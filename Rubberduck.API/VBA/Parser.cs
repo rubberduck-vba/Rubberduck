@@ -94,6 +94,7 @@ namespace Rubberduck.API.VBA
             _vbeEvents = VBEEvents.Initialize(_vbe);
             var declarationFinderFactory = new ConcurrentlyConstructedDeclarationFinderFactory();
             var projectRepository = new ProjectsRepository(_vbe);
+            var projectsToBeLoadedFromComSelector = new ProjectsToResolveFromComProjectsSelector(projectRepository);
             _state = new RubberduckParserState(_vbe, projectRepository, declarationFinderFactory, _vbeEvents);
             _state.StateChanged += _state_StateChanged;
             var vbeVersion = double.Parse(_vbe.Version, CultureInfo.InvariantCulture);
@@ -101,6 +102,7 @@ namespace Rubberduck.API.VBA
             var typeLibProvider = new TypeLibWrapperProvider(projectRepository);
             var compilationArgumentsProvider = new CompilationArgumentsProvider(typeLibProvider, _dispatcher, predefinedCompilationConstants);
             var compilationsArgumentsCache = new CompilationArgumentsCache(compilationArgumentsProvider);
+            var userProjectsRepository = new UserProjectRepository(typeLibProvider, _dispatcher, projectRepository);
             var preprocessorErrorListenerFactory = new PreprocessingParseErrorListenerFactory();
             var preprocessorParser = new VBAPreprocessorParser(preprocessorErrorListenerFactory, preprocessorErrorListenerFactory);
             var preprocessor = new VBAPreprocessor(preprocessorParser, compilationsArgumentsCache);
@@ -114,8 +116,10 @@ namespace Rubberduck.API.VBA
             var referenceRemover = new ReferenceRemover(_state, moduleToModuleReferenceManager);
             var supertypeClearer = new SupertypeClearer(_state);
             var comLibraryProvider = new ComLibraryProvider();
-            var referencedDeclarationsCollector = new LibraryReferencedDeclarationsCollector(comLibraryProvider);
+            var declarationsFromComProjectLoader = new DeclarationsFromComProjectLoader();
+            var referencedDeclarationsCollector = new LibraryReferencedDeclarationsCollector(declarationsFromComProjectLoader, comLibraryProvider);
             var comSynchronizer = new COMReferenceSynchronizer(_state, parserStateManager, projectRepository, referencedDeclarationsCollector);
+            var userComProjectSynchronizer = new UserComProjectSynchronizer(_state, declarationsFromComProjectLoader, userProjectsRepository, projectsToBeLoadedFromComSelector);
             var builtInDeclarationLoader = new BuiltInDeclarationLoader(
                 _state,
                 new List<ICustomDeclarationLoader>
@@ -154,14 +158,17 @@ namespace Rubberduck.API.VBA
                 builtInDeclarationLoader,
                 parseRunner,
                 declarationResolveRunner,
-                referenceResolveRunner  
+                referenceResolveRunner,
+                userComProjectSynchronizer
                 );
             var parsingCacheService = new ParsingCacheService(
                 _state,
                 moduleToModuleReferenceManager,
                 referenceRemover,
                 supertypeClearer,
-                compilationsArgumentsCache
+                compilationsArgumentsCache,
+                userProjectsRepository,
+                projectsToBeLoadedFromComSelector
                 );
 
             _parser = new SynchronousParseCoordinator(

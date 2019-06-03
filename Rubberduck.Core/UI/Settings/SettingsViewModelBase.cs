@@ -8,9 +8,9 @@ namespace Rubberduck.UI.Settings
     public abstract class SettingsViewModelBase<TSettings> : ViewModelBase 
         where TSettings : new()
     {
-        protected readonly IFilePersistenceService<TSettings> Service;
+        protected readonly IConfigurationService<TSettings> Service;
 
-        protected SettingsViewModelBase(IFilePersistenceService<TSettings> service)
+        protected SettingsViewModelBase(IConfigurationService<TSettings> service)
         {
             Service = service;
         }
@@ -37,8 +37,9 @@ namespace Rubberduck.UI.Settings
                     return;
                 }
 
-                var loaded = Service.Load(new TSettings(), dialog.FileName);
-                TransferSettingsToView(loaded);
+                Service.Import(dialog.FileName);
+                // FIXME transfer settings to view cleaner
+                TransferSettingsToView(Service.Read());
             }
         }
 
@@ -56,7 +57,7 @@ namespace Rubberduck.UI.Settings
                     return;
                 }
 
-                Service.Save(settings, dialog.FileName);
+                Service.Export(dialog.FileName);
             }
         }
     }

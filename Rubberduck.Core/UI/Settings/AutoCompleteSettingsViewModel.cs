@@ -9,7 +9,7 @@ namespace Rubberduck.UI.Settings
 {
     public sealed class AutoCompleteSettingsViewModel : SettingsViewModelBase<Rubberduck.Settings.AutoCompleteSettings>, ISettingsViewModel<Rubberduck.Settings.AutoCompleteSettings>
     {
-        public AutoCompleteSettingsViewModel(Configuration config, IFilePersistenceService<Rubberduck.Settings.AutoCompleteSettings> service) 
+        public AutoCompleteSettingsViewModel(Configuration config, IConfigurationService<Rubberduck.Settings.AutoCompleteSettings> service) 
             : base(service)
         {
             TransferSettingsToView(config.UserSettings.AutoCompleteSettings);

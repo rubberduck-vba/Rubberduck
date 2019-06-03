@@ -17,21 +17,10 @@ namespace Rubberduck.SettingsProvider
 
         public XmlContractPersistenceService(IPersistencePathProvider pathProvider) : base(pathProvider) { }
 
-        private string _filePath;
-        public override string FilePath
-        {
-            get => _filePath ?? Path.Combine(RootPath, DefaultConfigFile);
-            set => _filePath = value;
-        }
+        protected override string FilePath => Path.Combine(RootPath, DefaultConfigFile);
 
-        public override T Load(T toDeserialize, string nonDefaultFilePath = null)
+        protected override T Read(string filePath)
         {
-            var filePath = string.IsNullOrWhiteSpace(nonDefaultFilePath) ? FilePath : nonDefaultFilePath;
-            if (!File.Exists(filePath))
-            {
-                return Cached;
-            }
-            
             try
             {
                 using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
@@ -41,24 +30,20 @@ namespace Rubberduck.SettingsProvider
                     return (T)serializer.ReadObject(reader);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return FailedLoadReturnValue();
+                return default;
             }
         }
 
-        public override void Save(T toSerialize, string nonDefaultFilePath = null)
+        protected override void Write(T toSerialize, string filePath)
         {
-            var filePath = string.IsNullOrWhiteSpace(nonDefaultFilePath) ? FilePath : nonDefaultFilePath;
-            EnsurePathExists(filePath);
-
+            // overwriting on write is intentional, we only expect this to be used for References settings
             using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
             using (var writer = XmlWriter.Create(stream, OutputXmlSettings))
             {
                 var serializer = new DataContractSerializer(typeof(T), SerializerSettings);
                 serializer.WriteObject(writer, toSerialize);
-
-                Cached = toSerialize;
             }
         }
     }

@@ -7,7 +7,6 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.ToDoItems;
 using RubberduckTests.Mocks;
-using Rubberduck.Common;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.SettingsProvider;
 using Rubberduck.ToDoItems;

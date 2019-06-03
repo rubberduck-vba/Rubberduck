@@ -10,6 +10,31 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Warns about assignments that appear to be assigning an object reference without the 'Set' keyword.
+    /// </summary>
+    /// <why>
+    /// Omitting the 'Set' keyword will Let-coerce the right-hand side (RHS) of the assignment expression. If the RHS is an object variable,
+    /// then the assignment is implicitly assigning to that object's default member, which may raise run-time error 91 at run-time.
+    /// </why>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim foo As Object
+    ///     foo = New Collection
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim foo As Object
+    ///     Set foo = New Collection
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class ObjectVariableNotSetInspection : InspectionBase
     {
         public ObjectVariableNotSetInspection(RubberduckParserState state)

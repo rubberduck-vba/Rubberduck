@@ -168,13 +168,12 @@ namespace RubberduckTests.Settings
         public void UserSettingsLoadedUsingDefaultWhenMissingFile()
         {
             var pathProviderMock = new Mock<IPersistencePathProvider>();
-            pathProviderMock.Setup(x => x.DataRootPath).Returns("C:\\rubberduck\\");
+            pathProviderMock.Setup(x => x.DataRootPath).Returns(@"C:\some\non\existent\path\rubberduck");
             pathProviderMock.Setup(x => x.DataFolderPath(It.IsAny<string>())).Returns<string>(x => x);
             // For this test, we need to use the actual object. Fortunately, the path is virtual, so we
             // can override that property and force it to use an non-existent path to prove that settings
             // will be still created using defaults without the file present. 
             var persisterMock = new Mock<XmlPersistenceService<GeneralSettings>>(pathProviderMock.Object);
-            persisterMock.Setup(x => x.FilePath).Returns("C:\\some\\non\\existent\\path\\rubberduck");
             persisterMock.CallBase = true;
             var configProvider = new GeneralConfigProvider(persisterMock.Object);
 

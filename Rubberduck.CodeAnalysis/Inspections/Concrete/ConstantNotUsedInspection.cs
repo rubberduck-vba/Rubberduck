@@ -13,6 +13,30 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Locates 'Const' declarations that are never referenced.
+    /// </summary>
+    /// <why>
+    /// Declarations that are never used should be removed.
+    /// </why>
+    /// <example>
+    /// <![CDATA[
+    /// Private Const foo As Long = 42
+    ///
+    /// Public Sub DoSomething()
+    ///     ' no reference to 'foo' anywhere...
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// Private Const foo As Long = 42
+    ///
+    /// Public Sub DoSomething()
+    ///     Debug.Print foo
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class ConstantNotUsedInspection : InspectionBase
     {
         public ConstantNotUsedInspection(RubberduckParserState state)

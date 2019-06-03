@@ -12,6 +12,30 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Warns about a variable that is assigned, and then re-assigned before the first assignment is read.
+    /// </summary>
+    /// <why>
+    /// The first assignment is likely redundant, since it is being overwritten by the second.
+    /// </why>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim foo As Long
+    ///     foo = 12 ' assignment is redundant
+    ///     foo = 34 
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal foo As Long)
+    ///     Dim bar As Long
+    ///     bar = 12
+    ///     bar = bar + foo ' variable is re-assigned, but the prior assigned value is read at least once first.
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class AssignmentNotUsedInspection : InspectionBase
     {
         private readonly Walker _walker;

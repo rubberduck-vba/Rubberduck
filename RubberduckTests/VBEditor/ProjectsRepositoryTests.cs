@@ -23,6 +23,19 @@ namespace RubberduckTests.VBEditor
             return repository;
         }
 
+        private Mock<IVBProject> TestProject(string projectName, ProjectProtection protection, MockVbeBuilder vbeBuilder)
+        {
+            if (protection == ProjectProtection.Locked)
+            {
+                var mockProject = vbeBuilder.ProjectBuilder(projectName, "projectPath", protection).Build();
+                var projectId = QualifiedModuleName.GetProjectId(projectName, "projectPath");
+                mockProject.Setup(m => m.ProjectId).Returns(projectId);
+                return mockProject;
+            }
+
+            return vbeBuilder.ProjectBuilder(projectName, protection).Build();
+        }
+
         [Test]
         [Category("COM")]
         public void ProjectsCollectionReturnsTheOneFromTheVbePassedIn()
@@ -67,11 +80,9 @@ namespace RubberduckTests.VBEditor
         public void ProjectsReturnsProjectsOnVbe()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.Build();
+            var projectMock = TestProject("project", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(projectMock);
-            var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.Build();
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -88,14 +99,30 @@ namespace RubberduckTests.VBEditor
 
         [Test]
         [Category("COM")]
+        public void ProjectsDoesNotReturnsLockedProjectsOnVbe()
+        {
+            var vbeBuilder = new MockVbeBuilder();
+            var projectMock = TestProject("project", ProjectProtection.Locked, vbeBuilder);
+            vbeBuilder.AddProject(projectMock);
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Locked, vbeBuilder);
+            vbeBuilder.AddProject(otherProjectMock);
+
+            var vbe = vbeBuilder.Build().Object;
+
+            var repository = TestRepository(vbe);
+            var projects = repository.Projects().ToList();
+
+            Assert.AreEqual(0, projects.Count);
+        }
+
+        [Test]
+        [Category("COM")]
         public void ProjectsGetDisposedOnDisposal()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.Build();
+            var projectMock = TestProject("project", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(projectMock);
-            var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.Build();
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -112,11 +139,9 @@ namespace RubberduckTests.VBEditor
         public void ProjectsReturnsEmptyCollectionAfterDisposal()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.Build();
+            var projectMock = TestProject("project", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(projectMock);
-            var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.Build();
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -133,11 +158,9 @@ namespace RubberduckTests.VBEditor
         public void ProjectsReturnsEmptyCollectionBeforeFirstRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.Build();
+            var projectMock = TestProject("project", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(projectMock);
-            var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.Build();
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -153,8 +176,7 @@ namespace RubberduckTests.VBEditor
         public void ProjectsDoesNotReturnProjectsAddedToVbeWithoutRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.Build();
+            var projectMock = TestProject("project", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(projectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -171,8 +193,7 @@ namespace RubberduckTests.VBEditor
         public void ProjectsReturnsProjectsAddedToVbeAfterRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.Build();
+            var projectMock = TestProject("project", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(projectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -193,11 +214,9 @@ namespace RubberduckTests.VBEditor
         public void ProjectsReturnsRemovedProjectsBeforeRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.Build();
+            var projectMock = TestProject("project", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(projectMock);
-            var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.Build();
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -218,11 +237,9 @@ namespace RubberduckTests.VBEditor
         public void ProjectsDoesNotReturnRemovedProjectsAfterRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.Build();
+            var projectMock = TestProject("project", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(projectMock);
-            var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.Build();
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -241,11 +258,9 @@ namespace RubberduckTests.VBEditor
         public void ProjectsGetDisposedOnRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.Build();
+            var projectMock = TestProject("project", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(projectMock);
-            var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.Build();
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -262,11 +277,226 @@ namespace RubberduckTests.VBEditor
         public void RemovedProjectsGetDisposedOnRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.Build();
+            var projectMock = TestProject("project", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(projectMock);
-            var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.Build();
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Unprotected, vbeBuilder);
+            vbeBuilder.AddProject(otherProjectMock);
+
+            var vbe = vbeBuilder.Build().Object;
+            var otherProject = otherProjectMock.Object;
+
+            var repository = TestRepository(vbe);
+            vbe.VBProjects.Remove(otherProject);
+            repository.Refresh();
+
+            otherProjectMock.Verify(m => m.Dispose(), Times.Once);
+        }
+
+        [Test]
+        [Category("COM")]
+        public void LockedProjectsReturnsLockedProjectsOnVbe()
+        {
+            var vbeBuilder = new MockVbeBuilder();
+            var projectMock = TestProject("project", ProjectProtection.Locked, vbeBuilder);
+            vbeBuilder.AddProject(projectMock);
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Locked, vbeBuilder);
+            vbeBuilder.AddProject(otherProjectMock);
+
+            var vbe = vbeBuilder.Build().Object;
+            var project = projectMock.Object;
+            var otherProject = otherProjectMock.Object;
+
+            var repository = TestRepository(vbe);
+            var projects = repository.LockedProjects().ToList();
+
+            Assert.AreEqual(2, projects.Count);
+            Assert.Contains((project.ProjectId, project), projects);
+            Assert.Contains((otherProject.ProjectId, otherProject), projects);
+        }
+
+        [Test]
+        [Category("COM")]
+        public void LockedProjectsDoesNotReturnsLockedProjectsOnVbe()
+        {
+            var vbeBuilder = new MockVbeBuilder();
+            var projectMock = TestProject("project", ProjectProtection.Unprotected, vbeBuilder);
+            vbeBuilder.AddProject(projectMock);
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Unprotected, vbeBuilder);
+            vbeBuilder.AddProject(otherProjectMock);
+
+            var vbe = vbeBuilder.Build().Object;
+
+            var repository = TestRepository(vbe);
+            var projects = repository.LockedProjects().ToList();
+
+            Assert.AreEqual(0, projects.Count);
+        }
+
+        [Test]
+        [Category("COM")]
+        public void LockedProjectsGetDisposedOnDisposal()
+        {
+            var vbeBuilder = new MockVbeBuilder();
+            var projectMock = TestProject("project", ProjectProtection.Locked, vbeBuilder);
+            vbeBuilder.AddProject(projectMock);
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Locked, vbeBuilder);
+            vbeBuilder.AddProject(otherProjectMock);
+
+            var vbe = vbeBuilder.Build().Object;
+
+            var repository = TestRepository(vbe);
+            repository.Dispose();
+
+            projectMock.Verify(m => m.Dispose(), Times.Once);
+            otherProjectMock.Verify(m => m.Dispose(), Times.Once);
+        }
+
+        [Test]
+        [Category("COM")]
+        public void LockedProjectsReturnsEmptyCollectionAfterDisposal()
+        {
+            var vbeBuilder = new MockVbeBuilder();
+            var projectMock = TestProject("project", ProjectProtection.Locked, vbeBuilder);
+            vbeBuilder.AddProject(projectMock);
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Locked, vbeBuilder);
+            vbeBuilder.AddProject(otherProjectMock);
+
+            var vbe = vbeBuilder.Build().Object;
+
+            var repository = TestRepository(vbe);
+            repository.Dispose();
+            var projects = repository.LockedProjects().ToList();
+
+            Assert.IsEmpty(projects);
+        }
+
+        [Test]
+        [Category("COM")]
+        public void LockedProjectsReturnsEmptyCollectionBeforeFirstRefresh()
+        {
+            var vbeBuilder = new MockVbeBuilder();
+            var projectMock = TestProject("project", ProjectProtection.Locked, vbeBuilder);
+            vbeBuilder.AddProject(projectMock);
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Locked, vbeBuilder);
+            vbeBuilder.AddProject(otherProjectMock);
+
+            var vbe = vbeBuilder.Build().Object;
+
+            var repository = TestRepository(vbe, initialRefresh: false);
+            var projects = repository.LockedProjects().ToList();
+
+            Assert.IsEmpty(projects);
+        }
+
+        [Test]
+        [Category("COM")]
+        public void LockedProjectsDoesNotReturnLockedProjectsAddedToVbeWithoutRefresh()
+        {
+            var vbeBuilder = new MockVbeBuilder();
+            var projectMock = TestProject("project", ProjectProtection.Locked, vbeBuilder);
+            vbeBuilder.AddProject(projectMock);
+
+            var vbe = vbeBuilder.Build().Object;
+
+            var repository = TestRepository(vbe);
+            var otherProject = vbe.VBProjects.Open("testPath");
+            var projects = repository.LockedProjects().ToList();
+
+            Assert.IsFalse(projects.Contains((otherProject.ProjectId, otherProject)));
+        }
+
+        [Test]
+        [Category("COM")]
+        public void LockedProjectsReturnsLockedProjectsAddedToVbeAfterRefresh()
+        {
+            var vbeBuilder = new MockVbeBuilder();
+            var projectMock = TestProject("project", ProjectProtection.Locked, vbeBuilder);
+            vbeBuilder.AddProject(projectMock);
+
+            var vbe = vbeBuilder.Build().Object;
+            var project = projectMock.Object;
+
+            var repository = TestRepository(vbe);
+            var otherProject = vbe.VBProjects.Open("testPath");
+            repository.Refresh();
+            var projects = repository.LockedProjects().ToList();
+
+            Assert.AreEqual(2, projects.Count);
+            Assert.Contains((project.ProjectId, project), projects);
+            Assert.Contains((otherProject.ProjectId, otherProject), projects);
+        }
+
+        [Test]
+        [Category("COM")]
+        public void LockedProjectsReturnsRemovedLockedProjectsBeforeRefresh()
+        {
+            var vbeBuilder = new MockVbeBuilder();
+            var projectMock = TestProject("project", ProjectProtection.Locked, vbeBuilder);
+            vbeBuilder.AddProject(projectMock);
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Locked, vbeBuilder);
+            vbeBuilder.AddProject(otherProjectMock);
+
+            var vbe = vbeBuilder.Build().Object;
+            var project = projectMock.Object;
+            var otherProject = otherProjectMock.Object;
+
+            var repository = TestRepository(vbe);
+            vbe.VBProjects.Remove(otherProject);
+            var projects = repository.LockedProjects().ToList();
+
+            Assert.AreEqual(2, projects.Count);
+            Assert.Contains((project.ProjectId, project), projects);
+            Assert.Contains((otherProject.ProjectId, otherProject), projects);
+        }
+
+        [Test]
+        [Category("COM")]
+        public void LockedProjectsDoesNotReturnRemovedLockedProjectsAfterRefresh()
+        {
+            var vbeBuilder = new MockVbeBuilder();
+            var projectMock = TestProject("project", ProjectProtection.Locked, vbeBuilder);
+            vbeBuilder.AddProject(projectMock);
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Locked, vbeBuilder);
+            vbeBuilder.AddProject(otherProjectMock);
+
+            var vbe = vbeBuilder.Build().Object;
+            var otherProject = otherProjectMock.Object;
+
+            var repository = TestRepository(vbe);
+            vbe.VBProjects.Remove(otherProject);
+            repository.Refresh();
+            var projects = repository.LockedProjects().ToList();
+
+            Assert.IsFalse(projects.Contains((otherProject.ProjectId, otherProject)));
+        }
+
+        [Test]
+        [Category("COM")]
+        public void LockedProjectsGetDisposedOnRefresh()
+        {
+            var vbeBuilder = new MockVbeBuilder();
+            var projectMock = TestProject("project", ProjectProtection.Locked, vbeBuilder);
+            vbeBuilder.AddProject(projectMock);
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Locked, vbeBuilder);
+            vbeBuilder.AddProject(otherProjectMock);
+
+            var vbe = vbeBuilder.Build().Object;
+
+            var repository = TestRepository(vbe);
+            repository.Refresh();
+
+            projectMock.Verify(m => m.Dispose(), Times.Once);
+            otherProjectMock.Verify(m => m.Dispose(), Times.Once);
+        }
+
+        [Test]
+        [Category("COM")]
+        public void RemovedLockedProjectsGetDisposedOnRefresh()
+        {
+            var vbeBuilder = new MockVbeBuilder();
+            var projectMock = TestProject("project", ProjectProtection.Locked, vbeBuilder);
+            vbeBuilder.AddProject(projectMock);
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Locked, vbeBuilder);
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -284,11 +514,9 @@ namespace RubberduckTests.VBEditor
         public void ProjectReturnsProjectWithMatchingProjectId()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.Build();
+            var projectMock = TestProject("project", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(projectMock);
-            var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.Build();
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -305,11 +533,9 @@ namespace RubberduckTests.VBEditor
         public void ProjectReturnsNullForUnknownProjectId()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.Build();
+            var projectMock = TestProject("project", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(projectMock);
-            var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.Build();
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -325,11 +551,9 @@ namespace RubberduckTests.VBEditor
         public void ProjectReturnsNullAfterDisposal()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.Build();
+            var projectMock = TestProject("project", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(projectMock);
-            var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.Build();
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -347,11 +571,9 @@ namespace RubberduckTests.VBEditor
         public void ProjectReturnsNullBeforeFirstRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.Build();
+            var projectMock = TestProject("project", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(projectMock);
-            var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.Build();
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -368,8 +590,7 @@ namespace RubberduckTests.VBEditor
         public void ProjectReturnsNullForProjectIdOfAddedProjectBeforeRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.Build();
+            var projectMock = TestProject("project", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(projectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -386,8 +607,7 @@ namespace RubberduckTests.VBEditor
         public void ProjectReturnsAddedProjectWithMatchingProjectIdAfterRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.Build();
+            var projectMock = TestProject("project", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(projectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -405,11 +625,9 @@ namespace RubberduckTests.VBEditor
         public void ProjectReturnsRemovedProjectWithMatchingProjectIdBeforeRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.Build();
+            var projectMock = TestProject("project", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(projectMock);
-            var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.Build();
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -427,11 +645,9 @@ namespace RubberduckTests.VBEditor
         public void ProjectReturnsNullForProjectIdOfRemovedProjectAfterRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.Build();
+            var projectMock = TestProject("project", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(projectMock);
-            var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.Build();
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -500,8 +716,7 @@ namespace RubberduckTests.VBEditor
             var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var componentsCollectionMock = projectBuilder.MockVBComponents;
-            var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.Build();
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -519,11 +734,9 @@ namespace RubberduckTests.VBEditor
         public void ComponentsCollectionReturnsComponentsCollectionOfProjectWithMatchingProjectId()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.Build();
+            var projectMock = TestProject("project", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(projectMock);
-            var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.Build();
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -540,11 +753,9 @@ namespace RubberduckTests.VBEditor
         public void ComponentsCollectionReturnsNullForUnknownProjectId()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.Build();
+            var projectMock = TestProject("project", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(projectMock);
-            var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.Build();
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -560,11 +771,9 @@ namespace RubberduckTests.VBEditor
         public void ComponentsCollectionReturnsNullAfterDisposal()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.Build();
+            var projectMock = TestProject("project", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(projectMock);
-            var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.Build();
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -582,11 +791,9 @@ namespace RubberduckTests.VBEditor
         public void ComponentsCollectionReturnsNullBeforeFirstRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.Build();
+            var projectMock = TestProject("project", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(projectMock);
-            var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.Build();
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -603,8 +810,7 @@ namespace RubberduckTests.VBEditor
         public void ComponentsCollectionReturnsNullForProjectIdOfAddedProjectBeforeRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.Build();
+            var projectMock = TestProject("project", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(projectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -621,8 +827,7 @@ namespace RubberduckTests.VBEditor
         public void ComponentCollectionReturnsComponentsCollectionOfAddedProjectWithMatchingProjectIdAfterRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.Build();
+            var projectMock = TestProject("project", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(projectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -640,11 +845,9 @@ namespace RubberduckTests.VBEditor
         public void ComponentsCollectionReturnsComponentsCollectionOfRemovedProjectWithMatchingProjectIdBeforeRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.Build();
+            var projectMock = TestProject("project", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(projectMock);
-            var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.Build();
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -662,11 +865,9 @@ namespace RubberduckTests.VBEditor
         public void ComponentsCollectionReturnsNullForProjectIdOfRemovedProjectAfterRefresh()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.Build();
+            var projectMock = TestProject("project", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(projectMock);
-            var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.Build();
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -689,8 +890,7 @@ namespace RubberduckTests.VBEditor
             var projectMock = projectBuilder.Build();
             vbeBuilder.AddProject(projectMock);
             var componentsCollectionMock = projectBuilder.MockVBComponents;
-            var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
-            var otherProjectMock = otherProjectBuilder.Build();
+            var otherProjectMock = TestProject("otherProject", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(otherProjectMock);
 
             var vbe = vbeBuilder.Build().Object;
@@ -707,8 +907,7 @@ namespace RubberduckTests.VBEditor
         public void ComponentsCollectionsOfProjectsWithNonMatchingProjectIdDoNotGetDisposedOnRefreshForProjectId()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var projectBuilder = vbeBuilder.ProjectBuilder("project", ProjectProtection.Unprotected);
-            var projectMock = projectBuilder.Build();
+            var projectMock = TestProject("project", ProjectProtection.Unprotected, vbeBuilder);
             vbeBuilder.AddProject(projectMock);
             var otherProjectBuilder = vbeBuilder.ProjectBuilder("otherProject", ProjectProtection.Unprotected);
             var otherProjectMock = otherProjectBuilder.Build();

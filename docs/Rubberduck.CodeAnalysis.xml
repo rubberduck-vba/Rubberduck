@@ -1,0 +1,2330 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Rubberduck.CodeAnalysis</name>
+    </assembly>
+    <members>
+        <member name="P:Rubberduck.CodeAnalysis.CodeMetrics.CodeMetric.Name">
+            <summary>
+            The name of the metric. Used for localization purposes as well as a uniquely identifying name to disambiguate between metrics.
+            </summary>
+        </member>
+        <member name="P:Rubberduck.CodeAnalysis.CodeMetrics.CodeMetric.Level">
+            <summary>
+            The aggregation level that this metric applies to.
+            </summary>
+        </member>
+        <member name="T:Rubberduck.CodeAnalysis.CodeMetrics.ICodeMetricResult">
+            <summary>
+            A CodeMetricsResult. Each result is attached to a Declaration.
+            Usually this declaration would be a Procedure (Function/Sub/Property).
+            Some metrics are only useful on Module level, some even on Project level.
+            
+            Some metrics may be aggregated to obtain a metric for a "higher hierarchy level"
+            </summary>
+        </member>
+        <member name="P:Rubberduck.CodeAnalysis.CodeMetrics.ICodeMetricResult.Declaration">
+            <summary>
+            The declaration that this result refers to.
+            </summary>
+        </member>
+        <member name="P:Rubberduck.CodeAnalysis.CodeMetrics.ICodeMetricResult.Metric">
+            <summary>
+            The Metric kind that this result belongs to. Only results belonging to the **same** metric can be aggregated.
+            </summary>
+        </member>
+        <member name="P:Rubberduck.CodeAnalysis.CodeMetrics.ICodeMetricResult.Value">
+            <summary>
+            A string representation of the value.
+            </summary>
+        </member>
+        <member name="T:Rubberduck.CodeAnalysis.Inspections.Concrete.ObsoleteWhileWendStatementInspection">
+            <summary>
+            Flags 'While...Wend' loops as obsolete.
+            </summary>
+            <why>
+            'While...Wend' loops were made obsolete when 'Do While...Loop' statements were introduced.
+            'While...Wend' loops cannot be exited early without a GoTo jump; 'Do...Loop' statements can be conditionally exited with 'Exit Do'.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                While True
+                    ' ...
+                Wend
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Do While True
+                    ' ...
+                Loop
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="M:Rubberduck.CodeAnalysis.Settings.CodeInspectionSetting.#ctor">
+            <Summary>
+            Default constructor required for XML serialization.
+            </Summary>
+        </member>
+        <member name="P:Rubberduck.Inspections.Abstract.InspectionBase.Description">
+            <summary>
+            Gets a localized string representing a short name/description for the inspection.
+            </summary>
+        </member>
+        <member name="P:Rubberduck.Inspections.Abstract.InspectionBase.InspectionType">
+            <summary>
+            Gets the type of inspection; used for regrouping inspections.
+            </summary>
+        </member>
+        <member name="P:Rubberduck.Inspections.Abstract.InspectionBase.Name">
+            <summary>
+            The inspection type name, obtained by reflection.
+            </summary>
+        </member>
+        <member name="P:Rubberduck.Inspections.Abstract.InspectionBase.Severity">
+            <summary>
+            Inspection severity level. Can control whether an inspection is enabled.
+            </summary>
+        </member>
+        <member name="P:Rubberduck.Inspections.Abstract.InspectionBase.Meta">
+            <summary>
+            Meta-information about why an inspection exists.
+            </summary>
+        </member>
+        <member name="P:Rubberduck.Inspections.Abstract.InspectionBase.InspectionTypeName">
+            <summary>
+            Gets a localized string representing the type of inspection.
+            <see cref="P:Rubberduck.Inspections.Abstract.InspectionBase.InspectionType"/>
+            </summary>
+        </member>
+        <member name="P:Rubberduck.Inspections.Abstract.InspectionBase.AnnotationName">
+            <summary>
+            Gets a string representing the text that must be present in an 
+            @Ignore annotation to disable the inspection at a given site.
+            </summary>
+        </member>
+        <member name="P:Rubberduck.Inspections.Abstract.InspectionBase.Declarations">
+            <summary>
+            Gets all declarations in the parser state without an @Ignore annotation for this inspection.
+            </summary>
+        </member>
+        <member name="P:Rubberduck.Inspections.Abstract.InspectionBase.UserDeclarations">
+            <summary>
+            Gets all user declarations in the parser state without an @Ignore annotation for this inspection.
+            </summary>
+        </member>
+        <member name="M:Rubberduck.Inspections.Abstract.InspectionBase.GetInspectionResults(System.Threading.CancellationToken)">
+            <summary>
+            A method that inspects the parser state and returns all issues it can find.
+            </summary>
+            <param name="token"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Rubberduck.Inspections.Abstract.InspectionResultBase.QualifiedSelection">
+            <summary>
+            Gets the information needed to select the target instruction in the VBE.
+            </summary>
+        </member>
+        <member name="M:Rubberduck.Inspections.Abstract.InspectionResultBase.ToClipboardString">
+            <summary>
+            WARNING: This property can have side effects. It can change the ActiveVBProject if the result has a null Declaration, 
+            which causes a flicker in the VBE. This should only be called if it is *absolutely* necessary.
+            </summary>
+        </member>
+        <member name="T:Rubberduck.Inspections.Inspections.Concrete.ExcelUdfNameIsValidCellReferenceInspection">
+            <summary>
+            Locates public User-Defined Function procedures accidentally named after a cell reference.
+            </summary>
+            <reference name="Excel" />
+            <why>
+            Another good reason to avoid numeric suffixes: if the function is meant to be used as a UDF in a cell formula,
+            the worksheet cell by the same name takes precedence and gets the reference, and the function is never invoked.
+            </why>
+            <example>
+            <![CDATA[
+            Public Function FOO1234()
+            End Function
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Function Foo()
+            End Function
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Inspections.Concrete.IsMissingWithNonArgumentParameterInspection">
+            <summary>
+            Identifies uses of 'IsMissing' involving a non-parameter argument.
+            </summary>
+            <why>
+            'IsMissing' only returns True when an optional Variant parameter was not supplied as an argument.
+            This inspection flags uses that attempt to use 'IsMissing' for other purposes, resulting in conditions that are always False.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim foo As Variant
+                If IsMissing(foo) Then Exit Sub ' condition is always false
+                ' ...
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(Optional ByVal foo As Variant = 0)
+                If IsMissing(foo) Then Exit Sub
+                ' ...
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Inspections.Concrete.ObsoleteCallingConventionInspection">
+            <summary>
+            Warns about 'Declare' statements that are using the obsolete/unsupported 'CDecl' calling convention on Windows.
+            </summary>
+            <why>
+            The CDecl calling convention is only implemented in VBA for Mac; if Rubberduck can see it (Rubberduck only runs on Windows),
+            then the declaration is using an unsupported (no-op) calling convention on Windows.
+            </why>
+            <example>
+            <![CDATA[
+            Private Declare Sub Beep CDecl Lib "kernel32" (dwFreq As Any, dwDuration As Any)
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Private Declare Sub Beep Lib "kernel32" (dwFreq As Any, dwDuration As Any)
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Inspections.Concrete.ObsoleteMemberUsageInspection">
+             <summary>
+             Flags usages of members marked as obsolete with an @Obsolete("justification") Rubberduck annotation.
+             </summary>
+             <why>
+             Marking members as obsolete can help refactoring a legacy code base. This inspection is a tool that makes it easy to locate obsolete member calls.
+             </why>
+             <example>
+             <![CDATA[
+             Public Sub DoSomething()
+                 DoStuff ' member is marked as obsolete
+             End Sub
+            
+             '@Obsolete("Use the newer DoThing() method instead")
+             Private Sub DoStuff()
+                 ' ...
+             End Sub
+            
+             Private Sub DoThing()
+                 ' ...
+             End Sub
+             ]]>
+             </example>
+             <example>
+             <![CDATA[
+             Public Sub DoSomething()
+                 DoThing
+             End Sub
+            
+             '@Obsolete("Use the newer DoThing() method instead")
+             Private Sub DoStuff()
+                 ' ...
+             End Sub
+            
+             Private Sub DoThing()
+                 ' ...
+             End Sub
+             ]]>
+             </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Inspections.Concrete.ThunderCode.KeywordsUsedAsMemberInspection">
+            <summary>
+            A ThunderCode inspection that locates instances of various keywords and reserved identifiers used as Type or Enum member names.
+            </summary>
+            <why>
+            This inpection is flagging code we dubbed "ThunderCode", 
+            code our friend Andrew Jackson would have written to confuse Rubberduck's parser and/or resolver. 
+            While perfectly legal as Type or Enum member names, these identifiers should be avoided: 
+            they need to be square-bracketed everywhere they are used.
+            </why>
+        </member>
+        <member name="T:Rubberduck.Inspections.Inspections.Concrete.ThunderCode.LineContinuationBetweenKeywordsInspection">
+            <summary>
+            A ThunderCode inspection that locates certain specific instances of line continuations in places we'd never think to put them.
+            </summary>
+            <why>
+            This inpection is flagging code we dubbed "ThunderCode", 
+            code our friend Andrew Jackson would have written to confuse Rubberduck's parser and/or resolver. 
+            While perfectly legal, these line continuations serve no purpose and should be removed.
+            </why>
+            <remarks>
+            Note that the inspection only checks a subset of possible "evil" line continatuions 
+            for both simplicity and performance reasons. Exhaustive inspection would likely take too much effort. 
+            </remarks>
+        </member>
+        <member name="T:Rubberduck.Inspections.Inspections.Concrete.ThunderCode.NegativeLineNumberInspection">
+            <summary>
+            A ThunderCode inspection that locates negative line numbers.
+            </summary>
+            <why>
+            This inpection is flagging code we dubbed "ThunderCode", 
+            code our friend Andrew Jackson would have written to confuse Rubberduck's parser and/or resolver. 
+            The VBE does allow rather strange and unbelievable things to happen.
+            </why>
+        </member>
+        <member name="T:Rubberduck.Inspections.Inspections.Concrete.ThunderCode.NonBreakingSpaceIdentifierInspection">
+            <summary>
+            A ThunderCode inspection that locates non-breaking spaces hidden in identifier names.
+            </summary>
+            <why>
+            This inpection is flagging code we dubbed "ThunderCode", 
+            code our friend Andrew Jackson would have written to confuse Rubberduck's parser and/or resolver. 
+            This inspection may accidentally reveal non-breaking spaces in code copied and pasted from a website.
+            </why>
+        </member>
+        <member name="T:Rubberduck.Inspections.Inspections.Concrete.ThunderCode.OnErrorGoToMinusOneInspection">
+            <summary>
+            A ThunderCode inspection that locates instances of 'On Error GoTo -1' statements.
+            </summary>
+            <why>
+            This inpection is flagging code we dubbed "ThunderCode", 
+            code our friend Andrew Jackson would have written to confuse Rubberduck's parser and/or resolver. 
+            'On Error GoTo -1' is poorly documented and uselessly complicates error handling.
+            </why>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.AssignedByValParameterInspection">
+            <summary>
+            Warns about parameters passed by value being assigned a new value in the body of a procedure.
+            </summary>
+            <why>
+            Debugging is easier if the procedure's initial state is preserved and accessible anywhere within its scope.
+            Mutating the inputs destroys the initial state, and makes the intent ambiguous: if the calling code is meant
+            to be able to access the modified values, then the parameter should be passed ByRef; the ByVal modifier might be a bug.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(ByVal foo As Long)
+                foo = foo + 1 ' is the caller supposed to see the updated value?
+                Debug.Print foo
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(ByVal foo As Long)
+                Dim bar As Long
+                bar = foo
+                bar = bar + 1 ' clearly a local copy of the original value.
+                Debug.Print bar
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.AssignmentNotUsedInspection">
+            <summary>
+            Warns about a variable that is assigned, and then re-assigned before the first assignment is read.
+            </summary>
+            <why>
+            The first assignment is likely redundant, since it is being overwritten by the second.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim foo As Long
+                foo = 12 ' assignment is redundant
+                foo = 34 
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(ByVal foo As Long)
+                Dim bar As Long
+                bar = 12
+                bar = bar + foo ' variable is re-assigned, but the prior assigned value is read at least once first.
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.AttributeValueOutOfSyncInspection">
+            <summary>
+            Indicates that the value of a hidden VB attribute is out of sync with the corresponding Rubberduck annotation comment.
+            </summary>
+            <why>
+            Keeping Rubberduck annotation comments in sync with the hidden VB attribute values, surfaces these hidden attributes in the VBE code panes; 
+            Rubberduck can rewrite the attributes to match the corresponding annotation comment.
+            </why>
+            <example>
+            <![CDATA[
+            '@Description("foo")
+            Public Sub DoSomething()
+            Attribute VB_Description = "bar"
+                ' ...
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            '@Description("foo")
+            Public Sub DoSomething()
+            Attribute VB_Description = "foo"
+                ' ...
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.BooleanAssignedInIfElseInspection">
+            <summary>
+            Identifies redundant Boolean expressions in conditionals.
+            </summary>
+            <why>
+            A Boolean expression never needs to be compared to a Boolean literal in a conditional expression.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(ByVal foo As Boolean)
+                If foo = True Then ' foo is known to already be a Boolean value.
+                    ' ...
+                End If
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(ByVal foo As Boolean)
+                If foo Then
+                    ' ...
+                End If
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.ConstantNotUsedInspection">
+             <summary>
+             Locates 'Const' declarations that are never referenced.
+             </summary>
+             <why>
+             Declarations that are never used should be removed.
+             </why>
+             <example>
+             <![CDATA[
+             Private Const foo As Long = 42
+            
+             Public Sub DoSomething()
+                 ' no reference to 'foo' anywhere...
+             End Sub
+             ]]>
+             </example>
+             <example>
+             <![CDATA[
+             Private Const foo As Long = 42
+            
+             Public Sub DoSomething()
+                 Debug.Print foo
+             End Sub
+             ]]>
+             </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.DefaultProjectNameInspection">
+            <summary>
+            This inspection means to indicate when the project has not been renamed.
+            </summary>
+            <why>
+            VBA projects should be meaningfully named, to avoid namespace clashes when referencing other VBA projects.
+            </why>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.DefTypeStatementInspection">
+             <summary>
+             Warns about Def[Type] statements.
+             </summary>
+             <why>
+             These declarative statements make the first letter of identifiers determine the data type.
+             </why>
+             <example>
+             <![CDATA[
+             DefBool B
+             DefDbl D
+            
+             Public Sub DoSomething() 
+                 Dim bar ' implicit Boolean
+                 ' ...
+             End Sub
+             ]]>
+             </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.DuplicatedAnnotationInspection">
+             <summary>
+             Warns about duplicated annotations.
+             </summary>
+             <why>
+             Rubberduck annotations should not be specified more than once for a given module, member, variable, or expression.
+             </why>
+             <example>
+             <![CDATA[
+             '@Folder("Bar")
+             '@Folder("Foo")
+            
+             Public Sub DoSomething()
+                 ' ...
+             End Sub
+             ]]>
+             </example>
+             <example>
+             <![CDATA[
+             '@Folder("Foo.Bar")
+            
+             Public Sub DoSomething()
+                 ' ...
+             End Sub
+             ]]>
+             </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.EmptyCaseBlockInspection">
+            <summary>
+            Identifies empty 'Case' blocks that can be safely removed.
+            </summary>
+            <why>
+            Case blocks in VBA do not "fall through"; an empty 'Case' block might be hiding a bug.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(ByVal foo As Long)
+                Select Case foo
+                    Case 0 ' empty block
+                    Case Is > 0
+                        Debug.Print foo ' does not run if foo is 0.
+                End Select
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(ByVal foo As Long)
+                Select Case foo
+                    Case 0
+                        '...code...
+                    Case Is > 0
+                        '...code...
+                End Select
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.EmptyDoWhileBlockInspection">
+            <summary>
+            Identifies empty 'Do...Loop While' blocks that can be safely removed.
+            </summary>
+            <why>
+            Dead code should be removed. A loop without a body is usually redundant.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(ByVal foo As Long)
+                Do
+                    ' no executable statement...
+                Loop While foo < 100
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(ByVal foo As Long)
+                Do
+                    Debug.Print foo
+                Loop While foo < 100
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.EmptyElseBlockInspection">
+            <summary>
+            Identifies empty 'Else' blocks that can be safely removed.
+            </summary>
+            <why>
+            Empty code blocks are redundant, dead code that should be removed. They can also be misleading about their intent:
+            an empty block may be signalling an unfinished thought or an oversight.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(ByVal foo As Boolean)
+                If foo Then
+                    ' ...
+                Else
+                End If
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(ByVal foo As Boolean)
+                If foo Then
+                    ' ...
+                End If
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.EmptyForEachBlockInspection">
+            <summary>
+            Identifies empty 'For Each...Next' blocks that can be safely removed.
+            </summary>
+            <why>
+            Dead code should be removed. A loop without a body is usually redundant.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim sheet As Worksheet
+                For Each sheet In ThisWorkbook.Worksheets
+                    ' no executable statement...
+                Next
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim sheet As Worksheet
+                For Each sheet In ThisWorkbook.Worksheets
+                    Debug.Print sheet.Name
+                Next
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.EmptyForLoopBlockInspection">
+            <summary>
+            Identifies empty 'For...Next' blocks that can be safely removed.
+            </summary>
+            <why>
+            Dead code should be removed. A loop without a body is usually redundant.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(ByVal foo As Long)
+                Dim i As Long
+                For i = 0 To foo
+                    ' no executable statement...
+                Next
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(ByVal foo As Long)
+                Dim i As Long
+                For i = 0 To foo
+                    Debug.Print i
+                Next
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.EmptyIfBlockInspection">
+            <summary>
+            Identifies empty 'If' blocks.
+            </summary>
+            <why>
+            Conditional expression is inverted; there would not be a need for an 'Else' block otherwise.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(ByVal foo As Boolean)
+                If foo Then
+                Else
+                    ' ...
+                End If
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(ByVal foo As Boolean)
+                If Not foo Then
+                    ' ...
+                End If
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.EmptyModuleInspection">
+            <summary>
+            Flags empty code modules.
+            </summary>
+            <why>
+            An empty module does not need to exist and can be safely removed.
+            </why>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.EmptyStringLiteralInspection">
+            <summary>
+            Flags uses of an empty string literal ("").
+            </summary>
+            <why>
+            Standard library constant 'vbNullString' is more explicit about its intent, and should be preferred to a string literal. 
+            While the memory gain is meaningless, an empty string literal still takes up 2 bytes of memory,
+            but 'vbNullString' is a null string pointer, and doesn't.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(ByVal foo As String)
+                If foo = "" Then
+                    ' ...
+                End If
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(ByVal foo As String)
+                If foo = vbNullString Then
+                    ' ...
+                End If
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.EmptyWhileWendBlockInspection">
+            <summary>
+            Identifies empty 'While...Wend' blocks that can be safely removed.
+            </summary>
+            <why>
+            Dead code should be removed. A loop without a body is usually redundant.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(ByVal foo As Long)
+                While foo < 100
+                    'no executable statements... would be an infinite loop if entered
+                Wend
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(ByVal foo As Long)
+                While foo < 100
+                    foo = foo + 1
+                Wend
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.EncapsulatePublicFieldInspection">
+            <summary>
+            Flags publicly exposed instance fields.
+            </summary>
+            <why>
+            Instance fields are the implementation details of a object's internal state; exposing them directly breaks encapsulation. 
+            Often, an object only needs to expose a 'Get' procedure to expose an internal instance field.
+            </why>
+            <example>
+            <![CDATA[
+            Public Foo As Long
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Private internalFoo As Long
+            
+            Public Property Get Foo() As Long
+                Foo = internalFoo
+            End Property
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.ApplicationWorksheetFunctionInspection">
+            <summary>
+            Warns about late-bound WorksheetFunction calls made against the extended interface of the Application object.
+            </summary>
+            <reference name="Excel" />
+            <why>
+            An early-bound, equivalent function likely exists in the object returned by the Application.WorksheetFunction property; 
+            late-bound member calls will fail at run-time with error 438 if there is a typo (a typo fails to compile for an early-bound member call). 
+            Late-bound worksheet functions will return a Variant/Error given invalid inputs; 
+            the equivalent early-bound member calls raise a more VB-idiomatic runtime error given the same invalid inputs. 
+            A Variant/Error value cannot be coerced into any other data type, be it for assignment or comparison. 
+            Trying to compare or assign a Variant/Error to another data type will throw error 13 "type mismatch" at run-time. 
+            Consider using the early-bound equivalent function instead.
+            </why>
+            <example>
+            <![CDATA[
+            Private Sub Example()
+                Debug.Print Application.Sum(Array(1, 2, 3), 4, 5, "ABC") ' outputs "Error 2015"
+            
+                Dim foo As Long
+                foo = Application.Sum(Array(1, 2, 3), 4, 5, "ABC") ' error 13 "type mismatch". Variant/Error can't be coerced to Long.
+            
+                If Application.Sum(Array(1, 2, 3), 4, 5, "ABC") > 15 Then
+                    ' won't run, error 13 "type mismatch" will be thrown when Variant/Error is compared to an Integer.
+                End If
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Private Sub Example()
+                Debug.Print Application.WorksheetFunction.Sum(Array(1, 2, 3), 4, 5, "ABC") ' throws error 1004
+            
+                Dim foo As Long
+                foo = Application.WorksheetFunction.Sum(Array(1, 2, 3), 4, 5, "ABC") ' throws error 1004
+            
+                If Application.WorksheetFunction.Sum(Array(1, 2, 3), 4, 5, "ABC") > 15 Then ' throws error 1004
+                    ' won't run, error 1004 is thrown when "ABC" is processed by WorksheetFunction.Sum, before it returns.
+                End If
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.ExcelMemberMayReturnNothingInspection">
+            <summary>Locates instances of member calls made against the result of a Range.Find/FindNext/FindPrevious method, without prior validation.</summary>
+            <reference name="Excel" />
+            <why>
+            Range.Find methods return a Range object reference that refers to the cell containing the search string;
+            this object reference will be Nothing if the search didn't turn up any results, and a member call against Nothing will raise run-time error 91.
+            </why>
+            <example>
+            <![CDATA[
+            Private Sub Example()
+                Dim foo As Range
+                Set foo = Sheet1.Range("A:A").Find("Test") ' foo is Nothing if there are no results
+                MsgBox foo.Address ' Range.Address member call should be flagged.
+            
+                Dim rowIndex As Range
+                rowIndex = Sheet1.Range("A:A").Find("Test").Row ' Range.Row member call should be flagged.
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Private Sub Example()
+                Dim foo As Range
+                Set foo = Sheet1.Range("A:A").Find("Test")
+                If Not foo Is Nothing Then
+                    MsgBox foo.Address ' Range.Address member call is safe.
+                End If
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.ImplicitActiveSheetReferenceInspection">
+            <summary>
+            Locates unqualified Worksheet.Range/Cells/Columns/Rows member calls that implicitly refer to ActiveSheet.
+            </summary>
+            <reference name="Excel" />
+            <why>
+            Implicit references to the active worksheet rarely mean to be working with *whatever worksheet is currently active*. 
+            By explicitly qualifying these member calls with a specific Worksheet object, the assumptions are removed, the code
+            is more robust, and will be less likely to throw run-time error 1004 or produce unexpected results
+            when the active sheet isn't the expected one.
+            </why>
+            <example>
+            <![CDATA[
+            Private Sub Example()
+                Dim foo As Range
+                Set foo = Sheet1.Range(Cells(1, 1), Cells(1, 10)) ' Worksheet.Cells implicitly from ActiveSheet; error 1004 if that isn't Sheet1.
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Private Sub Example()
+                Dim foo As Range
+                With Sheet1
+                    Set foo = .Range(.Cells(1, 1), .Cells(1, 10)) ' all member calls are made against the With block object
+                End With
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.ImplicitActiveWorkbookReferenceInspection">
+            <summary>
+            Locates unqualified Workbook.Worksheets/Sheets/Names member calls that implicitly refer to ActiveWorkbook.
+            </summary>
+            <reference name="Excel" />
+            <why>
+            Implicit references to the active workbook rarely mean to be working with *whatever workbook is currently active*. 
+            By explicitly qualifying these member calls with a specific Workbook object, the assumptions are removed, the code
+            is more robust, and will be less likely to throw run-time error 1004 or produce unexpected results
+            when the active workbook isn't the expected one.
+            </why>
+            <example>
+            <![CDATA[
+            Private Sub Example()
+                Dim summarySheet As Worksheet
+                Set summarySheet = Worksheets("Summary") ' unqualified Worksheets is implicitly querying the active workbook's Worksheets collection.
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Private Sub Example(ByVal book As Workbook)
+                Dim summarySheet As Worksheet
+                Set summarySheet = book.Worksheets("Summary")
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.SheetAccessedUsingStringInspection">
+            <summary>
+            Locates ThisWorkbook.Worksheets and ThisWorkbook.Sheets calls that appear to be dereferencing a worksheet that is already accessible at compile-time with a global-scope identifier.
+            </summary>
+            <why>
+            Sheet names can be changed by the user, as can a worksheet's index in ThisWorkbook.Worksheets. 
+            Worksheets that exist in ThisWorkbook at compile-time are more reliably programmatically accessed using their CodeName, 
+            which cannot be altered by the user without accessing the VBE and altering the VBA project.
+            </why>
+            <reference name="Excel" />
+            <remarks>
+            Inspection only evaluates hard-coded string literals; string-valued expressions evaluating into a sheet name are ignored.
+            </remarks>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim sheet As Worksheet
+                Set sheet = ThisWorkbook.Worksheets("Sheet1") ' Sheet "Sheet1" exists at compile-time
+                sheet.Range("A1").Value = 42
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Sheet1.Range("A1").Value = 42 ' TODO rename Sheet1 to meaningful name
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.FunctionReturnValueNotUsedInspection">
+            <summary>
+            Warns when a user function's return value is never used, at any of its call sites.
+            </summary>
+            <why>
+            A 'Function' procedure normally means its return value to be captured and consumed by the calling code. 
+            It's possible that not all call sites need the return value, but if the value is systematically discarded then this
+            means the function is side-effecting, and thus should probably be a 'Sub' procedure instead.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                GetFoo ' return value is not captured
+            End Sub
+            
+            Private Function GetFoo() As Long
+                GetFoo = 42
+            End Function
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim foo As Long
+                foo = GetFoo
+            End Sub
+            
+            Private Function GetFoo() As Long
+                GetFoo = 42
+            End Function
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.HostSpecificExpressionInspection">
+            <summary>
+            Warns about host-evaluated square-bracketed expressions.
+            </summary>
+            <why>
+            Host-evaluated expressions should be implementable using the host application's object model.
+            If the expression yields an object, member calls against that object are late-bound.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                [A1].Value = 42
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                ActiveSheet.Range("A1").Value = 42
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.HungarianNotationInspection">
+             <summary>
+             Flags identifiers that use [Systems] Hungarian Notation prefixes.
+             </summary>
+             <why>
+             Systems Hungarian (encoding data types in variable names) stemmed from a misunderstanding of what its inventor meant
+             when they described that prefixes identified the "kind" of variable in a naming scheme dubbed Apps Hungarian.
+             Modern naming conventions in all programming languages heavily discourage the use of Systems Hungarian prefixes. 
+             </why>
+             <example>
+             <![CDATA[
+             Public Sub DoSomething()
+                 Dim bFoo As Boolean, blnFoo As Boolean
+                 Dim intBar As Long ' which is correct? the int or the Long?
+             End Sub
+            
+             Private Function fnlngGetFoo() As Long
+                 fnlngGetFoo = 42
+             End Function
+             ]]>
+             </example>
+             <example>
+             <![CDATA[
+             Public Sub DoSomething()
+                 Dim foo As Boolean, isFoo As Boolean
+                 Dim bar As long
+             End Sub
+             
+             Private Function GetFoo() As Long
+                 GetFoo = 42
+             End Function
+             ]]>
+             </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.IllegalAnnotationInspection">
+            <summary>
+            Flags invalid Rubberduck annotation comments.
+            </summary>
+            <why>
+            Rubberduck is correctly parsing an annotation, but that annotation is illegal in that context.
+            </why>
+            <example>
+            <![CDATA[
+            Option Explicit
+            
+            Public Sub DoSomething()
+                '@Folder("Module1.DoSomething")
+                Dim foo As Long
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            '@Folder("Module1.DoSomething")
+            Option Explicit
+            
+            Public Sub DoSomething()
+                Dim foo As Long
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:Rubberduck.Inspections.Concrete.ImplicitByRefModifierInspection" -->
+        <member name="T:Rubberduck.Inspections.Concrete.ImplicitDefaultMemberAssignmentInspection">
+            <summary>
+            Identifies implicit default member calls.
+            </summary>
+            <why>
+            Code should do what it says, and say what it does. Implicit default member calls generally do the opposite of that.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                ActiveSheet.Range("A1") = 42 ' implicit assignment to 'Range.[_default]'.
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                ActiveSheet.Range("A1").Value = 42
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.ImplicitPublicMemberInspection">
+            <summary>
+            Highlights implicit Public access modifiers in user code.
+            </summary>
+            <why>
+            In modern VB (VB.NET), the implicit access modifier is Private, as it is in most other programming languages.
+            Making the Public modifiers explicit can help surface potentially unexpected language defaults.
+            </why>
+            <example>
+            <![CDATA[
+            Sub DoSomething()
+                ' ...
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                ' ...
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.ImplicitVariantReturnTypeInspection">
+            <summary>
+            Warns about 'Function' and 'Property Get' procedures that don't have an explicit return type.
+            </summary>
+            <why>
+            All functions return something, whether a type is specified or not. The implicit default is 'Variant'.
+            </why>
+            <example>
+            <![CDATA[
+            Public Function GetFoo()
+                GetFoo = 42
+            End Function
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Function GetFoo() As Long
+                GetFoo = 42
+            End Function
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.IntegerDataTypeInspection">
+            <summary>
+            Identifies obsolete 16-bit integer variables.
+            </summary>
+            <why>
+            Modern processors are optimized for processing 32-bit integers; internally, a 16-bit integer is still stored as a 32-bit value.
+            Unless code is interacting with APIs that require a 16-bit integer, a Long (32-bit integer) should be used instead.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim rowCount As Integer
+                rowCount = Sheet1.Rows.Count ' overflow: maximum 16-bit signed integer value is only 32,767 (2^15-1)!
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim rowCount As Long
+                rowCount = Sheet1.Rows.Count ' all good: maximum 32-bit signed integer value is 2,147,483,647 (2^31-1)!
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.IsMissingOnInappropriateArgumentInspection">
+            <summary>
+            Identifies uses of 'IsMissing' involving non-variant, non-optional, or array parameters.
+            </summary>
+            <why>
+            'IsMissing' only returns True when an optional Variant parameter was not supplied as an argument.
+            This inspection flags uses that attempt to use 'IsMissing' for other purposes, resulting in conditions that are always False.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(ByVal foo As Long = 0)
+                If IsMissing(foo) Then Exit Sub ' condition is always false
+                ' ...
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(Optional ByVal foo As Variant = 0)
+                If IsMissing(foo) Then Exit Sub
+                ' ...
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.LineLabelNotUsedInspection">
+            <summary>
+            Identifies line labels that are never referenced, and therefore superfluous.
+            </summary>
+            <why>
+            Line labels are useful for GoTo, GoSub, Resume, and On Error statements; but the intent of a line label
+            can be confusing if it isn't referenced by any such instruction.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+            '    On Error GoTo ErrHandler ' (commented-out On Error statement leaves line label unreferenced)
+                ' ...
+                Exit Sub
+            ErrHandler:
+                ' ...
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                On Error GoTo ErrHandler
+                ' ...
+                Exit Sub
+            ErrHandler:
+                ' ...
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.MemberNotOnInterfaceInspection">
+            <summary>
+            Warns about member calls against an extensible interface, that cannot be validated at compile-time.
+            </summary>
+            <why>
+            Extensible COM types can have members attached at run-time; VBA cannot bind these member calls at compile-time.
+            If there is an early-bound alternative way to achieve the same result, it should be preferred.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(ByVal adoConnection As ADODB.Connection)
+                adoConnection.SomeStoredProcedure 42
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(ByVal adoConnection As ADODB.Connection)
+                Dim adoCommand As ADODB.Command
+                Set adoCommand.ActiveConnection = adoConnection
+                adoCommand.CommandText = "SomeStoredProcedure"
+                adoCommand.CommandType = adCmdStoredProc
+                adoCommand.Parameters.Append adocommand.CreateParameter(Value:=42)
+                adoCommand.Execute
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.MissingAnnotationArgumentInspection">
+            <summary>
+            Warns about a malformed Rubberduck annotation that is missing an argument.
+            </summary>
+            <why>
+            Some annotations require arguments; if the argument isn't specified, the annotation is nothing more than an obscure comment.
+            </why>
+            <example>
+            <![CDATA[
+            '@Folder
+            '@ModuleDescription
+            Option Explicit
+            ' ...
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            '@Folder("MyProject.XYZ")
+            '@ModuleDescription("This module does XYZ")
+            Option Explicit
+            ' ...
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.MissingAttributeInspection">
+            <summary>
+            Indicates that a Rubberduck annotation is documenting the presence of a VB attribute that is actually missing.
+            </summary>
+            <why>
+            Rubberduck annotations mean to document the presence of hidden VB attributes; this inspection flags annotations that
+            do not have a corresponding VB attribute.
+            </why>
+            <example>
+            <![CDATA[
+            '@Description("foo")
+            Public Sub DoSomething()
+                ' ...
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            '@Description("foo")
+            Public Sub DoSomething()
+            Attribute VB_Description = "foo"
+                ' ...
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.MissingMemberAnnotationInspection">
+            <summary>
+            Indicates that a hidden VB attribute is present for a member, but no Rubberduck annotation is documenting it.
+            </summary>
+            <why>
+            Rubberduck annotations mean to document the presence of hidden VB attributes; this inspection flags members that
+            do not have a Rubberduck annotation corresponding to the hidden VB attribute.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+            Attribute VB_Description = "foo"
+                ' ...
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            '@Description("foo")
+            Public Sub DoSomething()
+            Attribute VB_Description = "foo"
+                ' ...
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.MissingModuleAnnotationInspection">
+            <summary>
+            Indicates that a hidden VB attribute is present for a module, but no Rubberduck annotation is documenting it.
+            </summary>
+            <why>
+            Rubberduck annotations mean to document the presence of hidden VB attributes; this inspection flags modules that
+            do not have a Rubberduck annotation corresponding to the hidden VB attribute.
+            </why>
+            <example>
+            <![CDATA[
+            Attribute VB_PredeclaredId = True
+            Option Explicit
+            ' ...
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Attribute VB_PredeclaredId = True
+            '@PredeclaredId
+            Option Explicit
+            ' ...
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.ModuleScopeDimKeywordInspection">
+            <summary>
+            Warns about module-level declarations made using the 'Dim' keyword.
+            </summary>
+            <why>
+            Private module variables should be declared using the 'Private' keyword. While 'Dim' is also legal, it should preferably be 
+            restricted to declarations of procedure-scoped local variables, for consistency, since public module variables are declared with the 'Public' keyword.
+            </why>
+            <example>
+            <![CDATA[
+            Option Explicit
+            Dim foo As Long
+            ' ...
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Option Explicit
+            Private foo As Long
+            ' ...
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.ModuleWithoutFolderInspection">
+            <summary>
+            Indicates that a user module is missing a @Folder Rubberduck annotation.
+            </summary>
+            <why>
+            Modules without a custom @Folder annotation will be grouped under the default folder in the Code Explorer toolwindow.
+            By specifying a custom @Folder annotation, modules can be organized by functionality rather than simply listed.
+            </why>
+            <example>
+            <![CDATA[
+            Option Explicit
+            ' ...
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            '@Folder("Foo")
+            Option Explicit
+            ' ...
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.MoveFieldCloserToUsageInspection">
+             <summary>
+             Locates module-level fields that can be moved to a smaller scope.
+             </summary>
+             <why>
+             Module-level variables that are only used in a single procedure can often be declared in that procedure's scope. 
+             Declaring variables closer to where they are used generally makes the code easier to follow.
+             </why>
+             <example>
+             <![CDATA[
+             Option Explicit
+             Private foo As Long
+            
+             Public Sub DoSomething()
+                 foo = 42
+                 Debug.Print foo ' module variable is only used in this scope
+             End Sub
+             ]]>
+             </example>
+             <example>
+             <![CDATA[
+             Option Explicit
+            
+             Public Sub DoSomething()
+                 Dim foo As Long ' local variable only used in this scope
+                 foo = 42
+                 Debug.Print foo
+             End Sub
+             ]]>
+             </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.MultilineParameterInspection">
+            <summary>
+            Flags parameters declared across multiple physical lines of code.
+            </summary>
+            <why>
+            When splitting a long list of parameters across multiple lines, care should be taken to avoid splitting a parameter declaration in two.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(ByVal foo As Long, ByVal _ 
+                                         bar As Long)
+                ' ...
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(ByVal foo As Long, _ 
+                                   ByVal bar As Long)
+                ' ...
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.MultipleDeclarationsInspection">
+            <summary>
+            Flags declaration statements spanning multiple physical lines of code.
+            </summary>
+            <why>
+            Declaration statements should generally declare a single variable.
+            </why>
+            <example>
+            <![CDATA[
+            Dim foo As Long, bar As Long
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Dim foo As Long 
+            Dim bar As Long 
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.NonReturningFunctionInspection">
+            <summary>
+            Warns about 'Function' and 'Property Get' procedures whose return value is not assigned.
+            </summary>
+            <why>
+            Both 'Function' and 'Property Get' accessors should always return something. Omitting the return assignment is likely a bug.
+            </why>
+            <example>
+            <![CDATA[
+            Public Function GetFoo() As Long
+                Dim foo As Long
+                foo = 42
+                'function will always return 0
+            End Function
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Function GetFoo() As Long
+                Dim foo As Long
+                foo = 42
+                GetFoo = foo
+            End Function
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.NonReturningFunctionInspection.FunctionReturnValueAssignmentLocator">
+            <summary>
+            A visitor that visits a member's body and returns <c>true</c> if any <c>LET</c> statement (assignment) is assigning the specified <c>name</c>.
+            </summary>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.ObjectVariableNotSetInspection">
+            <summary>
+            Warns about assignments that appear to be assigning an object reference without the 'Set' keyword.
+            </summary>
+            <why>
+            Omitting the 'Set' keyword will Let-coerce the right-hand side (RHS) of the assignment expression. If the RHS is an object variable,
+            then the assignment is implicitly assigning to that object's default member, which may raise run-time error 91 at run-time.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim foo As Object
+                foo = New Collection
+                ' ...
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim foo As Object
+                Set foo = New Collection
+                ' ...
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.ObsoleteCallStatementInspection">
+             <summary>
+             Locates explicit 'Call' statements.
+             </summary>
+             <why>
+             The 'Call' keyword is obsolete and redundant, since call statements are legal and generally more consistent without it.
+             </why>
+             <example>
+             <![CDATA[
+             Public Sub Test()
+                 Call DoSomething(42)
+             End Sub
+            
+             Private Sub DoSomething(ByVal foo As Long)
+                 ' ...
+             End Sub
+             ]]>
+             </example>
+             <example>
+             <![CDATA[
+             Public Sub Test()
+                 DoSomething 42
+             End Sub
+            
+             Private Sub DoSomething(ByVal foo As Long)
+                 ' ...
+             End Sub
+             ]]>
+             </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.ObsoleteCommentSyntaxInspection">
+            <summary>
+            Locates legacy 'Rem' comments.
+            </summary>
+            <why>
+            Modern VB comments use a single quote character (') to denote the beginning of a comment: the legacy 'Rem' syntax is obsolete.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+            Rem this comment is using an obsolete legacy syntax
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+            ' this comment is using the modern comment syntax
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.ObsoleteErrorSyntaxInspection">
+            <summary>
+            Locates legacy 'Error' statements.
+            </summary>
+            <why>
+            The legacy syntax is obsolete; prefer 'Err.Raise' instead.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Error 5 ' raises run-time error 5
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Err.Raise 5 ' raises run-time error 5
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.ObsoleteGlobalInspection">
+            <summary>
+            Locates legacy 'Global' declaration statements.
+            </summary>
+            <why>
+            The legacy syntax is obsolete; use the 'Public' keyword instead.
+            </why>
+            <example>
+            <![CDATA[
+            Option Explicit
+            Global Foo As Long
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Option Explicit
+            Public Foo As Long
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.ObsoleteLetStatementInspection">
+            <summary>
+            Locates explicit 'Let' assignments.
+            </summary>
+            <why>
+            The legacy syntax is obsolete/redundant; prefer implicit Let-coercion instead.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim foo As Long
+                Let foo = 42 ' explicit Let is redundant
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim foo As Long
+                foo = 42 ' [Let] is implicit
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.ObsoleteTypeHintInspection">
+            <summary>
+            Flags declarations where a type hint is used in place of an 'As' clause.
+            </summary>
+            <why>
+            Type hints were made obsolete when declaration syntax introduced the 'As' keyword. Prefer explicit type names over type hint symbols.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim foo$
+                foo = "some string"
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim foo As String
+                foo = "some string"
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.OnLocalErrorInspection">
+            <summary>
+            Flags obsolete 'On Local Error' statements.
+            </summary>
+            <why>
+            All errors are "local" - the keyword is redundant/confusing and should be removed.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                On Local Error GoTo ErrHandler
+                ' ...
+                Exit Sub
+            ErrHandler:
+                ' ...
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                On Error GoTo ErrHandler
+                ' ...
+                Exit Sub
+            ErrHandler:
+                ' ...
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.OptionBaseInspection">
+            <summary>
+            Flags modules that specify Option Base 1.
+            </summary>
+            <why>
+            Implicit array lower bound is 0 by default, and Option Base 1 makes it 1. While compelling in a 1-based environment like the Excel object model, 
+            having an implicit lower bound of 1 for implicitly-sized user arrays does not change the fact that arrays are always better off with explicit boundaries.
+            Because 0 is always the lower array bound in many other programming languages, this option may trip a reader/maintainer with a different background.
+            </why>
+            <example>
+            <![CDATA[
+            Option Explicit
+            Option Base 1
+            
+            Public Sub DoSomething()
+                Dim foo(10) As Long ' implicit lower bound is 1, array has 10 items.
+                ' ...
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Option Explicit
+            Public Sub DoSomething()
+                Dim foo(10) As Long ' implicit lower bound is 0, array has 11 items.
+                Dim bar(1 To 10) As Long ' explicit lower bound removes all ambiguities, Option Base is redundant.
+                ' ...
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.OptionExplicitInspection">
+             <summary>
+             Flags modules that omit Option Explicit.
+             </summary>
+             <why>
+             This option makes variable declarations mandatory. Without it, a typo gets compiled as a new on-the-spot Variant/Empty variable with a new name. 
+             Omitting this option amounts to refusing the little help the VBE can provide with compile-time validation.
+             </why>
+             <example>
+             <![CDATA[
+            
+             
+             Public Sub DoSomething()
+                 ' ...
+             End Sub
+             ]]>
+             </example>
+             <example>
+             <![CDATA[
+             Option Explicit
+             
+             Public Sub DoSomething()
+                 ' ...
+             End Sub
+             ]]>
+             </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.ParameterCanBeByValInspection">
+            <summary>
+            Flags parameters that are passed by reference (ByRef), but could be passed by value (ByVal).
+            </summary>
+            <why>
+            Explicitly specifying a ByVal modifier on a parameter makes the intent explicit: this parameter is not meant to be assigned. In contrast, 
+            a parameter that is passed by reference (implicitly, or explicitly ByRef) makes it ambiguous from the calling code's standpoint, whether the 
+            procedure might re-assign these ByRef values and introduce a bug.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(ByVal foo As Long, bar As Long)
+                Debug.Print foo, bar
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Option Explicit
+            Public Sub DoSomething(ByVal foo As long, ByRef bar As Long)
+                bar = foo * 2 ' ByRef parameter assignment: passing it ByVal could introduce a bug.
+                Debug.Print foo, bar
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.ParameterNotUsedInspection">
+            <summary>
+            Identifies parameter declarations that are not used.
+            </summary>
+            <why>
+            Declarations that are not used anywhere should probably be removed.
+            </why>
+            <warning>
+            Not all unused parameters can/should be removed: ignore any inspection results for 
+            event handler procedures and interface members that Rubberduck isn't recognizing as such.
+            </warning>
+            <example>
+            <![CDATA[
+            Option Explicit
+            
+            Public Sub DoSomething(ByVal foo As Long, ByVal bar As Long)
+                Debug.Print foo
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Option Explicit
+            Public Sub DoSomething(ByVal foo As Long, ByVal bar As Long)
+                Debug.Print foo, bar
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.ProcedureCanBeWrittenAsFunctionInspection">
+            <summary>
+            Warns about 'Sub' procedures that could be refactored into a 'Function'.
+            </summary>
+            <why>
+            Idiomatic VB code uses 'Function' procedures to return a single value. If the procedure isn't side-effecting, consider writing is as a
+            'Function' rather than a 'Sub' the returns a result through a 'ByRef' parameter.
+            </why>
+            <example>
+            <![CDATA[
+            Option Explicit
+            
+            Public Sub DoSomething(ByRef result As Long)
+                ' ...
+                result = 42
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Option Explicit
+            Public Function DoSomething() As Long
+                ' ...
+                DoSomething = 42
+            End Function
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.ProcedureNotUsedInspection">
+             <summary>
+             Locates procedures that are never invoked from user code.
+             </summary>
+             <why>
+             Unused procedures are dead code that should probably be removed. Note, a procedure may be effectively "not used" in code, but attached to some
+             Shape object in the host document: in such cases the inspection result should be ignored. An event handler procedure that isn't being
+             resolved as such, may also wrongly trigger this inspection.
+             </why>
+             <warning>
+             Not all unused procedures can/should be removed: ignore any inspection results for 
+             event handler procedures and interface members that Rubberduck isn't recognizing as such.
+             </warning>
+             <example>
+             <![CDATA[
+             Option Explicit
+             
+             Public Sub DoSomething()
+                 ' macro is attached to a worksheet Shape.
+             End Sub
+             ]]>
+             </example>
+             <example>
+             <![CDATA[
+             Option Explicit
+            
+             '@Ignore ProcedureNotUsed
+             Public Sub DoSomething()
+                 ' macro is attached to a worksheet Shape.
+             End Sub
+             ]]>
+             </example>
+        </member>
+        <member name="M:Rubberduck.Inspections.Concrete.ProcedureNotUsedInspection.IsPublicModuleMember(System.Collections.Generic.IEnumerable{Rubberduck.Parsing.Symbols.Declaration},Rubberduck.Parsing.Symbols.Declaration)">
+            <remarks>
+            We cannot determine whether exposed members of standard modules are called or not,
+            so we assume they are instead of flagging them as "never called".
+            </remarks>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.RedundantByRefModifierInspection">
+            <summary>
+            Identifies redundant ByRef modifiers.
+            </summary>
+            <why>
+            Out of convention or preference, explicit ByRef modifiers could be considered redundant since they are the implicit default. 
+            This inspection can ensure the consistency of the convention.
+            </why>
+            <example>
+            <![CDATA[
+            Option Explicit
+            
+            Public Sub DoSomething(ByRef foo As Long)
+                foo = foo + 17
+                Debug.Print foo
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Option Explicit
+            Public Sub DoSomething(foo As Long)
+                foo = foo + 17
+                Debug.Print foo
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.RedundantOptionInspection">
+            <summary>
+            Identifies redundant module options that are set to their implicit default.
+            </summary>
+            <why>
+            Module options that are redundant can be safely removed. Disable this inspection if your convention is to explicitly specify them; a future 
+            inspection may be used to enforce consistently explicit module options.
+            </why>
+            <example>
+            <![CDATA[
+            Option Explicit
+            Option Base 0
+            Option Compare Binary
+            
+            Public Sub DoSomething()
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Option Explicit
+            
+            Public Sub DoSomething()
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.SelfAssignedDeclarationInspection">
+            <summary>
+            Identifies auto-assigned object declarations.
+            </summary>
+            <why>
+            Auto-assigned objects are automatically re-created as soon as they are referenced. It is therefore impossible to set one such reference 
+            to 'Nothing' and then verifying whether the object 'Is Nothing': it will never be. This behavior is potentially confusing and bug-prone.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim c As New Collection
+                Set c = Nothing
+                c.Add 42 ' no error 91 raised
+                Debug.Print c.Count ' 1
+                Set c = Nothing
+                Debug.Print c Is Nothing ' False
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim c As Collection
+                Set c = New Collection
+                Set c = Nothing
+                c.Add 42 ' error 91
+                Debug.Print c.Count ' error 91
+                Set c = Nothing
+                Debug.Print c Is Nothing ' True
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.ShadowedDeclarationInspection">
+            <summary>
+            Identifies identifiers that hide/"shadow" other identifiers otherwise accessible in that scope.
+            </summary>
+            <why>
+            Global namespace contains a number of perfectly legal identifier names that user code can use. But using these names in user code 
+            effectively "hides" the global ones. In general, avoid shadowing global-scope identifiers if possible.
+            </why>
+            <example>
+            <![CDATA[
+            Private MsgBox As String ' hides the global-scope VBA.Interaction.MsgBox function in this module.
+            
+            Public Sub DoSomething()
+                MsgBox = "Test" ' refers to the module variable in scope.
+                VBA.Interaction.MsgBox MsgBox ' global function now needs to be fully qualified to be accessed.
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Private message As String
+            
+            Public Sub DoSomething()
+                message = "Test"
+                MsgBox message ' VBA.Interaction module qualifier is optional.
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.StepIsNotSpecifiedInspection">
+            <summary>
+            Locates 'For' loops where the 'Step' token is omitted.
+            </summary>
+            <why>
+            Out of convention or preference, explicit 'Step' specifiers could be considered mandatory; 
+            this inspection can ensure the consistency of the convention.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim i As Long
+                For i = 1 To 100 ' Step is implicitly 1
+                    ' ...
+                Next
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim i As Long
+                For i = 1 To 100 Step 1 ' explicit 'Step 1' could also be considered redundant.
+                    ' ...
+                Next
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.StepOneIsRedundantInspection">
+            <summary>
+            Locates 'For' loops where the 'Step' token is specified with the default increment value (1).
+            </summary>
+            <why>
+            Out of convention or preference, explicit 'Step 1' specifiers could be considered redundant; 
+            this inspection can ensure the consistency of the convention.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim i As Long
+                For i = 1 To 100 Step 1 ' 1 being the implicit default, 'Step 1' could be considered redundant.
+                    ' ...
+                Next
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim i As Long
+                For i = 1 To 100 ' implicit: 'Step 1'
+                    ' ...
+                Next
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.StopKeywordInspection">
+            <summary>
+            Locates 'Stop' instructions in user code.
+            </summary>
+            <why>
+            While a great debugging tool, 'Stop' instructions should not be reachable in production code; this inspection makes it easy to locate them all.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                ' ...
+                Stop ' halts execution on-the-spot, bringing up the VBE; not very user-friendly!
+                '....
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                ' ...
+                'Stop ' the commented-out statement isn't executable. Could also be simply removed.
+                ' ...
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.UnassignedVariableUsageInspection">
+            <summary>
+            Warns when a variable is referenced prior to being assigned.
+            </summary>
+            <why>
+            An uninitialized variable is being read, but since it's never assigned, the only value ever read would be the data type's default initial value. 
+            Reading a variable that was never written to in any code path (especially if Option Explicit isn't specified), is likely to be a bug.
+            </why>
+            <remarks>
+            This inspection may produce false positives when the variable is an array, or if it's passed by reference (ByRef) to a procedure that assigns it.
+            </remarks>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim i As Long
+                Debug.Print i ' i was never assigned
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim i As Long
+                i = 42
+                Debug.Print i
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.UndeclaredVariableInspection">
+            <summary>
+            Warns about implicit local variables that are used but never declared.
+            </summary>
+            <why>
+            If this code compiles, then Option Explicit is omitted and compile-time validation is easily forfeited, even accidentally (e.g. typos). 
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                foo = 42 ' foo is not declared
+                ' ...
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim foo As Long
+                foo = 42
+                ' ...
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.UnderscoreInPublicClassModuleMemberInspection">
+            <summary>
+            Warns about public class members with an underscore in their names.
+            </summary>
+            <why>
+            The public interface of any class module can be implemented by any other class module; if the public interface 
+            contains names with underscores, other classes cannot implement it - the code will not compile. Avoid underscores; prefer PascalCase names.
+            </why>
+            <example>
+            <![CDATA[
+            '@Interface
+            
+            Public Sub Do_Something() ' underscore in name makes the interface non-implementable.
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            '@Interface
+            
+            Public Sub DoSomething() ' PascalCase identifiers are never a problem.
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.UnhandledOnErrorResumeNextInspection">
+            <summary>
+            Finds instances of 'On Error Resume Next' that don't have a corresponding 'On Error GoTo 0' to restore error handling.
+            </summary>
+            <why>
+            'On Error Resume Next' should be constrained to a limited number of instructions, otherwise it supresses error handling 
+            for the rest of the procedure; 'On Error GoTo 0' reinstates error handling. 
+            This inspection helps treating 'Resume Next' and 'GoTo 0' as a code block (similar to 'With...End With'), essentially.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                On Error Resume Next ' error handling is never restored in this scope.
+                ' ...
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                On Error Resume Next
+                ' ...
+                On Error GoTo 0
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.UnreachableCaseInspection.UnreachableCaseInspection">
+            <summary>
+            Flags 'Case' blocks that are semantically unreachable.
+            </summary>
+            <why>
+            Unreachable code is certainly unintended, and is probably either redundant, or a bug.
+            </why>
+            <remarks>
+            Not all unreachable 'Case' blocks may be flagged, depending on expression complexity.
+            </remarks>
+            <example>
+            <![CDATA[
+            Private Sub Example(ByVal value As Long)
+                Select Case value
+                    Case 0 To 99
+                        ' ...
+                    Case 50 ' unreachable: case is covered by a preceding condition.
+                        ' ...
+                    Case Is < 100
+                        ' ...
+                    Case < 0 ' unreachable: case is covered by a preceding condition.
+                        ' ...
+                End Select
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.UntypedFunctionUsageInspection">
+            <summary>
+            Flags uses of a number of specific string-centric but Variant-returning functions in various standard library modules.
+            </summary>
+            <why>
+            Several functions in the standard library take a Variant parameter and return a Variant result, but an equivalent 
+            string-returning function taking a string parameter exists and should probably be preferred.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(ByVal foo As Double)
+                Debug.Print Format(foo, "Currency") ' Strings.Format function returns a Variant.
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(ByVal foo As Double)
+                Debug.Print Format$(CStr(foo), "Currency") ' Strings.Format$ function returns a String.
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.UseMeaningfulNameInspection">
+            <summary>
+            Warns about identifiers that have names that are likely to be too short, disemvoweled, or appended with a numeric suffix.
+            </summary>
+            <why>
+            Meaningful, pronounceable, unabbreviated names read better and leave less room for interpretation. 
+            Moreover, names suffixed with a number can indicate the need to look into an array, collection, or dictionary data structure.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub CpFrmtRls(ByVal rng1 As Range, ByVal rng2 As Range)
+                ' ...
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub CopyFormatRules(ByVal source As Range, ByVal destination As Range)
+                ' ...
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.VariableNotAssignedInspection">
+            <summary>
+            Warns about variables that are never assigned.
+            </summary>
+            <why>
+            A variable that is never assigned is probably a sign of a bug. 
+            This inspection may yield false positives if the variable is assigned through a ByRef parameter assignment, or 
+            if UserForm controls fail to resolve, references to these controls in code-behind can be flagged as unassigned and undeclared variables.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim value As Long ' declared, but not assigned
+                ' ...
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim value As Long
+                value = 42
+                ' ...
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.VariableNotUsedInspection">
+            <summary>
+            Warns about variables that are never referenced.
+            </summary>
+            <why>
+            A variable can be declared and even assigned, but if its value is never referenced, it's effectively an unused variable.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim value As Long ' declared
+                value = 42 ' assigned
+                ' ... but never rerenced
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim value As Long
+                value = 42
+                Debug.Print value
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.VariableTypeNotDeclaredInspection">
+            <summary>
+            Warns about variables declared without an explicit data type.
+            </summary>
+            <why>
+            A variable declared without an explicit data type is implicitly a Variant/Empty until it is assigned.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim value ' implicit Variant
+                value = 42
+                ' ...
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething()
+                Dim value As Long
+                value = 42
+                ' ...
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.WriteOnlyPropertyInspection">
+             <summary>
+             Warns about properties that don't expose a 'Property Get' accessor.
+             </summary>
+             <why>
+             Write-only properties are suspicious: if the client code is able to set a property, it should be allowed to read that property as well. 
+             Class design guidelines and best practices generally recommend against write-only properties.
+             </why>
+             <example>
+             <![CDATA[
+             Private internalFoo As Long
+            
+             Public Property Let Foo(ByVal value As Long)
+                 internalFoo = value
+             End Property
+             ]]>
+             </example>
+             <example>
+             <![CDATA[
+             Private internalFoo As Long
+            
+             Public Property Let Foo(ByVal value As Long)
+                 internalFoo = value
+             End Property
+            
+             Public Property Get Foo() As Long
+                 Foo = internalFoo
+             End Property
+             ]]>
+             </example>
+        </member>
+        <member name="M:Rubberduck.Inspections.VariableRequiresSetAssignmentEvaluator.RequiresSetAssignment(Rubberduck.Parsing.Symbols.IdentifierReference,Rubberduck.Parsing.VBA.IDeclarationFinderProvider)">
+            <summary>
+            Determines whether the 'Set' keyword is required (whether it's present or not) for the specified identifier reference.
+            </summary>
+            <param name="reference">The identifier reference to analyze</param>
+            <param name="declarationFinderProvider">The parser state</param>
+        </member>
+        <member name="T:Rubberduck.Inspections.QuickFixes.RemoveUnusedDeclarationQuickFix">
+            <summary>
+            A code inspection quickfix that removes an unused identifier declaration.
+            </summary>
+        </member>
+    </members>
+</doc>

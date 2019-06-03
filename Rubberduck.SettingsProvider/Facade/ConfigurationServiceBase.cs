@@ -33,7 +33,7 @@ namespace Rubberduck.SettingsProvider
                 if (CurrentValue == null)
                 {
                     T defaults = ReadDefaults();
-                    T newValue = persister.Load(defaults) ?? defaults;
+                    T newValue = persister.Load() ?? defaults;
                     CurrentValue = newValue;
                 }
                 return CurrentValue;
@@ -64,6 +64,19 @@ namespace Rubberduck.SettingsProvider
         {
             PersistValue(settings);
             OnSettingsChanged();
+        }
+
+        public virtual T Import(string path)
+        {
+            T loaded = persister.Load(path);
+            Save(loaded);
+            return Read();
+        }
+
+        public virtual void Export(string path)
+        {
+            T current = Read();
+            persister.Save(current, path);
         }
     }
 }

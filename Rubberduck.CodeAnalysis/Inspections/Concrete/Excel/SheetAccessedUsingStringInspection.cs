@@ -14,6 +14,34 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Locates ThisWorkbook.Worksheets and ThisWorkbook.Sheets calls that appear to be dereferencing a worksheet that is already accessible at compile-time with a global-scope identifier.
+    /// </summary>
+    /// <why>
+    /// Sheet names can be changed by the user, as can a worksheet's index in ThisWorkbook.Worksheets. 
+    /// Worksheets that exist in ThisWorkbook at compile-time are more reliably programmatically accessed using their CodeName, 
+    /// which cannot be altered by the user without accessing the VBE and altering the VBA project.
+    /// </why>
+    /// <reference name="Excel" />
+    /// <remarks>
+    /// Inspection only evaluates hard-coded string literals; string-valued expressions evaluating into a sheet name are ignored.
+    /// </remarks>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim sheet As Worksheet
+    ///     Set sheet = ThisWorkbook.Worksheets("Sheet1") ' Sheet "Sheet1" exists at compile-time
+    ///     sheet.Range("A1").Value = 42
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Sheet1.Range("A1").Value = 42 ' TODO rename Sheet1 to meaningful name
+    /// End Sub
+    /// ]]>
+    /// </example>
     [RequiredHost("EXCEL.EXE")]
     [RequiredLibrary("Excel")]
     public class SheetAccessedUsingStringInspection : InspectionBase

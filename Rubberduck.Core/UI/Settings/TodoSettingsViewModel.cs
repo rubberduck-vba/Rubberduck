@@ -11,7 +11,7 @@ namespace Rubberduck.UI.Settings
 {
     public sealed class TodoSettingsViewModel : SettingsViewModelBase<ToDoListSettings>, ISettingsViewModel<ToDoListSettings>
     {
-        public TodoSettingsViewModel(Configuration config, IFilePersistenceService<ToDoListSettings> service) 
+        public TodoSettingsViewModel(Configuration config, IConfigurationService<ToDoListSettings> service) 
             : base(service)
         {
             TodoSettings = new ObservableCollection<ToDoMarker>(config.UserSettings.ToDoListSettings.ToDoMarkers);

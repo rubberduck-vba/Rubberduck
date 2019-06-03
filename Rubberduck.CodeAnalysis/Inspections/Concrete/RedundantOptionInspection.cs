@@ -13,6 +13,31 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Identifies redundant module options that are set to their implicit default.
+    /// </summary>
+    /// <why>
+    /// Module options that are redundant can be safely removed. Disable this inspection if your convention is to explicitly specify them; a future 
+    /// inspection may be used to enforce consistently explicit module options.
+    /// </why>
+    /// <example>
+    /// <![CDATA[
+    /// Option Explicit
+    /// Option Base 0
+    /// Option Compare Binary
+    /// 
+    /// Public Sub DoSomething()
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class RedundantOptionInspection : ParseTreeInspectionBase
     {
         public RedundantOptionInspection(RubberduckParserState state)

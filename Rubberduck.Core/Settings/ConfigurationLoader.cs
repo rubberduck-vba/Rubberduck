@@ -108,5 +108,35 @@ namespace Rubberduck.Settings
         {
             SettingsChanged?.Invoke(this, e);
         }
+
+        public Configuration Import(string fileName)
+        {
+            return new Configuration
+            {
+                UserSettings = new UserSettings
+                (
+                    _generalProvider.Import(fileName),
+                    _hotkeyProvider.Import(fileName),
+                    _autoCompleteProvider.Import(fileName),
+                    _todoProvider.Import(fileName),
+                    _inspectionProvider.Import(fileName),
+                    _unitTestProvider.Import(fileName),
+                    _indenterProvider.Import(fileName),
+                    _windowProvider.Import(fileName)
+                )
+            };
+        }
+
+        public void Export(string fileName)
+        {
+            _generalProvider.Export(fileName);
+            _hotkeyProvider.Export(fileName);
+            _autoCompleteProvider.Export(fileName);
+            _todoProvider.Export(fileName);
+            _inspectionProvider.Export(fileName);
+            _unitTestProvider.Export(fileName);
+            _indenterProvider.Export(fileName);
+            _windowProvider.Export(fileName);
+        }
     }
 }

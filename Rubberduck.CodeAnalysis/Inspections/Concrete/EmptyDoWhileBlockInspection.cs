@@ -13,6 +13,30 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Identifies empty 'Do...Loop While' blocks that can be safely removed.
+    /// </summary>
+    /// <why>
+    /// Dead code should be removed. A loop without a body is usually redundant.
+    /// </why>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal foo As Long)
+    ///     Do
+    ///         ' no executable statement...
+    ///     Loop While foo < 100
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal foo As Long)
+    ///     Do
+    ///         Debug.Print foo
+    ///     Loop While foo < 100
+    /// End Sub
+    /// ]]>
+    /// </example>
     [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
     internal class EmptyDoWhileBlockInspection : ParseTreeInspectionBase
     {
@@ -23,13 +47,11 @@ namespace Rubberduck.Inspections.Concrete
         {
             return Listener.Contexts
                 .Where(result => !result.IsIgnoringInspectionResultFor(State.DeclarationFinder, AnnotationName))
-                .Select(result => new QualifiedContextInspectionResult(this,
-                                                        InspectionResults.EmptyDoWhileBlockInspection,
-                                                        result));
+                .Select(result => 
+                    new QualifiedContextInspectionResult(this, InspectionResults.EmptyDoWhileBlockInspection, result));
         }
 
-        public override IInspectionListener Listener { get; } =
-            new EmptyDoWhileBlockListener();
+        public override IInspectionListener Listener { get; } = new EmptyDoWhileBlockListener();
 
         public class EmptyDoWhileBlockListener : EmptyBlockInspectionListenerBase
         {

@@ -9,6 +9,12 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// This inspection means to indicate when the project has not been renamed.
+    /// </summary>
+    /// <why>
+    /// VBA projects should be meaningfully named, to avoid namespace clashes when referencing other VBA projects.
+    /// </why>
     [CannotAnnotate]
     public sealed class DefaultProjectNameInspection : InspectionBase
     {
