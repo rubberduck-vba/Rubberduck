@@ -230,9 +230,12 @@ namespace Rubberduck.UI.Inspections
                 }
 
                 _grouping = value;
-                // updating GroupDescriptions forces a Refresh
-                Results.GroupDescriptions.Clear();
-                Results.GroupDescriptions.Add(GroupDescriptions[_grouping]);
+                // Deferring refresh to avoid a rerendering without grouping
+                using (Results.DeferRefresh())
+                {
+                    Results.GroupDescriptions.Clear();
+                    Results.GroupDescriptions.Add(GroupDescriptions[_grouping]);
+                }
                 OnPropertyChanged();
             }
         }
@@ -308,7 +311,6 @@ namespace Rubberduck.UI.Inspections
         }
 
         private bool _canQuickFix;
-
         public bool CanQuickFix
         {
             get => _canQuickFix;
@@ -445,13 +447,12 @@ namespace Rubberduck.UI.Inspections
                 }
 
                 stopwatch.Stop();
-                LogManager.GetCurrentClassLogger().Trace("Inspection results rendered in {0}ms", stopwatch.ElapsedMilliseconds);
+                Logger.Trace("Inspection results rendered in {0}ms", stopwatch.ElapsedMilliseconds);
             });
         }
 
-        private void InvalidateStaleInspectionResults(ICollection<QualifiedModuleName> modifiedModules)
+        private void InvalidateUIStaleInspectionResults(ICollection<IInspectionResult> staleResults)
         {
-            var staleResults = _results.Where(result => result.ChangesInvalidateResult(modifiedModules)).ToList();
             _uiDispatcher.Invoke(() =>
             {
                 foreach (var staleResult in staleResults)
@@ -460,6 +461,13 @@ namespace Rubberduck.UI.Inspections
                 }
                 Results.Refresh();
             });
+        }
+
+        private void InvalidateStaleInspectionResults(ICollection<QualifiedModuleName> modifiedModules)
+        {
+            // materialize the collection to take work off of the UI thread
+            var staleResults = _results.Where(result => result.ChangesInvalidateResult(modifiedModules)).ToList();
+            InvalidateUIStaleInspectionResults(staleResults);
         }
 
         private void ExecuteQuickFixCommand(object parameter)
@@ -554,14 +562,12 @@ namespace Rubberduck.UI.Inspections
 
             Task.Run(() => _configService.Save(config));
 
-            _uiDispatcher.Invoke(() =>
-            {
-                RefreshCommand.Execute(null);
-            });
+            // remove inspection results of the selected inspection from the UI
+            // collection is materialized to take work off of the UI thread
+            InvalidateUIStaleInspectionResults(_results.Where(i => i.Inspection == _selectedInspection).ToList());
         }
 
         private bool _canDisableInspection;
-
         public bool CanDisableInspection
         {
             get => _canDisableInspection;
