@@ -90,8 +90,7 @@ namespace Rubberduck.UI.ToDoItems
             OnPropertyChanged(nameof(Items));
             Grouping = ToDoItemGrouping.Marker;
 
-            var toDoListSettings = _configService.Read().UserSettings.ToDoListSettings;
-            _columnHeaderInformation = toDoListSettings.ColumnHeaderInformation ?? new DefaultSettings<ToDoExplorerColumns, Properties.Settings>().Default;
+            _columnHeaderInformation = _configService.Read().UserSettings.ToDoListSettings.ColumnHeaderInformation;
         }
 
         private ToDoExplorerColumns _columnHeaderInformation { get; set; }

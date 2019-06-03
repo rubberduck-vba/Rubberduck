@@ -19,5 +19,17 @@ namespace Rubberduck.Settings
         {
             return new ToDoListSettings(_defaultMarkers, _columnHeadingsOrder);
         }
+
+        public override ToDoListSettings Read()
+        {
+            var toDoListSettings = base.Read();
+
+            if (toDoListSettings.ColumnHeaderInformation == null)
+            {
+                toDoListSettings.ColumnHeaderInformation = _columnHeadingsOrder;
+            }
+
+            return toDoListSettings;
+        }
     }
 }
