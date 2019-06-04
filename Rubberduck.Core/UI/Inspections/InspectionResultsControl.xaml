@@ -17,7 +17,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Controls/ToolBar.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-
+            
             <codeInspections:InspectionSeverityImageSourceConverter x:Key="SeverityIconConverter" />
             <codeInspections:InspectionImageSourceConverter x:Key="InspectionIconConverter" />
             <codeInspections:QuickFixImageSourceConverter x:Key="QuickFixIconConverter" />
@@ -25,24 +25,6 @@
             <Style x:Key="IconMargin" TargetType="Image">
                 <Setter Property="Margin" Value="4" />
             </Style>
-
-            <BitmapImage x:Key="CopyResultsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/document-copy.png" />
-            <BitmapImage x:Key="SettingsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/gear.png" />
-            <BitmapImage x:Key="RefreshImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-double.png" />
-            <BitmapImage x:Key="FixImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/tick.png" />
-
-            <BitmapImage x:Key="GroupByInspectionTypeImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/block.png" />
-            <BitmapImage x:Key="GroupByInspectionImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/light-bulb-code.png" />
-            <BitmapImage x:Key="GroupByLocationImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/ObjectClass.png" />
-            <BitmapImage x:Key="GroupBySeverityImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/Severity.png" />
-
-            <BitmapImage x:Key="FilterByHintImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/information-white.png" />
-            <BitmapImage x:Key="FilterBySuggestionImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/information.png" />
-            <BitmapImage x:Key="FilterByWarningImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/exclamation.png" />
-            <BitmapImage x:Key="FilterByErrorImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
-
-            <BitmapImage x:Key="ExpandAllImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/expand-all.png" />
-            <BitmapImage x:Key="CollapseAllImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/collapse-all.png" />
 
             <Style TargetType="Image">
                 <Setter Property="Height" Value="16"/>
@@ -63,18 +45,29 @@
 
             <ToolBar Style="{StaticResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
                 <ToolBar.Resources>
-                    <codeInspections:InspectionFilterToBooleanConverter x:Key="ErrorFlagConverter" />
-                    <codeInspections:InspectionFilterToBooleanConverter x:Key="WarningFlagConverter" />
-                    <codeInspections:InspectionFilterToBooleanConverter x:Key="SuggestionFlagConverter" />
-                    <codeInspections:InspectionFilterToBooleanConverter x:Key="HintFlagConverter" />
-                    <codeInspections:InspectionResultGroupingToBooleanConverter x:Key="GroupByTypeConverter" />
-                    <codeInspections:InspectionResultGroupingToBooleanConverter x:Key="GroupByNameConverter" />
-                    <codeInspections:InspectionResultGroupingToBooleanConverter x:Key="GroupByLocationConverter" />
-                    <codeInspections:InspectionResultGroupingToBooleanConverter x:Key="GroupBySeverityConverter" />
+                    <codeInspections:InspectionFilterToBooleanConverter x:Key="InspectionTypeToBooleanConverter" />
+                    <codeInspections:InspectionResultGroupingToBooleanConverter x:Key="GroupingToBooleanConverter" />
                     <Style x:Key="ToolBarToggleStyle" TargetType="ToggleButton">
                         <Setter Property="Margin" Value="2" />
                         <Setter Property="BorderBrush" Value="{x:Static SystemColors.ActiveBorderBrush}" />
                     </Style>
+                    <BitmapImage x:Key="CopyResultsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/document-copy.png" />
+                    <BitmapImage x:Key="SettingsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/gear.png" />
+                    <BitmapImage x:Key="RefreshImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-double.png" />
+                    <BitmapImage x:Key="FixImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/tick.png" />
+
+                    <BitmapImage x:Key="GroupByInspectionTypeImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/block.png" />
+                    <BitmapImage x:Key="GroupByInspectionImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/light-bulb-code.png" />
+                    <BitmapImage x:Key="GroupByLocationImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/ObjectClass.png" />
+                    <BitmapImage x:Key="GroupBySeverityImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/Severity.png" />
+
+                    <BitmapImage x:Key="FilterByHintImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/information-white.png" />
+                    <BitmapImage x:Key="FilterBySuggestionImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/information.png" />
+                    <BitmapImage x:Key="FilterByWarningImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/exclamation.png" />
+                    <BitmapImage x:Key="FilterByErrorImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
+
+                    <BitmapImage x:Key="ExpandAllImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/expand-all.png" />
+                    <BitmapImage x:Key="CollapseAllImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/collapse-all.png" />
                 </ToolBar.Resources>
 
                 <Button Command="{Binding RefreshCommand}">
@@ -114,25 +107,25 @@
 
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByInspectionType}"
-                              IsChecked="{Binding Path=Grouping, Converter={StaticResource GroupByTypeConverter}, ConverterParameter={x:Static codeInspections:InspectionResultGrouping.Type}}">
+                              IsChecked="{Binding Path=Grouping, Converter={StaticResource GroupingToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultGrouping.Type}}">
                     <Image Source="{StaticResource GroupByInspectionTypeImage}" />
                 </ToggleButton>
 
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByName}"
-                              IsChecked="{Binding Path=Grouping, Converter={StaticResource GroupByNameConverter}, ConverterParameter={x:Static codeInspections:InspectionResultGrouping.Name}}">
+                              IsChecked="{Binding Path=Grouping, Converter={StaticResource GroupingToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultGrouping.Name}}">
                     <Image Source="{StaticResource GroupByInspectionImage}" />
                 </ToggleButton>
 
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByLocation}"
-                              IsChecked="{Binding Path=Grouping, Converter={StaticResource GroupByLocationConverter}, ConverterParameter={x:Static codeInspections:InspectionResultGrouping.Location}}">
+                              IsChecked="{Binding Path=Grouping, Converter={StaticResource GroupingToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultGrouping.Location}}">
                     <Image Source="{StaticResource GroupByLocationImage}" />
                 </ToggleButton>
 
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_BySeverity}"
-                              IsChecked="{Binding Path=Grouping, Converter={StaticResource GroupBySeverityConverter}, ConverterParameter={x:Static codeInspections:InspectionResultGrouping.Severity}}">
+                              IsChecked="{Binding Path=Grouping, Converter={StaticResource GroupingToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultGrouping.Severity}}">
                     <Image Source="{StaticResource GroupBySeverityImage}" />
                 </ToggleButton>
 
@@ -142,25 +135,25 @@
 
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByError}"
-                              IsChecked="{Binding Path=SelectedFilters, Converter={StaticResource ErrorFlagConverter}, ConverterParameter={x:Static codeInspections:InspectionResultsFilter.Error}}">
+                              IsChecked="{Binding Path=SelectedFilters, Converter={StaticResource InspectionTypeToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultsFilter.Error}}">
                     <Image Source="{StaticResource FilterByErrorImage}" />
                 </ToggleButton>
 
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByWarning}"
-                              IsChecked="{Binding Path=SelectedFilters, Converter={StaticResource WarningFlagConverter}, ConverterParameter={x:Static codeInspections:InspectionResultsFilter.Warning}}">
+                              IsChecked="{Binding Path=SelectedFilters, Converter={StaticResource InspectionTypeToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultsFilter.Warning}}">
                     <Image Source="{StaticResource FilterByWarningImage}" />
                 </ToggleButton>
 
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterBySuggestion}"
-                              IsChecked="{Binding Path=SelectedFilters, Converter={StaticResource SuggestionFlagConverter}, ConverterParameter={x:Static codeInspections:InspectionResultsFilter.Suggestion}}">
+                              IsChecked="{Binding Path=SelectedFilters, Converter={StaticResource InspectionTypeToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultsFilter.Suggestion}}">
                     <Image Source="{StaticResource FilterBySuggestionImage}" />
                 </ToggleButton>
 
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByHint}"
-                              IsChecked="{Binding Path=SelectedFilters, Converter={StaticResource HintFlagConverter}, ConverterParameter={x:Static codeInspections:InspectionResultsFilter.Hint}}">
+                              IsChecked="{Binding Path=SelectedFilters, Converter={StaticResource InspectionTypeToBooleanConverter}, ConverterParameter={x:Static codeInspections:InspectionResultsFilter.Hint}}">
                     <Image Source="{StaticResource FilterByHintImage}" />
                 </ToggleButton>
 
@@ -199,7 +192,7 @@
                                SelectedItem="{Binding SelectedItem}"
                                SelectionUnit="FullRow"
                                ItemsSource="{Binding Results, NotifyOnSourceUpdated=True}"
-                               VirtualizingPanel.IsVirtualizingWhenGrouping="False">
+                               VirtualizingPanel.IsVirtualizingWhenGrouping="True">
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
                     <Grid>
@@ -242,8 +235,6 @@
         </controls:GroupingGrid>
 
         <controls:EmptyUIRefresh Grid.Row="1" Visibility="{Binding Unparsed, Converter={StaticResource BoolToVisibility}}" />
-
-
         <controls:BusyIndicator Grid.Row="1" Width="120" Height="120" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
 
         <GridSplitter Grid.Row="2" Height="5" ShowsPreview="True" Cursor="SizeNS" HorizontalAlignment="Stretch"/>
