@@ -316,5 +316,32 @@ namespace Rubberduck.Properties {
                 return ((global::Rubberduck.Settings.AutoCompleteSettings)(this["AutoCompleteSettings"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ToDoExplorerColumns xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <DescriptionColumn>
+    <DisplayIndex>0</DisplayIndex>
+    <Width />
+  </DescriptionColumn>
+  <ProjectColumn>
+    <DisplayIndex>2</DisplayIndex>
+    <Width />
+  </ProjectColumn>
+  <ModuleColumn>
+    <DisplayIndex>1</DisplayIndex>
+    <Width />
+  </ModuleColumn>
+  <LineNumberColumn>
+    <DisplayIndex>3</DisplayIndex>
+    <Width />
+  </LineNumberColumn>
+</ToDoExplorerColumns>")]
+        public global::Rubberduck.Settings.ToDoExplorerColumns ToDoExplorerColumnsDefault {
+            get {
+                return ((global::Rubberduck.Settings.ToDoExplorerColumns)(this["ToDoExplorerColumnsDefault"]));
+            }
+        }
     }
 }
