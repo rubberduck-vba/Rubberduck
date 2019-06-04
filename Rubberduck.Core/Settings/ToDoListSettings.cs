@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Controls;
 using System.Xml.Serialization;
+using Rubberduck.UI;
 
 namespace Rubberduck.Settings
 {
     internal interface IToDoListSettings
     {
         ToDoMarker[] ToDoMarkers { get; set; }
-        ToDoExplorerColumns ColumnHeaderInformation { get; set; }
+        ObservableCollection<GridViewColumnInfo> ColumnHeadersInformation { get; set; }
     }
 
     [XmlType(AnonymousType = true)]
-    public class ToDoListSettings : IToDoListSettings, IEquatable<ToDoListSettings>
+    public class ToDoListSettings : ViewModelBase, IToDoListSettings, IEquatable<ToDoListSettings>
     {
         private IEnumerable<ToDoMarker> _markers;
 
@@ -28,7 +30,19 @@ namespace Rubberduck.Settings
             }
         }
 
-        public ToDoExplorerColumns ColumnHeaderInformation { get; set; }
+        private ObservableCollection<GridViewColumnInfo> _columnHeadersInfo;
+        public ObservableCollection<GridViewColumnInfo> ColumnHeadersInformation
+        {
+            get => _columnHeadersInfo;
+            set
+            {
+                if (value != _columnHeadersInfo)
+                {
+                    _columnHeadersInfo = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         /// <Summary>
         /// Default constructor required for XML serialization.
@@ -37,71 +51,66 @@ namespace Rubberduck.Settings
         {
         }
 
-        public ToDoListSettings(IEnumerable<ToDoMarker> defaultMarkers, ToDoExplorerColumns columnHeadings)
+        public ToDoListSettings(IEnumerable<ToDoMarker> defaultMarkers, ObservableCollection<GridViewColumnInfo> columnHeaders)
         {
             _markers = defaultMarkers;
-            ColumnHeaderInformation = columnHeadings;
+            ColumnHeadersInformation = columnHeaders;
         }
 
         public bool Equals(ToDoListSettings other)
         {
             return other != null 
                 && ToDoMarkers.SequenceEqual(other.ToDoMarkers)
-                && ColumnHeaderInformation.Equals(other.ColumnHeaderInformation);
+                && ColumnHeadersInformation.Equals(other.ColumnHeadersInformation);
         }
     }
 
-    public class ToDoExplorerColumns : IEquatable<ToDoExplorerColumns>
+    public class GridViewColumnInfo : ViewModelBase, IEquatable<GridViewColumnInfo>
     {
-        public ToDoExplorerColumn DescriptionColumn { get; set; }
-        public ToDoExplorerColumn ProjectColumn { get; set; }
-        public ToDoExplorerColumn ModuleColumn { get; set; }
-        public ToDoExplorerColumn LineNumberColumn { get; set; }
-
-        /// <Summary>
-        /// Default constructor required for XML serialization.
-        /// </Summary>
-        public ToDoExplorerColumns()
+        private int _displayIndex;
+        public int DisplayIndex
         {
+            get => _displayIndex;
+            set
+            {
+                if (value != _displayIndex)
+                {
+                    _displayIndex = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
-        public ToDoExplorerColumns(ToDoExplorerColumn descriptionColumn, ToDoExplorerColumn projectColumn, ToDoExplorerColumn moduleColumn, ToDoExplorerColumn lineNumberColumn)
-        {
-            DescriptionColumn = descriptionColumn;
-            ProjectColumn = projectColumn;
-            ModuleColumn = moduleColumn;
-            LineNumberColumn = lineNumberColumn;
-        }
-
-        public bool Equals(ToDoExplorerColumns other)
-        {
-            return DescriptionColumn == other.DescriptionColumn 
-                && ProjectColumn == other.ProjectColumn
-                && ModuleColumn == other.ModuleColumn
-                && LineNumberColumn == other.LineNumberColumn;
-        }
-    }
-
-    public class ToDoExplorerColumn : IEquatable<ToDoExplorerColumn>
-    {
-        public int DisplayIndex { get; set; }
         [XmlElement(Type = typeof(DataGridLength))]
-        public DataGridLength Width { get; set; }
+        private DataGridLength _width;
+
+        public DataGridLength Width
+        {
+            get => _width;
+            set
+            {
+                if (value != _width)
+                {
+                    _width = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         /// <Summary>
         /// Default constructor required for XML serialization.
         /// </Summary>
-        public ToDoExplorerColumn()
+        public GridViewColumnInfo()
         {
         }
 
-        public ToDoExplorerColumn(int displayIndex, DataGridLength width)
+        public GridViewColumnInfo(int displayIndex, DataGridLength width)
         {
             DisplayIndex = displayIndex;
             Width = width;
         }
 
-        public bool Equals(ToDoExplorerColumn other)
+        public bool Equals(GridViewColumnInfo other)
         {
             return DisplayIndex == other.DisplayIndex
                 && Width == other.Width;

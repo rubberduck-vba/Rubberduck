@@ -338,9 +338,9 @@ namespace Rubberduck.Properties {
     <Width />
   </LineNumberColumn>
 </ToDoExplorerColumns>")]
-        public global::Rubberduck.Settings.ToDoExplorerColumns ToDoExplorerColumnsDefault {
+        public global::Rubberduck.Settings.GridViewColumnInfo ToDoExplorerColumnsDefault {
             get {
-                return ((global::Rubberduck.Settings.ToDoExplorerColumns)(this["ToDoExplorerColumnsDefault"]));
+                return ((global::Rubberduck.Settings.GridViewColumnInfo)(this["ToDoExplorerColumnsDefault"]));
             }
         }
     }
