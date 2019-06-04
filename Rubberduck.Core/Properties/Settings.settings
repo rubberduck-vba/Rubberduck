@@ -192,14 +192,14 @@
     &lt;DisplayIndex&gt;0&lt;/DisplayIndex&gt;
     &lt;Width /&gt;
   &lt;/DescriptionColumn&gt;
-  &lt;ProjectColumn&gt;
-    &lt;DisplayIndex&gt;2&lt;/DisplayIndex&gt;
-    &lt;Width /&gt;
-  &lt;/ProjectColumn&gt;
   &lt;ModuleColumn&gt;
     &lt;DisplayIndex&gt;1&lt;/DisplayIndex&gt;
     &lt;Width /&gt;
   &lt;/ModuleColumn&gt;
+  &lt;ProjectColumn&gt;
+    &lt;DisplayIndex&gt;2&lt;/DisplayIndex&gt;
+    &lt;Width /&gt;
+  &lt;/ProjectColumn&gt;
   &lt;LineNumberColumn&gt;
     &lt;DisplayIndex&gt;3&lt;/DisplayIndex&gt;
     &lt;Width /&gt;
