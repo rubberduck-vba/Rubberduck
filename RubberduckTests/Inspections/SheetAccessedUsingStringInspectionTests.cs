@@ -14,7 +14,7 @@ namespace RubberduckTests.Inspections
     public class SheetAccessedUsingStringInspectionTests
     {
         [Test]
-        //[Ignore("See #4411")]
+        //[Ignore("ThisWorkbook.Worksheets fails to resolve")]
         [Category("Inspections")]
         public void SheetAccessedUsingString_ThisWorkbookQualifier_HasResult()
         {

@@ -11,6 +11,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -55,7 +56,7 @@ namespace Rubberduck.Inspections.Concrete
 
         private static readonly string[] InterestingClasses =
         {
-            "Workbook" // "_Global", "_Application", "Global", "Application", "Workbook"
+            "Workbook", "ThisWorkbook" // "_Global", "_Application", "Global", "Application", "Workbook"
         };
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
@@ -63,7 +64,7 @@ namespace Rubberduck.Inspections.Concrete
             var excel = State.DeclarationFinder.Projects.SingleOrDefault(item => !item.IsUserDefined && item.IdentifierName == "Excel");
             if (excel == null)
             {
-                return Enumerable.Empty<IInspectionResult>();                
+                return Enumerable.Empty<IInspectionResult>();
             }
 
             var targetProperties = BuiltInDeclarations
@@ -73,15 +74,16 @@ namespace Rubberduck.Inspections.Concrete
 
             var references = targetProperties.SelectMany(declaration => declaration.References
                 .Where(reference => !reference.IsIgnoringInspectionResultFor(AnnotationName) &&
-                                    IsAccessedWithStringLiteralParameter(reference))
-                .Select(reference => new IdentifierReferenceInspectionResult(this,
-                    InspectionResults.SheetAccessedUsingStringInspection, State, reference)));
+                                    IsAccessedWithStringLiteralParameter(reference))).ToArray();
 
-            var issues = new List<IdentifierReferenceInspectionResult>();
+            var issues = references.Select(reference => 
+                    new IdentifierReferenceInspectionResult(
+                        this, InspectionResults.SheetAccessedUsingStringInspection, State, reference))
+                .ToList();
 
-            foreach (var reference in references)
+            foreach (var issue in issues)
             {
-                using (var component = GetVBComponentMatchingSheetName(reference)) 
+                using (var component = GetVBComponentMatchingSheetName(issue)) 
                 {
                     if (component == null)
                     {
@@ -89,9 +91,9 @@ namespace Rubberduck.Inspections.Concrete
                     }
                     using (var properties = component.Properties)
                     {
-                        reference.Properties.CodeName = (string)properties.Single(property => property.Name == "CodeName").Value;
+                        issue.Properties.CodeName = (string)properties.Single(property => property.Name == "CodeName").Value;
                     }
-                    issues.Add(reference);
+                    issues.Add(issue);
                 }
             }
             return issues;
@@ -99,11 +101,24 @@ namespace Rubberduck.Inspections.Concrete
 
         private static bool IsAccessedWithStringLiteralParameter(IdentifierReference reference)
         {
-            // Second case accounts for global modules
-            var indexExprContext = reference.Context.Parent.Parent as VBAParser.IndexExprContext ??
-                                   reference.Context.Parent as VBAParser.IndexExprContext;
+            if (reference.Context.Parent.Parent is VBAParser.IndexExprContext qualifiedMemberCall)
+            {
+                return HasStringLiteralParameter(qualifiedMemberCall)
+                       && qualifiedMemberCall
+                           ?.GetAncestor<VBAParser.MemberAccessExprContext>()
+                           ?.lExpression().GetChild<VBAParser.SimpleNameExprContext>()
+                           ?.GetText() == "ThisWorkbook";
+            }
 
-            var literalExprContext = indexExprContext
+            return reference.Context.Parent is VBAParser.IndexExprContext unqualifiedMemberCall
+                   && HasStringLiteralParameter(unqualifiedMemberCall)
+                   && reference.ParentScoping.QualifiedModuleName.ComponentType == ComponentType.Document
+                   && reference.ParentScoping.QualifiedModuleName.ComponentName == "ThisWorkbook";
+        }
+
+        private static bool HasStringLiteralParameter(VBAParser.IndexExprContext context)
+        {
+            var literalExprContext = context
                 ?.argumentList()
                 ?.argument(0)
                 ?.positionalArgument()
