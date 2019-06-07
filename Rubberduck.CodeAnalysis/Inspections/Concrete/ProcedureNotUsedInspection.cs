@@ -19,10 +19,10 @@ namespace Rubberduck.Inspections.Concrete
     /// Shape object in the host document: in such cases the inspection result should be ignored. An event handler procedure that isn't being
     /// resolved as such, may also wrongly trigger this inspection.
     /// </why>
-    /// <warning>
+    /// <remarks>
     /// Not all unused procedures can/should be removed: ignore any inspection results for 
     /// event handler procedures and interface members that Rubberduck isn't recognizing as such.
-    /// </warning>
+    /// </remarks>
     /// <example>
     /// <![CDATA[
     /// Option Explicit
