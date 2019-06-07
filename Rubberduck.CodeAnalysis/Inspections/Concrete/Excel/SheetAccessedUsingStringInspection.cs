@@ -55,7 +55,7 @@ namespace Rubberduck.Inspections.Concrete
 
         private static readonly string[] InterestingClasses =
         {
-            "_Global", "_Application", "Global", "Application", "Workbook"
+            "Workbook" // "_Global", "_Application", "Global", "Application", "Workbook"
         };
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()

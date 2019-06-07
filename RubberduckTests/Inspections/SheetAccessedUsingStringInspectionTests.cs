@@ -14,12 +14,12 @@ namespace RubberduckTests.Inspections
     public class SheetAccessedUsingStringInspectionTests
     {
         [Test]
-        [Ignore("See #4411")]
+        //[Ignore("See #4411")]
         [Category("Inspections")]
-        public void SheetAccessedUsingString_ReturnsResult_AccessingUsingWorkbookModule()
+        public void SheetAccessedUsingString_ThisWorkbookQualifier_HasResult()
         {
-            const string inputCode =
-                @"Public Sub Foo()
+            const string inputCode = @"
+Public Sub Foo()
     ThisWorkbook.Worksheets(""Sheet1"").Range(""A1"") = ""Foo""
     ThisWorkbook.Sheets(""Sheet1"").Range(""A1"") = ""Foo""
 End Sub";
@@ -35,10 +35,10 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void SheetAccessedUsingString_ReturnsResult_AccessingUsingApplicationModule()
+        public void SheetAccessedUsingString_ApplicationQualifier_NoResult()
         {
-            const string inputCode =
-                @"Public Sub Foo()
+            const string inputCode = @"
+Public Sub Foo()
     Application.Worksheets(""Sheet1"").Range(""A1"") = ""Foo""
     Application.Sheets(""Sheet1"").Range(""A1"") = ""Foo""
 End Sub";
@@ -48,16 +48,17 @@ End Sub";
                 var inspection = new SheetAccessedUsingStringInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
-                Assert.AreEqual(2, inspectionResults.Count());
+                // implicit ActiveWorkbook reference, we don't know if that's ThisWorkbook.
+                Assert.AreEqual(0, inspectionResults.Count());
             }
         }
 
         [Test]
         [Category("Inspections")]
-        public void SheetAccessedUsingString_ReturnsResult_AccessingUsingGlobalModule()
+        public void SheetAccessedUsingString_ImplicitQualifier_NoResultInStandardModule()
         {
-            const string inputCode =
-                @"Public Sub Foo()
+            const string inputCode = @"
+Public Sub Foo()
     Worksheets(""Sheet1"").Range(""A1"") = ""Foo""
     Sheets(""Sheet1"").Range(""A1"") = ""Foo""
 End Sub";
@@ -67,14 +68,34 @@ End Sub";
                 var inspection = new SheetAccessedUsingStringInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
-                Assert.AreEqual(2, inspectionResults.Count());
+                // implicit ActiveWorkbook reference, we don't know if that's ThisWorkbook.
+                Assert.AreEqual(0, inspectionResults.Count());
             }
         }
 
         [Test]
-        [Ignore("Ref #4329")]
         [Category("Inspections")]
-        public void SheetAccessedUsingString_DoesNotReturnResult_AccessingUsingWorkbooksProperty()
+        public void SheetAccessedUsingString_ImplicitQualifier_NoResultInThisWorkbook()
+        {
+            const string inputCode = @"
+Public Sub Foo()
+    Worksheets(""Sheet1"").Range(""A1"") = ""Foo""
+    Sheets(""Sheet1"").Range(""A1"") = ""Foo""
+End Sub";
+
+            using (var state = ArrangeParserAndParseThisWorkbook(inputCode))
+            {
+                var inspection = new SheetAccessedUsingStringInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                // implicit ActiveWorkbook reference, we don't know if that's ThisWorkbook.
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
+        }
+        [Test]
+        //[Ignore("Ref #4329")]
+        [Category("Inspections")]
+        public void SheetAccessedUsingString_DereferencedWorkbook_NoResults()
         {
             const string inputCode =
                 @"Public Sub Foo()
@@ -93,7 +114,7 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void SheetAccessedUsingString_DoesNotReturnResult_NoSheetWithGivenNameExists()
+        public void SheetAccessedUsingString_NonExistingThisWorkbookSheetName_NoResults()
         {
             const string inputCode =
                 @"Public Sub Foo()
@@ -112,7 +133,7 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void SheetAccessedUsingString_DoesNotReturnResult_SheetWithGivenNameExistsInAnotherProject()
+        public void SheetAccessedUsingString_ThisWorkbookSheetNamneExistsInAnotherProject_NoResults()
         {
             const string inputCode =
                 @"Public Sub Foo()
@@ -132,7 +153,7 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void SheetAccessedUsingString_DoesNotReturnResult_AccessingUsingVariable()
+        public void SheetAccessedUsingString_DoesNotEvaluateVariableExpression()
         {
             const string inputCode =
                 @"Public Sub Foo()
@@ -167,6 +188,37 @@ End Sub";
 
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, inputCode)
+                .AddComponent("ThisWorkbook", ComponentType.Document, "")
+                .AddComponent("Sheet1", ComponentType.Document, "",
+                    properties: new[]
+                    {
+                        CreateVBComponentPropertyMock("Name", "Sheet1").Object,
+                        CreateVBComponentPropertyMock("CodeName", "Sheet1").Object
+                    })
+                .AddReference("ReferencedProject", string.Empty, 0, 0)
+                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
+                .Build();
+
+            var vbe = builder.AddProject(referencedProject).AddProject(project).Build();
+
+            return MockParser.CreateAndParse(vbe.Object);
+        }
+
+        private static RubberduckParserState ArrangeParserAndParseThisWorkbook(string inputCode)
+        {
+            var builder = new MockVbeBuilder();
+
+            var referencedProject = builder.ProjectBuilder("ReferencedProject", ProjectProtection.Unprotected)
+                .AddComponent("SheetFromOtherProject", ComponentType.Document, "",
+                    properties: new[]
+                    {
+                        CreateVBComponentPropertyMock("Name", "SheetFromOtherProject").Object,
+                        CreateVBComponentPropertyMock("CodeName", "SheetFromOtherProject").Object
+                    })
+                .Build();
+
+            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
+                .AddComponent("ThisWorkbook", ComponentType.Document, inputCode)
                 .AddComponent("Sheet1", ComponentType.Document, "",
                     properties: new[]
                     {
