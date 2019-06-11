@@ -157,7 +157,9 @@ namespace Rubberduck.Parsing.ComReflection
                                 //TKIND_UNION is not a supported member type in VBA.
                                 break;
                             case TYPEKIND_VBE.TKIND_VBACLASS:
-                                //TODO: Implement this.
+                                //TODO: remove this when VBProject modules are exposed as TKIND_DISPATCH
+                                var vbInterface = type ?? new ComInterface(this, typeLibrary, info, typeAttributes, index);
+                                _interfaces.Add(vbInterface as ComInterface);
                                 break;
                             default:
                                 throw new NotImplementedException($"Didn't expect a TYPEATTR with multiple typekind flags set in {Path}.");
