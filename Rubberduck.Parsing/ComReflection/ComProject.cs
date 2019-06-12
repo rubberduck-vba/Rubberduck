@@ -101,17 +101,19 @@ namespace Rubberduck.Parsing.ComReflection
                     {
                         var typeAttributes = Marshal.PtrToStructure<TYPEATTR>(typeAttributesPointer);
                         KnownTypes.TryGetValue(typeAttributes.guid, out var type);
-                        
+
                         switch (typeAttributes.typekind.ToTypeKindVbe())
                         {
                             case TYPEKIND_VBE.TKIND_ENUM:
-                                var enumeration = type ?? new ComEnumeration(this, typeLibrary, info, typeAttributes, index);
+                                var enumeration =
+                                    type ?? new ComEnumeration(this, typeLibrary, info, typeAttributes, index);
                                 Debug.Assert(enumeration is ComEnumeration);
                                 _enumerations.Add(enumeration as ComEnumeration);
                                 if (type == null && !enumeration.Guid.Equals(Guid.Empty))
                                 {
                                     KnownTypes.TryAdd(typeAttributes.guid, enumeration);
                                 }
+
                                 break;
                             case TYPEKIND_VBE.TKIND_COCLASS:
                                 var coclass = type ?? new ComCoClass(this, typeLibrary, info, typeAttributes, index);
@@ -121,6 +123,7 @@ namespace Rubberduck.Parsing.ComReflection
                                 {
                                     KnownTypes.TryAdd(typeAttributes.guid, coclass);
                                 }
+
                                 break;
                             case TYPEKIND_VBE.TKIND_DISPATCH:
                             case TYPEKIND_VBE.TKIND_INTERFACE:
@@ -131,6 +134,7 @@ namespace Rubberduck.Parsing.ComReflection
                                 {
                                     KnownTypes.TryAdd(typeAttributes.guid, intface);
                                 }
+
                                 break;
                             case TYPEKIND_VBE.TKIND_RECORD:
                                 var structure = new ComStruct(this, typeLibrary, info, typeAttributes, index);
@@ -144,6 +148,7 @@ namespace Rubberduck.Parsing.ComReflection
                                 {
                                     KnownTypes.TryAdd(typeAttributes.guid, module);
                                 }
+
                                 break;
                             case TYPEKIND_VBE.TKIND_ALIAS:
                                 var alias = new ComAlias(this, typeLibrary, info, index, typeAttributes);
@@ -152,21 +157,26 @@ namespace Rubberduck.Parsing.ComReflection
                                 {
                                     KnownAliases.TryAdd(alias.Guid, alias);
                                 }
+
                                 break;
                             case TYPEKIND_VBE.TKIND_UNION:
                                 //TKIND_UNION is not a supported member type in VBA.
                                 break;
                             case TYPEKIND_VBE.TKIND_VBACLASS:
-                                //TODO: remove this when VBProject modules are exposed as TKIND_DISPATCH
                                 var vbInterface = type ?? new ComInterface(this, typeLibrary, info, typeAttributes, index);
                                 _interfaces.Add(vbInterface as ComInterface);
+
                                 break;
                             default:
-                                throw new NotImplementedException($"Didn't expect a TYPEATTR with multiple typekind flags set in {Path}.");
+                                throw new NotImplementedException(
+                                    $"Didn't expect a TYPEATTR with multiple typekind flags set in {Path}.");
                         }
                     }
                 }
-                catch (COMException) { }
+                catch (COMException e)
+                {
+                    Debug.WriteLine(e.ToString());
+                }
             }
             ApplySpecificLibraryTweaks();
         }

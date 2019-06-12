@@ -14,9 +14,10 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement.CompilationPasses
         private readonly DeclarationFinder _declarationFinder;
         private readonly BindingService _bindingService;
         private readonly VBAExpressionParser _expressionParser;
+        private readonly IParsingCacheService _parsingCacheService;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public TypeHierarchyPass(DeclarationFinder declarationFinder, VBAExpressionParser expressionParser)
+        public TypeHierarchyPass(DeclarationFinder declarationFinder, VBAExpressionParser expressionParser, IParsingCacheService parsingCacheService)
         {
             _declarationFinder = declarationFinder;
             var typeBindingContext = new TypeBindingContext(_declarationFinder);
@@ -27,6 +28,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement.CompilationPasses
                 typeBindingContext,
                 procedurePointerBindingContext);
             _expressionParser = expressionParser;
+            _parsingCacheService = parsingCacheService;
         }
 
         public void Execute(IReadOnlyCollection<QualifiedModuleName> modules)
@@ -48,18 +50,46 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement.CompilationPasses
                 return;
             }
             var classModule = (ClassModuleDeclaration)potentialClassModule;
+
+            if (classModule.DeclarationType.HasFlag(DeclarationType.Document) ||
+                classModule.DeclarationType.HasFlag(DeclarationType.UserForm))
+            {
+                AddUserTypeLibImplementedInterfaceNames(classModule);
+            }
+
+            AddImplementedInterfaces(classModule);
+        }
+
+        private void AddImplementedInterfaces(ClassModuleDeclaration classModule)
+        {
             foreach (var implementedInterfaceName in classModule.SupertypeNames)
             {
                 var expressionContext = _expressionParser.Parse(implementedInterfaceName);
-                var implementedInterface = _bindingService.ResolveType(potentialClassModule, potentialClassModule, expressionContext);
+                var implementedInterface = _bindingService.ResolveType(classModule, classModule, expressionContext);
                 if (implementedInterface.Classification != ExpressionClassification.ResolutionFailed)
                 {
                     classModule.AddSupertype(implementedInterface.ReferencedDeclaration);
                 }
                 else
                 {
-                    Logger.Warn("Failed to resolve interface {0}.", implementedInterfaceName);
+                    Logger.Warn("Failed to resolve interface {0} for module {1}.", implementedInterfaceName, classModule.IdentifierName);
                 }
+            }
+        }
+
+        private void AddUserTypeLibImplementedInterfaceNames(ClassModuleDeclaration classModule)
+        {
+            var project = _parsingCacheService.UserProject(classModule.ProjectId);
+            var comClassModule = project.Interfaces.SingleOrDefault(i => i.Name == classModule.IdentifierName);
+            if (comClassModule == default)
+            {
+                return;
+            }
+
+            foreach (var comInterface in comClassModule.InheritedInterfaces)
+            {
+                Logger.Trace("Module {0} implements COM interface {1}.", classModule.IdentifierName, comInterface.Name);
+                classModule.AddSupertypeName(comInterface.Name);
             }
         }
     }

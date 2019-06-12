@@ -26,6 +26,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
 
         protected readonly RubberduckParserState _state;
         protected readonly IParserStateManager _parserStateManager;
+        protected readonly IParsingCacheService _parsingCacheService;
+
         private readonly IModuleToModuleReferenceManager _moduleToModuleReferenceManager;
         private readonly IReferenceRemover _referenceRemover;
 
@@ -33,29 +35,14 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             RubberduckParserState state,
             IParserStateManager parserStateManager,
             IModuleToModuleReferenceManager moduletToModuleReferenceManager,
-            IReferenceRemover referenceRemover)
+            IReferenceRemover referenceRemover,
+            IParsingCacheService parsingCacheService)
         {
-            if (state == null)
-            {
-                throw new ArgumentNullException(nameof(state));
-            }
-            if (parserStateManager == null)
-            {
-                throw new ArgumentNullException(nameof(parserStateManager));
-            }
-            if (moduletToModuleReferenceManager == null)
-            {
-                throw new ArgumentNullException(nameof(moduletToModuleReferenceManager));
-            }
-            if (referenceRemover == null)
-            {
-                throw new ArgumentNullException(nameof(referenceRemover));
-            }
-
-            _state = state;
-            _parserStateManager = parserStateManager;
-            _moduleToModuleReferenceManager = moduletToModuleReferenceManager;
-            _referenceRemover = referenceRemover;
+            _state = state ?? throw new ArgumentNullException(nameof(state));
+            _parserStateManager = parserStateManager ?? throw new ArgumentNullException(nameof(parserStateManager));
+            _moduleToModuleReferenceManager = moduletToModuleReferenceManager ?? throw new ArgumentNullException(nameof(moduletToModuleReferenceManager));
+            _referenceRemover = referenceRemover ?? throw new ArgumentNullException(nameof(referenceRemover));
+            _parsingCacheService = parsingCacheService;
         }
 
 
@@ -131,7 +118,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 {
                     // This pass has to come first because the type binding resolution depends on it.
                     new ProjectReferencePass(_state.DeclarationFinder),
-                    new TypeHierarchyPass(_state.DeclarationFinder, new VBAExpressionParser()),
+                    new TypeHierarchyPass(_state.DeclarationFinder, new VBAExpressionParser(), _parsingCacheService),
                     new TypeAnnotationPass(_state.DeclarationFinder, new VBAExpressionParser())
                 };
             try

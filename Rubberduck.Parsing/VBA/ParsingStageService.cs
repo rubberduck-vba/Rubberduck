@@ -26,37 +26,12 @@ namespace Rubberduck.Parsing.VBA
             IReferenceResolveRunner referenceResolver,
             IUserComProjectSynchronizer userComProjectSynchronizer)
         {
-            if(comSynchronizer == null)
-            {
-                throw new ArgumentNullException(nameof(comSynchronizer));
-            }
-            if (builtInDeclarationLoader == null)
-            {
-                throw new ArgumentNullException(nameof(builtInDeclarationLoader));
-            }
-            if (parseRunner == null)
-            {
-                throw new ArgumentNullException(nameof(parseRunner));
-            }
-            if (declarationResolver == null)
-            {
-                throw new ArgumentNullException(nameof(declarationResolver));
-            }
-            if (referenceResolver == null)
-            {
-                throw new ArgumentNullException(nameof(referenceResolver));
-            }
-            if (userComProjectSynchronizer == null)
-            {
-                throw new ArgumentNullException(nameof(userComProjectSynchronizer));
-            }
-
-            _comSynchronizer = comSynchronizer;
-            _builtInDeclarationLoader = builtInDeclarationLoader;
-            _parseRunner = parseRunner;
-            _declarationResolver = declarationResolver;
-            _referenceResolver = referenceResolver;
-            _userComProjectSynchronizer = userComProjectSynchronizer;
+            _comSynchronizer = comSynchronizer ?? throw new ArgumentNullException(nameof(comSynchronizer));
+            _builtInDeclarationLoader = builtInDeclarationLoader ?? throw new ArgumentNullException(nameof(builtInDeclarationLoader));
+            _parseRunner = parseRunner ?? throw new ArgumentNullException(nameof(parseRunner));
+            _declarationResolver = declarationResolver ?? throw new ArgumentNullException(nameof(declarationResolver));
+            _referenceResolver = referenceResolver ?? throw new ArgumentNullException(nameof(referenceResolver));
+            _userComProjectSynchronizer = userComProjectSynchronizer ?? throw new ArgumentNullException(nameof(userComProjectSynchronizer));
         }
 
         public bool LastLoadOfBuiltInDeclarationsLoadedDeclarations => _builtInDeclarationLoader.LastLoadOfBuiltInDeclarationsLoadedDeclarations;

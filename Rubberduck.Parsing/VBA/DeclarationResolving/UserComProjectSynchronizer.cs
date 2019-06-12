@@ -47,11 +47,28 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
             var projectsToBeUndloaded =
                 _currentlyLoadedProjectIds.Where(projectId => !projectIdsToBeLoaded.Contains(projectId));
 
-            LoadProjects(newProjectIdsToBeLoaded);
-            UnloadProjects(projectsToBeUndloaded);
+            var hasNewProjectIds = newProjectIdsToBeLoaded.Any();
+            var hasUnloadedProjects = projectsToBeUndloaded.Any();
+            var hasWorkToDo = hasNewProjectIds || hasUnloadedProjects;
+            if (hasNewProjectIds)
+            {
+                LoadProjects(newProjectIdsToBeLoaded);
+            }
+
+            if (hasUnloadedProjects)
+            {
+                UnloadProjects(projectsToBeUndloaded);
+            }
 
             parsingStateTimer.Stop();
-            parsingStateTimer.Log("Loaded declarations from ComProjects for user projects in {0}ms.");
+            if (hasWorkToDo)
+            {
+                parsingStateTimer.Log("Loaded declarations from ComProjects for user projects in {0}ms.");
+            }
+            else
+            {
+                parsingStateTimer.Log("SyncUserComProjects: no work to do.");
+            }
         }
 
         private void LoadProjects(IEnumerable<string> projectIds)

@@ -21,10 +21,12 @@ using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
 using Rubberduck.Parsing.VBA.ReferenceManagement;
 using Rubberduck.VBEditor.ComManagement;
+using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.Utility;
+using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 
 namespace RubberduckTests.Mocks
 {
@@ -115,19 +117,7 @@ namespace RubberduckTests.Mocks
                 state, 
                 parserStateManager, 
                 comSynchronizer);
-            var referenceResolveRunner = new SynchronousReferenceResolveRunner(
-                state,
-                parserStateManager,
-                moduleToModuleReferenceManager,
-                referenceRemover);
-            var parsingStageService = new ParsingStageService(
-                comSynchronizer,
-                builtInDeclarationLoader,
-                parseRunner,
-                declarationResolveRunner,
-                referenceResolveRunner,
-                userComProjectSynchronizer
-                );
+
             var parsingCacheService = new ParsingCacheService(
                 state,
                 moduleToModuleReferenceManager,
@@ -135,8 +125,21 @@ namespace RubberduckTests.Mocks
                 supertypeClearer,
                 compilationsArgumentsCache,
                 userComProjectsRepository,
-                projectsToBeLoadedFromComSelector
-                );
+                projectsToBeLoadedFromComSelector);
+            var referenceResolveRunner = new SynchronousReferenceResolveRunner(
+                state,
+                parserStateManager,
+                moduleToModuleReferenceManager,
+                referenceRemover, 
+                parsingCacheService);
+            var parsingStageService = new ParsingStageService(
+                comSynchronizer,
+                builtInDeclarationLoader,
+                parseRunner,
+                declarationResolveRunner,
+                referenceResolveRunner,
+                userComProjectSynchronizer);
+
             var tokenStreamCache = new StateTokenStreamCache(state);
             var moduleRewriterFactory = new ModuleRewriterFactory(
                 codePaneSourceCodeHandler,

@@ -17,11 +17,13 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             RubberduckParserState state, 
             IParserStateManager parserStateManager, 
             IModuleToModuleReferenceManager moduletToModuleReferenceManager,
-            IReferenceRemover referenceRemover) 
+            IReferenceRemover referenceRemover,
+            IParsingCacheService parsingCacheService) 
         :base(state, 
             parserStateManager, 
             moduletToModuleReferenceManager,
-            referenceRemover)
+            referenceRemover,
+            parsingCacheService)
         { }
 
 

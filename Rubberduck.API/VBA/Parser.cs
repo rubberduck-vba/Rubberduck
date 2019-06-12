@@ -148,19 +148,7 @@ namespace Rubberduck.API.VBA
                 _state, 
                 parserStateManager, 
                 comSynchronizer);
-            var referenceResolveRunner = new ReferenceResolveRunner(
-                _state,
-                parserStateManager,
-                moduleToModuleReferenceManager,
-                referenceRemover);
-            var parsingStageService = new ParsingStageService(
-                comSynchronizer,
-                builtInDeclarationLoader,
-                parseRunner,
-                declarationResolveRunner,
-                referenceResolveRunner,
-                userComProjectSynchronizer
-                );
+
             var parsingCacheService = new ParsingCacheService(
                 _state,
                 moduleToModuleReferenceManager,
@@ -169,6 +157,22 @@ namespace Rubberduck.API.VBA
                 compilationsArgumentsCache,
                 userProjectsRepository,
                 projectsToBeLoadedFromComSelector
+            );
+
+            var referenceResolveRunner = new ReferenceResolveRunner(
+                _state,
+                parserStateManager,
+                moduleToModuleReferenceManager,
+                referenceRemover,
+                parsingCacheService);
+
+            var parsingStageService = new ParsingStageService(
+                comSynchronizer,
+                builtInDeclarationLoader,
+                parseRunner,
+                declarationResolveRunner,
+                referenceResolveRunner,
+                userComProjectSynchronizer
                 );
 
             _parser = new SynchronousParseCoordinator(

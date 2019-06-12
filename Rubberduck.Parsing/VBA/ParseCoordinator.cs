@@ -43,32 +43,11 @@ namespace Rubberduck.Parsing.VBA
             IParserStateManager parserStateManager,
             IRewritingManager rewritingManager = null)
         {
-            if (state == null)
-            {
-                throw new ArgumentNullException(nameof(state));
-            }
-            if (parsingStageService == null)
-            {
-                throw new ArgumentNullException(nameof(parsingStageService));
-            }
-            if (parsingStageService == null)
-            {
-                throw new ArgumentNullException(nameof(parsingStageService));
-            }
-            if (parsingCacheService == null)
-            {
-                throw new ArgumentNullException(nameof(parsingCacheService));
-            }
-            if (parserStateManager == null)
-            {
-                throw new ArgumentNullException(nameof(parserStateManager));
-            }
-
-            State = state;
-            _parsingStageService = parsingStageService;
-            _projectManager = projectManager;
-            _parsingCacheService = parsingCacheService;
-            _parserStateManager = parserStateManager;
+            State = state ?? throw new ArgumentNullException(nameof(state));
+            _parsingStageService = parsingStageService ?? throw new ArgumentNullException(nameof(parsingStageService));
+            _projectManager = projectManager ?? throw new ArgumentNullException(nameof(projectManager));
+            _parsingCacheService = parsingCacheService ?? throw new ArgumentNullException(nameof(parsingCacheService));
+            _parserStateManager = parserStateManager ?? throw new ArgumentNullException(nameof(parserStateManager));
             _rewritingManager = rewritingManager;
 
             state.ParseRequest += ReparseRequested;
@@ -240,12 +219,12 @@ namespace Rubberduck.Parsing.VBA
             token.ThrowIfCancellationRequested();
 
             //TODO: Remove the conditional compilation after loading from typelibs actually works.
-#if LOAD_USER_COM_PROJECTS
+//#if LOAD_USER_COM_PROJECTS
             RefreshUserComProjects(toParse, newProjectIds);
             token.ThrowIfCancellationRequested();
 
             SyncDeclarationsFromUserComProjects(toParse, token, toReresolveReferences);
-#endif
+//#endif
 
             SyncComReferences(toParse, token, toReresolveReferences);
             token.ThrowIfCancellationRequested();
