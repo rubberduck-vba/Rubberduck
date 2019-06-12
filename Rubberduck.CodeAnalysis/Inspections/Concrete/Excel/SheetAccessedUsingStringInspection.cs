@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.CodePathAnalysis.Nodes;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections;
@@ -12,6 +13,7 @@ using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Parsing;
+using Rubberduck.VBEditor.ComManagement.TypeLibs;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -54,11 +56,6 @@ namespace Rubberduck.Inspections.Concrete
             "Worksheets", "Sheets"
         };
 
-        private static readonly string[] InterestingClasses =
-        {
-            "Workbook", "ThisWorkbook" // "_Global", "_Application", "Global", "Application", "Workbook"
-        };
-
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var excel = State.DeclarationFinder.Projects.SingleOrDefault(item => !item.IsUserDefined && item.IdentifierName == "Excel");
@@ -69,7 +66,7 @@ namespace Rubberduck.Inspections.Concrete
 
             var targetProperties = BuiltInDeclarations
                 .OfType<PropertyDeclaration>()
-                .Where(x => InterestingMembers.Contains(x.IdentifierName) && InterestingClasses.Contains(x.ParentDeclaration?.IdentifierName))
+                .Where(x => InterestingMembers.Contains(x.IdentifierName) && x.ParentDeclaration?.IdentifierName == "_Workbook")
                 .ToList();
 
             var references = targetProperties.SelectMany(declaration => declaration.References
@@ -99,21 +96,29 @@ namespace Rubberduck.Inspections.Concrete
             return issues;
         }
 
-        private static bool IsAccessedWithStringLiteralParameter(IdentifierReference reference)
+        private bool IsAccessedWithStringLiteralParameter(IdentifierReference reference)
         {
             if (reference.Context.Parent.Parent is VBAParser.IndexExprContext qualifiedMemberCall)
             {
-                return HasStringLiteralParameter(qualifiedMemberCall)
-                       && qualifiedMemberCall
-                           ?.GetAncestor<VBAParser.MemberAccessExprContext>()
-                           ?.lExpression().GetChild<VBAParser.SimpleNameExprContext>()
-                           ?.GetText() == "ThisWorkbook";
+                // member call is qualified; true if the qualifier is ThisWorkbook.
+                if (HasStringLiteralParameter(qualifiedMemberCall))
+                {
+                    var qualifier = qualifiedMemberCall?.GetAncestor<VBAParser.MemberAccessExprContext>()
+                        ?.lExpression().GetChild<VBAParser.SimpleNameExprContext>()
+                        ?.GetText();
+                    var project = State.DeclarationFinder.FindProject(reference.QualifiedModuleName.ProjectName, reference.ParentScoping);
+                    if (State.DeclarationFinder.FindClassModule(qualifier, project) is ClassModuleDeclaration documentModule)
+                    {
+                        //return documentModule.ClassType == DocClassType.ExcelWorkbook;
+                    }
+                }
             }
 
+            // member call is unqualified; true if reference is inside the ThisWorkbook module.
             return reference.Context.Parent is VBAParser.IndexExprContext unqualifiedMemberCall
                    && HasStringLiteralParameter(unqualifiedMemberCall)
-                   && reference.ParentScoping.QualifiedModuleName.ComponentType == ComponentType.Document
-                   && reference.ParentScoping.QualifiedModuleName.ComponentName == "ThisWorkbook";
+                   && reference.ParentScoping is DocumentModuleDeclaration document
+                   /*&& document.ClassType == DocClassType.ExcelWorkbook*/;
         }
 
         private static bool HasStringLiteralParameter(VBAParser.IndexExprContext context)
