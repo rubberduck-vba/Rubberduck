@@ -475,7 +475,24 @@ namespace Rubberduck.Parsing.Symbols
         /// This value is <c>null</c> if not applicable, 
         /// and <c>Variant</c> if applicable but unspecified.
         /// </remarks>
-        public string FullAsTypeName => AsTypeDeclaration?.QualifiedModuleName.ToString() ?? AsTypeName;
+        public string FullAsTypeName
+        {
+            get
+            {
+                if (AsTypeDeclaration == null)
+                {
+                    return AsTypeName;
+                }
+
+                if (AsTypeDeclaration.DeclarationType.HasFlag(DeclarationType.ClassModule))
+                {
+                    return AsTypeDeclaration.QualifiedModuleName.ToString();
+                }
+
+                //Enums and UDTs have to be qualified by the module they are contained in.
+                return AsTypeDeclaration.QualifiedName.ToString();
+            }
+        }
 
         public bool AsTypeIsBaseType => string.IsNullOrWhiteSpace(AsTypeName) || SymbolList.BaseTypes.Contains(AsTypeName.ToUpperInvariant());
 

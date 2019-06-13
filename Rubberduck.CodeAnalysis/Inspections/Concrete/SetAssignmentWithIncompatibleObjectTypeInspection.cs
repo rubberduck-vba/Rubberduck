@@ -7,6 +7,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.TypeResolvers;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
@@ -17,8 +18,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     public class SetAssignmentWithIncompatibleObjectTypeInspection : InspectionBase
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
-
-        private const string UndeterminedValue = "Undetermined";
+        private readonly ISetTypeResolver _setTypeResolver;
 
         /// <summary>
         /// Locates assignments to object variables for which the RHS does not have a compatible declared type. 
@@ -80,10 +80,11 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         /// End Sub
         /// ]]>
         /// </example>
-        public SetAssignmentWithIncompatibleObjectTypeInspection(RubberduckParserState state)
+        public SetAssignmentWithIncompatibleObjectTypeInspection(RubberduckParserState state, ISetTypeResolver setTypeResolver)
             : base(state)
         {
             _declarationFinderProvider = state;
+            _setTypeResolver = setTypeResolver;
         }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
@@ -93,7 +94,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             var offendingAssignments = StronglyTypedObjectVariables(finder)
                 .SelectMany(SetAssignments)
                 .Select(setAssignment => SetAssignmentWithAssignedTypeName(setAssignment, finder))
-                .Where(setAssignmentWithAssignedTypeName => setAssignmentWithAssignedTypeName.assignedTypeName != UndeterminedValue
+                .Where(setAssignmentWithAssignedTypeName => setAssignmentWithAssignedTypeName.assignedTypeName != null
                     && !SetAssignmentPossiblyLegal(setAssignmentWithAssignedTypeName));
 
             return offendingAssignments
@@ -126,43 +127,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
         private string SetTypeNameOfExpression(VBAParser.ExpressionContext expression, QualifiedModuleName containingModule, DeclarationFinder finder)
         {
-            switch (expression)
-            {
-                case VBAParser.LExprContext lExpression:
-                    return SetTypeNameOfExpression(lExpression.lExpression(), containingModule, finder);
-                case VBAParser.NewExprContext newExpression:
-                    return UndeterminedValue;
-                default:
-                    return UndeterminedValue;
-            }
-        }
-
-        private string SetTypeNameOfExpression(VBAParser.LExpressionContext lExpression, QualifiedModuleName containingModule, DeclarationFinder finder)
-        {
-            switch (lExpression)
-            {
-                case VBAParser.SimpleNameExprContext simpleNameExpression:
-                    return SetTypeNameOfExpression(simpleNameExpression.identifier(), containingModule, finder);
-                case VBAParser.InstanceExprContext instanceExpression:
-                    return SetTypeNameOfInstance(containingModule);
-                default:
-                    return UndeterminedValue;
-            }
-        }
-
-        private string SetTypeNameOfExpression(VBAParser.IdentifierContext identifier, QualifiedModuleName containingModule, DeclarationFinder finder)
-        {
-            var typeName = finder.IdentifierReferences(identifier, containingModule)
-                .Select(reference => reference.Declaration)
-                .Where(declaration => declaration.IsObject)
-                .Select(declaration => declaration.FullAsTypeName)
-                .FirstOrDefault();
-            return typeName ?? UndeterminedValue;
-        }
-
-        private string SetTypeNameOfInstance(QualifiedModuleName instance)
-        {
-            return instance.ToString();
+            return _setTypeResolver.SetTypeName(expression, containingModule);
         }
         
         private bool SetAssignmentPossiblyLegal((IdentifierReference setAssignment, string assignedTypeName) setAssignmentWithAssignedType)
