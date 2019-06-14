@@ -217,25 +217,16 @@
                 <Separator />
 
                 <Label Content="{Resx Key=TestExplorer_Filter, ResxName=Rubberduck.Resources.UnitTesting.TestExplorer}" />
+
                 <TextBox MinWidth="100"
+
                          Text="{Binding TestNameFilter, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <Label Content="{Resx Key=TestExplorer_Outcome, ResxName=Rubberduck.Resources.UnitTesting.TestExplorer}" />
 
-                <!--<ComboBox Width="100"
-                          ItemsSource="{Binding SeverityFilters, UpdateSourceTrigger=PropertyChanged}"
-                          SelectedItem="{Binding SelectedSeverityFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" />-->
-                <ComboBox Width=" 40" 
+                <ComboBox Width="100" 
                           ItemsSource="{Binding OutcomeFilters, UpdateSourceTrigger=PropertyChanged}"
                           SelectedItem="{Binding SelectedOutcomeFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                <!--<TextBlock Text="None" />
-                    <Image Source="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=question_white}" />
-                    <Image Source="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=tick_circle}" />
-                    <Image Source="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=cross_circle}" />
-                    <Image Source="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=exclamation}" />
-                    <Image Source="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=minus_white}" />
-                    <Image Source="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=skull_mad}" />
-                </ComboBox>-->
 
                 <Separator />
 

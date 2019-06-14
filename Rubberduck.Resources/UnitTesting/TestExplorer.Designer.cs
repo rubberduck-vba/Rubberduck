@@ -106,6 +106,15 @@ namespace Rubberduck.Resources.UnitTesting {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All.
+        /// </summary>
+        public static string TestExplorer_AllResults {
+            get {
+                return ResourceManager.GetString("TestExplorer_AllResults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Category.
         /// </summary>
         public static string TestExplorer_CategoryName {
