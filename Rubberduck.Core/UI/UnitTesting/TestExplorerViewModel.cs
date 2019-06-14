@@ -161,7 +161,8 @@ namespace Rubberduck.UI.UnitTesting
                 {
                     _testNameFilter = value;
                     OnPropertyChanged();
-                    Tests.Filter = item => FilterResults(item);
+                    Tests.Filter = FilterResults;
+                    OnPropertyChanged(nameof(Tests));
                 }
             }
         }
@@ -177,15 +178,14 @@ namespace Rubberduck.UI.UnitTesting
                 {
                     _selectedOutcomeFilter = value.Replace(" ", string.Empty);
                     OnPropertyChanged();
-                    Tests.Filter = item => FilterResults(item);
+                    Tests.Filter = FilterResults;
+                    OnPropertyChanged(nameof(Tests));
                 }
             }
         }
 
         private bool FilterResults(object unitTest)
         {
-            OnPropertyChanged(nameof(Tests));
-
             var testMethodViewModel = unitTest as TestMethodViewModel;
             var memberName = testMethodViewModel.QualifiedName.MemberName;
 
