@@ -21,7 +21,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Out of convention or preference, explicit ByRef modifiers could be considered redundant since they are the implicit default. 
     /// This inspection can ensure the consistency of the convention.
     /// </why>
-    /// <example>
+    /// <example hasResults="true">
     /// <![CDATA[
     /// Option Explicit
     /// 
@@ -31,7 +31,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example>
+    /// <example hasResults="false">
     /// <![CDATA[
     /// Option Explicit
     /// Public Sub DoSomething(foo As Long)

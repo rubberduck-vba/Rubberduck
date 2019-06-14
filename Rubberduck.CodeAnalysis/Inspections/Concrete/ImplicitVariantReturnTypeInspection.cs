@@ -18,14 +18,14 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// All functions return something, whether a type is specified or not. The implicit default is 'Variant'.
     /// </why>
-    /// <example>
+    /// <example hasResults="true">
     /// <![CDATA[
     /// Public Function GetFoo()
     ///     GetFoo = 42
     /// End Function
     /// ]]>
     /// </example>
-    /// <example>
+    /// <example hasResults="false">
     /// <![CDATA[
     /// Public Function GetFoo() As Long
     ///     GetFoo = 42

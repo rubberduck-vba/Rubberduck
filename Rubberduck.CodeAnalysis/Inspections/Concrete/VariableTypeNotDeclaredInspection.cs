@@ -16,7 +16,7 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// A variable declared without an explicit data type is implicitly a Variant/Empty until it is assigned.
     /// </why>
-    /// <example>
+    /// <example hasResults="true">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim value ' implicit Variant
@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example>
+    /// <example hasResults="false">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim value As Long

@@ -22,7 +22,7 @@ namespace Rubberduck.Inspections.Concrete
     /// when they described that prefixes identified the "kind" of variable in a naming scheme dubbed Apps Hungarian.
     /// Modern naming conventions in all programming languages heavily discourage the use of Systems Hungarian prefixes. 
     /// </why>
-    /// <example>
+    /// <example hasResults="true">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim bFoo As Boolean, blnFoo As Boolean
@@ -34,7 +34,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Function
     /// ]]>
     /// </example>
-    /// <example>
+    /// <example hasResults="false">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Boolean, isFoo As Boolean

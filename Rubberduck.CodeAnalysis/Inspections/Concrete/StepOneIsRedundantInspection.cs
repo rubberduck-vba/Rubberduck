@@ -22,7 +22,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Out of convention or preference, explicit 'Step 1' specifiers could be considered redundant; 
     /// this inspection can ensure the consistency of the convention.
     /// </why>
-    /// <example>
+    /// <example hasResults="true">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim i As Long
@@ -32,7 +32,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example>
+    /// <example hasResults="false">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim i As Long
