@@ -189,7 +189,7 @@ namespace Rubberduck.UI.UnitTesting
             var testMethodViewModel = unitTest as TestMethodViewModel;
             var memberName = testMethodViewModel.QualifiedName.MemberName;
 
-            return memberName.ToUpper().Contains(TestNameFilter.ToUpper())
+            return memberName.ToUpper().Contains(TestNameFilter?.ToUpper() ?? string.Empty)
                 && (SelectedOutcomeFilter.Equals(_allResultsFilter) || testMethodViewModel.Result.Outcome.ToString().Equals(_selectedOutcomeFilter));
         }
 
