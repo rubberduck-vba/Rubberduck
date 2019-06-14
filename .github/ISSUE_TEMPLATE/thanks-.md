@@ -1,10 +1,12 @@
 ---
 name: Thanks!
-about: Tell us how much this add-in changed your life as a VBA/VB6 developer
+about: Thank the devs
 title: ''
 labels: thanks
 assignees: ''
 
 ---
 
-We don't want your money - what we value the most, what gives us warm fuzzy feelings, is user feedback. Show your appreciation for what we're doing by telling us how Rubberduck features are helping you do your job better. Feel free to give us a star, if you haven't already!
+Our use of GitHub "issues" includes meta-discussions, feature ideas, bugs of course, ...it's also perfectly fine to make one just to drop a "thanks!" to the team, too! Got a story to tell? We want to hear it!
+
+Thank *you* for your support! Rubberduck exists *because* it's free, open-source software. [Here are the real heroes](https://github.com/rubberduck-vba/Rubberduck/stargazers), join them!
