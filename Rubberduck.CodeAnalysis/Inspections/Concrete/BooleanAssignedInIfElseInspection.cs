@@ -19,7 +19,7 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// A Boolean expression never needs to be compared to a Boolean literal in a conditional expression.
     /// </why>
-    /// <example>
+    /// <example hasResults="true">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Boolean)
     ///     If foo = True Then ' foo is known to already be a Boolean value.
@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example>
+    /// <example hasResults="false">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Boolean)
     ///     If foo Then

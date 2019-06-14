@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// Some annotations require arguments; if the argument isn't specified, the annotation is nothing more than an obscure comment.
     /// </why>
-    /// <example>
+    /// <example hasResults="true">
     /// <![CDATA[
     /// '@Folder
     /// '@ModuleDescription
@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections.Concrete
     /// ' ...
     /// ]]>
     /// </example>
-    /// <example>
+    /// <example hasResults="false">
     /// <![CDATA[
     /// '@Folder("MyProject.XYZ")
     /// '@ModuleDescription("This module does XYZ")

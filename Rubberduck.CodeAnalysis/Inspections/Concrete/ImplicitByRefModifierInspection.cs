@@ -21,14 +21,14 @@ namespace Rubberduck.Inspections.Concrete
     /// In modern VB (VB.NET), the implicit modifier is ByVal, as it is in most other programming languages.
     /// Making the ByRef modifiers explicit can help surface potentially unexpected language defaults.
     /// </why>
-    /// <example>
+    /// <example hasResults="true">
     /// <![CDATA[
     /// Public Sub DoSomething(foo As Long)
     ///     foo = 42
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example>
+    /// <example hasResults="false">
     /// <![CDATA[
     /// Public Sub DoSomething(ByRef foo As Long)
     ///     foo = 42

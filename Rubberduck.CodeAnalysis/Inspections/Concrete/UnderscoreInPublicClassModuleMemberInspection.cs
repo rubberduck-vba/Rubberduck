@@ -15,7 +15,7 @@ namespace Rubberduck.Inspections.Concrete
     /// The public interface of any class module can be implemented by any other class module; if the public interface 
     /// contains names with underscores, other classes cannot implement it - the code will not compile. Avoid underscores; prefer PascalCase names.
     /// </why>
-    /// <example>
+    /// <example hasResults="true">
     /// <![CDATA[
     /// '@Interface
     /// 
@@ -23,7 +23,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example>
+    /// <example hasResults="false">
     /// <![CDATA[
     /// '@Interface
     /// 

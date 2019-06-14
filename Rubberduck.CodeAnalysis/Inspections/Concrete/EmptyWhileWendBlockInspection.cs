@@ -19,7 +19,7 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// Dead code should be removed. A loop without a body is usually redundant.
     /// </why>
-    /// <example>
+    /// <example hasResults="true">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     While foo &lt; 100
@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example>
+    /// <example hasResults="false">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     While foo &lt; 100

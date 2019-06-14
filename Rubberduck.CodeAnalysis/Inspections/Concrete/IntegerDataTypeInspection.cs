@@ -19,7 +19,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Modern processors are optimized for processing 32-bit integers; internally, a 16-bit integer is still stored as a 32-bit value.
     /// Unless code is interacting with APIs that require a 16-bit integer, a Long (32-bit integer) should be used instead.
     /// </why>
-    /// <example>
+    /// <example hasResults="true">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim rowCount As Integer
@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example>
+    /// <example hasResults="false">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim rowCount As Long

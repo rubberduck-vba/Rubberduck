@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Write-only properties are suspicious: if the client code is able to set a property, it should be allowed to read that property as well. 
     /// Class design guidelines and best practices generally recommend against write-only properties.
     /// </why>
-    /// <example>
+    /// <example hasResults="true">
     /// <![CDATA[
     /// Private internalFoo As Long
     ///
@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Property
     /// ]]>
     /// </example>
-    /// <example>
+    /// <example hasResults="false">
     /// <![CDATA[
     /// Private internalFoo As Long
     ///

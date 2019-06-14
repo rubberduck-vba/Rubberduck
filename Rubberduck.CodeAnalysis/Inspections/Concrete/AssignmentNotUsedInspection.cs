@@ -18,7 +18,7 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// The first assignment is likely redundant, since it is being overwritten by the second.
     /// </why>
-    /// <example>
+    /// <example hasResults="true">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Long
@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example>
+    /// <example hasResults="false">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     Dim bar As Long

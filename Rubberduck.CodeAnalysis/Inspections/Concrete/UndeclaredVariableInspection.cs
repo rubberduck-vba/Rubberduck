@@ -16,7 +16,7 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// If this code compiles, then Option Explicit is omitted and compile-time validation is easily forfeited, even accidentally (e.g. typos). 
     /// </why>
-    /// <example>
+    /// <example hasResults="true">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     foo = 42 ' foo is not declared
@@ -24,7 +24,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example>
+    /// <example hasResults="false">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Long

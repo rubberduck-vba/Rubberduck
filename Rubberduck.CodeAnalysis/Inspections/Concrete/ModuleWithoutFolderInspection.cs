@@ -17,13 +17,13 @@ namespace Rubberduck.Inspections.Concrete
     /// Modules without a custom @Folder annotation will be grouped under the default folder in the Code Explorer toolwindow.
     /// By specifying a custom @Folder annotation, modules can be organized by functionality rather than simply listed.
     /// </why>
-    /// <example>
+    /// <example hasResults="true">
     /// <![CDATA[
     /// Option Explicit
     /// ' ...
     /// ]]>
     /// </example>
-    /// <example>
+    /// <example hasResults="false">
     /// <![CDATA[
     /// '@Folder("Foo")
     /// Option Explicit
