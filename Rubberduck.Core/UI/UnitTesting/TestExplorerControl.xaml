@@ -217,8 +217,6 @@
                 <Separator />
 
                 <Label Content="{Resx Key=TestExplorer_Filter, ResxName=Rubberduck.Resources.UnitTesting.TestExplorer}" />
-                <!--<TextBox MinWidth="50"
-                         Text="{Binding TestNameFilter, UpdateSourceTrigger=PropertyChanged}"/>-->
                 <controls:SearchBox Width="100"
                                     Text="{Binding TestNameFilter, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
 
