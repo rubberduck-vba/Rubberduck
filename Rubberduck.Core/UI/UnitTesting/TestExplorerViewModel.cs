@@ -184,6 +184,10 @@ namespace Rubberduck.UI.UnitTesting
             }
         }
 
+        /// <summary>
+        /// Filtering for displaying the correct tests.
+        /// Uses both <see cref="SelectedOutcomeFilter"/> and <see cref="TestNameFilter"/>
+        /// </summary>
         private bool FilterResults(object unitTest)
         {
             var testMethodViewModel = unitTest as TestMethodViewModel;
