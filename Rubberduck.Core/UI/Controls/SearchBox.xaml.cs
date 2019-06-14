@@ -54,7 +54,7 @@ namespace Rubberduck.UI.Controls
             }
         }
 
-        public ICommand ClearSearchCommand { get => new DelegateCommand(LogManager.GetCurrentClassLogger(), (arg) => Text = ""); }
+        public ICommand ClearSearchCommand => new DelegateCommand(LogManager.GetCurrentClassLogger(), (arg) => Text = "");
 
         public SearchBox()
         {
