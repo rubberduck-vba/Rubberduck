@@ -62,7 +62,9 @@ namespace Rubberduck.SettingsProvider
                 }
             }
 
-            using (var xml = XmlWriter.Create(FilePath, OutputXmlSettings))
+            EnsureDirectoryExists(path);
+
+            using (var xml = XmlWriter.Create(path, OutputXmlSettings))
             {
                 doc.WriteTo(xml);
             }
