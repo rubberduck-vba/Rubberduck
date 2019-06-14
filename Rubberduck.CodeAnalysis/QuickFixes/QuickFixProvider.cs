@@ -37,14 +37,19 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public IEnumerable<IQuickFix> QuickFixes(IInspectionResult result)
+        public IEnumerable<IQuickFix> QuickFixes(Type inspectionType)
         {
-            if (!_quickFixes.ContainsKey(result.Inspection.GetType()))
+            if (!_quickFixes.ContainsKey(inspectionType))
             {
                 return Enumerable.Empty<IQuickFix>();
             }
 
-            return _quickFixes[result.Inspection.GetType()].Where(fix =>
+            return _quickFixes[inspectionType];
+        }
+
+        public IEnumerable<IQuickFix> QuickFixes(IInspectionResult result)
+        {
+            return QuickFixes(result.Inspection.GetType()).Where(fix =>
                 {
                     string value;
                     try

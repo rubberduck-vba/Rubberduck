@@ -15,6 +15,33 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Locates 'For' loops where the 'Step' token is specified with the default increment value (1).
+    /// </summary>
+    /// <why>
+    /// Out of convention or preference, explicit 'Step 1' specifiers could be considered redundant; 
+    /// this inspection can ensure the consistency of the convention.
+    /// </why>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim i As Long
+    ///     For i = 1 To 100 Step 1 ' 1 being the implicit default, 'Step 1' could be considered redundant.
+    ///         ' ...
+    ///     Next
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim i As Long
+    ///     For i = 1 To 100 ' implicit: 'Step 1'
+    ///         ' ...
+    ///     Next
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class StepOneIsRedundantInspection : ParseTreeInspectionBase
     {
         public StepOneIsRedundantInspection(RubberduckParserState state) : base(state) { }

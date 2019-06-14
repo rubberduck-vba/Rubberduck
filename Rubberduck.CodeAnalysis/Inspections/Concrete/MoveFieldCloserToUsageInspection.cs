@@ -10,6 +10,35 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Locates module-level fields that can be moved to a smaller scope.
+    /// </summary>
+    /// <why>
+    /// Module-level variables that are only used in a single procedure can often be declared in that procedure's scope. 
+    /// Declaring variables closer to where they are used generally makes the code easier to follow.
+    /// </why>
+    /// <example>
+    /// <![CDATA[
+    /// Option Explicit
+    /// Private foo As Long
+    ///
+    /// Public Sub DoSomething()
+    ///     foo = 42
+    ///     Debug.Print foo ' module variable is only used in this scope
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// Option Explicit
+    ///
+    /// Public Sub DoSomething()
+    ///     Dim foo As Long ' local variable only used in this scope
+    ///     foo = 42
+    ///     Debug.Print foo
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class MoveFieldCloserToUsageInspection : InspectionBase
     {
         public MoveFieldCloserToUsageInspection(RubberduckParserState state)

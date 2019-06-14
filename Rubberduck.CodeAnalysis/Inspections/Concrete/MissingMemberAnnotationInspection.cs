@@ -13,6 +13,30 @@ using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Indicates that a hidden VB attribute is present for a member, but no Rubberduck annotation is documenting it.
+    /// </summary>
+    /// <why>
+    /// Rubberduck annotations mean to document the presence of hidden VB attributes; this inspection flags members that
+    /// do not have a Rubberduck annotation corresponding to the hidden VB attribute.
+    /// </why>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    /// Attribute VB_Description = "foo"
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// '@Description("foo")
+    /// Public Sub DoSomething()
+    /// Attribute VB_Description = "foo"
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class MissingMemberAnnotationInspection : InspectionBase
     {
         public MissingMemberAnnotationInspection(RubberduckParserState state) 

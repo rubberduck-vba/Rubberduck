@@ -244,6 +244,11 @@ namespace Rubberduck.Root
                     .Where(t => Attribute.IsDefined(t, typeof(ExperimentalAttribute))));
             }
 
+            container.Register(Component.For(typeof(IDefaultSettings<>))
+                .ImplementedBy(typeof(DefaultSettings<,>), new FixedGenericAppender(new[] { typeof(Properties.Settings) }))
+                .IsFallback()
+                .LifestyleTransient());
+
             var provider = new ExperimentalTypesProvider(experimentalTypes);
             container.Register(Component.For(typeof(IExperimentalTypesProvider))
                 .DependsOn(Dependency.OnComponent<ViewModelBase, GeneralSettingsViewModel>())
@@ -253,11 +258,11 @@ namespace Rubberduck.Root
             container.Register(Component.For<IComProjectSerializationProvider>()
                 .ImplementedBy<XmlComProjectSerializer>()
                 .LifestyleTransient());
-            container.Register(Component.For(typeof(IPersistenceService<>), typeof(IFilePersistenceService<>))
+            container.Register(Component.For(typeof(IPersistenceService<>))
                 .ImplementedBy(typeof(XmlPersistenceService<>))
                 .LifestyleSingleton());
 
-            container.Register(Component.For(typeof(IPersistenceService<ReferenceSettings>), typeof(IFilePersistenceService<>))
+            container.Register(Component.For(typeof(IPersistenceService<ReferenceSettings>))
                 .ImplementedBy(typeof(XmlContractPersistenceService<>))
                 .LifestyleSingleton());
 
@@ -923,6 +928,18 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<ITypeLibWrapperProvider>()
                 .ImplementedBy<TypeLibWrapperProvider>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IUserComProjectRepository, IUserComProjectProvider>()
+                .ImplementedBy<UserProjectRepository>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IDeclarationsFromComProjectLoader>()
+                .ImplementedBy<DeclarationsFromComProjectLoader>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IUserComProjectSynchronizer>()
+                .ImplementedBy<UserComProjectSynchronizer>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IProjectsToResolveFromComProjectSelector>()
+                .ImplementedBy<ProjectsToResolveFromComProjectsSelector>()
                 .LifestyleSingleton());
         }
 

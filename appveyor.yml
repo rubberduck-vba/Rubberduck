@@ -108,6 +108,8 @@ after_test:
 artifacts:
   - path: Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.*.exe
     name: Rubberduck
+  - path: Rubberduck.Deployment\bin\Rubberduck.CodeAnalysis.xml
+    name: InspectionDocs
 deploy:
   - provider: GitHub
     tag: RETAGMEWITHAMESSAGE
@@ -117,7 +119,7 @@ deploy:
     description: "Built with :heart: by AppVeyor CI on [$(appveyor_repo_branch)] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)"
     auth_token:
       secure: NVAZgFRSk566SP5QDge5gYRWCaLi4NJJPTNk3QengH15wL9iVldfrFOllbzKXExq
-    artifact: Rubberduck
+    artifact: Rubberduck, InspectionDocs
     on: 
       branch: master
   - provider: GitHub
@@ -128,7 +130,7 @@ deploy:
     description: "AppVeyor build on [$(appveyor_repo_branch)] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)"
     auth_token:
       secure: NVAZgFRSk566SP5QDge5gYRWCaLi4NJJPTNk3QengH15wL9iVldfrFOllbzKXExq
-    artifact: Rubberduck
+    artifact: Rubberduck, InspectionDocs
     on: 
       branch: next
 

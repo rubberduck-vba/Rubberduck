@@ -10,6 +10,30 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Warns about variables declared without an explicit data type.
+    /// </summary>
+    /// <why>
+    /// A variable declared without an explicit data type is implicitly a Variant/Empty until it is assigned.
+    /// </why>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim value ' implicit Variant
+    ///     value = 42
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim value As Long
+    ///     value = 42
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class VariableTypeNotDeclaredInspection : InspectionBase
     {
         public VariableTypeNotDeclaredInspection(RubberduckParserState state)

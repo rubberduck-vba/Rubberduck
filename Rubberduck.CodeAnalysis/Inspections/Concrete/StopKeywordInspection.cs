@@ -14,6 +14,30 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Locates 'Stop' instructions in user code.
+    /// </summary>
+    /// <why>
+    /// While a great debugging tool, 'Stop' instructions should not be reachable in production code; this inspection makes it easy to locate them all.
+    /// </why>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     ' ...
+    ///     Stop ' halts execution on-the-spot, bringing up the VBE; not very user-friendly!
+    ///     '....
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     ' ...
+    ///     'Stop ' the commented-out statement isn't executable. Could also be simply removed.
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class StopKeywordInspection : ParseTreeInspectionBase
     {
         public StopKeywordInspection(RubberduckParserState state)

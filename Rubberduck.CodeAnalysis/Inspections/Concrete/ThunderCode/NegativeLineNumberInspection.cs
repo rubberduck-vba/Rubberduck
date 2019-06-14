@@ -13,6 +13,14 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
 {
+    /// <summary>
+    /// A ThunderCode inspection that locates negative line numbers.
+    /// </summary>
+    /// <why>
+    /// This inpection is flagging code we dubbed "ThunderCode", 
+    /// code our friend Andrew Jackson would have written to confuse Rubberduck's parser and/or resolver. 
+    /// The VBE does allow rather strange and unbelievable things to happen.
+    /// </why>
     public class NegativeLineNumberInspection : ParseTreeInspectionBase
     {
         public NegativeLineNumberInspection(RubberduckParserState state) : base(state)
@@ -23,11 +31,7 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts.Select(c => new QualifiedContextInspectionResult(
-                this,
-                
-                InspectionResults.NegativeLineNumberInspection.
-                    ThunderCodeFormat(),
-                c));
+                this, InspectionResults.NegativeLineNumberInspection.ThunderCodeFormat(), c));
         }
 
         public override IInspectionListener Listener { get; }
@@ -38,10 +42,7 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
 
             public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
 
-            public void ClearContexts()
-            {
-                _contexts.Clear();
-            }
+            public void ClearContexts() => _contexts.Clear();
 
             public QualifiedModuleName CurrentModuleName { get; set; }
 

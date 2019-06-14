@@ -10,6 +10,7 @@ namespace Rubberduck.Settings
         public ToDoListConfigProvider(IPersistenceService<ToDoListSettings> persister)
             : base(persister, new DefaultSettings<ToDoListSettings, Properties.Settings>())
         {
+            // FIXME replace separated ToDoMarkers with ToDoListSettings
             defaultMarkers = new DefaultSettings<ToDoMarker, Properties.Settings>().Defaults;
         }
         

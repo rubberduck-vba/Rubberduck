@@ -13,6 +13,31 @@ using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Indicates that the value of a hidden VB attribute is out of sync with the corresponding Rubberduck annotation comment.
+    /// </summary>
+    /// <why>
+    /// Keeping Rubberduck annotation comments in sync with the hidden VB attribute values, surfaces these hidden attributes in the VBE code panes; 
+    /// Rubberduck can rewrite the attributes to match the corresponding annotation comment.
+    /// </why>
+    /// <example>
+    /// <![CDATA[
+    /// '@Description("foo")
+    /// Public Sub DoSomething()
+    /// Attribute VB_Description = "bar"
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// '@Description("foo")
+    /// Public Sub DoSomething()
+    /// Attribute VB_Description = "foo"
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
     [CannotAnnotate]
     public sealed class AttributeValueOutOfSyncInspection : InspectionBase
     {

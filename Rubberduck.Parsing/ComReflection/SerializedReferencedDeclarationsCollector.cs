@@ -8,7 +8,8 @@ namespace Rubberduck.Parsing.ComReflection
     {
         private readonly IComProjectDeserializer _deserializer;
 
-        public SerializedReferencedDeclarationsCollector(IComProjectDeserializer deserializer)
+        public SerializedReferencedDeclarationsCollector(IDeclarationsFromComProjectLoader declarationsFromComProjectLoader, IComProjectDeserializer deserializer)
+        :base(declarationsFromComProjectLoader)
         {
             _deserializer = deserializer;
         }

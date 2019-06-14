@@ -346,4 +346,7 @@
   <data name="TestExplorer_Filter" xml:space="preserve">
     <value>Test Name</value>
   </data>
+  <data name="TestExplorer_AllResults" xml:space="preserve">
+    <value>All</value>
+  </data>
 </root>

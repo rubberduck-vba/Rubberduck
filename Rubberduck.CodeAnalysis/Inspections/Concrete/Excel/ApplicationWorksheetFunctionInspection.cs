@@ -12,6 +12,47 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Warns about late-bound WorksheetFunction calls made against the extended interface of the Application object.
+    /// </summary>
+    /// <reference name="Excel" />
+    /// <why>
+    /// An early-bound, equivalent function likely exists in the object returned by the Application.WorksheetFunction property; 
+    /// late-bound member calls will fail at run-time with error 438 if there is a typo (a typo fails to compile for an early-bound member call). 
+    /// Late-bound worksheet functions will return a Variant/Error given invalid inputs; 
+    /// the equivalent early-bound member calls raise a more VB-idiomatic runtime error given the same invalid inputs. 
+    /// A Variant/Error value cannot be coerced into any other data type, be it for assignment or comparison. 
+    /// Trying to compare or assign a Variant/Error to another data type will throw error 13 "type mismatch" at run-time. 
+    /// Consider using the early-bound equivalent function instead.
+    /// </why>
+    /// <example>
+    /// <![CDATA[
+    /// Private Sub Example()
+    ///     Debug.Print Application.Sum(Array(1, 2, 3), 4, 5, "ABC") ' outputs "Error 2015"
+    /// 
+    ///     Dim foo As Long
+    ///     foo = Application.Sum(Array(1, 2, 3), 4, 5, "ABC") ' error 13 "type mismatch". Variant/Error can't be coerced to Long.
+    /// 
+    ///     If Application.Sum(Array(1, 2, 3), 4, 5, "ABC") > 15 Then
+    ///         ' won't run, error 13 "type mismatch" will be thrown when Variant/Error is compared to an Integer.
+    ///     End If
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// Private Sub Example()
+    ///     Debug.Print Application.WorksheetFunction.Sum(Array(1, 2, 3), 4, 5, "ABC") ' throws error 1004
+    /// 
+    ///     Dim foo As Long
+    ///     foo = Application.WorksheetFunction.Sum(Array(1, 2, 3), 4, 5, "ABC") ' throws error 1004
+    /// 
+    ///     If Application.WorksheetFunction.Sum(Array(1, 2, 3), 4, 5, "ABC") > 15 Then ' throws error 1004
+    ///         ' won't run, error 1004 is thrown when "ABC" is processed by WorksheetFunction.Sum, before it returns.
+    ///     End If
+    /// End Sub
+    /// ]]>
+    /// </example>
     [RequiredLibrary("Excel")]
     public class ApplicationWorksheetFunctionInspection : InspectionBase
     {

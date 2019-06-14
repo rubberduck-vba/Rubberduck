@@ -18,6 +18,7 @@ using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Utility;
 using DataFormats = System.Windows.DataFormats;
+using Rubberduck.Resources.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -67,16 +68,11 @@ namespace Rubberduck.UI.UnitTesting
 
             OnPropertyChanged(nameof(Tests));
             TestGrouping = TestExplorerGrouping.Outcome;
-            TestFiltering = null;
 
-            //SeverityFilters = new ObservableCollection<string>(
-            //    new[] { InspectionsUI.ResourceManager.GetString("CodeInspectionSeverity_All", CultureInfo.CurrentUICulture) }
-            //        .Concat(Enum.GetNames(typeof(CodeInspectionSeverity)).Select(s => InspectionsUI.ResourceManager.GetString("CodeInspectionSeverity_" + s, CultureInfo.CurrentUICulture))));
-            OutcomeFilters = new System.Collections.ObjectModel.ObservableCollection<object>(
-                new[] { "None" }
-                    .Concat(Enum.GetNames(typeof(TestOutcome)).Select(s => s.ToString())));
-
-            UnitTestProperties = new ListCollectionView(Model.Tests);
+            OutcomeFilters = new System.Collections.ObjectModel.ObservableCollection<string>(
+                new[] { _allResultsFilter }
+                    .Concat(Enum.GetNames(typeof(TestOutcome)).Select(s => s.ToString()))
+                    .OrderBy(s => s));
         }
 
         public TestExplorerModel Model { get; }
@@ -142,41 +138,6 @@ namespace Rubberduck.UI.UnitTesting
             }
         }
 
-        //public System.Collections.ObjectModel.ObservableCollection<System.Windows.Media.Imaging.BitmapImage> OutcomeFilters { get; }
-        public System.Collections.ObjectModel.ObservableCollection<object> OutcomeFilters { get; }
-
-        private TestOutcome? _filtering = null;
-
-        public TestOutcome? TestFiltering
-        {
-            get => _filtering;
-            set
-            {
-                if (value == _filtering)
-                {
-                    return;
-                }
-
-                _filtering = value;
-                Tests.Refresh();
-                OnPropertyChanged();
-            }
-        }
-
-        private string _testNameFilter = string.Empty;
-        public string TestNameFilter
-        {
-            get => _testNameFilter;
-            set
-            {
-                if (_testNameFilter != value)
-                {
-                    _testNameFilter = value;
-                    
-                }
-            }
-        }
-
         private bool _expanded;
         public bool ExpandedState
         {
@@ -188,8 +149,25 @@ namespace Rubberduck.UI.UnitTesting
             }
         }
 
-        private const string _noFilter = "None";
-        private string _selectedOutcomeFilter = _noFilter;
+        public System.Collections.ObjectModel.ObservableCollection<string> OutcomeFilters { get; }
+
+        private string _testNameFilter = string.Empty;
+        public string TestNameFilter
+        {
+            get => _testNameFilter;
+            set
+            {
+                if (_testNameFilter != value)
+                {
+                    _testNameFilter = value;
+                    OnPropertyChanged();
+                    Tests.Filter = item => FilterResults(item);
+                }
+            }
+        }
+
+        private static readonly string _allResultsFilter = TestExplorer.ResourceManager.GetString("TestExplorer_AllResults", CultureInfo.CurrentUICulture);
+        private string _selectedOutcomeFilter = _allResultsFilter;
         public string SelectedOutcomeFilter
         {
             get => _selectedOutcomeFilter;
@@ -199,32 +177,20 @@ namespace Rubberduck.UI.UnitTesting
                 {
                     _selectedOutcomeFilter = value.Replace(" ", string.Empty);
                     OnPropertyChanged();
-                    UnitTestProperties.Filter = item => FilterResults(item);
+                    Tests.Filter = item => FilterResults(item);
                 }
             }
         }
 
         private bool FilterResults(object unitTest)
         {
-            OnPropertyChanged(nameof(UnitTestProperties));
-            var unitTestProperties = unitTest as UnitTestProperties;
+            OnPropertyChanged(nameof(Tests));
 
-            return unitTestProperties.Name.ToUpper().Contains(_noFilter.ToUpper())
-                && unitTestProperties.TestOutcome.ToString().Equals(_noFilter);
-        }
+            var testMethodViewModel = unitTest as TestMethodViewModel;
+            var memberName = testMethodViewModel.QualifiedName.MemberName;
 
-        private ListCollectionView _unitTestProperties;
-        public ListCollectionView UnitTestProperties
-        {
-            get => _unitTestProperties;
-            set
-            {
-                if (_unitTestProperties != value)
-                {
-                    _unitTestProperties = value;
-                    OnPropertyChanged();
-                }
-            }
+            return memberName.ToUpper().Contains(TestNameFilter?.ToUpper() ?? string.Empty)
+                && (SelectedOutcomeFilter.Equals(_allResultsFilter) || testMethodViewModel.Result.Outcome.ToString().Equals(_selectedOutcomeFilter));
         }
 
         private void HandleTestCompletion(object sender, TestCompletedEventArgs e)

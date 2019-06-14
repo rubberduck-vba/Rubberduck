@@ -10,16 +10,19 @@ namespace Rubberduck.SettingsProvider
     internal class XmlPersistenceService<T> : XmlPersistenceServiceBase<T> 
         where T : class, IEquatable<T>, new()
     {
+        private const string DefaultConfigFile = "rubberduck.config";
+
         public XmlPersistenceService(IPersistencePathProvider pathProvider) : base(pathProvider) { }
 
-        public override T Load(T toDeserialize, string nonDefaultFilePath = null)
+        protected override string FilePath => Path.Combine(RootPath, DefaultConfigFile);
+
+        protected override T Read(string path)
         {
-            var filePath = string.IsNullOrWhiteSpace(nonDefaultFilePath) ? FilePath : nonDefaultFilePath;
-            var doc = GetConfigurationDoc(filePath);
+            var doc = GetConfigurationDoc(path);
             var node = GetNodeByName(doc, typeof(T).Name);
             if (node == null)
             {
-                return Cached;
+                return default;
             }
 
             using (var reader = node.CreateReader())
@@ -27,23 +30,21 @@ namespace Rubberduck.SettingsProvider
                 var deserializer = new XmlSerializer(typeof(T));
                 try
                 {
-                    Cached = (T)deserializer.Deserialize(reader);
-                    return Cached;
+                    return (T)deserializer.Deserialize(reader);
                 }
                 catch
                 {
-                    return FailedLoadReturnValue();
+                    return default;
                 }
             }
         }
 
-        [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")] //This is fine. StreamWriter disposes the MemoryStream, but calling twice is a NOP.
-        public override void Save(T toSerialize, string nonDefaultFilePath = null)
+        //This is fine. StreamWriter disposes the MemoryStream, but calling twice is a NOP.
+        [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")] 
+        protected override void Write(T toSerialize, string path)
         {
-            var filePath = string.IsNullOrWhiteSpace(nonDefaultFilePath) ? FilePath : nonDefaultFilePath;
-            var doc = GetConfigurationDoc(filePath);
+            var doc = GetConfigurationDoc(path);
             var node = GetNodeByName(doc, typeof(T).Name);
-
             using (var stream = new MemoryStream())
             using (var writer = new StreamWriter(stream))
             {
@@ -61,12 +62,11 @@ namespace Rubberduck.SettingsProvider
                 }
             }
 
-            EnsurePathExists();
+            EnsureDirectoryExists(path);
 
-            using (var xml = XmlWriter.Create(FilePath, OutputXmlSettings))
+            using (var xml = XmlWriter.Create(path, OutputXmlSettings))
             {
                 doc.WriteTo(xml);
-                Cached = toSerialize;
             }
         }
     }
