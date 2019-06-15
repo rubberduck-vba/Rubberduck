@@ -220,7 +220,7 @@
                 <controls:SearchBox Width="100"
                                     Text="{Binding TestNameFilter, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
 
-                    <Label Content="{Resx Key=TestExplorer_Outcome, ResxName=Rubberduck.Resources.UnitTesting.TestExplorer}" />
+                <Label Content="{Resx Key=TestExplorer_Outcome, ResxName=Rubberduck.Resources.UnitTesting.TestExplorer}" />
 
                 <ComboBox Width="100" 
                           ItemsSource="{Binding OutcomeFilters, UpdateSourceTrigger=PropertyChanged}"
