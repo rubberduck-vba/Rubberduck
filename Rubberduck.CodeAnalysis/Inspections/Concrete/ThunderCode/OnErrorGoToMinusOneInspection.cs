@@ -13,7 +13,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
 {
-    /// <summary>
+    /// <summary hidden="true">
     /// A ThunderCode inspection that locates instances of 'On Error GoTo -1' statements.
     /// </summary>
     /// <why>

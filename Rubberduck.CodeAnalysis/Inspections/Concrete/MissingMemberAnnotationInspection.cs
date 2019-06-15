@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Rubberduck annotations mean to document the presence of hidden VB attributes; this inspection flags members that
     /// do not have a Rubberduck annotation corresponding to the hidden VB attribute.
     /// </why>
-    /// <example>
+    /// <example hasResults="true">
     /// <![CDATA[
     /// Public Sub DoSomething()
     /// Attribute VB_Description = "foo"
@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example>
+    /// <example hasResults="false">
     /// <![CDATA[
     /// '@Description("foo")
     /// Public Sub DoSomething()

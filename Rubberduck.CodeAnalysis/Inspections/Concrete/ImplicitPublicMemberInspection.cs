@@ -16,14 +16,14 @@ namespace Rubberduck.Inspections.Concrete
     /// In modern VB (VB.NET), the implicit access modifier is Private, as it is in most other programming languages.
     /// Making the Public modifiers explicit can help surface potentially unexpected language defaults.
     /// </why>
-    /// <example>
+    /// <example hasResults="true">
     /// <![CDATA[
     /// Sub DoSomething()
     ///     ' ...
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example>
+    /// <example hasResults="false">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     ' ...

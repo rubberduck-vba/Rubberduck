@@ -22,7 +22,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Idiomatic VB code uses 'Function' procedures to return a single value. If the procedure isn't side-effecting, consider writing is as a
     /// 'Function' rather than a 'Sub' the returns a result through a 'ByRef' parameter.
     /// </why>
-    /// <example>
+    /// <example hasResults="true">
     /// <![CDATA[
     /// Option Explicit
     /// 
@@ -32,7 +32,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example>
+    /// <example hasResults="false">
     /// <![CDATA[
     /// Option Explicit
     /// Public Function DoSomething() As Long

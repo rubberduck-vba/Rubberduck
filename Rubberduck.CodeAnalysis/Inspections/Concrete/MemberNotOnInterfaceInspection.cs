@@ -18,14 +18,14 @@ namespace Rubberduck.Inspections.Concrete
     /// Extensible COM types can have members attached at run-time; VBA cannot bind these member calls at compile-time.
     /// If there is an early-bound alternative way to achieve the same result, it should be preferred.
     /// </why>
-    /// <example>
+    /// <example hasResults="true">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal adoConnection As ADODB.Connection)
     ///     adoConnection.SomeStoredProcedure 42
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example>
+    /// <example hasResults="false">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal adoConnection As ADODB.Connection)
     ///     Dim adoCommand As ADODB.Command

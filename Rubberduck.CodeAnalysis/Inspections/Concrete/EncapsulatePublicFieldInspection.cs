@@ -17,12 +17,12 @@ namespace Rubberduck.Inspections.Concrete
     /// Instance fields are the implementation details of a object's internal state; exposing them directly breaks encapsulation. 
     /// Often, an object only needs to expose a 'Get' procedure to expose an internal instance field.
     /// </why>
-    /// <example>
+    /// <example hasResults="true">
     /// <![CDATA[
     /// Public Foo As Long
     /// ]]>
     /// </example>
-    /// <example>
+    /// <example hasResults="false">
     /// <![CDATA[
     /// Private internalFoo As Long
     /// 

@@ -13,7 +13,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
 {
-    /// <summary>
+    /// <summary hidden="true">
     /// A ThunderCode inspection that locates certain specific instances of line continuations in places we'd never think to put them.
     /// </summary>
     /// <why>

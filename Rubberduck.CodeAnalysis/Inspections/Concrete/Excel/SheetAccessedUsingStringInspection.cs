@@ -23,10 +23,11 @@ namespace Rubberduck.Inspections.Concrete
     /// which cannot be altered by the user without accessing the VBE and altering the VBA project.
     /// </why>
     /// <reference name="Excel" />
+    /// <hostapp name="EXCEL.EXE" />
     /// <remarks>
-    /// Inspection only evaluates hard-coded string literals; string-valued expressions evaluating into a sheet name are ignored.
+    /// For performance reasons, the inspection only evaluates hard-coded string literals; string-valued expressions evaluating into a sheet name are ignored.
     /// </remarks>
-    /// <example>
+    /// <example hasResults="true">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim sheet As Worksheet
@@ -35,7 +36,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example>
+    /// <example hasResults="false">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Sheet1.Range("A1").Value = 42 ' TODO rename Sheet1 to meaningful name
