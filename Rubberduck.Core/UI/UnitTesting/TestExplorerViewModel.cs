@@ -69,7 +69,8 @@ namespace Rubberduck.UI.UnitTesting
             OnPropertyChanged(nameof(Tests));
             TestGrouping = TestExplorerGrouping.Outcome;
 
-            OutcomeFilters = new System.Collections.ObjectModel.ObservableCollection<string>(
+
+            OutcomeFilters = new System.Collections.ObjectModel.ObservableCollection<object>(
                 new[] { _allResultsFilter }
                     .Concat(Enum.GetNames(typeof(TestOutcome)).Select(s => s.ToString()))
                     .OrderBy(s => s));
@@ -138,18 +139,26 @@ namespace Rubberduck.UI.UnitTesting
             }
         }
 
-        private bool _expanded;
-        public bool ExpandedState
+        //public System.Collections.ObjectModel.ObservableCollection<System.Windows.Media.Imaging.BitmapImage> OutcomeFilters { get; }
+        public System.Collections.ObjectModel.ObservableCollection<object> OutcomeFilters { get; }
+
+        private TestOutcome? _filtering = null;
+
+        public TestOutcome? TestFiltering
         {
-            get => _expanded;
+            get => _filtering;
             set
             {
-                _expanded = value;
+                if (value == _filtering)
+                {
+                    return;
+                }
+
+                _filtering = value;
+                Tests.Refresh();
                 OnPropertyChanged();
             }
         }
-
-        public System.Collections.ObjectModel.ObservableCollection<string> OutcomeFilters { get; }
 
         private string _testNameFilter = string.Empty;
         public string TestNameFilter
@@ -164,6 +173,17 @@ namespace Rubberduck.UI.UnitTesting
                     Tests.Filter = FilterResults;
                     OnPropertyChanged(nameof(Tests));
                 }
+            }
+        }
+
+        private bool _expanded;
+        public bool ExpandedState
+        {
+            get => _expanded;
+            set
+            {
+                _expanded = value;
+                OnPropertyChanged();
             }
         }
 
@@ -195,6 +215,7 @@ namespace Rubberduck.UI.UnitTesting
 
             return memberName.ToUpper().Contains(TestNameFilter?.ToUpper() ?? string.Empty)
                 && (SelectedOutcomeFilter.Equals(_allResultsFilter) || testMethodViewModel.Result.Outcome.ToString().Equals(_selectedOutcomeFilter));
+
         }
 
         private void HandleTestCompletion(object sender, TestCompletedEventArgs e)
