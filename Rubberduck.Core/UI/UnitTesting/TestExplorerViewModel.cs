@@ -139,7 +139,6 @@ namespace Rubberduck.UI.UnitTesting
             }
         }
 
-        //public System.Collections.ObjectModel.ObservableCollection<System.Windows.Media.Imaging.BitmapImage> OutcomeFilters { get; }
         public System.Collections.ObjectModel.ObservableCollection<object> OutcomeFilters { get; }
 
         private TestOutcome? _filtering = null;
