@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
@@ -139,7 +140,7 @@ namespace Rubberduck.UI.UnitTesting
             }
         }
 
-        public System.Collections.ObjectModel.ObservableCollection<object> OutcomeFilters { get; }
+        public ObservableCollection<object> OutcomeFilters { get; }
 
         private TestOutcome? _filtering = null;
 
