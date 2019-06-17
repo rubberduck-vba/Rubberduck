@@ -288,4 +288,7 @@
   <data name="ApplyQuickFixFailedCaption" xml:space="preserve">
     <value>Quickfixausführung fehlgeschlagen</value>
   </data>
+  <data name="ReplaceWhileWendWithDoWhileLoopQuickFix" xml:space="preserve">
+    <value>'While...Wend' durch'Do While...Loop' ersetzen</value>
+  </data>
 </root>
