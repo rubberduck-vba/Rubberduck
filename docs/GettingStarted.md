@@ -86,7 +86,7 @@ End Sub
 (also accessible through *RightClick > Toggle > Rubberduck*)
 
 ---
-Some Helpful Shortcuts:  
+Some helpful shortcuts (these hotkeys are all configurable):
 
 | Shortcut | Function |
 | --- | --- |
