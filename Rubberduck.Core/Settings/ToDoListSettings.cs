@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Controls;
 using System.Xml.Serialization;
 using Rubberduck.UI;
 
@@ -11,7 +10,7 @@ namespace Rubberduck.Settings
     internal interface IToDoListSettings
     {
         ToDoMarker[] ToDoMarkers { get; set; }
-        ObservableCollection<GridViewColumnInfo> ColumnHeadersInformation { get; set; }
+        ObservableCollection<ToDoGridViewColumnInfo> ColumnHeadersInformation { get; set; }
     }
 
     [XmlType(AnonymousType = true)]
@@ -30,8 +29,8 @@ namespace Rubberduck.Settings
             }
         }
 
-        private ObservableCollection<GridViewColumnInfo> _columnHeadersInfo;
-        public ObservableCollection<GridViewColumnInfo> ColumnHeadersInformation
+        private ObservableCollection<ToDoGridViewColumnInfo> _columnHeadersInfo;
+        public ObservableCollection<ToDoGridViewColumnInfo> ColumnHeadersInformation
         {
             get => _columnHeadersInfo;
             set
@@ -51,7 +50,7 @@ namespace Rubberduck.Settings
         {
         }
 
-        public ToDoListSettings(IEnumerable<ToDoMarker> defaultMarkers, ObservableCollection<GridViewColumnInfo> columnHeaders)
+        public ToDoListSettings(IEnumerable<ToDoMarker> defaultMarkers, ObservableCollection<ToDoGridViewColumnInfo> columnHeaders)
         {
             _markers = defaultMarkers;
             ColumnHeadersInformation = columnHeaders;
@@ -62,58 +61,6 @@ namespace Rubberduck.Settings
             return other != null 
                 && ToDoMarkers.SequenceEqual(other.ToDoMarkers)
                 && ColumnHeadersInformation.Equals(other.ColumnHeadersInformation);
-        }
-    }
-
-    public class GridViewColumnInfo : ViewModelBase, IEquatable<GridViewColumnInfo>
-    {
-        private int _displayIndex;
-        public int DisplayIndex
-        {
-            get => _displayIndex;
-            set
-            {
-                if (value != _displayIndex)
-                {
-                    _displayIndex = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        [XmlElement(Type = typeof(DataGridLength))]
-        private DataGridLength _width;
-
-        public DataGridLength Width
-        {
-            get => _width;
-            set
-            {
-                if (value != _width)
-                {
-                    _width = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <Summary>
-        /// Default constructor required for XML serialization.
-        /// </Summary>
-        public GridViewColumnInfo()
-        {
-        }
-
-        public GridViewColumnInfo(int displayIndex, DataGridLength width)
-        {
-            DisplayIndex = displayIndex;
-            Width = width;
-        }
-
-        public bool Equals(GridViewColumnInfo other)
-        {
-            return DisplayIndex == other.DisplayIndex
-                && Width == other.Width;
         }
     }
 }

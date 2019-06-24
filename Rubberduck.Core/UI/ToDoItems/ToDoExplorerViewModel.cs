@@ -93,7 +93,7 @@ namespace Rubberduck.UI.ToDoItems
             _columnHeaders = _configService.Read().UserSettings.ToDoListSettings.ColumnHeadersInformation;
         }
 
-        private ObservableCollection<GridViewColumnInfo> _columnHeaders { get; }
+        private ObservableCollection<ToDoGridViewColumnInfo> _columnHeaders { get; }
         public void UpdateColumnHeaderInformation(ObservableCollection<DataGridColumn> columns)
         {
             _columnHeaders[0].DisplayIndex = columns[0].DisplayIndex;
