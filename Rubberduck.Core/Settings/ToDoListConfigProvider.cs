@@ -14,15 +14,9 @@ namespace Rubberduck.Settings
             : base(persister, new DefaultSettings<ToDoListSettings, Properties.Settings>())
         {
             _defaultMarkers = new DefaultSettings<ToDoMarker, Properties.Settings>().Defaults;
-            //_toDoExplorerColumns = new DefaultSettings<ObservableCollection<GridViewColumnInfo>, Properties.Settings>().Default;
-            //TODO: Clean up :barf:. Deserialization as the ^ `DefaultSettings<T,U>()Default` is null.
-            _toDoExplorerColumns = new ObservableCollection<ToDoGridViewColumnInfo>
-            {
-                new ToDoGridViewColumnInfo(0, new DataGridLength(1, DataGridLengthUnitType.Auto)),
-                new ToDoGridViewColumnInfo(1, new DataGridLength(75)),
-                new ToDoGridViewColumnInfo(2, new DataGridLength(75)),
-                new ToDoGridViewColumnInfo(3, new DataGridLength(75))
-            };
+
+            var gvciDefaults = new DefaultSettings<ToDoGridViewColumnInfo, Properties.Settings>().Defaults;
+            _toDoExplorerColumns = new ObservableCollection<ToDoGridViewColumnInfo>(gvciDefaults);
         }
         
         public override ToDoListSettings ReadDefaults()

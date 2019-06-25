@@ -319,28 +319,45 @@ namespace Rubberduck.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<ToDoExplorerColumns xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-  <DescriptionColumn>
-    <DisplayIndex>0</DisplayIndex>
-    <Width />
-  </DescriptionColumn>
-  <ProjectColumn>
-    <DisplayIndex>2</DisplayIndex>
-    <Width />
-  </ProjectColumn>
-  <ModuleColumn>
-    <DisplayIndex>1</DisplayIndex>
-    <Width />
-  </ModuleColumn>
-  <LineNumberColumn>
-    <DisplayIndex>3</DisplayIndex>
-    <Width />
-  </LineNumberColumn>
-</ToDoExplorerColumns>")]
-        public global::Rubberduck.Settings.GridViewColumnInfo ToDoExplorerColumnsDefault {
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<GridViewColumnInfo xmlns:xsi=\"http://ww" +
+            "w.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r" +
+            "\n  <DisplayIndex>0</DisplayIndex>\r\n  <Width />\r\n</GridViewColumnInfo>")]
+        public global::Rubberduck.Settings.ToDoGridViewColumnInfo ToDoGridViewColumnInfo_Description {
             get {
-                return ((global::Rubberduck.Settings.GridViewColumnInfo)(this["ToDoExplorerColumnsDefault"]));
+                return ((global::Rubberduck.Settings.ToDoGridViewColumnInfo)(this["ToDoGridViewColumnInfo_Description"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<GridViewColumnInfo xmlns:xsi=\"http://ww" +
+            "w.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r" +
+            "\n  <DisplayIndex>1</DisplayIndex>\r\n  <Width />\r\n</GridViewColumnInfo>")]
+        public global::Rubberduck.Settings.ToDoGridViewColumnInfo ToDoGridViewColumnInfo_Project {
+            get {
+                return ((global::Rubberduck.Settings.ToDoGridViewColumnInfo)(this["ToDoGridViewColumnInfo_Project"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<GridViewColumnInfo xmlns:xsi=\"http://ww" +
+            "w.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r" +
+            "\n  <DisplayIndex>2</DisplayIndex>\r\n  <Width />\r\n</GridViewColumnInfo>")]
+        public global::Rubberduck.Settings.ToDoGridViewColumnInfo ToDoGridViewColumnInfo_Module {
+            get {
+                return ((global::Rubberduck.Settings.ToDoGridViewColumnInfo)(this["ToDoGridViewColumnInfo_Module"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<GridViewColumnInfo xmlns:xsi=\"http://ww" +
+            "w.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r" +
+            "\n  <DisplayIndex>3</DisplayIndex>\r\n  <Width />\r\n</GridViewColumnInfo>")]
+        public global::Rubberduck.Settings.ToDoGridViewColumnInfo ToDoGridViewColumnInfo_LineNumber {
+            get {
+                return ((global::Rubberduck.Settings.ToDoGridViewColumnInfo)(this["ToDoGridViewColumnInfo_LineNumber"]));
             }
         }
     }
