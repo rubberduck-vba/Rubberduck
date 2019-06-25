@@ -319,9 +319,9 @@ namespace Rubberduck.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<GridViewColumnInfo xmlns:xsi=\"http://ww" +
-            "w.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r" +
-            "\n  <DisplayIndex>0</DisplayIndex>\r\n  <Width />\r\n</GridViewColumnInfo>")]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ToDoGridViewColumnInfo xmlns:xsi=\"http:" +
+            "//www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchem" +
+            "a\">\r\n  <DisplayIndex>0</DisplayIndex>\r\n  <Width />\r\n</ToDoGridViewColumnInfo>")]
         public global::Rubberduck.Settings.ToDoGridViewColumnInfo ToDoGridViewColumnInfo_Description {
             get {
                 return ((global::Rubberduck.Settings.ToDoGridViewColumnInfo)(this["ToDoGridViewColumnInfo_Description"]));
@@ -330,9 +330,9 @@ namespace Rubberduck.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<GridViewColumnInfo xmlns:xsi=\"http://ww" +
-            "w.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r" +
-            "\n  <DisplayIndex>1</DisplayIndex>\r\n  <Width />\r\n</GridViewColumnInfo>")]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ToDoGridViewColumnInfo xmlns:xsi=\"http:" +
+            "//www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchem" +
+            "a\">\r\n  <DisplayIndex>1</DisplayIndex>\r\n  <Width />\r\n</ToDoGridViewColumnInfo>")]
         public global::Rubberduck.Settings.ToDoGridViewColumnInfo ToDoGridViewColumnInfo_Project {
             get {
                 return ((global::Rubberduck.Settings.ToDoGridViewColumnInfo)(this["ToDoGridViewColumnInfo_Project"]));
@@ -341,9 +341,9 @@ namespace Rubberduck.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<GridViewColumnInfo xmlns:xsi=\"http://ww" +
-            "w.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r" +
-            "\n  <DisplayIndex>2</DisplayIndex>\r\n  <Width />\r\n</GridViewColumnInfo>")]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ToDoGridViewColumnInfo xmlns:xsi=\"http:" +
+            "//www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchem" +
+            "a\">\r\n  <DisplayIndex>2</DisplayIndex>\r\n  <Width />\r\n</ToDoGridViewColumnInfo>")]
         public global::Rubberduck.Settings.ToDoGridViewColumnInfo ToDoGridViewColumnInfo_Module {
             get {
                 return ((global::Rubberduck.Settings.ToDoGridViewColumnInfo)(this["ToDoGridViewColumnInfo_Module"]));
@@ -352,9 +352,9 @@ namespace Rubberduck.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<GridViewColumnInfo xmlns:xsi=\"http://ww" +
-            "w.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r" +
-            "\n  <DisplayIndex>3</DisplayIndex>\r\n  <Width />\r\n</GridViewColumnInfo>")]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ToDoGridViewColumnInfo xmlns:xsi=\"http:" +
+            "//www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchem" +
+            "a\">\r\n  <DisplayIndex>3</DisplayIndex>\r\n  <Width />\r\n</ToDoGridViewColumnInfo>")]
         public global::Rubberduck.Settings.ToDoGridViewColumnInfo ToDoGridViewColumnInfo_LineNumber {
             get {
                 return ((global::Rubberduck.Settings.ToDoGridViewColumnInfo)(this["ToDoGridViewColumnInfo_LineNumber"]));
