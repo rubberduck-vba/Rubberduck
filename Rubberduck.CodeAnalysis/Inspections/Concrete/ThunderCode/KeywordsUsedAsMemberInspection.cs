@@ -10,7 +10,7 @@ using Rubberduck.Resources.Inspections;
 
 namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
 {
-    /// <summary>
+    /// <summary hidden="true">
     /// A ThunderCode inspection that locates instances of various keywords and reserved identifiers used as Type or Enum member names.
     /// </summary>
     /// <why>

@@ -17,11 +17,11 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// Declarations that are not used anywhere should probably be removed.
     /// </why>
-    /// <warning>
+    /// <remarks>
     /// Not all unused parameters can/should be removed: ignore any inspection results for 
     /// event handler procedures and interface members that Rubberduck isn't recognizing as such.
-    /// </warning>
-    /// <example>
+    /// </remarks>
+    /// <example hasResults="true">
     /// <![CDATA[
     /// Option Explicit
     /// 

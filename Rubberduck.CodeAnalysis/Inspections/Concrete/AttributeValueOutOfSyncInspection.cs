@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Keeping Rubberduck annotation comments in sync with the hidden VB attribute values, surfaces these hidden attributes in the VBE code panes; 
     /// Rubberduck can rewrite the attributes to match the corresponding annotation comment.
     /// </why>
-    /// <example>
+    /// <example hasResults="true">
     /// <![CDATA[
     /// '@Description("foo")
     /// Public Sub DoSomething()
@@ -29,7 +29,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example>
+    /// <example hasResults="false">
     /// <![CDATA[
     /// '@Description("foo")
     /// Public Sub DoSomething()

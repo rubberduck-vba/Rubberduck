@@ -19,14 +19,14 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// Code should do what it says, and say what it does. Implicit default member calls generally do the opposite of that.
     /// </why>
-    /// <example>
+    /// <example hasResults="true">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     ActiveSheet.Range("A1") = 42 ' implicit assignment to 'Range.[_default]'.
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example>
+    /// <example hasResults="false">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     ActiveSheet.Range("A1").Value = 42

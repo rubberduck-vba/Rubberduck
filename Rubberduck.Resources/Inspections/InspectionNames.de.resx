@@ -157,16 +157,16 @@
     <value>Funktion oder Eigenschaft ohne Rückgabewert</value>
   </data>
   <data name="ObsoleteCallStatementInspection" xml:space="preserve">
-    <value>Nutzung des 'Call'-Aufrufes</value>
+    <value>Verwendung der veralteten 'Call'-Anweisung</value>
   </data>
   <data name="ObsoleteCommentSyntaxInspection" xml:space="preserve">
-    <value>Nutzung der 'REM'-Anweisung</value>
+    <value>Verwendung der veralteten 'REM'-Anweisung</value>
   </data>
   <data name="ObsoleteGlobalInspection" xml:space="preserve">
-    <value>Nutzung der 'Global'-Zugriffsdeklaration</value>
+    <value>Verwendung der veralteten 'Global'-Zugriffsdeklaration</value>
   </data>
   <data name="ObsoleteLetStatementInspection" xml:space="preserve">
-    <value>Nutzung des 'Let'-Ausdrucks</value>
+    <value>Verwendung der veralteten 'Let'-Anweisung</value>
   </data>
   <data name="ObsoleteTypeHintInspection" xml:space="preserve">
     <value>Verwendungshinweis für Typ</value>
@@ -256,7 +256,7 @@
     <value>Redundante 'ByRef'-Markierung</value>
   </data>
   <data name="ImplicitByRefModifierInspection" xml:space="preserve">
-    <value>Implizite Referenzübergabe</value>
+    <value>Impliziter ByRef Parameter</value>
   </data>
   <data name="IllegalAnnotationInspection" xml:space="preserve">
     <value>Illegale Annotation</value>
@@ -362,5 +362,8 @@
   </data>
   <data name="MissingModuleAnnotationInspection" xml:space="preserve">
     <value>Fehlende Modulannotation</value>
+  </data>
+  <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
+    <value>Verwendung der veralteten 'While...Wend'-Anweisung</value>
   </data>
 </root>

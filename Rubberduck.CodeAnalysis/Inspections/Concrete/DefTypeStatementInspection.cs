@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// These declarative statements make the first letter of identifiers determine the data type.
     /// </why>
-    /// <example>
+    /// <example hasResults="true">
     /// <![CDATA[
     /// DefBool B
     /// DefDbl D

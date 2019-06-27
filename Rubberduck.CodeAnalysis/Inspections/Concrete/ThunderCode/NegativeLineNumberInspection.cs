@@ -13,7 +13,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
 {
-    /// <summary>
+    /// <summary hidden="true">
     /// A ThunderCode inspection that locates negative line numbers.
     /// </summary>
     /// <why>
