@@ -127,6 +127,12 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
+                <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddExistingFileText}"
+                          Command="{Binding ImportCommand}"
+                          CommandParameter="{Binding SelectedItem, Mode=OneWay}">
+
+                </MenuItem>
+                <Separator />
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddTestModuleText}"
                                   Command="{Binding AddTestModuleCommand}"
                                   CommandParameter="{Binding SelectedItem, Mode=OneWay}">
@@ -483,10 +489,6 @@
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator />
-                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Import}"
-                      Command="{Binding ImportCommand}"
-                      CommandParameter="{Binding SelectedItem, Mode=OneWay}"
-                      Visibility="{Binding VBAVisibility}" />
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Export}"
                       Command="{Binding ExportCommand}"
                       CommandParameter="{Binding SelectedItem, Mode=OneWay}"
