@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:Rubberduck.UI.UnitTesting"
              xmlns:vm="clr-namespace:Rubberduck.UI.UnitTesting.ViewModels"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
-             xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
              Language="{UICulture}"

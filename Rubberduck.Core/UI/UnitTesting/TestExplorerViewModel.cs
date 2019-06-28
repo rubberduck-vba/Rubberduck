@@ -15,11 +15,8 @@ using Rubberduck.UI.Settings;
 using Rubberduck.UI.UnitTesting.Commands;
 using Rubberduck.UI.UnitTesting.ViewModels;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Utility;
 using DataFormats = System.Windows.DataFormats;
-using Rubberduck.Resources.UnitTesting;
-using Rubberduck.UI.Converters;
 
 namespace Rubberduck.UI.UnitTesting
 {
