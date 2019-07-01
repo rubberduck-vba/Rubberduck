@@ -70,21 +70,10 @@ Uninstallable=ShouldCreateUninstaller()
 CreateUninstallRegKey=ShouldCreateUninstaller()
 
 ; should be at least a 55 x 55 bitmap
-WizardSmallImageFile={#GraphicsDir}Rubberduck.Duck.Small.55x55.bmp, \
-                     {#GraphicsDir}Rubberduck.Duck.Small.64x68.bmp, \
-                     {#GraphicsDir}Rubberduck.Duck.Small.83x80.bmp, \
-                     {#GraphicsDir}Rubberduck.Duck.Small.92x97.bmp, \
-                     {#GraphicsDir}Rubberduck.Duck.Small.110x106.bmp, \
-                     {#GraphicsDir}Rubberduck.Duck.Small.119x123.bmp, \
-                     {#GraphicsDir}Rubberduck.Duck.Small.138x140.bmp
+WizardSmallImageFile={#GraphicsDir}Duck.Small\*.bmp
 
 ; should be at least a 164 x 314 bitmap
-WizardImageFile={#GraphicsDir}Rubberduck.Duck.164x314.bmp, \
-                {#GraphicsDir}Rubberduck.Duck.192x386.bmp, \
-                {#GraphicsDir}Rubberduck.Duck.246x459.bmp, \
-                {#GraphicsDir}Rubberduck.Duck.273x556.bmp, \
-                {#GraphicsDir}Rubberduck.Duck.328x604.bmp, \
-                {#GraphicsDir}Rubberduck.Duck.355x700.bmp
+WizardImageFile={#GraphicsDir}Duck\*.bmp
 
 [Languages]
 Name: "English"; MessagesFile: "compiler:Default.isl"
