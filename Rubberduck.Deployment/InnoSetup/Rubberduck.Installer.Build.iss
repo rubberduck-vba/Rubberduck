@@ -1,11 +1,11 @@
 ﻿;The file must be encoded in UTF-8 BOM
 
-#pragma include __INCLUDE__ + ";" + SourcePath + "\Includes\"
+#pragma include __INCLUDE__ + ";" + SourcePath + "Includes\"
 
 #define protected
 #define BuildDir ExtractFileDir(ExtractFileDir(SourcePath)) + "\bin\"
-#define IncludesDir SourcePath + "\Includes\"
-#define GraphicsDir SourcePath + "\Graphics\"
+#define IncludesDir SourcePath + "Includes\"
+#define GraphicsDir SourcePath + "Graphics\"
 #define AppName "Rubberduck"
 #define AddinDLL "Rubberduck.dll"
 #define Tlb32bit "Rubberduck.x32.tlb"
@@ -16,7 +16,7 @@
 #define AppVersion GetFileVersion(BuildDir + "Rubberduck.dll")
 #define AppPublisher "Rubberduck"
 #define AppURL "http://rubberduckvba.com"
-#define License SourcePath + "\Includes\License.rtf"
+#define License SourcePath + "Includes\License.rtf"
 #define OutputDirectory SourcePath + "Installers\"
 #define AddinProgId "Rubberduck.Extension"
 #define AddinCLSID "8D052AD8-BBD2-4C59-8DEC-F697CA1F8A66"
