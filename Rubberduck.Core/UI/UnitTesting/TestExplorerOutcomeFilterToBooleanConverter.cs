@@ -4,6 +4,10 @@ using System.Windows.Data;
 
 namespace Rubberduck.UI.UnitTesting
 {
+    /// <summary>
+    /// Binds an individual flag of <see cref="TestExplorerOutcomeFilter"/> to a boolean. Note: This is a stateful converter, so each bound control
+    /// requires its own converter instance.
+    /// </summary>
     class TestExplorerOutcomeFilterToBooleanConverter : IValueConverter
     {
         private TestExplorerOutcomeFilter _cachedOutcomeFilter;
