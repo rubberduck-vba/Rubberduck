@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Rubberduck.AddRemoveReferences;
 
@@ -8,7 +7,7 @@ namespace Rubberduck.UI.AddRemoveReferences
     /// <summary>
     /// Interaction logic for AddRemoveReferencesWindow.xaml
     /// </summary>
-    public partial class AddRemoveReferencesWindow : UserControl
+    public partial class AddRemoveReferencesWindow
     {
         public AddRemoveReferencesWindow()
         {
