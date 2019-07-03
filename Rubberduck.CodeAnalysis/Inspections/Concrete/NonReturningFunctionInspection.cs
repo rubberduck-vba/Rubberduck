@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// Both 'Function' and 'Property Get' accessors should always return something. Omitting the return assignment is likely a bug.
     /// </why>
-    /// <example>
+    /// <example hasResults="true">
     /// <![CDATA[
     /// Public Function GetFoo() As Long
     ///     Dim foo As Long
@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Function
     /// ]]>
     /// </example>
-    /// <example>
+    /// <example hasResults="false">
     /// <![CDATA[
     /// Public Function GetFoo() As Long
     ///     Dim foo As Long

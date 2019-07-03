@@ -21,14 +21,14 @@ namespace Rubberduck.Inspections.Concrete
     /// Private module variables should be declared using the 'Private' keyword. While 'Dim' is also legal, it should preferably be 
     /// restricted to declarations of procedure-scoped local variables, for consistency, since public module variables are declared with the 'Public' keyword.
     /// </why>
-    /// <example>
+    /// <example hasResults="true">
     /// <![CDATA[
     /// Option Explicit
     /// Dim foo As Long
     /// ' ...
     /// ]]>
     /// </example>
-    /// <example>
+    /// <example hasResults="false">
     /// <![CDATA[
     /// Option Explicit
     /// Private foo As Long

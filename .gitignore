@@ -185,7 +185,7 @@ CodeGraphData/
 /Rubberduck.Deployment/Rubberduck.idl
 
 # Generated Artifacts
-/Rubberduck.CodeAnalysis/Rubberduck.CodeAnalysis.xml
+Rubberduck.CodeAnalysis.xml
 
 #Gradle 
 /.gradle/
