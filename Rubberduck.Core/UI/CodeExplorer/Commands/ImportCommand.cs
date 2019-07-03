@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Resources;
+using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
@@ -20,11 +21,20 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private readonly IVBE _vbe;
         private readonly IFileSystemBrowserFactory _dialogFactory;
+        private readonly IList<string> _importableExtensions;
+        private readonly string _filterExtensions;
 
         public ImportCommand(IVBE vbe, IFileSystemBrowserFactory dialogFactory)
         {
             _vbe = vbe;
             _dialogFactory = dialogFactory;
+
+            _importableExtensions =
+                vbe.Kind == VBEKind.Hosted
+                    ? new List<string> {"bas", "cls", "frm", "doccls"} // VBA 
+                    : new List<string> {"bas", "cls", "frm", "ctl", "pag", "dob"}; // VB6
+
+            _filterExtensions = string.Join("; ", _importableExtensions.Select(ext => $"*.{ext}"));
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
@@ -43,8 +53,6 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return activeProject != null;
             }
         }
-
-        private static readonly List<string> ImportableExtensions = new List<string> { "bas", "cls", "frm" };
 
         protected override void OnExecute(object parameter)
         {
@@ -79,7 +87,16 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             using (var dialog = _dialogFactory.CreateOpenFileDialog())
             {
-                ConfigureOpenDialog(dialog);
+                dialog.AddExtension = true;
+                dialog.AutoUpgradeEnabled = true;
+                dialog.CheckFileExists = true;
+                dialog.CheckPathExists = true;
+                dialog.Multiselect = true;
+                dialog.ShowHelp = false;
+                dialog.Title = RubberduckUI.ImportCommand_OpenDialog_Title;
+                dialog.Filter = 
+                    $"{RubberduckUI.ImportCommand_OpenDialog_Filter_VBFiles} ({_filterExtensions})|{_filterExtensions}|" +
+                    $"{RubberduckUI.ImportCommand_OpenDialog_Filter_AllFiles}, (*.*)|*.*";
 
                 if (project == null || dialog.ShowDialog() != DialogResult.OK)
                 {
@@ -91,7 +108,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 }
 
                 var fileExists = dialog.FileNames.Select(s => s.Split('.').Last());
-                if (fileExists.Any(fileExt => !ImportableExtensions.Contains(fileExt)))
+                if (fileExists.Any(fileExt => !_importableExtensions.Contains(fileExt)))
                 {
                     if (usingFreshProjectWrapper)
                     {
@@ -113,21 +130,6 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             {
                 project.Dispose();
             }
-        }
-
-        private static void ConfigureOpenDialog(IOpenFileDialog dialog)
-        {
-            dialog.AddExtension = true;
-            dialog.AutoUpgradeEnabled = true;
-            dialog.CheckFileExists = true;
-            dialog.CheckPathExists = true;
-            dialog.Multiselect = true;
-            dialog.ShowHelp = false;   // we don't want 1996's file picker.
-            //TODO - Filter needs descriptions.
-            dialog.Filter = string.Concat(RubberduckUI.ImportCommand_OpenDialog_Filter_VBFiles,
-                @" (*.cls, *.bas, *.frm, *.doccls)|*.cls; *.bas; *.frm; *.doccls|",
-                RubberduckUI.ImportCommand_OpenDialog_Filter_AllFiles, @" (*.*)|*.*");
-            dialog.Title = RubberduckUI.ImportCommand_OpenDialog_Title;
         }
     }
 }
