@@ -16,10 +16,8 @@ using Rubberduck.UI.Settings;
 using Rubberduck.UI.UnitTesting.Commands;
 using Rubberduck.UI.UnitTesting.ViewModels;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Utility;
 using DataFormats = System.Windows.DataFormats;
-using Rubberduck.Resources.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -29,6 +27,18 @@ namespace Rubberduck.UI.UnitTesting
         Outcome,
         Category,
         Location
+    }
+
+    [Flags]
+    public enum TestExplorerOutcomeFilter
+    {
+        None = 0,
+        Unknown = 1,
+        SpectacularFail = 1 << 1,
+        Fail = 1 << 2,
+        Inconclusive = 1 << 3,
+        Succeeded = 1 << 4,
+        All = Unknown | SpectacularFail | Fail | Inconclusive | Succeeded
     }
 
     internal sealed class TestExplorerViewModel : ViewModelBase, INavigateSelection, IDisposable
@@ -70,11 +80,7 @@ namespace Rubberduck.UI.UnitTesting
             OnPropertyChanged(nameof(Tests));
             TestGrouping = TestExplorerGrouping.Outcome;
 
-
-            OutcomeFilters = new System.Collections.ObjectModel.ObservableCollection<object>(
-                new[] { _allResultsFilter }
-                    .Concat(Enum.GetNames(typeof(TestOutcome)).Select(s => s.ToString()))
-                    .OrderBy(s => s));
+            OutcomeFilter = TestExplorerOutcomeFilter.All;
         }
 
         public TestExplorerModel Model { get; }
@@ -140,23 +146,21 @@ namespace Rubberduck.UI.UnitTesting
             }
         }
 
-        public ObservableCollection<object> OutcomeFilters { get; }
-
-        private TestOutcome? _filtering = null;
-
-        public TestOutcome? TestFiltering
+        private TestExplorerOutcomeFilter _outcomeFilter = TestExplorerOutcomeFilter.All;
+        public TestExplorerOutcomeFilter OutcomeFilter
         {
-            get => _filtering;
+            get => _outcomeFilter;
             set
             {
-                if (value == _filtering)
+                if (value == _outcomeFilter)
                 {
                     return;
                 }
 
-                _filtering = value;
-                Tests.Refresh();
+                _outcomeFilter = value;
                 OnPropertyChanged();
+
+                Tests.Filter = FilterResults;
             }
         }
 
@@ -186,36 +190,20 @@ namespace Rubberduck.UI.UnitTesting
                 OnPropertyChanged();
             }
         }
-
-        private static readonly string _allResultsFilter = TestExplorer.ResourceManager.GetString("TestExplorer_AllResults", CultureInfo.CurrentUICulture);
-        private string _selectedOutcomeFilter = _allResultsFilter;
-        public string SelectedOutcomeFilter
-        {
-            get => _selectedOutcomeFilter;
-            set
-            {
-                if (_selectedOutcomeFilter != value)
-                {
-                    _selectedOutcomeFilter = value.Replace(" ", string.Empty);
-                    OnPropertyChanged();
-                    Tests.Filter = FilterResults;
-                    OnPropertyChanged(nameof(Tests));
-                }
-            }
-        }
-
         /// <summary>
         /// Filtering for displaying the correct tests.
-        /// Uses both <see cref="SelectedOutcomeFilter"/> and <see cref="TestNameFilter"/>
+        /// Uses both <see cref="OutcomeFilter"/> and <see cref="TestNameFilter"/>
         /// </summary>
         private bool FilterResults(object unitTest)
         {
             var testMethodViewModel = unitTest as TestMethodViewModel;
-            var memberName = testMethodViewModel.QualifiedName.MemberName;
 
-            return memberName.ToUpper().Contains(TestNameFilter?.ToUpper() ?? string.Empty)
-                && (SelectedOutcomeFilter.Equals(_allResultsFilter) || testMethodViewModel.Result.Outcome.ToString().Equals(_selectedOutcomeFilter));
+            var passesNameFilter = testMethodViewModel.QualifiedName.MemberName.ToUpper().Contains(TestNameFilter?.ToUpper() ?? string.Empty);
 
+            Enum.TryParse(testMethodViewModel.Result.Outcome.ToString(), out TestExplorerOutcomeFilter convertedOutcome);
+            var passesOutcomeFilter = (OutcomeFilter & convertedOutcome) == convertedOutcome;
+
+            return passesNameFilter && passesOutcomeFilter;
         }
 
         private void HandleTestCompletion(object sender, TestCompletedEventArgs e)
