@@ -1,6 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using EasyHook;
-using NLog;
 using Rubberduck.Runtime;
 using Rubberduck.UI.Command.ComCommands;
 using Rubberduck.VBEditor.Events;
@@ -22,22 +20,14 @@ namespace Rubberduck.AutoComplete
         private readonly IVBE _vbe;
         private readonly IBeepInterceptor _beepInterceptor;
 
-        public ShowQuickInfoCommand(
-            IVBE vbe, 
-            IVbeEvents vbeEvents, 
-            IBeepInterceptor beepInterceptor) 
-            : base(LogManager.GetCurrentClassLogger(), vbeEvents)
+        public ShowQuickInfoCommand(IVBE vbe, IVbeEvents vbeEvents, IBeepInterceptor beepInterceptor) : base(vbeEvents)
         {
             _vbe = vbe;
             _beepInterceptor = beepInterceptor;
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        public void Execute()
-        {
-            OnExecute(null);
-        }
-
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
             try
             {
@@ -49,12 +39,17 @@ namespace Rubberduck.AutoComplete
             }
         }
 
+        public void Execute()
+        {
+            OnExecute(null);
+        }
+
         protected override void OnExecute(object parameter)
         {
-            const int showIntelliSenseId = 2531;
+            const int showQuickInfoId = 2531;
             using (var commandBars = _vbe.CommandBars)
             {
-                using (var command = commandBars.FindControl(showIntelliSenseId))
+                using (var command = commandBars.FindControl(showQuickInfoId))
                 {
                     // Ensures that the queued beep message (if any) is suppressed
                     _beepInterceptor.SuppressBeep(100);

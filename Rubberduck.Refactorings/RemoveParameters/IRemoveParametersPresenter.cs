@@ -1,8 +1,5 @@
 ﻿namespace Rubberduck.Refactorings.RemoveParameters
 {
-    public interface IRemoveParametersPresenter
-    {
-        RemoveParametersModel Show();
-    }
-
+    public interface IRemoveParametersPresenter : IRefactoringPresenter<RemoveParametersModel>
+    {}
 }

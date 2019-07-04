@@ -12,6 +12,7 @@ using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Extensions;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -49,7 +50,7 @@ namespace Rubberduck.Inspections.Concrete
                 .AddRange(parameters.Where(parameter => CanBeChangedToBePassedByVal(parameter, eventScopeDeclarations, interfaceScopeDeclarations)));
 
             return parametersThatCanBeChangedToBePassedByVal
-                .Where(parameter => !IsIgnoringInspectionResultFor(parameter, AnnotationName))
+                .Where(parameter => !parameter.IsIgnoringInspectionResultFor(AnnotationName))
                 .Select(parameter => new DeclarationInspectionResult(this, string.Format(InspectionResults.ParameterCanBeByValInspection, parameter.IdentifierName), parameter));
         }
 
@@ -70,7 +71,7 @@ namespace Rubberduck.Inspections.Concrete
                 && (parameter.IsByRef || parameter.IsImplicitByRef)
                 && !IsParameterOfDeclaredLibraryFunction(parameter)
                 && (parameter.AsTypeDeclaration == null 
-                    || (parameter.AsTypeDeclaration.DeclarationType != DeclarationType.ClassModule 
+                    || (!parameter.AsTypeDeclaration.DeclarationType.HasFlag(DeclarationType.ClassModule)
                         && parameter.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType 
                         && parameter.AsTypeDeclaration.DeclarationType != DeclarationType.Enumeration))
                 && !parameter.References.Any(reference => reference.IsAssignment)

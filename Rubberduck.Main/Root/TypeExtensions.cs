@@ -14,10 +14,10 @@ namespace Rubberduck.Root
 
         internal static bool NotExperimental(this Type type, GeneralSettings initialSettings)
         {
-            var attribute = type.CustomAttributes.FirstOrDefault(f => f.AttributeType == typeof(ExperimentalAttribute));
-            var ctorArg = attribute?.ConstructorArguments.Any() == true ? (string)attribute.ConstructorArguments.First().Value : string.Empty;
+            var attribute = type.GetCustomAttributes(typeof(ExperimentalAttribute), false).FirstOrDefault();
+            var resourceKey = (attribute as ExperimentalAttribute)?.Resource ?? string.Empty;
 
-            return attribute == null || initialSettings.EnableExperimentalFeatures.Any(a => a.Key == ctorArg && a.IsEnabled);
+            return attribute == null || initialSettings.EnableExperimentalFeatures.Any(a => a.Key == resourceKey && a.IsEnabled);
         }
 
         internal static bool NotDisabled(this Type type)

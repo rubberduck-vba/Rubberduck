@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
     public class AddPropertyPageCommand : AddComponentCommandBase
     {
-        public AddPropertyPageCommand(IVBE vbe, IVbeEvents vbeEvents) : base(vbe, vbeEvents) { }
+        public AddPropertyPageCommand(
+            ICodeExplorerAddComponentService addComponentService, IVbeEvents vbeEvents) 
+            : base(addComponentService, vbeEvents) { }
 
         public override IEnumerable<ProjectType> AllowableProjectTypes => ProjectTypes.VB6;
 

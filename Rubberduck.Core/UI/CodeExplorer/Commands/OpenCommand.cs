@@ -21,19 +21,20 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         public OpenCommand(INavigateCommand openCommand, IVbeEvents vbeEvents) : base(vbeEvents)
         {
             _openCommand = openCommand;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
         public sealed override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
-            return base.EvaluateCanExecute(parameter) && 
-                   ((CodeExplorerItemViewModel)parameter).QualifiedSelection.HasValue;
+            return ((CodeExplorerItemViewModel)parameter).QualifiedSelection.HasValue;
         }
 
         protected override void OnExecute(object parameter)
         {
-            if (!EvaluateCanExecute(parameter))
+            if (!CanExecute(parameter))
             {
                 return;
             }

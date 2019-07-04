@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public sealed class ClassModuleDeclaration : ModuleDeclaration
+    public class ClassModuleDeclaration : ModuleDeclaration
     {
         private readonly List<string> _supertypeNames;
         private readonly HashSet<Declaration> _supertypes;
@@ -28,12 +28,13 @@ namespace Rubberduck.Parsing.Symbols
                   Attributes attributes,
                   bool isWithEvents = false,
                   bool hasDefaultInstanceVariable = false,
-                  bool isControl = false)
+                  bool isControl = false,
+                  bool isDocument = false)
             : base(
                   qualifiedName,
                   projectDeclaration,
                   name,
-                  DeclarationType.ClassModule,
+                  isDocument ? DeclarationType.Document : DeclarationType.ClassModule,
                   isUserDefined,
                   annotations,
                   attributes,

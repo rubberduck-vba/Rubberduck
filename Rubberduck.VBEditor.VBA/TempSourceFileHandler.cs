@@ -21,17 +21,18 @@ namespace Rubberduck.VBEditor.VBA
                 : null;         
         }
 
-        public void ImportAndCleanUp(IVBComponent component, string fileName)
+        public IVBComponent ImportAndCleanUp(IVBComponent component, string fileName)
         {
             if (fileName == null || !File.Exists(fileName))
             {
-                return;
+                return component;
             }
 
+            IVBComponent newComponent = null;
             using (var components = component.Collection)
             {
                 components.Remove(component);
-                components.ImportSourceFile(fileName);
+                newComponent = components.ImportSourceFile(fileName);
             }
 
             try
@@ -42,6 +43,8 @@ namespace Rubberduck.VBEditor.VBA
             {
                 // Meh.
             }
+
+            return newComponent;
         }
 
         public string Read(IVBComponent component)

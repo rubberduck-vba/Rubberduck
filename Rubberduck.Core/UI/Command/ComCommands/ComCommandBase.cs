@@ -1,31 +1,22 @@
-﻿using System;
-using NLog;
-using Rubberduck.VBEditor.Events;
+﻿using Rubberduck.VBEditor.Events;
 
 namespace Rubberduck.UI.Command.ComCommands
 {
     public abstract class ComCommandBase : CommandBase
     {
         private readonly IVbeEvents _vbeEvents;
-
-        protected ComCommandBase(ILogger logger, IVbeEvents vbeEvents) : base(logger)
+        
+        protected ComCommandBase(IVbeEvents vbeEvents) 
         {
             _vbeEvents = vbeEvents;
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
         
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
-            return !_vbeEvents.Terminated && base.EvaluateCanExecute(parameter);
+            return !_vbeEvents.Terminated;
         }
 
-        public new void Execute(object parameter)
-        {
-            if (_vbeEvents.Terminated)
-            {
-                return;
-            }
-
-            base.Execute(parameter);
-        }
+        protected sealed override bool RequireReEvaluationOnExecute => true;
     }
 }

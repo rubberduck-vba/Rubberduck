@@ -589,11 +589,11 @@ Do you want to proceed with this rename?</value>
   <data name="MoveCloserToUsage_Caption" xml:space="preserve">
     <value>Rubberduck - Move Closer To Usage</value>
   </data>
-  <data name="MoveCloserToUsage_TargetHasNoReferences" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetHasNoReferences" xml:space="preserve">
     <value>'{0}' is not used anywhere.</value>
     <comment>{0}: Variable Name</comment>
   </data>
-  <data name="MoveCloserToUsage_TargetIsUsedInMultipleMethods" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods" xml:space="preserve">
     <value>'{0}' has references in multiple methods.</value>
     <comment>{0}: Variable Name</comment>
   </data>
@@ -613,7 +613,7 @@ Do you want to proceed with this rename?</value>
   <data name="ImplementInterface_InvalidSelectionMessage" xml:space="preserve">
     <value>The current selection is not valid.</value>
   </data>
-  <data name="MoveCloserToUsage_InvalidSelection" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
     <value>Invalid Selection.</value>
   </data>
   <data name="ExtractInterface_Caption" xml:space="preserve">
@@ -1076,12 +1076,6 @@ Would you like to import them to Rubberduck?</value>
   <data name="Preview" xml:space="preserve">
     <value>Preview</value>
   </data>
-  <data name="RefactorRename_TargetNotDefinedError" xml:space="preserve">
-    <value>Unable to detect selected rename target</value>
-  </data>
-  <data name="RefactorRename_TargetNotUserDefinedError" xml:space="preserve">
-    <value>Identifier {0} cannot be renamed.</value>
-  </data>
   <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
     <value>Could not rename {0}.</value>
   </data>
@@ -1502,25 +1496,25 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="PerformanceWarningCaption" xml:space="preserve">
     <value>Performance Warning</value>
   </data>
-  <data name="MoveCloserToUsage_TargetIsNotUserDefined" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsNotUserDefined" xml:space="preserve">
     <value>'{0}' is built-in.</value>
     <comment>{0}: Variable Name</comment>
   </data>
-  <data name="MoveCloserToUsage_TargetIsInDifferentProject" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsInDifferentProject" xml:space="preserve">
     <value>'{0}' is not defined in the same project it is used.</value>
     <comment>{0}: Variable Name</comment>
   </data>
-  <data name="MoveCloserToUsage_TargetIsInOtherNonStandardModule" xml:space="preserve">
-    <value>'{0}' is defined neither in the component component it is used not in a standard module. </value>
+  <data name="MoveCloserToUsageFailure_TargetIsInOtherNonStandardModule" xml:space="preserve">
+    <value>'{0}' is defined neither in the component component it is used nor in a standard module. </value>
     <comment>{0}: Variable Name</comment>
   </data>
-  <data name="MoveCloserToUsage_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
-    <value>'{0}' is a non-private module variable outside a standard module.</value>
+  <data name="MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
+    <value>'{0}' is a public member of of a class, form or document.</value>
     <comment>{0}: Variable Name</comment>
   </data>
-  <data name="MoveCloserToUsage_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
-    <value>The method using '{0}' already has another declaration of the same name in scope.</value>
-    <comment>{0}: Variable Name</comment>
+  <data name="MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
+    <value>The method using '{0}' already has the declaration '{1}'' of the same name in scope.</value>
+    <comment>{0}: Variable Name; {1}: name of conflicting declaration</comment>
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
     <value>Filter</value>
@@ -1551,5 +1545,53 @@ NOTE: Restart is required for the setting to take effect.</value>
   </data>
   <data name="References_BrowseButtonText" xml:space="preserve">
     <value>Browse...</value>
+  </data>
+  <data name="RefactoringFailure_BaseMessage" xml:space="preserve">
+    <value>Refactoring failed.</value>
+    
+  </data>
+  <data name="RefactoringFailure_NoActiveSelection" xml:space="preserve">
+    <value>There is no active selection.</value>
+  </data>
+  <data name="RefactoringFailure_NoTargetDeclarationForSelection" xml:space="preserve">
+    <value>No viable target selected.</value>
+  </data>
+  <data name="RefactoringFailure_TargetNull" xml:space="preserve">
+    <value>Target declaration is null.</value>
+  </data>
+  <data name="RenameFailure_TargetModuleWithoutCodeModule" xml:space="preserve">
+    <value>No code module found for the target module '{0}'.</value>
+    <comment>{0}: name of module</comment>
+  </data>
+  <data name="RenameFailure_TargetContriolNotFound" xml:space="preserve">
+    <value>Target control '{0}' not found,</value>
+    <comment>{0}: name of control</comment>
+  </data>
+  <data name="RenameFailure_StandardEventHandler" xml:space="preserve">
+    <value>Target '{0}' is a standard event handler, which cannot be renamed.</value>
+    <comment>{0}: name of target</comment>
+  </data>
+  <data name="RefactoringFailure_TargetNotUserDefined" xml:space="preserve">
+    <value>The target is not user-defined.</value>
+    <comment>{0}: name of target</comment>
+  </data>
+  <data name="RefactoringFailure_InvalidDeclarationType" xml:space="preserve">
+    <value>Declaration type of target '{0}' is '{1}' instead of the expected '{2}'.</value>
+    <comment>{0}: name of target; {1}: actual declaration type; {2}: expected declaration type</comment>
+  </data>
+  <data name="ImplementInterfaceFailed_NoImplementsStatementSelected" xml:space="preserve">
+    <value>No implements selected.</value>
+  </data>
+  <data name="IntroduceFieldFailed_TargetIsAlreadyAField" xml:space="preserve">
+    <value>The target '{0}'is already a field.</value>
+    <comment>{0}: name of target</comment>
+  </data>
+  <data name="IntroduceParameterFailed_TargetNotContainedInMethod" xml:space="preserve">
+    <value>The target '{0}'is not contained in a method.</value>
+    <comment>{0}: name of target</comment>
+  </data>
+  <data name="RefactoringFailure_InvalidDeclarationType_multipleValid" xml:space="preserve">
+    <value>Declaration type of target '{0}' is '{1}' instead of one of the expected '{2}'.</value>
+    <comment>{0}: name of target; {1}: actual declaration type; {2}: expected declaration types</comment>
   </data>
 </root>

@@ -32,9 +32,11 @@ namespace Rubberduck.UI.Command.ComCommands
         private readonly RubberduckParserState _state;
         private readonly GeneralSettings _settings;
 
-        public ReparseCommand(IVBE vbe, IConfigProvider<GeneralSettings> settingsProvider, RubberduckParserState state,
-            IVBETypeLibsAPI typeLibApi, IVbeSettings vbeSettings, IMessageBox messageBox, IVbeEvents vbeEvents) : base(
-            LogManager.GetCurrentClassLogger(), vbeEvents)
+        public ReparseCommand(
+            IVBE vbe, IConfigProvider<GeneralSettings> settingsProvider, 
+            RubberduckParserState state, IVBETypeLibsAPI typeLibApi, IVbeSettings vbeSettings, 
+            IMessageBox messageBox, IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _vbe = vbe;
             _vbeSettings = vbeSettings;
@@ -42,9 +44,11 @@ namespace Rubberduck.UI.Command.ComCommands
             _state = state;
             _settings = settingsProvider.Create();
             _messageBox = messageBox;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
             return _state.Status == ParserState.Pending
                    || _state.Status == ParserState.Ready
@@ -58,7 +62,7 @@ namespace Rubberduck.UI.Command.ComCommands
             // WPF binds to EvaluateCanExecute asychronously, which means that in some instances the bound refresh control will
             // enable itself based on a "stale" ParserState. There's no easy way to test for race conditions inside WPF, so we
             // need to make this test again...
-            if (!EvaluateCanExecute(parameter))
+            if (!CanExecute(parameter))
             {
                 return;
             }

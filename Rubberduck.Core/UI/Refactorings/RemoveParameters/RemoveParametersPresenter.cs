@@ -1,7 +1,7 @@
 ﻿using Rubberduck.Interaction;
+using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Resources;
 using Rubberduck.Refactorings.RemoveParameters;
-using Rubberduck.Refactorings;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
@@ -24,6 +24,12 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
                 return null;
             }
 
+            if (Model.IsInterfaceMemberRefactoring
+                && !UserConfirmsInterfaceTarget(Model))
+            {
+                throw new RefactoringAbortedException();
+            }
+
             switch (Model.Parameters.Count)
             {
                 case 0:
@@ -34,9 +40,20 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
                     Model.RemoveParameters = Model.Parameters;
                     return Model;
                 default:
-                    base.Show();
-                    return DialogResult != RefactoringDialogResult.Execute ? null : Model;
+                    return base.Show();
             }
+        }
+
+        private bool UserConfirmsInterfaceTarget(RemoveParametersModel model)
+        {
+            var message = string.Format(RubberduckUI.Refactoring_TargetIsInterfaceMemberImplementation,
+                model.OriginalTarget.IdentifierName, Model.TargetDeclaration.ComponentName, model.TargetDeclaration.IdentifierName);
+            return UserConfirmsNewTarget(message);
+        }
+
+        private bool UserConfirmsNewTarget(string message)
+        {
+            return _messageBox.ConfirmYesNo(message, RubberduckUI.RemoveParamsDialog_TitleText);
         }
     }
 }

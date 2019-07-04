@@ -29,9 +29,9 @@ namespace RubberduckTests.IoCContainer
             var beepInterceptor = new Mock<IBeepInterceptor>();
             var initialSettings = new GeneralSettings
             {
-                EnableExperimentalFeatures = new List<ExperimentalFeatures>
+                EnableExperimentalFeatures = new List<ExperimentalFeature>
                 {
-                    new ExperimentalFeatures()
+                    new ExperimentalFeature()
                 }
             };
 
@@ -57,7 +57,7 @@ namespace RubberduckTests.IoCContainer
             var vbeNativeApi = new Mock<IVbeNativeApi>();
             var beepInterceptor = new Mock<IBeepInterceptor>();
 
-            var initialSettings = new GeneralSettings {EnableExperimentalFeatures = new List<ExperimentalFeatures>()};
+            var initialSettings = new GeneralSettings {EnableExperimentalFeatures = new List<ExperimentalFeature>()};
 
             using (var container =
                 new WindsorContainer().Install(new RubberduckIoCInstaller(ide, addin, initialSettings, vbeNativeApi.Object, beepInterceptor.Object)))

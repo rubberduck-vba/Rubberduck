@@ -589,11 +589,11 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="MoveCloserToUsage_Caption" xml:space="preserve">
     <value>Rubberduck - Acercar al uso</value>
   </data>
-  <data name="MoveCloserToUsage_TargetHasNoReferences" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetHasNoReferences" xml:space="preserve">
     <value>'{0}' no se usa en ninguna parte.</value>
     <comment>{0}: Nombre de la variable</comment>
   </data>
-  <data name="MoveCloserToUsage_TargetIsUsedInMultipleMethods" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods" xml:space="preserve">
     <value>'{0}' tiene referencias en múltiples métodos.</value>
     <comment>{0}: Nombre de la variable</comment>
   </data>
@@ -613,7 +613,7 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="ImplementInterface_InvalidSelectionMessage" xml:space="preserve">
     <value>La selección actual no es válida.</value>
   </data>
-  <data name="MoveCloserToUsage_InvalidSelection" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
     <value>Selección invalida.</value>
   </data>
   <data name="ExtractInterface_Caption" xml:space="preserve">
@@ -659,7 +659,7 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
     <value>Habilitada</value>
   </data>
   <data name="GeneralSettings_HotkeyKey1" xml:space="preserve">
-    <value>Key1</value>
+    <value>Tecla1</value>
   </data>
   <data name="IndenterSettings_AlignCommentsWithCode" xml:space="preserve">
     <value>Alinear comentarios con código</value>
@@ -818,7 +818,7 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
     <value>Ctrl</value>
   </data>
   <data name="GeneralSettings_HotkeyKey2" xml:space="preserve">
-    <value>Key2</value>
+    <value>Tecla2</value>
   </data>
   <data name="GeneralSettings_HotkeyShift" xml:space="preserve">
     <value>Shift</value>
@@ -1075,12 +1075,6 @@ End Sub</value>
   </data>
   <data name="Preview" xml:space="preserve">
     <value>Avance</value>
-  </data>
-  <data name="RefactorRename_TargetNotDefinedError" xml:space="preserve">
-    <value>No se puede detectar el objetivo de cambio de nombre seleccionado</value>
-  </data>
-  <data name="RefactorRename_TargetNotUserDefinedError" xml:space="preserve">
-    <value>El identificador {0} no puede ser renombrado.</value>
   </data>
   <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
     <value>No se pudo cambiar el nombre de {0}.</value>
@@ -1408,19 +1402,19 @@ NOTA: Es necesario reiniciar para que la configuración tenga efecto.</value>
   <data name="PerformanceWarningCaption" xml:space="preserve">
     <value>Advertencia de rendimiento</value>
   </data>
-  <data name="MoveCloserToUsage_TargetIsNotUserDefined" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsNotUserDefined" xml:space="preserve">
     <value>'{0}' está incorporado.</value>
   </data>
-  <data name="MoveCloserToUsage_TargetIsInDifferentProject" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsInDifferentProject" xml:space="preserve">
     <value>'{0}' no está definido en el mismo proyecto que se usa.</value>
   </data>
-  <data name="MoveCloserToUsage_TargetIsInOtherNonStandardModule" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsInOtherNonStandardModule" xml:space="preserve">
     <value>'{0}' no está definido ni en el componente que se usa, no en un módulo estándar.</value>
   </data>
-  <data name="MoveCloserToUsage_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
     <value>'{0}' es una variable de módulo no privado fuera de un módulo estándar.</value>
   </data>
-  <data name="MoveCloserToUsage_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
     <value>En el método que usa '{0}', el nombre de esta variable ya hace referencia a otra declaración.</value>
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
@@ -1440,5 +1434,8 @@ NOTA: Es necesario reiniciar para que la configuración tenga efecto.</value>
   </data>
   <data name="Language_ES" xml:space="preserve">
     <value>Español</value>
+  </data>
+  <data name="References_BrowseButtonText" xml:space="preserve">
+    <value>Navegando...</value>
   </data>
 </root>

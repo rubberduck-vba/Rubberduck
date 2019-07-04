@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using NLog;
+using System.Runtime.InteropServices;
 using Rubberduck.UI.CodeMetrics;
 using Rubberduck.VBEditor.Events;
 
@@ -11,7 +10,7 @@ namespace Rubberduck.UI.Command.ComCommands
         private readonly CodeMetricsDockablePresenter _presenter;
 
         public CodeMetricsCommand(CodeMetricsDockablePresenter presenter, IVbeEvents vbeEvents)
-            : base(LogManager.GetCurrentClassLogger(), vbeEvents)
+            : base(vbeEvents)
         {
             _presenter = presenter;
         }

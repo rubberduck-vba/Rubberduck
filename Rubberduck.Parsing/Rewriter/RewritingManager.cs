@@ -6,8 +6,8 @@ namespace Rubberduck.Parsing.Rewriter
 {
     public class RewritingManager : IRewritingManager
     {
-        private readonly HashSet<IRewriteSession> _activeCodePaneSessions = new HashSet<IRewriteSession>();
-        private readonly HashSet<IRewriteSession> _activeAttributesSessions = new HashSet<IRewriteSession>();
+        private readonly HashSet<IExecutableRewriteSession> _activeCodePaneSessions = new HashSet<IExecutableRewriteSession>();
+        private readonly HashSet<IExecutableRewriteSession> _activeAttributesSessions = new HashSet<IExecutableRewriteSession>();
         private readonly IMemberAttributeRecovererWithSettableRewritingManager _memberAttributeRecoverer;
 
         private readonly IRewriteSessionFactory _sessionFactory;
@@ -22,7 +22,7 @@ namespace Rubberduck.Parsing.Rewriter
         }
 
 
-        public IRewriteSession CheckOutCodePaneSession()
+        public IExecutableRewriteSession CheckOutCodePaneSession()
         {
             var newSession = _sessionFactory.CodePaneSession(TryAllowExclusiveRewrite);
             lock (_invalidationLockObject)
@@ -33,7 +33,7 @@ namespace Rubberduck.Parsing.Rewriter
             return newSession;
         }
 
-        public IRewriteSession CheckOutAttributesSession()
+        public IExecutableRewriteSession CheckOutAttributesSession()
         {
             var newSession = _sessionFactory.AttributesSession(TryAllowExclusiveRewrite);
             lock (_invalidationLockObject)
@@ -71,14 +71,19 @@ namespace Rubberduck.Parsing.Rewriter
 
         private bool IsCurrentlyActive(IRewriteSession rewriteSession)
         {
-            switch (rewriteSession.TargetCodeKind)
+            if (!(rewriteSession is IExecutableRewriteSession executableRewriteSession))
+            {
+                throw new NotSupportedException(nameof(rewriteSession));
+            }
+
+            switch (executableRewriteSession.TargetCodeKind)
             {
                 case CodeKind.CodePaneCode:
-                    return _activeCodePaneSessions.Contains(rewriteSession);
+                    return _activeCodePaneSessions.Contains(executableRewriteSession);
                 case CodeKind.AttributesCode:
-                    return _activeAttributesSessions.Contains(rewriteSession);
+                    return _activeAttributesSessions.Contains(executableRewriteSession);
                 default:
-                    throw new NotSupportedException(nameof(rewriteSession));
+                    throw new NotSupportedException(nameof(executableRewriteSession));
             }
         }
 

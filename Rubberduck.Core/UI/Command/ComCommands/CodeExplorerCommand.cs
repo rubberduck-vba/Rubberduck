@@ -1,5 +1,4 @@
 using System.Runtime.InteropServices;
-using NLog;
 using Rubberduck.UI.CodeExplorer;
 using Rubberduck.VBEditor.Events;
 
@@ -14,7 +13,7 @@ namespace Rubberduck.UI.Command.ComCommands
         private readonly CodeExplorerDockablePresenter _presenter;
 
         public CodeExplorerCommand(CodeExplorerDockablePresenter presenter, IVbeEvents vbeEvents)
-            : base(LogManager.GetCurrentClassLogger(), vbeEvents)
+            : base(vbeEvents)
         {
             _presenter = presenter;
         }

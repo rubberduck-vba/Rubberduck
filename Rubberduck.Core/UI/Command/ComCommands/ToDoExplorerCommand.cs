@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using NLog;
 using Rubberduck.UI.ToDoItems;
 using Rubberduck.VBEditor.Events;
 
@@ -14,7 +13,7 @@ namespace Rubberduck.UI.Command.ComCommands
         private readonly ToDoExplorerDockablePresenter _presenter;
 
         public ToDoExplorerCommand(ToDoExplorerDockablePresenter presenter, IVbeEvents vbeEvents)
-            : base(LogManager.GetCurrentClassLogger(), vbeEvents)
+            : base(vbeEvents)
         {
             _presenter = presenter;
         }

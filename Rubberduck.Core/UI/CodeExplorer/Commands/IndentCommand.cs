@@ -30,13 +30,15 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _state = state;
             _indenter = indenter;
             _navigateCommand = navigateCommand;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
         public sealed override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
-            if (!base.EvaluateCanExecute(parameter) || _state.Status != ParserState.Ready)
+            if (_state.Status != ParserState.Ready)
             {
                 return false;
             }
@@ -53,7 +55,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                         .Select(s => s.Declaration)
                         .Any(d => d.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent));
                 case CodeExplorerComponentViewModel model:
-                    return model.Declaration.Annotations.Any(a => a.AnnotationType != AnnotationType.NoIndent);
+                    return model.Declaration.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent);
                 case CodeExplorerMemberViewModel member:
                     return member.QualifiedSelection.HasValue; 
                 default:
@@ -63,7 +65,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override void OnExecute(object parameter)
         {
-            if (!base.EvaluateCanExecute(parameter) || 
+            if (!CanExecute(parameter) || 
                 !(parameter is CodeExplorerItemViewModel node) ||
                 node.Declaration == null)
             {

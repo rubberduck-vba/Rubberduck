@@ -275,8 +275,9 @@ End Sub
             {
                 var addTestModuleCommand = ArrangeAddTestModuleCommand(vbe, state);
                 var addWithStubsCommand = ArrangeAddTestModuleWithStubsCommand(vbe, addTestModuleCommand);
-
-                addWithStubsCommand.Execute(null);
+                List<Declaration> declarations = null;
+                var model = new CodeExplorerComponentViewModel(null, null, ref declarations, vbe.Object);
+                addWithStubsCommand.Execute(model);
 
                 var expectedModule = $"{TestModuleBaseName}{added}";
                 var generated = state.DeclarationFinder.AllUserDeclarations.SingleOrDefault(test => test.IdentifierName.Equals(expectedModule));

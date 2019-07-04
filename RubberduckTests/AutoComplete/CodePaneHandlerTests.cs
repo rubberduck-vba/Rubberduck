@@ -134,7 +134,7 @@ ExecuteStoredProcedure (""AddAppointmentCountForAClinic"", False,dbconfig.SQLCon
             module.Setup(m => m.CodePane).Returns(pane.Object);
             module.Setup(m => m.GetLines(original.SnippetPosition)).Returns(prettified.Code);
 
-            var sut = new CodePaneSourceCodeHandler(new ProjectsRepository(vbe.Object));
+            var sut = new CodePaneHandler(new ProjectsRepository(vbe.Object));
             return sut;
         }
     }

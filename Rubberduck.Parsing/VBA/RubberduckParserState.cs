@@ -313,10 +313,10 @@ namespace Rubberduck.Parsing.VBA
             foreach (var declaration in AllUserDeclarations)
             {
                 if (declaration.ProjectId == e.ProjectId &&
-                    declaration.DeclarationType == DeclarationType.ClassModule &&
+                    declaration is ClassModuleDeclaration classModule &&
                     declaration.IdentifierName == e.OldName)
                 {
-                    foreach (var superType in ((ClassModuleDeclaration)declaration).Supertypes)
+                    foreach (var superType in classModule.Supertypes)
                     {
                         if (superType.IdentifierName == "Worksheet")
                         {
@@ -396,8 +396,21 @@ namespace Rubberduck.Parsing.VBA
             var handler = StateChanged;
             if (handler != null && !token.IsCancellationRequested)
             {
-                var args = new ParserStateEventArgs(state, oldStatus, token);
-                handler.Invoke(requestor, args);
+                try
+                {
+                    var args = new ParserStateEventArgs(state, oldStatus, token);
+                    handler.Invoke(requestor, args);
+                }
+                catch (OperationCanceledException cancellation)
+                {
+                    throw;
+                }
+                catch (Exception e)
+                {
+                    // Error state, because this implies consumers are not exception-safe!
+                    // this behaviour could leave us in a state where some consumers have correctly updated and some have not
+                    Logger.Error(e, "An exception occurred when notifying consumers of updated parser state.");
+                }
             }
         }
 

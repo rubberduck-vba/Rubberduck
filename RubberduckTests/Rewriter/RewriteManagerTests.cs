@@ -345,29 +345,29 @@ namespace RubberduckTests.Rewriter
 
     public class MockRewriteSessionFactory : IRewriteSessionFactory
     {
-        private readonly List<Mock<IRewriteSession>> _requestedCodePaneSessions = new List<Mock<IRewriteSession>>();
-        private readonly List<Mock<IRewriteSession>> _requestedAttributesSessions = new List<Mock<IRewriteSession>>();
+        private readonly List<Mock<IExecutableRewriteSession>> _requestedCodePaneSessions = new List<Mock<IExecutableRewriteSession>>();
+        private readonly List<Mock<IExecutableRewriteSession>> _requestedAttributesSessions = new List<Mock<IExecutableRewriteSession>>();
 
-        public IEnumerable<Mock<IRewriteSession>> RequestedCodePaneSessions()
+        public IEnumerable<Mock<IExecutableRewriteSession>> RequestedCodePaneSessions()
         {
             return _requestedCodePaneSessions;
         }
 
-        public IEnumerable<Mock<IRewriteSession>> RequestedAttributesSessions()
+        public IEnumerable<Mock<IExecutableRewriteSession>> RequestedAttributesSessions()
         {
             return _requestedAttributesSessions;
         }
 
-        public IRewriteSession CodePaneSession(Func<IRewriteSession, bool> rewritingAllowed)
+        public IExecutableRewriteSession CodePaneSession(Func<IRewriteSession, bool> rewritingAllowed)
         {
             var mockSession = MockSession(rewritingAllowed, CodeKind.CodePaneCode);
             _requestedCodePaneSessions.Add(mockSession);
             return mockSession.Object;
         }
 
-        private Mock<IRewriteSession> MockSession(Func<IRewriteSession, bool> rewritingAllowed, CodeKind targetCodeKind)
+        private Mock<IExecutableRewriteSession> MockSession(Func<IRewriteSession, bool> rewritingAllowed, CodeKind targetCodeKind)
         {
-            var mockSession = new Mock<IRewriteSession>();
+            var mockSession = new Mock<IExecutableRewriteSession>();
             mockSession.Setup(m => m.TryRewrite()).Callback(() => rewritingAllowed.Invoke(mockSession.Object));
             var status = RewriteSessionState.Valid;
             mockSession.SetupGet(m => m.Status).Returns(status);
@@ -391,7 +391,7 @@ namespace RubberduckTests.Rewriter
             return mockSession;
         }
 
-        public IRewriteSession AttributesSession(Func<IRewriteSession, bool> rewritingAllowed)
+        public IExecutableRewriteSession AttributesSession(Func<IRewriteSession, bool> rewritingAllowed)
         {
             var mockSession = MockSession(rewritingAllowed, CodeKind.AttributesCode);
             _requestedAttributesSessions.Add(mockSession);

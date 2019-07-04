@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
-using NLog;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
@@ -26,13 +25,12 @@ namespace Rubberduck.UI.Command.ComCommands
         private readonly SearchResultPresenterInstanceManager _presenterService;
         private readonly IUiDispatcher _uiDispatcher;
 
-        public ShowParserErrorsCommand(INavigateCommand navigateCommand,
-            RubberduckParserState state,
-            ISearchResultsWindowViewModel viewModel,
+        public ShowParserErrorsCommand(
+            INavigateCommand navigateCommand, RubberduckParserState state, 
+            ISearchResultsWindowViewModel viewModel, 
             SearchResultPresenterInstanceManager presenterService,
-            IUiDispatcher uiDispatcher,
-            IVbeEvents vbeEvents)
-            : base(LogManager.GetCurrentClassLogger(), vbeEvents)
+            IUiDispatcher uiDispatcher, IVbeEvents vbeEvents)
+            : base(vbeEvents)
         {
             _navigateCommand = navigateCommand;
             _state = state;

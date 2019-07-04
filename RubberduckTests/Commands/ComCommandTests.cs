@@ -89,13 +89,11 @@ namespace RubberduckTests.Commands
 
         private static ComCommandBase ArranageComCommand(IVbeEvents vbeEvents)
         {
-            var logger = new Mock<ILogger>();
-
             // The ComCommandBase is an abstract class and is the subject under the test
             // Therefore, we actually want to use Moq.Mock to create an implementation
             // to directly test the base class' behaviors. We should not modify the mock
             // behavior, hence why we return the object, rather than the mock. 
-            var mockComCommand = new Mock<ComCommandBase>(logger.Object, vbeEvents)
+            var mockComCommand = new Mock<ComCommandBase>(args:vbeEvents)
             {
                 CallBase = true
             };

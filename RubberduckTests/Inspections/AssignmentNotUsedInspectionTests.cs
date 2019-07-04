@@ -10,6 +10,8 @@ using Rubberduck.Parsing.Inspections.Abstract;
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
+    [Category("Inspections")]
+    [Category("AssignmentNotUsed")]
     public class AssignmentNotUsedInspectionTests
     {
         private IEnumerable<IInspectionResult> GetInspectionResults(string code, bool includeLibraries = false)
@@ -25,7 +27,6 @@ namespace RubberduckTests.Inspections
         }
 
         [Test]
-        [Category("Inspections")]
         public void IgnoresExplicitArrays()
         {
             const string code = @"
@@ -39,7 +40,6 @@ End Sub
         }
 
         [Test]
-        [Category("Inspections")]
         public void IgnoresImplicitArrays()
         {
             const string code = @"
@@ -54,7 +54,6 @@ End Sub
         }
 
         [Test]
-        [Category("Inspections")]
         public void IgnoresImplicitReDimmedArray()
         {
             const string code = @"
@@ -69,7 +68,6 @@ End Sub
         }
 
         [Test]
-        [Category("Inspections")]
         public void MarksSequentialAssignments()
         {
             const string code = @"
@@ -87,7 +85,6 @@ End Sub";
         }
 
         [Test]
-        [Category("Inspections")]
         public void MarksLastAssignmentInDeclarationBlock()
         {
             const string code = @"
@@ -100,7 +97,6 @@ End Sub";
         }
 
         [Test]
-        [Category("Inspections")]
         // Note: both assignments in the if/else can be marked in the future;
         // I just want feedback before I start mucking around that deep.
         public void DoesNotMarkLastAssignmentInNonDeclarationBlock()
@@ -120,7 +116,6 @@ End Sub";
         }
 
         [Test]
-        [Category("Inspections")]
         public void DoesNotMarkAssignmentWithReferenceAfter()
         {
             const string code = @"
@@ -137,7 +132,6 @@ End Sub";
         }
 
         [Test]
-        [Category("Inspections")]
         public void DoesNotMarkAssignment_UsedInForNext()
         {
             const string code = @"
@@ -152,7 +146,6 @@ End Sub";
         }
 
         [Test]
-        [Category("Inspections")]
         public void DoesNotMarkAssignment_UsedInWhileWend()
         {
             const string code = @"
@@ -169,7 +162,6 @@ End Sub";
         }
 
         [Test]
-        [Category("Inspections")]
         public void DoesNotMarkAssignment_UsedInDoWhile()
         {
             const string code = @"
@@ -184,7 +176,6 @@ End Sub";
         }
 
         [Test]
-        [Category("Inspections")]
         public void DoesNotMarkAssignment_UsedInSelectCase()
         {
             const string code = @"
@@ -207,7 +198,6 @@ End Sub";
         }
 
         [Test]
-        [Category("Inspections")]
         public void DoesNotMarkAssignment_UsingNothing()
         {
             const string code = @"
@@ -224,7 +214,6 @@ End Sub";
         }
 
         [Test]
-        [Category("Inspections")]
         public void DoesMarkAssignment_UsingNothing_NotUsed()
         {
             const string code = @"
@@ -236,6 +225,44 @@ Set my_fso = Nothing
 End Sub";
             var results = GetInspectionResults(code, includeLibraries: true);
             Assert.AreEqual(1, results.Count());
+        }
+
+        [Test]
+        public void DoesNotMarkResults_InIgnoredModule()
+        {
+            const string code = @"'@IgnoreModule 
+Public Sub Test()
+    Dim foo As Long
+    foo = 1245316
+End Sub";
+            var results = GetInspectionResults(code, includeLibraries: false);
+            Assert.AreEqual(0, results.Count());
+        }
+
+        [Test]
+        public void DoesNotMarkAssignment_WithIgnoreOnceAnnotation()
+        {
+            const string code = @"Public Sub Test()
+    Dim foo As Long
+    '@Ignore AssignmentNotUsed
+    foo = 123451
+    foo = 56126
+End Sub";
+            var results = GetInspectionResults(code, includeLibraries: false);
+            Assert.AreEqual(1, results.Count());
+        }
+
+        [Test]
+        public void DoesNotMarkAssignment_ToIgnoredDeclaration()
+        {
+            const string code = @"Public Sub Test()
+    '@Ignore AssignmentNotUsed
+    Dim foo As Long
+    foo = 123467
+    foo = 45678
+End Sub";
+            var results = GetInspectionResults(code, includeLibraries: false);
+            Assert.AreEqual(0, results.Count());
         }
     }
 }

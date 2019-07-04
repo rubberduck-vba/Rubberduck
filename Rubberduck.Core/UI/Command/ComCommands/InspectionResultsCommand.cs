@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using NLog;
 using Rubberduck.UI.Inspections;
 using Rubberduck.VBEditor.Events;
 
@@ -13,8 +12,9 @@ namespace Rubberduck.UI.Command.ComCommands
     {
         private readonly InspectionResultsDockablePresenter _presenter;
 
-        public InspectionResultsCommand(InspectionResultsDockablePresenter presenter, IVbeEvents vbeEvents)
-            : base(LogManager.GetCurrentClassLogger(), vbeEvents)
+        public InspectionResultsCommand(
+            InspectionResultsDockablePresenter presenter, IVbeEvents vbeEvents)
+            : base(vbeEvents)
         {
             _presenter = presenter;
         }

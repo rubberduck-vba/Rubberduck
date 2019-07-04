@@ -1,5 +1,4 @@
 using System.Runtime.InteropServices;
-using NLog;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Controls;
@@ -18,16 +17,19 @@ namespace Rubberduck.UI.Command.ComCommands
         private readonly IVBE _vbe;
         private readonly FindAllImplementationsService _finder;
 
-        public FindAllImplementationsCommand(RubberduckParserState state, IVBE vbe,
-            ISearchResultsWindowViewModel viewModel, FindAllImplementationsService finder, IVbeEvents vbeEvents)
-            : base(LogManager.GetCurrentClassLogger(), vbeEvents)
+        public FindAllImplementationsCommand(
+            RubberduckParserState state, IVBE vbe, ISearchResultsWindowViewModel viewModel, 
+            FindAllImplementationsService finder, IVbeEvents vbeEvents)
+            : base(vbeEvents)
         {
             _finder = finder;
             _state = state;
             _vbe = vbe;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
             if (_state.Status != ParserState.Ready)
             {

@@ -8,6 +8,7 @@ using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -33,7 +34,7 @@ namespace Rubberduck.Inspections.Concrete
                                                            members.Contains(decl.IdentifierName));
 
             return from usage in usages
-                   from reference in usage.References.Where(use => !IsIgnoringInspectionResultFor(use, AnnotationName))
+                   from reference in usage.References.Where(use => !use.IsIgnoringInspectionResultFor(AnnotationName))
                    let qualifiedSelection = new QualifiedSelection(reference.QualifiedModuleName, reference.Selection)
                    select new IdentifierReferenceInspectionResult(this,
                                                string.Format(InspectionResults.ApplicationWorksheetFunctionInspection, usage.IdentifierName),

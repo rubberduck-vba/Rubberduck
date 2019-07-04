@@ -184,6 +184,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         private IDictionary<(VBAParser.ImplementsStmtContext Context, Declaration Implementor), List<ModuleBodyElementDeclaration>> FindAllImplementingMembers()
         {
             var implementsInstructions = UserDeclarations(DeclarationType.ClassModule)
+                .Concat(UserDeclarations(DeclarationType.Document))
                 .SelectMany(cls => cls.References
                     .Where(reference => reference.Context is VBAParser.ImplementsStmtContext 
                         || (reference.Context).IsDescendentOf<VBAParser.ImplementsStmtContext>())
@@ -214,6 +215,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         private Dictionary<ClassModuleDeclaration, List<ClassModuleDeclaration>> FindAllImplementionsByInterface()
         {
             return UserDeclarations(DeclarationType.ClassModule)
+                .Concat(UserDeclarations(DeclarationType.Document))
                 .Cast<ClassModuleDeclaration>()
                 .Where(module => module.IsInterface).ToDictionary(intrface => intrface,
                     intrface => intrface.Subtypes.Cast<ClassModuleDeclaration>()
@@ -237,6 +239,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         private IDictionary<ClassModuleDeclaration, List<Declaration>> FindAllIinterfaceMembersByModule()
         {
             return UserDeclarations(DeclarationType.ClassModule)
+                .Concat(UserDeclarations(DeclarationType.Document))
                 .Cast<ClassModuleDeclaration>()
                 .Where(module => module.IsInterface)
                 .ToDictionary(
@@ -271,30 +274,29 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
         public Declaration FindSelectedDeclaration(QualifiedSelection qualifiedSelection)
         {
-            var selection = qualifiedSelection.Selection;
+            var matches = new List<Declaration>();
 
             // statistically we'll be on an IdentifierReference more often than on a Declaration:
-            var matches = _referencesBySelection
-                .Where(kvp => kvp.Key.QualifiedName.Equals(qualifiedSelection.QualifiedName)
-                              && kvp.Key.Selection.ContainsFirstCharacter(qualifiedSelection.Selection))
-                .SelectMany(kvp => kvp.Value)
-                .OrderByDescending(reference => reference.Declaration.DeclarationType)
-                .Select(reference => reference.Declaration)
-                .Distinct()
-                .ToArray();
-
-            if (!matches.Any())
+            if (_referencesByModule.TryGetValue(qualifiedSelection.QualifiedName, out var referencesInModule))
             {
-                matches = _declarationsBySelection
-                    .Where(kvp => kvp.Key.QualifiedName.Equals(qualifiedSelection.QualifiedName)
-                                  && kvp.Key.Selection.ContainsFirstCharacter(selection))
-                    .SelectMany(kvp => kvp.Value)
-                    .OrderByDescending(declaration => declaration.DeclarationType)
+                matches = referencesInModule
+                    .Where(reference => reference.IsSelected(qualifiedSelection))
+                    .OrderByDescending(reference => reference.Declaration.DeclarationType)
+                    .Select(reference => reference.Declaration)
                     .Distinct()
-                    .ToArray();
+                    .ToList();
             }
 
-            switch (matches.Length)
+            if (!matches.Any() && _declarations.TryGetValue(qualifiedSelection.QualifiedName, out var declarationsInModule))
+            {
+                matches = declarationsInModule
+                    .Where(declaration => declaration.IsSelected(qualifiedSelection))
+                    .OrderByDescending(declaration => declaration.DeclarationType)
+                    .Distinct()
+                    .ToList();
+            }
+
+            switch (matches.Count)
             {
                 case 0:
                     return ModuleDeclaration(qualifiedSelection.QualifiedName);
@@ -819,7 +821,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         {
             var nameMatches = MatchName(defaultInstanceVariableClassName);
             var moduleMatches = nameMatches.Where(m =>
-                m.DeclarationType == DeclarationType.ClassModule && ((ClassModuleDeclaration)m).HasDefaultInstanceVariable
+                m is ClassModuleDeclaration classModule 
+                && classModule.HasDefaultInstanceVariable
                 && Declaration.GetProjectParent(m).Equals(callingProject)).ToList(); 
             var accessibleModules = moduleMatches.Where(calledModule => AccessibilityCheck.IsModuleAccessible(callingProject, callingModule, calledModule));
             var match = accessibleModules.FirstOrDefault();
@@ -848,8 +851,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         public Declaration FindDefaultInstanceVariableClassReferencedProject(Declaration callingProject, Declaration callingModule, string calleeModuleName)
         {
             var moduleMatches = FindAllInReferencedProjectByPriority(callingProject, calleeModuleName,
-                p => p.DeclarationType == DeclarationType.ClassModule &&
-                     ((ClassModuleDeclaration) p).HasDefaultInstanceVariable);
+                p => p is ClassModuleDeclaration classModule &&
+                     classModule.HasDefaultInstanceVariable);
             var accessibleModules = moduleMatches.Where(calledModule => AccessibilityCheck.IsModuleAccessible(callingProject, callingModule, calledModule));
             var match = accessibleModules.FirstOrDefault();
             return match;
@@ -860,8 +863,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         {
             var moduleMatches = FindAllInReferencedProjectByPriority(callingProject, calleeModuleName,
                 p => referencedProject.Equals(Declaration.GetProjectParent(p))
-                    && p.DeclarationType == DeclarationType.ClassModule 
-                    && ((ClassModuleDeclaration)p).HasDefaultInstanceVariable);
+                    && p is ClassModuleDeclaration classModule
+                    && classModule.HasDefaultInstanceVariable);
             var accessibleModules = moduleMatches.Where(calledModule => AccessibilityCheck.IsModuleAccessible(callingProject, callingModule, calledModule));
             var match = accessibleModules.FirstOrDefault();
             return match;
@@ -1082,7 +1085,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             var isInstanceSensitive = IsInstanceSensitive(memberType);
             var memberMatches = FindAllInReferencedProjectByPriority(callingProject, memberName,
                 p => (!isInstanceSensitive || Declaration.GetModuleParent(p) == null ||
-                      Declaration.GetModuleParent(p).DeclarationType != DeclarationType.ClassModule) &&
+                      !Declaration.GetModuleParent(p).DeclarationType.HasFlag(DeclarationType.ClassModule)) &&
                      p.DeclarationType.HasFlag(memberType));
             var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
             var match = accessibleMembers.FirstOrDefault();
@@ -1109,7 +1112,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 memberName, 
                 p => p.DeclarationType.HasFlag(memberType) 
                     && (Declaration.GetModuleParent(p) == null 
-                        || Declaration.GetModuleParent(p).DeclarationType == DeclarationType.ClassModule) 
+                        || Declaration.GetModuleParent(p).DeclarationType.HasFlag(DeclarationType.ClassModule)) 
                     && ((ClassModuleDeclaration)Declaration.GetModuleParent(p)).IsGlobalClassModule);
             var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
             var match = accessibleMembers.FirstOrDefault();
@@ -1240,7 +1243,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 return Enumerable.Empty<Declaration>();
             }
 
-            var identifierMatches = MatchName(newName);
+            var identifierMatches = MatchName(newName).ToList();
             if (!identifierMatches.Any())
             {
                 return Enumerable.Empty<Declaration>();
@@ -1252,11 +1255,11 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                     IsEnumOrUDTMemberDeclaration(idm) && idm.ParentDeclaration == renameTarget.ParentDeclaration);
             }
 
-            identifierMatches = identifierMatches.Where(nc => !IsEnumOrUDTMemberDeclaration(nc));
+            identifierMatches = identifierMatches.Where(nc => !IsEnumOrUDTMemberDeclaration(nc)).ToList();
             var referenceConflicts = identifierMatches.Where(idm =>
                 renameTarget.References
                     .Any(renameTargetRef => renameTargetRef.ParentScoping == idm.ParentDeclaration
-                        || renameTarget.ParentDeclaration.DeclarationType != DeclarationType.ClassModule
+                        || !renameTarget.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.ClassModule)
                             && idm == renameTargetRef.ParentScoping
                             && !UsesScopeResolution(renameTargetRef.Context.Parent)
                         || idm.References
@@ -1264,7 +1267,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                                 && !UsesScopeResolution(renameTargetRef.Context.Parent)))
                 || idm.DeclarationType.HasFlag(DeclarationType.Variable)
                     && idm.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Module)
-                    && renameTarget.References.Any(renameTargetRef => renameTargetRef.QualifiedModuleName == idm.ParentDeclaration.QualifiedModuleName));
+                    && renameTarget.References.Any(renameTargetRef => renameTargetRef.QualifiedModuleName == idm.ParentDeclaration.QualifiedModuleName))
+                .ToList();
 
             if (referenceConflicts.Any())
             {

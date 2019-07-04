@@ -101,7 +101,7 @@ namespace Rubberduck.Root
             container.Register(Component.For<IProjectsProvider, IProjectsRepository>()
                 .ImplementedBy<ProjectsRepository>()
                 .LifestyleSingleton());
-            container.Register(Component.For<RubberduckParserState, IParseTreeProvider, IDeclarationFinderProvider, IParseManager>()
+            container.Register(Component.For<RubberduckParserState, IParseTreeProvider, IDeclarationFinderProvider, IParseManager, IParserStatusProvider>()
                 .ImplementedBy<RubberduckParserState>()
                 .LifestyleSingleton());
             container.Register(Component.For<ISelectionChangeService>()
@@ -121,6 +121,7 @@ namespace Rubberduck.Root
                 .LifestyleTransient());
 
             RegisterSmartIndenter(container);
+            RegisterSourceCodeHandlers(container);
             RegisterParsingEngine(container);
             RegisterTypeLibApi(container);
 
@@ -129,6 +130,11 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<IMemberAttributeRecovererWithSettableRewritingManager>()
                 .ImplementedBy<MemberAttributeRecoverer>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IAddComponentService>()
+                .ImplementedBy<AddComponentService>()
+                .DependsOn(Dependency.OnComponent("codePaneComponentSourceCodeProvider", typeof(CodeModuleComponentSourceCodeHandler)),
+                    Dependency.OnComponent("attributesComponentSourceCodeProvider", typeof(SourceFileHandlerComponentSourceCodeHandlerAdapter)))
                 .LifestyleSingleton());
 
             container.Register(Component.For<TestExplorerModel>()
@@ -176,6 +182,7 @@ namespace Rubberduck.Root
             RegisterParseTreeInspections(container, assembliesToRegister);
             RegisterInspections(container, assembliesToRegister);
             RegisterQuickFixes(container, assembliesToRegister);
+            RegisterRefactorings(container, assembliesToRegister);
             RegisterAutoCompletes(container, assembliesToRegister);
             RegisterCodeMetrics(container, assembliesToRegister);
 
@@ -183,6 +190,18 @@ namespace Rubberduck.Root
             RegisterFactories(container, assembliesToRegister);
 
             ApplyDefaultInterfaceConvention(container, assembliesToRegister);
+        }
+
+        private void RegisterRefactorings(IWindsorContainer container, Assembly[] assembliesToRegister)
+        {
+            foreach (var assembly in assembliesToRegister)
+            {
+                container.Register(Classes.FromAssembly(assembly)
+                    .IncludeNonPublicTypes()
+                    .BasedOn<IRefactoring>()
+                    .WithServiceSelf()
+                    .LifestyleSingleton());
+            }
         }
 
         private void RegisterCodeMetrics(IWindsorContainer container, Assembly[] assembliesToRegister)
@@ -289,18 +308,32 @@ namespace Rubberduck.Root
             }
         }
 
+        private void RegisterSourceCodeHandlers(IWindsorContainer container)
+        {
+            container.Register(Component.For<ISourceCodeHandler>()
+                .ImplementedBy<ComponentSourceCodeHandlerSourceCodeHandlerAdapter>()
+                .DependsOn(Dependency.OnComponent<IComponentSourceCodeHandler, CodeModuleComponentSourceCodeHandler>())
+                .LifestyleSingleton()
+                .Named("CodeModuleSourceCodeHandler"));
+            container.Register(Component.For<ISourceCodeHandler>()
+                .ImplementedBy<ComponentSourceCodeHandlerSourceCodeHandlerAdapter>()
+                .DependsOn(Dependency.OnComponent<IComponentSourceCodeHandler, SourceFileHandlerComponentSourceCodeHandlerAdapter>())
+                .LifestyleSingleton()
+                .Named("SourceFileSourceCodeHandler"));
+        }
+
         private void RegisterSpecialFactories(IWindsorContainer container)
         {
             container.Register(Component.For<ICodePaneHandler>()
-                .ImplementedBy<CodePaneSourceCodeHandler>()
+                .ImplementedBy<CodePaneHandler>()
                 .LifestyleSingleton());
             container.Register(Component.For<IFileSystemBrowserFactory>()
                 .ImplementedBy<DialogFactory>()
                 .LifestyleSingleton());
             container.Register(Component.For<IModuleRewriterFactory>()
                 .ImplementedBy<ModuleRewriterFactory>()
-                .DependsOn(Dependency.OnComponent("codePaneSourceCodeHandler", typeof(CodePaneSourceCodeHandler)),
-                    Dependency.OnComponent("attributesSourceCodeHandler", typeof(SourceFileHandlerSourceCodeHandlerAdapter)))
+                .DependsOn(Dependency.OnComponent("codePaneSourceCodeHandler", "CodeModuleSourceCodeHandler"),
+                    Dependency.OnComponent("attributesSourceCodeHandler", "SourceFileSourceCodeHandler"))
                 .LifestyleSingleton());
             container.Register(Component.For<IRubberduckParserErrorListenerFactory>()
                 .ImplementedBy<ExceptionErrorListenerFactory>()
@@ -890,8 +923,8 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<IModuleParser>()
                 .ImplementedBy<ModuleParser>()
-                .DependsOn(Dependency.OnComponent("codePaneSourceCodeProvider", typeof(CodePaneSourceCodeHandler)),
-                    Dependency.OnComponent("attributesSourceCodeProvider", typeof(SourceFileHandlerSourceCodeHandlerAdapter)))
+                .DependsOn(Dependency.OnComponent("codePaneSourceCodeProvider", "CodeModuleSourceCodeHandler"),
+                    Dependency.OnComponent("attributesSourceCodeProvider", "SourceFileSourceCodeHandler"))
                 .LifestyleSingleton());
             container.Register(Component.For<ITypeLibWrapperProvider>()
                 .ImplementedBy<TypeLibWrapperProvider>()

@@ -11,7 +11,6 @@ using Rubberduck.Settings;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer.Commands;
-using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -24,6 +23,9 @@ using Rubberduck.UnitTesting;
 using Rubberduck.UnitTesting.CodeGeneration;
 using Rubberduck.UnitTesting.Settings;
 using Rubberduck.VBEditor.Events;
+using Rubberduck.UI.CodeExplorer;
+using Rubberduck.VBEditor.SourceCodeHandling;
+using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Settings;
 
 namespace RubberduckTests.CodeExplorer
@@ -160,8 +162,17 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddStdModuleCommand()
         {
-            ViewModel.AddStdModuleCommand = new AddStdModuleCommand(Vbe.Object, VbeEvents.Object);
+            ViewModel.AddStdModuleCommand = new AddStdModuleCommand(AddComponentService(), VbeEvents.Object);
             return this;
+        }
+
+        private ICodeExplorerAddComponentService AddComponentService()
+        {
+            var codePaneComponentSourceCodeHandler = new CodeModuleComponentSourceCodeHandler();
+
+            var addComponentBaseService = new AddComponentService(State.ProjectsProvider, codePaneComponentSourceCodeHandler, codePaneComponentSourceCodeHandler);
+
+            return new CodeExplorerAddComponentService(State, addComponentBaseService, Vbe.Object);
         }
 
         public void ExecuteAddStdModuleCommand()
@@ -175,7 +186,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddClassModuleCommand()
         {
-            ViewModel.AddClassModuleCommand = new AddClassModuleCommand(Vbe.Object, VbeEvents.Object);
+            ViewModel.AddClassModuleCommand = new AddClassModuleCommand(AddComponentService(), VbeEvents.Object);
             return this;
         }
 
@@ -190,7 +201,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddUserFormCommand()
         {
-            ViewModel.AddUserFormCommand = new AddUserFormCommand(Vbe.Object, VbeEvents.Object);
+            ViewModel.AddUserFormCommand = new AddUserFormCommand(AddComponentService(), VbeEvents.Object);
             return this;
         }
 
@@ -205,7 +216,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddVbFormCommand()
         {
-            ViewModel.AddVBFormCommand = new AddVBFormCommand(Vbe.Object, VbeEvents.Object);
+            ViewModel.AddVBFormCommand = new AddVBFormCommand(AddComponentService(), VbeEvents.Object);
             return this;
         }
 
@@ -220,7 +231,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddMdiFormCommand()
         {
-            ViewModel.AddMDIFormCommand = new AddMDIFormCommand(Vbe.Object, VbeEvents.Object);
+            ViewModel.AddMDIFormCommand = new AddMDIFormCommand(AddComponentService(), VbeEvents.Object);
             return this;
         }
 
@@ -235,7 +246,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddUserControlCommand()
         {
-            ViewModel.AddUserControlCommand = new AddUserControlCommand(Vbe.Object, VbeEvents.Object);
+            ViewModel.AddUserControlCommand = new AddUserControlCommand(AddComponentService(), VbeEvents.Object);
             return this;
         }
 
@@ -250,7 +261,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddPropertyPageCommand()
         {
-            ViewModel.AddPropertyPageCommand = new AddPropertyPageCommand(Vbe.Object, VbeEvents.Object);
+            ViewModel.AddPropertyPageCommand = new AddPropertyPageCommand(AddComponentService(), VbeEvents.Object);
             return this;
         }
 
@@ -265,7 +276,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddUserDocumentCommand()
         {
-            ViewModel.AddUserDocumentCommand = new AddUserDocumentCommand(Vbe.Object, VbeEvents.Object);
+            ViewModel.AddUserDocumentCommand = new AddUserDocumentCommand(AddComponentService(), VbeEvents.Object);
             return this;
         }
 
@@ -434,9 +445,9 @@ namespace RubberduckTests.CodeExplorer
 
             var generalSettings = new GeneralSettings
             {
-                EnableExperimentalFeatures = new List<ExperimentalFeatures>
+                EnableExperimentalFeatures = new List<ExperimentalFeature>
                     {
-                        new ExperimentalFeatures()
+                        new ExperimentalFeature()
                     }
             };
 

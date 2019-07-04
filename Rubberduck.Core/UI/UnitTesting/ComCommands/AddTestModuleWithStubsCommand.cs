@@ -12,15 +12,16 @@ namespace Rubberduck.UI.UnitTesting.ComCommands
         private readonly AddTestModuleCommand _newUnitTestModuleCommand;
 
         public AddTestModuleWithStubsCommand(
-            IVBE vbe, 
-            AddTestModuleCommand newUnitTestModuleCommand,
-            IVbeEvents vbeEvents) : base(LogManager.GetCurrentClassLogger(), vbeEvents)
+            IVBE vbe, AddTestModuleCommand newUnitTestModuleCommand, IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _vbe = vbe;
             _newUnitTestModuleCommand = newUnitTestModuleCommand;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter) => parameter is CodeExplorerComponentViewModel;
+        private bool SpecialEvaluateCanExecute(object parameter) => parameter is CodeExplorerComponentViewModel;
 
         protected override void OnExecute(object parameter)
         {

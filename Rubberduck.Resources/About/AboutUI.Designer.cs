@@ -62,7 +62,6 @@ namespace Rubberduck.Resources.About {
         
         /// <summary>
         ///   Looks up a localized string similar to Parsing powered by ANTLR
-        ///GitHub integration powered by LibGit2Sharp
         ///Syntax highlighting powered by AvalonEdit
         ///Native hooks powered by EasyHook
         ///Fugue icons by Yusuke Kamiyamane
@@ -121,7 +120,7 @@ namespace Rubberduck.Resources.About {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to © Copyright 2014-2018 Rubberduck project contributors.
+        ///   Looks up a localized string similar to © Copyright 2014-{0} Rubberduck project contributors.
         /// </summary>
         public static string AboutWindow_Copyright {
             get {
@@ -139,7 +138,7 @@ namespace Rubberduck.Resources.About {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copy version information to clipboard..
+        ///   Looks up a localized string similar to Copy version information to clipboard.
         /// </summary>
         public static string AboutWindow_CopyVersionLabel {
             get {
@@ -245,6 +244,15 @@ namespace Rubberduck.Resources.About {
         public static string AboutWindow_SpecialThanksLabel {
             get {
                 return ResourceManager.GetString("AboutWindow_SpecialThanksLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View log in File Explorer.
+        /// </summary>
+        public static string AboutWindow_ViewLogLabel {
+            get {
+                return ResourceManager.GetString("AboutWindow_ViewLogLabel", resourceCulture);
             }
         }
     }

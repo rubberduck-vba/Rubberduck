@@ -378,4 +378,25 @@
   <data name="MissingModuleAnnotationInspection" xml:space="preserve">
     <value>Modul '{0}' má '{1}' atribut s hodnotou/hodnotami '{2}', avšak chybí odpovídající anotace.</value>
   </data>
+  <data name="ThunderCode_Base" xml:space="preserve">
+    <value>{0}
+Andrew "ThunderFrame" Jackson by byl pyšný!
+Výsledek této inspekce vidíte, protože neexistuje žádná šance, je toto reálný kód a zkoušíte hranice možností, co ještě RubberDuck analýza zmákne, než selže. ...ŽE?
+In memoriam, 1972-2018</value>
+  </data>
+  <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
+    <value>Došlo k chybě: 'On Error GoTo -1'</value>
+  </data>
+  <data name="NegativeLineNumberInspection" xml:space="preserve">
+    <value>Bylo zjištěno záporné číslo řádku</value>
+  </data>
+  <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
+    <value>Pokračování řádku(ů) na neočekávaných místech.</value>
+  </data>
+  <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
+    <value>Klíčové slovo použito jako identifikátor člena '{0}'</value>
+  </data>
+  <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
+    <value>Pevná mezera v identifikátoru '{0}'</value>
+  </data>
 </root>

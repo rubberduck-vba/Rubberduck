@@ -234,4 +234,97 @@
   <data name="TestExplorer_Uncategorized" xml:space="preserve">
     <value>Bez kategorie</value>
   </data>
+  <data name="UnitTest_NewModule_BaseName" xml:space="preserve">
+    <value>TestovaciModul</value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewModule_DefaultFolder" xml:space="preserve">
+    <value>Testy</value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewMethod_TestInitializeMethod" xml:space="preserve">
+    <value>InicializaceTestu</value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewMethod_TestFailLabel" xml:space="preserve">
+    <value>SelhaniTestu</value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewModule_LateBindDirective" xml:space="preserve">
+    <value>PozdniVazbaTestu</value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewMethod_TestExitLabel" xml:space="preserve">
+    <value>OpusteniTestu</value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewMethod_TestCleanupMethod" xml:space="preserve">
+    <value>UklidTestu</value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewMethod_ModuleInitializeMethod" xml:space="preserve">
+    <value>InicializovatModul</value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewMethod_ModuleCleanupMethod" xml:space="preserve">
+    <value>VycisteniModulu</value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewModule_LateBindConstant" xml:space="preserve">
+    <value>PozdniVazba</value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewMethod_ExpectedError" xml:space="preserve">
+    <value>OcekavanaChyba</value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewMethod_BaseName" xml:space="preserve">
+    <value>TestovaciMetoda</value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="TestOutcome_RunSummaryFormat" xml:space="preserve">
+    <value>{0} z {1} testů (celková doba běhu: {2:g})</value>
+  </data>
+  <data name="TestExplorer_ContextMenuRunGroup" xml:space="preserve">
+    <value>Spustit všechny testy ve skupině</value>
+  </data>
+  <data name="TestExplorer_ContextMenuRunAll" xml:space="preserve">
+    <value>Spustit všechny testy</value>
+  </data>
+  <data name="TestExplorer_ContextMenuRunSelected" xml:space="preserve">
+    <value>Spustit označené testy</value>
+  </data>
+  <data name="TestExplorer_ContextMenuRunSingle" xml:space="preserve">
+    <value>Spustit samostatný test</value>
+  </data>
+  <data name="TestExplorer_ResetButtonTooltip" xml:space="preserve">
+    <value>Resetovat výsledky všech testů</value>
+  </data>
+  <data name="UnitTest_NewMethod_Act" xml:space="preserve">
+    <value>Jednat</value>
+  </data>
+  <data name="UnitTest_NewMethod_Arrange" xml:space="preserve">
+    <value>Připravit</value>
+  </data>
+  <data name="UnitTest_NewMethod_Assert" xml:space="preserve">
+    <value>Potvrzení</value>
+  </data>
+  <data name="TestOutcome_DurationHour" xml:space="preserve">
+    <value>hod</value>
+  </data>
+  <data name="TestOutcome_DurationMillisecond" xml:space="preserve">
+    <value>ms</value>
+  </data>
+  <data name="TestOutcome_DurationMinute" xml:space="preserve">
+    <value>min</value>
+  </data>
+  <data name="TestOutcome_DurationSecond" xml:space="preserve">
+    <value>s</value>
+  </data>
+  <data name="TestOutcome_SummaryCaption" xml:space="preserve">
+    <value>Shrnutí:</value>
+  </data>
+  <data name="TestOutcome_SpectacularFail" xml:space="preserve">
+    <value>Pozoruhodné Selhání</value>
+  </data>
 </root>

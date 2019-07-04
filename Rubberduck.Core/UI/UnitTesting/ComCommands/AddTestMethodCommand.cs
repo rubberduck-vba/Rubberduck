@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Runtime.InteropServices;
-using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -23,14 +22,19 @@ namespace Rubberduck.UI.UnitTesting.ComCommands
         private readonly RubberduckParserState _state;
         private readonly ITestCodeGenerator _codeGenerator;
 
-        public AddTestMethodCommand(IVBE vbe, RubberduckParserState state, ITestCodeGenerator codeGenerator, IVbeEvents vbeEvents) : base(LogManager.GetCurrentClassLogger(), vbeEvents)
+        public AddTestMethodCommand(
+            IVBE vbe, RubberduckParserState state, ITestCodeGenerator codeGenerator, 
+            IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _vbe = vbe;
             _state = state;
             _codeGenerator = codeGenerator;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
             if (_state.Status != ParserState.Ready)
             {

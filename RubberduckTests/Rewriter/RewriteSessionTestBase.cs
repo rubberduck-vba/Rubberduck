@@ -81,11 +81,11 @@ namespace RubberduckTests.Rewriter
 
         [Test]
         [Category("Rewriter")]
-        public void TryRewriteReturnsFalseIfNoRewritersHaveBeenCheckedOut()
+        public void TryRewriteReturnsTrueIfNoRewritersHaveBeenCheckedOut()
         {
             var rewriteSession = RewriteSession(session => true, out _);
             var actual = rewriteSession.TryRewrite();
-            Assert.IsFalse(actual);
+            Assert.IsTrue(actual);
         }
 
         [Test]
@@ -351,7 +351,7 @@ namespace RubberduckTests.Rewriter
         }
 
 
-        protected IRewriteSession RewriteSession(Func<IRewriteSession, bool> rewritingAllowed,
+        protected IExecutableRewriteSession RewriteSession(Func<IRewriteSession, bool> rewritingAllowed,
             out MockRewriterProvider mockProvider, bool rewritersAreDirty = false, ISelectionRecoverer selectionRecoverer = null)
         {
             var parseManager = new Mock<IParseManager>();
@@ -361,7 +361,7 @@ namespace RubberduckTests.Rewriter
             return RewriteSession(parseManager.Object, rewritingAllowed, out mockProvider, rewritersAreDirty, selectionRecoverer);
         }
 
-        protected abstract IRewriteSession RewriteSession(IParseManager parseManager, Func<IRewriteSession, bool> rewritingAllowed, out MockRewriterProvider mockProvider, bool rewritersAreDirty = false, ISelectionRecoverer selectionRecoverer = null);
+        protected abstract IExecutableRewriteSession RewriteSession(IParseManager parseManager, Func<IRewriteSession, bool> rewritingAllowed, out MockRewriterProvider mockProvider, bool rewritersAreDirty = false, ISelectionRecoverer selectionRecoverer = null);
     }
 
 

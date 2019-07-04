@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
@@ -85,6 +86,7 @@ namespace Rubberduck.Inspections.Concrete
             DeclarationType.Constant,
             DeclarationType.Control,
             DeclarationType.ClassModule,
+            DeclarationType.Document,
             DeclarationType.Member,
             DeclarationType.Module,
             DeclarationType.ProceduralModule,
@@ -121,7 +123,7 @@ namespace Rubberduck.Inspections.Concrete
                                       !IgnoredProcedureTypes.Contains(declaration.DeclarationType) && 
                                       !IgnoredProcedureTypes.Contains(declaration.ParentDeclaration.DeclarationType) &&
                                       HungarianIdentifierRegex.IsMatch(declaration.IdentifierName) &&
-                                      !IsIgnoringInspectionResultFor(declaration, AnnotationName))
+                                      !declaration.IsIgnoringInspectionResultFor(AnnotationName))
                 .Select(issue => new DeclarationInspectionResult(this,
                                                       string.Format(Resources.Inspections.InspectionResults.IdentifierNameInspection,
                                                                     RubberduckUI.ResourceManager.GetString($"DeclarationType_{issue.DeclarationType}", CultureInfo.CurrentUICulture),

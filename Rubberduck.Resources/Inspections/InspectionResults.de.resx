@@ -128,7 +128,7 @@
     <comment>{0} Procedure name</comment>
   </data>
   <data name="IdentifierNameInspection" xml:space="preserve">
-    <value>Übelege die Umbenennung {0} '{1}'</value>
+    <value>Überlegen Sie '{1}' ({0}) umzubenennen.</value>
   </data>
   <data name="WriteOnlyPropertyInspection" xml:space="preserve">
     <value>Eigenschaft '{0}' hat keinen Getter.</value>
@@ -379,5 +379,26 @@
   </data>
   <data name="MissingModuleAnnotationInspection" xml:space="preserve">
     <value>Modul '{0}' hat ein '{1}' Attribut mit Wert(en) '{2}', aber keine zugehörige Annotation.</value>
+  </data>
+  <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
+    <value>Der Name des Elements '{0}' ist ein Schlüsselwort.</value>
+  </data>
+  <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
+    <value>Zeilenfortsetzungszeichen an unerwarteten Orten</value>
+  </data>
+  <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
+    <value>Der Bezeichner '{0}' enthält eine geschütztes Leerzeichen.</value>
+  </data>
+  <data name="ThunderCode_Base" xml:space="preserve">
+    <value>{0}
+Andrew "ThunderFrame" Jackson wäre stolz! 
+Sie sehen dies, da es nicht sein kann, dass dies ein echtes Programm ist. Sie versuchen lediglich Rubberducks Grenzen auszuloten, oder? ..ODER? 
+In Memoriam, 1972-2018</value>
+  </data>
+  <data name="NegativeLineNumberInspection" xml:space="preserve">
+    <value>Verwendung einer negativen Zeilennummer</value>
+  </data>
+  <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
+    <value>Verwendung von 'On Error GoTo -1'</value>
   </data>
 </root>

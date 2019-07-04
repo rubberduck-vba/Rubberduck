@@ -1,5 +1,4 @@
 using System.Runtime.InteropServices;
-using NLog;
 using Rubberduck.Common;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.VBA;
@@ -20,7 +19,8 @@ namespace Rubberduck.UI.Command.ComCommands
         private readonly NavigateCommand _navigateCommand;
 
         public FindSymbolCommand(RubberduckParserState state, ISelectionService selectionService,
-            DeclarationIconCache iconCache, IVbeEvents vbeEvents) : base(LogManager.GetCurrentClassLogger(), vbeEvents)
+            DeclarationIconCache iconCache, IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _state = state;
             _iconCache = iconCache;

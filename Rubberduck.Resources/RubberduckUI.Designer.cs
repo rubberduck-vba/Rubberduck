@@ -1820,6 +1820,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No implements selected..
+        /// </summary>
+        public static string ImplementInterfaceFailed_NoImplementsStatementSelected {
+            get {
+                return ResourceManager.GetString("ImplementInterfaceFailed_NoImplementsStatementSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All Files.
         /// </summary>
         public static string ImportCommand_OpenDialog_Filter_AllFiles {
@@ -2193,6 +2202,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The target &apos;{0}&apos;is already a field..
+        /// </summary>
+        public static string IntroduceFieldFailed_TargetIsAlreadyAField {
+            get {
+                return ResourceManager.GetString("IntroduceFieldFailed_TargetIsAlreadyAField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rubberduck - Introduce Parameter.
         /// </summary>
         public static string IntroduceParameter_Caption {
@@ -2207,6 +2225,15 @@ namespace Rubberduck.Resources {
         public static string IntroduceParameter_PromptIfTargetIsInterface {
             get {
                 return ResourceManager.GetString("IntroduceParameter_PromptIfTargetIsInterface", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The target &apos;{0}&apos;is not contained in a method..
+        /// </summary>
+        public static string IntroduceParameterFailed_TargetNotContainedInMethod {
+            get {
+                return ResourceManager.GetString("IntroduceParameterFailed_TargetNotContainedInMethod", resourceCulture);
             }
         }
         
@@ -2407,72 +2434,72 @@ namespace Rubberduck.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Invalid Selection..
         /// </summary>
-        public static string MoveCloserToUsage_InvalidSelection {
+        public static string MoveCloserToUsageFailure_InvalidSelection {
             get {
-                return ResourceManager.GetString("MoveCloserToUsage_InvalidSelection", resourceCulture);
+                return ResourceManager.GetString("MoveCloserToUsageFailure_InvalidSelection", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The method using &apos;{0}&apos; already has another declaration of the same name in scope..
+        ///   Looks up a localized string similar to The method using &apos;{0}&apos; already has the declaration &apos;{1}&apos;&apos; of the same name in scope..
         /// </summary>
-        public static string MoveCloserToUsage_ReferencingMethodHasSameNameDeclarationInScope {
+        public static string MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope {
             get {
-                return ResourceManager.GetString("MoveCloserToUsage_ReferencingMethodHasSameNameDeclarationInScope", resourceCulture);
+                return ResourceManager.GetString("MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; is not used anywhere..
         /// </summary>
-        public static string MoveCloserToUsage_TargetHasNoReferences {
+        public static string MoveCloserToUsageFailure_TargetHasNoReferences {
             get {
-                return ResourceManager.GetString("MoveCloserToUsage_TargetHasNoReferences", resourceCulture);
+                return ResourceManager.GetString("MoveCloserToUsageFailure_TargetHasNoReferences", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; is not defined in the same project it is used..
         /// </summary>
-        public static string MoveCloserToUsage_TargetIsInDifferentProject {
+        public static string MoveCloserToUsageFailure_TargetIsInDifferentProject {
             get {
-                return ResourceManager.GetString("MoveCloserToUsage_TargetIsInDifferentProject", resourceCulture);
+                return ResourceManager.GetString("MoveCloserToUsageFailure_TargetIsInDifferentProject", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is defined neither in the component component it is used not in a standard module. .
+        ///   Looks up a localized string similar to &apos;{0}&apos; is defined neither in the component component it is used nor in a standard module. .
         /// </summary>
-        public static string MoveCloserToUsage_TargetIsInOtherNonStandardModule {
+        public static string MoveCloserToUsageFailure_TargetIsInOtherNonStandardModule {
             get {
-                return ResourceManager.GetString("MoveCloserToUsage_TargetIsInOtherNonStandardModule", resourceCulture);
+                return ResourceManager.GetString("MoveCloserToUsageFailure_TargetIsInOtherNonStandardModule", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is a non-private module variable outside a standard module..
+        ///   Looks up a localized string similar to &apos;{0}&apos; is a public member of of a class, form or document..
         /// </summary>
-        public static string MoveCloserToUsage_TargetIsNonPrivateInNonStandardModule {
+        public static string MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule {
             get {
-                return ResourceManager.GetString("MoveCloserToUsage_TargetIsNonPrivateInNonStandardModule", resourceCulture);
+                return ResourceManager.GetString("MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; is built-in..
         /// </summary>
-        public static string MoveCloserToUsage_TargetIsNotUserDefined {
+        public static string MoveCloserToUsageFailure_TargetIsNotUserDefined {
             get {
-                return ResourceManager.GetString("MoveCloserToUsage_TargetIsNotUserDefined", resourceCulture);
+                return ResourceManager.GetString("MoveCloserToUsageFailure_TargetIsNotUserDefined", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; has references in multiple methods..
         /// </summary>
-        public static string MoveCloserToUsage_TargetIsUsedInMultipleMethods {
+        public static string MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods {
             get {
-                return ResourceManager.GetString("MoveCloserToUsage_TargetIsUsedInMultipleMethods", resourceCulture);
+                return ResourceManager.GetString("MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods", resourceCulture);
             }
         }
         
@@ -2894,20 +2921,65 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to detect selected rename target.
+        ///   Looks up a localized string similar to Refactoring failed..
         /// </summary>
-        public static string RefactorRename_TargetNotDefinedError {
+        public static string RefactoringFailure_BaseMessage {
             get {
-                return ResourceManager.GetString("RefactorRename_TargetNotDefinedError", resourceCulture);
+                return ResourceManager.GetString("RefactoringFailure_BaseMessage", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Identifier {0} cannot be renamed..
+        ///   Looks up a localized string similar to Declaration type of target &apos;{0}&apos; is &apos;{1}&apos; instead of the expected &apos;{2}&apos;..
         /// </summary>
-        public static string RefactorRename_TargetNotUserDefinedError {
+        public static string RefactoringFailure_InvalidDeclarationType {
             get {
-                return ResourceManager.GetString("RefactorRename_TargetNotUserDefinedError", resourceCulture);
+                return ResourceManager.GetString("RefactoringFailure_InvalidDeclarationType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Declaration type of target &apos;{0}&apos; is &apos;{1}&apos; instead of one of the expected &apos;{2}&apos;..
+        /// </summary>
+        public static string RefactoringFailure_InvalidDeclarationType_multipleValid {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_InvalidDeclarationType_multipleValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is no active selection..
+        /// </summary>
+        public static string RefactoringFailure_NoActiveSelection {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_NoActiveSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No viable target selected..
+        /// </summary>
+        public static string RefactoringFailure_NoTargetDeclarationForSelection {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_NoTargetDeclarationForSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The target is not user-defined..
+        /// </summary>
+        public static string RefactoringFailure_TargetNotUserDefined {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_TargetNotUserDefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Target declaration is null..
+        /// </summary>
+        public static string RefactoringFailure_TargetNull {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_TargetNull", resourceCulture);
             }
         }
         
@@ -3566,6 +3638,33 @@ namespace Rubberduck.Resources {
         public static string RenameDialog_TitleText {
             get {
                 return ResourceManager.GetString("RenameDialog_TitleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Target &apos;{0}&apos; is a standard event handler, which cannot be renamed..
+        /// </summary>
+        public static string RenameFailure_StandardEventHandler {
+            get {
+                return ResourceManager.GetString("RenameFailure_StandardEventHandler", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Target control &apos;{0}&apos; not found,.
+        /// </summary>
+        public static string RenameFailure_TargetContriolNotFound {
+            get {
+                return ResourceManager.GetString("RenameFailure_TargetContriolNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No code module found for the target module &apos;{0}&apos;..
+        /// </summary>
+        public static string RenameFailure_TargetModuleWithoutCodeModule {
+            get {
+                return ResourceManager.GetString("RenameFailure_TargetModuleWithoutCodeModule", resourceCulture);
             }
         }
         

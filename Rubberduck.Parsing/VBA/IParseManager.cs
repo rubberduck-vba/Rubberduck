@@ -4,11 +4,8 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public interface IParseManager
+    public interface IParseManager : IParserStatusProvider
     {
-        event EventHandler<ParserStateEventArgs> StateChanged;
-        event EventHandler<ParseProgressEventArgs> ModuleStateChanged;
-
         /// <summary>
         /// Requests reparse.
         /// </summary>

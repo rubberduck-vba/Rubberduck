@@ -1,5 +1,4 @@
-﻿using Rubberduck.Refactorings;
-using Rubberduck.Refactorings.ExtractInterface;
+﻿using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Refactorings.ExtractInterface
@@ -13,13 +12,7 @@ namespace Rubberduck.UI.Refactorings.ExtractInterface
 
         public override ExtractInterfaceModel Show()
         {
-            if (Model.TargetDeclaration == null)
-            {
-                return null;
-            }
-
-            var model = base.Show();
-            return DialogResult != RefactoringDialogResult.Execute ? null : model;
+            return Model.TargetDeclaration == null ? null : base.Show();
         }
     }
 }

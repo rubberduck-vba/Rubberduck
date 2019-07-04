@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -38,24 +37,23 @@ namespace Rubberduck.UI.Command.ComCommands
         private readonly RubberduckParserState _state;
         private readonly CodeExplorerViewModel _explorer;
 
-        public SyncCodeExplorerCommand(IVBE vbe, RubberduckParserState state, CodeExplorerViewModel explorer,
-            IVbeEvents vbeEvents) : base(LogManager.GetCurrentClassLogger(), vbeEvents)
+        public SyncCodeExplorerCommand(
+            IVBE vbe, RubberduckParserState state, 
+            CodeExplorerViewModel explorer, IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _vbe = vbe;
             _state = state;
             _explorer = explorer;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
-            if (_state.Status != ParserState.Ready || 
-                _explorer.IsBusy || 
-                FindTargetNode() == null)
-            {
-                return false;
-            }
-
-            return true;
+            return _state.Status == ParserState.Ready 
+                   && !_explorer.IsBusy 
+                   && FindTargetNode() != null;
         }
 
         protected override void OnExecute(object parameter)

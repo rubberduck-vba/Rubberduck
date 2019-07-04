@@ -126,4 +126,19 @@
   <data name="PredeclaredClassModule_Description" xml:space="preserve">
     <value>Přidá modul třídy, který je předdeklarovaný a může být tedy použit bez nutnosti do něj napsat hlavičku.</value>
   </data>
+  <data name="PredeclaredClassModule_Code" xml:space="preserve">
+    <value>VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = False
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = False
+Attribute VB_Ext_KEY = "Rubberduck", "Predeclared Class Module"
+
+Option Explicit
+'@PredeclaredId</value>
+    <comment>Do not translate</comment>
+  </data>
 </root>

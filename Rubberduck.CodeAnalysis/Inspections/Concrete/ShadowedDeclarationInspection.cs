@@ -119,8 +119,8 @@ namespace Rubberduck.Inspections.Concrete
                 return false;
             }
 
-            var originalDeclarationComponentType = originalDeclaration.QualifiedName.QualifiedModuleName.ComponentType;
-            var userDeclarationComponentType = userDeclaration.QualifiedName.QualifiedModuleName.ComponentType;
+            var originalDeclarationEnclosingType = originalDeclaration.QualifiedName.QualifiedModuleName.ComponentType;
+            var userDeclarationEnclosingType = userDeclaration.QualifiedName.QualifiedModuleName.ComponentType;
 
             // It is not possible to directly access a Parameter, UDT Member or Label declared in another project
             if (originalDeclaration.DeclarationType == DeclarationType.Parameter || originalDeclaration.DeclarationType == DeclarationType.UserDefinedTypeMember ||
@@ -136,20 +136,20 @@ namespace Rubberduck.Inspections.Concrete
             }
 
             // It is not possible to directly access a UserForm or Document declared in another project, nor any declarations placed inside them
-            if (originalDeclarationComponentType == ComponentType.UserForm || originalDeclarationComponentType == ComponentType.Document)
+            if (originalDeclarationEnclosingType == ComponentType.UserForm || originalDeclarationEnclosingType == ComponentType.Document)
             {
                 return false;
             }
 
             // It is not possible to directly access any declarations placed inside a Class Module
-            if (originalDeclaration.DeclarationType != DeclarationType.ClassModule && originalDeclarationComponentType == ComponentType.ClassModule)
+            if (originalDeclaration.DeclarationType != DeclarationType.ClassModule && originalDeclarationEnclosingType == ComponentType.ClassModule)
             {
                 return false;
             }
 
-            if (userDeclaration.DeclarationType == DeclarationType.ClassModule)
+            if (userDeclaration.DeclarationType == DeclarationType.ClassModule || userDeclaration.DeclarationType == DeclarationType.Document)
             {
-                switch (userDeclarationComponentType)
+                switch (userDeclarationEnclosingType)
                 {
                     case ComponentType.UserForm when !ReferencedProjectTypeShadowingRelations[originalDeclaration.DeclarationType].Contains(DeclarationType.UserForm):
                         return false;
@@ -158,8 +158,8 @@ namespace Rubberduck.Inspections.Concrete
                 }
             }
 
-            if (userDeclaration.DeclarationType != DeclarationType.ClassModule ||
-                (userDeclarationComponentType != ComponentType.UserForm && userDeclarationComponentType != ComponentType.Document))
+            if ((userDeclaration.DeclarationType != DeclarationType.ClassModule && userDeclaration.DeclarationType != DeclarationType.Document) ||
+                (userDeclarationEnclosingType != ComponentType.UserForm && userDeclarationEnclosingType != ComponentType.Document))
             {
                 if (!ReferencedProjectTypeShadowingRelations[originalDeclaration.DeclarationType].Contains(userDeclaration.DeclarationType))
                 {
@@ -188,7 +188,7 @@ namespace Rubberduck.Inspections.Concrete
                 return false;
             }
 
-            var originalDeclarationComponentType = originalDeclaration.QualifiedName.QualifiedModuleName.ComponentType;
+            var originalDeclarationEnclosingType = originalDeclaration.QualifiedName.QualifiedModuleName.ComponentType;
 
             // It is not possible to directly access a Parameter, UDT Member or Label declared in another component.
             if (originalDeclaration.DeclarationType == DeclarationType.Parameter || originalDeclaration.DeclarationType == DeclarationType.UserDefinedTypeMember ||
@@ -198,27 +198,33 @@ namespace Rubberduck.Inspections.Concrete
             }
 
             // It is not possible to directly access any declarations placed inside a Class Module.
-            if (originalDeclaration.DeclarationType != DeclarationType.ClassModule && originalDeclarationComponentType == ComponentType.ClassModule)
+            if (originalDeclaration.DeclarationType != DeclarationType.ClassModule &&
+                originalDeclaration.DeclarationType != DeclarationType.Document &&
+                originalDeclarationEnclosingType == ComponentType.ClassModule)
             {
                 return false;
             }
 
             // It is not possible to directly access any declarations placed inside a Document Module. (Document Modules have DeclarationType ClassMoodule.)
-            if (originalDeclaration.DeclarationType != DeclarationType.ClassModule && originalDeclarationComponentType == ComponentType.Document)
+            if (originalDeclaration.DeclarationType != DeclarationType.ClassModule &&
+                originalDeclaration.DeclarationType != DeclarationType.Document && 
+                originalDeclarationEnclosingType == ComponentType.Document)
             {
                 return false;
             }
 
             // It is not possible to directly access any declarations placed inside a User Form. (User Forms have DeclarationType ClassMoodule.)
-            if (originalDeclaration.DeclarationType != DeclarationType.ClassModule && originalDeclarationComponentType == ComponentType.UserForm)
+            if (originalDeclaration.DeclarationType != DeclarationType.ClassModule &&
+                originalDeclaration.DeclarationType != DeclarationType.Document && 
+                originalDeclarationEnclosingType == ComponentType.UserForm)
             {
                 return false;
             }
 
-            if (originalDeclaration.DeclarationType == DeclarationType.ClassModule)
+            if (originalDeclaration.DeclarationType == DeclarationType.ClassModule || originalDeclaration.DeclarationType == DeclarationType.Document)
             {
                 // Syntax of instantiating a new class makes it impossible to be shadowed
-                switch (originalDeclarationComponentType)
+                switch (originalDeclarationEnclosingType)
                 {
                     case ComponentType.ClassModule:
                         return false;
@@ -250,8 +256,12 @@ namespace Rubberduck.Inspections.Concrete
         private static bool DeclarationInTheSameComponentCanBeShadowed(Declaration originalDeclaration, Declaration userDeclaration)
         {
             // Shadowing the component containing the declaration is not a problem, because it is possible to directly access declarations inside that component
-            if (originalDeclaration.DeclarationType == DeclarationType.ProceduralModule || originalDeclaration.DeclarationType == DeclarationType.ClassModule ||
-                userDeclaration.DeclarationType == DeclarationType.ProceduralModule || userDeclaration.DeclarationType == DeclarationType.ClassModule)
+            if (originalDeclaration.DeclarationType == DeclarationType.ProceduralModule || 
+                originalDeclaration.DeclarationType == DeclarationType.ClassModule ||
+                originalDeclaration.DeclarationType == DeclarationType.Document ||
+                userDeclaration.DeclarationType == DeclarationType.ProceduralModule || 
+                userDeclaration.DeclarationType == DeclarationType.ClassModule ||
+                userDeclaration.DeclarationType == DeclarationType.Document)
             {
                 return false;
             }
@@ -360,7 +370,7 @@ namespace Rubberduck.Inspections.Concrete
                 }.ToHashSet(),
             [DeclarationType.ClassModule] = new[]
                 {
-                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.ClassModule, DeclarationType.UserForm
+                    DeclarationType.Project, DeclarationType.ProceduralModule, DeclarationType.ClassModule, DeclarationType.UserForm, DeclarationType.Document
                 }.ToHashSet(),
             [DeclarationType.Procedure] = new[]
                 {

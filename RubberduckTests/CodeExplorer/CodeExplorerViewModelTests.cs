@@ -104,7 +104,7 @@ namespace RubberduckTests.CodeExplorer
         [Test]
         public void AddVbForm()
         {
-            using (var explorer = new MockedCodeExplorer(ProjectType.HostProject).SelectFirstModule())
+            using (var explorer = new MockedCodeExplorer(ProjectType.StandardExe).SelectFirstModule())
             {
                 explorer.ExecuteAddVbFormCommand();
                 explorer.VbComponents.Verify(c => c.Add(ComponentType.VBForm), Times.Once);
@@ -131,7 +131,7 @@ namespace RubberduckTests.CodeExplorer
         [Test]
         public void AddMdiForm()
         {
-            using (var explorer = new MockedCodeExplorer(ProjectType.HostProject).SelectFirstModule())
+            using (var explorer = new MockedCodeExplorer(ProjectType.StandardExe).SelectFirstModule())
             {
                 explorer.ExecuteAddMdiFormCommand();
                 explorer.VbComponents.Verify(c => c.Add(ComponentType.MDIForm), Times.Once);
@@ -168,7 +168,7 @@ namespace RubberduckTests.CodeExplorer
         [Test]
         public void AddUserControlForm()
         {
-            using (var explorer = new MockedCodeExplorer(ProjectType.HostProject).SelectFirstModule())
+            using (var explorer = new MockedCodeExplorer(ProjectType.StandardExe).SelectFirstModule())
             {
                 explorer.ExecuteAddUserControlCommand();
                 explorer.VbComponents.Verify(c => c.Add(ComponentType.UserControl), Times.Once);
@@ -195,7 +195,7 @@ namespace RubberduckTests.CodeExplorer
         [Test]
         public void AddPropertyPage()
         {
-            using (var explorer = new MockedCodeExplorer(ProjectType.HostProject).SelectFirstModule())
+            using (var explorer = new MockedCodeExplorer(ProjectType.StandardExe).SelectFirstModule())
             {
                 explorer.ExecuteAddPropertyPageCommand();
                 explorer.VbComponents.Verify(c => c.Add(ComponentType.PropPage), Times.Once);
@@ -222,7 +222,7 @@ namespace RubberduckTests.CodeExplorer
         [Test]
         public void AddUserDocument()
         {
-            using (var explorer = new MockedCodeExplorer(ProjectType.HostProject).SelectFirstModule())
+            using (var explorer = new MockedCodeExplorer(ProjectType.ActiveXExe).SelectFirstModule())
             {
                 explorer.ExecuteAddUserDocumentCommand();
                 explorer.VbComponents.Verify(c => c.Add(ComponentType.DocObject), Times.Once);
@@ -543,7 +543,8 @@ End Sub
                 .SelectFirstModule())
             {
                 explorer.ExecuteIndenterCommand();
-                Assert.AreEqual(expectedCode, explorer.VbComponent.Object.CodeModule.Content());
+                var actualCode = explorer.VbComponent.Object.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 

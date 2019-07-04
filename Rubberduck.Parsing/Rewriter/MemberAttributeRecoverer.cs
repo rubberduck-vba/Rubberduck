@@ -130,7 +130,7 @@ namespace Rubberduck.Parsing.Rewriter
             EndTheCurrentParse(e.Token);
         }
 
-        private void Apply(IRewriteSession rewriteSession)
+        private void Apply(IExecutableRewriteSession rewriteSession)
         {
 
             var rewriteSucceeded = rewriteSession.TryRewrite();

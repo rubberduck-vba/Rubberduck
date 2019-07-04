@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -18,7 +19,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             // we're creating a public field for every control on a form, needs to be ignored.
             var fields = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                .Where(item => !IsIgnoringInspectionResultFor(item, AnnotationName)
+                .Where(item => !item.IsIgnoringInspectionResultFor(AnnotationName)
                                && item.Accessibility == Accessibility.Public
                                && (item.DeclarationType != DeclarationType.Control))
                 .ToList();

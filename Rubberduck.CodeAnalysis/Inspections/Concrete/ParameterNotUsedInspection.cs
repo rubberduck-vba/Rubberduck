@@ -7,6 +7,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -25,7 +26,7 @@ namespace Rubberduck.Inspections.Concrete
             var parameters = State.DeclarationFinder
                 .UserDeclarations(DeclarationType.Parameter)
                 .OfType<ParameterDeclaration>()
-                .Where(parameter => !parameter.References.Any() && !IsIgnoringInspectionResultFor(parameter, AnnotationName)
+                .Where(parameter => !parameter.References.Any() && !parameter.IsIgnoringInspectionResultFor(AnnotationName)
                                     && parameter.ParentDeclaration.DeclarationType != DeclarationType.Event
                                     && parameter.ParentDeclaration.DeclarationType != DeclarationType.LibraryFunction
                                     && parameter.ParentDeclaration.DeclarationType != DeclarationType.LibraryProcedure

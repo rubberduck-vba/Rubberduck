@@ -3,6 +3,7 @@ using System.Linq;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Inspections.CodePathAnalysis;
 using Rubberduck.Inspections.CodePathAnalysis.Nodes;
+using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -28,7 +29,7 @@ namespace Rubberduck.Inspections.Abstract
             }
 
             var output = new List<IInspectionResult>();
-            foreach (var reference in interesting.Where(use => !IsIgnoringInspectionResultFor(use, AnnotationName)))
+            foreach (var reference in interesting.Where(use => !use.IsIgnoringInspectionResultFor(AnnotationName)))
             {
                 var access = reference.Context.GetAncestor<VBAParser.MemberAccessExprContext>();
                 var usageContext = access.Parent is VBAParser.IndexExprContext
