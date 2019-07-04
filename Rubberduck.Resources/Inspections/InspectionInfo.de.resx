@@ -379,4 +379,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
     <value>Hierbei handelt es sich um ein schlecht dokumentiertes Feature: Im Normallfall wird der Fehlerspeicher geleert und jegliche Fehlerbehandlung deaktiviert. Sollte allerdings -1 als Zeilennummer vorhanden sein, kann diese als Marker der zu verwendenden Fehlerbehandlung interpretiert werden.</value>
   </data>
+  <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
+    <value>'While...Wend'-Schleifen sind aus Gründen der Abwärtskompatibilität vorhanden und wurden durch die Einführung von 'Do While...Loop'-Blöcken ersetzt, die die 'Exit Do'-Exit-Anweisung unterstützen. 'While...Wend'-Schleifen können nur beendet werden, wenn die 'While'-Bedingung erfüllt ist.</value>
+  </data>
 </root>

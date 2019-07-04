@@ -5,7 +5,13 @@ using Rubberduck.Parsing.VBA.ReferenceManagement;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public interface IParsingStageService: ICOMReferenceSynchronizer, IBuiltInDeclarationLoader, IParseRunner, IDeclarationResolveRunner, IReferenceResolveRunner 
+    public interface IParsingStageService: 
+        ICOMReferenceSynchronizer, 
+        IBuiltInDeclarationLoader, 
+        IParseRunner, 
+        IDeclarationResolveRunner, 
+        IReferenceResolveRunner, 
+        IUserComProjectSynchronizer
     {
     }
 }

@@ -1026,6 +1026,11 @@ namespace Rubberduck.Parsing.VBA
 
         public bool IsNewOrModified(QualifiedModuleName key)
         {
+            if (key.ComponentType == ComponentType.ComComponent)
+            {
+                return false;
+            }
+
             if (_moduleStates.TryGetValue(key, out var moduleState))
             {
                 // existing/modified
@@ -1063,13 +1068,24 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void RemoveBuiltInDeclarations(QualifiedModuleName projectQmn)
+        public void RemoveBuiltInDeclarations(string projectId)
         {
-            ClearAsTypeDeclarationPointingToReference(projectQmn);
-            if (_moduleStates.TryRemove(projectQmn, out var moduleState))
+            foreach (var module in _moduleStates.Keys.Where(key => key.ProjectId == projectId))
+            {
+                RemoveBuiltInDeclarations(module);
+            }
+        }
+
+        public void RemoveBuiltInDeclarations(QualifiedModuleName moduleOrProject)
+        {
+            ClearAsTypeDeclarationPointingToReference(moduleOrProject);
+            if (_moduleStates.TryRemove(moduleOrProject, out var moduleState))
             {
                 moduleState?.Dispose();
-                Logger.Warn("Could not remove declarations for removed reference '{0}' ({1}).", projectQmn.Name, projectQmn.ProjectId);
+            }
+            else
+            {
+                Logger.Warn("Could not remove declarations for removed reference '{0}' ({1}).", moduleOrProject.Name, moduleOrProject.ProjectId); 
             }
         }
         

@@ -18,8 +18,8 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources.ToDoExplorer;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.UIContext;
-using Rubberduck.UI.Command.ComCommands;
 using Rubberduck.VBEditor.Utility;
+using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -33,13 +33,13 @@ namespace Rubberduck.UI.ToDoItems
     public sealed class ToDoExplorerViewModel : ViewModelBase, INavigateSelection, IDisposable
     {
         private readonly RubberduckParserState _state;
-        private readonly IGeneralConfigService _configService;
+        private readonly IConfigurationService<Configuration> _configService;
         private readonly ISettingsFormFactory _settingsFormFactory;
         private readonly IUiDispatcher _uiDispatcher;
 
         public ToDoExplorerViewModel(
-            RubberduckParserState state, 
-            IGeneralConfigService configService, 
+            RubberduckParserState state,
+            IConfigurationService<Configuration> configService, 
             ISettingsFormFactory settingsFormFactory, 
             ISelectionService selectionService, 
             IUiDispatcher uiDispatcher)
@@ -50,6 +50,40 @@ namespace Rubberduck.UI.ToDoItems
             _uiDispatcher = uiDispatcher;
             _state.StateChanged += HandleStateChanged;
 
+            RefreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(),
+                _ =>
+                {
+                    switch(_state.Status)
+                    {
+                        case ParserState.Ready:
+                        case ParserState.Error:
+                        case ParserState.ResolverError:
+                        case ParserState.UnexpectedError:
+                        case ParserState.Pending:
+                            _state.OnParseRequested(this);
+                            break;
+                    }
+                },
+                _ =>
+                {
+                    switch (_state.Status)
+                    {
+                        case ParserState.Ready:
+                        case ParserState.Error:
+                        case ParserState.ResolverError:
+                        case ParserState.UnexpectedError:
+                        case ParserState.Pending:
+                            return true;
+                        default:
+                            return false;
+                    }
+                });
+            NavigateCommand = new NavigateCommand(selectionService);
+            RemoveCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveCommand, CanExecuteRemoveCommand);
+            CollapseAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseAll);
+            ExpandAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandAll);
+            CopyResultsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
+            OpenTodoSettingsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteOpenTodoSettingsCommand);
             NavigateCommand = new NavigateCommand(selectionService);
             RemoveCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveCommand, CanExecuteRemoveCommand);
             CollapseAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseAll);
@@ -132,7 +166,7 @@ namespace Rubberduck.UI.ToDoItems
 
         public INavigateCommand NavigateCommand { get; }
 
-        public ReparseCommand RefreshCommand { get; set; }
+        public CommandBase RefreshCommand { get; set; }
 
         public CommandBase RemoveCommand { get; }
 
@@ -225,7 +259,7 @@ namespace Rubberduck.UI.ToDoItems
 
         private IEnumerable<ToDoItem> GetToDoMarkers(CommentNode comment)
         {
-            var markers = _configService.LoadConfiguration().UserSettings.ToDoListSettings.ToDoMarkers;
+            var markers = _configService.Read().UserSettings.ToDoListSettings.ToDoMarkers;
             return markers.Where(marker => !string.IsNullOrEmpty(marker.Text)
                                          && Regex.IsMatch(comment.CommentText, @"\b" + Regex.Escape(marker.Text) + @"\b", RegexOptions.IgnoreCase))
                            .Select(marker => new ToDoItem(marker.Text, comment));

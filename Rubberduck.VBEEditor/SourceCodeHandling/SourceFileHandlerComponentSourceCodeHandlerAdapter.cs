@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Text;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -31,7 +32,7 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             {
                 return module;
             }
-            File.WriteAllText(fileName, newCode);
+            File.WriteAllText(fileName, newCode, Encoding.Default);
             return _tempSourceFileHandler.ImportAndCleanUp(module, fileName);
         }
     }

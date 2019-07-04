@@ -4,7 +4,7 @@
     <AssemblyName>Rubberduck.Parsing</AssemblyName>
     <Title>Rubberduck.Parsing</Title>
     <Product>Rubberduck.Parsing</Product>
-    <Copyright>Copyright © 2015-2016</Copyright>
+    <Copyright>Copyright © 2015-2019</Copyright>
     <ProjectGuid>{A4A618E1-CBCA-435F-9C6C-5181E030ADFC}</ProjectGuid>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />

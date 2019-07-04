@@ -3,23 +3,22 @@ using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.Settings
 {
-    public class HotkeyConfigProvider : IConfigProvider<HotkeySettings>
+    public class HotkeyConfigProvider : ConfigurationServiceBase<HotkeySettings>
     {
-        private readonly IPersistanceService<HotkeySettings> _persister;
         private readonly IEnumerable<HotkeySetting> _defaultHotkeys;
 
-        public HotkeyConfigProvider(IPersistanceService<HotkeySettings> persister)
+        public HotkeyConfigProvider(IPersistenceService<HotkeySettings> persister)
+            : base(persister, new DefaultSettings<HotkeySettings, Properties.Settings>())
         {
-            _persister = persister;
-            _defaultHotkeys = new DefaultSettings<HotkeySetting>().Defaults;
+            _defaultHotkeys = new DefaultSettings<HotkeySetting, Properties.Settings>().Defaults;
         }
 
-        public HotkeySettings Create()
+        public override HotkeySettings Read()
         {
             var prototype = new HotkeySettings(_defaultHotkeys);
 
             // Loaded settings don't contain defaults, so we need to use the `Settings` property to combine user settings with defaults.
-            var loaded = _persister.Load(prototype);
+            var loaded = LoadCacheValue();
             if (loaded != null)
             {
                 prototype.Settings = loaded.Settings;
@@ -28,14 +27,9 @@ namespace Rubberduck.Settings
             return prototype;
         }
 
-        public HotkeySettings CreateDefaults()
+        public override HotkeySettings ReadDefaults()
         {
             return new HotkeySettings(_defaultHotkeys);
-        }
-
-        public void Save(HotkeySettings settings)
-        {
-            _persister.Save(settings);
         }
     }
 }

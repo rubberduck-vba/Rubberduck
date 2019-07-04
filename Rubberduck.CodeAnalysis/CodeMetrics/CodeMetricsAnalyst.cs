@@ -1,5 +1,4 @@
 ﻿using Antlr4.Runtime.Tree;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
@@ -14,11 +13,11 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private readonly CodeMetric[] metrics;
+        private readonly CodeMetric[] _metrics;
 
         public CodeMetricsAnalyst(IEnumerable<CodeMetric> supportedMetrics)
         {
-            metrics = supportedMetrics.ToArray();
+            _metrics = supportedMetrics.ToArray();
         }
 
         public IEnumerable<ICodeMetricResult> GetMetrics(RubberduckParserState state)
@@ -45,7 +44,7 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
 
         private IEnumerable<ICodeMetricResult> TraverseModuleTree(IParseTree parseTree, DeclarationFinder declarationFinder, QualifiedModuleName moduleName)
         {
-            var listeners = metrics.Select(metric => metric.TreeListener).ToList();
+            var listeners = _metrics.Select(metric => metric.TreeListener).ToList();
             foreach (var l in listeners)
             {
                 l.Reset();

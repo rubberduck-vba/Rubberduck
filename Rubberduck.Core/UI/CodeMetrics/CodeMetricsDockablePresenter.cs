@@ -6,7 +6,7 @@ namespace Rubberduck.UI.CodeMetrics
 {
     public class CodeMetricsDockablePresenter : DockableToolwindowPresenter
     {
-        public CodeMetricsDockablePresenter(IVBE vbe, IAddIn addIn, CodeMetricsWindow view, IConfigProvider<WindowSettings> settings)
+        public CodeMetricsDockablePresenter(IVBE vbe, IAddIn addIn, CodeMetricsWindow view, IConfigurationService<WindowSettings> settings)
             : base(vbe, addIn, view, settings)
         {
         }

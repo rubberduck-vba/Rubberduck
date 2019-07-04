@@ -151,16 +151,11 @@ namespace Rubberduck
                     return;
                 }
 
-                var pathProvider = PersistancePathProvider.Instance;
-                var configLoader = new XmlPersistanceService<GeneralSettings>(pathProvider)
-                {
-                    FilePath =
-                        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                            "Rubberduck", "rubberduck.config")
-                };
+                var pathProvider = PersistencePathProvider.Instance;
+                var configLoader = new XmlPersistenceService<GeneralSettings>(pathProvider);
                 var configProvider = new GeneralConfigProvider(configLoader);
 
-                _initialSettings = configProvider.Create();
+                _initialSettings = configProvider.Read();
                 if (_initialSettings != null)
                 {
                     try

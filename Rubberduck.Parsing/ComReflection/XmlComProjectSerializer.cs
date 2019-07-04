@@ -12,7 +12,7 @@ namespace Rubberduck.Parsing.ComReflection
     {
         public readonly string DefaultSerializationPath;
 
-        public XmlComProjectSerializer(IPersistancePathProvider pathProvider)
+        public XmlComProjectSerializer(IPersistencePathProvider pathProvider)
         {
             DefaultSerializationPath = pathProvider.DataFolderPath("Declarations");
         }

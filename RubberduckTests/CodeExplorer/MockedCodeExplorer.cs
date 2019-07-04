@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using NUnit.Framework;
 using Moq;
@@ -35,21 +36,22 @@ namespace RubberduckTests.CodeExplorer
         private readonly GeneralSettings _generalSettings = new GeneralSettings();
 
         private readonly Mock<IUiDispatcher> _uiDispatcher = new Mock<IUiDispatcher>();
-        private readonly Mock<IConfigProvider<GeneralSettings>> _generalSettingsProvider = new Mock<IConfigProvider<GeneralSettings>>();
-        private readonly Mock<IConfigProvider<WindowSettings>> _windowSettingsProvider = new Mock<IConfigProvider<WindowSettings>>();
-        private readonly Mock<IConfigProvider<UnitTestSettings>> _unitTestSettingsProvider = new Mock<IConfigProvider<UnitTestSettings>>();
+        private readonly Mock<IConfigurationService<GeneralSettings>> _generalSettingsProvider = new Mock<IConfigurationService<GeneralSettings>>();
+        private readonly Mock<IConfigurationService<WindowSettings>> _windowSettingsProvider = new Mock<IConfigurationService<WindowSettings>>();
+        private readonly Mock<IConfigurationService<UnitTestSettings>> _unitTestSettingsProvider = new Mock<IConfigurationService<UnitTestSettings>>();
         private readonly Mock<ConfigurationLoader> _configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null, null);
         private readonly Mock<IVBEInteraction> _interaction = new Mock<IVBEInteraction>();
 
         public MockedCodeExplorer()
         {
-            _generalSettingsProvider.Setup(s => s.Create()).Returns(_generalSettings);
-            _windowSettingsProvider.Setup(s => s.Create()).Returns(WindowSettings);
-            _configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-            _unitTestSettingsProvider.Setup(s => s.Create())
+            _generalSettingsProvider.Setup(s => s.Read()).Returns(_generalSettings);
+            _windowSettingsProvider.Setup(s => s.Read()).Returns(WindowSettings);
+            _configLoader.Setup(c => c.Read()).Returns(GetDefaultUnitTestConfig());
+            _unitTestSettingsProvider.Setup(s => s.Read())
                 .Returns(new UnitTestSettings(BindingMode.LateBinding,AssertMode.StrictAssert, true, true, false));
 
             _uiDispatcher.Setup(m => m.Invoke(It.IsAny<Action>())).Callback((Action argument) => argument.Invoke());
+            _uiDispatcher.Setup(m => m.StartTask(It.IsAny<Action>(), It.IsAny<TaskCreationOptions>())).Returns((Action argument, TaskCreationOptions options) => Task.Factory.StartNew(argument.Invoke, options));
 
             SaveDialog = new Mock<ISaveFileDialog>();
             SaveDialog.Setup(o => o.OverwritePrompt);

@@ -17,13 +17,14 @@ using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.VersionCheck;
 using Application = System.Windows.Forms.Application;
+using Rubberduck.SettingsProvider;
 
 namespace Rubberduck
 {
     public sealed class App : IDisposable
     {
         private readonly IMessageBox _messageBox;
-        private readonly IGeneralConfigService _configService;
+        private readonly IConfigurationService<Configuration> _configService;
         private readonly IAppMenu _appMenus;
         private readonly IRubberduckHooks _hooks;
         private readonly IVersionCheck _version;
@@ -34,7 +35,7 @@ namespace Rubberduck
         private Configuration _config;
 
         public App(IMessageBox messageBox,
-            IGeneralConfigService configService,
+            IConfigurationService<Configuration> configService,
             IAppMenu appMenus,
             IRubberduckHooks hooks,
             IVersionCheck version,
@@ -54,7 +55,7 @@ namespace Rubberduck
 
         private void _configService_SettingsChanged(object sender, ConfigurationChangedEventArgs e)
         {
-            _config = _configService.LoadConfiguration();
+            _config = _configService.Read();
             _hooks.HookHotkeys();
             UpdateLoggingLevel();
 
@@ -120,7 +121,7 @@ namespace Rubberduck
             }
 
             _config.UserSettings.GeneralSettings.MinimumLogLevel = LogLevel.Off.Ordinal;
-            _configService.SaveConfiguration(_config);
+            _configService.Save(_config);
         }
 
         public void Startup()
@@ -160,7 +161,7 @@ namespace Rubberduck
 
         private void ApplyCultureConfig()
         {
-            _config = _configService.LoadConfiguration();
+            _config = _configService.Read();
 
             var currentCulture = Resources.RubberduckUI.Culture;
             try
@@ -176,7 +177,7 @@ namespace Rubberduck
                 // not accessing resources here, because setting resource culture literally just failed.
                 _messageBox.NotifyWarn(exception.Message, "Rubberduck");
                 _config.UserSettings.GeneralSettings.Language.Code = currentCulture.Name;
-                _configService.SaveConfiguration(_config);
+                _configService.Save(_config);
             }
         }
 
@@ -216,7 +217,7 @@ namespace Rubberduck
                     _config.UserSettings.IndenterSettings.LoadLegacyFromRegistry();
                 }
                 _config.UserSettings.GeneralSettings.IsSmartIndenterPrompted = true;
-                _configService.SaveConfiguration(_config);
+                _configService.Save(_config);
             }
             catch 
             {

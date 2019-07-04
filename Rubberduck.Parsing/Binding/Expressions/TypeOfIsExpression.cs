@@ -5,9 +5,6 @@ namespace Rubberduck.Parsing.Binding
 {
     public sealed class TypeOfIsExpression : BoundExpression
     {
-        private readonly IBoundExpression _expression;
-        private readonly IBoundExpression _typeExpression;
-
         public TypeOfIsExpression(
             Declaration referencedDeclaration,
             ParserRuleContext context,
@@ -15,24 +12,11 @@ namespace Rubberduck.Parsing.Binding
             IBoundExpression typeExpression)
             : base(referencedDeclaration, ExpressionClassification.Value, context)
         {
-            _expression = expression;
-            _typeExpression = typeExpression;
+            Expression = expression;
+            TypeExpression = typeExpression;
         }
 
-        public IBoundExpression Expression
-        {
-            get
-            {
-                return _expression;
-            }
-        }
-
-        public IBoundExpression TypeExpression
-        {
-            get
-            {
-                return _typeExpression;
-            }
-        }
+        public IBoundExpression Expression { get; }
+        public IBoundExpression TypeExpression { get; }
     }
 }

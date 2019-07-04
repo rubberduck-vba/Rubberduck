@@ -192,14 +192,14 @@
                         Width="*"
                         IsReadOnly="True" />
                             <DataGridTemplateColumn
-                        Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GeneralSettings_ModifierWarning}"
-                        Width="Auto">
+                                Width="Auto">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Label Content="{Resx ResxName=Rubberduck.Resources.Resources, Key=exclamation}"
-                                               Visibility="{Binding IsValid, Converter={StaticResource BoolToHiddenVisibility}}"
-                                               HorizontalContentAlignment="Center"
-                                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GeneralSettings_HotkeyRestrictionToolTip}"/>
+                                        <Label Visibility="{Binding IsValid, Converter={StaticResource BoolToHiddenVisibility}}"
+                                               HorizontalContentAlignment="Center">
+                                            <Image Source="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=exclamation}"
+                                                   ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GeneralSettings_HotkeyRestrictionToolTip}"/>
+                                        </Label>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using NLog;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources;
@@ -33,7 +32,7 @@ namespace Rubberduck.UI.Command.ComCommands
         private readonly GeneralSettings _settings;
 
         public ReparseCommand(
-            IVBE vbe, IConfigProvider<GeneralSettings> settingsProvider, 
+            IVBE vbe, IConfigurationService<GeneralSettings> settingsProvider, 
             RubberduckParserState state, IVBETypeLibsAPI typeLibApi, IVbeSettings vbeSettings, 
             IMessageBox messageBox, IVbeEvents vbeEvents) 
             : base(vbeEvents)
@@ -42,7 +41,7 @@ namespace Rubberduck.UI.Command.ComCommands
             _vbeSettings = vbeSettings;
             _typeLibApi = typeLibApi;
             _state = state;
-            _settings = settingsProvider.Create();
+            _settings = settingsProvider.Read();
             _messageBox = messageBox;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
