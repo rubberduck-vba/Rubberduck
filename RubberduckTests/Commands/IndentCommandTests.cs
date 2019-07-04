@@ -4,6 +4,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.ComCommands;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -19,10 +20,9 @@ namespace RubberduckTests.Commands
         public void AddNoIndentAnnotation()
         {
             IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule("", out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule("", out component, Selection.Home);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-
                 var noIndentAnnotationCommand = MockIndenter.ArrangeNoIndentAnnotationCommand(vbe, state);
                 noIndentAnnotationCommand.Execute(null);
 
@@ -50,7 +50,7 @@ Sub Foo()
 End Sub";
 
             IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, Selection.Home);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
