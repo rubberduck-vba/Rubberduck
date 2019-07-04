@@ -479,7 +479,7 @@ End Enum
             return new AddTestModuleCommand(vbe.Object, state, ArrangeCodeGenerator(vbe.Object, state), vbeEvents.Object);
         }
 
-        // TODO: Remove the temporal copuling with other Arrange*
+        // TODO: Remove the temporal coupling with other Arrange*
         private AddTestModuleWithStubsCommand ArrangeAddTestModuleWithStubsCommand(Mock<IVBE> vbe,
             AddTestModuleCommand addTestModuleCommand)
         {

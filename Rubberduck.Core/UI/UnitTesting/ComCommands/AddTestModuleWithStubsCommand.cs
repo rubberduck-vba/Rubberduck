@@ -21,7 +21,7 @@ namespace Rubberduck.UI.UnitTesting.ComCommands
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        private bool SpecialEvaluateCanExecute(object parameter) => parameter is CodeExplorerComponentViewModel;
+        private bool SpecialEvaluateCanExecute(object parameter) => parameter is CodeExplorerComponentViewModel || parameter == null;
 
         protected override void OnExecute(object parameter)
         {
