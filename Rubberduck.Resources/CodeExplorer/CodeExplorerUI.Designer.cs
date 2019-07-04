@@ -129,6 +129,15 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Existing file....
+        /// </summary>
+        public static string CodeExplorer_AddExistingFileText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_AddExistingFileText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to UserForm (.frm).
         /// </summary>
         public static string CodeExplorer_AddFormText {
@@ -147,7 +156,7 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add Module.
+        ///   Looks up a localized string similar to Add.
         /// </summary>
         public static string CodeExplorer_AddModule {
             get {
@@ -228,7 +237,7 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Collapse node and all child nodes.
+        ///   Looks up a localized string similar to Collapse all.
         /// </summary>
         public static string CodeExplorer_CollapseSubnodesToolTip {
             get {
@@ -273,7 +282,7 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expand node and all child nodes.
+        ///   Looks up a localized string similar to Expand all.
         /// </summary>
         public static string CodeExplorer_ExpandSubnodesToolTip {
             get {

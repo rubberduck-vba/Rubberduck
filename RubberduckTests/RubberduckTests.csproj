@@ -5,7 +5,7 @@
     <AssemblyName>RubberduckTests</AssemblyName>
     <Title>RubberduckTests</Title>
     <Product>RubberduckTests</Product>
-    <Copyright>Copyright © 2016-2018</Copyright>
+    <Copyright>Copyright © 2016-2019</Copyright>
     <!-- Default to Debug configuration. AppVeyor expects to be able to build Release tests -->
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <ProjectGuid>{ADADE971-75E3-40C4-8C19-AB7409372F2E}</ProjectGuid>
