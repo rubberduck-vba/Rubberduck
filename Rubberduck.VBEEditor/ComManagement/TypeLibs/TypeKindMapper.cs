@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices.ComTypes;
-using Rubberduck.VBEditor.ComManagement.TypeLibsSupport;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 {
