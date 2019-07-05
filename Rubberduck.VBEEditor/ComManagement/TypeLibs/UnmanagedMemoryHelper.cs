@@ -39,7 +39,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// <summary>
     /// Exposes some special routines for dealing with unmanaged memory
     /// </summary>
-    public static class UnmanagedMemHelper
+    public static class UnmanagedMemoryHelper
     {
         /// <summary>
         /// Windows API call used for memory range validation
@@ -177,7 +177,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         /// <returns>the requested structure T</returns>
         public static T ReadStructureSafe<T>(IntPtr memAddress)
         {
-            if (UnmanagedMemHelper.IsValidMemoryRange(memAddress, Marshal.SizeOf(typeof(T))))
+            if (UnmanagedMemoryHelper.IsValidMemoryRange(memAddress, Marshal.SizeOf(typeof(T))))
             {
                 return (T)Marshal.PtrToStructure(memAddress, typeof(T));
             }

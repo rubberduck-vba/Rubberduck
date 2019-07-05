@@ -3,32 +3,27 @@ using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
 
-/// <summary>
-/// For usage examples, please see VBETypeLibsAPI
-/// </summary>
-/// <remarks>
-/// TypeInfos from a VBA hosted project, and obtained through VBETypeLibsAccessor will have the following behaviours:
-/// 
-///   will expose both public and private prcoedures and fields
-///   will expose constants values, but they are unnamed (their member IDs will be MEMBERID_NIL)
-///   enumerations are not exposed directly in the type library
-///   enumerations may be referenced by field/argument datatypes, and the ITypeInfos for them are then accessible that way
-///   UDTs are not exposed directly in the type library
-///   UDTs may be referenced by field/argument datatypes, and as such the ITypeInfos for them are then accessible that way
-///   
-/// TypeInfos obtained by other means (such as the IDispatch::GetTypeInfo method) usually expose more restricted
-/// versions of ITypeInfo which may not expose private members
-/// </remarks>
-
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 {
     /// <summary>
-    /// A wrapper for ITypeLib objects, with specific extensions for VBE hosted ITypeLibs
+    /// A wrapper for ITypeLib objects, with specific extensions for VBE hosted ITypeLibs. For usage examples, please see <see cref="VBETypeLibsAccessor"/>.
     /// </summary>
     /// <remarks>
-    /// allow safe managed consumption of VBA provided type librarys, plus exposes 
-    /// a VBE extentions property for accessing VBE specific extensions.
+    /// Allow safe managed consumption of VBA provided type libraries, plus exposes 
+    /// a VBE extensions property for accessing VBE specific extensions.
     /// Can also be cast to ComTypes.ITypeLib for raw access to the underlying type library
+    ///
+    /// TypeInfos from a VBA hosted project, and obtained through VBETypeLibsAccessor will have the following behaviours:
+    /// 
+    ///   will expose both public and private procedures and fields
+    ///   will expose constants values, but they are unnamed (their member IDs will be MEMBERID_NIL)
+    ///   enumerations are not exposed directly in the type library
+    ///   enumerations may be referenced by field/argument datatypes, and the ITypeInfos for them are then accessible that way
+    ///   UDTs are not exposed directly in the type library
+    ///   UDTs may be referenced by field/argument datatypes, and as such the ITypeInfos for them are then accessible that way
+    ///   
+    /// TypeInfos obtained by other means (such as the IDispatch::GetTypeInfo method) usually expose more restricted
+    /// versions of ITypeInfo which may not expose private members
     /// </remarks>
     public sealed class TypeLibWrapper : ITypeLibInternalSelfMarshalForwarder, ITypeLibWrapper
     {
@@ -64,7 +59,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                     var cache = new TypeLibTextFields();
                     // as a C# caller, it's easier to work with ComTypes.ITypeLib
                     ((ComTypes.ITypeLib)_target_ITypeLib).GetDocumentation((int)KnownDispatchMemberIDs.MEMBERID_NIL, out cache._name, out cache._docString, out cache._helpContext, out cache._helpFile);
-                    if (cache._name == null) cache._name = "[VBA.Immediate.Window]";
+                    if (cache._name == null && HasVBEExtensions) cache._name = "[VBA.Immediate.Window]";
                     _cachedTextFields = cache;
                 }
                 return _cachedTextFields.Value;
@@ -104,7 +99,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         private void InitFromRawPointer(IntPtr rawObjectPtr, bool makeCopyOfReference)
         {
-            if (!UnmanagedMemHelper.ValidateComObject(rawObjectPtr))
+            if (!UnmanagedMemoryHelper.ValidateComObject(rawObjectPtr))
             {
                 throw new ArgumentException("Expected COM object, but validation failed.");
             }

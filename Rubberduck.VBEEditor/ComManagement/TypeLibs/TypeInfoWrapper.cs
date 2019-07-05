@@ -149,7 +149,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         private void InitFromRawPointer(IntPtr rawObjectPtr, bool makeCopyOfReference)
         {
-            if (!UnmanagedMemHelper.ValidateComObject(rawObjectPtr))
+            if (!UnmanagedMemoryHelper.ValidateComObject(rawObjectPtr))
             {
                 throw new ArgumentException("Expected COM object, but validation failed.");
             }

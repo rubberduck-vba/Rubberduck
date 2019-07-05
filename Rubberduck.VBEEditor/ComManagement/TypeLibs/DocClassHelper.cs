@@ -76,9 +76,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
 
         /// <summary>
-        /// Determines the document class type of a VBA class.  See DocClassHelper
+        /// Determines the document class type of a VBA class.  See <see cref="DocClassHelper" />
         /// </summary>
-        /// <returns>the identified document class type, or DocClassType.Unrecognized</returns>
+        /// <returns>the identified document class type, or <see cref="DocClassType.Unrecognized" /></returns>
         public static DocClassType DetermineDocumentClassType(TypeInfoWrapper rootInterface)
         {
             if (rootInterface.ImplementedInterfaces.DoesImplement(DocClassHelper.KnownDocumentInterfaceProgIds, out int matchId))
