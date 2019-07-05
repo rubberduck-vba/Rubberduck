@@ -1,44 +1,39 @@
-using NLog;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Rubberduck.Navigation.CodeExplorer;
-using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class AddMDIFormCommand : CommandBase
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
+    public class AddMDIFormCommand : AddComponentCommandBase
     {
-        private readonly IVBE _vbe;
-        private readonly AddComponentCommand _addComponentCommand;
+        private static readonly ProjectType[] Types = { ProjectType.StandardExe, ProjectType.ActiveXExe };
 
-        public AddMDIFormCommand(IVBE vbe, AddComponentCommand addComponentCommand) : base(LogManager.GetCurrentClassLogger())
+        public AddMDIFormCommand(ICodeExplorerAddComponentService addComponentService)
+            : base(addComponentService)
         {
-            _vbe = vbe;
-            _addComponentCommand = addComponentCommand;
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        public override IEnumerable<ProjectType> AllowableProjectTypes => Types;
+
+        public override ComponentType ComponentType => ComponentType.MDIForm;
+
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
-            var node = parameter as CodeExplorerItemViewModel;
-            while (node != null && !(node is ICodeExplorerDeclarationViewModel))
+            if (!(parameter is CodeExplorerItemViewModel node))
             {
-                node = node.Parent;
-            }
-            var project = (node as ICodeExplorerDeclarationViewModel)?.Declaration?.Project;
-
-            if (project == null  && _vbe.ProjectsCount == 1)
-            {
-                using (var vbProjects = _vbe.VBProjects)
-                using (project = vbProjects[1])
-                {
-                    return EvaluateCanExecuteCore(project, parameter as CodeExplorerItemViewModel);
-                }
+                return false;
             }
 
-            return EvaluateCanExecuteCore(project, parameter as CodeExplorerItemViewModel);
+            var project = node.Declaration?.Project;
+
+            return EvaluateCanExecuteForProject(project);
         }
 
-        private bool EvaluateCanExecuteCore(IVBProject project, CodeExplorerItemViewModel itemViewModel)
+        private static bool EvaluateCanExecuteForProject(IVBProject project)
         {
             if (project == null)
             {
@@ -60,12 +55,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 }
             }
 
-            return _addComponentCommand.CanAddComponent(itemViewModel, new[] {ProjectType.StandardExe, ProjectType.ActiveXExe});
-        }
-
-        protected override void OnExecute(object parameter)
-        {
-            _addComponentCommand.AddComponent(parameter as CodeExplorerItemViewModel, ComponentType.MDIForm);
+            return true;
         }
     }
 }

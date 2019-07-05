@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 using Rubberduck.Resources.Settings;
+using BindingMode = Rubberduck.UnitTesting.Settings.BindingMode;
 
 namespace Rubberduck.UI.Settings.Converters
 {
@@ -9,13 +10,15 @@ namespace Rubberduck.UI.Settings.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var mode = (Rubberduck.Settings.BindingMode)value;
+            var mode = (BindingMode)value;
             switch (mode)
             {
-                case Rubberduck.Settings.BindingMode.EarlyBinding:
+                case BindingMode.EarlyBinding:
                     return UnitTestingPage.UnitTestSettings_EarlyBinding;
-                case Rubberduck.Settings.BindingMode.LateBinding:
+                case BindingMode.LateBinding:
                     return UnitTestingPage.UnitTestSettings_LateBinding;
+                case BindingMode.DualBinding:
+                    return UnitTestingPage.UnitTestSettings_DualBinding;
                 default:
                     return value;
             }
@@ -24,9 +27,15 @@ namespace Rubberduck.UI.Settings.Converters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var text = (string)value;
-            return text == UnitTestingPage.UnitTestSettings_EarlyBinding
-                ? Rubberduck.Settings.BindingMode.EarlyBinding
-                : Rubberduck.Settings.BindingMode.LateBinding;
+
+            if (UnitTestingPage.UnitTestSettings_EarlyBinding.Equals(text))
+            {
+                return BindingMode.EarlyBinding;
+            }
+
+            return UnitTestingPage.UnitTestSettings_LateBinding.Equals(text)
+                ? BindingMode.LateBinding
+                : BindingMode.DualBinding;
         }
     }
 }

@@ -145,7 +145,6 @@ namespace Rubberduck.Parsing.Symbols
                 ProjectName = IdentifierName;
             }
 
-            CustomFolder = FolderFromAnnotations();
             IsArray = isArray;
             AsTypeContext = asTypeContext;
             TypeHint = typeHint;
@@ -230,32 +229,13 @@ namespace Rubberduck.Parsing.Symbols
                 null,
                 new Attributes()) { }
 
-        private string FolderFromAnnotations()
-            {
-                var @namespace = Annotations.FirstOrDefault(annotation => annotation.AnnotationType == AnnotationType.Folder);
-                string result;
-                if (@namespace == null)
-                {
-                    result = string.IsNullOrEmpty(QualifiedName.QualifiedModuleName.ProjectName)
-                        ? ProjectId
-                        : QualifiedName.QualifiedModuleName.ProjectName;
-                }
-                else
-                {
-                    var value = ((FolderAnnotation)@namespace).FolderName;
-                    result = value;
-                }
-                return result;
-            }
-
-
         public static Declaration GetModuleParent(Declaration declaration)
         {
             if (declaration == null)
             {
                 return null;
             }
-            if (declaration.DeclarationType == DeclarationType.ClassModule || declaration.DeclarationType == DeclarationType.ProceduralModule)
+            if (declaration.DeclarationType.HasFlag(DeclarationType.ClassModule) || declaration.DeclarationType == DeclarationType.ProceduralModule)
             {
                 return declaration;
             }
@@ -566,6 +546,7 @@ namespace Rubberduck.Parsing.Symbols
                     case DeclarationType.Project:
                         return "VBE";
                     case DeclarationType.ClassModule:
+                    case DeclarationType.Document:
                     case DeclarationType.ProceduralModule:
                         return QualifiedModuleName.ToString();
                     case DeclarationType.Procedure:
@@ -590,7 +571,7 @@ namespace Rubberduck.Parsing.Symbols
         /// </summary>
         public bool IsUndeclared { get; }
 
-        public string CustomFolder { get; }
+        public virtual string CustomFolder => ParentDeclaration?.CustomFolder ?? ProjectName;
 
         public bool Equals(Declaration other)
         {

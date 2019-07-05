@@ -1,26 +1,19 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
-    public class ExtractInterfaceModel
+    public class ExtractInterfaceModel : IRefactoringModel
     {
-        public RubberduckParserState State { get; }
+        public IDeclarationFinderProvider DeclarationFinderProvider { get; }
+
         public Declaration TargetDeclaration { get; }
-
         public string InterfaceName { get; set; }
-
-        public IEnumerable<InterfaceMember> Members { get; set; } = new List<InterfaceMember>();
-
-        private static readonly DeclarationType[] ModuleTypes =
-        {
-            DeclarationType.ClassModule,
-            DeclarationType.Document,
-            DeclarationType.UserForm
-        };
+        public ObservableCollection<InterfaceMember> Members { get; set; } = new ObservableCollection<InterfaceMember>();
+        public IEnumerable<InterfaceMember> SelectedMembers => Members.Where(m => m.IsSelected);
 
         public static readonly DeclarationType[] MemberTypes =
         {
@@ -31,14 +24,10 @@ namespace Rubberduck.Refactorings.ExtractInterface
             DeclarationType.PropertySet,
         };
 
-        public ExtractInterfaceModel(RubberduckParserState state, QualifiedSelection selection)
+        public ExtractInterfaceModel(IDeclarationFinderProvider declarationFinderProvider, Declaration target)
         {
-            State = state;
-            var declarations = state.AllUserDeclarations.ToList();
-            var candidates = declarations.Where(item => ModuleTypes.Contains(item.DeclarationType)).ToList();
-
-            TargetDeclaration = candidates.SingleOrDefault(item => 
-                        item.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName));
+            TargetDeclaration = target;
+            DeclarationFinderProvider = declarationFinderProvider;
 
             if (TargetDeclaration == null)
             {
@@ -47,14 +36,20 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
             InterfaceName = $"I{TargetDeclaration.IdentifierName}";
 
-            Members = declarations.Where(item => item.ProjectId == TargetDeclaration.ProjectId
-                                                 && item.ComponentName == TargetDeclaration.ComponentName
-                                                 && (item.Accessibility == Accessibility.Public || item.Accessibility == Accessibility.Implicit)
-                                                 && MemberTypes.Contains(item.DeclarationType))
-                                   .OrderBy(o => o.Selection.StartLine)
-                                   .ThenBy(t => t.Selection.StartColumn)
-                                   .Select(d => new InterfaceMember(d))
-                                   .ToList();
+            LoadMembers();
+        }
+
+        private void LoadMembers()
+        {
+            Members = new ObservableCollection<InterfaceMember>(DeclarationFinderProvider.DeclarationFinder
+                .Members(TargetDeclaration.QualifiedModuleName)
+                .Where(item =>
+                    (item.Accessibility == Accessibility.Public || item.Accessibility == Accessibility.Implicit)
+                    && MemberTypes.Contains(item.DeclarationType))
+                .OrderBy(o => o.Selection.StartLine)
+                .ThenBy(t => t.Selection.StartColumn)
+                .Select(d => new InterfaceMember(d))
+                .ToList());
         }
     }
 }

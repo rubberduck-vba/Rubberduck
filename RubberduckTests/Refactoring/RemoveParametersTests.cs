@@ -2,24 +2,25 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Moq;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
-using Rubberduck.UI.Refactorings.RemoveParameters;
 using System.Collections.Generic;
+using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Exceptions;
+using Rubberduck.VBEditor.Utility;
 
 namespace RubberduckTests.Refactoring
 {
     [TestFixture]
-    public class RemoveParametersTests
+    public class RemoveParametersTests : InteractiveRefactoringTestBase<IRemoveParametersPresenter, RemoveParametersModel>
     {
         //TestCase arg1 => number of arguments in the Sub or Function call
-        //TestCase arg2 => arguement numbers to remove
+        //TestCase arg2 => argument numbers to remove
         //Input and Expected results generated for each test
         [TestCase(1, "1")]
         [TestCase(2, "1")]
@@ -52,9 +53,13 @@ namespace RubberduckTests.Refactoring
             var input = preamble;
             for (var argNum = 1; argNum <= numParams; argNum++)
             {
-                input = argNum == 1 ? input + $"ar|g{argNum} As Long, " : input + $"arg{argNum} As Long, ";
+                input = argNum == 1 
+                    ? input + $"ar|g{argNum} As Long, " 
+                    : input + $"arg{argNum} As Long, ";
             }
-            input = input.Equals(preamble) ? input : input.Remove(input.Length - 2);
+            input = input.Equals(preamble) 
+                ? input 
+                : input.Remove(input.Length - 2);
             input = input + ")";
 
             var paramsTR = paramsToRemove.Split(',');
@@ -87,7 +92,7 @@ End Sub";
         }
 
         //TestCase arg1 => number of arguments in the Sub or Function call
-        //TestCase arg2 => arguement numbers to remove
+        //TestCase arg2 => argument numbers to remove
         //Input and Expected results generated for each test.  This test generates references to modify as well
         [TestCase(2, "1")]
         [TestCase(3, "2,3")] //Replicates Issue #4319
@@ -106,10 +111,14 @@ End Sub";
             var refInput = refPreamble;
             for (var argNum = 1; argNum <= numParams; argNum++)
             {
-                input = argNum == 1 ? input + $"ar|g{argNum} As Long, " : input + $"arg{argNum} As Long, ";
+                input = argNum == 1 
+                    ? input + $"ar|g{argNum} As Long, " 
+                    : input + $"arg{argNum} As Long, ";
                 refInput = refInput + $"{argNum},";
             }
-            input = input.Equals(preamble) ? input : input.Remove(input.Length - 2);
+            input = input.Equals(preamble) 
+                ? input 
+                : input.Remove(input.Length - 2);
             input = input + ")";
 
             refInput = refInput.Remove(refInput.Length - 1);
@@ -463,14 +472,8 @@ End Property";
 
                 var qualifiedSelection = parameter.QualifiedSelection;
 
-                //Specify Param(s) to remove
-                var model = new RemoveParametersModel(state, qualifiedSelection, null);
-
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object, rewritingManager);
-                refactoring.QuickFix(state, qualifiedSelection);
+                var refactoring = (RemoveParametersRefactoring)TestRefactoring(rewritingManager, state);
+                refactoring.QuickFix(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }
@@ -637,7 +640,7 @@ End Sub
     Foo 10, ""Hello""
 End Sub
 ";
-            var selection = new Selection(1, 23, 1, 27);
+            var selection = new Selection(1, 45, 1, 49);
 
             //Expectation
             const string expectedCallingCode =
@@ -645,35 +648,18 @@ End Sub
     Foo 10
 End Sub
 ";
+            var paramIndices = new[] {1}.ToList();
+            var presenterAction = StandardPresenterAction(paramIndices);
+            var actualCode = RefactoredCode(
+                "DeclarationModule",
+                selection,
+                presenterAction,
+                null,
+                false,
+                ("DeclarationModule", inputDeclaringCode, ComponentType.StandardModule),
+                ("CallingModule", inputCallingCode, ComponentType.StandardModule));
 
-            var vbeBuilder = new MockVbeBuilder();
-            var projectBuilder = vbeBuilder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("DeclarationModule", ComponentType.StandardModule, inputDeclaringCode, selection)
-                .AddComponent("CallingModule", ComponentType.StandardModule, inputCallingCode);
-            projectBuilder.AddProjectToVbeBuilder();
-            var vbe = vbeBuilder.Build();
-            var declaringComponent = projectBuilder.MockComponents[0].Object;
-            var callingComponent = projectBuilder.MockComponents[1].Object; 
-
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(declaringComponent), selection);
-
-                //Specify Param(s) to remove
-                var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.RemoveParameters = new[] { model.Parameters[1] }.ToList();
-
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-                var resultCallingCode = callingComponent.CodeModule.Content();
-
-                Assert.AreEqual(expectedCallingCode, resultCallingCode);
-            }
+            Assert.AreEqual(expectedCallingCode, actualCode["CallingModule"]);
         }
 
         [Test]
@@ -769,16 +755,16 @@ End Sub
 End Property";
             var selection = new Selection(1, 23, 1, 27);
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            RemoveParametersModel capturedModel = null;
+            Func<RemoveParametersModel, RemoveParametersModel> presenterAction = model => 
             {
+                capturedModel = model;
+                return model;
+            };
 
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            RefactoredCode(inputCode, selection, presenterAction);
 
-                var model = new RemoveParametersModel(state, qualifiedSelection, null);
-
-                Assert.AreEqual(1, model.Parameters.Count); // doesn't allow removing last param from setter
-            }
+            Assert.AreEqual(1, capturedModel.Parameters.Count); // doesn't allow removing last param from setter
         }
 
         [Test]
@@ -792,16 +778,16 @@ End Property";
 End Property";
             var selection = new Selection(1, 23, 1, 27);
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            RemoveParametersModel capturedModel = null;
+            Func<RemoveParametersModel, RemoveParametersModel> presenterAction = model =>
             {
+                capturedModel = model;
+                return model;
+            };
 
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            RefactoredCode(inputCode, selection, presenterAction);
 
-                var model = new RemoveParametersModel(state, qualifiedSelection, null);
-
-                Assert.AreEqual(1, model.Parameters.Count); // doesn't allow removing last param from letter
-            }
+            Assert.AreEqual(1, capturedModel.Parameters.Count); // doesn't allow removing last param from setter
         }
 
         [Test]
@@ -1132,34 +1118,19 @@ End Sub";
 Private Sub IClass1_DoSomething(ByVal a As Integer)
 End Sub";   // note: IDE removes excess spaces
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
+            var paramIndices = new[] { 1 }.ToList();
+            var presenterAction = StandardPresenterAction(paramIndices);
+            var actualCode = RefactoredCode(
+                "IClass1",
+                selection,
+                presenterAction,
+                null,
+                false,
+                ("IClass1", inputCode1, ComponentType.ClassModule),
+                ("Class1", inputCode2, ComponentType.ClassModule));
 
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
-
-                var module1 = project.Object.VBComponents[0].CodeModule;
-                var module2 = project.Object.VBComponents[1].CodeModule;
-
-                //Specify Params to remove
-                var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.RemoveParameters = new[] { model.Parameters[1] }.ToList();
-
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-
-                Assert.AreEqual(expectedCode1, module1.Content());
-                Assert.AreEqual(expectedCode2, module2.Content());
-            }
+            Assert.AreEqual(expectedCode1, actualCode["IClass1"]);
+            Assert.AreEqual(expectedCode2, actualCode["Class1"]);
         }
 
         [Test]
@@ -1189,34 +1160,19 @@ End Sub";
 Private Sub IClass1_DoSomething(ByVal v1 As Integer)
 End Sub";   // note: IDE removes excess spaces
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
+            var paramIndices = new[] { 1 }.ToList();
+            var presenterAction = StandardPresenterAction(paramIndices);
+            var actualCode = RefactoredCode(
+                "IClass1",
+                selection,
+                presenterAction,
+                null,
+                false,
+                ("IClass1", inputCode1, ComponentType.ClassModule),
+                ("Class1", inputCode2, ComponentType.ClassModule));
 
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
-
-                var module1 = project.Object.VBComponents[0].CodeModule;
-                var module2 = project.Object.VBComponents[1].CodeModule;
-
-                //Specify Params to remove
-                var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.RemoveParameters = new[] { model.Parameters[1] }.ToList();
-
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-
-                Assert.AreEqual(expectedCode1, module1.Content());
-                Assert.AreEqual(expectedCode2, module2.Content());
-            }
+            Assert.AreEqual(expectedCode1, actualCode["IClass1"]);
+            Assert.AreEqual(expectedCode2, actualCode["Class1"]);
         }
 
         [Test]
@@ -1256,37 +1212,21 @@ End Sub";   // note: IDE removes excess spaces
 Private Sub IClass1_DoSomething(ByVal i As Integer)
 End Sub";   // note: IDE removes excess spaces
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
-                .AddComponent("Class2", ComponentType.ClassModule, inputCode3)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
+            var paramIndices = new[] { 1 }.ToList();
+            var presenterAction = StandardPresenterAction(paramIndices);
+            var actualCode = RefactoredCode(
+                "IClass1",
+                selection,
+                presenterAction,
+                null,
+                false,
+                ("IClass1", inputCode1, ComponentType.ClassModule),
+                ("Class1", inputCode2, ComponentType.ClassModule),
+                ("Class2", inputCode3, ComponentType.ClassModule));
 
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
-
-                var module1 = project.Object.VBComponents[0].CodeModule;
-                var module2 = project.Object.VBComponents[1].CodeModule;
-                var module3 = project.Object.VBComponents[2].CodeModule;
-
-                //Specify Params to remove
-                var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.RemoveParameters = new[] { model.Parameters[1] }.ToList();
-
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-
-                Assert.AreEqual(expectedCode1, module1.Content());
-                Assert.AreEqual(expectedCode2, module2.Content());
-                Assert.AreEqual(expectedCode3, module3.Content());
-            }
+            Assert.AreEqual(expectedCode1, actualCode["IClass1"]);
+            Assert.AreEqual(expectedCode2, actualCode["Class1"]);
+            Assert.AreEqual(expectedCode3, actualCode["Class2"]);
         }
 
         [Test]
@@ -1316,34 +1256,19 @@ End Sub";
 Private Sub abc_Foo(ByVal arg1 As Integer)
 End Sub";   // note: IDE removes excess spaces
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
-
-                var module1 = project.Object.VBComponents[0].CodeModule;
-                var module2 = project.Object.VBComponents[1].CodeModule;
-
-                //Specify Params to remove
-                var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.RemoveParameters = new[] { model.Parameters[1] }.ToList();
-
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-
-                Assert.AreEqual(expectedCode1, module1.Content());
-                Assert.AreEqual(expectedCode2, module2.Content());
-            }
+            var paramIndices = new[] { 1 }.ToList();
+            var presenterAction = StandardPresenterAction(paramIndices);
+            var actualCode = RefactoredCode(
+                "Class1",
+                selection,
+                presenterAction,
+                null,
+                false,
+                ("Class1", inputCode1, ComponentType.ClassModule),
+                ("Class2", inputCode2, ComponentType.ClassModule));
+            
+            Assert.AreEqual(expectedCode1, actualCode["Class1"]);
+            Assert.AreEqual(expectedCode2, actualCode["Class2"]);
         }
 
         [Test]
@@ -1373,34 +1298,19 @@ End Sub";   // note: IDE removes excess spaces
             const string expectedCode2 =
                 @"Public Event Foo(ByVal arg1 As Integer)";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
+            var paramIndices = new[] { 1 }.ToList();
+            var presenterAction = StandardPresenterAction(paramIndices);
+            var actualCode = RefactoredCode(
+                "Class1",
+                selection,
+                presenterAction,
+                null,
+                false,
+                ("Class1", inputCode1, ComponentType.ClassModule),
+                ("Class2", inputCode2, ComponentType.ClassModule));
 
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
-
-                var module1 = project.Object.VBComponents[0].CodeModule;
-                var module2 = project.Object.VBComponents[1].CodeModule;
-
-                //Specify Params to remove
-                var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.RemoveParameters = new[] { model.Parameters.Last() }.ToList();
-
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-
-                Assert.AreEqual(expectedCode1, module1.Content());
-                Assert.AreEqual(expectedCode2, module2.Content());
-            }
+            Assert.AreEqual(expectedCode1, actualCode["Class1"]);
+            Assert.AreEqual(expectedCode2, actualCode["Class2"]);
         }
 
         [Test]
@@ -1430,34 +1340,19 @@ End Sub";
 Private Sub abc_Foo(ByVal i As Integer)
 End Sub";   // note: IDE removes excess spaces
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
+            var paramIndices = new[] { 1 }.ToList();
+            var presenterAction = StandardPresenterAction(paramIndices);
+            var actualCode = RefactoredCode(
+                "Class1",
+                selection,
+                presenterAction,
+                null,
+                false,
+                ("Class1", inputCode1, ComponentType.ClassModule),
+                ("Class2", inputCode2, ComponentType.ClassModule));
 
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
-
-                var module1 = project.Object.VBComponents[0].CodeModule;
-                var module2 = project.Object.VBComponents[1].CodeModule;
-
-                //Specify Params to remove
-                var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.RemoveParameters = new[] { model.Parameters[1] }.ToList();
-
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-
-                Assert.AreEqual(expectedCode1, module1.Content());
-                Assert.AreEqual(expectedCode2, module2.Content());
-            }
+            Assert.AreEqual(expectedCode1, actualCode["Class1"]);
+            Assert.AreEqual(expectedCode2, actualCode["Class2"]);
         }
 
         [Test]
@@ -1497,37 +1392,21 @@ End Sub";   // note: IDE removes excess spaces
 Private Sub abc_Foo(ByVal v1 As Integer)
 End Sub";   // note: IDE removes excess spaces
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
-                .AddComponent("Class3", ComponentType.ClassModule, inputCode3)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
+            var paramIndices = new[] { 1 }.ToList();
+            var presenterAction = StandardPresenterAction(paramIndices);
+            var actualCode = RefactoredCode(
+                "Class1",
+                selection,
+                presenterAction,
+                null,
+                false,
+                ("Class1", inputCode1, ComponentType.ClassModule),
+                ("Class2", inputCode2, ComponentType.ClassModule),
+                ("Class3", inputCode3, ComponentType.ClassModule));
 
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
-
-                var module1 = project.Object.VBComponents[0].CodeModule;
-                var module2 = project.Object.VBComponents[1].CodeModule;
-                var module3 = project.Object.VBComponents[2].CodeModule;
-
-                //Specify Params to remove
-                var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.RemoveParameters = new[] { model.Parameters[1] }.ToList();
-
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-
-                Assert.AreEqual(expectedCode1, module1.Content());
-                Assert.AreEqual(expectedCode2, module2.Content());
-                Assert.AreEqual(expectedCode3, module3.Content());
-            }
+            Assert.AreEqual(expectedCode1, actualCode["Class1"]);
+            Assert.AreEqual(expectedCode2, actualCode["Class2"]);
+            Assert.AreEqual(expectedCode3, actualCode["Class3"]);
         }
 
         [Test]
@@ -1558,74 +1437,19 @@ End Sub";   // note: IDE removes excess spaces
                 @"Public Sub DoSomething(ByVal a As Integer)
 End Sub";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("IClass1", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
+            var paramIndices = new[] { 1 }.ToList();
+            var presenterAction = StandardPresenterAction(paramIndices);
+            var actualCode = RefactoredCode(
+                "Class1",
+                selection,
+                presenterAction,
+                null,
+                false,
+                ("Class1", inputCode1, ComponentType.ClassModule),
+                ("IClass1", inputCode2, ComponentType.ClassModule));
 
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
-
-                var module1 = project.Object.VBComponents[0].CodeModule;
-                var module2 = project.Object.VBComponents[1].CodeModule;
-
-                var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(true);
-
-                //Specify Params to remove
-                var model = new RemoveParametersModel(state, qualifiedSelection, messageBox.Object);
-                model.RemoveParameters = new[] { model.Parameters[1] }.ToList();
-
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-
-                Assert.AreEqual(expectedCode1, module1.Content());
-                Assert.AreEqual(expectedCode2, module2.Content());
-            }
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Remove Parameters")]
-        public void RemoveParametersRefactoring_LastInterfaceParamRemoved_RejectPrompt()
-        {
-            //Input
-            const string inputCode1 =
-                @"Implements IClass1
-
-Private Sub IClass1_DoSomething(ByVal a As Integer, ByVal b As String)
-End Sub";
-            const string inputCode2 =
-                @"Public Sub DoSomething(ByVal a As Integer, ByVal b As String)
-End Sub";
-
-            var selection = new Selection(3, 23, 3, 23);
-
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("IClass1", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
-
-                var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(false);
-
-                //Specify Params to remove
-                var model = new RemoveParametersModel(state, qualifiedSelection, messageBox.Object);
-                Assert.IsNull(model.TargetDeclaration);
-            }
+            Assert.AreEqual(expectedCode1, actualCode["Class1"]);
+            Assert.AreEqual(expectedCode2, actualCode["IClass1"]);
         }
 
         [Test]
@@ -1637,36 +1461,26 @@ End Sub";
             const string inputCode =
                 @"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub";
-            var selection = new Selection(1, 23, 1, 27);
+            var actualCode = RefactoredCode(inputCode, "TestModule1", DeclarationType.ProceduralModule, typeof(InvalidDeclarationTypeException));
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
+            Assert.AreEqual(inputCode, actualCode);
+        }
 
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
+        public void RemoveParams_RefactorDeclaration_FailsNoValidTargetSelected()
+        {
+            //Input
+            const string inputCode =
+                @"Private bar As Long
 
-                //set up model
-                var model = new RemoveParametersModel(state, qualifiedSelection, null);
+Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub";
+            var selection = Selection.Home;
+            var actualCode = RefactoredCode(inputCode, selection, typeof(NoDeclarationForSelectionException));
 
-                var factory = SetupFactory(model);
-
-                var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object, rewritingManager);
-
-                try
-                {
-                    refactoring.Refactor(
-                        model.Declarations.FirstOrDefault(
-                            i => i.DeclarationType == DeclarationType.ProceduralModule));
-                }
-                catch (ArgumentException e)
-                {
-                    Assert.AreEqual("Invalid declaration type", e.Message);
-                    return;
-                }
-
-                Assert.Fail();
-            }
+            Assert.AreEqual(inputCode, actualCode);
         }
 
         [Test]
@@ -1678,16 +1492,21 @@ End Sub";
             const string inputCode =
                 @"Private Sub Foo()
 End Sub";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
 
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
-                var factory = new RemoveParametersPresenterFactory(vbe.Object, null, state, null);
+                var qualifiedSelection = new QualifiedSelection(component.QualifiedModuleName, Selection.Home);
+                var factory = new Mock<IRefactoringPresenterFactory>();
+                factory.Setup(f => f.Create<IRemoveParametersPresenter, RemoveParametersModel>(It.IsAny<RemoveParametersModel>()))
+                    .Returns(() => null); // resolves method overload resolution error
 
-                var refactoring = new RemoveParametersRefactoring(vbe.Object, factory, rewritingManager);
-                refactoring.Refactor();
+                var selectionService = MockedSelectionService();
+
+                var refactoring = TestRefactoring(rewritingManager, state, factory.Object, selectionService);
+
+                Assert.Throws<InvalidRefactoringPresenterException>(() => refactoring.Refactor(qualifiedSelection));
 
                 Assert.AreEqual(inputCode, component.CodeModule.Content());
             }
@@ -1704,169 +1523,63 @@ End Sub";
 End Sub";
             var selection = new Selection(1, 23, 1, 27);
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
+            Func<RemoveParametersModel, RemoveParametersModel> presenterAction = model => null;
 
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction, typeof(InvalidRefactoringModelException));
 
-                //Specify Param(s) to remove
-                var model = new RemoveParametersModel(state, qualifiedSelection, null);
-
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-
-                Assert.AreEqual(inputCode, component.CodeModule.Content());
-            }
+            Assert.AreEqual(inputCode, actualCode);
         }
 
-        [Test]
-        [Category("Refactorings")]
-        [Category("Remove Parameters")]
-        public void Presenter_Accept_AutoMarksSingleParamAsRemoved()
+        private string RemoveParams(string inputCode, Selection? selection = null, IEnumerable<int> paramIndices = null)
         {
-            //Input
-            const string inputCode =
-                @"Private Sub Foo(ByVal arg1 As Integer)
-End Sub";
-            var selection = new Selection(1, 15, 1, 15);
+            var (code, codeSelection) = CodeFromCodeStringLike(inputCode, selection);
+            var presenterAction = StandardPresenterAction(paramIndices);
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-
-            using(var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-                var model = new RemoveParametersModel(state, qualifiedSelection, new Mock<IMessageBox>().Object);
-                model.RemoveParameters = new[] { model.Parameters[0] }.ToList();
-
-                var factory = new RemoveParametersPresenterFactory(vbe.Object, null, state, null);
-
-                var presenter = factory.Create();
-
-                Assert.IsTrue(model.Parameters[0].Declaration.Equals(presenter.Show().Parameters[0].Declaration));
-            }
+            return RefactoredCode(code, codeSelection, presenterAction);
         }
 
-        [Test]
-        [Category("Refactorings")]
-        [Category("Remove Parameters")]
-        public void Presenter_ParameterlessTargetReturnsNullModel()
+        private string RemoveParams(string inputCode, string targetName, DeclarationType declarationType, IEnumerable<int> paramIndices = null)
         {
-            //Input
-            const string inputCode =
-                @"Private Sub Foo()
-End Sub";
-            var selection = new Selection(1, 15, 1, 15);
+            var (code, codeSelection) = CodeFromCodeStringLike(inputCode);
+            var presenterAction = StandardPresenterAction(paramIndices);
 
-            var builder = new MockVbeBuilder();
-            var projectBuilder = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
-            projectBuilder.AddComponent("Module1", ComponentType.StandardModule, inputCode, selection);
-            var project = projectBuilder.Build();
-            builder.AddProject(project);
-            var vbe = builder.Build();
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var factory = new RemoveParametersPresenterFactory(vbe.Object, null, state, new Mock<IMessageBox>().Object);
-                var presenter = factory.Create();
-
-                Assert.AreEqual(null, presenter.Show());
-            }
+            return RefactoredCode(code, targetName, declarationType, presenterAction);
         }
 
-        [Test]
-        [Category("Refactorings")]
-        [Category("Remove Parameters")]
-        public void Factory_NullSelectionNullReturnsNullPresenter()
+        private static Func<RemoveParametersModel, RemoveParametersModel> StandardPresenterAction(IEnumerable<int> paramIndices = null)
         {
-            //Input
-            const string inputCode =
-                @"Private Sub Foo()
-End Sub";
-
-            var builder = new MockVbeBuilder();
-            var projectBuilder = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected);
-            projectBuilder.AddComponent("Module1", ComponentType.StandardModule, inputCode);
-            var project = projectBuilder.Build();
-            builder.AddProject(project);
-            var vbe = builder.Build();
-
-            vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            if (paramIndices == null)
             {
-                var factory = new RemoveParametersPresenterFactory(vbe.Object, null, state, null);
-
-                Assert.IsNull(factory.Create());
-            }
-        }
-
-        private static string RemoveParams(string inputCode, bool passInTarget = false, Selection? selection = null, IEnumerable<int> paramIndices = null)
-        {
-            var codeString = inputCode.ToCodeString();
-            if (!selection.HasValue)
-            {
-                var derivedSelect = codeString.CaretPosition.ToOneBased();
-
-                selection = derivedSelect;
-            }
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(codeString.Code, out var component, selection.Value);
-            string result;
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection.Value);
-
-                //Specify Params to remove
-                var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                if (paramIndices is null)
+                return model =>
                 {
                     model.RemoveParameters = model.Parameters;
-                }
-                else
-                {
-                    var paramsToRemove = new List<Parameter>();
-                    foreach (var idx in paramIndices)
-                    {
-                        paramsToRemove.Add(model.Parameters[idx]);
-                    }
-                    model.RemoveParameters = paramsToRemove;
-                }
-
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object, rewritingManager);
-                if (passInTarget)
-                {
-                    refactoring.Refactor(model.TargetDeclaration);
-                }
-                else
-                {
-                    refactoring.Refactor(qualifiedSelection);
-                }
-                result = component.CodeModule.Content();
+                    return model;
+                };
             }
-            return result;
+
+            return model =>
+            {
+                var paramsToRemove = paramIndices
+                    .Select(idx => model.Parameters[idx])
+                    .ToList();
+
+                model.RemoveParameters = paramsToRemove;
+                return model;
+            };
         }
 
-        #region setup
-        private static Mock<IRefactoringPresenterFactory<IRemoveParametersPresenter>> SetupFactory(RemoveParametersModel model)
+        private static (string code, Selection selection) CodeFromCodeStringLike(string inputCode, Selection? selection = null)
         {
-            var presenter = new Mock<IRemoveParametersPresenter>();
-            presenter.Setup(p => p.Show()).Returns(model);
+            var codeString = inputCode.ToCodeString();
+            var derivedSelection = selection ?? codeString.CaretPosition.ToOneBased();
 
-            var factory = new Mock<IRefactoringPresenterFactory<IRemoveParametersPresenter>>();
-            factory.Setup(f => f.Create()).Returns(presenter.Object);
-            return factory;
+            return (codeString.Code, derivedSelection);
         }
 
-        #endregion
+        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state,
+            IRefactoringPresenterFactory factory, ISelectionService selectionService)
+        {
+            return new RemoveParametersRefactoring(state, factory, rewritingManager, selectionService);
+        }
     }
 }

@@ -1,7 +1,5 @@
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -14,15 +12,18 @@ namespace RubberduckTests.UnitTesting
     {
         [Test]
         [Category("Unit Testing")]
-        public void Discovery_DiscoversAnnotatedTestMethods()
+        [TestCase("Public")]
+        [TestCase("Private")]
+        [TestCase("Friend")]
+        public void Discovery_DiscoversAnnotatedTestMethods(string accessibility)
         {
-            var testMethods = @"'@TestMethod
-Public Sub TestMethod1()
+            var testMethods = $@"'@TestMethod
+{accessibility} Sub TestMethod1()
 End Sub";
 
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput(accessibility) + testMethods);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
             using (var state = MockParser.CreateAndParse(vbe))
@@ -33,14 +34,17 @@ End Sub";
 
         [Test]
         [Category("Unit Testing")]
-        public void Discovery_IgnoresNonAnnotatedTestMethods()
+        [TestCase("Public")]
+        [TestCase("Private")]
+        [TestCase("Friend")]
+        public void Discovery_IgnoresNonAnnotatedTestMethods(string accessibility)
         {
-            var testMethods = @"Public Sub TestMethod1()
+            var testMethods = $@"{accessibility} Sub TestMethod1()
 End Sub";
 
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput(accessibility) + testMethods);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
             using (var state = MockParser.CreateAndParse(vbe))
@@ -51,15 +55,18 @@ End Sub";
 
         [Test]
         [Category("Unit Testing")]
-        public void Discovery_IgnoresAnnotatedTestMethodsNotInTestModule()
+        [TestCase("Public")]
+        [TestCase("Private")]
+        [TestCase("Friend")]
+        public void Discovery_IgnoresAnnotatedTestMethodsNotInTestModule(string accessibility)
         {
-            var testMethods = @"'@TestMethod
-Public Sub TestMethod1()
+            var testMethods = $@"'@TestMethod
+{accessibility} Sub TestMethod1()
 End Sub";
 
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, GetNormalModuleInput + testMethods);
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetNormalModuleInput(accessibility) + testMethods);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
             using (var state = MockParser.CreateAndParse(vbe))
@@ -70,16 +77,19 @@ End Sub";
 
         [Test]
         [Category("Unit Testing")]
-        public void Discovery_DiscoversAnnotatedTestMethodsInGivenTestModule()
+        [TestCase("Public")]
+        [TestCase("Private")]
+        [TestCase("Friend")]
+        public void Discovery_DiscoversAnnotatedTestMethodsInGivenTestModule(string accessibility)
         {
-            var testMethods = @"'@TestMethod
-Public Sub TestMethod1()
+            var testMethods = $@"'@TestMethod
+{accessibility} Sub TestMethod1()
 End Sub";
 
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods)
-                .AddComponent("TestModule2", ComponentType.StandardModule, GetTestModuleInput + testMethods);
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput(accessibility) + testMethods)
+                .AddComponent("TestModule2", ComponentType.StandardModule, GetTestModuleInput(accessibility) + testMethods);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
             using (var state = MockParser.CreateAndParse(vbe))
@@ -94,12 +104,15 @@ End Sub";
 
         [Test]
         [Category("Unit Testing")]
-        public void Discovery_DiscoversAnnotatedTestInitInGivenTestModule()
+        [TestCase("Public")]
+        [TestCase("Private")]
+        [TestCase("Friend")]
+        public void Discovery_DiscoversAnnotatedTestInitInGivenTestModule(string accessibility)
         {
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput)
-                .AddComponent("TestModule2", ComponentType.StandardModule, GetTestModuleInput);
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput(accessibility))
+                .AddComponent("TestModule2", ComponentType.StandardModule, GetTestModuleInput(accessibility));
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
             using (var state = MockParser.CreateAndParse(vbe))
@@ -117,12 +130,15 @@ End Sub";
 
         [Test]
         [Category("Unit Testing")]
-        public void Discovery_DiscoversAnnotatedTestCleanupInGivenTestModule()
+        [TestCase("Public")]
+        [TestCase("Private")]
+        [TestCase("Friend")]
+        public void Discovery_DiscoversAnnotatedTestCleanupInGivenTestModule(string accessibility)
         {
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput)
-                .AddComponent("TestModule2", ComponentType.StandardModule, GetTestModuleInput);
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput(accessibility))
+                .AddComponent("TestModule2", ComponentType.StandardModule, GetTestModuleInput(accessibility));
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
             using (var state = MockParser.CreateAndParse(vbe))
@@ -140,11 +156,14 @@ End Sub";
 
         [Test]
         [Category("Unit Testing")]
-        public void Discovery_IgnoresNonAnnotatedTestInitInGivenTestModule()
+        [TestCase("Public")]
+        [TestCase("Private")]
+        [TestCase("Friend")]
+        public void Discovery_IgnoresNonAnnotatedTestInitInGivenTestModule(string accessibility)
         {
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput.Replace("'@TestInitialize", string.Empty));
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput(accessibility).Replace("'@TestInitialize", string.Empty));
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
             using (var state = MockParser.CreateAndParse(vbe))
@@ -159,11 +178,14 @@ End Sub";
 
         [Test]
         [Category("Unit Testing")]
-        public void Discovery_IgnoresNonAnnotatedTestCleanupInGivenTestModule()
+        [TestCase("Public")]
+        [TestCase("Private")]
+        [TestCase("Friend")]
+        public void Discovery_IgnoresNonAnnotatedTestCleanupInGivenTestModule(string accessibility)
         {
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput.Replace("'@TestCleanup", string.Empty));
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput(accessibility).Replace("'@TestCleanup", string.Empty));
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
             using (var state = MockParser.CreateAndParse(vbe))
@@ -178,11 +200,14 @@ End Sub";
 
         [Test]
         [Category("Unit Testing")]
-        public void Discovery_IgnoresNonAnnotatedTestInitInGivenNonTestModule()
+        [TestCase("Public")]
+        [TestCase("Private")]
+        [TestCase("Friend")]
+        public void Discovery_IgnoresNonAnnotatedTestInitInGivenNonTestModule(string accessibility)
         {
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, GetNormalModuleInput.Replace("'@TestInitialize", string.Empty));
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetNormalModuleInput(accessibility).Replace("'@TestInitialize", string.Empty));
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
             using (var state = MockParser.CreateAndParse(vbe))
@@ -197,11 +222,14 @@ End Sub";
 
         [Test]
         [Category("Unit Testing")]
-        public void Discovery_IgnoresNonAnnotatedTestCleanupInGivenNonTestModule()
+        [TestCase("Public")]
+        [TestCase("Private")]
+        [TestCase("Friend")]
+        public void Discovery_IgnoresNonAnnotatedTestCleanupInGivenNonTestModule(string accessibility)
         {
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, GetNormalModuleInput.Replace("'@TestCleanup", string.Empty));
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetNormalModuleInput(accessibility).Replace("'@TestCleanup", string.Empty));
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
             using (var state = MockParser.CreateAndParse(vbe))
@@ -216,12 +244,15 @@ End Sub";
 
         [Test]
         [Category("Unit Testing")]
-        public void Discovery_DiscoversAnnotatedModuleInitInGivenTestModule()
+        [TestCase("Public")]
+        [TestCase("Private")]
+        [TestCase("Friend")]
+        public void Discovery_DiscoversAnnotatedModuleInitInGivenTestModule(string accessibility)
         {
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput)
-                .AddComponent("TestModule2", ComponentType.StandardModule, GetTestModuleInput);
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput(accessibility))
+                .AddComponent("TestModule2", ComponentType.StandardModule, GetTestModuleInput(accessibility));
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
             using (var state = MockParser.CreateAndParse(vbe))
@@ -239,12 +270,15 @@ End Sub";
 
         [Test]
         [Category("Unit Testing")]
-        public void Discovery_DiscoversAnnotatedModuleCleanupInGivenTestModule()
+        [TestCase("Public")]
+        [TestCase("Private")]
+        [TestCase("Friend")]
+        public void Discovery_DiscoversAnnotatedModuleCleanupInGivenTestModule(string accessibility)
         {
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput)
-                .AddComponent("TestModule2", ComponentType.StandardModule, GetTestModuleInput);
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput(accessibility))
+                .AddComponent("TestModule2", ComponentType.StandardModule, GetTestModuleInput(accessibility));
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
             using (var state = MockParser.CreateAndParse(vbe))
@@ -262,11 +296,14 @@ End Sub";
 
         [Test]
         [Category("Unit Testing")]
-        public void Discovery_IgnoresNonAnnotatedModuleInitInGivenTestModule()
+        [TestCase("Public")]
+        [TestCase("Private")]
+        [TestCase("Friend")]
+        public void Discovery_IgnoresNonAnnotatedModuleInitInGivenTestModule(string accessibility)
         {
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput.Replace("'@ModuleInitialize", string.Empty));
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput(accessibility).Replace("'@ModuleInitialize", string.Empty));
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
             using (var state = MockParser.CreateAndParse(vbe))
@@ -281,11 +318,14 @@ End Sub";
 
         [Test]
         [Category("Unit Testing")]
-        public void Discovery_IgnoresNonAnnotatedModuleCleanupInGivenTestModule()
+        [TestCase("Public")]
+        [TestCase("Private")]
+        [TestCase("Friend")]
+        public void Discovery_IgnoresNonAnnotatedModuleCleanupInGivenTestModule(string accessibility)
         {
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput.Replace("'@ModuleCleanup", string.Empty));
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput(accessibility).Replace("'@ModuleCleanup", string.Empty));
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
             using (var state = MockParser.CreateAndParse(vbe))
@@ -300,11 +340,14 @@ End Sub";
 
         [Test]
         [Category("Unit Testing")]
-        public void Discovery_IgnoresNonAnnotatedModuleInitInGivenNonTestModule()
+        [TestCase("Public")]
+        [TestCase("Private")]
+        [TestCase("Friend")]
+        public void Discovery_IgnoresNonAnnotatedModuleInitInGivenNonTestModule(string accessibility)
         {
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, GetNormalModuleInput.Replace("'@ModuleInitialize", string.Empty));
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetNormalModuleInput(accessibility).Replace("'@ModuleInitialize", string.Empty));
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
             using (var state = MockParser.CreateAndParse(vbe))
@@ -319,11 +362,14 @@ End Sub";
 
         [Test]
         [Category("Unit Testing")]
-        public void Discovery_IgnoresNonAnnotatedModuleCleanupInGivenNonTestModule()
+        [TestCase("Public")]
+        [TestCase("Private")]
+        [TestCase("Friend")]
+        public void Discovery_IgnoresNonAnnotatedModuleCleanupInGivenNonTestModule(string accessibility)
         {
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, GetNormalModuleInput.Replace("'@ModuleCleanup", string.Empty));
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetNormalModuleInput(accessibility).Replace("'@ModuleCleanup", string.Empty));
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
             using (var state = MockParser.CreateAndParse(vbe))
@@ -344,34 +390,34 @@ Option Private Module
 Private Assert As New Rubberduck.AssertClass
 
 '@ModuleInitialize
-Public Sub ModuleInitialize()
+{1} Sub ModuleInitialize()
     'this method runs once per module.
 End Sub
 
 '@ModuleCleanup
-Public Sub ModuleCleanup()
+{1} Sub ModuleCleanup()
     'this method runs once per module.
 End Sub
 
 '@TestInitialize
-Public Sub TestInitialize()
+{1} Sub TestInitialize()
     'this method runs before every test in the module.
 End Sub
 
 '@TestCleanup
-Public Sub TestCleanup()
+{1} Sub TestCleanup()
     'this method runs after every test in the module.
 End Sub
 ";
 
-        private string GetTestModuleInput
+        private static string GetTestModuleInput(string accessibility)
         {
-            get { return string.Format(RawInput, "'@TestModule"); }
+            return string.Format(RawInput, "'@TestModule", accessibility);
         }
 
-        private string GetNormalModuleInput
+        private static string GetNormalModuleInput(string accessibility)
         {
-            get { return string.Format(RawInput, string.Empty); }
+            return string.Format(RawInput, string.Empty, accessibility);
         }
     }
 }

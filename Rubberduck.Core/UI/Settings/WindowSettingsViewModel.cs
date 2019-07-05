@@ -6,16 +6,24 @@ using Rubberduck.Resources.Settings;
 
 namespace Rubberduck.UI.Settings
 {
-    public class WindowSettingsViewModel : SettingsViewModelBase, ISettingsViewModel
+    public sealed class WindowSettingsViewModel : SettingsViewModelBase<Rubberduck.Settings.WindowSettings>, ISettingsViewModel<Rubberduck.Settings.WindowSettings>
     {
-        public WindowSettingsViewModel(Configuration config)
+        public WindowSettingsViewModel(Configuration config, IConfigurationService<Rubberduck.Settings.WindowSettings> service) 
+            : base(service)
         {
             CodeExplorerVisibleOnStartup = config.UserSettings.WindowSettings.CodeExplorerVisibleOnStartup;
             CodeInspectionsVisibleOnStartup = config.UserSettings.WindowSettings.CodeInspectionsVisibleOnStartup;
             TestExplorerVisibleOnStartup = config.UserSettings.WindowSettings.TestExplorerVisibleOnStartup;
             TodoExplorerVisibleOnStartup = config.UserSettings.WindowSettings.TodoExplorerVisibleOnStartup;
 
-            ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings());
+            ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ =>
+                ExportSettings(new Rubberduck.Settings.WindowSettings()
+                {
+                    CodeExplorerVisibleOnStartup = CodeExplorerVisibleOnStartup,
+                    CodeInspectionsVisibleOnStartup = CodeInspectionsVisibleOnStartup,
+                    TestExplorerVisibleOnStartup = TestExplorerVisibleOnStartup,
+                    TodoExplorerVisibleOnStartup = TodoExplorerVisibleOnStartup
+                }));
             ImportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ImportSettings());
         }
 
@@ -92,49 +100,15 @@ namespace Rubberduck.UI.Settings
             TransferSettingsToView(config.UserSettings.WindowSettings);
         }
 
-        private void TransferSettingsToView(Rubberduck.Settings.WindowSettings toLoad)
+        protected override string DialogLoadTitle => SettingsUI.DialogCaption_LoadWindowSettings;
+        protected override string DialogSaveTitle => SettingsUI.DialogCaption_SaveWindowSettings;
+
+        protected override void TransferSettingsToView(Rubberduck.Settings.WindowSettings toLoad)
         {
             CodeExplorerVisibleOnStartup = toLoad.CodeExplorerVisibleOnStartup;
             CodeInspectionsVisibleOnStartup = toLoad.CodeInspectionsVisibleOnStartup;
             TestExplorerVisibleOnStartup = toLoad.TestExplorerVisibleOnStartup;
             TodoExplorerVisibleOnStartup = toLoad.TodoExplorerVisibleOnStartup;
-        }
-
-        private void ImportSettings()
-        {
-            using (var dialog = new OpenFileDialog
-            {
-                Filter = SettingsUI.DialogMask_XmlFilesOnly,
-                Title = SettingsUI.DialogCaption_LoadWindowSettings
-            })
-            {
-                dialog.ShowDialog();
-                if (string.IsNullOrEmpty(dialog.FileName)) return;
-                var service = new XmlPersistanceService<Rubberduck.Settings.WindowSettings> { FilePath = dialog.FileName };
-                var loaded = service.Load(new Rubberduck.Settings.WindowSettings());
-                TransferSettingsToView(loaded);
-            }
-        }
-
-        private void ExportSettings()
-        {
-            using (var dialog = new SaveFileDialog
-            {
-                Filter = SettingsUI.DialogMask_XmlFilesOnly,
-                Title = SettingsUI.DialogCaption_SaveWindowSettings
-            })
-            {
-                dialog.ShowDialog();
-                if (string.IsNullOrEmpty(dialog.FileName)) return;
-                var service = new XmlPersistanceService<Rubberduck.Settings.WindowSettings> { FilePath = dialog.FileName };
-                service.Save(new Rubberduck.Settings.WindowSettings()
-                {
-                    CodeExplorerVisibleOnStartup = CodeExplorerVisibleOnStartup,
-                    CodeInspectionsVisibleOnStartup = CodeInspectionsVisibleOnStartup,
-                    TestExplorerVisibleOnStartup = TestExplorerVisibleOnStartup,
-                    TodoExplorerVisibleOnStartup = TodoExplorerVisibleOnStartup
-                });
-            }
         }
     }
 }

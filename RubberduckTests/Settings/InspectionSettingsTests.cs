@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using Rubberduck.CodeAnalysis.Settings;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Settings;
 using Rubberduck.UI.Settings;
@@ -55,26 +56,26 @@ namespace RubberduckTests.Settings
         public void SaveConfigWorks()
         {
             var customConfig = GetNondefaultConfig();
-            var viewModel = new InspectionSettingsViewModel(customConfig);
+            var viewModel = new InspectionSettingsViewModel(customConfig, null);
 
             var config = GetDefaultConfig();
             viewModel.UpdateConfig(config);
 
-            Assert.IsTrue(config.UserSettings.CodeInspectionSettings.CodeInspections.SequenceEqual(
-                    viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>()));
+            Assert.IsTrue(config.UserSettings.CodeInspectionSettings.CodeInspections.OrderBy(setting => setting.InspectionType).SequenceEqual(
+                    viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>().OrderBy(setting => setting.InspectionType)));
         }
 
         [Category("Settings")]
         [Test]
         public void SetDefaultsWorks()
         {
-            var viewModel = new InspectionSettingsViewModel(GetNondefaultConfig());
+            var viewModel = new InspectionSettingsViewModel(GetNondefaultConfig(), null);
 
             var defaultConfig = GetDefaultConfig();
             viewModel.SetToDefaults(defaultConfig);
 
-            Assert.IsTrue(defaultConfig.UserSettings.CodeInspectionSettings.CodeInspections.SequenceEqual(
-                    viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>()));
+            Assert.IsTrue(defaultConfig.UserSettings.CodeInspectionSettings.CodeInspections.OrderBy(setting => setting.InspectionType).SequenceEqual(
+                    viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>().OrderBy(setting => setting.InspectionType)));
         }
 
         [Category("Settings")]
@@ -82,10 +83,10 @@ namespace RubberduckTests.Settings
         public void InspectionsAreSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new InspectionSettingsViewModel(defaultConfig);
+            var viewModel = new InspectionSettingsViewModel(defaultConfig, null);
 
-            Assert.IsTrue(defaultConfig.UserSettings.CodeInspectionSettings.CodeInspections.SequenceEqual(
-                    viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>()));
+            Assert.IsTrue(defaultConfig.UserSettings.CodeInspectionSettings.CodeInspections.OrderBy(setting => setting.InspectionType).SequenceEqual(
+                    viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>().OrderBy(setting => setting.InspectionType)));
         }
 
         [Category("Settings")]
@@ -93,7 +94,7 @@ namespace RubberduckTests.Settings
         public void InspectionSeveritiesAreUpdated()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new InspectionSettingsViewModel(defaultConfig);
+            var viewModel = new InspectionSettingsViewModel(defaultConfig, null);
 
             viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>().First().Severity =
                 GetNondefaultConfig().UserSettings.CodeInspectionSettings.CodeInspections.First().Severity;
@@ -102,8 +103,8 @@ namespace RubberduckTests.Settings
             updatedConfig.UserSettings.CodeInspectionSettings.CodeInspections.First().Severity =
                 GetNondefaultConfig().UserSettings.CodeInspectionSettings.CodeInspections.First().Severity;
 
-            Assert.IsTrue(updatedConfig.UserSettings.CodeInspectionSettings.CodeInspections.SequenceEqual(
-                    viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>()));
+            Assert.IsTrue(updatedConfig.UserSettings.CodeInspectionSettings.CodeInspections.OrderBy(setting => setting.InspectionType).SequenceEqual(
+                    viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>().OrderBy(setting => setting.InspectionType)));
         }
     }
 }

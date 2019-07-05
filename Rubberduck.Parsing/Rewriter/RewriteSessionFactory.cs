@@ -7,21 +7,23 @@ namespace Rubberduck.Parsing.Rewriter
     {
         private readonly RubberduckParserState _state;
         private readonly IRewriterProvider _rewriterProvider;
+        private readonly ISelectionRecoverer _selectionRecoverer;
 
-        public RewriteSessionFactory(RubberduckParserState state, IRewriterProvider rewriterProvider)
+        public RewriteSessionFactory(RubberduckParserState state, IRewriterProvider rewriterProvider, ISelectionRecoverer selectionRecoverer)
         {
             _state = state;
             _rewriterProvider = rewriterProvider;
+            _selectionRecoverer = selectionRecoverer;
         }
 
-        public IRewriteSession CodePaneSession(Func<IRewriteSession, bool> rewritingAllowed)
+        public IExecutableRewriteSession CodePaneSession(Func<IRewriteSession, bool> rewritingAllowed)
         {
-            return new CodePaneRewriteSession(_state, _rewriterProvider, rewritingAllowed);
+            return new CodePaneRewriteSession(_state, _rewriterProvider, _selectionRecoverer, rewritingAllowed);
         }
 
-        public IRewriteSession AttributesSession(Func<IRewriteSession, bool> rewritingAllowed)
+        public IExecutableRewriteSession AttributesSession(Func<IRewriteSession, bool> rewritingAllowed)
         {
-            return new AttributesRewriteSession(_state, _rewriterProvider, rewritingAllowed);
+            return new AttributesRewriteSession(_state, _rewriterProvider, _selectionRecoverer, rewritingAllowed);
         }
     }
 }

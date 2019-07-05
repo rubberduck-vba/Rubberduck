@@ -107,6 +107,7 @@ namespace Rubberduck.Inspections.QuickFixes
             switch (parameter.AsTypeDeclaration.DeclarationType)
             {
                 case DeclarationType.ClassModule:
+                case DeclarationType.Document:
                     return $"{parameter.IdentifierName} Is {Tokens.Nothing}";
                 case DeclarationType.Enumeration:
                     var members = _declarationFinderProvider.DeclarationFinder.AllDeclarations.OfType<ValuedDeclaration>()

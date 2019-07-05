@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using Rubberduck.RegexAssistant.Atoms;
+using Rubberduck.RegexAssistant.Expressions;
 
 namespace Rubberduck.RegexAssistant.Tests
 {
+    
     [TestFixture]
+    [Category("RegexAssistant")]
     public class CharacterClassTests
     {
-        [Category("RegexAssistant")]
         [Test]
         public void InvertedCharacterClass()
         {
@@ -23,7 +25,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [Category("RegexAssistant")]
+        
         [Test]
         public void SimpleCharacterRange()
         {
@@ -38,7 +40,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [Category("RegexAssistant")]
+        
         [Test]
         public void UnicodeCharacterRange()
         {
@@ -53,7 +55,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [Category("RegexAssistant")]
+        
         [Test]
         public void OctalCharacterRange()
         {
@@ -68,7 +70,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [Category("RegexAssistant")]
+        
         [Test]
         public void HexadecimalCharacterRange()
         {
@@ -83,7 +85,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [Category("RegexAssistant")]
+        
         [Test]
         public void MixedCharacterRanges()
         {
@@ -102,7 +104,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [Category("RegexAssistant")]
+        
         [Test]
         public void RangeFailureWithCharacterClass()
         {
@@ -124,7 +126,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [Category("RegexAssistant")]
+        
         [Test]
         public void EscapedLiteralRanges()
         {
@@ -153,7 +155,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [Category("RegexAssistant")]
+        
         [Test]
         public void SkipsIncorrectlyEscapedLiterals()
         {
@@ -173,7 +175,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [Category("RegexAssistant")]
+        
         [Test]
         public void IncorrectlyEscapedRangeTargetLiteralsBlowUp()
         {
@@ -194,7 +196,7 @@ namespace Rubberduck.RegexAssistant.Tests
 
         }
 
-        [Category("RegexAssistant")]
+        
         [Test]
         public void IgnoresBackreferenceSpecifiers()
         {
@@ -207,6 +209,26 @@ namespace Rubberduck.RegexAssistant.Tests
             {
                 Assert.AreEqual(expectedSpecifiers[i], cut.CharacterSpecifiers[i]);
             }
+        }
+
+        [Test]
+        // https://github.com/rubberduck-vba/Rubberduck/issues/4839
+        public void TrailingEscapedBackslash()
+        {
+            const string pattern = @"[^\w\\]";
+
+            var expression = VBRegexParser.Parse(pattern);
+            Assert.IsInstanceOf(typeof(SingleAtomExpression), expression);
+            var atom = (expression as SingleAtomExpression).Atom;
+            Assert.AreEqual(new CharacterClass(@"[^\w\\]", Quantifier.None), atom);
+        }
+
+        [Test]
+        // https://github.com/rubberduck-vba/Rubberduck/issues/4839
+        public void TrailingEscapedBackslashIsConstructible()
+        {
+            const string pattern = @"[^\w\\]";
+            new CharacterClass(pattern, Quantifier.None);
         }
     }
 }

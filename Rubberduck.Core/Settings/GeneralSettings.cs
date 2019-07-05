@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Xml.Serialization;
 using Rubberduck.Common;
+using Rubberduck.Resources;
 
 namespace Rubberduck.Settings
 {
@@ -19,14 +20,27 @@ namespace Rubberduck.Settings
         bool UserEditedLogLevel { get; set; }
         int MinimumLogLevel { get; set; }
         bool SetDpiUnaware { get; set; }
-        List<ExperimentalFeatures> EnableExperimentalFeatures { get; set; }
+        List<ExperimentalFeature> EnableExperimentalFeatures { get; set; }
     }
 
     [SettingsSerializeAs(SettingsSerializeAs.Xml)]
     [XmlType(AnonymousType = true)]
     public class GeneralSettings : IGeneralSettings, IEquatable<GeneralSettings>
     {
-        public DisplayLanguageSetting Language { get; set; }
+        private DisplayLanguageSetting _language = new DisplayLanguageSetting(Locales.DefaultCulture.Name);
+
+        public DisplayLanguageSetting Language
+        {
+            get => _language;
+            set
+            {
+                if (Locales.AvailableCultures.Exists(culture => culture.Name.Equals(value.Code, StringComparison.OrdinalIgnoreCase)))
+                {
+                    _language = value;
+                }
+            }
+        }
+
         public bool CanShowSplash { get; set; }
         public bool CanCheckVersion { get; set; }
         public bool CompileBeforeParse { get; set; }
@@ -59,7 +73,7 @@ namespace Rubberduck.Settings
 
         public bool SetDpiUnaware { get; set; }
 
-        public List<ExperimentalFeatures> EnableExperimentalFeatures { get; set; } = new List<ExperimentalFeatures>();
+        public List<ExperimentalFeature> EnableExperimentalFeatures { get; set; } = new List<ExperimentalFeature>();
 
         public GeneralSettings()
         {

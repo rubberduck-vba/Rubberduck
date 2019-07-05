@@ -18,20 +18,22 @@ namespace Rubberduck.Parsing.VBA.Parsing
         { }
 
 
-        public override void ParseModules(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)
+        protected override IReadOnlyCollection<(QualifiedModuleName module, ModuleParseResults results)> ModulePareResults(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)
         {
             if (!modules.Any())
             {
-                return;
+                return new List<(QualifiedModuleName module, ModuleParseResults results)>();
             }
 
             token.ThrowIfCancellationRequested();
+
+            var results = new List<(QualifiedModuleName module, ModuleParseResults results)>();
 
             try
             {
                 foreach (var module in modules)
                 {
-                    ParseModule(module, token);
+                    results.Add((module, ModuleParseResults(module, token)));
                 }
             }
             catch (OperationCanceledException)
@@ -43,6 +45,8 @@ namespace Rubberduck.Parsing.VBA.Parsing
                 StateManager.SetStatusAndFireStateChanged(this, ParserState.Error, token);
                 throw;
             }
+
+            return results;
         }
     }
 }

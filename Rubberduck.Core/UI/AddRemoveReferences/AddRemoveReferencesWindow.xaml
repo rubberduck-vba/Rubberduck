@@ -9,7 +9,7 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="380" d:DesignWidth="600"
              d:DataContext="{d:DesignInstance local:AddRemoveReferencesViewModel}">
     <UserControl.Resources>
@@ -26,7 +26,6 @@
         <local:ReferenceStatusImageSourceConverter x:Key="StatusToIcon" />
         <local:PriorityButtonVisibilityConverter x:Key="PriorityButtonVisibility" />
         <local:PriorityButtonImageSourceConverter x:Key="PriorityButtonIcon" />
-        <converters:SearchImageSourceConverter x:Key="SearchToIcon" />
         <converters:BooleanToNonDimmedBrushConverter x:Key="BooleanToNonDimmed" />
         <converters:BoolToHiddenVisibilityConverter x:Key="ProjectVisibilityConverter" />
 
@@ -34,37 +33,6 @@
             <Setter Property="Margin" Value="5,0" />
             <Setter Property="Height" Value="24" />
             <Setter Property="Padding" Value="10,0" />
-        </Style>
-        <Style x:Key="PlaceHolder" TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type TextBox}">
-                        <Grid>
-                            <TextBox Text="{Binding Path=Text,
-                                                RelativeSource={RelativeSource TemplatedParent}, 
-                                                Mode=TwoWay,
-                                                UpdateSourceTrigger=PropertyChanged}"
-                                     x:Name="textSource" 
-                                     Background="Transparent" 
-                                     Panel.ZIndex="2" />
-                            <TextBox Text="{TemplateBinding Tag}" Background="{TemplateBinding Background}" Panel.ZIndex="1">
-                                <TextBox.Style>
-                                    <Style TargetType="{x:Type TextBox}">
-                                        <Setter Property="Foreground" Value="Transparent"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=Text, Source={x:Reference textSource}}" Value="">
-                                                <Setter Property="Foreground" Value="LightGray"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBox.Style>
-                            </TextBox>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Margin" Value="0" />
-            <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
         <Style TargetType="{x:Type TabItem}">
             <Setter Property="Background" Value="Transparent" />
@@ -183,7 +151,7 @@
                             Command="{Binding BrowseCommand}">
                         <StackPanel Orientation="Horizontal">
                             <Image Margin="0,0,5,0" Height="16" Source="{StaticResource BrowseIcon}" />
-                            <TextBlock Background="Transparent" Text="Browse..."></TextBlock>
+                            <TextBlock Background="Transparent" Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_BrowseButtonText}" />
                         </StackPanel>
                     </Button>
                     <Grid Grid.Row="1" Margin="10,10,10,5">
@@ -202,30 +170,11 @@
                                 BorderThickness="1" 
                                 Margin="0,5" 
                                 Padding="2">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="20" />
-                                </Grid.ColumnDefinitions>
-                                <TextBox Name="SearchBox" Grid.Column="0">
-                                    <TextBox.Style>
-                                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource PlaceHolder}">
-                                            <Setter Property="Height" Value="20" />
-                                            <Setter Property="Width" Value="Auto" />
-                                            <Setter Property="Tag" Value="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_SearchPlaceholder}" />
-                                            <Setter Property="Text" Value="{Binding Search, UpdateSourceTrigger=PropertyChanged}" />
-                                        </Style>
-                                    </TextBox.Style>
-                                </TextBox>
-                                <Button Name="SearchButton"  Grid.Column="1" Command="{Binding ClearSearchCommand}" 
-                                        BorderBrush="{x:Static SystemColors.ControlLightBrush}"
-                                        Background="Transparent"
-                                        Width="20" Height="20" Padding="0" Margin="0,1"
-                                        controls:EventFocusAttachment.ElementToFocus="{Binding ElementName=SearchBox}">
-                                    <Image Margin="2" Width="16" Height="16" 
-                                           Source="{Binding Search, Converter={StaticResource SearchToIcon}, UpdateSourceTrigger=PropertyChanged}" />
-                                </Button>
-                            </Grid>
+                            <controls:SearchBox x:Name="SearchBox" Grid.Column="0"
+                                                Background="{x:Static SystemColors.WindowBrush}"
+                                                Width="Auto"
+                                                Text="{Binding Search, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                Hint="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_SearchPlaceholder}" />
                         </Border>
                         <Border Grid.Row="1" Grid.Column="0">
                             <ListView Name="LibrarySelect" SelectedItem="{Binding SelectedLibrary, Mode=TwoWay}" 

@@ -1,9 +1,11 @@
 ﻿using System.Linq;
 using System.Threading;
+using Moq;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Rewriter;
 using RubberduckTests.Mocks;
 using RubberduckTests.Inspections;
 
@@ -29,7 +31,8 @@ End Sub";
                 var inspection = new ConstantNotUsedInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
-                var quickFixProvider = new QuickFixProvider(rewritingManager, new IQuickFix[] { });
+                var failureNotifier = new Mock<IQuickFixFailureNotifier>().Object;
+                var quickFixProvider = new QuickFixProvider(rewritingManager, failureNotifier, new IQuickFix[] { });
                 Assert.AreEqual(0, quickFixProvider.QuickFixes(inspectionResults.First()).Count());
             }
         }
@@ -53,7 +56,8 @@ End Sub";
                 var inspector = InspectionsHelper.GetInspector(inspection);
                 var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-                var quickFixProvider = new QuickFixProvider(rewritingManager, new IQuickFix[] { new ReplaceEmptyStringLiteralStatementQuickFix() });
+                var failureNotifier = new Mock<IQuickFixFailureNotifier>().Object;
+                var quickFixProvider = new QuickFixProvider(rewritingManager, failureNotifier, new IQuickFix[] { new ReplaceEmptyStringLiteralStatementQuickFix() });
                 Assert.AreEqual(1, quickFixProvider.QuickFixes(inspectionResults.First()).Count());
             }
         }
@@ -75,12 +79,46 @@ End Sub";
                 var inspection = new ConstantNotUsedInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
-                var quickFixProvider = new QuickFixProvider(rewritingManager, new IQuickFix[] { new RemoveUnusedDeclarationQuickFix() });
+                var failureNotifier = new Mock<IQuickFixFailureNotifier>().Object;
+                var quickFixProvider = new QuickFixProvider(rewritingManager, failureNotifier, new IQuickFix[] { new RemoveUnusedDeclarationQuickFix() });
 
                 var result = inspectionResults.First();
                 result.Properties.DisableFixes = nameof(RemoveUnusedDeclarationQuickFix);
 
                 Assert.AreEqual(0, quickFixProvider.QuickFixes(result).Count());
+            }
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void ProviderCallsNotifierOnFailureToRewrite()
+        {
+            const string inputCode =
+                @"Public Sub Foo()
+    Dim str As String
+    str = """"
+End Sub";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
+            {
+
+                var inspection = new EmptyStringLiteralInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var inspectionResult = inspectionResults.First();
+
+                var failureNotifierMock = new Mock<IQuickFixFailureNotifier>();
+                var quickFixProvider = new QuickFixProvider(rewritingManager, failureNotifierMock.Object, new IQuickFix[] { new ReplaceEmptyStringLiteralStatementQuickFix() });
+                var quickFix = quickFixProvider.QuickFixes(inspectionResult).First();
+
+                //Make rewrite fail.
+                component.CodeModule.InsertLines(1, "'afejfaofef");
+
+                quickFixProvider.Fix(quickFix, inspectionResult);
+
+                failureNotifierMock.Verify(m => m.NotifyQuickFixExecutionFailure(RewriteSessionState.StaleParseTree));
             }
         }
     }

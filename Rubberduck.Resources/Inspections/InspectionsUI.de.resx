@@ -177,4 +177,25 @@
   <data name="CodeInspectionSeverity_All" xml:space="preserve">
     <value>Alle</value>
   </data>
+  <data name="CodeInspection_Filter" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="ExportColumnHeader_Column" xml:space="preserve">
+    <value>Spalte</value>
+  </data>
+  <data name="ExportColumnHeader_Component" xml:space="preserve">
+    <value>Komponente</value>
+  </data>
+  <data name="ExportColumnHeader_Issue" xml:space="preserve">
+    <value>Problem</value>
+  </data>
+  <data name="ExportColumnHeader_Line" xml:space="preserve">
+    <value>Zeile</value>
+  </data>
+  <data name="ExportColumnHeader_Project" xml:space="preserve">
+    <value>Projekt</value>
+  </data>
+  <data name="ExportColumnHeader_Type" xml:space="preserve">
+    <value>Typ</value>
+  </data>
 </root>

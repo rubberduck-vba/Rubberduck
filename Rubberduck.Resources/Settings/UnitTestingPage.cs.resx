@@ -127,10 +127,10 @@
     <value>Typ zabezpečení:</value>
   </data>
   <data name="UnitTestSettings_BindingMode" xml:space="preserve">
-    <value>Binding mód:</value>
+    <value>Režim vazby (binding):</value>
   </data>
   <data name="UnitTestSettings_EarlyBinding" xml:space="preserve">
-    <value>Časný binding</value>
+    <value>Časná vazba</value>
   </data>
   <data name="UnitTestSettings_IncludeTestMethodInitCleanupPrompt" xml:space="preserve">
     <value>Inicializace/úklid test metody</value>
@@ -142,7 +142,7 @@
     <value>Inicializace/úklid test modulu</value>
   </data>
   <data name="UnitTestSettings_LateBinding" xml:space="preserve">
-    <value>Pozdní binding</value>
+    <value>Pozdní vazba</value>
   </data>
   <data name="UnitTestSettings_PermissiveAssert" xml:space="preserve">
     <value>Tolerantní assert</value>
@@ -152,5 +152,8 @@
   </data>
   <data name="UnitTestSettings_TestModuleTemplateHeader" xml:space="preserve">
     <value>Šablona Test Modulu</value>
+  </data>
+  <data name="UnitTestSettings_DualBinding" xml:space="preserve">
+    <value>Dvojitá vazba</value>
   </data>
 </root>

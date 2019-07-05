@@ -1,128 +1,100 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using NLog;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
-    public class ExtractInterfaceRefactoring : IRefactoring
+    public class ExtractInterfaceRefactoring : InteractiveRefactoringBase<IExtractInterfacePresenter, ExtractInterfaceModel>
     {
-        private readonly IVBE _vbe;
-        private readonly IMessageBox _messageBox;
-        private readonly IRewritingManager _rewritingManager;
-        private readonly IRefactoringPresenterFactory<IExtractInterfacePresenter> _factory;
-        private ExtractInterfaceModel _model;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        private readonly IParseManager _parseManager;
+
+        private readonly ImplementInterfaceRefactoring _implementInterfaceRefactoring;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public ExtractInterfaceRefactoring(IVBE vbe, IMessageBox messageBox, IRefactoringPresenterFactory<IExtractInterfacePresenter> factory, IRewritingManager rewritingManager)
+        public ExtractInterfaceRefactoring(IDeclarationFinderProvider declarationFinderProvider, IParseManager parseManager, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
+        :base(rewritingManager, selectionService, factory)
         {
-            _vbe = vbe;
-            _rewritingManager = rewritingManager;
-            _messageBox = messageBox;
-            _factory = factory;
+            _declarationFinderProvider = declarationFinderProvider;
+            _parseManager = parseManager;
+
+            _implementInterfaceRefactoring = new ImplementInterfaceRefactoring(_declarationFinderProvider, RewritingManager, SelectionService);
         }
 
-        public void Refactor()
+        protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
         {
-            var presenter = _factory.Create();
-            if (presenter == null)
-            {
-                return;
-            }
+            var candidates = _declarationFinderProvider.DeclarationFinder
+                .Members(targetSelection.QualifiedName)
+                .Where(item => ModuleTypes.Contains(item.DeclarationType));
 
-            _model = presenter.Show();
-            if (_model == null)
-            {
-                return;
-            }
-
-            using (var pane = _vbe.ActiveCodePane)
-            {
-                if (pane.IsWrappingNullReference)
-                {
-                    return;
-                }
-
-                var oldSelection = pane.GetQualifiedSelection();
-
-                AddInterface();
-
-                if (oldSelection.HasValue)
-                {
-                    pane.Selection = oldSelection.Value.Selection;
-                }
-            }
-
-            _model.State.OnParseRequested(this);
+            return candidates.SingleOrDefault(item =>
+                item.QualifiedSelection.QualifiedName.Equals(targetSelection.QualifiedName));
         }
 
-        public void Refactor(QualifiedSelection target)
+        protected override ExtractInterfaceModel InitializeModel(Declaration target)
         {
-            using (var pane = _vbe.ActiveCodePane)
+            if (target == null)
             {
-                if (pane.IsWrappingNullReference)
-                {
-                    return;
-                }
-                pane.Selection = target.Selection;
+                throw new TargetDeclarationIsNullException();
             }
-            Refactor();
+
+            if (!ModuleTypes.Contains(target.DeclarationType))
+            {
+                throw new InvalidDeclarationTypeException(target);
+            }
+
+            return new ExtractInterfaceModel(_declarationFinderProvider, target);
         }
 
-        public void Refactor(Declaration target)
+        protected override void RefactorImpl(ExtractInterfaceModel model)
         {
-            using (var pane = _vbe.ActiveCodePane)
-            {
-                if (pane.IsWrappingNullReference)
-                {
-                    return;
-                }
-                pane.Selection = target.QualifiedSelection.Selection;
-            }
-            Refactor();
+            AddInterface(model);
         }
 
-        private void AddInterface()
+        private void AddInterface(ExtractInterfaceModel model)
         {
             //We need to suspend here since adding the interface and rewriting will both trigger a reparse.
-            var suspendResult = _model.State.OnSuspendParser(this, new[] {ParserState.Ready}, AddInterfaceInternal);
+            var suspendResult = _parseManager.OnSuspendParser(this, new[] {ParserState.Ready}, () => AddInterfaceInternal(model));
             if (suspendResult != SuspensionResult.Completed)
             {
                 _logger.Warn("Extract interface failed.");
             }
         }
 
-        private void AddInterfaceInternal()
+        private void AddInterfaceInternal(ExtractInterfaceModel model)
         {
-            var targetProject = _model.TargetDeclaration.Project;
+            var targetProject = model.TargetDeclaration.Project;
             if (targetProject == null)
             {
                 return; //The target project is not available.
             }
 
-            AddInterfaceClass(_model.TargetDeclaration, _model.InterfaceName, GetInterfaceModuleBody());
+            AddInterfaceClass(model.TargetDeclaration, model.InterfaceName, GetInterfaceModuleBody(model));
 
-            var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
-            var rewriter = rewriteSession.CheckOutModuleRewriter(_model.TargetDeclaration.QualifiedModuleName);
+            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
+            var rewriter = rewriteSession.CheckOutModuleRewriter(model.TargetDeclaration.QualifiedModuleName);
 
-            var firstNonFieldMember = _model.State.DeclarationFinder.Members(_model.TargetDeclaration)
+            var firstNonFieldMember = _declarationFinderProvider.DeclarationFinder.Members(model.TargetDeclaration)
                                             .OrderBy(o => o.Selection)
                                             .First(m => ExtractInterfaceModel.MemberTypes.Contains(m.DeclarationType));
-            rewriter.InsertBefore(firstNonFieldMember.Context.Start.TokenIndex, $"Implements {_model.InterfaceName}{Environment.NewLine}{Environment.NewLine}");
+            rewriter.InsertBefore(firstNonFieldMember.Context.Start.TokenIndex, $"Implements {model.InterfaceName}{Environment.NewLine}{Environment.NewLine}");
 
-            AddInterfaceMembersToClass(rewriter);
+            AddInterfaceMembersToClass(model, rewriter);
 
-            rewriteSession.TryRewrite();
+            if (!rewriteSession.TryRewrite())
+            {
+                throw new RewriteFailedException(rewriteSession);
+            }
         }
 
         private void AddInterfaceClass(Declaration implementingClass, string interfaceName, string interfaceBody)
@@ -147,15 +119,21 @@ namespace Rubberduck.Refactorings.ExtractInterface
             }
         }
 
-        private void AddInterfaceMembersToClass(IModuleRewriter rewriter)
+        private void AddInterfaceMembersToClass(ExtractInterfaceModel model, IModuleRewriter rewriter)
         {
-            var implementInterfaceRefactoring = new ImplementInterfaceRefactoring(_vbe, _model.State, _messageBox, _rewritingManager);
-            implementInterfaceRefactoring.Refactor(_model.Members.Select(m => m.Member).ToList(), rewriter, _model.InterfaceName);
+            _implementInterfaceRefactoring.Refactor(model.SelectedMembers.Select(m => m.Member).ToList(), rewriter, model.InterfaceName);
         }
 
-        private string GetInterfaceModuleBody()
+        private string GetInterfaceModuleBody(ExtractInterfaceModel model)
         {
-            return string.Join(Environment.NewLine, _model.Members.Select(m => m.Body));
+            return string.Join(Environment.NewLine, model.SelectedMembers.Select(m => m.Body));
         }
+
+        private static readonly DeclarationType[] ModuleTypes =
+        {
+            DeclarationType.ClassModule,
+            DeclarationType.Document,
+            DeclarationType.UserForm
+        };
     }
 }

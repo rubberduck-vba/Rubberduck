@@ -1,7 +1,5 @@
 ﻿namespace Rubberduck.Refactorings.ExtractInterface
 {
-    public interface IExtractInterfacePresenter
-    {
-        ExtractInterfaceModel Show();
-    }
+    public interface IExtractInterfacePresenter : IRefactoringPresenter<ExtractInterfaceModel>
+    {}
 }

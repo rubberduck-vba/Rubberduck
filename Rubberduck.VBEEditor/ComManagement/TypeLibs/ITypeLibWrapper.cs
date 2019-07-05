@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
+using Rubberduck.VBEditor.ComManagement.TypeLibsSupport;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 {
-    public interface ITypeLibWrapper : IDisposable
+    public interface ITypeLibWrapper: ITypeLib, IDisposable
     {
         string Name { get; }
         string DocString { get; }

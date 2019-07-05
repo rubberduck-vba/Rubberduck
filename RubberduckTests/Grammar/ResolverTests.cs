@@ -17,8 +17,7 @@ namespace RubberduckTests.Grammar
     {
         private RubberduckParserState Resolve(string code, bool loadStdLib = false, ComponentType moduleType = ComponentType.StandardModule)
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(code, moduleType, out component, Selection.Empty, loadStdLib);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(code, moduleType, out var component, Selection.Empty, loadStdLib);
             var parser = MockParser.Create(vbe.Object);
             var state = parser.State;
             parser.Parse(new CancellationTokenSource());

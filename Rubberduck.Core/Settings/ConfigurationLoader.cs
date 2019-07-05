@@ -2,43 +2,31 @@
 using System.Linq;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SmartIndenter;
+using Rubberduck.UnitTesting.Settings;
+using Rubberduck.CodeAnalysis.Settings;
 
 namespace Rubberduck.Settings
 {
-    public class ConfigurationChangedEventArgs : EventArgs
+
+    public class ConfigurationLoader : IConfigurationService<Configuration>
     {
-        public bool LanguageChanged { get; }
-        public bool InspectionSettingsChanged { get; }
-        public bool RunInspectionsOnReparse { get; }
-        public bool AutoCompleteSettingsChanged { get; }
+        private readonly IConfigurationService<GeneralSettings> _generalProvider;
+        private readonly IConfigurationService<HotkeySettings> _hotkeyProvider;
+        private readonly IConfigurationService<AutoCompleteSettings> _autoCompleteProvider;
+        private readonly IConfigurationService<ToDoListSettings> _todoProvider;
+        private readonly IConfigurationService<CodeInspectionSettings> _inspectionProvider;
+        private readonly IConfigurationService<UnitTestSettings> _unitTestProvider;
+        private readonly IConfigurationService<IndenterSettings> _indenterProvider;
+        private readonly IConfigurationService<WindowSettings> _windowProvider;
 
-        public ConfigurationChangedEventArgs(bool runInspections, bool languageChanged, bool inspectionSettingsChanged, bool autoCompleteSettingsChanged)
-        {
-            AutoCompleteSettingsChanged = autoCompleteSettingsChanged;
-            RunInspectionsOnReparse = runInspections;
-            LanguageChanged = languageChanged;
-            InspectionSettingsChanged = inspectionSettingsChanged;
-        }
-    }
-
-    public interface IGeneralConfigService : IConfigurationService<Configuration>
-    {
-        Configuration GetDefaultConfiguration();
-    }
-
-    public class ConfigurationLoader : IGeneralConfigService
-    {
-        private readonly IConfigProvider<GeneralSettings> _generalProvider;
-        private readonly IConfigProvider<HotkeySettings> _hotkeyProvider;
-        private readonly IConfigProvider<AutoCompleteSettings> _autoCompleteProvider;
-        private readonly IConfigProvider<ToDoListSettings> _todoProvider;
-        private readonly IConfigProvider<CodeInspectionSettings> _inspectionProvider;
-        private readonly IConfigProvider<UnitTestSettings> _unitTestProvider;
-        private readonly IConfigProvider<IndenterSettings> _indenterProvider;
-        private readonly IConfigProvider<WindowSettings> _windowProvider;
-
-        public ConfigurationLoader(IConfigProvider<GeneralSettings> generalProvider, IConfigProvider<HotkeySettings> hotkeyProvider, IConfigProvider<AutoCompleteSettings> autoCompleteProvider, IConfigProvider<ToDoListSettings> todoProvider,
-                                   IConfigProvider<CodeInspectionSettings> inspectionProvider, IConfigProvider<UnitTestSettings> unitTestProvider, IConfigProvider<IndenterSettings> indenterProvider, IConfigProvider<WindowSettings> windowProvider)
+        public ConfigurationLoader(IConfigurationService<GeneralSettings> generalProvider, 
+            IConfigurationService<HotkeySettings> hotkeyProvider, 
+            IConfigurationService<AutoCompleteSettings> autoCompleteProvider, 
+            IConfigurationService<ToDoListSettings> todoProvider,
+            IConfigurationService<CodeInspectionSettings> inspectionProvider, 
+            IConfigurationService<UnitTestSettings> unitTestProvider, 
+            IConfigurationService<IndenterSettings> indenterProvider, 
+            IConfigurationService<WindowSettings> windowProvider)
         {
             _generalProvider = generalProvider;
             _hotkeyProvider = hotkeyProvider;
@@ -53,52 +41,53 @@ namespace Rubberduck.Settings
         /// <summary>
         /// Loads the configuration from Rubberduck.config xml file.
         /// </summary>
-        public virtual Configuration LoadConfiguration()
+        // marked virtual for Mocking
+        public virtual Configuration Read()
         {
             var config = new Configuration
             {
                 UserSettings = new UserSettings
                 (
-                    _generalProvider.Create(),
-                    _hotkeyProvider.Create(),
-                    _autoCompleteProvider.Create(),
-                    _todoProvider.Create(),
-                    _inspectionProvider.Create(),
-                    _unitTestProvider.Create(),
-                    _indenterProvider.Create(),
-                    _windowProvider.Create()
+                    _generalProvider.Read(),
+                    _hotkeyProvider.Read(),
+                    _autoCompleteProvider.Read(),
+                    _todoProvider.Read(),
+                    _inspectionProvider.Read(),
+                    _unitTestProvider.Read(),
+                    _indenterProvider.Read(),
+                    _windowProvider.Read()
                 )
             };            
             return config;
         }
 
-        public Configuration GetDefaultConfiguration()
+        public Configuration ReadDefaults()
         {
             return new Configuration
             {
                 UserSettings = new UserSettings
                 (
-                    _generalProvider.CreateDefaults(),
-                    _hotkeyProvider.CreateDefaults(),
-                    _autoCompleteProvider.CreateDefaults(),
-                    _todoProvider.CreateDefaults(),
-                    _inspectionProvider.CreateDefaults(),
-                    _unitTestProvider.CreateDefaults(),
-                    _indenterProvider.CreateDefaults(),
-                    _windowProvider.CreateDefaults()
+                    _generalProvider.ReadDefaults(),
+                    _hotkeyProvider.ReadDefaults(),
+                    _autoCompleteProvider.ReadDefaults(),
+                    _todoProvider.ReadDefaults(),
+                    _inspectionProvider.ReadDefaults(),
+                    _unitTestProvider.ReadDefaults(),
+                    _indenterProvider.ReadDefaults(),
+                    _windowProvider.ReadDefaults()
                 )
             };
         }
         
-        public void SaveConfiguration(Configuration toSerialize)
+        public void Save(Configuration toSerialize)
         {
-            var langChanged = _generalProvider.Create().Language.Code != toSerialize.UserSettings.GeneralSettings.Language.Code;
-            var oldInspectionSettings = _inspectionProvider.Create().CodeInspections.Select(s => Tuple.Create(s.Name, s.Severity));
+            var langChanged = _generalProvider.Read().Language.Code != toSerialize.UserSettings.GeneralSettings.Language.Code;
+            var oldInspectionSettings = _inspectionProvider.Read().CodeInspections.Select(s => Tuple.Create(s.Name, s.Severity));
             var newInspectionSettings = toSerialize.UserSettings.CodeInspectionSettings.CodeInspections.Select(s => Tuple.Create(s.Name, s.Severity));
             var inspectionsChanged = !oldInspectionSettings.SequenceEqual(newInspectionSettings);
             var inspectOnReparse = toSerialize.UserSettings.CodeInspectionSettings.RunInspectionsOnSuccessfulParse;
 
-            var oldAutoCompleteSettings = _autoCompleteProvider.Create();
+            var oldAutoCompleteSettings = _autoCompleteProvider.Read();
             var newAutoCompleteSettings = toSerialize.UserSettings.AutoCompleteSettings;
             var autoCompletesChanged = oldAutoCompleteSettings.Equals(newAutoCompleteSettings);
 
@@ -118,6 +107,36 @@ namespace Rubberduck.Settings
         protected virtual void OnSettingsChanged(ConfigurationChangedEventArgs e)
         {
             SettingsChanged?.Invoke(this, e);
+        }
+
+        public Configuration Import(string fileName)
+        {
+            return new Configuration
+            {
+                UserSettings = new UserSettings
+                (
+                    _generalProvider.Import(fileName),
+                    _hotkeyProvider.Import(fileName),
+                    _autoCompleteProvider.Import(fileName),
+                    _todoProvider.Import(fileName),
+                    _inspectionProvider.Import(fileName),
+                    _unitTestProvider.Import(fileName),
+                    _indenterProvider.Import(fileName),
+                    _windowProvider.Import(fileName)
+                )
+            };
+        }
+
+        public void Export(string fileName)
+        {
+            _generalProvider.Export(fileName);
+            _hotkeyProvider.Export(fileName);
+            _autoCompleteProvider.Export(fileName);
+            _todoProvider.Export(fileName);
+            _inspectionProvider.Export(fileName);
+            _unitTestProvider.Export(fileName);
+            _indenterProvider.Export(fileName);
+            _windowProvider.Export(fileName);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace RubberduckTests.PostProcessing
 
             var module = new QualifiedModuleName("TestProject", string.Empty,"TestModule");
             var projectsProvider = TestProvider(module, codeModule.Object);
-            var codePaneSourceHandler = new CodePaneSourceCodeHandler(projectsProvider);
+            var codePaneSourceHandler = new CodePaneHandler(projectsProvider);
             var tokenStream = new CommonTokenStream(new ListTokenSource(new List<IToken>()));
 
             var sut = new ModuleRewriter(module, tokenStream, codePaneSourceHandler);
@@ -53,7 +53,7 @@ namespace RubberduckTests.PostProcessing
 
             var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
             var projectsProvider = TestProvider(module, codeModule.Object);
-            var codePaneSourceHandler = new CodePaneSourceCodeHandler(projectsProvider);
+            var codePaneSourceHandler = new CodePaneHandler(projectsProvider);
             var tokenStream = new CommonTokenStream(new ListTokenSource(new List<IToken>()));
 
             var sut = new ModuleRewriter(module, tokenStream, codePaneSourceHandler);

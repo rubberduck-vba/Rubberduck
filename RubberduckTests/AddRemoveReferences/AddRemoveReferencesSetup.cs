@@ -40,6 +40,9 @@ namespace RubberduckTests.AddRemoveReferences
                     new ReferenceInfo(Guid.Empty, $"VBProject{info}", $@"C:\Users\Rubberduck\Documents\Book{info}.xlsm", 0, 0))
                 .ToList();
 
+        public static List<ReferenceModel> DummyProjectsList => ProjectReferenceInfoList
+            .Select(proj => new ReferenceModel(proj, ReferenceKind.Project)).ToList();
+
         public static List<ReferenceInfo> RecentProjectReferenceInfoList =>
             Enumerable.Range(1, 3)
                 .Select(info =>
@@ -91,17 +94,17 @@ namespace RubberduckTests.AddRemoveReferences
             return settings;
         }
 
-        public static IConfigProvider<ReferenceSettings> GetReferenceSettingsProvider(ReferenceSettings settings = null)
+        public static IConfigurationService<ReferenceSettings> GetReferenceSettingsProvider(ReferenceSettings settings = null)
         {
             return GetMockReferenceSettingsProvider(settings).Object;
         }
 
-        public static Mock<IConfigProvider<ReferenceSettings>> GetMockReferenceSettingsProvider(ReferenceSettings settings = null)
+        public static Mock<IConfigurationService<ReferenceSettings>> GetMockReferenceSettingsProvider(ReferenceSettings settings = null)
         {
-            var output = new Mock<IConfigProvider<ReferenceSettings>>();
+            var output = new Mock<IConfigurationService<ReferenceSettings>>();
 
-            output.Setup(m => m.Create()).Returns(() => settings ?? GetDefaultReferenceSettings());
-            output.Setup(m => m.CreateDefaults()).Returns(GetDefaultReferenceSettings);
+            output.Setup(m => m.Read()).Returns(() => settings ?? GetDefaultReferenceSettings());
+            output.Setup(m => m.ReadDefaults()).Returns(GetDefaultReferenceSettings);
             output.Setup(m => m.Save(It.IsAny<ReferenceSettings>()));
 
             return output;
@@ -254,7 +257,7 @@ namespace RubberduckTests.AddRemoveReferences
                 allReferences.AddRange(projects);
             }
 
-            var model = new AddRemoveReferencesModel(declaration, allReferences, settings);
+            var model = new AddRemoveReferencesModel(null, declaration, allReferences, settings);
             var reconciler = ArrangeReferenceReconciler(settings, out _, out libraryProvider);
             browserFactory = new Mock<IFileSystemBrowserFactory>();
 

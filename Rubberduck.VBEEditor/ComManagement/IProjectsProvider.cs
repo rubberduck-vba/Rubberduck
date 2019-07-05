@@ -8,6 +8,7 @@ namespace Rubberduck.VBEditor.ComManagement
     {
         IVBProjects ProjectsCollection();
         IEnumerable<(string ProjectId, IVBProject Project)> Projects();
+        IEnumerable<(string ProjectId, IVBProject Project)> LockedProjects();
         IVBProject Project(string projectId);
         IVBComponents ComponentsCollection(string projectId);
         IEnumerable<(QualifiedModuleName QualifiedModuleName, IVBComponent Component)> Components();

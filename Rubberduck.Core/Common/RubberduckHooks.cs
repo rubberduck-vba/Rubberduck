@@ -8,13 +8,13 @@ using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.WindowsApi;
 using Rubberduck.AutoComplete;
-using Rubberduck.AutoComplete.Service;
+using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.Common
 {
     public class RubberduckHooks : SubclassingWindow, IRubberduckHooks
     {
-        private readonly IGeneralConfigService _config;
+        private readonly IConfigurationService<Configuration> _config;
         private readonly HotkeyFactory _hotkeyFactory;
         private readonly IList<IAttachable> _hooks = new List<IAttachable>();
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -29,7 +29,7 @@ namespace Rubberduck.Common
 
         private RubberduckHooks(IntPtr ptr) : base(ptr, ptr) { }
 
-        public RubberduckHooks(IVBE vbe, IGeneralConfigService config, HotkeyFactory hotkeyFactory,
+        public RubberduckHooks(IVBE vbe, IConfigurationService<Configuration> config, HotkeyFactory hotkeyFactory,
             AutoCompleteService autoComplete)
             : this(GetVbeMainWindowPtr(vbe))
         {
@@ -43,7 +43,7 @@ namespace Rubberduck.Common
             Detach();
             _hooks.Clear();
 
-            var config = _config.LoadConfiguration();
+            var config = _config.Read();
             var settings = config.UserSettings.HotkeySettings;
 
             foreach (var hotkeySetting in settings.Settings.Where(hotkeySetting => hotkeySetting.IsEnabled))

@@ -6,9 +6,31 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Flags uses of a number of specific string-centric but Variant-returning functions in various standard library modules.
+    /// </summary>
+    /// <why>
+    /// Several functions in the standard library take a Variant parameter and return a Variant result, but an equivalent 
+    /// string-returning function taking a string parameter exists and should probably be preferred.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal foo As Double)
+    ///     Debug.Print Format(foo, "Currency") ' Strings.Format function returns a Variant.
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal foo As Double)
+    ///     Debug.Print Format$(CStr(foo), "Currency") ' Strings.Format$ function returns a String.
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class UntypedFunctionUsageInspection : InspectionBase
     {
         public UntypedFunctionUsageInspection(RubberduckParserState state)
@@ -49,7 +71,7 @@ namespace Rubberduck.Inspections.Concrete
 
             return declarations.SelectMany(declaration => declaration.References
                 .Where(item => _tokens.Contains(item.IdentifierName) &&
-                               !IsIgnoringInspectionResultFor(item, AnnotationName))
+                               !item.IsIgnoringInspectionResultFor(AnnotationName))
                 .Select(item => new IdentifierReferenceInspectionResult(this,
                                                      string.Format(InspectionResults.UntypedFunctionUsageInspection, item.Declaration.IdentifierName),
                                                      State,

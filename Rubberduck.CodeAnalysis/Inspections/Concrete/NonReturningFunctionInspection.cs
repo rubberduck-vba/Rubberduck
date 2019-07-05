@@ -11,6 +11,30 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Warns about 'Function' and 'Property Get' procedures whose return value is not assigned.
+    /// </summary>
+    /// <why>
+    /// Both 'Function' and 'Property Get' accessors should always return something. Omitting the return assignment is likely a bug.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Public Function GetFoo() As Long
+    ///     Dim foo As Long
+    ///     foo = 42
+    ///     'function will always return 0
+    /// End Function
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Public Function GetFoo() As Long
+    ///     Dim foo As Long
+    ///     foo = 42
+    ///     GetFoo = foo
+    /// End Function
+    /// ]]>
+    /// </example>
     public sealed class NonReturningFunctionInspection : InspectionBase
     {
         public NonReturningFunctionInspection(RubberduckParserState state)
@@ -51,7 +75,7 @@ namespace Rubberduck.Inspections.Concrete
         private bool IsAssignedByRefArgument(Declaration enclosingProcedure, IdentifierReference reference)
         {
             var argExpression = reference.Context.GetAncestor<VBAParser.ArgumentExpressionContext>();
-            var parameter = State.DeclarationFinder.FindParameterFromArgument(argExpression, enclosingProcedure);
+            var parameter = State.DeclarationFinder.FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(argExpression, enclosingProcedure);
 
             // note: not recursive, by design.
             return parameter != null

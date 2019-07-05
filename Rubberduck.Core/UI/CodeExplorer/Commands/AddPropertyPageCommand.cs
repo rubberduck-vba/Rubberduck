@@ -1,27 +1,16 @@
-using NLog;
-using Rubberduck.Navigation.CodeExplorer;
-using Rubberduck.UI.Command;
+using System.Collections.Generic;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class AddPropertyPageCommand : CommandBase
+    public class AddPropertyPageCommand : AddComponentCommandBase
     {
-        private readonly AddComponentCommand _addComponentCommand;
+        public AddPropertyPageCommand(ICodeExplorerAddComponentService addComponentService) 
+            : base(addComponentService)
+        {}
 
-        public AddPropertyPageCommand(AddComponentCommand addComponentCommand) : base(LogManager.GetCurrentClassLogger())
-        {
-            _addComponentCommand = addComponentCommand;
-        }
+        public override IEnumerable<ProjectType> AllowableProjectTypes => ProjectTypes.VB6;
 
-        protected override bool EvaluateCanExecute(object parameter)
-        {
-            return _addComponentCommand.CanAddComponent(parameter as CodeExplorerItemViewModel, ProjectTypes.VB6);
-        }
-
-        protected override void OnExecute(object parameter)
-        {
-            _addComponentCommand.AddComponent(parameter as CodeExplorerItemViewModel, ComponentType.PropPage);
-        }
+        public override ComponentType ComponentType => ComponentType.PropPage;
     }
 }

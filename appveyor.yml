@@ -1,4 +1,4 @@
-version: '2.3.1.{build}'
+version: '2.4.1.{build}'
 
 # add nuget api to hosts file, making sure we can actually nuget restore for the build
 hosts:
@@ -37,9 +37,10 @@ platform: Any CPU
 # cache the nuget packages unless something changed there
 cache:
   - packages/ -> **/packages.config
+  - '%USERPROFILE%/.gradle/wrapper/dists'
 
 install:
-  set PATH=C:\Program Files (x86)\MSBuild\15.0\Bin;%PATH%
+  set PATH=C:\Program Files (x86)\MSBuild\15.0\Bin;C:\Program Files (x86)\Java\jdk1.8.0;%PATH%
 
 # patch version specifiers in the base project
 dotnet_csproj:
@@ -51,10 +52,12 @@ dotnet_csproj:
 
 
 before_build:
-  - cinst innosetup
+  - development/java/Rubberduck.Parsing/Grammar/gradlew.bat -p development/java/Rubberduck.Parsing/Grammar clean build
+  - cinst innosetup -version 5.6.1
   - cinst codecov
   - cinst opencover.portable
-  - nuget restore
+  - nuget restore RubberduckMeta.sln
+  - nuget restore Rubberduck.sln
 build:
   verbosity: minimal
   project: Rubberduck.sln
@@ -105,6 +108,8 @@ after_test:
 artifacts:
   - path: Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.*.exe
     name: Rubberduck
+  - path: Rubberduck.Deployment\bin\Rubberduck.CodeAnalysis.xml
+    name: InspectionDocs
 deploy:
   - provider: GitHub
     tag: RETAGMEWITHAMESSAGE
@@ -114,7 +119,7 @@ deploy:
     description: "Built with :heart: by AppVeyor CI on [$(appveyor_repo_branch)] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)"
     auth_token:
       secure: NVAZgFRSk566SP5QDge5gYRWCaLi4NJJPTNk3QengH15wL9iVldfrFOllbzKXExq
-    artifact: Rubberduck
+    artifact: Rubberduck, InspectionDocs
     on: 
       branch: master
   - provider: GitHub
@@ -125,7 +130,7 @@ deploy:
     description: "AppVeyor build on [$(appveyor_repo_branch)] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)"
     auth_token:
       secure: NVAZgFRSk566SP5QDge5gYRWCaLi4NJJPTNk3QengH15wL9iVldfrFOllbzKXExq
-    artifact: Rubberduck
+    artifact: Rubberduck, InspectionDocs
     on: 
       branch: next
 

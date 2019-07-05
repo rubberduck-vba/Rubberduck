@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Navigation.RegexSearchReplace
 {
@@ -15,11 +17,13 @@ namespace Rubberduck.Navigation.RegexSearchReplace
     {
         private readonly IVBE _vbe;
         private readonly IParseCoordinator _parser;
+        private readonly ISelectionService _selectionService;
 
-        public RegexSearchReplace(IVBE vbe, IParseCoordinator parser)
+        public RegexSearchReplace(IVBE vbe, IParseCoordinator parser, ISelectionService selectionService)
         {
             _vbe = vbe;
             _parser = parser;
+            _selectionService = selectionService;
             _search = new Dictionary<RegexSearchReplaceScope, Func<string, IEnumerable<RegexSearchResult>>>
             {
                 { RegexSearchReplaceScope.Selection, SearchSelection},
@@ -89,11 +93,7 @@ namespace Rubberduck.Navigation.RegexSearchReplace
 
         private void SetSelection(RegexSearchResult item)
         {
-            var module = item.Module;
-            using (var codePane = module.CodePane)
-            {
-                codePane.Selection = item.Selection;
-            }
+            _selectionService.TrySetActiveSelection(item.Module.QualifiedModuleName, item.Selection);
         }
 
         private List<RegexSearchResult> SearchSelection(string searchPattern)
@@ -138,7 +138,15 @@ namespace Rubberduck.Navigation.RegexSearchReplace
                     var results = GetResultsFromModule(module, searchPattern);
 
                     var qualifiedSelection = pane.GetQualifiedSelection();
-                    dynamic block = state.AllDeclarations.FindTarget(qualifiedSelection.Value, declarationTypes).Context
+
+                    if (!qualifiedSelection.HasValue)
+                    {
+                        return new List<RegexSearchResult>();
+                    }
+
+                    var block = (ParserRuleContext)state.AllDeclarations
+                        .FindTarget(qualifiedSelection.Value, declarationTypes)
+                        .Context
                         .Parent;
                     var selection = new Selection(block.Start.Line, block.Start.Column, block.Stop.Line,
                         block.Stop.Column);

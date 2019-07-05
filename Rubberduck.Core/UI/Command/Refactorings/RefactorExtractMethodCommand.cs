@@ -1,10 +1,13 @@
+using System;
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using Rubberduck.Parsing.Common;
+using Rubberduck.Resources;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -13,22 +16,24 @@ namespace Rubberduck.UI.Command.Refactorings
     [Disabled]
 #endif
     [ComVisible(false)]
-    public class RefactorExtractMethodCommand : RefactorCommandBase
+    public class RefactorExtractMethodCommand : CommandBase
     {
         private readonly RubberduckParserState _state;
         private readonly IIndenter _indenter;
+        private readonly IVBE _vbe;
 
         public RefactorExtractMethodCommand(IVBE vbe, RubberduckParserState state, IIndenter indenter)
-            : base (vbe)
         {
             _state = state;
             _indenter = indenter;
+            _vbe = vbe;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
-
-            var qualifiedSelection = Vbe.GetActiveSelection();
+            var qualifiedSelection = _vbe.GetActiveSelection();
             if (!qualifiedSelection.HasValue)
             {
                 return false;
@@ -49,7 +54,7 @@ namespace Rubberduck.UI.Command.Refactorings
         protected override void OnExecute(object parameter)
         {
             var declarations = _state.AllDeclarations;
-            var qualifiedSelection = Vbe.GetActiveSelection();
+            var qualifiedSelection = _vbe.GetActiveSelection();
 
             var extractMethodValidation = new ExtractMethodSelectionValidation(declarations);
             var canExecute = extractMethodValidation.withinSingleProcedure(qualifiedSelection.Value);
@@ -58,7 +63,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 return;
             }
 
-            using (var pane = Vbe.ActiveCodePane)
+            using (var pane = _vbe.ActiveCodePane)
             using (var module = pane.CodeModule)
             {
                 var extraction = new ExtractMethodExtraction();
@@ -96,6 +101,11 @@ namespace Rubberduck.UI.Command.Refactorings
                     return extractedMethodModel;
                 }
             }
+        }
+
+        private void HandleInvalidSelection(object sender, EventArgs e)
+        {
+            MessageBox.Show(RubberduckUI.ExtractMethod_InvalidSelectionMessage, RubberduckUI.ExtractMethod_Caption, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
     }
 }

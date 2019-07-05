@@ -9,12 +9,18 @@ using Rubberduck.Resources.Settings;
 
 namespace Rubberduck.UI.Settings
 {
-    public class TodoSettingsViewModel : SettingsViewModelBase, ISettingsViewModel
+    public sealed class TodoSettingsViewModel : SettingsViewModelBase<ToDoListSettings>, ISettingsViewModel<ToDoListSettings>
     {
-        public TodoSettingsViewModel(Configuration config)
+        public TodoSettingsViewModel(Configuration config, IConfigurationService<ToDoListSettings> service) 
+            : base(service)
         {
             TodoSettings = new ObservableCollection<ToDoMarker>(config.UserSettings.ToDoListSettings.ToDoMarkers);
-            ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings());
+            ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(),
+                _ => ExportSettings(new ToDoListSettings
+                {
+                    ToDoMarkers = TodoSettings.Select(m => new ToDoMarker(m.Text.ToUpperInvariant())).Distinct()
+                        .ToArray()
+                }));
             ImportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ImportSettings());
         }
 
@@ -45,13 +51,14 @@ namespace Rubberduck.UI.Settings
                 {
                     var placeholder = TodoSettings.Count(m => m.Text.StartsWith("PLACEHOLDER")) + 1;
                     TodoSettings.Add(
-                        new ToDoMarker(string.Format("PLACEHOLDER{0}",
-                            placeholder == 1 ? string.Empty : placeholder.ToString(CultureInfo.InvariantCulture))));
+                        new ToDoMarker(
+                            $"PLACEHOLDER{(placeholder == 1 ? string.Empty : placeholder.ToString(CultureInfo.InvariantCulture))}"));
                 });
             }
         }
 
         private CommandBase _deleteTodoCommand;
+        
         public CommandBase DeleteTodoCommand
         {
             get
@@ -75,35 +82,11 @@ namespace Rubberduck.UI.Settings
                     config.UserSettings.ToDoListSettings.ToDoMarkers);
         }
 
-        private void ImportSettings()
+        protected override string DialogLoadTitle => SettingsUI.DialogCaption_LoadToDoSettings;
+        protected override string DialogSaveTitle => SettingsUI.DialogCaption_SaveToDoSettings;
+        protected override void TransferSettingsToView(ToDoListSettings toLoad)
         {
-            using (var dialog = new OpenFileDialog
-            {
-                Filter = SettingsUI.DialogMask_XmlFilesOnly,
-                Title = SettingsUI.DialogCaption_LoadToDoSettings
-            })
-            {
-                dialog.ShowDialog();
-                if (string.IsNullOrEmpty(dialog.FileName)) return;
-                var service = new XmlPersistanceService<ToDoListSettings> { FilePath = dialog.FileName };
-                var loaded = service.Load(new ToDoListSettings());
-                TodoSettings = new ObservableCollection<ToDoMarker>(loaded.ToDoMarkers);
-            }
-        }
-
-        private void ExportSettings()
-        {
-            using (var dialog = new SaveFileDialog
-            {
-                Filter = SettingsUI.DialogMask_XmlFilesOnly,
-                Title = SettingsUI.DialogCaption_SaveToDoSettings
-            })
-            {
-                dialog.ShowDialog();
-                if (string.IsNullOrEmpty(dialog.FileName)) return;
-                var service = new XmlPersistanceService<ToDoListSettings> { FilePath = dialog.FileName };
-                service.Save(new ToDoListSettings { ToDoMarkers = TodoSettings.Select(m => new ToDoMarker(m.Text.ToUpperInvariant())).Distinct().ToArray() });
-            }
+            TodoSettings = new ObservableCollection<ToDoMarker>(toLoad.ToDoMarkers);
         }
     }
 }

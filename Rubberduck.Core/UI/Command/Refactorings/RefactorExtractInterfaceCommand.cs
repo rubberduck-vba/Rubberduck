@@ -2,52 +2,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Antlr4.Runtime;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractInterface;
-using Rubberduck.UI.Refactorings;
-using Rubberduck.UI.Refactorings.ExtractInterface;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.UI.Command.Refactorings.Notifiers;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
     [ComVisible(false)]
-    public class RefactorExtractInterfaceCommand : RefactorCommandBase
+    public class RefactorExtractInterfaceCommand : RefactorCodePaneCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IRewritingManager _rewritingManager;
-        private readonly IMessageBox _messageBox;
-
-        public RefactorExtractInterfaceCommand(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager)
-            :base(vbe)
+        
+        public RefactorExtractInterfaceCommand(ExtractInterfaceRefactoring refactoring, ExtractInterfaceFailedNotifier extractInterfaceFailedNotifier, RubberduckParserState state, ISelectionService selectionService)
+            :base(refactoring, extractInterfaceFailedNotifier, selectionService, state)
         {
             _state = state;
-            _rewritingManager = rewritingManager;
-            _messageBox = messageBox;
+
+            AddToCanExecuteEvaluation(SpecializedEvaluateCanExecute);
         }
 
-        private static readonly IReadOnlyList<DeclarationType> ModuleTypes = new[] 
+        private bool SpecializedEvaluateCanExecute(object parameter)
         {
-            DeclarationType.ClassModule,
-            DeclarationType.UserForm, 
-            DeclarationType.ProceduralModule, 
-        };
-
-        protected override bool EvaluateCanExecute(object parameter)
-        {
-            var selection = Vbe.GetActiveSelection();
-
-            if (!selection.HasValue)
+            var activeSelection = SelectionService.ActiveSelection();
+            if (!activeSelection.HasValue)
             {
                 return false;
             }
 
             var interfaceClass = _state.AllUserDeclarations.SingleOrDefault(item =>
-                item.QualifiedName.QualifiedModuleName.Equals(selection.Value.QualifiedName)
+                item.QualifiedName.QualifiedModuleName.Equals(activeSelection.Value.QualifiedName)
                 && ModuleTypes.Contains(item.DeclarationType));
 
             if (interfaceClass == null)
@@ -56,11 +43,11 @@ namespace Rubberduck.UI.Command.Refactorings
             }
 
             // interface class must have members to be implementable
-            var hasMembers = _state.AllUserDeclarations.Any(item => 
-                item.DeclarationType.HasFlag(DeclarationType.Member) 
-                && item.ParentDeclaration != null 
+            var hasMembers = _state.AllUserDeclarations.Any(item =>
+                item.DeclarationType.HasFlag(DeclarationType.Member)
+                && item.ParentDeclaration != null
                 && item.ParentDeclaration.Equals(interfaceClass));
-            
+
             if (!hasMembers)
             {
                 return false;
@@ -70,27 +57,16 @@ namespace Rubberduck.UI.Command.Refactorings
             var context = ((ParserRuleContext)parseTree).GetDescendents<VBAParser.ImplementsStmtContext>();
 
             // true if active code pane is for a class/document/form module
-            return !context.Any() 
-                && !_state.IsNewOrModified(interfaceClass.QualifiedModuleName) 
-                && !_state.IsNewOrModified(selection.Value.QualifiedName);
+            return !context.Any()
+                   && !_state.IsNewOrModified(interfaceClass.QualifiedModuleName)
+                   && !_state.IsNewOrModified(activeSelection.Value.QualifiedName);
         }
 
-        protected override void OnExecute(object parameter)
+        private static readonly IReadOnlyList<DeclarationType> ModuleTypes = new[] 
         {
-            using(var activePane = Vbe.ActiveCodePane)
-            {
-                if (activePane == null || activePane.IsWrappingNullReference)
-                {
-                    return;
-                }
-            }
-
-            using (var view = new ExtractInterfaceDialog(new ExtractInterfaceViewModel()))
-            {
-                var factory = new ExtractInterfacePresenterFactory(Vbe, _state, view);
-                var refactoring = new ExtractInterfaceRefactoring(Vbe, _messageBox, factory, _rewritingManager);
-                refactoring.Refactor();
-            }
-        }
+            DeclarationType.ClassModule,
+            DeclarationType.UserForm, 
+            DeclarationType.Document, 
+        };
     }
 }

@@ -1,61 +1,42 @@
 using System.Linq;
 using System.Runtime.InteropServices;
-using Rubberduck.Interaction;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ImplementInterface;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.UI.Command.Refactorings.Notifiers;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
     [ComVisible(false)]
-    public class RefactorImplementInterfaceCommand : RefactorCommandBase
+    public class RefactorImplementInterfaceCommand : RefactorCodePaneCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IRewritingManager _rewritingManager;
-        private readonly IMessageBox _msgBox;
 
-        public RefactorImplementInterfaceCommand(IVBE vbe, RubberduckParserState state, IMessageBox msgBox, IRewritingManager rewritingManager)
-            : base(vbe)
+        public RefactorImplementInterfaceCommand(ImplementInterfaceRefactoring refactoring, ImplementInterfaceFailedNotifier implementInterfaceFailedNotifier, RubberduckParserState state, ISelectionService selectionService)
+            : base(refactoring, implementInterfaceFailedNotifier, selectionService, state)
         {
             _state = state;
-            _rewritingManager = rewritingManager;
-            _msgBox = msgBox;
+
+            AddToCanExecuteEvaluation(SpecializedEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecializedEvaluateCanExecute(object parameter)
         {
-            
-            var selection = Vbe.GetActiveSelection();        
-
-            if (!selection.HasValue)
+            var activeSelection = SelectionService.ActiveSelection();        
+            if (!activeSelection.HasValue)
             {
                 return false;
             }
 
-            var targetInterface = _state.DeclarationFinder.FindInterface(selection.Value);
+            var targetInterface = _state.DeclarationFinder.FindInterface(activeSelection.Value);
             
-            var targetClass = _state.DeclarationFinder.Members(selection.Value.QualifiedName)
+            var targetClass = _state.DeclarationFinder.Members(activeSelection.Value.QualifiedName)
                 .SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.ClassModule);
 
             return targetInterface != null && targetClass != null
                 && !_state.IsNewOrModified(targetInterface.QualifiedModuleName)
-                && !_state.IsNewOrModified(targetClass.QualifiedModuleName);
-            
-        }
-
-        protected override void OnExecute(object parameter)
-        {
-            using (var pane = Vbe.ActiveCodePane)
-            {
-                if (pane.IsWrappingNullReference)
-                {
-                    return;
-                }
-            }
-            var refactoring = new ImplementInterfaceRefactoring(Vbe, _state, _msgBox, _rewritingManager);
-            refactoring.Refactor();
+                && !_state.IsNewOrModified(targetClass.QualifiedModuleName); 
         }
     }
 }

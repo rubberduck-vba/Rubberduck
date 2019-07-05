@@ -581,10 +581,10 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="EncapsulateField_SetterType" xml:space="preserve">
     <value>Typ für 'Set':</value>
   </data>
-  <data name="MoveCloserToUsage_TargetHasNoReferences" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetHasNoReferences" xml:space="preserve">
     <value>'{0}' hat keine Referenzen.</value>
   </data>
-  <data name="MoveCloserToUsage_TargetIsUsedInMultipleMethods" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods" xml:space="preserve">
     <value>'{0}' hat Referenzen in mehrere Methoden.</value>
   </data>
   <data name="IntroduceField_Caption" xml:space="preserve">
@@ -602,7 +602,7 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="EncapsulateField_InstructionText" xml:space="preserve">
     <value>Spezifizierung des Eigenschaftsnamen, Parameterverfügbarkeit und 'Setter type' notwendig.</value>
   </data>
-  <data name="MoveCloserToUsage_InvalidSelection" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
     <value>Ungültige Auswahl.</value>
   </data>
   <data name="ImplementInterface_InvalidSelectionMessage" xml:space="preserve">
@@ -1022,12 +1022,6 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
   <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
     <value>Konnte Interfacemitglied {0} nicht umbenennen.</value>
   </data>
-  <data name="RefactorRename_TargetNotUserDefinedError" xml:space="preserve">
-    <value>Bezeichner {0} kann nicht umbenannt werden.</value>
-  </data>
-  <data name="RefactorRename_TargetNotDefinedError" xml:space="preserve">
-    <value>Kann gewähltes Ziel für Umbenennung nicht erkennen.</value>
-  </data>
   <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
     <value>Konnte {0} nicht umbenennen.</value>
   </data>
@@ -1226,5 +1220,218 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   </data>
   <data name="IndenterSettings_EmptyLineHeading" xml:space="preserve">
     <value>Leerzeilenbehandlung:</value>
+  </data>
+  <data name="References_BrowseFilterAllFiles" xml:space="preserve">
+    <value>Alle Dateien(*.*)|*.*</value>
+  </data>
+  <data name="References_BrowseFilterExcel" xml:space="preserve">
+    <value>Microsoft-Excel-Dateien ({0})|{0}</value>
+  </data>
+  <data name="References_BrowseFilterPowerPoint" xml:space="preserve">
+    <value>PowerPoint-Addin-Dateien({0})|{0}</value>
+  </data>
+  <data name="References_BrowseFilterAccess" xml:space="preserve">
+    <value>Microsoft-Access-Datenbanken({0})|{0}</value>
+  </data>
+  <data name="GeneralSettings_SetDpiUnaware" xml:space="preserve">
+    <value>Korrektur für hochauflösende Displayskalierung</value>
+  </data>
+  <data name="TodoSettings_Caption" xml:space="preserve">
+    <value>TODO Explorer</value>
+  </data>
+  <data name="TodoSettings_Text" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="TodoSettings_TextLabel" xml:space="preserve">
+    <value>Text:</value>
+  </data>
+  <data name="ReferenceSettings_FixBroken" xml:space="preserve">
+    <value>Versuche fehlerhafte Referenzen zu reparieren</value>
+  </data>
+  <data name="References_Version" xml:space="preserve">
+    <value>Version:</value>
+  </data>
+  <data name="References_BrowseFilterActiveX" xml:space="preserve">
+    <value>ActiveX-Kontrollelemente (*.ocx)|*.ocx</value>
+  </data>
+  <data name="References_AddToolTip" xml:space="preserve">
+    <value>Zu Projekt hinzufügen</value>
+  </data>
+  <data name="References_CaptionTemplate" xml:space="preserve">
+    <value>Referenzen hinzufügen/entfernen - {0}</value>
+  </data>
+  <data name="References_Caption" xml:space="preserve">
+    <value>Referenzen hinzufügen/entfernen</value>
+  </data>
+  <data name="References_BrowseFilterVisio" xml:space="preserve">
+    <value>Alle Visio-Dateien ({0})|{0}</value>
+  </data>
+  <data name="ApplyButtonText" xml:space="preserve">
+    <value>Ausführen</value>
+  </data>
+  <data name="ReferenceSettings_FolderDialogHeader" xml:space="preserve">
+    <value>Projektverzeichnis öffnen</value>
+  </data>
+  <data name="References_BrowseCaption" xml:space="preserve">
+    <value>Verzeichnis der Referenz öffnen</value>
+  </data>
+  <data name="References_AddFailedCaption" xml:space="preserve">
+    <value>Hinzufügen der Referenz fehlgeschlagen</value>
+  </data>
+  <data name="References_BrowseFilterExecutable" xml:space="preserve">
+    <value>Ausführbare Dateien (*.exe;*.dll)|*.exe;*.dll</value>
+  </data>
+  <data name="References_Locale" xml:space="preserve">
+    <value>Sprache:</value>
+  </data>
+  <data name="References_BrowseFilterOutlook" xml:space="preserve">
+    <value>Outlook-VBA-Dateien ({0})|{0}</value>
+  </data>
+  <data name="References_PinToolTip" xml:space="preserve">
+    <value>Referenz anheften</value>
+  </data>
+  <data name="References_Pinned" xml:space="preserve">
+    <value>Angeheftet</value>
+  </data>
+  <data name="ReferenceSettings_FoldersHeader" xml:space="preserve">
+    <value>Projektverzeichnisse</value>
+  </data>
+  <data name="References_Projects" xml:space="preserve">
+    <value>Projekte</value>
+  </data>
+  <data name="References_BrowseFilterWord" xml:space="preserve">
+    <value>Word-Dokumente ({0})|{0}</value>
+  </data>
+  <data name="References_BrowseFilterTypes" xml:space="preserve">
+    <value>Typbibliotheken (*.olb;*.tlb;*.dll)|*.olb;*.tlb;*.dll</value>
+  </data>
+  <data name="References_TypeLibs" xml:space="preserve">
+    <value>Typbibliotheken</value>
+  </data>
+  <data name="ReferenceSettings_TrackHostReferences" xml:space="preserve">
+    <value>Verfolge nicht von Rubberduck hinzugefügte Referenzen</value>
+  </data>
+  <data name="References_DefaultLocale" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+  <data name="References_SubCaption" xml:space="preserve">
+    <value>Wähle Typbibliotheken und VB-Projekte zum Hinzufügen oder Entfernen.</value>
+  </data>
+  <data name="References_SearchPlaceholder" xml:space="preserve">
+    <value>Nach Referenz suchen...</value>
+  </data>
+  <data name="References" xml:space="preserve">
+    <value>Referenzen</value>
+  </data>
+  <data name="References_BrowseFilterPublisher" xml:space="preserve">
+    <value>Publisher-Dateien ({0}|{0}</value>
+  </data>
+  <data name="ReferenceSettings_RecentTracked" xml:space="preserve">
+    <value>Zuletzt verfolgte Referenzen</value>
+  </data>
+  <data name="References_Recent" xml:space="preserve">
+    <value>Zuletzt verwendet</value>
+  </data>
+  <data name="References_RemoveToolTip" xml:space="preserve">
+    <value>Vom Projekt enfernen</value>
+  </data>
+  <data name="References_MoveDownToolTip" xml:space="preserve">
+    <value>Aufwärts bewegen</value>
+  </data>
+  <data name="References_MoveUpToolTip" xml:space="preserve">
+    <value>Abwärts bewegen</value>
+  </data>
+  <data name="MemberAttributeRecoveryRewriteFailedMessage" xml:space="preserve">
+    <value>Das Wiederherstellen der Elementattribute ist fehlgeschlagen.</value>
+  </data>
+  <data name="MemberAttributeRecoveryFailureCaption" xml:space="preserve">
+    <value>Wiederherstellen der Elementattribute fehlgeschlagen</value>
+  </data>
+  <data name="MemberAttributeRecoveryMembersNotFoundMessage" xml:space="preserve">
+    <value>Die Elementattribute für die folgenden Elemente konnten nicht wiederhergestellt werden, da sie nicht mehr aufgefunden wurden: {0} </value>
+  </data>
+  <data name="AllReferences_NoneFoundReference" xml:space="preserve">
+    <value>Es wurden keine Verwendungen der Projektreferenz '{0}' gefunden.</value>
+  </data>
+  <data name="AllReferences_PerformanceWarning" xml:space="preserve">
+    <value>Die Suche nach Verwendungen von Referenz '{0}' hat {1} Ergebnisse geliefert. Sie anzuzeigen könnte die Performance beeinträchtigen. Fortfahren?</value>
+  </data>
+  <data name="PerformanceWarningCaption" xml:space="preserve">
+    <value>Performancewarnung</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetIsNotUserDefined" xml:space="preserve">
+    <value>'{0}' ist keine Nutzerdeklaration.</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetIsInDifferentProject" xml:space="preserve">
+    <value>Die Variable '{0}' ist nicht im selben Projekt definiert, in dem sie verwendet wird.</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetIsInOtherNonStandardModule" xml:space="preserve">
+    <value>Die Variable '{0}' ist weder in der Komponente definiert, in der sie verwendet wir, noch in einem Standardmodul.</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
+    <value>'{0}' ist eine nicht private Modulvariable außerhalb eines Standardmoduls.</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
+    <value>In der Methode, die '{0}' verwendet, referenziert der Name dieser Variable bereits die Deklaration '{1}.</value>
+  </data>
+  <data name="Language_ES" xml:space="preserve">
+    <value>Español</value>
+  </data>
+  <data name="RefactoringFailure_BaseMessage" xml:space="preserve">
+    <value>Refactoring fehlgeschlagen.</value>
+  </data>
+  <data name="RefactoringFailure_NoActiveSelection" xml:space="preserve">
+    <value>Es gibt keine aktive Selektion.</value>
+  </data>
+  <data name="RefactoringFailure_NoTargetDeclarationForSelection" xml:space="preserve">
+    <value>Es ist kein zulässiges Ziel selektiert.</value>
+  </data>
+  <data name="RefactoringFailure_TargetNull" xml:space="preserve">
+    <value>Das Ziel des Refactorings ist null.</value>
+  </data>
+  <data name="RenameFailure_TargetModuleWithoutCodeModule" xml:space="preserve">
+    <value>Es wurde kein Codemodul für das Zielmodul '{0}' gefunden.</value>
+  </data>
+  <data name="RenameFailure_TargetContriolNotFound" xml:space="preserve">
+    <value>Es wurde das Zielkontrollelement '{0}' nicht gefunden.</value>
+  </data>
+  <data name="RenameFailure_StandardEventHandler" xml:space="preserve">
+    <value>Das Ziel '{0}' ist ein Standardeventhandler, welcher nicht umbenannt werden kann.</value>
+  </data>
+  <data name="RefactoringFailure_TargetNotUserDefined" xml:space="preserve">
+    <value>Das Ziel ist nicht benutzerdefiniert.</value>
+  </data>
+  <data name="RefactoringFailure_InvalidDeclarationType" xml:space="preserve">
+    <value>Der Typ des Ziels '{0}'ist '{1}' anstatt des erwarteten Typs '{2}'.</value>
+  </data>
+  <data name="ImplementInterfaceFailed_NoImplementsStatementSelected" xml:space="preserve">
+    <value>Es ist keine Implements-Anweisung selektiert.</value>
+  </data>
+  <data name="IntroduceFieldFailed_TargetIsAlreadyAField" xml:space="preserve">
+    <value>Das Ziel '{0}' ist bereits ein Feld.</value>
+  </data>
+  <data name="IntroduceParameterFailed_TargetNotContainedInMethod" xml:space="preserve">
+    <value>Das Ziel '{0}' ist nicht in einer Methode enthalten.</value>
+  </data>
+  <data name="RefactoringFailure_InvalidDeclarationType_multipleValid" xml:space="preserve">
+    <value>Der Typ des Ziels '{0}'ist '{1}' anstatt eines der erwarteten Typen '{2}'.</value>
+  </data>
+  <data name="GroupingGrid_Filter" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="GroupingStyle_ByName" xml:space="preserve">
+    <value>Nach Codeuntersuchung</value>
+  </data>
+  <data name="GroupingStyle_BySeverity" xml:space="preserve">
+    <value>Nach Schweregrad</value>
+  </data>
+  <data name="InspectionResults_CollapseAll" xml:space="preserve">
+    <value>Alle einklappen</value>
+  </data>
+  <data name="InspectionResults_ExpandAll" xml:space="preserve">
+    <value>Alle ausklappen</value>
+  </data>
+  <data name="References_BrowseButtonText" xml:space="preserve">
+    <value>Durchsuchen...</value>
   </data>
 </root>

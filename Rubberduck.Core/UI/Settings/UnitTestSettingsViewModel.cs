@@ -3,19 +3,23 @@ using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
 using Rubberduck.Resources.Settings;
+using Rubberduck.UnitTesting.Settings;
 
 namespace Rubberduck.UI.Settings
 {
-    public class UnitTestSettingsViewModel : SettingsViewModelBase, ISettingsViewModel
+    public sealed class UnitTestSettingsViewModel : SettingsViewModelBase<Rubberduck.UnitTesting.Settings.UnitTestSettings>, ISettingsViewModel<Rubberduck.UnitTesting.Settings.UnitTestSettings>
     {
-        public UnitTestSettingsViewModel(Configuration config)
+        public UnitTestSettingsViewModel(Configuration config, IConfigurationService<Rubberduck.UnitTesting.Settings.UnitTestSettings> service) 
+            : base(service)
         {
             BindingMode = config.UserSettings.UnitTestSettings.BindingMode;
             AssertMode = config.UserSettings.UnitTestSettings.AssertMode;
             ModuleInit = config.UserSettings.UnitTestSettings.ModuleInit;
             MethodInit = config.UserSettings.UnitTestSettings.MethodInit;
             DefaultTestStubInNewModule = config.UserSettings.UnitTestSettings.DefaultTestStubInNewModule;
-            ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings());
+            ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(),
+                _ => ExportSettings(new Rubberduck.UnitTesting.Settings.UnitTestSettings(BindingMode, AssertMode, ModuleInit,
+                    MethodInit, DefaultTestStubInNewModule)));
             ImportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ImportSettings());
         }
 
@@ -78,6 +82,7 @@ namespace Rubberduck.UI.Settings
         }
 
         private bool _defaultTestStubInNewModule;
+
         public bool DefaultTestStubInNewModule
         {
             get => _defaultTestStubInNewModule;
@@ -107,44 +112,15 @@ namespace Rubberduck.UI.Settings
             TransferSettingsToView(config.UserSettings.UnitTestSettings);
         }
 
-        private void TransferSettingsToView(Rubberduck.Settings.UnitTestSettings toLoad)
+        protected override string DialogLoadTitle => SettingsUI.DialogCaption_LoadUnitTestSettings;
+        protected override string DialogSaveTitle => SettingsUI.DialogCaption_SaveUnitTestSettings;
+        protected override void TransferSettingsToView(Rubberduck.UnitTesting.Settings.UnitTestSettings toLoad)
         {
             BindingMode = toLoad.BindingMode;
             AssertMode = toLoad.AssertMode;
             ModuleInit = toLoad.ModuleInit;
             MethodInit = toLoad.MethodInit;
             DefaultTestStubInNewModule = toLoad.DefaultTestStubInNewModule;
-        }
-
-        private void ImportSettings()
-        {
-            using (var dialog = new OpenFileDialog
-            {
-                Filter = SettingsUI.DialogMask_XmlFilesOnly,
-                Title = SettingsUI.DialogCaption_LoadUnitTestSettings
-            })
-            {
-                dialog.ShowDialog();
-                if (string.IsNullOrEmpty(dialog.FileName)) return;
-                var service = new XmlPersistanceService<Rubberduck.Settings.UnitTestSettings> { FilePath = dialog.FileName };
-                var loaded = service.Load(new Rubberduck.Settings.UnitTestSettings());
-                TransferSettingsToView(loaded);
-            }
-        }
-
-        private void ExportSettings()
-        {
-            using (var dialog = new SaveFileDialog
-            {
-                Filter = SettingsUI.DialogMask_XmlFilesOnly,
-                Title = SettingsUI.DialogCaption_SaveUnitTestSettings
-            })
-            {
-                dialog.ShowDialog();
-                if (string.IsNullOrEmpty(dialog.FileName)) return;
-                var service = new XmlPersistanceService<Rubberduck.Settings.UnitTestSettings> { FilePath = dialog.FileName };
-                service.Save(new Rubberduck.Settings.UnitTestSettings(BindingMode, AssertMode, ModuleInit, MethodInit, DefaultTestStubInNewModule));
-            }
         }
     }
 }

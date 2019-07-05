@@ -16,7 +16,7 @@ namespace Rubberduck.Templates
     {
         private readonly string _rootPath;
 
-        public TemplateFileHandlerProvider(IPersistancePathProvider pathProvider)
+        public TemplateFileHandlerProvider(IPersistencePathProvider pathProvider)
         {
             _rootPath = pathProvider.DataFolderPath("Templates");
         }

@@ -34,15 +34,14 @@ namespace Rubberduck.Parsing.ComReflection
 
         public ComModule(IComBase parent, ITypeLib typeLib, ITypeInfo info, TYPEATTR attrib, int index) : base(parent, typeLib, attrib, index)
         {
+            Debug.Assert(attrib.cFuncs >= 0 && attrib.cVars >= 0);
             Type = DeclarationType.ProceduralModule;
             if (attrib.cFuncs > 0)
             {
-                Debug.Assert(attrib.cVars == 0);
                 GetComMembers(info, attrib);
             }
-            else
+            if (attrib.cVars > 0)
             {
-                Debug.Assert(attrib.cVars > 0);
                 GetComFields(info, attrib);
             }
         }
@@ -59,7 +58,9 @@ namespace Rubberduck.Parsing.ComReflection
                     info.GetNames(desc.memid, names, names.Length, out int length);
                     Debug.Assert(length == 1);
 
-                    _fields.Add(new ComField(this, info, names[0], desc, index, DeclarationType.Constant));
+                    var type = desc.desc.lpvarValue == IntPtr.Zero ? DeclarationType.Variable : DeclarationType.Constant;
+
+                    _fields.Add(new ComField(this, info, names[0], desc, index, type));
                 }
             }
         }

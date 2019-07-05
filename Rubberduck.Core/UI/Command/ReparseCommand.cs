@@ -16,6 +16,12 @@ using Rubberduck.VBEditor.VbeRuntime.Settings;
 namespace Rubberduck.UI.Command
 {
     [ComVisible(false)]
+    public class ReparseCancellationFlag
+    {
+        public bool Canceled { get;  set; }
+    }
+
+    [ComVisible(false)]
     public class ReparseCommand : CommandBase
     {
         private readonly IVBE _vbe;
@@ -25,17 +31,19 @@ namespace Rubberduck.UI.Command
         private readonly RubberduckParserState _state;
         private readonly GeneralSettings _settings;
 
-        public ReparseCommand(IVBE vbe, IConfigProvider<GeneralSettings> settingsProvider, RubberduckParserState state, IVBETypeLibsAPI typeLibApi, IVbeSettings vbeSettings, IMessageBox messageBox) : base(LogManager.GetCurrentClassLogger())
+        public ReparseCommand(IVBE vbe, IConfigurationService<GeneralSettings> settingsProvider, RubberduckParserState state, IVBETypeLibsAPI typeLibApi, IVbeSettings vbeSettings, IMessageBox messageBox) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _vbeSettings = vbeSettings;
             _typeLibApi = typeLibApi;
             _state = state;
-            _settings = settingsProvider.Create();
+            _settings = settingsProvider.Read();
             _messageBox = messageBox;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
             return _state.Status == ParserState.Pending
                    || _state.Status == ParserState.Ready
@@ -46,10 +54,22 @@ namespace Rubberduck.UI.Command
 
         protected override void OnExecute(object parameter)
         {
+            // WPF binds to EvaluateCanExecute asychronously, which means that in some instances the bound refresh control will
+            // enable itself based on a "stale" ParserState. There's no easy way to test for race conditions inside WPF, so we
+            // need to make this test again...
+            if (!CanExecute(parameter))
+            {
+                return;
+            }
+
             if (_settings.CompileBeforeParse)
             {
                 if (!VerifyCompileOnDemand())
                 {
+                    if (parameter is ReparseCancellationFlag cancellation)
+                    {
+                        cancellation.Canceled = true;
+                    }
                     return;
                 }
 
@@ -57,6 +77,10 @@ namespace Rubberduck.UI.Command
                 {
                     if (!PromptUserToContinue(failedNames))
                     {
+                        if (parameter is ReparseCancellationFlag cancellation)
+                        {
+                            cancellation.Canceled = true;
+                        }
                         return;
                     }
                 }

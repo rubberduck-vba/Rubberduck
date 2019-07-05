@@ -1,14 +1,52 @@
+using System;
+using System.Linq;
 using NUnit.Framework;
+using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.Exceptions;
+using Rubberduck.Refactorings.Exceptions.ImplementInterface;
 using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring
 {
     [TestFixture]
-    public class ImplementInterfaceTests
+    public class ImplementInterfaceTests : RefactoringTestBase
     {
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
+        public override void TargetNull_Throws()
+        {
+            var testVbe = TestVbe(string.Empty, out _);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(testVbe);
+            using (state)
+            {
+                var refactoring = TestRefactoring(rewritingManager, state);
+                Assert.Throws<NotSupportedException>(() => refactoring.Refactor((Declaration)null));
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
+        public void DoesNotSupportCallingWithADeclaration()
+        {
+            var testVbe = TestVbe(("testClass", string.Empty, ComponentType.ClassModule));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(testVbe);
+            using (state)
+            {
+                var target = state.DeclarationFinder.UserDeclarations(DeclarationType.ClassModule).Single();
+                var refactoring = TestRefactoring(rewritingManager, state);
+                Assert.Throws<NotSupportedException>(() => refactoring.Refactor(target));
+            }
+        }
+
         [Test]
         [Category("Refactorings")]
         [Category("Implement Interface")]
@@ -22,6 +60,8 @@ End Sub";
             const string inputCode2 =
                 @"Implements Class1";
 
+            var selection = Selection.Home;
+
             //Expectation
             const string expectedCode =
                 @"Implements Class1
@@ -31,26 +71,46 @@ Private Sub Class1_Foo()
 End Sub
 ";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[1];
+            var actualCode = RefactoredCode(
+                "Class2", 
+                selection, 
+                null, 
+                false,
+                ("Class1", inputCode1, ComponentType.ClassModule), 
+                ("Class2", inputCode2, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class2"]);
+        }
 
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
+        public void DoesNotImplementInterface_SelectionNotOnImplementsStatement()
+        {
+            //Input
+            const string inputCode1 =
+                @"Public Sub Foo()
+End Sub";
 
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
+            const string inputCode2 =
+                @"Implements Class1
+   
+";
+            var selection = new Selection(2, 2);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
+            //Expectation
+            const string expectedCode =
+                @"Implements Class1
+   
+";
 
-                var actualCode = component.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var actualCode = RefactoredCode(
+                "Class2", 
+                selection, 
+                typeof(NoImplementsStatementSelectedException), 
+                false, 
+                ("Class1", inputCode1, ComponentType.ClassModule), 
+                ("Class2", inputCode2, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class2"]);
         }
 
         [Test]
@@ -68,6 +128,7 @@ End Sub";
 
 Public Sub Bar()
 End Sub";
+            var selection = Selection.Home;
 
             //Expectation
             const string expectedCode =
@@ -81,26 +142,14 @@ Private Sub Class1_Foo()
 End Sub
 ";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[1];
-
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
-
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-
-                var actualCode = component.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var actualCode = RefactoredCode(
+                "Class2",
+                selection,
+                null,
+                false,
+                ("Class1", inputCode1, ComponentType.ClassModule),
+                ("Class2", inputCode2, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class2"]);
         }
 
         [Test]
@@ -124,6 +173,7 @@ End Property";
 
 Private Property Let Class1_b(RHS As String)
 End Property";
+            var selection = Selection.Home;
 
             //Expectation
             const string expectedCode =
@@ -145,26 +195,14 @@ Private Property Get Class1_b() As String
 End Property
 ";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[1];
-
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
-
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-
-                var actualCode = component.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var actualCode = RefactoredCode(
+                "Class2",
+                selection,
+                null,
+                false,
+                ("Class1", inputCode1, ComponentType.ClassModule),
+                ("Class2", inputCode2, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class2"]);
         }
 
         [Test]
@@ -179,7 +217,8 @@ End Sub";
 
             const string inputCode2 =
                 @"Implements Class1";
-
+            var selection = Selection.Home;
+            
             //Expectation
             const string expectedCode =
                 @"Implements Class1
@@ -189,26 +228,14 @@ Private Sub Class1_Foo(ByVal a As Integer, ByRef b As Variant, ByRef c As Varian
 End Sub
 ";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[1];
-
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
-
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-
-                var actualCode = component.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var actualCode = RefactoredCode(
+                "Class2",
+                selection,
+                null,
+                false,
+                ("Class1", inputCode1, ComponentType.ClassModule),
+                ("Class2", inputCode2, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class2"]);
         }
 
         [Test]
@@ -224,6 +251,8 @@ End Function";
             const string inputCode2 =
                 @"Implements Class1";
 
+            var selection = Selection.Home;
+
             //Expectation
             const string expectedCode =
                 @"Implements Class1
@@ -233,26 +262,14 @@ Private Function Class1_Foo() As Integer
 End Function
 ";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[1];
-
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
-
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-
-                var actualCode = component.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var actualCode = RefactoredCode(
+                "Class2",
+                selection,
+                null,
+                false,
+                ("Class1", inputCode1, ComponentType.ClassModule),
+                ("Class2", inputCode2, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class2"]);
         }
 
         [Test]
@@ -268,6 +285,8 @@ End Function";
             const string inputCode2 =
                 @"Implements Class1";
 
+            var selection = Selection.Home;
+
             //Expectation
             const string expectedCode =
                 @"Implements Class1
@@ -277,26 +296,14 @@ Private Function Class1_Foo() As Variant
 End Function
 ";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[1];
-
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
-
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-
-                var actualCode = component.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var actualCode = RefactoredCode(
+                "Class2",
+                selection,
+                null,
+                false,
+                ("Class1", inputCode1, ComponentType.ClassModule),
+                ("Class2", inputCode2, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class2"]);
         }
 
         [Test]
@@ -312,6 +319,8 @@ End Function";
             const string inputCode2 =
                 @"Implements Class1";
 
+            var selection = Selection.Home;
+
             //Expectation
             const string expectedCode =
                 @"Implements Class1
@@ -321,26 +330,14 @@ Private Function Class1_Foo(ByRef a As Variant) As Variant
 End Function
 ";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[1];
-
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
-
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-
-                var actualCode = component.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var actualCode = RefactoredCode(
+                "Class2",
+                selection,
+                null,
+                false,
+                ("Class1", inputCode1, ComponentType.ClassModule),
+                ("Class2", inputCode2, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class2"]);
         }
 
         [Test]
@@ -356,6 +353,8 @@ End Property";
             const string inputCode2 =
                 @"Implements Class1";
 
+            var selection = Selection.Home;
+
             //Expectation
             const string expectedCode =
                 @"Implements Class1
@@ -365,26 +364,14 @@ Private Property Get Class1_Foo() As Integer
 End Property
 ";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[1];
-
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
-
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-
-                var actualCode = component.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var actualCode = RefactoredCode(
+                "Class2",
+                selection,
+                null,
+                false,
+                ("Class1", inputCode1, ComponentType.ClassModule),
+                ("Class2", inputCode2, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class2"]);
         }
 
         [Test]
@@ -400,6 +387,8 @@ End Property";
             const string inputCode2 =
                 @"Implements Class1";
 
+            var selection = Selection.Home;
+
             //Expectation
             const string expectedCode =
                 @"Implements Class1
@@ -409,26 +398,14 @@ Private Property Get Class1_Foo() As Variant
 End Property
 ";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[1];
-
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
-
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-
-                var actualCode = component.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var actualCode = RefactoredCode(
+                "Class2",
+                selection,
+                null,
+                false,
+                ("Class1", inputCode1, ComponentType.ClassModule),
+                ("Class2", inputCode2, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class2"]);
         }
 
         [Test]
@@ -444,6 +421,8 @@ End Property";
             const string inputCode2 =
                 @"Implements Class1";
 
+            var selection = Selection.Home;
+
             //Expectation
             const string expectedCode =
                 @"Implements Class1
@@ -453,26 +432,14 @@ Private Property Get Class1_Foo(ByRef a As Variant) As Variant
 End Property
 ";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[1];
-
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
-
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-
-                var actualCode = component.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var actualCode = RefactoredCode(
+                "Class2",
+                selection,
+                null,
+                false,
+                ("Class1", inputCode1, ComponentType.ClassModule),
+                ("Class2", inputCode2, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class2"]);
         }
 
         [Test]
@@ -488,6 +455,8 @@ End Property";
             const string inputCode2 =
                 @"Implements Class1";
 
+            var selection = Selection.Home;
+
             //Expectation
             const string expectedCode =
                 @"Implements Class1
@@ -497,26 +466,14 @@ Private Property Let Class1_Foo(ByRef value As Long)
 End Property
 ";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[1];
-
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
-
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-
-                var actualCode = component.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var actualCode = RefactoredCode(
+                "Class2",
+                selection,
+                null,
+                false,
+                ("Class1", inputCode1, ComponentType.ClassModule),
+                ("Class2", inputCode2, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class2"]);
         }
 
         [Test]
@@ -532,6 +489,8 @@ End Property";
             const string inputCode2 =
                 @"Implements Class1";
 
+            var selection = Selection.Home;
+
             //Expectation
             const string expectedCode =
                 @"Implements Class1
@@ -541,26 +500,14 @@ Private Property Let Class1_Foo(ByRef a As Variant)
 End Property
 ";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[1];
-
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
-
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-
-                var actualCode = component.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var actualCode = RefactoredCode(
+                "Class2",
+                selection,
+                null,
+                false,
+                ("Class1", inputCode1, ComponentType.ClassModule),
+                ("Class2", inputCode2, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class2"]);
         }
 
         [Test]
@@ -576,6 +523,8 @@ End Property";
             const string inputCode2 =
                 @"Implements Class1";
 
+            var selection = Selection.Home;
+
             //Expectation
             const string expectedCode =
                 @"Implements Class1
@@ -585,26 +534,14 @@ Private Property Set Class1_Foo(ByRef value As Variant)
 End Property
 ";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[1];
-
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
-
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-
-                var actualCode = component.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var actualCode = RefactoredCode(
+                "Class2",
+                selection,
+                null,
+                false,
+                ("Class1", inputCode1, ComponentType.ClassModule),
+                ("Class2", inputCode2, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class2"]);
         }
 
         [Test]
@@ -620,6 +557,8 @@ End Property";
             const string inputCode2 =
                 @"Implements Class1";
 
+            var selection = Selection.Home;
+
             //Expectation
             const string expectedCode =
                 @"Implements Class1
@@ -629,26 +568,14 @@ Private Property Set Class1_Foo(ByRef a As Variant)
 End Property
 ";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[1];
-
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
-
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-
-                var actualCode = component.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var actualCode = RefactoredCode(
+                "Class2", 
+                selection, 
+                null, 
+                false, 
+                ("Class1", inputCode1, ComponentType.ClassModule), 
+                ("Class2", inputCode2, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class2"]);
         }
 
         [Test]
@@ -673,6 +600,8 @@ End Property";
             const string inputCode2 =
                 @"Implements Class1";
 
+            var selection = Selection.Home;
+
             //Expectation
             const string expectedCode =
                 @"Implements Class1
@@ -694,26 +623,14 @@ Private Property Let Class1_Buz(ByVal a As Boolean, ByRef value As Integer)
 End Property
 ";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[1];
-
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
-
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-
-                var actualCode = component.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var actualCode = RefactoredCode(
+                "Class2",
+                selection,
+                null,
+                false,
+                ("Class1", inputCode1, ComponentType.ClassModule),
+                ("Class2", inputCode2, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class2"]);
         }
 
         [Test]
@@ -741,6 +658,8 @@ End Property";
             const string inputCode =
                 @"Implements IClassModule";
 
+            var selection = Selection.Home;
+
             //Expectation
             const string expectedCode =
                 @"Implements IClassModule
@@ -766,26 +685,14 @@ Private Property Set IClassModule_Buzz(ByRef value As Variant)
 End Property
 ";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("IClassModule", ComponentType.ClassModule, interfaceCode)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[1];
-
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
-
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-
-                var actualCode = component.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var actualCode = RefactoredCode(
+                "Class2",
+                selection,
+                null,
+                false,
+                ("IClassModule", interfaceCode, ComponentType.ClassModule),
+                ("Class2", inputCode, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class2"]);
         }
 
         [Test]
@@ -798,6 +705,9 @@ Public Sub DoSomething()
 End Sub
 ";
             const string initialCode = @"Implements IInterface";
+
+            var selection = Selection.Home;
+
             const string expectedCode = @"Implements IInterface
 
 Private Sub IInterface_DoSomething()
@@ -805,28 +715,14 @@ Private Sub IInterface_DoSomething()
 End Sub
 ";
 
-            var vbe = new MockVbeBuilder()
-                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("IInterface", ComponentType.ClassModule, interfaceCode)
-                .AddComponent("Sheet1", ComponentType.Document, initialCode, Selection.Home)
-                .AddProjectToVbeBuilder()
-                .Build();
-
-            var project = vbe.Object.VBProjects[0];
-            var component = project.VBComponents["Sheet1"];
-
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
-
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-
-                var actualCode = component.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var actualCode = RefactoredCode(
+                "Sheet1",
+                selection,
+                null,
+                false,
+                ("IInterface", interfaceCode, ComponentType.ClassModule),
+                ("Sheet1", initialCode, ComponentType.Document));
+            Assert.AreEqual(expectedCode, actualCode["Sheet1"]);
         }
 
         [Test]
@@ -839,6 +735,9 @@ Public Sub DoSomething()
 End Sub
 ";
             const string initialCode = @"Implements IInterface";
+
+            var selection = Selection.Home;
+
             const string expectedCode = @"Implements IInterface
 
 Private Sub IInterface_DoSomething()
@@ -846,28 +745,14 @@ Private Sub IInterface_DoSomething()
 End Sub
 ";
 
-            var vbe = new MockVbeBuilder()
-                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("IInterface", ComponentType.ClassModule, interfaceCode)
-                .AddComponent("Form1", ComponentType.UserForm, initialCode, Selection.Home)
-                .AddProjectToVbeBuilder()
-                .Build();
-
-            var project = vbe.Object.VBProjects[0];
-            var component = project.VBComponents["Form1"];
-
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
-
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-
-                var actualCode = component.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var actualCode = RefactoredCode(
+                "Form1",
+                selection,
+                null,
+                false,
+                ("IInterface", interfaceCode, ComponentType.ClassModule),
+                ("Form1", initialCode, ComponentType.UserForm));
+            Assert.AreEqual(expectedCode, actualCode["Form1"]);
         }
 
         [Test]
@@ -879,6 +764,8 @@ End Sub
         {
             const string inputCode2 =
                 @"Implements Class1";
+
+            var selection = Selection.Home;
 
             //Expectation
             const string expectedCode =
@@ -893,26 +780,14 @@ Private Property Let Class1_Foo(ByVal rhs As Long)
 End Property
 ";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[1];
-
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
-
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-
-                var actualCode = component.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var actualCode = RefactoredCode(
+                "Class2",
+                selection,
+                null,
+                false,
+                ("Class1", inputCode1, ComponentType.ClassModule),
+                ("Class2", inputCode2, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class2"]);
         }
 
         [Test]
@@ -924,6 +799,8 @@ End Property
         {
             const string inputCode2 =
                 @"Implements Class1";
+
+            var selection = Selection.Home;
 
             //Expectation
             const string expectedCode =
@@ -938,26 +815,14 @@ Private Property Set Class1_Foo(ByVal rhs As Object)
 End Property
 ";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[1];
-
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
-
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
-
-                var actualCode = component.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var actualCode = RefactoredCode(
+                "Class2",
+                selection,
+                null,
+                false,
+                ("Class1", inputCode1, ComponentType.ClassModule),
+                ("Class2", inputCode2, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class2"]);
         }
 
         [Test]
@@ -971,6 +836,8 @@ End Property
         {
             const string inputCode2 =
                 @"Implements Class1";
+
+            var selection = Selection.Home;
 
             //Expectation
             const string expectedCode =
@@ -989,26 +856,61 @@ Private Property Set Class1_Foo(ByVal rhs As Variant)
 End Property
 ";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[1];
+            var actualCode = RefactoredCode(
+                "Class2",
+                selection,
+                null,
+                false,
+                ("Class1", inputCode1, ComponentType.ClassModule),
+                ("Class2", inputCode2, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class2"]);
+        }
 
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
+        public void ImplementsCorrectInterface_MultipleInterfaces()
+        {
+            //Input
+            const string inputCode1 =
+                @"Public Sub Foo()
+End Sub";
 
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
+            const string inputCode2 =
+                @"Implements Class1
+Implements Class3";
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
-                refactoring.Refactor(qualifiedSelection);
+            var selection = new Selection(1, 1);
 
-                var actualCode = component.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            const string inputCode3 =
+                @"Public Sub Foo()
+End Sub";
+
+            //Expectation
+            const string expectedCode =
+                @"Implements Class1
+Implements Class3
+
+Private Sub Class1_Foo()
+    Err.Raise 5 'TODO implement interface member
+End Sub
+";
+
+            var actualCode = RefactoredCode(
+                "Class2",
+                selection,
+                null,
+                false,
+                ("Class1", inputCode1, ComponentType.ClassModule),
+                ("Class2", inputCode2, ComponentType.ClassModule),
+                ("Class3", inputCode3, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class2"]);
+        }
+
+        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state,
+            ISelectionService selectionService)
+        {
+            return new ImplementInterfaceRefactoring(state, rewritingManager, selectionService);
         }
     }
 }

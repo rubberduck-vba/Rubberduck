@@ -3,16 +3,29 @@ using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.UI.Command;
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using Rubberduck.Parsing.Symbols;
 using System.Linq;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
-    public class RemoveParametersViewModel : ViewModelBase
+    public class RemoveParametersViewModel : RefactoringViewModelBase<RemoveParametersModel>
     {
-        public RubberduckParserState State { get; }
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
+
+        public RemoveParametersViewModel(IDeclarationFinderProvider declarationFinderProvider, RemoveParametersModel model) : base(model)
+        {
+            _declarationFinderProvider = declarationFinderProvider;
+            RemoveParameterCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => RemoveParameter((ParameterViewModel)param));
+            RestoreParameterCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => RestoreParameter((ParameterViewModel)param));
+
+            Parameters = model.Parameters.Select(p => p.ToViewModel()).ToList();
+        }
+
+        private void UpdateModelParameters()
+        {
+            Model.RemoveParameters = Parameters.Where(m => m.IsRemoved).Select(vm => vm.ToModel()).ToList();
+        }
 
         private List<ParameterViewModel> _parameters;
         public List<ParameterViewModel> Parameters
@@ -21,6 +34,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             set
             {
                 _parameters = value;
+                UpdateModelParameters();
                 OnPropertyChanged();
             }
         }
@@ -39,19 +53,20 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
 
                 if (member.DeclarationType.HasFlag(DeclarationType.Property))
                 {
-                    var declarations = State.AllUserDeclarations;
+                    var getter = _declarationFinderProvider.DeclarationFinder
+                        .UserDeclarations(DeclarationType.PropertyGet)
+                        .FirstOrDefault(item => item.Scope == member.Scope 
+                                                && item.IdentifierName == member.IdentifierName);
 
-                    var getter = declarations.FirstOrDefault(item => item.Scope == member.Scope &&
-                                                                     item.IdentifierName == member.IdentifierName &&
-                                                                     item.DeclarationType == DeclarationType.PropertyGet);
+                    var letter = _declarationFinderProvider.DeclarationFinder
+                        .UserDeclarations(DeclarationType.PropertyLet)
+                        .FirstOrDefault(item => item.Scope == member.Scope
+                                                && item.IdentifierName == member.IdentifierName); 
 
-                    var letter = declarations.FirstOrDefault(item => item.Scope == member.Scope &&
-                                                                     item.IdentifierName == member.IdentifierName &&
-                                                                     item.DeclarationType == DeclarationType.PropertyLet);
-
-                    var setter = declarations.FirstOrDefault(item => item.Scope == member.Scope &&
-                                                                     item.IdentifierName == member.IdentifierName &&
-                                                                     item.DeclarationType == DeclarationType.PropertySet);
+                    var setter = _declarationFinderProvider.DeclarationFinder
+                        .UserDeclarations(DeclarationType.PropertySet)
+                        .FirstOrDefault(item => item.Scope == member.Scope
+                                                && item.IdentifierName == member.IdentifierName); 
 
                     var signature = string.Empty;
                     if (getter != null) { signature += GetSignature((PropertyGetDeclaration)getter); }
@@ -75,67 +90,46 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
 
         private string GetSignature(SubroutineDeclaration member)
         {
-            var signature = member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString();
-            signature += " Sub " + member.IdentifierName + "(";
-
+            var access = member.Accessibility.TokenString();
             var selectedParams = Parameters.Where(p => !p.IsRemoved).Select(s => s.Name);
-            return signature + string.Join(", ", selectedParams) + ")";
+            return $"{access} Sub {member.IdentifierName}({string.Join(", ", selectedParams)})";
         }
 
         private string GetSignature(FunctionDeclaration member)
         {
-            var signature = member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString();
-            signature += " Function " + member.IdentifierName + "(";
-
+            var access = member.Accessibility.TokenString();
             var selectedParams = Parameters.Where(p => !p.IsRemoved).Select(s => s.Name);
-            return signature + string.Join(", ", selectedParams) + ") As " + member.AsTypeName;
+            return $"{access} Function {member.IdentifierName}({string.Join(", ", selectedParams)}) As {member.AsTypeName}";
         }
 
         private string GetSignature(EventDeclaration member)
         {
-            var signature = member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString();
-            signature += " Event " + member.IdentifierName + "(";
-
+            var access = member.Accessibility.TokenString();
             var selectedParams = Parameters.Where(p => !p.IsRemoved).Select(s => s.Name);
-            return signature + string.Join(", ", selectedParams) + ")";
+            return $"{access} Event {member.IdentifierName}({string.Join(", ", selectedParams)})";
         }
 
         private string GetSignature(PropertyGetDeclaration member)
         {
-            var signature = member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString();
-            signature += " Property Get " + member.IdentifierName + "(";
-
+            var access = member.Accessibility.TokenString();
             var selectedParams = Parameters.Where(p => !p.IsRemoved).Select(s => s.Name);
-            return signature + string.Join(", ", selectedParams) + ") As " + member.AsTypeName;
+            return $"{access} Property Get {member.IdentifierName}({string.Join(", ", selectedParams)}) As {member.AsTypeName}";
         }
 
         private string GetSignature(PropertyLetDeclaration member)
         {
-            var signature = member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString();
-            signature += " Property Let " + member.IdentifierName + "(";
-
+            var access = member.Accessibility.TokenString();
             var selectedParams = Parameters.Where(p => !p.IsRemoved).Select(s => s.Name).ToList();
             selectedParams.Add(new Parameter(member.Parameters.Last()).Name);
-            return signature + string.Join(", ", selectedParams) + ")";
+            return $"{access} Property Let {member.IdentifierName}({string.Join(", ", selectedParams)})";
         }
 
         private string GetSignature(PropertySetDeclaration member)
         {
-            var signature = member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString();
-            signature += " Property Set " + member.IdentifierName + "(";
-
+            var access = member.Accessibility.TokenString();
             var selectedParams = Parameters.Where(p => !p.IsRemoved).Select(s => s.Name).ToList();
             selectedParams.Add(new Parameter(member.Parameters.Last()).Name);
-            return signature + string.Join(", ", selectedParams) + ")";
-        }
-
-        public RemoveParametersViewModel(RubberduckParserState state)
-        {
-            State = state;
-            OkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogOk());
-            CancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogCancel());
-            RemoveParameterCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => RemoveParameter((ParameterViewModel)param));
-            RestoreParameterCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => RestoreParameter((ParameterViewModel)param));
+            return $"{access} Property Set {member.IdentifierName}({string.Join(", ", selectedParams)})";
         }
 
         private void RemoveParameter(ParameterViewModel parameter)
@@ -143,6 +137,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             if (parameter != null)
             {
                 parameter.IsRemoved = true;
+                UpdateModelParameters();
                 OnPropertyChanged(nameof(SignaturePreview));
             }
         }
@@ -152,16 +147,11 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             if (parameter != null)
             {
                 parameter.IsRemoved = false;
+                UpdateModelParameters();
                 OnPropertyChanged(nameof(SignaturePreview));
             }
         }
 
-        public event EventHandler<DialogResult> OnWindowClosed;
-        private void DialogCancel() => OnWindowClosed?.Invoke(this, DialogResult.Cancel);
-        private void DialogOk() => OnWindowClosed?.Invoke(this, DialogResult.OK);
-        
-        public CommandBase OkButtonCommand { get; }
-        public CommandBase CancelButtonCommand { get; }
         public CommandBase RemoveParameterCommand { get; }
         public CommandBase RestoreParameterCommand { get; }
     }

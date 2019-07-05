@@ -1,111 +1,59 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Common;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.Resources;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {
-    public class ReorderParametersModel
+    public class ReorderParametersModel : IRefactoringModel
     {
-        public RubberduckParserState State { get; }
-        public IEnumerable<Declaration> Declarations { get; }
-
-        public Declaration TargetDeclaration { get; private set; }
-        public List<Parameter> Parameters { get; set; }
-
-        private readonly IMessageBox _messageBox;
-            
-        public ReorderParametersModel(RubberduckParserState state, QualifiedSelection selection, IMessageBox messageBox)
+        public ReorderParametersModel(Declaration target)
         {
-            State = state;
-            Declarations = state.AllUserDeclarations;
-            _messageBox = messageBox;
-
-            AcquireTarget(selection);
-
             Parameters = new List<Parameter>();
+
+            OriginalTarget = target;
+            TargetDeclaration = target;
             LoadParameters();
         }
 
-        private void AcquireTarget(QualifiedSelection selection)
+        private Declaration _target;
+        public Declaration TargetDeclaration
         {
-            TargetDeclaration = Declarations.FindTarget(selection, ValidDeclarationTypes);
-            TargetDeclaration = PromptIfTargetImplementsInterface();
-            TargetDeclaration = GetEvent();
-            TargetDeclaration = GetGetter();
+            get => _target;
+            set
+            {
+                if (value == null)
+                {
+                    return;
+                }
+
+                _target = value;
+                LoadParameters();
+            }
         }
+
+        public Declaration OriginalTarget { get; }
+        public List<Parameter> Parameters { get; set; }
+
+        public bool IsInterfaceMemberRefactoring { get; set; }
+        public bool IsEventRefactoring { get; set; }
+        public bool IsPropertyRefactoringWithGetter { get; set; }
 
         private void LoadParameters()
         {
-            if (TargetDeclaration == null) { return; }
+            Parameters.Clear();
 
-            Parameters = ((IParameterizedDeclaration) TargetDeclaration).Parameters.Select((param, idx) => new Parameter(param, idx)).ToList();
+            if (!(TargetDeclaration is IParameterizedDeclaration parameterizedDeclaration))
+            {
+                return;
+            }
 
-            if (TargetDeclaration.DeclarationType == DeclarationType.PropertyLet ||
-                TargetDeclaration.DeclarationType == DeclarationType.PropertySet)
+            Parameters.AddRange(parameterizedDeclaration.Parameters.Select((param, idx) => new Parameter(param, idx)));
+
+            if (TargetDeclaration.DeclarationType == DeclarationType.PropertyLet
+                || TargetDeclaration.DeclarationType == DeclarationType.PropertySet)
             {
                 Parameters.Remove(Parameters.Last());
             }
-        }
-
-        public static readonly DeclarationType[] ValidDeclarationTypes =
-        {
-            DeclarationType.Event,
-            DeclarationType.Function,
-            DeclarationType.Procedure,
-            DeclarationType.PropertyGet,
-            DeclarationType.PropertyLet,
-            DeclarationType.PropertySet
-        };
-
-        private Declaration PromptIfTargetImplementsInterface()
-        {
-            if (!(TargetDeclaration is ModuleBodyElementDeclaration member) || !member.IsInterfaceImplementation)
-            {
-                return TargetDeclaration;
-            }
-
-            var interfaceMember = member.InterfaceMemberImplemented;
-            var message = 
-                string.Format(RubberduckUI.Refactoring_TargetIsInterfaceMemberImplementation, TargetDeclaration.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
-            
-            return _messageBox.ConfirmYesNo(message, RubberduckUI.ReorderParamsDialog_TitleText) ? interfaceMember : null;
-        }
-
-        private Declaration GetEvent()
-        {
-            foreach (var events in Declarations.Where(item => item.DeclarationType == DeclarationType.Event))
-            {
-                if (Declarations.FindHandlersForEvent(events).Any(reference => Equals(reference.Item2, TargetDeclaration)))
-                {
-                    return events;
-                }
-            }
-            return TargetDeclaration;
-        }
-
-        private Declaration GetGetter()
-        {
-            if (TargetDeclaration == null)
-            {
-                return null;
-            }
-
-            if (TargetDeclaration.DeclarationType != DeclarationType.PropertyLet &&
-                TargetDeclaration.DeclarationType != DeclarationType.PropertySet)
-            {
-                return TargetDeclaration;
-            }
-
-            var getter = Declarations.FirstOrDefault(item => item.Scope == TargetDeclaration.Scope &&
-                                          item.IdentifierName == TargetDeclaration.IdentifierName &&
-                                          item.DeclarationType == DeclarationType.PropertyGet);
-
-            return getter ?? TargetDeclaration;
         }
     }
 }

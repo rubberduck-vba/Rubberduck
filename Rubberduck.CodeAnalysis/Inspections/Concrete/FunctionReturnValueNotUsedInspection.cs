@@ -11,10 +11,41 @@ using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    // bug: quick fix for converting to sub is exposed for interface members now
+    /// <summary>
+    /// Warns when a user function's return value is never used, at any of its call sites.
+    /// </summary>
+    /// <why>
+    /// A 'Function' procedure normally means its return value to be captured and consumed by the calling code. 
+    /// It's possible that not all call sites need the return value, but if the value is systematically discarded then this
+    /// means the function is side-effecting, and thus should probably be a 'Sub' procedure instead.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     GetFoo ' return value is not captured
+    /// End Sub
+    /// 
+    /// Private Function GetFoo() As Long
+    ///     GetFoo = 42
+    /// End Function
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim foo As Long
+    ///     foo = GetFoo
+    /// End Sub
+    /// 
+    /// Private Function GetFoo() As Long
+    ///     GetFoo = 42
+    /// End Function
+    /// ]]>
+    /// </example>
     public sealed class FunctionReturnValueNotUsedInspection : InspectionBase
     {
         public FunctionReturnValueNotUsedInspection(RubberduckParserState state)
@@ -22,13 +53,11 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            // Note: This inspection does not find dictionary calls (e.g. foo!bar) since we do not know what the
-            // default member is of a class.
             var interfaceMembers = State.DeclarationFinder.FindAllInterfaceMembers().ToList();
             var interfaceImplementationMembers = State.DeclarationFinder.FindAllInterfaceImplementingMembers();
             var functions = State.DeclarationFinder
                 .UserDeclarations(DeclarationType.Function)
-                .Where(item => !IsIgnoringInspectionResultFor(item, AnnotationName) &&
+                .Where(item => !item.IsIgnoringInspectionResultFor(AnnotationName) &&
                                item.References.Any(r => !IsReturnStatement(item, r) && !r.IsAssignment))
                 .ToList();
             var interfaceMemberIssues = GetInterfaceMemberIssues(interfaceMembers);
@@ -75,13 +104,14 @@ namespace Rubberduck.Inspections.Concrete
 
         private bool IsReturnValueUsed(Declaration function)
         {
+            // TODO: This is O(MG) at work here. Need to refactor the whole shebang.
             return (from usage in function.References
-                    where !IsAddressOfCall(usage)
-                    where !IsTypeOfExpression(usage)
-                    where !IsCallStmt(usage)
-                    where !IsLet(usage)
-                    where !IsSet(usage)
-                    select usage).Any(usage => !IsReturnStatement(function, usage));
+                where !IsLet(usage)
+                where !IsSet(usage)
+                where !IsCallStmt(usage)
+                where !IsTypeOfExpression(usage)
+                where !IsAddressOfCall(usage)
+                select usage).Any(usage => !IsReturnStatement(function, usage));
         }
 
         private bool IsAddressOfCall(IdentifierReference usage)
@@ -93,7 +123,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             return usage.Context.IsDescendentOf<VBAParser.TypeofexprContext>();
         }
-
+        
         private bool IsReturnStatement(Declaration function, IdentifierReference assignment)
         {
             return assignment.ParentScoping.Equals(function) && assignment.Declaration.Equals(function);
@@ -111,6 +141,19 @@ namespace Rubberduck.Inspections.Concrete
             {
                 return false;
             }
+
+            var indexExpr = usage.Context.GetAncestor<VBAParser.IndexExprContext>();
+            if (indexExpr != null)
+            {
+                var memberAccessStmt = usage.Context.GetAncestor<VBAParser.MemberAccessExprContext>();
+                if (memberAccessStmt != null &&
+                    callStmt.SourceInterval.ProperlyContains(memberAccessStmt.SourceInterval) &&
+                    memberAccessStmt.SourceInterval.ProperlyContains(indexExpr.SourceInterval))
+                {
+                    return false;
+                }
+            }
+
             var argumentList = CallStatement.GetArgumentList(callStmt);
             if (argumentList == null)
             {

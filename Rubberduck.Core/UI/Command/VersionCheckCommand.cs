@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using NLog;
 using Rubberduck.Interaction;
 using Rubberduck.VersionCheck;
 using Rubberduck.Resources;
@@ -31,7 +30,6 @@ namespace Rubberduck.UI.Command
         private readonly IExternalProcess _process;
 
         public VersionCheckCommand(IVersionCheck versionCheck, IMessageBox prompt, IExternalProcess process)
-            : base(LogManager.GetCurrentClassLogger())
         {
             _versionCheck = versionCheck;
             _prompt = prompt;

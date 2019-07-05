@@ -145,6 +145,9 @@ namespace Rubberduck.Parsing.Rewriter
             _rewriter.InsertAfter(tokenIndex, content);
         }
 
+        public Selection? Selection { get; set; }
+        public Selection? SelectionOffset { get; set; }
+
         public string GetText(int startTokenIndex, int stopTokenIndex)
         {
             return _rewriter.GetText(Interval.Of(startTokenIndex, stopTokenIndex));

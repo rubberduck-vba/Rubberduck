@@ -342,6 +342,34 @@ End Sub
             }
         }
 
+
+        [Test]
+        [Category("Inspections")]
+        [Category("Unused Value")]
+        public void ChainedMemberAccess_ReturnsNoResult()
+        {
+            const string inputCode = @"
+Public Function GetIt(x As Long) As Object
+End Function
+
+Public Sub Baz()
+    GetIt(1).Select
+End Sub";
+            var builder = new MockVbeBuilder();
+            var vbe = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("TestModule", ComponentType.StandardModule, inputCode)
+                .AddProjectToVbeBuilder().Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new FunctionReturnValueNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
+        }
+
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]

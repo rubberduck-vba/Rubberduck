@@ -19,9 +19,11 @@
 
 parser grammar VBAParser;
 
-options { tokenVocab = VBALexer; }
-
-@header { using System.Text.RegularExpressions; }
+options {
+    tokenVocab = VBALexer;
+    superClass = VBABaseParser;
+    contextSuperClass = VBABaseParserRuleContext;
+ }
 
 startRule : module EOF;
 
@@ -57,7 +59,7 @@ moduleConfig :
 
 moduleConfigProperty :
     BEGINPROPERTY whiteSpace unrestrictedIdentifier (LPAREN numberLiteral RPAREN)? (whiteSpace GUIDLITERAL)? endOfStatement
-        (moduleConfigProperty | moduleConfigElement)+
+        (moduleConfigProperty | moduleConfigElement)*
     ENDPROPERTY endOfStatement
 ;
 
@@ -321,14 +323,14 @@ defType :
 // singleLetter must appear at the end to prevent premature bailout
 letterSpec : universalLetterRange | letterRange | singleLetter;
 
-singleLetter : {_input.Lt(1).Text.Length == 1 && Regex.Match(_input.Lt(1).Text, @"[a-zA-Z]").Success}? IDENTIFIER;
+singleLetter : {MatchesRegex(TextOf(TokenAtRelativePosition(1)),"^[a-zA-Z]$")}? IDENTIFIER;
 
 // We make a separate universalLetterRange rule because it is treated specially in VBA. This makes it easy for users of the parser
 // to identify this case. Quoting MS VBAL:
 // "A <universal-letter-range> defines a single implicit declared type for every <IDENTIFIER> within 
 // a module, even those with a first character that would otherwise fall outside this range if it was 
 // interpreted as a <letter-range> from A-Z.""
-universalLetterRange : {_input.Lt(1).Text.Equals("A") && _input.Lt(3).Text.Equals("Z")}? IDENTIFIER MINUS IDENTIFIER;
+universalLetterRange : {EqualsString(TextOf(TokenAtRelativePosition(1)),"A") && EqualsString(TextOf(TokenAtRelativePosition(3)),"Z")}? IDENTIFIER MINUS IDENTIFIER;
  
 letterRange : singleLetter MINUS singleLetter;
 
@@ -414,8 +416,9 @@ elseBlock :
 // 5.4.2.9 Single-line If Statement
 singleLineIfStmt : ifWithNonEmptyThen | ifWithEmptyThen;
 ifWithNonEmptyThen : IF whiteSpace? booleanExpression whiteSpace? THEN whiteSpace? listOrLabel (whiteSpace singleLineElseClause)?;
-ifWithEmptyThen : IF whiteSpace? booleanExpression whiteSpace? THEN endOfStatement? whiteSpace? singleLineElseClause;
+ifWithEmptyThen : IF whiteSpace? booleanExpression whiteSpace? THEN whiteSpace? emptyThenStatement? singleLineElseClause;
 singleLineElseClause : ELSE whiteSpace? listOrLabel?;
+
 // lineNumberLabel should actually be "statement-label" according to MS VBAL but they only allow lineNumberLabels:
 // A <statement-label> that occurs as the first element of a <list-or-label> element has the effect 
 // as if the <statement-label> was replaced with a <goto-statement> containing the same 
@@ -425,7 +428,9 @@ listOrLabel :
     lineNumberLabel (whiteSpace? COLON whiteSpace? sameLineStatement?)*
     | (COLON whiteSpace?)? sameLineStatement (whiteSpace? COLON whiteSpace? sameLineStatement?)*
 ;
+
 sameLineStatement : mainBlockStmt;
+emptyThenStatement : (COLON whiteSpace?)+;
 booleanExpression : expression;
 
 implementsStmt : IMPLEMENTS whiteSpace expression;
@@ -566,20 +571,34 @@ withStmt :
 ;
 
 // Special forms with special syntax, only available in VBA reports or VB6 forms and pictureboxes.
-lineSpecialForm : expression whiteSpace ((STEP whiteSpace?)? tuple)? MINUS (STEP whiteSpace?)? tuple whiteSpace? (COMMA whiteSpace? expression)? whiteSpace? (COMMA whiteSpace? lineSpecialFormOption)?;
+// lineSpecialFormOption is required if expression is missing
+lineSpecialForm : expression whiteSpace ((STEP whiteSpace?)? tuple)?
+    whiteSpace? MINUS whiteSpace?
+	(STEP whiteSpace?)? tuple whiteSpace?
+	(COMMA whiteSpace? expression? whiteSpace?)?
+	(COMMA whiteSpace? lineSpecialFormOption)?
+;
 circleSpecialForm : (expression whiteSpace? DOT whiteSpace?)? CIRCLE whiteSpace (STEP whiteSpace?)? tuple (whiteSpace? COMMA whiteSpace? expression)+;
 scaleSpecialForm : (expression whiteSpace? DOT whiteSpace?)? SCALE whiteSpace tuple whiteSpace? MINUS whiteSpace? tuple;
 pSetSpecialForm : (expression whiteSpace? DOT whiteSpace?)? PSET (whiteSpace STEP)? whiteSpace? tuple whiteSpace? (COMMA whiteSpace? expression)?;
 tuple : LPAREN whiteSpace? expression whiteSpace? COMMA whiteSpace? expression whiteSpace? RPAREN;
-lineSpecialFormOption : {_input.Lt(1).Text.ToLower().Equals("b") || _input.Lt(1).Text.ToLower().Equals("bf")}? unrestrictedIdentifier;
+lineSpecialFormOption : {EqualsStringIgnoringCase(TextOf(TokenAtRelativePosition(1)),"b","bf")}? unrestrictedIdentifier;
 
 subscripts : subscript (whiteSpace? COMMA whiteSpace? subscript)*;
 
 subscript : (expression whiteSpace TO whiteSpace)? expression;
 
 unrestrictedIdentifier : identifier | statementKeyword | markerKeyword;
-legalLabelIdentifier : { !(new[]{DOEVENTS,END,CLOSE,ELSE,LOOP,NEXT,RANDOMIZE,REM,RESUME,RETURN,STOP,WEND}).Contains(_input.La(1))}? identifier | markerKeyword;
-identifier : typedIdentifier | untypedIdentifier;
+legalLabelIdentifier : { !IsTokenType(TokenTypeAtRelativePosition(1),DOEVENTS,END,CLOSE,ELSE,LOOP,NEXT,RANDOMIZE,REM,RESUME,RETURN,STOP,WEND)}? identifier | markerKeyword;
+//The predicate in the following rule has been introduced to lessen the problem that VBA uses the same characters used as type hints in other syntactical constructs, 
+//e.g. in the bang notation (see withDictionaryAccessExpr). Generally, it is not legal to have an identifier or opening bracket follow immediately after a type hint.
+//The first part of the predicate tries to exclude these two situations. Unfortunately, predicates have to be at the start of a rule. So, an assumption about the number 
+//of tokens in the identifier is made. All untypedIdentifers not a foreignNames consist of exactly one token and a typedIdentifier is an untyped one followed by a typeHint,
+//again a single token. So, in the majority of situations, the third token is the token following the potential type hint. 
+//For foreignNames, no assumption can be made because they consist of a pair of brackets containing arbitrarily many tokens. 
+//That is why the second part of the predicate looks at the first character in order to determine whether the identifier is a foreignName. 
+identifier : {!IsTokenType(TokenTypeAtRelativePosition(3),IDENTIFIER,L_SQUARE_BRACKET) || IsTokenType(TokenTypeAtRelativePosition(1),L_SQUARE_BRACKET)}? typedIdentifier
+             | untypedIdentifier;
 untypedIdentifier : identifierValue;
 typedIdentifier : untypedIdentifier typeHint;
 identifierValue : IDENTIFIER | keyword | foreignName;
@@ -606,13 +625,16 @@ complexType :
 fieldLength : MULT whiteSpace? (numberLiteral | identifierValue);
 
 //Statement labels can only appear at the start of a line.
-statementLabelDefinition : {_input.La(-1) == NEWLINE || _input.La(-1) == LINE_CONTINUATION}? (combinedLabels | identifierStatementLabel | standaloneLineNumberLabel);
+statementLabelDefinition : {IsTokenType(TokenTypeAtRelativePosition(-1),NEWLINE,LINE_CONTINUATION)}? (combinedLabels | identifierStatementLabel | standaloneLineNumberLabel);
 identifierStatementLabel : legalLabelIdentifier whiteSpace? COLON;
 standaloneLineNumberLabel : 
     lineNumberLabel whiteSpace? COLON
     | lineNumberLabel;
 combinedLabels : lineNumberLabel whiteSpace identifierStatementLabel;
-lineNumberLabel : numberLiteral;
+// Technically, the negative numbers are illegal but VBE can prettify a
+// &HFFFFFFFF into a -1 which becomes a legal line number. Editing the same
+// line subsequently then breaks it. 
+lineNumberLabel : MINUS? numberLiteral; 
 
 numberLiteral : HEXLITERAL | OCTLITERAL | FLOATLITERAL | INTEGERLITERAL;
 

@@ -2,17 +2,18 @@
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.IdentifierReferences
 {
     public class IdentifierReferencesListDockablePresenter : DockableToolwindowPresenter
     {
-        private readonly IProjectsProvider _projectsProvider;
+        private readonly ISelectionService _selectionService;
 
-        public IdentifierReferencesListDockablePresenter(IVBE vbe, IAddIn addin, SimpleListControl control, IProjectsProvider projectsProvider, Declaration target)
+        public IdentifierReferencesListDockablePresenter(IVBE vbe, IAddIn addin, SimpleListControl control, ISelectionService selectionService, Declaration target)
             : base(vbe, addin, control, null)
         {
-            _projectsProvider = projectsProvider;
+            _selectionService = selectionService;
 
             BindTarget(target);
         }
@@ -31,14 +32,7 @@ namespace Rubberduck.UI.IdentifierReferences
 
         private void OnNavigateIdentifierReference(IdentifierReference reference)
         {
-            var component = _projectsProvider.Component(reference.QualifiedModuleName);
-            using (var codeModule = component.CodeModule)
-            {
-                using (var codePane = codeModule.CodePane)
-                {
-                    codePane.Selection = reference.Selection;
-                }
-            }
+            _selectionService.TrySetActiveSelection(reference.QualifiedModuleName, reference.Selection);
         }
 
         private void ControlNavigate(object sender, ListItemActionEventArgs e)

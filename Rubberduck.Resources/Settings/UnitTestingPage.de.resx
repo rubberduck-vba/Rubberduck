@@ -153,4 +153,7 @@
   <data name="UnitTestSettings_TestModuleTemplateHeader" xml:space="preserve">
     <value>Testmodulvorlage</value>
   </data>
+  <data name="UnitTestSettings_DualBinding" xml:space="preserve">
+    <value>Duale Bindung (dual binding)</value>
+  </data>
 </root>

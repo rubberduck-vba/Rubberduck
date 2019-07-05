@@ -1,6 +1,5 @@
 ﻿using System.Windows.Input;
 using NLog;
-using Rubberduck.Resources;
 using Rubberduck.Resources.Settings;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
@@ -8,12 +7,33 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Settings
 {
-    public class AutoCompleteSettingsViewModel : SettingsViewModelBase, ISettingsViewModel
+    public sealed class AutoCompleteSettingsViewModel : SettingsViewModelBase<Rubberduck.Settings.AutoCompleteSettings>, ISettingsViewModel<Rubberduck.Settings.AutoCompleteSettings>
     {
-        public AutoCompleteSettingsViewModel(Configuration config)
+        public AutoCompleteSettingsViewModel(Configuration config, IConfigurationService<Rubberduck.Settings.AutoCompleteSettings> service) 
+            : base(service)
         {
             TransferSettingsToView(config.UserSettings.AutoCompleteSettings);
-            ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings());
+            ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ =>
+                ExportSettings(new Rubberduck.Settings.AutoCompleteSettings
+                {
+                    IsEnabled = IsEnabled,
+                    BlockCompletion = new Rubberduck.Settings.AutoCompleteSettings.BlockCompletionSettings
+                    {
+                        CompleteOnEnter = CompleteBlockOnEnter,
+                        CompleteOnTab = CompleteBlockOnTab,
+                        IsEnabled = EnableBlockCompletion
+                    },
+                    SelfClosingPairs = new Rubberduck.Settings.AutoCompleteSettings.SelfClosingPairSettings
+                    {
+                        IsEnabled = EnableSelfClosingPairs
+                    },
+                    SmartConcat = new Rubberduck.Settings.AutoCompleteSettings.SmartConcatSettings
+                    {
+                        ConcatVbNewLineModifier =
+                            ConcatVbNewLine ? ModifierKeySetting.CtrlKey : ModifierKeySetting.None,
+                        IsEnabled = EnableSmartConcat
+                    }
+                }));
             ImportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ImportSettings());
 
             IncrementMaxConcatLinesCommand = new DelegateCommand(null, ExecuteIncrementMaxConcatLines, CanExecuteIncrementMaxConcatLines);
@@ -50,7 +70,7 @@ namespace Rubberduck.UI.Settings
             config.UserSettings.AutoCompleteSettings.BlockCompletion.CompleteOnEnter = CompleteBlockOnEnter;
         }
 
-        private void TransferSettingsToView(Rubberduck.Settings.AutoCompleteSettings toLoad)
+        protected override void TransferSettingsToView(Rubberduck.Settings.AutoCompleteSettings toLoad)
         {
             IsEnabled = toLoad.IsEnabled;
 
@@ -176,6 +196,7 @@ namespace Rubberduck.UI.Settings
         }
 
         private bool _completeBlockOnTab;
+
         public bool CompleteBlockOnTab
         {
             get { return _completeBlockOnTab; }
@@ -194,54 +215,7 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        private void ImportSettings()
-        {
-            using (var dialog = new OpenFileDialog
-            {
-                Filter = SettingsUI.DialogMask_XmlFilesOnly,
-                Title = SettingsUI.DialogCaption_LoadInspectionSettings
-            })
-            {
-                dialog.ShowDialog();
-                if (string.IsNullOrEmpty(dialog.FileName)) return;
-                var service = new XmlPersistanceService<Rubberduck.Settings.AutoCompleteSettings> { FilePath = dialog.FileName };
-                var loaded = service.Load(new Rubberduck.Settings.AutoCompleteSettings());
-                TransferSettingsToView(loaded);
-            }
-        }
-
-        private void ExportSettings()
-        {
-            using (var dialog = new SaveFileDialog
-            {
-                Filter = SettingsUI.DialogMask_XmlFilesOnly,
-                Title = SettingsUI.DialogCaption_SaveAutocompletionSettings
-            })
-            {
-                dialog.ShowDialog();
-                if (string.IsNullOrEmpty(dialog.FileName)) return;
-                var service = new XmlPersistanceService<Rubberduck.Settings.AutoCompleteSettings> { FilePath = dialog.FileName };
-                service.Save(new Rubberduck.Settings.AutoCompleteSettings
-                {
-                    IsEnabled = IsEnabled,
-                    BlockCompletion = new Rubberduck.Settings.AutoCompleteSettings.BlockCompletionSettings
-                    {
-                        CompleteOnEnter = CompleteBlockOnEnter,
-                        CompleteOnTab = CompleteBlockOnTab,
-                        IsEnabled = EnableBlockCompletion
-                    },
-                    SelfClosingPairs = new Rubberduck.Settings.AutoCompleteSettings.SelfClosingPairSettings
-                    {
-                        IsEnabled = EnableSelfClosingPairs
-                    },
-                    SmartConcat = new Rubberduck.Settings.AutoCompleteSettings.SmartConcatSettings
-                    {
-                        ConcatVbNewLineModifier =
-                            ConcatVbNewLine ? ModifierKeySetting.CtrlKey : ModifierKeySetting.None,
-                        IsEnabled = EnableSmartConcat
-                    }
-                });
-            }
-        }
+        protected override string DialogLoadTitle => SettingsUI.DialogCaption_LoadInspectionSettings;
+        protected override string DialogSaveTitle => SettingsUI.DialogCaption_SaveAutocompletionSettings;
     }
 }

@@ -534,7 +534,7 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="ExtractInterface_Caption" xml:space="preserve">
     <value>Rubberduck - Extraire une interface</value>
   </data>
-  <data name="MoveCloserToUsage_TargetHasNoReferences" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetHasNoReferences" xml:space="preserve">
     <value>'{0}' n'est pas utilisé</value>
   </data>
   <data name="EncapsulateField_TitleText" xml:space="preserve">
@@ -606,7 +606,7 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="EncapsulateField_Preview" xml:space="preserve">
     <value>Aperçu:</value>
   </data>
-  <data name="MoveCloserToUsage_TargetIsUsedInMultipleMethods" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods" xml:space="preserve">
     <value>'{0}' est utilisé dans plus d'une méthode.</value>
   </data>
   <data name="RegexSearchReplace_ReplaceAllButtonLabel" xml:space="preserve">
@@ -615,7 +615,7 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="EncapsulateField_SetterType" xml:space="preserve">
     <value>Mutateur:</value>
   </data>
-  <data name="MoveCloserToUsage_InvalidSelection" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
     <value>Sélection invalide</value>
   </data>
   <data name="IntroduceField_Caption" xml:space="preserve">
@@ -1050,12 +1050,6 @@ les projets dans le VBE.</value>
   <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
     <value>Tous les fichiers</value>
   </data>
-  <data name="RefactorRename_TargetNotUserDefinedError" xml:space="preserve">
-    <value>L'identifiant {0} ne peut être renommé.</value>
-  </data>
-  <data name="RefactorRename_TargetNotDefinedError" xml:space="preserve">
-    <value>Impossible de détecter la cible à renommer</value>
-  </data>
   <data name="ImportCommand_OpenDialog_Title" xml:space="preserve">
     <value>Importer fichiers source</value>
   </data>
@@ -1095,7 +1089,7 @@ les projets dans le VBE.</value>
 {1} marqueurs trouvés.</value>
   </data>
   <data name="CodeMetrics_Nesting" xml:space="preserve">
-    <value>P</value>
+    <value>Imbrication</value>
   </data>
   <data name="CodeMetrics_Complexity" xml:space="preserve">
     <value>Complexité Cyclomatique</value>
@@ -1218,5 +1212,192 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   </data>
   <data name="Language_CS" xml:space="preserve">
     <value>Tchèque</value>
+  </data>
+  <data name="InspectionResults_FilterByError" xml:space="preserve">
+    <value>Erreur</value>
+  </data>
+  <data name="InspectionResults_FilterByHint" xml:space="preserve">
+    <value>Note</value>
+  </data>
+  <data name="InspectionResults_FilterBySuggestion" xml:space="preserve">
+    <value>Suggestion</value>
+  </data>
+  <data name="InspectionResults_FilterByWarning" xml:space="preserve">
+    <value>Avertissement</value>
+  </data>
+  <data name="References" xml:space="preserve">
+    <value>Références</value>
+  </data>
+  <data name="ApplyButtonText" xml:space="preserve">
+    <value>Appliquer</value>
+  </data>
+  <data name="References_AddFailedCaption" xml:space="preserve">
+    <value>La référence n'a pu être ajoutée.</value>
+  </data>
+  <data name="References_BrowseCaption" xml:space="preserve">
+    <value>Parcourir...</value>
+  </data>
+  <data name="References_BrowseFilterActiveX" xml:space="preserve">
+    <value>Contrôles ActiveX (*.ocx)|*.ocx</value>
+  </data>
+  <data name="References_BrowseFilterAllFiles" xml:space="preserve">
+    <value>Tous (*.*)|*.*</value>
+  </data>
+  <data name="References_BrowseFilterExcel" xml:space="preserve">
+    <value>Fichiers Microsoft Excel ({0})|{0}</value>
+  </data>
+  <data name="References_BrowseFilterExecutable" xml:space="preserve">
+    <value>Exécutables (*.exe,*.dll)|*.exe;*.dll</value>
+  </data>
+  <data name="References_BrowseFilterTypes" xml:space="preserve">
+    <value>Bibliothêques (*.olb;*.tlb;*.dll)|*.olb;*.tlb;*.dll</value>
+  </data>
+  <data name="References_Caption" xml:space="preserve">
+    <value>Ajouter/Supprimer Références</value>
+  </data>
+  <data name="AllReferences_NoneFoundReference" xml:space="preserve">
+    <value>Aucune utilisation de '{0}' n'a été trouvée dans le projet.</value>
+  </data>
+  <data name="AllReferences_PerformanceWarning" xml:space="preserve">
+    <value>La recherche des utilisations de la référence '{0}' renvoie {1} résultats. Les afficher pourrait dégrader la performance. Continuer?</value>
+  </data>
+  <data name="GeneralSettings_SetDpiUnaware" xml:space="preserve">
+    <value>Correction pour l'affichage haute définition</value>
+  </data>
+  <data name="References_Locale" xml:space="preserve">
+    <value>Langue:</value>
+  </data>
+  <data name="PerformanceWarningCaption" xml:space="preserve">
+    <value>Avertissement - Performance</value>
+  </data>
+  <data name="References_AddToolTip" xml:space="preserve">
+    <value>Ajouter au projet</value>
+  </data>
+  <data name="References_BrowseFilterAccess" xml:space="preserve">
+    <value>Base de données Microsoft Access ({0})|{0}</value>
+  </data>
+  <data name="References_BrowseFilterOutlook" xml:space="preserve">
+    <value>Fichiers VBA Outlook ({0})|{0}</value>
+  </data>
+  <data name="References_BrowseFilterPowerPoint" xml:space="preserve">
+    <value>Fichiers complément PowerPoint ({0})|{0}</value>
+  </data>
+  <data name="References_BrowseFilterPublisher" xml:space="preserve">
+    <value>Fichiers Publisher ({0})|{0}</value>
+  </data>
+  <data name="References_BrowseFilterVisio" xml:space="preserve">
+    <value>Tous les fichiers Visio ({0})|{0}</value>
+  </data>
+  <data name="References_BrowseFilterWord" xml:space="preserve">
+    <value>Documents Word ({0})|{0}</value>
+  </data>
+  <data name="References_CaptionTemplate" xml:space="preserve">
+    <value>Ajouter/Supprimer Références - {0}</value>
+  </data>
+  <data name="References_DefaultLocale" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+  <data name="References_MoveDownToolTip" xml:space="preserve">
+    <value>Déplacer vers le haut</value>
+  </data>
+  <data name="References_MoveUpToolTip" xml:space="preserve">
+    <value>Déplacer vers le bas</value>
+  </data>
+  <data name="References_Pinned" xml:space="preserve">
+    <value>Épingles</value>
+  </data>
+  <data name="References_PinToolTip" xml:space="preserve">
+    <value>Épingler la référence</value>
+  </data>
+  <data name="References_Projects" xml:space="preserve">
+    <value>Projets</value>
+  </data>
+  <data name="References_Recent" xml:space="preserve">
+    <value>Récents</value>
+  </data>
+  <data name="References_RemoveToolTip" xml:space="preserve">
+    <value>Supprimer du projet</value>
+  </data>
+  <data name="References_SearchPlaceholder" xml:space="preserve">
+    <value>Rechercher une référence...</value>
+  </data>
+  <data name="References_SubCaption" xml:space="preserve">
+    <value>Sélectionner les librairies et projets à ajouter ou supprimer aux références du projet.</value>
+  </data>
+  <data name="References_TypeLibs" xml:space="preserve">
+    <value>Bibliothèques</value>
+  </data>
+  <data name="References_Version" xml:space="preserve">
+    <value>Version:</value>
+  </data>
+  <data name="ReferenceSettings_FixBroken" xml:space="preserve">
+    <value>Tenter de réparer la référence</value>
+  </data>
+  <data name="ReferenceSettings_FolderDialogHeader" xml:space="preserve">
+    <value>Parcourir...</value>
+  </data>
+  <data name="ReferenceSettings_FoldersHeader" xml:space="preserve">
+    <value>Dossiers pour les projets</value>
+  </data>
+  <data name="ReferenceSettings_RecentTracked" xml:space="preserve">
+    <value>Références récentes:</value>
+  </data>
+  <data name="ReferenceSettings_TrackHostReferences" xml:space="preserve">
+    <value>Inclure les références qui n'ont pas été ajoutées par Rubberduck</value>
+  </data>
+  <data name="TodoSettings_Caption" xml:space="preserve">
+    <value>Explorateur de tâches</value>
+  </data>
+  <data name="TodoSettings_Text" xml:space="preserve">
+    <value>Texte</value>
+  </data>
+  <data name="TodoSettings_TextLabel" xml:space="preserve">
+    <value>Texte:</value>
+  </data>
+  <data name="Language_ES" xml:space="preserve">
+    <value>Español</value>
+  </data>
+  <data name="MemberAttributeRecoveryRewriteFailedMessage" xml:space="preserve">
+    <value>Échec de la récupération des attributs.</value>
+  </data>
+  <data name="MemberAttributeRecoveryMembersNotFoundMessage" xml:space="preserve">
+    <value>Les attributs des membres des modules suivants n'ont pas pu être récupérés: {0}</value>
+  </data>
+  <data name="MemberAttributeRecoveryFailureCaption" xml:space="preserve">
+    <value>Échec de la récupération des attributs</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetIsNotUserDefined" xml:space="preserve">
+    <value>'{0}' n'est pas défini par l'utilisateur</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetIsInDifferentProject" xml:space="preserve">
+    <value>'{0}' doit être défini dans le même projet que la cible.</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetIsInOtherNonStandardModule" xml:space="preserve">
+    <value>'{0}' n'est utilisé ni dans le module où il est défini, ni dans un module standard.</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
+    <value>La procédure qui utilise '{0}' contient déjà une déclaration utilisant cet identifiant.</value>
+  </data>
+  <data name="GroupingGrid_Filter" xml:space="preserve">
+    <value>Filtre</value>
+  </data>
+  <data name="GroupingStyle_ByName" xml:space="preserve">
+    <value>Par inspection</value>
+  </data>
+  <data name="GroupingStyle_BySeverity" xml:space="preserve">
+    <value>Par sévérité</value>
+  </data>
+  <data name="InspectionResults_CollapseAll" xml:space="preserve">
+    <value>Réduire tout</value>
+  </data>
+  <data name="References_BrowseButtonText" xml:space="preserve">
+    <value>Parcourir...</value>
+  </data>
+  <data name="InspectionResults_ExpandAll" xml:space="preserve">
+    <value>Développer tout</value>
+  </data>
+  <data name="MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
+    <value>'{0}' est accessible globalement, et est utilisé</value>
+    
   </data>
 </root>

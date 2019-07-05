@@ -1,48 +1,56 @@
-﻿using System.Collections.ObjectModel;
-using System.Linq;
-using Rubberduck.Resources;
+﻿using Rubberduck.Resources;
 using Rubberduck.Interaction;
-using Rubberduck.UI.Refactorings;
-using Rubberduck.UI.Refactorings.ReorderParameters;
-using System.Windows.Forms;
+using Rubberduck.Refactorings.Exceptions;
+using Rubberduck.Refactorings.ReorderParameters;
 
-namespace Rubberduck.Refactorings.ReorderParameters
+namespace Rubberduck.UI.Refactorings.ReorderParameters
 {
-    // FIXME investigate generic IRefactoringPresenter<ReorderParametersModel> usage!
-    public class ReorderParametersPresenter : IReorderParametersPresenter
+    public class ReorderParametersPresenter : RefactoringPresenterBase<ReorderParametersModel>, IReorderParametersPresenter
     {
-        private readonly IRefactoringDialog<ReorderParametersViewModel> _view;
-        private readonly ReorderParametersModel _model;
+        private static readonly DialogData DialogData =
+            DialogData.Create(RubberduckUI.ReorderParamsDialog_Caption, 395, 494);
         private readonly IMessageBox _messageBox;
 
-        public ReorderParametersPresenter(IRefactoringDialog<ReorderParametersViewModel> view, ReorderParametersModel model, IMessageBox messageBox)
+        public ReorderParametersPresenter(ReorderParametersModel model,
+            IRefactoringDialogFactory dialogFactory, IMessageBox messageBox) : 
+            base(DialogData,  model, dialogFactory)
         {
-            _view = view;
-            _model = model;
             _messageBox = messageBox;
         }
 
-        public ReorderParametersModel Show()
+        public override ReorderParametersModel Show()
         {
-            if (_model.TargetDeclaration == null) { return null; }
-
-            if (_model.Parameters.Count < 2)
+            if (Model.TargetDeclaration == null)
             {
-                var message = string.Format(RubberduckUI.ReorderPresenter_LessThanTwoParametersError, _model.TargetDeclaration.IdentifierName);
+                return null;
+            }
+
+            if (Model.IsInterfaceMemberRefactoring
+                && !UserConfirmsInterfaceTarget(Model))
+            {
+                throw new RefactoringAbortedException();
+            }
+
+            if (Model.Parameters.Count < 2)
+            {
+                var message = string.Format(RubberduckUI.ReorderPresenter_LessThanTwoParametersError, Model.TargetDeclaration.IdentifierName);
                 _messageBox.NotifyWarn(message, RubberduckUI.ReorderParamsDialog_TitleText);
                 return null;
             }
 
-            _view.ViewModel.Parameters = new ObservableCollection<Parameter>(_model.Parameters);
+            return base.Show();
+        }
 
-            _view.ShowDialog();
-            if (_view.DialogResult != DialogResult.OK)
-            {
-                return null;
-            }
+        private bool UserConfirmsInterfaceTarget(ReorderParametersModel model)
+        {
+            var message = string.Format(RubberduckUI.Refactoring_TargetIsInterfaceMemberImplementation,
+                model.OriginalTarget.IdentifierName, Model.TargetDeclaration.ComponentName, model.TargetDeclaration.IdentifierName);
+            return UserConfirmsNewTarget(message);
+        }
 
-            _model.Parameters = _view.ViewModel.Parameters.ToList();
-            return _model;
+        private bool UserConfirmsNewTarget(string message)
+        {
+            return _messageBox.ConfirmYesNo(message, RubberduckUI.ReorderParamsDialog_TitleText);
         }
     }
 }

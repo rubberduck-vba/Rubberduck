@@ -5,7 +5,10 @@ using Moq;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using RubberduckTests.Mocks;
-using Rubberduck.Interaction;
+using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.RemoveParameters;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Utility;
 
 namespace RubberduckTests.QuickFixes
 {
@@ -33,12 +36,24 @@ End Sub";
                 var inspection = new ParameterNotUsedInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
+                var selectionService = MockedSelectionService();
 
-                new RemoveUnusedParameterQuickFix(vbe.Object, state, new Mock<IMessageBox>().Object, rewritingManager)
+                var factory = new Mock<IRefactoringPresenterFactory>().Object;
+                var refactoring = new RemoveParametersRefactoring(state, factory, rewritingManager, selectionService);
+                new RemoveUnusedParameterQuickFix(refactoring)
                     .Fix(inspectionResults.First(), rewriteSession);
-
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }
+        }
+
+        private static ISelectionService MockedSelectionService()
+        {
+            QualifiedSelection? activeSelection = null;
+            var selectionServiceMock = new Mock<ISelectionService>();
+            selectionServiceMock.Setup(m => m.ActiveSelection()).Returns(() => activeSelection);
+            selectionServiceMock.Setup(m => m.TrySetActiveSelection(It.IsAny<QualifiedSelection>()))
+                .Returns(() => true).Callback((QualifiedSelection selection) => activeSelection = selection);
+            return selectionServiceMock.Object;
         }
     }
 }

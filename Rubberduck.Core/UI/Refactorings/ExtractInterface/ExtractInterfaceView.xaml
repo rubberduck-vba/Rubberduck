@@ -98,7 +98,7 @@
                         <ColumnDefinition Width="auto" />
                     </Grid.ColumnDefinitions>
 
-                    <DataGrid ItemsSource="{Binding Members}"
+                    <DataGrid ItemsSource="{Binding Members, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                               Grid.Column="0"
                               HorizontalAlignment="Stretch"
                               AutoGenerateColumns="False"
@@ -125,7 +125,7 @@
                         </DataGrid.CellStyle>
                         <DataGrid.Columns>
                             <DataGridCheckBoxColumn Width="Auto"
-                                                    Binding="{Binding IsSelected}" />
+                                                    Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                             <DataGridTextColumn Binding="{Binding FullMemberSignature}"
                                                 Width="*"
                                                 IsReadOnly="True"

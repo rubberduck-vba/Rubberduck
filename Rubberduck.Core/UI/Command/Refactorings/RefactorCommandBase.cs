@@ -1,25 +1,27 @@
-﻿using System;
-using System.Windows.Forms;
-using NLog;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.Resources;
+﻿using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
+using Rubberduck.UI.Command.Refactorings.Notifiers;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
     public abstract class RefactorCommandBase : CommandBase
     {
-        protected readonly IVBE Vbe;
+        protected readonly IRefactoring Refactoring;
+        protected readonly IRefactoringFailureNotifier FailureNotifier;
+        protected readonly IParserStatusProvider ParserStatusProvider;
 
-        protected RefactorCommandBase(IVBE vbe)
-            : base (LogManager.GetCurrentClassLogger())
+        protected RefactorCommandBase(IRefactoring refactoring, IRefactoringFailureNotifier failureNotifier, IParserStatusProvider parserStatusProvider)
         {
-            Vbe = vbe;
+            Refactoring = refactoring;
+            ParserStatusProvider = parserStatusProvider;
+            FailureNotifier = failureNotifier;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        protected void HandleInvalidSelection(object sender, EventArgs e)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
-            System.Windows.Forms.MessageBox.Show(RubberduckUI.ExtractMethod_InvalidSelectionMessage, RubberduckUI.ExtractMethod_Caption, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return ParserStatusProvider.Status == ParserState.Ready;
         }
     }
 }
-

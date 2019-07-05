@@ -11,6 +11,37 @@ using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Locates procedures that are never invoked from user code.
+    /// </summary>
+    /// <why>
+    /// Unused procedures are dead code that should probably be removed. Note, a procedure may be effectively "not used" in code, but attached to some
+    /// Shape object in the host document: in such cases the inspection result should be ignored. An event handler procedure that isn't being
+    /// resolved as such, may also wrongly trigger this inspection.
+    /// </why>
+    /// <remarks>
+    /// Not all unused procedures can/should be removed: ignore any inspection results for 
+    /// event handler procedures and interface members that Rubberduck isn't recognizing as such.
+    /// </remarks>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     ' macro is attached to a worksheet Shape.
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Option Explicit
+    ///
+    /// '@Ignore ProcedureNotUsed
+    /// Public Sub DoSomething()
+    ///     ' macro is attached to a worksheet Shape.
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class ProcedureNotUsedInspection : InspectionBase
     {
         public ProcedureNotUsedInspection(RubberduckParserState state) : base(state) { }
@@ -29,8 +60,10 @@ namespace Rubberduck.Inspections.Concrete
         {
             var declarations = UserDeclarations.ToList();
 
-            var classes = State.DeclarationFinder.UserDeclarations(DeclarationType.ClassModule).ToList(); // declarations.Where(item => item.DeclarationType == DeclarationType.ClassModule).ToList();
-            var modules = State.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule).ToList(); // declarations.Where(item => item.DeclarationType == DeclarationType.ProceduralModule).ToList();
+            var classes = State.DeclarationFinder.UserDeclarations(DeclarationType.ClassModule)
+                .Concat(State.DeclarationFinder.UserDeclarations(DeclarationType.Document))
+                .ToList(); 
+            var modules = State.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule).ToList();
 
             var handlers = State.DeclarationFinder.UserDeclarations(DeclarationType.Control)
                 .SelectMany(control => declarations.FindEventHandlers(control)).ToList();

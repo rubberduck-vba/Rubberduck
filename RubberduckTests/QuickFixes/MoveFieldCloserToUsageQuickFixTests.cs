@@ -6,6 +6,9 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using RubberduckTests.Mocks;
 using Rubberduck.Interaction;
+using Rubberduck.Refactorings.MoveCloserToUsage;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Utility;
 
 namespace RubberduckTests.QuickFixes
 {
@@ -34,7 +37,7 @@ End Sub";
 
         [Test]
         [Category("QuickFixes")]
-        public void MoveFieldCloserToUsage_QuickFixWorks_SingleLineIfStatemente()
+        public void MoveFieldCloserToUsage_QuickFixWorks_SingleLineIfStatement()
         {
             const string inputCode =
                 @"Private bar As String
@@ -92,7 +95,7 @@ End Sub";
 
         [Test]
         [Category("QuickFixes")]
-        public void MoveFieldCloserToUsage_QuickFixWorks_SingleLineElseStatemente()
+        public void MoveFieldCloserToUsage_QuickFixWorks_SingleLineElseStatement()
         {
             const string inputCode =
                 @"Private bar As String
@@ -121,13 +124,25 @@ End Sub";
                 var inspection = new MoveFieldCloserToUsageInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
                 var resultToFix = inspectionResults.First();
-                var rewriteSession = rewritingManager.CheckOutCodePaneSession(); 
-                var quickFix = new MoveFieldCloserToUsageQuickFix(vbe.Object, state, new Mock<IMessageBox>().Object, rewritingManager);
+                var rewriteSession = rewritingManager.CheckOutCodePaneSession();
+                var selectionService = MockedSelectionService();
+                var refactoring = new MoveCloserToUsageRefactoring(state, rewritingManager, selectionService);
+                var quickFix = new MoveFieldCloserToUsageQuickFix(refactoring);
 
                 quickFix.Fix(resultToFix, rewriteSession);
 
                 return component.CodeModule.Content();
             }
+        }
+
+        private static ISelectionService MockedSelectionService()
+        {
+            QualifiedSelection? activeSelection = null;
+            var selectionServiceMock = new Mock<ISelectionService>();
+            selectionServiceMock.Setup(m => m.ActiveSelection()).Returns(() => activeSelection);
+            selectionServiceMock.Setup(m => m.TrySetActiveSelection(It.IsAny<QualifiedSelection>()))
+                .Returns(() => true).Callback((QualifiedSelection selection) => activeSelection = selection);
+            return selectionServiceMock.Object;
         }
     }
 }

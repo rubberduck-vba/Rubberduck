@@ -2,6 +2,7 @@
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Rewriter
 {
@@ -99,6 +100,18 @@ namespace Rubberduck.Parsing.Rewriter
         /// <param name="tokenIndex">The index of the insertion point in the module's lexer token stream.</param>
         /// <param name="content">The literal content to insert.</param>
         void InsertAfter(int tokenIndex, string content);
+
+        /// <summary>
+        /// Selection the module should be set to after the rewrite.
+        /// Not setting this property means that tno absolute selection change will be performed.
+        /// </summary>
+        Selection? Selection { get; set; }
+
+        /// <summary>
+        /// Offset to be applied to the selection of the module after the rewrite.
+        /// The offset gets ignored if the selection gets set explicitly.
+        /// </summary>
+        Selection? SelectionOffset { get; set; }
 
         /// <summary>
         /// Gets the text between specified token positions (inclusive).

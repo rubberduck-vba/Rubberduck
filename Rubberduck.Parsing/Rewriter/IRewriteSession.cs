@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.VBA.Parsing;
+﻿using System.Collections.Generic;
+using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Rewriter
@@ -6,9 +7,16 @@ namespace Rubberduck.Parsing.Rewriter
     public interface IRewriteSession
     {
         IModuleRewriter CheckOutModuleRewriter(QualifiedModuleName module);
-        bool TryRewrite();
-        bool IsInvalidated { get; }
-        void Invalidate();
+        IReadOnlyCollection<QualifiedModuleName> CheckedOutModules { get; }
+        RewriteSessionState Status { get; set; }
         CodeKind TargetCodeKind { get; }
+    }
+
+    public enum RewriteSessionState
+    {
+        Valid,
+        RewriteApplied,
+        OtherSessionsRewriteApplied,
+        StaleParseTree
     }
 }

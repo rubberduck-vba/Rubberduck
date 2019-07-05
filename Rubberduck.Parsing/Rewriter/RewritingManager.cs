@@ -6,20 +6,23 @@ namespace Rubberduck.Parsing.Rewriter
 {
     public class RewritingManager : IRewritingManager
     {
-        private readonly HashSet<IRewriteSession> _activeCodePaneSessions = new HashSet<IRewriteSession>();
-        private readonly HashSet<IRewriteSession> _activeAttributesSessions = new HashSet<IRewriteSession>();
+        private readonly HashSet<IExecutableRewriteSession> _activeCodePaneSessions = new HashSet<IExecutableRewriteSession>();
+        private readonly HashSet<IExecutableRewriteSession> _activeAttributesSessions = new HashSet<IExecutableRewriteSession>();
+        private readonly IMemberAttributeRecovererWithSettableRewritingManager _memberAttributeRecoverer;
 
         private readonly IRewriteSessionFactory _sessionFactory;
 
         private readonly object _invalidationLockObject = new object();
 
-        public RewritingManager(IRewriteSessionFactory sessionFactory)
+        public RewritingManager(IRewriteSessionFactory sessionFactory, IMemberAttributeRecovererWithSettableRewritingManager memberAttributeRecoverer)
         {
             _sessionFactory = sessionFactory;
+            _memberAttributeRecoverer = memberAttributeRecoverer;
+            _memberAttributeRecoverer.RewritingManager = this;
         }
 
 
-        public IRewriteSession CheckOutCodePaneSession()
+        public IExecutableRewriteSession CheckOutCodePaneSession()
         {
             var newSession = _sessionFactory.CodePaneSession(TryAllowExclusiveRewrite);
             lock (_invalidationLockObject)
@@ -30,7 +33,7 @@ namespace Rubberduck.Parsing.Rewriter
             return newSession;
         }
 
-        public IRewriteSession CheckOutAttributesSession()
+        public IExecutableRewriteSession CheckOutAttributesSession()
         {
             var newSession = _sessionFactory.AttributesSession(TryAllowExclusiveRewrite);
             lock (_invalidationLockObject)
@@ -50,21 +53,37 @@ namespace Rubberduck.Parsing.Rewriter
                     return false;
                 }
 
+                rewriteSession.Status = RewriteSessionState.RewriteApplied;
+
                 InvalidateAllSessionsInternal();
+                if (rewriteSession.TargetCodeKind == CodeKind.CodePaneCode)
+                {
+                    RequestMemberAttributeRecovery(rewriteSession);
+                }
                 return true;
             }
         }
 
+        private void RequestMemberAttributeRecovery(IRewriteSession rewriteSession)
+        {
+            _memberAttributeRecoverer.RecoverCurrentMemberAttributesAfterNextParse(rewriteSession.CheckedOutModules);
+        }
+
         private bool IsCurrentlyActive(IRewriteSession rewriteSession)
         {
-            switch (rewriteSession.TargetCodeKind)
+            if (!(rewriteSession is IExecutableRewriteSession executableRewriteSession))
+            {
+                throw new NotSupportedException(nameof(rewriteSession));
+            }
+
+            switch (executableRewriteSession.TargetCodeKind)
             {
                 case CodeKind.CodePaneCode:
-                    return _activeCodePaneSessions.Contains(rewriteSession);
+                    return _activeCodePaneSessions.Contains(executableRewriteSession);
                 case CodeKind.AttributesCode:
-                    return _activeAttributesSessions.Contains(rewriteSession);
+                    return _activeAttributesSessions.Contains(executableRewriteSession);
                 default:
-                    throw new NotSupportedException(nameof(rewriteSession));
+                    throw new NotSupportedException(nameof(executableRewriteSession));
             }
         }
 
@@ -80,13 +99,13 @@ namespace Rubberduck.Parsing.Rewriter
         {
             foreach (var rewriteSession in _activeCodePaneSessions)
             {
-                rewriteSession.Invalidate();
+                rewriteSession.Status = RewriteSessionState.OtherSessionsRewriteApplied;
             }
             _activeCodePaneSessions.Clear();
 
             foreach (var rewriteSession in _activeAttributesSessions)
             {
-                rewriteSession.Invalidate();
+                rewriteSession.Status = RewriteSessionState.OtherSessionsRewriteApplied;
             }
             _activeAttributesSessions.Clear();
         }

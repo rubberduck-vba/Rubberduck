@@ -6,7 +6,7 @@ namespace Rubberduck.UI.Inspections
 {
     public class InspectionResultsDockablePresenter : DockableToolwindowPresenter
     {
-        public InspectionResultsDockablePresenter(IVBE vbe, IAddIn addin, InspectionResultsWindow window, IConfigProvider<WindowSettings> settings)
+        public InspectionResultsDockablePresenter(IVBE vbe, IAddIn addin, InspectionResultsWindow window, IConfigurationService<WindowSettings> settings)
             : base(vbe, addin, window, settings)
         {
         }

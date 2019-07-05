@@ -61,7 +61,7 @@ namespace Rubberduck.Resources.RegexAssistant {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Matches the ASCII character CR.
+        ///   Looks up a localized string similar to Matches the ASCII character &apos;CR&apos; (carriage return).
         /// </summary>
         public static string AtomDescription_CarriageReturn {
             get {
@@ -106,7 +106,7 @@ namespace Rubberduck.Resources.RegexAssistant {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Matches the &quot;Form-Feed&quot;-character.
+        ///   Looks up a localized string similar to Matches the ASCII character &apos;FF&apos; (form feed).
         /// </summary>
         public static string AtomDescription_FormFeed {
             get {
@@ -124,7 +124,7 @@ namespace Rubberduck.Resources.RegexAssistant {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Matches the horizontal &quot;Tab&quot;-character.
+        ///   Looks up a localized string similar to Matches the ASCII character &apos;HT&apos; (horizontal tab).
         /// </summary>
         public static string AtomDescription_HTab {
             get {
@@ -187,7 +187,7 @@ namespace Rubberduck.Resources.RegexAssistant {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Matches the ASCII character LF, also known as newline.
+        ///   Looks up a localized string similar to Matches the ASCII character &apos;LF&apos; (line feed).
         /// </summary>
         public static string AtomDescription_Newline {
             get {
@@ -232,7 +232,7 @@ namespace Rubberduck.Resources.RegexAssistant {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Matches the vertical &quot;Tab&quot;-character.
+        ///   Looks up a localized string similar to Matches the ASCII character &apos;VT&apos; (vertical tab).
         /// </summary>
         public static string AtomDescription_VTab {
             get {
@@ -286,7 +286,7 @@ namespace Rubberduck.Resources.RegexAssistant {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not parse &apos;{0}&apos; as literal. Check your input, please.
+        ///   Looks up a localized string similar to Could not parse &apos;{0}&apos; as literal..
         /// </summary>
         public static string ExpressionDescription_ErrorExpression {
             get {
@@ -340,7 +340,7 @@ namespace Rubberduck.Resources.RegexAssistant {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to at least once.
+        ///   Looks up a localized string similar to at least once (1+).
         /// </summary>
         public static string Quantifer_Plus {
             get {
@@ -349,7 +349,7 @@ namespace Rubberduck.Resources.RegexAssistant {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to any number of times.
+        ///   Looks up a localized string similar to any number of times (0+).
         /// </summary>
         public static string Quantifier_Asterisk {
             get {
@@ -376,7 +376,7 @@ namespace Rubberduck.Resources.RegexAssistant {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to exactly once.
+        ///   Looks up a localized string similar to exactly once (1).
         /// </summary>
         public static string Quantifier_None {
             get {
@@ -394,7 +394,7 @@ namespace Rubberduck.Resources.RegexAssistant {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to at most once.
+        ///   Looks up a localized string similar to at most once (1-).
         /// </summary>
         public static string Quantifier_Optional {
             get {

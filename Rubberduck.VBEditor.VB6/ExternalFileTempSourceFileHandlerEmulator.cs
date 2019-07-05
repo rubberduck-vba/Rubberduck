@@ -13,9 +13,10 @@ namespace Rubberduck.VBEditor.VB6
             return component.GetFileName(1);            
         }
 
-        public void ImportAndCleanUp(IVBComponent component, string fileName)
+        public IVBComponent ImportAndCleanUp(IVBComponent component, string fileName)
         {
             // VB6 source code can be written directly in-place, without needing to import it, hence no-op.
+            return component;
         }
 
         public string Read(IVBComponent component)

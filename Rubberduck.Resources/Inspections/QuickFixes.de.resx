@@ -279,4 +279,16 @@
   <data name="AddAttributeAnnotationQuickFix" xml:space="preserve">
     <value>Attributannotation hinzufügen</value>
   </data>
+  <data name="ApplyQuickFixesFailedMessage" xml:space="preserve">
+    <value>Die Ausführen des Quickfixes ist fehlgeschlagen. </value>
+  </data>
+  <data name="StaleModuleFailureReason" xml:space="preserve">
+    <value>Ein betroffenes Module wurde seit dem letzten Parse modifiziert.</value>
+  </data>
+  <data name="ApplyQuickFixFailedCaption" xml:space="preserve">
+    <value>Quickfixausführung fehlgeschlagen</value>
+  </data>
+  <data name="ReplaceWhileWendWithDoWhileLoopQuickFix" xml:space="preserve">
+    <value>'While...Wend' durch'Do While...Loop' ersetzen</value>
+  </data>
 </root>

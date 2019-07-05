@@ -1,61 +1,37 @@
 using System.Linq;
 using System.Runtime.InteropServices;
-using Rubberduck.Interaction;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
-using Rubberduck.UI.Refactorings.Rename;
+using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
     [ComVisible(false)]
-    public class ProjectExplorerRefactorRenameCommand : RefactorCommandBase
+    public class ProjectExplorerRefactorRenameCommand : RefactorDeclarationCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IRewritingManager _rewritingManager;
-        private readonly IMessageBox _msgBox;
+        private readonly IVBE _vbe;
 
-        public ProjectExplorerRefactorRenameCommand(IVBE vbe, RubberduckParserState state, IMessageBox msgBox, IRewritingManager rewritingManager) 
-            : base (vbe)
+        public ProjectExplorerRefactorRenameCommand(RenameRefactoring refactoring, RenameFailedNotifier renameFailedNotifier, IVBE vbe, RubberduckParserState state, ISelectionService selectionService)
+            : base(refactoring, renameFailedNotifier, state)
         {
             _state = state;
-            _rewritingManager = rewritingManager;
-            _msgBox = msgBox;
+            _vbe = vbe;
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
-        {
-            return _state.Status == ParserState.Ready;
-        }
-
-        protected override void OnExecute(object parameter)
-        {
-            using (var view = new RenameDialog(new RenameViewModel(_state)))
-            {
-                var factory = new RenamePresenterFactory(Vbe, view, _state);
-                var refactoring = new RenameRefactoring(Vbe, factory, _msgBox, _state, _state.ProjectsProvider, _rewritingManager);
-
-                var target = GetTarget();
-
-                if (target != null)
-                {
-                    refactoring.Refactor(target);
-                }
-            }
-        }
-
-        private Declaration GetTarget()
+        protected override Declaration GetTarget()
         {
             string selectedComponentName;
-            using (var selectedComponent = Vbe.SelectedVBComponent)
+            using (var selectedComponent = _vbe.SelectedVBComponent)
             {
                 selectedComponentName = selectedComponent?.Name;
             }
 
             string activeProjectId;
-            using (var activeProject = Vbe.ActiveVBProject)
+            using (var activeProject = _vbe.ActiveVBProject)
             {
                 activeProjectId = activeProject?.ProjectId;
             }

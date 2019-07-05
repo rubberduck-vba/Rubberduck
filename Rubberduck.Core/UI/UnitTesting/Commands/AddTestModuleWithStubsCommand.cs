@@ -1,7 +1,5 @@
-﻿using System.Runtime.InteropServices;
-using NLog;
+﻿using NLog;
 using Rubberduck.Navigation.CodeExplorer;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -16,31 +14,22 @@ namespace Rubberduck.UI.UnitTesting.Commands
         {
             _vbe = vbe;
             _newUnitTestModuleCommand = newUnitTestModuleCommand;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter) => parameter is CodeExplorerComponentViewModel;
+        private bool SpecialEvaluateCanExecute(object parameter) => parameter is CodeExplorerComponentViewModel;
 
         protected override void OnExecute(object parameter)
         {
-            if (parameter != null)
+            if (parameter is CodeExplorerItemViewModel node)
             {
-                _newUnitTestModuleCommand.Execute(GetDeclaration(parameter));
+                _newUnitTestModuleCommand.Execute(node.Declaration);
             }
             else
             {
                 _newUnitTestModuleCommand.Execute(_vbe.ActiveVBProject);
             }
-        }
-
-        private Declaration GetDeclaration(object parameter)
-        {
-            var node = parameter as CodeExplorerItemViewModel;
-            while (node != null && !(node is ICodeExplorerDeclarationViewModel))
-            {
-                node = node.Parent;
-            }
-
-            return ((ICodeExplorerDeclarationViewModel)node)?.Declaration;
         }
     }
 }

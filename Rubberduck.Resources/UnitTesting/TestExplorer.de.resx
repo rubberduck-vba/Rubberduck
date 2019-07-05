@@ -156,25 +156,25 @@
   <data name="TestExplorer_MethodName" xml:space="preserve">
     <value>Methodenname</value>
   </data>
-  <data name="TestExplorer_RunAllTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuAllTests" xml:space="preserve">
     <value>Alle Tests</value>
   </data>
-  <data name="TestExplorer_RunButtonText" xml:space="preserve">
+  <data name="TestExplorer_RunMenuButtonText" xml:space="preserve">
     <value>Ausführen</value>
   </data>
-  <data name="TestExplorer_RunFailedTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuFailedTests" xml:space="preserve">
     <value>Fehlgeschlagene Tests</value>
   </data>
-  <data name="TestExplorer_RunLastRunTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuLastRunTests" xml:space="preserve">
     <value>Wiederhole letzten Testlauf</value>
   </data>
-  <data name="TestExplorer_RunNotRunTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuNotRunTests" xml:space="preserve">
     <value>Nicht ausgeführte Tests</value>
   </data>
-  <data name="TestExplorer_RunPassedTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuPassedTests" xml:space="preserve">
     <value>Bestanden Tests</value>
   </data>
-  <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuSelectedTests" xml:space="preserve">
     <value>Ausgewählte Tests</value>
   </data>
   <data name="TestExplorer_QualifiedModuleName" xml:space="preserve">
@@ -216,10 +216,10 @@
   <data name="TestOutcome_Ignored" xml:space="preserve">
     <value>Ingoriert</value>
   </data>
-  <data name="UnitTest_TotalDuration" xml:space="preserve">
+  <data name="TestExplorer_TotalDuration" xml:space="preserve">
     <value>Gesamtdauer</value>
   </data>
-  <data name="TestExplorer_RunInconclusiveTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuInconclusiveTests" xml:space="preserve">
     <value>Nicht aussagekräftige Tests</value>
   </data>
   <data name="TestExplorer_Outcome" xml:space="preserve">
@@ -228,13 +228,91 @@
   <data name="Command_AddTestModule_Error" xml:space="preserve">
     <value>Konnte Testmodul nicht erzeugen. Die Hostanwendung könnte die Erzeugung nicht unterstützen oder das Projekt könnte versiegelt sein. Bitte prüfen Sie die Logdatei für weitere Informationen.</value>
   </data>
-  <data name="TestExplorer_RunSelectedCategoryTests" xml:space="preserve">
-    <value>Gewählte Kategorie</value>
-  </data>
   <data name="TestExplorer_CategoryName" xml:space="preserve">
     <value>Kategorie</value>
   </data>
   <data name="TestExplorer_Uncategorized" xml:space="preserve">
     <value>Ohne Kategorie</value>
+  </data>
+  <data name="TestExplorer_ContextMenuRunGroup" xml:space="preserve">
+    <value>Alle Tests in der Gruppe ausführen</value>
+  </data>
+  <data name="TestExplorer_ContextMenuRunAll" xml:space="preserve">
+    <value>Alle Tests ausführen</value>
+  </data>
+  <data name="TestExplorer_ContextMenuRunSelected" xml:space="preserve">
+    <value>Selektierte Tests ausführen</value>
+  </data>
+  <data name="TestExplorer_ContextMenuRunSingle" xml:space="preserve">
+    <value>Einzelnen Test ausführen</value>
+  </data>
+  <data name="TestExplorer_ResetButtonTooltip" xml:space="preserve">
+    <value>Alle Testresultate zurücksetzen</value>
+  </data>
+  <data name="UnitTest_NewMethod_Act" xml:space="preserve">
+    <value>Ausfuehren</value>
+  </data>
+  <data name="UnitTest_NewMethod_Assert" xml:space="preserve">
+    <value>Validieren</value>
+  </data>
+  <data name="UnitTest_NewMethod_Arrange" xml:space="preserve">
+    <value>Einrichten</value>
+  </data>
+  <data name="UnitTest_NewMethod_ExpectedError" xml:space="preserve">
+    <value>ErwarteterFehler</value>
+  </data>
+  <data name="UnitTest_NewMethod_ModuleInitializeMethod" xml:space="preserve">
+    <value>ModulInitialisierung</value>
+  </data>
+  <data name="UnitTest_NewMethod_TestInitializeMethod" xml:space="preserve">
+    <value>TestInitialisierung</value>
+  </data>
+  <data name="UnitTest_NewModule_BaseName" xml:space="preserve">
+    <value>TestModul</value>
+  </data>
+  <data name="UnitTest_NewMethod_BaseName" xml:space="preserve">
+    <value>TestMethode</value>
+  </data>
+  <data name="UnitTest_NewModule_DefaultFolder" xml:space="preserve">
+    <value>Tests</value>
+  </data>
+  <data name="UnitTest_NewModule_LateBindConstant" xml:space="preserve">
+    <value>SpaetesBinden</value>
+  </data>
+  <data name="UnitTest_NewModule_LateBindDirective" xml:space="preserve">
+    <value>BindeTestsSpaet</value>
+  </data>
+  <data name="TestOutcome_DurationHour" xml:space="preserve">
+    <value>std</value>
+  </data>
+  <data name="TestOutcome_DurationMillisecond" xml:space="preserve">
+    <value>ms</value>
+  </data>
+  <data name="TestOutcome_DurationMinute" xml:space="preserve">
+    <value>min</value>
+  </data>
+  <data name="TestOutcome_DurationSecond" xml:space="preserve">
+    <value>s</value>
+  </data>
+  <data name="TestOutcome_SummaryCaption" xml:space="preserve">
+    <value>Zusammenfassung:</value>
+  </data>
+  <data name="TestOutcome_SpectacularFail" xml:space="preserve">
+    <value>Spektakulärer Fehlschlag</value>
+  </data>
+  <data name="TestOutcome_RunSummaryFormat" xml:space="preserve">
+    <value>{0} von {1} Test(s) ausgeführt. (Laufzeit: {2:g})</value>
+  </data>
+  <data name="UnitTest_NewMethod_TestCleanupMethod" xml:space="preserve">
+    <value>TestTerminierung</value>
+  </data>
+  <data name="UnitTest_NewMethod_ModuleCleanupMethod" xml:space="preserve">
+    <value>ModulTerminierung</value>
+  </data>
+  <data name="UnitTest_NewMethod_TestExitLabel" xml:space="preserve">
+    <value>TestEnde</value>
+  </data>
+  <data name="UnitTest_NewMethod_TestFailLabel" xml:space="preserve">
+    <value>TestFehlschlag</value>
   </data>
 </root>

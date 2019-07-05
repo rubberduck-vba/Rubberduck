@@ -4,11 +4,12 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ReorderParameters;
 
 namespace Rubberduck.UI.Refactorings.ReorderParameters
 {
-    public partial class ReorderParametersView
+    public partial class ReorderParametersView : IRefactoringView<ReorderParametersModel>
     {
         // borrowed the drag/drop from https://fxmax.wordpress.com/2010/10/05/wpf/
         private Point _startPoint;

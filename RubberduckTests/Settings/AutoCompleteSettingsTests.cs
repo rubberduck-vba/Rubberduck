@@ -68,7 +68,7 @@ namespace RubberduckTests.Settings
         [Test]
         public void AutoCompleteDisabledByDefault()
         {
-            var defaultSettings = new DefaultSettings<AutoCompleteSettings>().Default;
+            var defaultSettings = new DefaultSettings<AutoCompleteSettings, Rubberduck.Properties.Settings>().Default;
             Assert.IsFalse(defaultSettings.IsEnabled);
         }
 
@@ -77,7 +77,7 @@ namespace RubberduckTests.Settings
         public void SaveConfigWorks()
         {
             var customConfig = GetNonDefaultConfig();
-            var viewModel = new AutoCompleteSettingsViewModel(customConfig);
+            var viewModel = new AutoCompleteSettingsViewModel(customConfig, null);
 
             var config = GetDefaultConfig();
             viewModel.UpdateConfig(config);
@@ -95,7 +95,7 @@ namespace RubberduckTests.Settings
         [Test]
         public void SetDefaultsWorks()
         {
-            var viewModel = new AutoCompleteSettingsViewModel(GetNonDefaultConfig());
+            var viewModel = new AutoCompleteSettingsViewModel(GetNonDefaultConfig(), null);
 
             var defaultConfig = GetDefaultConfig();
             viewModel.SetToDefaults(defaultConfig);

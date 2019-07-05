@@ -1,59 +1,45 @@
 ﻿using Rubberduck.Common;
-using Rubberduck.Interaction;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.IntroduceField;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.UI.Command.Refactorings.Notifiers;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
-    public class RefactorIntroduceFieldCommand : RefactorCommandBase
+    public class RefactorIntroduceFieldCommand : RefactorCodePaneCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IRewritingManager _rewritingManager;
-        private readonly IMessageBox _messageBox;
 
-        public RefactorIntroduceFieldCommand (IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager)
-            :base(vbe)
+        public RefactorIntroduceFieldCommand (IntroduceFieldRefactoring refactoring, IntroduceFieldFailedNotifier introduceFieldFailedNotifier, RubberduckParserState state, ISelectionService selectionService)
+            :base(refactoring, introduceFieldFailedNotifier, selectionService, state)
         {
             _state = state;
-            _rewritingManager = rewritingManager;
-            _messageBox = messageBox;
+
+            AddToCanExecuteEvaluation(SpecializedEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecializedEvaluateCanExecute(object parameter)
         {
-            if (_state.Status != ParserState.Ready)
-            {
-                return false;
-            }
-
-            var selection = Vbe.GetActiveSelection();
-
-            if (!selection.HasValue)
-            {
-                return false;
-            }
-
-            var target = _state.AllUserDeclarations.FindVariable(selection.Value);
+            var target = GetTarget();
 
             return target != null 
                 && !_state.IsNewOrModified(target.QualifiedModuleName)
                 && target.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
         }
 
-        protected override void OnExecute(object parameter)
+        private Declaration GetTarget()
         {
-            var selection = Vbe.GetActiveSelection();
-
-            if (!selection.HasValue)
+            var activeSelection = SelectionService.ActiveSelection();
+            if (!activeSelection.HasValue)
             {
-                return;
+                return null;
             }
 
-            var refactoring = new IntroduceFieldRefactoring(Vbe, _state, _messageBox, _rewritingManager);
-            refactoring.Refactor(selection.Value);
+            var target = _state.DeclarationFinder
+                .UserDeclarations(DeclarationType.Variable)
+                .FindVariable(activeSelection.Value);
+            return target;
         }
     }
 }

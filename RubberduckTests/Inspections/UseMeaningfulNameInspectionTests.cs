@@ -8,6 +8,7 @@ using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
+using Rubberduck.CodeAnalysis.Settings;
 
 namespace RubberduckTests.Inspections
 {
@@ -171,10 +172,10 @@ End Sub";
             }
         }
 
-        internal static Mock<IPersistanceService<CodeInspectionSettings>> GetInspectionSettings()
+        internal static Mock<IConfigurationService<CodeInspectionSettings>> GetInspectionSettings()
         {
-            var settings = new Mock<IPersistanceService<CodeInspectionSettings>>();
-            settings.Setup(s => s.Load(It.IsAny<CodeInspectionSettings>()))
+            var settings = new Mock<IConfigurationService<CodeInspectionSettings>>();
+            settings.Setup(s => s.Read())
                 .Returns(new CodeInspectionSettings(Enumerable.Empty<CodeInspectionSetting>(), new[]
                 {
                     new WhitelistedIdentifierSetting("sss"),

@@ -1,47 +1,31 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+﻿using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Refactorings.Rename
 {
-    public class RenameModel
+    public class RenameModel : IRefactoringModel
     {
-        public IVBE VBE { get; }
-
-        private readonly IList<Declaration> _declarations;
-        public IEnumerable<Declaration> Declarations => _declarations;
-
         private Declaration _target;
         public Declaration Target
         {
             get => _target;
-            set => _target = value;
+            set
+            {
+                _target = value;
+                NewName = _target?.IdentifierName ?? string.Empty;
+            }
         }
 
-        public QualifiedSelection Selection { get; }
-
-        public RubberduckParserState State { get; }
+        public Declaration InitialTarget { get; } 
+        public bool IsInterfaceMemberRename { set; get; }
+        public bool IsControlEventHandlerRename { set; get; }
+        public bool IsUserEventHandlerRename { set; get; }
 
         public string NewName { get; set; }
 
-        public RenameModel(IVBE vbe, RubberduckParserState state, QualifiedSelection selection)
+        public RenameModel(Declaration target)
         {
-            VBE = vbe;
-            State = state;
-            _declarations = state.AllDeclarations.ToList();
-            Selection = selection;
-
-            AcquireTarget(out _target, Selection);
-        }
-
-        private void AcquireTarget(out Declaration target, QualifiedSelection selection)
-        {
-            target = _declarations
-                .Where(item => item.IsUserDefined)
-                .FirstOrDefault(item => item.IsSelected(selection) || item.References.Any(r => r.IsSelected(selection)));
+            Target = target;
+            InitialTarget = target;
         }
     }
 }

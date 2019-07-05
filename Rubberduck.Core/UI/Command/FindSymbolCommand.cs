@@ -1,10 +1,10 @@
 using System.Runtime.InteropServices;
-using NLog;
 using Rubberduck.Common;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.FindSymbol;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command
 {
@@ -19,13 +19,13 @@ namespace Rubberduck.UI.Command
         private readonly DeclarationIconCache _iconCache;
         private readonly NavigateCommand _navigateCommand;
 
-        public FindSymbolCommand(IVBE vbe, RubberduckParserState state, DeclarationIconCache iconCache) : base(LogManager.GetCurrentClassLogger())
+        public FindSymbolCommand(IVBE vbe, RubberduckParserState state, ISelectionService selectionService, DeclarationIconCache iconCache)
         {
             _vbe = vbe;
             _state = state;
             _iconCache = iconCache;
 
-            _navigateCommand = new NavigateCommand(_state.ProjectsProvider);
+            _navigateCommand = new NavigateCommand(selectionService);
         }
 
         protected override void OnExecute(object parameter)

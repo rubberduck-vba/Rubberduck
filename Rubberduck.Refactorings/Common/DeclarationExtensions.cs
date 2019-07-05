@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
+using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -324,7 +325,7 @@ namespace Rubberduck.Common
             .Select(item => new
             {
                 WithEventDeclaration = item, 
-                EventProvider = items.SingleOrDefault(type => type.DeclarationType == DeclarationType.ClassModule && type.QualifiedName.QualifiedModuleName == item.QualifiedName.QualifiedModuleName)
+                EventProvider = items.SingleOrDefault(type => type.DeclarationType.HasFlag(DeclarationType.ClassModule) && type.QualifiedName.QualifiedModuleName == item.QualifiedName.QualifiedModuleName)
             })
             .Select(item => new
             {
@@ -423,19 +424,13 @@ namespace Rubberduck.Common
 
                 foreach (var reference in declaration.References)
                 {
-                    var proc = (dynamic)reference.Context.Parent;
+                    var proc = (ParserRuleContext)reference.Context.Parent;
                     var paramList = proc ;
 
-                    // This is to prevent throws when this statement fails:
-                    // (VBAParser.ArgsCallContext)proc.argsCall();
-                    var method = ((Type) proc.GetType()).GetMethod("argsCall");
-                    if (method != null)
+                    if (paramList == null)
                     {
-                        try { paramList = method.Invoke(proc, null); }
-                        catch { continue; }
+                        continue;
                     }
-
-                    if (paramList == null) { continue; }
 
                     activeSelection = new Selection(paramList.Start.Line,
                                                     paramList.Start.Column,

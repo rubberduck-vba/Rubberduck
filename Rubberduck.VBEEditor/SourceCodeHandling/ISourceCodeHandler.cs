@@ -2,6 +2,9 @@
 
 namespace Rubberduck.VBEditor.SourceCodeHandling
 {
+    /// <summary>
+    /// An object that can rewrite a module's contents.
+    /// </summary>
     public interface ISourceCodeHandler : ISourceCodeProvider
     {
         /// <summary>
@@ -10,6 +13,9 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
         void SubstituteCode(QualifiedModuleName module, string newCode);
     }
 
+    /// <summary>
+    /// An object that can manipulate the code in a CodePane.
+    /// </summary>
     public interface ICodePaneHandler : ISourceCodeHandler
     {
         /// <summary>
@@ -21,11 +27,8 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
         /// </summary>
         void SubstituteCode(ICodeModule module, CodeString newCode);
         void SetSelection(ICodeModule module, Selection selection);
-        void SetSelection(QualifiedModuleName module, Selection selection);
         CodeString Prettify(QualifiedModuleName module, CodeString original);
         CodeString Prettify(ICodeModule module, CodeString original);
         CodeString GetCurrentLogicalLine(ICodeModule module);
-        CodeString GetCurrentLogicalLine(QualifiedModuleName module);
-        Selection GetSelection(QualifiedModuleName module);
     }
 }

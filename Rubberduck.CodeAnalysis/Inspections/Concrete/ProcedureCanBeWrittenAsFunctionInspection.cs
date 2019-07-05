@@ -11,9 +11,36 @@ using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Warns about 'Sub' procedures that could be refactored into a 'Function'.
+    /// </summary>
+    /// <why>
+    /// Idiomatic VB code uses 'Function' procedures to return a single value. If the procedure isn't side-effecting, consider writing is as a
+    /// 'Function' rather than a 'Sub' the returns a result through a 'ByRef' parameter.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething(ByRef result As Long)
+    ///     ' ...
+    ///     result = 42
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Option Explicit
+    /// Public Function DoSomething() As Long
+    ///     ' ...
+    ///     DoSomething = 42
+    /// End Function
+    /// ]]>
+    /// </example>
     public sealed class ProcedureCanBeWrittenAsFunctionInspection : ParseTreeInspectionBase
     {
         public ProcedureCanBeWrittenAsFunctionInspection(RubberduckParserState state)
@@ -26,6 +53,11 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
+            if (!Listener.Contexts.Any())
+            {
+                return Enumerable.Empty<IInspectionResult>();
+            }
+
             var userDeclarations = UserDeclarations.ToList();
             var builtinHandlers = State.DeclarationFinder.FindEventHandlers().ToList();
 
@@ -38,17 +70,31 @@ namespace Rubberduck.Inspections.Concrete
 
             return Listener.Contexts
                 .Where(context => context.Context.Parent is VBAParser.SubStmtContext
-                                  && contextLookup[context.Context.GetChild<VBAParser.ArgContext>()].References
-                                      .Any(reference => reference.IsAssignment))
-                .Select(context => contextLookup[(VBAParser.SubStmtContext)context.Context.Parent])
-                .Where(decl => !IsIgnoringInspectionResultFor(decl, AnnotationName) &&
-                               !ignored.Contains(decl) &&
-                               userDeclarations.Where(item => item.IsWithEvents)
+                                    && HasArgumentReferencesWithIsAssignmentFlagged(context))
+                .Select(context => GetSubStmtParentDeclaration(context))
+                .Where(decl => decl != null && 
+                                !decl.IsIgnoringInspectionResultFor(AnnotationName) &&
+                                !ignored.Contains(decl) &&
+                                userDeclarations.Where(item => item.IsWithEvents)
                                    .All(withEvents => userDeclarations.FindEventProcedures(withEvents) == null) &&
                                !builtinHandlers.Contains(decl))
                 .Select(result => new DeclarationInspectionResult(this,
                     string.Format(InspectionResults.ProcedureCanBeWrittenAsFunctionInspection, result.IdentifierName),
                     result));
+
+            bool HasArgumentReferencesWithIsAssignmentFlagged(QualifiedContext<ParserRuleContext> context)
+            {
+                return contextLookup.TryGetValue(context.Context.GetChild<VBAParser.ArgContext>(), out Declaration decl)
+                    ? decl.References.Any(rf => rf.IsAssignment)
+                        : false;
+            }
+
+            Declaration GetSubStmtParentDeclaration(QualifiedContext<ParserRuleContext> context)
+            {
+                return contextLookup.TryGetValue(context.Context.Parent as VBAParser.SubStmtContext, out Declaration decl)
+                    ? decl
+                        : null;
+            }
         }
 
         public class SingleByRefParamArgListListener : VBAParserBaseListener, IInspectionListener

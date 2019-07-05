@@ -77,15 +77,22 @@
         <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource SectionBorder}">
             <StackPanel Grid.Column="0" Grid.Row="1"
                         MinHeight="100" MinWidth="250" 
-                        VerticalAlignment="Center"
-                        MouseLeftButtonDown="CopyVersionInfo_MouseLeftButtonDown" >
+                        VerticalAlignment="Center">
                 <TextBlock x:Name="Version" Text="{Binding Version}" Style="{StaticResource HeadingLabel}" HorizontalAlignment="Center" Margin="5" />
                 <TextBlock x:Name="OperatingSystem" Text="{Binding OperatingSystem}" Style="{StaticResource NormalLabel}" HorizontalAlignment="Center"/>
                 <TextBlock x:Name="HostProduct" Text="{Binding HostProduct}" Style="{StaticResource NormalLabel}" HorizontalAlignment="Center"/>
                 <TextBlock x:Name="HostVersion" Text="{Binding HostVersion}" Style="{StaticResource NormalLabel}" HorizontalAlignment="Center"/>
                 <TextBlock x:Name="HostExecutable" Text="{Binding HostExecutable}" Style="{StaticResource NormalLabel}" HorizontalAlignment="Center"/>
-                <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_CopyVersionLabel}" 
-                           Style="{StaticResource SubtleLabel}" HorizontalAlignment="Center" Margin="5,10"/>
+                <TextBlock Style="{StaticResource SubtleLabel}" HorizontalAlignment="Center" Margin="5,10,5,2">
+                    <Hyperlink Click="CopyVersionInfo_Click">
+                        <Run Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_CopyVersionLabel}"/>
+                    </Hyperlink>
+                </TextBlock>
+                <TextBlock Style="{StaticResource SubtleLabel}" HorizontalAlignment="Center" Margin="5,2,5,10" >
+                    <Hyperlink Command="{Binding ViewLogCommand}">
+                        <Run Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_ViewLogLabel}"/>
+                    </Hyperlink>
+                </TextBlock>
             </StackPanel>
         </Border>
         <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource SectionBorder}">
@@ -99,7 +106,7 @@
                     <Border Style="{StaticResource ReportButtonBorder}">
                         <TextBlock>
                             <Hyperlink Name="GitHubIssueUrl"
-                                       NavigateUri="https://github.com/rubberduck-vba/Rubberduck/issues/new"
+                                       NavigateUri="https://github.com/rubberduck-vba/Rubberduck/issues/new/choose"
                                        TextDecorations="{x:Null}"
                                        Command="{Binding UriCommand}" CommandParameter="{Binding ElementName=GitHubIssueUrl, Path=NavigateUri}">
                                 <Label Height="40" Foreground="White" FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
@@ -151,7 +158,7 @@
             </TextBlock>
         </Border>
         <Border Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" Style="{StaticResource SectionBorder}">
-            <ScrollViewer Margin="5" Height="350" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible">
+            <ScrollViewer Margin="5" Height="360" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible">
                 <StackPanel VerticalAlignment="Top">
                     <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_AttributionsLabel}"
                                Style="{StaticResource HeadingLabel}" />
@@ -215,7 +222,9 @@ Wayne Phillips (vbWatchdog)
                         </TextBlock>
 
                         <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_GeneralThanks}"
-                                   FontSize="10" 
+                                   FontSize="10"
+                                   HorizontalAlignment="Left"
+                                   TextWrapping="WrapWithOverflow"
                                    Margin="15,0,0,0"/>
                     </StackPanel>
                 </StackPanel>

@@ -43,8 +43,8 @@
 
         private static bool VerifyIfUserDefined(string name)
         {
-            var builtInName = Resources.Templates.ResourceManager.GetString(name + "_Name");
-            return builtInName == null || builtInName != name;
+            var builtInCode = Resources.Templates.ResourceManager.GetString(name + "_Code");
+            return builtInCode == null;
         }
 
         private static void VerifyFile(string name, ITemplateFileHandler handler)

@@ -4,7 +4,7 @@ using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.UI.AddRemoveReferences
 {
-    public partial class AddRemoveReferencesDialog : Form, IRefactoringDialog<AddRemoveReferencesViewModel>
+    public partial class AddRemoveReferencesDialog : Form
     {
         public AddRemoveReferencesViewModel ViewModel { get; }
 

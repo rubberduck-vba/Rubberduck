@@ -110,9 +110,9 @@ namespace RubberduckTests.Mocks
         /// <param name="filePath">The path to the referenced library.</param>
         /// <param name="isBuiltIn">Indicates whether the reference is a built-in reference.</param>
         /// <returns>Returns the <see cref="MockProjectBuilder"/> instance.</returns>
-        public MockProjectBuilder AddReference(string name, string filePath, int major, int minor, bool isBuiltIn = false)
+        public MockProjectBuilder AddReference(string name, string filePath, int major, int minor, bool isBuiltIn = false, ReferenceKind type = ReferenceKind.TypeLibrary)
         {
-            var reference = CreateReferenceMock(name, filePath, major, minor, isBuiltIn);
+            var reference = CreateReferenceMock(name, filePath, major, minor, isBuiltIn, type);
             _references.Add(reference.Object);
             return this;
         }
@@ -250,7 +250,7 @@ namespace RubberduckTests.Mocks
             return result;
         }
 
-        public Mock<IReference> CreateReferenceMock(string name, string filePath, int major, int minor, bool isBuiltIn = true)
+        public Mock<IReference> CreateReferenceMock(string name, string filePath, int major, int minor, bool isBuiltIn = true, ReferenceKind type = ReferenceKind.TypeLibrary)
         {
             var result = new Mock<IReference>();
 
@@ -264,6 +264,7 @@ namespace RubberduckTests.Mocks
             result.SetupGet(m => m.FullPath).Returns(() => filePath);
             result.SetupGet(m => m.Major).Returns(() => major);
             result.SetupGet(m => m.Minor).Returns(() => minor);
+            result.SetupGet(m => m.Type).Returns(() => type);
 
             result.SetupGet(m => m.IsBuiltIn).Returns(isBuiltIn);
 
@@ -309,7 +310,7 @@ namespace RubberduckTests.Mocks
         {
             var codePane = CreateCodePaneMock(name, selection, component);
 
-            var result = CreateCodeModuleMock(content, name);
+            var result = CreateCodeModuleMock(content);
             result.SetupReferenceEqualityIncludingHashCode();
             result.Setup(m => m.Equals(It.IsAny<ICodeModule>()))
                 .Returns((ICodeModule other) => ReferenceEquals(result.Object, other));
@@ -317,10 +318,12 @@ namespace RubberduckTests.Mocks
             result.SetupGet(m => m.Parent).Returns(() => component.Object);
             result.SetupGet(m => m.CodePane).Returns(() => codePane.Object);
             result.SetupGet(m => m.QualifiedModuleName).Returns(() => new QualifiedModuleName(component.Object));
-          
-            codePane.SetupGet(m => m.CodeModule).Returns(() => result.Object);
-
             result.Setup(m => m.AddFromFile(It.IsAny<string>()));
+
+            result.SetupGet(m => m.Name).Returns(() => component.Object.Name);
+            result.SetupSet(m => m.Name = It.IsAny<string>()).Callback<string>(value => component.Object.Name = value);
+
+            codePane.SetupGet(m => m.CodeModule).Returns(() => result.Object);
             return result;
         }
 
@@ -329,7 +332,7 @@ namespace RubberduckTests.Mocks
             Tokens.Sub + ' ', Tokens.Function + ' ', Tokens.Property + ' '
         };
 
-        private Mock<ICodeModule> CreateCodeModuleMock(string content, string name)
+        private Mock<ICodeModule> CreateCodeModuleMock(string content)
         {
             var lines = content.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
 
@@ -380,10 +383,8 @@ namespace RubberduckTests.Mocks
                     lines.AddRange(newLine.Split(new[] { Environment.NewLine }, StringSplitOptions.None));
                 });
 
-            codeModule.SetupProperty(m => m.Name, name);
-
             codeModule.Setup(m => m.Equals(It.IsAny<ICodeModule>()))
-                .Returns((ICodeModule other) => name.Equals(other.Name) && content.Equals(other.Content()));
+                .Returns((ICodeModule other) => codeModule.Object.Name.Equals(other.Name) && codeModule.Object.Content().Equals(other.Content()));
             codeModule.Setup(m => m.GetHashCode()).Returns(() => codeModule.Object.Target.GetHashCode());
 
             return codeModule;

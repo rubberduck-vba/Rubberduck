@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AtomDescription_CarriageReturn" xml:space="preserve">
-    <value>Matches the ASCII character CR</value>
+    <value>Matches the ASCII character 'CR' (carriage return)</value>
   </data>
   <data name="AtomDescription_CharacterClass" xml:space="preserve">
     <value>Matches any of the following characters: {0}</value>
@@ -133,13 +133,13 @@
     <value>Matches any character</value>
   </data>
   <data name="AtomDescription_FormFeed" xml:space="preserve">
-    <value>Matches the "Form-Feed"-character</value>
+    <value>Matches the ASCII character 'FF' (form feed)</value>
   </data>
   <data name="AtomDescription_Group" xml:space="preserve">
     <value>Matches a capture group '{0}'</value>
   </data>
   <data name="AtomDescription_HTab" xml:space="preserve">
-    <value>Matches the horizontal "Tab"-character</value>
+    <value>Matches the ASCII character 'HT' (horizontal tab)</value>
   </data>
   <data name="AtomDescription_Literal_ActualLiteral" xml:space="preserve">
     <value>Matches literal '{0}'</value>
@@ -160,7 +160,7 @@
     <value>Matches the Unicode Codepoint {0}</value>
   </data>
   <data name="AtomDescription_Newline" xml:space="preserve">
-    <value>Matches the ASCII character LF, also known as newline</value>
+    <value>Matches the ASCII character 'LF' (line feed)</value>
   </data>
   <data name="AtomDescription_NonDigit" xml:space="preserve">
     <value>Matches non-digits. Equivalent to "[^\d]"</value>
@@ -175,7 +175,7 @@
     <value>Matches "non-word characters". Equivalent to "[^\w]"</value>
   </data>
   <data name="AtomDescription_VTab" xml:space="preserve">
-    <value>Matches the vertical "Tab"-character</value>
+    <value>Matches the ASCII character 'VT' (vertical tab)</value>
   </data>
   <data name="AtomDescription_Whitespace" xml:space="preserve">
     <value>Matches any whitespace character. Equivalent to "[ \t\r\n\v\f]"</value>
@@ -193,7 +193,7 @@
     <value>Matches literal sequence</value>
   </data>
   <data name="ExpressionDescription_ErrorExpression" xml:space="preserve">
-    <value>Could not parse '{0}' as literal. Check your input, please</value>
+    <value>Could not parse '{0}' as literal.</value>
   </data>
   <data name="PatternDescription_AnchorEnd" xml:space="preserve">
     <value>$ ensures all characters of the string are consumed</value>
@@ -211,10 +211,10 @@
     <value>All matches ignore the case (upper or lower) of literals</value>
   </data>
   <data name="Quantifer_Plus" xml:space="preserve">
-    <value>at least once</value>
+    <value>at least once (1+)</value>
   </data>
   <data name="Quantifier_Asterisk" xml:space="preserve">
-    <value>any number of times</value>
+    <value>any number of times (0+)</value>
   </data>
   <data name="Quantifier_ClosedRange" xml:space="preserve">
     <value>between {0} and {1} times</value>
@@ -223,12 +223,12 @@
     <value>exactly {0} times</value>
   </data>
   <data name="Quantifier_None" xml:space="preserve">
-    <value>exactly once</value>
+    <value>exactly once (1)</value>
   </data>
   <data name="Quantifier_OpenRange" xml:space="preserve">
     <value>at least {0} times</value>
   </data>
   <data name="Quantifier_Optional" xml:space="preserve">
-    <value>at most once</value>
+    <value>at most once (1-)</value>
   </data>
 </root>

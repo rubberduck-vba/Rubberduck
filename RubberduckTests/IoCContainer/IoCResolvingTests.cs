@@ -6,9 +6,9 @@ using Moq;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Root;
 using Rubberduck.VBEditor.SourceCodeHandling;
+using Rubberduck.VBEditor.VbeRuntime;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.IoCContainer
@@ -27,11 +27,13 @@ namespace RubberduckTests.IoCContainer
             var ide = ideMock.Object;
             var addInBuilder = new MockAddInBuilder();
             var addin = addInBuilder.Build().Object;
+            var vbeNativeApi = new Mock<IVbeNativeApi>();
+
             var initialSettings = new GeneralSettings
             {
-                EnableExperimentalFeatures = new List<ExperimentalFeatures>
+                EnableExperimentalFeatures = new List<ExperimentalFeature>
                 {
-                    new ExperimentalFeatures()
+                    new ExperimentalFeature()
                 }
             };
 
@@ -40,7 +42,7 @@ namespace RubberduckTests.IoCContainer
             {
                 try
                 {
-                    container = new WindsorContainer().Install(new RubberduckIoCInstaller(ide, addin, initialSettings));
+                    container = new WindsorContainer().Install(new RubberduckIoCInstaller(ide, addin, initialSettings, vbeNativeApi.Object));
                 }
                 catch (Exception exception)
                 {
@@ -68,11 +70,13 @@ namespace RubberduckTests.IoCContainer
             var ide = ideMock.Object;
             var addInBuilder = new MockAddInBuilder();
             var addin = addInBuilder.Build().Object;
+            var vbeNativeApi = new Mock<IVbeNativeApi>();
+
             var initialSettings = new GeneralSettings
             {
-                EnableExperimentalFeatures = new List<ExperimentalFeatures>
+                EnableExperimentalFeatures = new List<ExperimentalFeature>
                 {
-                    new ExperimentalFeatures()
+                    new ExperimentalFeature()
                 }
             };
 
@@ -81,7 +85,7 @@ namespace RubberduckTests.IoCContainer
             {
                 try
             {
-                container = new WindsorContainer().Install(new RubberduckIoCInstaller(ide, addin, initialSettings));
+                container = new WindsorContainer().Install(new RubberduckIoCInstaller(ide, addin, initialSettings, vbeNativeApi.Object));
             }
             catch (Exception exception)
             {

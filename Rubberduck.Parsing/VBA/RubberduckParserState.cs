@@ -127,6 +127,7 @@ namespace Rubberduck.Parsing.VBA
             new ConcurrentDictionary<QualifiedModuleName, ModuleState>();
 
         public event EventHandler<EventArgs> ParseRequest;
+        public event EventHandler<EventArgs> ParseCancellationRequested;
         public event EventHandler<RubberduckStatusSuspendParserEventArgs> SuspendRequest;
         public event EventHandler<RubberduckStatusMessageEventArgs> StatusMessageUpdate;
 
@@ -312,10 +313,10 @@ namespace Rubberduck.Parsing.VBA
             foreach (var declaration in AllUserDeclarations)
             {
                 if (declaration.ProjectId == e.ProjectId &&
-                    declaration.DeclarationType == DeclarationType.ClassModule &&
+                    declaration is ClassModuleDeclaration classModule &&
                     declaration.IdentifierName == e.OldName)
                 {
-                    foreach (var superType in ((ClassModuleDeclaration)declaration).Supertypes)
+                    foreach (var superType in classModule.Supertypes)
                     {
                         if (superType.IdentifierName == "Worksheet")
                         {
@@ -395,8 +396,21 @@ namespace Rubberduck.Parsing.VBA
             var handler = StateChanged;
             if (handler != null && !token.IsCancellationRequested)
             {
-                var args = new ParserStateEventArgs(state, oldStatus, token);
-                handler.Invoke(requestor, args);
+                try
+                {
+                    var args = new ParserStateEventArgs(state, oldStatus, token);
+                    handler.Invoke(requestor, args);
+                }
+                catch (OperationCanceledException cancellation)
+                {
+                    throw;
+                }
+                catch (Exception e)
+                {
+                    // Error state, because this implies consumers are not exception-safe!
+                    // this behaviour could leave us in a state where some consumers have correctly updated and some have not
+                    Logger.Error(e, "An exception occurred when notifying consumers of updated parser state.");
+                }
             }
         }
 
@@ -963,14 +977,7 @@ namespace Rubberduck.Parsing.VBA
             return _moduleStates[key].Declarations.TryRemove(declaration, out _);
         }
 
-        /// <summary>
-        /// Ensures parser state accounts for built-in declarations.
-        /// </summary>
-        /// <summary>
-        /// Requests reparse for specified component.
-        /// Omit parameter to request a full reparse.
-        /// </summary>
-        /// <param name="requestor">The object requesting a reparse.</param>
+        /// <inheritdoc />
         public void OnParseRequested(object requestor)
         {
             var handler = ParseRequest;
@@ -981,6 +988,18 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        /// <inheritdoc />
+        public void OnParseCancellationRequested(object requestor)
+        {
+            var handler = ParseCancellationRequested;
+            if (handler != null && IsEnabled)
+            {
+                var args = EventArgs.Empty;
+                handler.Invoke(requestor, args);
+            }
+        }
+
+        /// <inheritdoc />
         public SuspensionResult OnSuspendParser(object requestor, IEnumerable<ParserState> allowedRunStates, Action busyAction, int millisecondsTimeout = NoTimeout)
         {
             if (millisecondsTimeout < NoTimeout)
@@ -1007,6 +1026,11 @@ namespace Rubberduck.Parsing.VBA
 
         public bool IsNewOrModified(QualifiedModuleName key)
         {
+            if (key.ComponentType == ComponentType.ComComponent)
+            {
+                return false;
+            }
+
             if (_moduleStates.TryGetValue(key, out var moduleState))
             {
                 // existing/modified
@@ -1044,13 +1068,24 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void RemoveBuiltInDeclarations(QualifiedModuleName projectQmn)
+        public void RemoveBuiltInDeclarations(string projectId)
         {
-            ClearAsTypeDeclarationPointingToReference(projectQmn);
-            if (_moduleStates.TryRemove(projectQmn, out var moduleState))
+            foreach (var module in _moduleStates.Keys.Where(key => key.ProjectId == projectId))
+            {
+                RemoveBuiltInDeclarations(module);
+            }
+        }
+
+        public void RemoveBuiltInDeclarations(QualifiedModuleName moduleOrProject)
+        {
+            ClearAsTypeDeclarationPointingToReference(moduleOrProject);
+            if (_moduleStates.TryRemove(moduleOrProject, out var moduleState))
             {
                 moduleState?.Dispose();
-                Logger.Warn("Could not remove declarations for removed reference '{0}' ({1}).", projectQmn.Name, projectQmn.ProjectId);
+            }
+            else
+            {
+                Logger.Warn("Could not remove declarations for removed reference '{0}' ({1}).", moduleOrProject.Name, moduleOrProject.ProjectId); 
             }
         }
         
