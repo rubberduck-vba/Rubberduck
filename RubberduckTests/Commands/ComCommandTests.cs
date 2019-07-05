@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using Moq;
 using Moq.Protected;
-using NLog;
 using NUnit.Framework;
 using Rubberduck.UI.Command.ComCommands;
 using Rubberduck.VBEditor.Events;
@@ -18,7 +16,8 @@ namespace RubberduckTests.Commands
         [Test]
         public void Verify_CanExecute_Before_And_After_Termination()
         {
-            var (command, vbeEvents) = ArranageComCommand();
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out _);
+            var (command, vbeEvents) = ArrangeComCommand(vbe);
             vbeEvents.SetupSequence(v => v.Terminated).Returns(false).Returns(true);
 
             Assert.IsTrue(command.CanExecute(null));
@@ -28,7 +27,8 @@ namespace RubberduckTests.Commands
         [Test]
         public void Verify_OnExecute_Before_And_After_Termination()
         {
-            var (command, vbeEvents) = ArranageComCommand();
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out _);
+            var (command, vbeEvents) = ArrangeComCommand(vbe);
 
             vbeEvents.SetupSequence(v => v.Terminated).Returns(false).Returns(true);
             command.Execute(null);
@@ -81,9 +81,9 @@ namespace RubberduckTests.Commands
             return VbeEvents.Initialize(vbe.Object);
         }
         
-        private static (ComCommandBase comCommand, Mock<IVbeEvents> vbeEvents) ArranageComCommand()
+        private static (ComCommandBase comCommand, Mock<IVbeEvents> vbeEvents) ArrangeComCommand(Mock<IVBE> vbe)
         {
-            var vbeEvents = new Mock<IVbeEvents>();
+            var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
             return (ArranageComCommand(vbeEvents.Object), vbeEvents);
         }
 

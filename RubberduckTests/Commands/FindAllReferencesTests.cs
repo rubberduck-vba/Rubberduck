@@ -498,7 +498,7 @@ End Sub
         private static FindAllReferencesCommand ArrangeFindAllReferencesCommand(RubberduckParserState state,
             Mock<IVBE> vbe, ISearchResultsWindowViewModel viewModel, FindAllReferencesService finder)
         {
-            return ArrangeFindAllReferencesCommand(state, vbe, viewModel, finder, new Mock<IVbeEvents>());
+            return ArrangeFindAllReferencesCommand(state, vbe, viewModel, finder, MockVbeEvents.CreateMockVbeEvents(vbe));
         }
 
         private static FindAllReferencesCommand ArrangeFindAllReferencesCommand(RubberduckParserState state,

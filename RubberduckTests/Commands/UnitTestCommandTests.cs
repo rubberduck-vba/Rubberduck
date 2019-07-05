@@ -470,7 +470,7 @@ End Enum
         // TODO: Remove the temporal copuling with other Arrange*
         private AddTestModuleCommand ArrangeAddTestModuleCommand(Mock<IVBE> vbe, RubberduckParserState state, ITestCodeGenerator generator)
         {
-            return ArrangeAddTestModuleCommand(vbe, state, generator, new Mock<IVbeEvents>());
+            return ArrangeAddTestModuleCommand(vbe, state, generator, MockVbeEvents.CreateMockVbeEvents(vbe));
         }
 
         // TODO: Remove the temporal copuling with other Arrange*
@@ -483,7 +483,7 @@ End Enum
         private AddTestModuleWithStubsCommand ArrangeAddTestModuleWithStubsCommand(Mock<IVBE> vbe,
             AddTestModuleCommand addTestModuleCommand)
         {
-            return ArrangeAddTestModuleWithStubsCommand(vbe, addTestModuleCommand, new Mock<IVbeEvents>());
+            return ArrangeAddTestModuleWithStubsCommand(vbe, addTestModuleCommand, MockVbeEvents.CreateMockVbeEvents(vbe));
         }
 
         // TODO: Remove the temporal copuling with other Arrange*
@@ -502,7 +502,7 @@ End Enum
         private ICommand ArranageAddTestMethodCommand(Type command, Mock<IVBE> vbe, RubberduckParserState state,
             ITestCodeGenerator testCodeGenerator)
         {
-            return ArranageAddTestMethodCommand(command, vbe, state, testCodeGenerator, new Mock<IVbeEvents>());
+            return ArranageAddTestMethodCommand(command, vbe, state, testCodeGenerator, MockVbeEvents.CreateMockVbeEvents(vbe));
         }
 
         // TODO: Remove the temporal copuling with other Arrange*

@@ -854,6 +854,7 @@ End Sub";
         {
             var builder = new MockVbeBuilder();
             var vbe = builder.Build();
+            var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
             var parser = MockParser.Create(vbe.Object, null, MockVbeEvents.CreateMockVbeEvents(vbe));
             var state = parser.State;
             var dispatcher = new Mock<IUiDispatcher>();
@@ -862,7 +863,7 @@ End Sub";
             dispatcher.Setup(m => m.StartTask(It.IsAny<Action>(), It.IsAny<TaskCreationOptions>())).Returns((Action argument, TaskCreationOptions options) => Task.Factory.StartNew(argument.Invoke, options));
 
             var viewModel = new CodeExplorerViewModel(state, null, null, null, dispatcher.Object, vbe.Object, null,
-                new CodeExplorerSyncProvider(vbe.Object, state, new Mock<IVbeEvents>().Object));
+                new CodeExplorerSyncProvider(vbe.Object, state, vbeEvents.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error)

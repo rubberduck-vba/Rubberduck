@@ -87,7 +87,7 @@ namespace RubberduckTests.CodeExplorer
             VbComponent = project.MockComponents.First();
             VbProject = project.Build();
             Vbe = builder.AddProject(VbProject).Build();
-            VbeEvents = new Mock<IVbeEvents>();
+            VbeEvents = MockVbeEvents.CreateMockVbeEvents(Vbe);
             SetupViewModelAndParse();
         }
 
@@ -120,7 +120,7 @@ namespace RubberduckTests.CodeExplorer
             VbComponent = project.MockComponents.First();
             VbProject = project.Build();
             Vbe = builder.AddProject(VbProject).Build();
-            VbeEvents = new Mock<IVbeEvents>();
+            VbeEvents = MockVbeEvents.CreateMockVbeEvents(Vbe);
             SetupViewModelAndParse();
 
             VbProject.SetupGet(m => m.VBComponents.Count).Returns(componentTypes.Count);
