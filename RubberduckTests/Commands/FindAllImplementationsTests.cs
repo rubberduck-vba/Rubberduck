@@ -177,14 +177,12 @@ End Sub";
             }
         }
 
-        [Ignore("The Interface check is not correct because the body has interface annotation but no references, so resolver returns false for it being an interface with a member")]
         [Category("Commands")]
         [Test]
         public void FindAllImplementations_NoResults_DisplayMessageBox()
         {
             const string inputCode =
-                @"'@Interface
-Public Sub Foo()
+                @"Public Sub Foo()
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
