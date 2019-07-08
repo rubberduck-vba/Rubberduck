@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Product>Rubberduck.CodeAnalysis</Product>
     <Description>Assembly Containing the Code Analysis features exposed by Rubberduck</Description>
-    <Copyright>Copyright © 2017-2018</Copyright>
+    <Copyright>Copyright © 2017-2019</Copyright>
     <AssemblyName>Rubberduck.CodeAnalysis</AssemblyName>
     <RootNamespace>Rubberduck.CodeAnalysis</RootNamespace>
     <ProjectGuid>{DEF2FB9D-6E62-49D6-8E26-9983AC025768}</ProjectGuid>
