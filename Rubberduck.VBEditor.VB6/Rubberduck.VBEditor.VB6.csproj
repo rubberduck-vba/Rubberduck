@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Title>Rubberduck.VBEditor.VB6</Title>
     <Product>Rubberduck.VBEditor.VB6</Product>
-    <Copyright>Copyright © 2018</Copyright>
+    <Copyright>Copyright © 2018-2019</Copyright>
     <ProjectGuid>{5D683117-21F1-4A01-A0C7-6AE6F30A16A7}</ProjectGuid>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />

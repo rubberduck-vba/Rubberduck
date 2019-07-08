@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Product>Rubberduck.API</Product>
     <Description>Rubberduck Reflection API</Description>
-    <Copyright>Copyright © 2018</Copyright>
+    <Copyright>Copyright © 2018-2019</Copyright>
     <ProjectGuid>{AC1B4A57-364A-4F90-A0CD-6EE818349CE5}</ProjectGuid>
     <!-- 
     TODO: affix AssemblyVersion and/or FileVersion for COM-Registration?!
