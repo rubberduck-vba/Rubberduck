@@ -18,7 +18,7 @@ namespace Rubberduck.RegexAssistant
 
             var subexpressions = new List<IRegularExpression>();
             var concatenation = new List<IRegularExpression>();
-            while (specifier != "")
+            while (specifier != string.Empty)
             {
                 if (specifier.StartsWith("|"))
                 {
@@ -56,7 +56,7 @@ namespace Rubberduck.RegexAssistant
                     if (expressionBody.Length == 0)
                     {
                         // well, this is an error
-                        concatenation.Add(new ErrorExpression("" + specifier[0]));
+                        concatenation.Add(new ErrorExpression(string.Empty + specifier[0]));
                         specifier = specifier.Substring(1);
                         continue;
                     }
@@ -82,7 +82,7 @@ namespace Rubberduck.RegexAssistant
             {
                 return matcher.Groups["expression"].Value;
             }
-            return "";
+            return string.Empty;
         }
 
         private static string DescendClass(string specifier)
@@ -98,7 +98,7 @@ namespace Rubberduck.RegexAssistant
             {
                 return matcher.Groups["quantifier"].Value;
             }
-            return "";
+            return string.Empty;
         }
 
         private static string DescendGroup(string specifier)
@@ -124,7 +124,7 @@ namespace Rubberduck.RegexAssistant
                     escapeToggle = false;
                     if (openingCount <= 0)
                     {
-                        return openingCount == 0 ? specifier.Substring(0, length + 1) : "";
+                        return openingCount == 0 ? specifier.Substring(0, length + 1) : string.Empty;
                     }
                 }
                 if (digit == '\\' || escapeToggle)
@@ -133,7 +133,7 @@ namespace Rubberduck.RegexAssistant
                 }
                 length++;
             }
-            return "";
+            return string.Empty;
         }
     }
 }
