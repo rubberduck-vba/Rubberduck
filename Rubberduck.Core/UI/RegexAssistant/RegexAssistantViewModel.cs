@@ -114,7 +114,7 @@ namespace Rubberduck.UI.RegexAssistant
 
         private static TreeViewItem AsTreeViewItem(IRegularExpression expression)
         {
-            throw new InvalidOperationException("Some unknown IRegularExpression subtype was in RegexAssistantViewModel");
+            throw new InvalidOperationException($"Some unknown {typeof(IRegularExpression)} subtype was in RegexAssistantViewModel");
         }
 
         private static TreeViewItem AsTreeViewItem(ErrorExpression expression)
