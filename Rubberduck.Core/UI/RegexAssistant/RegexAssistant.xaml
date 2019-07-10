@@ -83,7 +83,7 @@
             </StackPanel>
         </GroupBox>
 
-        <GroupBox Grid.Row="1" Margin="5">
+        <GroupBox Grid.Row="1" Margin="0,5">
             <GroupBox.Header>
                 <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=RegexAssistant_DescriptionResultsLabel}" FontWeight="SemiBold" />
             </GroupBox.Header>
