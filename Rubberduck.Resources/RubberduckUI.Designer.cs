@@ -3335,6 +3335,24 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {{{0}}}.
+        /// </summary>
+        public static string RegexAssistant_EncloseWhitespace_EnclosingFormat {
+            get {
+                return ResourceManager.GetString("RegexAssistant_EncloseWhitespace_EnclosingFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enclose whitespace in identifier.
+        /// </summary>
+        public static string RegexAssistant_EncloseWhitespaceFlag {
+            get {
+                return ResourceManager.GetString("RegexAssistant_EncloseWhitespaceFlag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Global.
         /// </summary>
         public static string RegexAssistant_GlobalFlag {

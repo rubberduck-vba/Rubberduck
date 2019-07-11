@@ -3,6 +3,7 @@ using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Rubberduck.Resources;
 
 namespace Rubberduck.RegexAssistant.Atoms
 {
@@ -11,7 +12,7 @@ namespace Rubberduck.RegexAssistant.Atoms
         public bool InverseMatching { get; }
         public IList<string> CharacterSpecifiers { get; }
 
-        public CharacterClass(string specifier, Quantifier quantifier)
+        public CharacterClass(string specifier, Quantifier quantifier, bool surroundWhitespaceCharWithIdentifier = false)
         {
             if (specifier == null || quantifier == null)
             {
@@ -27,7 +28,8 @@ namespace Rubberduck.RegexAssistant.Atoms
             // trim leading and closing bracket
             var actualSpecifier = specifier.Substring(1, specifier.Length - 2);
             InverseMatching = actualSpecifier.StartsWith("^");
-            CharacterSpecifiers= ExtractCharacterSpecifiers(InverseMatching ? actualSpecifier.Substring(1) : actualSpecifier);
+            CharacterSpecifiers= ExtractCharacterSpecifiers(InverseMatching ? actualSpecifier.Substring(1) : actualSpecifier,
+                surroundWhitespaceCharWithIdentifier);
         }
 
         public string Specifier { get; }
@@ -35,7 +37,8 @@ namespace Rubberduck.RegexAssistant.Atoms
         public Quantifier Quantifier { get; }
 
         private static readonly Regex CharacterRanges = new Regex(@"(\\[dDwWsS]|(\\[ntfvr]|\\([0-7]{3}|x[\dA-F]{2}|u[\dA-F]{4}|[\\\.\[\]])|.)(-(\\[ntfvr]|\\([0-7]{3}|x[A-F]{2}|u[\dA-F]{4}|[\.\\\[\]])|.))?)", RegexOptions.Compiled);
-        private IList<string> ExtractCharacterSpecifiers(string characterClass)
+        private static readonly Regex whitespace = new Regex("\\s");
+        private IList<string> ExtractCharacterSpecifiers(string characterClass, bool surroundWhitespaceCharWithIdentifier)
         {
             var specifiers = CharacterRanges.Matches(characterClass);
             var result = new List<string>();
@@ -55,7 +58,10 @@ namespace Rubberduck.RegexAssistant.Atoms
                         continue;
                     }
                 }
-                result.Add(specifier.Value);
+
+                result.Add(whitespace.IsMatch(specifier.Value) && surroundWhitespaceCharWithIdentifier
+                    ? string.Format(RubberduckUI.RegexAssistant_EncloseWhitespace_EnclosingFormat, specifier.Value)
+                    : specifier.Value);
             }
             return result;
         }

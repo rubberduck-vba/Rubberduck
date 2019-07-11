@@ -47,9 +47,20 @@ namespace Rubberduck.UI.RegexAssistant
             }
         }
 
+        public bool SurroundWhitespaceCharWithIdentifier
+        {
+            get => _surroundWhitespaceCharWithIdentifier;
+            set
+            {
+                _surroundWhitespaceCharWithIdentifier = value;
+                RecalculateDescription();
+            }
+        }
+
         private bool _globalFlag;
         private bool _ignoreCaseFlag;
         private string _pattern;
+        private bool _surroundWhitespaceCharWithIdentifier;
 
         private List<TreeViewItem> _resultItems;
         public List<TreeViewItem> ResultItems
@@ -78,7 +89,7 @@ namespace Rubberduck.UI.RegexAssistant
                 ResultItems = results;
                 return;
             }
-            ResultItems = ToTreeViewItems(new Pattern(_pattern, _ignoreCaseFlag, _globalFlag));
+            ResultItems = ToTreeViewItems(new Pattern(_pattern, _ignoreCaseFlag, _globalFlag, _surroundWhitespaceCharWithIdentifier));
         }
 
         private List<TreeViewItem> ToTreeViewItems(Pattern pattern)

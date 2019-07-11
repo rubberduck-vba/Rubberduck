@@ -12,7 +12,7 @@ namespace Rubberduck.RegexAssistant
         private static readonly Regex LITERAL_PATTERN = new Regex("^" + Literal.Pattern);
         private static readonly Regex QUANTIFIER_PATTERN = new Regex("^" + Quantifier.Pattern);
 
-        public static IRegularExpression Parse(string specifier)
+        public static IRegularExpression Parse(string specifier, bool surroundWhitespaceCharWithIdentifier = false)
         {
             if (specifier == null) throw new ArgumentNullException(nameof(specifier));
 
@@ -45,7 +45,7 @@ namespace Rubberduck.RegexAssistant
                     if (expressionBody.Length != 0)
                     {
                         var quantifier = GetQuantifier(specifier, expressionBody.Length);
-                        concatenation.Add(new SingleAtomExpression(new CharacterClass(expressionBody, new Quantifier(quantifier))));
+                        concatenation.Add(new SingleAtomExpression(new CharacterClass(expressionBody, new Quantifier(quantifier), surroundWhitespaceCharWithIdentifier)));
                         specifier = specifier.Substring(expressionBody.Length + quantifier.Length);
                         continue;
                     }
