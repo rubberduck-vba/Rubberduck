@@ -224,7 +224,7 @@
                             <Setter Property="Command" Value="{Binding Command}" />
                             <Setter Property="CommandParameter" Value="{Binding Fix}" />
                             <Setter Property="Header" Value="{Binding Description}" />
-                            <Setter Property="Background" Value="Transparent"></Setter>
+                            <Setter Property="Background" Value="Transparent" />
                         </Style>
                     </ContextMenu.Resources>
                 </ContextMenu>
