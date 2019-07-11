@@ -1597,6 +1597,24 @@ NOTE: Restart is required for the setting to take effect.</value>
     <value>Enclose whitespace in identifier</value>
   </data>
   <data name="RegexAssistant_EncloseWhitespace_EnclosingFormat" xml:space="preserve">
-    <value>{{{0}}}</value>
+    <value>&lt;{0}&gt;</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_CarriageReturn" xml:space="preserve">
+    <value>carriage-return</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_CarriageReturnNewLine" xml:space="preserve">
+    <value>carriage-return-new-line</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_NewLine" xml:space="preserve">
+    <value>new-line</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_Space" xml:space="preserve">
+    <value>space</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_Tab" xml:space="preserve">
+    <value>tab</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_UnidentifiedWhitespace" xml:space="preserve">
+    <value>unidentified-whitespace</value>
   </data>
 </root>

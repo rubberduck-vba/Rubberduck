@@ -3335,7 +3335,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {{{0}}}.
+        ///   Looks up a localized string similar to &lt;{0}&gt;.
         /// </summary>
         public static string RegexAssistant_EncloseWhitespace_EnclosingFormat {
             get {
@@ -3394,6 +3394,60 @@ namespace Rubberduck.Resources {
         public static string RegexAssistant_RegexPatternLabel {
             get {
                 return ResourceManager.GetString("RegexAssistant_RegexPatternLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to carriage-return.
+        /// </summary>
+        public static string RegexAssistant_SpelledOut_CarriageReturn {
+            get {
+                return ResourceManager.GetString("RegexAssistant_SpelledOut_CarriageReturn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to carriage-return-new-line.
+        /// </summary>
+        public static string RegexAssistant_SpelledOut_CarriageReturnNewLine {
+            get {
+                return ResourceManager.GetString("RegexAssistant_SpelledOut_CarriageReturnNewLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to new-line.
+        /// </summary>
+        public static string RegexAssistant_SpelledOut_NewLine {
+            get {
+                return ResourceManager.GetString("RegexAssistant_SpelledOut_NewLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to space.
+        /// </summary>
+        public static string RegexAssistant_SpelledOut_Space {
+            get {
+                return ResourceManager.GetString("RegexAssistant_SpelledOut_Space", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to tab.
+        /// </summary>
+        public static string RegexAssistant_SpelledOut_Tab {
+            get {
+                return ResourceManager.GetString("RegexAssistant_SpelledOut_Tab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to unidentified-whitespace.
+        /// </summary>
+        public static string RegexAssistant_SpelledOut_UnidentifiedWhitespace {
+            get {
+                return ResourceManager.GetString("RegexAssistant_SpelledOut_UnidentifiedWhitespace", resourceCulture);
             }
         }
         
