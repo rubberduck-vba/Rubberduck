@@ -8,7 +8,7 @@ namespace Rubberduck.RegexAssistant.Atoms
 {
     public class Group : IAtom
     {
-        public Group(IRegularExpression expression, string specifier, Quantifier quantifier) {
+        public Group(IRegularExpression expression, string specifier, Quantifier quantifier, bool spellOutWhiteSpace = false) {
             if (expression == null || quantifier == null)
             {
                 throw new ArgumentNullException();
@@ -17,6 +17,7 @@ namespace Rubberduck.RegexAssistant.Atoms
             Quantifier = quantifier;
             Subexpression = expression;
             Specifier = specifier;
+            _spellOutWhiteSpace = spellOutWhiteSpace;
         }
 
         public IRegularExpression Subexpression { get; }
@@ -25,7 +26,12 @@ namespace Rubberduck.RegexAssistant.Atoms
 
         public string Specifier { get; }
 
-        public string Description => string.Format(AssistantResources.AtomDescription_Group, Specifier);
+        private readonly bool _spellOutWhiteSpace;
+
+        public string Description => string.Format(AssistantResources.AtomDescription_Group, 
+            _spellOutWhiteSpace && WhitespaceToString.IsFullySpellingOutApplicable(Specifier, out var spelledOutWhiteSpace)
+                ? spelledOutWhiteSpace
+                : Specifier);
 
 
         public override string ToString() => Specifier;

@@ -12,7 +12,7 @@ namespace Rubberduck.RegexAssistant
         private static readonly Regex LITERAL_PATTERN = new Regex("^" + Literal.Pattern);
         private static readonly Regex QUANTIFIER_PATTERN = new Regex("^" + Quantifier.Pattern);
 
-        public static IRegularExpression Parse(string specifier, bool surroundWhitespaceCharWithIdentifier = false)
+        public static IRegularExpression Parse(string specifier, bool spellOutWhiteSpace = false)
         {
             if (specifier == null) throw new ArgumentNullException(nameof(specifier));
 
@@ -34,7 +34,7 @@ namespace Rubberduck.RegexAssistant
                     {
                         var quantifier = GetQuantifier(specifier, expressionBody.Length);
                         var expression = Parse(expressionBody.Substring(1, expressionBody.Length - 2));
-                        concatenation.Add(new SingleAtomExpression(new RdGroup(expression, expressionBody, new Quantifier(quantifier))));
+                        concatenation.Add(new SingleAtomExpression(new RdGroup(expression, expressionBody, new Quantifier(quantifier), spellOutWhiteSpace)));
                         specifier = specifier.Substring(expressionBody.Length + quantifier.Length);
                         continue;
                     }
@@ -45,7 +45,7 @@ namespace Rubberduck.RegexAssistant
                     if (expressionBody.Length != 0)
                     {
                         var quantifier = GetQuantifier(specifier, expressionBody.Length);
-                        concatenation.Add(new SingleAtomExpression(new CharacterClass(expressionBody, new Quantifier(quantifier), surroundWhitespaceCharWithIdentifier)));
+                        concatenation.Add(new SingleAtomExpression(new CharacterClass(expressionBody, new Quantifier(quantifier), spellOutWhiteSpace)));
                         specifier = specifier.Substring(expressionBody.Length + quantifier.Length);
                         continue;
                     }
@@ -61,7 +61,7 @@ namespace Rubberduck.RegexAssistant
                         continue;
                     }
                     var quantifier = GetQuantifier(specifier, expressionBody.Length);
-                    concatenation.Add(new SingleAtomExpression(new Literal(expressionBody, new Quantifier(quantifier))));
+                    concatenation.Add(new SingleAtomExpression(new Literal(expressionBody, new Quantifier(quantifier), spellOutWhiteSpace)));
                     specifier = specifier.Substring(expressionBody.Length + quantifier.Length);
                     continue;
                 }

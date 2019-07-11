@@ -12,7 +12,7 @@ namespace Rubberduck.RegexAssistant.Atoms
         public bool InverseMatching { get; }
         public IList<string> CharacterSpecifiers { get; }
 
-        public CharacterClass(string specifier, Quantifier quantifier, bool surroundWhitespaceCharWithIdentifier = false)
+        public CharacterClass(string specifier, Quantifier quantifier, bool spellOutWhiteSpace = false)
         {
             if (specifier == null || quantifier == null)
             {
@@ -28,8 +28,8 @@ namespace Rubberduck.RegexAssistant.Atoms
             // trim leading and closing bracket
             var actualSpecifier = specifier.Substring(1, specifier.Length - 2);
             InverseMatching = actualSpecifier.StartsWith("^");
-            CharacterSpecifiers= ExtractCharacterSpecifiers(InverseMatching ? actualSpecifier.Substring(1) : actualSpecifier,
-                surroundWhitespaceCharWithIdentifier);
+            CharacterSpecifiers = ExtractCharacterSpecifiers(InverseMatching ? actualSpecifier.Substring(1) : actualSpecifier,
+                spellOutWhiteSpace);
         }
 
         public string Specifier { get; }
@@ -37,8 +37,8 @@ namespace Rubberduck.RegexAssistant.Atoms
         public Quantifier Quantifier { get; }
 
         private static readonly Regex CharacterRanges = new Regex(@"(\\[dDwWsS]|(\\[ntfvr]|\\([0-7]{3}|x[\dA-F]{2}|u[\dA-F]{4}|[\\\.\[\]])|.)(-(\\[ntfvr]|\\([0-7]{3}|x[A-F]{2}|u[\dA-F]{4}|[\.\\\[\]])|.))?)", RegexOptions.Compiled);
-        private static readonly Regex whitespace = new Regex("\\s");
-        private IList<string> ExtractCharacterSpecifiers(string characterClass, bool surroundWhitespaceCharWithIdentifier)
+        
+        private IList<string> ExtractCharacterSpecifiers(string characterClass, bool spellOutWhitespace)
         {
             var specifiers = CharacterRanges.Matches(characterClass);
             var result = new List<string>();
@@ -59,9 +59,15 @@ namespace Rubberduck.RegexAssistant.Atoms
                     }
                 }
 
-                result.Add(whitespace.IsMatch(specifier.Value) && surroundWhitespaceCharWithIdentifier
-                    ? string.Format(RubberduckUI.RegexAssistant_EncloseWhitespace_EnclosingFormat, specifier.Value)
-                    : specifier.Value);
+                if (spellOutWhitespace 
+                    && WhitespaceToString.IsFullySpellingOutApplicable(specifier.Value, out var spelledOutWhiteSpace))
+                {
+                    result.Add(spelledOutWhiteSpace);
+                }
+                else
+                {
+                    result.Add(specifier.Value);
+                }
             }
             return result;
         }

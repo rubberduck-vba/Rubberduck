@@ -11,6 +11,7 @@ namespace Rubberduck.RegexAssistant.Atoms
         public static readonly string Pattern = @"(?<expression>\\(u[\dA-F]{4}|x[\dA-F]{2}|[0-7]{3}|[bB\(\){}\\\[\]\.+*?1-9nftvrdDwWsS])|[^()\[\]{}\\*+?^$])";
         private static readonly Regex Matcher = new Regex($"^{Pattern}$", RegexOptions.Compiled);
         private static readonly ISet<char> EscapeLiterals = new HashSet<char>();
+        private readonly bool _surroundWhitespaceCharWithIdentifier;
 
         static Literal() {
             foreach (var escape in new[]{ '.', '+', '*', '?', '(', ')', '{', '}', '[', ']', '|', '\\' })
@@ -32,7 +33,7 @@ namespace Rubberduck.RegexAssistant.Atoms
             _escapeDescriptions.Add('t', AssistantResources.AtomDescription_HTab);
         }
 
-        public Literal(string specifier, Quantifier quantifier)
+        public Literal(string specifier, Quantifier quantifier, bool spellOutWhitespace = false)
         {
             if (specifier == null || quantifier == null)
             {
@@ -45,6 +46,8 @@ namespace Rubberduck.RegexAssistant.Atoms
             {
                 throw new ArgumentException("The given specifier does not denote a Literal");
             }
+
+            _surroundWhitespaceCharWithIdentifier = spellOutWhitespace;
             Specifier = specifier;
         }
 
@@ -95,9 +98,15 @@ namespace Rubberduck.RegexAssistant.Atoms
                     }
                 }
 
-                return Specifier.Equals(".") 
-                    ? AssistantResources.AtomDescription_Dot 
-                    : string.Format(AssistantResources.AtomDescription_Literal_ActualLiteral, Specifier);
+                if (Specifier.Equals("."))
+                {
+                    return AssistantResources.AtomDescription_Dot;
+                }
+
+                return string.Format(AssistantResources.AtomDescription_Literal_ActualLiteral, 
+                    _surroundWhitespaceCharWithIdentifier && WhitespaceToString.IsFullySpellingOutApplicable(Specifier, out var spelledOutWhiteSpace)
+                        ? spelledOutWhiteSpace
+                        : Specifier);
             }
         }
 

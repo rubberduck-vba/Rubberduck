@@ -10,7 +10,7 @@ namespace Rubberduck.RegexAssistant
 
         public string Description { get; }
 
-        public Pattern(string expression, bool ignoreCase = false, bool global = false, bool surroundWhitespaceCharWithIdentifier = false)
+        public Pattern(string expression, bool ignoreCase = false, bool global = false, bool spellOutWhitespace = false)
         {
             if (expression == null)
             {
@@ -25,7 +25,7 @@ namespace Rubberduck.RegexAssistant
 
             var start = AnchoredAtStart ? 1 : 0;
             var end = (AnchoredAtEnd ? 1 : 0) + start;
-            RootExpression = VBRegexParser.Parse(expression.Substring(start, expression.Length - end), surroundWhitespaceCharWithIdentifier);
+            RootExpression = VBRegexParser.Parse(expression.Substring(start, expression.Length - end), spellOutWhitespace);
             Description = AssembleDescription();
         }
 
