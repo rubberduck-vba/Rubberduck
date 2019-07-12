@@ -78,11 +78,9 @@ namespace Rubberduck.RegexAssistant
         private static string DescendLiteral(string specifier)
         {
             var matcher = LITERAL_PATTERN.Match(specifier);
-            if (matcher.Success)
-            {
-                return matcher.Groups["expression"].Value;
-            }
-            return string.Empty;
+            return matcher.Success 
+                ? matcher.Groups["expression"].Value
+                : string.Empty;
         }
 
         private static string DescendClass(string specifier)
@@ -94,11 +92,9 @@ namespace Rubberduck.RegexAssistant
         {
             var operationalSubstring = specifier.Substring(length);
             var matcher = QUANTIFIER_PATTERN.Match(operationalSubstring);
-            if (matcher.Success)
-            {
-                return matcher.Groups["quantifier"].Value;
-            }
-            return string.Empty;
+            return matcher.Success
+                ? matcher.Groups["quantifier"].Value
+                : string.Empty;
         }
 
         private static string DescendGroup(string specifier)
