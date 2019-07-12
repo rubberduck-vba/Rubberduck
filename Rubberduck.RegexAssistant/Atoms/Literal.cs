@@ -75,27 +75,26 @@ namespace Rubberduck.RegexAssistant.Atoms
                         {
                             return string.Format(AssistantResources.AtomDescription_Literal_UnicodePoint, relevant.Substring(1)); //skip u
                         }
-                        else if (relevant.StartsWith("x"))
+
+                        if (relevant.StartsWith("x"))
                         {
                             return string.Format(AssistantResources.AtomDescription_Literal_HexCodepoint, relevant.Substring(1)); // skip x
                         }
-                        else
-                        {
-                            return string.Format(AssistantResources.AtomDescription_Literal_OctalCodepoint, relevant); // no format specifier to skip
-                        }
+
+                        return string.Format(AssistantResources.AtomDescription_Literal_OctalCodepoint, relevant); // no format specifier to skip
                     }
-                    else if (EscapeLiterals.Contains(relevant[0]))
+
+                    if (EscapeLiterals.Contains(relevant[0]))
                     {
                         return string.Format(AssistantResources.AtomDescription_Literal_EscapedLiteral, relevant);
                     }
-                    else if (char.IsDigit(relevant[0]))
+
+                    if (char.IsDigit(relevant[0]))
                     {
                         return string.Format(AssistantResources.AtomDescription_Literal_Backreference, relevant);
                     }
-                    else
-                    {
-                        return _escapeDescriptions[relevant[0]];
-                    }
+
+                    return _escapeDescriptions[relevant[0]];
                 }
 
                 if (Specifier.Equals("."))
