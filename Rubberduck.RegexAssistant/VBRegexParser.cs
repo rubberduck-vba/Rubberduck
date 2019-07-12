@@ -108,9 +108,9 @@ namespace Rubberduck.RegexAssistant
 
         private static string DescendExpression(string specifier, char opening, char closing)
         {
-            int length = 0;
-            int openingCount = 0;
-            bool escapeToggle = false;
+            var length = 0;
+            var openingCount = 0;
+            var escapeToggle = false;
             foreach (var digit in specifier)
             {
                 if (digit == opening && !escapeToggle)
