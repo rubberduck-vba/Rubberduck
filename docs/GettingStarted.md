@@ -83,7 +83,6 @@ End Sub
 ...with a single click!
 
 **Rubberduck > Indent > Current Procedure / Module / Project**  
-(also accessible through *RightClick > Toggle > Rubberduck*)
 
 ---
 Some helpful shortcuts (these hotkeys are all configurable):
