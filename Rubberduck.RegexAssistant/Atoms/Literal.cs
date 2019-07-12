@@ -11,7 +11,6 @@ namespace Rubberduck.RegexAssistant.Atoms
         public static readonly string Pattern = @"(?<expression>\\(u[\dA-F]{4}|x[\dA-F]{2}|[0-7]{3}|[bB\(\){}\\\[\]\.+*?1-9nftvrdDwWsS])|[^()\[\]{}\\*+?^$])";
         private static readonly Regex Matcher = new Regex($"^{Pattern}$", RegexOptions.Compiled);
         private static readonly ISet<char> EscapeLiterals = new HashSet<char>();
-        private readonly bool _surroundWhitespaceCharWithIdentifier;
 
         static Literal() {
             foreach (var escape in new[]{ '.', '+', '*', '?', '(', ')', '{', '}', '[', ']', '|', '\\' })
@@ -33,7 +32,7 @@ namespace Rubberduck.RegexAssistant.Atoms
             _escapeDescriptions.Add('t', AssistantResources.AtomDescription_HTab);
         }
 
-        public Literal(string specifier, Quantifier quantifier, bool spellOutWhitespace = false)
+        public Literal(string specifier, Quantifier quantifier)
         {
             if (specifier == null || quantifier == null)
             {
@@ -47,7 +46,6 @@ namespace Rubberduck.RegexAssistant.Atoms
                 throw new ArgumentException("The given specifier does not denote a Literal");
             }
 
-            _surroundWhitespaceCharWithIdentifier = spellOutWhitespace;
             Specifier = specifier;
         }
 
@@ -56,57 +54,54 @@ namespace Rubberduck.RegexAssistant.Atoms
         public Quantifier Quantifier { get; }
 
         private static readonly Dictionary<char, string> _escapeDescriptions = new Dictionary<char, string>();
-        public string Description
+        public string Description(bool spellOutWhitespace)
         {
-            get
+            // here be dragons!
+            // keep track of:
+            // - escaped chars
+            // - escape sequences (each having a different description)
+            // - codepoint escapes (belongs into above category but kept separate)
+            // - and actually boring literal matches
+            if (Specifier.Length > 1)
             {
-                // here be dragons!
-                // keep track of:
-                // - escaped chars
-                // - escape sequences (each having a different description)
-                // - codepoint escapes (belongs into above category but kept separate)
-                // - and actually boring literal matches
-                if (Specifier.Length > 1)
+                var relevant = Specifier.Substring(1); // skip the damn Backslash at the start
+                if (relevant.Length > 1) // longer sequences
                 {
-                    var relevant = Specifier.Substring(1); // skip the damn Backslash at the start
-                    if (relevant.Length > 1) // longer sequences
+                    if (relevant.StartsWith("u"))
                     {
-                        if (relevant.StartsWith("u"))
-                        {
-                            return string.Format(AssistantResources.AtomDescription_Literal_UnicodePoint, relevant.Substring(1)); //skip u
-                        }
-
-                        if (relevant.StartsWith("x"))
-                        {
-                            return string.Format(AssistantResources.AtomDescription_Literal_HexCodepoint, relevant.Substring(1)); // skip x
-                        }
-
-                        return string.Format(AssistantResources.AtomDescription_Literal_OctalCodepoint, relevant); // no format specifier to skip
+                        return string.Format(AssistantResources.AtomDescription_Literal_UnicodePoint, relevant.Substring(1)); //skip u
                     }
 
-                    if (EscapeLiterals.Contains(relevant[0]))
+                    if (relevant.StartsWith("x"))
                     {
-                        return string.Format(AssistantResources.AtomDescription_Literal_EscapedLiteral, relevant);
+                        return string.Format(AssistantResources.AtomDescription_Literal_HexCodepoint, relevant.Substring(1)); // skip x
                     }
 
-                    if (char.IsDigit(relevant[0]))
-                    {
-                        return string.Format(AssistantResources.AtomDescription_Literal_Backreference, relevant);
-                    }
-
-                    return _escapeDescriptions[relevant[0]];
+                    return string.Format(AssistantResources.AtomDescription_Literal_OctalCodepoint, relevant); // no format specifier to skip
                 }
 
-                if (Specifier.Equals("."))
+                if (EscapeLiterals.Contains(relevant[0]))
                 {
-                    return AssistantResources.AtomDescription_Dot;
+                    return string.Format(AssistantResources.AtomDescription_Literal_EscapedLiteral, relevant);
                 }
 
-                return string.Format(AssistantResources.AtomDescription_Literal_ActualLiteral, 
-                    _surroundWhitespaceCharWithIdentifier && WhitespaceToString.IsFullySpellingOutApplicable(Specifier, out var spelledOutWhiteSpace)
-                        ? spelledOutWhiteSpace
-                        : Specifier);
+                if (char.IsDigit(relevant[0]))
+                {
+                    return string.Format(AssistantResources.AtomDescription_Literal_Backreference, relevant);
+                }
+
+                return _escapeDescriptions[relevant[0]];
             }
+
+            if (Specifier.Equals("."))
+            {
+                return AssistantResources.AtomDescription_Dot;
+            }
+
+            return string.Format(AssistantResources.AtomDescription_Literal_ActualLiteral,
+                spellOutWhitespace && WhitespaceToString.IsFullySpellingOutApplicable(Specifier, out var spelledOutWhiteSpace)
+                    ? spelledOutWhiteSpace
+                    : Specifier);
         }
 
         public override string ToString() => Specifier;

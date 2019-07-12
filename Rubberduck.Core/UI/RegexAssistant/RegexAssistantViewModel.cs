@@ -47,6 +47,7 @@ namespace Rubberduck.UI.RegexAssistant
             }
         }
 
+        private bool _spellOutWhiteSpace;
         public bool SpellOutWhiteSpace
         {
             get => _spellOutWhiteSpace;
@@ -60,8 +61,7 @@ namespace Rubberduck.UI.RegexAssistant
         private bool _globalFlag;
         private bool _ignoreCaseFlag;
         private string _pattern;
-        private bool _spellOutWhiteSpace;
-
+        
         private List<TreeViewItem> _resultItems;
         public List<TreeViewItem> ResultItems
         {
@@ -103,7 +103,7 @@ namespace Rubberduck.UI.RegexAssistant
             {
                 resultItems.Add(TreeViewItemFromHeader(pattern.StartAnchorDescription));
             }
-            resultItems.Add(AsTreeViewItem((dynamic)pattern.RootExpression));
+            resultItems.Add(AsTreeViewItem((dynamic)pattern.RootExpression, _spellOutWhiteSpace));
             if (pattern.AnchoredAtEnd)
             {
                 resultItems.Add(TreeViewItemFromHeader(pattern.EndAnchorDescription));
@@ -123,60 +123,60 @@ namespace Rubberduck.UI.RegexAssistant
 
         public string DescriptionResults { get; private set; }
 
-        private static TreeViewItem AsTreeViewItem(IRegularExpression expression)
+        private static TreeViewItem AsTreeViewItem(IRegularExpression expression, bool spellOutWhitespace)
         {
             throw new InvalidOperationException($"Some unknown {typeof(IRegularExpression)} subtype was in RegexAssistantViewModel");
         }
 
-        private static TreeViewItem AsTreeViewItem(ErrorExpression expression)
+        private static TreeViewItem AsTreeViewItem(ErrorExpression expression, bool spellOutWhitespace)
         {
             var result = new TreeViewItem
             {
-                Header = expression.Description
+                Header = expression.Description(spellOutWhitespace)
             };
 
             return result;
         }
 
-        private static TreeViewItem AsTreeViewItem(ConcatenatedExpression expression)
+        private static TreeViewItem AsTreeViewItem(ConcatenatedExpression expression, bool spellOutWhitespace)
         {
             var result = new TreeViewItem
             {
-                Header = expression.Description
+                Header = expression.Description(spellOutWhitespace)
             };
 
-            foreach (var subtree in expression.Subexpressions.Select(exp => AsTreeViewItem((dynamic)exp)))
+            foreach (var subtree in expression.Subexpressions.Select(exp => AsTreeViewItem((dynamic)exp, spellOutWhitespace)))
             {
                 result.Items.Add(subtree);
             }
             return result;
         }
 
-        private static TreeViewItem AsTreeViewItem(AlternativesExpression expression)
+        private static TreeViewItem AsTreeViewItem(AlternativesExpression expression, bool spellOutWhitespace)
         {
             var result = new TreeViewItem
             {
-                Header = expression.Description
+                Header = expression.Description(spellOutWhitespace)
             };
 
-            foreach (var subtree in expression.Subexpressions.Select(exp => AsTreeViewItem((dynamic)exp)))
+            foreach (var subtree in expression.Subexpressions.Select(exp => AsTreeViewItem((dynamic)exp, spellOutWhitespace)))
             {
                 result.Items.Add(subtree);
             }
             return result;
         }
 
-        private static TreeViewItem AsTreeViewItem(SingleAtomExpression expression)
+        private static TreeViewItem AsTreeViewItem(SingleAtomExpression expression, bool spellOutWhitespace)
         {
             var result = new TreeViewItem
             {
-                Header = expression.Description
+                Header = expression.Description(spellOutWhitespace)
             };
 
             // no other Atom has Subexpressions we care about
             if (expression.Atom.GetType() == typeof(Group))
             {
-                result.Items.Add(AsTreeViewItem((dynamic)(expression.Atom as Group).Subexpression));
+                result.Items.Add(AsTreeViewItem((dynamic)(expression.Atom as Group).Subexpression, spellOutWhitespace));
             }
             
             return result;

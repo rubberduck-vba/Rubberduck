@@ -1,14 +1,12 @@
 ﻿using Rubberduck.RegexAssistant.i18n;
 using Rubberduck.VBEditor;
 using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace Rubberduck.RegexAssistant.Atoms
 {
     public class Group : IAtom
     {
-        public Group(IRegularExpression expression, string specifier, Quantifier quantifier, bool spellOutWhiteSpace = false) {
+        public Group(IRegularExpression expression, string specifier, Quantifier quantifier) {
             if (expression == null || quantifier == null)
             {
                 throw new ArgumentNullException();
@@ -17,7 +15,6 @@ namespace Rubberduck.RegexAssistant.Atoms
             Quantifier = quantifier;
             Subexpression = expression;
             Specifier = specifier;
-            _spellOutWhiteSpace = spellOutWhiteSpace;
         }
 
         public IRegularExpression Subexpression { get; }
@@ -26,10 +23,8 @@ namespace Rubberduck.RegexAssistant.Atoms
 
         public string Specifier { get; }
 
-        private readonly bool _spellOutWhiteSpace;
-
-        public string Description => string.Format(AssistantResources.AtomDescription_Group, 
-            _spellOutWhiteSpace && WhitespaceToString.IsFullySpellingOutApplicable(Specifier, out var spelledOutWhiteSpace)
+        public string Description(bool spellOutWhitespace) => string.Format(AssistantResources.AtomDescription_Group, 
+            spellOutWhitespace && WhitespaceToString.IsFullySpellingOutApplicable(Specifier, out var spelledOutWhiteSpace)
                 ? spelledOutWhiteSpace
                 : Specifier);
 

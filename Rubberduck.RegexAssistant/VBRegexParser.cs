@@ -34,7 +34,7 @@ namespace Rubberduck.RegexAssistant
                     {
                         var quantifier = GetQuantifier(specifier, expressionBody.Length);
                         var expression = Parse(expressionBody.Substring(1, expressionBody.Length - 2));
-                        concatenation.Add(new SingleAtomExpression(new RdGroup(expression, expressionBody, new Quantifier(quantifier), spellOutWhiteSpace)));
+                        concatenation.Add(new SingleAtomExpression(new RdGroup(expression, expressionBody, new Quantifier(quantifier))));
                         specifier = specifier.Substring(expressionBody.Length + quantifier.Length);
                         continue;
                     }
@@ -61,7 +61,7 @@ namespace Rubberduck.RegexAssistant
                         continue;
                     }
                     var quantifier = GetQuantifier(specifier, expressionBody.Length);
-                    concatenation.Add(new SingleAtomExpression(new Literal(expressionBody, new Quantifier(quantifier), spellOutWhiteSpace)));
+                    concatenation.Add(new SingleAtomExpression(new Literal(expressionBody, new Quantifier(quantifier))));
                     specifier = specifier.Substring(expressionBody.Length + quantifier.Length);
                     continue;
                 }
