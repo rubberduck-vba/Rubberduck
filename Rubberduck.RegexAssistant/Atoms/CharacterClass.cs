@@ -28,8 +28,10 @@ namespace Rubberduck.RegexAssistant.Atoms
             // trim leading and closing bracket
             var actualSpecifier = specifier.Substring(1, specifier.Length - 2);
             InverseMatching = actualSpecifier.StartsWith("^");
-            CharacterSpecifiers = ExtractCharacterSpecifiers(InverseMatching ? actualSpecifier.Substring(1) : actualSpecifier,
-                spellOutWhiteSpace);
+            CharacterSpecifiers = ExtractCharacterSpecifiers(InverseMatching 
+                    ? actualSpecifier.Substring(1) 
+                    : actualSpecifier
+                , spellOutWhiteSpace);
         }
 
         public string Specifier { get; }
@@ -59,20 +61,14 @@ namespace Rubberduck.RegexAssistant.Atoms
                     }
                 }
 
-                if (spellOutWhitespace 
-                    && WhitespaceToString.IsFullySpellingOutApplicable(specifier.Value, out var spelledOutWhiteSpace))
-                {
-                    result.Add(spelledOutWhiteSpace);
-                }
-                else
-                {
-                    result.Add(specifier.Value);
-                }
+                result.Add(spellOutWhitespace && WhitespaceToString.IsFullySpellingOutApplicable(specifier.Value, out var spelledOutWhiteSpace)
+                    ? spelledOutWhiteSpace
+                    : specifier.Value);
             }
             return result;
         }
 
-        public string Description => string.Format(InverseMatching 
+        public string Description(bool notApplicable) => string.Format(InverseMatching 
                 ? AssistantResources.AtomDescription_CharacterClass_Inverted 
                 : AssistantResources.AtomDescription_CharacterClass
             , HumanReadableClass());

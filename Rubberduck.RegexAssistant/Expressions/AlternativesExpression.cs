@@ -12,7 +12,7 @@ namespace Rubberduck.RegexAssistant.Expressions
             Subexpressions = subexpressions ?? throw new ArgumentNullException();
         }
 
-        public string Description => string.Format(AssistantResources.ExpressionDescription_AlternativesExpression, Subexpressions.Count);
+        public string Description(bool notApplicable) => string.Format(AssistantResources.ExpressionDescription_AlternativesExpression, Subexpressions.Count);
 
         public IList<IRegularExpression> Subexpressions { get; }
 
