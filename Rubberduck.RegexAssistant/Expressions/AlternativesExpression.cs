@@ -16,7 +16,7 @@ namespace Rubberduck.RegexAssistant.Expressions
 
         public IList<IRegularExpression> Subexpressions { get; }
 
-        public override string ToString() => $"Aternatives:{Subexpressions.ToString()}";
+        public override string ToString() => $"Aternatives:{Subexpressions}";
         public override bool Equals(object obj) => obj is AlternativesExpression other && Subexpressions.Equals(other.Subexpressions);
         public override int GetHashCode() => HashCode.Compute(Subexpressions);
     }
