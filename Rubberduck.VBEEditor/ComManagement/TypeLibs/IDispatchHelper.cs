@@ -81,18 +81,18 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             if ((args != null) && (args.Length != 0))
             {
-                var variantStructSize = Marshal.SizeOf(typeof(VARIANT));
+                var variantStructSize = RdMarshal.SizeOf(typeof(VARIANT));
                 pDispParams.cArgs = args.Length;
 
                 var argsVariantLength = variantStructSize * pDispParams.cArgs;
-                var variantArgsArray = Marshal.AllocHGlobal(argsVariantLength);
+                var variantArgsArray = RdMarshal.AllocHGlobal(argsVariantLength);
 
                 // In IDispatch::Invoke, arguments are passed in reverse order
                 IntPtr variantArgsArrayOffset = variantArgsArray + argsVariantLength;
                 foreach (var arg in args)
                 {
                     variantArgsArrayOffset -= variantStructSize;
-                    Marshal.GetNativeVariantForObject(arg, variantArgsArrayOffset);
+                    RdMarshal.GetNativeVariantForObject(arg, variantArgsArrayOffset);
                 }
                 pDispParams.rgvarg = variantArgsArray;
             }
@@ -112,7 +112,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             if (pDispParams.rgvarg != IntPtr.Zero)
             {
                 // free the array of COM VARIANTs
-                var variantStructSize = Marshal.SizeOf(typeof(VARIANT));
+                var variantStructSize = RdMarshal.SizeOf(typeof(VARIANT));
                 var variantArgsArrayOffset = pDispParams.rgvarg;
                 int argIndex = 0;
                 while (argIndex < pDispParams.cArgs)
@@ -121,7 +121,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                     variantArgsArrayOffset += variantStructSize;
                     argIndex++;
                 }
-                Marshal.FreeHGlobal(pDispParams.rgvarg);
+                RdMarshal.FreeHGlobal(pDispParams.rgvarg);
             }
         }
 
@@ -148,9 +148,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 if ((hr == (int)KnownComHResults.DISP_E_EXCEPTION) && (ComHelper.HRESULT_FAILED(pExcepInfo.scode)))
                 {
-                    throw Marshal.GetExceptionForHR(pExcepInfo.scode);
+                    throw RdMarshal.GetExceptionForHR(pExcepInfo.scode);
                 }
-                throw Marshal.GetExceptionForHR(hr);
+                throw RdMarshal.GetExceptionForHR(hr);
             }
 
             return pVarResult;

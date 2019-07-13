@@ -1117,7 +1117,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
                     ti = ti.ImplementedInterfaces.GetItemByIndex(0);
                 }
 
-                var clrType = Marshal.GetTypeForITypeInfo(Marshal.GetIUnknownForObject(ti));
+                var clrType = RdMarshal.GetTypeForITypeInfo(Marshal.GetIUnknownForObject(ti));
                 return clrType.ToString();
             }
         }

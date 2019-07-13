@@ -49,7 +49,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         private void HandleBadHRESULT(int hr)
         {
-            throw Marshal.GetExceptionForHR(hr);
+            throw RdMarshal.GetExceptionForHR(hr);
         }
 
         void ComTypes.ITypeInfo.GetContainingTypeLib(out ComTypes.ITypeLib ppTLB, out int pIndex)
@@ -251,9 +251,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             using (var outPpvObj = AddressableVariables.CreateObjectPtr<object>())
             {
-                var unkOuter = Marshal.GetIUnknownForObject(pUnkOuter);
+                var unkOuter = RdMarshal.GetIUnknownForObject(pUnkOuter);
                 int hr = _this_Internal.CreateInstance(unkOuter, riid, outPpvObj.Address);
-                Marshal.Release(unkOuter);
+                RdMarshal.Release(unkOuter);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
 
                 ppvObj = outPpvObj.Value;

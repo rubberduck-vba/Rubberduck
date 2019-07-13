@@ -68,7 +68,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public TYPEKIND_VBE TypeKind => (TYPEKIND_VBE)CachedAttributes.typekind;
         public bool HasPredeclaredId => CachedAttributes.wTypeFlags.HasFlag(ComTypes.TYPEFLAGS.TYPEFLAG_FPREDECLID);
         public ComTypes.TYPEFLAGS Flags => CachedAttributes.wTypeFlags;
-        public string ContainerName => Marshal.GetTypeLibName(Container);
+        public string ContainerName => RdMarshal.GetTypeLibName(Container);
 
         // Constants inside VBA components are exposed via the ITypeInfo, but there names are not reported correctly.
         // Their names all appear with a DispID of MEMBERID_NIL.  In order to try to make VBA type infos more agreeable to the specifications,
@@ -154,7 +154,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 throw new ArgumentException("Expected COM object, but validation failed.");
             }
 
-            if (makeCopyOfReference) Marshal.AddRef(rawObjectPtr);
+            if (makeCopyOfReference) RdMarshal.AddRef(rawObjectPtr);
             _target_ITypeInfoPtr = rawObjectPtr;
 
             // We have to restrict interface requests to VBE hosted ITypeInfos due to a bug in their implementation.
@@ -216,15 +216,15 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             if (_target_ITypeInfo_IsRefCounted)
             {
-                if (_target_ITypeInfo != null) Marshal.ReleaseComObject(_target_ITypeInfo);
-                if (_target_ITypeInfoAlternate != null) Marshal.ReleaseComObject(_target_ITypeInfoAlternate);
+                if (_target_ITypeInfo != null) RdMarshal.ReleaseComObject(_target_ITypeInfo);
+                if (_target_ITypeInfoAlternate != null) RdMarshal.ReleaseComObject(_target_ITypeInfoAlternate);
             }
 
             _vbeExtensions?.Dispose();
             _cachedReferencedTypeInfos?.Dispose();
             Container?.Dispose();
 
-            if (_target_ITypeInfoPtr != IntPtr.Zero) Marshal.Release(_target_ITypeInfoPtr);
+            if (_target_ITypeInfoPtr != IntPtr.Zero) RdMarshal.Release(_target_ITypeInfoPtr);
         }
 
         TypeInfoVBEExtensions _vbeExtensions;
@@ -311,7 +311,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
 
         public IntPtr GetCOMReferencePtr()
-            => Marshal.GetComInterfaceForObject(this, typeof(ITypeInfoInternal));
+            => RdMarshal.GetComInterfaceForObject(this, typeof(ITypeInfoInternal));
 
         int HandleBadHRESULT(int hr)
         {
@@ -323,12 +323,12 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             // even though pIndex is described as a non-optional OUT argument, mscorlib sometimes calls this with a nullptr from the C++ side.
             if (pIndex == IntPtr.Zero)
             {
-                Marshal.WriteIntPtr(ppTLB, IntPtr.Zero);
+                RdMarshal.WriteIntPtr(ppTLB, IntPtr.Zero);
                 return (int)KnownComHResults.E_INVALIDARG;
             }
 
-            Marshal.WriteIntPtr(ppTLB, Marshal.GetComInterfaceForObject(Container, typeof(ITypeLibInternal)));
-            if (pIndex != IntPtr.Zero) Marshal.WriteInt32(pIndex, ContainerIndex);
+            RdMarshal.WriteIntPtr(ppTLB, RdMarshal.GetComInterfaceForObject(Container, typeof(ITypeLibInternal)));
+            if (pIndex != IntPtr.Zero) RdMarshal.WriteInt32(pIndex, ContainerIndex);
 
             return (int)KnownComHResults.S_OK;
         }
@@ -342,7 +342,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             var typeAttr = StructHelper.ReadStructureUnsafe<ComTypes.TYPEATTR>(pTypeAttr);
 
             typeAttr.typekind = PatchTypeKind((TYPEKIND_VBE)typeAttr.typekind);
-            Marshal.StructureToPtr<ComTypes.TYPEATTR>(typeAttr, pTypeAttr, false);
+            RdMarshal.StructureToPtr<ComTypes.TYPEATTR>(typeAttr, pTypeAttr, true);
             return hr;
         }
 
@@ -384,7 +384,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                         }
                         _target_ITypeInfoAlternate.ReleaseFuncDesc(funcDescAlternatePtr.Value.Address);
 
-                        Marshal.StructureToPtr(funcDesc, pFuncDesc, false);
+                        RdMarshal.StructureToPtr(funcDesc, pFuncDesc, true);
                     }
                 }
             }
@@ -404,7 +404,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 // constants are not reported correctly in VBA type infos.  They all have MEMBERID_NIL set.
                 // we will provide fake DispIds and names to satisfy parsers.  Shit but works for now.
                 varDesc.memid = (int)(_ourConstantsDispatchMemberIDRangeStart + index);
-                Marshal.StructureToPtr(varDesc, pVarDesc, false);
+                RdMarshal.StructureToPtr(varDesc, pVarDesc, true);
             }
             else
             {
@@ -418,7 +418,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                             var hr2 = target_ITypeInfoAlternate.GetVarDesc(index, varDescPtr2.Address);
                             var varDesc2 = varDescPtr2.Value.Value; // dereference the ptr, then the content
                             VarDesc.wVarFlags = varDesc2.wVarFlags;
-                            Marshal.StructureToPtr(VarDesc, pVarDesc, false);
+                            RdMarshal.StructureToPtr(VarDesc, pVarDesc, false);
                         }
                    }
                 */
@@ -435,8 +435,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 if ((rgBstrNames != IntPtr.Zero) && (cMaxNames >= 1))
                 {
                     // output 1 string to the array
-                    Marshal.WriteIntPtr(rgBstrNames, Marshal.StringToBSTR("_constantFieldId" + fieldId));
-                    if (pcNames != IntPtr.Zero) Marshal.WriteInt32(pcNames, 1);
+                    RdMarshal.WriteIntPtr(rgBstrNames, RdMarshal.StringToBSTR("_constantFieldId" + fieldId));
+                    if (pcNames != IntPtr.Zero) RdMarshal.WriteInt32(pcNames, 1);
                     return (int)KnownComHResults.S_OK;
                 }
             }
@@ -480,20 +480,20 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 // this is very likely one of our simulated names from GetVarDesc()
                 var fieldId = memid & _ourConstantsDispatchMemberIDIndexBitmask;
-                if (strName != IntPtr.Zero) Marshal.WriteIntPtr(strName, Marshal.StringToBSTR("_constantFieldId" + fieldId));
-                if (strDocString != IntPtr.Zero) Marshal.WriteIntPtr(strDocString, IntPtr.Zero);
-                if (dwHelpContext != IntPtr.Zero) Marshal.WriteInt32(dwHelpContext, 0);
-                if (strHelpFile != IntPtr.Zero) Marshal.WriteIntPtr(strHelpFile, IntPtr.Zero);
+                if (strName != IntPtr.Zero) RdMarshal.WriteIntPtr(strName, Marshal.StringToBSTR("_constantFieldId" + fieldId));
+                if (strDocString != IntPtr.Zero) RdMarshal.WriteIntPtr(strDocString, IntPtr.Zero);
+                if (dwHelpContext != IntPtr.Zero) RdMarshal.WriteInt32(dwHelpContext, 0);
+                if (strHelpFile != IntPtr.Zero) RdMarshal.WriteIntPtr(strHelpFile, IntPtr.Zero);
                 return (int)KnownComHResults.S_OK;
             }
 
             if (memid == (int)KnownDispatchMemberIDs.MEMBERID_NIL)
             {
                 // return the cached information here, to workaround the VBE bug for unnamed UserForm base classes causing an access violation
-                if (strName != IntPtr.Zero) Marshal.WriteIntPtr(strName, Marshal.StringToBSTR(Name));
-                if (strDocString != IntPtr.Zero) Marshal.WriteIntPtr(strDocString, Marshal.StringToBSTR(DocString));
-                if (dwHelpContext != IntPtr.Zero) Marshal.WriteInt32(dwHelpContext, HelpContext);
-                if (strHelpFile != IntPtr.Zero) Marshal.WriteIntPtr(strHelpFile, Marshal.StringToBSTR(HelpFile));
+                if (strName != IntPtr.Zero) RdMarshal.WriteIntPtr(strName, RdMarshal.StringToBSTR(Name));
+                if (strDocString != IntPtr.Zero) RdMarshal.WriteIntPtr(strDocString, RdMarshal.StringToBSTR(DocString));
+                if (dwHelpContext != IntPtr.Zero) RdMarshal.WriteInt32(dwHelpContext, HelpContext);
+                if (strHelpFile != IntPtr.Zero) RdMarshal.WriteIntPtr(strHelpFile, RdMarshal.StringToBSTR(HelpFile));
                 return (int)KnownComHResults.S_OK;
             }
             else
@@ -516,7 +516,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             int hr = GetSafeRefTypeInfo(hRef, out var ti);
             if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
 
-            Marshal.WriteIntPtr(ppTI, ti.GetCOMReferencePtr());
+            RdMarshal.WriteIntPtr(ppTI, ti.GetCOMReferencePtr());
             return hr;
         }
 

@@ -42,7 +42,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         private void HandleBadHRESULT(int hr)
         {
-            throw Marshal.GetExceptionForHR(hr);
+            throw RdMarshal.GetExceptionForHR(hr);
         }
 
         int ComTypes.ITypeLib.GetTypeInfoCount()

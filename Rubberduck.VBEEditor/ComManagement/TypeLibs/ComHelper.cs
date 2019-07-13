@@ -36,7 +36,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             if (queryForType)
             {
                 var iid = typeof(T).GUID;
-                if (ComHelper.HRESULT_FAILED(Marshal.QueryInterface(outerObject, ref iid, out _outerObject)))
+                if (ComHelper.HRESULT_FAILED(RdMarshal.QueryInterface(outerObject, ref iid, out _outerObject)))
                 {
                     // allow null wrapping here
                     return;
@@ -45,12 +45,12 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             else
             {
                 _outerObject = outerObject;
-                Marshal.AddRef(_outerObject);
+                RdMarshal.AddRef(_outerObject);
             }
 
-            var clrAggregator = Marshal.CreateAggregatedObject(_outerObject, this);
-            WrappedObject = (T)Marshal.GetObjectForIUnknown(clrAggregator);        // when this CCW object gets released, it will free the aggObjInner (well, after GC)
-            Marshal.Release(clrAggregator);         // _wrappedObject holds a reference to this now
+            var clrAggregator = RdMarshal.CreateAggregatedObject(_outerObject, this);
+            WrappedObject = (T)RdMarshal.GetObjectForIUnknown(clrAggregator);        // when this CCW object gets released, it will free the aggObjInner (well, after GC)
+            RdMarshal.Release(clrAggregator);         // _wrappedObject holds a reference to this now
         }
 
         public T WrappedObject { get; set; }
@@ -80,12 +80,12 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             if (WrappedObject != null)
             {
-                Marshal.ReleaseComObject(WrappedObject);
+                RdMarshal.ReleaseComObject(WrappedObject);
             }
 
             if (_outerObject != IntPtr.Zero)
             {
-                Marshal.Release(_outerObject);
+                RdMarshal.Release(_outerObject);
 
                 // dont set _outerObject to IntPtr.Zero here, as GetInterface() can still be called by the outer RCW
                 // if it is still alive. For example, if ExtractWrappedObject was used and the outer object hasn't yet
@@ -102,7 +102,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             if (iid == typeof(T).GUID)
             {
                 ppv = _outerObject;
-                Marshal.AddRef(_outerObject);
+                RdMarshal.AddRef(_outerObject);
                 return CustomQueryInterfaceResult.Handled;
             }
 
@@ -128,10 +128,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public static bool DoesComObjPtrSupportInterface<T>(IntPtr comObjPtr)
         {
             var iid = typeof(T).GUID;
-            int hr = Marshal.QueryInterface(comObjPtr, ref iid, out var outInterfacePtr);
+            int hr = RdMarshal.QueryInterface(comObjPtr, ref iid, out var outInterfacePtr);
             if (!ComHelper.HRESULT_FAILED(hr))
             {
-                Marshal.Release(outInterfacePtr);
+                RdMarshal.Release(outInterfacePtr);
                 return true;
             }
             return false;

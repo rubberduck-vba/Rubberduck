@@ -67,7 +67,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             if (_isDisposed) return;
             _isDisposed = true;
 
-            if (_target_IVBEComponent != null) Marshal.ReleaseComObject(_target_IVBEComponent);
+            if (_target_IVBEComponent != null) RdMarshal.ReleaseComObject(_target_IVBEComponent);
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
             finally
             {
-                Marshal.ReleaseComObject(staticModule);
+                RdMarshal.ReleaseComObject(staticModule);
             }
         }
     }

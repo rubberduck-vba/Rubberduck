@@ -57,12 +57,12 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             // Is it a valid memory address, with at least one accessible vTable ptr
             if (!IsValidMemoryRange(comObjectPtr, IntPtr.Size)) return false;
 
-            IntPtr vTablePtr = Marshal.ReadIntPtr(comObjectPtr);
+            IntPtr vTablePtr = RdMarshal.ReadIntPtr(comObjectPtr);
 
             // And for a COM object, we need a valid vtable, with at least 3 vTable entries (for IUnknown)
             if (!IsValidMemoryRange(vTablePtr, IntPtr.Size * 3)) return false;
 
-            IntPtr firstvTableEntry = Marshal.ReadIntPtr(vTablePtr);
+            IntPtr firstvTableEntry = RdMarshal.ReadIntPtr(vTablePtr);
 
             // And lets check the first vTable entry actually points to EXECUTABLE memory
             // (we could check all 3 initial IUnknown entries, but we want to be reasonably  
@@ -90,7 +90,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             if (memOffset == IntPtr.Zero) return false;
 
             var memInfo = new MEMORY_BASIC_INFORMATION();
-            var sizeOfMemInfo = new IntPtr(Marshal.SizeOf(memInfo));
+            var sizeOfMemInfo = new IntPtr(RdMarshal.SizeOf(memInfo));
 
             // most of the time, a bad pointer will fail here
             if (VirtualQuery(memOffset, out memInfo, sizeOfMemInfo) != sizeOfMemInfo)
@@ -137,18 +137,18 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public static T ReadComObjectStructure<T>(object comObj)
         {
             // Reads a COM object as a structure to copy its internal fields
-            if (!Marshal.IsComObject(comObj))
+            if (!RdMarshal.IsComObject(comObj))
             {
                 throw new ArgumentException("Expected a COM object");
             }
 
-            var referencesPtr = Marshal.GetIUnknownForObjectInContext(comObj);
+            var referencesPtr = RdMarshal.GetIUnknownForObjectInContext(comObj);
             if (referencesPtr == IntPtr.Zero)
             {
                 throw new InvalidOperationException("Cannot access the TypeLib API from this thread.  TypeLib API must be accessed from the main thread.");
             }
             var retVal = ReadStructureSafe<T>(referencesPtr);
-            Marshal.Release(referencesPtr);
+            RdMarshal.Release(referencesPtr);
             return retVal;
         }
 
@@ -164,7 +164,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             // We catch the most basic mistake of passing a null pointer here as it virtually costs nothing to check, 
             // but no other checks are made as to the validity of the pointer. 
             if (memAddress == IntPtr.Zero) throw new ArgumentException("Unexpected null pointer.");
-            return (T)Marshal.PtrToStructure(memAddress, typeof(T));
+            return (T)RdMarshal.PtrToStructure(memAddress, typeof(T));
         }
 
 
@@ -177,9 +177,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         /// <returns>the requested structure T</returns>
         public static T ReadStructureSafe<T>(IntPtr memAddress)
         {
-            if (UnmanagedMemoryHelper.IsValidMemoryRange(memAddress, Marshal.SizeOf(typeof(T))))
+            if (UnmanagedMemoryHelper.IsValidMemoryRange(memAddress, RdMarshal.SizeOf(typeof(T))))
             {
-                return (T)Marshal.PtrToStructure(memAddress, typeof(T));
+                return (T)RdMarshal.PtrToStructure(memAddress, typeof(T));
             }
 
             throw new ArgumentException("Bad data pointer - unable to read structure data.");

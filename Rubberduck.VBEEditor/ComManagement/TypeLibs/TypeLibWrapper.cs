@@ -103,10 +103,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 throw new ArgumentException("Expected COM object, but validation failed.");
             }
-            if (makeCopyOfReference) Marshal.AddRef(rawObjectPtr);
+            if (makeCopyOfReference) RdMarshal.AddRef(rawObjectPtr);
 
             _target_ITypeLibPtr = rawObjectPtr;
-            _target_ITypeLib = (ITypeLibInternal)Marshal.GetObjectForIUnknown(rawObjectPtr);
+            _target_ITypeLib = (ITypeLibInternal)RdMarshal.GetObjectForIUnknown(rawObjectPtr);
             _target_ITypeLib_IsRefCounted = true;
             InitCommon();
         }
@@ -130,7 +130,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 return;
             }
 
-            _target_ITypeLibPtr = Marshal.GetIUnknownForObject(unwrappedTypeLib);
+            _target_ITypeLibPtr = RdMarshal.GetIUnknownForObject(unwrappedTypeLib);
             _target_ITypeLib = (ITypeLibInternal)unwrappedTypeLib;
             _target_ITypeLib_IsRefCounted = false;
             InitCommon();
@@ -143,8 +143,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             _isDisposed = true;
 
             _cachedTypeInfos?.Dispose();
-            if (_target_ITypeLib_IsRefCounted) Marshal.ReleaseComObject(_target_ITypeLib);
-            if (_target_ITypeLibPtr != IntPtr.Zero) Marshal.Release(_target_ITypeLibPtr);
+            if (_target_ITypeLib_IsRefCounted) RdMarshal.ReleaseComObject(_target_ITypeLib);
+            if (_target_ITypeLibPtr != IntPtr.Zero) RdMarshal.Release(_target_ITypeLibPtr);
         }
 
         public int GetSafeTypeInfoByIndex(int index, out TypeInfoWrapper outTI)
@@ -188,7 +188,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
 
         public IntPtr GetCOMReferencePtr()
-            => Marshal.GetComInterfaceForObject(this, typeof(ITypeLibInternal));
+            => RdMarshal.GetComInterfaceForObject(this, typeof(ITypeLibInternal));
 
         int HandleBadHRESULT(int hr)
         {
@@ -207,7 +207,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             int hr = GetSafeTypeInfoByIndex(index, out var ti);
             if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
 
-            Marshal.WriteIntPtr(ppTI, ti.GetCOMReferencePtr());
+            RdMarshal.WriteIntPtr(ppTI, ti.GetCOMReferencePtr());
             return hr;
         }
         public override int GetTypeInfoType(int index, IntPtr pTKind)
@@ -215,9 +215,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             int hr = _target_ITypeLib.GetTypeInfoType(index, pTKind);
             if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
 
-            var tKind = Marshal.ReadInt32(pTKind);
+            var tKind = RdMarshal.ReadInt32(pTKind);
             tKind = (int)TypeInfoWrapper.PatchTypeKind((TYPEKIND_VBE)tKind);
-            Marshal.WriteInt32(pTKind, tKind);
+            RdMarshal.WriteInt32(pTKind, tKind);
 
             return hr;
         }
@@ -226,10 +226,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             int hr = _target_ITypeLib.GetTypeInfoOfGuid(guid, ppTInfo);
             if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
 
-            var pTInfo = Marshal.ReadIntPtr(ppTInfo);
+            var pTInfo = RdMarshal.ReadIntPtr(ppTInfo);
             using (var outVal = new TypeInfoWrapper(pTInfo)) // takes ownership of the COM reference [pTInfo]
             {
-                Marshal.WriteIntPtr(ppTInfo, outVal.GetCOMReferencePtr());
+                RdMarshal.WriteIntPtr(ppTInfo, outVal.GetCOMReferencePtr());
 
                 _cachedTypeInfos = _cachedTypeInfos ?? new DisposableList<TypeInfoWrapper>();
                 _cachedTypeInfos.Add(outVal);

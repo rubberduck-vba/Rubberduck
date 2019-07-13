@@ -34,7 +34,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                         if (retValElement.tdesc.vt == (short)VarEnum.VT_USERDEFINED)
                         {
                             int hr = rootInterface.GetSafeRefTypeInfo((int)retValElement.tdesc.lpValue, out var retVal);
-                            if (ComHelper.HRESULT_FAILED(hr)) throw Marshal.GetExceptionForHR(hr);
+                            if (ComHelper.HRESULT_FAILED(hr)) throw RdMarshal.GetExceptionForHR(hr);
                             return retVal;
                         }
                     }
@@ -55,7 +55,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                                 if (retValElement.tdesc.vt == (short)VarEnum.VT_USERDEFINED)
                                 {
                                     int hr = rootInterface.GetSafeRefTypeInfo((int)retValElement.tdesc.lpValue, out var retVal);
-                                    if (ComHelper.HRESULT_FAILED(hr)) throw Marshal.GetExceptionForHR(hr);
+                                    if (ComHelper.HRESULT_FAILED(hr)) throw RdMarshal.GetExceptionForHR(hr);
                                     return retVal;
                                 }
                             }

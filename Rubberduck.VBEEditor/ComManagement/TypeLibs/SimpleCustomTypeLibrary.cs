@@ -51,7 +51,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             if (index >= _containedTypeInfos.Count) return (int)KnownComHResults.TYPE_E_ELEMENTNOTFOUND;
 
             var ti = _containedTypeInfos[index];
-            Marshal.WriteIntPtr(ppTI, ti.GetCOMReferencePtr());
+            RdMarshal.WriteIntPtr(ppTI, ti.GetCOMReferencePtr());
             return (int)KnownComHResults.S_OK;
         }
 
@@ -62,7 +62,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             var ti = _containedTypeInfos[index];
 
             var typeKind = TypeInfoWrapper.PatchTypeKind(ti.TypeKind);
-            Marshal.WriteInt32(pTKind, (int)typeKind);
+            RdMarshal.WriteInt32(pTKind, (int)typeKind);
 
             return (int)KnownComHResults.S_OK;
         }
@@ -73,15 +73,15 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             var ti = _containedTypeInfos.Find(x => x.GUID == inGuid);
             if (ti == null) return (int)KnownComHResults.TYPE_E_ELEMENTNOTFOUND;
 
-            Marshal.WriteIntPtr(ppTInfo, ti.GetCOMReferencePtr());
+            RdMarshal.WriteIntPtr(ppTInfo, ti.GetCOMReferencePtr());
             return (int)KnownComHResults.S_OK;
         }
 
         public override int GetLibAttr(IntPtr ppTLibAttr)
         {
-            var output = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(ComTypes.TYPELIBATTR)));
-            Marshal.StructureToPtr(_libAttribs, output, false);
-            Marshal.WriteIntPtr(ppTLibAttr, output);
+            var output = RdMarshal.AllocHGlobal(Marshal.SizeOf(typeof(ComTypes.TYPELIBATTR)));
+            RdMarshal.StructureToPtr(_libAttribs, output, false);
+            RdMarshal.WriteIntPtr(ppTLibAttr, output);
             return (int)KnownComHResults.S_OK;
         }
 
@@ -93,10 +93,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             if (memid == (int)KnownDispatchMemberIDs.MEMBERID_NIL)
             {
-                if (strName != IntPtr.Zero) Marshal.WriteIntPtr(strName, Marshal.StringToBSTR("_ArtificialContainer"));
-                if (strDocString != IntPtr.Zero) Marshal.WriteIntPtr(strDocString, IntPtr.Zero);
-                if (dwHelpContext != IntPtr.Zero) Marshal.WriteInt32(dwHelpContext, 0);
-                if (strHelpFile != IntPtr.Zero) Marshal.WriteIntPtr(strHelpFile, IntPtr.Zero);
+                if (strName != IntPtr.Zero) RdMarshal.WriteIntPtr(strName, Marshal.StringToBSTR("_ArtificialContainer"));
+                if (strDocString != IntPtr.Zero) RdMarshal.WriteIntPtr(strDocString, IntPtr.Zero);
+                if (dwHelpContext != IntPtr.Zero) RdMarshal.WriteInt32(dwHelpContext, 0);
+                if (strHelpFile != IntPtr.Zero) RdMarshal.WriteIntPtr(strHelpFile, IntPtr.Zero);
 
                 return (int)KnownComHResults.S_OK;
             }
@@ -113,7 +113,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         public override void ReleaseTLibAttr(IntPtr pTLibAttr)
         {
-            if (pTLibAttr != IntPtr.Zero) Marshal.FreeHGlobal(pTLibAttr);
+            if (pTLibAttr != IntPtr.Zero) RdMarshal.FreeHGlobal(pTLibAttr);
         }
     }
 }

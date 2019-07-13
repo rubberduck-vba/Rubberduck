@@ -189,7 +189,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                     {
                         // This internal VBE interface doesn't have a queryable IID.  
                         // The vtable for this interface directly preceeds the _IVBProjectEx, and we can access it through an aggregation helper
-                        var objIVBProjectExPtr = Marshal.GetComInterfaceForObject(_wrappedObject, typeof(IVBEProject));
+                        var objIVBProjectExPtr = RdMarshal.GetComInterfaceForObject(_wrappedObject, typeof(IVBEProject));
                         _cachedIVBProjectEx2 = ComHelper.ForceComObjPtrToInterfaceViaAggregation<IVBEProject2>(objIVBProjectExPtr - IntPtr.Size, queryForType: false);
                     }
                     else
