@@ -14,5 +14,6 @@ namespace Rubberduck.VBEditor.ComManagement
         IEnumerable<(QualifiedModuleName QualifiedModuleName, IVBComponent Component)> Components();
         IEnumerable<(QualifiedModuleName QualifiedModuleName, IVBComponent Component)> Components(string projectId);
         IVBComponent Component(QualifiedModuleName qualifiedModuleName);
+        void RemoveComponent(QualifiedModuleName qualifiedModuleName);
     }
 }

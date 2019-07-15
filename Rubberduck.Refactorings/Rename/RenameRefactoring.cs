@@ -114,6 +114,10 @@ namespace Rubberduck.Refactorings.Rename
             if (target.DeclarationType.HasFlag(DeclarationType.Control))
             {
                 var component = _projectsProvider.Component(target.QualifiedName.QualifiedModuleName);
+                if (component is null)
+                {
+                    throw new TargetControlNotFoundException(target);
+                }
                 using (var controls = component.Controls)
                 {
                     using (var control = controls.FirstOrDefault(item => item.Name == target.IdentifierName))

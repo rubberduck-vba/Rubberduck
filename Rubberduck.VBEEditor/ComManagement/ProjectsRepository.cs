@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using NLog;
+using Rubberduck.VBEditor.ComManagement.TypeLibsSupport;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -168,7 +169,7 @@ namespace Rubberduck.VBEditor.ComManagement
 
         private void RefreshCollections(string projectId)
         {
-            if (!_projects.TryGetValue(projectId, out var project))
+            if (!_projects.TryGetValue(projectId, out var project))     
             {
                 return;
             }
@@ -223,7 +224,7 @@ namespace Rubberduck.VBEditor.ComManagement
             var readLockTaken = false;
             try
             {
-                _refreshProtectionLock.EnterReadLock();
+                _refreshProtectionLock.EnterUpgradeableReadLock();
                 readLockTaken = true;
                 return function.Invoke();
             }
@@ -231,7 +232,7 @@ namespace Rubberduck.VBEditor.ComManagement
             {
                 if (readLockTaken)
                 {
-                    _refreshProtectionLock.ExitReadLock();
+                    _refreshProtectionLock.ExitUpgradeableReadLock();
                 }
             }
         }
@@ -272,6 +273,28 @@ namespace Rubberduck.VBEditor.ComManagement
         public IVBComponent Component(QualifiedModuleName qualifiedModuleName)
         {
             return EvaluateWithinReadLock(() => _components.TryGetValue(qualifiedModuleName, out var component) ? component : null);
+        }
+
+        public void RemoveComponent(QualifiedModuleName qualifiedModuleName)
+        {
+            EvaluateWithinReadLock(() =>
+            {
+                if (_components.TryGetValue(qualifiedModuleName, out var component))
+                {
+                    ExecuteWithinWriteLock(() =>
+                    {
+                        if (_projects.TryGetValue(qualifiedModuleName.ProjectId, out var project))
+                        {
+                            using (var components = project.VBComponents)
+                            {
+                                components.Remove(component);
+                            }
+                        }
+                        _components.Remove(qualifiedModuleName);
+                    });
+                }
+                return new { };
+            });
         }
 
         public void Dispose()

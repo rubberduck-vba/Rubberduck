@@ -37,10 +37,15 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             try
             {
                 var component = _projectsProvider.Component(node.Declaration.QualifiedName.QualifiedModuleName);
+                if (component is null)
+                {
+                    return false;
+                }
                 using (var codeModule = component.CodeModule)
                 {
                     return codeModule.CountOfLines != 0;
                 }
+
             }
             catch (COMException)
             {

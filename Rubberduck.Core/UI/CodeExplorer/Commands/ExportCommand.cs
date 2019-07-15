@@ -8,6 +8,7 @@ using Rubberduck.UI.Command;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -22,23 +23,30 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         };
 
         private readonly IFileSystemBrowserFactory _dialogFactory;
+        private readonly IVBE _vbe;
 
-        public ExportCommand(IFileSystemBrowserFactory dialogFactory, IMessageBox messageBox, IProjectsProvider projectsProvider)
+        public ExportCommand(IFileSystemBrowserFactory dialogFactory, IMessageBox messageBox, IProjectsRepository projectsRepository, IVBE vbe)
         {
             _dialogFactory = dialogFactory;
+            _vbe = vbe;
             MessageBox = messageBox;
-            ProjectsProvider = projectsProvider;
+            ProjectsRepository = projectsRepository;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
         protected IMessageBox MessageBox { get; }
-        protected IProjectsProvider ProjectsProvider { get; }
+        protected IProjectsRepository ProjectsRepository { get; }
 
         private bool SpecialEvaluateCanExecute(object parameter)
         {
             if (!(parameter is CodeExplorerComponentViewModel node) ||
                 node.Declaration == null)
+            {
+                return false;
+            }
+
+            if (_vbe.Kind != VBEKind.Hosted)
             {
                 return false;
             }
@@ -58,7 +66,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             PromptFileNameAndExport(node.Declaration.QualifiedName.QualifiedModuleName);
         }
 
-        protected bool PromptFileNameAndExport(QualifiedModuleName qualifiedModule)
+        public bool PromptFileNameAndExport(QualifiedModuleName qualifiedModule)
         {
             if (!ExportableFileExtensions.TryGetValue(qualifiedModule.ComponentType, out var extension))
             {
@@ -76,7 +84,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                     return false;
                 }
 
-                var component = ProjectsProvider.Component(qualifiedModule);
+                var component = ProjectsRepository.Component(qualifiedModule);
                 try
                 {
                     component.Export(dialog.FileName);

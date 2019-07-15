@@ -418,4 +418,10 @@
   <data name="CodeExplorer_AddExistingFileText" xml:space="preserve">
     <value>Existing file...</value>
   </data>
+  <data name="CodeExplorer_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="CodeExplorer_Exclude" xml:space="preserve">
+    <value>Exclude from project</value>
+  </data>
 </root>

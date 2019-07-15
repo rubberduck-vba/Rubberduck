@@ -255,6 +255,15 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string CodeExplorer_Delete {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Display member &amp;names.
         /// </summary>
         public static string CodeExplorer_DisplayMemberNamesText {
@@ -278,6 +287,15 @@ namespace Rubberduck.Resources.CodeExplorer {
         public static string CodeExplorer_DisplaySignaturesText {
             get {
                 return ResourceManager.GetString("CodeExplorer_DisplaySignaturesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exclude from project.
+        /// </summary>
+        public static string CodeExplorer_Exclude {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Exclude", resourceCulture);
             }
         }
         
