@@ -412,7 +412,8 @@
                   ItemContainerStyle="{StaticResource TreeViewContainerStyle}"
                   FontSize="{Binding FontSize, Mode=OneWay}"
                   BorderThickness="0,1"
-                  VirtualizingPanel.IsVirtualizing="False">
+                  VirtualizingPanel.IsVirtualizing="False"
+                  KeyDown="ProjectTree_KeyDown">
             <TreeView.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Open}"
