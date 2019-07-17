@@ -424,4 +424,16 @@
   <data name="CodeExplorer_Exclude" xml:space="preserve">
     <value>Exclude from project</value>
   </data>
+  <data name="ConfirmBeforeDelete_Caption" xml:space="preserve">
+    <value>Confirm Delete</value>
+  </data>
+  <data name="ConfirmBeforeDelete_Prompt" xml:space="preserve">
+    <value>{0} will be permanently deleted.\r\n\r\nContinue?</value>
+  </data>
+  <data name="DeleteFailed_Caption" xml:space="preserve">
+    <value>Delete Failed</value>
+  </data>
+  <data name="DeleteFailed_Message" xml:space="preserve">
+    <value>The following files could not be deleted\r\n\r\n{0}</value>
+  </data>
 </root>

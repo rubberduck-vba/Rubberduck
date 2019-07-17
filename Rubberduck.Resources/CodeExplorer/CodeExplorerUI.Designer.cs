@@ -606,12 +606,48 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Confirm Delete.
+        /// </summary>
+        public static string ConfirmBeforeDelete_Caption {
+            get {
+                return ResourceManager.GetString("ConfirmBeforeDelete_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} will be permanently deleted.\r\n\r\nContinue?.
+        /// </summary>
+        public static string ConfirmBeforeDelete_Prompt {
+            get {
+                return ResourceManager.GetString("ConfirmBeforeDelete_Prompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap cross_circle {
             get {
                 object obj = ResourceManager.GetObject("cross_circle", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete Failed.
+        /// </summary>
+        public static string DeleteFailed_Caption {
+            get {
+                return ResourceManager.GetString("DeleteFailed_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The following files could not be deleted\r\n\r\n{0}.
+        /// </summary>
+        public static string DeleteFailed_Message {
+            get {
+                return ResourceManager.GetString("DeleteFailed_Message", resourceCulture);
             }
         }
         

@@ -14,30 +14,47 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 {
     public class ExportCommand : CommandBase
     {
-        private static readonly Dictionary<ComponentType, string> ExportableFileExtensions = new Dictionary<ComponentType, string>
+        private static readonly Dictionary<ComponentType, string> VBAExportableFileExtensions = new Dictionary<ComponentType, string>
         {
             { ComponentType.StandardModule, ".bas" },
             { ComponentType.ClassModule, ".cls" },
             { ComponentType.Document, ".cls" },
-            { ComponentType.UserForm, ".frm" }
+            { ComponentType.UserForm, ".frm" }            
+        };
+
+        private static readonly Dictionary<ComponentType, string> VB6ExportableFileExtensions = new Dictionary<ComponentType, string>
+        {
+            { ComponentType.StandardModule, ".bas" },
+            { ComponentType.ClassModule, ".cls" },
+            { ComponentType.VBForm, ".frm" },
+            { ComponentType.MDIForm, ".frm" },
+            { ComponentType.UserControl, ".ctl" },
+            { ComponentType.DocObject, ".dob" },
+            { ComponentType.ActiveXDesigner, ".dsr" },
+            { ComponentType.PropPage, ".pag" },
+            { ComponentType.ResFile, ".res" },            
         };
 
         private readonly IFileSystemBrowserFactory _dialogFactory;
-        private readonly IVBE _vbe;
+        private readonly Dictionary<ComponentType, string> _ExportableFileExtensions;
 
-        public ExportCommand(IFileSystemBrowserFactory dialogFactory, IMessageBox messageBox, IProjectsRepository projectsRepository, IVBE vbe)
+        public ExportCommand(IFileSystemBrowserFactory dialogFactory, IMessageBox messageBox, IProjectsProvider projectsProvider, IVBE vbe)
         {
             _dialogFactory = dialogFactory;
-            _vbe = vbe;
             MessageBox = messageBox;
-            ProjectsRepository = projectsRepository;
+            ProjectsProvider = projectsProvider;
+
+            _ExportableFileExtensions =
+                vbe.Kind == VBEKind.Hosted
+                    ? VBAExportableFileExtensions
+                    : VB6ExportableFileExtensions;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
         protected IMessageBox MessageBox { get; }
-        protected IProjectsRepository ProjectsRepository { get; }
-
+        protected IProjectsProvider ProjectsProvider { get; }
+        
         private bool SpecialEvaluateCanExecute(object parameter)
         {
             if (!(parameter is CodeExplorerComponentViewModel node) ||
@@ -46,13 +63,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return false;
             }
 
-            if (_vbe.Kind != VBEKind.Hosted)
-            {
-                return false;
-            }
-
             var componentType = node.Declaration.QualifiedName.QualifiedModuleName.ComponentType;
-            return ExportableFileExtensions.Select(s => s.Key).Contains(componentType);
+
+            return _ExportableFileExtensions.Select(s => s.Key).Contains(componentType);
         }
 
         protected override void OnExecute(object parameter)
@@ -68,7 +81,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public bool PromptFileNameAndExport(QualifiedModuleName qualifiedModule)
         {
-            if (!ExportableFileExtensions.TryGetValue(qualifiedModule.ComponentType, out var extension))
+            if (!_ExportableFileExtensions.TryGetValue(qualifiedModule.ComponentType, out var extension))
             {
                 return false;
             }
@@ -84,7 +97,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                     return false;
                 }
 
-                var component = ProjectsRepository.Component(qualifiedModule);
+                var component = ProjectsProvider.Component(qualifiedModule);
                 try
                 {
                     component.Export(dialog.FileName);

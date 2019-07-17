@@ -3,6 +3,7 @@ using Rubberduck.Interaction;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Resources.CodeExplorer;
 using Rubberduck.UI.Command;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -16,7 +17,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IMessageBox _messageBox;
         private readonly IVBE _vbe;
 
-        public RemoveCommand(ExportCommand exportCommand, IProjectsRepository projectsRepository, IMessageBox messageBox, IVBE vbe) 
+        public RemoveCommand(ExportCommand exportCommand, IProjectsRepository projectsRepository, IMessageBox messageBox, IVBE vbe)
         {
             _exportCommand = exportCommand;
             _projectsRepository = projectsRepository;
@@ -28,10 +29,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private bool SpecialEvaluateCanExecute(object parameter)
         {
-            return _vbe.Kind == VBEKind.Standalone ||  
-                   _exportCommand.CanExecute(parameter) &&
-                   ((CodeExplorerComponentViewModel)parameter).Declaration.QualifiedName.QualifiedModuleName.ComponentType != ComponentType.Document;
-        }        
+            return _exportCommand.CanExecute(parameter) &&
+                   parameter is CodeExplorerComponentViewModel viewModel &&
+                   viewModel.Declaration.QualifiedName.QualifiedModuleName.ComponentType != ComponentType.Document;
+        }
 
         protected override void OnExecute(object parameter)
         {
@@ -42,31 +43,16 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return;
             }
 
-            var qualifiedModuleName = node.Declaration.QualifiedName.QualifiedModuleName;
-            var projectId = qualifiedModuleName.ProjectId;
-            var projectType = _projectsRepository.Project(projectId).Type;
+            RemoveComponent(node.Declaration.QualifiedModuleName);
+        }
 
-            if (projectType == ProjectType.HostProject) // Prompt for export for VBA only
+        public bool RemoveComponent(QualifiedModuleName qualifiedModuleName, bool promptToExport = true)
+        {
+            if (promptToExport && !TryExport(qualifiedModuleName))
             {
-                var message = string.Format(CodeExplorerUI.ExportBeforeRemove_Prompt, node.Name);
-
-                switch(_messageBox.Confirm(message, CodeExplorerUI.ExportBeforeRemove_Caption, ConfirmationOutcome.Yes))
-                {
-                    case ConfirmationOutcome.Yes:
-                        if (!_exportCommand.PromptFileNameAndExport(qualifiedModuleName))
-                        {
-                            return; // Don't remove if export was cancelled
-                        }
-                        break;
-
-                    case ConfirmationOutcome.Cancel:
-                        return;
-
-                    case ConfirmationOutcome.No:
-                        break;
-                }
+                return false;
             }
-
+            
             // No file export or file successfully exported--now remove it
             try
             {
@@ -75,7 +61,39 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             catch (Exception ex)
             {
                 _messageBox.NotifyWarn(ex.Message, string.Format(CodeExplorerUI.RemoveError_Caption, qualifiedModuleName.ComponentName));
+                return false;
             }
+
+            return true;
+        }
+
+        private bool TryExport(QualifiedModuleName qualifiedModuleName)
+        {
+            var projectId = qualifiedModuleName.ProjectId;
+            var projectType = _projectsRepository.Project(projectId).Type;
+            var component = _projectsRepository.Component(qualifiedModuleName);
+
+            if (projectType == ProjectType.HostProject && component.IsSaved)
+            {
+                return true; // File already up-to-date
+            }
+
+            var message = string.Format(CodeExplorerUI.ExportBeforeRemove_Prompt, qualifiedModuleName.Name);
+
+            switch (_messageBox.Confirm(message, CodeExplorerUI.ExportBeforeRemove_Caption, ConfirmationOutcome.Yes))
+            {
+                case ConfirmationOutcome.No:
+                    return true;
+
+                case ConfirmationOutcome.Yes:
+                    if (_exportCommand.PromptFileNameAndExport(qualifiedModuleName))
+                    {
+                        return true;
+                    }
+                    break;
+            }
+
+            return false; // Export cancelled or failed
         }
     }
 }

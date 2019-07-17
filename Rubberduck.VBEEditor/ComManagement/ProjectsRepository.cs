@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using NLog;
-using Rubberduck.VBEditor.ComManagement.TypeLibsSupport;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -169,7 +168,7 @@ namespace Rubberduck.VBEditor.ComManagement
 
         private void RefreshCollections(string projectId)
         {
-            if (!_projects.TryGetValue(projectId, out var project))     
+            if (!_projects.TryGetValue(projectId, out var project))
             {
                 return;
             }
@@ -287,9 +286,11 @@ namespace Rubberduck.VBEditor.ComManagement
                         {
                             using (var components = project.VBComponents)
                             {
+                                // Remove the actual component...
                                 components.Remove(component);
                             }
                         }
+                        // ...and our cached copy of it
                         _components.Remove(qualifiedModuleName);
                     });
                 }
