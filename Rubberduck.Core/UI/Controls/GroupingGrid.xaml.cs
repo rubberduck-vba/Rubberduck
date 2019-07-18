@@ -7,10 +7,10 @@ namespace Rubberduck.UI.Controls
     public partial class GroupingGrid
     {
         public static readonly DependencyProperty ShowGroupingItemCountProperty =
-            DependencyProperty.Register("ShowGroupingItemCount", typeof (bool), typeof(GroupingGrid));
+            DependencyProperty.Register(nameof(ShowGroupingItemCount), typeof (bool), typeof(GroupingGrid));
 
         public static readonly DependencyProperty InitialExpandedStateProperty =
-            DependencyProperty.Register("InitialExpandedState", typeof(bool), typeof(GroupingGrid));
+            DependencyProperty.Register(nameof(InitialExpandedState), typeof(bool), typeof(GroupingGrid));
 
         public bool ShowGroupingItemCount
         {
