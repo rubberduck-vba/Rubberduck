@@ -77,7 +77,6 @@ namespace RubberduckTests.UnitTesting
             { TestOutcome.Succeeded,  (TestOutcome.Succeeded, "", 0)  },
             { TestOutcome.Inconclusive,  (TestOutcome.Inconclusive, "", 0)  },
             { TestOutcome.Failed,  (TestOutcome.Failed, "", 0)  },
-            { TestOutcome.SpectacularFail,  (TestOutcome.SpectacularFail, "", 0)  },
             { TestOutcome.Ignored,  (TestOutcome.Ignored, "", 0)  }
         };
 
@@ -91,7 +90,6 @@ namespace RubberduckTests.UnitTesting
         //[TestCase(new[] { TestOutcome.Failed, TestOutcome.Failed, TestOutcome.Failed })]
         //[TestCase(new[] { TestOutcome.Succeeded, TestOutcome.Ignored })]
         //[TestCase(new[] { TestOutcome.Succeeded, TestOutcome.Ignored, TestOutcome.Failed })]
-        //[TestCase(new[] { TestOutcome.Ignored, TestOutcome.SpectacularFail })]
         //public void TestGrouping_GroupsByOutcome(params TestOutcome[] tests)
         //{
         //    var underTest = tests.Select(test => DummyOutcomes[test]).ToList();

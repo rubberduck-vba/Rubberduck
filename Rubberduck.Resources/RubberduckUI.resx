@@ -1537,9 +1537,6 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="hourglass" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Fugue\hourglass.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="skull_mad" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\skull-mad.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Language_ES" xml:space="preserve">
     <value>Español</value>
   </data>
@@ -1598,9 +1595,6 @@ NOTE: Restart is required for the setting to take effect.</value>
   </data>
   <data name="TestOutcome_Inconclusive" xml:space="preserve">
     <value>Inconclusive</value>
-  </data>
-  <data name="TestOutcome_SpectacularFail" xml:space="preserve">
-    <value>SpectacularFail</value>
   </data>
   <data name="TestOutcome_Succeeded" xml:space="preserve">
     <value>Suceeded</value>

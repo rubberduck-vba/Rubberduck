@@ -3984,16 +3984,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap skull_mad {
-            get {
-                object obj = ResourceManager.GetObject("skull_mad", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Smart Indenter settings were found in your registry.
         ///Would you like to import them to Rubberduck?.
         /// </summary>
@@ -4038,15 +4028,6 @@ namespace Rubberduck.Resources {
         public static string TestOutcome_Inconclusive {
             get {
                 return ResourceManager.GetString("TestOutcome_Inconclusive", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to SpectacularFail.
-        /// </summary>
-        public static string TestOutcome_SpectacularFail {
-            get {
-                return ResourceManager.GetString("TestOutcome_SpectacularFail", resourceCulture);
             }
         }
         

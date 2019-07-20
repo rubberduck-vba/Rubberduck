@@ -339,10 +339,6 @@
   <data name="TestOutcome_SummaryCaption" xml:space="preserve">
     <value>Summary:</value>
   </data>
-  <data name="TestOutcome_SpectacularFail" xml:space="preserve">
-    <value>Spectacular Failure</value>
-    <comment>Easter egg status.</comment>
-  </data>
   <data name="TestExplorer_Filter" xml:space="preserve">
     <value>Test Name</value>
   </data>

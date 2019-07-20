@@ -324,7 +324,4 @@
   <data name="TestOutcome_SummaryCaption" xml:space="preserve">
     <value>Shrnutí:</value>
   </data>
-  <data name="TestOutcome_SpectacularFail" xml:space="preserve">
-    <value>Pozoruhodné Selhání</value>
-  </data>
 </root>

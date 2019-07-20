@@ -34,11 +34,10 @@ namespace Rubberduck.UI.UnitTesting
     {
         None = 0,
         Unknown = 1,
-        SpectacularFail = 1 << 1,
-        Fail = 1 << 2,
-        Inconclusive = 1 << 3,
-        Succeeded = 1 << 4,
-        All = Unknown | SpectacularFail | Fail | Inconclusive | Succeeded
+        Fail = 1 << 1,
+        Inconclusive = 1 << 2,
+        Succeeded = 1 << 3,
+        All = Unknown | Fail | Inconclusive | Succeeded
     }
 
     internal sealed class TestExplorerViewModel : ViewModelBase, INavigateSelection, IDisposable
