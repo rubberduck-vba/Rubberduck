@@ -103,7 +103,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 throw new ArgumentException("Expected COM object, but validation failed.");
             }
-            if (makeCopyOfReference) RdMarshal.AddRef(rawObjectPtr);
+
+            if (makeCopyOfReference)
+            {
+                RdMarshal.AddRef(rawObjectPtr);
+            }
 
             _target_ITypeLibPtr = rawObjectPtr;
             _target_ITypeLib = (ITypeLibInternal)RdMarshal.GetObjectForIUnknown(rawObjectPtr);
@@ -114,7 +118,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="rawObjectPtr">The raw unamanaged ITypeLib pointer</param>
+        /// <param name="rawObjectPtr">The raw unmanaged ITypeLib pointer</param>
         public TypeLibWrapper(IntPtr rawObjectPtr, bool makeCopyOfReference)
         {
             InitFromRawPointer(rawObjectPtr, makeCopyOfReference);

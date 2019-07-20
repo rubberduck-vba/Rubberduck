@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define TRACE_MARSHAL
+
+using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -29,7 +31,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 #if DEBUG && TRACE_MARSHAL
             Debug.Assert(pUnk!=IntPtr.Zero,"Null pointer passed in");
 
-            Debug.Print($"Entering {nameof(AddRef)}; {nameof(pUnk)}: {pUnk}");
+            Debug.Print($"Entering {nameof(AddRef)}; {nameof(pUnk)}: {FormatPtr(pUnk)}");
 #endif
             var result = Marshal.AddRef(pUnk);
 #if DEBUG && TRACE_MARSHAL
@@ -89,7 +91,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
 #if DEBUG && TRACE_MARSHAL
             Debug.Assert(ptr!=IntPtr.Zero,"Null pointer passed in");
-            Debug.Print($"Executing {nameof(FreeBSTR)}; {nameof(ptr)}: {ptr}");
+            Debug.Print($"Executing {nameof(FreeBSTR)}; {nameof(ptr)}: {FormatPtr(ptr)}");
 #endif
 #if DEBUG
             PrintFree(ptr);
@@ -177,7 +179,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 #if DEBUG && TRACE_MARSHAL
             Debug.Assert(pUnk != IntPtr.Zero, "Null pointer passed in");
 
-            Debug.Print($"Entering {nameof(GetObjectForIUnknown)}; {nameof(pUnk)}: {pUnk}");
+            Debug.Print($"Entering {nameof(GetObjectForIUnknown)}; {nameof(pUnk)}: {FormatPtr(pUnk)}");
 #endif
             var result = Marshal.GetObjectForIUnknown(pUnk);
 #if DEBUG && TRACE_MARSHAL
@@ -224,7 +226,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 #if DEBUG && TRACE_MARSHAL
             Debug.Assert(ptr!=IntPtr.Zero, "Null pointer passed in");
 
-            Debug.Print($"Entering {nameof(PtrToStringBSTR)}; {nameof(ptr)}: {ptr}");
+            Debug.Print($"Entering {nameof(PtrToStringBSTR)}; {nameof(ptr)}: {FormatPtr(ptr)}");
 #endif
             var result = Marshal.PtrToStringBSTR(ptr);
 #if DEBUG && TRACE_MARSHAL
@@ -238,7 +240,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 #if DEBUG && TRACE_MARSHAL
             Debug.Assert(ptr != IntPtr.Zero, "Null pointer passed in");
 
-            Debug.Print($"Entering {nameof(PtrToStructure)}; {nameof(ptr)}: {ptr}, {nameof(T)}: {T.Name}");
+            Debug.Print($"Entering {nameof(PtrToStructure)}; {nameof(ptr)}: {FormatPtr(ptr)}, {nameof(T)}: {T.Name}");
 #endif
             var result = Marshal.PtrToStructure(ptr, T);
 #if DEBUG && TRACE_MARSHAL
@@ -253,7 +255,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             Debug.Assert(pUnk != IntPtr.Zero, "Null pointer passed in");
             Debug.Assert(iid != Guid.Empty, "Empty IID passed in");
 
-            Debug.Print($"Entering {nameof(QueryInterface)}; {nameof(pUnk)}: {pUnk}, {nameof(iid)}: {iid.ToString()}");
+            Debug.Print($"Entering {nameof(QueryInterface)}; {nameof(pUnk)}: {FormatPtr(pUnk)}, {nameof(iid)}: {iid.ToString()}");
 #endif
             var result = Marshal.QueryInterface(pUnk, ref iid, out ppv);
 #if DEBUG && TRACE_MARSHAL
@@ -270,7 +272,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 #if DEBUG && TRACE_MARSHAL
             Debug.Assert(ptr!=IntPtr.Zero);
 
-            Debug.Print($"Entering {nameof(ReadInt32)}; {nameof(ptr)}: {ptr}");
+            Debug.Print($"Entering {nameof(ReadInt32)}; {nameof(ptr)}: {FormatPtr(ptr)}");
 #endif
             var result = Marshal.ReadInt32(ptr);
 #if DEBUG && TRACE_MARSHAL
@@ -284,7 +286,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 #if DEBUG && TRACE_MARSHAL
             Debug.Assert(ptr != IntPtr.Zero);
 
-            Debug.Print($"Entering {nameof(ReadIntPtr)}; {nameof(ptr)}: {ptr}");
+            Debug.Print($"Entering {nameof(ReadIntPtr)}; {nameof(ptr)}: {FormatPtr(ptr)}");
 #endif
             var result = Marshal.ReadIntPtr(ptr);
 #if DEBUG && TRACE_MARSHAL
@@ -296,7 +298,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         internal static int Release(IntPtr pUnk)
         {
 #if DEBUG && TRACE_MARSHAL
-            Debug.Print($"Entering {nameof(Release)}; {nameof(pUnk)}: {pUnk}");
+            Debug.Print($"Entering {nameof(Release)}; {nameof(pUnk)}: {FormatPtr(pUnk)}");
 #endif
             var result = Marshal.Release(pUnk);
 #if DEBUG && TRACE_MARSHAL
@@ -304,7 +306,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             Debug.Print($"Leaving {nameof(Release)}; {nameof(result)}: {result}");
 #endif
 #if DEBUG
-            Debug.Print($"{nameof(Release)}:: COM Object: {pUnk} ref count {result}");
+            Debug.Print($"{nameof(Release)}:: COM Object: {FormatPtr(pUnk)} ref count {result}");
 #endif
             return result;
         }
@@ -313,7 +315,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
 #if DEBUG && TRACE_MARSHAL
             var ptr = Marshal.GetIUnknownForObject(o);
-            Debug.Print($"Entering {nameof(ReleaseComObject)}; {nameof(o)}: {ptr}, {o.GetType().Name}");
+            Debug.Print($"Entering {nameof(ReleaseComObject)}; {nameof(o)}: {FormatPtr(ptr)}, {o.GetType().Name}");
             var debugResult = Marshal.Release(ptr);
 #endif
             var result = Marshal.ReleaseComObject(o);
@@ -372,7 +374,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         internal static void StructureToPtr<T>(T structure, IntPtr ptr, bool fDeleteOld)
         {
 #if DEBUG && TRACE_MARSHAL
-            Debug.Print($"Executing {nameof(StructureToPtr)}; {nameof(structure)}: {structure.GetType().Name}, {nameof(ptr)}: {ptr}, {nameof(fDeleteOld)}: {fDeleteOld}");
+            Debug.Print($"Executing {nameof(StructureToPtr)}; {nameof(structure)}: {structure.GetType().Name}, {nameof(ptr)}: {FormatPtr(ptr)}, {nameof(fDeleteOld)}: {fDeleteOld}");
 #endif
             Marshal.StructureToPtr(structure, ptr, fDeleteOld);
 #if DEBUG
@@ -385,7 +387,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 #if DEBUG && TRACE_MARSHAL
             Debug.Assert(ptr != IntPtr.Zero, "Null pointer passed in");
 
-            Debug.Print($"Executing {nameof(WriteInt32)}; {nameof(ptr)}: {ptr}, {nameof(val)}: {val}");
+            Debug.Print($"Executing {nameof(WriteInt32)}; {nameof(ptr)}: {FormatPtr(ptr)}, {nameof(val)}: {val}");
 #endif
             Marshal.WriteInt32(ptr, val);
         }
@@ -395,7 +397,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 #if DEBUG && TRACE_MARSHAL
             Debug.Assert(ptr!= IntPtr.Zero, "Null pointer passed in");
 
-            Debug.Print($"Executing {nameof(WriteIntPtr)}; {nameof(ptr)}: {ptr}, {nameof(val)}: {val}");
+            Debug.Print($"Executing {nameof(WriteIntPtr)}; {nameof(ptr)}: {FormatPtr(ptr)}, {nameof(val)}: {val}");
 #endif
             Marshal.WriteIntPtr(ptr, val);
         }
@@ -407,7 +409,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 var refCount = Marshal.AddRef(pUnk) - 1;
                 Marshal.Release(pUnk);
-                Debug.Print($"{methodName}:: COM Object: {pUnk} ref count {refCount}");
+                Debug.Print($"{methodName}:: COM Object: {FormatPtr(pUnk)} ref count {refCount}");
             }
             else
             {
@@ -417,11 +419,20 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         private static void PrintAlloc(IntPtr pUnmanaged, [CallerMemberName] string methodName = null)
         {
-            Debug.Print($"{methodName}:: Unmanaged pointer allocated: {pUnmanaged}");
+            Debug.Print($"{methodName}:: Unmanaged pointer allocated: {FormatPtr(pUnmanaged)}");
         }
+
         private static void PrintFree(IntPtr pUnmanaged, [CallerMemberName] string methodName = null)
         {
-            Debug.Print($"{methodName}:: Unmanaged pointer released: {pUnmanaged}");
+            Debug.Print($"{methodName}:: Unmanaged pointer released: {FormatPtr(pUnmanaged)}");
+        }
+
+        private static string FormatPtr(IntPtr ptr)
+        {
+            return string.Concat("0x",
+                (Marshal.SizeOf<IntPtr>() == 8 ? 
+                    ptr.ToInt64().ToString("X16") : 
+                    ptr.ToInt32().ToString("X8")));
         }
     }
 }
