@@ -1537,9 +1537,6 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="hourglass" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Fugue\hourglass.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="skull_mad" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\skull-mad.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Language_ES" xml:space="preserve">
     <value>Español</value>
   </data>
@@ -1548,7 +1545,6 @@ NOTE: Restart is required for the setting to take effect.</value>
   </data>
   <data name="RefactoringFailure_BaseMessage" xml:space="preserve">
     <value>Refactoring failed.</value>
-    
   </data>
   <data name="RefactoringFailure_NoActiveSelection" xml:space="preserve">
     <value>There is no active selection.</value>
@@ -1593,5 +1589,17 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="RefactoringFailure_InvalidDeclarationType_multipleValid" xml:space="preserve">
     <value>Declaration type of target '{0}' is '{1}' instead of one of the expected '{2}'.</value>
     <comment>{0}: name of target; {1}: actual declaration type; {2}: expected declaration types</comment>
+  </data>
+  <data name="TestOutcome_Fail" xml:space="preserve">
+    <value>Fail</value>
+  </data>
+  <data name="TestOutcome_Inconclusive" xml:space="preserve">
+    <value>Inconclusive</value>
+  </data>
+  <data name="TestOutcome_Succeeded" xml:space="preserve">
+    <value>Suceeded</value>
+  </data>
+  <data name="TestOutcome_Unknown" xml:space="preserve">
+    <value>Unknown</value>
   </data>
 </root>
