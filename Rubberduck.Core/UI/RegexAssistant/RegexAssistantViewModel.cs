@@ -165,7 +165,7 @@ namespace Rubberduck.UI.RegexAssistant
             // no other Atom has Subexpressions we care about
             if (expression.Atom.GetType() == typeof(Group))
             {
-                result.Items.Add(AsTreeViewItem((dynamic)((expression.Atom) as Group).Subexpression));
+                result.Items.Add(AsTreeViewItem((dynamic)(expression.Atom as Group).Subexpression));
             }
             
             return result;
