@@ -54,12 +54,12 @@ namespace Rubberduck.UI.Controls
             }
         }
 
-        public ICommand ClearSearchCommand => new DelegateCommand(LogManager.GetCurrentClassLogger(), (arg) => Text = "");
+        public ICommand ClearSearchCommand => new DelegateCommand(LogManager.GetCurrentClassLogger(), (arg) => Text = string.Empty);
 
         public SearchBox()
         {
             // design instance!
-            Text = "";
+            Text = string.Empty;
             Hint = "Search";
             Width = 300;
             Height = 25;
