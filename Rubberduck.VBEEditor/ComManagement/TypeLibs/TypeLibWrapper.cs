@@ -25,7 +25,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// TypeInfos obtained by other means (such as the IDispatch::GetTypeInfo method) usually expose more restricted
     /// versions of ITypeInfo which may not expose private members
     /// </remarks>
-    public sealed class TypeLibWrapper : ITypeLibInternalSelfMarshalForwarder, ITypeLibWrapper
+    public sealed class TypeLibWrapper : TypeLibInternalSelfMarshalForwarderBase, ITypeLibWrapper
     {
         private DisposableList<TypeInfoWrapper> _cachedTypeInfos;
         private IntPtr _target_ITypeLibPtr;
@@ -126,10 +126,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         public TypeLibWrapper(ComTypes.ITypeLib unwrappedTypeLib)
         {
-            if ((unwrappedTypeLib as ITypeLibInternalSelfMarshalForwarder) != null)
+            if ((unwrappedTypeLib as TypeLibInternalSelfMarshalForwarderBase) != null)
             {
                 // The passed in TypeInfo is already a TypeInfoWrapper.  Detect & prevent double wrapping...
-                var tlib = (TypeLibWrapper)(ITypeLibInternalSelfMarshalForwarder)unwrappedTypeLib;
+                var tlib = (TypeLibWrapper)(TypeLibInternalSelfMarshalForwarderBase)unwrappedTypeLib;
                 InitFromRawPointer(tlib._target_ITypeLibPtr, makeCopyOfReference: true);
                 return;
             }

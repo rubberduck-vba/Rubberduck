@@ -38,7 +38,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     ///
     /// This class can also be cast to ComTypes.ITypeInfo for raw access to the underlying type information
     /// </remarks>
-    public sealed class TypeInfoWrapper : ITypeInfoInternalSelfMarshalForwarder, IDisposable
+    public sealed class TypeInfoWrapper : TypeInfoInternalSelfMarshalForwarderBase, IDisposable
     {
         private DisposableList<TypeInfoWrapper> _cachedReferencedTypeInfos;
         private IntPtr _target_ITypeInfoPtr;
@@ -46,7 +46,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         private ITypeInfoInternal _target_ITypeInfoAlternate;
         private bool _target_ITypeInfo_IsRefCounted;
 
-        public ITypeLibInternalSelfMarshalForwarder Container { get; private set; }
+        public TypeLibInternalSelfMarshalForwarderBase Container { get; private set; }
         public int ContainerIndex { get; private set; }
         public bool HasModuleScopeCompilationErrors { get; private set; }
         public bool HasVBEExtensions { get; private set; }
@@ -176,10 +176,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         public TypeInfoWrapper(ComTypes.ITypeInfo rawTypeInfo)
         {
-            if ((rawTypeInfo as ITypeInfoInternalSelfMarshalForwarder) != null)
+            if ((rawTypeInfo as TypeInfoInternalSelfMarshalForwarderBase) != null)
             {
                 // The passed in TypeInfo is already a TypeInfoWrapper.  Detect & prevent double wrapping...
-                var tlib = (TypeInfoWrapper)(ITypeInfoInternalSelfMarshalForwarder)rawTypeInfo;
+                var tlib = (TypeInfoWrapper)(TypeInfoInternalSelfMarshalForwarderBase)rawTypeInfo;
                 var rawObjectPtr = tlib._target_ITypeInfoPtr;
                 InitFromRawPointer(rawObjectPtr, makeCopyOfReference: true);
                 _cachedTextFields = tlib._cachedTextFields;     // copied to ensure we work around the UserForm GetDocumentation() crash

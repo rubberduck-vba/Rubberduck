@@ -43,7 +43,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// ITypeInfoInternal must be inherited BEFORE ComTypes.ITypeInfo as they both have the same IID 
     /// this will ensure QueryInterface(IID_ITypeInfo) returns ITypeInfoInternal, not ComTypes.ITypeInfo
     /// </remarks>
-    public abstract class ITypeInfoInternalSelfMarshalForwarder : ITypeInfoInternal, ComTypes.ITypeInfo
+    public abstract class TypeInfoInternalSelfMarshalForwarderBase : ITypeInfoInternal, ComTypes.ITypeInfo
     {
         private ITypeInfoInternal _this_Internal => (ITypeInfoInternal)this;
 

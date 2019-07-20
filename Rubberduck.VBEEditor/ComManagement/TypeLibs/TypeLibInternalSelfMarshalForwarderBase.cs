@@ -36,7 +36,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// 
     /// These wrappers could likely be implemented much more efficiently if we could use unsafe/fixed code
     /// </remarks>
-    public abstract class ITypeLibInternalSelfMarshalForwarder : ITypeLibInternal, ComTypes.ITypeLib, IDisposable
+    public abstract class TypeLibInternalSelfMarshalForwarderBase : ITypeLibInternal, ComTypes.ITypeLib, IDisposable
     {
         private ITypeLibInternal _this_Internal => (ITypeLibInternal)this;
 
