@@ -427,7 +427,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             Debug.Print($"{methodName}:: Unmanaged pointer released: {FormatPtr(pUnmanaged)}");
         }
 
-        private static string FormatPtr(IntPtr ptr)
+        internal static string FormatPtr(IntPtr ptr)
         {
             return string.Concat("0x",
                 (Marshal.SizeOf<IntPtr>() == 8 ? 
