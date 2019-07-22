@@ -19,7 +19,7 @@ namespace Rubberduck.Parsing.Rewriter.RewriterInfo
         public int StartTokenIndex { get; }
         public int StopTokenIndex { get; }
 
-        public static RewriterInfo None { get { return default(RewriterInfo); } }
+        public static RewriterInfo None => default;
 
         public bool Equals(RewriterInfo other)
         {
