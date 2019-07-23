@@ -467,7 +467,7 @@ namespace RubberduckTests.CodeExplorer
                 var component = explorer.VbComponent.Object;
 
                 explorer.ViewModel.RemoveCommand.Execute(removing);
-                explorer.VbComponents.Verify(c => c.Remove(component), Times.Once);
+                explorer.ProjectsRepository.Verify(c => c.RemoveComponent(component.QualifiedModuleName), Times.Once);
             }
         }
 
@@ -503,8 +503,9 @@ namespace RubberduckTests.CodeExplorer
                 var removing = explorer.ViewModel.SelectedItem;
                 var component = explorer.VbComponent.Object;
 
+
                 explorer.ViewModel.RemoveCommand.Execute(removing);
-                explorer.VbComponents.Verify(c => c.Remove(component), Times.Once);
+                explorer.ProjectsRepository.Verify(c => c.RemoveComponent(component.QualifiedModuleName), Times.Once);
             }
         }
 

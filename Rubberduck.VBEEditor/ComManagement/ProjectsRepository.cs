@@ -223,7 +223,7 @@ namespace Rubberduck.VBEditor.ComManagement
             var readLockTaken = false;
             try
             {
-                _refreshProtectionLock.EnterUpgradeableReadLock();
+                _refreshProtectionLock.EnterReadLock();
                 readLockTaken = true;
                 return function.Invoke();
             }
@@ -231,7 +231,7 @@ namespace Rubberduck.VBEditor.ComManagement
             {
                 if (readLockTaken)
                 {
-                    _refreshProtectionLock.ExitUpgradeableReadLock();
+                    _refreshProtectionLock.ExitReadLock();
                 }
             }
         }
@@ -276,25 +276,16 @@ namespace Rubberduck.VBEditor.ComManagement
 
         public void RemoveComponent(QualifiedModuleName qualifiedModuleName)
         {
-            EvaluateWithinReadLock(() =>
+            ExecuteWithinWriteLock(() =>
             {
-                if (_components.TryGetValue(qualifiedModuleName, out var component))
+                if (!_components.TryGetValue(qualifiedModuleName, out var component) ||
+                    !_componentsCollections.TryGetValue(qualifiedModuleName.ProjectId, out var components))
                 {
-                    ExecuteWithinWriteLock(() =>
-                    {
-                        if (_projects.TryGetValue(qualifiedModuleName.ProjectId, out var project))
-                        {
-                            using (var components = project.VBComponents)
-                            {
-                                // Remove the actual component...
-                                components.Remove(component);
-                            }
-                        }
-                        // ...and our cached copy of it
-                        _components.Remove(qualifiedModuleName);
-                    });
+                    return;
                 }
-                return new { };
+
+                _components.Remove(qualifiedModuleName);
+                components.Remove(component);                
             });
         }
 

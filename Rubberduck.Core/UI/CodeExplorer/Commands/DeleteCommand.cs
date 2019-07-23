@@ -13,14 +13,14 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     public class DeleteCommand : CodeExplorerCommandBase
     {
         private readonly RemoveCommand _removeCommand;
-        private readonly IProjectsRepository _projectsRepository;
+        private readonly IProjectsProvider _projectsProvider;
         private readonly IMessageBox _messageBox;
         private readonly IVBE _vbe;
 
-        public DeleteCommand(RemoveCommand removeCommand, IProjectsRepository projectsRepository, IMessageBox messageBox, IVBE vbe)
+        public DeleteCommand(RemoveCommand removeCommand, IProjectsProvider projectsProvider, IMessageBox messageBox, IVBE vbe)
         {
             _removeCommand = removeCommand;
-            _projectsRepository = projectsRepository;
+            _projectsProvider = projectsProvider;
             _messageBox = messageBox;
             _vbe = vbe;
 
@@ -41,7 +41,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
 
             var qualifiedModuleName = node.Declaration.QualifiedName.QualifiedModuleName;
-            var component = _projectsRepository.Component(qualifiedModuleName);
+            var component = _projectsProvider.Component(qualifiedModuleName);
             if (component is null)
             {
                 return;
