@@ -65,6 +65,7 @@ namespace Rubberduck.UI.UnitTesting
             OpenTestSettingsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), OpenSettings);
             CollapseAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseAll);
             ExpandAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandAll);
+            AddIgnoreTestAnnotationCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteIgnoreTestAnnotationCommand);
 
             Model = model;
             Model.TestCompleted += HandleTestCompletion;
@@ -246,6 +247,8 @@ namespace Rubberduck.UI.UnitTesting
         public CommandBase CollapseAllCommand { get; }
         public CommandBase ExpandAllCommand { get; }
 
+        public CommandBase AddIgnoreTestAnnotationCommand { get; }
+
         #endregion
 
         #region Delegates
@@ -339,6 +342,18 @@ namespace Rubberduck.UI.UnitTesting
             }
 
             Tests.Refresh();
+        }
+
+        private void ExecuteIgnoreTestAnnotationCommand(object parameter)
+        {
+            var foo = SelectedItem;
+            var testMethod = ((TestMethodViewModel)SelectedItem).Method;
+            //testMethod.IsEnabled = !testMethod.IsEnabled;
+
+            var result = Rubberduck.Parsing.VBA.Parsing.VBACodeStringParser.Parse(testMethod.TestCode, x => x.annotationList());
+            
+
+            var annotations = testMethod.Declaration.Annotations;
         }
 
         private void ExecuteCopyResultsCommand(object parameter)

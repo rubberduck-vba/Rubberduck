@@ -37,6 +37,9 @@ namespace Rubberduck.UnitTesting
             return new NavigateCodeEventArgs(new QualifiedSelection(Declaration.QualifiedName.QualifiedModuleName, Declaration.Context.GetSelection()));
         }
 
+        public bool IsEnabled => !Declaration.Annotations.Any(annotation => annotation.AnnotationType == AnnotationType.IgnoreTest);
+        
+
         public bool Equals(TestMethod other) => other != null && Declaration.QualifiedName.Equals(other.Declaration.QualifiedName) && TestCode.Equals(other.TestCode);
 
         public override bool Equals(object obj) => obj is TestMethod method && Equals(method);

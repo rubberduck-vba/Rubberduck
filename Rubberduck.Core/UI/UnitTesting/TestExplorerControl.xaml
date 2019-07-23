@@ -433,6 +433,11 @@
                                     <Image Source="{StaticResource RunAllTestsImage}" />
                                 </MenuItem.Icon>
                             </MenuItem>
+                            
+                            <Separator />
+
+                            <MenuItem Command="{Binding AddIgnoreTestAnnotationCommand}"
+                                      Header="Disable/Enable test" />
                         </ContextMenu>
                     </DataGrid.ContextMenu>
                     <i:Interaction.Behaviors>
