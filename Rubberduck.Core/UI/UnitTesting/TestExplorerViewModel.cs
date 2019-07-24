@@ -129,7 +129,6 @@ namespace Rubberduck.UI.UnitTesting
 
         private void RefreshContextMenu()
         {
-            OnPropertyChanged(nameof(IsCursorOverTest));
             OnPropertyChanged(nameof(DisplayUnignoreTestLabel));
             OnPropertyChanged(nameof(DisplayIgnoreTestLabel));
         }
@@ -236,11 +235,8 @@ namespace Rubberduck.UI.UnitTesting
         public string UnignoreTestLabel => RubberduckUI.TestExplorer_TestToggle_Unignore;
         public string IgnoreTestLabel => RubberduckUI.TestExplorer_TestToggle_Ignore;
 
-        public bool IsCursorOverTest => SelectedItem != null;
-        private TestMethod _selectedTestMethod => ((TestMethodViewModel)SelectedItem).Method;
-
-        public bool DisplayUnignoreTestLabel => IsCursorOverTest && _selectedTestMethod.IsIgnored;
-        public bool DisplayIgnoreTestLabel => IsCursorOverTest && !_selectedTestMethod.IsIgnored;
+        public bool DisplayUnignoreTestLabel => SelectedItem != null & ((TestMethodViewModel)SelectedItem).Method.IsIgnored;
+        public bool DisplayIgnoreTestLabel => SelectedItem != null && !((TestMethodViewModel)SelectedItem).Method.IsIgnored;
         
         #region Commands
 
