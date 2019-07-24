@@ -4014,6 +4014,24 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ignore test.
+        /// </summary>
+        public static string TestExplorer_TestToggle_Ignore {
+            get {
+                return ResourceManager.GetString("TestExplorer_TestToggle_Ignore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unignore test.
+        /// </summary>
+        public static string TestExplorer_TestToggle_Unignore {
+            get {
+                return ResourceManager.GetString("TestExplorer_TestToggle_Unignore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fail.
         /// </summary>
         public static string TestOutcome_Fail {

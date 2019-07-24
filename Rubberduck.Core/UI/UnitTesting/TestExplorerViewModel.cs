@@ -9,6 +9,10 @@ using System.Windows.Data;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Interaction.Navigation;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Resources;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
@@ -50,7 +54,8 @@ namespace Rubberduck.UI.UnitTesting
             IClipboardWriter clipboard,
             // ReSharper disable once UnusedParameter.Local - left in place because it will likely be needed for app wide font settings, etc.
             IConfigurationService<Configuration> configService,
-            ISettingsFormFactory settingsFormFactory)
+            ISettingsFormFactory settingsFormFactory,
+            IRewritingManager rewritingManager)
         {
             _clipboard = clipboard;
             _settingsFormFactory = settingsFormFactory;
@@ -65,7 +70,9 @@ namespace Rubberduck.UI.UnitTesting
             OpenTestSettingsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), OpenSettings);
             CollapseAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseAll);
             ExpandAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandAll);
-            AddIgnoreTestAnnotationCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteIgnoreTestAnnotationCommand);
+            ToggleIgnoreTestAnnotationCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteToggleTestAnnotationCommand);
+
+            RewritingManager = rewritingManager;
 
             Model = model;
             Model.TestCompleted += HandleTestCompletion;
@@ -101,6 +108,9 @@ namespace Rubberduck.UI.UnitTesting
                 }
                 _mouseOverTest = value;
                 OnPropertyChanged();
+                //OnPropertyChanged(nameof(TestToggleLabel));
+                //OnPropertyChanged(nameof(IsTestSelected));
+                RefreshContextMenu();
             }
         }
 
@@ -116,7 +126,15 @@ namespace Rubberduck.UI.UnitTesting
                 }
                 _mouseOverGroup = value;
                 OnPropertyChanged();
+                RefreshContextMenu();
             }
+        }
+
+        private void RefreshContextMenu()
+        {
+            OnPropertyChanged(nameof(IsSelectionATest));
+            OnPropertyChanged(nameof(DisplayUnignoreTestLabel));
+            OnPropertyChanged(nameof(DisplayIgnoreTestLabel));
         }
 
         private static readonly Dictionary<TestExplorerGrouping, PropertyGroupDescription> GroupDescriptions = new Dictionary<TestExplorerGrouping, PropertyGroupDescription>
@@ -216,6 +234,32 @@ namespace Rubberduck.UI.UnitTesting
             Tests.Refresh();
         }
 
+        public IRewritingManager RewritingManager { get; }
+
+        public string TestToggleLabel
+        {
+            get
+            {
+                if (IsSelectionATest)
+                {
+                    return string.Empty;
+                }
+
+                return _selectedTestMethod.IsIgnored
+                    ? RubberduckUI.TestExplorer_TestToggle_Unignore
+                    : RubberduckUI.TestExplorer_TestToggle_Ignore;
+            }
+        }
+
+        public string UnignoreTestLabel => RubberduckUI.TestExplorer_TestToggle_Unignore;
+        public string IgnoreTestLabel => RubberduckUI.TestExplorer_TestToggle_Ignore;
+
+        public bool IsSelectionATest => SelectedItem != null;
+        private TestMethod _selectedTestMethod => ((TestMethodViewModel)SelectedItem).Method;
+
+        public bool DisplayUnignoreTestLabel => IsSelectionATest && _selectedTestMethod.IsIgnored;
+        public bool DisplayIgnoreTestLabel => IsSelectionATest && !_selectedTestMethod.IsIgnored;
+        
         #region Commands
 
         public ReparseCommand RefreshCommand { get; set; }
@@ -247,7 +291,7 @@ namespace Rubberduck.UI.UnitTesting
         public CommandBase CollapseAllCommand { get; }
         public CommandBase ExpandAllCommand { get; }
 
-        public CommandBase AddIgnoreTestAnnotationCommand { get; }
+        public CommandBase ToggleIgnoreTestAnnotationCommand { get; }
 
         #endregion
 
@@ -344,16 +388,26 @@ namespace Rubberduck.UI.UnitTesting
             Tests.Refresh();
         }
 
-        private void ExecuteIgnoreTestAnnotationCommand(object parameter)
+        private void ExecuteToggleTestAnnotationCommand(object parameter)
         {
-            var foo = SelectedItem;
-            var testMethod = ((TestMethodViewModel)SelectedItem).Method;
-            //testMethod.IsEnabled = !testMethod.IsEnabled;
+            var selectedTestMethodViewModel = (TestMethodViewModel)SelectedItem;
+            var testMethod = selectedTestMethodViewModel.Method;
 
-            var result = Rubberduck.Parsing.VBA.Parsing.VBACodeStringParser.Parse(testMethod.TestCode, x => x.annotationList());
-            
+            var annotationUpdater = new AnnotationUpdater();
+            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
 
-            var annotations = testMethod.Declaration.Annotations;
+            if (testMethod.IsIgnored)
+            {
+                var ignoreTestAnnotation = testMethod.Declaration.Annotations.First(iannotation => iannotation.AnnotationType == Parsing.Annotations.AnnotationType.IgnoreTest);
+                annotationUpdater.RemoveAnnotation(rewriteSession, ignoreTestAnnotation);
+            }
+            else
+            {
+                var qualifiedContext = new QualifiedContext(testMethod.Declaration.QualifiedModuleName, testMethod.Declaration.Context);
+                annotationUpdater.AddAnnotation(rewriteSession, qualifiedContext, Parsing.Annotations.AnnotationType.IgnoreTest);
+            }
+
+            rewriteSession.TryRewrite();
         }
 
         private void ExecuteCopyResultsCommand(object parameter)
