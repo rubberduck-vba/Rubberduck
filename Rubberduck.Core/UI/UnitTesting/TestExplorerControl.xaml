@@ -60,8 +60,7 @@
             <local:TestOutcomeImageSourceConverter x:Key="OutcomeIconConverter" />
             <converters:MillisecondToTimeMagnitudeConverter x:Key="FormattedTime" />
             <converters:InvertBoolValueConverter x:Key="InvertBoolValue" />
-            <converters:BoolToVisibilityConverter x:Key="BoolToVisibility" />
-            <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
+            <BooleanToVisibilityConverter x:Key="BoolToVisibility" />            
 
             <Style x:Key="ToolbarImageOpacity" TargetType="Image" >
                 <Setter Property="Height" Value="16" />
