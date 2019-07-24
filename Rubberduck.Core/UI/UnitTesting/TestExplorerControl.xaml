@@ -437,10 +437,7 @@
                                     <Image Source="{StaticResource RunAllTestsImage}" />
                                 </MenuItem.Icon>
                             </MenuItem>
-
-                            <Separator Visibility="{Binding IsSelectionATest, Converter={StaticResource BoolToVisibility}}" />
-
-                            <MenuItem Command="{Binding ToggleIgnoreTestAnnotationCommand}"
+                            <MenuItem Command="{Binding IgnoreTestCommand}"
                                       CommandParameter="{Binding RewritingManager}"
                                       Header="{Binding IgnoreTestLabel}"
                                       Visibility="{Binding DisplayIgnoreTestLabel, Converter={StaticResource BoolToVisibility}}">
@@ -448,7 +445,7 @@
                                     <Image Source="{StaticResource IgnoreTestImage}" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Command="{Binding ToggleIgnoreTestAnnotationCommand}"
+                            <MenuItem Command="{Binding UnignoreTestCommand}"
                                       CommandParameter="{Binding RewritingManager}"
                                       Header="{Binding UnignoreTestLabel}"
                                       Visibility="{Binding DisplayUnignoreTestLabel, Converter={StaticResource BoolToVisibility}}">

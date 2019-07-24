@@ -69,7 +69,8 @@ namespace Rubberduck.UI.UnitTesting
             OpenTestSettingsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), OpenSettings);
             CollapseAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseAll);
             ExpandAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandAll);
-            ToggleIgnoreTestAnnotationCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteToggleTestAnnotationCommand);
+            IgnoreTestCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteIgnoreTestCommand);
+            UnignoreTestCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteUnignoreTestCommand);
 
             RewritingManager = rewritingManager;
 
@@ -235,8 +236,9 @@ namespace Rubberduck.UI.UnitTesting
         public string UnignoreTestLabel => RubberduckUI.TestExplorer_TestToggle_Unignore;
         public string IgnoreTestLabel => RubberduckUI.TestExplorer_TestToggle_Ignore;
 
-        public bool DisplayUnignoreTestLabel => SelectedItem != null & ((TestMethodViewModel)SelectedItem).Method.IsIgnored;
-        public bool DisplayIgnoreTestLabel => SelectedItem != null && !((TestMethodViewModel)SelectedItem).Method.IsIgnored;
+        private TestMethod _mousedOverTestMethod => ((TestMethodViewModel)SelectedItem).Method;
+        public bool DisplayUnignoreTestLabel => SelectedItem != null && _mousedOverTestMethod.IsIgnored;
+        public bool DisplayIgnoreTestLabel => SelectedItem != null && !_mousedOverTestMethod.IsIgnored;
         
         #region Commands
 
@@ -269,7 +271,8 @@ namespace Rubberduck.UI.UnitTesting
         public CommandBase CollapseAllCommand { get; }
         public CommandBase ExpandAllCommand { get; }
 
-        public CommandBase ToggleIgnoreTestAnnotationCommand { get; }
+        public CommandBase IgnoreTestCommand { get; }
+        public CommandBase UnignoreTestCommand { get; }
 
         #endregion
 
@@ -366,24 +369,24 @@ namespace Rubberduck.UI.UnitTesting
             Tests.Refresh();
         }
 
-        private void ExecuteToggleTestAnnotationCommand(object parameter)
+        private void ExecuteIgnoreTestCommand(object parameter)
         {
-            var selectedTestMethodViewModel = (TestMethodViewModel)SelectedItem;
-            var testMethod = selectedTestMethodViewModel.Method;
+            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
+            var qualifiedContext = new QualifiedContext(_mousedOverTestMethod.Declaration.QualifiedModuleName, _mousedOverTestMethod.Declaration.Context);
 
             var annotationUpdater = new AnnotationUpdater();
-            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
+            annotationUpdater.AddAnnotation(rewriteSession, qualifiedContext, Parsing.Annotations.AnnotationType.IgnoreTest);
 
-            if (testMethod.IsIgnored)
-            {
-                var ignoreTestAnnotation = testMethod.Declaration.Annotations.First(iannotation => iannotation.AnnotationType == Parsing.Annotations.AnnotationType.IgnoreTest);
-                annotationUpdater.RemoveAnnotation(rewriteSession, ignoreTestAnnotation);
-            }
-            else
-            {
-                var qualifiedContext = new QualifiedContext(testMethod.Declaration.QualifiedModuleName, testMethod.Declaration.Context);
-                annotationUpdater.AddAnnotation(rewriteSession, qualifiedContext, Parsing.Annotations.AnnotationType.IgnoreTest);
-            }
+            rewriteSession.TryRewrite();
+        }
+
+        private void ExecuteUnignoreTestCommand(object parameter)
+        {
+            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
+            var ignoreTestAnnotation = _mousedOverTestMethod.Declaration.Annotations.First(iannotation => iannotation.AnnotationType == Parsing.Annotations.AnnotationType.IgnoreTest);
+
+            var annotationUpdater = new AnnotationUpdater();
+            annotationUpdater.RemoveAnnotation(rewriteSession, ignoreTestAnnotation);
 
             rewriteSession.TryRewrite();
         }
