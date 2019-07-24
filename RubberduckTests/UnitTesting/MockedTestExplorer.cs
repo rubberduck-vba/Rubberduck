@@ -14,7 +14,7 @@ namespace RubberduckTests.UnitTesting
             Vbe = model.Engine.Vbe.Object;
             State = model.Engine.ParserState;
             Model = model.Model;
-            ViewModel = new TestExplorerViewModel(null, Model, ClipboardWriter.Object, null, null);
+            ViewModel = new TestExplorerViewModel(null, Model, ClipboardWriter.Object, null, null, null);
         }
 
         public RubberduckParserState State { get; set; }
