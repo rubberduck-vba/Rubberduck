@@ -233,21 +233,6 @@ namespace Rubberduck.UI.UnitTesting
 
         public IRewritingManager RewritingManager { get; }
 
-        public string TestToggleLabel
-        {
-            get
-            {
-                if (IsCursorOverTest)
-                {
-                    return string.Empty;
-                }
-
-                return _selectedTestMethod.IsIgnored
-                    ? RubberduckUI.TestExplorer_TestToggle_Unignore
-                    : RubberduckUI.TestExplorer_TestToggle_Ignore;
-            }
-        }
-
         public string UnignoreTestLabel => RubberduckUI.TestExplorer_TestToggle_Unignore;
         public string IgnoreTestLabel => RubberduckUI.TestExplorer_TestToggle_Ignore;
 
