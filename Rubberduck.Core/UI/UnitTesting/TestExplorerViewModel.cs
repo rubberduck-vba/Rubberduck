@@ -108,8 +108,6 @@ namespace Rubberduck.UI.UnitTesting
                 }
                 _mouseOverTest = value;
                 OnPropertyChanged();
-                //OnPropertyChanged(nameof(TestToggleLabel));
-                //OnPropertyChanged(nameof(IsTestSelected));
                 RefreshContextMenu();
             }
         }
