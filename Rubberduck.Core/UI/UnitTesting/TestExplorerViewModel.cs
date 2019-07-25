@@ -383,7 +383,8 @@ namespace Rubberduck.UI.UnitTesting
         private void ExecuteUnignoreTestCommand(object parameter)
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
-            var ignoreTestAnnotation = _mousedOverTestMethod.Declaration.Annotations.First(iannotation => iannotation.AnnotationType == Parsing.Annotations.AnnotationType.IgnoreTest);
+            var ignoreTestAnnotation = _mousedOverTestMethod.Declaration.Annotations
+                .First(iannotation => iannotation.AnnotationType == Parsing.Annotations.AnnotationType.IgnoreTest);  // ignore illegal duplicate annotations
 
             var annotationUpdater = new AnnotationUpdater();
             annotationUpdater.RemoveAnnotation(rewriteSession, ignoreTestAnnotation);
