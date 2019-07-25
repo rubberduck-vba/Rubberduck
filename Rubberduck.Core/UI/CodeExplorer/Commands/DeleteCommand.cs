@@ -25,7 +25,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _vbe = vbe;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
-        }        
+        }
+
+        public override IEnumerable<Type> ApplicableNodeTypes => new List<Type> { typeof(CodeExplorerComponentViewModel) };
 
         private bool SpecialEvaluateCanExecute(object parameter)
         {
@@ -79,7 +81,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 }
                 catch (Exception exception)
                 {
-                    Logger.Error(exception, "Failed to delete file");                 
+                    Logger.Warn(exception, "Failed to delete file");                 
                     failedDeletions.Add(file);
                 }
             }
@@ -92,7 +94,5 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
             
         }
-
-        public override IEnumerable<Type> ApplicableNodeTypes => new List<Type> { typeof(CodeExplorerComponentViewModel) };
     }
 }

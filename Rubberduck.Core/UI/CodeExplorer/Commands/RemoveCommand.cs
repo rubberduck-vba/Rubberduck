@@ -1,8 +1,8 @@
 using System;
+using System.Collections.Generic;
 using Rubberduck.Interaction;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Resources.CodeExplorer;
-using Rubberduck.UI.Command;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -10,7 +10,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class RemoveCommand : CommandBase
+    public class RemoveCommand : CodeExplorerCommandBase
     {
         private readonly ExportCommand _exportCommand;
         private readonly IProjectsRepository _projectsRepository;
@@ -26,6 +26,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
+
+        public override IEnumerable<Type> ApplicableNodeTypes => new List<Type> { typeof(CodeExplorerComponentViewModel) };
 
         private bool SpecialEvaluateCanExecute(object parameter)
         {
@@ -83,17 +85,19 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             switch (_messageBox.Confirm(message, CodeExplorerUI.ExportBeforeRemove_Caption, ConfirmationOutcome.Yes))
             {
                 case ConfirmationOutcome.No:
+                    // User elected to remove without export, return success.
                     return true;
 
                 case ConfirmationOutcome.Yes:
                     if (_exportCommand.PromptFileNameAndExport(qualifiedModuleName))
                     {
+                        // Export complete
                         return true;
                     }
                     break;
             }
 
-            return false; // Export cancelled or failed
+            return false; // Save dialog cancelled or export failed (failures will have already been displayed and logged by this point)
         }
     }
 }

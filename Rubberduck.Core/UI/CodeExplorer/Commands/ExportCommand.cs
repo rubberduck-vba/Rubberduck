@@ -36,7 +36,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         };
 
         private readonly IFileSystemBrowserFactory _dialogFactory;
-        private readonly Dictionary<ComponentType, string> _ExportableFileExtensions;
+        private readonly Dictionary<ComponentType, string> _exportableFileExtensions;
 
         public ExportCommand(IFileSystemBrowserFactory dialogFactory, IMessageBox messageBox, IProjectsProvider projectsProvider, IVBE vbe)
         {
@@ -44,7 +44,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             MessageBox = messageBox;
             ProjectsProvider = projectsProvider;
 
-            _ExportableFileExtensions =
+            _exportableFileExtensions =
                 vbe.Kind == VBEKind.Hosted
                     ? VBAExportableFileExtensions
                     : VB6ExportableFileExtensions;
@@ -65,7 +65,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             var componentType = node.Declaration.QualifiedName.QualifiedModuleName.ComponentType;
 
-            return _ExportableFileExtensions.Select(s => s.Key).Contains(componentType);
+            return _exportableFileExtensions.ContainsKey(componentType);
         }
 
         protected override void OnExecute(object parameter)
@@ -81,7 +81,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public bool PromptFileNameAndExport(QualifiedModuleName qualifiedModule)
         {
-            if (!_ExportableFileExtensions.TryGetValue(qualifiedModule.ComponentType, out var extension))
+            if (!_exportableFileExtensions.TryGetValue(qualifiedModule.ComponentType, out var extension))
             {
                 return false;
             }
@@ -104,6 +104,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 }
                 catch (Exception ex)
                 {
+                    Logger.Warn(ex, $"Failed to export component {qualifiedModule.Name}");
                     MessageBox.NotifyWarn(ex.Message, string.Format(Resources.CodeExplorer.CodeExplorerUI.ExportError_Caption, qualifiedModule.ComponentName));
                 }                    
                 return true;
