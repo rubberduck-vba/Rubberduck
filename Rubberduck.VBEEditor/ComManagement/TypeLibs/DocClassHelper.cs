@@ -67,7 +67,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         static DocClassHelper()
         {
-            int index = 0;
+            var index = 0;
             KnownDocumentInterfaceProgIds = new string[KnownDocumentInterfaces.Length];
             foreach (var knownDocClass in KnownDocumentInterfaces)
             {
@@ -81,11 +81,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         /// <returns>the identified document class type, or <see cref="DocClassType.Unrecognized" /></returns>
         public static DocClassType DetermineDocumentClassType(TypeInfoWrapper rootInterface)
         {
-            if (rootInterface.ImplementedInterfaces.DoesImplement(DocClassHelper.KnownDocumentInterfaceProgIds, out int matchId))
-            {
-                return DocClassHelper.KnownDocumentInterfaces[matchId].DocType;
-            }
-            return DocClassType.Unrecognized;
+            return rootInterface.ImplementedInterfaces
+                .DoesImplement(DocClassHelper.KnownDocumentInterfaceProgIds, out var matchId)
+                ? DocClassHelper.KnownDocumentInterfaces[matchId].DocType
+                : DocClassType.Unrecognized;
         }
     }
 }

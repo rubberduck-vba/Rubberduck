@@ -61,7 +61,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 var cache = new TypeLibTextFields();
                 // as a C# caller, it's easier to work with ComTypes.ITypeLib
                 ((ComTypes.ITypeLib)_target_ITypeLib).GetDocumentation((int)KnownDispatchMemberIDs.MEMBERID_NIL, out cache._name, out cache._docString, out cache._helpContext, out cache._helpFile);
-                if (cache._name == null && HasVBEExtensions) cache._name = "[VBA.Immediate.Window]";
+                if (cache._name == null && HasVBEExtensions)
+                {
+                    cache._name = "[VBA.Immediate.Window]";
+                }
                 _cachedTextFields = cache;
                 return _cachedTextFields.Value;
             }
@@ -93,7 +96,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             // ReSharper disable once SuspiciousTypeConversion.Global 
             // there is no direct implementation but it can be reached via
             // IUnknown::QueryInterface which is implicitly done as part of casting
-            HasVBEExtensions = (_target_ITypeLib as IVBEProject) != null;
+            HasVBEExtensions = _target_ITypeLib is IVBEProject;
         }
 
         internal static TypeLibWrapper FromVBProject(IVBProject vbProject)

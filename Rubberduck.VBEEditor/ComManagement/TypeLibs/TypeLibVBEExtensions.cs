@@ -60,7 +60,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// </summary>
     public class TypeLibVBEExtensions
     {
-        //private readonly TypeLibWrapper _parent;
         private readonly string _name;
         private readonly IVBEProject _target_IVBEProject;
         public TypeLibReferenceCollection VBEReferences;
@@ -68,6 +67,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public TypeLibVBEExtensions(ITypeLibWrapper parent, ITypeLibInternal unwrappedTypeLib)
         {
             _name = parent.Name;
+            // ReSharper disable once SuspiciousTypeConversion.Global
+            // We assume that the caller already has checked the HasVBEExtensions
+            // before creating this object for the given type library.
             _target_IVBEProject = (IVBEProject)unwrappedTypeLib;
             VBEReferences = new TypeLibReferenceCollection(this);
         }
@@ -115,17 +117,15 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             get
             {
-                string args = _target_IVBEProject.GetConditionalCompilationArgs();
+                var args = _target_IVBEProject.GetConditionalCompilationArgs();
 
-                if (args.Length > 0)
-                {
-                    string[] argsArray = args.Split(new[] { ':' });
-                    return argsArray.Select(item => item.Split('=')).ToDictionary(s => s[0].Trim(), s => short.Parse(s[1]));
-                }
-                else
+                if (args.Length <= 0)
                 {
                     return new Dictionary<string, short>();
                 }
+
+                var argsArray = args.Split(new[] { ':' });
+                return argsArray.Select(item => item.Split('=')).ToDictionary(s => s[0].Trim(), s => short.Parse(s[1]));
             }
 
             set
@@ -157,7 +157,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 throw new ArgumentException($"Specified index not valid for the references collection (reference {index} in project {_name})");
             }
 
-            IntPtr referenceTypeLibPtr = _target_IVBEProject.GetReferenceTypeLib(index);
+            var referenceTypeLibPtr = _target_IVBEProject.GetReferenceTypeLib(index);
             if (referenceTypeLibPtr == IntPtr.Zero)
             {
                 throw new ArgumentException("Reference TypeLib not available - probably a missing reference.");

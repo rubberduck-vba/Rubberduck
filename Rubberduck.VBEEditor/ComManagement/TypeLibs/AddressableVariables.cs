@@ -17,7 +17,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     ///
     /// Use static <see cref="AddressableVariables"/> to create objects simply.
     /// </remarks>
-    public abstract class AddressableVariableBase<TUnmarshalled, TMarshalled> : IDisposable
+    internal abstract class AddressableVariableBase<TUnmarshalled, TMarshalled> : IDisposable
     {
         public IntPtr Address { get; }
         public int ElementCount { get; }    // 1 for singular elements
@@ -115,7 +115,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }
 
-        // Extract the address and ensure no cleanup
+        /// <summary>
+        /// Extract the address and ensure no cleanup; the caller is now the owner of the
+        /// unmanaged variable and must release it itself.
+        /// </summary>
+        /// <returns><see cref="IntPtr"/> representing the address of the unmanaged variable</returns>
         public IntPtr Extract()
         {
             _ownedMemory = false;
@@ -138,7 +142,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             if (_ownedMemory)
             {
-                // call the derived MarshallRelease for each element (e.g. Marshal.FreeBSTR for strings etc)
+                // call the derived MarshalRelease for each element (e.g. Marshal.FreeBSTR for strings etc)
                 var index = 0;
                 while (index < ElementCount)
                 {
@@ -154,7 +158,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// <summary>
     /// AddressableVariableSimple is ideal for basic types, like int, short, that require no marshalling or special handling
     /// </summary>
-    public class AddressableVariableSimple<TBasicType> : AddressableVariableBase<TBasicType, TBasicType>
+    internal class AddressableVariableSimple<TBasicType> : AddressableVariableBase<TBasicType, TBasicType>
     {
         public AddressableVariableSimple(int contiguousArrayElementCount = 1,
                                     IntPtr alreadyAllocatedMem = default)
@@ -168,7 +172,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// <summary>
     /// AddressableVariableBSTR handles marshalling between string and BSTR
     /// </summary>
-    public class AddressableVariableBSTR : AddressableVariableBase<IntPtr, string>
+    internal class AddressableVariableBSTR : AddressableVariableBase<IntPtr, string>
     {
         public AddressableVariableBSTR(int contigiousArrayElementCount)
             : base(contigiousArrayElementCount) { }
@@ -186,7 +190,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// <summary>
     /// AddressableVariableObject handles marshalling between COM interface pointers, and object
     /// </summary>
-    public class AddressableVariableObject<T> : AddressableVariableBase<IntPtr, T>
+    internal class AddressableVariableObject<T> : AddressableVariableBase<IntPtr, T>
     {
         public AddressableVariableObject(int contigiousArrayElementCount)
             : base(contigiousArrayElementCount) { }
@@ -207,7 +211,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// AddressableVariablePtr is ideal for creating out-only pointers, making the content easily 
     /// deferencable once set on the unmanaged side. Designed for simple types with no content marshalling.
     /// </summary>
-    public class AddressableVariablePtr<T> : AddressableVariableBase<IntPtr, AddressableVariableSimple<T>>
+    internal class AddressableVariablePtr<T> : AddressableVariableBase<IntPtr, AddressableVariableSimple<T>>
     {
         protected override AddressableVariableSimple<T> MarshalFrom(IntPtr input)
             => new AddressableVariableSimple<T>(alreadyAllocatedMem: UnmarshalledValue);
@@ -219,7 +223,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// <summary>
     /// AddressableVariables exposes helpers for creating the common derived classes 
     /// </summary>
-    static class AddressableVariables
+    internal static class AddressableVariables
     {
         public static AddressableVariableSimple<T> Create<T>(int elementCount = 1)
             => new AddressableVariableSimple<T>(elementCount);

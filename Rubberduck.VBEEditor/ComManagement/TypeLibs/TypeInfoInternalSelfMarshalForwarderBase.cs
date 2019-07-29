@@ -9,7 +9,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// see https://msdn.microsoft.com/en-gb/library/windows/desktop/ms221696(v=vs.85).aspx
     /// </summary>
     /// <remarks>
-    /// We use [Attribute] (<see cref="PreserveSigAttribute"/>) so that we can handle HRESULTs directly
+    /// We use [PreserveSig] (<see cref="PreserveSigAttribute"/>) so that we can handle HRESULTs directly
     /// </remarks>
     [ComImport(), Guid("00020401-0000-0000-C000-000000000046")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]

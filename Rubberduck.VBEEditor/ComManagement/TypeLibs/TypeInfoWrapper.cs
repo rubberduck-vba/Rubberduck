@@ -37,7 +37,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     ///     to get the type name.  We've got to remember that the VBE didn't ever intend for us to get hold of these objects, 
     ///     so there will be little bugs.  This bug is also resolved in the provided wrappers.
     ///
-    /// This class can also be cast to ComTypes.ITypeInfo for raw access to the underlying type information
+    /// This class can also be cast to <see cref="ComTypes.ITypeInfo"/> for safe access to the underlying type information
     /// </remarks>
     public sealed class TypeInfoWrapper : TypeInfoInternalSelfMarshalForwarderBase, IDisposable
     {
@@ -157,6 +157,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 throw new ArgumentException("Expected COM object, but validation failed.");
             }
 
+            // We have to restrict interface requests to VBE hosted ITypeInfos due to a bug in their implementation.
+            // See TypeInfoWrapper class XML doc for details.
+
+            // VBE provides two implementations of ITypeInfo for each component.  Both versions have different quirks and limitations.
+            // We use both versions to try to expose a more complete/accurate version of ITypeInfo.
             _typeInfoPointer =
                 ComPointer<ITypeInfoInternal>.GetObjectViaAggregation(rawObjectPtr, addRef, queryType: false);
             _typeInfoAlternatePointer =
