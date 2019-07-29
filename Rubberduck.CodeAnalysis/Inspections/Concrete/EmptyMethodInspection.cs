@@ -13,16 +13,19 @@ using System.Linq;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    [Experimental]
     internal class EmptyMethodInspection : ParseTreeInspectionBase
     {
         public EmptyMethodInspection(RubberduckParserState state)
             : base(state) { }
 
-        public override IInspectionListener Listener => new EmptyMethodListener();
+        public override IInspectionListener Listener { get; } =
+            new EmptyMethodListener();
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            return Listener.Contexts.Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
+            return Listener.Contexts
+                .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
                 .Select(result => new QualifiedContextInspectionResult(this, "Test string", result));
         }
     }
