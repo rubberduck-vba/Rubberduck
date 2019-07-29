@@ -43,8 +43,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         IEnumerator IEnumerable.GetEnumerator() => this;
         public IEnumerator<TypeLibWrapper> GetEnumerator() => this;
 
-        TypeLibWrapper IEnumerator<TypeLibWrapper>.Current => new TypeLibWrapper(_currentTypeLibPtr, makeCopyOfReference: true);
-        object IEnumerator.Current => new TypeLibWrapper(_currentTypeLibPtr, makeCopyOfReference: true);
+        TypeLibWrapper IEnumerator<TypeLibWrapper>.Current => new TypeLibWrapper(_currentTypeLibPtr, addRef: true);
+        object IEnumerator.Current => new TypeLibWrapper(_currentTypeLibPtr, addRef: true);
 
         public void Reset()  // walk back to the first project in the chain
         {

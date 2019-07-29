@@ -19,6 +19,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             GC.SuppressFinalize(this);
         }
 
+        ~DisposableList()
+        {
+            System.Diagnostics.Debug.Print("DisposableList:: Finalize called");
+        }
+
         private bool _isDisposed;
         protected virtual void Dispose(bool disposing)
         {

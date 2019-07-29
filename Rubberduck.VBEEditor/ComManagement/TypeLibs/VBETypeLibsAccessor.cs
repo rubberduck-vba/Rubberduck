@@ -37,34 +37,37 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             // We need at least one project in the VBE.VBProjects collection to be accessible (i.e. unprotected)
             // in order to get access to the list of loaded project TypeLibs using this method
-
-            foreach (var project in ide.VBProjects)
+            using (var projects = ide.VBProjects)
             {
-                using (project)
+                foreach (var project in projects)
                 {
-                    try
+                    using (project)
                     {
-                        using (var references = project.References)
+                        try
                         {
-                            // Now we've got the references object, we can read the internal object structure to grab the ITypeLib
-                            var internalReferencesObj = StructHelper.ReadComObjectStructure<VBEReferencesObj>(references.Target);
-
-                            // Now we've got this one internalReferencesObj.typeLib, we can iterate through ALL loaded project TypeLibs
-                            using (var typeLibIterator = new VBETypeLibsIterator(internalReferencesObj._typeLib))
+                            using (var references = project.References)
                             {
-                                foreach (var typeLib in typeLibIterator)
+                                // Now we've got the references object, we can read the internal object structure to grab the ITypeLib
+                                var internalReferencesObj =
+                                    StructHelper.ReadComObjectStructure<VBEReferencesObj>(references.Target);
+
+                                // Now we've got this one internalReferencesObj.typeLib, we can iterate through ALL loaded project TypeLibs
+                                using (var typeLibIterator = new VBETypeLibsIterator(internalReferencesObj._typeLib))
                                 {
-                                    Add(typeLib);
+                                    foreach (var typeLib in typeLibIterator)
+                                    {
+                                        Add(typeLib);
+                                    }
                                 }
                             }
-                        }
 
-                        // we only need access to a single VBProject References object to make it work, so we can return now.
-                        return;
-                    }
-                    catch (Exception ex)
-                    {
-                        // probably a protected project, just move on to the next project.
+                            // we only need access to a single VBProject References object to make it work, so we can return now.
+                            return;
+                        }
+                        catch (Exception ex)
+                        {
+                            // probably a protected project, just move on to the next project.
+                        }
                     }
                 }
             }

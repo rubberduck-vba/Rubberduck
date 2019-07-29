@@ -28,9 +28,12 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     public sealed class TypeLibWrapper : TypeLibInternalSelfMarshalForwarderBase, ITypeLibWrapper
     {
         private DisposableList<TypeInfoWrapper> _cachedTypeInfos;
-        private IntPtr _target_ITypeLibPtr;
-        private ITypeLibInternal _target_ITypeLib;
-        private bool _target_ITypeLib_IsRefCounted;
+        private ComPointer<ITypeLibInternal> _typeLibPointer;
+
+        private ITypeLibInternal _target_ITypeLib => _typeLibPointer.Interface;
+        //private IntPtr _target_ITypeLibPtr;
+        //private ITypeLibInternal _target_ITypeLib;
+        //private bool _target_ITypeLib_IsRefCounted;
 
         public bool HasVBEExtensions { get; private set; }
         public TypeInfoWrapperCollection TypeInfos { get; private set; }
@@ -66,17 +69,22 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }
 
-        TypeLibVBEExtensions _vbeExtensions;
+        private TypeLibVBEExtensions _vbeExtensions;
         public TypeLibVBEExtensions VBEExtensions
         {
             get
             {
-                if (_vbeExtensions == null)
+                if (_vbeExtensions != null)
                 {
-                    if (!HasVBEExtensions) throw new InvalidOperationException("This TypeLib does not represent a VBE project, so does not expose VBE Extensions");
-                    _vbeExtensions = new TypeLibVBEExtensions(this, _target_ITypeLib);
+                    return _vbeExtensions;
                 }
 
+                if (!HasVBEExtensions)
+                {
+                    throw new InvalidOperationException("This TypeLib does not represent a VBE project, so does not expose VBE Extensions");
+                }
+
+                _vbeExtensions = new TypeLibVBEExtensions(this, _target_ITypeLib);
                 return _vbeExtensions;
             }
         }
@@ -93,25 +101,27 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 // Now we've got the references object, we can read the internal object structure to grab the ITypeLib
                 var internalReferencesObj = StructHelper.ReadComObjectStructure<VBEReferencesObj>(references.Target);
-                return new TypeLibWrapper(internalReferencesObj._typeLib, makeCopyOfReference: false);
+                return new TypeLibWrapper(internalReferencesObj._typeLib, addRef: true);
             }
         }
 
-        private void InitFromRawPointer(IntPtr rawObjectPtr, bool makeCopyOfReference)
+        private void InitFromRawPointer(IntPtr rawObjectPtr, bool addRef)
         {
             if (!UnmanagedMemoryHelper.ValidateComObject(rawObjectPtr))
             {
                 throw new ArgumentException("Expected COM object, but validation failed.");
             }
 
-            if (makeCopyOfReference)
-            {
-                RdMarshal.AddRef(rawObjectPtr);
-            }
+            //if (makeCopyOfReference)
+            //{
+            //    RdMarshal.AddRef(rawObjectPtr);
+            //}
 
-            _target_ITypeLibPtr = rawObjectPtr;
-            _target_ITypeLib = (ITypeLibInternal)RdMarshal.GetObjectForIUnknown(rawObjectPtr);
-            _target_ITypeLib_IsRefCounted = true;
+            _typeLibPointer = ComPointer<ITypeLibInternal>.GetObject(rawObjectPtr, addRef);
+            
+            //_target_ITypeLibPtr = rawObjectPtr;
+            //_target_ITypeLib = (ITypeLibInternal)RdMarshal.GetObjectForIUnknown(rawObjectPtr);
+            //_target_ITypeLib_IsRefCounted = true;
             InitCommon();
         }
 
@@ -119,26 +129,31 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         /// Constructor
         /// </summary>
         /// <param name="rawObjectPtr">The raw unmanaged ITypeLib pointer</param>
-        public TypeLibWrapper(IntPtr rawObjectPtr, bool makeCopyOfReference)
+        /// <param name="addRef">
+        /// Indicates that the pointer was obtained via unorthodox methods, such as
+        /// direct memory read. Setting the parameter will effect an IUnknown::AddRef
+        /// on the pointer. 
+        /// </param>
+        public TypeLibWrapper(IntPtr rawObjectPtr, bool addRef)
         {
-            InitFromRawPointer(rawObjectPtr, makeCopyOfReference);
+            InitFromRawPointer(rawObjectPtr, addRef);
         }
 
-        public TypeLibWrapper(ComTypes.ITypeLib unwrappedTypeLib)
-        {
-            if ((unwrappedTypeLib as TypeLibInternalSelfMarshalForwarderBase) != null)
-            {
-                // The passed in TypeInfo is already a TypeInfoWrapper.  Detect & prevent double wrapping...
-                var tlib = (TypeLibWrapper)(TypeLibInternalSelfMarshalForwarderBase)unwrappedTypeLib;
-                InitFromRawPointer(tlib._target_ITypeLibPtr, makeCopyOfReference: true);
-                return;
-            }
+        //public TypeLibWrapper(ComTypes.ITypeLib unwrappedTypeLib)
+        //{
+        //    if ((unwrappedTypeLib as TypeLibInternalSelfMarshalForwarderBase) != null)
+        //    {
+        //        // The passed in TypeInfo is already a TypeInfoWrapper.  Detect & prevent double wrapping...
+        //        var tlib = (TypeLibWrapper)(TypeLibInternalSelfMarshalForwarderBase)unwrappedTypeLib;
+        //        InitFromRawPointer(tlib._target_ITypeLibPtr, makeCopyOfReference: true);
+        //        return;
+        //    }
 
-            _target_ITypeLibPtr = RdMarshal.GetIUnknownForObject(unwrappedTypeLib);
-            _target_ITypeLib = (ITypeLibInternal)unwrappedTypeLib;
-            _target_ITypeLib_IsRefCounted = false;
-            InitCommon();
-        }
+        //    _target_ITypeLibPtr = RdMarshal.GetIUnknownForObject(unwrappedTypeLib);
+        //    _target_ITypeLib = (ITypeLibInternal)unwrappedTypeLib;
+        //    _target_ITypeLib_IsRefCounted = false;
+        //    InitCommon();
+        //}
 
         private bool _isDisposed;
         public override void Dispose()
@@ -147,8 +162,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             _isDisposed = true;
 
             _cachedTypeInfos?.Dispose();
-            if (_target_ITypeLib_IsRefCounted) RdMarshal.ReleaseComObject(_target_ITypeLib);
-            if (_target_ITypeLibPtr != IntPtr.Zero) RdMarshal.Release(_target_ITypeLibPtr);
+            _typeLibPointer.Dispose();
+            //if (_target_ITypeLib_IsRefCounted) RdMarshal.ReleaseComObject(_target_ITypeLib);
+            //if (_target_ITypeLibPtr != IntPtr.Zero) RdMarshal.Release(_target_ITypeLibPtr);
         }
 
         public int GetSafeTypeInfoByIndex(int index, out TypeInfoWrapper outTI)
@@ -191,8 +207,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }
 
-        public IntPtr GetCOMReferencePtr()
-            => RdMarshal.GetComInterfaceForObject(this, typeof(ITypeLibInternal));
+        //public IntPtr GetCOMReferencePtr()
+        //    => RdMarshal.GetComInterfaceForObject(this, typeof(ITypeLibInternal));
 
         int HandleBadHRESULT(int hr)
         {

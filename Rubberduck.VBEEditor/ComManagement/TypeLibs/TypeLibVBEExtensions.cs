@@ -60,13 +60,14 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// </summary>
     public class TypeLibVBEExtensions
     {
-        private readonly TypeLibWrapper _parent;
+        //private readonly TypeLibWrapper _parent;
+        private readonly string _name;
         private readonly IVBEProject _target_IVBEProject;
         public TypeLibReferenceCollection VBEReferences;
 
-        public TypeLibVBEExtensions(TypeLibWrapper parent, ITypeLibInternal unwrappedTypeLib)
+        public TypeLibVBEExtensions(ITypeLibWrapper parent, ITypeLibInternal unwrappedTypeLib)
         {
-            _parent = parent;
+            _name = parent.Name;
             _target_IVBEProject = (IVBEProject)unwrappedTypeLib;
             VBEReferences = new TypeLibReferenceCollection(this);
         }
@@ -143,7 +144,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             if (index >= _target_IVBEProject.GetReferencesCount())
             {
-                throw new ArgumentException($"Specified index not valid for the references collection (reference {index} in project {_parent.Name})");
+                throw new ArgumentException($"Specified index not valid for the references collection (reference {index} in project {_name})");
             }
 
             return new TypeLibReference(this, index, _target_IVBEProject.GetReferenceString(index));
@@ -153,7 +154,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             if (index >= _target_IVBEProject.GetReferencesCount())
             {
-                throw new ArgumentException($"Specified index not valid for the references collection (reference {index} in project {_parent.Name})");
+                throw new ArgumentException($"Specified index not valid for the references collection (reference {index} in project {_name})");
             }
 
             IntPtr referenceTypeLibPtr = _target_IVBEProject.GetReferenceTypeLib(index);
@@ -161,7 +162,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 throw new ArgumentException("Reference TypeLib not available - probably a missing reference.");
             }
-            return new TypeLibWrapper(referenceTypeLibPtr, makeCopyOfReference: false);
+            return new TypeLibWrapper(referenceTypeLibPtr, addRef: false);
         }
 
         public TypeLibReference GetVBEReferenceByGuid(Guid referenceGuid)

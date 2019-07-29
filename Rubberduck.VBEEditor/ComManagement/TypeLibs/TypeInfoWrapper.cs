@@ -41,10 +41,16 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     public sealed class TypeInfoWrapper : TypeInfoInternalSelfMarshalForwarderBase, IDisposable
     {
         private DisposableList<TypeInfoWrapper> _cachedReferencedTypeInfos;
-        private IntPtr _target_ITypeInfoPtr;
-        private ITypeInfoInternal _target_ITypeInfo;
-        private ITypeInfoInternal _target_ITypeInfoAlternate;
-        private bool _target_ITypeInfo_IsRefCounted;
+        private ComPointer<ITypeInfoInternal> _typeInfoPointer;
+        private ComPointer<ITypeInfoInternal> _typeInfoAlternatePointer;
+
+        private ITypeInfoInternal _target_ITypeInfo => _typeInfoPointer.Interface;
+        private ITypeInfoInternal _target_ITypeInfoAlternate => _typeInfoAlternatePointer.Interface;
+
+        //private IntPtr _target_ITypeInfoPtr;
+        //private ITypeInfoInternal _target_ITypeInfo;
+        //private ITypeInfoInternal _target_ITypeInfoAlternate;
+        //private bool _target_ITypeInfo_IsRefCounted;
 
         public TypeLibInternalSelfMarshalForwarderBase Container { get; private set; }
         public int ContainerIndex { get; private set; }
@@ -125,7 +131,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 if (!ComHelper.HRESULT_FAILED(hr))
                 {
                     // We have to wrap the ITypeLib returned by GetContainingTypeLib
-                    Container = new TypeLibWrapper(typeLibPtr.Value, makeCopyOfReference: false);
+                    Container = new TypeLibWrapper(typeLibPtr.Value, addRef: false);
                     ContainerIndex = containerTypeLibIndex.Value;
                 }
                 else
@@ -147,15 +153,15 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }
 
-        private void InitFromRawPointer(IntPtr rawObjectPtr, bool makeCopyOfReference)
+        private void InitFromRawPointer(IntPtr rawObjectPtr, bool addRef)
         {
             if (!UnmanagedMemoryHelper.ValidateComObject(rawObjectPtr))
             {
                 throw new ArgumentException("Expected COM object, but validation failed.");
             }
 
-            if (makeCopyOfReference) RdMarshal.AddRef(rawObjectPtr);
-            _target_ITypeInfoPtr = rawObjectPtr;
+            //if (makeCopyOfReference) RdMarshal.AddRef(rawObjectPtr);
+            //_target_ITypeInfoPtr = rawObjectPtr;
 
             // We have to restrict interface requests to VBE hosted ITypeInfos due to a bug in their implementation.
             // See TypeInfoWrapper class XML doc for details.
@@ -163,12 +169,17 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             // VBE provides two implementations of ITypeInfo for each component.  Both versions have different quirks and limitations.
             // We use both versions to try to expose a more complete/accurate version of ITypeInfo.
 
-            _target_ITypeInfo = ComHelper.ComCastViaAggregation<ITypeInfoInternal>(rawObjectPtr, queryForType: false);
-            _target_ITypeInfoAlternate = ComHelper.ComCastViaAggregation<ITypeInfoInternal>(rawObjectPtr, queryForType: true);
-            _target_ITypeInfo_IsRefCounted = true;
+            _typeInfoPointer =
+                ComPointer<ITypeInfoInternal>.GetObjectViaAggregation(rawObjectPtr, addRef, queryType: false);
+            _typeInfoAlternatePointer =
+                ComPointer<ITypeInfoInternal>.GetObjectViaAggregation(rawObjectPtr, addRef, queryType: true);
+            //_target_ITypeInfo = ComHelper.ComCastViaAggregation<ITypeInfoInternal>(rawObjectPtr, queryForType: false);
+            //_target_ITypeInfoAlternate = ComHelper.ComCastViaAggregation<ITypeInfoInternal>(rawObjectPtr, queryForType: true);
+            //_target_ITypeInfo_IsRefCounted = true;
 
             // safely test whether the provided ITypeInfo is hosted by the VBE, and thus exposes the VBE extensions
-            HasVBEExtensions = ComHelper.DoesComObjPtrSupportInterface<IVBEComponent>(_target_ITypeInfoPtr);
+            HasVBEExtensions = ComHelper.DoesComObjPtrSupportInterface<IVBEComponent>(rawObjectPtr);
+            //HasVBEExtensions = ComHelper.DoesComObjPtrSupportInterface<IVBEComponent>(_target_ITypeInfoPtr);
 
             InitCommon();
             DetectUserFormClass();
@@ -180,13 +191,14 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 // The passed in TypeInfo is already a TypeInfoWrapper.  Detect & prevent double wrapping...
                 var tlib = (TypeInfoWrapper)(TypeInfoInternalSelfMarshalForwarderBase)rawTypeInfo;
-                var rawObjectPtr = tlib._target_ITypeInfoPtr;
-                InitFromRawPointer(rawObjectPtr, makeCopyOfReference: true);
+                var rawObjectPtr = tlib._typeInfoPointer.ExtractPointer();
+                //var rawObjectPtr = tlib._target_ITypeInfoPtr;
+                InitFromRawPointer(rawObjectPtr, addRef: true);
                 _cachedTextFields = tlib._cachedTextFields;     // copied to ensure we work around the UserForm GetDocumentation() crash
                 return;
             }
 
-            _target_ITypeInfo = (ITypeInfoInternal)rawTypeInfo;
+            //_target_ITypeInfo = (ITypeInfoInternal)rawTypeInfo;
             InitCommon();
         }
 
@@ -205,7 +217,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 _cachedTextFields = new TypeLibTextFields { _name = "_UserFormBase{unnamed}#" + parentUserFormUniqueId };
             }
 
-            InitFromRawPointer(rawObjectPtr, makeCopyOfReference: false);
+            InitFromRawPointer(rawObjectPtr, addRef: false);
         }
 
         private bool _isDisposed;
@@ -214,17 +226,20 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             if (_isDisposed) return;
             _isDisposed = true;
 
-            if (_target_ITypeInfo_IsRefCounted)
-            {
-                if (_target_ITypeInfo != null) RdMarshal.ReleaseComObject(_target_ITypeInfo);
-                if (_target_ITypeInfoAlternate != null) RdMarshal.ReleaseComObject(_target_ITypeInfoAlternate);
-            }
-
+            //if (_target_ITypeInfo_IsRefCounted)
+            //{
+            //    if (_target_ITypeInfo != null) RdMarshal.ReleaseComObject(_target_ITypeInfo);
+            //    if (_target_ITypeInfoAlternate != null) RdMarshal.ReleaseComObject(_target_ITypeInfoAlternate);
+            //}
+            
             _vbeExtensions?.Dispose();
             _cachedReferencedTypeInfos?.Dispose();
             Container?.Dispose();
 
-            if (_target_ITypeInfoPtr != IntPtr.Zero) RdMarshal.Release(_target_ITypeInfoPtr);
+            _typeInfoPointer.Dispose();
+            _typeInfoAlternatePointer.Dispose();
+
+            //if (_target_ITypeInfoPtr != IntPtr.Zero) RdMarshal.Release(_target_ITypeInfoPtr);
         }
 
         TypeInfoVBEExtensions _vbeExtensions;
@@ -235,7 +250,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 if (_vbeExtensions == null)
                 {
                     if (!HasVBEExtensions) throw new InvalidOperationException("This TypeInfo does not represent a VBE component, so does not expose VBE Extensions");
-                    _vbeExtensions = new TypeInfoVBEExtensions(this, _target_ITypeInfoPtr);
+                    _vbeExtensions = new TypeInfoVBEExtensions(this, _typeInfoPointer.ExtractPointer());
                 }
 
                 return _vbeExtensions;

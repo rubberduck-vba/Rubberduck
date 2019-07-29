@@ -1,6 +1,4 @@
-﻿#define TRACE_MARSHAL
-
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -187,7 +185,15 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 #endif
             return result;
         }
-        
+
+        internal static object GetTypedObjectForIUnknown(IntPtr pUnk, Type t)
+        {
+#if DEBUG && TRACE_MARSHAL
+            Debug.Print($"Executing {nameof(GetTypedObjectForIUnknown)}; {nameof(pUnk)}: {FormatPtr(pUnk)}, {nameof(t)}: `{t.Name}`");
+#endif
+            return Marshal.GetTypedObjectForIUnknown(pUnk, t);
+        }
+
         internal static Type GetTypeForITypeInfo(IntPtr pTypeInfo)
         {
 #if DEBUG && TRACE_MARSHAL

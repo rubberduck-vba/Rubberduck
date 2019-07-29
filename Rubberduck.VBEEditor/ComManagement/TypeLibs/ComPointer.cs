@@ -33,10 +33,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             if (addRef)
             {
                 _addRef = true;
-                refCount = Marshal.AddRef(_pUnk); 
+                refCount = RdMarshal.AddRef(_pUnk); 
             }
 
-            Interface = (TComInterface)Marshal.GetTypedObjectForIUnknown(pUnk, typeof(TComInterface));
+            Interface = (TComInterface)RdMarshal.GetTypedObjectForIUnknown(pUnk, typeof(TComInterface));
 
 #if DEBUG
             Debug.Print($"ComPointer:: Created from pointer: pUnk: {RdMarshal.FormatPtr(_pUnk)} interface: {Interface.GetType().Name} - {Interface.GetHashCode()} addRef: {_addRef} refCount: {refCount}");
@@ -56,7 +56,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         private ComPointer(TComInterface comInterface)
         {
             Interface = comInterface;
-            _pUnk = Marshal.GetIUnknownForObject(Interface);
+            _pUnk = RdMarshal.GetIUnknownForObject(Interface);
 
 #if DEBUG
             Debug.Print($"ComPointer:: Created from object: pUnk: {RdMarshal.FormatPtr(_pUnk)} interface: {Interface.GetType().Name} - {Interface.GetHashCode()} addRef: {_addRef}");
@@ -75,13 +75,13 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             if(_disposed) return;
 
-            var rcwCount = Marshal.ReleaseComObject(Interface);
+            var rcwCount = RdMarshal.ReleaseComObject(Interface);
             var refCount = -1;
             
             if (_addRef)
             {
-                refCount = Marshal.Release(_pUnk);
-            }
+                refCount = RdMarshal.Release(_pUnk);
+            } 
 
 #if DEBUG
             Debug.Print($"ComPointer:: Disposed: _pUnk: {RdMarshal.FormatPtr(_pUnk)} _interface: {Interface.GetType().Name} - {Interface.GetHashCode()} addRef: {_addRef} rcwCount: {rcwCount} refCount: {refCount}");
@@ -97,6 +97,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         ~ComPointer()
         {
+            Debug.Print("ComPointer:: Finalize called");
             ReleaseUnmanagedResources();
         }
     }
