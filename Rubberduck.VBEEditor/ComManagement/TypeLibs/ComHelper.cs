@@ -137,7 +137,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             return false;
         }
 
-        // ComCastViaAggregation creates an aggregated object to forcably cast a pointer
+        // ComCastViaAggregation creates an aggregated object to forcibly cast a pointer
         // to a specific interface.  The aggregator is disposed before returning.  Caller must release the
         // returned RCW with Marshal.ReleaseComObject.  
         public static T ComCastViaAggregation<T>(IntPtr rawObjectPtr, bool queryForType = true)

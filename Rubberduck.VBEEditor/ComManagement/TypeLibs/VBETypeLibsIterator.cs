@@ -10,7 +10,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// Also provides Prev/Next pointers, exposing a double linked list of all loaded project ITypeLibs
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    struct VBETypeLibObj
+    internal struct VBETypeLibObj
     {
         IntPtr _vTable1;     // ITypeLib vtable
         IntPtr _vTable2;

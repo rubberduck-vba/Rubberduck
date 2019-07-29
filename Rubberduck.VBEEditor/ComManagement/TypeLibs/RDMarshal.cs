@@ -19,8 +19,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// To avoid quote ambiguity, all strings returned by Debug.Print will
     /// be delimited with backtick (`).
     ///
-    /// Due to performance and space considerations, the tracing requires use of additional flag
-    /// TRACE_MARSHAL, which should be defined to enable the tracing.
+    /// Due to performance and space considerations, the tracing requires use of additional flags
+    /// TRACE_MARSHAL and REF_COUNT, which should be defined to enable the tracing.
     /// </remarks>
     internal static class RdMarshal
     {
@@ -35,7 +35,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 #if DEBUG && TRACE_MARSHAL
             Debug.Print($"Leaving {nameof(AddRef)}; {nameof(result)}: {result}");
 #endif
-#if DEBUG
+#if DEBUG && REF_COUNT
             PrintRefCount(pUnk);
 #endif
             return result;
@@ -50,7 +50,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 #if DEBUG && TRACE_MARSHAL
             Debug.Print($"Leaving {nameof(AllocHGlobal)}; {nameof(result)}: {result}");
 #endif
-#if DEBUG
+#if DEBUG && REF_COUNT
             PrintAlloc(result);
 #endif
             return result;
@@ -79,7 +79,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 #if DEBUG && TRACE_MARSHAL
             Debug.Print($"Leaving {nameof(CreateAggregatedObject)}; {nameof(result)}: {result}");
 #endif
-#if DEBUG
+#if DEBUG && REF_COUNT
             PrintRefCount(result);
 #endif
             return result;
@@ -91,7 +91,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             Debug.Assert(ptr!=IntPtr.Zero,"Null pointer passed in");
             Debug.Print($"Executing {nameof(FreeBSTR)}; {nameof(ptr)}: {FormatPtr(ptr)}");
 #endif
-#if DEBUG
+#if DEBUG && REF_COUNT
             PrintFree(ptr);
 #endif
             Marshal.FreeBSTR(ptr);
@@ -104,7 +104,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             Debug.Print($"Executing {nameof(FreeHGlobal)}; {nameof(hglobal)}: {hglobal}");
 #endif
-#if DEBUG
+#if DEBUG && REF_COUNT
             PrintFree(hglobal);
 #endif
             Marshal.FreeHGlobal(hglobal);
@@ -119,7 +119,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 #if DEBUG && TRACE_MARSHAL
             Debug.Print($"Leaving {nameof(GetComInterfaceForObject)}; {nameof(result)}: {result}");
 #endif
-#if DEBUG
+#if DEBUG && REF_COUNT
             PrintRefCount(result);
 #endif
             return result;
@@ -134,7 +134,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 #if DEBUG && TRACE_MARSHAL
             Debug.Print($"Leaving {nameof(GetIUnknownForObject)}; {nameof(result)}: {result}");
 #endif
-#if DEBUG
+#if DEBUG && REF_COUNT
             PrintRefCount(result);
 #endif
             return result;
@@ -149,7 +149,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 #if DEBUG && TRACE_MARSHAL
             Debug.Print($"Leaving {nameof(GetIUnknownForObjectInContext)}; {nameof(result)}: {result}");
 #endif
-#if DEBUG
+#if DEBUG && REF_COUNT
             PrintRefCount(result);
 #endif
             return result;
@@ -267,7 +267,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 #if DEBUG && TRACE_MARSHAL
             Debug.Print($"Leaving {nameof(QueryInterface)}; {nameof(result)}: {result}, {nameof(ppv)}: {ppv}");
 #endif
-#if DEBUG
+#if DEBUG && REF_COUNT
             PrintRefCount(ppv);
 #endif
             return result;
@@ -311,7 +311,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             Debug.Assert(result >= 0, "The ref count is negative which is invalid.");
             Debug.Print($"Leaving {nameof(Release)}; {nameof(result)}: {result}");
 #endif
-#if DEBUG
+#if DEBUG && REF_COUNT
             Debug.Print($"{nameof(Release)}:: COM Object: {FormatPtr(pUnk)} ref count {result}");
 #endif
             return result;
@@ -332,7 +332,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 $"The ref count is invalid after calling the {nameof(Marshal.ReleaseComObject)}");
             Debug.Print($"Leaving {nameof(ReleaseComObject)}; {nameof(result)}: {result}");
 #endif
-#if DEBUG
+#if DEBUG && REF_COUNT
             Debug.Print($"{nameof(ReleaseComObject)}:: COM Object: {o.GetType().Name} ref count {result}");
 #endif
             return result;
@@ -371,7 +371,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 #if DEBUG && TRACE_MARSHAL
             Debug.Print($"Leaving {nameof(StringToBSTR)}; {nameof(result)}: {result}");
 #endif
-#if DEBUG
+#if DEBUG && REF_COUNT
             PrintAlloc(result);
 #endif
             return result;

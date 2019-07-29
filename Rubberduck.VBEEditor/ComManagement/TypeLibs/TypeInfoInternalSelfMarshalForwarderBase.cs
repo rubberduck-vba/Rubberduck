@@ -9,7 +9,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// see https://msdn.microsoft.com/en-gb/library/windows/desktop/ms221696(v=vs.85).aspx
     /// </summary>
     /// <remarks>
-    /// We use [PreserveSig] so that we can handle HRESULTs directly
+    /// We use [Attribute] (<see cref="PreserveSigAttribute"/>) so that we can handle HRESULTs directly
     /// </remarks>
     [ComImport(), Guid("00020401-0000-0000-C000-000000000046")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -47,7 +47,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     {
         private ITypeInfoInternal _this_Internal => (ITypeInfoInternal)this;
 
-        private void HandleBadHRESULT(int hr)
+        private static void HandleBadHRESULT(int hr)
         {
             throw RdMarshal.GetExceptionForHR(hr);
         }
@@ -61,7 +61,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             using (var typeLibPtr = AddressableVariables.CreateObjectPtr<ComTypes.ITypeLib>())
             using (var indexPtr = AddressableVariables.Create<int>())
             {
-                int hr = _this_Internal.GetContainingTypeLib(typeLibPtr.Address, indexPtr.Address);
+                var hr = _this_Internal.GetContainingTypeLib(typeLibPtr.Address, indexPtr.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
 
                 ppTLB = typeLibPtr.Value;
@@ -146,7 +146,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             using (var outHref = AddressableVariables.Create<int>())
             {
-                int hr = _this_Internal.GetRefTypeOfImplType(index, outHref.Address);
+                var hr = _this_Internal.GetRefTypeOfImplType(index, outHref.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
                 href = outHref.Value;
             }
@@ -159,7 +159,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             using (var implTypeFlags = AddressableVariables.Create<ComTypes.IMPLTYPEFLAGS>())
             {
-                int hr = _this_Internal.GetImplTypeFlags(index, implTypeFlags.Address);
+                var hr = _this_Internal.GetImplTypeFlags(index, implTypeFlags.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
 
                 pImplTypeFlags = implTypeFlags.Value;
@@ -200,7 +200,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             using (var helpContext = AddressableVariables.Create<int>())
             using (var helpFile = AddressableVariables.CreateBSTR())
             {
-                int hr = _this_Internal.GetDocumentation(memid, name.Address, docString.Address, helpContext.Address, helpFile.Address);
+                var hr = _this_Internal.GetDocumentation(memid, name.Address, docString.Address, helpContext.Address, helpFile.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
 
                 strName = name.Value;
@@ -214,7 +214,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             // for some reason, the ComTypes.ITypeInfo definition for GetDllEntry uses the raw pointers for strings here, 
             // just like our unfriendly version.  This makes it much easier for us to forward on
-            int hr = _this_Internal.GetDllEntry(memid, invKind, pBstrDllName, pBstrName, pwOrdinal);
+            var hr = _this_Internal.GetDllEntry(memid, invKind, pBstrDllName, pBstrName, pwOrdinal);
             if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
         }
 
@@ -238,7 +238,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             using (var outPpv = AddressableVariables.Create<IntPtr>())
             {
-                int hr = _this_Internal.AddressOfMember(memid, invKind, outPpv.Address);
+                var hr = _this_Internal.AddressOfMember(memid, invKind, outPpv.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
                 ppv = outPpv.Value;
             }
@@ -252,7 +252,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             using (var outPpvObj = AddressableVariables.CreateObjectPtr<object>())
             {
                 var unkOuter = RdMarshal.GetIUnknownForObject(pUnkOuter);
-                int hr = _this_Internal.CreateInstance(unkOuter, riid, outPpvObj.Address);
+                var hr = _this_Internal.CreateInstance(unkOuter, riid, outPpvObj.Address);
                 RdMarshal.Release(unkOuter);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
 
@@ -267,7 +267,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             using (var strMops = AddressableVariables.CreateBSTR())
             {
-                int hr = _this_Internal.GetMops(memid, strMops.Address);
+                var hr = _this_Internal.GetMops(memid, strMops.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
 
                 pBstrMops = strMops.Value;

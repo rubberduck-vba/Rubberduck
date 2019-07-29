@@ -13,7 +13,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// The TypeInfos it holds are disposed of elsewhere.
     /// (typically in an earlier typeinfo references collection) 
     /// </remarks>
-    public sealed class SimpleCustomTypeLibrary : TypeLibInternalSelfMarshalForwarderBase, IDisposable
+    public sealed class SimpleCustomTypeLibrary : TypeLibInternalSelfMarshalForwarderBase
     {
         private readonly List<TypeInfoWrapper> _containedTypeInfos = new List<TypeInfoWrapper>();
         ComTypes.TYPELIBATTR _libAttribs;

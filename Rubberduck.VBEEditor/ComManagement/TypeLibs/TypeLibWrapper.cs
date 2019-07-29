@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
 
@@ -31,10 +30,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         private ComPointer<ITypeLibInternal> _typeLibPointer;
 
         private ITypeLibInternal _target_ITypeLib => _typeLibPointer.Interface;
-        //private IntPtr _target_ITypeLibPtr;
-        //private ITypeLibInternal _target_ITypeLib;
-        //private bool _target_ITypeLib_IsRefCounted;
-
+        
         public bool HasVBEExtensions { get; private set; }
         public TypeInfoWrapperCollection TypeInfos { get; private set; }
 
@@ -45,7 +41,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public string HelpFile => CachedTextFields._helpFile;
         public int TypesCount => _target_ITypeLib.GetTypeInfoCount();
 
-        public struct TypeLibTextFields
+        private struct TypeLibTextFields
         {
             public string _name;
             public string _docString;
@@ -57,14 +53,16 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             get
             {
-                if (!_cachedTextFields.HasValue)
+                if (_cachedTextFields.HasValue)
                 {
-                    var cache = new TypeLibTextFields();
-                    // as a C# caller, it's easier to work with ComTypes.ITypeLib
-                    ((ComTypes.ITypeLib)_target_ITypeLib).GetDocumentation((int)KnownDispatchMemberIDs.MEMBERID_NIL, out cache._name, out cache._docString, out cache._helpContext, out cache._helpFile);
-                    if (cache._name == null && HasVBEExtensions) cache._name = "[VBA.Immediate.Window]";
-                    _cachedTextFields = cache;
+                    return _cachedTextFields.Value;
                 }
+
+                var cache = new TypeLibTextFields();
+                // as a C# caller, it's easier to work with ComTypes.ITypeLib
+                ((ComTypes.ITypeLib)_target_ITypeLib).GetDocumentation((int)KnownDispatchMemberIDs.MEMBERID_NIL, out cache._name, out cache._docString, out cache._helpContext, out cache._helpFile);
+                if (cache._name == null && HasVBEExtensions) cache._name = "[VBA.Immediate.Window]";
+                _cachedTextFields = cache;
                 return _cachedTextFields.Value;
             }
         }
@@ -92,6 +90,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         private void InitCommon()
         {
             TypeInfos = new TypeInfoWrapperCollection(this);
+            // ReSharper disable once SuspiciousTypeConversion.Global 
+            // there is no direct implementation but it can be reached via
+            // IUnknown::QueryInterface which is implicitly done as part of casting
             HasVBEExtensions = (_target_ITypeLib as IVBEProject) != null;
         }
 
@@ -112,16 +113,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 throw new ArgumentException("Expected COM object, but validation failed.");
             }
 
-            //if (makeCopyOfReference)
-            //{
-            //    RdMarshal.AddRef(rawObjectPtr);
-            //}
-
             _typeLibPointer = ComPointer<ITypeLibInternal>.GetObject(rawObjectPtr, addRef);
-            
-            //_target_ITypeLibPtr = rawObjectPtr;
-            //_target_ITypeLib = (ITypeLibInternal)RdMarshal.GetObjectForIUnknown(rawObjectPtr);
-            //_target_ITypeLib_IsRefCounted = true;
             InitCommon();
         }
 
@@ -138,23 +130,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             InitFromRawPointer(rawObjectPtr, addRef);
         }
-
-        //public TypeLibWrapper(ComTypes.ITypeLib unwrappedTypeLib)
-        //{
-        //    if ((unwrappedTypeLib as TypeLibInternalSelfMarshalForwarderBase) != null)
-        //    {
-        //        // The passed in TypeInfo is already a TypeInfoWrapper.  Detect & prevent double wrapping...
-        //        var tlib = (TypeLibWrapper)(TypeLibInternalSelfMarshalForwarderBase)unwrappedTypeLib;
-        //        InitFromRawPointer(tlib._target_ITypeLibPtr, makeCopyOfReference: true);
-        //        return;
-        //    }
-
-        //    _target_ITypeLibPtr = RdMarshal.GetIUnknownForObject(unwrappedTypeLib);
-        //    _target_ITypeLib = (ITypeLibInternal)unwrappedTypeLib;
-        //    _target_ITypeLib_IsRefCounted = false;
-        //    InitCommon();
-        //}
-
+        
         private bool _isDisposed;
         public override void Dispose()
         {
@@ -163,8 +139,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             _cachedTypeInfos?.Dispose();
             _typeLibPointer.Dispose();
-            //if (_target_ITypeLib_IsRefCounted) RdMarshal.ReleaseComObject(_target_ITypeLib);
-            //if (_target_ITypeLibPtr != IntPtr.Zero) RdMarshal.Release(_target_ITypeLibPtr);
         }
 
         public int GetSafeTypeInfoByIndex(int index, out TypeInfoWrapper outTI)
@@ -173,8 +147,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             using (var typeInfoPtr = AddressableVariables.Create<IntPtr>())
             {
-                int hr = _target_ITypeLib.GetTypeInfo(index, typeInfoPtr.Address);
-                if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
+                var hr = _target_ITypeLib.GetTypeInfo(index, typeInfoPtr.Address);
+                if (ComHelper.HRESULT_FAILED(hr))
+                {
+                    return HandleBadHRESULT(hr);
+                }
 
                 var outVal = new TypeInfoWrapper(typeInfoPtr.Value);
                 _cachedTypeInfos = _cachedTypeInfos ?? new DisposableList<TypeInfoWrapper>();
@@ -190,25 +167,29 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             get
             {
-                if (!_cachedLibAttribs.HasValue)
+                if (_cachedLibAttribs.HasValue)
                 {
-                    using (var typeLibAttributesPtr = AddressableVariables.CreatePtrTo<ComTypes.TYPELIBATTR>())
+                    return _cachedLibAttribs.Value;
+                }
+
+                using (var typeLibAttributesPtr = AddressableVariables.CreatePtrTo<ComTypes.TYPELIBATTR>())
+                {
+                    var hr = _target_ITypeLib.GetLibAttr(typeLibAttributesPtr.Address);
+                    if (ComHelper.HRESULT_FAILED(hr))
                     {
-                        int hr = _target_ITypeLib.GetLibAttr(typeLibAttributesPtr.Address);
-                        if (!ComHelper.HRESULT_FAILED(hr))
-                        {
-                            _cachedLibAttribs = typeLibAttributesPtr.Value.Value;   // dereference the ptr, then the content
-                            var pTypeLibAttr = typeLibAttributesPtr.Value.Address; // dereference the ptr, and take the contents address
-                            _target_ITypeLib.ReleaseTLibAttr(pTypeLibAttr);         // can release immediately as _cachedLibAttribs is a copy
-                        }
+                        return _cachedLibAttribs.Value;
                     }
+
+                    _cachedLibAttribs = typeLibAttributesPtr.Value.Value;   // dereference the ptr, then the content
+                    var pTypeLibAttr = typeLibAttributesPtr.Value.Address; // dereference the ptr, and take the contents address
+                    _target_ITypeLib.ReleaseTLibAttr(pTypeLibAttr);         // can release immediately as _cachedLibAttribs is a copy
                 }
                 return _cachedLibAttribs.Value;
             }
         }
 
-        //public IntPtr GetCOMReferencePtr()
-        //    => RdMarshal.GetComInterfaceForObject(this, typeof(ITypeLibInternal));
+        public IntPtr GetCOMReferencePtr()
+            => RdMarshal.GetComInterfaceForObject(this, typeof(ITypeLibInternal));
 
         int HandleBadHRESULT(int hr)
         {
@@ -217,14 +198,14 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         public override int GetTypeInfoCount()
         {
-            int retVal = _target_ITypeLib.GetTypeInfoCount();
+            var retVal = _target_ITypeLib.GetTypeInfoCount();
             return retVal;
         }
 
         public override int GetTypeInfo(int index, IntPtr ppTI)
         {
             // We have to wrap the ITypeInfo returned by GetTypeInfo
-            int hr = GetSafeTypeInfoByIndex(index, out var ti);
+            var hr = GetSafeTypeInfoByIndex(index, out var ti);
             if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
 
             RdMarshal.WriteIntPtr(ppTI, ti.GetCOMReferencePtr());
@@ -232,7 +213,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
         public override int GetTypeInfoType(int index, IntPtr pTKind)
         {
-            int hr = _target_ITypeLib.GetTypeInfoType(index, pTKind);
+            var hr = _target_ITypeLib.GetTypeInfoType(index, pTKind);
             if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
 
             var tKind = RdMarshal.ReadInt32(pTKind);
@@ -243,7 +224,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
         public override int GetTypeInfoOfGuid(ref Guid guid, IntPtr ppTInfo)
         {
-            int hr = _target_ITypeLib.GetTypeInfoOfGuid(guid, ppTInfo);
+            var hr = _target_ITypeLib.GetTypeInfoOfGuid(guid, ppTInfo);
             if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
 
             var pTInfo = RdMarshal.ReadIntPtr(ppTInfo);
@@ -260,33 +241,28 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         public override int GetLibAttr(IntPtr ppTLibAttr)
         {
-            int hr = _target_ITypeLib.GetLibAttr(ppTLibAttr);
-            if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
-            return hr;
+            var hr = _target_ITypeLib.GetLibAttr(ppTLibAttr);
+            return ComHelper.HRESULT_FAILED(hr) ? HandleBadHRESULT(hr) : hr;
         }
         public override int GetTypeComp(IntPtr ppTComp)
         {
-            int hr = _target_ITypeLib.GetTypeComp(ppTComp);
-            if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
-            return hr;
+            var hr = _target_ITypeLib.GetTypeComp(ppTComp);
+            return ComHelper.HRESULT_FAILED(hr) ? HandleBadHRESULT(hr) : hr;
         }
         public override int GetDocumentation(int index, IntPtr strName, IntPtr strDocString, IntPtr dwHelpContext, IntPtr strHelpFile)
         {
-            int hr = _target_ITypeLib.GetDocumentation(index, strName, strDocString, dwHelpContext, strHelpFile);
-            if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
-            return hr;
+            var hr = _target_ITypeLib.GetDocumentation(index, strName, strDocString, dwHelpContext, strHelpFile);
+            return ComHelper.HRESULT_FAILED(hr) ? HandleBadHRESULT(hr) : hr;
         }
         public override int IsName(string szNameBuf, int lHashVal, IntPtr pfName)
         {
-            int hr = _target_ITypeLib.IsName(szNameBuf, lHashVal, pfName);
-            if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
-            return hr;
+            var hr = _target_ITypeLib.IsName(szNameBuf, lHashVal, pfName);
+            return ComHelper.HRESULT_FAILED(hr) ? HandleBadHRESULT(hr) : hr;
         }
         public override int FindName(string szNameBuf, int lHashVal, IntPtr ppTInfo, IntPtr rgMemId, IntPtr pcFound)
         {
-            int hr = _target_ITypeLib.FindName(szNameBuf, lHashVal, ppTInfo, rgMemId, pcFound);
-            if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
-            return hr;
+            var hr = _target_ITypeLib.FindName(szNameBuf, lHashVal, ppTInfo, rgMemId, pcFound);
+            return ComHelper.HRESULT_FAILED(hr) ? HandleBadHRESULT(hr) : hr;
         }
         public override void ReleaseTLibAttr(IntPtr pTLibAttr)
         {

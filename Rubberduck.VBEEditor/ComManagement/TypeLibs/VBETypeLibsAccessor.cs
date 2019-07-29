@@ -9,7 +9,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// These offsets are known to be valid across 32-bit and 64-bit versions of VBA and VB6, right back from when VBA6 was first released.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    struct VBEReferencesObj
+    internal struct VBEReferencesObj
     {
         IntPtr _vTable1;     // _References vtable
         IntPtr _vTable2;
@@ -31,9 +31,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     ///   Make sure you call VBETypeLibsAccessor.Dispose() as soon as you have done what you need to do with it.
     ///   Once control returns back to the VBE, you must assume that all the ITypeLib/ITypeInfo pointers are now invalid.
     /// </remarks>
-    public class VBETypeLibsAccessor : DisposableList<TypeLibWrapper>
+    internal class VBETypeLibsAccessor : DisposableList<TypeLibWrapper>
     {
-        public VBETypeLibsAccessor(IVBE ide)
+        internal VBETypeLibsAccessor(IVBE ide)
         {
             // We need at least one project in the VBE.VBProjects collection to be accessible (i.e. unprotected)
             // in order to get access to the list of loaded project TypeLibs using this method
@@ -64,7 +64,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                             // we only need access to a single VBProject References object to make it work, so we can return now.
                             return;
                         }
-                        catch (Exception ex)
+                        catch
                         {
                             // probably a protected project, just move on to the next project.
                         }
@@ -75,7 +75,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             // return an empty list on error
         }
 
-        public TypeLibWrapper Find(string searchLibName)
+        internal TypeLibWrapper Find(string searchLibName)
         {
             foreach (var typeLib in this)
             {
@@ -87,7 +87,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             return null;
         }
 
-        public TypeLibWrapper Get(string searchLibName)
+        internal TypeLibWrapper Get(string searchLibName)
         {
             var retVal = Find(searchLibName);
             if (retVal == null)
@@ -96,7 +96,5 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
             return retVal;
         }
-
-        protected override void Dispose(bool disposing) => base.Dispose(disposing);
     }
 }

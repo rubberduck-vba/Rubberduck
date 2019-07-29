@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
 
@@ -47,11 +48,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         private ITypeInfoInternal _target_ITypeInfo => _typeInfoPointer.Interface;
         private ITypeInfoInternal _target_ITypeInfoAlternate => _typeInfoAlternatePointer.Interface;
 
-        //private IntPtr _target_ITypeInfoPtr;
-        //private ITypeInfoInternal _target_ITypeInfo;
-        //private ITypeInfoInternal _target_ITypeInfoAlternate;
-        //private bool _target_ITypeInfo_IsRefCounted;
-
         public TypeLibInternalSelfMarshalForwarderBase Container { get; private set; }
         public int ContainerIndex { get; private set; }
         public bool HasModuleScopeCompilationErrors { get; private set; }
@@ -87,7 +83,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         const int _ourConstantsDispatchMemberIDRangeStart = unchecked((int)0xFEDC0000);
         const int _ourConstantsDispatchMemberIDRangeBitmaskCheck = unchecked((int)0xFFFF0000);
         const int _ourConstantsDispatchMemberIDIndexBitmask = unchecked((int)0x0000FFFF);
-        bool IsDispatchMemberIDInOurConstantsRange(int memid)
+
+        private static bool IsDispatchMemberIDInOurConstantsRange(int memid)
         {
             return (memid & _ourConstantsDispatchMemberIDRangeBitmaskCheck) == _ourConstantsDispatchMemberIDRangeStart;
         }
@@ -96,7 +93,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             using (var typeAttrPtr = AddressableVariables.CreatePtrTo<ComTypes.TYPEATTR>())
             {
-                int hr = _target_ITypeInfo.GetTypeAttr(typeAttrPtr.Address);
+                var hr = _target_ITypeInfo.GetTypeAttr(typeAttrPtr.Address);
 
                 if (!ComHelper.HRESULT_FAILED(hr))
                 {
@@ -160,27 +157,14 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 throw new ArgumentException("Expected COM object, but validation failed.");
             }
 
-            //if (makeCopyOfReference) RdMarshal.AddRef(rawObjectPtr);
-            //_target_ITypeInfoPtr = rawObjectPtr;
-
-            // We have to restrict interface requests to VBE hosted ITypeInfos due to a bug in their implementation.
-            // See TypeInfoWrapper class XML doc for details.
-
-            // VBE provides two implementations of ITypeInfo for each component.  Both versions have different quirks and limitations.
-            // We use both versions to try to expose a more complete/accurate version of ITypeInfo.
-
             _typeInfoPointer =
                 ComPointer<ITypeInfoInternal>.GetObjectViaAggregation(rawObjectPtr, addRef, queryType: false);
             _typeInfoAlternatePointer =
                 ComPointer<ITypeInfoInternal>.GetObjectViaAggregation(rawObjectPtr, addRef, queryType: true);
-            //_target_ITypeInfo = ComHelper.ComCastViaAggregation<ITypeInfoInternal>(rawObjectPtr, queryForType: false);
-            //_target_ITypeInfoAlternate = ComHelper.ComCastViaAggregation<ITypeInfoInternal>(rawObjectPtr, queryForType: true);
-            //_target_ITypeInfo_IsRefCounted = true;
-
+            
             // safely test whether the provided ITypeInfo is hosted by the VBE, and thus exposes the VBE extensions
             HasVBEExtensions = ComHelper.DoesComObjPtrSupportInterface<IVBEComponent>(rawObjectPtr);
-            //HasVBEExtensions = ComHelper.DoesComObjPtrSupportInterface<IVBEComponent>(_target_ITypeInfoPtr);
-
+            
             InitCommon();
             DetectUserFormClass();
         }
@@ -192,13 +176,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 // The passed in TypeInfo is already a TypeInfoWrapper.  Detect & prevent double wrapping...
                 var tlib = (TypeInfoWrapper)(TypeInfoInternalSelfMarshalForwarderBase)rawTypeInfo;
                 var rawObjectPtr = tlib._typeInfoPointer.ExtractPointer();
-                //var rawObjectPtr = tlib._target_ITypeInfoPtr;
                 InitFromRawPointer(rawObjectPtr, addRef: true);
                 _cachedTextFields = tlib._cachedTextFields;     // copied to ensure we work around the UserForm GetDocumentation() crash
                 return;
             }
 
-            //_target_ITypeInfo = (ITypeInfoInternal)rawTypeInfo;
             InitCommon();
         }
 
@@ -226,20 +208,12 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             if (_isDisposed) return;
             _isDisposed = true;
 
-            //if (_target_ITypeInfo_IsRefCounted)
-            //{
-            //    if (_target_ITypeInfo != null) RdMarshal.ReleaseComObject(_target_ITypeInfo);
-            //    if (_target_ITypeInfoAlternate != null) RdMarshal.ReleaseComObject(_target_ITypeInfoAlternate);
-            //}
-            
             _vbeExtensions?.Dispose();
             _cachedReferencedTypeInfos?.Dispose();
             Container?.Dispose();
 
             _typeInfoPointer.Dispose();
             _typeInfoAlternatePointer.Dispose();
-
-            //if (_target_ITypeInfoPtr != IntPtr.Zero) RdMarshal.Release(_target_ITypeInfoPtr);
         }
 
         TypeInfoVBEExtensions _vbeExtensions;
@@ -247,17 +221,19 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             get
             {
-                if (_vbeExtensions == null)
+                if (_vbeExtensions != null)
                 {
-                    if (!HasVBEExtensions) throw new InvalidOperationException("This TypeInfo does not represent a VBE component, so does not expose VBE Extensions");
-                    _vbeExtensions = new TypeInfoVBEExtensions(this, _typeInfoPointer.ExtractPointer());
+                    return _vbeExtensions;
                 }
+
+                if (!HasVBEExtensions) throw new InvalidOperationException("This TypeInfo does not represent a VBE component, so does not expose VBE Extensions");
+                _vbeExtensions = new TypeInfoVBEExtensions(this, _typeInfoPointer.ExtractPointer());
 
                 return _vbeExtensions;
             }
         }
 
-        public struct TypeLibTextFields
+        private struct TypeLibTextFields
         {
             public string _name;
             public string _docString;
@@ -269,12 +245,14 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             get
             {
-                if (!_cachedTextFields.HasValue)
+                if (_cachedTextFields.HasValue)
                 {
-                    var cache = new TypeLibTextFields();
-                    ((ComTypes.ITypeInfo)_target_ITypeInfo).GetDocumentation((int)KnownDispatchMemberIDs.MEMBERID_NIL, out cache._name, out cache._docString, out cache._helpContext, out cache._helpFile);
-                    _cachedTextFields = cache;
+                    return _cachedTextFields.Value;
                 }
+
+                var cache = new TypeLibTextFields();
+                ((ComTypes.ITypeInfo)_target_ITypeInfo).GetDocumentation((int)KnownDispatchMemberIDs.MEMBERID_NIL, out cache._name, out cache._docString, out cache._helpContext, out cache._helpFile);
+                _cachedTextFields = cache;
                 return _cachedTextFields.Value;
             }
         }
@@ -313,7 +291,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             using (var typeInfoPtr = AddressableVariables.Create<IntPtr>())
             {
-                int hr = _target_ITypeInfo.GetRefTypeInfo(hRef, typeInfoPtr.Address);
+                var hr = _target_ITypeInfo.GetRefTypeInfo(hRef, typeInfoPtr.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
 
                 var outVal = new TypeInfoWrapper(typeInfoPtr.Value, IsUserFormBaseClass ? (int?)hRef : null); // takes ownership of the COM reference
@@ -328,7 +306,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public IntPtr GetCOMReferencePtr()
             => RdMarshal.GetComInterfaceForObject(this, typeof(ITypeInfoInternal));
 
-        int HandleBadHRESULT(int hr)
+        private static int HandleBadHRESULT(int hr)
         {
             return hr;
         }
@@ -350,7 +328,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         public override int GetTypeAttr(IntPtr ppTypeAttr)
         {
-            int hr = _target_ITypeInfo.GetTypeAttr(ppTypeAttr);
+            var hr = _target_ITypeInfo.GetTypeAttr(ppTypeAttr);
             if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
 
             var pTypeAttr = StructHelper.ReadStructureUnsafe<IntPtr>(ppTypeAttr);
@@ -363,14 +341,13 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         public override int GetTypeComp(IntPtr ppTComp)
         {
-            int hr = _target_ITypeInfo.GetTypeComp(ppTComp);
-            if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
-            return hr;
+            var hr = _target_ITypeInfo.GetTypeComp(ppTComp);
+            return ComHelper.HRESULT_FAILED(hr) ? HandleBadHRESULT(hr) : hr;
         }
 
         public override int GetFuncDesc(int index, IntPtr ppFuncDesc)
         {
-            int hr = _target_ITypeInfo.GetFuncDesc(index, ppFuncDesc);
+            var hr = _target_ITypeInfo.GetFuncDesc(index, ppFuncDesc);
             if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
 
             if (_target_ITypeInfoAlternate != null)
@@ -395,7 +372,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                         }
                         else
                         {
-                            // FIXME log
+                            Debug.Assert(false, $"The sanity check failed; {nameof(funcDesc.memid)}: {funcDesc.memid} and {nameof(funcDescAlternate.memid)}: {funcDescAlternate.memid}");
                         }
                         _target_ITypeInfoAlternate.ReleaseFuncDesc(funcDescAlternatePtr.Value.Address);
 
@@ -409,7 +386,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         public override int GetVarDesc(int index, IntPtr ppVarDesc)
         {
-            int hr = _target_ITypeInfo.GetVarDesc(index, ppVarDesc);
+            var hr = _target_ITypeInfo.GetVarDesc(index, ppVarDesc);
             if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
 
             var pVarDesc = StructHelper.ReadStructureUnsafe<IntPtr>(ppVarDesc);
@@ -456,37 +433,32 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 }
             }
 
-            int hr = _target_ITypeInfo.GetNames(memid, rgBstrNames, cMaxNames, pcNames);
-            if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
-            return hr;
+            var hr = _target_ITypeInfo.GetNames(memid, rgBstrNames, cMaxNames, pcNames);
+            return ComHelper.HRESULT_FAILED(hr) ? HandleBadHRESULT(hr) : hr;
         }
 
         public override int GetRefTypeOfImplType(int index, IntPtr href)
         {
-            int hr = _target_ITypeInfo.GetRefTypeOfImplType(index, href);
-            if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
-            return hr;
+            var hr = _target_ITypeInfo.GetRefTypeOfImplType(index, href);
+            return ComHelper.HRESULT_FAILED(hr) ? HandleBadHRESULT(hr) : hr;
         }
 
         public override int GetImplTypeFlags(int index, IntPtr pImplTypeFlags)
         {
-            int hr = _target_ITypeInfo.GetImplTypeFlags(index, pImplTypeFlags);
-            if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
-            return hr;
+            var hr = _target_ITypeInfo.GetImplTypeFlags(index, pImplTypeFlags);
+            return ComHelper.HRESULT_FAILED(hr) ? HandleBadHRESULT(hr) : hr;
         }
 
         public override int GetIDsOfNames(IntPtr rgszNames, int cNames, IntPtr pMemId)
         {
-            int hr = _target_ITypeInfo.GetIDsOfNames(rgszNames, cNames, pMemId);
-            if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
-            return hr;
+            var hr = _target_ITypeInfo.GetIDsOfNames(rgszNames, cNames, pMemId);
+            return ComHelper.HRESULT_FAILED(hr) ? HandleBadHRESULT(hr) : hr;
         }
 
         public override int Invoke(IntPtr pvInstance, int memid, short wFlags, IntPtr pDispParams, IntPtr pVarResult, IntPtr pExcepInfo, IntPtr puArgErr)
         {
-            int hr = _target_ITypeInfo.Invoke(pvInstance, memid, wFlags, pDispParams, pVarResult, pExcepInfo, puArgErr);
-            if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
-            return hr;
+            var hr = _target_ITypeInfo.Invoke(pvInstance, memid, wFlags, pDispParams, pVarResult, pExcepInfo, puArgErr);
+            return ComHelper.HRESULT_FAILED(hr) ? HandleBadHRESULT(hr) : hr;
         }
 
         public override int GetDocumentation(int memid, IntPtr strName, IntPtr strDocString, IntPtr dwHelpContext, IntPtr strHelpFile)
@@ -513,22 +485,20 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
             else
             {
-                int hr = _target_ITypeInfo.GetDocumentation(memid, strName, strDocString, dwHelpContext, strHelpFile);
-                if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
-                return hr;
+                var hr = _target_ITypeInfo.GetDocumentation(memid, strName, strDocString, dwHelpContext, strHelpFile);
+                return ComHelper.HRESULT_FAILED(hr) ? HandleBadHRESULT(hr) : hr;
             }
         }
 
         public override int GetDllEntry(int memid, ComTypes.INVOKEKIND invKind, IntPtr pBstrDllName, IntPtr pBstrName, IntPtr pwOrdinal)
         {
-            int hr = _target_ITypeInfo.GetDllEntry(memid, invKind, pBstrDllName, pBstrName, pwOrdinal);
-            if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
-            return hr;
+            var hr = _target_ITypeInfo.GetDllEntry(memid, invKind, pBstrDllName, pBstrName, pwOrdinal);
+            return ComHelper.HRESULT_FAILED(hr) ? HandleBadHRESULT(hr) : hr;
         }
 
         public override int GetRefTypeInfo(int hRef, IntPtr ppTI)
         {
-            int hr = GetSafeRefTypeInfo(hRef, out var ti);
+            var hr = GetSafeRefTypeInfo(hRef, out var ti);
             if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
 
             RdMarshal.WriteIntPtr(ppTI, ti.GetCOMReferencePtr());
@@ -537,41 +507,35 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         public override int AddressOfMember(int memid, ComTypes.INVOKEKIND invKind, IntPtr ppv)
         {
-            int hr = _target_ITypeInfo.AddressOfMember(memid, invKind, ppv);
-            if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
-            return hr;
+            var hr = _target_ITypeInfo.AddressOfMember(memid, invKind, ppv);
+            return ComHelper.HRESULT_FAILED(hr) ? HandleBadHRESULT(hr) : hr;
         }
 
         public override int CreateInstance(IntPtr pUnkOuter, ref Guid riid, IntPtr ppvObj)
         {
-            int hr = _target_ITypeInfo.CreateInstance(pUnkOuter, riid, ppvObj);
-            if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
-            return hr;
+            var hr = _target_ITypeInfo.CreateInstance(pUnkOuter, riid, ppvObj);
+            return ComHelper.HRESULT_FAILED(hr) ? HandleBadHRESULT(hr) : hr;
         }
 
         public override int GetMops(int memid, IntPtr pBstrMops)
         {
-            int hr = _target_ITypeInfo.GetMops(memid, pBstrMops);
-            if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
-            return hr;
+            var hr = _target_ITypeInfo.GetMops(memid, pBstrMops);
+            return ComHelper.HRESULT_FAILED(hr) ? HandleBadHRESULT(hr) : hr;
         }
 
         public override void ReleaseTypeAttr(IntPtr pTypeAttr)
         {
             _target_ITypeInfo.ReleaseTypeAttr(pTypeAttr);
-            return;
         }
 
         public override void ReleaseFuncDesc(IntPtr pFuncDesc)
         {
             _target_ITypeInfo.ReleaseFuncDesc(pFuncDesc);
-            return;
         }
 
         public override void ReleaseVarDesc(IntPtr pVarDesc)
         {
             _target_ITypeInfo.ReleaseVarDesc(pVarDesc);
-            return;
         }
     }
 }
