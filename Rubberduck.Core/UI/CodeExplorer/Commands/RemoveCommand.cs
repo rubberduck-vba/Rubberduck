@@ -33,14 +33,14 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             return _exportCommand.CanExecute(parameter) &&
                    parameter is CodeExplorerComponentViewModel viewModel &&
-                   viewModel.Declaration.QualifiedName.QualifiedModuleName.ComponentType != ComponentType.Document;
+                   viewModel.Declaration.QualifiedModuleName.ComponentType != ComponentType.Document;
         }
 
         protected override void OnExecute(object parameter)
         {
             if (!(parameter is CodeExplorerComponentViewModel node) ||
                 node.Declaration == null ||
-                node.Declaration.QualifiedName.QualifiedModuleName.ComponentType == ComponentType.Document)
+                node.Declaration.QualifiedModuleName.ComponentType == ComponentType.Document)
             {
                 return;
             }
@@ -71,15 +71,18 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private bool TryExport(QualifiedModuleName qualifiedModuleName)
         {
-            var projectId = qualifiedModuleName.ProjectId;
-            var projectType = _projectsRepository.Project(projectId).Type;
             var component = _projectsRepository.Component(qualifiedModuleName);
+            if (component is null)
+            {
+                return false; // Edge-case, component already gone.
+            }
 
-            if (projectType == ProjectType.HostProject && component.IsSaved)
+            if (_vbe.Kind == VBEKind.Standalone && component.IsSaved)
             {
                 return true; // File already up-to-date
             }
 
+            // "Do you want to export '{qualifiedModuleName.Name}' before removing?" (localized)
             var message = string.Format(CodeExplorerUI.ExportBeforeRemove_Prompt, qualifiedModuleName.Name);
 
             switch (_messageBox.Confirm(message, CodeExplorerUI.ExportBeforeRemove_Caption, ConfirmationOutcome.Yes))
