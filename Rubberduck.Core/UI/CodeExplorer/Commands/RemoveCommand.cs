@@ -27,12 +27,13 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        public override IEnumerable<Type> ApplicableNodeTypes => new List<Type> { typeof(CodeExplorerComponentViewModel) };
+        public override IEnumerable<Type> ApplicableNodeTypes { get; } = new List<Type> { typeof(CodeExplorerComponentViewModel)};
 
         private bool SpecialEvaluateCanExecute(object parameter)
         {
             return _exportCommand.CanExecute(parameter) &&
                    parameter is CodeExplorerComponentViewModel viewModel &&
+                   viewModel.Declaration != null &&
                    viewModel.Declaration.QualifiedModuleName.ComponentType != ComponentType.Document;
         }
 

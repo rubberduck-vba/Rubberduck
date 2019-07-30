@@ -643,7 +643,7 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The following files could not be deleted\r\n\r\n{0}.
+        ///   Looks up a localized string similar to The following files could not be deleted:\r\n\r\n{0}.
         /// </summary>
         public static string DeleteFailed_Message {
             get {

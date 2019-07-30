@@ -434,6 +434,6 @@
     <value>Delete Failed</value>
   </data>
   <data name="DeleteFailed_Message" xml:space="preserve">
-    <value>The following files could not be deleted\r\n\r\n{0}</value>
+    <value>The following files could not be deleted:\r\n\r\n{0}</value>
   </data>
 </root>

@@ -27,7 +27,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        public override IEnumerable<Type> ApplicableNodeTypes => new List<Type> { typeof(CodeExplorerComponentViewModel) };
+        public override IEnumerable<Type> ApplicableNodeTypes { get; } = new List<Type> { typeof(CodeExplorerComponentViewModel) };
 
         private bool SpecialEvaluateCanExecute(object parameter)
         {
@@ -42,14 +42,14 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return;
             }
 
-            var qualifiedModuleName = node.Declaration.QualifiedName.QualifiedModuleName;
+            var qualifiedModuleName = node.Declaration.QualifiedModuleName;
             var component = _projectsProvider.Component(qualifiedModuleName);
             if (component is null)
             {
                 return;
             }
 
-            // Permanent operation, prompt for confirm
+            // "{qualifiedModuleName.Name} will be permanently deleted. Continue?" (localized)
             var message = string.Format(Resources.CodeExplorer.CodeExplorerUI.ConfirmBeforeDelete_Prompt, qualifiedModuleName.Name);
             if (!_messageBox.ConfirmYesNo(message, Resources.CodeExplorer.CodeExplorerUI.ConfirmBeforeDelete_Caption))
             {
@@ -89,6 +89,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             // Let the user know if there are any component files left on disk
             if (failedDeletions.Any())
             {
+                // "The following files could not be deleted: {fileDeletions}" (localized)
                 message = string.Format(Resources.CodeExplorer.CodeExplorerUI.DeleteFailed_Message, string.Join(Environment.NewLine, failedDeletions));
                 _messageBox.NotifyWarn(message, Resources.CodeExplorer.CodeExplorerUI.DeleteFailed_Caption);
             }
