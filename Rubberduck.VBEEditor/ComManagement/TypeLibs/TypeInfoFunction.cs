@@ -1,4 +1,6 @@
 ﻿using System;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
@@ -6,7 +8,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// <summary>
     /// A class that represents a function definition within a typeinfo.  Essentially a wrapper for ComTypes.FUNCDESC.
     /// </summary>
-    public class TypeInfoFunction : IDisposable
+    internal class TypeInfoFunction : ITypeInfoFunction
     {
         private readonly ComTypes.ITypeInfo _typeInfo;
         private readonly IntPtr _funcDescPtr;
@@ -57,14 +59,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         public string Name => _names[0];
         public int ParamCount => FuncDesc.cParams;
-
-        public enum PROCKIND
-        {
-            PROCKIND_PROC,
-            PROCKIND_LET,
-            PROCKIND_SET,
-            PROCKIND_GET
-        }
 
         public PROCKIND ProcKind
         {

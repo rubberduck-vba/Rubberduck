@@ -1,6 +1,8 @@
 ﻿using System;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Utility;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 {

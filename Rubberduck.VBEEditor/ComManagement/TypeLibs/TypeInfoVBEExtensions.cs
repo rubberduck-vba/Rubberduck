@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 {
@@ -9,7 +11,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// <remarks>This internal interface is known to be supported since the very earliest version of VBA6</remarks>
     [ComImport(), Guid("DDD557E1-D96F-11CD-9570-00AA0051E5D4")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    public interface IVBEComponent
+    internal interface IVBEComponent
     {
         void Placeholder1();
         void Placeholder2();
@@ -50,7 +52,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// <summary>
     /// Exposes the VBE specific extensions provided by an ITypeInfo
     /// </summary>
-    public class TypeInfoVBEExtensions : IDisposable
+    internal class TypeInfoVBEExtensions : ITypeInfoVBEExtensions
     {
         private readonly TypeInfoWrapper _parent;
         private readonly IVBEComponent _target_IVBEComponent;
@@ -117,7 +119,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             // We search for the dispId using the real type info rather than using staticModule.GetIdsOfNames, 
             // as we can then also include PRIVATE scoped procedures.
-            var func = _parent.Funcs.Find(name, TypeInfoFunction.PROCKIND.PROCKIND_PROC);
+            var func = _parent.Funcs.Find(name, PROCKIND.PROCKIND_PROC);
             if (func == null)
             {
                 throw new ArgumentException($"StdModExecute failed.  Couldn't find procedure named '{name}'");

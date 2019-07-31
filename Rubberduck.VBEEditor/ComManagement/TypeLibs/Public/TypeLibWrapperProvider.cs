@@ -1,5 +1,7 @@
-﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+﻿using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
+// ReSharper disable once CheckNamespace
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 {
     public class TypeLibWrapperProvider : ITypeLibWrapperProvider

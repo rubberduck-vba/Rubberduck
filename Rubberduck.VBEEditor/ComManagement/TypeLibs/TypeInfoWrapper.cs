@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Utility;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
@@ -39,7 +42,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     ///
     /// This class can also be cast to <see cref="ComTypes.ITypeInfo"/> for safe access to the underlying type information
     /// </remarks>
-    public sealed class TypeInfoWrapper : TypeInfoInternalSelfMarshalForwarderBase, IDisposable
+    internal sealed class TypeInfoWrapper : TypeInfoInternalSelfMarshalForwarderBase, ITypeInfoWrapper
     {
         private DisposableList<TypeInfoWrapper> _cachedReferencedTypeInfos;
         private ComPointer<ITypeInfoInternal> _typeInfoPointer;
@@ -49,6 +52,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         private ITypeInfoInternal _target_ITypeInfoAlternate => _typeInfoAlternatePointer.Interface;
 
         public TypeLibInternalSelfMarshalForwarderBase Container { get; private set; }
+
+        // FIXME ugly ugly ugly hack....
+        ITypeLibWrapper ITypeInfoWrapper.Container => Container as ITypeLibWrapper;
+
         public int ContainerIndex { get; private set; }
         public bool HasModuleScopeCompilationErrors { get; private set; }
         public bool HasVBEExtensions { get; private set; }
@@ -56,9 +63,14 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public bool HasSimulatedContainer { get; private set; }
         public bool IsUserFormBaseClass { get; private set; }
 
-        public TypeInfoFunctionCollection Funcs;
-        public TypeInfoVariablesCollection Vars;
-        public TypeInfoImplementedInterfacesCollection ImplementedInterfaces;
+        public TypeInfoFunctionCollection Funcs { get; private set; }
+        ITypeInfoFunctionCollection ITypeInfoWrapper.Funcs => Funcs;
+
+        public TypeInfoVariablesCollection Vars { get; private set; }
+        ITypeInfoVariablesCollection ITypeInfoWrapper.Vars => Vars;
+
+        public TypeInfoImplementedInterfacesCollection ImplementedInterfaces { get; private set; }
+        ITypeInfoImplementedInterfacesCollection ITypeInfoWrapper.ImplementedInterfaces => ImplementedInterfaces;
 
         // some helpers
         public string Name => CachedTextFields._name;
@@ -71,6 +83,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public bool HasPredeclaredId => CachedAttributes.wTypeFlags.HasFlag(ComTypes.TYPEFLAGS.TYPEFLAG_FPREDECLID);
         public ComTypes.TYPEFLAGS Flags => CachedAttributes.wTypeFlags;
         public string ContainerName => RdMarshal.GetTypeLibName(Container);
+        ITypeInfoVBEExtensions ITypeInfoWrapper.VBEExtensions => VBEExtensions;
 
         // Constants inside VBA components are exposed via the ITypeInfo, but there names are not reported correctly.
         // Their names all appear with a DispID of MEMBERID_NIL.  In order to try to make VBA type infos more agreeable to the specifications,
@@ -306,6 +319,13 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
                 return hr;
             }
+        }
+
+        int ITypeInfoWrapper.GetSafeRefTypeInfo(int hRef, out ITypeInfoWrapper outTI)
+        {
+            var result = GetSafeRefTypeInfo(hRef, out var outTIW);
+            outTI = outTIW;
+            return result;
         }
 
         public IntPtr GetCOMReferencePtr()

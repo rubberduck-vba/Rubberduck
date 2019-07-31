@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Rubberduck.VBEditor.ComManagement.TypeLibs
+namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
 {
     /// <summary>
     /// AddressableVariables aid creating and handling unmanaged data

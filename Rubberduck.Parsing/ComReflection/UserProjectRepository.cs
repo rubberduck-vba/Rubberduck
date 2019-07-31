@@ -5,7 +5,7 @@ using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor.ComManagement;
-using Rubberduck.VBEditor.ComManagement.TypeLibs;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 

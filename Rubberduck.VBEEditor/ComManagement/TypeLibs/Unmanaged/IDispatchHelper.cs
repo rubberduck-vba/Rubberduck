@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
 
-namespace Rubberduck.VBEditor.ComManagement.TypeLibs
+namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
 {
     /// <summary>
     /// Used by methods in the ITypeInfo and ITypeLib interfaces.  Usually used to get the root type or library name.
     /// </summary>
-    public enum KnownDispatchMemberIDs : int
+    internal enum KnownDispatchMemberIDs 
     {
         MEMBERID_NIL = -1,
     }
@@ -17,7 +18,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// see https://msdn.microsoft.com/en-us/library/windows/desktop/ms221627(v=vs.85).aspx
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public struct VARIANT
+    internal struct VARIANT
     {
         short _vt;
         short _reserved1;
@@ -28,32 +29,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     }
 
     /// <summary>
-    /// A version of IDispatch that allows us to call its members explicitly
-    /// see https://msdn.microsoft.com/en-us/library/windows/desktop/ms221608(v=vs.85).aspx
-    /// </summary>
-    [ComImport(), Guid("00020400-0000-0000-C000-000000000046")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    public interface IDispatch
-    {
-        [PreserveSig] int GetTypeInfoCount([Out] out uint pctinfo);
-        [PreserveSig] int GetTypeInfo([In] uint iTInfo, [In] uint lcid, [Out] out ComTypes.ITypeInfo pTypeInfo);
-        [PreserveSig] int GetIDsOfNames([In] ref Guid riid, [In] string[] rgszNames, [In] uint cNames, [In] uint lcid, [Out] out int[] rgDispId);
-
-        [PreserveSig]
-        int Invoke([In] int dispIdMember,
-            [In] ref Guid riid,
-            [In] uint lcid,
-            [In] uint dwFlags,
-            [In, Out] ref ComTypes.DISPPARAMS pDispParams,
-            [Out] out Object pVarResult,
-            [In, Out] ref ComTypes.EXCEPINFO pExcepInfo,
-            [Out] out uint pArgErr);
-    }
-
-    /// <summary>
     /// Exposes some special routines for dealing with OLEs IDispatch interface
     /// </summary>
-    public static class IDispatchHelper
+    internal static class IDispatchHelper
     {
         private static Guid _guid_null = new Guid();
 

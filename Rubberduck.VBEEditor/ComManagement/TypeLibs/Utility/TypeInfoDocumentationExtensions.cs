@@ -1,4 +1,6 @@
-﻿namespace Rubberduck.VBEditor.ComManagement.TypeLibs
+﻿using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
+
+namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Utility
 {
     /// <summary>
     /// All the Document() methods in one extension class for convenience
@@ -6,9 +8,9 @@
     /// <remarks>
     /// TODO: could make this more friendly by outputting in IDL format
     /// </remarks>
-    public static class TypeInfoDocumentationExtensions
+    internal static class TypeInfoDocumentationExtensions
     {
-        public static void Document(this TypeLibWrapper _this, StringLineBuilder output)
+        public static void Document(this ITypeLibWrapper _this, StringLineBuilder output)
         {
             output.AppendLine();
             output.AppendLine("================================================================================");
@@ -45,7 +47,7 @@
             }
         }
 
-        public static void Document(this TypeInfoWrapper _this, StringLineBuilder output, string qualifiedName, int implementsLevel)
+        public static void Document(this ITypeInfoWrapper _this, StringLineBuilder output, string qualifiedName, int implementsLevel)
         {
             output.AppendLine();
             if (implementsLevel == 0)
@@ -96,12 +98,12 @@
             }
         }
 
-        public static void Document(this TypeInfoVariable _this, StringLineBuilder output)
+        public static void Document(this ITypeInfoVariable _this, StringLineBuilder output)
         {
             output.AppendLine("- field: " + _this.Name + " [id 0x" + _this.MemberID.ToString("X") + ", flags " + _this.MemberFlags.ToString() + "]");
         }
 
-        public static void Document(this TypeInfoFunction _this, StringLineBuilder output)
+        public static void Document(this ITypeInfoFunction _this, StringLineBuilder output)
         {
             string namesInfo = _this.Name + "(";
 
@@ -121,7 +123,7 @@
             output.AppendLine("- member: " + namesInfo + " [id 0x" + _this.MemberID.ToString("X") + ", " + _this.InvokeKind + ", flags " + _this.MemberFlags.ToString() + "]");
         }
 
-        public static void Document(this TypeLibReference _this, StringLineBuilder output)
+        public static void Document(this ITypeLibReference _this, StringLineBuilder output)
         {
             output.AppendLine("- VBE Reference: " + _this.Name + " [path: " + _this.Path + ", majorVersion: " + _this.MajorVersion +
                                 ", minorVersion: " + _this.MinorVersion + ", guid: " + _this.GUID + ", lcid: " + _this.LCID + "]");

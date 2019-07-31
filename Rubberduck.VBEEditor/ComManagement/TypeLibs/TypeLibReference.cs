@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Globalization;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 {
     /// <summary>
     /// A class that represents a reference within a VBA project
     /// </summary>
-    public class TypeLibReference
+    internal class TypeLibReference : ITypeLibReference
     {
         private readonly TypeLibVBEExtensions _vbeTypeLib;
         private readonly int _typeLibIndex;
@@ -51,5 +52,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
 
         public TypeLibWrapper TypeLib => _vbeTypeLib.GetVBEReferenceTypeLibByIndex(_typeLibIndex);
+        ITypeLibWrapper ITypeLibReference.TypeLib => TypeLib;
     }
 }

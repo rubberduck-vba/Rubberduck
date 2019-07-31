@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Rubberduck.VBEditor.ComManagement.TypeLibs
+namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
 {
     /// <summary>
     /// Some known COM HRESULTs used in our code
     /// </summary>
-    public enum KnownComHResults : int
+    internal enum KnownComHResults 
     {
         S_OK = 0,
         E_VBA_COMPILEERROR = unchecked((int)0x800A9C64),
@@ -20,7 +20,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// Ensures that a wrapped COM object only responds to a specific COM interface.
     /// </summary>
     /// <typeparam name="T">The COM interface for restriction</typeparam>
-    public class RestrictComInterfaceByAggregation<T> : ICustomQueryInterface, IDisposable
+    internal class RestrictComInterfaceByAggregation<T> : ICustomQueryInterface, IDisposable
     {
         private readonly IntPtr _outerObject;
 
@@ -113,7 +113,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// <summary>
     /// Exposes some special routines for dealing with COM interop
     /// </summary>
-    public static class ComHelper
+    internal static class ComHelper
     {
         /// <summary>
         /// Equivalent of the Windows FAILED() macro in C

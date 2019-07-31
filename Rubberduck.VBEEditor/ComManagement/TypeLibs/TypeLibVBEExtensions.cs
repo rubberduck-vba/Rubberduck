@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 {
@@ -12,7 +14,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// <remarks>This internal interface is known to be supported since the very earliest version of VBA6</remarks>
     [ComImport(), Guid("DDD557E0-D96F-11CD-9570-00AA0051E5D4")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    interface IVBEProject
+    internal interface IVBEProject
     {
         string GetProjectName();                 // same as calling ITypeLib::GetDocumentation(-1)                   
         void SetProjectName(string value);       // same as IVBEProject2::set_ProjectName()
@@ -58,11 +60,12 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// <summary>
     /// Exposes the VBE specific extensions provided by an ITypeLib
     /// </summary>
-    public class TypeLibVBEExtensions
+    internal class TypeLibVBEExtensions : ITypeLibVBEExtensions
     {
         private readonly string _name;
         private readonly IVBEProject _target_IVBEProject;
         public TypeLibReferenceCollection VBEReferences;
+        ITypeLibReferenceCollection ITypeLibVBEExtensions.VBEReferences => VBEReferences;
 
         public TypeLibVBEExtensions(ITypeLibWrapper parent, ITypeLibInternal unwrappedTypeLib)
         {
@@ -149,6 +152,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             return new TypeLibReference(this, index, _target_IVBEProject.GetReferenceString(index));
         }
+        ITypeLibReference ITypeLibVBEExtensions.GetVBEReferenceByIndex(int index) => GetVBEReferenceByIndex(index);
 
         public TypeLibWrapper GetVBEReferenceTypeLibByIndex(int index)
         {
@@ -164,8 +168,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
             return new TypeLibWrapper(referenceTypeLibPtr, addRef: false);
         }
+        ITypeLibWrapper ITypeLibVBEExtensions.GetVBEReferenceTypeLibByIndex(int index) =>
+            GetVBEReferenceTypeLibByIndex(index);
 
-        public TypeLibReference GetVBEReferenceByGuid(Guid referenceGuid)
+        public ITypeLibReference GetVBEReferenceByGuid(Guid referenceGuid)
         {
             foreach (var reference in VBEReferences)
             {

@@ -1,4 +1,6 @@
 ﻿using System;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
@@ -6,7 +8,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// <summary>
     /// A class that represents a variable or field within a typeinfo
     /// </summary>
-    public class TypeInfoVariable : IDisposable
+    internal class TypeInfoVariable : ITypeInfoVariable
     {
         private readonly ComTypes.ITypeInfo _typeInfo;
         private readonly ComTypes.VARDESC _varDesc;

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices.ComTypes;
 
-namespace Rubberduck.VBEditor.ComManagement.TypeLibs
+namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract
 {
-    public interface ITypeLibWrapper: ITypeLib, IDisposable
+    public interface ITypeLibWrapper : ITypeLib, IDisposable
     {
         string Name { get; }
         string DocString { get; }
@@ -12,11 +12,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         bool HasVBEExtensions { get; }
         int TypesCount { get; }
 
-        TypeInfoWrapperCollection TypeInfos { get; }
-        TypeLibVBEExtensions VBEExtensions { get; }
+        ITypeInfoWrapperCollection TypeInfos { get; }
+        ITypeLibVBEExtensions VBEExtensions { get; }
 
         System.Runtime.InteropServices.ComTypes.TYPELIBATTR Attributes { get; }
 
-        int GetSafeTypeInfoByIndex(int index, out TypeInfoWrapper outTI);
+        int GetSafeTypeInfoByIndex(int index, out ITypeInfoWrapper outTI);
     }
 }

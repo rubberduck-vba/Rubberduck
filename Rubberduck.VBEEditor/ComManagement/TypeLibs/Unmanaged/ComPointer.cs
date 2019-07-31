@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Rubberduck.VBEditor.ComManagement.TypeLibs
+namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
 {
     /// <summary>
     /// The <see cref="ComPointer{TComInterface}"/> encapsulates the conversion between

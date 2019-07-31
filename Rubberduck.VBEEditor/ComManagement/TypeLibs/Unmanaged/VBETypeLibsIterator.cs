@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace Rubberduck.VBEditor.ComManagement.TypeLibs
+namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
 {
     /// <summary>
     /// An internal representation of the ITypeLib object hosted by the VBE.
@@ -22,7 +22,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// <summary>
     /// An enumerable class for iterating over the double linked list of ITypeLibs provided by the VBE 
     /// </summary>
-    public sealed class VBETypeLibsIterator : IEnumerable<TypeLibWrapper>, IEnumerator<TypeLibWrapper>
+    internal sealed class VBETypeLibsIterator : IEnumerable<TypeLibWrapper>, IEnumerator<TypeLibWrapper>
     {
         private IntPtr _currentTypeLibPtr;
         private VBETypeLibObj _currentTypeLibStruct;

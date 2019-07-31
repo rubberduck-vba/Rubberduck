@@ -1,4 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Utility;
 
 /// <summary>
 /// For usage examples, please see VBETypeLibsAPI
@@ -22,14 +27,14 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// <summary>
     /// Exposes an enumerable collection of TypeInfo objects exposed by this ITypeLib
     /// </summary>
-    public class TypeInfoWrapperCollection : IIndexedCollectionBase<TypeInfoWrapper>
+    internal class TypeInfoWrapperCollection : IndexedCollectionBase<TypeInfoWrapper>, ITypeInfoWrapperCollection
     {
         private readonly TypeLibWrapper _parent;
         public TypeInfoWrapperCollection(TypeLibWrapper parent) => _parent = parent;
         public override int Count => _parent.TypesCount;
         public override TypeInfoWrapper GetItemByIndex(int index)
         {
-            int hr = _parent.GetSafeTypeInfoByIndex(index, out var retVal);
+            var hr = _parent.GetSafeTypeInfoByIndex(index, out var retVal);
 
             if (ComHelper.HRESULT_FAILED(hr))
             {
@@ -59,5 +64,24 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             return retVal;
         }
 
+        ITypeInfoWrapper ITypeInfoWrapperCollection.Find(string searchTypeName)
+        {
+            return Find(searchTypeName);
+        }
+
+        ITypeInfoWrapper ITypeInfoWrapperCollection.Get(string searchTypeName)
+        {
+            return Get(searchTypeName);
+        }
+
+        IEnumerator<ITypeInfoWrapper> ITypeInfoWrapperCollection.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        ITypeInfoWrapper ITypeInfoWrapperCollection.GetItemByIndex(int index)
+        {
+            return GetItemByIndex(index);
+        }
     }
 }

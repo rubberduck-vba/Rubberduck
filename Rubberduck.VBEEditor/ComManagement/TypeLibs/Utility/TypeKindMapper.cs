@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices.ComTypes;
 
-namespace Rubberduck.VBEditor.ComManagement.TypeLibs
+namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Utility
 {
-    public static class TypeKindMapper
+    internal static class TypeKindMapper
     {
         public static TYPEKIND_VBE ToTypeKindVbe(this TYPEKIND typeKind)
         {

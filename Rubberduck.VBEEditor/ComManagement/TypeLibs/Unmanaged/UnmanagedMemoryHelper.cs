@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Rubberduck.VBEditor.ComManagement.TypeLibs
+namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
 {
     /// <summary>
     /// Windows API constants used by VirtualQuery, see https://msdn.microsoft.com/en-us/library/windows/desktop/aa366786.aspx
     /// </summary>
-    public enum ALLOCATION_PROTECTION : uint
+    internal enum ALLOCATION_PROTECTION : uint
     {
         PAGE_EXECUTE = 0x00000010,
         PAGE_EXECUTE_READ = 0x00000020,
@@ -25,7 +25,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// Windows API structure used by VirtualQuery, see https://msdn.microsoft.com/en-us/library/windows/desktop/aa366775.aspx
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public struct MEMORY_BASIC_INFORMATION
+    internal struct MEMORY_BASIC_INFORMATION
     {
         public IntPtr BaseAddress;
         public IntPtr AllocationBase;
@@ -39,7 +39,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// <summary>
     /// Exposes some special routines for dealing with unmanaged memory
     /// </summary>
-    public static class UnmanagedMemoryHelper
+    internal static class UnmanagedMemoryHelper
     {
         /// <summary>
         /// Windows API call used for memory range validation
@@ -126,7 +126,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// <summary>
     /// Encapsulates reading unmanaged memory into managed structures
     /// </summary>
-    public static class StructHelper
+    internal static class StructHelper
     {
         /// <summary>
         /// Takes a COM object, and reads the unmanaged memory given by its pointer, allowing us to read internal fields

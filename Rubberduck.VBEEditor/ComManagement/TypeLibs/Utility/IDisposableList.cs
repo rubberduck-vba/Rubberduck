@@ -2,13 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Rubberduck.VBEditor.ComManagement.TypeLibs
+namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Utility
 {
     /// <summary>
     /// A disposable list that encapsulates the disposing of its elements
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class DisposableList<T> : IList<T>, IDisposable
+    internal class DisposableList<T> : IList<T>, IDisposable
         where T : IDisposable
     {
         private readonly IList<T> _list = new List<T>();

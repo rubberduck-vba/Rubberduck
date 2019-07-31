@@ -1,4 +1,7 @@
 ﻿using System;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Utility;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
 
@@ -24,7 +27,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// TypeInfos obtained by other means (such as the IDispatch::GetTypeInfo method) usually expose more restricted
     /// versions of ITypeInfo which may not expose private members
     /// </remarks>
-    public sealed class TypeLibWrapper : TypeLibInternalSelfMarshalForwarderBase, ITypeLibWrapper
+    internal sealed class TypeLibWrapper : TypeLibInternalSelfMarshalForwarderBase, ITypeLibWrapper
     {
         private DisposableList<TypeInfoWrapper> _cachedTypeInfos;
         private ComPointer<ITypeLibInternal> _typeLibPointer;
@@ -32,7 +35,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         private ITypeLibInternal _target_ITypeLib => _typeLibPointer.Interface;
         
         public bool HasVBEExtensions { get; private set; }
-        public TypeInfoWrapperCollection TypeInfos { get; private set; }
+        public ITypeInfoWrapperCollection TypeInfos { get; private set; }
 
         // helpers
         public string Name => CachedTextFields._name;
@@ -71,7 +74,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
 
         private TypeLibVBEExtensions _vbeExtensions;
-        public TypeLibVBEExtensions VBEExtensions
+        public ITypeLibVBEExtensions VBEExtensions
         {
             get
             {
@@ -163,6 +166,13 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
                 return hr;
             }
+        }
+
+        int ITypeLibWrapper.GetSafeTypeInfoByIndex(int index, out ITypeInfoWrapper outTI)
+        {
+            var result = GetSafeTypeInfoByIndex(index, out var outTIW);
+            outTI = outTIW;
+            return result;
         }
 
         private ComTypes.TYPELIBATTR? _cachedLibAttribs;

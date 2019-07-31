@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
 
-namespace Rubberduck.VBEditor.ComManagement.TypeLibs
+namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Utility
 {
     /// <summary>
     /// A custom implementation of ITypeLib.  A dumb container of ITypeInfos.
@@ -13,7 +14,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// The TypeInfos it holds are disposed of elsewhere.
     /// (typically in an earlier typeinfo references collection) 
     /// </remarks>
-    public sealed class SimpleCustomTypeLibrary : TypeLibInternalSelfMarshalForwarderBase
+    internal sealed class SimpleCustomTypeLibrary : TypeLibInternalSelfMarshalForwarderBase
     {
         private readonly List<TypeInfoWrapper> _containedTypeInfos = new List<TypeInfoWrapper>();
         ComTypes.TYPELIBATTR _libAttribs;

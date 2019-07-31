@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
 
-namespace Rubberduck.VBEditor.ComManagement.TypeLibs
+namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
 {
     /// <summary>
     /// A compatible version of ComTypes.ITypeLib, using IntPtr for all out params
@@ -13,7 +13,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// </remarks>
     [ComImport(), Guid("00020402-0000-0000-C000-000000000046")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    public interface ITypeLibInternal
+    internal interface ITypeLibInternal
     {
         [PreserveSig] int GetTypeInfoCount();
         [PreserveSig] /*HRESULT*/ int GetTypeInfo(int index, /*out ITypeInfo*/ IntPtr ppTI);
@@ -36,7 +36,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// 
     /// These wrappers could likely be implemented much more efficiently if we could use unsafe/fixed code
     /// </remarks>
-    public abstract class TypeLibInternalSelfMarshalForwarderBase : ITypeLibInternal, ComTypes.ITypeLib, IDisposable
+    internal abstract class TypeLibInternalSelfMarshalForwarderBase : ITypeLibInternal, ComTypes.ITypeLib, IDisposable
     {
         private ITypeLibInternal _this_Internal => (ITypeLibInternal)this;
 

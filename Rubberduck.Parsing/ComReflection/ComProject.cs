@@ -10,6 +10,7 @@ using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.Utility;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using TYPELIBATTR = System.Runtime.InteropServices.ComTypes.TYPELIBATTR;
+using TYPEKIND = System.Runtime.InteropServices.ComTypes.TYPEKIND;
 
 namespace Rubberduck.Parsing.ComReflection
 {
@@ -101,9 +102,9 @@ namespace Rubberduck.Parsing.ComReflection
                         var typeAttributes = Marshal.PtrToStructure<TYPEATTR>(typeAttributesPointer);
                         KnownTypes.TryGetValue(typeAttributes.guid, out var type);
                         
-                        switch (typeAttributes.typekind.ToTypeKindVbe())
+                        switch (typeAttributes.typekind)
                         {
-                            case TYPEKIND_VBE.TKIND_ENUM:
+                            case TYPEKIND.TKIND_ENUM:
                                 var enumeration = type ?? new ComEnumeration(this, typeLibrary, info, typeAttributes, index);
                                 Debug.Assert(enumeration is ComEnumeration);
                                 _enumerations.Add(enumeration as ComEnumeration);
@@ -112,7 +113,7 @@ namespace Rubberduck.Parsing.ComReflection
                                     KnownTypes.TryAdd(typeAttributes.guid, enumeration);
                                 }
                                 break;
-                            case TYPEKIND_VBE.TKIND_COCLASS:
+                            case TYPEKIND.TKIND_COCLASS:
                                 var coclass = type ?? new ComCoClass(this, typeLibrary, info, typeAttributes, index);
                                 Debug.Assert(coclass is ComCoClass && !coclass.Guid.Equals(Guid.Empty));
                                 _classes.Add(coclass as ComCoClass);
@@ -121,8 +122,8 @@ namespace Rubberduck.Parsing.ComReflection
                                     KnownTypes.TryAdd(typeAttributes.guid, coclass);
                                 }
                                 break;
-                            case TYPEKIND_VBE.TKIND_DISPATCH:
-                            case TYPEKIND_VBE.TKIND_INTERFACE:
+                            case TYPEKIND.TKIND_DISPATCH:
+                            case TYPEKIND.TKIND_INTERFACE:
                                 var intface = type ?? new ComInterface(this, typeLibrary, info, typeAttributes, index);
                                 Debug.Assert(intface is ComInterface && !intface.Guid.Equals(Guid.Empty));
                                 _interfaces.Add(intface as ComInterface);
@@ -131,11 +132,11 @@ namespace Rubberduck.Parsing.ComReflection
                                     KnownTypes.TryAdd(typeAttributes.guid, intface);
                                 }
                                 break;
-                            case TYPEKIND_VBE.TKIND_RECORD:
+                            case TYPEKIND.TKIND_RECORD:
                                 var structure = new ComStruct(this, typeLibrary, info, typeAttributes, index);
                                 _structs.Add(structure);
                                 break;
-                            case TYPEKIND_VBE.TKIND_MODULE:
+                            case TYPEKIND.TKIND_MODULE:
                                 var module = type ?? new ComModule(this, typeLibrary, info, typeAttributes, index);
                                 Debug.Assert(module is ComModule);
                                 _modules.Add(module as ComModule);
@@ -144,7 +145,7 @@ namespace Rubberduck.Parsing.ComReflection
                                     KnownTypes.TryAdd(typeAttributes.guid, module);
                                 }
                                 break;
-                            case TYPEKIND_VBE.TKIND_ALIAS:
+                            case TYPEKIND.TKIND_ALIAS:
                                 var alias = new ComAlias(this, typeLibrary, info, index, typeAttributes);
                                 _aliases.Add(alias);
                                 if (alias.Guid != Guid.Empty)
@@ -152,11 +153,8 @@ namespace Rubberduck.Parsing.ComReflection
                                     KnownAliases.TryAdd(alias.Guid, alias);
                                 }
                                 break;
-                            case TYPEKIND_VBE.TKIND_UNION:
+                            case TYPEKIND.TKIND_UNION:
                                 //TKIND_UNION is not a supported member type in VBA.
-                                break;
-                            case TYPEKIND_VBE.TKIND_VBACLASS:
-                                //TODO: Implement this.
                                 break;
                             default:
                                 throw new NotImplementedException($"Didn't expect a TYPEATTR with multiple typekind flags set in {Path}.");

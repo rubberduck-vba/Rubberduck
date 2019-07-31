@@ -1,11 +1,12 @@
 ﻿using System.Text;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 
-namespace Rubberduck.VBEditor.ComManagement.TypeLibs
+namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Utility
 {
     /// <summary>
     /// Extension to StringBuilder to allow adding text line by line.
     /// </summary>
-    public class StringLineBuilder
+    internal class StringLineBuilder
     {
         private readonly StringBuilder _document = new StringBuilder();
 
@@ -33,7 +34,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// <summary>
     /// A helper class for providing a static array of known VBA document class types
     /// </summary>
-    public static class DocClassHelper
+    internal static class DocClassHelper
     {
         /// <summary>
         /// A class for holding known document class types used in VBA hosts, and their corresponding interface progIds
@@ -79,7 +80,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         /// Determines the document class type of a VBA class.  See <see cref="DocClassHelper" />
         /// </summary>
         /// <returns>the identified document class type, or <see cref="DocClassType.Unrecognized" /></returns>
-        public static DocClassType DetermineDocumentClassType(TypeInfoWrapper rootInterface)
+        public static DocClassType DetermineDocumentClassType(ITypeInfoWrapper rootInterface)
         {
             return rootInterface.ImplementedInterfaces
                 .DoesImplement(DocClassHelper.KnownDocumentInterfaceProgIds, out var matchId)

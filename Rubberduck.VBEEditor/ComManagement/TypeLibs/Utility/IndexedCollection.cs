@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace Rubberduck.VBEditor.ComManagement.TypeLibs
+namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Utility
 {
     /// <summary>
     /// A base class for exposing an enumerable collection through an index based accessor
     /// </summary>
     /// <typeparam name="TItem">the collection element type</typeparam>
-    public abstract class IIndexedCollectionBase<TItem> : IEnumerable<TItem>
+    internal abstract class IndexedCollectionBase<TItem> : IEnumerable<TItem>
         where TItem : class
     {
-        IEnumerator IEnumerable.GetEnumerator() => new IIndexedCollectionEnumerator<IIndexedCollectionBase<TItem>, TItem>(this);
-        public IEnumerator<TItem> GetEnumerator() => new IIndexedCollectionEnumerator<IIndexedCollectionBase<TItem>, TItem>(this);
+        IEnumerator IEnumerable.GetEnumerator() => new IndexedCollectionEnumerator<IndexedCollectionBase<TItem>, TItem>(this);
+        public IEnumerator<TItem> GetEnumerator() => new IndexedCollectionEnumerator<IndexedCollectionBase<TItem>, TItem>(this);
 
         public abstract int Count { get; }
         public abstract TItem GetItemByIndex(int index);
@@ -23,8 +22,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// </summary>
     /// <typeparam name="TCollection">the IIndexedCollectionBase type</typeparam>
     /// <typeparam name="TItem">the collection element type</typeparam>
-    public sealed class IIndexedCollectionEnumerator<TCollection, TItem> : IEnumerator<TItem>
-        where TCollection : IIndexedCollectionBase<TItem>
+    internal sealed class IndexedCollectionEnumerator<TCollection, TItem> : IEnumerator<TItem>
+        where TCollection : IndexedCollectionBase<TItem>
         where TItem : class
     {
         private readonly TCollection _collection;
@@ -32,7 +31,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         private int _index = -1;
         private TItem _current;
 
-        public IIndexedCollectionEnumerator(TCollection collection)
+        public IndexedCollectionEnumerator(TCollection collection)
         {
             _collection = collection;
             _collectionCount = _collection.Count;

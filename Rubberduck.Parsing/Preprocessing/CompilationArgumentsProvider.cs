@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Rubberduck.Parsing.UIContext;
-using Rubberduck.VBEditor.ComManagement.TypeLibs;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 
 namespace Rubberduck.Parsing.PreProcessing
 {

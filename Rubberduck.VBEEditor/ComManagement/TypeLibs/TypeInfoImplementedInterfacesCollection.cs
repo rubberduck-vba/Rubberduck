@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Utility;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
@@ -6,7 +9,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// <summary>
     /// Exposes an enumerable collection of implemented interfaces provided by the ITypeInfo
     /// </summary>
-    public class TypeInfoImplementedInterfacesCollection : IIndexedCollectionBase<TypeInfoWrapper>
+    internal class TypeInfoImplementedInterfacesCollection : IndexedCollectionBase<TypeInfoWrapper>, ITypeInfoImplementedInterfacesCollection
     {
         private readonly ComTypes.ITypeInfo _parent;
         private readonly int _count;
@@ -130,5 +133,17 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             throw new ArgumentException($"TypeInfoWrapper::Get failed. '{searchTypeName}' component not found.");
         }
+
+        ITypeInfoWrapper ITypeInfoImplementedInterfacesCollection.GetItemByIndex(int index)
+        {
+            return GetItemByIndex(index);
+        }
+
+        ITypeInfoWrapper ITypeInfoImplementedInterfacesCollection.Get(string searchTypeName)
+        {
+            return Get(searchTypeName);
+        }
+
+        IEnumerator<ITypeInfoWrapper> ITypeInfoImplementedInterfacesCollection.GetEnumerator() => GetEnumerator();
     }
 }
