@@ -165,7 +165,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 throw new ArgumentException("Reference TypeLib not available - probably a missing reference.");
             }
-            return new TypeLibWrapper(referenceTypeLibPtr, addRef: false);
+            return TypeApiFactory.GetTypeLibWrapper(referenceTypeLibPtr, addRef: false);
         }
         
         public ITypeLibReference GetVBEReferenceByGuid(Guid referenceGuid)

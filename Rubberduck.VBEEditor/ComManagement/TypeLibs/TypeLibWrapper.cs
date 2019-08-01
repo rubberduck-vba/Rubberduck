@@ -108,7 +108,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 // Now we've got the references object, we can read the internal object structure to grab the ITypeLib
                 var internalReferencesObj = StructHelper.ReadComObjectStructure<VBEReferencesObj>(references.Target);
-                return new TypeLibWrapper(internalReferencesObj._typeLib, addRef: true);
+                return TypeApiFactory.GetTypeLibWrapper(internalReferencesObj._typeLib, addRef: true);
             }
         }
 
@@ -132,7 +132,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         /// direct memory read. Setting the parameter will effect an IUnknown::AddRef
         /// on the pointer. 
         /// </param>
-        public TypeLibWrapper(IntPtr rawObjectPtr, bool addRef)
+        internal TypeLibWrapper(IntPtr rawObjectPtr, bool addRef)
         {
             InitFromRawPointer(rawObjectPtr, addRef);
         }
@@ -147,7 +147,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             _typeLibPointer.Dispose();
         }
 
-        public int GetSafeTypeInfoByIndex(int index, out TypeInfoWrapper outTI)
+        public int GetSafeTypeInfoByIndex(int index, out ITypeInfoWrapper outTI)
         {
             outTI = null;
 
@@ -159,7 +159,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                     return HandleBadHRESULT(hr);
                 }
 
-                var outVal = new TypeInfoWrapper(typeInfoPtr.Value);
+                var outVal = TypeApiFactory.GetTypeInfoWrapper(typeInfoPtr.Value);
                 _cachedTypeInfos = _cachedTypeInfos ?? new DisposableList<ITypeInfoWrapper>();
                 _cachedTypeInfos.Add(outVal);
                 outTI = outVal;
@@ -241,7 +241,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
 
             var pTInfo = RdMarshal.ReadIntPtr(ppTInfo);
-            using (var outVal = new TypeInfoWrapper(pTInfo)) // takes ownership of the COM reference [pTInfo]
+            using (var outVal = TypeApiFactory.GetTypeInfoWrapper(pTInfo)) // takes ownership of the COM reference [pTInfo]
             {
                 RdMarshal.WriteIntPtr(ppTInfo, outVal.GetCOMReferencePtr());
 

@@ -24,7 +24,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             _parent.GetRefTypeOfImplType(index, out var href);
             _parent.GetRefTypeInfo(href, out var ti);
 
-            return new TypeInfoWrapper(ti);
+            return TypeApiFactory.GetTypeInfoWrapper(ti);
         }
 
         /// <summary>

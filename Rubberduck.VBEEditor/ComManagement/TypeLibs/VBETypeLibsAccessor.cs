@@ -34,7 +34,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     ///   Make sure you call VBETypeLibsAccessor.Dispose() as soon as you have done what you need to do with it.
     ///   Once control returns back to the VBE, you must assume that all the ITypeLib/ITypeInfo pointers are now invalid.
     /// </remarks>
-    internal class VBETypeLibsAccessor : DisposableList<TypeLibWrapper>
+    internal class VBETypeLibsAccessor : DisposableList<ITypeLibWrapper>
     {
         internal VBETypeLibsAccessor(IVBE ide)
         {

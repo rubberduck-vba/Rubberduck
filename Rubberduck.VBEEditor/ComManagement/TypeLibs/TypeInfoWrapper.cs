@@ -133,7 +133,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 if (!ComHelper.HRESULT_FAILED(hr))
                 {
                     // We have to wrap the ITypeLib returned by GetContainingTypeLib
-                    _container = new TypeLibWrapper(typeLibPtr.Value, addRef: false);
+                    _container = (TypeLibInternalSelfMarshalForwarderBase)TypeApiFactory.GetTypeLibWrapper(typeLibPtr.Value, addRef: false);
                     ContainerIndex = containerTypeLibIndex.Value;
                 }
                 else
@@ -180,7 +180,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             DetectUserFormClass();
         }
 
-        public TypeInfoWrapper(ComTypes.ITypeInfo rawTypeInfo)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="rawTypeInfo">The ITypeInfo object to be wrapped. It will be checked if it's already wrapped to avoid double-wraping.</param>
+        internal TypeInfoWrapper(ComTypes.ITypeInfo rawTypeInfo)
         {
             if ((rawTypeInfo as TypeInfoInternalSelfMarshalForwarderBase) != null)
             {
@@ -200,7 +204,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         /// </summary>
         /// <param name="rawObjectPtr">The raw unmanaged pointer to the ITypeInfo.  This class takes ownership, and will call Marshall.Release() on it upon disposal.</param>
         /// <param name="parentUserFormUniqueId">used internally for providing a name for UserForm base classes</param>
-        public TypeInfoWrapper(IntPtr rawObjectPtr, int? parentUserFormUniqueId = null)
+        internal TypeInfoWrapper(IntPtr rawObjectPtr, int? parentUserFormUniqueId = null)
         {
             // base classes of VBE UserForms cause an access violation on calling GetDocumentation(MEMBERID_NIL)
             // so we have to detect UserForm parents, and ensure GetDocumentation(MEMBERID_NIL) never gets through
@@ -296,7 +300,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }
 
-        public int GetSafeRefTypeInfo(int hRef, out TypeInfoWrapper outTI)
+        public int GetSafeRefTypeInfo(int hRef, out ITypeInfoWrapper outTI)
         {
             outTI = null;
 
@@ -305,7 +309,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 var hr = _target_ITypeInfo.GetRefTypeInfo(hRef, typeInfoPtr.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
 
-                var outVal = new TypeInfoWrapper(typeInfoPtr.Value, IsUserFormBaseClass ? (int?)hRef : null); // takes ownership of the COM reference
+                var outVal = TypeApiFactory.GetTypeInfoWrapper(typeInfoPtr.Value, IsUserFormBaseClass ? (int?)hRef : null); // takes ownership of the COM reference
                 _cachedReferencedTypeInfos = _cachedReferencedTypeInfos ?? new DisposableList<ITypeInfoWrapper>();
                 _cachedReferencedTypeInfos.Add(outVal);
                 outTI = outVal;

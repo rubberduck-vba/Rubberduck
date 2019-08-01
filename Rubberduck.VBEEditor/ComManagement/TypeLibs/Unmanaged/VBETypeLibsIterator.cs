@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
 {
@@ -22,7 +23,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
     /// <summary>
     /// An enumerable class for iterating over the double linked list of ITypeLibs provided by the VBE 
     /// </summary>
-    internal sealed class VBETypeLibsIterator : IEnumerable<TypeLibWrapper>, IEnumerator<TypeLibWrapper>
+    internal sealed class VBETypeLibsIterator : IEnumerable<ITypeLibWrapper>, IEnumerator<ITypeLibWrapper>
     {
         private IntPtr _currentTypeLibPtr;
         private VBETypeLibObj _currentTypeLibStruct;
@@ -41,10 +42,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
         }
 
         IEnumerator IEnumerable.GetEnumerator() => this;
-        public IEnumerator<TypeLibWrapper> GetEnumerator() => this;
+        public IEnumerator<ITypeLibWrapper> GetEnumerator() => this;
 
-        TypeLibWrapper IEnumerator<TypeLibWrapper>.Current => new TypeLibWrapper(_currentTypeLibPtr, addRef: true);
-        object IEnumerator.Current => new TypeLibWrapper(_currentTypeLibPtr, addRef: true);
+        ITypeLibWrapper IEnumerator<ITypeLibWrapper>.Current => TypeApiFactory.GetTypeLibWrapper(_currentTypeLibPtr, addRef: true);
+        object IEnumerator.Current => TypeApiFactory.GetTypeLibWrapper(_currentTypeLibPtr, addRef: true);
 
         public void Reset()  // walk back to the first project in the chain
         {
