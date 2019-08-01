@@ -8,7 +8,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// <summary>
     /// Exposes an enumerable collection of functions provided by the ITypeInfo
     /// </summary>
-    internal class TypeInfoFunctionCollection : IndexedCollectionBase<TypeInfoFunction>, ITypeInfoFunctionCollection
+    internal class TypeInfoFunctionCollection : IndexedCollectionBase<ITypeInfoFunction>, ITypeInfoFunctionCollection
     {
         private readonly ComTypes.ITypeInfo _parent;
         private readonly int _count;
@@ -21,30 +21,15 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         public override int Count => _count;
         
-        public override TypeInfoFunction GetItemByIndex(int index) => new TypeInfoFunction(_parent, index);
+        public override ITypeInfoFunction GetItemByIndex(int index) => new TypeInfoFunction(_parent, index);
 
-        public TypeInfoFunction Find(string name, PROCKIND procKind)
+        public ITypeInfoFunction Find(string name, PROCKIND procKind)
         {
             foreach (var func in this)
             {
                 if ((func.Name == name) && (func.ProcKind == procKind)) return func;
             }
             return null;
-        }
-
-        ITypeInfoFunction ITypeInfoFunctionCollection.GetItemByIndex(int index)
-        {
-            return GetItemByIndex(index);
-        }
-
-        ITypeInfoFunction ITypeInfoFunctionCollection.Find(string name, PROCKIND procKind)
-        {
-            return Find(name, procKind);
-        }
-
-        IEnumerator<ITypeInfoFunction> ITypeInfoFunctionCollection.GetEnumerator()
-        {
-            return GetEnumerator();
         }
     }
 }

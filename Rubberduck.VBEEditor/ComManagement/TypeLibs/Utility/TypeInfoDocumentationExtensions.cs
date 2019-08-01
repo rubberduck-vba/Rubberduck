@@ -105,12 +105,12 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Utility
 
         public static void Document(this ITypeInfoFunction _this, StringLineBuilder output)
         {
-            string namesInfo = _this.Name + "(";
+            var namesInfo = _this.Name + "(";
 
             var namesArray = _this.NamesArray;
             var namesCount = _this.NamesArrayCount;
 
-            int argIndex = 1;
+            var argIndex = 1;
             while (argIndex < namesCount)
             {
                 if (argIndex > 1) namesInfo += ", ";

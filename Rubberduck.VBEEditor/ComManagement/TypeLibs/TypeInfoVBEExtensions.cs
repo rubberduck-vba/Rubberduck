@@ -52,24 +52,40 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// <summary>
     /// Exposes the VBE specific extensions provided by an ITypeInfo
     /// </summary>
-    internal class TypeInfoVBEExtensions : ITypeInfoVBEExtensions
+    internal class TypeInfoVBEExtensions : ITypeInfoVBEExtensions, IDisposable
     {
-        private readonly TypeInfoWrapper _parent;
-        private readonly IVBEComponent _target_IVBEComponent;
+        private readonly ITypeInfoWrapper _parent;
+        //private readonly IVBEComponent _target_IVBEComponent;
+        private readonly ComPointer<IVBEComponent> _vbeComponentPointer;
+        private IVBEComponent _vbeComponent => _vbeComponentPointer.Interface;
 
-        public TypeInfoVBEExtensions(TypeInfoWrapper parent, IntPtr tiPtr)
+        public TypeInfoVBEExtensions(ITypeInfoWrapper parent, IntPtr tiPtr)
         {
             _parent = parent;
-            _target_IVBEComponent = ComHelper.ComCastViaAggregation<IVBEComponent>(tiPtr);
+            //_target_IVBEComponent = ComHelper.ComCastViaAggregation<IVBEComponent>(tiPtr);
+            _vbeComponentPointer = ComPointer<IVBEComponent>.GetObjectViaAggregation(tiPtr, false, true);
         }
 
         private bool _isDisposed;
         public void Dispose()
         {
-            if (_isDisposed) return;
+            if (_isDisposed)
+            {
+                return;
+            }
+
             _isDisposed = true;
 
-            if (_target_IVBEComponent != null) RdMarshal.ReleaseComObject(_target_IVBEComponent);
+            // We shouldn't dispose the containing ITypeInfoWrapper, since it is required
+            // to create the class with it as a parameter and ITypeInfoWrapper should be
+            // the one to dispose of this class. However, we did create the IVBEComponent,
+            // so we'll dispose of it here.
+            _vbeComponentPointer?.Dispose();
+
+            /*if (_target_IVBEComponent != null)
+            {
+                RdMarshal.ReleaseComObject(_target_IVBEComponent);
+            }*/
         }
 
         /// <summary>
@@ -80,7 +96,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             try
             {
-                _target_IVBEComponent.CompileComponent();
+                //_target_IVBEComponent.CompileComponent();
+                _vbeComponent.CompileComponent();
                 return true;
             }
             catch (Exception e)
@@ -105,7 +122,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         /// <returns>the accessor object</returns>
         public IDispatch GetStdModAccessor()
         {
-            return _target_IVBEComponent.GetStdModAccessor();
+            //return _target_IVBEComponent.GetStdModAccessor();
+            return _vbeComponent.GetStdModAccessor();
         }
 
         /// <summary>

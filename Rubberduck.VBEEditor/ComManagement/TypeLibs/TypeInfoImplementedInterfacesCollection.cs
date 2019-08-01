@@ -9,7 +9,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// <summary>
     /// Exposes an enumerable collection of implemented interfaces provided by the ITypeInfo
     /// </summary>
-    internal class TypeInfoImplementedInterfacesCollection : IndexedCollectionBase<TypeInfoWrapper>, ITypeInfoImplementedInterfacesCollection
+    internal class TypeInfoImplementedInterfacesCollection : IndexedCollectionBase<ITypeInfoWrapper>, ITypeInfoImplementedInterfacesCollection
     {
         private readonly ComTypes.ITypeInfo _parent;
         private readonly int _count;
@@ -19,7 +19,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             _count = attributes.cImplTypes;
         }
         public override int Count => _count;
-        public override TypeInfoWrapper GetItemByIndex(int index)
+        public override ITypeInfoWrapper GetItemByIndex(int index)
         {
             _parent.GetRefTypeOfImplType(index, out var href);
             _parent.GetRefTypeInfo(href, out var ti);
@@ -123,7 +123,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             return false;
         }
 
-        public TypeInfoWrapper Get(string searchTypeName)
+        public ITypeInfoWrapper Get(string searchTypeName)
         {
             foreach (var typeInfo in this)
             {
@@ -133,17 +133,5 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             throw new ArgumentException($"TypeInfoWrapper::Get failed. '{searchTypeName}' component not found.");
         }
-
-        ITypeInfoWrapper ITypeInfoImplementedInterfacesCollection.GetItemByIndex(int index)
-        {
-            return GetItemByIndex(index);
-        }
-
-        ITypeInfoWrapper ITypeInfoImplementedInterfacesCollection.Get(string searchTypeName)
-        {
-            return Get(searchTypeName);
-        }
-
-        IEnumerator<ITypeInfoWrapper> ITypeInfoImplementedInterfacesCollection.GetEnumerator() => GetEnumerator();
     }
 }

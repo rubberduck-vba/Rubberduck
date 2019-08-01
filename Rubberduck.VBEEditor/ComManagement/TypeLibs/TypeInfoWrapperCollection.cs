@@ -27,12 +27,12 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// <summary>
     /// Exposes an enumerable collection of TypeInfo objects exposed by this ITypeLib
     /// </summary>
-    internal class TypeInfoWrapperCollection : IndexedCollectionBase<TypeInfoWrapper>, ITypeInfoWrapperCollection
+    internal class TypeInfoWrapperCollection : IndexedCollectionBase<ITypeInfoWrapper>, ITypeInfoWrapperCollection
     {
-        private readonly TypeLibWrapper _parent;
-        public TypeInfoWrapperCollection(TypeLibWrapper parent) => _parent = parent;
+        private readonly ITypeLibWrapper _parent;
+        public TypeInfoWrapperCollection(ITypeLibWrapper parent) => _parent = parent;
         public override int Count => _parent.TypesCount;
-        public override TypeInfoWrapper GetItemByIndex(int index)
+        public override ITypeInfoWrapper GetItemByIndex(int index)
         {
             var hr = _parent.GetSafeTypeInfoByIndex(index, out var retVal);
 
@@ -44,7 +44,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             return retVal;
         }
 
-        public TypeInfoWrapper Find(string searchTypeName)
+        public ITypeInfoWrapper Find(string searchTypeName)
         {
             foreach (var typeInfo in this)
             {
@@ -54,7 +54,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             return null;
         }
 
-        public TypeInfoWrapper Get(string searchTypeName)
+        public ITypeInfoWrapper Get(string searchTypeName)
         {
             var retVal = Find(searchTypeName);
             if (retVal == null)
@@ -62,26 +62,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 throw new ArgumentException($"TypeInfosCollection::Get failed. '{searchTypeName}' component not found.");
             }
             return retVal;
-        }
-
-        ITypeInfoWrapper ITypeInfoWrapperCollection.Find(string searchTypeName)
-        {
-            return Find(searchTypeName);
-        }
-
-        ITypeInfoWrapper ITypeInfoWrapperCollection.Get(string searchTypeName)
-        {
-            return Get(searchTypeName);
-        }
-
-        IEnumerator<ITypeInfoWrapper> ITypeInfoWrapperCollection.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        ITypeInfoWrapper ITypeInfoWrapperCollection.GetItemByIndex(int index)
-        {
-            return GetItemByIndex(index);
         }
     }
 }

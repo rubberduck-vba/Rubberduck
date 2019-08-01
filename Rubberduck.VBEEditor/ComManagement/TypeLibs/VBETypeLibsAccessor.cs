@@ -1,6 +1,7 @@
 ﻿using System;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System.Runtime.InteropServices;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Utility;
 
@@ -77,7 +78,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             // return an empty list on error
         }
 
-        internal TypeLibWrapper Find(string searchLibName)
+        internal ITypeLibWrapper Find(string searchLibName)
         {
             foreach (var typeLib in this)
             {
@@ -89,7 +90,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             return null;
         }
 
-        internal TypeLibWrapper Get(string searchLibName)
+        internal ITypeLibWrapper Get(string searchLibName)
         {
             var retVal = Find(searchLibName);
             if (retVal == null)

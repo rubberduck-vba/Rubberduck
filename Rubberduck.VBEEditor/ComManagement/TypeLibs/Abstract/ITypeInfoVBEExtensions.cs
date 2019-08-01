@@ -2,7 +2,7 @@
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract
 {
-    public interface ITypeInfoVBEExtensions : IDisposable
+    public interface ITypeInfoVBEExtensions
     {
         /// <summary>
         /// Silently compiles the individual VBE component (class/module etc)

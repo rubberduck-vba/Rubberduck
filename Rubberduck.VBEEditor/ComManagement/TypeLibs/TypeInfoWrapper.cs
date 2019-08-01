@@ -44,17 +44,15 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// </remarks>
     internal sealed class TypeInfoWrapper : TypeInfoInternalSelfMarshalForwarderBase, ITypeInfoWrapper
     {
-        private DisposableList<TypeInfoWrapper> _cachedReferencedTypeInfos;
+        private DisposableList<ITypeInfoWrapper> _cachedReferencedTypeInfos;
         private ComPointer<ITypeInfoInternal> _typeInfoPointer;
         private ComPointer<ITypeInfoInternal> _typeInfoAlternatePointer;
 
         private ITypeInfoInternal _target_ITypeInfo => _typeInfoPointer.Interface;
         private ITypeInfoInternal _target_ITypeInfoAlternate => _typeInfoAlternatePointer.Interface;
 
-        public TypeLibInternalSelfMarshalForwarderBase Container { get; private set; }
-
-        // FIXME ugly ugly ugly hack....
-        ITypeLibWrapper ITypeInfoWrapper.Container => Container as ITypeLibWrapper;
+        private TypeLibInternalSelfMarshalForwarderBase _container { get; set; }
+        public ComTypes.ITypeLib Container => _container;
 
         public int ContainerIndex { get; private set; }
         public bool HasModuleScopeCompilationErrors { get; private set; }
@@ -63,14 +61,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public bool HasSimulatedContainer { get; private set; }
         public bool IsUserFormBaseClass { get; private set; }
 
-        public TypeInfoFunctionCollection Funcs { get; private set; }
-        ITypeInfoFunctionCollection ITypeInfoWrapper.Funcs => Funcs;
-
-        public TypeInfoVariablesCollection Vars { get; private set; }
-        ITypeInfoVariablesCollection ITypeInfoWrapper.Vars => Vars;
-
-        public TypeInfoImplementedInterfacesCollection ImplementedInterfaces { get; private set; }
-        ITypeInfoImplementedInterfacesCollection ITypeInfoWrapper.ImplementedInterfaces => ImplementedInterfaces;
+        public ITypeInfoFunctionCollection Funcs { get; private set; }
+        public ITypeInfoVariablesCollection Vars { get; private set; }
+        public ITypeInfoImplementedInterfacesCollection ImplementedInterfaces { get; private set; }
 
         // some helpers
         public string Name => CachedTextFields._name;
@@ -82,9 +75,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public TYPEKIND_VBE TypeKind => (TYPEKIND_VBE)CachedAttributes.typekind;
         public bool HasPredeclaredId => CachedAttributes.wTypeFlags.HasFlag(ComTypes.TYPEFLAGS.TYPEFLAG_FPREDECLID);
         public ComTypes.TYPEFLAGS Flags => CachedAttributes.wTypeFlags;
-        public string ContainerName => RdMarshal.GetTypeLibName(Container);
-        ITypeInfoVBEExtensions ITypeInfoWrapper.VBEExtensions => VBEExtensions;
-
+        public string ContainerName => RdMarshal.GetTypeLibName(_container);
+        
         // Constants inside VBA components are exposed via the ITypeInfo, but there names are not reported correctly.
         // Their names all appear with a DispID of MEMBERID_NIL.  In order to try to make VBA type infos more agreeable to the specifications,
         // we make up some unique names for these constants, and create unique DispIDs for them at runtime.  
@@ -141,7 +133,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 if (!ComHelper.HRESULT_FAILED(hr))
                 {
                     // We have to wrap the ITypeLib returned by GetContainingTypeLib
-                    Container = new TypeLibWrapper(typeLibPtr.Value, addRef: false);
+                    _container = new TypeLibWrapper(typeLibPtr.Value, addRef: false);
                     ContainerIndex = containerTypeLibIndex.Value;
                 }
                 else
@@ -150,9 +142,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                     {
                         // it is acceptable for a type to not have a container, as types can be runtime generated (e.g. UserForm base classes)
                         // When that is the case, the ITypeInfo responds with E_NOTIMPL
+                        // However, we create fake container to avoid errors from CLR when using those "uncontained" TypeInfo
                         HasSimulatedContainer = true;
                         var newContainer = new SimpleCustomTypeLibrary();
-                        Container = newContainer;
+                        _container = newContainer;
                         ContainerIndex = newContainer.Add(this);
                     }
                     else
@@ -228,14 +221,14 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             _vbeExtensions?.Dispose();
             _cachedReferencedTypeInfos?.Dispose();
-            Container?.Dispose();
+            _container?.Dispose();
 
             _typeInfoPointer.Dispose();
             _typeInfoAlternatePointer.Dispose();
         }
 
         TypeInfoVBEExtensions _vbeExtensions;
-        public TypeInfoVBEExtensions VBEExtensions
+        public ITypeInfoVBEExtensions VBEExtensions
         {
             get
             {
@@ -313,7 +306,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
 
                 var outVal = new TypeInfoWrapper(typeInfoPtr.Value, IsUserFormBaseClass ? (int?)hRef : null); // takes ownership of the COM reference
-                _cachedReferencedTypeInfos = _cachedReferencedTypeInfos ?? new DisposableList<TypeInfoWrapper>();
+                _cachedReferencedTypeInfos = _cachedReferencedTypeInfos ?? new DisposableList<ITypeInfoWrapper>();
                 _cachedReferencedTypeInfos.Add(outVal);
                 outTI = outVal;
 
@@ -345,7 +338,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 return (int)KnownComHResults.E_INVALIDARG;
             }
 
-            RdMarshal.WriteIntPtr(ppTLB, RdMarshal.GetComInterfaceForObject(Container, typeof(ITypeLibInternal)));
+            RdMarshal.WriteIntPtr(ppTLB, RdMarshal.GetComInterfaceForObject(_container, typeof(ITypeLibInternal)));
             if (pIndex != IntPtr.Zero) RdMarshal.WriteInt32(pIndex, ContainerIndex);
 
             return (int)KnownComHResults.S_OK;

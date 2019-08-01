@@ -5,7 +5,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract
 {
     public interface ITypeInfoWrapper : ITypeInfo, IDisposable
     {
-        ITypeLibWrapper Container { get; }
+        ITypeLib Container { get; }
         int ContainerIndex { get; }
         bool HasModuleScopeCompilationErrors { get; }
         bool HasVBEExtensions { get; }

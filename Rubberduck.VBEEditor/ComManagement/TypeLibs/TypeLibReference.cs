@@ -9,7 +9,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// </summary>
     internal class TypeLibReference : ITypeLibReference
     {
-        private readonly TypeLibVBEExtensions _vbeTypeLib;
+        private readonly ITypeLibVBEExtensions _vbeTypeLib;
         private readonly int _typeLibIndex;
 
         public string RawString { get; }
@@ -20,7 +20,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public string Path { get; }
         public string Name { get; }
 
-        public TypeLibReference(TypeLibVBEExtensions vbeTypeLib, int typeLibIndex, string referenceStringRaw)
+        public TypeLibReference(ITypeLibVBEExtensions vbeTypeLib, int typeLibIndex, string referenceStringRaw)
         {
             _vbeTypeLib = vbeTypeLib;
             _typeLibIndex = typeLibIndex;
@@ -51,7 +51,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             Name = referenceStringParts[4];
         }
 
-        public TypeLibWrapper TypeLib => _vbeTypeLib.GetVBEReferenceTypeLibByIndex(_typeLibIndex);
-        ITypeLibWrapper ITypeLibReference.TypeLib => TypeLib;
+        public ITypeLibWrapper TypeLib => _vbeTypeLib.GetVBEReferenceTypeLibByIndex(_typeLibIndex);
     }
 }

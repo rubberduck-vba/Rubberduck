@@ -29,7 +29,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// </remarks>
     internal sealed class TypeLibWrapper : TypeLibInternalSelfMarshalForwarderBase, ITypeLibWrapper
     {
-        private DisposableList<TypeInfoWrapper> _cachedTypeInfos;
+        private DisposableList<ITypeInfoWrapper> _cachedTypeInfos;
         private ComPointer<ITypeLibInternal> _typeLibPointer;
 
         private ITypeLibInternal _target_ITypeLib => _typeLibPointer.Interface;
@@ -102,7 +102,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             HasVBEExtensions = _target_ITypeLib is IVBEProject;
         }
 
-        internal static TypeLibWrapper FromVBProject(IVBProject vbProject)
+        internal static ITypeLibWrapper FromVBProject(IVBProject vbProject)
         {
             using (var references = vbProject.References)
             {
@@ -160,7 +160,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 }
 
                 var outVal = new TypeInfoWrapper(typeInfoPtr.Value);
-                _cachedTypeInfos = _cachedTypeInfos ?? new DisposableList<TypeInfoWrapper>();
+                _cachedTypeInfos = _cachedTypeInfos ?? new DisposableList<ITypeInfoWrapper>();
                 _cachedTypeInfos.Add(outVal);
                 outTI = outVal;
 
@@ -245,7 +245,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 RdMarshal.WriteIntPtr(ppTInfo, outVal.GetCOMReferencePtr());
 
-                _cachedTypeInfos = _cachedTypeInfos ?? new DisposableList<TypeInfoWrapper>();
+                _cachedTypeInfos = _cachedTypeInfos ?? new DisposableList<ITypeInfoWrapper>();
                 _cachedTypeInfos.Add(outVal);
             }
 

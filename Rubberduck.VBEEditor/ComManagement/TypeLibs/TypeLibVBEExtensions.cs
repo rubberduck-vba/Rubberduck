@@ -64,8 +64,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     {
         private readonly string _name;
         private readonly IVBEProject _target_IVBEProject;
-        public TypeLibReferenceCollection VBEReferences;
-        ITypeLibReferenceCollection ITypeLibVBEExtensions.VBEReferences => VBEReferences;
+
+        public ITypeLibReferenceCollection VBEReferences { get; }
 
         public TypeLibVBEExtensions(ITypeLibWrapper parent, ITypeLibInternal unwrappedTypeLib)
         {
@@ -143,7 +143,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             return _target_IVBEProject.GetReferencesCount();
         }
 
-        public TypeLibReference GetVBEReferenceByIndex(int index)
+        public ITypeLibReference GetVBEReferenceByIndex(int index)
         {
             if (index >= _target_IVBEProject.GetReferencesCount())
             {
@@ -152,9 +152,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             return new TypeLibReference(this, index, _target_IVBEProject.GetReferenceString(index));
         }
-        ITypeLibReference ITypeLibVBEExtensions.GetVBEReferenceByIndex(int index) => GetVBEReferenceByIndex(index);
-
-        public TypeLibWrapper GetVBEReferenceTypeLibByIndex(int index)
+        
+        public ITypeLibWrapper GetVBEReferenceTypeLibByIndex(int index)
         {
             if (index >= _target_IVBEProject.GetReferencesCount())
             {
@@ -168,9 +167,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
             return new TypeLibWrapper(referenceTypeLibPtr, addRef: false);
         }
-        ITypeLibWrapper ITypeLibVBEExtensions.GetVBEReferenceTypeLibByIndex(int index) =>
-            GetVBEReferenceTypeLibByIndex(index);
-
+        
         public ITypeLibReference GetVBEReferenceByGuid(Guid referenceGuid)
         {
             foreach (var reference in VBEReferences)
