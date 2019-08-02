@@ -51,8 +51,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         private ITypeInfoInternal _target_ITypeInfo => _typeInfoPointer.Interface;
         private ITypeInfoInternal _target_ITypeInfoAlternate => _typeInfoAlternatePointer.Interface;
 
-        private TypeLibInternalSelfMarshalForwarderBase _container { get; set; }
-        public ComTypes.ITypeLib Container => _container;
+        private ComTypes.ITypeLib _container { get; set; }
+        public ComTypes.ITypeLib Container => (ComTypes.ITypeLib)_container;
 
         public int ContainerIndex { get; private set; }
         public bool HasModuleScopeCompilationErrors { get; private set; }
@@ -133,7 +133,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 if (!ComHelper.HRESULT_FAILED(hr))
                 {
                     // We have to wrap the ITypeLib returned by GetContainingTypeLib
-                    _container = (TypeLibInternalSelfMarshalForwarderBase)TypeApiFactory.GetTypeLibWrapper(typeLibPtr.Value, addRef: false);
+                    _container = TypeApiFactory.GetTypeLibWrapper(typeLibPtr.Value, addRef: false);
                     ContainerIndex = containerTypeLibIndex.Value;
                 }
                 else
@@ -225,7 +225,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             _vbeExtensions?.Dispose();
             _cachedReferencedTypeInfos?.Dispose();
-            _container?.Dispose();
+            (_container as IDisposable)?.Dispose();
 
             _typeInfoPointer.Dispose();
             _typeInfoAlternatePointer.Dispose();

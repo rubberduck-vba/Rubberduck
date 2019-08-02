@@ -2,16 +2,19 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
 {
-    internal class TypeLibWrapperTracer : ITypeLibWrapper
+    internal class TypeLibWrapperTracer : ITypeLibWrapper, ITypeLibInternal
     {
         private readonly ITypeLibWrapper _wrapper;
+        private readonly ITypeLibInternal _inner;
 
-        internal TypeLibWrapperTracer(ITypeLibWrapper wrapper)
+        internal TypeLibWrapperTracer(ITypeLibWrapper wrapper, ITypeLibInternal inner)
         {
             _wrapper = wrapper;
+            _inner = inner;
         }
 
         private static void Before(string parameters = null, [CallerMemberName] string methodName = null)
@@ -29,6 +32,70 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             Before();
             var result = _wrapper.GetTypeInfoCount();
             After($"{nameof(result)}: {result}");
+            return result;
+        }
+
+        public int GetTypeInfo(int index, IntPtr ppTI)
+        {
+            Before($"{nameof(index)}: {index}, {nameof(ppTI)}: {ppTI}");
+            var result = _inner.GetTypeInfo(index, ppTI);
+            After($"{nameof(result)}: {result}, {nameof(ppTI)}: {ppTI}");
+            return result;
+        }
+
+        public int GetTypeInfoType(int index, IntPtr pTKind)
+        {
+            Before($"{nameof(index)}: {index}, {nameof(pTKind)}: {pTKind}");
+            var result = _inner.GetTypeInfoType(index, pTKind);
+            After($"{nameof(result)}: {result}, {nameof(pTKind)}: {pTKind}");
+            return result;
+        }
+
+        public int GetTypeInfoOfGuid(ref Guid guid, IntPtr ppTInfo)
+        {
+            Before($"{nameof(guid)}: {guid}, {nameof(ppTInfo)}: {ppTInfo}");
+            var result = _inner.GetTypeInfoOfGuid(ref guid, ppTInfo);
+            After($"{nameof(result)}: {result}, {nameof(ppTInfo)}: {ppTInfo}");
+            return result;
+        }
+
+        public int GetLibAttr(IntPtr ppTLibAttr)
+        {
+            Before($"{nameof(ppTLibAttr)}: {ppTLibAttr}");
+            var result = _inner.GetLibAttr(ppTLibAttr);
+            After($"{nameof(result)}: {result}, {nameof(ppTLibAttr)}: {ppTLibAttr}");
+            return result;
+        }
+
+        public int GetTypeComp(IntPtr ppTComp)
+        {
+            Before($"{nameof(ppTComp)}: {ppTComp}");
+            var result = _inner.GetTypeComp(ppTComp);
+            After($"{nameof(result)}: {result}, {nameof(ppTComp)}: {ppTComp}");
+            return result;
+        }
+
+        public int GetDocumentation(int index, IntPtr strName, IntPtr strDocString, IntPtr dwHelpContext, IntPtr strHelpFile)
+        {
+            Before($"{nameof(index)}: {index}, {nameof(strName)}: {strName}, {nameof(strDocString)}: {strDocString}, {nameof(dwHelpContext)}: {dwHelpContext}, {nameof(strHelpFile)}: {strHelpFile}");
+            var result = _inner.GetDocumentation(index, strName, strDocString, dwHelpContext, strHelpFile);
+            After($"{nameof(result)}: {result}, {nameof(strName)}: {strName}, {nameof(strDocString)}: {strDocString}, {nameof(dwHelpContext)}: {dwHelpContext}, {nameof(strHelpFile)}: {strHelpFile}");
+            return result;
+        }
+
+        public int IsName(string szNameBuf, int lHashVal, IntPtr pfName)
+        {
+            Before($"{nameof(szNameBuf)}: {szNameBuf}, {nameof(lHashVal)}: {lHashVal}, {nameof(pfName)}: {pfName}");
+            var result = _inner.IsName(szNameBuf, lHashVal, pfName);
+            After($"{nameof(result)}: {result}, {nameof(pfName)}: {pfName}");
+            return result;
+        }
+
+        public int FindName(string szNameBuf, int lHashVal, IntPtr ppTInfo, IntPtr rgMemId, IntPtr pcFound)
+        {
+            Before($"{nameof(szNameBuf)}: {szNameBuf}, {nameof(lHashVal)}: {lHashVal}, {nameof(ppTInfo)}: {ppTInfo}, {nameof(rgMemId)}: {rgMemId}, {nameof(pcFound)}: {pcFound}");
+            var result = _inner.FindName(szNameBuf, lHashVal, ppTInfo, rgMemId, pcFound);
+            After($"{nameof(result)}: {result}, {nameof(ppTInfo)}: {ppTInfo}, {nameof(rgMemId)}: {rgMemId}, {nameof(pcFound)}: {pcFound}");
             return result;
         }
 

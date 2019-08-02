@@ -5,13 +5,15 @@ using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
 {
-    internal class TypeInfoWrapperTracer : ITypeInfoWrapper
+    internal class TypeInfoWrapperTracer : ITypeInfoWrapper, ITypeInfoInternal
     {
         private readonly ITypeInfoWrapper _wrapper;
+        private readonly ITypeInfoInternal _inner;
 
-        internal TypeInfoWrapperTracer(ITypeInfoWrapper wrapper)
+        internal TypeInfoWrapperTracer(ITypeInfoWrapper wrapper, ITypeInfoInternal inner)
         {
             _wrapper = wrapper;
+            _inner = inner;
         }
 
         private static void Before(string parameters = null, [CallerMemberName] string methodName = null)
@@ -112,6 +114,14 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             Before($"{nameof(memid)}: {memid}, {nameof(invKind)}: {invKind}, {nameof(pBstrDllName)}: {pBstrDllName}, {nameof(pBstrName)}: {pBstrName}, {nameof(pwOrdinal)}: {pwOrdinal}");
             var result = _wrapper.GetDllEntry(memid, invKind, pBstrDllName, pBstrName, pwOrdinal);
             After($"{nameof(result)}: {result}");
+            return result;
+        }
+
+        int ITypeInfoInternal.GetDllEntry(int memid, INVOKEKIND invKind, IntPtr pBstrDllName, IntPtr pBstrName, IntPtr pwOrdinal)
+        {
+            Before($"{nameof(memid)}: {memid}, {nameof(invKind)}: {invKind}, {nameof(pBstrDllName)}: {pBstrDllName}, {nameof(pBstrName)}: {pBstrName}, {nameof(pwOrdinal)}: {pwOrdinal}");
+            var result = _inner.GetDllEntry(memid, invKind, pBstrDllName, pBstrName, pwOrdinal);
+            After($"{nameof(result)}: {result}, {nameof(pBstrDllName)}: {pBstrDllName}, {nameof(pBstrName)}: {pBstrName}, {nameof(pwOrdinal)}: {pwOrdinal}");
             return result;
         }
 

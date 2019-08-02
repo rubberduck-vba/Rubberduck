@@ -1,4 +1,4 @@
-﻿#define TRACE_TYPEAPI
+﻿// #define TRACE_TYPEAPI
 
 using System;
 using System.Runtime.InteropServices.ComTypes;
@@ -16,7 +16,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             var wrapper = new TypeLibWrapper(rawObjectPtr, addRef);
 #if DEBUG && TRACE_TYPEAPI
-            return new TypeLibWrapperTracer(wrapper);
+            return new TypeLibWrapperTracer(wrapper, wrapper);
 #else
             return wrapper;
 #endif
@@ -26,7 +26,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             var wrapper = new TypeInfoWrapper(rawObjectPtr, parentUserFormUniqueId);
 #if DEBUG && TRACE_TYPEAPI
-            return new TypeInfoWrapperTracer(wrapper);
+            return new TypeInfoWrapperTracer(wrapper, wrapper);
 #else
             return wrapper;
 #endif
@@ -36,7 +36,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             var wrapper = new TypeInfoWrapper(rawTypeInfo);
 #if DEBUG && TRACE_TYPEAPI
-            return new TypeInfoWrapperTracer(wrapper);
+            return new TypeInfoWrapperTracer(wrapper, wrapper);
 #else
             return wrapper;
 #endif

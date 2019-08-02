@@ -107,7 +107,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
 
             Interface = (TComInterface)RdMarshal.GetTypedObjectForIUnknown(pUnk, typeof(TComInterface));
 
-#if DEBUG
+#if DEBUG && TRACE_COM_POINTERS
             Debug.Print($"ComPointer:: Created from pointer: pUnk: {RdMarshal.FormatPtr(_pUnk)} interface: {typeof(TComInterface).Name} - {Interface.GetHashCode()} addRef: {_addRef} refCount: {refCount}");
 #endif
         }
@@ -117,7 +117,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
             _pUnk = pUnk;
             Interface = comInterface;
 
-#if DEBUG
+#if DEBUG && TRACE_COM_POINTERS
             Debug.Print($"ComPointer:: Created from aggregation: pUnk: {RdMarshal.FormatPtr(_pUnk)} interface: {typeof(TComInterface).Name} - {Interface.GetHashCode()} addRef: {_addRef}");
 #endif
         }
@@ -127,7 +127,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
             Interface = comInterface;
             _pUnk = RdMarshal.GetIUnknownForObject(Interface);
 
-#if DEBUG
+#if DEBUG && TRACE_COM_POINTERS
             Debug.Print($"ComPointer:: Created from object: pUnk: {RdMarshal.FormatPtr(_pUnk)} interface: {typeof(TComInterface).Name} - {Interface.GetHashCode()} addRef: {_addRef}");
 #endif
         }
@@ -145,8 +145,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
             if(_disposed) return;
 
             var rcwCount = RdMarshal.ReleaseComObject(Interface);
-            
-#if DEBUG
+
+#if DEBUG && TRACE_COM_POINTERS
             if (!_addRef)
             {
                 // Temporarily add a ref so that we can safely call IUnknown::Release
