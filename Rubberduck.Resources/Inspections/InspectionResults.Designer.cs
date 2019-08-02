@@ -196,7 +196,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Method {0} contains no executable statements..
+        ///   Looks up a localized string similar to {0} &apos;{1}&apos;  contains no executable statements..
         /// </summary>
         public static string EmptyMethodInspection {
             get {

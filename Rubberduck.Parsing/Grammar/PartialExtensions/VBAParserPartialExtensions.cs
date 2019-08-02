@@ -44,7 +44,7 @@ namespace Rubberduck.Parsing.Grammar
             #endregion
         }
 
-        public partial class SubStmtContext : IIdentifierContext, IAnnotatedContext
+        public partial class SubStmtContext : IIdentifierContext, IAnnotatedContext, IMethodStmtContext
         {
             #region IIdentifierContext
             public Interval IdentifierTokens
@@ -78,9 +78,18 @@ namespace Rubberduck.Parsing.Grammar
                 }
             }
             #endregion
+
+            #region IMethodStmtContext
+
+            public string MethodName => subroutineName().GetText();
+
+            public string MethodKind => SUB().GetText();
+
+            #endregion
+
         }
 
-        public partial class FunctionStmtContext : IIdentifierContext, IAnnotatedContext
+        public partial class FunctionStmtContext : IIdentifierContext, IAnnotatedContext, IMethodStmtContext
         {
             #region IIdentifierContext
 
@@ -115,6 +124,14 @@ namespace Rubberduck.Parsing.Grammar
                     Attributes.Add(new AttributeNode(attribute.Name, attribute.Values));
                 }
             }
+            #endregion
+
+            #region IMethodStmtContext
+
+            public string MethodName => functionName().GetText();
+
+            public string MethodKind => FUNCTION().GetText();
+
             #endregion
         }
 
@@ -244,7 +261,7 @@ namespace Rubberduck.Parsing.Grammar
             #endregion
         }
 
-        public partial class PropertyGetStmtContext : IIdentifierContext, IAnnotatedContext
+        public partial class PropertyGetStmtContext : IIdentifierContext, IAnnotatedContext, IMethodStmtContext
         {
             #region IIdentifierContext
             public Interval IdentifierTokens
@@ -278,9 +295,18 @@ namespace Rubberduck.Parsing.Grammar
                 }
             }
             #endregion
+
+            #region IMethodStmtContext
+
+            public string MethodName => functionName().GetText();
+
+            public string MethodKind => PROPERTY_GET().GetText();
+
+            #endregion
+
         }
 
-        public partial class PropertyLetStmtContext : IIdentifierContext, IAnnotatedContext
+        public partial class PropertyLetStmtContext : IIdentifierContext, IAnnotatedContext, IMethodStmtContext
         {
             #region IIdentifierContext
             public Interval IdentifierTokens
@@ -314,9 +340,18 @@ namespace Rubberduck.Parsing.Grammar
                 }
             }
             #endregion
+
+            #region IMethodStmtContext
+
+            public string MethodName => subroutineName().GetText();
+
+            public string MethodKind => PROPERTY_LET().GetText();
+
+            #endregion
+
         }
 
-        public partial class PropertySetStmtContext : IIdentifierContext, IAnnotatedContext
+        public partial class PropertySetStmtContext : IIdentifierContext, IAnnotatedContext, IMethodStmtContext
         {
             #region IIdentifierContext
             public Interval IdentifierTokens
@@ -350,6 +385,15 @@ namespace Rubberduck.Parsing.Grammar
                 }
             }
             #endregion
+
+            #region IMethodStmtContext
+
+            public string MethodName => subroutineName().GetText();
+
+            public string MethodKind => PROPERTY_SET().GetText();
+
+            #endregion
+
         }
 
         public partial class EnumerationStmtContext : IIdentifierContext, IAnnotatedContext
