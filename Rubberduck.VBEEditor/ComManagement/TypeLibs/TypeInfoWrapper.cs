@@ -228,7 +228,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             (_container as IDisposable)?.Dispose();
 
             _typeInfoPointer.Dispose();
-            _typeInfoAlternatePointer.Dispose();
+            _typeInfoAlternatePointer?.Dispose();
         }
 
         TypeInfoVBEExtensions _vbeExtensions;
