@@ -196,7 +196,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} &apos;{1}&apos;  contains no executable statements..
+        ///   Looks up a localized string similar to {0} &apos;{1}&apos; contains no executable statements..
         /// </summary>
         public static string EmptyMethodInspection {
             get {
@@ -615,6 +615,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string ObsoleteTypeHintInspection {
             get {
                 return ResourceManager.GetString("ObsoleteTypeHintInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;While...Wend&apos; conditional loop can be written as a &apos;Do While...Loop&apos; block..
+        /// </summary>
+        public static string ObsoleteWhileWendStatementInspection {
+            get {
+                return ResourceManager.GetString("ObsoleteWhileWendStatementInspection", resourceCulture);
             }
         }
         

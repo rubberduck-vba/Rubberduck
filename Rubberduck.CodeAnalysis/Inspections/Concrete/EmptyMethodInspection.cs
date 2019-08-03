@@ -12,10 +12,34 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using static Rubberduck.Parsing.Grammar.VBAParser;
+using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Resources.Experimentals;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    [Experimental]
+
+    /// <summary>
+    /// Identifies empty module member blocks.
+    /// </summary>
+    /// <why>
+    /// Methods containing no executable statements are misleading as they appear to be doing something which they actually don't.
+    /// This might be the result of delaying the actual implementation for a later stage of development, and then forgetting all about that.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Sub Foo()
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Sub Foo()
+    ///     MsgBox "?"
+    /// End Sub
+    /// ]]>
+    /// </example>
+    [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
     internal class EmptyMethodInspection : ParseTreeInspectionBase
     {
         public EmptyMethodInspection(RubberduckParserState state)
@@ -31,7 +55,7 @@ namespace Rubberduck.Inspections.Concrete
             // while RD marks them as interfaces all the same.
             
             var results = Listener.Contexts
-                .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
+                .Where(result => !result.IsIgnoringInspectionResultFor(State.DeclarationFinder, AnnotationName))
                 .GroupBy(result => result.ModuleName.ComponentName)
                 // Exclude results from module
                 .Where(resultsInModule => !State.DeclarationFinder.FindAllUserInterfaces()
@@ -41,7 +65,8 @@ namespace Rubberduck.Inspections.Concrete
                                           .Any()
                 )
                 .SelectMany(resultsInModule => resultsInModule)
-                .Select(result => new { actual = result, method = (IMethodStmtContext)result.Context });
+                .Select(result => new { actual = result, method = result.Context as IMethodStmtContext })
+                ;
 
             return results.Select(result => new QualifiedContextInspectionResult(this,
                                                                                  string.Format(InspectionResults.EmptyMethodInspection,
