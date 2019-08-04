@@ -23,7 +23,7 @@ namespace RubberduckTests.ExpressionResolving
         [TestCase("TestProject.Class1", "TestProject.Class1")]
         [TestCase("Variant", "Variant")]
         [TestCase("Object", "Object")]
-        [TestCase("Long", null)]
+        [TestCase("Long", SetTypeResolver.NotAnObject)]
         public void SimpleNameExpression_SetTypeNameTests(string typeName, string expectedSetTypeName)
         {
             const string class1 =
@@ -155,7 +155,7 @@ End Sub
         [TestCase("TestProject.Class1", "TestProject.Class1")]
         [TestCase("Variant", "Variant")]
         [TestCase("Object", "Object")]
-        [TestCase("Long", null)]
+        [TestCase("Long", SetTypeResolver.NotAnObject)]
         public void MemberAccessExpression_SetTypeNameTests(string typeName, string expectedSetTypeName)
         {
             var class1 =
@@ -234,7 +234,7 @@ End Sub
         [TestCase("TestProject.Class1", "TestProject.Class1")]
         [TestCase("Variant", "Variant")]
         [TestCase("Object", "Object")]
-        [TestCase("Long", null)]
+        [TestCase("Long", SetTypeResolver.NotAnObject)]
         public void WithMemberAccessExpression_SetTypeNameTests(string typeName, string expectedSetTypeName)
         {
             var class1 =

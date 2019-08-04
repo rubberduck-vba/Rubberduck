@@ -20,7 +20,7 @@ namespace Rubberduck.Parsing.TypeResolvers
         /// </summary>
         /// <returns>
         /// Qualified name of the Set type of the expression, if there is one, and
-        /// null, otherwise.
+        /// NotAnObject, otherwise. Returns null, if the resolution fails.
         /// </returns>
         string SetTypeName(VBAParser.ExpressionContext expression, QualifiedModuleName containingModule);
     }

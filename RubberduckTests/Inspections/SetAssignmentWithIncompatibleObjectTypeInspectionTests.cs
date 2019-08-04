@@ -485,6 +485,8 @@ End Sub
         [TestCase("Class1", "OtherProject.Class1", 1)]
         [TestCase("Interface1", "OtherProject.Class1", 1)]
         [TestCase("Class1", "OtherProject.Interface1", 1)]
+        [TestCase("Class1", SetTypeResolver.NotAnObject, 1)] //The RHS is not even an object. (Will show as type NotAnObject in the result.) 
+        [TestCase("Class1", null, 0)] //We could not resolve the Set type, so we do not return a result. 
         public void MockedSetTypeEvaluatorTest(string lhsTypeName, string expressionFullTypeName, int expectedResultsCount)
         {
             const string interface1 =
