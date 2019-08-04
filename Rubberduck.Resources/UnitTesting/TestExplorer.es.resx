@@ -312,7 +312,4 @@
   <data name="TestOutcome_SummaryCaption" xml:space="preserve">
     <value>Resumen:</value>
   </data>
-  <data name="TestOutcome_SpectacularFail" xml:space="preserve">
-    <value>Fracaso espectacular</value>
-  </data>
 </root>

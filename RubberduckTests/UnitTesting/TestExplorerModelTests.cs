@@ -53,7 +53,6 @@ namespace RubberduckTests.UnitTesting
             { TestOutcome.Succeeded,  (TestOutcome.Succeeded, "", DummyTestDuration)  },
             { TestOutcome.Inconclusive,  (TestOutcome.Inconclusive, "", DummyTestDuration)  },
             { TestOutcome.Failed,  (TestOutcome.Failed, "", DummyTestDuration)  },
-            { TestOutcome.SpectacularFail,  (TestOutcome.SpectacularFail, "", DummyTestDuration)  },
             { TestOutcome.Ignored,  (TestOutcome.Ignored, "", DummyTestDuration)  }
         };
 
@@ -65,7 +64,6 @@ namespace RubberduckTests.UnitTesting
         //[TestCase(new object[] { TestOutcome.Failed, TestOutcome.Failed, TestOutcome.Failed })]
         //[TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Ignored })]
         //[TestCase(new object[] { TestOutcome.Ignored, TestOutcome.Ignored, TestOutcome.Ignored })]
-        //[TestCase(new object[] { TestOutcome.Ignored, TestOutcome.SpectacularFail })]
         //[Category("Unit Testing")]
         //public void LastTestSucceededCount_CountIsCorrect(params TestOutcome[] tests)
         //{
@@ -90,7 +88,6 @@ namespace RubberduckTests.UnitTesting
         //[TestCase(new object[] { TestOutcome.Failed, TestOutcome.Failed, TestOutcome.Failed })]
         //[TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Ignored })]
         //[TestCase(new object[] { TestOutcome.Ignored, TestOutcome.Ignored, TestOutcome.Ignored })]
-        //[TestCase(new object[] { TestOutcome.Ignored, TestOutcome.SpectacularFail })]
         //[Category("Unit Testing")]
         //public void LastTestIgnoredCount_CountIsCorrect(params TestOutcome[] tests)
         //{
@@ -115,7 +112,6 @@ namespace RubberduckTests.UnitTesting
         //[TestCase(new object[] { TestOutcome.Failed, TestOutcome.Failed, TestOutcome.Failed })]
         //[TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Ignored })]
         //[TestCase(new object[] { TestOutcome.Ignored, TestOutcome.Ignored, TestOutcome.Ignored })]
-        //[TestCase(new object[] { TestOutcome.Ignored, TestOutcome.SpectacularFail })]
         //[Category("Unit Testing")]
         //public void LastTestInconclusiveCount_CountIsCorrect(params TestOutcome[] tests)
         //{
@@ -140,7 +136,6 @@ namespace RubberduckTests.UnitTesting
         //[TestCase(new object[] { TestOutcome.Failed, TestOutcome.Failed, TestOutcome.Failed })]
         //[TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Ignored })]
         //[TestCase(new object[] { TestOutcome.Ignored, TestOutcome.Ignored, TestOutcome.Ignored })]
-        //[TestCase(new object[] { TestOutcome.Ignored, TestOutcome.SpectacularFail })]
         //[Category("Unit Testing")]
         //public void LastTestFailedCount_CountIsCorrect(params TestOutcome[] tests)
         //{
@@ -154,31 +149,6 @@ namespace RubberduckTests.UnitTesting
 
         //        var expected = tests.Count(outcome => outcome == TestOutcome.Failed);
         //        Assert.AreEqual(expected, model.Model.LastTestFailedCount);
-        //    }
-        //}
-
-        //[Test]
-        //[TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Failed })]
-        //[TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Succeeded, TestOutcome.Succeeded })]
-        //[TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Inconclusive, TestOutcome.Failed })]
-        //[TestCase(new object[] { TestOutcome.Inconclusive, TestOutcome.Inconclusive, TestOutcome.Inconclusive })]
-        //[TestCase(new object[] { TestOutcome.Failed, TestOutcome.Failed, TestOutcome.Failed })]
-        //[TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Ignored })]
-        //[TestCase(new object[] { TestOutcome.SpectacularFail, TestOutcome.SpectacularFail, TestOutcome.Ignored })]
-        //[TestCase(new object[] { TestOutcome.Ignored, TestOutcome.SpectacularFail })]
-        //[Category("Unit Testing")]
-        //public void LastTestSpectacularFailCount_CountIsCorrect(params TestOutcome[] tests)
-        //{
-        //    var underTest = tests.Select(test => DummyOutcomes[test]).ToList();
-
-        //    using (var model = new MockedTestExplorerModel(underTest))
-        //    {
-        //        model.Engine.ParserState.OnParseRequested(model);
-        //        model.Model.ExecuteTests(model.Model.Tests);
-        //        Thread.SpinWait(25);
-
-        //        var expected = tests.Count(outcome => outcome == TestOutcome.SpectacularFail);
-        //        Assert.AreEqual(expected, model.Model.LastTestSpectacularFailCount);
         //    }
         //}
 
@@ -203,7 +173,6 @@ namespace RubberduckTests.UnitTesting
             { "Gold", Colors.Gold },
             { "Orange", Colors.Orange },
             { "Red", Colors.Red },
-            { "Black", Colors.Black }
         };
 
         //[Test]
@@ -214,7 +183,6 @@ namespace RubberduckTests.UnitTesting
         //[TestCase("Gold", new [] { TestOutcome.Inconclusive, TestOutcome.Inconclusive, TestOutcome.Succeeded })]
         //[TestCase("Red", new [] { TestOutcome.Failed, TestOutcome.Failed, TestOutcome.Failed })]
         //[TestCase("Orange", new [] { TestOutcome.Succeeded, TestOutcome.Ignored })]
-        //[TestCase("Black", new[] { TestOutcome.Ignored, TestOutcome.SpectacularFail })]
         //[Category("Unit Testing")]
         //public void ProgressBarColor_CorrectGivenTestResult(params object[] args)
         //{

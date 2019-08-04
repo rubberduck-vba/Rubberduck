@@ -297,9 +297,6 @@
   <data name="TestOutcome_SummaryCaption" xml:space="preserve">
     <value>Zusammenfassung:</value>
   </data>
-  <data name="TestOutcome_SpectacularFail" xml:space="preserve">
-    <value>Spektakulärer Fehlschlag</value>
-  </data>
   <data name="TestOutcome_RunSummaryFormat" xml:space="preserve">
     <value>{0} von {1} Test(s) ausgeführt. (Laufzeit: {2:g})</value>
   </data>

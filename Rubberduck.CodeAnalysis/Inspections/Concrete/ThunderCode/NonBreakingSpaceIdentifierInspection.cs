@@ -8,7 +8,7 @@ using Rubberduck.Resources.Inspections;
 
 namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
 {
-    /// <summary>
+    /// <summary hidden="true">
     /// A ThunderCode inspection that locates non-breaking spaces hidden in identifier names.
     /// </summary>
     /// <why>

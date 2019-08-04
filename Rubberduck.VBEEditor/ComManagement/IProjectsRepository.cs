@@ -4,5 +4,6 @@
     {
         void Refresh();
         void Refresh(string projectId);
+        void RemoveComponent(QualifiedModuleName qualifiedModuleName);
     }
 }

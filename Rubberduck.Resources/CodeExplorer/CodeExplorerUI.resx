@@ -210,7 +210,7 @@
     <comment>TC</comment>
   </data>
   <data name="CodeExplorer_AddModule" xml:space="preserve">
-    <value>Add Module</value>
+    <value>Add</value>
   </data>
   <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
     <value>Standard module (.bas)</value>
@@ -225,7 +225,7 @@
     <comment>TC</comment>
   </data>
   <data name="CodeExplorer_CollapseSubnodesToolTip" xml:space="preserve">
-    <value>Collapse node and all child nodes</value>
+    <value>Collapse all</value>
   </data>
   <data name="CodeExplorer_CopyToolTip" xml:space="preserve">
     <value>Copy to clipboard</value>
@@ -240,7 +240,7 @@
     <value>Display full &amp;signatures</value>
   </data>
   <data name="CodeExplorer_ExpandSubnodesToolTip" xml:space="preserve">
-    <value>Expand node and all child nodes</value>
+    <value>Expand all</value>
   </data>
   <data name="CodeExplorer_Export" xml:space="preserve">
     <value>Export...</value>
@@ -414,5 +414,30 @@
   </data>
   <data name="ObjectTestMethod" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Icons\Custom\PNG\TestMethod.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CodeExplorer_AddExistingFileText" xml:space="preserve">
+    <value>Existing file...</value>
+  </data>
+  <data name="CodeExplorer_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="CodeExplorer_Exclude" xml:space="preserve">
+    <value>Exclude from project</value>
+  </data>
+  <data name="ConfirmBeforeDelete_Caption" xml:space="preserve">
+    <value>Confirm Delete</value>
+  </data>
+  <data name="ConfirmBeforeDelete_Prompt" xml:space="preserve">
+    <value>{0} will be permanently deleted.
+    
+Continue?</value>
+  </data>
+  <data name="DeleteFailed_Caption" xml:space="preserve">
+    <value>Delete Failed</value>
+  </data>
+  <data name="DeleteFailed_Message" xml:space="preserve">
+    <value>The following files could not be deleted:
+    
+{0}</value>
   </data>
 </root>

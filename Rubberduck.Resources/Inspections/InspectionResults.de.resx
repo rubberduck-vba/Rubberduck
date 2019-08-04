@@ -198,10 +198,10 @@
     <value>Projekt '{0}' hat den Standardnamen</value>
   </data>
   <data name="ObsoleteCallStatementInspection" xml:space="preserve">
-    <value>Zuweisung verwendet obsolete 'Call'-Anweisung</value>
+    <value>Verwendung der veralteten 'Call'-Anweisung</value>
   </data>
   <data name="ObsoleteLetStatementInspection" xml:space="preserve">
-    <value>Zuweisung verwendet obsolete 'Let'-Anweisung</value>
+    <value>Verwendung der veralteten 'Let'-Anweisung</value>
   </data>
   <data name="ImplicitActiveSheetReferenceInspection" xml:space="preserve">
     <value>Member '{0}' referenziert implizit auf 'ActiveSheet'</value>
@@ -402,7 +402,7 @@ In Memoriam, 1972-2018</value>
     <value>Verwendung von 'On Error GoTo -1'</value>
   </data>
   <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
-    <value>Die 'While...Wend'-Schleife kann als 'Do While...Loop'-Block geschrieben werden.</value>
+    <value>'While...Wend'-Schleife kann als 'Do While...Loop'-Block formuliert werden.</value>
   </data>
   <data name="SetAssignmentWithIncompatibleObjectTypeInspection" xml:space="preserve">
     <value>Der Variablen '{0}' vom deklarierten Typ '{1}' wird eine Wert des inkompatiblen Typs '{2}' Set-zugewiesen.</value>

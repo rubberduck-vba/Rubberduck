@@ -160,7 +160,7 @@
     <value>Función de no devolución o captador de propiedad.</value>
   </data>
   <data name="ObsoleteCallStatementInspection" xml:space="preserve">
-    <value>Uso de declaración obsoleta 'Call'</value>
+    <value>Uso de declaración 'Call' obsoleta </value>
   </data>
   <data name="ObsoleteCommentSyntaxInspection" xml:space="preserve">
     <value>Uso de la declaración 'Rem' obsoleta</value>
@@ -362,5 +362,8 @@
   </data>
   <data name="MissingModuleAnnotationInspection" xml:space="preserve">
     <value>Falta la anotación del módulo</value>
+  </data>
+  <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
+    <value>Uso de declaración 'While...Wend' obsoleta </value>
   </data>
 </root>

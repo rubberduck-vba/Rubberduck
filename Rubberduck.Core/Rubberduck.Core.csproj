@@ -5,7 +5,7 @@
     <AssemblyName>Rubberduck.Core</AssemblyName>
     <Title>Rubberduck.Core</Title>
     <Product>Rubberduck.Core</Product>
-    <Copyright>Copyright © 2014-2018</Copyright>
+    <Copyright>Copyright © 2014-2019</Copyright>
     <ProjectGuid>{A1587EAC-7B54-407E-853F-4C7493D0323E}</ProjectGuid>
     <DocumentationFile>bin\Debug\Rubberduck.Core.xml</DocumentationFile>
     <!-- Disable "Missing XML documentation" warning (CS1591) -->
@@ -27,6 +27,7 @@
     <Reference Include="Infralution.Localization.Wpf">
       <HintPath>..\libs\Infralution.Localization.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="mscorlib" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="PresentationFramework.Aero" />

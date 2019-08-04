@@ -36,7 +36,7 @@ namespace Rubberduck.UI.Controls
         }
 
         public static readonly DependencyProperty TextProperty =
-            DependencyProperty.Register("Text", typeof(string), typeof(BindableTextEditor), new PropertyMetadata((obj, args) =>
+            DependencyProperty.Register(nameof(Text), typeof(string), typeof(BindableTextEditor), new PropertyMetadata((obj, args) =>
             {
                 var target = (BindableTextEditor)obj;
                 target.Text = (string)args.NewValue;
@@ -44,7 +44,7 @@ namespace Rubberduck.UI.Controls
 
         protected override void OnTextChanged(EventArgs e)
         {
-            RaisePropertyChanged("Text");
+            RaisePropertyChanged(nameof(Text));
             base.OnTextChanged(e);
         }
 
