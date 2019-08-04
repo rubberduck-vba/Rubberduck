@@ -92,9 +92,9 @@ namespace Rubberduck.Parsing.TypeResolvers
                 case VBAParser.IndexExprContext indexExpression:
                     throw new NotImplementedException();
                 case VBAParser.MemberAccessExprContext memberAccessExpression:
-                    throw new NotImplementedException();
+                    return SetTypeDeterminingDeclarationOfExpression(memberAccessExpression.unrestrictedIdentifier(), containingModule, finder);
                 case VBAParser.WithMemberAccessExprContext withMemberAccessExpression:
-                    throw new NotImplementedException();
+                    return SetTypeDeterminingDeclarationOfExpression(withMemberAccessExpression.unrestrictedIdentifier(), containingModule, finder);
                 case VBAParser.DictionaryAccessExprContext dictionaryAccessExpression:
                     throw new NotImplementedException();
                 case VBAParser.WithDictionaryAccessExprContext withDictionaryAccessExpression:
@@ -110,7 +110,18 @@ namespace Rubberduck.Parsing.TypeResolvers
         {
             return finder.IdentifierReferences(identifier, containingModule)
                 .Select(reference => reference.Declaration)
-                .FirstOrDefault(declaration => declaration.IsObject || declaration.AsTypeName == Tokens.Variant);
+                .FirstOrDefault(declaration => declaration.IsObject 
+                                               || declaration.AsTypeName == Tokens.Variant 
+                                               || declaration.DeclarationType.HasFlag(DeclarationType.ClassModule));
+        }
+
+        private Declaration SetTypeDeterminingDeclarationOfExpression(VBAParser.UnrestrictedIdentifierContext identifier, QualifiedModuleName containingModule, DeclarationFinder finder)
+        {
+            return finder.IdentifierReferences(identifier, containingModule)
+                .Select(reference => reference.Declaration)
+                .FirstOrDefault(declaration => declaration.IsObject
+                                               || declaration.AsTypeName == Tokens.Variant
+                                               || declaration.DeclarationType.HasFlag(DeclarationType.ClassModule));
         }
 
         private Declaration SetTypeDeterminingDeclarationOfInstance(QualifiedModuleName instance, DeclarationFinder finder)

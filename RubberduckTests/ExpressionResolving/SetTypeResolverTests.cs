@@ -149,6 +149,165 @@ End Sub
             Assert.AreEqual(expectedNameOfSetTypeDeclaration, actualNameOfSetTypeDeclaration);
         }
 
+        [Test]
+        [Category("ExpressionResolver")]
+        [TestCase("Class1", "TestProject.Class1")]
+        [TestCase("TestProject.Class1", "TestProject.Class1")]
+        [TestCase("Variant", "Variant")]
+        [TestCase("Object", "Object")]
+        [TestCase("Long", null)]
+        public void MemberAccessExpression_SetTypeNameTests(string typeName, string expectedSetTypeName)
+        {
+            var class1 =
+                $@"
+Public Property Get Foo() As {typeName}
+End Property
+";
+
+            var module1 =
+                @"
+Private Sub Bar()
+    Dim cls As Class1
+    Dim baz as Variant
+    Set baz = cls.Foo
+End Sub
+";
+
+            var expressionSelection = new Selection(5, 15, 5, 22);
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, class1)
+                .AddComponent("Module1", ComponentType.StandardModule, module1)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
+
+            var actualSetTypeName = ExpressionTypeName(vbe, "Module1", expressionSelection);
+
+            Assert.AreEqual(expectedSetTypeName, actualSetTypeName);
+        }
+
+        [Test]
+        [Category("ExpressionResolver")]
+        [TestCase("Class1", "TestProject.Class1")]
+        [TestCase("TestProject.Class1", "TestProject.Class1")]
+        [TestCase("Variant", null)]
+        [TestCase("Object", null)]
+        [TestCase("Long", null)]
+        public void MemberAccessExpression_SetTypeDeclarationTests(string typeName, string expectedNameOfSetTypeDeclaration)
+        {
+            var class1 =
+                $@"
+Public Property Get Foo() As {typeName}
+End Property
+";
+
+            var module1 =
+                @"
+Private Sub Bar()
+    Dim cls As Class1
+    Dim baz As Variant
+    Set baz = cls.Foo
+End Sub
+";
+
+            var expressionSelection = new Selection(5, 15, 5, 22);
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, class1)
+                .AddComponent("Module1", ComponentType.StandardModule, module1)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
+
+            var setTypeDeclaration = ExpressionTypeDeclaration(vbe, "Module1", expressionSelection);
+            var actualNameOfSetTypeDeclaration = setTypeDeclaration?.QualifiedModuleName.ToString();
+
+            Assert.AreEqual(expectedNameOfSetTypeDeclaration, actualNameOfSetTypeDeclaration);
+        }
+
+        [Test]
+        [Category("ExpressionResolver")]
+        [TestCase("Class1", "TestProject.Class1")]
+        [TestCase("TestProject.Class1", "TestProject.Class1")]
+        [TestCase("Variant", "Variant")]
+        [TestCase("Object", "Object")]
+        [TestCase("Long", null)]
+        public void WithMemberAccessExpression_SetTypeNameTests(string typeName, string expectedSetTypeName)
+        {
+            var class1 =
+                $@"
+Public Property Get Foo() As {typeName}
+End Property
+";
+
+            var module1 =
+                @"
+Private Sub Bar()
+    With New Class1
+        Dim baz as Variant
+        Set baz = .Foo
+    End With
+End Sub
+";
+
+            var expressionSelection = new Selection(5, 19, 5, 23);
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, class1)
+                .AddComponent("Module1", ComponentType.StandardModule, module1)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
+
+            var actualSetTypeName = ExpressionTypeName(vbe, "Module1", expressionSelection);
+
+            Assert.AreEqual(expectedSetTypeName, actualSetTypeName);
+        }
+
+        [Test]
+        [Category("ExpressionResolver")]
+        [TestCase("Class1", "TestProject.Class1")]
+        [TestCase("TestProject.Class1", "TestProject.Class1")]
+        [TestCase("Variant", null)]
+        [TestCase("Object", null)]
+        [TestCase("Long", null)]
+        public void WithMemberAccessExpression_SetTypeDeclarationTests(string typeName, string expectedNameOfSetTypeDeclaration)
+        {
+            var class1 =
+                $@"
+Public Property Get Foo() As {typeName}
+End Property
+";
+
+            var module1 =
+                @"
+Private Sub Bar()
+    With New Class1
+        Dim baz as Variant
+        Set baz = .Foo
+    End With
+End Sub
+";
+
+            var expressionSelection = new Selection(5, 19, 5, 23);
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, class1)
+                .AddComponent("Module1", ComponentType.StandardModule, module1)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
+
+            var setTypeDeclaration = ExpressionTypeDeclaration(vbe, "Module1", expressionSelection);
+            var actualNameOfSetTypeDeclaration = setTypeDeclaration?.QualifiedModuleName.ToString();
+
+            Assert.AreEqual(expectedNameOfSetTypeDeclaration, actualNameOfSetTypeDeclaration);
+        }
 
         private Declaration ExpressionTypeDeclaration(IVBE vbe, string componentName, Selection selection)
         {

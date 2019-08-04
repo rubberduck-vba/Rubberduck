@@ -1404,6 +1404,16 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         }
 
         /// <summary>
+        /// Gets all identifier references for an UnrestrictedIdentifierContext.
+        /// </summary>
+        public IEnumerable<IdentifierReference> IdentifierReferences(VBAParser.UnrestrictedIdentifierContext identifierContext, QualifiedModuleName module)
+        {
+            var qualifiedSelection = new QualifiedSelection(module, identifierContext.GetSelection());
+            return IdentifierReferences(qualifiedSelection)
+                .Where(identifierReference => identifierReference.IdentifierName.Equals(identifierContext.GetText()));
+        }
+
+        /// <summary>
         /// Gets all identifier references with the specified selection.
         /// </summary>
         public IEnumerable<IdentifierReference> IdentifierReferences(QualifiedSelection selection)
