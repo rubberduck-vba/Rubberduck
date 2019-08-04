@@ -26,10 +26,10 @@ namespace Rubberduck.UI.UnitTesting
             set => SetValue(MouseOverGroupProperty, value);
         }
 
-        public static readonly DependencyProperty MouseOverTestProperty = DependencyProperty.Register("MouseOverTest",
+        public static readonly DependencyProperty MouseOverTestProperty = DependencyProperty.Register(nameof(MouseOverTest),
             typeof(TestMethodViewModel), typeof(TestExplorerRowMouseOverBehavior));
 
-        public static readonly DependencyProperty MouseOverGroupProperty = DependencyProperty.Register("MouseOverGroup",
+        public static readonly DependencyProperty MouseOverGroupProperty = DependencyProperty.Register(nameof(MouseOverGroup),
             typeof(CollectionViewGroup), typeof(TestExplorerRowMouseOverBehavior));
 
         protected override void OnAttached()

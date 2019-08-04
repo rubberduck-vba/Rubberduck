@@ -274,6 +274,21 @@ namespace Rubberduck.VBEditor.ComManagement
             return EvaluateWithinReadLock(() => _components.TryGetValue(qualifiedModuleName, out var component) ? component : null);
         }
 
+        public void RemoveComponent(QualifiedModuleName qualifiedModuleName)
+        {
+            ExecuteWithinWriteLock(() =>
+            {
+                if (!_components.TryGetValue(qualifiedModuleName, out var component) ||
+                    !_componentsCollections.TryGetValue(qualifiedModuleName.ProjectId, out var componentsCollectionItem))
+                {
+                    return;
+                }
+
+                _components.Remove(qualifiedModuleName); // Remove our cached copy of the component
+                componentsCollectionItem.Remove(component); // Remove the actual component from the project 
+            });
+        }
+
         public void Dispose()
         {
             Dispose(true);

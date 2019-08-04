@@ -1,4 +1,5 @@
-﻿
+﻿using System;
+
 namespace Rubberduck.UI.ToDoItems
 {
     /// <summary>
@@ -20,6 +21,11 @@ namespace Rubberduck.UI.ToDoItems
             {
                 ViewModel.RefreshCommand.Execute(null);
             }
+        }
+
+        private void GroupingGrid_ColumnReordered(object sender, System.Windows.Controls.DataGridColumnEventArgs e)
+        {
+            ViewModel.UpdateColumnHeaderInformation(MainGrid.Columns);
         }
     }
 }

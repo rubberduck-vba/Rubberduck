@@ -412,7 +412,8 @@
                   ItemContainerStyle="{StaticResource TreeViewContainerStyle}"
                   FontSize="{Binding FontSize, Mode=OneWay}"
                   BorderThickness="0,1"
-                  VirtualizingPanel.IsVirtualizing="False">
+                  VirtualizingPanel.IsVirtualizing="False"
+                  KeyDown="ProjectTree_KeyDown">
             <TreeView.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Open}"
@@ -471,6 +472,19 @@
                               Command="{Binding RemoveCommand}"
                               CommandParameter="{Binding SelectedItem, Mode=OneWay}"
                               Visibility="{Binding VBAVisibility}">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource RemoveImage}" Style="{StaticResource ToolbarImageOpacity}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Exclude}"
+                              Command="{Binding RemoveCommand}"
+                              CommandParameter="{Binding SelectedItem, Mode=OneWay}"
+                              Visibility="{Binding VB6Visibility}">
+                    </MenuItem>
+                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Delete}"
+                              Command="{Binding DeleteCommand}"
+                              CommandParameter="{Binding SelectedItem, Mode=OneWay}"
+                              Visibility="{Binding VB6Visibility}">
                         <MenuItem.Icon>
                             <Image Source="{StaticResource RemoveImage}" Style="{StaticResource ToolbarImageOpacity}" />
                         </MenuItem.Icon>

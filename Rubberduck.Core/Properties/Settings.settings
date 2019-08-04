@@ -185,5 +185,33 @@
   &lt;BlockCompletion IsEnabled="false" CompleteOnEnter="false" CompleteOnTab="false" /&gt;
 &lt;/AutoCompleteSettings&gt;</Value>
     </Setting>
+    <Setting Name="ToDoGridViewColumnInfo_Description" Type="Rubberduck.Settings.ToDoGridViewColumnInfo" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ToDoGridViewColumnInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;DisplayIndex&gt;0&lt;/DisplayIndex&gt;
+  &lt;Width /&gt;
+&lt;/ToDoGridViewColumnInfo&gt;</Value>
+    </Setting>
+    <Setting Name="ToDoGridViewColumnInfo_Project" Type="Rubberduck.Settings.ToDoGridViewColumnInfo" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ToDoGridViewColumnInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;DisplayIndex&gt;1&lt;/DisplayIndex&gt;
+  &lt;Width /&gt;
+&lt;/ToDoGridViewColumnInfo&gt;</Value>
+    </Setting>
+    <Setting Name="ToDoGridViewColumnInfo_Module" Type="Rubberduck.Settings.ToDoGridViewColumnInfo" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ToDoGridViewColumnInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;DisplayIndex&gt;2&lt;/DisplayIndex&gt;
+  &lt;Width /&gt;
+&lt;/ToDoGridViewColumnInfo&gt;</Value>
+    </Setting>
+    <Setting Name="ToDoGridViewColumnInfo_LineNumber" Type="Rubberduck.Settings.ToDoGridViewColumnInfo" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ToDoGridViewColumnInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;DisplayIndex&gt;3&lt;/DisplayIndex&gt;
+  &lt;Width /&gt;
+&lt;/ToDoGridViewColumnInfo&gt;</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -61,6 +61,7 @@
                     <BitmapImage x:Key="GroupByLocationImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/ObjectClass.png" />
                     <BitmapImage x:Key="GroupBySeverityImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/Severity.png" />
 
+                    <BitmapImage x:Key="FilterImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/Funnel.png" />
                     <BitmapImage x:Key="FilterByHintImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/information-white.png" />
                     <BitmapImage x:Key="FilterBySuggestionImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/information.png" />
                     <BitmapImage x:Key="FilterByWarningImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/exclamation.png" />
@@ -130,6 +131,8 @@
                 </ToggleButton>
 
                 <Separator />
+
+                <Image Source="{StaticResource FilterImage}" />
 
                 <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_Filter}" VerticalContentAlignment="Center" />
 
