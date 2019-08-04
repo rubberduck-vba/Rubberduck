@@ -196,7 +196,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Methods without executable statements serve no purpose and can be safely omitted..
+        ///   Looks up a localized string similar to Methods without executable statements may appear to be doing something which they actually don&apos;t, and therefore causing unexpected behaviour..
         /// </summary>
         public static string EmptyMethodInspection {
             get {

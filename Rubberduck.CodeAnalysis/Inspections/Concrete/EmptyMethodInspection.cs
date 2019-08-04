@@ -62,11 +62,9 @@ namespace Rubberduck.Inspections.Concrete
                                           // where all members of that module contain no executables
                                           .Where(interfaceModule => interfaceModule.ComponentName == resultsInModule.Key
                                                                     && interfaceModule.Members.Count == resultsInModule.Count())
-                                          .Any()
-                )
+                                          .Any())
                 .SelectMany(resultsInModule => resultsInModule)
-                .Select(result => new { actual = result, method = result.Context as IMethodStmtContext })
-                ;
+                .Select(result => new { actual = result, method = result.Context as IMethodStmtContext });
 
             return results.Select(result => new QualifiedContextInspectionResult(this,
                                                                                  string.Format(InspectionResults.EmptyMethodInspection,

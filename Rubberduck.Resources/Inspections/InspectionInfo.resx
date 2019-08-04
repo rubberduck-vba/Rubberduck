@@ -383,6 +383,6 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>'While...Wend' loops exist for backward compatibility and have been superseded by the introduction of 'Do While...Loop' blocks, which support the 'Exit Do' exit statement. 'While...Wend' loops cannot be exited other than fulfilling the 'While' condition.</value>
   </data>
   <data name="EmptyMethodInspection" xml:space="preserve">
-    <value>Methods without executable statements serve no purpose and can be safely omitted.</value>
+    <value>Methods without executable statements may appear to be doing something which they actually don't, and therefore causing unexpected behaviour.</value>
   </data>
 </root>
