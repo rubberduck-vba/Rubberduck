@@ -1,10 +1,16 @@
-﻿using System;
+﻿#if DEBUG && TRACE_TYPEAPI
+using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
 {
+    /// <summary>
+    /// Wraps the existing implementation so that we can trace the calls for
+    /// diagnostics or debugging. See <see cref="TypeApiFactory"/> for
+    /// creating a class to be traced. The class should not be created directly.
+    /// </summary>
     internal class TypeInfoWrapperTracer : ITypeInfoWrapper, ITypeInfoInternal
     {
         private readonly ITypeInfoWrapper _wrapper;
@@ -26,7 +32,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             System.Diagnostics.Debug.Print($"Leaving {nameof(ITypeInfoWrapper)}::{methodName}; {parameters}");
         }
 
-        public void GetTypeAttr(out IntPtr ppTypeAttr)
+        void ITypeInfo.GetTypeAttr(out IntPtr ppTypeAttr)
         {
             Before();
             _wrapper.GetTypeAttr(out var t);
@@ -34,7 +40,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             ppTypeAttr = t;
         }
 
-        public void GetTypeComp(out ITypeComp ppTComp)
+        void ITypeInfo.GetTypeComp(out ITypeComp ppTComp)
         {
             Before();
             _wrapper.GetTypeComp(out var t);
@@ -42,7 +48,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             ppTComp = t;
         }
 
-        public void GetFuncDesc(int index, out IntPtr ppFuncDesc)
+        void ITypeInfo.GetFuncDesc(int index, out IntPtr ppFuncDesc)
         {
             Before($"{nameof(index)}: {index}");
             _wrapper.GetFuncDesc(index, out var t);
@@ -50,7 +56,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             ppFuncDesc = t;
         }
 
-        public void GetVarDesc(int index, out IntPtr ppVarDesc)
+        void ITypeInfo.GetVarDesc(int index, out IntPtr ppVarDesc)
         {
             Before($"{nameof(index)}: {index}");
             _wrapper.GetVarDesc(index, out var t);
@@ -58,7 +64,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             ppVarDesc = t;
         }
 
-        public void GetNames(int memid, string[] rgBstrNames, int cMaxNames, out int pcNames)
+        void ITypeInfo.GetNames(int memid, string[] rgBstrNames, int cMaxNames, out int pcNames)
         {
             Before($"{nameof(memid)}: {memid}, {nameof(rgBstrNames)}: {(rgBstrNames == null ? "null" : "strings")}, {nameof(cMaxNames)}: {cMaxNames}");
             _wrapper.GetNames(memid, rgBstrNames, cMaxNames, out var t);
@@ -66,7 +72,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             pcNames = t;
         }
 
-        public void GetRefTypeOfImplType(int index, out int href)
+        void ITypeInfo.GetRefTypeOfImplType(int index, out int href)
         {
             Before($"{nameof(index)}: {index}");
             _wrapper.GetRefTypeOfImplType(index, out var t);
@@ -74,7 +80,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             href = t;
         }
 
-        public void GetImplTypeFlags(int index, out IMPLTYPEFLAGS pImplTypeFlags)
+        void ITypeInfo.GetImplTypeFlags(int index, out IMPLTYPEFLAGS pImplTypeFlags)
         {
             Before($"{nameof(index)}: {index}");
             _wrapper.GetImplTypeFlags(index, out var t);
@@ -82,14 +88,14 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             pImplTypeFlags = t;
         }
 
-        public void GetIDsOfNames(string[] rgszNames, int cNames, int[] pMemId)
+        void ITypeInfo.GetIDsOfNames(string[] rgszNames, int cNames, int[] pMemId)
         {
             Before($"{nameof(rgszNames)}: {(rgszNames == null ? "null" : "strings")}, {nameof(cNames)}: {cNames}, {nameof(pMemId)}: {(pMemId == null ? "null" : "ints")}");
             _wrapper.GetIDsOfNames(rgszNames, cNames, pMemId);
             After($"{nameof(rgszNames)}: {(rgszNames == null ? "null" : "strings")}, {nameof(pMemId)}: {(pMemId == null ? "null" : "ints")}");
         }
 
-        public void Invoke(object pvInstance, int memid, short wFlags, ref DISPPARAMS pDispParams, IntPtr pVarResult,
+        void ITypeInfo.Invoke(object pvInstance, int memid, short wFlags, ref DISPPARAMS pDispParams, IntPtr pVarResult,
             IntPtr pExcepInfo, out int puArgErr)
         {
             Before("parameters not included");
@@ -125,7 +131,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             return result;
         }
 
-        public int GetRefTypeInfo(int hRef, IntPtr ppTI)
+        private int GetRefTypeInfo(int hRef, IntPtr ppTI)
         {
             Before($"{nameof(hRef)}: {hRef}, {nameof(ppTI)}: {ppTI}");
             var result = _wrapper.GetRefTypeInfo(hRef, ppTI);
@@ -133,7 +139,17 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             return result;
         }
 
-        public int AddressOfMember(int memid, INVOKEKIND invKind, IntPtr ppv)
+        int ITypeInfoInternal.GetRefTypeInfo(int hRef, IntPtr ppTI)
+        {
+            return GetRefTypeInfo(hRef, ppTI);
+        }
+
+        int ITypeInfoWrapper.GetRefTypeInfo(int hRef, IntPtr ppTI)
+        {
+            return GetRefTypeInfo(hRef, ppTI);
+        }
+
+        private int AddressOfMember(int memid, INVOKEKIND invKind, IntPtr ppv)
         {
             Before($"{nameof(memid)}: {memid}, {nameof(invKind)}: {invKind}, {nameof(ppv)}: {ppv}");
             var result = _wrapper.AddressOfMember(memid, invKind, ppv);
@@ -141,7 +157,17 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             return result;
         }
 
-        public int CreateInstance(IntPtr pUnkOuter, ref Guid riid, IntPtr ppvObj)
+        int ITypeInfoInternal.AddressOfMember(int memid, INVOKEKIND invKind, IntPtr ppv)
+        {
+            return AddressOfMember(memid, invKind, ppv);
+        }
+
+        int ITypeInfoWrapper.AddressOfMember(int memid, INVOKEKIND invKind, IntPtr ppv)
+        {
+            return AddressOfMember(memid, invKind, ppv);
+        }
+
+        private int CreateInstance(IntPtr pUnkOuter, ref Guid riid, IntPtr ppvObj)
         {
             Before($"{nameof(pUnkOuter)}: {pUnkOuter}, {nameof(riid)}: {riid}, {nameof(ppvObj)}: {ppvObj}");
             var result = _wrapper.CreateInstance(pUnkOuter, ref riid, ppvObj);
@@ -149,7 +175,17 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             return result;
         }
 
-        public int GetMops(int memid, IntPtr pBstrMops)
+        int ITypeInfoInternal.CreateInstance(IntPtr pUnkOuter, ref Guid riid, IntPtr ppvObj)
+        {
+            return CreateInstance(pUnkOuter, ref riid, ppvObj);
+        }
+
+        int ITypeInfoWrapper.CreateInstance(IntPtr pUnkOuter, ref Guid riid, IntPtr ppvObj)
+        {
+            return CreateInstance(pUnkOuter, ref riid, ppvObj);
+        }
+
+        private int GetMops(int memid, IntPtr pBstrMops)
         {
             Before($"{nameof(memid)}: {memid}, {nameof(pBstrMops)}: {pBstrMops}");
             var result = _wrapper.GetMops(memid, pBstrMops);
@@ -157,13 +193,38 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             return result;
         }
 
-        public void ReleaseTypeAttr(IntPtr pTypeAttr)
+        int ITypeInfoInternal.GetMops(int memid, IntPtr pBstrMops)
+        {
+            return GetMops(memid, pBstrMops);
+        }
+
+        int ITypeInfoWrapper.GetMops(int memid, IntPtr pBstrMops)
+        {
+            return GetMops(memid, pBstrMops);
+        }
+
+        private void ReleaseTypeAttr(IntPtr pTypeAttr)
         {
             Before($"{nameof(pTypeAttr)}: {pTypeAttr}");
             _wrapper.ReleaseTypeAttr(pTypeAttr);
             After();
         }
-        
+
+        void ITypeInfoInternal.ReleaseTypeAttr(IntPtr pTypeAttr)
+        {
+            ReleaseTypeAttr(pTypeAttr);
+        }
+
+        void ITypeInfo.ReleaseTypeAttr(IntPtr pTypeAttr)
+        {
+            ReleaseTypeAttr(pTypeAttr);
+        }
+
+        void ITypeInfoWrapper.ReleaseTypeAttr(IntPtr pTypeAttr)
+        {
+            ReleaseTypeAttr(pTypeAttr);
+        }
+
         public void ReleaseFuncDesc(IntPtr pFuncDesc)
         {
             Before($"{nameof(pFuncDesc)}: {pFuncDesc}");
@@ -171,14 +232,29 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             After();
         }
 
-        public void ReleaseVarDesc(IntPtr pVarDesc)
+        private void ReleaseVarDesc(IntPtr pVarDesc)
         {
             Before($"{nameof(pVarDesc)}: {pVarDesc}");
             _wrapper.ReleaseVarDesc(pVarDesc);  
             After();
         }
 
-        public ITypeInfoFunctionCollection Funcs
+        void ITypeInfoInternal.ReleaseVarDesc(IntPtr pVarDesc)
+        {
+            ReleaseVarDesc(pVarDesc);
+        }
+
+        void ITypeInfo.ReleaseVarDesc(IntPtr pVarDesc)
+        {
+            ReleaseVarDesc(pVarDesc);
+        }
+
+        void ITypeInfoWrapper.ReleaseVarDesc(IntPtr pVarDesc)
+        {
+            ReleaseVarDesc(pVarDesc);
+        }
+
+        ITypeInfoFunctionCollection ITypeInfoWrapper.Funcs
         {
             get
             {
@@ -189,7 +265,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             }
         }
 
-        public ITypeInfoVariablesCollection Vars
+        ITypeInfoVariablesCollection ITypeInfoWrapper.Vars
         {
             get
             {
@@ -200,7 +276,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             }
         }
 
-        public ITypeInfoImplementedInterfacesCollection ImplementedInterfaces
+        ITypeInfoImplementedInterfacesCollection ITypeInfoWrapper.ImplementedInterfaces
         {
             get
             {
@@ -211,7 +287,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             }
         }
 
-        public int GetDocumentation(int memid, IntPtr strName, IntPtr strDocString, IntPtr dwHelpContext, IntPtr strHelpFile)
+        private int GetDocumentation(int memid, IntPtr strName, IntPtr strDocString, IntPtr dwHelpContext, IntPtr strHelpFile)
         {
             Before($"{nameof(memid)}: {memid}, {nameof(strName)}: {strName}, {nameof(strDocString)}: {strDocString}, {nameof(dwHelpContext)}: {dwHelpContext}, {nameof(strHelpFile)}: {strHelpFile}");
             var result = _wrapper.GetDocumentation(memid, strName, strDocString, dwHelpContext, strHelpFile);
@@ -219,14 +295,24 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             return result;
         }
 
-        public void GetDllEntry(int memid, INVOKEKIND invKind, IntPtr pBstrDllName, IntPtr pBstrName, IntPtr pwOrdinal)
+        int ITypeInfoInternal.GetDocumentation(int memid, IntPtr strName, IntPtr strDocString, IntPtr dwHelpContext, IntPtr strHelpFile)
+        {
+            return GetDocumentation(memid, strName, strDocString, dwHelpContext, strHelpFile);
+        }
+
+        int ITypeInfoWrapper.GetDocumentation(int memid, IntPtr strName, IntPtr strDocString, IntPtr dwHelpContext, IntPtr strHelpFile)
+        {
+            return GetDocumentation(memid, strName, strDocString, dwHelpContext, strHelpFile);
+        }
+
+        void ITypeInfo.GetDllEntry(int memid, INVOKEKIND invKind, IntPtr pBstrDllName, IntPtr pBstrName, IntPtr pwOrdinal)
         {
             Before($"{nameof(memid)}: {memid}, {nameof(invKind)}: {invKind}, {nameof(pBstrDllName)}: {pBstrDllName}, {nameof(pBstrName)}: {pBstrName}, {nameof(pwOrdinal)}: {pwOrdinal}");
-            var result = _wrapper.GetDllEntry(memid, invKind, pBstrDllName, pBstrName, pwOrdinal);
+            var result = _inner.GetDllEntry(memid, invKind, pBstrDllName, pBstrName, pwOrdinal);
             After($"{nameof(result)}: {result}");
         }
 
-        public void GetRefTypeInfo(int hRef, out ITypeInfo ppTI)
+        void ITypeInfo.GetRefTypeInfo(int hRef, out ITypeInfo ppTI)
         {
             Before($"{nameof(hRef)}: {hRef}");
             _wrapper.GetRefTypeInfo(hRef, out var t);
@@ -234,7 +320,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             ppTI = t;
         }
 
-        public void AddressOfMember(int memid, INVOKEKIND invKind, out IntPtr ppv)
+        void ITypeInfo.AddressOfMember(int memid, INVOKEKIND invKind, out IntPtr ppv)
         {
             Before($"{nameof(memid)}: {memid}, {nameof(invKind)}: {invKind}");
             _wrapper.AddressOfMember(memid, invKind, out var t);
@@ -242,7 +328,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             ppv = t;
         }
 
-        public void CreateInstance(object pUnkOuter, ref Guid riid, out object ppvObj)
+        void ITypeInfo.CreateInstance(object pUnkOuter, ref Guid riid, out object ppvObj)
         {
             Before($"{nameof(pUnkOuter)}: {pUnkOuter?.GetHashCode()}, {nameof(riid)}: {riid}");
             _wrapper.CreateInstance(pUnkOuter, ref riid, out var t);
@@ -250,7 +336,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             ppvObj = t;
         }
 
-        public void GetMops(int memid, out string pBstrMops)
+        void ITypeInfo.GetMops(int memid, out string pBstrMops)
         {
             Before($"{nameof(memid)}: {memid}");
             _wrapper.GetMops(memid, out var t);
@@ -258,7 +344,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             pBstrMops = t;
         }
 
-        public void GetContainingTypeLib(out ITypeLib ppTLB, out int pIndex)
+        void ITypeInfo.GetContainingTypeLib(out ITypeLib ppTLB, out int pIndex)
         {
             Before();
             _wrapper.GetContainingTypeLib(out var t1, out var t2);
@@ -266,8 +352,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             ppTLB = t1;
             pIndex = t2;
         }
-        
-        public ITypeLib Container
+
+        ITypeLib ITypeInfoWrapper.Container
         {
             get
             {
@@ -278,7 +364,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             }
         }
 
-        public int ContainerIndex
+        int ITypeInfoWrapper.ContainerIndex
         {
             get
             {
@@ -289,7 +375,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             }
         }
 
-        public bool HasModuleScopeCompilationErrors
+        bool ITypeInfoWrapper.HasModuleScopeCompilationErrors
         {
             get
             {
@@ -300,7 +386,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             }
         }
 
-        public bool HasVBEExtensions
+        bool ITypeInfoWrapper.HasVBEExtensions
         {
             get
             {
@@ -311,7 +397,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             }
         }
 
-        public TYPEATTR CachedAttributes
+        TYPEATTR ITypeInfoWrapper.CachedAttributes
         {
             get
             {
@@ -322,7 +408,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             }
         }
 
-        public bool HasSimulatedContainer
+        bool ITypeInfoWrapper.HasSimulatedContainer
         {
             get
             {
@@ -333,7 +419,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             }
         }
 
-        public bool IsUserFormBaseClass
+        bool ITypeInfoWrapper.IsUserFormBaseClass
         {
             get
             {
@@ -344,7 +430,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             }
         }
 
-        public string Name
+        string ITypeInfoWrapper.Name
         {
             get
             {
@@ -355,7 +441,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             }
         }
 
-        public string DocString
+        string ITypeInfoWrapper.DocString
         {
             get
             {
@@ -366,7 +452,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             }
         }
 
-        public int HelpContext
+        int ITypeInfoWrapper.HelpContext
         {
             get
             {
@@ -377,7 +463,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             }
         }
 
-        public string HelpFile
+        string ITypeInfoWrapper.HelpFile
         {
             get
             {
@@ -388,7 +474,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             }
         }
 
-        public string ProgID
+        string ITypeInfoWrapper.ProgID
         {
             get
             {
@@ -399,7 +485,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             }
         }
 
-        public Guid GUID
+        Guid ITypeInfoWrapper.GUID
         {
             get
             {
@@ -410,7 +496,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             }
         }
 
-        public TYPEKIND_VBE TypeKind
+        TYPEKIND_VBE ITypeInfoWrapper.TypeKind
         {
             get
             {
@@ -421,7 +507,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             }
         }
 
-        public bool HasPredeclaredId
+        bool ITypeInfoWrapper.HasPredeclaredId
         {
             get
             {
@@ -432,7 +518,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             }
         }
 
-        public TYPEFLAGS Flags
+        TYPEFLAGS ITypeInfoWrapper.Flags
         {
             get
             {
@@ -443,7 +529,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             }
         }
 
-        public string ContainerName
+        string ITypeInfoWrapper.ContainerName
         {
             get
             {
@@ -454,7 +540,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             }
         }
 
-        public ITypeInfoVBEExtensions VBEExtensions
+        ITypeInfoVBEExtensions ITypeInfoWrapper.VBEExtensions
         {
             get
             {
@@ -472,7 +558,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             After();
         }
 
-        public int GetSafeRefTypeInfo(int hRef, out ITypeInfoWrapper outTI)
+        int ITypeInfoWrapper.GetSafeRefTypeInfo(int hRef, out ITypeInfoWrapper outTI)
         {
             Before($"{nameof(hRef)}: {hRef}");
             var result = _wrapper.GetSafeRefTypeInfo(hRef, out var t);
@@ -481,7 +567,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             return result;
         }
 
-        public IntPtr GetCOMReferencePtr()
+        IntPtr ITypeInfoWrapper.GetCOMReferencePtr()
         {
             Before();
             var result = _wrapper.GetCOMReferencePtr();
@@ -489,7 +575,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             return result;
         }
 
-        public int GetContainingTypeLib(IntPtr ppTLB, IntPtr pIndex)
+        private int GetContainingTypeLib(IntPtr ppTLB, IntPtr pIndex)
         {
             Before($"{nameof(ppTLB)}: {ppTLB}, {nameof(pIndex)}: {pIndex}");
             var result = _wrapper.GetContainingTypeLib(ppTLB, pIndex);
@@ -497,7 +583,17 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             return result;
         }
 
-        public int GetTypeAttr(IntPtr ppTypeAttr)
+        int ITypeInfoInternal.GetContainingTypeLib(IntPtr ppTLB, IntPtr pIndex)
+        {
+            return GetContainingTypeLib(ppTLB, pIndex);
+        }
+
+        int ITypeInfoWrapper.GetContainingTypeLib(IntPtr ppTLB, IntPtr pIndex)
+        {
+            return GetContainingTypeLib(ppTLB, pIndex);
+        }
+
+        private int GetTypeAttr(IntPtr ppTypeAttr)
         {
             Before($"{nameof(ppTypeAttr)}: {ppTypeAttr}");
             var result = _wrapper.GetTypeAttr(ppTypeAttr);
@@ -505,7 +601,17 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             return result;
         }
 
-        public int GetTypeComp(IntPtr ppTComp)
+        int ITypeInfoInternal.GetTypeAttr(IntPtr ppTypeAttr)
+        {
+            return GetTypeAttr(ppTypeAttr);
+        }
+
+        int ITypeInfoWrapper.GetTypeAttr(IntPtr ppTypeAttr)
+        {
+            return GetTypeAttr(ppTypeAttr);
+        }
+
+        private int GetTypeComp(IntPtr ppTComp)
         {
             Before($"{nameof(ppTComp)}: {ppTComp}");
             var result = _wrapper.GetTypeComp(ppTComp);
@@ -513,12 +619,32 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             return result;
         }
 
-        public int GetFuncDesc(int index, IntPtr ppFuncDesc)
+        int ITypeInfoInternal.GetTypeComp(IntPtr ppTComp)
+        {
+            return GetTypeComp(ppTComp);
+        }
+
+        int ITypeInfoWrapper.GetTypeComp(IntPtr ppTComp)
+        {
+            return GetTypeComp(ppTComp);
+        }
+
+        private int GetFuncDesc(int index, IntPtr ppFuncDesc)
         {
             Before($"{nameof(index)}: {index}, {nameof(ppFuncDesc)}: {ppFuncDesc}");
             var result = _wrapper.GetFuncDesc(index, ppFuncDesc);
             After($"{nameof(result)}: {result}");
             return result;
+        }
+
+        int ITypeInfoInternal.GetFuncDesc(int index, IntPtr ppFuncDesc)
+        {
+            return GetFuncDesc(index, ppFuncDesc);
+        }
+
+        int ITypeInfoWrapper.GetFuncDesc(int index, IntPtr ppFuncDesc)
+        {
+            return GetFuncDesc(index, ppFuncDesc);
         }
 
         public int GetVarDesc(int index, IntPtr ppVarDesc)
@@ -529,7 +655,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             return result;
         }
 
-        public int GetNames(int memid, IntPtr rgBstrNames, int cMaxNames, IntPtr pcNames)
+        private int GetNames(int memid, IntPtr rgBstrNames, int cMaxNames, IntPtr pcNames)
         {
             Before($"{nameof(memid)}: {memid}, {nameof(rgBstrNames)}: {rgBstrNames}, {nameof(cMaxNames)}: {cMaxNames}: {nameof(pcNames)}: {pcNames}");
             var result = _wrapper.GetNames(memid, rgBstrNames, cMaxNames, pcNames);
@@ -537,7 +663,17 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             return result;
         }
 
-        public int GetRefTypeOfImplType(int index, IntPtr href)
+        int ITypeInfoInternal.GetNames(int memid, IntPtr rgBstrNames, int cMaxNames, IntPtr pcNames)
+        {
+            return GetNames(memid, rgBstrNames, cMaxNames, pcNames);
+        }
+
+        int ITypeInfoWrapper.GetNames(int memid, IntPtr rgBstrNames, int cMaxNames, IntPtr pcNames)
+        {
+            return GetNames(memid, rgBstrNames, cMaxNames, pcNames);
+        }
+
+        private int GetRefTypeOfImplType(int index, IntPtr href)
         {
             Before($"{nameof(index)}: {index}, {nameof(href)}: {href}");
             var result = _wrapper.GetRefTypeOfImplType(index, href);
@@ -545,7 +681,17 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             return result;
         }
 
-        public int GetImplTypeFlags(int index, IntPtr pImplTypeFlags)
+        int ITypeInfoInternal.GetRefTypeOfImplType(int index, IntPtr href)
+        {
+            return GetRefTypeOfImplType(index, href);
+        }
+
+        int ITypeInfoWrapper.GetRefTypeOfImplType(int index, IntPtr href)
+        {
+            return GetRefTypeOfImplType(index, href);
+        }
+
+        private int GetImplTypeFlags(int index, IntPtr pImplTypeFlags)
         {
             Before($"{nameof(index)}: {index}, {nameof(pImplTypeFlags)}: {pImplTypeFlags}");
             var result = _wrapper.GetImplTypeFlags(index, pImplTypeFlags);
@@ -553,7 +699,17 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             return result;
         }
 
-        public int GetIDsOfNames(IntPtr rgszNames, int cNames, IntPtr pMemId)
+        int ITypeInfoInternal.GetImplTypeFlags(int index, IntPtr pImplTypeFlags)
+        {
+            return GetImplTypeFlags(index, pImplTypeFlags);
+        }
+
+        int ITypeInfoWrapper.GetImplTypeFlags(int index, IntPtr pImplTypeFlags)
+        {
+            return GetImplTypeFlags(index, pImplTypeFlags);
+        }
+
+        private int GetIDsOfNames(IntPtr rgszNames, int cNames, IntPtr pMemId)
         {
             Before($"{nameof(rgszNames)}: {rgszNames}, {nameof(cNames)}: {cNames}, {nameof(pMemId)}: {pMemId}");
             var result = _wrapper.GetIDsOfNames(rgszNames, cNames, pMemId);
@@ -561,7 +717,17 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             return result;
         }
 
-        public int Invoke(IntPtr pvInstance, int memid, short wFlags, IntPtr pDispParams, IntPtr pVarResult, IntPtr pExcepInfo,
+        int ITypeInfoInternal.GetIDsOfNames(IntPtr rgszNames, int cNames, IntPtr pMemId)
+        {
+            return GetIDsOfNames(rgszNames, cNames, pMemId);
+        }
+
+        int ITypeInfoWrapper.GetIDsOfNames(IntPtr rgszNames, int cNames, IntPtr pMemId)
+        {
+            return GetIDsOfNames(rgszNames, cNames, pMemId);
+        }
+
+        private int Invoke(IntPtr pvInstance, int memid, short wFlags, IntPtr pDispParams, IntPtr pVarResult, IntPtr pExcepInfo,
             IntPtr puArgErr)
         {
             Before($"parameters not supplied");
@@ -569,5 +735,18 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
             After($"parameters not supplied");
             return result;
         }
+
+        int ITypeInfoInternal.Invoke(IntPtr pvInstance, int memid, short wFlags, IntPtr pDispParams, IntPtr pVarResult, IntPtr pExcepInfo,
+            IntPtr puArgErr)
+        {
+            return Invoke(pvInstance, memid, wFlags, pDispParams, pVarResult, pExcepInfo, puArgErr);
+        }
+
+        int ITypeInfoWrapper.Invoke(IntPtr pvInstance, int memid, short wFlags, IntPtr pDispParams, IntPtr pVarResult, IntPtr pExcepInfo,
+            IntPtr puArgErr)
+        {
+            return Invoke(pvInstance, memid, wFlags, pDispParams, pVarResult, pExcepInfo, puArgErr);
+        }
     }
 }
+#endif

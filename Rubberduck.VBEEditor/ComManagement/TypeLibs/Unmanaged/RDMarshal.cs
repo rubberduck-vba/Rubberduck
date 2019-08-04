@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
@@ -207,7 +208,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
 #endif
             return result;
         }
-
+        
         internal static string GetTypeLibName(ITypeLib typelib)
         {
 #if DEBUG && TRACE_MARSHAL

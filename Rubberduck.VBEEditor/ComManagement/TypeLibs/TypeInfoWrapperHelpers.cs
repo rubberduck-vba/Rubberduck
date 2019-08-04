@@ -7,15 +7,19 @@ using ComTypes = System.Runtime.InteropServices.ComTypes;
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 {
     /// <summary>
-    /// Static helpers here for working with TypeInfoWrapper
+    /// Static helpers here for working with <see cref="ITypeInfoWrapper"/>
     /// </summary>
     internal static class TypeInfoWrapperHelpers
     {
         /// <summary>
-        /// Gets the control ITypeInfo by looking for the corresponding getter on the form interface and returning its retval type
+        /// Gets the control <see cref="ComTypes.ITypeInfo"/> by looking for the
+        /// corresponding getter on the form interface and returning its retval type
         /// </summary>
         /// <param name="controlName">the name of the control</param>
-        /// <returns>TypeInfoWrapper representing the type of control, typically the coclass, but this is host dependent</returns>
+        /// <returns>
+        /// <see cref="ITypeInfoWrapper"/> representing the type of control,
+        /// typically the coclass, but this is host dependent
+        /// </returns>
         public static ITypeInfoWrapper GetControlTypeFromInterface(ITypeInfoWrapper rootInterface, string controlName)
         {
             // TODO should encapsulate handling of raw datatypes

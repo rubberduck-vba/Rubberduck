@@ -27,7 +27,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     }
 
     /// <summary>
-    /// A wrapper for ITypeInfo objects, with specific extensions for VBE hosted ITypeInfos
+    /// A wrapper for <see cref="ComTypes.ITypeInfo"/> objects, with specific
+    /// extensions for VBE hosted ITypeInfos
     /// </summary>
     /// <remarks>
     /// There are two significant bugs in the VBE implementations for ITypeInfo that we have to work around.
@@ -62,7 +63,40 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public bool IsUserFormBaseClass { get; private set; }
 
         public ITypeInfoFunctionCollection Funcs { get; private set; }
-        public ITypeInfoVariablesCollection Vars { get; private set; }
+
+        /// <summary>
+        /// A VBA module's <see cref="ComTypes.ITypeInfo"/> violates the type API conventions
+        /// because a module is not supposed to have fields/variables enumerated. To
+        /// work around this, we will maintain this separate lists containing only
+        /// constants. For any kind of ITypeInfos, this will/should not be used.
+        /// Rather use <see cref="Consts"/> which should implement the class
+        /// <see cref="TypeInfoConstantsCollection"/> to help with this problem.
+        /// </summary>
+        public ITypeInfoVariablesCollection AllVars { get; private set; }
+
+        /// <summary>
+        /// Enumerates constants only. This is populated only for non-compliant type infos
+        /// (e.g. VBA standard modules).
+        /// </summary>
+        /// <remarks>
+        /// See <see cref="AllVars"/> for extra considerations with VBA's ITypeInfo
+        /// </remarks>
+        public ITypeInfoVariablesCollection Consts => _consts;
+        private TypeInfoConstantsCollection _consts;
+
+        public ITypeInfoVariablesCollection Vars
+        {
+            get
+            {
+                if (_consts != null && _consts.Count > 0)
+                {
+                    return _consts;
+                }
+
+                return AllVars;
+            }
+        }
+
         public ITypeInfoImplementedInterfacesCollection ImplementedInterfaces { get; private set; }
 
         // some helpers
@@ -121,7 +155,14 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
 
             Funcs = new TypeInfoFunctionCollection(this, CachedAttributes);
-            Vars = new TypeInfoVariablesCollection(this, CachedAttributes);
+
+            // Refer to AllVars XML docs for details
+            AllVars = new TypeInfoVariablesCollection(this, CachedAttributes);
+            if (CachedAttributes.typekind == ComTypes.TYPEKIND.TKIND_MODULE && HasVBEExtensions)
+            {
+                _consts = new TypeInfoConstantsCollection(this, CachedAttributes);
+            }
+
             ImplementedInterfaces = new TypeInfoImplementedInterfacesCollection(this, CachedAttributes);
 
             // cache the container type library if it is available, else create a simulated one
@@ -181,7 +222,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
 
         /// <summary>
-        /// Constructor
+        /// Constructor -- should be called via <see cref="TypeApiFactory"/> only.
         /// </summary>
         /// <param name="rawTypeInfo">The ITypeInfo object to be wrapped. It will be checked if it's already wrapped to avoid double-wraping.</param>
         internal TypeInfoWrapper(ComTypes.ITypeInfo rawTypeInfo)
@@ -200,7 +241,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
 
         /// <summary>
-        /// Constructor
+        /// Constructor -- should be called via <see cref="TypeApiFactory"/> only.
         /// </summary>
         /// <param name="rawObjectPtr">The raw unmanaged pointer to the ITypeInfo.  This class takes ownership, and will call Marshall.Release() on it upon disposal.</param>
         /// <param name="parentUserFormUniqueId">used internally for providing a name for UserForm base classes</param>
@@ -256,6 +297,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             public string _helpFile;
         }
         private TypeLibTextFields? _cachedTextFields;
+
         private TypeLibTextFields CachedTextFields
         {
             get
@@ -357,6 +399,17 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             var typeAttr = StructHelper.ReadStructureUnsafe<ComTypes.TYPEATTR>(pTypeAttr);
 
             typeAttr.typekind = PatchTypeKind((TYPEKIND_VBE)typeAttr.typekind);
+
+            // A proper type library would not have any variables defined in the modules. 
+            // However, a VBA module can have those and that can trip up CLR's parser. To
+            // work around this, we lie to any ComTypes.ITypeInfo consumer that there's no 
+            // variables. If we need for VBA-specific work, we need to consult
+            // ITypeInfoWrapper.Vars instead.
+            if (typeAttr.typekind == ComTypes.TYPEKIND.TKIND_MODULE && typeAttr.cVars > 0)
+            {
+                typeAttr.cVars = (short)Consts.Count;
+            }
+
             RdMarshal.StructureToPtr<ComTypes.TYPEATTR>(typeAttr, pTypeAttr, true);
             return hr;
         }
@@ -408,7 +461,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         public override int GetVarDesc(int index, IntPtr ppVarDesc)
         {
-            var hr = _target_ITypeInfo.GetVarDesc(index, ppVarDesc);
+            var safeIndex = _consts != null && _consts.Count > 0 
+                ? _consts.MappedIndex(index) 
+                : index;
+
+            var hr = _target_ITypeInfo.GetVarDesc(safeIndex, ppVarDesc);
             if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
 
             var pVarDesc = StructHelper.ReadStructureUnsafe<IntPtr>(ppVarDesc);
@@ -417,7 +474,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 // constants are not reported correctly in VBA type infos.  They all have MEMBERID_NIL set.
                 // we will provide fake DispIds and names to satisfy parsers.  Shit but works for now.
-                varDesc.memid = (int)(_ourConstantsDispatchMemberIDRangeStart + index);
+                varDesc.memid = (int)(_ourConstantsDispatchMemberIDRangeStart + safeIndex);
                 RdMarshal.StructureToPtr(varDesc, pVarDesc, true);
             }
             else

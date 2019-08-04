@@ -1,6 +1,7 @@
 ﻿using System;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Utility;
@@ -26,10 +27,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     }
 
     /// <summary>
-    /// The root class for hooking into the live ITypeLibs provided by the VBE
+    /// The root class for hooking into the live <see cref="ITypeLib"/>s provided by the VBE
     /// </summary>
     /// <remarks>
-    /// WARNING: when using VBETypeLibsAccessor directly, do not cache it
+    /// WARNING: when using <see cref="VBETypeLibsAccessor"/> directly, do not cache it
     ///   The VBE provides LIVE type library information, so consider it a snapshot at that very moment when you are dealing with it
     ///   Make sure you call VBETypeLibsAccessor.Dispose() as soon as you have done what you need to do with it.
     ///   Once control returns back to the VBE, you must assume that all the ITypeLib/ITypeInfo pointers are now invalid.

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
+﻿using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Utility;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs

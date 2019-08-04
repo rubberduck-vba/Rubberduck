@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged;
 
@@ -58,7 +59,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     */
 
     /// <summary>
-    /// Exposes the VBE specific extensions provided by an ITypeLib
+    /// Exposes the VBE specific extensions provided by an <see cref="ITypeLib"/>
     /// </summary>
     internal class TypeLibVBEExtensions : ITypeLibVBEExtensions
     {

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Utility;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
@@ -7,7 +6,7 @@ using ComTypes = System.Runtime.InteropServices.ComTypes;
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 {
     /// <summary>
-    /// Exposes an enumerable collection of implemented interfaces provided by the ITypeInfo
+    /// Exposes an enumerable collection of implemented interfaces provided by the <see cref="ComTypes.ITypeInfo"/>
     /// </summary>
     internal class TypeInfoImplementedInterfacesCollection : IndexedCollectionBase<ITypeInfoWrapper>, ITypeInfoImplementedInterfacesCollection
     {

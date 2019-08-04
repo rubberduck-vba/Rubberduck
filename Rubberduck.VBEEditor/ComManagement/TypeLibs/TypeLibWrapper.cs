@@ -8,14 +8,15 @@ using ComTypes = System.Runtime.InteropServices.ComTypes;
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 {
     /// <summary>
-    /// A wrapper for ITypeLib objects, with specific extensions for VBE hosted ITypeLibs. For usage examples, please see <see cref="VBETypeLibsAccessor"/>.
+    /// A wrapper for <see cref="ComTypes.ITypeLib"/> objects, with specific extensions for VBE hosted ITypeLibs. For usage examples, please see <see cref="VBETypeLibsAccessor"/>.
     /// </summary>
     /// <remarks>
     /// Allow safe managed consumption of VBA provided type libraries, plus exposes 
     /// a VBE extensions property for accessing VBE specific extensions.
-    /// Can also be cast to ComTypes.ITypeLib for raw access to the underlying type library
+    /// Can also be cast to <see cref="ComTypes.ITypeLib"/> for raw access to the underlying type library
     ///
-    /// TypeInfos from a VBA hosted project, and obtained through VBETypeLibsAccessor will have the following behaviours:
+    /// <see cref="ComTypes.ITypeInfo"/>s from a VBA hosted project, and obtained through
+    /// <see cref="VBETypeLibsAccessor"/> will have the following behaviours:
     /// 
     ///   will expose both public and private procedures and fields
     ///   will expose constants values, but they are unnamed (their member IDs will be MEMBERID_NIL)
@@ -124,7 +125,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
 
         /// <summary>
-        /// Constructor
+        /// Constructor -- should be called via <see cref="TypeApiFactory"/> only.
         /// </summary>
         /// <param name="rawObjectPtr">The raw unmanaged ITypeLib pointer</param>
         /// <param name="addRef">
