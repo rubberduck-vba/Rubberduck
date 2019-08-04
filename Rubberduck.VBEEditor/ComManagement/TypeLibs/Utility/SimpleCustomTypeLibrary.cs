@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.InteropServices;
-using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Utility
 {
     /// <summary>
-    /// A custom implementation of ITypeLib.  A dumb container of ITypeInfos.
+    /// A custom implementation of <see cref="ComTypes.ITypeLib"/>.
+    /// A dumb container of ITypeInfos.
     /// </summary>
     /// <remarks>
     /// The TypeInfos it holds are disposed of elsewhere.

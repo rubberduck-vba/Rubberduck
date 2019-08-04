@@ -57,12 +57,12 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
             // Is it a valid memory address, with at least one accessible vTable ptr
             if (!IsValidMemoryRange(comObjectPtr, IntPtr.Size)) return false;
 
-            IntPtr vTablePtr = RdMarshal.ReadIntPtr(comObjectPtr);
+            var vTablePtr = RdMarshal.ReadIntPtr(comObjectPtr);
 
             // And for a COM object, we need a valid vtable, with at least 3 vTable entries (for IUnknown)
             if (!IsValidMemoryRange(vTablePtr, IntPtr.Size * 3)) return false;
 
-            IntPtr firstvTableEntry = RdMarshal.ReadIntPtr(vTablePtr);
+            var firstvTableEntry = RdMarshal.ReadIntPtr(vTablePtr);
 
             // And lets check the first vTable entry actually points to EXECUTABLE memory
             // (we could check all 3 initial IUnknown entries, but we want to be reasonably  
@@ -156,9 +156,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
         /// Takes an unmanaged memory address and reads the unmanaged memory given by its pointer
         /// </summary>
         /// <typeparam name="T">the type of structure to return</typeparam>
-        /// <param name="memAddress">the unamanaged memory address to read</param>
+        /// <param name="memAddress">the unmanaged memory address to read</param>
         /// <returns>the requested structure T</returns>
-        /// <remarks>use this over ReadStructureSafe for effiency when there is no doubt about the validity of the pointed to data</remarks>
+        /// <remarks>use this over ReadStructureSafe for efficiency when there is no doubt about the validity of the pointed to data</remarks>
         public static T ReadStructureUnsafe<T>(IntPtr memAddress)
         {
             // We catch the most basic mistake of passing a null pointer here as it virtually costs nothing to check, 

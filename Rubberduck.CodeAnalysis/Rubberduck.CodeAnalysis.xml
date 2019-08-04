@@ -46,7 +46,7 @@
             'While...Wend' loops were made obsolete when 'Do While...Loop' statements were introduced.
             'While...Wend' loops cannot be exited early without a GoTo jump; 'Do...Loop' statements can be conditionally exited with 'Exit Do'.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething()
                 While True
@@ -55,7 +55,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething()
                 Do While True
@@ -144,13 +144,13 @@
             Another good reason to avoid numeric suffixes: if the function is meant to be used as a UDF in a cell formula,
             the worksheet cell by the same name takes precedence and gets the reference, and the function is never invoked.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Function FOO1234()
             End Function
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Function Foo()
             End Function
@@ -165,7 +165,7 @@
             'IsMissing' only returns True when an optional Variant parameter was not supplied as an argument.
             This inspection flags uses that attempt to use 'IsMissing' for other purposes, resulting in conditions that are always False.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething()
                 Dim foo As Variant
@@ -174,7 +174,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething(Optional ByVal foo As Variant = 0)
                 If IsMissing(foo) Then Exit Sub
@@ -191,12 +191,12 @@
             The CDecl calling convention is only implemented in VBA for Mac; if Rubberduck can see it (Rubberduck only runs on Windows),
             then the declaration is using an unsupported (no-op) calling convention on Windows.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Private Declare Sub Beep CDecl Lib "kernel32" (dwFreq As Any, dwDuration As Any)
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Private Declare Sub Beep Lib "kernel32" (dwFreq As Any, dwDuration As Any)
             ]]>
@@ -209,7 +209,7 @@
              <why>
              Marking members as obsolete can help refactoring a legacy code base. This inspection is a tool that makes it easy to locate obsolete member calls.
              </why>
-             <example>
+             <example hasResults="true">
              <![CDATA[
              Public Sub DoSomething()
                  DoStuff ' member is marked as obsolete
@@ -225,7 +225,7 @@
              End Sub
              ]]>
              </example>
-             <example>
+             <example hasResults="false">
              <![CDATA[
              Public Sub DoSomething()
                  DoThing
@@ -243,7 +243,7 @@
              </example>
         </member>
         <member name="T:Rubberduck.Inspections.Inspections.Concrete.ThunderCode.KeywordsUsedAsMemberInspection">
-            <summary>
+            <summary hidden="true">
             A ThunderCode inspection that locates instances of various keywords and reserved identifiers used as Type or Enum member names.
             </summary>
             <why>
@@ -254,7 +254,7 @@
             </why>
         </member>
         <member name="T:Rubberduck.Inspections.Inspections.Concrete.ThunderCode.LineContinuationBetweenKeywordsInspection">
-            <summary>
+            <summary hidden="true">
             A ThunderCode inspection that locates certain specific instances of line continuations in places we'd never think to put them.
             </summary>
             <why>
@@ -268,7 +268,7 @@
             </remarks>
         </member>
         <member name="T:Rubberduck.Inspections.Inspections.Concrete.ThunderCode.NegativeLineNumberInspection">
-            <summary>
+            <summary hidden="true">
             A ThunderCode inspection that locates negative line numbers.
             </summary>
             <why>
@@ -278,7 +278,7 @@
             </why>
         </member>
         <member name="T:Rubberduck.Inspections.Inspections.Concrete.ThunderCode.NonBreakingSpaceIdentifierInspection">
-            <summary>
+            <summary hidden="true">
             A ThunderCode inspection that locates non-breaking spaces hidden in identifier names.
             </summary>
             <why>
@@ -288,7 +288,7 @@
             </why>
         </member>
         <member name="T:Rubberduck.Inspections.Inspections.Concrete.ThunderCode.OnErrorGoToMinusOneInspection">
-            <summary>
+            <summary hidden="true">
             A ThunderCode inspection that locates instances of 'On Error GoTo -1' statements.
             </summary>
             <why>
@@ -306,7 +306,7 @@
             Mutating the inputs destroys the initial state, and makes the intent ambiguous: if the calling code is meant
             to be able to access the modified values, then the parameter should be passed ByRef; the ByVal modifier might be a bug.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething(ByVal foo As Long)
                 foo = foo + 1 ' is the caller supposed to see the updated value?
@@ -314,7 +314,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething(ByVal foo As Long)
                 Dim bar As Long
@@ -332,7 +332,7 @@
             <why>
             The first assignment is likely redundant, since it is being overwritten by the second.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething()
                 Dim foo As Long
@@ -341,7 +341,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething(ByVal foo As Long)
                 Dim bar As Long
@@ -359,7 +359,7 @@
             Keeping Rubberduck annotation comments in sync with the hidden VB attribute values, surfaces these hidden attributes in the VBE code panes; 
             Rubberduck can rewrite the attributes to match the corresponding annotation comment.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             '@Description("foo")
             Public Sub DoSomething()
@@ -368,7 +368,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             '@Description("foo")
             Public Sub DoSomething()
@@ -385,7 +385,7 @@
             <why>
             A Boolean expression never needs to be compared to a Boolean literal in a conditional expression.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething(ByVal foo As Boolean)
                 If foo = True Then ' foo is known to already be a Boolean value.
@@ -394,7 +394,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething(ByVal foo As Boolean)
                 If foo Then
@@ -411,7 +411,7 @@
              <why>
              Declarations that are never used should be removed.
              </why>
-             <example>
+             <example hasResults="true">
              <![CDATA[
              Private Const foo As Long = 42
             
@@ -420,7 +420,7 @@
              End Sub
              ]]>
              </example>
-             <example>
+             <example hasResults="false">
              <![CDATA[
              Private Const foo As Long = 42
             
@@ -445,7 +445,7 @@
              <why>
              These declarative statements make the first letter of identifiers determine the data type.
              </why>
-             <example>
+             <example hasResults="true">
              <![CDATA[
              DefBool B
              DefDbl D
@@ -464,7 +464,7 @@
              <why>
              Rubberduck annotations should not be specified more than once for a given module, member, variable, or expression.
              </why>
-             <example>
+             <example hasResults="true">
              <![CDATA[
              '@Folder("Bar")
              '@Folder("Foo")
@@ -474,7 +474,7 @@
              End Sub
              ]]>
              </example>
-             <example>
+             <example hasResults="false">
              <![CDATA[
              '@Folder("Foo.Bar")
             
@@ -491,7 +491,7 @@
             <why>
             Case blocks in VBA do not "fall through"; an empty 'Case' block might be hiding a bug.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething(ByVal foo As Long)
                 Select Case foo
@@ -502,7 +502,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething(ByVal foo As Long)
                 Select Case foo
@@ -522,7 +522,7 @@
             <why>
             Dead code should be removed. A loop without a body is usually redundant.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething(ByVal foo As Long)
                 Do
@@ -531,7 +531,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething(ByVal foo As Long)
                 Do
@@ -549,7 +549,7 @@
             Empty code blocks are redundant, dead code that should be removed. They can also be misleading about their intent:
             an empty block may be signalling an unfinished thought or an oversight.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething(ByVal foo As Boolean)
                 If foo Then
@@ -559,7 +559,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething(ByVal foo As Boolean)
                 If foo Then
@@ -576,7 +576,7 @@
             <why>
             Dead code should be removed. A loop without a body is usually redundant.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething()
                 Dim sheet As Worksheet
@@ -586,7 +586,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething()
                 Dim sheet As Worksheet
@@ -604,7 +604,7 @@
             <why>
             Dead code should be removed. A loop without a body is usually redundant.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething(ByVal foo As Long)
                 Dim i As Long
@@ -614,7 +614,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething(ByVal foo As Long)
                 Dim i As Long
@@ -632,7 +632,7 @@
             <why>
             Conditional expression is inverted; there would not be a need for an 'Else' block otherwise.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething(ByVal foo As Boolean)
                 If foo Then
@@ -642,7 +642,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething(ByVal foo As Boolean)
                 If Not foo Then
@@ -669,7 +669,7 @@
             While the memory gain is meaningless, an empty string literal still takes up 2 bytes of memory,
             but 'vbNullString' is a null string pointer, and doesn't.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething(ByVal foo As String)
                 If foo = "" Then
@@ -678,7 +678,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething(ByVal foo As String)
                 If foo = vbNullString Then
@@ -695,7 +695,7 @@
             <why>
             Dead code should be removed. A loop without a body is usually redundant.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething(ByVal foo As Long)
                 While foo < 100
@@ -704,7 +704,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething(ByVal foo As Long)
                 While foo < 100
@@ -722,12 +722,12 @@
             Instance fields are the implementation details of a object's internal state; exposing them directly breaks encapsulation. 
             Often, an object only needs to expose a 'Get' procedure to expose an internal instance field.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Foo As Long
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Private internalFoo As Long
             
@@ -743,18 +743,18 @@
             </summary>
             <reference name="Excel" />
             <why>
-            An early-bound, equivalent function likely exists in the object returned by the Application.WorksheetFunction property; 
-            late-bound member calls will fail at run-time with error 438 if there is a typo (a typo fails to compile for an early-bound member call). 
-            Late-bound worksheet functions will return a Variant/Error given invalid inputs; 
-            the equivalent early-bound member calls raise a more VB-idiomatic runtime error given the same invalid inputs. 
-            A Variant/Error value cannot be coerced into any other data type, be it for assignment or comparison. 
-            Trying to compare or assign a Variant/Error to another data type will throw error 13 "type mismatch" at run-time. 
-            Consider using the early-bound equivalent function instead.
+            An early-bound, equivalent function exists in the object returned by the Application.WorksheetFunction property; 
+            late-bound member calls will fail at run-time with error 438 if there is a typo (a typo fails to compile for an early-bound member call); 
+            given invalid inputs, these late-bound member calls return a Variant/Error value that cannot be coerced into another type.
+            The equivalent early-bound member calls raise a more VB-idiomatic, trappable runtime error given the same invalid inputs: 
+            trying to compare or assign a Variant/Error to another data type will throw error 13 "type mismatch" at run-time. 
+            A Variant/Error value cannot be coerced into any other data type, be it for assignment or comparison.
+            
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Private Sub Example()
-                Debug.Print Application.Sum(Array(1, 2, 3), 4, 5, "ABC") ' outputs "Error 2015"
+                Debug.Print Application.Sum(Array(1, 2, 3), 4, 5, "ABC") ' outputs "Error 2015" (no run-time error is raised).
             
                 Dim foo As Long
                 foo = Application.Sum(Array(1, 2, 3), 4, 5, "ABC") ' error 13 "type mismatch". Variant/Error can't be coerced to Long.
@@ -765,16 +765,16 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Private Sub Example()
-                Debug.Print Application.WorksheetFunction.Sum(Array(1, 2, 3), 4, 5, "ABC") ' throws error 1004
+                Debug.Print Application.WorksheetFunction.Sum(Array(1, 2, 3), 4, 5, "ABC") ' raises error 1004
             
                 Dim foo As Long
-                foo = Application.WorksheetFunction.Sum(Array(1, 2, 3), 4, 5, "ABC") ' throws error 1004
+                foo = Application.WorksheetFunction.Sum(Array(1, 2, 3), 4, 5, "ABC") ' raises error 1004
             
-                If Application.WorksheetFunction.Sum(Array(1, 2, 3), 4, 5, "ABC") > 15 Then ' throws error 1004
-                    ' won't run, error 1004 is thrown when "ABC" is processed by WorksheetFunction.Sum, before it returns.
+                If Application.WorksheetFunction.Sum(Array(1, 2, 3), 4, 5, "ABC") > 15 Then ' raises error 1004
+                    ' won't run, error 1004 is raised when "ABC" is processed by WorksheetFunction.Sum, before it returns.
                 End If
             End Sub
             ]]>
@@ -787,7 +787,7 @@
             Range.Find methods return a Range object reference that refers to the cell containing the search string;
             this object reference will be Nothing if the search didn't turn up any results, and a member call against Nothing will raise run-time error 91.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Private Sub Example()
                 Dim foo As Range
@@ -799,7 +799,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Private Sub Example()
                 Dim foo As Range
@@ -822,7 +822,7 @@
             is more robust, and will be less likely to throw run-time error 1004 or produce unexpected results
             when the active sheet isn't the expected one.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Private Sub Example()
                 Dim foo As Range
@@ -830,7 +830,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Private Sub Example()
                 Dim foo As Range
@@ -852,7 +852,7 @@
             is more robust, and will be less likely to throw run-time error 1004 or produce unexpected results
             when the active workbook isn't the expected one.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Private Sub Example()
                 Dim summarySheet As Worksheet
@@ -860,7 +860,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Private Sub Example(ByVal book As Workbook)
                 Dim summarySheet As Worksheet
@@ -879,10 +879,11 @@
             which cannot be altered by the user without accessing the VBE and altering the VBA project.
             </why>
             <reference name="Excel" />
+            <hostapp name="EXCEL.EXE" />
             <remarks>
-            Inspection only evaluates hard-coded string literals; string-valued expressions evaluating into a sheet name are ignored.
+            For performance reasons, the inspection only evaluates hard-coded string literals; string-valued expressions evaluating into a sheet name are ignored.
             </remarks>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething()
                 Dim sheet As Worksheet
@@ -891,7 +892,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething()
                 Sheet1.Range("A1").Value = 42 ' TODO rename Sheet1 to meaningful name
@@ -908,7 +909,7 @@
             It's possible that not all call sites need the return value, but if the value is systematically discarded then this
             means the function is side-effecting, and thus should probably be a 'Sub' procedure instead.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething()
                 GetFoo ' return value is not captured
@@ -919,7 +920,7 @@
             End Function
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething()
                 Dim foo As Long
@@ -940,14 +941,14 @@
             Host-evaluated expressions should be implementable using the host application's object model.
             If the expression yields an object, member calls against that object are late-bound.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething()
                 [A1].Value = 42
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething()
                 ActiveSheet.Range("A1").Value = 42
@@ -964,7 +965,7 @@
              when they described that prefixes identified the "kind" of variable in a naming scheme dubbed Apps Hungarian.
              Modern naming conventions in all programming languages heavily discourage the use of Systems Hungarian prefixes. 
              </why>
-             <example>
+             <example hasResults="true">
              <![CDATA[
              Public Sub DoSomething()
                  Dim bFoo As Boolean, blnFoo As Boolean
@@ -976,7 +977,7 @@
              End Function
              ]]>
              </example>
-             <example>
+             <example hasResults="false">
              <![CDATA[
              Public Sub DoSomething()
                  Dim foo As Boolean, isFoo As Boolean
@@ -996,7 +997,7 @@
             <why>
             Rubberduck is correctly parsing an annotation, but that annotation is illegal in that context.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Option Explicit
             
@@ -1006,7 +1007,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             '@Folder("Module1.DoSomething")
             Option Explicit
@@ -1025,14 +1026,14 @@
             In modern VB (VB.NET), the implicit modifier is ByVal, as it is in most other programming languages.
             Making the ByRef modifiers explicit can help surface potentially unexpected language defaults.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething(foo As Long)
                 foo = 42
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething(ByRef foo As Long)
                 foo = 42
@@ -1047,14 +1048,14 @@
             <why>
             Code should do what it says, and say what it does. Implicit default member calls generally do the opposite of that.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething()
                 ActiveSheet.Range("A1") = 42 ' implicit assignment to 'Range.[_default]'.
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething()
                 ActiveSheet.Range("A1").Value = 42
@@ -1070,14 +1071,14 @@
             In modern VB (VB.NET), the implicit access modifier is Private, as it is in most other programming languages.
             Making the Public modifiers explicit can help surface potentially unexpected language defaults.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Sub DoSomething()
                 ' ...
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething()
                 ' ...
@@ -1092,14 +1093,14 @@
             <why>
             All functions return something, whether a type is specified or not. The implicit default is 'Variant'.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Function GetFoo()
                 GetFoo = 42
             End Function
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Function GetFoo() As Long
                 GetFoo = 42
@@ -1115,7 +1116,7 @@
             Modern processors are optimized for processing 32-bit integers; internally, a 16-bit integer is still stored as a 32-bit value.
             Unless code is interacting with APIs that require a 16-bit integer, a Long (32-bit integer) should be used instead.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething()
                 Dim rowCount As Integer
@@ -1123,7 +1124,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething()
                 Dim rowCount As Long
@@ -1140,7 +1141,7 @@
             'IsMissing' only returns True when an optional Variant parameter was not supplied as an argument.
             This inspection flags uses that attempt to use 'IsMissing' for other purposes, resulting in conditions that are always False.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething(ByVal foo As Long = 0)
                 If IsMissing(foo) Then Exit Sub ' condition is always false
@@ -1148,7 +1149,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething(Optional ByVal foo As Variant = 0)
                 If IsMissing(foo) Then Exit Sub
@@ -1165,7 +1166,7 @@
             Line labels are useful for GoTo, GoSub, Resume, and On Error statements; but the intent of a line label
             can be confusing if it isn't referenced by any such instruction.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething()
             '    On Error GoTo ErrHandler ' (commented-out On Error statement leaves line label unreferenced)
@@ -1176,7 +1177,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething()
                 On Error GoTo ErrHandler
@@ -1196,14 +1197,14 @@
             Extensible COM types can have members attached at run-time; VBA cannot bind these member calls at compile-time.
             If there is an early-bound alternative way to achieve the same result, it should be preferred.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething(ByVal adoConnection As ADODB.Connection)
                 adoConnection.SomeStoredProcedure 42
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething(ByVal adoConnection As ADODB.Connection)
                 Dim adoCommand As ADODB.Command
@@ -1223,7 +1224,7 @@
             <why>
             Some annotations require arguments; if the argument isn't specified, the annotation is nothing more than an obscure comment.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             '@Folder
             '@ModuleDescription
@@ -1231,7 +1232,7 @@
             ' ...
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             '@Folder("MyProject.XYZ")
             '@ModuleDescription("This module does XYZ")
@@ -1248,7 +1249,7 @@
             Rubberduck annotations mean to document the presence of hidden VB attributes; this inspection flags annotations that
             do not have a corresponding VB attribute.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             '@Description("foo")
             Public Sub DoSomething()
@@ -1256,7 +1257,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             '@Description("foo")
             Public Sub DoSomething()
@@ -1274,7 +1275,7 @@
             Rubberduck annotations mean to document the presence of hidden VB attributes; this inspection flags members that
             do not have a Rubberduck annotation corresponding to the hidden VB attribute.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething()
             Attribute VB_Description = "foo"
@@ -1282,7 +1283,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             '@Description("foo")
             Public Sub DoSomething()
@@ -1300,14 +1301,14 @@
             Rubberduck annotations mean to document the presence of hidden VB attributes; this inspection flags modules that
             do not have a Rubberduck annotation corresponding to the hidden VB attribute.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Attribute VB_PredeclaredId = True
             Option Explicit
             ' ...
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Attribute VB_PredeclaredId = True
             '@PredeclaredId
@@ -1324,14 +1325,14 @@
             Private module variables should be declared using the 'Private' keyword. While 'Dim' is also legal, it should preferably be 
             restricted to declarations of procedure-scoped local variables, for consistency, since public module variables are declared with the 'Public' keyword.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Option Explicit
             Dim foo As Long
             ' ...
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Option Explicit
             Private foo As Long
@@ -1347,13 +1348,13 @@
             Modules without a custom @Folder annotation will be grouped under the default folder in the Code Explorer toolwindow.
             By specifying a custom @Folder annotation, modules can be organized by functionality rather than simply listed.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Option Explicit
             ' ...
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             '@Folder("Foo")
             Option Explicit
@@ -1369,7 +1370,7 @@
              Module-level variables that are only used in a single procedure can often be declared in that procedure's scope. 
              Declaring variables closer to where they are used generally makes the code easier to follow.
              </why>
-             <example>
+             <example hasResults="true">
              <![CDATA[
              Option Explicit
              Private foo As Long
@@ -1380,7 +1381,7 @@
              End Sub
              ]]>
              </example>
-             <example>
+             <example hasResults="false">
              <![CDATA[
              Option Explicit
             
@@ -1399,7 +1400,7 @@
             <why>
             When splitting a long list of parameters across multiple lines, care should be taken to avoid splitting a parameter declaration in two.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething(ByVal foo As Long, ByVal _ 
                                          bar As Long)
@@ -1407,7 +1408,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething(ByVal foo As Long, _ 
                                    ByVal bar As Long)
@@ -1423,12 +1424,12 @@
             <why>
             Declaration statements should generally declare a single variable.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Dim foo As Long, bar As Long
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Dim foo As Long 
             Dim bar As Long 
@@ -1442,7 +1443,7 @@
             <why>
             Both 'Function' and 'Property Get' accessors should always return something. Omitting the return assignment is likely a bug.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Function GetFoo() As Long
                 Dim foo As Long
@@ -1451,7 +1452,7 @@
             End Function
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Function GetFoo() As Long
                 Dim foo As Long
@@ -1474,7 +1475,7 @@
             Omitting the 'Set' keyword will Let-coerce the right-hand side (RHS) of the assignment expression. If the RHS is an object variable,
             then the assignment is implicitly assigning to that object's default member, which may raise run-time error 91 at run-time.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething()
                 Dim foo As Object
@@ -1483,7 +1484,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething()
                 Dim foo As Object
@@ -1500,7 +1501,7 @@
              <why>
              The 'Call' keyword is obsolete and redundant, since call statements are legal and generally more consistent without it.
              </why>
-             <example>
+             <example hasResults="true">
              <![CDATA[
              Public Sub Test()
                  Call DoSomething(42)
@@ -1511,7 +1512,7 @@
              End Sub
              ]]>
              </example>
-             <example>
+             <example hasResults="false">
              <![CDATA[
              Public Sub Test()
                  DoSomething 42
@@ -1530,14 +1531,14 @@
             <why>
             Modern VB comments use a single quote character (') to denote the beginning of a comment: the legacy 'Rem' syntax is obsolete.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething()
             Rem this comment is using an obsolete legacy syntax
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething()
             ' this comment is using the modern comment syntax
@@ -1552,14 +1553,14 @@
             <why>
             The legacy syntax is obsolete; prefer 'Err.Raise' instead.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething()
                 Error 5 ' raises run-time error 5
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething()
                 Err.Raise 5 ' raises run-time error 5
@@ -1574,13 +1575,13 @@
             <why>
             The legacy syntax is obsolete; use the 'Public' keyword instead.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Option Explicit
             Global Foo As Long
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Option Explicit
             Public Foo As Long
@@ -1594,7 +1595,7 @@
             <why>
             The legacy syntax is obsolete/redundant; prefer implicit Let-coercion instead.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething()
                 Dim foo As Long
@@ -1602,7 +1603,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething()
                 Dim foo As Long
@@ -1618,7 +1619,7 @@
             <why>
             Type hints were made obsolete when declaration syntax introduced the 'As' keyword. Prefer explicit type names over type hint symbols.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething()
                 Dim foo$
@@ -1626,7 +1627,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething()
                 Dim foo As String
@@ -1642,7 +1643,7 @@
             <why>
             All errors are "local" - the keyword is redundant/confusing and should be removed.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething()
                 On Local Error GoTo ErrHandler
@@ -1653,7 +1654,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething()
                 On Error GoTo ErrHandler
@@ -1674,7 +1675,7 @@
             having an implicit lower bound of 1 for implicitly-sized user arrays does not change the fact that arrays are always better off with explicit boundaries.
             Because 0 is always the lower array bound in many other programming languages, this option may trip a reader/maintainer with a different background.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Option Explicit
             Option Base 1
@@ -1685,7 +1686,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Option Explicit
             Public Sub DoSomething()
@@ -1704,7 +1705,7 @@
              This option makes variable declarations mandatory. Without it, a typo gets compiled as a new on-the-spot Variant/Empty variable with a new name. 
              Omitting this option amounts to refusing the little help the VBE can provide with compile-time validation.
              </why>
-             <example>
+             <example hasResults="true">
              <![CDATA[
             
              
@@ -1713,7 +1714,7 @@
              End Sub
              ]]>
              </example>
-             <example>
+             <example hasResults="false">
              <![CDATA[
              Option Explicit
              
@@ -1732,14 +1733,14 @@
             a parameter that is passed by reference (implicitly, or explicitly ByRef) makes it ambiguous from the calling code's standpoint, whether the 
             procedure might re-assign these ByRef values and introduce a bug.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething(ByVal foo As Long, bar As Long)
                 Debug.Print foo, bar
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Option Explicit
             Public Sub DoSomething(ByVal foo As long, ByRef bar As Long)
@@ -1756,11 +1757,11 @@
             <why>
             Declarations that are not used anywhere should probably be removed.
             </why>
-            <warning>
+            <remarks>
             Not all unused parameters can/should be removed: ignore any inspection results for 
             event handler procedures and interface members that Rubberduck isn't recognizing as such.
-            </warning>
-            <example>
+            </remarks>
+            <example hasResults="true">
             <![CDATA[
             Option Explicit
             
@@ -1786,7 +1787,7 @@
             Idiomatic VB code uses 'Function' procedures to return a single value. If the procedure isn't side-effecting, consider writing is as a
             'Function' rather than a 'Sub' the returns a result through a 'ByRef' parameter.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Option Explicit
             
@@ -1796,7 +1797,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Option Explicit
             Public Function DoSomething() As Long
@@ -1815,11 +1816,11 @@
              Shape object in the host document: in such cases the inspection result should be ignored. An event handler procedure that isn't being
              resolved as such, may also wrongly trigger this inspection.
              </why>
-             <warning>
+             <remarks>
              Not all unused procedures can/should be removed: ignore any inspection results for 
              event handler procedures and interface members that Rubberduck isn't recognizing as such.
-             </warning>
-             <example>
+             </remarks>
+             <example hasResults="true">
              <![CDATA[
              Option Explicit
              
@@ -1828,7 +1829,7 @@
              End Sub
              ]]>
              </example>
-             <example>
+             <example hasResults="false">
              <![CDATA[
              Option Explicit
             
@@ -1853,7 +1854,7 @@
             Out of convention or preference, explicit ByRef modifiers could be considered redundant since they are the implicit default. 
             This inspection can ensure the consistency of the convention.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Option Explicit
             
@@ -1863,7 +1864,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Option Explicit
             Public Sub DoSomething(foo As Long)
@@ -1881,7 +1882,7 @@
             Module options that are redundant can be safely removed. Disable this inspection if your convention is to explicitly specify them; a future 
             inspection may be used to enforce consistently explicit module options.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Option Explicit
             Option Base 0
@@ -1891,7 +1892,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Option Explicit
             
@@ -1908,7 +1909,7 @@
             Auto-assigned objects are automatically re-created as soon as they are referenced. It is therefore impossible to set one such reference 
             to 'Nothing' and then verifying whether the object 'Is Nothing': it will never be. This behavior is potentially confusing and bug-prone.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething()
                 Dim c As New Collection
@@ -1920,7 +1921,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething()
                 Dim c As Collection
@@ -1942,7 +1943,7 @@
             Global namespace contains a number of perfectly legal identifier names that user code can use. But using these names in user code 
             effectively "hides" the global ones. In general, avoid shadowing global-scope identifiers if possible.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Private MsgBox As String ' hides the global-scope VBA.Interaction.MsgBox function in this module.
             
@@ -1952,7 +1953,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Private message As String
             
@@ -1971,7 +1972,7 @@
             Out of convention or preference, explicit 'Step' specifiers could be considered mandatory; 
             this inspection can ensure the consistency of the convention.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething()
                 Dim i As Long
@@ -1981,7 +1982,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething()
                 Dim i As Long
@@ -2000,7 +2001,7 @@
             Out of convention or preference, explicit 'Step 1' specifiers could be considered redundant; 
             this inspection can ensure the consistency of the convention.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething()
                 Dim i As Long
@@ -2010,7 +2011,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething()
                 Dim i As Long
@@ -2028,7 +2029,7 @@
             <why>
             While a great debugging tool, 'Stop' instructions should not be reachable in production code; this inspection makes it easy to locate them all.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething()
                 ' ...
@@ -2037,7 +2038,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething()
                 ' ...
@@ -2058,7 +2059,7 @@
             <remarks>
             This inspection may produce false positives when the variable is an array, or if it's passed by reference (ByRef) to a procedure that assigns it.
             </remarks>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething()
                 Dim i As Long
@@ -2066,7 +2067,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething()
                 Dim i As Long
@@ -2083,7 +2084,7 @@
             <why>
             If this code compiles, then Option Explicit is omitted and compile-time validation is easily forfeited, even accidentally (e.g. typos). 
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething()
                 foo = 42 ' foo is not declared
@@ -2091,7 +2092,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething()
                 Dim foo As Long
@@ -2109,7 +2110,7 @@
             The public interface of any class module can be implemented by any other class module; if the public interface 
             contains names with underscores, other classes cannot implement it - the code will not compile. Avoid underscores; prefer PascalCase names.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             '@Interface
             
@@ -2117,7 +2118,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             '@Interface
             
@@ -2135,7 +2136,7 @@
             for the rest of the procedure; 'On Error GoTo 0' reinstates error handling. 
             This inspection helps treating 'Resume Next' and 'GoTo 0' as a code block (similar to 'With...End With'), essentially.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething()
                 On Error Resume Next ' error handling is never restored in this scope.
@@ -2143,7 +2144,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething()
                 On Error Resume Next
@@ -2163,7 +2164,7 @@
             <remarks>
             Not all unreachable 'Case' blocks may be flagged, depending on expression complexity.
             </remarks>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Private Sub Example(ByVal value As Long)
                 Select Case value
@@ -2188,14 +2189,14 @@
             Several functions in the standard library take a Variant parameter and return a Variant result, but an equivalent 
             string-returning function taking a string parameter exists and should probably be preferred.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething(ByVal foo As Double)
                 Debug.Print Format(foo, "Currency") ' Strings.Format function returns a Variant.
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething(ByVal foo As Double)
                 Debug.Print Format$(CStr(foo), "Currency") ' Strings.Format$ function returns a String.
@@ -2211,14 +2212,14 @@
             Meaningful, pronounceable, unabbreviated names read better and leave less room for interpretation. 
             Moreover, names suffixed with a number can indicate the need to look into an array, collection, or dictionary data structure.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub CpFrmtRls(ByVal rng1 As Range, ByVal rng2 As Range)
                 ' ...
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub CopyFormatRules(ByVal source As Range, ByVal destination As Range)
                 ' ...
@@ -2235,7 +2236,7 @@
             This inspection may yield false positives if the variable is assigned through a ByRef parameter assignment, or 
             if UserForm controls fail to resolve, references to these controls in code-behind can be flagged as unassigned and undeclared variables.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething()
                 Dim value As Long ' declared, but not assigned
@@ -2243,7 +2244,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething()
                 Dim value As Long
@@ -2260,7 +2261,7 @@
             <why>
             A variable can be declared and even assigned, but if its value is never referenced, it's effectively an unused variable.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething()
                 Dim value As Long ' declared
@@ -2269,7 +2270,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething()
                 Dim value As Long
@@ -2286,7 +2287,7 @@
             <why>
             A variable declared without an explicit data type is implicitly a Variant/Empty until it is assigned.
             </why>
-            <example>
+            <example hasResults="true">
             <![CDATA[
             Public Sub DoSomething()
                 Dim value ' implicit Variant
@@ -2295,7 +2296,7 @@
             End Sub
             ]]>
             </example>
-            <example>
+            <example hasResults="false">
             <![CDATA[
             Public Sub DoSomething()
                 Dim value As Long
@@ -2313,7 +2314,7 @@
              Write-only properties are suspicious: if the client code is able to set a property, it should be allowed to read that property as well. 
              Class design guidelines and best practices generally recommend against write-only properties.
              </why>
-             <example>
+             <example hasResults="true">
              <![CDATA[
              Private internalFoo As Long
             
@@ -2322,7 +2323,7 @@
              End Property
              ]]>
              </example>
-             <example>
+             <example hasResults="false">
              <![CDATA[
              Private internalFoo As Long
             

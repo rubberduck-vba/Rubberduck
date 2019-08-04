@@ -3,7 +3,7 @@
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
 {
     /// <summary>
-    /// AddressableVariables aid creating and handling unmanaged data
+    /// AddressableVariables aids in creating and handling unmanaged data
     /// </summary>
     /// <remarks>
     /// AddressableVariables are created in unmanaged memory space, designed to aid creating addressable

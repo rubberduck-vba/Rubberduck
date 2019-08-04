@@ -128,7 +128,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
         public static bool DoesComObjPtrSupportInterface<T>(IntPtr comObjPtr)
         {
             var iid = typeof(T).GUID;
-            int hr = RdMarshal.QueryInterface(comObjPtr, ref iid, out var outInterfacePtr);
+            var hr = RdMarshal.QueryInterface(comObjPtr, ref iid, out var outInterfacePtr);
             if (!ComHelper.HRESULT_FAILED(hr))
             {
                 RdMarshal.Release(outInterfacePtr);

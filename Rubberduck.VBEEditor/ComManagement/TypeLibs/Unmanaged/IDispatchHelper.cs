@@ -6,7 +6,8 @@ using ComTypes = System.Runtime.InteropServices.ComTypes;
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
 {
     /// <summary>
-    /// Used by methods in the ITypeInfo and ITypeLib interfaces.  Usually used to get the root type or library name.
+    /// Used by methods in the <see cref="ComTypes.ITypeInfo"/> and <see cref="ComTypes.ITypeLib"/> interfaces.
+    /// Usually used to get the root type or library name.
     /// </summary>
     internal enum KnownDispatchMemberIDs 
     {
@@ -52,7 +53,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
         /// see https://msdn.microsoft.com/en-us/library/windows/desktop/ms221416(v=vs.85).aspx
         /// </summary>
         /// <param name="args">An array of arguments to wrap</param>
-        /// <returns>DISPPARAMS structure ready to pass to IDispatch::Invoke</returns>
+        /// <returns><see cref="ComTypes.DISPPARAMS"/> structure ready to pass to IDispatch::Invoke</returns>
         private static ComTypes.DISPPARAMS PrepareDispatchArgs(object[] args)
         {
             var pDispParams = new ComTypes.DISPPARAMS();
@@ -66,7 +67,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
                 var variantArgsArray = RdMarshal.AllocHGlobal(argsVariantLength);
 
                 // In IDispatch::Invoke, arguments are passed in reverse order
-                IntPtr variantArgsArrayOffset = variantArgsArray + argsVariantLength;
+                var variantArgsArrayOffset = variantArgsArray + argsVariantLength;
                 foreach (var arg in args)
                 {
                     variantArgsArrayOffset -= variantStructSize;
@@ -78,7 +79,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
         }
 
         [DllImport("oleaut32.dll", SetLastError = true, CallingConvention = CallingConvention.StdCall)]
-        static extern Int32 VariantClear(IntPtr pvarg);
+        static extern int VariantClear(IntPtr pvarg);
 
         /// <summary>
         /// frees all unmanaged memory assoicated with a DISPPARAMS structure
@@ -92,7 +93,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
                 // free the array of COM VARIANTs
                 var variantStructSize = RdMarshal.SizeOf(typeof(VARIANT));
                 var variantArgsArrayOffset = pDispParams.rgvarg;
-                int argIndex = 0;
+                var argIndex = 0;
                 while (argIndex < pDispParams.cArgs)
                 {
                     VariantClear(variantArgsArrayOffset);
@@ -117,8 +118,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
             var pDispParams = PrepareDispatchArgs(args);
             var pExcepInfo = new ComTypes.EXCEPINFO();
 
-            int hr = obj.Invoke(memberId, ref _guid_null, 0, (uint)invokeKind,
-                                    ref pDispParams, out object pVarResult, ref pExcepInfo, out uint pErrArg);
+            var hr = obj.Invoke(memberId, ref _guid_null, 0, (uint)invokeKind,
+                                    ref pDispParams, out var pVarResult, ref pExcepInfo, out var pErrArg);
 
             UnprepareDispatchArgs(pDispParams);
 

@@ -6,7 +6,8 @@ using ComTypes = System.Runtime.InteropServices.ComTypes;
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 {
     /// <summary>
-    /// A class that represents a function definition within a <see cref="ComTypes.ITypeInfo"/>.  Essentially a wrapper for <see cref="ComTypes.FUNCDESC"/>.
+    /// A class that represents a function definition described in <see cref="ComTypes.FUNCDESC"/>
+    /// within a <see cref="ComTypes.ITypeInfo"/>.  
     /// </summary>
     internal class TypeInfoFunction : ITypeInfoFunction
     {

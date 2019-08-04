@@ -2,12 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
 {
     /// <summary>
-    /// An internal representation of the ITypeLib object hosted by the VBE.
+    /// An internal representation of the <see cref="ITypeLib"/> object hosted by the VBE.
     /// Also provides Prev/Next pointers, exposing a double linked list of all loaded project ITypeLibs
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
@@ -21,7 +22,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
     }
 
     /// <summary>
-    /// An enumerable class for iterating over the double linked list of ITypeLibs provided by the VBE 
+    /// An enumerable class for iterating over the double linked list of <see cref="ITypeLib"/>s provided by the VBE 
     /// </summary>
     internal sealed class VBETypeLibsIterator : IEnumerable<ITypeLibWrapper>, IEnumerator<ITypeLibWrapper>
     {

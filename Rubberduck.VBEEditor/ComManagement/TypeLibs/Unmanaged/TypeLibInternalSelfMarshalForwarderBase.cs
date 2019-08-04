@@ -5,7 +5,7 @@ using ComTypes = System.Runtime.InteropServices.ComTypes;
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
 {
     /// <summary>
-    /// A compatible version of ComTypes.ITypeLib, using IntPtr for all out params
+    /// A compatible version of <see cref="ComTypes.ITypeLib"/>, using <see cref="IntPtr"/> for all out params
     /// see https://msdn.microsoft.com/en-us/library/windows/desktop/ms221549(v=vs.85).aspx
     /// </summary>
     /// <remarks>
@@ -28,7 +28,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
     }
 
     /// <summary>
-    /// This class marshals ComTypes.ITypeLib members to ITypeLibInternal
+    /// This class marshals <see cref="ComTypes.ITypeLib"/> members to <see cref="ITypeLibInternal"/>
     /// </summary>
     /// <remarks>
     /// ITypeLibInternal must be inherited BEFORE ComTypes.ITypeLib as they both have the same IID 

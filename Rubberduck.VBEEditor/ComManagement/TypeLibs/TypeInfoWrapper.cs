@@ -42,6 +42,19 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     ///     so there will be little bugs.  This bug is also resolved in the provided wrappers.
     ///
     /// This class can also be cast to <see cref="ComTypes.ITypeInfo"/> for safe access to the underlying type information
+    ///
+    /// TypeInfos from a VBA hosted project, and obtained through <see cref="VBETypeLibsAccessor"/> will have the following behaviours:
+    /// 
+    ///   will expose both public and private procedures and fields
+    ///   will expose constants values, but they are unnamed (their member IDs will be MEMBERID_NIL)
+    ///   module level variables in a standard module are hidden (ref to <see cref="TypeInfoConstantsCollection"/> for details)
+    ///   enumerations are not exposed directly in the type library
+    ///   enumerations may be referenced by field/argument datatypes, and the ITypeInfos for them are then accessible that way
+    ///   UDTs are not exposed directly in the type library
+    ///   UDTs may be referenced by field/argument datatypes, and as such the ITypeInfos for them are then accessible that way
+    ///   
+    /// TypeInfos obtained by other means (such as the IDispatch::GetTypeInfo method) usually expose more restricted
+    /// versions of ITypeInfo which may not expose private members
     /// </remarks>
     internal sealed class TypeInfoWrapper : TypeInfoInternalSelfMarshalForwarderBase, ITypeInfoWrapper
     {

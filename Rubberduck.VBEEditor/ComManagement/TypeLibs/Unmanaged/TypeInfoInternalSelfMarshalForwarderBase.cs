@@ -5,7 +5,7 @@ using ComTypes = System.Runtime.InteropServices.ComTypes;
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
 {
     /// <summary>
-    /// This class marshals ComTypes.ITypeInfo members to ITypeInfoInternal
+    /// This class marshals <see cref="ComTypes.ITypeInfo"/> members to <see cref="ITypeInfoInternal"/>
     /// </summary>
     /// <remarks>
     /// ITypeInfoInternal must be inherited BEFORE ComTypes.ITypeInfo as they both have the same IID 

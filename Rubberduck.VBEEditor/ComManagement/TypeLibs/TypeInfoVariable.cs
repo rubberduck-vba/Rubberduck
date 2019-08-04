@@ -6,7 +6,8 @@ using ComTypes = System.Runtime.InteropServices.ComTypes;
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 {
     /// <summary>
-    /// A class that represents a variable or field within a <see cref="ComTypes.ITypeInfo"/>
+    /// A class that represents a variable or field described in a <see cref="ComTypes.VARDESC"/>
+    /// within a <see cref="ComTypes.ITypeInfo"/>
     /// </summary>
     internal class TypeInfoVariable : ITypeInfoVariable
     {
