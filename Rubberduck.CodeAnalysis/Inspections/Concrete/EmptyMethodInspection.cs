@@ -1,19 +1,14 @@
-﻿using Antlr4.Runtime;
-using Antlr4.Runtime.Misc;
-using Rubberduck.Inspections.Abstract;
+﻿using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Common;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
-using static Rubberduck.Parsing.Grammar.VBAParser;
-using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Resources.Experimentals;
+using static Rubberduck.Parsing.Grammar.VBAParser;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -40,66 +35,97 @@ namespace Rubberduck.Inspections.Concrete
     /// ]]>
     /// </example>
     [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
-    internal class EmptyMethodInspection : ParseTreeInspectionBase
+    internal class EmptyMethodInspection : InspectionBase// EmptyBlockInspectionBase
     {
         public EmptyMethodInspection(RubberduckParserState state)
             : base(state) { }
-
-        public override IInspectionListener Listener { get; } =
-            new EmptyMethodListener();
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             // Exclude empty members in user interfaces, as long as all members of the interface are empty,
             // since some VB users might use concrete user defined classes as interfaces,
             // while RD marks them as interfaces all the same.
-            
-            var results = Listener.Contexts
-                .Where(result => !result.IsIgnoringInspectionResultFor(State.DeclarationFinder, AnnotationName))
-                .GroupBy(result => result.ModuleName.ComponentName)
-                // Exclude results from module
-                .Where(resultsInModule => !State.DeclarationFinder.FindAllUserInterfaces()
-                                          // where all members of that module contain no executables
-                                          .Where(interfaceModule => interfaceModule.ComponentName == resultsInModule.Key
-                                                                    && interfaceModule.Members.Count == resultsInModule.Count())
-                                          .Any())
-                .SelectMany(resultsInModule => resultsInModule)
-                .Select(result => new { actual = result, method = result.Context as IMethodStmtContext });
 
-            return results.Select(result => new QualifiedContextInspectionResult(this,
-                                                                                 string.Format(InspectionResults.EmptyMethodInspection,
-                                                                                              result.method.MethodKind,
-                                                                                              result.method.MethodName),
-                                                                                result.actual));
+            return UserDeclarations.OfType<ModuleBodyElementDeclaration>()
+                .Where(bodyElement => !BlockContainsExecutableStatements(bodyElement.Block))
+                .GroupBy(bodyElement => bodyElement.ComponentName)
+                // Exclude results from user interfaces
+                .Where(bodyElements => !State.DeclarationFinder.FindAllUserInterfaces()
+                                       // where all members of that interface contain no executables
+                                       .Where(interfaceModule => interfaceModule.ComponentName == bodyElements.Key
+                                                                && interfaceModule.Members.Count == bodyElements.Count())
+                                       .Any())
+                .SelectMany(bodyElements => bodyElements)
+                .Select(result => new DeclarationInspectionResult(this,
+                                                                  string.Format(InspectionResults.EmptyMethodInspection,
+                                                                                result.DeclarationType.ToFormatted(),
+                                                                                result.IdentifierName),
+                                                                  result));
+        }
+
+        private bool BlockContainsExecutableStatements(BlockContext block)
+        {
+            return block?.children != null && ContainsExecutableStatements(block.children);
+        }
+
+        private bool ContainsExecutableStatements(IList<Antlr4.Runtime.Tree.IParseTree> blockChildren)
+        {
+            foreach (var child in blockChildren)
+            {
+                if (child is BlockStmtContext blockStmt)
+                {
+                    var mainBlockStmt = blockStmt.mainBlockStmt();
+
+                    if (mainBlockStmt == null)
+                    {
+                        continue;   //We have a lone line lable, which is not executable.
+                    }
+
+                    System.Diagnostics.Debug.Assert(mainBlockStmt.ChildCount == 1);
+
+                    // exclude variables and consts because they are not executable statements
+                    if (mainBlockStmt.GetChild(0) is VariableStmtContext ||
+                        mainBlockStmt.GetChild(0) is ConstStmtContext)
+                    {
+                        continue;
+                    }
+
+                    return true;
+                }
+
+                if (child is RemCommentContext ||
+                    child is CommentContext ||
+                    child is CommentOrAnnotationContext ||
+                    child is EndOfStatementContext)
+                {
+                    continue;
+                }
+
+                return true;
+            }
+
+            return false;
         }
     }
 
-    internal class EmptyMethodListener : EmptyBlockInspectionListenerBase
+    public static class DeclarationTypeFormat
     {
-        public override void EnterFunctionStmt([NotNull] FunctionStmtContext context)
+        public static string ToFormatted(this DeclarationType declarationType)
         {
-            InspectBlockForExecutableStatements(context.block(), context);
-        }
+            string result = declarationType.ToString();
+            int length = result.Length;
 
-        public override void EnterPropertyGetStmt([NotNull] PropertyGetStmtContext context)
-        { 
-            InspectBlockForExecutableStatements(context.block(), context);
-        }
+            for (int i = 1; i < length; i++)
+            {
+                if (char.IsUpper(result[i]))
+                {
+                    result = result.Insert(i++, " ");
+                    length++;
+                }
+            }
 
-        public override void EnterPropertyLetStmt([NotNull] PropertyLetStmtContext context)
-        {
-            InspectBlockForExecutableStatements(context.block(), context);
+            return result;
         }
-
-        public override void EnterPropertySetStmt([NotNull] PropertySetStmtContext context)
-        {
-            InspectBlockForExecutableStatements(context.block(), context);
-        }
-
-        public override void EnterSubStmt([NotNull] SubStmtContext context)
-        {
-            InspectBlockForExecutableStatements(context.block(), context);
-        }
-
     }
+
 }
