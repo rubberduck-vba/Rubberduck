@@ -647,6 +647,7 @@ visibility : PRIVATE | PUBLIC | FRIEND | GLOBAL;
 // 5.6 Expressions
 expression :
     // Literal Expression has to come before lExpression, otherwise it'll be classified as simple name expression instead.
+	//The same holds for Built-in Type Expression.
     whiteSpace? LPAREN whiteSpace? expression whiteSpace? RPAREN                                    # parenthesizedExpr
     | TYPEOF whiteSpace expression                                                                  # typeofexpr // To make the grammar SLL, the type-of-is-expression is actually the child of an IS relational op.
     | HASH expression                                                                               # markedFileNumberExpr // Added to support special forms such as Input(file1, #file1)
@@ -666,8 +667,8 @@ expression :
     | expression whiteSpace? EQV whiteSpace? expression                                             # logicalEqvOp
     | expression whiteSpace? IMP whiteSpace? expression                                             # logicalImpOp
     | literalExpression                                                                             # literalExpr
-    | lExpression                                                                                   # lExpr
     | builtInType                                                                                   # builtInTypeExpr
+    | lExpression                                                                                   # lExpr
 ;
 
 // 5.6.5 Literal Expressions

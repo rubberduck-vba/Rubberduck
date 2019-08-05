@@ -33,7 +33,7 @@ End Property
                 @"
 Private Sub DoSomething()
     Dim target As Object
-    Set target = New Object
+    Set target = New Class1
     target.DoSomething
     Set target = Nothing
 End Sub
@@ -85,7 +85,7 @@ Public Property Set Foo(rhs As Object)
 End Property
 
 Private Sub DoSomething()
-    Foo = New Object
+    Foo = New Class1
 End Sub
 ";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
@@ -102,7 +102,7 @@ Public Property Set Foo(rhs As Object)
 End Property
 
 Private Sub DoSomething()
-    Set Foo = New Object
+    Set Foo = New Class1
 End Sub
 ";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);

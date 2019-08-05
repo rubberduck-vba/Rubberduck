@@ -538,7 +538,7 @@ End Sub
         [TestCase("[Any]", "Any")]
         [TestCase("Long", SetTypeResolver.NotAnObject)]
         [TestCase("[Long]", SetTypeResolver.NotAnObject)]
-        public void TypeOfIsRHSExpression_SetTypeNameTests(string builtInType, string expectedSetTypeName)
+        public void BuiltInTypeExpression_SetTypeNameTests(string builtInType, string expectedSetTypeName)
         {
             var class1 =
                 @"
@@ -550,11 +550,11 @@ End Property
                 $@"
 Private Sub Bar()
     Dim baz as Variant
-    Set baz = TypeOf baz Is {builtInType}
+    baz = TypeOf baz Is {builtInType}
 End Sub
 ";
 
-            var expressionSelection = new Selection(4, 30, 4, 31);
+            var expressionSelection = new Selection(4, 25, 4, 26);
 
             var vbe = new MockVbeBuilder()
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
@@ -579,7 +579,7 @@ End Sub
         [TestCase("[Any]", null)]
         [TestCase("Long", null)]
         [TestCase("[Long]", null)]
-        public void TypeOfIsRHS_SetTypeDeclarationTests(string builtInType, string expectedNameOfSetTypeDeclaration)
+        public void BuiltInTypeExpression_SetTypeDeclarationTests(string builtInType, string expectedNameOfSetTypeDeclaration)
         {
             var class1 =
                 @"
@@ -591,11 +591,11 @@ End Property
                 $@"
 Private Sub Bar()
     Dim baz as Variant
-    Set baz = TypeOf baz Is {builtInType}
+    baz = TypeOf baz Is {builtInType}
 End Sub
 ";
 
-            var expressionSelection = new Selection(4, 29, 4, 30);
+            var expressionSelection = new Selection(4, 25, 4, 26);
 
             var vbe = new MockVbeBuilder()
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)

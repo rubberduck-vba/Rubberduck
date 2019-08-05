@@ -75,7 +75,10 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 case ResolutionFailedExpression resolutionFailedExpression:
                     Visit(resolutionFailedExpression, module, scope, parent);
                     break;
-                default: throw new NotSupportedException($"Unexpected bound expression type {boundExpression.GetType()}");
+                case BuiltInTypeExpression builtInTypeExpression:
+                    break;
+                default:
+                    throw new NotSupportedException($"Unexpected bound expression type {boundExpression.GetType()}");
             }
         }
 

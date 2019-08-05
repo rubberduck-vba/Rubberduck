@@ -118,8 +118,7 @@ namespace Rubberduck.Parsing.TypeResolvers
         {
             if (setTypeDeterminingDeclaration == null)
             {
-                //This is a workaround because built-in type expressions tent to get matched by simple name expressions instead.
-                return BuiltInObjectTypeNameFromUnresolvedlExpression(lExpression);
+                return null;
             }
 
             if (setTypeDeterminingDeclaration.DeclarationType.HasFlag(DeclarationType.ClassModule))
@@ -136,56 +135,6 @@ namespace Rubberduck.Parsing.TypeResolvers
                 ? setTypeDeterminingDeclaration.AsTypeName
                 : NotAnObject;
         }
-
-        private static string BuiltInObjectTypeNameFromUnresolvedlExpression(VBAParser.LExpressionContext lExpression)
-        {
-            var expressionText = WithBracketsRemoved(lExpression.GetText());
-
-            if (_builtInObjectTypeNames.Contains(expressionText))
-            {
-                return expressionText;
-            }
-
-            if (_builtInNonObjectTypeNames.Contains(expressionText))
-            {
-                return NotAnObject;
-            }
-
-            return null;
-        }
-
-        private static string WithBracketsRemoved(string input)
-        {
-            if (input.StartsWith("[") && input.EndsWith("]"))
-            {
-                return input.Substring(1, input.Length - 2);
-            }
-
-            return input;
-        }
-
-        private static List<string> _builtInObjectTypeNames = new List<string>
-        {
-            Tokens.Any,
-            Tokens.Variant,
-            Tokens.Object
-        };
-
-        private static List<string> _builtInNonObjectTypeNames = new List<string>
-        {
-            Tokens.Boolean,
-            Tokens.Byte,
-            Tokens.Currency,
-            Tokens.Date,
-            Tokens.Double,
-            Tokens.Integer,
-            Tokens.Long,
-            Tokens.LongLong,
-            Tokens.LongPtr,
-            Tokens.Single,
-            Tokens.String
-        };
-
 
         private (Declaration declaration, bool mightHaveSetType) SetTypeDeterminingDeclarationOfExpression(VBAParser.LExpressionContext lExpression, QualifiedModuleName containingModule, DeclarationFinder finder)
         {

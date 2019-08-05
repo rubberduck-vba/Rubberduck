@@ -179,7 +179,7 @@ namespace Rubberduck.Parsing.Binding
         private IExpressionBinding Visit(VBAParser.BuiltInTypeExprContext expression)
         {
             // Not actually an expression, but treated as one to allow for a faster parser.
-            return null;
+            return new BuiltInTypeDefaultBinding(expression);
         }
 
         private IExpressionBinding VisitType(Declaration module, Declaration parent, VBAParser.ExpressionContext expression, IBoundExpression withBlockVariable)
