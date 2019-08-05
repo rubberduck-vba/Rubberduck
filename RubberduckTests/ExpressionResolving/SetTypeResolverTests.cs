@@ -309,6 +309,308 @@ End Sub
             Assert.AreEqual(expectedNameOfSetTypeDeclaration, actualNameOfSetTypeDeclaration);
         }
 
+        [Test]
+        [Category("ExpressionResolver")]
+        public void TypeOfExpression_SetTypeName_ReturnsSetTypeNameOfExpression()
+        {
+            var class1 =
+                @"
+Public Property Get Foo() As Class2
+End Property
+";
+            var class2 =
+                @"";
+
+            var module1 =
+                @"
+Private Sub Bar()
+    Dim cls as Class1
+    Dim baz as Variant
+    baz = TypeOf cls.Foo Is TestProject.Class1
+End Sub
+";
+
+            var expressionSelection = new Selection(5, 11, 5, 25);
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, class1)
+                .AddComponent("Class2", ComponentType.ClassModule, class2)
+                .AddComponent("Module1", ComponentType.StandardModule, module1)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
+
+            var actualSetTypeName = ExpressionTypeName(vbe, "Module1", expressionSelection);
+            var expectedSetTypeName = "TestProject.Class2";
+
+            Assert.AreEqual(expectedSetTypeName, actualSetTypeName);
+        }
+
+        [Test]
+        [Category("ExpressionResolver")]
+        public void TypeOfExpression_SetTypeDeclaration_ReturnsSetTypeDeclarationOfExpression()
+        {
+            var class1 =
+                @"
+Public Property Get Foo() As Class2
+End Property
+";
+            var class2 =
+                @"";
+
+            var module1 =
+                @"
+Private Sub Bar()
+    Dim cls as Class1
+    Dim baz as Variant
+    baz = TypeOf cls.Foo Is TestProject.Class1
+End Sub
+";
+
+            var expressionSelection = new Selection(5, 11, 5, 25);
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, class1)
+                .AddComponent("Class2", ComponentType.ClassModule, class2)
+                .AddComponent("Module1", ComponentType.StandardModule, module1)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
+
+            var setTypeDeclaration = ExpressionTypeDeclaration(vbe, "Module1", expressionSelection);
+            var actualNameOfSetTypeDeclaration = setTypeDeclaration?.QualifiedModuleName.ToString();
+            var expectedNameOfSetTypeDeclaration = "TestProject.Class2";
+
+            Assert.AreEqual(expectedNameOfSetTypeDeclaration, actualNameOfSetTypeDeclaration);
+        }
+
+        [Test]
+        [Category("ExpressionResolver")]
+        [TestCase("Class1", "TestProject.Class1")]
+        [TestCase("TestProject.Class1", "TestProject.Class1")]
+        public void NewExpression_SetTypeNameTests(string typeName, string expectedSetTypeName)
+        {
+            var class1 =
+                @"
+Public Property Get Foo() As Variant
+End Property
+";
+
+            var module1 =
+                $@"
+Private Sub Bar()
+    Dim baz as Variant
+    Set baz = New {typeName}
+End Sub
+";
+
+            var expressionSelection = new Selection(4, 15, 4, 20);
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, class1)
+                .AddComponent("Module1", ComponentType.StandardModule, module1)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
+
+            var actualSetTypeName = ExpressionTypeName(vbe, "Module1", expressionSelection);
+
+            Assert.AreEqual(expectedSetTypeName, actualSetTypeName);
+        }
+
+        [Test]
+        [Category("ExpressionResolver")]
+        [TestCase("Class1", "TestProject.Class1")]
+        [TestCase("TestProject.Class1", "TestProject.Class1")]
+        public void NewExpression_SetTypeDeclarationTests(string typeName, string expectedNameOfSetTypeDeclaration)
+        {
+            var class1 =
+                @"
+Public Property Get Foo() As Variant
+End Property
+";
+
+            var module1 =
+                $@"
+Private Sub Bar()
+    Dim baz as Variant
+    Set baz = New {typeName}
+End Sub
+";
+
+            var expressionSelection = new Selection(4, 15, 4, 20);
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, class1)
+                .AddComponent("Module1", ComponentType.StandardModule, module1)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
+
+            var setTypeDeclaration = ExpressionTypeDeclaration(vbe, "Module1", expressionSelection);
+            var actualNameOfSetTypeDeclaration = setTypeDeclaration?.QualifiedModuleName.ToString();
+
+            Assert.AreEqual(expectedNameOfSetTypeDeclaration, actualNameOfSetTypeDeclaration);
+        }
+
+        [Test]
+        [Category("ExpressionResolver")]
+        [TestCase("Nothing", "Object")]
+        [TestCase("5", SetTypeResolver.NotAnObject)]
+        public void LiteralExpression_SetTypeNameTests(string literal, string expectedSetTypeName)
+        {
+            var class1 =
+                @"
+Public Property Get Foo() As Variant
+End Property
+";
+
+            var module1 =
+                $@"
+Private Sub Bar()
+    Dim baz as Variant
+    Set baz = {literal}
+End Sub
+";
+
+            var expressionSelection = new Selection(4, 15, 4, 16);
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, class1)
+                .AddComponent("Module1", ComponentType.StandardModule, module1)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
+
+            var actualSetTypeName = ExpressionTypeName(vbe, "Module1", expressionSelection);
+
+            Assert.AreEqual(expectedSetTypeName, actualSetTypeName);
+        }
+
+        [Test]
+        [Category("ExpressionResolver")]
+        [TestCase("Nothing", null)]
+        [TestCase("5", null)]
+        public void LiteralExpression_SetTypeDeclarationTests(string literal, string expectedNameOfSetTypeDeclaration)
+        {
+            var class1 =
+                @"
+Public Property Get Foo() As Variant
+End Property
+";
+
+            var module1 =
+                $@"
+Private Sub Bar()
+    Dim baz as Variant
+    Set baz = {literal}
+End Sub
+";
+
+            var expressionSelection = new Selection(4, 15, 4, 16);
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, class1)
+                .AddComponent("Module1", ComponentType.StandardModule, module1)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
+
+            var setTypeDeclaration = ExpressionTypeDeclaration(vbe, "Module1", expressionSelection);
+            var actualNameOfSetTypeDeclaration = setTypeDeclaration?.QualifiedModuleName.ToString();
+
+            Assert.AreEqual(expectedNameOfSetTypeDeclaration, actualNameOfSetTypeDeclaration);
+        }
+
+        [Test]
+        [Category("ExpressionResolver")]
+        [TestCase("Object", "Object")]
+        [TestCase("[Object]", "Object")]
+        [TestCase("Variant", "Variant")]
+        [TestCase("[Variant]", "Variant")]
+        [TestCase("Any", "Any")]
+        [TestCase("[Any]", "Any")]
+        [TestCase("Long", SetTypeResolver.NotAnObject)]
+        [TestCase("[Long]", SetTypeResolver.NotAnObject)]
+        public void TypeOfIsRHSExpression_SetTypeNameTests(string builtInType, string expectedSetTypeName)
+        {
+            var class1 =
+                @"
+Public Property Get Foo() As Variant
+End Property
+";
+
+            var module1 =
+                $@"
+Private Sub Bar()
+    Dim baz as Variant
+    Set baz = TypeOf baz Is {builtInType}
+End Sub
+";
+
+            var expressionSelection = new Selection(4, 30, 4, 31);
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, class1)
+                .AddComponent("Module1", ComponentType.StandardModule, module1)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
+
+            var actualSetTypeName = ExpressionTypeName(vbe, "Module1", expressionSelection);
+
+            Assert.AreEqual(expectedSetTypeName, actualSetTypeName);
+        }
+
+        [Test]
+        [Category("ExpressionResolver")]
+        [TestCase("Object", null)]
+        [TestCase("[Object]", null)]
+        [TestCase("Variant", null)]
+        [TestCase("[Variant]", null)]
+        [TestCase("Any", null)]
+        [TestCase("[Any]", null)]
+        [TestCase("Long", null)]
+        [TestCase("[Long]", null)]
+        public void TypeOfIsRHS_SetTypeDeclarationTests(string builtInType, string expectedNameOfSetTypeDeclaration)
+        {
+            var class1 =
+                @"
+Public Property Get Foo() As Variant
+End Property
+";
+
+            var module1 =
+                $@"
+Private Sub Bar()
+    Dim baz as Variant
+    Set baz = TypeOf baz Is {builtInType}
+End Sub
+";
+
+            var expressionSelection = new Selection(4, 29, 4, 30);
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, class1)
+                .AddComponent("Module1", ComponentType.StandardModule, module1)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
+
+            var setTypeDeclaration = ExpressionTypeDeclaration(vbe, "Module1", expressionSelection);
+            var actualNameOfSetTypeDeclaration = setTypeDeclaration?.QualifiedModuleName.ToString();
+
+            Assert.AreEqual(expectedNameOfSetTypeDeclaration, actualNameOfSetTypeDeclaration);
+        }
+
         private Declaration ExpressionTypeDeclaration(IVBE vbe, string componentName, Selection selection)
         {
             using (var state = MockParser.CreateAndParse(vbe))
@@ -353,22 +655,22 @@ End Sub
                 return null;
             }
 
+            var containingChild = context.children
+                .OfType<ParserRuleContext>()
+                .FirstOrDefault(childContext => childContext.GetSelection().Contains(selection));
+
+            var containedTestExpression = containingChild != null
+                ? TestExpression(containingChild, selection)
+                : null;
+
+            if (containedTestExpression != null)
+            {
+                return containedTestExpression;
+            }
+
             if (context is VBAParser.ExpressionContext expression)
             {
                 return expression;
-            }
-
-            if (context.children == null)
-            {
-                return null;
-            }
-
-            foreach (var child in context.children)
-            {
-                if (child is ParserRuleContext childContext && childContext.GetSelection().Contains(selection))
-                {
-                    return TestExpression(childContext, selection);
-                }
             }
 
             return null;
