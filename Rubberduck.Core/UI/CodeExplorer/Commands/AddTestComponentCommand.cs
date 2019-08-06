@@ -32,7 +32,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private bool SpecialEvaluateCanExecute(object parameter)
         {
             if (parameter == null)
+            {
                 return false;
+            }
 
             Declaration declaration;
             if (ApplicableNodes.Contains(parameter.GetType()) &&

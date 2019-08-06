@@ -79,13 +79,6 @@ namespace Rubberduck.UI.ToDoItems
                             return false;
                     }
                 });
-            NavigateCommand = new NavigateCommand(selectionService);
-            RemoveCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveCommand, CanExecuteRemoveCommand);
-            CollapseAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseAll);
-            ExpandAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandAll);
-            CopyResultsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
-            OpenTodoSettingsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteOpenTodoSettingsCommand);
-            NavigateCommand = new NavigateCommand(selectionService);
             RemoveCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveCommand, CanExecuteRemoveCommand);
             CollapseAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseAll);
             ExpandAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandAll);
@@ -198,7 +191,7 @@ namespace Rubberduck.UI.ToDoItems
             });
         }
 
-        public INavigateCommand NavigateCommand { get; }
+        public INavigateCommand NavigateCommand { get; set; }
 
         public CommandBase RefreshCommand { get; set; }
 
