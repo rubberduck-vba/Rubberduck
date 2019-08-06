@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Xml.Serialization;
+using Rubberduck.UI;
 
 namespace Rubberduck.Settings
 {
     internal interface IToDoListSettings
     {
         ToDoMarker[] ToDoMarkers { get; set; }
+        ObservableCollection<ToDoGridViewColumnInfo> ColumnHeadersInformation { get; set; }
     }
 
     [XmlType(AnonymousType = true)]
-    public class ToDoListSettings : IToDoListSettings, IEquatable<ToDoListSettings>
+    public class ToDoListSettings : ViewModelBase, IToDoListSettings, IEquatable<ToDoListSettings>
     {
         private IEnumerable<ToDoMarker> _markers;
 
@@ -26,6 +29,20 @@ namespace Rubberduck.Settings
             }
         }
 
+        private ObservableCollection<ToDoGridViewColumnInfo> _columnHeadersInfo;
+        public ObservableCollection<ToDoGridViewColumnInfo> ColumnHeadersInformation
+        {
+            get => _columnHeadersInfo;
+            set
+            {
+                if (value != _columnHeadersInfo)
+                {
+                    _columnHeadersInfo = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         /// <Summary>
         /// Default constructor required for XML serialization.
         /// </Summary>
@@ -33,14 +50,17 @@ namespace Rubberduck.Settings
         {
         }
 
-        public ToDoListSettings(IEnumerable<ToDoMarker> defaultMarkers)
+        public ToDoListSettings(IEnumerable<ToDoMarker> defaultMarkers, ObservableCollection<ToDoGridViewColumnInfo> columnHeaders)
         {
             _markers = defaultMarkers;
+            ColumnHeadersInformation = columnHeaders;
         }
 
         public bool Equals(ToDoListSettings other)
         {
-            return other != null && ToDoMarkers.SequenceEqual(other.ToDoMarkers);
+            return other != null 
+                && ToDoMarkers.SequenceEqual(other.ToDoMarkers)
+                && ColumnHeadersInformation.Equals(other.ColumnHeadersInformation);
         }
     }
 }

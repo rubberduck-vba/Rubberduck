@@ -18,7 +18,6 @@ using Rubberduck.SettingsProvider;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI.UnitTesting.ComCommands;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.UI.UnitTesting.Commands;
 using Rubberduck.UnitTesting;
 using Rubberduck.UnitTesting.CodeGeneration;
 using Rubberduck.UnitTesting.Settings;

@@ -12,7 +12,6 @@ using Rubberduck.Interaction;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.ComCommands;
-using Rubberduck.VBEditor.Events;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.CodeExplorer
@@ -466,7 +465,7 @@ namespace RubberduckTests.CodeExplorer
                 var component = explorer.VbComponent.Object;
 
                 explorer.ViewModel.RemoveCommand.Execute(removing);
-                explorer.VbComponents.Verify(c => c.Remove(component), Times.Once);
+                explorer.ProjectsRepository.Verify(c => c.RemoveComponent(component.QualifiedModuleName), Times.Once);
             }
         }
 
@@ -502,8 +501,9 @@ namespace RubberduckTests.CodeExplorer
                 var removing = explorer.ViewModel.SelectedItem;
                 var component = explorer.VbComponent.Object;
 
+
                 explorer.ViewModel.RemoveCommand.Execute(removing);
-                explorer.VbComponents.Verify(c => c.Remove(component), Times.Once);
+                explorer.ProjectsRepository.Verify(c => c.RemoveComponent(component.QualifiedModuleName), Times.Once);
             }
         }
 

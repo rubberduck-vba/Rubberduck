@@ -30,6 +30,17 @@ namespace Rubberduck.UI.UnitTesting
         Location
     }
 
+    [Flags]
+    public enum TestExplorerOutcomeFilter
+    {
+        None = 0,
+        Unknown = 1,
+        Fail = 1 << 1,
+        Inconclusive = 1 << 2,
+        Succeeded = 1 << 3,
+        All = Unknown | Fail | Inconclusive | Succeeded
+    }
+
     internal sealed class TestExplorerViewModel : ViewModelBase, INavigateSelection, IDisposable
     {
         private readonly IClipboardWriter _clipboard;
@@ -68,6 +79,8 @@ namespace Rubberduck.UI.UnitTesting
 
             OnPropertyChanged(nameof(Tests));
             TestGrouping = TestExplorerGrouping.Outcome;
+
+            OutcomeFilter = TestExplorerOutcomeFilter.All;
         }
 
         public TestExplorerModel Model { get; }
@@ -133,6 +146,40 @@ namespace Rubberduck.UI.UnitTesting
             }
         }
 
+        private TestExplorerOutcomeFilter _outcomeFilter = TestExplorerOutcomeFilter.All;
+        public TestExplorerOutcomeFilter OutcomeFilter
+        {
+            get => _outcomeFilter;
+            set
+            {
+                if (value == _outcomeFilter)
+                {
+                    return;
+                }
+
+                _outcomeFilter = value;
+                OnPropertyChanged();
+
+                Tests.Filter = FilterResults;
+            }
+        }
+
+        private string _testNameFilter = string.Empty;
+        public string TestNameFilter
+        {
+            get => _testNameFilter;
+            set
+            {
+                if (_testNameFilter != value)
+                {
+                    _testNameFilter = value;
+                    OnPropertyChanged();
+                    Tests.Filter = FilterResults;
+                    OnPropertyChanged(nameof(Tests));
+                }
+            }
+        }
+
         private bool _expanded;
         public bool ExpandedState
         {
@@ -142,6 +189,21 @@ namespace Rubberduck.UI.UnitTesting
                 _expanded = value;
                 OnPropertyChanged();
             }
+        }
+        /// <summary>
+        /// Filtering for displaying the correct tests.
+        /// Uses both <see cref="OutcomeFilter"/> and <see cref="TestNameFilter"/>
+        /// </summary>
+        private bool FilterResults(object unitTest)
+        {
+            var testMethodViewModel = unitTest as TestMethodViewModel;
+
+            var passesNameFilter = testMethodViewModel.QualifiedName.MemberName.ToUpper().Contains(TestNameFilter?.ToUpper() ?? string.Empty);
+
+            Enum.TryParse(testMethodViewModel.Result.Outcome.ToString(), out TestExplorerOutcomeFilter convertedOutcome);
+            var passesOutcomeFilter = (OutcomeFilter & convertedOutcome) == convertedOutcome;
+
+            return passesNameFilter && passesOutcomeFilter;
         }
 
         private void HandleTestCompletion(object sender, TestCompletedEventArgs e)

@@ -181,7 +181,8 @@
                                       SelectionMode="Single"
                                       ItemsSource="{Binding AvailableReferences}" 
                                       HorizontalContentAlignment="Stretch"
-                                      ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                      GotFocus="ListView_SynchronizeCurrentSelection_OnGotFocus">
                                 <ListView.ItemContainerStyle>
                                     <Style TargetType="ListViewItem">
                                         <Setter Property="Height" Value="20" />
@@ -239,7 +240,8 @@
                                       SelectionMode="Single"
                                       ItemsSource="{Binding ProjectReferences, NotifyOnTargetUpdated=True}" 
                                       ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                      HorizontalContentAlignment="Stretch">
+                                      HorizontalContentAlignment="Stretch"
+                                      GotFocus="ListView_SynchronizeCurrentSelection_OnGotFocus">
                                 <ListView.ItemContainerStyle>
                                     <Style TargetType="ListViewItem">
                                         <Setter Property="Height" Value="20" />
@@ -388,18 +390,22 @@
                                     <ColumnDefinition Width="50" />
                                     <ColumnDefinition Width="100" />
                                 </Grid.ColumnDefinitions>
-                                <TextBox Grid.Row="0" Grid.Column="0" Style="{StaticResource SelectableText}" Text="{Binding CurrentSelection.Description, Mode=OneWay}" />
+                                <TextBox x:Name="Description"
+                                         Grid.Row="0" Grid.Column="0" Style="{StaticResource SelectableText}" Text="{Binding CurrentSelection.Description, Mode=OneWay}" />
                                 <Label Grid.Row="0" Grid.Column="1"  
                                        Foreground="{x:Static SystemColors.GrayTextBrush}" 
                                        VerticalAlignment="Center" 
                                        Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_Version}" />
-                                <TextBox Grid.Row="0" Grid.Column="2" Style="{StaticResource SelectableText}" Text="{Binding CurrentSelection.Version, Mode=OneWay}" />
+                                <TextBox x:Name="Version"
+                                         Grid.Row="0" Grid.Column="2" Style="{StaticResource SelectableText}" Text="{Binding CurrentSelection.Version, Mode=OneWay}" />
                                 <Label Grid.Row="0" Grid.Column="3"  
                                        Foreground="{x:Static SystemColors.GrayTextBrush}" 
                                        VerticalAlignment="Center" 
                                        Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_Locale}" />
-                                <TextBox Grid.Row="0" Grid.Column="4" Style="{StaticResource SelectableText}" Text="{Binding CurrentSelection.LocaleName, Mode=OneWay}" />
-                                <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" Style="{StaticResource SelectableText}" Text="{Binding CurrentSelection.FullPath, Mode=OneWay}"  />
+                                <TextBox x:Name="LocaleName"
+                                         Grid.Row="0" Grid.Column="4" Style="{StaticResource SelectableText}" Text="{Binding CurrentSelection.LocaleName, Mode=OneWay}" />
+                                <TextBox x:Name="FullPath"
+                                         Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" Style="{StaticResource SelectableText}" Text="{Binding CurrentSelection.FullPath, Mode=OneWay}"  />
                             </Grid>
                         </Border>
                     </Border>

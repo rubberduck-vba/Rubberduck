@@ -100,8 +100,6 @@ namespace Rubberduck.UI.UnitTesting
         public string LastTestRunSummary =>
             string.Format(Resources.UnitTesting.TestExplorer.TestOutcome_RunSummaryFormat, CurrentRunTestCount, Tests.Count, TimeSpan.FromMilliseconds(TotalDuration));
 
-        public int LastTestSpectacularFailCount => Tests.Count(test => test.Result.Outcome == TestOutcome.SpectacularFail && _testEngine.LastRunTests.Contains(test.Method));
-
         public int LastTestFailedCount => Tests.Count(test => test.Result.Outcome == TestOutcome.Failed && _testEngine.LastRunTests.Contains(test.Method));
 
         public int LastTestInconclusiveCount => Tests.Count(test => test.Result.Outcome == TestOutcome.Inconclusive && _testEngine.LastRunTests.Contains(test.Method));
@@ -181,7 +179,6 @@ namespace Rubberduck.UI.UnitTesting
             IsBusy = false;
 
             OnPropertyChanged(nameof(LastTestRunSummary));
-            OnPropertyChanged(nameof(LastTestSpectacularFailCount));
             OnPropertyChanged(nameof(LastTestFailedCount));
             OnPropertyChanged(nameof(LastTestIgnoredCount));
             OnPropertyChanged(nameof(LastTestInconclusiveCount));
@@ -246,7 +243,6 @@ namespace Rubberduck.UI.UnitTesting
             { TestOutcome.Inconclusive, Colors.Gold },
             { TestOutcome.Ignored, Colors.Orange },
             { TestOutcome.Failed, Colors.Red },
-            { TestOutcome.SpectacularFail, Colors.Black }
         };
 
         private TestOutcome _worstOutcome = TestOutcome.Unknown;

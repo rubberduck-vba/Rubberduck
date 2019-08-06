@@ -20,6 +20,7 @@ using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.SettingsProvider;
+using System.Windows.Controls;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -94,6 +95,39 @@ namespace Rubberduck.UI.ToDoItems
             Items = CollectionViewSource.GetDefaultView(_items);
             OnPropertyChanged(nameof(Items));
             Grouping = ToDoItemGrouping.Marker;
+
+            _columnHeaders = _configService.Read().UserSettings.ToDoListSettings.ColumnHeadersInformation;
+        }
+
+        private ObservableCollection<ToDoGridViewColumnInfo> _columnHeaders { get; }
+        public void UpdateColumnHeaderInformation(ObservableCollection<DataGridColumn> columns)
+        {
+            _columnHeaders[0].DisplayIndex = columns[0].DisplayIndex;
+            _columnHeaders[1].DisplayIndex = columns[1].DisplayIndex;
+            _columnHeaders[2].DisplayIndex = columns[2].DisplayIndex;
+            _columnHeaders[3].DisplayIndex = columns[3].DisplayIndex;
+
+            _columnHeaders[0].Width = columns[0].Width;
+            _columnHeaders[1].Width = columns[1].Width;
+            _columnHeaders[2].Width = columns[2].Width;
+            _columnHeaders[3].Width = columns[3].Width;
+
+            var userSettings = _configService.Read().UserSettings;
+            userSettings.ToDoListSettings.ColumnHeadersInformation = _columnHeaders;
+            _configService.Save(new Configuration(userSettings));
+        }
+
+        public void UpdateColumnHeaderInformationToMatchCached(ObservableCollection<DataGridColumn> columns)
+        {
+            columns[0].DisplayIndex = _columnHeaders[0].DisplayIndex;
+            columns[1].DisplayIndex = _columnHeaders[1].DisplayIndex;
+            columns[2].DisplayIndex = _columnHeaders[2].DisplayIndex;
+            columns[3].DisplayIndex = _columnHeaders[3].DisplayIndex;
+
+            columns[0].Width = _columnHeaders[0].Width;
+            columns[1].Width = _columnHeaders[1].Width;
+            columns[2].Width = _columnHeaders[2].Width;
+            columns[3].Width = _columnHeaders[3].Width;
         }
 
         private readonly ObservableCollection<ToDoItem> _items = new ObservableCollection<ToDoItem>();

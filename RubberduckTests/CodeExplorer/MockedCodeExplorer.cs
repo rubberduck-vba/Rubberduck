@@ -25,6 +25,8 @@ using Rubberduck.UnitTesting.CodeGeneration;
 using Rubberduck.UnitTesting.Settings;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.UI.CodeExplorer;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Settings;
@@ -88,6 +90,10 @@ namespace RubberduckTests.CodeExplorer
             VbProject = project.Build();
             Vbe = builder.AddProject(VbProject).Build();
             VbeEvents = MockVbeEvents.CreateMockVbeEvents(Vbe);
+            ProjectsRepository = new Mock<IProjectsRepository>();
+            ProjectsRepository.Setup(x => x.Project(It.IsAny<string>())).Returns(VbProject.Object);
+            ProjectsRepository.Setup(x => x.Component(It.IsAny<QualifiedModuleName>())).Returns(VbComponent.Object);
+
             SetupViewModelAndParse();
         }
 
@@ -121,6 +127,10 @@ namespace RubberduckTests.CodeExplorer
             VbProject = project.Build();
             Vbe = builder.AddProject(VbProject).Build();
             VbeEvents = MockVbeEvents.CreateMockVbeEvents(Vbe);
+            ProjectsRepository = new Mock<IProjectsRepository>();
+            ProjectsRepository.Setup(x => x.Project(It.IsAny<string>())).Returns(VbProject.Object);
+            ProjectsRepository.Setup(x => x.Component(It.IsAny<QualifiedModuleName>())).Returns(VbComponent.Object);
+
             SetupViewModelAndParse();
 
             VbProject.SetupGet(m => m.VBComponents.Count).Returns(componentTypes.Count);
@@ -128,10 +138,12 @@ namespace RubberduckTests.CodeExplorer
 
         private void SetupViewModelAndParse()
         {
-            var parser = MockParser.Create(Vbe.Object, null, MockVbeEvents.CreateMockVbeEvents(Vbe));
+            var vbeEvents = MockVbeEvents.CreateMockVbeEvents(Vbe);
+            var parser = MockParser.Create(Vbe.Object, null, vbeEvents);
             State = parser.State;
 
-            var removeCommand = new RemoveCommand(BrowserFactory.Object, MessageBox.Object, State.ProjectsProvider);
+            var exportCommand = new ExportCommand(BrowserFactory.Object, MessageBox.Object, State.ProjectsProvider, Vbe.Object);
+            var removeCommand = new RemoveCommand(exportCommand, ProjectsRepository.Object, MessageBox.Object, Vbe.Object, vbeEvents.Object);
 
             ViewModel = new CodeExplorerViewModel(State, removeCommand,
                 _generalSettingsProvider.Object,
@@ -159,6 +171,7 @@ namespace RubberduckTests.CodeExplorer
         public Mock<IOpenFileDialog> OpenDialog { get; }
         public Mock<IFolderBrowser> FolderBrowser { get; }
         public Mock<IMessageBox> MessageBox { get; } = new Mock<IMessageBox>();
+        public Mock<IProjectsRepository> ProjectsRepository { get; }
 
         public WindowSettings WindowSettings { get; } = new WindowSettings();
 
@@ -356,7 +369,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementExportCommand()
         {
-            ViewModel.ExportCommand = new ExportCommand(BrowserFactory.Object, MessageBox.Object, State.ProjectsProvider);
+            ViewModel.ExportCommand = new ExportCommand(BrowserFactory.Object, MessageBox.Object, State.ProjectsProvider, Vbe.Object);
             return this;
         }
 
