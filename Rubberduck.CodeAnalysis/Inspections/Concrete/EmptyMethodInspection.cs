@@ -9,10 +9,14 @@ using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources.Experimentals;
 using static Rubberduck.Parsing.Grammar.VBAParser;
+using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Inspections.Concrete.Extensions;
+using Antlr4.Runtime.Tree;
+using System;
+using static Rubberduck.Inspections.Concrete.Extensions.EmptyMethodInspectionMeasures;
 
 namespace Rubberduck.Inspections.Concrete
 {
-
     /// <summary>
     /// Identifies empty module member blocks.
     /// </summary>
@@ -34,11 +38,18 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
-    internal class EmptyMethodInspection : InspectionBase// EmptyBlockInspectionBase
+    internal class EmptyMethodInspection : InspectionBase
     {
+        public EmptyMethodInspection(RubberduckParserState state, bool measure)
+            :base(state)
+        {
+
+        }
+
         public EmptyMethodInspection(RubberduckParserState state)
             : base(state) { }
+
+        protected override IEnumerable<Declaration> UserDeclarations => base.UserDeclarations;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
@@ -46,15 +57,23 @@ namespace Rubberduck.Inspections.Concrete
             // since some VB users might use concrete user defined classes as interfaces,
             // while RD marks them as interfaces all the same.
 
-            return UserDeclarations.OfType<ModuleBodyElementDeclaration>()
-                .Where(bodyElement => !BlockContainsExecutableStatements(bodyElement.Block))
-                .GroupBy(bodyElement => bodyElement.ComponentName)
-                // Exclude results from user interfaces
-                .Where(bodyElements => !State.DeclarationFinder.FindAllUserInterfaces()
-                                       // where all members of that interface contain no executables
-                                       .Where(interfaceModule => interfaceModule.ComponentName == bodyElements.Key
-                                                                && interfaceModule.Members.Count == bodyElements.Count())
-                                       .Any())
+            //var firstImplementation = UserDeclarations.OfType<ModuleBodyElementDeclaration>()
+            //    .Where(bodyElement => !BlockContainsExecutableStatements(bodyElement.Block))
+            //    .GroupBy(bodyElement => bodyElement.QualifiedModuleName);
+
+            var allInterfaces = new HashSet<ClassModuleDeclaration>(State.DeclarationFinder.FindAllUserInterfaces());
+
+            return State.DeclarationFinder.UserDeclarations(DeclarationType.Member)
+                .Where(member => !member.IsIgnoringInspectionResultFor(AnnotationName)
+                                  && !BlockContainsExecutableStatements(((ModuleBodyElementDeclaration)member).Block))
+                
+                // Exclude results from user PURE interfaces only - → → → ↓↓↓↓
+                .GroupBy(bodyElement => bodyElement.QualifiedModuleName)
+                .Where(bodyElements => !allInterfaces
+                                            // by filtering out any classModules as long ALL its members contain no executables
+                                            // which means that it IS used as concrete and SHOULD be inspected for empty members
+                                            .Any(interfaceModule => interfaceModule.QualifiedModuleName == bodyElements.Key
+                                                                    && interfaceModule.Members.Count == bodyElements.Count()))
                 .SelectMany(bodyElements => bodyElements)
                 .Select(result => new DeclarationInspectionResult(this,
                                                                   string.Format(InspectionResults.EmptyMethodInspection,
@@ -65,10 +84,21 @@ namespace Rubberduck.Inspections.Concrete
 
         private bool BlockContainsExecutableStatements(BlockContext block)
         {
-            return block?.children != null && ContainsExecutableStatements(block.children);
+            bool result1 = false;
+            bool result2 = false;
+            int reps = 200;
+            string text = State.DeclarationFinder.UserDeclarations(DeclarationType.Member).First().Context.GetText();
+            Measure(text, Syntax.Old, reps, () =>
+                result1 = block?.children != null && ContainsExecutableStatements(block.children));
+
+            Measure(text, Syntax.Linq, reps, () =>
+                result2 = block?.children != null && ContainsExecutableStatementsLinq(block.children));
+
+            System.Diagnostics.Debug.Assert(result1 == result2);
+            return result1;
         }
 
-        private bool ContainsExecutableStatements(IList<Antlr4.Runtime.Tree.IParseTree> blockChildren)
+        private bool ContainsExecutableStatements(IList<IParseTree> blockChildren)
         {
             foreach (var child in blockChildren)
             {
@@ -78,10 +108,8 @@ namespace Rubberduck.Inspections.Concrete
 
                     if (mainBlockStmt == null)
                     {
-                        continue;   //We have a lone line lable, which is not executable.
+                        continue;   //We have a lone line label, which is not executable.
                     }
-
-                    System.Diagnostics.Debug.Assert(mainBlockStmt.ChildCount == 1);
 
                     // exclude variables and consts because they are not executable statements
                     if (mainBlockStmt.GetChild(0) is VariableStmtContext ||
@@ -106,6 +134,19 @@ namespace Rubberduck.Inspections.Concrete
 
             return false;
         }
+
+        private bool ContainsExecutableStatementsLinq(IList<IParseTree> blockChildren)
+        {
+            return blockChildren.Any(child => (child is BlockStmtContext blockStmt
+                                               && !(blockStmt.mainBlockStmt() == null
+                                                    || IsConstantOrVariable(blockStmt))));
+        }
+
+        private bool IsConstantOrVariable(BlockStmtContext blockStmt)
+        {
+            var context = blockStmt.mainBlockStmt().GetChild(0);
+            return context is VariableStmtContext || context is ConstStmtContext;
+        }
     }
 
     public static class DeclarationTypeFormat
@@ -127,5 +168,4 @@ namespace Rubberduck.Inspections.Concrete
             return result;
         }
     }
-
 }

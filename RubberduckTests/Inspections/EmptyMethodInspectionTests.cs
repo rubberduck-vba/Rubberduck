@@ -8,7 +8,7 @@ using Rubberduck.VBEditor.SafeComWrappers;
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    class EmptyMethodInspectionTests
+    public class EmptyMethodInspectionTests
     {
         [Test]
         [Category("Inspections")]
@@ -106,6 +106,61 @@ End Property";
 Sub Foo()
 End Sub";
             CheckActualEmptyBlockCountEqualsExpected(inputCode, 0);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [TestCase("Label:")]
+        [TestCase("Const Bar = 42")]
+        [TestCase("Dim bar As Long")]
+        [TestCase("Const Bar = 42: Dim baz As Long")]
+        [TestCase("Const Bar = 42\nDim baz As Long")]
+        [TestCase("Label: Const Bar = 42: Dim baz As Long")]
+        [TestCase("Label:\nConst Bar = 42\nDim baz As Long")]
+        [TestCase("Rem This is a rem comment")]
+        [TestCase("'This is a comment")]
+        [TestCase("'@Ignore EmptyMethod")]
+        [TestCase("")]
+        public void EmptyMethod_VariousStatements_ReturnResult(string statement)
+        {
+            string inputCode =
+                $@"Sub Foo()
+{statement}
+End Sub";
+            CheckActualEmptyBlockCountEqualsExpected(inputCode, 1);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [TestCase("Label: Foo")]
+        [TestCase("Label:\nFoo")]
+        [TestCase("Const Bar = 42: Foo")]
+        [TestCase("Const Bar = 42\nFoo")]
+        [TestCase("Dim bar As Long: Foo")]
+        [TestCase("Dim bar As Long\nFoo")]
+        [TestCase("Label: Const Bar = 42: Foo")]
+        [TestCase("Label:\nConst Bar = 42:\nFoo")]
+        [TestCase("Foo 'This is a comment")]
+        [TestCase("Foo '@Ignore EmptyMethod")]
+        [TestCase("Call Foo: Const Bar = 42: Dim baz As Long")]
+        [TestCase("Call Foo\nConst Bar = 42\nDim baz As Long")]
+        public void EmptyMethod_VariousStatements_DontReturnResult(string statement)
+        {
+            string inputCode =
+                $@"Sub Qux()
+{statement}
+End Sub
+
+Sub Foo()
+    MsgBox ""?""
+End Sub";
+            CheckActualEmptyBlockCountEqualsExpected(inputCode, 0);
+        }
+
+        [OneTimeTearDown]
+        public void Cleanup()
+        {
+            Rubberduck.Inspections.Concrete.Extensions.EmptyMethodInspectionMeasures.DisplayResults();
         }
 
         private void CheckActualEmptyBlockCountEqualsExpected(string inputCode, int expectedCount)
