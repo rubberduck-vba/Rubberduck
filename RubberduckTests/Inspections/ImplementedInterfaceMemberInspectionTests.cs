@@ -61,41 +61,6 @@ Public Sub IClass1_DoSomethingElse(ByVal a As Integer)
 End Sub";
             CheckActualEmptyBlockCountEqualsExpected(interfaceCode, concreteCode, 1);
         }
-        
-        [Test]
-        [Category("Inspections")]
-        public void ImplementedInterfaceMember_ReturnsExpectedMessage()
-        {
-            string interfaceCode =
-                $@"Property Set Bar()
-    MsgBox ""?""
-End Property";
-
-            string concreteCode =
-    $@"Implements Iclass1
-
-Property Set Bar()
-End Property";
-
-            string expected = "Interface class module contains a concrete implementation for Property set accessor 'Bar'.";
-
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("IClass1", ComponentType.ClassModule, interfaceCode)
-                .AddComponent("Class1", ComponentType.ClassModule, concreteCode)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ImplementedInterfaceMemberInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(expected, actualResults.First().Description);
-            }
-        }
 
         [Test]
         [Category("Inspections")]

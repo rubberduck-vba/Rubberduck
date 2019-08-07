@@ -1054,7 +1054,7 @@
             Identifies implemented members of class modules that are used as interfaces.
             </summary>
             <why>
-            Interfaces provide a unified programmatic access to different objects, and therefore are rearly instantiated as concrete objects.
+            Interfaces provide a unified programmatic access to different objects, and therefore are rarely instantiated as concrete objects.
             </why>
             <example hasResults="false">
             <![CDATA[

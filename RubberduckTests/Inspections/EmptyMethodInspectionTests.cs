@@ -59,24 +59,6 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void EmptyMethod_ReturnsExpectedMessage()
-        {
-            string inputCode =
-                $@"Property Get Bar()
-End Property";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new EmptyMethodInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual("Property get accessor 'Bar' contains no executable statements.", actualResults.Select(result => result.Description).First());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
         public void EmptyMethod_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
