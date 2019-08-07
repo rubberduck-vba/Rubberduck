@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
