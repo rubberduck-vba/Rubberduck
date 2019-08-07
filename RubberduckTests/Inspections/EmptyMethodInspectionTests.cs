@@ -158,12 +158,6 @@ End Sub";
             CheckActualEmptyBlockCountEqualsExpected(inputCode, 0);
         }
 
-        [OneTimeTearDown]
-        public void Cleanup()
-        {
-            Rubberduck.Inspections.Concrete.Extensions.EmptyMethodInspectionMeasures.DisplayResults();
-        }
-
         private void CheckActualEmptyBlockCountEqualsExpected(string inputCode, int expectedCount)
         {
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
