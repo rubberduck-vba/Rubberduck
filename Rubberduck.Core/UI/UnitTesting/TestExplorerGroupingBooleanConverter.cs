@@ -5,7 +5,7 @@ using System.Windows.Data;
 namespace Rubberduck.UI.UnitTesting
 {
     /// <summary>
-    /// Binds an individual flag of TestExplorerGrouping to a boolean. Note: This is a stateful converter, so each bound control
+    /// Binds an individual flag of <see cref="TestExplorerGrouping"/> to a boolean. Note: This is a stateful converter, so each bound control
     /// requires its own converter instance.
     /// </summary>
     internal class TestExplorerGroupingBooleanConverter : IValueConverter

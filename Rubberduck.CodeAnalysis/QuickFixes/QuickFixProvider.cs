@@ -6,6 +6,7 @@ using Microsoft.CSharp.RuntimeBinder;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
@@ -36,14 +37,19 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        public IEnumerable<IQuickFix> QuickFixes(IInspectionResult result)
+        public IEnumerable<IQuickFix> QuickFixes(Type inspectionType)
         {
-            if (!_quickFixes.ContainsKey(result.Inspection.GetType()))
+            if (!_quickFixes.ContainsKey(inspectionType))
             {
                 return Enumerable.Empty<IQuickFix>();
             }
 
-            return _quickFixes[result.Inspection.GetType()].Where(fix =>
+            return _quickFixes[inspectionType];
+        }
+
+        public IEnumerable<IQuickFix> QuickFixes(IInspectionResult result)
+        {
+            return QuickFixes(result.Inspection.GetType()).Where(fix =>
                 {
                     string value;
                     try
@@ -78,11 +84,18 @@ namespace Rubberduck.Inspections.QuickFixes
             }
 
             var rewriteSession = RewriteSession(fix.TargetCodeKind);
-            fix.Fix(result, rewriteSession);
+            try
+            {
+                fix.Fix(result, rewriteSession);
+            }
+            catch (RewriteFailedException)
+            {
+                _failureNotifier.NotifyQuickFixExecutionFailure(rewriteSession.Status);
+            }
             Apply(rewriteSession);
         }
 
-        private void Apply(IRewriteSession rewriteSession)
+        private void Apply(IExecutableRewriteSession rewriteSession)
         {
             if (!rewriteSession.TryRewrite())
             {
@@ -90,7 +103,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        private IRewriteSession RewriteSession(CodeKind targetCodeKind)
+        private IExecutableRewriteSession RewriteSession(CodeKind targetCodeKind)
         {
             switch (targetCodeKind)
             {

@@ -12,7 +12,7 @@ namespace Rubberduck.UI.Settings
 {
     public sealed class IndenterSettingsViewModel : SettingsViewModelBase<SmartIndenter.IndenterSettings>, ISettingsViewModel<SmartIndenter.IndenterSettings>
     {
-        public IndenterSettingsViewModel(Configuration config, IFilePersistanceService<SmartIndenter.IndenterSettings> service)
+        public IndenterSettingsViewModel(Configuration config, IConfigurationService<SmartIndenter.IndenterSettings> service)
             : base(service)
         {
             _alignCommentsWithCode = config.UserSettings.IndenterSettings.AlignCommentsWithCode;
@@ -49,9 +49,9 @@ namespace Rubberduck.UI.Settings
         private void IndenterSettingsViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             // ReSharper disable once ExplicitCallerInfoArgument
-            if (e.PropertyName != "PreviewSampleCode")
+            if (e.PropertyName != nameof(PreviewSampleCode))
             {
-                OnPropertyChanged("PreviewSampleCode");
+                OnPropertyChanged(nameof(PreviewSampleCode));
             }
         }
 

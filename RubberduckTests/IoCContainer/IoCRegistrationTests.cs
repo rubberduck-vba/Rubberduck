@@ -28,9 +28,9 @@ namespace RubberduckTests.IoCContainer
 
             var initialSettings = new GeneralSettings
             {
-                EnableExperimentalFeatures = new List<ExperimentalFeatures>
+                EnableExperimentalFeatures = new List<ExperimentalFeature>
                 {
-                    new ExperimentalFeatures()
+                    new ExperimentalFeature()
                 }
             };
 
@@ -55,7 +55,7 @@ namespace RubberduckTests.IoCContainer
             var addin = addInBuilder.Build().Object;
             var vbeNativeApi = new Mock<IVbeNativeApi>();
 
-            var initialSettings = new GeneralSettings {EnableExperimentalFeatures = new List<ExperimentalFeatures>()};
+            var initialSettings = new GeneralSettings {EnableExperimentalFeatures = new List<ExperimentalFeature>()};
 
             using (var container =
                 new WindsorContainer().Install(new RubberduckIoCInstaller(ide, addin, initialSettings, vbeNativeApi.Object)))

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using NUnit.Framework;
 using Moq;
@@ -18,10 +19,15 @@ using RubberduckTests.Mocks;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.SettingsProvider;
 using Rubberduck.Interaction;
+using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.UnitTesting.Commands;
 using Rubberduck.UnitTesting;
 using Rubberduck.UnitTesting.CodeGeneration;
 using Rubberduck.UnitTesting.Settings;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.ComManagement;
+using Rubberduck.VBEditor.SourceCodeHandling;
+using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Settings;
 
 namespace RubberduckTests.CodeExplorer
@@ -31,21 +37,22 @@ namespace RubberduckTests.CodeExplorer
         private readonly GeneralSettings _generalSettings = new GeneralSettings();
 
         private readonly Mock<IUiDispatcher> _uiDispatcher = new Mock<IUiDispatcher>();
-        private readonly Mock<IConfigProvider<GeneralSettings>> _generalSettingsProvider = new Mock<IConfigProvider<GeneralSettings>>();
-        private readonly Mock<IConfigProvider<WindowSettings>> _windowSettingsProvider = new Mock<IConfigProvider<WindowSettings>>();
-        private readonly Mock<IConfigProvider<UnitTestSettings>> _unitTestSettingsProvider = new Mock<IConfigProvider<UnitTestSettings>>();
+        private readonly Mock<IConfigurationService<GeneralSettings>> _generalSettingsProvider = new Mock<IConfigurationService<GeneralSettings>>();
+        private readonly Mock<IConfigurationService<WindowSettings>> _windowSettingsProvider = new Mock<IConfigurationService<WindowSettings>>();
+        private readonly Mock<IConfigurationService<UnitTestSettings>> _unitTestSettingsProvider = new Mock<IConfigurationService<UnitTestSettings>>();
         private readonly Mock<ConfigurationLoader> _configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null, null);
         private readonly Mock<IVBEInteraction> _interaction = new Mock<IVBEInteraction>();
 
         public MockedCodeExplorer()
         {
-            _generalSettingsProvider.Setup(s => s.Create()).Returns(_generalSettings);
-            _windowSettingsProvider.Setup(s => s.Create()).Returns(WindowSettings);
-            _configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-            _unitTestSettingsProvider.Setup(s => s.Create())
+            _generalSettingsProvider.Setup(s => s.Read()).Returns(_generalSettings);
+            _windowSettingsProvider.Setup(s => s.Read()).Returns(WindowSettings);
+            _configLoader.Setup(c => c.Read()).Returns(GetDefaultUnitTestConfig());
+            _unitTestSettingsProvider.Setup(s => s.Read())
                 .Returns(new UnitTestSettings(BindingMode.LateBinding,AssertMode.StrictAssert, true, true, false));
 
             _uiDispatcher.Setup(m => m.Invoke(It.IsAny<Action>())).Callback((Action argument) => argument.Invoke());
+            _uiDispatcher.Setup(m => m.StartTask(It.IsAny<Action>(), It.IsAny<TaskCreationOptions>())).Returns((Action argument, TaskCreationOptions options) => Task.Factory.StartNew(argument.Invoke, options));
 
             SaveDialog = new Mock<ISaveFileDialog>();
             SaveDialog.Setup(o => o.OverwritePrompt);
@@ -82,6 +89,10 @@ namespace RubberduckTests.CodeExplorer
             VbProject = project.Build();
             Vbe = builder.AddProject(VbProject).Build();
 
+            ProjectsRepository = new Mock<IProjectsRepository>();
+            ProjectsRepository.Setup(x => x.Project(It.IsAny<string>())).Returns(VbProject.Object);
+            ProjectsRepository.Setup(x => x.Component(It.IsAny<QualifiedModuleName>())).Returns(VbComponent.Object);
+
             SetupViewModelAndParse();
         }
 
@@ -115,6 +126,10 @@ namespace RubberduckTests.CodeExplorer
             VbProject = project.Build();
             Vbe = builder.AddProject(VbProject).Build();
 
+            ProjectsRepository = new Mock<IProjectsRepository>();
+            ProjectsRepository.Setup(x => x.Project(It.IsAny<string>())).Returns(VbProject.Object);
+            ProjectsRepository.Setup(x => x.Component(It.IsAny<QualifiedModuleName>())).Returns(VbComponent.Object);
+
             SetupViewModelAndParse();
 
             VbProject.SetupGet(m => m.VBComponents.Count).Returns(componentTypes.Count);
@@ -125,7 +140,8 @@ namespace RubberduckTests.CodeExplorer
             var parser = MockParser.Create(Vbe.Object, null, MockVbeEvents.CreateMockVbeEvents(Vbe));
             State = parser.State;
 
-            var removeCommand = new RemoveCommand(BrowserFactory.Object, MessageBox.Object, State.ProjectsProvider);
+            var exportCommand = new ExportCommand(BrowserFactory.Object, MessageBox.Object, State.ProjectsProvider, Vbe.Object);
+            var removeCommand = new RemoveCommand(exportCommand, ProjectsRepository.Object, MessageBox.Object, Vbe.Object);
 
             ViewModel = new CodeExplorerViewModel(State, removeCommand,
                 _generalSettingsProvider.Object,
@@ -152,13 +168,23 @@ namespace RubberduckTests.CodeExplorer
         public Mock<IOpenFileDialog> OpenDialog { get; }
         public Mock<IFolderBrowser> FolderBrowser { get; }
         public Mock<IMessageBox> MessageBox { get; } = new Mock<IMessageBox>();
+        public Mock<IProjectsRepository> ProjectsRepository { get; }
 
         public WindowSettings WindowSettings { get; } = new WindowSettings();
 
         public MockedCodeExplorer ImplementAddStdModuleCommand()
         {
-            ViewModel.AddStdModuleCommand = new AddStdModuleCommand(Vbe.Object);
+            ViewModel.AddStdModuleCommand = new AddStdModuleCommand(AddComponentService());
             return this;
+        }
+
+        private ICodeExplorerAddComponentService AddComponentService()
+        {
+            var codePaneComponentSourceCodeHandler = new CodeModuleComponentSourceCodeHandler();
+
+            var addComponentBaseService = new AddComponentService(State.ProjectsProvider, codePaneComponentSourceCodeHandler, codePaneComponentSourceCodeHandler);
+
+            return new CodeExplorerAddComponentService(State, addComponentBaseService, Vbe.Object);
         }
 
         public void ExecuteAddStdModuleCommand()
@@ -172,7 +198,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddClassModuleCommand()
         {
-            ViewModel.AddClassModuleCommand = new AddClassModuleCommand(Vbe.Object);
+            ViewModel.AddClassModuleCommand = new AddClassModuleCommand(AddComponentService());
             return this;
         }
 
@@ -187,7 +213,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddUserFormCommand()
         {
-            ViewModel.AddUserFormCommand = new AddUserFormCommand(Vbe.Object);
+            ViewModel.AddUserFormCommand = new AddUserFormCommand(AddComponentService());
             return this;
         }
 
@@ -202,7 +228,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddVbFormCommand()
         {
-            ViewModel.AddVBFormCommand = new AddVBFormCommand(Vbe.Object);
+            ViewModel.AddVBFormCommand = new AddVBFormCommand(AddComponentService());
             return this;
         }
 
@@ -217,7 +243,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddMdiFormCommand()
         {
-            ViewModel.AddMDIFormCommand = new AddMDIFormCommand(Vbe.Object);
+            ViewModel.AddMDIFormCommand = new AddMDIFormCommand(AddComponentService());
             return this;
         }
 
@@ -232,7 +258,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddUserControlCommand()
         {
-            ViewModel.AddUserControlCommand = new AddUserControlCommand(Vbe.Object);
+            ViewModel.AddUserControlCommand = new AddUserControlCommand(AddComponentService());
             return this;
         }
 
@@ -247,7 +273,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddPropertyPageCommand()
         {
-            ViewModel.AddPropertyPageCommand = new AddPropertyPageCommand(Vbe.Object);
+            ViewModel.AddPropertyPageCommand = new AddPropertyPageCommand(AddComponentService());
             return this;
         }
 
@@ -262,7 +288,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddUserDocumentCommand()
         {
-            ViewModel.AddUserDocumentCommand = new AddUserDocumentCommand(Vbe.Object);
+            ViewModel.AddUserDocumentCommand = new AddUserDocumentCommand(AddComponentService());
             return this;
         }
 
@@ -340,7 +366,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementExportCommand()
         {
-            ViewModel.ExportCommand = new ExportCommand(BrowserFactory.Object, MessageBox.Object, State.ProjectsProvider);
+            ViewModel.ExportCommand = new ExportCommand(BrowserFactory.Object, MessageBox.Object, State.ProjectsProvider, Vbe.Object);
             return this;
         }
 
@@ -431,9 +457,9 @@ namespace RubberduckTests.CodeExplorer
 
             var generalSettings = new GeneralSettings
             {
-                EnableExperimentalFeatures = new List<ExperimentalFeatures>
+                EnableExperimentalFeatures = new List<ExperimentalFeature>
                     {
-                        new ExperimentalFeatures()
+                        new ExperimentalFeature()
                     }
             };
 

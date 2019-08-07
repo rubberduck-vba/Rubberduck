@@ -1,9 +1,10 @@
 ﻿using Moq;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Settings;
 using System.Linq;
 using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.Inspections.Rubberduck.Inspections;
+using Rubberduck.SettingsProvider;
+using Rubberduck.CodeAnalysis.Settings;
 
 namespace RubberduckTests.Inspections
 {
@@ -17,16 +18,16 @@ namespace RubberduckTests.Inspections
             return new Inspector(GetSettings(inspection), inspectionProviderMock.Object);
         }
 
-        public static IGeneralConfigService GetSettings(IInspection inspection)
+        public static IConfigurationService<CodeInspectionSettings> GetSettings(IInspection inspection)
         {
-            var settings = new Mock<IGeneralConfigService>();
+            var settings = new Mock<IConfigurationService<CodeInspectionSettings>>();
             var config = GetTestConfig(inspection);
-            settings.Setup(x => x.LoadConfiguration()).Returns(config);
+            settings.Setup(x => x.Read()).Returns(config);
 
             return settings.Object;
         }
 
-        private static Configuration GetTestConfig(IInspection inspection)
+        private static CodeInspectionSettings GetTestConfig(IInspection inspection)
         {
             var settings = new CodeInspectionSettings();
             settings.CodeInspections.Add(new CodeInspectionSetting
@@ -35,10 +36,7 @@ namespace RubberduckTests.Inspections
                 Severity = inspection.Severity, 
                 Name = inspection.ToString()
             });
-            return new Configuration
-            {
-                UserSettings = new UserSettings(null, null, null, null, settings, null, null, null)
-            };
+            return settings;
         }
     }
 }

@@ -31,7 +31,7 @@ namespace Rubberduck.RegexAssistant
                     }
                     return string.Format(AssistantResources.Quantifier_ClosedRange, quant.MinimumMatches, quant.MaximumMatches);
             }
-            return "";
+            return string.Empty;
         }
     }
 }

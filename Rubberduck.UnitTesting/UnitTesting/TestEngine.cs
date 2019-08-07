@@ -368,11 +368,6 @@ namespace Rubberduck.UnitTesting
             var result = new AssertCompletedEventArgs(TestOutcome.Succeeded);
             var asserted = assertResults.ToList();
 
-            if (asserted.Count(assert => assert.Outcome == TestOutcome.Failed) >= 10)
-            {
-                return new TestResult(TestOutcome.SpectacularFail, result.Message, duration);
-            }
-
             if (asserted.Any(assertion => assertion.Outcome != TestOutcome.Succeeded))
             {
                 result = asserted.First(assertion => assertion.Outcome != TestOutcome.Succeeded);

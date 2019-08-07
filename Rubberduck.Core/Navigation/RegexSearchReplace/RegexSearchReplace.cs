@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
@@ -137,7 +138,15 @@ namespace Rubberduck.Navigation.RegexSearchReplace
                     var results = GetResultsFromModule(module, searchPattern);
 
                     var qualifiedSelection = pane.GetQualifiedSelection();
-                    dynamic block = state.AllDeclarations.FindTarget(qualifiedSelection.Value, declarationTypes).Context
+
+                    if (!qualifiedSelection.HasValue)
+                    {
+                        return new List<RegexSearchResult>();
+                    }
+
+                    var block = (ParserRuleContext)state.AllDeclarations
+                        .FindTarget(qualifiedSelection.Value, declarationTypes)
+                        .Context
                         .Parent;
                     var selection = new Selection(block.Start.Line, block.Start.Column, block.Stop.Line,
                         block.Stop.Column);

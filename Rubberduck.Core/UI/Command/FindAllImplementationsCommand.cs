@@ -18,14 +18,15 @@ namespace Rubberduck.UI.Command
         private readonly FindAllImplementationsService _finder;
 
         public FindAllImplementationsCommand(RubberduckParserState state, IVBE vbe, ISearchResultsWindowViewModel viewModel, FindAllImplementationsService finder)
-             : base(LogManager.GetCurrentClassLogger())
         {
             _finder = finder;
             _state = state;
             _vbe = vbe;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
             if (_state.Status != ParserState.Ready)
             {

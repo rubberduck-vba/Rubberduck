@@ -6,9 +6,10 @@ using Rubberduck.RegexAssistant.Atoms;
 namespace Rubberduck.RegexAssistant.Tests
 {
     [TestFixture]
+    [Category("RegexAssistant")]
     public class LiteralTests
     {
-        [Category("RegexAssistant")]
+
         [Test]
         public void EscapedLiteralTests()
         {
@@ -20,7 +21,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [Category("RegexAssistant")]
+
         [Test]
         public void EscapeSequences()
         {
@@ -32,7 +33,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [Category("RegexAssistant")]
+
         [Test]
         public void CodePoints()
         {
@@ -44,7 +45,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [Category("RegexAssistant")]
+
         [Test]
         public void SimpleLiterals()
         {
@@ -56,7 +57,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [Category("RegexAssistant")]
+
         [Test]
         public void EverythingElseBlowsUp()
         {
@@ -79,7 +80,7 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
-        [Category("RegexAssistant")]
+
         [Test]
         public void SingleEscapedCharsAreNotParsedAsLiteral()
         {

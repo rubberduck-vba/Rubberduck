@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
@@ -12,6 +13,30 @@ using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Indicates that a hidden VB attribute is present for a member, but no Rubberduck annotation is documenting it.
+    /// </summary>
+    /// <why>
+    /// Rubberduck annotations mean to document the presence of hidden VB attributes; this inspection flags members that
+    /// do not have a Rubberduck annotation corresponding to the hidden VB attribute.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    /// Attribute VB_Description = "foo"
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// '@Description("foo")
+    /// Public Sub DoSomething()
+    /// Attribute VB_Description = "foo"
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class MissingMemberAnnotationInspection : InspectionBase
     {
         public MissingMemberAnnotationInspection(RubberduckParserState state) 
@@ -26,7 +51,7 @@ namespace Rubberduck.Inspections.Concrete
 
             var declarationsToInspect = memberDeclarationsWithAttributes
                 .Where(decl => decl.QualifiedModuleName.ComponentType != ComponentType.Document
-                               && !IsIgnoringInspectionResultFor(decl, AnnotationName));
+                               && !decl.IsIgnoringInspectionResultFor(AnnotationName));
 
             var results = new List<DeclarationInspectionResult>();
             foreach (var declaration in declarationsToInspect)

@@ -1,5 +1,6 @@
 ﻿using System;
 using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.Exceptions;
 
 namespace Rubberduck.UI.Refactorings
 {
@@ -11,7 +12,9 @@ namespace Rubberduck.UI.Refactorings
             IRefactoringViewModel<TModel>>
         where TModel : class
     {
-        protected RefactoringPresenterBase(DialogData dialogData, TModel model, IRefactoringDialogFactory factory):base(dialogData, model, factory) { }
+        protected RefactoringPresenterBase(DialogData dialogData, TModel model, IRefactoringDialogFactory factory)
+        :base(dialogData, model, factory)
+        {}
     }
 
     public abstract class RefactoringPresenterGenericBase<TModel, TDialog, TView, TViewModel> : IDisposable, IRefactoringPresenter<TModel, TDialog, TView, TViewModel> 
@@ -38,7 +41,13 @@ namespace Rubberduck.UI.Refactorings
         public virtual TModel Show()
         {
             DialogResult = Dialog.ShowDialog();
-            return DialogResult == RefactoringDialogResult.Execute ? Dialog.ViewModel.Model : null;
+
+            if (DialogResult != RefactoringDialogResult.Execute)
+            {
+                throw new RefactoringAbortedException();
+            }
+
+            return Dialog.ViewModel.Model;
         }
 
         public void Dispose()

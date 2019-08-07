@@ -1,6 +1,4 @@
-using NLog;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command
 {
@@ -12,12 +10,13 @@ namespace Rubberduck.UI.Command
         private readonly ITestEngine _engine;
 
         public RunAllTestsCommand(ITestEngine engine)
-            : base(LogManager.GetCurrentClassLogger())
         {
             _engine = engine;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
             return _engine.CanRun;
         }

@@ -8,6 +8,28 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Flags declarations where a type hint is used in place of an 'As' clause.
+    /// </summary>
+    /// <why>
+    /// Type hints were made obsolete when declaration syntax introduced the 'As' keyword. Prefer explicit type names over type hint symbols.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim foo$
+    ///     foo = "some string"
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim foo As String
+    ///     foo = "some string"
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class ObsoleteTypeHintInspection : InspectionBase
     {
         public ObsoleteTypeHintInspection(RubberduckParserState state)

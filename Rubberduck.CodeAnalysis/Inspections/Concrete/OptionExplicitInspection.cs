@@ -10,9 +10,35 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Flags modules that omit Option Explicit.
+    /// </summary>
+    /// <why>
+    /// This option makes variable declarations mandatory. Without it, a typo gets compiled as a new on-the-spot Variant/Empty variable with a new name. 
+    /// Omitting this option amounts to refusing the little help the VBE can provide with compile-time validation.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    ///
+    /// 
+    /// Public Sub DoSomething()
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class OptionExplicitInspection : ParseTreeInspectionBase
     {
         public OptionExplicitInspection(RubberduckParserState state)
@@ -26,7 +52,7 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts
-                .Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line))
+                .Where(context => !context.IsIgnoringInspectionResultFor(State.DeclarationFinder, AnnotationName))
                 .Select(context => new QualifiedContextInspectionResult(this,
                     string.Format(InspectionResults.OptionExplicitInspection, context.ModuleName.ComponentName),
                     context));

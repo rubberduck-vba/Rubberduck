@@ -6,6 +6,7 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using RubberduckTests.Mocks;
 using Rubberduck.Interaction;
+using Rubberduck.Refactorings.MoveCloserToUsage;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
 
@@ -125,7 +126,8 @@ End Sub";
                 var resultToFix = inspectionResults.First();
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
                 var selectionService = MockedSelectionService();
-                var quickFix = new MoveFieldCloserToUsageQuickFix(state, new Mock<IMessageBox>().Object, rewritingManager, selectionService);
+                var refactoring = new MoveCloserToUsageRefactoring(state, rewritingManager, selectionService);
+                var quickFix = new MoveFieldCloserToUsageQuickFix(refactoring);
 
                 quickFix.Fix(resultToFix, rewriteSession);
 

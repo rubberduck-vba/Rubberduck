@@ -402,4 +402,7 @@ In memoriam, 1972-2018</value>
   <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
     <value>Le nom du membre '{0}' est un mot-clé</value>
   </data>
+  <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
+    <value>La boucle conditionelle 'While...Wend' pourrait être 'Do While...Loop'</value>
+  </data>
 </root>

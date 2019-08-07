@@ -7,9 +7,9 @@ namespace Rubberduck.VBEditor.ComManagement
     {
         void Add(ISafeComWrapper comWrapper);
         bool TryRemove(ISafeComWrapper comWrapper);
-#if DEBUG
+#if TRACE_COM_SAFE
         /// <summary>
-        /// Available in DEBUG build only. Provide a mechanism for serializing both
+        /// Available only if the compilation constant TRACE_COM_SAFE is set. Provide a mechanism for serializing both
         /// a snapshot of the COM safe at the instant and a historical activity log
         /// with a limited stack trace for each entry.
         /// </summary>

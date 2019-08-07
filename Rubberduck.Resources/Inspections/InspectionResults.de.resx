@@ -128,7 +128,7 @@
     <comment>{0} Procedure name</comment>
   </data>
   <data name="IdentifierNameInspection" xml:space="preserve">
-    <value>Übelege die Umbenennung {0} '{1}'</value>
+    <value>Überlegen Sie '{1}' ({0}) umzubenennen.</value>
   </data>
   <data name="WriteOnlyPropertyInspection" xml:space="preserve">
     <value>Eigenschaft '{0}' hat keinen Getter.</value>
@@ -198,10 +198,10 @@
     <value>Projekt '{0}' hat den Standardnamen</value>
   </data>
   <data name="ObsoleteCallStatementInspection" xml:space="preserve">
-    <value>Zuweisung verwendet obsolete 'Call'-Anweisung</value>
+    <value>Verwendung der veralteten 'Call'-Anweisung</value>
   </data>
   <data name="ObsoleteLetStatementInspection" xml:space="preserve">
-    <value>Zuweisung verwendet obsolete 'Let'-Anweisung</value>
+    <value>Verwendung der veralteten 'Let'-Anweisung</value>
   </data>
   <data name="ImplicitActiveSheetReferenceInspection" xml:space="preserve">
     <value>Member '{0}' referenziert implizit auf 'ActiveSheet'</value>
@@ -400,5 +400,8 @@ In Memoriam, 1972-2018</value>
   </data>
   <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
     <value>Verwendung von 'On Error GoTo -1'</value>
+  </data>
+  <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
+    <value>'While...Wend'-Schleife kann als 'Do While...Loop'-Block formuliert werden.</value>
   </data>
 </root>

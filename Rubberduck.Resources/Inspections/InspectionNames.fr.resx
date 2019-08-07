@@ -349,7 +349,7 @@
     <value>Utilisation d'un membre marqué '@Obsolete'</value>
   </data>
   <data name="OnLocalErrorInspection" xml:space="preserve">
-    <value>Instruction 'On Local Error'</value>
+    <value>Instruction obsolète 'On Local Error'</value>
   </data>
   <data name="UnderscoreInPublicClassModuleMemberInspection" xml:space="preserve">
     <value>Caractère de soulignement dans le nom d'un membre d'un module de classe</value>
@@ -362,5 +362,8 @@
   </data>
   <data name="MissingModuleAnnotationInspection" xml:space="preserve">
     <value>Annotation manquante (module)</value>
+  </data>
+  <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
+    <value>Utilisation de l'instruction obsolète 'While...Wend'</value>
   </data>
 </root>

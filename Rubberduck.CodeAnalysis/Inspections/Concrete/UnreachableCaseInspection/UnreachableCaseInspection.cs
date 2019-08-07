@@ -12,9 +12,35 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using System;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
+    /// <summary>
+    /// Flags 'Case' blocks that are semantically unreachable.
+    /// </summary>
+    /// <why>
+    /// Unreachable code is certainly unintended, and is probably either redundant, or a bug.
+    /// </why>
+    /// <remarks>
+    /// Not all unreachable 'Case' blocks may be flagged, depending on expression complexity.
+    /// </remarks>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Private Sub Example(ByVal value As Long)
+    ///     Select Case value
+    ///         Case 0 To 99
+    ///             ' ...
+    ///         Case 50 ' unreachable: case is covered by a preceding condition.
+    ///             ' ...
+    ///         Case Is < 100
+    ///             ' ...
+    ///         Case < 0 ' unreachable: case is covered by a preceding condition.
+    ///             ' ...
+    ///     End Select
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class UnreachableCaseInspection : ParseTreeInspectionBase
     {
         private readonly IUnreachableCaseInspectorFactory _unreachableCaseInspectorFactory;
@@ -49,7 +75,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             _inspectionResults = new List<IInspectionResult>();
             var qualifiedSelectCaseStmts = Listener.Contexts
-                .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line));
+                .Where(result => !result.IsIgnoringInspectionResultFor(State.DeclarationFinder, AnnotationName));
 
             ParseTreeValueVisitor.OnValueResultCreated += ValueResults.OnNewValueResult;
 

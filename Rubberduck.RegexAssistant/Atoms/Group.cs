@@ -1,8 +1,6 @@
 ﻿using Rubberduck.RegexAssistant.i18n;
 using Rubberduck.VBEditor;
 using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace Rubberduck.RegexAssistant.Atoms
 {

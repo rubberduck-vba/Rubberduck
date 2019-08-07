@@ -889,7 +889,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     {
         public NotImplementedComException()
         {
-            HResult = unchecked((int)0x80004001);
+            HResult = unchecked ((int)0x80004001);
         }
     }
 }

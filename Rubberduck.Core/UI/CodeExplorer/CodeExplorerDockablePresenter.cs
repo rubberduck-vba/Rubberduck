@@ -6,7 +6,7 @@ namespace Rubberduck.UI.CodeExplorer
 {
     public class CodeExplorerDockablePresenter : DockableToolwindowPresenter
     {
-        public CodeExplorerDockablePresenter(IVBE vbe, IAddIn addIn, CodeExplorerWindow view, IConfigProvider<WindowSettings> settings)
+        public CodeExplorerDockablePresenter(IVBE vbe, IAddIn addIn, CodeExplorerWindow view, IConfigurationService<WindowSettings> settings)
             : base(vbe, addIn, view, settings)
         {
         }

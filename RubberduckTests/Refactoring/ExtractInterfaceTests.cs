@@ -1,24 +1,23 @@
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using NUnit.Framework;
 using Moq;
-using Rubberduck.Interaction;
+using NUnit.Framework;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.ExtractInterface;
-using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring
 {
     [TestFixture]
-    public class ExtractInterfaceTests
+    public class ExtractInterfaceTests : InteractiveRefactoringTestBase<IExtractInterfacePresenter, ExtractInterfaceModel>
     {
         [Test]
         [Category("Refactorings")]
@@ -33,12 +32,12 @@ End Sub";
 
             //Expectation
             const string expectedCode =
-                @"Implements ITestModule1
+                @"Implements IClass
 
 Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
 
-Private Sub ITestModule1_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+Private Sub IClass_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
     Err.Raise 5 'TODO implement interface member
 End Sub
 ";
@@ -50,29 +49,80 @@ Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
 
 ";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
+            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
             {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-                //Specify Params to remove
-                var model = new ExtractInterfaceModel(state, qualifiedSelection);
                 foreach (var interfaceMember in model.Members)
                 {
                     interfaceMember.IsSelected = true;
                 }
 
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
-                refactoring.Refactor(qualifiedSelection);
-                var actualCode = component.CodeModule.Content();
+                return model;
+            };
 
-                Assert.AreEqual(expectedInterfaceCode, component.Collection[1].CodeModule.Content());
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var actualCode = RefactoredCode("Class", selection, presenterAction, null, false, ("Class", inputCode, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class"]);
+            var actualInterfaceCode = actualCode[actualCode.Keys.Single(componentName => !componentName.Equals("Class"))];
+            Assert.AreEqual(expectedInterfaceCode, actualInterfaceCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Extract Interface")]
+        public void ExtractInterfaceRefactoring_InvalidTargetType_Throws()
+        {
+            //Input
+            const string inputCode =
+                @"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub";
+
+            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
+            {
+                foreach (var interfaceMember in model.Members)
+                {
+                    interfaceMember.IsSelected = true;
+                }
+
+                return model;
+            };
+
+            var actualCode = RefactoredCode(
+                "Module", 
+                DeclarationType.ProceduralModule, 
+                presenterAction, 
+                typeof(InvalidDeclarationTypeException),
+                ("Module", inputCode, ComponentType.StandardModule));
+            Assert.AreEqual(inputCode, actualCode["Module"]);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Extract Interface")]
+        public void ExtractInterfaceRefactoring_NoValidTargetSelected_Throws()
+        {
+            //Input
+            const string inputCode =
+                @"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub";
+            var selection = new Selection(1, 23, 1, 27);
+
+            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
+            {
+                foreach (var interfaceMember in model.Members)
+                {
+                    interfaceMember.IsSelected = true;
+                }
+
+                return model;
+            };
+
+            var actualCode = RefactoredCode(
+                "Module",
+                selection,
+                presenterAction,
+                typeof(NoDeclarationForSelectionException),
+                false,
+                ("Module", inputCode, ComponentType.StandardModule));
+            Assert.AreEqual(inputCode, actualCode["Module"]);
         }
 
         [Test]
@@ -101,7 +151,7 @@ End Property";
 
             //Expectation
             const string expectedCode = @"
-Implements ITestModule1
+Implements IClass
 
 Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
@@ -118,23 +168,23 @@ End Property
 Public Property Set Buzz(value)
 End Property
 
-Private Sub ITestModule1_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+Private Sub IClass_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
     Err.Raise 5 'TODO implement interface member
 End Sub
 
-Private Function ITestModule1_Fizz(ByRef b As Variant) As Variant
+Private Function IClass_Fizz(ByRef b As Variant) As Variant
     Err.Raise 5 'TODO implement interface member
 End Function
 
-Private Property Get ITestModule1_Buzz() As Variant
+Private Property Get IClass_Buzz() As Variant
     Err.Raise 5 'TODO implement interface member
 End Property
 
-Private Property Let ITestModule1_Buzz(ByRef value As Variant)
+Private Property Let IClass_Buzz(ByRef value As Variant)
     Err.Raise 5 'TODO implement interface member
 End Property
 
-Private Property Set ITestModule1_Buzz(ByRef value As Variant)
+Private Property Set IClass_Buzz(ByRef value As Variant)
     Err.Raise 5 'TODO implement interface member
 End Property
 ";
@@ -158,28 +208,20 @@ Public Property Set Buzz(ByRef value As Variant)
 End Property
 
 ";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
+            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
             {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-                //Specify Params to remove
-                var model = new ExtractInterfaceModel(state, qualifiedSelection);
                 foreach (var interfaceMember in model.Members)
                 {
                     interfaceMember.IsSelected = true;
                 }
 
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
-                refactoring.Refactor(qualifiedSelection);
+                return model;
+            };
 
-                Assert.AreEqual(expectedInterfaceCode, component.Collection[1].CodeModule.Content());
-                Assert.AreEqual(expectedCode, component.CodeModule.Content());
-            }
+            var actualCode = RefactoredCode("Class", selection, presenterAction, null, false, ("Class", inputCode, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class"]);
+            var actualInterfaceCode = actualCode[actualCode.Keys.Single(componentName => !componentName.Equals("Class"))];
+            Assert.AreEqual(expectedInterfaceCode, actualInterfaceCode);
         }
 
         [Test]
@@ -208,7 +250,7 @@ End Property";
 
             //Expectation
             const string expectedCode =
-                @"Implements ITestModule1
+                @"Implements IClass
 
 Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
@@ -225,11 +267,11 @@ End Property
 Public Property Set Buzz(value)
 End Property
 
-Private Sub ITestModule1_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+Private Sub IClass_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
     Err.Raise 5 'TODO implement interface member
 End Sub
 
-Private Function ITestModule1_Fizz(ByRef b As Variant) As Variant
+Private Function IClass_Fizz(ByRef b As Variant) As Variant
     Err.Raise 5 'TODO implement interface member
 End Function
 ";
@@ -244,28 +286,20 @@ Public Function Fizz(ByRef b As Variant) As Variant
 End Function
 
 ";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
+            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
             {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-                //Specify Params to remove
-                var model = new ExtractInterfaceModel(state, qualifiedSelection);
                 foreach (var interfaceMember in model.Members.Where(member => !member.FullMemberSignature.Contains("Property")))
                 {
                     interfaceMember.IsSelected = true;
                 }
 
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
-                refactoring.Refactor(qualifiedSelection);
+                return model;
+            };
 
-                Assert.AreEqual(expectedInterfaceCode, component.Collection[1].CodeModule.Content());
-                Assert.AreEqual(expectedCode, component.CodeModule.Content());
-            }
+            var actualCode = RefactoredCode("Class", selection, presenterAction, null, false, ("Class", inputCode, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class"]);
+            var actualInterfaceCode = actualCode[actualCode.Keys.Single(componentName => !componentName.Equals("Class"))];
+            Assert.AreEqual(expectedInterfaceCode, actualInterfaceCode);
         }
 
         [Test]
@@ -279,17 +313,14 @@ End Function
 
             var selection = new Selection(1, 23, 1, 27);
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _, selection);
+            using(var state = MockParser.CreateAndParse(vbe.Object))
             {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+                var target  = state.DeclarationFinder.UserDeclarations(DeclarationType.ClassModule).First();
 
                 //Specify Params to remove
-                var model = new ExtractInterfaceModel(state, qualifiedSelection);
-                Assert.AreEqual(0, model.Members.Count());
+                var model = new ExtractInterfaceModel(state, target);
+                Assert.AreEqual(0, model.Members.Count);
             }
         }
 
@@ -304,23 +335,21 @@ End Function
 End Sub";
             var selection = new Selection(1, 23, 1, 27);
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
-
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-                //Specify Params to remove
-                var model = new ExtractInterfaceModel(state, qualifiedSelection);
 
                 //SetupFactory
                 var factory = new Mock<IRefactoringPresenterFactory>();
                 factory.Setup(f => f.Create<IExtractInterfacePresenter, ExtractInterfaceModel>(It.IsAny<ExtractInterfaceModel>())).Returns(value: null);
 
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, factory.Object);
-                refactoring.Refactor();
+                var selectionService = MockedSelectionService();
+
+                var refactoring = TestRefactoring(rewritingManager, state, factory.Object, selectionService);
+
+                Assert.Throws<InvalidRefactoringPresenterException>(() => refactoring.Refactor(qualifiedSelection));
 
                 Assert.AreEqual(1, vbe.Object.ActiveVBProject.VBComponents.Count());
                 Assert.AreEqual(inputCode, component.CodeModule.Content());
@@ -337,16 +366,12 @@ End Sub";
                 @"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub";
             var selection = new Selection(1, 23, 1, 27);
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out var component, selection);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model: null);
-                refactoring.Refactor();
 
-                Assert.AreEqual(1, vbe.Object.ActiveVBProject.VBComponents.Count());
-                Assert.AreEqual(inputCode, component.CodeModule.Content());
-            }
+            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model => null;
+
+            var actualCode = RefactoredCode("Class", selection, presenterAction, typeof(InvalidRefactoringModelException), false, ("Class", inputCode, ComponentType.ClassModule));
+            Assert.AreEqual(inputCode, actualCode["Class"]);
+            Assert.AreEqual(1, actualCode.Count);
         }
 
         [Test]
@@ -358,16 +383,15 @@ End Sub";
             const string inputCode =
                 @"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub";
-            var selection = new Selection(1, 23, 1, 27);
 
             //Expectation
             const string expectedCode =
-                @"Implements ITestModule1
+                @"Implements IClass
 
 Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
 
-Private Sub ITestModule1_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+Private Sub IClass_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
     Err.Raise 5 'TODO implement interface member
 End Sub
 ";
@@ -379,66 +403,23 @@ Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
 
 ";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
+            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
             {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-                //Specify Params to remove
-                var model = new ExtractInterfaceModel(state, qualifiedSelection);
                 model.Members.ElementAt(0).IsSelected = true;
-                model.Members = new ObservableCollection<InterfaceMember>(new[] {model.Members.ElementAt(0)}.ToList());
-                
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
-                refactoring.Refactor(state.AllUserDeclarations.Single(s => s.DeclarationType == DeclarationType.ClassModule));
+                model.Members = new ObservableCollection<InterfaceMember>(new[] { model.Members.ElementAt(0) }.ToList());
 
-                Assert.AreEqual(expectedInterfaceCode, component.Collection[1].CodeModule.Content());
-                Assert.AreEqual(expectedCode, component.CodeModule.Content());
-            }
+                return model;
+            };
+
+            var actualCode = RefactoredCode("Class", DeclarationType.ClassModule, presenterAction, null, ("Class", inputCode, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class"]);
+            var actualInterfaceCode = actualCode[actualCode.Keys.Single(componentName => !componentName.Equals("Class"))];
+            Assert.AreEqual(expectedInterfaceCode, actualInterfaceCode);
         }
 
-        #region setup
-        private static IRefactoring TestRefactoring(IVBE vbe, IRewritingManager rewritingManager, RubberduckParserState state, ExtractInterfaceModel model, IMessageBox msgBox = null)
+        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
         {
-            var factory = SetupFactory(model);
-            return TestRefactoring(vbe, rewritingManager, state, factory.Object, msgBox);
+            return new ExtractInterfaceRefactoring(state, state, factory, rewritingManager, selectionService);
         }
-
-        private static IRefactoring TestRefactoring(IVBE vbe, IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, IMessageBox msgBox = null)
-        {
-            var selectionService = MockedSelectionService(vbe.GetActiveSelection());
-            if (msgBox == null)
-            {
-                msgBox = new Mock<IMessageBox>().Object;
-            }
-            return new ExtractInterfaceRefactoring(state, state, msgBox, factory, rewritingManager, selectionService);
-        }
-
-        private static ISelectionService MockedSelectionService(QualifiedSelection? initialSelection)
-        {
-            QualifiedSelection? activeSelection = initialSelection;
-            var selectionServiceMock = new Mock<ISelectionService>();
-            selectionServiceMock.Setup(m => m.ActiveSelection()).Returns(() => activeSelection);
-            selectionServiceMock.Setup(m => m.TrySetActiveSelection(It.IsAny<QualifiedSelection>()))
-                .Returns(() => true).Callback((QualifiedSelection selection) => activeSelection = selection);
-            return selectionServiceMock.Object;
-        }
-
-        private static Mock<IRefactoringPresenterFactory> SetupFactory(ExtractInterfaceModel model)
-        {
-            var presenter = new Mock<IExtractInterfacePresenter>();
-
-            var factory = new Mock<IRefactoringPresenterFactory>();
-            factory.Setup(f => f.Create<IExtractInterfacePresenter, ExtractInterfaceModel>(It.IsAny<ExtractInterfaceModel>()))
-                .Callback(() => presenter.Setup(p => p.Show()).Returns(model))
-                .Returns(presenter.Object);
-            return factory;
-        }
-
-        #endregion
     }
 }

@@ -2,6 +2,7 @@
 using Rubberduck.Settings;
 using Rubberduck.Interaction;
 using Rubberduck.SettingsProvider;
+using Rubberduck.CodeAnalysis.Settings;
 
 namespace Rubberduck.UI.Settings
 {
@@ -26,13 +27,13 @@ namespace Rubberduck.UI.Settings
             InitializeComponent();
         }
 
-        public SettingsForm(IGeneralConfigService configService, 
+        public SettingsForm(IConfigurationService<Configuration> configService, 
             IMessageBox messageBox, 
             ISettingsViewModelFactory viewModelFactory,
             SettingsViews activeView = SettingsViews.GeneralSettings) 
             : this()
         {
-            var config = configService.LoadConfiguration();
+            var config = configService.Read();
 
             ViewModel = new SettingsControlViewModel(messageBox, configService,
                 config,

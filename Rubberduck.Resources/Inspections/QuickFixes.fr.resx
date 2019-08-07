@@ -288,4 +288,7 @@
   <data name="StaleModuleFailureReason" xml:space="preserve">
     <value>Un module affecté a été modifier depuis la dernière analyse.</value>
   </data>
+  <data name="ReplaceWhileWendWithDoWhileLoopQuickFix" xml:space="preserve">
+    <value>Remplacer 'While...Wend' par 'Do While...Loop'</value>
+  </data>
 </root>

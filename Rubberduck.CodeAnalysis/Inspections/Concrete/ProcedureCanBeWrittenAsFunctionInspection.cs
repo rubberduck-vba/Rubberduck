@@ -11,9 +11,36 @@ using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Warns about 'Sub' procedures that could be refactored into a 'Function'.
+    /// </summary>
+    /// <why>
+    /// Idiomatic VB code uses 'Function' procedures to return a single value. If the procedure isn't side-effecting, consider writing is as a
+    /// 'Function' rather than a 'Sub' the returns a result through a 'ByRef' parameter.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething(ByRef result As Long)
+    ///     ' ...
+    ///     result = 42
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Option Explicit
+    /// Public Function DoSomething() As Long
+    ///     ' ...
+    ///     DoSomething = 42
+    /// End Function
+    /// ]]>
+    /// </example>
     public sealed class ProcedureCanBeWrittenAsFunctionInspection : ParseTreeInspectionBase
     {
         public ProcedureCanBeWrittenAsFunctionInspection(RubberduckParserState state)
@@ -46,7 +73,7 @@ namespace Rubberduck.Inspections.Concrete
                                     && HasArgumentReferencesWithIsAssignmentFlagged(context))
                 .Select(context => GetSubStmtParentDeclaration(context))
                 .Where(decl => decl != null && 
-                                !IsIgnoringInspectionResultFor(decl, AnnotationName) &&
+                                !decl.IsIgnoringInspectionResultFor(AnnotationName) &&
                                 !ignored.Contains(decl) &&
                                 userDeclarations.Where(item => item.IsWithEvents)
                                    .All(withEvents => userDeclarations.FindEventProcedures(withEvents) == null) &&

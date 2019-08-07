@@ -1,33 +1,40 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Windows.Controls;
 using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.Settings
 {
-    public class ToDoListConfigProvider : IConfigProvider<ToDoListSettings>
+    public class ToDoListConfigProvider : ConfigurationServiceBase<ToDoListSettings>
     {
-        private readonly IPersistanceService<ToDoListSettings> _persister;
         private readonly IEnumerable<ToDoMarker> _defaultMarkers;
+        private readonly ObservableCollection<ToDoGridViewColumnInfo> _toDoExplorerColumns;
 
-        public ToDoListConfigProvider(IPersistanceService<ToDoListSettings> persister)
+        public ToDoListConfigProvider(IPersistenceService<ToDoListSettings> persister)
+            : base(persister, new DefaultSettings<ToDoListSettings, Properties.Settings>())
         {
-            _persister = persister;
-            _defaultMarkers = new DefaultSettings<ToDoMarker>().Defaults;
+            _defaultMarkers = new DefaultSettings<ToDoMarker, Properties.Settings>().Defaults;
+
+            var gvciDefaults = new DefaultSettings<ToDoGridViewColumnInfo, Properties.Settings>().Defaults;
+            _toDoExplorerColumns = new ObservableCollection<ToDoGridViewColumnInfo>(gvciDefaults);
+        }
+        
+        public override ToDoListSettings ReadDefaults()
+        {
+            return new ToDoListSettings(_defaultMarkers, _toDoExplorerColumns);
         }
 
-        public ToDoListSettings Create()
+        public override ToDoListSettings Read()
         {
-            var prototype = new ToDoListSettings(_defaultMarkers);
-            return _persister.Load(prototype) ?? prototype;
-        }
+            var toDoListSettings = base.Read();
 
-        public ToDoListSettings CreateDefaults()
-        {
-            return new ToDoListSettings(_defaultMarkers);
-        }
+            if (toDoListSettings.ColumnHeadersInformation == null
+                || toDoListSettings.ColumnHeadersInformation.Count == 0)
+            {
+                toDoListSettings.ColumnHeadersInformation = _toDoExplorerColumns;
+            }
 
-        public void Save(ToDoListSettings settings)
-        {
-            _persister.Save(settings);
+            return toDoListSettings;
         }
     }
 }

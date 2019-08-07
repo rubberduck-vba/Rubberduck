@@ -41,8 +41,11 @@ namespace RubberduckTests.Refactoring.MockIoC
                 var container = RefactoringContainerInstaller.GetContainer();
                 var factory = container.Resolve<IRefactoringPresenterFactory>();
 
-                var model = new RenameModel(state.DeclarationFinder,
-                    new QualifiedSelection(new QualifiedModuleName(component), new Selection(1, 1)));
+                var declaration =
+                    state.DeclarationFinder.FindSelectedDeclaration(
+                        new QualifiedSelection(new QualifiedModuleName(component), new Selection(1, 1)));
+
+                var model = new RenameModel(declaration);
                 var presenter = factory.Create<IRenamePresenter, RenameModel>(model);
 
                 Assert.IsInstanceOf<IRenamePresenter>(presenter);
@@ -56,10 +59,13 @@ namespace RubberduckTests.Refactoring.MockIoC
             var parser = MockParser.Create(vbe.Object);
             using (var state = parser.State)
             {
-                var actual = new RenameModel(state.DeclarationFinder,
-                    new QualifiedSelection(new QualifiedModuleName(component), new Selection(2, 2)));
-                var initial = new RenameModel(state.DeclarationFinder,
+                var actualTarget = state.DeclarationFinder
+                    .FindSelectedDeclaration(new QualifiedSelection(new QualifiedModuleName(component), new Selection(2, 2)));
+                var actual = new RenameModel(actualTarget);
+
+                var initialTarget = state.DeclarationFinder.FindSelectedDeclaration(
                     new QualifiedSelection(new QualifiedModuleName(component), new Selection(3, 3)));
+                var initial = new RenameModel(initialTarget);
 
                 var container = RefactoringContainerInstaller.GetContainer();
                 var mockArgs =
@@ -73,8 +79,9 @@ namespace RubberduckTests.Refactoring.MockIoC
                 mockView.SetupGet(m => m.DataContext).Returns(actual);
 
                 var factory = container.Resolve<IRefactoringPresenterFactory>();
-                var model = new RenameModel(state.DeclarationFinder,
+                var target = state.DeclarationFinder.FindSelectedDeclaration(
                     new QualifiedSelection(new QualifiedModuleName(component), new Selection(1, 1)));
+                var model = new RenameModel(target);
                 var presenter = (RenamePresenter)factory.Create<IRenamePresenter, RenameModel>(model);
                 var expected = presenter.Dialog.View.DataContext;
                 Assert.AreEqual(actual, expected);
@@ -88,13 +95,15 @@ namespace RubberduckTests.Refactoring.MockIoC
             var parser = MockParser.Create(vbe.Object);
             using (var state = parser.State)
             {
-                var actual = new RenameModel(state.DeclarationFinder,
-                    new QualifiedSelection(new QualifiedModuleName(component), new Selection(2, 2)));
+                var actualTarget = state.DeclarationFinder
+                    .FindSelectedDeclaration(new QualifiedSelection(new QualifiedModuleName(component), new Selection(2, 2)));
+                var actual = new RenameModel(actualTarget);
                 var container = RefactoringContainerInstaller.GetContainer();
                 var factory = container.Resolve<IRefactoringPresenterFactory>();
 
-                var model = new RenameModel(state.DeclarationFinder,
-                    new QualifiedSelection(new QualifiedModuleName(component), new Selection(1, 1)));
+                var target = state.DeclarationFinder
+                    .FindSelectedDeclaration(new QualifiedSelection(new QualifiedModuleName(component), new Selection(1, 1)));
+                var model = new RenameModel(target);
                 var presenter = (RenamePresenter)factory.Create<IRenamePresenter, RenameModel>(model);
 
                 var mock = Mock.Get(presenter.Dialog);
@@ -112,13 +121,15 @@ namespace RubberduckTests.Refactoring.MockIoC
             var parser = MockParser.Create(vbe.Object);
             using (var state = parser.State)
             {
-                var actual = new RenameModel(state.DeclarationFinder,
-                    new QualifiedSelection(new QualifiedModuleName(component), new Selection(2, 2)));
+                var actualTarget = state.DeclarationFinder
+                    .FindSelectedDeclaration(new QualifiedSelection(new QualifiedModuleName(component), new Selection(2, 2)));
+                var actual = new RenameModel(actualTarget);
                 var container = RefactoringContainerInstaller.GetContainer();
                 var factory = container.Resolve<IRefactoringPresenterFactory>();
 
-                var model = new RenameModel(state.DeclarationFinder,
-                    new QualifiedSelection(new QualifiedModuleName(component), new Selection(1, 1)));
+                var target = state.DeclarationFinder
+                    .FindSelectedDeclaration(new QualifiedSelection(new QualifiedModuleName(component), new Selection(1, 1)));
+                var model = new RenameModel(target);
                 var presenter = (RenamePresenter)factory.Create<IRenamePresenter, RenameModel>(model);
                 
                 //Mock setup must happen after creating the presenter. Otherwise, the code will error about 

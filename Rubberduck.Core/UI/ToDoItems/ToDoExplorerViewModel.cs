@@ -19,6 +19,8 @@ using Rubberduck.Resources.ToDoExplorer;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.VBEditor.Utility;
+using Rubberduck.SettingsProvider;
+using System.Windows.Controls;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -32,13 +34,13 @@ namespace Rubberduck.UI.ToDoItems
     public sealed class ToDoExplorerViewModel : ViewModelBase, INavigateSelection, IDisposable
     {
         private readonly RubberduckParserState _state;
-        private readonly IGeneralConfigService _configService;
+        private readonly IConfigurationService<Configuration> _configService;
         private readonly ISettingsFormFactory _settingsFormFactory;
         private readonly IUiDispatcher _uiDispatcher;
 
         public ToDoExplorerViewModel(
-            RubberduckParserState state, 
-            IGeneralConfigService configService, 
+            RubberduckParserState state,
+            IConfigurationService<Configuration> configService, 
             ISettingsFormFactory settingsFormFactory, 
             ISelectionService selectionService, 
             IUiDispatcher uiDispatcher)
@@ -49,6 +51,34 @@ namespace Rubberduck.UI.ToDoItems
             _uiDispatcher = uiDispatcher;
             _state.StateChanged += HandleStateChanged;
 
+            RefreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(),
+                _ =>
+                {
+                    switch(_state.Status)
+                    {
+                        case ParserState.Ready:
+                        case ParserState.Error:
+                        case ParserState.ResolverError:
+                        case ParserState.UnexpectedError:
+                        case ParserState.Pending:
+                            _state.OnParseRequested(this);
+                            break;
+                    }
+                },
+                _ =>
+                {
+                    switch (_state.Status)
+                    {
+                        case ParserState.Ready:
+                        case ParserState.Error:
+                        case ParserState.ResolverError:
+                        case ParserState.UnexpectedError:
+                        case ParserState.Pending:
+                            return true;
+                        default:
+                            return false;
+                    }
+                });
             NavigateCommand = new NavigateCommand(selectionService);
             RemoveCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveCommand, CanExecuteRemoveCommand);
             CollapseAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseAll);
@@ -59,6 +89,39 @@ namespace Rubberduck.UI.ToDoItems
             Items = CollectionViewSource.GetDefaultView(_items);
             OnPropertyChanged(nameof(Items));
             Grouping = ToDoItemGrouping.Marker;
+
+            _columnHeaders = _configService.Read().UserSettings.ToDoListSettings.ColumnHeadersInformation;
+        }
+
+        private ObservableCollection<ToDoGridViewColumnInfo> _columnHeaders { get; }
+        public void UpdateColumnHeaderInformation(ObservableCollection<DataGridColumn> columns)
+        {
+            _columnHeaders[0].DisplayIndex = columns[0].DisplayIndex;
+            _columnHeaders[1].DisplayIndex = columns[1].DisplayIndex;
+            _columnHeaders[2].DisplayIndex = columns[2].DisplayIndex;
+            _columnHeaders[3].DisplayIndex = columns[3].DisplayIndex;
+
+            _columnHeaders[0].Width = columns[0].Width;
+            _columnHeaders[1].Width = columns[1].Width;
+            _columnHeaders[2].Width = columns[2].Width;
+            _columnHeaders[3].Width = columns[3].Width;
+
+            var userSettings = _configService.Read().UserSettings;
+            userSettings.ToDoListSettings.ColumnHeadersInformation = _columnHeaders;
+            _configService.Save(new Configuration(userSettings));
+        }
+
+        public void UpdateColumnHeaderInformationToMatchCached(ObservableCollection<DataGridColumn> columns)
+        {
+            columns[0].DisplayIndex = _columnHeaders[0].DisplayIndex;
+            columns[1].DisplayIndex = _columnHeaders[1].DisplayIndex;
+            columns[2].DisplayIndex = _columnHeaders[2].DisplayIndex;
+            columns[3].DisplayIndex = _columnHeaders[3].DisplayIndex;
+
+            columns[0].Width = _columnHeaders[0].Width;
+            columns[1].Width = _columnHeaders[1].Width;
+            columns[2].Width = _columnHeaders[2].Width;
+            columns[3].Width = _columnHeaders[3].Width;
         }
 
         private readonly ObservableCollection<ToDoItem> _items = new ObservableCollection<ToDoItem>();
@@ -131,7 +194,7 @@ namespace Rubberduck.UI.ToDoItems
 
         public INavigateCommand NavigateCommand { get; }
 
-        public ReparseCommand RefreshCommand { get; set; }
+        public CommandBase RefreshCommand { get; set; }
 
         public CommandBase RemoveCommand { get; }
 
@@ -224,7 +287,7 @@ namespace Rubberduck.UI.ToDoItems
 
         private IEnumerable<ToDoItem> GetToDoMarkers(CommentNode comment)
         {
-            var markers = _configService.LoadConfiguration().UserSettings.ToDoListSettings.ToDoMarkers;
+            var markers = _configService.Read().UserSettings.ToDoListSettings.ToDoMarkers;
             return markers.Where(marker => !string.IsNullOrEmpty(marker.Text)
                                          && Regex.IsMatch(comment.CommentText, @"\b" + Regex.Escape(marker.Text) + @"\b", RegexOptions.IgnoreCase))
                            .Select(marker => new ToDoItem(marker.Text, comment));

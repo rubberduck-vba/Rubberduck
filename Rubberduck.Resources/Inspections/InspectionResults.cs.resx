@@ -399,4 +399,7 @@ In memoriam, 1972-2018</value>
   <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
     <value>Pevná mezera v identifikátoru '{0}'</value>
   </data>
+  <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
+    <value>Bloková odmínka 'While...Wend' může být napsána jako 'Do While...Loop'.</value>
+  </data>
 </root>

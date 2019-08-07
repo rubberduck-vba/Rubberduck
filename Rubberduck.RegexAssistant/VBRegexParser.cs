@@ -10,7 +10,6 @@ namespace Rubberduck.RegexAssistant
     internal class VBRegexParser
     {
         private static readonly Regex LITERAL_PATTERN = new Regex("^" + Literal.Pattern);
-        private static readonly Regex CHARACTER_CLASS_PATTERN = new Regex("^" + CharacterClass.Pattern);
         private static readonly Regex QUANTIFIER_PATTERN = new Regex("^" + Quantifier.Pattern);
 
         public static IRegularExpression Parse(string specifier)
@@ -88,12 +87,7 @@ namespace Rubberduck.RegexAssistant
 
         private static string DescendClass(string specifier)
         {
-            var matcher = CHARACTER_CLASS_PATTERN.Match(specifier);
-            if (matcher.Success)
-            {
-                return $"[{matcher.Groups["expression"].Value}]";
-            }
-            return "";
+            return DescendExpression(specifier, '[', ']');
         }
 
         private static string GetQuantifier(string specifier, int length)
@@ -109,17 +103,22 @@ namespace Rubberduck.RegexAssistant
 
         private static string DescendGroup(string specifier)
         {
+            return DescendExpression(specifier, '(', ')');
+        }
+
+        private static string DescendExpression(string specifier, char opening, char closing)
+        {
             int length = 0;
             int openingCount = 0;
             bool escapeToggle = false;
-            foreach (var digit in specifier) 
+            foreach (var digit in specifier)
             {
-                if (digit == '(' && !escapeToggle)
+                if (digit == opening && !escapeToggle)
                 {
                     openingCount++;
                     escapeToggle = false;
                 }
-                if (digit == ')' && !escapeToggle)
+                if (digit == closing && !escapeToggle)
                 {
                     openingCount--;
                     escapeToggle = false;

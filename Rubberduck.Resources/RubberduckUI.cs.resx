@@ -373,7 +373,7 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
     <value>Získali jste odznak "Continuator"!</value>
   </data>
   <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
-    <value>Nastavení modulu by měly být specifikovány jako první</value>
+    <value>Nastavení modulu by měla být specifikována jako první</value>
   </data>
   <data name="RemoveParamsDialog_Caption" xml:space="preserve">
     <value>Rubberduck - Odstranit Parametry</value>
@@ -474,7 +474,7 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="ExtractInterface_Caption" xml:space="preserve">
     <value>Rubberduck - Extrahovat Rozhraní</value>
   </data>
-  <data name="MoveCloserToUsage_InvalidSelection" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
     <value>Neplatný výběr.</value>
   </data>
   <data name="EndOfLineCommentStyle_Absolute" xml:space="preserve">
@@ -635,10 +635,10 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   <data name="MoveCloserToUsage_Caption" xml:space="preserve">
     <value>Rubberduck - Přesuň na Místo Použití</value>
   </data>
-  <data name="MoveCloserToUsage_TargetHasNoReferences" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetHasNoReferences" xml:space="preserve">
     <value>'{0}' není nikde použito.</value>
   </data>
-  <data name="MoveCloserToUsage_TargetIsUsedInMultipleMethods" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods" xml:space="preserve">
     <value>'{0}' má odkazy ve více metodách.</value>
   </data>
   <data name="IntroduceField_Caption" xml:space="preserve">
@@ -970,12 +970,6 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   </data>
   <data name="Preview" xml:space="preserve">
     <value>Náhled</value>
-  </data>
-  <data name="RefactorRename_TargetNotDefinedError" xml:space="preserve">
-    <value>Nepodařilo se detekovat označené slovo pro přejmenování</value>
-  </data>
-  <data name="RefactorRename_TargetNotUserDefinedError" xml:space="preserve">
-    <value>Identifikátor {0} není možno přejmenovat.</value>
   </data>
   <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
     <value>Nebylo možno přejmenovat {0}.</value>
@@ -1311,7 +1305,7 @@ End Enum</value>
   <data name="Language_ES" xml:space="preserve">
     <value>Español</value>
   </data>
-  <data name="MoveCloserToUsage_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
     <value>'{0}' je globálně přístupno a je využíváno.</value>
     <comment>FIXME: needs rewording/clarification</comment>
   </data>
@@ -1333,13 +1327,13 @@ End Enum</value>
   <data name="PerformanceWarningCaption" xml:space="preserve">
     <value>Varování o výkonu</value>
   </data>
-  <data name="MoveCloserToUsage_TargetIsNotUserDefined" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsNotUserDefined" xml:space="preserve">
     <value>'{0}' je vestavěná proměnná.</value>
   </data>
-  <data name="MoveCloserToUsage_TargetIsInDifferentProject" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsInDifferentProject" xml:space="preserve">
     <value>'{0}' není definováno ve stejném projektu, ve kterém je používáno.</value>
   </data>
-  <data name="MoveCloserToUsage_TargetIsInOtherNonStandardModule" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsInOtherNonStandardModule" xml:space="preserve">
     <value>'{0}' není definováno ani v komponentě komponenty, ve které je použito, ani ve standardním modulu.</value>
   </data>
   <data name="References_BrowseButtonText" xml:space="preserve">
@@ -1360,7 +1354,46 @@ End Enum</value>
   <data name="GroupingGrid_Filter" xml:space="preserve">
     <value>Filtr</value>
   </data>
-  <data name="MoveCloserToUsage_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
-    <value>Metoda používající '{0}' má již jinou deklaraci stejného jména v rozsahu.</value>
+  <data name="MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
+    <value>Metoda používající '{0}' má již jinou deklaraci '{1}' stejného jména v rozsahu.</value>
+  </data>
+  <data name="RefactoringFailure_BaseMessage" xml:space="preserve">
+    <value>Refaktorování selhalo.</value>
+  </data>
+  <data name="RefactoringFailure_NoActiveSelection" xml:space="preserve">
+    <value>Neexistuje žádný aktivní výběr.</value>
+  </data>
+  <data name="RefactoringFailure_NoTargetDeclarationForSelection" xml:space="preserve">
+    <value>Vybraný cíl nejde refaktorovat.</value>
+  </data>
+  <data name="RefactoringFailure_TargetNull" xml:space="preserve">
+    <value>Cílová deklarace je 'Null'</value>
+  </data>
+  <data name="ImplementInterfaceFailed_NoImplementsStatementSelected" xml:space="preserve">
+    <value>Nebyl vybrán žádný příkaz implementace.</value>
+  </data>
+  <data name="RenameFailure_TargetContriolNotFound" xml:space="preserve">
+    <value>Cílový control '{0}' nebyl nalezen.</value>
+  </data>
+  <data name="RenameFailure_TargetModuleWithoutCodeModule" xml:space="preserve">
+    <value>Pro cílový modul '{0}' nebyl nalezen žádný kódový modul.</value>
+  </data>
+  <data name="RenameFailure_StandardEventHandler" xml:space="preserve">
+    <value>Cíl '{0}' je standardní ovladač událostí, který nemůže být přejmenován.</value>
+  </data>
+  <data name="RefactoringFailure_TargetNotUserDefined" xml:space="preserve">
+    <value>Cíl není uživatelsky definován.</value>
+  </data>
+  <data name="IntroduceFieldFailed_TargetIsAlreadyAField" xml:space="preserve">
+    <value>Cíl '{0}' je již pole.</value>
+  </data>
+  <data name="IntroduceParameterFailed_TargetNotContainedInMethod" xml:space="preserve">
+    <value>Cíl '{0}' není obsažen v metodě.</value>
+  </data>
+  <data name="RefactoringFailure_InvalidDeclarationType" xml:space="preserve">
+    <value>Deklarace typu cíle '{0}' je '{1}' namísto očekávaného '{2}'.</value>
+  </data>
+  <data name="RefactoringFailure_InvalidDeclarationType_multipleValid" xml:space="preserve">
+    <value>Typ deklarace cíle '{0}' je '{1}' namísto jednoho z očekávaných '{2}'.</value>
   </data>
 </root>

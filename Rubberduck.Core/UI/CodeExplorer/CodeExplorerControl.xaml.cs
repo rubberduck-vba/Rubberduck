@@ -30,5 +30,14 @@ namespace Rubberduck.UI.CodeExplorer
             ((TreeViewItem)sender).IsSelected = true;
             e.Handled = true;
         }
+
+        private void ProjectTree_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Delete)
+            {
+                ViewModel.RemoveCommand.Execute(ViewModel.SelectedItem);
+                e.Handled = true;
+            }
+        }
     }
 }
