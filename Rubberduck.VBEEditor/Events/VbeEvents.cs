@@ -15,6 +15,10 @@ namespace Rubberduck.VBEditor.Events
         private readonly Dictionary<string, IVBComponents> _components;
         private readonly Dictionary<string, IReferences> _references;
 
+        private static long _terminated;
+        private const long _true = 1;
+        private const long _false = 0;
+
         public static VbeEvents Initialize(IVBE vbe)
         {
             lock (_instanceLock)
@@ -22,6 +26,7 @@ namespace Rubberduck.VBEditor.Events
                 if (_instance == null)
                 {
                     _instance = new VbeEvents(vbe);
+                    Interlocked.Exchange(ref _terminated, _false);
                 }
             }
 
@@ -38,6 +43,7 @@ namespace Rubberduck.VBEditor.Events
                 }
 
                 _instance.TerminateInternal();
+                _instance = null;
             }
         }
 
@@ -232,8 +238,6 @@ namespace Rubberduck.VBEditor.Events
 
         public event EventHandler EventsTerminated;
 
-        private long _terminated;
-        private const long _true = 1;
         public bool Terminated => Interlocked.Read(ref _terminated) == _true;
 
         private void TerminateInternal()
