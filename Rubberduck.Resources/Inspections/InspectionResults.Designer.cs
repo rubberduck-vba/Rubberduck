@@ -304,6 +304,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Interface class module contains a concrete implementation for {0} &apos;{1}&apos;..
+        /// </summary>
+        public static string ImplementedInterfaceMemberInspection {
+            get {
+                return ResourceManager.GetString("ImplementedInterfaceMemberInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Member &apos;{0}&apos; implicitly references &apos;ActiveSheet&apos;..
         /// </summary>
         public static string ImplicitActiveSheetReferenceInspection {

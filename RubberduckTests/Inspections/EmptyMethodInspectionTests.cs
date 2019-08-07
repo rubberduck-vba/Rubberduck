@@ -58,29 +58,6 @@ End Sub";
         }
 
         [Test]
-        [Ignore("This test should be moved to the new `concrete implementation code in interface` inspection")]
-        [Category("Inspections")]
-        public void EmptyMethodInConcreteClassMarkedAsInterface_ReturnsResult()
-        {
-            const string interfaceCode =
-                @"Public Sub DoSomething(ByVal a As Integer)
-End Sub
-Public Sub DoSomethingElse(ByVal a As Integer)
-    MsgBox ""?""
-End Sub";
-            const string concreteCode =
-                @"Implements IClass1
-
-Private Sub IClass1_DoSomething(ByVal a As Integer)
-    MsgBox ""?""
-End Sub
-Public Sub IClass1_DoSomethingElse(ByVal a As Integer)
-    MsgBox ""?""
-End Sub";
-            CheckActualEmptyBlockCountEqualsExpected(interfaceCode, concreteCode, 1);
-        }
-
-        [Test]
         [Category("Inspections")]
         public void EmptyMethod_ReturnsExpectedMessage()
         {
@@ -94,7 +71,7 @@ End Property";
                 var inspector = InspectionsHelper.GetInspector(inspection);
                 var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-                Assert.AreEqual("Property Get 'Bar' contains no executable statements.", actualResults.Select(result => result.Description).First());
+                Assert.AreEqual("Property get accessor 'Bar' contains no executable statements.", actualResults.Select(result => result.Description).First());
             }
         }
 

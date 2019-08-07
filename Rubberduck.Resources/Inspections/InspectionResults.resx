@@ -429,4 +429,8 @@ In memoriam, 1972-2018</value>
     <value>{0} '{1}' contains no executable statements.</value>
     <comment>{0} Method kind, {1} Method name</comment>
   </data>
+  <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
+    <value>Interface class module contains a concrete implementation for {0} '{1}'.</value>
+    <comment>{0} Method kind, {1} Method name</comment>
+  </data>
 </root>
