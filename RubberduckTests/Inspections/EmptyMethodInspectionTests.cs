@@ -58,6 +58,7 @@ End Sub";
         }
 
         [Test]
+        [Ignore("This test should be moved to the new `concrete implementation code in interface` inspection")]
         [Category("Inspections")]
         public void EmptyMethodInConcreteClassMarkedAsInterface_ReturnsResult()
         {
