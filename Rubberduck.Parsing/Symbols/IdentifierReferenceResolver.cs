@@ -257,12 +257,25 @@ namespace Rubberduck.Parsing.Symbols
             {
                 // We treat redim statements as index expressions to make it SLL.
                 var lExpr = ((VBAParser.LExprContext)redimVariableDeclaration.expression()).lExpression();
-                var indexExpr = (VBAParser.IndexExprContext)lExpr;
-                // The lexpression is the array that is being resized.
+
+                VBAParser.LExpressionContext indexedExpression;
+                VBAParser.ArgumentListContext argumentList;
+                if (lExpr is VBAParser.IndexExprContext indexExpr)
+                {
+                    indexedExpression = indexExpr.lExpression();
+                    argumentList = indexExpr.argumentList();
+                }
+                else
+                {
+                    var whitespaceIndexExpr = (VBAParser.WhitespaceIndexExprContext) lExpr;
+                    indexedExpression = whitespaceIndexExpr.lExpression();
+                    argumentList = whitespaceIndexExpr.argumentList();
+
+                }
+                // The indexedExpression is the array that is being resized.
                 // We can't treat it as a normal index expression because the semantics are different.
                 // It's not actually a function call but a special statement.
-                ResolveDefault(indexExpr.lExpression());
-                var argumentList = indexExpr.argumentList();
+                ResolveDefault(indexedExpression);
                 if (argumentList.argument() != null)
                 {
                     foreach (var positionalArgument in argumentList.argument())

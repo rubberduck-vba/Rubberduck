@@ -3147,5 +3147,25 @@ End Function
                 Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
             }
         }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        //See issue #5069 at https://github.com/rubberduck-vba/Rubberduck/issues/5069
+        public void LineContinuedReDimResolvesSuccessfully()
+        {
+            var moduleCode = @"
+Private Function Foo() As Class1 
+    Dim arr() As String
+    ReDim arr _
+        (0 To 1)
+End Function
+";
+
+            using (var state = Resolve(moduleCode))
+            {
+                //This test only tests that we do not get a resolver error.
+            }
+        }
     }
 }
