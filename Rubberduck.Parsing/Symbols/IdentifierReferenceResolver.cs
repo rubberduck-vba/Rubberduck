@@ -193,18 +193,13 @@ namespace Rubberduck.Parsing.Symbols
                 }
             }
 
-            IParameterizedDeclaration defaultMember = null;
-            if (boundExpression.ReferencedDeclaration != null 
-                && boundExpression.ReferencedDeclaration.DeclarationType != DeclarationType.Project
-                && boundExpression.ReferencedDeclaration.AsTypeDeclaration != null)
+            var reallyIsAssignmentTarget = isAssignmentTarget && isSetAssignment;
+            if (isAssignmentTarget && !isSetAssignment)
             {
-                var module = boundExpression.ReferencedDeclaration.AsTypeDeclaration;
-                var members = _declarationFinder.Members(module);
-                defaultMember = (IParameterizedDeclaration) members.FirstOrDefault(member =>
-                    member is IParameterizedDeclaration && member.Attributes.HasDefaultMemberAttribute() 
-                        && (isAssignmentTarget
-                            ? member.DeclarationType.HasFlag(DeclarationType.Procedure)
-                            : member.DeclarationType.HasFlag(DeclarationType.Function)));
+                var defaultMember = (boundExpression.ReferencedDeclaration?.AsTypeDeclaration as ClassModuleDeclaration)?.DefaultMember;
+                //This is a best guess; if the asType is Variant, we have no idea.
+                reallyIsAssignmentTarget = defaultMember == null 
+                                       || ((IParameterizedDeclaration) defaultMember).Parameters.All(param => param.IsOptional);
             }
 
             _boundExpressionVisitor.AddIdentifierReferences(
@@ -212,7 +207,7 @@ namespace Rubberduck.Parsing.Symbols
                 _qualifiedModuleName, 
                 _currentScope,
                 _currentParent,
-                isAssignmentTarget && (defaultMember == null || isSetAssignment || defaultMember.Parameters.All(param => param.IsOptional)),
+                reallyIsAssignmentTarget,
                 hasExplicitLetStatement, 
                 isSetAssignment);
         }

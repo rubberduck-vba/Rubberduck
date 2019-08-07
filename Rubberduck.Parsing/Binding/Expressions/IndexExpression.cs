@@ -10,14 +10,20 @@ namespace Rubberduck.Parsing.Binding
             ExpressionClassification classification, 
             ParserRuleContext context,
             IBoundExpression lExpression,
-            ArgumentList argumentList)
+            ArgumentList argumentList,
+            bool isArrayAccess = false,
+            bool isDefaultMemberAccess = false)
             : base(referencedDeclaration, classification, context)
         {
             LExpression = lExpression;
             ArgumentList = argumentList;
+            IsArrayAccess = isArrayAccess;
+            IsDefaultMemberAccess = isDefaultMemberAccess;
         }
 
         public IBoundExpression LExpression { get; }
         public ArgumentList ArgumentList { get; }
+        public bool IsArrayAccess { get; }
+        public bool IsDefaultMemberAccess { get; }
     }
 }

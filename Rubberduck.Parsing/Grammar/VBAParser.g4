@@ -687,13 +687,16 @@ variantLiteralIdentifier : EMPTY | NULL;
 lExpression :
     lExpression LPAREN whiteSpace? argumentList? whiteSpace? RPAREN                                                 # indexExpr
     | lExpression mandatoryLineContinuation? DOT mandatoryLineContinuation? unrestrictedIdentifier                  # memberAccessExpr
-    | lExpression mandatoryLineContinuation? EXCLAMATIONPOINT mandatoryLineContinuation? unrestrictedIdentifier     # dictionaryAccessExpr
+    | lExpression mandatoryLineContinuation? dictionaryAccess mandatoryLineContinuation? unrestrictedIdentifier     # dictionaryAccessExpr
     | ME                                                                                                            # instanceExpr
     | identifier                                                                                                    # simpleNameExpr
     | DOT mandatoryLineContinuation? unrestrictedIdentifier                                                         # withMemberAccessExpr
-    | EXCLAMATIONPOINT mandatoryLineContinuation? unrestrictedIdentifier                                            # withDictionaryAccessExpr
+    | dictionaryAccess mandatoryLineContinuation? unrestrictedIdentifier                                            # withDictionaryAccessExpr
     | lExpression mandatoryLineContinuation whiteSpace? LPAREN whiteSpace? argumentList? whiteSpace? RPAREN         # whitespaceIndexExpr
 ;
+
+//This is a hack to allow attaching identifier references for default members to the exclaramtion mark.
+dictionaryAccess : EXCLAMATIONPOINT;
 
 // 3.3.5.3 Special Identifier Forms
 builtInType : 

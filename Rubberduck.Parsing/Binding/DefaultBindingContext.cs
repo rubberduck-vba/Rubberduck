@@ -60,13 +60,12 @@ namespace Rubberduck.Parsing.Binding
             {
                 return lExpressionBinding is IndexDefaultBinding indexDefaultBinding
                     ? indexDefaultBinding
-                    : new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent,
-                        expression.lExpression(), lExpressionBinding, new ArgumentList());
+                    : new IndexDefaultBinding(expression.lExpression(), lExpressionBinding, new ArgumentList());
             }
 
             var argList = VisitArgumentList(module, parent, expression.argumentList(), withBlockVariable);
             SetLeftMatch(lExpressionBinding, argList.Arguments.Count);
-            return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression.lExpression(), lExpressionBinding, argList);
+            return new IndexDefaultBinding(expression.lExpression(), lExpressionBinding, argList);
         }
 
         private static void SetLeftMatch(IExpressionBinding binding, int argumentCount)
@@ -210,7 +209,7 @@ namespace Rubberduck.Parsing.Binding
             var lExpressionBinding = Visit(module, parent, lExpression, withBlockVariable, StatementResolutionContext.Undefined);
             var argumentListBinding = VisitArgumentList(module, parent, expression.argumentList(), withBlockVariable);
             SetLeftMatch(lExpressionBinding, argumentListBinding.Arguments.Count);
-            return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpressionBinding, argumentListBinding);
+            return new IndexDefaultBinding(expression, lExpressionBinding, argumentListBinding);
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.WhitespaceIndexExprContext expression, IBoundExpression withBlockVariable)
@@ -219,7 +218,7 @@ namespace Rubberduck.Parsing.Binding
             var lExpressionBinding = Visit(module, parent, lExpression, withBlockVariable, StatementResolutionContext.Undefined);
             var argumentListBinding = VisitArgumentList(module, parent, expression.argumentList(), withBlockVariable);
             SetLeftMatch(lExpressionBinding, argumentListBinding.Arguments.Count);
-            return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpressionBinding, argumentListBinding);
+            return new IndexDefaultBinding(expression, lExpressionBinding, argumentListBinding);
         }
 
         private ArgumentList VisitArgumentList(Declaration module, Declaration parent, VBAParser.ArgumentListContext argumentList, IBoundExpression withBlockVariable)
@@ -301,31 +300,35 @@ namespace Rubberduck.Parsing.Binding
         {
             var lExpression = expression.lExpression();
             var lExpressionBinding = Visit(module, parent, lExpression, withBlockVariable, StatementResolutionContext.Undefined);
-            return VisitDictionaryAccessExpression(module, parent, expression, expression.unrestrictedIdentifier(), lExpressionBinding);
+            return VisitDictionaryAccessExpression(expression, expression.unrestrictedIdentifier(), lExpressionBinding);
         }
 
-        private IExpressionBinding VisitDictionaryAccessExpression(Declaration module, Declaration parent, ParserRuleContext expression, ParserRuleContext nameContext, IExpressionBinding lExpressionBinding)
+        private IExpressionBinding VisitDictionaryAccessExpression(ParserRuleContext expression, ParserRuleContext nameContext, IExpressionBinding lExpressionBinding)
         {
             /*
                 A dictionary access expression is syntactically translated into an index expression with the same 
                 expression for <l-expression> and an argument list with a single positional argument with a 
                 declared type of String and a value equal to the name value of <unrestricted-name>. 
+
+                Still, we have a specific binding for it in order to attach a reference to the called default member to the exclamation mark.
              */
             var fakeArgList = new ArgumentList();
             fakeArgList.AddArgument(new ArgumentListArgument(new LiteralDefaultBinding(nameContext), ArgumentListArgumentType.Positional));
-            return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpressionBinding, fakeArgList);
+            return new DictionaryAccessDefaultBinding(expression, lExpressionBinding, fakeArgList);
         }
 
-        private IExpressionBinding VisitDictionaryAccessExpression(Declaration module, Declaration parent, ParserRuleContext expression, ParserRuleContext nameContext, IBoundExpression lExpression)
+        private IExpressionBinding VisitDictionaryAccessExpression(ParserRuleContext expression, ParserRuleContext nameContext, IBoundExpression lExpression)
         {
             /*
                 A dictionary access expression is syntactically translated into an index expression with the same 
                 expression for <l-expression> and an argument list with a single positional argument with a 
                 declared type of String and a value equal to the name value of <unrestricted-name>. 
+
+                Still, we have a specific binding for it in order to attach a reference to the called default member to the exclamation mark.
              */
             var fakeArgList = new ArgumentList();
             fakeArgList.AddArgument(new ArgumentListArgument(new LiteralDefaultBinding(nameContext), ArgumentListArgumentType.Positional));
-            return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpression, fakeArgList);
+            return new DictionaryAccessDefaultBinding(expression, lExpression, fakeArgList);
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.WithMemberAccessExprContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
@@ -341,7 +344,7 @@ namespace Rubberduck.Parsing.Binding
                 the innermost enclosing With block variable was specified for <l-expression>. If there is no 
                 enclosing With block, the <with-expression> is invalid.
              */
-            return VisitDictionaryAccessExpression(module, parent, expression, expression.unrestrictedIdentifier(), withBlockVariable);
+            return VisitDictionaryAccessExpression(expression, expression.unrestrictedIdentifier(), withBlockVariable);
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.ParenthesizedExprContext expression, IBoundExpression withBlockVariable)

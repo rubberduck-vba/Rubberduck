@@ -69,6 +69,9 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 case InstanceExpression instanceExpression:
                     Visit(instanceExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
                     break;
+                case DictionaryAccessExpression dictionaryAccessExpression:
+                    Visit(dictionaryAccessExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
+                    break;
                 case TypeOfIsExpression typeOfIsExpression:
                     Visit(typeOfIsExpression, module, scope, parent);
                     break;
@@ -186,23 +189,19 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 && expression.ReferencedDeclaration != null
                 && !ReferenceEquals(expression.LExpression.ReferencedDeclaration, expression.ReferencedDeclaration))
             {
-                // Referenced declaration could also be null if e.g. it's an array and the array is a "base type" such as String.
-                if (expression.ReferencedDeclaration != null)
-                {
-                    var callSiteContext = expression.LExpression.Context;
-                    var identifier = expression.LExpression.Context.GetText();
-                    var callee = expression.ReferencedDeclaration;
-                    expression.ReferencedDeclaration.AddReference(
-                        module,
-                        scope,
-                        parent,
-                        callSiteContext,
-                        identifier,
-                        callee,
-                        callSiteContext.GetSelection(),
-                        FindIdentifierAnnotations(module, callSiteContext.GetSelection().StartLine),
-                        isSetAssignment);
-                }
+                var callSiteContext = expression.LExpression.Context;
+                var identifier = expression.LExpression.Context.GetText();
+                var callee = expression.ReferencedDeclaration;
+                expression.ReferencedDeclaration.AddReference(
+                    module,
+                    scope,
+                    parent,
+                    callSiteContext,
+                    identifier,
+                    callee,
+                    callSiteContext.GetSelection(),
+                    FindIdentifierAnnotations(module, callSiteContext.GetSelection().StartLine),
+                    isSetAssignment);
             }
             // Argument List not affected by being unbound.
             foreach (var argument in expression.ArgumentList.Arguments)
@@ -215,6 +214,45 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 {
                     Visit(argument.NamedArgumentExpression, module, scope, parent);
                 }
+            }
+        }
+
+        private void Visit(
+            DictionaryAccessExpression expression,
+            QualifiedModuleName module,
+            Declaration scope,
+            Declaration parent,
+            bool isAssignmentTarget,
+            bool hasExplicitLetStatement,
+            bool isSetAssignment)
+        {
+            Visit(expression.LExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
+
+            if (expression.Classification != ExpressionClassification.Unbound
+                && expression.ReferencedDeclaration != null)
+            {
+                var callSiteContext = expression.DefaultMemberContext;
+                var identifier = expression.ReferencedDeclaration.IdentifierName;
+                var callee = expression.ReferencedDeclaration;
+                expression.ReferencedDeclaration.AddReference(
+                    module,
+                    scope,
+                    parent,
+                    callSiteContext,
+                    identifier,
+                    callee,
+                    callSiteContext.GetSelection(),
+                    FindIdentifierAnnotations(module, callSiteContext.GetSelection().StartLine),
+                    isSetAssignment);
+            }
+            // Argument List not affected by being unbound.
+            foreach (var argument in expression.ArgumentList.Arguments)
+            {
+                if (argument.Expression != null)
+                {
+                    Visit(argument.Expression, module, scope, parent);
+                }
+                //Dictionary access arguments cannot be named.
             }
         }
 
