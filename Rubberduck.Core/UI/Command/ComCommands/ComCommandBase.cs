@@ -9,14 +9,12 @@ namespace Rubberduck.UI.Command.ComCommands
         protected ComCommandBase(IVbeEvents vbeEvents) 
         {
             _vbeEvents = vbeEvents;
-            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute, true);
         }
         
         private bool SpecialEvaluateCanExecute(object parameter)
         {
             return !_vbeEvents.Terminated;
         }
-
-        protected sealed override bool RequireReEvaluationOnExecute => true;
     }
 }

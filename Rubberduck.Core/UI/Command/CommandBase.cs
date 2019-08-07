@@ -22,16 +22,42 @@ namespace Rubberduck.UI.Command
         protected abstract void OnExecute(object parameter);
 
         protected Func<object, bool> CanExecuteCondition { get; private set; }
+        protected Func<object, bool> OnExecuteCondition { get; private set; }
+        private bool RequireReEvaluationOnExecute => OnExecuteCondition != null;
 
-        protected void AddToCanExecuteEvaluation(Func<object, bool> furtherCanExecuteEvaluation)
+        protected void AddToCanExecuteEvaluation(Func<object, bool> furtherCanExecuteEvaluation, bool requireReevaluation = false)
         {
             if (furtherCanExecuteEvaluation == null)
             {
                 return;
             }
 
-            var currentCanExecute = CanExecuteCondition;
-            CanExecuteCondition = (parameter) => currentCanExecute(parameter) && furtherCanExecuteEvaluation(parameter);
+            AddToCanExecuteEvaluation(furtherCanExecuteEvaluation);
+
+            if (requireReevaluation)
+            {
+                AddToOnExecuteEvaluation(furtherCanExecuteEvaluation);
+            }
+        }
+
+        private void AddToCanExecuteEvaluation(Func<object, bool> furtherCanExecuteEvaluation)
+        {
+            var currentCanExecuteCondition = CanExecuteCondition;
+            CanExecuteCondition = (parameter) =>
+                currentCanExecuteCondition(parameter) && furtherCanExecuteEvaluation(parameter);
+        }
+
+        private void AddToOnExecuteEvaluation(Func<object, bool> furtherCanExecuteEvaluation)
+        {
+            if (OnExecuteCondition == null)
+            {
+                OnExecuteCondition = furtherCanExecuteEvaluation;
+            }
+            else
+            {
+                var currentOnExecute = OnExecuteCondition;
+                OnExecuteCondition = (parameter) => currentOnExecute(parameter) && furtherCanExecuteEvaluation(parameter);
+            }
         }
 
         public bool CanExecute(object parameter)
@@ -53,15 +79,13 @@ namespace Rubberduck.UI.Command
             }
         }
 
-        protected virtual bool RequireReEvaluationOnExecute => false;
-
         public void Execute(object parameter)
         {
             try
             {
                 if (RequireReEvaluationOnExecute)
                 {
-                    if (!CanExecute(parameter))
+                    if (!OnExecuteCondition(parameter))
                     {
                         return;
                     }
