@@ -151,9 +151,9 @@ namespace Rubberduck.Parsing.TypeResolvers
                 case VBAParser.WithMemberAccessExprContext withMemberAccessExpression:
                     return SetTypeDeterminingDeclarationOfExpression(withMemberAccessExpression.unrestrictedIdentifier(), containingModule, finder);
                 case VBAParser.DictionaryAccessExprContext dictionaryAccessExpression:
-                    throw new NotImplementedException();
+                    return SetTypeDeterminingDeclarationOfExpression(dictionaryAccessExpression.dictionaryAccess(), containingModule, finder);
                 case VBAParser.WithDictionaryAccessExprContext withDictionaryAccessExpression:
-                    throw new NotImplementedException();
+                    return SetTypeDeterminingDeclarationOfExpression(withDictionaryAccessExpression.dictionaryAccess(), containingModule, finder);
                 case VBAParser.WhitespaceIndexExprContext whitespaceIndexExpression:
                     throw new NotImplementedException();
                 default:
@@ -172,6 +172,15 @@ namespace Rubberduck.Parsing.TypeResolvers
         private (Declaration declaration, bool mightHaveSetType) SetTypeDeterminingDeclarationOfExpression(VBAParser.UnrestrictedIdentifierContext identifier, QualifiedModuleName containingModule, DeclarationFinder finder)
         {
             var declaration = finder.IdentifierReferences(identifier, containingModule)
+                .Select(reference => reference.Declaration)
+                .FirstOrDefault();
+            return (declaration, MightHaveSetType(declaration));
+        }
+
+        private (Declaration declaration, bool mightHaveSetType) SetTypeDeterminingDeclarationOfExpression(VBAParser.DictionaryAccessContext dictionaryAccess, QualifiedModuleName containingModule, DeclarationFinder finder)
+        {
+            var qualifiedSelection = new QualifiedSelection(containingModule, dictionaryAccess.GetSelection());
+            var declaration = finder.IdentifierReferences(qualifiedSelection)
                 .Select(reference => reference.Declaration)
                 .FirstOrDefault();
             return (declaration, MightHaveSetType(declaration));

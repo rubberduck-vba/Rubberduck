@@ -48,8 +48,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 case MemberAccessExpression memberAccessExpression:
                     Visit(memberAccessExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
                     break;
-                case IndexExpression failedExpression:
-                    Visit(failedExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
+                case IndexExpression indexExpression:
+                    Visit(indexExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
                     break;
                 case ParenthesizedExpression parenthesizedExpression:
                     Visit(parenthesizedExpression, module, scope, parent);
@@ -63,8 +63,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 case UnaryOpExpression unaryOpExpression:
                     Visit(unaryOpExpression, module, scope, parent);
                     break;
-                case NewExpression failedExpression:
-                    Visit(failedExpression, module, scope, parent);
+                case NewExpression newExpression:
+                    Visit(newExpression, module, scope, parent);
                     break;
                 case InstanceExpression instanceExpression:
                     Visit(instanceExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
