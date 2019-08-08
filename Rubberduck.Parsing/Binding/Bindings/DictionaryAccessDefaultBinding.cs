@@ -128,31 +128,37 @@ namespace Rubberduck.Parsing.Binding
 
             var parameters = ((IParameterizedDeclaration) defaultMember).Parameters.ToList();
 
-            switch (parameters.Count(param => !param.IsOptional))
+            if (parameters.Count > 0 
+                && parameters.Count(param => !param.IsOptional) <= 1 
+                && Tokens.String.Equals(parameters[0].AsTypeName, StringComparison.InvariantCultureIgnoreCase))
             {
-                case 1 when Tokens.String.Equals(parameters.First(param => !param.IsOptional).AsTypeName, StringComparison.InvariantCultureIgnoreCase):
-                    /*
+                /*
                     This default member’s parameter list is compatible with <argument-list>. In this case, the 
                     dictionary access expression references this default member and takes on its classification and 
                     declared type.  
                 */
-                    ResolveArgumentList(defaultMember);
-                    return new DictionaryAccessExpression(defaultMember, defaultMemberClassification, _expression, lExpression, _argumentList);
-                case 0 when DEFAULT_MEMBER_RECURSION_LIMIT > _defaultMemberRecursionLimitCounter:
-                {
-                    /*
+                ResolveArgumentList(defaultMember);
+                return new DictionaryAccessExpression(defaultMember, defaultMemberClassification, _expression,
+                    lExpression, _argumentList);
+            }
+
+            if (parameters.Count(param => !param.IsOptional) == 0 
+                && DEFAULT_MEMBER_RECURSION_LIMIT > _defaultMemberRecursionLimitCounter)
+            {
+                /*
                     This default member cannot accept any parameters. In this case, the static analysis restarts 
                     recursively, as if this default member was specified instead for <l-expression> with the 
                     same <argument-list>.
                 */
-                    _defaultMemberRecursionLimitCounter++;
+                _defaultMemberRecursionLimitCounter++;
 
-                    var defaultMemberAsLExpression = new SimpleNameExpression(defaultMember, defaultMemberClassification, _expression);
-                    var defaultMemberAsTypeName = defaultMember.AsTypeName;
-                    var defaultMemberAsTypeDeclaration = defaultMember.AsTypeDeclaration;
+                var defaultMemberAsLExpression =
+                    new SimpleNameExpression(defaultMember, defaultMemberClassification, _expression);
+                var defaultMemberAsTypeName = defaultMember.AsTypeName;
+                var defaultMemberAsTypeDeclaration = defaultMember.AsTypeDeclaration;
 
-                    return ResolveViaDefaultMember(defaultMemberAsLExpression, defaultMemberAsTypeName,defaultMemberAsTypeDeclaration);
-                }
+                return ResolveViaDefaultMember(defaultMemberAsLExpression, defaultMemberAsTypeName,
+                    defaultMemberAsTypeDeclaration);
             }
 
             ResolveArgumentList(null);
