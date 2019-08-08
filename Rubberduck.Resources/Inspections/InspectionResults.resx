@@ -429,4 +429,12 @@ In memoriam, 1972-2018</value>
     <value>To the variable '{0}' of declared type '{1}' a value is set assigned with the incompatible declared type '{2}'.  </value>
     <comment>{0} variable name, {1} variable declared type, {2} rhs declared type</comment>
   </data>
+  <data name="EmptyMethodInspection" xml:space="preserve">
+    <value>{0} '{1}' contains no executable statements.</value>
+    <comment>{0} Method kind, {1} Method name</comment>
+  </data>
+  <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
+    <value>Interface class module contains a concrete implementation for {0} '{1}'.</value>
+    <comment>{0} Method kind, {1} Method name</comment>
+  </data>
 </root>

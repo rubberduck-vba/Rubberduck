@@ -389,4 +389,10 @@
   <data name="SetAssignmentWithIncompatibleObjectTypeInspection" xml:space="preserve">
     <value>Set Assignment With Incompatible Object Type</value>
   </data>
+  <data name="EmptyMethodInspection" xml:space="preserve">
+    <value>Empty method</value>
+  </data>
+  <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
+    <value>Implemented member of interface class</value>
+  </data>
 </root>

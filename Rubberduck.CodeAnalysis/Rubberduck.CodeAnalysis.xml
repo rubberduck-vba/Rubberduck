@@ -359,6 +359,14 @@
             'On Error GoTo -1' is poorly documented and uselessly complicates error handling.
             </why>
         </member>
+        <member name="M:Rubberduck.Inspections.Inspections.Extensions.ExecutableBlocksExtensions.ContainsExecutableStatements(Rubberduck.Parsing.Grammar.VBAParser.BlockContext,System.Boolean)">
+            <summary>
+            Checks a block of code for executable statments and returns true if are present.
+            </summary>
+            <param name="block">The block to inspect</param>
+            <param name="considerAllocations">Determines wheather Dim or Const statements should be considered executables</param>
+            <returns></returns>
+        </member>
         <member name="T:Rubberduck.Inspections.Concrete.AssignedByValParameterInspection">
             <summary>
             Warns about parameters passed by value being assigned a new value in the body of a procedure.
@@ -710,6 +718,29 @@
                 If Not foo Then
                     ' ...
                 End If
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.EmptyMethodInspection">
+            <summary>
+            Identifies empty module member blocks.
+            </summary>
+            <why>
+            Methods containing no executable statements are misleading as they appear to be doing something which they actually don't.
+            This might be the result of delaying the actual implementation for a later stage of development, and then forgetting all about that.
+            </why>
+            <example hasResults="true">
+            <![CDATA[
+            Sub Foo()
+                ' ...
+            End Sub
+            ]]>
+            </example>
+            <example hasResults="false">
+            <![CDATA[
+            Sub Foo()
+                MsgBox "?"
             End Sub
             ]]>
             </example>
@@ -1076,6 +1107,28 @@
             
             Public Sub DoSomething()
                 Dim foo As Long
+            End Sub
+            ]]>
+            </example>
+        </member>
+        <member name="T:Rubberduck.Inspections.Concrete.ImplementedInterfaceMemberInspection">
+            <summary>
+            Identifies implemented members of class modules that are used as interfaces.
+            </summary>
+            <why>
+            Interfaces provide a unified programmatic access to different objects, and therefore are rarely instantiated as concrete objects.
+            </why>
+            <example hasResults="false">
+            <![CDATA[
+            Sub Foo()
+                ' ...
+            End Sub
+            ]]>
+            </example>
+            <example hasResults="true">
+            <![CDATA[
+            Sub Foo()
+                MsgBox "?"
             End Sub
             ]]>
             </example>
