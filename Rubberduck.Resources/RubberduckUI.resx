@@ -1594,7 +1594,7 @@ NOTE: Restart is required for the setting to take effect.</value>
     <comment>{0}: name of target; {1}: actual declaration type; {2}: expected declaration types</comment>
   </data>
   <data name="RegexAssistant_EncloseWhitespaceFlag" xml:space="preserve">
-    <value>Enclose whitespace in identifier</value>
+    <value>Spell out whitespace in the description</value>
   </data>
   <data name="RegexAssistant_EncloseWhitespace_EnclosingFormat" xml:space="preserve">
     <value>&lt;{0}&gt;</value>

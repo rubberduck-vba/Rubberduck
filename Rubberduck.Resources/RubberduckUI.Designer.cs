@@ -3344,7 +3344,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enclose whitespace in identifier.
+        ///   Looks up a localized string similar to Spell out whitespace in the description.
         /// </summary>
         public static string RegexAssistant_EncloseWhitespaceFlag {
             get {
@@ -4052,6 +4052,16 @@ namespace Rubberduck.Resources {
         public static string SeverityLabelText {
             get {
                 return ResourceManager.GetString("SeverityLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap skull_mad {
+            get {
+                object obj = ResourceManager.GetObject("skull_mad", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
