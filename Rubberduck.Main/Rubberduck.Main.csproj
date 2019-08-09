@@ -73,6 +73,7 @@
     <PackageReference Include="EasyHook">
       <Version>2.7.6684</Version>
     </PackageReference>
+    <PackageReference Include="ExpressiveReflection" Version="2.0.1" />
     <PackageReference Include="NLog">
       <Version>4.5.10</Version>
     </PackageReference>
