@@ -1,11 +1,11 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.ComReflection;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
+using static Rubberduck.Parsing.Grammar.VBAParser;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -16,7 +16,7 @@ namespace Rubberduck.Parsing.Symbols
             Declaration parent,
             Declaration parentScope,
             string asTypeName,
-            VBAParser.AsTypeClauseContext asTypeContext,
+            AsTypeClauseContext asTypeContext,
             string typeHint,
             Accessibility accessibility,
             ParserRuleContext context,
@@ -77,5 +77,7 @@ namespace Rubberduck.Parsing.Symbols
                 && IdentifierName.Equals(member.ImplementingIdentifierName)
                    && ((ClassModuleDeclaration)member.ParentDeclaration).Subtypes.Any(implementation => ReferenceEquals(implementation, ParentDeclaration));
         }
+
+        public override BlockContext Block => ((FunctionStmtContext)Context).block();
     }
 }

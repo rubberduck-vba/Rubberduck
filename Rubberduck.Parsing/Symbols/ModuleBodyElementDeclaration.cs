@@ -7,6 +7,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using static Rubberduck.Parsing.Grammar.VBAParser;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -17,7 +18,7 @@ namespace Rubberduck.Parsing.Symbols
             Declaration parent,
             Declaration parentScope,
             string asTypeName,
-            VBAParser.AsTypeClauseContext asTypeContext,
+            AsTypeClauseContext asTypeContext,
             string typeHint,
             Accessibility accessibility,
             DeclarationType type,
@@ -161,5 +162,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             return element.InterfaceImplemented?.Members.FirstOrDefault(member => element.Implements(member as IInterfaceExposable));
         }
+
+        public abstract BlockContext Block { get; }
     }
 }
