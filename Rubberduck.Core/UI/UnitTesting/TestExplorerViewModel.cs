@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Windows.Annotations;
 using System.Windows.Data;
 using NLog;
 using Rubberduck.Common;
@@ -380,11 +381,16 @@ namespace Rubberduck.UI.UnitTesting
         private void ExecuteUnignoreTestCommand(object parameter)
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
-            var ignoreTestAnnotation = _mousedOverTestMethod.Declaration.Annotations
-                .First(iannotation => iannotation.AnnotationType == Parsing.Annotations.AnnotationType.IgnoreTest);  // ignore illegal duplicate annotations
+            var ignoreTestAnnotations = _mousedOverTestMethod.Declaration.Annotations
+                .Where(iannotations => iannotations.AnnotationType == Parsing.Annotations.AnnotationType.IgnoreTest);
 
             var annotationUpdater = new AnnotationUpdater();
-            annotationUpdater.RemoveAnnotation(rewriteSession, ignoreTestAnnotation);
+
+            foreach (var ignoreTestAnnotation in ignoreTestAnnotations)
+            {
+                annotationUpdater.RemoveAnnotation(rewriteSession, ignoreTestAnnotation);
+            }
+            
 
             rewriteSession.TryRewrite();
         }
