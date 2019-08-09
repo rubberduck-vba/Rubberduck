@@ -9,7 +9,7 @@ namespace Rubberduck.RegexAssistant
         readonly MatcherFlags Flags;
 
         private readonly string _description;
-        public string Description(bool notApplicable) => _description;
+        public string Description(bool spellOutWhitespace) => _description;
 
         public Pattern(string expression, bool ignoreCase = false, bool global = false, bool spellOutWhitespace = false)
         {

@@ -12,7 +12,7 @@ namespace Rubberduck.RegexAssistant.Expressions
             Subexpressions = subexpressions ?? throw new ArgumentNullException();
         }
 
-        public string Description(bool notApplicable) => AssistantResources.ExpressionDescription_ConcatenatedExpression;
+        public string Description(bool spellOutWhitespace) => AssistantResources.ExpressionDescription_ConcatenatedExpression;
 
         public IList<IRegularExpression> Subexpressions { get; }
 

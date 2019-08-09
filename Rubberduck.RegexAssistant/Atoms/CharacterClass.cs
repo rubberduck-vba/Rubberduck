@@ -68,7 +68,7 @@ namespace Rubberduck.RegexAssistant.Atoms
             return result;
         }
 
-        public string Description(bool notApplicable) => string.Format(InverseMatching 
+        public string Description(bool spellOutWhitespace) => string.Format(InverseMatching 
                 ? AssistantResources.AtomDescription_CharacterClass_Inverted 
                 : AssistantResources.AtomDescription_CharacterClass
             , HumanReadableClass());
