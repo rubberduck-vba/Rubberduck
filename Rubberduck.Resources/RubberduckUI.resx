@@ -1602,10 +1602,4 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="TestOutcome_Unknown" xml:space="preserve">
     <value>Unknown</value>
   </data>
-  <data name="TestExplorer_TestToggle_Unignore" xml:space="preserve">
-    <value>Unignore test</value>
-  </data>
-  <data name="TestExplorer_TestToggle_Ignore" xml:space="preserve">
-    <value>Ignore test</value>
-  </data>
 </root>

@@ -439,7 +439,7 @@
                             </MenuItem>
                             <MenuItem Command="{Binding IgnoreTestCommand}"
                                       CommandParameter="{Binding RewritingManager}"
-                                      Header="{Binding IgnoreTestLabel}"
+                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_TestToggle_Ignore}"
                                       Visibility="{Binding DisplayIgnoreTestLabel, Converter={StaticResource BoolToVisibility}}">
                                 <MenuItem.Icon>
                                     <Image Source="{StaticResource IgnoreTestImage}" />
@@ -447,7 +447,7 @@
                             </MenuItem>
                             <MenuItem Command="{Binding UnignoreTestCommand}"
                                       CommandParameter="{Binding RewritingManager}"
-                                      Header="{Binding UnignoreTestLabel}"
+                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_TestToggle_Unignore}"
                                       Visibility="{Binding DisplayUnignoreTestLabel, Converter={StaticResource BoolToVisibility}}">
                                 <MenuItem.Icon>
                                     <Image Source="{StaticResource UnignoreTestImage}" />

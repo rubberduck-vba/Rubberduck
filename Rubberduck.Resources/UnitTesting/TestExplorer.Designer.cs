@@ -331,6 +331,24 @@ namespace Rubberduck.Resources.UnitTesting {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ignore test.
+        /// </summary>
+        public static string TestExplorer_TestToggle_Ignore {
+            get {
+                return ResourceManager.GetString("TestExplorer_TestToggle_Ignore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unignore test.
+        /// </summary>
+        public static string TestExplorer_TestToggle_Unignore {
+            get {
+                return ResourceManager.GetString("TestExplorer_TestToggle_Unignore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Total Duration.
         /// </summary>
         public static string TestExplorer_TotalDuration {

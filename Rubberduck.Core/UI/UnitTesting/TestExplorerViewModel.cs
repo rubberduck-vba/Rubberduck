@@ -233,9 +233,6 @@ namespace Rubberduck.UI.UnitTesting
 
         public IRewritingManager RewritingManager { get; }
 
-        public string UnignoreTestLabel => RubberduckUI.TestExplorer_TestToggle_Unignore;
-        public string IgnoreTestLabel => RubberduckUI.TestExplorer_TestToggle_Ignore;
-
         private TestMethod _mousedOverTestMethod => ((TestMethodViewModel)SelectedItem).Method;
         public bool DisplayUnignoreTestLabel => SelectedItem != null && _mousedOverTestMethod.IsIgnored;
         public bool DisplayIgnoreTestLabel => SelectedItem != null && !_mousedOverTestMethod.IsIgnored;
