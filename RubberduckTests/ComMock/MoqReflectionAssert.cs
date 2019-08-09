@@ -28,7 +28,7 @@ namespace RubberduckTests.ComMock
         [Test]
         public void As_Method_Exists()
         {
-            var asMethod = MockMemberInfos.As();
+            var asMethod = MockMemberInfos.As(typeof(object));
             var foundMethod = typeof(Mock<>).GetMethods().Single(x => 
                 x.Name == nameof(Mock<object>.As) &&
                 x.IsGenericMethod && 

@@ -17,9 +17,9 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
     /// </remarks>
     public static class MockMemberInfos
     {
-        public static MethodInfo As()
+        public static MethodInfo As(Type type)
         {
-            return Reflection.GetMethodExt(typeof(Mock), MockMemberNames.As());
+            return Reflection.GetMethodExt(typeof(Mock), MockMemberNames.As()).MakeGenericMethod(type);
         }
 
         public static MethodInfo Setup(Mock mocked)
