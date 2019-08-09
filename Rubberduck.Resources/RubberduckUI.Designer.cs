@@ -4056,16 +4056,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap skull_mad {
-            get {
-                object obj = ResourceManager.GetObject("skull_mad", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Smart Indenter settings were found in your registry.
         ///Would you like to import them to Rubberduck?.
         /// </summary>
@@ -4092,6 +4082,42 @@ namespace Rubberduck.Resources {
             get {
                 object obj = ResourceManager.GetObject("SyncArrows", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fail.
+        /// </summary>
+        public static string TestOutcome_Fail {
+            get {
+                return ResourceManager.GetString("TestOutcome_Fail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inconclusive.
+        /// </summary>
+        public static string TestOutcome_Inconclusive {
+            get {
+                return ResourceManager.GetString("TestOutcome_Inconclusive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suceeded.
+        /// </summary>
+        public static string TestOutcome_Succeeded {
+            get {
+                return ResourceManager.GetString("TestOutcome_Succeeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown.
+        /// </summary>
+        public static string TestOutcome_Unknown {
+            get {
+                return ResourceManager.GetString("TestOutcome_Unknown", resourceCulture);
             }
         }
         

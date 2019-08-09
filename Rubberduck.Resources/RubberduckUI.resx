@@ -1617,4 +1617,16 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="RegexAssistant_SpelledOut_UnidentifiedWhitespace" xml:space="preserve">
     <value>unidentified-whitespace</value>
   </data>
+  <data name="TestOutcome_Fail" xml:space="preserve">
+    <value>Fail</value>
+  </data>
+  <data name="TestOutcome_Inconclusive" xml:space="preserve">
+    <value>Inconclusive</value>
+  </data>
+  <data name="TestOutcome_Succeeded" xml:space="preserve">
+    <value>Suceeded</value>
+  </data>
+  <data name="TestOutcome_Unknown" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
 </root>
