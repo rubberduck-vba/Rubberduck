@@ -370,10 +370,9 @@ namespace Rubberduck.UI.UnitTesting
         private void ExecuteIgnoreTestCommand(object parameter)
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
-            var qualifiedContext = new QualifiedContext(_mousedOverTestMethod.Declaration.QualifiedModuleName, _mousedOverTestMethod.Declaration.Context);
 
             var annotationUpdater = new AnnotationUpdater();
-            annotationUpdater.AddAnnotation(rewriteSession, qualifiedContext, Parsing.Annotations.AnnotationType.IgnoreTest);
+            annotationUpdater.AddAnnotation(rewriteSession, _mousedOverTestMethod.Declaration, Parsing.Annotations.AnnotationType.IgnoreTest);
 
             rewriteSession.TryRewrite();
         }
