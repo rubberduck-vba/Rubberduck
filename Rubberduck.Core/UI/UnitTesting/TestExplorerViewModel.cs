@@ -55,7 +55,8 @@ namespace Rubberduck.UI.UnitTesting
             // ReSharper disable once UnusedParameter.Local - left in place because it will likely be needed for app wide font settings, etc.
             IConfigurationService<Configuration> configService,
             ISettingsFormFactory settingsFormFactory,
-            IRewritingManager rewritingManager)
+            IRewritingManager rewritingManager,
+            IAnnotationUpdater annotationUpdater)
         {
             _clipboard = clipboard;
             _settingsFormFactory = settingsFormFactory;
@@ -74,6 +75,7 @@ namespace Rubberduck.UI.UnitTesting
             UnignoreTestCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteUnignoreTestCommand);
 
             RewritingManager = rewritingManager;
+            AnnotationUpdater = annotationUpdater;
 
             Model = model;
             Model.TestCompleted += HandleTestCompletion;
@@ -233,6 +235,7 @@ namespace Rubberduck.UI.UnitTesting
         }
 
         public IRewritingManager RewritingManager { get; }
+        public IAnnotationUpdater AnnotationUpdater { get; }
 
         private TestMethod _mousedOverTestMethod => ((TestMethodViewModel)SelectedItem).Method;
         public bool DisplayUnignoreTestLabel => SelectedItem != null && _mousedOverTestMethod.IsIgnored;
@@ -371,8 +374,7 @@ namespace Rubberduck.UI.UnitTesting
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
 
-            var annotationUpdater = new AnnotationUpdater();
-            annotationUpdater.AddAnnotation(rewriteSession, _mousedOverTestMethod.Declaration, Parsing.Annotations.AnnotationType.IgnoreTest);
+            AnnotationUpdater.AddAnnotation(rewriteSession, _mousedOverTestMethod.Declaration, Parsing.Annotations.AnnotationType.IgnoreTest);
 
             rewriteSession.TryRewrite();
         }
@@ -383,13 +385,10 @@ namespace Rubberduck.UI.UnitTesting
             var ignoreTestAnnotations = _mousedOverTestMethod.Declaration.Annotations
                 .Where(iannotations => iannotations.AnnotationType == Parsing.Annotations.AnnotationType.IgnoreTest);
 
-            var annotationUpdater = new AnnotationUpdater();
-
             foreach (var ignoreTestAnnotation in ignoreTestAnnotations)
             {
-                annotationUpdater.RemoveAnnotation(rewriteSession, ignoreTestAnnotation);
+                AnnotationUpdater.RemoveAnnotation(rewriteSession, ignoreTestAnnotation);
             }
-            
 
             rewriteSession.TryRewrite();
         }
