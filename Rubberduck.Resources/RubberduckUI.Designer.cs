@@ -72,16 +72,6 @@ namespace Rubberduck.Resources {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap AddClass {
-            get {
-                object obj = ResourceManager.GetObject("AddClass", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap AddForm {
             get {
                 object obj = ResourceManager.GetObject("AddForm", resourceCulture);
@@ -4052,16 +4042,6 @@ namespace Rubberduck.Resources {
         public static string SeverityLabelText {
             get {
                 return ResourceManager.GetString("SeverityLabelText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap skull_mad {
-            get {
-                object obj = ResourceManager.GetObject("skull_mad", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
