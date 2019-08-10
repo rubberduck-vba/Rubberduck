@@ -145,7 +145,7 @@ namespace Rubberduck.Parsing.TypeResolvers
                 case VBAParser.InstanceExprContext instanceExpression:
                     return SetTypeDeterminingDeclarationOfInstance(containingModule, finder);
                 case VBAParser.IndexExprContext indexExpression:
-                    throw new NotImplementedException();
+                    return SetTypeDeterminingDeclarationOfIndexExpression(indexExpression.lExpression(), containingModule, finder);
                 case VBAParser.MemberAccessExprContext memberAccessExpression:
                     return SetTypeDeterminingDeclarationOfExpression(memberAccessExpression.unrestrictedIdentifier(), containingModule, finder);
                 case VBAParser.WithMemberAccessExprContext withMemberAccessExpression:
@@ -155,10 +155,64 @@ namespace Rubberduck.Parsing.TypeResolvers
                 case VBAParser.WithDictionaryAccessExprContext withDictionaryAccessExpression:
                     return SetTypeDeterminingDeclarationOfExpression(withDictionaryAccessExpression.dictionaryAccess(), containingModule, finder);
                 case VBAParser.WhitespaceIndexExprContext whitespaceIndexExpression:
-                    throw new NotImplementedException();
+                    return SetTypeDeterminingDeclarationOfIndexExpression(whitespaceIndexExpression.lExpression(), containingModule, finder);
                 default:
                     return (null, true);    //We should already cover every case. Return the value indicating that we have no idea.
             }
+        }
+
+        private (Declaration declaration, bool mightHaveSetType) SetTypeDeterminingDeclarationOfIndexExpression(VBAParser.LExpressionContext lExpression, QualifiedModuleName containingModule, DeclarationFinder finder)
+        {
+            var declaration = ResolveIndexExpressionAsMethod(lExpression, containingModule, finder)
+                              ?? ResolveIndexExpressionAsDefaultMemberAccess(lExpression, containingModule, finder);
+                
+            if (declaration != null)
+            {
+                return (declaration, MightHaveSetType(declaration));
+            }
+
+            return ResolveIndexExpressionAsArrayAccess(lExpression, containingModule, finder);
+        }
+
+        private Declaration ResolveIndexExpressionAsMethod(VBAParser.LExpressionContext lExpression, QualifiedModuleName containingModule, DeclarationFinder finder)
+        {
+            //For functions and properties, the identifier will be at the end of the lExpression.
+            var qualifiedSelection = new QualifiedSelection(containingModule, lExpression.GetSelection().Collapse());
+            var candidate = finder
+                .ContainingIdentifierReferences(qualifiedSelection)
+                .LastOrDefault()
+                ?.Declaration;
+            return candidate?.DeclarationType.HasFlag(DeclarationType.Member) ?? false
+                ? candidate
+                : null;
+        }
+
+        private (Declaration declaration, bool mightHaveSetType) ResolveIndexExpressionAsArrayAccess(VBAParser.LExpressionContext lExpression, QualifiedModuleName containingModule, DeclarationFinder finder)
+        {
+            var (potentialArrayDeclaration, lExpressionMightHaveSetType) = SetTypeDeterminingDeclarationOfExpression(lExpression, containingModule, finder);
+
+            if (potentialArrayDeclaration == null)
+            {
+                return (null, lExpressionMightHaveSetType);
+            }
+
+            if (!potentialArrayDeclaration.IsArray)
+            {
+                //This is not an array access. So, we have no idea.
+                return (null, true);
+            }
+
+            return (potentialArrayDeclaration, MightHaveSetTypeOnArrayAccess(potentialArrayDeclaration));
+        }
+
+        private Declaration ResolveIndexExpressionAsDefaultMemberAccess(VBAParser.LExpressionContext lExpression, QualifiedModuleName containingModule, DeclarationFinder finder)
+        {
+            // A default member access references the entire lExpression.
+            var qualifiedSelection = new QualifiedSelection(containingModule, lExpression.GetSelection());
+            return finder
+                .IdentifierReferences(qualifiedSelection)
+                .FirstOrDefault(reference => reference.IsDefaultMemberAccess)
+                ?.Declaration;
         }
 
         private (Declaration declaration, bool mightHaveSetType) SetTypeDeterminingDeclarationOfExpression(VBAParser.IdentifierContext identifier, QualifiedModuleName containingModule, DeclarationFinder finder)
@@ -193,6 +247,30 @@ namespace Rubberduck.Parsing.TypeResolvers
                    || declaration.AsTypeName == Tokens.Variant
                    || declaration.DeclarationType.HasFlag(DeclarationType.ClassModule);
         }
+
+        private static bool MightHaveSetTypeOnArrayAccess(Declaration declaration)
+        {
+            return declaration == null
+                || IsObjectArray(declaration)
+                || declaration.AsTypeName == Tokens.Variant;
+        }
+
+        private static bool IsObjectArray(Declaration declaration)
+        {
+            if (!declaration.IsArray)
+            {
+                return false;
+            }
+
+            if (declaration.AsTypeName == Tokens.Object ||
+                (declaration.AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.ClassModule) ?? false))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
 
         private (Declaration declaration, bool mightHaveSetType) SetTypeDeterminingDeclarationOfInstance(QualifiedModuleName instance, DeclarationFinder finder)
         {

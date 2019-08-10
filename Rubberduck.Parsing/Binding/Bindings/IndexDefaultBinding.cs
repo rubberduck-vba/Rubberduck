@@ -1,6 +1,8 @@
-﻿using Antlr4.Runtime;
+﻿using System;
+using Antlr4.Runtime;
 using Rubberduck.Parsing.Symbols;
 using System.Linq;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Parsing.Binding
@@ -171,11 +173,11 @@ namespace Rubberduck.Parsing.Binding
                 a declared type of Variant, referencing <l-expression> with no member name. 
              */
             if (
-                asTypeName != null
-                && (asTypeName.ToUpperInvariant() == "VARIANT" || asTypeName.ToUpperInvariant() == "OBJECT")
+                (Tokens.Variant.Equals(asTypeName, StringComparison.InvariantCultureIgnoreCase)
+                    || Tokens.Object.Equals(asTypeName, StringComparison.InvariantCultureIgnoreCase))
                 && !_argumentList.HasNamedArguments)
             {
-                return new IndexExpression(null, ExpressionClassification.Unbound, _expression, lExpression, _argumentList);
+                return new IndexExpression(null, ExpressionClassification.Unbound, _expression, lExpression, _argumentList, isDefaultMemberAccess: true);
             }
             /*
                 The declared type of <l-expression> is a specific class, which has a public default Property 
@@ -184,16 +186,8 @@ namespace Rubberduck.Parsing.Binding
             if (asTypeDeclaration is ClassModuleDeclaration classModule
                 && classModule.DefaultMember is Declaration defaultMember)
             {
-                bool isPropertyGetLetFunctionProcedure =
-                    defaultMember.DeclarationType == DeclarationType.PropertyGet
-                    || defaultMember.DeclarationType == DeclarationType.PropertyLet
-                    || defaultMember.DeclarationType == DeclarationType.Function
-                    || defaultMember.DeclarationType == DeclarationType.Procedure;
-                bool isPublic =
-                    defaultMember.Accessibility == Accessibility.Global
-                    || defaultMember.Accessibility == Accessibility.Implicit
-                    || defaultMember.Accessibility == Accessibility.Public;
-                if (isPropertyGetLetFunctionProcedure && isPublic)
+                if (IsPropertyGetLetFunctionProcedure(defaultMember) 
+                    && IsPublic(defaultMember))
                 {
 
                     /*
@@ -216,7 +210,7 @@ namespace Rubberduck.Parsing.Binding
                         recursively, as if this default member was specified instead for <l-expression> with the 
                         same <argument-list>.
                     */
-                    if (((IParameterizedDeclaration)defaultMember).Parameters.Count() == 0)
+                    if (parameters.Count(parameter => !parameter.IsOptional) == 0)
                     {
                         // Recursion limit reached, abort.
                         if (DEFAULT_MEMBER_RECURSION_LIMIT == _defaultMemberRecursionLimitCounter)
@@ -243,6 +237,23 @@ namespace Rubberduck.Parsing.Binding
                 }
             }
             return null;
+        }
+
+        private static bool IsPropertyGetLetFunctionProcedure(Declaration declaration)
+        {
+            var declarationType = declaration.DeclarationType;
+            return declarationType == DeclarationType.PropertyGet
+                   || declarationType == DeclarationType.PropertyLet
+                   || declarationType == DeclarationType.Function
+                   || declarationType == DeclarationType.Procedure;
+        }
+
+        private static bool IsPublic(Declaration declaration)
+        {
+            var accessibility = declaration.Accessibility;
+            return accessibility == Accessibility.Global
+                   || accessibility == Accessibility.Implicit
+                   || accessibility == Accessibility.Public;
         }
 
         private IBoundExpression ResolveLExpressionDeclaredTypeIsArray(IBoundExpression lExpression, Declaration asTypeDeclaration)
