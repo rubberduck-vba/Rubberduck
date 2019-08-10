@@ -203,9 +203,12 @@ namespace Rubberduck.Parsing.Binding
 
                         TODO: Primitive argument compatibility checking for now.
                      */
-                    if (((IParameterizedDeclaration)defaultMember).Parameters.Count() == _argumentList.Arguments.Count)
+                    var parameters = ((IParameterizedDeclaration) defaultMember).Parameters.ToList();
+                    if ((parameters.Count >= _argumentList.Arguments.Count 
+                            || parameters.Any(parameter => parameter.IsParamArray))
+                        && parameters.Count(parameter => !parameter.IsOptional) <= _argumentList.Arguments.Count)
                     {
-                        return new IndexExpression(defaultMember, lExpression.Classification, _expression, lExpression, _argumentList);
+                        return new IndexExpression(defaultMember, lExpression.Classification, _expression, _lExpression, _argumentList, isDefaultMemberAccess: true);
                     }
 
                     /**

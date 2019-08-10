@@ -130,7 +130,8 @@ namespace Rubberduck.Parsing.Binding
 
             if (parameters.Count > 0 
                 && parameters.Count(param => !param.IsOptional) <= 1 
-                && Tokens.String.Equals(parameters[0].AsTypeName, StringComparison.InvariantCultureIgnoreCase))
+                && (Tokens.String.Equals(parameters[0].AsTypeName, StringComparison.InvariantCultureIgnoreCase)
+                    || Tokens.Variant.Equals(parameters[0].AsTypeName, StringComparison.InvariantCultureIgnoreCase)))
             {
                 /*
                     This default member’s parameter list is compatible with <argument-list>. In this case, the 

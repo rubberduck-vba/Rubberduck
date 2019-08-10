@@ -359,7 +359,8 @@ namespace Rubberduck.Parsing.Symbols
             IEnumerable<IAnnotation> annotations,
             bool isAssignmentTarget = false,
             bool hasExplicitLetStatement = false,
-            bool isSetAssigned = false
+            bool isSetAssigned = false,
+            bool isDefaultMemberAccess = false
             )
         {
             var oldReference = _references.FirstOrDefault(r =>
@@ -386,7 +387,8 @@ namespace Rubberduck.Parsing.Symbols
                 isAssignmentTarget,
                 hasExplicitLetStatement,
                 annotations,
-                isSetAssigned);
+                isSetAssigned,
+                isDefaultMemberAccess);
             _references.AddOrUpdate(newReference, 1, (key, value) => 1);
         }
 

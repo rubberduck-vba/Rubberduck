@@ -3019,6 +3019,7 @@ End Function
                 var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
 
                 Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.IsTrue(reference.IsDefaultMemberAccess);
             }
         }
 
@@ -3058,6 +3059,7 @@ End Function
                 var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
 
                 Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.IsTrue(reference.IsDefaultMemberAccess);
             }
         }
 
@@ -3105,6 +3107,7 @@ End Function
                 var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
 
                 Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.IsTrue(reference.IsDefaultMemberAccess);
             }
         }
 
@@ -3145,6 +3148,7 @@ End Function
                 var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
 
                 Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.IsTrue(reference.IsDefaultMemberAccess);
             }
         }
 
@@ -3165,6 +3169,74 @@ End Function
             using (var state = Resolve(moduleCode))
             {
                 //This test only tests that we do not get a resolver error.
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void IndexExpressionOnMemberAccessYieldsCorrectIdentifierReference()
+        {
+            var code = @"
+Public Function Foo(baz As String) As String
+End Function
+
+Public Function Bar() As String
+    Bar = Foo(""Barrier"")
+End Function
+";
+            var selection = new Selection(6, 11, 6, 14);
+
+            using (var state = Resolve(code))
+            {
+                var module = state.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule).Single().QualifiedModuleName;
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var reference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).First();
+
+                var expectedIdentifierName = "Foo";
+                var actualIdentifierName = reference.IdentifierName;
+                Assert.AreEqual(expectedIdentifierName, actualIdentifierName);
+            }
+        }
+
+
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void IndexExpressionWithDefaultMemberAccessHasReferenceToDefaultMember()
+        {
+            var classCode = @"
+Public Function Foo(index As Long) As String
+Attribute Foo.VB_UserMemId = 0
+    Set Foo = ""Hello""
+End Function
+";
+
+            var moduleCode = @"
+Private Function Foo() As String 
+    Dim cls As new Class1
+    Foo = cls(0)
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(4, 13, 4, 13);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var defaultMamberReference = state.DeclarationFinder.ContainingIdentifierReferences(qualifiedSelection).Last(reference => reference.IsDefaultMemberAccess);
+                var referencedDeclaration = defaultMamberReference.Declaration;
+
+                var expectedReferencedDeclarationName = "Class1.Foo";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
             }
         }
     }

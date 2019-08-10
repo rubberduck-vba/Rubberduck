@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Binding;
 using Rubberduck.Parsing.Grammar;
@@ -185,6 +186,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             // add an identifier reference to, that's why we pass on the isassignment/hasexplicitletstatement values.
             Visit(expression.LExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
 
+            //Generate reference in case this is a default member access.
             if (expression.Classification != ExpressionClassification.Unbound
                 && expression.ReferencedDeclaration != null
                 && !ReferenceEquals(expression.LExpression.ReferencedDeclaration, expression.ReferencedDeclaration))
@@ -201,7 +203,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                     callee,
                     callSiteContext.GetSelection(),
                     FindIdentifierAnnotations(module, callSiteContext.GetSelection().StartLine),
-                    isSetAssignment);
+                    isSetAssignment,
+                    isDefaultMemberAccess: true);
             }
             // Argument List not affected by being unbound.
             foreach (var argument in expression.ArgumentList.Arguments)
@@ -243,7 +246,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                     callee,
                     callSiteContext.GetSelection(),
                     FindIdentifierAnnotations(module, callSiteContext.GetSelection().StartLine),
-                    isSetAssignment);
+                    isSetAssignment,
+                    isDefaultMemberAccess: true);
             }
             // Argument List not affected by being unbound.
             foreach (var argument in expression.ArgumentList.Arguments)
