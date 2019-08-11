@@ -22,23 +22,27 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             return Reflection.GetMethodExt(typeof(Mock), MockMemberNames.As()).MakeGenericMethod(type);
         }
 
-        public static MethodInfo Setup(Mock mocked)
+        public static MethodInfo Setup(Type mockType, Type returnType)
         {
-            var typeHandle = mocked.GetType().TypeHandle;
+            var typeHandle = mockType.TypeHandle;
             var mock = typeof(Mock<>);
-            var expression = typeof(Expression<>).MakeGenericType(typeof(Action<>));
+            var expression = typeof(Expression<>).MakeGenericType(returnType != null ?  
+                typeof(Func<,>) :
+                typeof(Action<>)
+            );
             var genericMethod = Reflection.GetMethodExt(mock, MockMemberNames.Setup(), expression);
-            return (MethodInfo) MethodBase.GetMethodFromHandle(genericMethod.MethodHandle, typeHandle);
+            var specificMethod = (MethodInfo) MethodBase.GetMethodFromHandle(genericMethod.MethodHandle, typeHandle);
+            return returnType != null ? specificMethod.MakeGenericMethod(returnType) : specificMethod;
         }
 
-        public static MethodInfo Returns(object setupMock)
+        public static MethodInfo Returns(Type setupMockType)
         {
-            var typeHandle = setupMock.GetType().GetInterfaces().Single(i =>
+            var typeHandle = setupMockType.GetInterfaces().Single(i =>
                 i.IsGenericType &&
                 i.GetGenericTypeDefinition() == typeof(IReturns<,>)
             ).TypeHandle;
             var setup = typeof(IReturns<,>);
-            var result = typeof(Func<>); 
+            var result = typeof(MethodReflection.T); 
             var genericMethod = Reflection.GetMethodExt(setup, MockMemberNames.Returns(), result);
             return (MethodInfo) MethodBase.GetMethodFromHandle(genericMethod.MethodHandle, typeHandle);
         }

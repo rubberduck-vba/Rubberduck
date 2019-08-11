@@ -41,7 +41,7 @@ namespace RubberduckTests.ComMock
         [Test]
         public void Setup_Method_Exists()
         {
-            var setupMethod = MockMemberInfos.Setup(new Mock<object>());
+            var setupMethod = MockMemberInfos.Setup(typeof(Mock<object>), null);
             var foundMethod = typeof(Mock<>).GetMethods().Single(x =>
                 x.Name == nameof(Mock<object>.Setup) &&
                 x.IsGenericMethod &&
@@ -52,22 +52,44 @@ namespace RubberduckTests.ComMock
         }
 
         [Test]
-        public void Setup_Is_Executed_On_ITest1()
+        public void Setup_Without_Returns_Is_Executed_On_ITest1()
         {
             var mocked = new Mock<ITest1>();
             Expression<Action<ITest1>> expression = x => x.DoThis();
-            var setupMethod = MockMemberInfos.Setup(mocked);
+            var setupMethod = MockMemberInfos.Setup(mocked.GetType(), null);
+
+            // We need to verify this succeeds
+            setupMethod.Invoke(mocked, new object[] { expression });
+        }
+
+        [Test]
+        public void Setup_Without_Returns_Is_Executed_On_ITest2()
+        {
+            var mocked = new Mock<ITest2>();
+            Expression<Action<ITest2>> expression = x => x.DoThat();
+            var setupMethod = MockMemberInfos.Setup(mocked.GetType(), null);
+
+            // We need to verify this succeeds
+            setupMethod.Invoke(mocked, new object[] { expression });
+        }
+
+        [Test]
+        public void Setup_With_Returns_Is_Executed_On_ITest1()
+        {
+            var mocked = new Mock<ITest1>();
+            Expression<Func<ITest1, int>> expression = x => x.DoThis();
+            var setupMethod = MockMemberInfos.Setup(mocked.GetType(), typeof(int));
 
             // We need to verify this succeeds
             setupMethod.Invoke(mocked, new object[] {expression});
         }
 
         [Test]
-        public void Setup_Is_Executed_On_ITest2()
+        public void Setup_With_Returns_Is_Executed_On_ITest2()
         {
             var mocked = new Mock<ITest2>();
-            Expression<Action<ITest2>> expression = x => x.DoThat();
-            var setupMethod = MockMemberInfos.Setup(mocked);
+            Expression<Func<ITest2, string>> expression = x => x.DoThat();
+            var setupMethod = MockMemberInfos.Setup(mocked.GetType(), typeof(string));
 
             // We need to verify this succeeds
             setupMethod.Invoke(mocked, new object[] { expression });
@@ -78,7 +100,7 @@ namespace RubberduckTests.ComMock
         {
             var mocked = new Mock<ITest1>();
             var setup = mocked.Setup(x => x.DoThis());
-            var returnMethod = MockMemberInfos.Returns(setup);
+            var returnMethod = MockMemberInfos.Returns(setup.GetType());
             var foundMethod = typeof(IReturns<,>).GetMethods().Single(x =>
                 x.Name == nameof(IReturns<object, object>.Returns) &&
                 x.IsGenericMethod &&
@@ -95,7 +117,7 @@ namespace RubberduckTests.ComMock
             var mocked = new Mock<ITest1>();
             var setup = mocked.Setup(x => x.DoThis());
             var expression = new Func<int>(() => expected);
-            var returnMethod = MockMemberInfos.Returns(setup);
+            var returnMethod = MockMemberInfos.Returns(setup.GetType());
 
             returnMethod.Invoke(setup, new object[] { expression });
 
@@ -110,7 +132,7 @@ namespace RubberduckTests.ComMock
             var mocked = new Mock<ITest2>();
             var setup = mocked.Setup(x => x.DoThat());
             var expression = new Func<string>(() => expected);
-            var returnMethod = MockMemberInfos.Returns(setup);
+            var returnMethod = MockMemberInfos.Returns(setup.GetType());
 
             returnMethod.Invoke(setup, new object[] { expression });
 

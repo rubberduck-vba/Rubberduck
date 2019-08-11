@@ -42,18 +42,16 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 
             foreach (var setupData in setupDatas)
             {
-                var returnsType = setupData.SetupMemberInfo.ReturnType.GetInterface("IReturns`2");
-                var returnsMemberInfos = returnsType.GetMember("Returns");
+                var returnsMethodInfo = MockMemberInfos.Returns(setupData.SetupMemberInfo.ReturnType);
+                var returnsType = returnsMethodInfo.DeclaringType;
 
-                //TODO: find a better way to get the correct method
-                var returnsMemberInfo = (MethodInfo)returnsMemberInfos.First();
-
-                Debug.Assert(returnsMemberInfo != null);
+                Debug.Assert(returnsMethodInfo != null);
+                Debug.Assert(returnsType != null);
 
                 var valueParameterExpression = Expression.Parameter(setupData.TargetType, "value");
 
                 var castReturnExpression = Expression.Convert(setupData.SetupExpression, returnsType);
-                var returnsCallExpression = Expression.Call(castReturnExpression, returnsMemberInfo, valueParameterExpression);
+                var returnsCallExpression = Expression.Call(castReturnExpression, returnsMethodInfo, valueParameterExpression);
                 var lambda = Expression.Lambda(returnsCallExpression, setupData.MockParameterExpression, valueParameterExpression);
                 lambda.Compile().DynamicInvoke(Mock, Value);
             }
@@ -66,19 +64,17 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 
             foreach (var setupData in setupDatas)
             {
-                var callbackType = setupData.SetupMemberInfo.ReturnType.GetInterface("ICallback`2");
-                var callbackMemberInfos = callbackType.GetMember("Callback");
+                var callbackMethodInfo = MockMemberInfos.Callback(Mock);
+                var callbackType = callbackMethodInfo.DeclaringType;
 
-                //TODO: find a better way to get the correct method
-                var callbackMemberInfo = (MethodInfo)callbackMemberInfos.First();
-
-                Debug.Assert(callbackMemberInfo != null);
+                Debug.Assert(callbackMethodInfo != null);
+                Debug.Assert(callbackType != null);
 
                 var valueParameterExpression = Expression.Parameter(Callback.GetType(), "value");
 
                 var castCallbackExpression = Expression.Convert(setupData.SetupExpression, callbackType);
                 var callCallbackExpression =
-                    Expression.Call(castCallbackExpression, callbackMemberInfo, valueParameterExpression);
+                    Expression.Call(castCallbackExpression, callbackMethodInfo, valueParameterExpression);
                 var lambda = Expression.Lambda(callCallbackExpression, setupData.MockParameterExpression,
                     valueParameterExpression);
                 lambda.Compile().DynamicInvoke(Mock, Callback);
@@ -300,21 +296,17 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
                 }
 
                 // Finalize the expression within the Setup's lambda. 
-                var lambdaTypes = Expression.GetFuncType(member.Key, memberType);
-                var expression = Expression.Lambda(lambdaTypes, memberAccessExpression, typeExpression);
+                //var lambdaTypes = Expression.GetFuncType(_type, memberType);
+                //var expression = Expression.Lambda(lambdaTypes, memberAccessExpression, typeExpression);
+                var expression = Expression.Lambda(memberAccessExpression, typeExpression);
 
                 // Create the expression for invoking `Mock<>.Setup()`, providing the expression above.
                 // We also want the _mock to be input into this lambda, so we must also make the `mock`
                 // a parameter so that we can pass the _mock in when we dynamically invoke the expression.
-                var asMemberInfo = mockType.GetMethod("As")?.MakeGenericMethod(member.Key);
+                var asMemberInfo = MockMemberInfos.As(member.Key);
                 Debug.Assert(asMemberInfo != null);
                 var asCallExpression = Expression.Call(mockParameterExpression, asMemberInfo);
-
-                // Close the generic Setup method based on the current interface
-                //TODO: Find a better way to find the correct type of Setup method
-                var setupMemberInfos = asMemberInfo.ReturnType.GetMember("Setup");
-                var setupMemberInfo = ((MethodInfo)setupMemberInfos.Last()).MakeGenericMethod(memberType);
-                Debug.Assert(setupMemberInfo != null);
+                var setupMemberInfo = MockMemberInfos.Setup(asMemberInfo.ReturnType, memberType);
 
                 // At this point, we have the expression for the `Mock<>.Setup().`. The expression can be
                 // further processed for additional actions (e.g. adding `Returns()` or `Callback()`. 
@@ -344,7 +336,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             var members = _type.GetMember(name);
 
             //COM interfaces should not allow for method overloading within same interface
-            System.Diagnostics.Debug.Assert(members.Length <= 1);
+            Debug.Assert(members.Length <= 1);
 
             if (members.Length == 1)
             {
@@ -364,7 +356,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
                 members = subType.GetMember(name);
 
                 //COM interfaces should not allow for method overloading within same interface
-                System.Diagnostics.Debug.Assert(members.Length <= 1);
+                Debug.Assert(members.Length <= 1);
 
                 if (members.Length == 0)
                 {
