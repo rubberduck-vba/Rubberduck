@@ -11,6 +11,7 @@ namespace RubberduckTests.ComMock
 {
     public interface ITest1
     {
+        void Do();
         int DoThis();
     }
 
@@ -116,10 +117,9 @@ namespace RubberduckTests.ComMock
             const int expected = 42;
             var mocked = new Mock<ITest1>();
             var setup = mocked.Setup(x => x.DoThis());
-            var expression = new Func<int>(() => expected);
             var returnMethod = MockMemberInfos.Returns(setup.GetType());
 
-            returnMethod.Invoke(setup, new object[] { expression });
+            returnMethod.Invoke(setup, new object[] { expected });
 
             var test = mocked.Object;
             Assert.AreEqual(expected, test.DoThis());
@@ -131,10 +131,9 @@ namespace RubberduckTests.ComMock
             const string expected = "abc";
             var mocked = new Mock<ITest2>();
             var setup = mocked.Setup(x => x.DoThat());
-            var expression = new Func<string>(() => expected);
             var returnMethod = MockMemberInfos.Returns(setup.GetType());
 
-            returnMethod.Invoke(setup, new object[] { expression });
+            returnMethod.Invoke(setup, new object[] { expected });
 
             var test = mocked.Object;
             Assert.AreEqual(expected, test.DoThat());
@@ -145,7 +144,7 @@ namespace RubberduckTests.ComMock
         {
             var mocked = new Mock<ITest1>();
             var setup = mocked.Setup(x => x.DoThis());
-            var returnMethod = MockMemberInfos.Callback(setup);
+            var returnMethod = MockMemberInfos.Callback(setup.GetType());
             var foundMethod = typeof(ICallback).GetMethods().Single(x =>
                 x.Name == nameof(ISetup<object>.Callback) &&
                 !x.IsGenericMethod &&
@@ -165,7 +164,7 @@ namespace RubberduckTests.ComMock
 
             var mocked = new Mock<ITest1>();
             var setup = mocked.Setup(x => x.DoThis());
-            var callbackMethod = MockMemberInfos.Callback(setup);
+            var callbackMethod = MockMemberInfos.Callback(setup.GetType());
 
             callbackMethod.Invoke(setup, new object[] { (Callback)Expression });
 
@@ -183,7 +182,7 @@ namespace RubberduckTests.ComMock
 
             var mocked = new Mock<ITest2>();
             var setup = mocked.Setup(x => x.DoThat());
-            var callbackMethod = MockMemberInfos.Callback(setup);
+            var callbackMethod = MockMemberInfos.Callback(setup.GetType());
 
             callbackMethod.Invoke(setup, new object[] { (Callback) Expression });
 

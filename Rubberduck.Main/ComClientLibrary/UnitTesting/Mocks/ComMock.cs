@@ -64,7 +64,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 
             foreach (var setupData in setupDatas)
             {
-                var callbackMethodInfo = MockMemberInfos.Callback(Mock);
+                var callbackMethodInfo = MockMemberInfos.Callback(Mock.GetType());
                 var callbackType = callbackMethodInfo.DeclaringType;
 
                 Debug.Assert(callbackMethodInfo != null);

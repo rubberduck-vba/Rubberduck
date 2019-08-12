@@ -47,9 +47,9 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             return (MethodInfo) MethodBase.GetMethodFromHandle(genericMethod.MethodHandle, typeHandle);
         }
 
-        public static MethodInfo Callback(object setupMock)
+        public static MethodInfo Callback(Type setupMockType)
         {
-            var typeHandle = setupMock.GetType().GetInterfaces().Single(i =>
+            var typeHandle = setupMockType.GetInterfaces().Single(i =>
                 !i.IsGenericType &&
                 i == typeof(ICallback)
             ).TypeHandle;
