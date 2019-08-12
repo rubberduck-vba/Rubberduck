@@ -967,7 +967,7 @@ End Sub
         [Category("Grammar")]
         [Category("Resolver")]
         [Test]
-        public void ArraySubscriptAccess_IsReferenceToArrayDeclaration()
+        public void ArraySubscriptAccess_IsReferenceToArrayOnceAsAccessAndOnceDirectlyDeclaration()
         {
             var code = @"
 Public Sub DoSomething(ParamArray values())
@@ -985,10 +985,13 @@ End Sub
                     && item.IdentifierName == "values"
                     && item.IsArray);
 
-                Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                var arrayReferences = declaration.References.Where(item =>
                     item.ParentScoping.DeclarationType == DeclarationType.Procedure
                     && item.ParentScoping.IdentifierName == "DoSomething"
-                    && !item.IsAssignment));
+                    && !item.IsAssignment).ToList();
+
+                Assert.AreEqual(1, arrayReferences.Count(reference => reference.IsArrayAccess));
+                Assert.AreEqual(1, arrayReferences.Count(reference => !reference.IsArrayAccess));
             }
         }
 
@@ -1011,7 +1014,33 @@ End Sub
                     item.DeclarationType == DeclarationType.Variable
                     && item.IdentifierName == "foo");
 
-                Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                Assert.AreEqual(1,declaration.References.Count(item =>
+                    item.ParentScoping.DeclarationType == DeclarationType.Procedure
+                    && item.ParentScoping.IdentifierName == "DoSomething"
+                    && item.IsAssignment));
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void SubscriptWrite_HasNonAssignmentReferenceToObjectDeclaration()
+        {
+            var code = @"
+Public Sub DoSomething()
+    Dim foo As Object
+    Set foo = CreateObject(""Scripting.Dictionary"")
+    foo(""key"") = 42
+End Sub
+";
+            using (var state = Resolve(code))
+            {
+
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable
+                    && item.IdentifierName == "foo");
+
+                Assert.AreEqual(1, declaration.References.Count(item =>
                     item.ParentScoping.DeclarationType == DeclarationType.Procedure
                     && item.ParentScoping.IdentifierName == "DoSomething"
                     && !item.IsAssignment));
@@ -1335,7 +1364,8 @@ End Function";
                     && item.IsArray
                     && item.ParentScopeDeclaration.IdentifierName == "DoSomething");
 
-                Assert.IsNotNull(declaration.References.SingleOrDefault(item => !item.IsAssignment));
+                Assert.AreEqual(1, declaration.References.Count(item => !item.IsAssignment && item.IsArrayAccess));
+                Assert.AreEqual(1, declaration.References.Count(item => !item.IsAssignment && !item.IsArrayAccess));
             }
         }
 
@@ -3199,8 +3229,6 @@ End Function
             }
         }
 
-
-
         [Category("Grammar")]
         [Category("Resolver")]
         [Test]
@@ -3230,13 +3258,42 @@ End Function
             {
                 var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
                 var qualifiedSelection = new QualifiedSelection(module, selection);
-                var defaultMamberReference = state.DeclarationFinder.ContainingIdentifierReferences(qualifiedSelection).Last(reference => reference.IsDefaultMemberAccess);
-                var referencedDeclaration = defaultMamberReference.Declaration;
+                var memberReference = state.DeclarationFinder.ContainingIdentifierReferences(qualifiedSelection).Last(reference => reference.IsDefaultMemberAccess);
+                var referencedDeclaration = memberReference.Declaration;
 
                 var expectedReferencedDeclarationName = "Class1.Foo";
                 var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
 
                 Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void ArrayAccessExpressionHasReferenceOnWholeExpression()
+        {
+            var moduleCode = @"
+Private Sub Foo() 
+    Dim bar(0 To 1) As Long
+    bar(0) = 23
+End Sub
+";
+
+            var selection = new Selection(4, 5, 4, 11);
+
+            using (var state = Resolve(moduleCode))
+            {
+                var module = state.DeclarationFinder.AllModules.Single(qmn => qmn.ComponentType == ComponentType.StandardModule);
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var reference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).First();
+
+                var expectedReferenceText = "bar(0)";
+                var actualReferenceText = reference.IdentifierName;
+
+                Assert.AreEqual(expectedReferenceText, actualReferenceText);
+                Assert.IsTrue(reference.IsArrayAccess);
+                Assert.IsTrue(reference.IsAssignment);
             }
         }
     }

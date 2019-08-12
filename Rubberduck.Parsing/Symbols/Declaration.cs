@@ -329,18 +329,21 @@ namespace Rubberduck.Parsing.Symbols
         /// </summary>
         public bool IsEnumeratorMember => _attributes.Any(a => a.Name.EndsWith("VB_UserMemId") && a.Values.Contains("-4"));
 
-        public virtual bool IsObject
+        public virtual bool IsObject => !IsArray && IsObjectOrObjectArray;
+
+        public virtual bool IsObjectArray => IsArray && IsObjectOrObjectArray;
+
+        private bool IsObjectOrObjectArray
         {
             get
             {
-                if (AsTypeName == Tokens.Object || 
-                    (AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.ClassModule) ?? false))
+                if (AsTypeName == Tokens.Object 
+                    || (AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.ClassModule) ?? false))
                 {
                     return true;
                 }
 
                 var isIntrinsic = AsTypeIsBaseType
-                                  || IsArray
                                   || (AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.UserDefinedType) ?? false)
                                   || (AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.Enumeration) ?? false);
 
@@ -360,7 +363,8 @@ namespace Rubberduck.Parsing.Symbols
             bool isAssignmentTarget = false,
             bool hasExplicitLetStatement = false,
             bool isSetAssigned = false,
-            bool isDefaultMemberAccess = false
+            bool isDefaultMemberAccess = false,
+            bool isArrayAccess = false
             )
         {
             var oldReference = _references.FirstOrDefault(r =>
@@ -388,7 +392,8 @@ namespace Rubberduck.Parsing.Symbols
                 hasExplicitLetStatement,
                 annotations,
                 isSetAssigned,
-                isDefaultMemberAccess);
+                isDefaultMemberAccess,
+                isArrayAccess);
             _references.AddOrUpdate(newReference, 1, (key, value) => 1);
         }
 

@@ -1,10 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using Rubberduck.Parsing.Symbols;
 using System.Linq;
 using Antlr4.Runtime;
-using Antlr4.Runtime.Atn;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Parsing.Binding
 {
@@ -16,7 +15,6 @@ namespace Rubberduck.Parsing.Binding
         private readonly ArgumentList _argumentList;
 
         private const int DEFAULT_MEMBER_RECURSION_LIMIT = 32;
-        private int _defaultMemberRecursionLimitCounter = 0;
 
         public DictionaryAccessDefaultBinding(
             ParserRuleContext expression,
@@ -97,7 +95,7 @@ namespace Rubberduck.Parsing.Binding
             return failedExpr;
         }       
 
-        private IBoundExpression ResolveViaDefaultMember(IBoundExpression lExpression, string asTypeName, Declaration asTypeDeclaration)
+        private IBoundExpression ResolveViaDefaultMember(IBoundExpression lExpression, string asTypeName, Declaration asTypeDeclaration, int recursionDepth = 0)
         {
             if (Tokens.Variant.Equals(asTypeName, StringComparison.InvariantCultureIgnoreCase) 
                     || Tokens.Object.Equals(asTypeName, StringComparison.InvariantCultureIgnoreCase))
@@ -128,10 +126,7 @@ namespace Rubberduck.Parsing.Binding
 
             var parameters = ((IParameterizedDeclaration) defaultMember).Parameters.ToList();
 
-            if (parameters.Count > 0 
-                && parameters.Count(param => !param.IsOptional) <= 1 
-                && (Tokens.String.Equals(parameters[0].AsTypeName, StringComparison.InvariantCultureIgnoreCase)
-                    || Tokens.Variant.Equals(parameters[0].AsTypeName, StringComparison.InvariantCultureIgnoreCase)))
+            if (IsCompatibleWithOneStringArgument(parameters))
             {
                 /*
                     This default member’s parameter list is compatible with <argument-list>. In this case, the 
@@ -139,31 +134,44 @@ namespace Rubberduck.Parsing.Binding
                     declared type.  
                 */
                 ResolveArgumentList(defaultMember);
-                return new DictionaryAccessExpression(defaultMember, defaultMemberClassification, _expression,
-                    lExpression, _argumentList);
+                return new DictionaryAccessExpression(defaultMember, defaultMemberClassification, _expression, lExpression, _argumentList);
             }
 
             if (parameters.Count(param => !param.IsOptional) == 0 
-                && DEFAULT_MEMBER_RECURSION_LIMIT > _defaultMemberRecursionLimitCounter)
+                && DEFAULT_MEMBER_RECURSION_LIMIT > recursionDepth)
             {
                 /*
                     This default member cannot accept any parameters. In this case, the static analysis restarts 
                     recursively, as if this default member was specified instead for <l-expression> with the 
                     same <argument-list>.
                 */
-                _defaultMemberRecursionLimitCounter++;
 
-                var defaultMemberAsLExpression =
-                    new SimpleNameExpression(defaultMember, defaultMemberClassification, _expression);
-                var defaultMemberAsTypeName = defaultMember.AsTypeName;
-                var defaultMemberAsTypeDeclaration = defaultMember.AsTypeDeclaration;
-
-                return ResolveViaDefaultMember(defaultMemberAsLExpression, defaultMemberAsTypeName,
-                    defaultMemberAsTypeDeclaration);
+                return ResolveRecursiveDefaultMember(defaultMember, defaultMemberClassification, recursionDepth);
             }
 
             ResolveArgumentList(null);
             return CreateFailedExpression(lExpression);
+        }
+
+        private static bool IsCompatibleWithOneStringArgument(List<ParameterDeclaration> parameters)
+        {
+            return parameters.Count > 0 
+                   && parameters.Count(param => !param.IsOptional) <= 1 
+                   && (Tokens.String.Equals(parameters[0].AsTypeName, StringComparison.InvariantCultureIgnoreCase)
+                       || Tokens.Variant.Equals(parameters[0].AsTypeName, StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        private IBoundExpression ResolveRecursiveDefaultMember(Declaration defaultMember, ExpressionClassification defaultMemberClassification, int recursionDepth)
+        {
+            var defaultMemberAsLExpression = new SimpleNameExpression(defaultMember, defaultMemberClassification, _expression);
+            var defaultMemberAsTypeName = defaultMember.AsTypeName;
+            var defaultMemberAsTypeDeclaration = defaultMember.AsTypeDeclaration;
+
+            return ResolveViaDefaultMember(
+                defaultMemberAsLExpression,
+                defaultMemberAsTypeName,
+                defaultMemberAsTypeDeclaration,
+                recursionDepth + 1);
         }
 
         private static bool IsPropertyGetLetFunctionProcedure(Declaration declaration)

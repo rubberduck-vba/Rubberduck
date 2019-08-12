@@ -24,7 +24,8 @@ namespace Rubberduck.Parsing.Symbols
             bool hasExplicitLetStatement = false, 
             IEnumerable<IAnnotation> annotations = null,
             bool isSetAssigned = false,
-            bool isDefaultMemberAccess = false)
+            bool isDefaultMemberAccess = false,
+            bool isArrayAccess = false)
         {
             ParentScoping = parentScopingDeclaration;
             ParentNonScoping = parentNonScopingDeclaration;
@@ -37,6 +38,7 @@ namespace Rubberduck.Parsing.Symbols
             IsAssignment = isAssignmentTarget;
             IsSetAssignment = isSetAssigned;
             IsDefaultMemberAccess = isDefaultMemberAccess;
+            IsArrayAccess = isArrayAccess;
             Annotations = annotations ?? new List<IAnnotation>();
         }
 
@@ -63,6 +65,8 @@ namespace Rubberduck.Parsing.Symbols
         public bool IsSetAssignment { get; }
 
         public bool IsDefaultMemberAccess { get; }
+
+        public bool IsArrayAccess { get; }
 
         public ParserRuleContext Context { get; }
 
