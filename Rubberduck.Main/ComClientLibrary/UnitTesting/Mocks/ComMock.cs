@@ -42,18 +42,11 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 
             foreach (var setupData in setupDatas)
             {
-                var returnsMethodInfo = MockMemberInfos.Returns(setupData.SetupMemberInfo.ReturnType);
-                var returnsType = returnsMethodInfo.DeclaringType;
-
-                Debug.Assert(returnsMethodInfo != null);
-                Debug.Assert(returnsType != null);
-
-                var valueParameterExpression = Expression.Parameter(setupData.TargetType, "value");
-
-                var castReturnExpression = Expression.Convert(setupData.SetupExpression, returnsType);
-                var returnsCallExpression = Expression.Call(castReturnExpression, returnsMethodInfo, valueParameterExpression);
-                var lambda = Expression.Lambda(returnsCallExpression, setupData.MockParameterExpression, valueParameterExpression);
-                lambda.Compile().DynamicInvoke(Mock, Value);
+                var builder = MockExpressionBuilder.Create(Mock);
+                builder.As(setupData.DeclaringType)
+                    .Setup(setupData.SetupExpression, setupData.ReturnType)
+                    .Returns(Value, setupData.ReturnType)
+                    .Execute();
             }
         }
 
@@ -64,20 +57,11 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 
             foreach (var setupData in setupDatas)
             {
-                var callbackMethodInfo = MockMemberInfos.Callback(Mock.GetType());
-                var callbackType = callbackMethodInfo.DeclaringType;
-
-                Debug.Assert(callbackMethodInfo != null);
-                Debug.Assert(callbackType != null);
-
-                var valueParameterExpression = Expression.Parameter(Callback.GetType(), "value");
-
-                var castCallbackExpression = Expression.Convert(setupData.SetupExpression, callbackType);
-                var callCallbackExpression =
-                    Expression.Call(castCallbackExpression, callbackMethodInfo, valueParameterExpression);
-                var lambda = Expression.Lambda(callCallbackExpression, setupData.MockParameterExpression,
-                    valueParameterExpression);
-                lambda.Compile().DynamicInvoke(Mock, Callback);
+                var builder = MockExpressionBuilder.Create(Mock);
+                builder.As(setupData.DeclaringType)
+                    .Setup(setupData.SetupExpression)
+                    .Callback(Callback)
+                    .Execute();
             }
         }
 
@@ -173,7 +157,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
         /// <remarks>
         /// If a method `Foo` requires one argument, we need to specify the behavior in an expression similar
         /// to this: `Mock<>.Setup(x => x.Foo(It.IsAny<>())`. The class <see cref="It"/> is static so we can
-        /// create call expresssions directly on it. 
+        /// create call expressions directly on it. 
         /// </remarks>
         /// <param name="parameters">Array of <see cref="ParameterInfo"/> returned from the member for which the <see cref="MockArgumentDefinitions"/> applies to</param>
         /// <param name="args">The <see cref="MockArgumentDefinitions"/> collection containing user supplied behavior</param>
@@ -265,17 +249,11 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             var parameterExpressions = ResolveParameters(membersToSetup.Parameters.ToArray(), args);
             var memberType = membersToSetup.ReturnType;
 
-            // In order to be able to invoke the Setup method, we must have a 
-            // generic Mock and we only have the non-generic mock. Thus, we must
-            // do a `_mock.As<_type>()` first.
-            var mockType = Mock.GetType();
-            var mockParameterExpression = Expression.Parameter(mockType, "mock");
-
             foreach (var member in membersToSetup.MemberInfos)
             {
                 var typeExpression = Expression.Parameter(member.Key, "x");
-
                 Expression memberAccessExpression;
+
                 switch (member.Value)
                 {
                     case FieldInfo _:
@@ -296,23 +274,9 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
                 }
 
                 // Finalize the expression within the Setup's lambda. 
-                //var lambdaTypes = Expression.GetFuncType(_type, memberType);
-                //var expression = Expression.Lambda(lambdaTypes, memberAccessExpression, typeExpression);
                 var expression = Expression.Lambda(memberAccessExpression, typeExpression);
-
-                // Create the expression for invoking `Mock<>.Setup()`, providing the expression above.
-                // We also want the _mock to be input into this lambda, so we must also make the `mock`
-                // a parameter so that we can pass the _mock in when we dynamically invoke the expression.
-                var asMemberInfo = MockMemberInfos.As(member.Key);
-                Debug.Assert(asMemberInfo != null);
-                var asCallExpression = Expression.Call(mockParameterExpression, asMemberInfo);
-                var setupMemberInfo = MockMemberInfos.Setup(asMemberInfo.ReturnType, memberType);
-
-                // At this point, we have the expression for the `Mock<>.Setup().`. The expression can be
-                // further processed for additional actions (e.g. adding `Returns()` or `Callback()`. 
-                var setupCallExpression = Expression.Call(asCallExpression, setupMemberInfo, expression);
-
-                setupDatas.Add(new SetupData(setupCallExpression, setupMemberInfo, memberType, mockParameterExpression, args));
+                
+                setupDatas.Add(new SetupData(expression, member.Key, memberType));
             }
 
             return setupDatas;
@@ -447,28 +411,20 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             internal Expression SetupExpression { get; }
 
             /// <summary>
-            /// MethodInfo on <see cref="Mock{T}.Setup"/>. Useful for supporting casts to different interfaces to expose
-            /// methods from those interfaces. 
+            /// The containing interface that implements the member being called in the setup expression.
             /// </summary>
-            internal MethodInfo SetupMemberInfo { get; }
+            internal Type DeclaringType { get; }
 
             /// <summary>
-            /// The type of the member of mocked type, determined at runtime.
+            /// The return type, if any, for the member being called in the setup expression.
             /// </summary>
-            internal Type TargetType { get; }
+            internal Type ReturnType { get; }
 
-            /// <summary>
-            /// The parameter expression for the mock. Required for the final lambda construction because we must pass in
-            /// the <see cref="ComMock.Mock"/> to the lambda, usually like this: `(mock) => mock.As()`.
-            /// </summary>
-            internal ParameterExpression MockParameterExpression { get; }
-
-            internal SetupData(Expression setupExpression, MethodInfo setupMemberInfo, Type targetType, ParameterExpression mockParameterExpression, MockArgumentDefinitions mockArgumentDefinitions)
+            internal SetupData(Expression setupExpression, Type declaringType, Type returnType)
             {
                 SetupExpression = setupExpression;
-                SetupMemberInfo = setupMemberInfo;
-                TargetType = targetType;
-                MockParameterExpression = mockParameterExpression;
+                DeclaringType = declaringType;
+                ReturnType = returnType;
             }
         }
     }
