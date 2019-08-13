@@ -193,22 +193,12 @@ namespace Rubberduck.Parsing.Symbols
                 }
             }
 
-            //TODO: Find out what this is about.
-            var reallyIsAssignmentTarget = isAssignmentTarget && isSetAssignment;
-            if (isAssignmentTarget && !isSetAssignment)
-            {
-                var defaultMember = (boundExpression.ReferencedDeclaration?.AsTypeDeclaration as ClassModuleDeclaration)?.DefaultMember;
-                reallyIsAssignmentTarget = defaultMember == null 
-                                       || ((IParameterizedDeclaration) defaultMember).Parameters.All(param => param.IsOptional)
-                                       || defaultMember.DeclarationType == DeclarationType.PropertyLet && ((IParameterizedDeclaration)defaultMember).Parameters.Count(param => !param.IsOptional) == 1;
-            }
-
             _boundExpressionVisitor.AddIdentifierReferences(
                 boundExpression, 
                 _qualifiedModuleName, 
                 _currentScope,
                 _currentParent,
-                reallyIsAssignmentTarget,
+                isAssignmentTarget,
                 hasExplicitLetStatement, 
                 isSetAssignment);
         }

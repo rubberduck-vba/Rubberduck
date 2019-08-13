@@ -48,12 +48,41 @@ namespace Rubberduck.Inspections.Concrete
                 .Cast<ParameterDeclaration>()
                 .Where(item => !item.IsByRef 
                     && !item.IsIgnoringInspectionResultFor(AnnotationName)
-                    && item.References.Any(reference => reference.IsAssignment));
+                    && item.References.Any(IsAssignmentToDeclaration));
 
             return parameters
                 .Select(param => new DeclarationInspectionResult(this,
                                                       string.Format(InspectionResults.AssignedByValParameterInspection, param.IdentifierName),
                                                       param));
+        }
+
+        private static bool IsAssignmentToDeclaration(IdentifierReference reference)
+        {
+            if (!reference.IsAssignment)
+            {
+                return false;
+            }
+
+            if (reference.IsSetAssignment)
+            {
+                return true;
+            }
+
+            var declaration = reference.Declaration;
+            if (declaration == null)
+            {
+                return false;
+            }
+
+            if (declaration.IsObject)
+            {
+                //This can only be legal with a default member access.
+                return false;
+            }
+
+            //This is not perfect in case the referenced declaration is an unbound Variant.
+            //In that case, a default member access might occur after the run-time resolution.
+            return true;
         }
     }
 }
