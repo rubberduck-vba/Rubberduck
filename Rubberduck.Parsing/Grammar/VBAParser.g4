@@ -955,11 +955,12 @@ annotationList : SINGLEQUOTE (AT annotation)+ (COLON commentBody)?;
 annotation : annotationName annotationArgList? whiteSpace?;
 annotationName : unrestrictedIdentifier;
 annotationArgList : 
-    whiteSpace annotationArg
-    | whiteSpace annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+
+    whiteSpace? LPAREN whiteSpace? annotationArg whiteSpace? RPAREN
     | whiteSpace? LPAREN whiteSpace? RPAREN
-    | whiteSpace? LPAREN whiteSpace? annotationArg whiteSpace? RPAREN
-    | whiteSpace? LPAREN annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+ whiteSpace? RPAREN;
+    | whiteSpace? LPAREN annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+ whiteSpace? RPAREN
+    | whiteSpace annotationArg
+    | whiteSpace annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+
+;
 annotationArg : expression;
 
 mandatoryLineContinuation : LINE_CONTINUATION WS*;
