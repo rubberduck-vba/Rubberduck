@@ -75,24 +75,38 @@ namespace Rubberduck.Parsing.Binding
                 return ResolveLExpressionIsUnbound(lExpression);
             }
 
-            if (lExpression is IndexExpression indexExpression
-                && _argumentList.HasArguments
-                && lExpression.ReferencedDeclaration != null)
+            if(lExpression.ReferencedDeclaration != null)
             {
-                var doubleIndexExpression = ResolveLExpressionIsIndexExpression(indexExpression, defaultMemberResolutionRecursionDepth);
-                if (doubleIndexExpression != null)
+                if (_argumentList.HasArguments)
                 {
-                    return doubleIndexExpression;
-                }
-            }
+                    switch (lExpression)
+                    {
+                        case IndexExpression indexExpression:
+                            var doubleIndexExpression = ResolveLExpressionIsIndexExpression(indexExpression, defaultMemberResolutionRecursionDepth);
+                            if (doubleIndexExpression != null)
+                            {
+                                return doubleIndexExpression;
+                            }
 
-            if (IsVariablePropertyFunctionWithoutParameters(lExpression)
-                && lExpression.ReferencedDeclaration != null)
-            {
-                var parameterlessLExpressionAccess = ResolveLExpressionIsVariablePropertyFunctionNoParameters(lExpression, defaultMemberResolutionRecursionDepth);
-                if (parameterlessLExpressionAccess != null)
+                            break;
+                        case DictionaryAccessExpression dictionaryAccessExpression:
+                            var indexOnBangExpression = ResolveLExpressionIsDictionaryAccessExpression(dictionaryAccessExpression, defaultMemberResolutionRecursionDepth);
+                            if (indexOnBangExpression != null)
+                            {
+                                return indexOnBangExpression;
+                            }
+
+                            break;
+                    }
+                }
+
+                if (IsVariablePropertyFunctionWithoutParameters(lExpression))
                 {
-                    return parameterlessLExpressionAccess;
+                    var parameterlessLExpressionAccess = ResolveLExpressionIsVariablePropertyFunctionNoParameters(lExpression, defaultMemberResolutionRecursionDepth);
+                    if (parameterlessLExpressionAccess != null)
+                    {
+                        return parameterlessLExpressionAccess;
+                    }
                 }
             }
 
@@ -183,6 +197,27 @@ namespace Rubberduck.Parsing.Binding
             var asTypeDeclaration = indexedDeclaration.AsTypeDeclaration;
 
             return ResolveDefaultMember(indexExpression, asTypeName, asTypeDeclaration, defaultMemberResolutionRecursionDepth);
+        }
+
+        private IBoundExpression ResolveLExpressionIsDictionaryAccessExpression(DictionaryAccessExpression dictionaryAccessExpression, int defaultMemberResolutionRecursionDepth = 0)
+        {
+            //This is equivalent to the case in which the lExpression is an IndexExpression with the difference that it cannot be an array access.
+
+            var indexedDeclaration = dictionaryAccessExpression.ReferencedDeclaration;
+            if (indexedDeclaration == null)
+            {
+                return null;
+            }
+
+            if (indexedDeclaration.IsArray)
+            {
+                return ResolveLExpressionDeclaredTypeIsArray(dictionaryAccessExpression);
+            }
+
+            var asTypeName = indexedDeclaration.AsTypeName;
+            var asTypeDeclaration = indexedDeclaration.AsTypeDeclaration;
+
+            return ResolveDefaultMember(dictionaryAccessExpression, asTypeName, asTypeDeclaration, defaultMemberResolutionRecursionDepth);
         }
 
         private IBoundExpression ResolveDefaultMember(IBoundExpression lExpression, string asTypeName, Declaration asTypeDeclaration, int defaultMemberResolutionRecursionDepth)
