@@ -32,7 +32,6 @@ namespace RubberduckTests.ComMock
         }
 
         [Test]
-        [Ignore("Require additional implementation to wrap a returning method in an Action<>")]
         public void Setup_Returning_Method_With_Return_Ignored_Compiles()
         {
             var mock = new Mock<ITest1>();

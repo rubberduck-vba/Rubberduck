@@ -20,7 +20,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 
     public interface IRuntimeCallback : IRuntimeExecute
     {
-        IRuntimeSetup Callback(Action Callback);
+        IRuntimeSetup Callback(Action callback);
     }
 
     public interface IRuntimeReturns : IRuntimeExecute
@@ -72,16 +72,28 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 
         public IRuntimeCallback Setup(Expression setupExpression)
         {
-            var setupMethodInfo = MockMemberInfos.Setup(_currentType, null);
-            _expression = Expression.Call(_expression, setupMethodInfo, setupExpression);
-            _currentType = setupMethodInfo.ReturnType;
-            return this;
+            switch (setupExpression.Type.GetGenericArguments().Length)
+            {
+                case 2:
+                    // It's a returning method so we need to use the Func version of Setup and ignore the return.
+                    Setup(setupExpression, setupExpression.Type.GetGenericArguments()[1]);
+                    return this;
+                case 1:
+                    var setupMethodInfo = MockMemberInfos.Setup(_currentType, null);
+                    // Quoting the setup lambda expression ensures that closures will be applied
+                    _expression = Expression.Call(_expression, setupMethodInfo, Expression.Quote(setupExpression));
+                    _currentType = setupMethodInfo.ReturnType;
+                    return this;
+                default:
+                    throw new NotSupportedException("Setup can only handle 1 or 2 arguments as an input");
+            }
         }
 
         public IRuntimeReturns Setup(Expression setupExpression, Type returnType)
         {
             var setupMethodInfo = MockMemberInfos.Setup(_currentType, returnType);
-            _expression = Expression.Call(_expression, setupMethodInfo, setupExpression);
+            // Quoting the setup lambda expression ensures that closures will be applied
+            _expression = Expression.Call(_expression, setupMethodInfo, Expression.Quote(setupExpression));
             _currentType = setupMethodInfo.ReturnType;
             return this;
         }
