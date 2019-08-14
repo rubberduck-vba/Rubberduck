@@ -3566,5 +3566,45 @@ End Sub
                 Assert.IsTrue(reference.IsAssignment);
             }
         }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void NamedArgumentOfIndexExpressionWithDefaultMemberAccessHasReferenceToParameter()
+        {
+            var classCode = @"
+Public Function Foo(index As Long) As String
+Attribute Foo.VB_UserMemId = 0
+    Set Foo = ""Hello""
+End Function
+";
+
+            var moduleCode = @"
+Private Function Foo() As String 
+    Dim cls As new Class1
+    Foo = cls(index:=0)
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(4, 15, 4, 20);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var memberReference = state.DeclarationFinder.ContainingIdentifierReferences(qualifiedSelection).Last();
+                var referencedDeclaration = memberReference.Declaration;
+
+                var expectedReferencedDeclarationName = "TestProject1.Class1.Foo.index";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ParentScope}.{referencedDeclaration.IdentifierName}";
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.AreEqual(DeclarationType.Parameter, referencedDeclaration.DeclarationType);
+            }
+        }
     }
 }

@@ -40,9 +40,9 @@ namespace Rubberduck.Parsing.Binding
             _argumentList = argumentList;
         }
 
-        private void ResolveArgumentList(Declaration calledProcedure)
+        private static void ResolveArgumentList(Declaration calledProcedure, ArgumentList argumentList)
         {
-            foreach (var argument in _argumentList.Arguments)
+            foreach (var argument in argumentList.Arguments)
             {
                 argument.Resolve(calledProcedure);
             }
@@ -54,37 +54,31 @@ namespace Rubberduck.Parsing.Binding
             {
                 _lExpression = _lExpressionBinding.Resolve();
             }
-            if (_lExpression.Classification != ExpressionClassification.ResolutionFailed)
-            {
-                ResolveArgumentList(_lExpression.ReferencedDeclaration);
-            }
-            else
-            {
-                ResolveArgumentList(null);
-            }
-            return Resolve(_lExpression);
+
+            return Resolve(_lExpression, _argumentList, _expression);
         }
 
-        private IBoundExpression Resolve(IBoundExpression lExpression, int defaultMemberResolutionRecursionDepth = 0)
+        private static IBoundExpression Resolve(IBoundExpression lExpression, ArgumentList argumentList, ParserRuleContext expression, int defaultMemberResolutionRecursionDepth = 0)
         {
             if (lExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
-                return CreateFailedExpression(lExpression);
+                ResolveArgumentList(null, argumentList);
+                return CreateFailedExpression(lExpression, argumentList);
             }
 
             if (lExpression.Classification == ExpressionClassification.Unbound)
             {
-                return ResolveLExpressionIsUnbound(lExpression);
+                return ResolveLExpressionIsUnbound(lExpression, argumentList, expression);
             }
 
             if(lExpression.ReferencedDeclaration != null)
             {
-                if (_argumentList.HasArguments)
+                if (argumentList.HasArguments)
                 {
                     switch (lExpression)
                     {
                         case IndexExpression indexExpression:
-                            var doubleIndexExpression = ResolveLExpressionIsIndexExpression(indexExpression, defaultMemberResolutionRecursionDepth);
+                            var doubleIndexExpression = ResolveLExpressionIsIndexExpression(indexExpression, argumentList, expression, defaultMemberResolutionRecursionDepth);
                             if (doubleIndexExpression != null)
                             {
                                 return doubleIndexExpression;
@@ -92,7 +86,7 @@ namespace Rubberduck.Parsing.Binding
 
                             break;
                         case DictionaryAccessExpression dictionaryAccessExpression:
-                            var indexOnBangExpression = ResolveLExpressionIsDictionaryAccessExpression(dictionaryAccessExpression, defaultMemberResolutionRecursionDepth);
+                            var indexOnBangExpression = ResolveLExpressionIsDictionaryAccessExpression(dictionaryAccessExpression, argumentList, expression, defaultMemberResolutionRecursionDepth);
                             if (indexOnBangExpression != null)
                             {
                                 return indexOnBangExpression;
@@ -104,7 +98,7 @@ namespace Rubberduck.Parsing.Binding
 
                 if (IsVariablePropertyFunctionWithoutParameters(lExpression))
                 {
-                    var parameterlessLExpressionAccess = ResolveLExpressionIsVariablePropertyFunctionNoParameters(lExpression, defaultMemberResolutionRecursionDepth);
+                    var parameterlessLExpressionAccess = ResolveLExpressionIsVariablePropertyFunctionNoParameters(lExpression, argumentList, expression, defaultMemberResolutionRecursionDepth);
                     if (parameterlessLExpressionAccess != null)
                     {
                         return parameterlessLExpressionAccess;
@@ -116,24 +110,25 @@ namespace Rubberduck.Parsing.Binding
                 || lExpression.Classification == ExpressionClassification.Function
                 || lExpression.Classification == ExpressionClassification.Subroutine)
             {
-                return ResolveLExpressionIsPropertyFunctionSubroutine(lExpression);
+                return ResolveLExpressionIsPropertyFunctionSubroutine(lExpression, argumentList, expression);
             }
 
-            return CreateFailedExpression(lExpression);
+            ResolveArgumentList(null, argumentList);
+            return CreateFailedExpression(lExpression, argumentList);
         }
 
-        private IBoundExpression CreateFailedExpression(IBoundExpression lExpression)
+        private static IBoundExpression CreateFailedExpression(IBoundExpression lExpression, ArgumentList argumentList)
         {
             var failedExpr = new ResolutionFailedExpression();
             failedExpr.AddSuccessfullyResolvedExpression(lExpression);
-            foreach (var arg in _argumentList.Arguments)
+            foreach (var arg in argumentList.Arguments)
             {
                 failedExpr.AddSuccessfullyResolvedExpression(arg.Expression);
             }
             return failedExpr;
         }
 
-        private IBoundExpression ResolveLExpressionIsVariablePropertyFunctionNoParameters(IBoundExpression lExpression, int defaultMemberResolutionRecursionDepth)
+        private static IBoundExpression ResolveLExpressionIsVariablePropertyFunctionNoParameters(IBoundExpression lExpression, ArgumentList argumentList, ParserRuleContext expression, int defaultMemberResolutionRecursionDepth)
         {
             /*
                 <l-expression> is classified as a variable, or <l-expression> is classified as a property or function 
@@ -151,13 +146,13 @@ namespace Rubberduck.Parsing.Binding
 
             if (indexedDeclaration.IsArray)
             {
-                return ResolveLExpressionDeclaredTypeIsArray(lExpression);
+                return ResolveLExpressionDeclaredTypeIsArray(lExpression, argumentList, expression);
             }
 
             var asTypeName = indexedDeclaration.AsTypeName;
             var asTypeDeclaration = indexedDeclaration.AsTypeDeclaration;
 
-            return ResolveDefaultMember(lExpression, asTypeName, asTypeDeclaration, defaultMemberResolutionRecursionDepth);
+            return ResolveDefaultMember(lExpression, asTypeName, asTypeDeclaration, argumentList, expression, defaultMemberResolutionRecursionDepth);
         }
 
         private static bool IsVariablePropertyFunctionWithoutParameters(IBoundExpression lExpression)
@@ -174,7 +169,7 @@ namespace Rubberduck.Parsing.Binding
             }
         }
 
-        private IBoundExpression ResolveLExpressionIsIndexExpression(IndexExpression indexExpression, int defaultMemberResolutionRecursionDepth = 0)
+        private static IBoundExpression ResolveLExpressionIsIndexExpression(IndexExpression indexExpression, ArgumentList argumentList, ParserRuleContext expression, int defaultMemberResolutionRecursionDepth = 0)
         {
             /*
              <l-expression> is classified as an index expression and the argument list is not empty.
@@ -192,16 +187,16 @@ namespace Rubberduck.Parsing.Binding
             //via the default member path.
             if (indexedDeclaration.IsArray && !indexExpression.IsArrayAccess)
             {
-                return ResolveLExpressionDeclaredTypeIsArray(indexExpression);
+                return ResolveLExpressionDeclaredTypeIsArray(indexExpression, argumentList, expression);
             }
 
             var asTypeName = indexedDeclaration.AsTypeName;
             var asTypeDeclaration = indexedDeclaration.AsTypeDeclaration;
 
-            return ResolveDefaultMember(indexExpression, asTypeName, asTypeDeclaration, defaultMemberResolutionRecursionDepth);
+            return ResolveDefaultMember(indexExpression, asTypeName, asTypeDeclaration, argumentList, expression, defaultMemberResolutionRecursionDepth);
         }
 
-        private IBoundExpression ResolveLExpressionIsDictionaryAccessExpression(DictionaryAccessExpression dictionaryAccessExpression, int defaultMemberResolutionRecursionDepth = 0)
+        private static IBoundExpression ResolveLExpressionIsDictionaryAccessExpression(DictionaryAccessExpression dictionaryAccessExpression, ArgumentList argumentList, ParserRuleContext expression, int defaultMemberResolutionRecursionDepth)
         {
             //This is equivalent to the case in which the lExpression is an IndexExpression with the difference that it cannot be an array access.
 
@@ -213,16 +208,16 @@ namespace Rubberduck.Parsing.Binding
 
             if (indexedDeclaration.IsArray)
             {
-                return ResolveLExpressionDeclaredTypeIsArray(dictionaryAccessExpression);
+                return ResolveLExpressionDeclaredTypeIsArray(dictionaryAccessExpression, argumentList, expression);
             }
 
             var asTypeName = indexedDeclaration.AsTypeName;
             var asTypeDeclaration = indexedDeclaration.AsTypeDeclaration;
 
-            return ResolveDefaultMember(dictionaryAccessExpression, asTypeName, asTypeDeclaration, defaultMemberResolutionRecursionDepth);
+            return ResolveDefaultMember(dictionaryAccessExpression, asTypeName, asTypeDeclaration, argumentList, expression, defaultMemberResolutionRecursionDepth);
         }
 
-        private IBoundExpression ResolveDefaultMember(IBoundExpression lExpression, string asTypeName, Declaration asTypeDeclaration, int defaultMemberResolutionRecursionDepth)
+        private static IBoundExpression ResolveDefaultMember(IBoundExpression lExpression, string asTypeName, Declaration asTypeDeclaration, ArgumentList argumentList, ParserRuleContext expression, int defaultMemberResolutionRecursionDepth)
         {
             /*
                 The declared type of <l-expression> is Object or Variant, and <argument-list> contains no 
@@ -232,9 +227,10 @@ namespace Rubberduck.Parsing.Binding
             if (
                 (Tokens.Variant.Equals(asTypeName, StringComparison.InvariantCultureIgnoreCase)
                     || Tokens.Object.Equals(asTypeName, StringComparison.InvariantCultureIgnoreCase))
-                && !_argumentList.HasNamedArguments)
+                && !argumentList.HasNamedArguments)
             {
-                return new IndexExpression(null, ExpressionClassification.Unbound, _expression, lExpression, _argumentList, isDefaultMemberAccess: true);
+                ResolveArgumentList(null, argumentList);
+                return new IndexExpression(null, ExpressionClassification.Unbound, expression, lExpression, argumentList, isDefaultMemberAccess: true);
             }
             /*
                 The declared type of <l-expression> is a specific class, which has a public default Property 
@@ -255,9 +251,10 @@ namespace Rubberduck.Parsing.Binding
                     TODO: Improve argument compatibility check by checking the argument types.
                  */
                 var parameters = ((IParameterizedDeclaration) defaultMember).Parameters.ToList();
-                if (ArgumentListIsCompatible(parameters, _argumentList))
+                if (ArgumentListIsCompatible(parameters, argumentList))
                 {
-                    return new IndexExpression(defaultMember, defaultMemberClassification, _expression, _lExpression, _argumentList, isDefaultMemberAccess: true);
+                    ResolveArgumentList(defaultMember, argumentList);
+                    return new IndexExpression(defaultMember, defaultMemberClassification, expression, lExpression, argumentList, isDefaultMemberAccess: true);
                 }
 
                 /**
@@ -268,7 +265,7 @@ namespace Rubberduck.Parsing.Binding
                 if (parameters.Count(parameter => !parameter.IsOptional) == 0
                     && DEFAULT_MEMBER_RECURSION_LIMIT > defaultMemberResolutionRecursionDepth)
                 {
-                    return ResolveRecursiveDefaultMember(defaultMember, defaultMemberClassification, defaultMemberResolutionRecursionDepth);
+                    return ResolveRecursiveDefaultMember(defaultMember, defaultMemberClassification, argumentList,  expression, defaultMemberResolutionRecursionDepth);
                 }
             }
 
@@ -282,10 +279,10 @@ namespace Rubberduck.Parsing.Binding
                     && parameters.Count(parameter => !parameter.IsOptional) <= argumentList.Arguments.Count;
         }
 
-        private IBoundExpression ResolveRecursiveDefaultMember(Declaration defaultMember, ExpressionClassification defaultMemberClassification, int defaultMemberResolutionRecursionDepth)
+        private static IBoundExpression ResolveRecursiveDefaultMember(Declaration defaultMember, ExpressionClassification defaultMemberClassification, ArgumentList argumentList, ParserRuleContext expression, int defaultMemberResolutionRecursionDepth)
         {
-            var defaultMemberAsLExpression = new SimpleNameExpression(defaultMember, defaultMemberClassification, _expression);
-            return Resolve(defaultMemberAsLExpression, defaultMemberResolutionRecursionDepth + 1);
+            var defaultMemberAsLExpression = new SimpleNameExpression(defaultMember, defaultMemberClassification, expression);
+            return Resolve(defaultMemberAsLExpression, argumentList, expression, defaultMemberResolutionRecursionDepth + 1);
         }
 
         private static ExpressionClassification DefaultMemberExpressionClassification(Declaration defaultMember)
@@ -320,10 +317,11 @@ namespace Rubberduck.Parsing.Binding
                    || accessibility == Accessibility.Public;
         }
 
-        private IBoundExpression ResolveLExpressionDeclaredTypeIsArray(IBoundExpression lExpression)
+        private static IBoundExpression ResolveLExpressionDeclaredTypeIsArray(IBoundExpression lExpression, ArgumentList argumentList, ParserRuleContext expression)
         {
             var indexedDeclaration = lExpression.ReferencedDeclaration;
-            if (!indexedDeclaration?.IsArray ?? false)
+            if (indexedDeclaration == null 
+                || !indexedDeclaration.IsArray)
             {
                 return null;
             }
@@ -333,18 +331,18 @@ namespace Rubberduck.Parsing.Binding
                  been specified for it, and one of the following is true:  
              */
 
-            if (!_argumentList.HasArguments)
+            if (!argumentList.HasArguments)
             {
                 /*
                     <argument-list> represents an empty argument list. In this case, the index expression 
                     takes on the classification and declared type of <l-expression> and references the same 
                     array.  
                  */
-
-                return new IndexExpression(indexedDeclaration, lExpression.Classification, _expression, lExpression, _argumentList);
+                ResolveArgumentList(indexedDeclaration, argumentList);
+                return new IndexExpression(indexedDeclaration, lExpression.Classification, expression, lExpression, argumentList);
             }
 
-            if (!_argumentList.HasNamedArguments)
+            if (!argumentList.HasNamedArguments)
             {
                 /*
                     <argument-list> represents an argument list with a number of positional arguments equal 
@@ -355,13 +353,14 @@ namespace Rubberduck.Parsing.Binding
                     TODO: Implement compatibility checking
                  */
 
-                return new IndexExpression(indexedDeclaration, ExpressionClassification.Variable, _expression, lExpression, _argumentList, isArrayAccess: true);
+                ResolveArgumentList(indexedDeclaration.AsTypeDeclaration, argumentList);
+                return new IndexExpression(indexedDeclaration, ExpressionClassification.Variable, expression, lExpression, argumentList, isArrayAccess: true);
             }
 
             return null;
         }
 
-        private IBoundExpression ResolveLExpressionIsPropertyFunctionSubroutine(IBoundExpression lExpression)
+        private static IBoundExpression ResolveLExpressionIsPropertyFunctionSubroutine(IBoundExpression lExpression, ArgumentList argumentList, ParserRuleContext expression)
         {
             /*
                     <l-expression> is classified as a property or function and its parameter list is compatible with 
@@ -374,16 +373,18 @@ namespace Rubberduck.Parsing.Binding
 
                     Note: We assume compatibility through enforcement by the VBE.
              */
-             return new IndexExpression(lExpression.ReferencedDeclaration, lExpression.Classification, _expression, lExpression, _argumentList);
+            ResolveArgumentList(lExpression.ReferencedDeclaration, argumentList);
+            return new IndexExpression(lExpression.ReferencedDeclaration, lExpression.Classification, expression, lExpression, argumentList);
         }
 
-        private IBoundExpression ResolveLExpressionIsUnbound(IBoundExpression lExpression)
+        private static IBoundExpression ResolveLExpressionIsUnbound(IBoundExpression lExpression, ArgumentList argumentList, ParserRuleContext expression)
         {
             /*
                  <l-expression> is classified as an unbound member. In this case, the index expression references 
                  <l-expression>, is classified as an unbound member and its declared type is Variant.  
             */
-            return new IndexExpression(lExpression.ReferencedDeclaration, ExpressionClassification.Unbound, _expression, lExpression, _argumentList);
+            ResolveArgumentList(lExpression.ReferencedDeclaration, argumentList);
+            return new IndexExpression(lExpression.ReferencedDeclaration, ExpressionClassification.Unbound, expression, lExpression, argumentList);
         }
     }
 }

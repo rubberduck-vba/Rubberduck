@@ -1156,7 +1156,6 @@ End Sub";
 
         [Category("Resolver")]
         [Test]
-        [Ignore("Temporarily ignored, the mock or serialization appears to be broken (works in release as of 7/16/2018); see issue #4191 for background")]
         public void Identify_NamedParameter_Parameter_FromExcel()
         {
             const string code = @"
@@ -1183,7 +1182,7 @@ End Sub";
 
         [Category("Resolver")]
         [Test]
-        [Ignore("Need to fix the default member access for function calls; see case #3937")]
+        //[Ignore("Need to fix the default member access for function calls; see case #3937")]
         public void Identify_NamedParameter_Parameter_FromExcel_DefaultAccess()
         {
             // Note that ColumnIndex is actually a parameter of the _Default default member
@@ -1197,20 +1196,26 @@ Public Sub DoIt()
 End Sub";
             var vbe = new MockVbeBuilder()
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(6, 22))
+                .AddComponent("TestModule", ComponentType.StandardModule, code)
                 .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
                 .AddProjectToVbeBuilder()
                 .Build();
 
+            var selection = new Selection(6, 21, 6, 32);
+
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var expected = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Parameter).Single(p =>
-                    !p.IsUserDefined && p.IdentifierName == "ColumnIndex" &&
-                    p.ParentScope == "EXCEL.EXE;Excel.Range._Default");
-                var actual = state.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName.Equals("TestModule"));
+                var qualifiedSelection = new QualifiedSelection(module, selection);
 
-                Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType,
-                    actual.DeclarationType);
+                var reference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).First();
+                var referencedDeclaration = reference.Declaration;
+
+                var expectedReferencedDeclarationName = "EXCEL.EXE;Excel.Range._Default.Let.ColumnIndex";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ParentScope}.{referencedDeclaration.IdentifierName}";
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.AreEqual(DeclarationType.Parameter, referencedDeclaration.DeclarationType);
             }
         }
 
