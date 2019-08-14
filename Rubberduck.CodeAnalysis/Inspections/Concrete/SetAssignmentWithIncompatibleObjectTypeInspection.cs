@@ -5,6 +5,7 @@ using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.TypeResolvers;
@@ -85,6 +86,9 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         {
             _declarationFinderProvider = state;
             _setTypeResolver = setTypeResolver;
+
+            //This will most likely cause a runtime error. The exceptions are rare and should be refactored or made explicit with an @Ignore annotation.
+            Severity = CodeInspectionSeverity.Error;
         }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
