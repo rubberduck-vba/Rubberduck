@@ -142,6 +142,9 @@ namespace Rubberduck.VBEditor
             return !(selection1 == selection2);
         }
 
+        /// <summary>
+        /// Orders first by start position and then end position.
+        /// </summary>
         public static bool operator >(Selection selection1, Selection selection2)
         {
             return IsGreaterPosition(selection1.StartLine, selection1.StartColumn, selection2.StartLine, selection2.StartColumn)
@@ -156,6 +159,9 @@ namespace Rubberduck.VBEditor
                     && column1 > column2;
         }
 
+        /// <summary>
+        /// Orders first by start position and then end position.
+        /// </summary>
         public static bool operator <(Selection selection1, Selection selection2)
         {
             return IsLesserPosition(selection1.StartLine, selection1.StartColumn, selection2.StartLine, selection2.StartColumn)
@@ -170,11 +176,17 @@ namespace Rubberduck.VBEditor
                     && column1 < column2;
         }
 
+        /// <summary>
+        /// Orders first by start position and then end position.
+        /// </summary>
         public static bool operator >=(Selection selection1, Selection selection2)
         {
             return !(selection1 < selection2);
         }
 
+        /// <summary>
+        /// Orders first by start position and then end position.
+        /// </summary>
         public static bool operator <=(Selection selection1, Selection selection2)
         {
             return !(selection1 > selection2);

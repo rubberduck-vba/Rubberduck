@@ -16,6 +16,8 @@ namespace Rubberduck.Parsing.Binding
 
         private const int DEFAULT_MEMBER_RECURSION_LIMIT = 32;
 
+        //This is based on the spec at https://docs.microsoft.com/en-us/openspecs/microsoft_general_purpose_programming_languages/MS-VBAL/f20c9ebc-3365-4614-9788-1cd50a504574
+
         public DictionaryAccessDefaultBinding(
             ParserRuleContext expression,
             IExpressionBinding lExpressionBinding,

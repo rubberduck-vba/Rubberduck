@@ -16,6 +16,8 @@ namespace Rubberduck.Parsing.Binding
 
         private const int DEFAULT_MEMBER_RECURSION_LIMIT = 32;
 
+        //This is based on the spec at https://docs.microsoft.com/en-us/openspecs/microsoft_general_purpose_programming_languages/MS-VBAL/551030b2-72a4-4c95-9cb0-fb8f8c8774b4
+
         public IndexDefaultBinding(
             ParserRuleContext expression,
             IExpressionBinding lExpressionBinding,
@@ -250,7 +252,7 @@ namespace Rubberduck.Parsing.Binding
                     index expression references this default member and takes on its classification and 
                     declared type.  
 
-                    TODO: Improve argument compatibility check.
+                    TODO: Improve argument compatibility check by checking the argument types.
                  */
                 var parameters = ((IParameterizedDeclaration) defaultMember).Parameters.ToList();
                 if (ArgumentListIsCompatible(parameters, _argumentList))
@@ -350,7 +352,7 @@ namespace Rubberduck.Parsing.Binding
                     references an individual element of the array, is classified as a variable and has the 
                     declared type of the array’s element type.  
 
-                    TODO: Implement compatibility checking / amend the grammar
+                    TODO: Implement compatibility checking
                  */
 
                 return new IndexExpression(indexedDeclaration, ExpressionClassification.Variable, _expression, lExpression, _argumentList, isArrayAccess: true);

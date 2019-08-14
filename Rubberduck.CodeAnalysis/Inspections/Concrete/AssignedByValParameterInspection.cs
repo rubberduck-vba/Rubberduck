@@ -58,6 +58,8 @@ namespace Rubberduck.Inspections.Concrete
 
         private static bool IsAssignmentToDeclaration(IdentifierReference reference)
         {
+            //Todo: Review whether this is still needed once parameterless default member assignments are resolved correctly.
+
             if (!reference.IsAssignment)
             {
                 return false;
