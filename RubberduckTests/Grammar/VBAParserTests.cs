@@ -3170,7 +3170,7 @@ End Sub
 
         
         [Test]
-        [Ignore("This cannot work with the current setup of identifiers bacause the SLL parser confuses the bang for a type hint.")]
+        [Ignore("This cannot work with the current setup of identifiers because the SLL parser confuses the bang for a type hint.")]
         public void ParserDoesNotFailOnBangOperatorOnForeignIdentifier()
         {
             const string code = @"
@@ -3201,7 +3201,7 @@ End Sub
 
         
         [Test]
-        [Ignore("This cannot work with the current setup of identifiers bacause the SLL parser confuses the bang for a type hint.")]
+        [Ignore("This cannot work with the current setup of identifiers because the SLL parser confuses the bang for a type hint.")]
         public void ParserDoesNotFailOnStackedBangOperator_ForeignIdentifier()
         {
             const string code = @"

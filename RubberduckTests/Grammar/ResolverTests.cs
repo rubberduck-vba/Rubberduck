@@ -3096,7 +3096,7 @@ End Function
         [Category("Grammar")]
         [Category("Resolver")]
         [Test]
-        public void ChainedDictionaryAccessExpressionHasReferenceToDefaultMemberAtSecondExclamationMark()
+        public void ChainedDictionaryAccessExpressionHasReferenceToDefaultMemberAtFirstExclamationMark()
         {
             var class1Code = @"
 Public Function Foo(bar As String) As Class2
@@ -3144,7 +3144,7 @@ End Function
         [Category("Grammar")]
         [Category("Resolver")]
         [Test]
-        public void ChainedDictionaryAccessExpressionHasReferenceToDefaultMemberAtFirstExclamationMark()
+        public void ChainedDictionaryAccessExpressionHasReferenceToDefaultMemberAtSecondExclamationMark()
         {
             var class1Code = @"
 Public Function Foo(bar As String) As Class2

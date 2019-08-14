@@ -1182,7 +1182,6 @@ End Sub";
 
         [Category("Resolver")]
         [Test]
-        //[Ignore("Need to fix the default member access for function calls; see case #3937")]
         public void Identify_NamedParameter_Parameter_FromExcel_DefaultAccess()
         {
             // Note that ColumnIndex is actually a parameter of the _Default default member
