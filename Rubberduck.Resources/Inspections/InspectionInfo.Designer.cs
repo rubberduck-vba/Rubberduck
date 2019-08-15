@@ -196,6 +196,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Methods without executable statements may appear to be doing something which they actually don&apos;t, and therefore causing unexpected behaviour..
+        /// </summary>
+        public static string EmptyMethodInspection {
+            get {
+                return ResourceManager.GetString("EmptyMethodInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Empty modules and classes either point to not yet implemented functionality or represent unnecessary baggage that can hurt the maintainability of a project..
         /// </summary>
         public static string EmptyModuleInspection {
@@ -282,6 +291,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string IllegalAnnotationInspection {
             get {
                 return ResourceManager.GetString("IllegalAnnotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A class module that is meant to be used as interface for concrete classes should gnerally be abstracted of any implementations. If it is your intention to use this class module as a concrete, you can safely ignore this inspection result..
+        /// </summary>
+        public static string ImplementedInterfaceMemberInspection {
+            get {
+                return ResourceManager.GetString("ImplementedInterfaceMemberInspection", resourceCulture);
             }
         }
         

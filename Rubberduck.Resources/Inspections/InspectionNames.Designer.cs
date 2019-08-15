@@ -196,6 +196,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Empty method.
+        /// </summary>
+        public static string EmptyMethodInspection {
+            get {
+                return ResourceManager.GetString("EmptyMethodInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Empty module.
         /// </summary>
         public static string EmptyModuleInspection {
@@ -282,6 +291,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string IllegalAnnotationInspection {
             get {
                 return ResourceManager.GetString("IllegalAnnotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implemented member of interface class.
+        /// </summary>
+        public static string ImplementedInterfaceMemberInspection {
+            get {
+                return ResourceManager.GetString("ImplementedInterfaceMemberInspection", resourceCulture);
             }
         }
         
