@@ -95,28 +95,25 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         {
             var finder = _declarationFinderProvider.DeclarationFinder;
 
-            var offendingAssignments = StronglyTypedObjectVariables(finder)
-                .SelectMany(SetAssignments)
+            var setAssignments = finder.AllIdentifierReferences().Where(reference => reference.IsSetAssignment);
+
+            var offendingAssignments = setAssignments
+                .Where(ToBeConsidered)
                 .Select(setAssignment => SetAssignmentWithAssignedTypeName(setAssignment, finder))
                 .Where(setAssignmentWithAssignedTypeName => setAssignmentWithAssignedTypeName.assignedTypeName != null
-                    && !SetAssignmentPossiblyLegal(setAssignmentWithAssignedTypeName));
+                                                            && !SetAssignmentPossiblyLegal(setAssignmentWithAssignedTypeName));
 
             return offendingAssignments
                 .Where(setAssignmentWithAssignedTypeName => !IsIgnored(setAssignmentWithAssignedTypeName.setAssignment))
                 .Select(setAssignmentWithAssignedTypeName => InspectionResult(setAssignmentWithAssignedTypeName, _declarationFinderProvider));
         }
 
-
-        private IEnumerable<Declaration> StronglyTypedObjectVariables(DeclarationFinder declarationFinder)
+        private static bool ToBeConsidered(IdentifierReference reference)
         {
-            return declarationFinder.DeclarationsWithType(DeclarationType.Variable)
-                .Where(declaration => declaration.IsObject
-                                      && declaration.AsTypeDeclaration != null);
-        }
-
-        private IEnumerable<IdentifierReference> SetAssignments(Declaration declaration)
-        {
-            return declaration.References.Where(reference => reference.IsSetAssignment);
+            var declaration = reference.Declaration;
+            return declaration != null
+                   && declaration.AsTypeDeclaration != null
+                   && declaration.IsObject;
         }
 
         private (IdentifierReference setAssignment, string assignedTypeName) SetAssignmentWithAssignedTypeName(IdentifierReference setAssignment, DeclarationFinder finder)

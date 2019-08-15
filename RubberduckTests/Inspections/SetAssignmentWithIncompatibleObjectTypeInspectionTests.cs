@@ -487,7 +487,125 @@ End Sub
         [TestCase("Class1", "OtherProject.Interface1", 1)]
         [TestCase("Class1", SetTypeResolver.NotAnObject, 1)] //The RHS is not even an object. (Will show as type NotAnObject in the result.) 
         [TestCase("Class1", null, 0)] //We could not resolve the Set type, so we do not return a result. 
-        public void MockedSetTypeEvaluatorTest(string lhsTypeName, string expressionFullTypeName, int expectedResultsCount)
+        public void MockedSetTypeEvaluatorTest_Variable(string lhsTypeName, string expressionFullTypeName, int expectedResultsCount)
+        {
+            const string interface1 =
+                @"
+Private Sub Foo() 
+End Sub
+";
+            const string class1 =
+                @"Implements Interface1
+
+Private Sub Interface1_Foo()
+End Sub
+";
+
+            var module1 =
+                $@"
+Private Function Cls() As {lhsTypeName}
+    Set Cls = expression
+End Function
+";
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, class1)
+                .AddComponent("Interface1", ComponentType.ClassModule, interface1)
+                .AddComponent("Module1", ComponentType.StandardModule, module1)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
+
+            var setTypeResolverMock = new Mock<ISetTypeResolver>();
+            setTypeResolverMock.Setup(m =>
+                    m.SetTypeName(It.IsAny<VBAParser.ExpressionContext>(), It.IsAny<QualifiedModuleName>()))
+                .Returns((VBAParser.ExpressionContext context, QualifiedModuleName qmn) => expressionFullTypeName);
+
+            var inspectionResults = InspectionResults(vbe, setTypeResolverMock.Object).ToList();
+
+            Assert.AreEqual(expectedResultsCount, inspectionResults.Count);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [TestCase("Class1", "TestProject.Class1", 0)]
+        [TestCase("Interface1", "TestProject.Class1", 0)]
+        [TestCase("Class1", "TestProject.Interface1", 0)]
+        [TestCase("Variant", "Whatever", 0)] //Tokens.Variant cannot be used here because it is not a constant expression.
+        [TestCase("Object", "Whatever", 0)]
+        [TestCase("Whatever", "Variant", 0)]
+        [TestCase("Whatever", "Object", 0)]
+        [TestCase("Class1", "TestProject.SomethingIncompatible", 1)]
+        [TestCase("Class1", "SomethingDifferent", 1)]
+        [TestCase("TestProject.Class1", "OtherProject.Class1", 1)]
+        [TestCase("TestProject.Interface1", "OtherProject.Class1", 1)]
+        [TestCase("TestProject.Class1", "OtherProject.Interface1", 1)]
+        [TestCase("Class1", "OtherProject.Class1", 1)]
+        [TestCase("Interface1", "OtherProject.Class1", 1)]
+        [TestCase("Class1", "OtherProject.Interface1", 1)]
+        [TestCase("Class1", SetTypeResolver.NotAnObject, 1)] //The RHS is not even an object. (Will show as type NotAnObject in the result.) 
+        [TestCase("Class1", null, 0)] //We could not resolve the Set type, so we do not return a result. 
+        public void MockedSetTypeEvaluatorTest_Function(string lhsTypeName, string expressionFullTypeName, int expectedResultsCount)
+        {
+            const string interface1 =
+                @"
+Private Sub Foo() 
+End Sub
+";
+            const string class1 =
+                @"Implements Interface1
+
+Private Sub Interface1_Foo()
+End Sub
+";
+
+            var module1 =
+                $@"
+Private Property Get Cls() As {lhsTypeName}
+    Set Cls = expression
+End Property
+";
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, class1)
+                .AddComponent("Interface1", ComponentType.ClassModule, interface1)
+                .AddComponent("Module1", ComponentType.StandardModule, module1)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
+
+            var setTypeResolverMock = new Mock<ISetTypeResolver>();
+            setTypeResolverMock.Setup(m =>
+                    m.SetTypeName(It.IsAny<VBAParser.ExpressionContext>(), It.IsAny<QualifiedModuleName>()))
+                .Returns((VBAParser.ExpressionContext context, QualifiedModuleName qmn) => expressionFullTypeName);
+
+            var inspectionResults = InspectionResults(vbe, setTypeResolverMock.Object).ToList();
+
+            Assert.AreEqual(expectedResultsCount, inspectionResults.Count);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [TestCase("Class1", "TestProject.Class1", 0)]
+        [TestCase("Interface1", "TestProject.Class1", 0)]
+        [TestCase("Class1", "TestProject.Interface1", 0)]
+        [TestCase("Variant", "Whatever", 0)] //Tokens.Variant cannot be used here because it is not a constant expression.
+        [TestCase("Object", "Whatever", 0)]
+        [TestCase("Whatever", "Variant", 0)]
+        [TestCase("Whatever", "Object", 0)]
+        [TestCase("Class1", "TestProject.SomethingIncompatible", 1)]
+        [TestCase("Class1", "SomethingDifferent", 1)]
+        [TestCase("TestProject.Class1", "OtherProject.Class1", 1)]
+        [TestCase("TestProject.Interface1", "OtherProject.Class1", 1)]
+        [TestCase("TestProject.Class1", "OtherProject.Interface1", 1)]
+        [TestCase("Class1", "OtherProject.Class1", 1)]
+        [TestCase("Interface1", "OtherProject.Class1", 1)]
+        [TestCase("Class1", "OtherProject.Interface1", 1)]
+        [TestCase("Class1", SetTypeResolver.NotAnObject, 1)] //The RHS is not even an object. (Will show as type NotAnObject in the result.) 
+        [TestCase("Class1", null, 0)] //We could not resolve the Set type, so we do not return a result. 
+        public void MockedSetTypeEvaluatorTest_PropertyGet(string lhsTypeName, string expressionFullTypeName, int expectedResultsCount)
         {
             const string interface1 =
                 @"
