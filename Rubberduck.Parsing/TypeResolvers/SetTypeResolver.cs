@@ -211,7 +211,7 @@ namespace Rubberduck.Parsing.TypeResolvers
         //Please note that the lExpression is the (whitespace) index expression itself and not the lExpression it contains. 
         private Declaration ResolveIndexExpressionAsArrayAccess(VBAParser.LExpressionContext actualIndexExpr, QualifiedModuleName containingModule, DeclarationFinder finder)
         {
-            // A n array access references the entire (whitespace)indexExpr.
+            // An array access references the entire (whitespace)indexExpr.
             var qualifiedSelection = new QualifiedSelection(containingModule, actualIndexExpr.GetSelection());
             return finder
                 .IdentifierReferences(qualifiedSelection)

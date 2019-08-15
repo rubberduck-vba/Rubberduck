@@ -306,7 +306,6 @@ End Sub";
         // when it was loaded by the COM collector (_Collection is missing the default interface flag). After picking up that member
         // this test fails because it resolves as attempting to assign 'New Collection' to `Test.DefaultMember`.
         [Test]
-        //[Ignore("Broken by COM collector fix. See comment on test.")]
         [Category("Inspections")]
         public void ObjectVariableNotSet_FunctionReturnNotSet_ReturnsResult()
         {

@@ -727,7 +727,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Set Assignment With Incompatible Object Type.
+        ///   Looks up a localized string similar to Set assignment with incompatible object type.
         /// </summary>
         public static string SetAssignmentWithIncompatibleObjectTypeInspection {
             get {
