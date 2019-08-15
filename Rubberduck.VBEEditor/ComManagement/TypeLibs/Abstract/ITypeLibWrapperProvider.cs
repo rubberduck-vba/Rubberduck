@@ -1,6 +1,6 @@
 ﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-namespace Rubberduck.VBEditor.ComManagement.TypeLibs
+namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract
 {
     public interface ITypeLibWrapperProvider
     {
