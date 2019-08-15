@@ -345,4 +345,10 @@
   <data name="TestExplorer_AllResults" xml:space="preserve">
     <value>All</value>
   </data>
+  <data name="TestExplorer_TestToggle_Ignore" xml:space="preserve">
+    <value>Ignore test</value>
+  </data>
+  <data name="TestExplorer_TestToggle_Unignore" xml:space="preserve">
+    <value>Unignore test</value>
+  </data>
 </root>
