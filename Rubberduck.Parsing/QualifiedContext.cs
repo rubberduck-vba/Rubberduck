@@ -39,9 +39,9 @@ namespace Rubberduck.Parsing
 
         public static bool operator ==(QualifiedContext context1, QualifiedContext context2)
         {
-            if ((object)context1 == null)
+            if (context1 is null)
             {
-                return (object)context2 == null;
+                return context2 is null;
             }
 
             return context1.Equals(context2);
@@ -49,9 +49,9 @@ namespace Rubberduck.Parsing
 
         public static bool operator !=(QualifiedContext context1, QualifiedContext context2)
         {
-            if ((object)context1 == null)
+            if (context1 is null)
             {
-                return (object)context2 != null;
+                return !(context2 is null);
             }
 
             return !context1.Equals(context2);

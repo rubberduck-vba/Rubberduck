@@ -5,25 +5,21 @@ namespace Rubberduck.Parsing.Rewriter.RewriterInfo
 {
     public struct RewriterInfo : IEquatable<RewriterInfo>
     {
-        private readonly string _replacement;
-        private readonly int _startTokenIndex;
-        private readonly int _stopTokenIndex;
-
         public RewriterInfo(int startTokenIndex, int stopTokenIndex)
             : this(string.Empty, startTokenIndex, stopTokenIndex) { }
 
         public RewriterInfo(string replacement, int startTokenIndex, int stopTokenIndex)
         {
-            _replacement = replacement;
-            _startTokenIndex = startTokenIndex;
-            _stopTokenIndex = stopTokenIndex;
+            Replacement = replacement;
+            StartTokenIndex = startTokenIndex;
+            StopTokenIndex = stopTokenIndex;
         }
 
-        public string Replacement { get { return _replacement; } }
-        public int StartTokenIndex { get { return _startTokenIndex; } }
-        public int StopTokenIndex { get { return _stopTokenIndex; } }
+        public string Replacement { get; }
+        public int StartTokenIndex { get; }
+        public int StopTokenIndex { get; }
 
-        public static RewriterInfo None { get { return default(RewriterInfo); } }
+        public static RewriterInfo None => default;
 
         public bool Equals(RewriterInfo other)
         {
