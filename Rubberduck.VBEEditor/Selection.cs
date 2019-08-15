@@ -102,10 +102,13 @@ namespace Rubberduck.VBEditor
 
         public bool Equals(Selection other)
         {
-            return other.StartLine == StartLine
-                   && other.EndLine == EndLine
-                   && other.StartColumn == StartColumn
-                   && other.EndColumn == EndColumn;
+            return IsSamePosition(other.StartLine, other.StartColumn, StartLine, StartColumn)
+                   && IsSamePosition(other.EndLine, other.EndColumn, EndLine, EndColumn);
+        }
+
+        private static bool IsSamePosition(int line1, int column1, int line2, int column2)
+        {
+            return line1 == line2 && column1 == column2;
         }
 
         public int CompareTo(Selection other)
@@ -139,25 +142,51 @@ namespace Rubberduck.VBEditor
             return !(selection1 == selection2);
         }
 
+        /// <summary>
+        /// Orders first by start position and then end position.
+        /// </summary>
         public static bool operator >(Selection selection1, Selection selection2)
         {
-            return selection1.StartLine > selection2.StartLine ||
-                   selection1.StartLine == selection2.StartLine &&
-                   selection1.StartColumn > selection2.StartColumn;
+            return IsGreaterPosition(selection1.StartLine, selection1.StartColumn, selection2.StartLine, selection2.StartColumn)
+                || IsSamePosition(selection1.StartLine, selection1.StartColumn, selection2.StartLine, selection2.StartColumn)
+                    && IsGreaterPosition(selection1.EndLine, selection1.EndColumn, selection2.EndLine, selection2.EndColumn);
         }
 
+        private static bool IsGreaterPosition(int line1, int column1, int line2, int column2)
+        {
+            return line1 > line2 
+                || line1 == line2 
+                    && column1 > column2;
+        }
+
+        /// <summary>
+        /// Orders first by start position and then end position.
+        /// </summary>
         public static bool operator <(Selection selection1, Selection selection2)
         {
-            return selection1.StartLine < selection2.StartLine ||
-                   selection1.StartLine == selection2.StartLine &&
-                   selection1.StartColumn < selection2.StartColumn;
+            return IsLesserPosition(selection1.StartLine, selection1.StartColumn, selection2.StartLine, selection2.StartColumn)
+                || IsSamePosition(selection1.StartLine, selection1.StartColumn, selection2.StartLine, selection2.StartColumn)
+                    && IsLesserPosition(selection1.EndLine, selection1.EndColumn, selection2.EndLine, selection2.EndColumn);
         }
 
+        private static bool IsLesserPosition(int line1, int column1, int line2, int column2)
+        {
+            return line1 < line2
+                || line1 == line2
+                    && column1 < column2;
+        }
+
+        /// <summary>
+        /// Orders first by start position and then end position.
+        /// </summary>
         public static bool operator >=(Selection selection1, Selection selection2)
         {
             return !(selection1 < selection2);
         }
 
+        /// <summary>
+        /// Orders first by start position and then end position.
+        /// </summary>
         public static bool operator <=(Selection selection1, Selection selection2)
         {
             return !(selection1 > selection2);

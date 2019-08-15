@@ -647,6 +647,7 @@ visibility : PRIVATE | PUBLIC | FRIEND | GLOBAL;
 // 5.6 Expressions
 expression :
     // Literal Expression has to come before lExpression, otherwise it'll be classified as simple name expression instead.
+    //The same holds for Built-in Type Expression.
     whiteSpace? LPAREN whiteSpace? expression whiteSpace? RPAREN                                    # parenthesizedExpr
     | TYPEOF whiteSpace expression                                                                  # typeofexpr // To make the grammar SLL, the type-of-is-expression is actually the child of an IS relational op.
     | HASH expression                                                                               # markedFileNumberExpr // Added to support special forms such as Input(file1, #file1)
@@ -666,8 +667,8 @@ expression :
     | expression whiteSpace? EQV whiteSpace? expression                                             # logicalEqvOp
     | expression whiteSpace? IMP whiteSpace? expression                                             # logicalImpOp
     | literalExpression                                                                             # literalExpr
-    | lExpression                                                                                   # lExpr
     | builtInType                                                                                   # builtInTypeExpr
+    | lExpression                                                                                   # lExpr
 ;
 
 // 5.6.5 Literal Expressions
@@ -686,13 +687,16 @@ variantLiteralIdentifier : EMPTY | NULL;
 lExpression :
     lExpression LPAREN whiteSpace? argumentList? whiteSpace? RPAREN                                                 # indexExpr
     | lExpression mandatoryLineContinuation? DOT mandatoryLineContinuation? unrestrictedIdentifier                  # memberAccessExpr
-    | lExpression mandatoryLineContinuation? EXCLAMATIONPOINT mandatoryLineContinuation? unrestrictedIdentifier     # dictionaryAccessExpr
+    | lExpression mandatoryLineContinuation? dictionaryAccess mandatoryLineContinuation? unrestrictedIdentifier     # dictionaryAccessExpr
     | ME                                                                                                            # instanceExpr
     | identifier                                                                                                    # simpleNameExpr
     | DOT mandatoryLineContinuation? unrestrictedIdentifier                                                         # withMemberAccessExpr
-    | EXCLAMATIONPOINT mandatoryLineContinuation? unrestrictedIdentifier                                            # withDictionaryAccessExpr
+    | dictionaryAccess mandatoryLineContinuation? unrestrictedIdentifier                                            # withDictionaryAccessExpr
     | lExpression mandatoryLineContinuation whiteSpace? LPAREN whiteSpace? argumentList? whiteSpace? RPAREN         # whitespaceIndexExpr
 ;
+
+//This is a hack to allow attaching identifier references for default members to the exclaramtion mark.
+dictionaryAccess : EXCLAMATIONPOINT;
 
 // 3.3.5.3 Special Identifier Forms
 builtInType : 
@@ -951,11 +955,12 @@ annotationList : SINGLEQUOTE (AT annotation)+ (COLON commentBody)?;
 annotation : annotationName annotationArgList? whiteSpace?;
 annotationName : unrestrictedIdentifier;
 annotationArgList : 
-    whiteSpace annotationArg
-    | whiteSpace annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+
+    whiteSpace? LPAREN whiteSpace? annotationArg whiteSpace? RPAREN
     | whiteSpace? LPAREN whiteSpace? RPAREN
-    | whiteSpace? LPAREN whiteSpace? annotationArg whiteSpace? RPAREN
-    | whiteSpace? LPAREN annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+ whiteSpace? RPAREN;
+    | whiteSpace? LPAREN annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+ whiteSpace? RPAREN
+    | whiteSpace annotationArg
+    | whiteSpace annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+
+;
 annotationArg : expression;
 
 mandatoryLineContinuation : LINE_CONTINUATION WS*;

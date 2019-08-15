@@ -386,6 +386,9 @@
   <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
     <value>Use of obsolete 'While...Wend' statement</value>
   </data>
+  <data name="SetAssignmentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>Set assignment with incompatible object type</value>
+  </data>
   <data name="EmptyMethodInspection" xml:space="preserve">
     <value>Empty method</value>
   </data>

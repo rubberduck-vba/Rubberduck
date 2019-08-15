@@ -329,18 +329,21 @@ namespace Rubberduck.Parsing.Symbols
         /// </summary>
         public bool IsEnumeratorMember => _attributes.Any(a => a.Name.EndsWith("VB_UserMemId") && a.Values.Contains("-4"));
 
-        public virtual bool IsObject
+        public virtual bool IsObject => !IsArray && IsObjectOrObjectArray;
+
+        public virtual bool IsObjectArray => IsArray && IsObjectOrObjectArray;
+
+        private bool IsObjectOrObjectArray
         {
             get
             {
-                if (AsTypeName == Tokens.Object || 
-                    (AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.ClassModule) ?? false))
+                if (AsTypeName == Tokens.Object 
+                    || (AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.ClassModule) ?? false))
                 {
                     return true;
                 }
 
                 var isIntrinsic = AsTypeIsBaseType
-                                  || IsArray
                                   || (AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.UserDefinedType) ?? false)
                                   || (AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.Enumeration) ?? false);
 
@@ -359,7 +362,9 @@ namespace Rubberduck.Parsing.Symbols
             IEnumerable<IAnnotation> annotations,
             bool isAssignmentTarget = false,
             bool hasExplicitLetStatement = false,
-            bool isSetAssigned = false
+            bool isSetAssigned = false,
+            bool isDefaultMemberAccess = false,
+            bool isArrayAccess = false
             )
         {
             var oldReference = _references.FirstOrDefault(r =>
@@ -386,7 +391,9 @@ namespace Rubberduck.Parsing.Symbols
                 isAssignmentTarget,
                 hasExplicitLetStatement,
                 annotations,
-                isSetAssigned);
+                isSetAssigned,
+                isDefaultMemberAccess,
+                isArrayAccess);
             _references.AddOrUpdate(newReference, 1, (key, value) => 1);
         }
 
@@ -448,7 +455,7 @@ namespace Rubberduck.Parsing.Symbols
         public string IdentifierName { get; }
 
         /// <summary>
-        /// Gets the name of the declared type.
+        /// Gets the name of the declared type as specified in code.
         /// </summary>
         /// <remarks>
         /// This value is <c>null</c> if not applicable, 
@@ -465,6 +472,32 @@ namespace Rubberduck.Parsing.Symbols
                     return AsTypeName;
                 }
                 return AsTypeName.Replace("(", "").Replace(")", "").Trim();
+            }
+        }
+
+        /// <summary>
+        /// Gets the fully qualified name of the declared type.
+        /// </summary>
+        /// <remarks>
+        /// This value is <c>null</c> if not applicable, 
+        /// and <c>Variant</c> if applicable but unspecified.
+        /// </remarks>
+        public string FullAsTypeName
+        {
+            get
+            {
+                if (AsTypeDeclaration == null)
+                {
+                    return AsTypeName;
+                }
+
+                if (AsTypeDeclaration.DeclarationType.HasFlag(DeclarationType.ClassModule))
+                {
+                    return AsTypeDeclaration.QualifiedModuleName.ToString();
+                }
+
+                //Enums and UDTs have to be qualified by the module they are contained in.
+                return AsTypeDeclaration.QualifiedName.ToString();
             }
         }
 

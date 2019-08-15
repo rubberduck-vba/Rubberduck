@@ -727,6 +727,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The VBA compiler does not raise an error if an object is set assigned to a variable with an incompatible declared object type, i.e. with an object type that is neither the same type, a supertype nor a subtype. Under almost all circumstances such an assignment leads to a run-time error, which is harder to detect and indicates a bug. In all other situations the code can be changed to use only assignments between compatible declared types..
+        /// </summary>
+        public static string SetAssignmentWithIncompatibleObjectTypeInspection {
+            get {
+                return ResourceManager.GetString("SetAssignmentWithIncompatibleObjectTypeInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Two declarations are in scope and have the same identifier name. Consider using fully qualified identifier names, otherwise only one of them will be available to use..
         /// </summary>
         public static string ShadowedDeclarationInspection {

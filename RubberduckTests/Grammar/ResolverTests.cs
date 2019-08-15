@@ -18,7 +18,12 @@ namespace RubberduckTests.Grammar
         private RubberduckParserState Resolve(string code, bool loadStdLib = false, ComponentType moduleType = ComponentType.StandardModule)
         {
             var vbe = MockVbeBuilder.BuildFromSingleModule(code, moduleType, out var component, Selection.Empty, loadStdLib);
-            var parser = MockParser.Create(vbe.Object);
+            return Resolve(vbe.Object);
+        }
+
+        private RubberduckParserState Resolve(IVBE vbe)
+        {
+            var parser = MockParser.Create(vbe);
             var state = parser.State;
             parser.Parse(new CancellationTokenSource());
 
@@ -47,20 +52,7 @@ namespace RubberduckTests.Grammar
             builder.AddProject(project);
             var vbe = builder.Build();
 
-            var parser = MockParser.Create(vbe.Object);
-            var state = parser.State;
-            parser.Parse(new CancellationTokenSource());
-
-            if (state.Status == ParserState.ResolverError)
-            {
-                Assert.Fail("Parser state should be 'Ready', but returns '{0}'.", state.Status);
-            }
-            if (state.Status != ParserState.Ready)
-            {
-                Assert.Inconclusive("Parser state should be 'Ready', but returns '{0}'.", state.Status);
-            }
-
-            return state;
+            return Resolve(vbe.Object);
         }
 
         private RubberduckParserState Resolve(params Tuple<string, ComponentType>[] components)
@@ -75,20 +67,8 @@ namespace RubberduckTests.Grammar
             var project = projectBuilder.Build();
             builder.AddProject(project);
             var vbe = builder.Build();
-            var parser = MockParser.Create(vbe.Object);
-            var state = parser.State;
-            parser.Parse(new CancellationTokenSource());
 
-            if (state.Status == ParserState.ResolverError)
-            {
-                Assert.Fail("Parser state should be 'Ready', but returns '{0}'.", state.Status);
-            }
-            if (state.Status != ParserState.Ready)
-            {
-                Assert.Inconclusive("Parser state should be 'Ready', but returns '{0}'.", state.Status);
-            }
-
-            return state;
+            return Resolve(vbe.Object);
         }
 
         [Category("Grammar")]
@@ -987,7 +967,7 @@ End Sub
         [Category("Grammar")]
         [Category("Resolver")]
         [Test]
-        public void ArraySubscriptAccess_IsReferenceToArrayDeclaration()
+        public void ArraySubscriptAccess_IsReferenceToArrayOnceAsAccessAndOnceDirectlyDeclaration()
         {
             var code = @"
 Public Sub DoSomething(ParamArray values())
@@ -1005,10 +985,13 @@ End Sub
                     && item.IdentifierName == "values"
                     && item.IsArray);
 
-                Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                var arrayReferences = declaration.References.Where(item =>
                     item.ParentScoping.DeclarationType == DeclarationType.Procedure
                     && item.ParentScoping.IdentifierName == "DoSomething"
-                    && !item.IsAssignment));
+                    && !item.IsAssignment).ToList();
+
+                Assert.AreEqual(1, arrayReferences.Count(reference => reference.IsArrayAccess));
+                Assert.AreEqual(1, arrayReferences.Count(reference => !reference.IsArrayAccess));
             }
         }
 
@@ -1031,7 +1014,33 @@ End Sub
                     item.DeclarationType == DeclarationType.Variable
                     && item.IdentifierName == "foo");
 
-                Assert.IsNotNull(declaration.References.SingleOrDefault(item =>
+                Assert.AreEqual(1,declaration.References.Count(item =>
+                    item.ParentScoping.DeclarationType == DeclarationType.Procedure
+                    && item.ParentScoping.IdentifierName == "DoSomething"
+                    && item.IsAssignment));
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void SubscriptWrite_HasNonAssignmentReferenceToObjectDeclaration()
+        {
+            var code = @"
+Public Sub DoSomething()
+    Dim foo As Object
+    Set foo = CreateObject(""Scripting.Dictionary"")
+    foo(""key"") = 42
+End Sub
+";
+            using (var state = Resolve(code))
+            {
+
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable
+                    && item.IdentifierName == "foo");
+
+                Assert.AreEqual(1, declaration.References.Count(item =>
                     item.ParentScoping.DeclarationType == DeclarationType.Procedure
                     && item.ParentScoping.IdentifierName == "DoSomething"
                     && !item.IsAssignment));
@@ -1355,7 +1364,8 @@ End Function";
                     && item.IsArray
                     && item.ParentScopeDeclaration.IdentifierName == "DoSomething");
 
-                Assert.IsNotNull(declaration.References.SingleOrDefault(item => !item.IsAssignment));
+                Assert.AreEqual(1, declaration.References.Count(item => !item.IsAssignment && item.IsArrayAccess));
+                Assert.AreEqual(1, declaration.References.Count(item => !item.IsAssignment && !item.IsArrayAccess));
             }
         }
 
@@ -3000,6 +3010,600 @@ End Sub
                 var expectedDescription = "Foo description";
                 var actualDescription = declaration.DescriptionString;
                 Assert.AreEqual(expectedDescription, actualDescription);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void DictionaryAccessExpressionHasReferenceToDefaultMemberAtExclamationMark()
+        {
+            var classCode = @"
+Public Function Foo(bar As String) As Class1
+Attribute Foo.VB_UserMemId = 0
+    Set Foo = New Class1
+End Function
+";
+
+            var moduleCode = @"
+Private Function Foo() As Class1 
+    Dim cls As new Class1
+    Set Foo = cls!newClassObject
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(4, 18, 4, 19);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var reference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).First();
+                var referencedDeclaration = reference.Declaration;
+
+                var expectedReferencedDeclarationName = "Class1.Foo";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.IsTrue(reference.IsDefaultMemberAccess);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void ChainedSameMemberDictionaryAccessExpressionHasReferenceToDefaultMemberAtExclamationMark()
+        {
+            var classCode = @"
+Public Function Foo(bar As String) As Class1
+Attribute Foo.VB_UserMemId = 0
+    Set Foo = New Class1
+End Function
+";
+
+            var moduleCode = @"
+Private Function Foo() As Class1 
+    Dim cls As new Class1
+    Set Foo = cls!newClassObject!whatever
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(4, 33, 4, 34);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var reference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).First();
+                var referencedDeclaration = reference.Declaration;
+
+                var expectedReferencedDeclarationName = "Class1.Foo";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.IsTrue(reference.IsDefaultMemberAccess);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void ChainedDictionaryAccessExpressionHasReferenceToDefaultMemberAtFirstExclamationMark()
+        {
+            var class1Code = @"
+Public Function Foo(bar As String) As Class2
+Attribute Foo.VB_UserMemId = 0
+    Set Foo = New Class2
+End Function
+";
+
+            var class2Code = @"
+Public Function Baz(bar As String) As Class2
+Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class2
+End Function
+";
+
+            var moduleCode = @"
+Private Function Foo() As Class1 
+    Dim cls As new Class1
+    Set Foo = cls!newClassObject!whatever
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(4, 18, 4, 19);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var reference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).First();
+                var referencedDeclaration = reference.Declaration;
+
+                var expectedReferencedDeclarationName = "Class1.Foo";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.IsTrue(reference.IsDefaultMemberAccess);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void ChainedDictionaryAccessExpressionHasReferenceToDefaultMemberAtSecondExclamationMark()
+        {
+            var class1Code = @"
+Public Function Foo(bar As String) As Class2
+Attribute Foo.VB_UserMemId = 0
+    Set Foo = New Class2
+End Function
+";
+
+            var class2Code = @"
+Public Function Baz(bar As String) As Class2
+Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class2
+End Function
+";
+
+            var moduleCode = @"
+Private Function Foo() As Class1 
+    Dim cls As new Class1
+    Set Foo = cls!newClassObject!whatever
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(4, 33, 4, 34);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var reference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).First();
+                var referencedDeclaration = reference.Declaration;
+
+                var expectedReferencedDeclarationName = "Class2.Baz";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.IsTrue(reference.IsDefaultMemberAccess);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void DictionaryAccessExpressionWithIndexedDefaultMemberAccessHasReferenceToDefaultMemberAtExclamationMark()
+        {
+            var class1Code = @"
+Public Function Foo(bar As String) As Class2
+Attribute Foo.VB_UserMemId = 0
+    Set Foo = New Class2
+End Function
+";
+
+            var class2Code = @"
+Public Function Baz(bar As String) As Class2
+Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class2
+End Function
+";
+
+            var moduleCode = @"
+Private Function Foo() As Class1 
+    Dim cls As new Class1
+    Set Foo = cls!newClassObject(""whatever"")
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(4, 18, 4, 19);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var reference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).First();
+                var referencedDeclaration = reference.Declaration;
+
+                var expectedReferencedDeclarationName = "Class1.Foo";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.IsTrue(reference.IsDefaultMemberAccess);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void DictionaryAccessExpressionWithIndexedDefaultMemberAccessHasReferenceToDefaultMemberOnEntireContextExcludingFinalArguments()
+        {
+            var class1Code = @"
+Public Function Foo(bar As String) As Class2
+Attribute Foo.VB_UserMemId = 0
+    Set Foo = New Class2
+End Function
+";
+
+            var class2Code = @"
+Public Function Baz(bar As String) As Class2
+Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class2
+End Function
+";
+
+            var moduleCode = @"
+Private Function Foo() As Class1 
+    Dim cls As new Class1
+    Set Foo = cls!newClassObject(""whatever"")
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(4, 15, 4, 33);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var reference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).First();
+                var referencedDeclaration = reference.Declaration;
+
+                var expectedReferencedDeclarationName = "Class2.Baz";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.IsTrue(reference.IsDefaultMemberAccess);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void DictionaryAccessExpressionWithArrayAccessHasReferenceToDefaultMemberAtExclamationMark()
+        {
+            var class1Code = @"
+Public Function Foo(bar As String) As Class1()
+Attribute Foo.VB_UserMemId = 0
+End Function
+";
+
+            var moduleCode = @"
+Private Function Foo() As Class1 
+    Dim cls As new Class1
+    Set Foo = cls!newClassObject(""whatever"")
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(4, 18, 4, 19);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var reference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).First();
+                var referencedDeclaration = reference.Declaration;
+
+                var expectedReferencedDeclarationName = "Class1.Foo";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.IsTrue(reference.IsDefaultMemberAccess);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void DictionaryAccessExpressionWithArrayAccessHasReferenceToDefaultMemberOnEntireContext()
+        {
+            var class1Code = @"
+Public Function Foo(bar As String) As Class1()
+Attribute Foo.VB_UserMemId = 0
+End Function
+";
+
+            var moduleCode = @"
+Private Function Foo() As Class1 
+    Dim cls As new Class1
+    Set Foo = cls!newClassObject(0)
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(4, 15, 4, 36);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var reference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).First();
+                var referencedDeclaration = reference.Declaration;
+
+                var expectedReferencedDeclarationName = "Class1.Foo";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.IsTrue(reference.IsArrayAccess);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void RecursiveDictionaryAccessExpressionHasReferenceToFinalDefaultMemberAtExclamationMark()
+        {
+            var classCode = @"
+Public Function Foo(bar As String) As Class1
+Attribute Foo.VB_UserMemId = 0
+    Set Foo = New Class1
+End Function
+";
+
+            var otherClassCode = @"
+Public Function Baz() As Class1
+Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class1
+End Function
+";
+
+            var moduleCode = @"
+Private Function Foo() As Class1 
+    Dim cls As new Class2
+    Set Foo = cls!newClassObject
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("Class2", otherClassCode, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(4, 18, 4, 19);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var reference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).First();
+                var referencedDeclaration = reference.Declaration;
+
+                var expectedReferencedDeclarationName = "Class1.Foo";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.IsTrue(reference.IsDefaultMemberAccess);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void WithDictionaryAccessExpressionHasReferenceToDefaultMemberAtExclamationMark()
+        {
+            var classCode = @"
+Public Function Foo(bar As String) As Class1
+Attribute Foo.VB_UserMemId = 0
+    Set Foo = New Class1
+End Function
+";
+
+            var moduleCode = @"
+Private Function Foo() As Class1 
+    With New Class1
+        Set Foo = !newClassObject
+    End With
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(4, 19, 4, 20);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var reference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).First();
+                var referencedDeclaration = reference.Declaration;
+
+                var expectedReferencedDeclarationName = "Class1.Foo";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.IsTrue(reference.IsDefaultMemberAccess);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        //See issue #5069 at https://github.com/rubberduck-vba/Rubberduck/issues/5069
+        public void LineContinuedReDimResolvesSuccessfully()
+        {
+            var moduleCode = @"
+Private Function Foo() As Class1 
+    Dim arr() As String
+    ReDim arr _
+        (0 To 1)
+End Function
+";
+
+            using (var state = Resolve(moduleCode))
+            {
+                //This test only tests that we do not get a resolver error.
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void IndexExpressionOnMemberAccessYieldsCorrectIdentifierReference()
+        {
+            var code = @"
+Public Function Foo(baz As String) As String
+End Function
+
+Public Function Bar() As String
+    Bar = Foo(""Barrier"")
+End Function
+";
+            var selection = new Selection(6, 11, 6, 14);
+
+            using (var state = Resolve(code))
+            {
+                var module = state.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule).Single().QualifiedModuleName;
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var reference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).First();
+
+                var expectedIdentifierName = "Foo";
+                var actualIdentifierName = reference.IdentifierName;
+                Assert.AreEqual(expectedIdentifierName, actualIdentifierName);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void IndexExpressionWithDefaultMemberAccessHasReferenceToDefaultMember()
+        {
+            var classCode = @"
+Public Function Foo(index As Long) As String
+Attribute Foo.VB_UserMemId = 0
+    Set Foo = ""Hello""
+End Function
+";
+
+            var moduleCode = @"
+Private Function Foo() As String 
+    Dim cls As new Class1
+    Foo = cls(0)
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(4, 13, 4, 13);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var memberReference = state.DeclarationFinder.ContainingIdentifierReferences(qualifiedSelection).Last(reference => reference.IsDefaultMemberAccess);
+                var referencedDeclaration = memberReference.Declaration;
+
+                var expectedReferencedDeclarationName = "Class1.Foo";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void ArrayAccessExpressionHasReferenceOnWholeExpression()
+        {
+            var moduleCode = @"
+Private Sub Foo() 
+    Dim bar(0 To 1) As Long
+    bar(0) = 23
+End Sub
+";
+
+            var selection = new Selection(4, 5, 4, 11);
+
+            using (var state = Resolve(moduleCode))
+            {
+                var module = state.DeclarationFinder.AllModules.Single(qmn => qmn.ComponentType == ComponentType.StandardModule);
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var reference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).First();
+
+                var expectedReferenceText = "bar(0)";
+                var actualReferenceText = reference.IdentifierName;
+
+                Assert.AreEqual(expectedReferenceText, actualReferenceText);
+                Assert.IsTrue(reference.IsArrayAccess);
+                Assert.IsTrue(reference.IsAssignment);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void NamedArgumentOfIndexExpressionWithDefaultMemberAccessHasReferenceToParameter()
+        {
+            var classCode = @"
+Public Function Foo(index As Long) As String
+Attribute Foo.VB_UserMemId = 0
+    Set Foo = ""Hello""
+End Function
+";
+
+            var moduleCode = @"
+Private Function Foo() As String 
+    Dim cls As new Class1
+    Foo = cls(index:=0)
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(4, 15, 4, 20);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var memberReference = state.DeclarationFinder.ContainingIdentifierReferences(qualifiedSelection).Last();
+                var referencedDeclaration = memberReference.Declaration;
+
+                var expectedReferencedDeclarationName = "TestProject1.Class1.Foo.index";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ParentScope}.{referencedDeclaration.IdentifierName}";
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.AreEqual(DeclarationType.Parameter, referencedDeclaration.DeclarationType);
             }
         }
     }

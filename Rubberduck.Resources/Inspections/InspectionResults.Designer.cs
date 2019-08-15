@@ -745,6 +745,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to To the variable &apos;{0}&apos; of declared type &apos;{1}&apos; a value is set assigned with the incompatible declared type &apos;{2}&apos;.  .
+        /// </summary>
+        public static string SetAssignmentWithIncompatibleObjectTypeInspection {
+            get {
+                return ResourceManager.GetString("SetAssignmentWithIncompatibleObjectTypeInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} &apos;{1}&apos; hides {2} &apos;{3}&apos;..
         /// </summary>
         public static string ShadowedDeclarationInspection {

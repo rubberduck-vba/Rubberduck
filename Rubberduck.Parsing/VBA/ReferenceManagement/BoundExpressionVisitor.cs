@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Binding;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
@@ -48,8 +47,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 case MemberAccessExpression memberAccessExpression:
                     Visit(memberAccessExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
                     break;
-                case IndexExpression failedExpression:
-                    Visit(failedExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
+                case IndexExpression indexExpression:
+                    Visit(indexExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
                     break;
                 case ParenthesizedExpression parenthesizedExpression:
                     Visit(parenthesizedExpression, module, scope, parent);
@@ -63,11 +62,14 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 case UnaryOpExpression unaryOpExpression:
                     Visit(unaryOpExpression, module, scope, parent);
                     break;
-                case NewExpression failedExpression:
-                    Visit(failedExpression, module, scope, parent);
+                case NewExpression newExpression:
+                    Visit(newExpression, module, scope, parent);
                     break;
                 case InstanceExpression instanceExpression:
                     Visit(instanceExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
+                    break;
+                case DictionaryAccessExpression dictionaryAccessExpression:
+                    Visit(dictionaryAccessExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
                     break;
                 case TypeOfIsExpression typeOfIsExpression:
                     Visit(typeOfIsExpression, module, scope, parent);
@@ -75,7 +77,10 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 case ResolutionFailedExpression resolutionFailedExpression:
                     Visit(resolutionFailedExpression, module, scope, parent);
                     break;
-                default: throw new NotSupportedException($"Unexpected bound expression type {boundExpression.GetType()}");
+                case BuiltInTypeExpression builtInTypeExpression:
+                    break;
+                default:
+                    throw new NotSupportedException($"Unexpected bound expression type {boundExpression.GetType()}");
             }
         }
 
@@ -101,14 +106,6 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             bool hasExplicitLetStatement,
             bool isSetAssignment)
         {
-            if (isAssignmentTarget && expression.Context.Parent is VBAParser.IndexExprContext && !expression.ReferencedDeclaration.IsArray)
-            {
-                // 'SomeDictionary' is not the assignment target in 'SomeDictionary("key") = 42'
-                // ..but we want to treat array index assignment as assignment to the array itself.
-                isAssignmentTarget = false;
-                isSetAssignment = false;
-            }
-
             var callSiteContext = expression.Context;
             var identifier = expression.Context.GetText();
             var callee = expression.ReferencedDeclaration;
@@ -175,33 +172,31 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             bool hasExplicitLetStatement,
             bool isSetAssignment)
         {
-            // Index expressions are a bit special in that they could refer to elements of an array, what apparently we don't want to
-            // add an identifier reference to, that's why we pass on the isassignment/hasexplicitletstatement values.
-            Visit(expression.LExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
-
-            if (expression.Classification != ExpressionClassification.Unbound
-                && expression.ReferencedDeclaration != null
-                && !ReferenceEquals(expression.LExpression.ReferencedDeclaration, expression.ReferencedDeclaration))
+            if (expression.IsDefaultMemberAccess)
             {
-                // Referenced declaration could also be null if e.g. it's an array and the array is a "base type" such as String.
-                if (expression.ReferencedDeclaration != null)
+                Visit(expression.LExpression, module, scope, parent);
+
+                if (expression.Classification != ExpressionClassification.Unbound
+                    && expression.ReferencedDeclaration != null)
                 {
-                    var callSiteContext = expression.LExpression.Context;
-                    var identifier = expression.LExpression.Context.GetText();
-                    var callee = expression.ReferencedDeclaration;
-                    expression.ReferencedDeclaration.AddReference(
-                        module,
-                        scope,
-                        parent,
-                        callSiteContext,
-                        identifier,
-                        callee,
-                        callSiteContext.GetSelection(),
-                        FindIdentifierAnnotations(module, callSiteContext.GetSelection().StartLine),
-                        isSetAssignment);
+                    AddDefaultMemberReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
                 }
             }
-            // Argument List not affected by being unbound.
+            else if (expression.Classification != ExpressionClassification.Unbound
+                && expression.IsArrayAccess
+                && expression.ReferencedDeclaration != null)
+            {
+                Visit(expression.LExpression, module, scope, parent);
+                AddArrayAccessReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
+            }
+            else
+            {
+                // Index expressions are a bit special in that they can refer to parameterized properties and functions.
+                // In that case, the reference goes to the property or function. So, we pass on the assignment flags.
+                Visit(expression.LExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
+            }
+
+            // Argument lists are not affected by the resolution of the target of the index expression.
             foreach (var argument in expression.ArgumentList.Arguments)
             {
                 if (argument.Expression != null)
@@ -212,6 +207,102 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 {
                     Visit(argument.NamedArgumentExpression, module, scope, parent);
                 }
+            }
+        }
+
+        private void AddArrayAccessReference(
+            IndexExpression expression, 
+            QualifiedModuleName module, 
+            Declaration scope,
+            Declaration parent, 
+            bool isAssignmentTarget, 
+            bool hasExplicitLetStatement, 
+            bool isSetAssignment)
+        {
+            var callSiteContext = expression.Context;
+            var identifier = expression.Context.GetText();
+            var callee = expression.ReferencedDeclaration;
+            expression.ReferencedDeclaration.AddReference(
+                module,
+                scope,
+                parent,
+                callSiteContext,
+                identifier,
+                callee,
+                callSiteContext.GetSelection(),
+                FindIdentifierAnnotations(module, callSiteContext.GetSelection().StartLine),
+                isAssignmentTarget,
+                hasExplicitLetStatement,
+                isSetAssignment,
+                isArrayAccess: true);
+        }
+
+        private void AddDefaultMemberReference(
+            IndexExpression expression, 
+            QualifiedModuleName module, 
+            Declaration scope,
+            Declaration parent, 
+            bool isAssignmentTarget,
+            bool isSetAssignment,
+            bool hasExplicitLetStatement)
+        {
+            var callSiteContext = expression.LExpression.Context;
+            var identifier = expression.LExpression.Context.GetText();
+            var callee = expression.ReferencedDeclaration;
+            expression.ReferencedDeclaration.AddReference(
+                module,
+                scope,
+                parent,
+                callSiteContext,
+                identifier,
+                callee,
+                callSiteContext.GetSelection(),
+                FindIdentifierAnnotations(module, callSiteContext.GetSelection().StartLine),
+                isAssignmentTarget,
+                hasExplicitLetStatement,
+                isSetAssignment,
+                isDefaultMemberAccess: true);
+        }
+
+        private void Visit(
+            DictionaryAccessExpression expression,
+            QualifiedModuleName module,
+            Declaration scope,
+            Declaration parent,
+            bool isAssignmentTarget,
+            bool hasExplicitLetStatement,
+            bool isSetAssignment)
+        {
+            Visit(expression.LExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
+
+            if (expression.Classification != ExpressionClassification.Unbound
+                && expression.ReferencedDeclaration != null)
+            {
+                var callSiteContext = expression.DefaultMemberContext;
+                var identifier = expression.ReferencedDeclaration.IdentifierName;
+                var callee = expression.ReferencedDeclaration;
+                expression.ReferencedDeclaration.AddReference(
+                    module,
+                    scope,
+                    parent,
+                    callSiteContext,
+                    identifier,
+                    callee,
+                    callSiteContext.GetSelection(),
+                    FindIdentifierAnnotations(module, callSiteContext.GetSelection().StartLine),
+                    isAssignmentTarget,
+                    hasExplicitLetStatement,
+                    isSetAssignment,
+                    isDefaultMemberAccess: true);
+            }
+            // Argument List not affected by being unbound.
+            foreach (var argument in expression.ArgumentList.Arguments)
+            {
+                if (argument.Expression != null)
+                {
+                    Visit(argument.Expression, module, scope, parent);
+                }
+                //Dictionary access arguments cannot be named.
             }
         }
 
