@@ -25,10 +25,12 @@ namespace Rubberduck.Parsing.VBA
         public SyntaxErrorException ModuleException { get; private set; }
         public IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> ModuleAttributes { get; private set; }
         public IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> MembersAllowingAttributes { get; private set; }
+        public IReadOnlyCollection<IdentifierReference> UnboundDefaultMemberAccesses => _unboundDefaultMemberAccesses;
 
         public bool IsNew { get; private set; }
         public bool IsMarkedAsModified { get; private set; }
 
+        private readonly HashSet<IdentifierReference> _unboundDefaultMemberAccesses = new HashSet<IdentifierReference>();
 
         public ModuleState(ConcurrentDictionary<Declaration, byte> declarations)
         {
@@ -148,6 +150,18 @@ namespace Rubberduck.Parsing.VBA
         public ModuleState SetAttributesTokenStream(ITokenStream attributesTokenStream)
         {
             AttributesTokenStream = attributesTokenStream;
+            return this;
+        }
+
+        public ModuleState AddUnboundDefaultMemberAccess(IdentifierReference defaultMemberAccess)
+        {
+            if (defaultMemberAccess.IsDefaultMemberAccess
+                && defaultMemberAccess.Declaration == null
+                && !_unboundDefaultMemberAccesses.Contains(defaultMemberAccess))
+            {
+                _unboundDefaultMemberAccesses.Add(defaultMemberAccess);
+            }
+
             return this;
         }
 

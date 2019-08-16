@@ -125,7 +125,8 @@ namespace Rubberduck.Parsing.Symbols
             return other != null
                 && other.QualifiedModuleName.Equals(QualifiedModuleName)
                 && other.Selection.Equals(Selection)
-                && other.Declaration.Equals(Declaration);
+                && (other.Declaration != null && other.Declaration.Equals(Declaration)
+                    || other.Declaration == null && Declaration == null);
         }
 
         public override bool Equals(object obj)
@@ -135,7 +136,9 @@ namespace Rubberduck.Parsing.Symbols
 
         public override int GetHashCode()
         {
-            return HashCode.Compute(QualifiedModuleName, Selection, Declaration);
+            return Declaration != null
+                ? HashCode.Compute(QualifiedModuleName, Selection, Declaration)
+                : HashCode.Compute(QualifiedModuleName, Selection);
         }
     }
 }

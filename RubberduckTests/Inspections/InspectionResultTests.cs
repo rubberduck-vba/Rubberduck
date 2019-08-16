@@ -141,7 +141,7 @@ namespace RubberduckTests.Inspections
 
             var declarationFinderProviderMock = new Mock<IDeclarationFinderProvider>();
             var declaratioFinder = new DeclarationFinder(new List<Declaration>(), new List<IAnnotation>(),
-                new List<UnboundMemberDeclaration>());
+                new List<UnboundMemberDeclaration>(), new Dictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>>());
             declarationFinderProviderMock.SetupGet(m => m.DeclarationFinder).Returns(declaratioFinder);
             var inspectionResult = new IdentifierReferenceInspectionResult(inspectionMock.Object, string.Empty, declarationFinderProviderMock.Object, identifierReference);
 
@@ -170,7 +170,7 @@ namespace RubberduckTests.Inspections
 
             var declarationFinderProviderMock = new Mock<IDeclarationFinderProvider>();
             var declaratioFinder = new DeclarationFinder(new List<Declaration>(), new List<IAnnotation>(),
-                new List<UnboundMemberDeclaration>());
+                new List<UnboundMemberDeclaration>(), new Dictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>>());
             declarationFinderProviderMock.SetupGet(m => m.DeclarationFinder).Returns(declaratioFinder);
             var inspectionResult = new IdentifierReferenceInspectionResult(inspectionMock.Object, string.Empty, declarationFinderProviderMock.Object, identifierReference);
 
