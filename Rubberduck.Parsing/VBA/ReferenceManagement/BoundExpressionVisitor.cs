@@ -181,6 +181,10 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 {
                     AddDefaultMemberReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
                 }
+                else
+                {
+                    AddUnboundDefaultMemberReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
+                }
             }
             else if (expression.Classification != ExpressionClassification.Unbound
                 && expression.IsArrayAccess
@@ -262,6 +266,34 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 hasExplicitLetStatement,
                 isSetAssignment,
                 isDefaultMemberAccess: true);
+        }
+
+        private void AddUnboundDefaultMemberReference(
+            IndexExpression expression,
+            QualifiedModuleName module,
+            Declaration scope,
+            Declaration parent,
+            bool isAssignmentTarget,
+            bool isSetAssignment,
+            bool hasExplicitLetStatement)
+        {
+            var callSiteContext = expression.LExpression.Context;
+            var identifier = expression.LExpression.Context.GetText();
+            var callee = expression.ReferencedDeclaration;
+            var reference = new IdentifierReference(
+                module,
+                scope,
+                parent,
+                identifier,
+                callSiteContext.GetSelection(),
+                callSiteContext,
+                callee,
+                isAssignmentTarget,
+                hasExplicitLetStatement,
+                FindIdentifierAnnotations(module, callSiteContext.GetSelection().StartLine),
+                isSetAssignment,
+                isDefaultMemberAccess: true);
+            _declarationFinder.AddUnboundDefaultMemberAccess(reference);
         }
 
         private void Visit(

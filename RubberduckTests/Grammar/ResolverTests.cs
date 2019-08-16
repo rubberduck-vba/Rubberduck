@@ -3541,6 +3541,36 @@ End Function
         [Category("Grammar")]
         [Category("Resolver")]
         [Test]
+        public void IndexExpressionWithUnboundDefaultMemberAccessYieldsUnboundDefaultMemberAccess()
+        {
+            var moduleCode = @"
+Private Function Foo() As String 
+    Dim cls As Object
+    Foo = cls(0)
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(4, 11, 4, 14);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var defaultMemberAccess = state.DeclarationFinder.UnboundDefaultMemberAccesses(module).First();
+                
+                var expectedReferencedSelection = new QualifiedSelection(module, selection);
+                var actualReferencedSelection = new QualifiedSelection(defaultMemberAccess.QualifiedModuleName, defaultMemberAccess.Selection);
+
+                Assert.AreEqual(expectedReferencedSelection, actualReferencedSelection);
+                Assert.IsTrue(defaultMemberAccess.IsDefaultMemberAccess);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void ArrayAccessExpressionHasReferenceOnWholeExpression()
         {
             var moduleCode = @"
