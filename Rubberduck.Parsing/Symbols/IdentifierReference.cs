@@ -24,7 +24,9 @@ namespace Rubberduck.Parsing.Symbols
             bool hasExplicitLetStatement = false, 
             IEnumerable<IAnnotation> annotations = null,
             bool isSetAssigned = false,
-            bool isDefaultMemberAccess = false,
+            bool isIndexedDefaultMemberAccess = false,
+            bool isNonIndexedDefaultMemberAccess = false,
+            int defaultMemberRecursionDepth = 0,
             bool isArrayAccess = false)
         {
             ParentScoping = parentScopingDeclaration;
@@ -37,7 +39,9 @@ namespace Rubberduck.Parsing.Symbols
             HasExplicitLetStatement = hasExplicitLetStatement;
             IsAssignment = isAssignmentTarget;
             IsSetAssignment = isSetAssigned;
-            IsDefaultMemberAccess = isDefaultMemberAccess;
+            IsIndexedDefaultMemberAccess = isIndexedDefaultMemberAccess;
+            IsNonIndexedDefaultMemberAccess = isNonIndexedDefaultMemberAccess;
+            DefaultMemberRecursionDepth = defaultMemberRecursionDepth;
             IsArrayAccess = isArrayAccess;
             Annotations = annotations ?? new List<IAnnotation>();
         }
@@ -64,7 +68,10 @@ namespace Rubberduck.Parsing.Symbols
 
         public bool IsSetAssignment { get; }
 
-        public bool IsDefaultMemberAccess { get; }
+        public bool IsIndexedDefaultMemberAccess { get; }
+        public bool IsNonIndexedDefaultMemberAccess { get; }
+        public bool IsDefaultMemberAccess => IsIndexedDefaultMemberAccess || IsNonIndexedDefaultMemberAccess;
+        public int DefaultMemberRecursionDepth { get; }
 
         public bool IsArrayAccess { get; }
 

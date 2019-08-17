@@ -75,7 +75,7 @@ namespace Rubberduck.Parsing.Binding
                     is classified as an unbound member with a declared type of Variant, referencing <l-expression> with no member name.
                 */
                 ResolveArgumentList(lDeclaration, argumentList);
-                return new DictionaryAccessExpression(null, ExpressionClassification.Unbound, expression, lExpression, argumentList);
+                return new DictionaryAccessExpression(null, ExpressionClassification.Unbound, expression, lExpression, argumentList, 1);
             }
 
             if (lDeclaration == null)
@@ -102,7 +102,7 @@ namespace Rubberduck.Parsing.Binding
             return failedExpr;
         }
 
-        private static IBoundExpression ResolveViaDefaultMember(IBoundExpression lExpression, string asTypeName, Declaration asTypeDeclaration, ArgumentList argumentList, ParserRuleContext expression, int recursionDepth = 0)
+        private static IBoundExpression ResolveViaDefaultMember(IBoundExpression lExpression, string asTypeName, Declaration asTypeDeclaration, ArgumentList argumentList, ParserRuleContext expression, int recursionDepth = 1)
         {
             if (Tokens.Variant.Equals(asTypeName, StringComparison.InvariantCultureIgnoreCase) 
                     || Tokens.Object.Equals(asTypeName, StringComparison.InvariantCultureIgnoreCase))
@@ -113,7 +113,7 @@ namespace Rubberduck.Parsing.Binding
                     a declared type of Variant, referencing <l-expression> with no member name. 
                 */
                 ResolveArgumentList(null, argumentList);
-                return new DictionaryAccessExpression(null, ExpressionClassification.Unbound, expression, lExpression, argumentList);
+                return new DictionaryAccessExpression(null, ExpressionClassification.Unbound, expression, lExpression, argumentList, recursionDepth);
             }
 
             /*
@@ -141,11 +141,11 @@ namespace Rubberduck.Parsing.Binding
                     declared type.  
                 */
                 ResolveArgumentList(defaultMember, argumentList);
-                return new DictionaryAccessExpression(defaultMember, defaultMemberClassification, expression, lExpression, argumentList);
+                return new DictionaryAccessExpression(defaultMember, defaultMemberClassification, expression, lExpression, argumentList, recursionDepth);
             }
 
             if (parameters.Count(param => !param.IsOptional) == 0 
-                && DEFAULT_MEMBER_RECURSION_LIMIT > recursionDepth)
+                && DEFAULT_MEMBER_RECURSION_LIMIT >= recursionDepth)
             {
                 /*
                     This default member cannot accept any parameters. In this case, the static analysis restarts 
@@ -153,6 +153,7 @@ namespace Rubberduck.Parsing.Binding
                     same <argument-list>.
                 */
 
+                //In contrast to the IndexDefaultBinding we pass the original expression context since the default member accesses will be attached to the exclamation mark.
                 return ResolveRecursiveDefaultMember(defaultMember, defaultMemberClassification, argumentList, expression, recursionDepth);
             }
 

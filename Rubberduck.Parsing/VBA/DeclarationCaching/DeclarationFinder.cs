@@ -1435,7 +1435,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         public IEnumerable<IdentifierReference> IdentifierReferences(QualifiedSelection selection)
         {
             return _referencesBySelection.TryGetValue(selection, out var value)
-                ? value
+                ? value.OrderBy(reference => reference.DefaultMemberRecursionDepth)
                 : Enumerable.Empty<IdentifierReference>();
         }
 
@@ -1446,17 +1446,20 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         {
             return IdentifierReferences(qualifiedSelection.QualifiedName)
                 .Where(reference => qualifiedSelection.Selection.Contains(reference.Selection))
-                .OrderBy(reference => reference.Selection);
+                .OrderBy(reference => reference.Selection)
+                .ThenBy(reference => reference.DefaultMemberRecursionDepth);
         }
 
         /// <summary>
-        /// Gets all identifier references containing a qualified selection, ordered by selection (start position, then length)
+        /// Gets all identifier references containing a qualified selection, ordered by selection (start position, then length).
+        /// Default member accesses with identical selections are ordered by call order.
         /// </summary>
         public IEnumerable<IdentifierReference> ContainingIdentifierReferences(QualifiedSelection qualifiedSelection)
         {
             return IdentifierReferences(qualifiedSelection.QualifiedName)
                 .Where(reference => reference.Selection.Contains(qualifiedSelection.Selection))
-                .OrderBy(reference => reference.Selection);
+                .OrderBy(reference => reference.Selection)
+                .ThenBy(reference => reference.DefaultMemberRecursionDepth);
         }
 
         /// <summary>

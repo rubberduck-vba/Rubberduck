@@ -12,18 +12,21 @@ namespace Rubberduck.Parsing.Binding
             IBoundExpression lExpression,
             ArgumentList argumentList,
             bool isArrayAccess = false,
-            bool isDefaultMemberAccess = false)
+            bool isDefaultMemberAccess = false,
+            int defaultMemberRecursionDepth = 0)
             : base(referencedDeclaration, classification, context)
         {
             LExpression = lExpression;
             ArgumentList = argumentList;
             IsArrayAccess = isArrayAccess;
             IsDefaultMemberAccess = isDefaultMemberAccess;
+            DefaultMemberRecursionDepth = defaultMemberRecursionDepth;
         }
 
         public IBoundExpression LExpression { get; }
         public ArgumentList ArgumentList { get; }
         public bool IsArrayAccess { get; }
         public bool IsDefaultMemberAccess { get; }
+        public int DefaultMemberRecursionDepth { get; }
     }
 }

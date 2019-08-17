@@ -58,7 +58,7 @@ namespace Rubberduck.Parsing.Binding
             return Resolve(_lExpression, _argumentList, _expression);
         }
 
-        private static IBoundExpression Resolve(IBoundExpression lExpression, ArgumentList argumentList, ParserRuleContext expression, int defaultMemberResolutionRecursionDepth = 0)
+        private static IBoundExpression Resolve(IBoundExpression lExpression, ArgumentList argumentList, ParserRuleContext expression, int defaultMemberResolutionRecursionDepth = 1)
         {
             if (lExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
@@ -169,7 +169,7 @@ namespace Rubberduck.Parsing.Binding
             }
         }
 
-        private static IBoundExpression ResolveLExpressionIsIndexExpression(IndexExpression indexExpression, ArgumentList argumentList, ParserRuleContext expression, int defaultMemberResolutionRecursionDepth = 0)
+        private static IBoundExpression ResolveLExpressionIsIndexExpression(IndexExpression indexExpression, ArgumentList argumentList, ParserRuleContext expression, int defaultMemberResolutionRecursionDepth)
         {
             /*
              <l-expression> is classified as an index expression and the argument list is not empty.
@@ -230,7 +230,7 @@ namespace Rubberduck.Parsing.Binding
                 && !argumentList.HasNamedArguments)
             {
                 ResolveArgumentList(null, argumentList);
-                return new IndexExpression(null, ExpressionClassification.Unbound, expression, lExpression, argumentList, isDefaultMemberAccess: true);
+                return new IndexExpression(null, ExpressionClassification.Unbound, expression, lExpression, argumentList, isDefaultMemberAccess: true, defaultMemberRecursionDepth: defaultMemberResolutionRecursionDepth);
             }
             /*
                 The declared type of <l-expression> is a specific class, which has a public default Property 
@@ -254,7 +254,7 @@ namespace Rubberduck.Parsing.Binding
                 if (ArgumentListIsCompatible(parameters, argumentList))
                 {
                     ResolveArgumentList(defaultMember, argumentList);
-                    return new IndexExpression(defaultMember, defaultMemberClassification, expression, lExpression, argumentList, isDefaultMemberAccess: true);
+                    return new IndexExpression(defaultMember, defaultMemberClassification, expression, lExpression, argumentList, isDefaultMemberAccess: true, defaultMemberRecursionDepth: defaultMemberResolutionRecursionDepth);
                 }
 
                 /**
@@ -263,9 +263,10 @@ namespace Rubberduck.Parsing.Binding
                     same <argument-list>.
                 */
                 if (parameters.Count(parameter => !parameter.IsOptional) == 0
-                    && DEFAULT_MEMBER_RECURSION_LIMIT > defaultMemberResolutionRecursionDepth)
+                    && DEFAULT_MEMBER_RECURSION_LIMIT >= defaultMemberResolutionRecursionDepth)
                 {
-                    return ResolveRecursiveDefaultMember(defaultMember, defaultMemberClassification, argumentList,  expression, defaultMemberResolutionRecursionDepth);
+                    //We pass lExpression.Context as context because this is the part of the expression the final reference is supposed to be attached to.
+                    return ResolveRecursiveDefaultMember(defaultMember, defaultMemberClassification, argumentList,  lExpression.Context, defaultMemberResolutionRecursionDepth);
                 }
             }
 

@@ -3400,14 +3400,15 @@ End Function
             {
                 var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
                 var qualifiedSelection = new QualifiedSelection(module, selection);
-                var reference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).First();
+                var reference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).Last();
                 var referencedDeclaration = reference.Declaration;
 
                 var expectedReferencedDeclarationName = "Class1.Foo";
                 var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
 
                 Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
-                Assert.IsTrue(reference.IsDefaultMemberAccess);
+                Assert.IsTrue(reference.IsIndexedDefaultMemberAccess);
+                Assert.AreEqual(2,reference.DefaultMemberRecursionDepth);
             }
         }
 
@@ -3448,7 +3449,7 @@ End Function
                 var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
 
                 Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
-                Assert.IsTrue(reference.IsDefaultMemberAccess);
+                Assert.IsTrue(reference.IsIndexedDefaultMemberAccess);
             }
         }
 
@@ -3564,7 +3565,7 @@ End Function
                 var actualReferencedSelection = new QualifiedSelection(defaultMemberAccess.QualifiedModuleName, defaultMemberAccess.Selection);
 
                 Assert.AreEqual(expectedReferencedSelection, actualReferencedSelection);
-                Assert.IsTrue(defaultMemberAccess.IsDefaultMemberAccess);
+                Assert.IsTrue(defaultMemberAccess.IsIndexedDefaultMemberAccess);
             }
         }
 
@@ -3634,6 +3635,98 @@ End Function
 
                 Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
                 Assert.AreEqual(DeclarationType.Parameter, referencedDeclaration.DeclarationType);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void RecursiveIndexedDefaultMemberAccessHasReferenceToFinalDefaultMemberOnContextExcludingArguments_HasRecursionDepth()
+        {
+            var classCode = @"
+Public Function Foo(bar As String) As Class1
+Attribute Foo.VB_UserMemId = 0
+    Set Foo = New Class1
+End Function
+";
+
+            var otherClassCode = @"
+Public Function Baz() As Class1
+Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class1
+End Function
+";
+
+            var moduleCode = @"
+Private Function Foo() As Class1 
+    Dim cls As new Class2
+    Set Foo = cls(""newClassObject"")
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("Class2", otherClassCode, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(4, 15, 4, 18);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+var references = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).ToList();
+                var reference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).Last();
+                var referencedDeclaration = reference.Declaration;
+
+                var expectedReferencedDeclarationName = "Class1.Foo";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.IsTrue(reference.IsIndexedDefaultMemberAccess);
+                Assert.AreEqual(2, reference.DefaultMemberRecursionDepth);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void IndexedDefaultMemberAccessHasReferenceToDefaultMemberOnContextExcludingArguments()
+        {
+            var classCode = @"
+Public Function Foo(bar As String) As Class1
+Attribute Foo.VB_UserMemId = 0
+    Set Foo = New Class1
+End Function
+";
+
+            var moduleCode = @"
+Private Function Foo() As Class1 
+    Dim cls As new Class1
+    Set Foo = cls(""newClassObject"")
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(4, 15, 4, 18);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+var references = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).ToList();
+                var reference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).Last();
+                var referencedDeclaration = reference.Declaration;
+
+                var expectedReferencedDeclarationName = "Class1.Foo";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.IsTrue(reference.IsIndexedDefaultMemberAccess);
+                Assert.AreEqual(1, reference.DefaultMemberRecursionDepth);
             }
         }
     }

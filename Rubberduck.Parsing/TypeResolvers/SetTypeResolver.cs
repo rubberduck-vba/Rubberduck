@@ -201,10 +201,11 @@ namespace Rubberduck.Parsing.TypeResolvers
         private Declaration ResolveIndexExpressionAsDefaultMemberAccess(VBAParser.LExpressionContext lExpressionOfIndexExpression, QualifiedModuleName containingModule, DeclarationFinder finder)
         {
             // A default member access references the entire lExpression.
+            // If there are multiple, the references are ordered by recursion depth.
             var qualifiedSelection = new QualifiedSelection(containingModule, lExpressionOfIndexExpression.GetSelection());
             return finder
                 .IdentifierReferences(qualifiedSelection)
-                .FirstOrDefault(reference => reference.IsDefaultMemberAccess)
+                .LastOrDefault(reference => reference.IsDefaultMemberAccess)
                 ?.Declaration;
         }
         
@@ -215,7 +216,7 @@ namespace Rubberduck.Parsing.TypeResolvers
             var qualifiedSelection = new QualifiedSelection(containingModule, actualIndexExpr.GetSelection());
             return finder
                 .IdentifierReferences(qualifiedSelection)
-                .FirstOrDefault(reference => reference.IsArrayAccess)
+                .LastOrDefault(reference => reference.IsArrayAccess)
                 ?.Declaration;
         }
 
@@ -223,7 +224,7 @@ namespace Rubberduck.Parsing.TypeResolvers
         {
             var declaration = finder.IdentifierReferences(identifier, containingModule)
                 .Select(reference => reference.Declaration)
-                .FirstOrDefault();
+                .LastOrDefault();
             return (declaration, MightHaveSetType(declaration));
         }
 
@@ -231,7 +232,7 @@ namespace Rubberduck.Parsing.TypeResolvers
         {
             var declaration = finder.IdentifierReferences(identifier, containingModule)
                 .Select(reference => reference.Declaration)
-                .FirstOrDefault();
+                .LastOrDefault();
             return (declaration, MightHaveSetType(declaration));
         }
 
@@ -240,7 +241,7 @@ namespace Rubberduck.Parsing.TypeResolvers
             var qualifiedSelection = new QualifiedSelection(containingModule, dictionaryAccess.GetSelection());
             var declaration = finder.IdentifierReferences(qualifiedSelection)
                 .Select(reference => reference.Declaration)
-                .FirstOrDefault();
+                .LastOrDefault();
             return (declaration, MightHaveSetType(declaration));
         }
 

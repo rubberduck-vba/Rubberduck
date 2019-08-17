@@ -11,15 +11,18 @@ namespace Rubberduck.Parsing.Binding
             ExpressionClassification classification,
             ParserRuleContext context,
             IBoundExpression lExpression,
-            ArgumentList argumentList)
+            ArgumentList argumentList,
+            int defaultMemberResursionDepth)
             : base(referencedDeclaration, classification, context)
         {
             LExpression = lExpression;
             ArgumentList = argumentList;
+            DefaultMemberRecursionDepth = defaultMemberResursionDepth;
         }
 
         public IBoundExpression LExpression { get; }
         public ArgumentList ArgumentList { get; }
+        public int DefaultMemberRecursionDepth { get; }
 
         public ParserRuleContext DefaultMemberContext
         {

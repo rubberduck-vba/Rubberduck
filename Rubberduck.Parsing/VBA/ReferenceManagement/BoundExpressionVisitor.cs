@@ -265,7 +265,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 isAssignmentTarget,
                 hasExplicitLetStatement,
                 isSetAssignment,
-                isDefaultMemberAccess: true);
+                isIndexedDefaultMemberAccess: true,
+                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth);
         }
 
         private void AddUnboundDefaultMemberReference(
@@ -292,7 +293,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 hasExplicitLetStatement,
                 FindIdentifierAnnotations(module, callSiteContext.GetSelection().StartLine),
                 isSetAssignment,
-                isDefaultMemberAccess: true);
+                isIndexedDefaultMemberAccess: true,
+                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth);
             _declarationFinder.AddUnboundDefaultMemberAccess(reference);
         }
 
@@ -325,7 +327,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                     isAssignmentTarget,
                     hasExplicitLetStatement,
                     isSetAssignment,
-                    isDefaultMemberAccess: true);
+                    isIndexedDefaultMemberAccess: true,
+                    defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth);
             }
             // Argument List not affected by being unbound.
             foreach (var argument in expression.ArgumentList.Arguments)
