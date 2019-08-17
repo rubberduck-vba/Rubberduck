@@ -9,17 +9,6 @@ using Rubberduck.ComClientLibrary.UnitTesting.Mocks;
 
 namespace RubberduckTests.ComMock
 {
-    public interface ITest1
-    {
-        void Do();
-        int DoThis();
-    }
-
-    public interface ITest2
-    {
-        string DoThat();
-    }
-
     internal delegate void Callback();
 
     [TestFixture]
