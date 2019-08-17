@@ -7,6 +7,7 @@ using Rubberduck.ComClientLibrary.UnitTesting.Mocks;
 namespace RubberduckTests.ComMock
 {
     [TestFixture]
+    [Category("ComMocks.MockExpressionBuilderTests")]
     public class MockExpressionBuilderTests
     {
         [Test]

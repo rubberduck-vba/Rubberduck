@@ -152,90 +152,6 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
         }
 
         /// <summary>
-        /// Transform the collection of <see cref="MockArgumentDefinition"/> into a <see cref="IReadOnlyList{Expression}"/>
-        /// </summary>
-        /// <remarks>
-        /// If a method `Foo` requires one argument, we need to specify the behavior in an expression similar
-        /// to this: `Mock<>.Setup(x => x.Foo(It.IsAny<>())`. The class <see cref="It"/> is static so we can
-        /// create call expressions directly on it. 
-        /// </remarks>
-        /// <param name="parameters">Array of <see cref="ParameterInfo"/> returned from the member for which the <see cref="MockArgumentDefinitions"/> applies to</param>
-        /// <param name="args">The <see cref="MockArgumentDefinitions"/> collection containing user supplied behavior</param>
-        /// <returns>A read-only list containing the <see cref="Expression"/> of arguments</returns>
-        private IReadOnlyList<Expression> ResolveParameters(ParameterInfo[] parameters,
-            MockArgumentDefinitions args)
-        {
-            var argsCount = args?.Count ?? 0;
-            if (parameters.Length != argsCount)
-            {
-                throw new ArgumentOutOfRangeException(nameof(args),
-                    $"The method expects {parameters.Length} parameters but only {argsCount} argument definitions were supplied. Setting up the mock's behavior requires that all parameters be filled in.");
-            }
-            if (parameters.Length == 0)
-            {
-                return null;
-            }
-
-            var resolvedArguments = new List<Expression>();
-            for(var i = 0; i < parameters.Length; i ++)
-            {
-                var parameter = parameters[i];
-                var definition = args.Item(i);
-
-                var itType = typeof(It);
-                MethodInfo itMemberInfo;
-                
-                var parameterType = parameter.ParameterType;
-                var itArgumentExpressions = new List<Expression>();
-                var typeExpression = Expression.Parameter(parameterType, "x");
-                
-                switch (definition.Type)
-                {
-                    case MockArgumentType.Is:
-                        itMemberInfo = itType.GetMethod(nameof(It.Is)).MakeGenericMethod(parameterType);
-                        var bodyExpression = Expression.Equal(typeExpression, Expression.Constant(definition.Values[0]));
-                        var itLambda = Expression.Lambda(bodyExpression, typeExpression);
-                        itArgumentExpressions.Add(itLambda);
-                        break;
-                    case MockArgumentType.IsAny:
-                        itMemberInfo = itType.GetMethod(nameof(It.IsAny)).MakeGenericMethod(parameterType);
-                        break;
-                    case MockArgumentType.IsIn:
-                        itMemberInfo = ((MethodInfo)itType.GetMember(nameof(It.IsIn)).First()).MakeGenericMethod(parameterType);
-                        var arrayInit = Expression.NewArrayInit(parameterType,
-                            definition.Values.Select(val => Expression.Constant(val)));
-                        itArgumentExpressions.Add(arrayInit);
-                        break;
-                    case MockArgumentType.IsInRange:
-                        itMemberInfo = itType.GetMethod(nameof(It.IsInRange)).MakeGenericMethod(parameterType);
-                        itArgumentExpressions.Add(Expression.Constant(definition.Values[0]));
-                        itArgumentExpressions.Add(Expression.Constant(definition.Values[1]));
-                        if (definition.Range != null)
-                        {
-                            itArgumentExpressions.Add(Expression.Constant((Range)definition.Range));
-                        }
-                        break;
-                    case MockArgumentType.IsNotIn:
-                        itMemberInfo = ((MethodInfo)itType.GetMember(nameof(It.IsNotIn)).First()).MakeGenericMethod(parameterType);
-                        var notArrayInit = Expression.NewArrayInit(parameterType,
-                            definition.Values.Select(val => Expression.Constant(val)));
-                        itArgumentExpressions.Add(notArrayInit);
-                        break;
-                    case MockArgumentType.IsNotNull:
-                        itMemberInfo = itType.GetMethod(nameof(It.IsNotNull)).MakeGenericMethod(parameterType);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-                var callExpression = Expression.Call(itMemberInfo, itArgumentExpressions);
-                resolvedArguments.Add(callExpression);
-            }
-
-            return resolvedArguments;
-        }
-
-        /// <summary>
         /// Builds the basic Setup expressions using provided inputs. The return can be then expanded upon for
         /// specifying behaviors of the given Setup.
         /// </summary>
@@ -246,7 +162,8 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
         {
             var setupDatas = new List<SetupData>();
             var membersToSetup = GetMembers(name);
-            var parameterExpressions = ResolveParameters(membersToSetup.Parameters.ToArray(), args);
+            var resolver = new MockArgumentResolver();
+            var parameterExpressions = resolver.ResolveParameters(membersToSetup.Parameters.ToArray(), args);
             var memberType = membersToSetup.ReturnType;
 
             foreach (var member in membersToSetup.MemberInfos)
