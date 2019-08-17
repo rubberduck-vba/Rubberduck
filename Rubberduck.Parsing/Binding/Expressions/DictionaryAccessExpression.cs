@@ -12,29 +12,22 @@ namespace Rubberduck.Parsing.Binding
             ParserRuleContext context,
             IBoundExpression lExpression,
             ArgumentList argumentList,
-            int defaultMemberResursionDepth)
+            ParserRuleContext defaultMemberContext,
+            int defaultMemberRecursionDepth = 1,
+            RecursiveDefaultMemberAccessExpression containedDefaultMemberRecursionExpression = null)
             : base(referencedDeclaration, classification, context)
         {
             LExpression = lExpression;
             ArgumentList = argumentList;
-            DefaultMemberRecursionDepth = defaultMemberResursionDepth;
+            DefaultMemberRecursionDepth = defaultMemberRecursionDepth;
+            ContainedDefaultMemberRecursionExpression = containedDefaultMemberRecursionExpression;
+            DefaultMemberContext = defaultMemberContext;
         }
 
         public IBoundExpression LExpression { get; }
         public ArgumentList ArgumentList { get; }
         public int DefaultMemberRecursionDepth { get; }
-
-        public ParserRuleContext DefaultMemberContext
-        {
-            get
-            {
-                if (Context is VBAParser.DictionaryAccessExprContext dictionaryAccess)
-                {
-                    return dictionaryAccess.dictionaryAccess();
-                }
-
-                return ((VBAParser.WithDictionaryAccessExprContext) Context).dictionaryAccess();
-            }
-        }
+        public ParserRuleContext DefaultMemberContext { get; }
+        public RecursiveDefaultMemberAccessExpression ContainedDefaultMemberRecursionExpression { get; }
     }
 }

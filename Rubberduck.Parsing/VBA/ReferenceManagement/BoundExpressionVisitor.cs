@@ -79,6 +79,9 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                     break;
                 case BuiltInTypeExpression builtInTypeExpression:
                     break;
+                case RecursiveDefaultMemberAccessExpression recursiveDefaultMemberAccessExpression:
+                    Visit(recursiveDefaultMemberAccessExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
+                    break;
                 default:
                     throw new NotSupportedException($"Unexpected bound expression type {boundExpression.GetType()}");
             }
@@ -172,9 +175,15 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             bool hasExplicitLetStatement,
             bool isSetAssignment)
         {
+            var containedExpression = expression.ContainedDefaultMemberRecursionExpression;
+            if (containedExpression != null)
+            {
+                Visit(containedExpression, module, scope, parent, hasExplicitLetStatement: hasExplicitLetStatement);
+            }
+
             if (expression.IsDefaultMemberAccess)
             {
-                Visit(expression.LExpression, module, scope, parent);
+                Visit(expression.LExpression, module, scope, parent, hasExplicitLetStatement: hasExplicitLetStatement);
 
                 if (expression.Classification != ExpressionClassification.Unbound
                     && expression.ReferencedDeclaration != null)
@@ -190,7 +199,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 && expression.IsArrayAccess
                 && expression.ReferencedDeclaration != null)
             {
-                Visit(expression.LExpression, module, scope, parent);
+                Visit(expression.LExpression, module, scope, parent, hasExplicitLetStatement: hasExplicitLetStatement);
                 AddArrayAccessReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
             }
             else
@@ -224,7 +233,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             bool isSetAssignment)
         {
             var callSiteContext = expression.Context;
-            var identifier = expression.Context.GetText();
+            var identifier = callSiteContext.GetText();
+            var selection = callSiteContext.GetSelection();
             var callee = expression.ReferencedDeclaration;
             expression.ReferencedDeclaration.AddReference(
                 module,
@@ -233,8 +243,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 callSiteContext,
                 identifier,
                 callee,
-                callSiteContext.GetSelection(),
-                FindIdentifierAnnotations(module, callSiteContext.GetSelection().StartLine),
+                selection,
+                FindIdentifierAnnotations(module, selection.StartLine),
                 isAssignmentTarget,
                 hasExplicitLetStatement,
                 isSetAssignment,
@@ -251,7 +261,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             bool hasExplicitLetStatement)
         {
             var callSiteContext = expression.LExpression.Context;
-            var identifier = expression.LExpression.Context.GetText();
+            var identifier = callSiteContext.GetText();
+            var selection = callSiteContext.GetSelection();
             var callee = expression.ReferencedDeclaration;
             expression.ReferencedDeclaration.AddReference(
                 module,
@@ -260,8 +271,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 callSiteContext,
                 identifier,
                 callee,
-                callSiteContext.GetSelection(),
-                FindIdentifierAnnotations(module, callSiteContext.GetSelection().StartLine),
+                selection,
+                FindIdentifierAnnotations(module, selection.StartLine),
                 isAssignmentTarget,
                 hasExplicitLetStatement,
                 isSetAssignment,
@@ -279,19 +290,20 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             bool hasExplicitLetStatement)
         {
             var callSiteContext = expression.LExpression.Context;
-            var identifier = expression.LExpression.Context.GetText();
+            var identifier = callSiteContext.GetText();
+            var selection = callSiteContext.GetSelection();
             var callee = expression.ReferencedDeclaration;
             var reference = new IdentifierReference(
                 module,
                 scope,
                 parent,
                 identifier,
-                callSiteContext.GetSelection(),
+                selection,
                 callSiteContext,
                 callee,
                 isAssignmentTarget,
                 hasExplicitLetStatement,
-                FindIdentifierAnnotations(module, callSiteContext.GetSelection().StartLine),
+                FindIdentifierAnnotations(module, selection.StartLine),
                 isSetAssignment,
                 isIndexedDefaultMemberAccess: true,
                 defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth);
@@ -307,7 +319,13 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             bool hasExplicitLetStatement,
             bool isSetAssignment)
         {
-            Visit(expression.LExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
+            Visit(expression.LExpression, module, scope, parent, hasExplicitLetStatement: hasExplicitLetStatement);
+
+            var containedExpression = expression.ContainedDefaultMemberRecursionExpression;
+            if (containedExpression != null)
+            {
+                Visit(containedExpression, module, scope, parent, hasExplicitLetStatement);
+            }
 
             if (expression.Classification != ExpressionClassification.Unbound
                 && expression.ReferencedDeclaration != null)
@@ -338,6 +356,41 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                     Visit(argument.Expression, module, scope, parent);
                 }
                 //Dictionary access arguments cannot be named.
+            }
+        }
+
+        private void Visit(
+            RecursiveDefaultMemberAccessExpression expression,
+            QualifiedModuleName module,
+            Declaration scope,
+            Declaration parent,
+            bool hasExplicitLetStatement)
+        {
+            var containedExpression = expression.ContainedDefaultMemberRecursionExpression;
+            if (containedExpression != null)
+            {
+                Visit(containedExpression, module, scope, parent, hasExplicitLetStatement: hasExplicitLetStatement);
+            }
+
+            if (expression.Classification != ExpressionClassification.Unbound
+                && expression.ReferencedDeclaration != null)
+            {
+                var callSiteContext = expression.Context;
+                var identifier = callSiteContext.GetText();
+                var selection = callSiteContext.GetSelection();
+                var callee = expression.ReferencedDeclaration;
+                expression.ReferencedDeclaration.AddReference(
+                    module,
+                    scope,
+                    parent,
+                    callSiteContext,
+                    identifier,
+                    callee,
+                    selection,
+                    FindIdentifierAnnotations(module, selection.StartLine),
+                    hasExplicitLetStatement: hasExplicitLetStatement,
+                    isNonIndexedDefaultMemberAccess: true,
+                    defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth);
             }
         }
 
