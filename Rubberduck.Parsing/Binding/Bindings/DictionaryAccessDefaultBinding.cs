@@ -18,6 +18,10 @@ namespace Rubberduck.Parsing.Binding
 
         //This is based on the spec at https://docs.microsoft.com/en-us/openspecs/microsoft_general_purpose_programming_languages/MS-VBAL/f20c9ebc-3365-4614-9788-1cd50a504574
 
+        //We pass _lExpression to the expressions we create instead of passing it along the call chain because this simplifies the handling
+        //when resolving recursive default member calls. For these we use a fake bound simple name expression, which leads to the right resolution.
+        //However, using this on the returned expressions would lead to no identifier references being generated for the original lExpression.
+
         public DictionaryAccessDefaultBinding(
             ParserRuleContext expression,
             IExpressionBinding lExpressionBinding,
@@ -58,7 +62,7 @@ namespace Rubberduck.Parsing.Binding
             return Resolve(_lExpression, _argumentList, _expression);
         }
 
-        private static IBoundExpression Resolve(IBoundExpression lExpression, ArgumentList argumentList, ParserRuleContext expression)
+        private IBoundExpression Resolve(IBoundExpression lExpression, ArgumentList argumentList, ParserRuleContext expression)
         {
             if (lExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
@@ -152,9 +156,7 @@ namespace Rubberduck.Parsing.Binding
                     recursively, as if this default member was specified instead for <l-expression> with the 
                     same <argument-list>.
                 */
-
-                //In contrast to the IndexDefaultBinding we pass the original expression context since the default member accesses will be attached to the exclamation mark.
-                return ResolveRecursiveDefaultMember(defaultMember, defaultMemberClassification, argumentList, expression, recursionDepth);
+                return ResolveRecursiveDefaultMember(lExpression, defaultMember, defaultMemberClassification, argumentList, expression, recursionDepth);
             }
 
             ResolveArgumentList(null, argumentList);
@@ -169,14 +171,13 @@ namespace Rubberduck.Parsing.Binding
                        || Tokens.Variant.Equals(parameters[0].AsTypeName, StringComparison.InvariantCultureIgnoreCase));
         }
 
-        private static IBoundExpression ResolveRecursiveDefaultMember(Declaration defaultMember, ExpressionClassification defaultMemberClassification, ArgumentList argumentList, ParserRuleContext expression, int recursionDepth)
+        private static IBoundExpression ResolveRecursiveDefaultMember(IBoundExpression lExpression, Declaration defaultMember, ExpressionClassification defaultMemberClassification, ArgumentList argumentList, ParserRuleContext expression, int recursionDepth)
         {
-            var defaultMemberAsLExpression = new SimpleNameExpression(defaultMember, defaultMemberClassification, expression);
             var defaultMemberAsTypeName = defaultMember.AsTypeName;
             var defaultMemberAsTypeDeclaration = defaultMember.AsTypeDeclaration;
 
             return ResolveViaDefaultMember(
-                defaultMemberAsLExpression,
+                lExpression,
                 defaultMemberAsTypeName,
                 defaultMemberAsTypeDeclaration,
                 argumentList,
