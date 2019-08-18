@@ -3944,7 +3944,7 @@ End Function
         [Category("Grammar")]
         [Category("Resolver")]
         [Test]
-        public void RecursiveIndexedDefaultMemberAccessHasReferenceToIntermediateDefaultMemberOnContextExcludingArgumentsWIthLowerRecursionDepth()
+        public void RecursiveIndexedDefaultMemberAccessHasReferenceToIntermediateDefaultMemberOnContextExcludingArgumentsWithLowerRecursionDepth()
         {
             var classCode = @"
 Public Function Foo(bar As String) As Class1
@@ -4124,6 +4124,756 @@ var references = state.DeclarationFinder.IdentifierReferences(qualifiedSelection
                 Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
                 Assert.IsTrue(reference.IsIndexedDefaultMemberAccess);
                 Assert.AreEqual(1, reference.DefaultMemberRecursionDepth);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void RecursiveLetCoercionDefaultMemberAccessHasReferenceToFinalDefaultMemberOnEntireContext()
+        {
+            var class1Code = @"
+Public Function Foo() As Long
+Attribute Foo.VB_UserMemId = 0
+End Function
+";
+
+            var class2Code = @"
+Public Function Baz() As Class1
+Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class1
+End Function
+";
+
+            var class3Code = @"
+Public Function Bar() As Class2
+Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class2
+End Function
+";
+
+            var moduleCode = @"
+Private Function Foo() As Long 
+    Dim cls As new Class3
+    Foo = cls.Bar
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Class3", class3Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(4, 11, 4, 18);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var defaultMemberReference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).Last();
+                var referencedDeclaration = defaultMemberReference.Declaration;
+
+                var expectedReferencedDeclarationName = "Class1.Foo";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.IsTrue(defaultMemberReference.IsNonIndexedDefaultMemberAccess);
+                Assert.AreEqual(2, defaultMemberReference.DefaultMemberRecursionDepth);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void RecursiveLetCoercionDefaultMemberAccessHasReferenceToIntermediateDefaultMemberOnEntireContextWithLowerRecursionDepth()
+        {
+            var class1Code = @"
+Public Function Foo() As Long
+Attribute Foo.VB_UserMemId = 0
+End Function
+";
+
+            var class2Code = @"
+Public Function Baz() As Class1
+Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class1
+End Function
+";
+
+            var class3Code = @"
+Public Function Bar() As Class2
+Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class2
+End Function
+";
+
+            var moduleCode = @"
+Private Function Foo() As Long 
+    Dim cls As new Class3
+    Foo = cls.Bar
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Class3", class3Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(4, 11, 4, 18);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var defaultMemberReference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).Single(reference => reference.DefaultMemberRecursionDepth == 1);
+                var referencedDeclaration = defaultMemberReference.Declaration;
+
+                var expectedReferencedDeclarationName = "Class2.Baz";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.IsTrue(defaultMemberReference.IsNonIndexedDefaultMemberAccess);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void RecursiveLetCoercionDefaultMemberAccessLeavesReferencesOnPartsOflExpression()
+        {
+            var class1Code = @"
+Public Function Foo() As Long
+Attribute Foo.VB_UserMemId = 0
+End Function
+";
+
+            var class2Code = @"
+Public Function Baz() As Class1
+Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class1
+End Function
+";
+
+            var class3Code = @"
+Public Function Bar() As Class2
+Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class2
+End Function
+";
+
+            var moduleCode = @"
+Private Function Foo() As Long 
+    Dim cls As new Class3
+    Foo = cls.Bar
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Class3", class3Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(4, 11, 4, 14);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var reference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).Last();
+                var referencedDeclaration = reference.Declaration;
+
+                var expectedReferencedDeclarationName = "Module1.cls";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.IsFalse(reference.IsDefaultMemberAccess);
+            }
+        }
+
+        [Test]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [TestCase("    Foo = cls.Baz", 11, 18)]
+        [TestCase("    Let Foo = cls.Baz", 15, 22)]
+        [TestCase("    Foo = cls.Baz + 42", 11, 18)]
+        [TestCase("    Foo = cls.Baz - 42", 11, 18)]
+        [TestCase("    Foo = cls.Baz * 42", 11, 18)]
+        [TestCase("    Foo = cls.Baz ^ 42", 11, 18)]
+        [TestCase("    Foo = cls.Baz \\ 42", 11, 18)]
+        [TestCase("    Foo = cls.Baz Mod 42", 11, 18)]
+        [TestCase("    Foo = cls.Baz & \" sheep\"", 11, 18)]
+        [TestCase("    Foo = cls.Baz And 42", 11, 18)]
+        [TestCase("    Foo = cls.Baz Or 42", 11, 18)]
+        [TestCase("    Foo = cls.Baz Xor 42", 11, 18)]
+        [TestCase("    Foo = cls.Baz Eqv 42", 11, 18)]
+        [TestCase("    Foo = cls.Baz Imp 42", 11, 18)]
+        [TestCase("    Foo = cls.Baz = 42", 11, 18)]
+        [TestCase("    Foo = cls.Baz < 42", 11, 18)]
+        [TestCase("    Foo = cls.Baz > 42", 11, 18)]
+        [TestCase("    Foo = cls.Baz <= 42", 11, 18)]
+        [TestCase("    Foo = cls.Baz =< 42", 11, 18)]
+        [TestCase("    Foo = cls.Baz >= 42", 11, 18)]
+        [TestCase("    Foo = cls.Baz => 42", 11, 18)]
+        [TestCase("    Foo = cls.Baz <> 42", 11, 18)]
+        [TestCase("    Foo = cls.Baz >< 42", 11, 18)]
+        [TestCase("    Foo = cls.Baz Like \"Hello\"", 11, 18)]
+        [TestCase("    Foo = 42 + cls.Baz", 16, 23)]
+        [TestCase("    Foo = 42 * cls.Baz", 16, 23)]
+        [TestCase("    Foo = 42 - cls.Baz", 16, 23)]
+        [TestCase("    Foo = 42 ^ cls.Baz", 16, 23)]
+        [TestCase("    Foo = 42 \\ cls.Baz", 17, 24)]
+        [TestCase("    Foo = 42 Mod cls.Baz", 18, 25)]
+        [TestCase("    Foo = \"sheep\" & cls.Baz", 21, 28)]
+        [TestCase("    Foo = 42 And cls.Baz", 18, 25)]
+        [TestCase("    Foo = 42 Or cls.Baz", 17, 24)]
+        [TestCase("    Foo = 42 Xor cls.Baz", 18, 25)]
+        [TestCase("    Foo = 42 Eqv cls.Baz", 18, 25)]
+        [TestCase("    Foo = 42 Imp cls.Baz", 18, 25)]
+        [TestCase("    Foo = 42 = cls.Baz", 17, 24)]
+        [TestCase("    Foo = 42 < cls.Baz", 17, 24)]
+        [TestCase("    Foo = 42 > cls.Baz", 17, 24)]
+        [TestCase("    Foo = 42 <= cls.Baz", 18, 25)]
+        [TestCase("    Foo = 42 =< cls.Baz", 18, 25)]
+        [TestCase("    Foo = 42 >= cls.Baz", 18, 25)]
+        [TestCase("    Foo = 42 => cls.Baz", 18, 25)]
+        [TestCase("    Foo = 42 <> cls.Baz", 18, 25)]
+        [TestCase("    Foo = 42 >< cls.Baz", 18, 25)]
+        [TestCase("    Foo = \"Hello\" Like cls.Baz", 24, 31)]
+        [TestCase("    Foo = -cls.Baz", 12, 19)]
+        [TestCase("    Foo = Not cls.Baz", 15, 22)]
+        [TestCase("    Bar cls.Baz", 9, 16)]
+        [TestCase("    Baz (cls.Baz)", 10, 17)]
+        [TestCase("    Debug.Print cls.Baz", 9, 16)]
+        [TestCase("    Debug.Print 42, cls.Baz", 13, 20)]
+        [TestCase("    Debug.Print 42; cls.Baz", 13, 20)]
+        [TestCase("    Debug.Print Spc(cls.Baz)", 13, 20)]
+        [TestCase("    Debug.Print 42, Spc(cls.Baz)", 17, 24)]
+        [TestCase("    Debug.Print 42; Spc(cls.Baz)", 17, 24)]
+        [TestCase("    Debug.Print Tab(cls.Baz)", 13, 20)]
+        [TestCase("    Debug.Print 42, Tab(cls.Baz)", 17, 24)]
+        [TestCase("    Debug.Print 42; Tab(cls.Baz)", 17, 24)]
+        [TestCase("    If cls.Baz Then Foo = 42", 8, 15)]
+        [TestCase("    If cls.Baz Then \r\n        Foo = 42 \r\n    End If", 8, 15)]
+        [TestCase("    If False Then : ElseIf cls.Baz Then\r\n        Foo = 42 \r\n    End If", 28, 35)]
+        [TestCase("    Do While cls.Baz\r\n        Foo = 42 \r\n    Loop", 14, 21)]
+        [TestCase("    Do Until cls.Baz\r\n        Foo = 42 \r\n    Loop", 14, 21)]
+        [TestCase("    Do : Foo = 42 :  Loop While cls.Baz", 33, 40)]
+        [TestCase("    Do : Foo = 42 :  Loop Until cls.Baz", 33, 40)]
+        [TestCase("    While cls.Baz\r\n        Foo = 42 \r\n    Wend", 11, 18)]
+        [TestCase("    For fooBar = cls.Baz To 42 Step 23\r\n        Foo = 42 \r\n    Next", 18, 25)]
+        [TestCase("    For fooBar = 42 To cls.Baz Step 23\r\n        Foo = 42 \r\n    Next", 24, 31)]
+        [TestCase("    For fooBar = 23 To 42 Step cls.Baz\r\n        Foo = 42 \r\n    Next", 32, 39)]
+        [TestCase("    Select Case cls.Baz : Case 42 : Foo = 42 : End Select", 17, 24)]
+        [TestCase("    Select Case 42 : Case cls.Baz : Foo = 42 : End Select", 27, 34)]
+        [TestCase("    Select Case 42 : Case 23, cls.Baz : Foo = 42 : End Select", 31, 38)]
+        [TestCase("    Select Case 42 : Case cls.Baz To 666 : Foo = 42 : End Select", 27, 34)]
+        [TestCase("    Select Case 42 : Case 23 To cls.Baz : Foo = 42 : End Select", 33, 40)]
+        [TestCase("    Select Case 42 : Case Is = cls.Baz : Foo = 42 : End Select", 32, 39)]
+        [TestCase("    Select Case 42 : Case Is < cls.Baz : Foo = 42 : End Select", 32, 39)]
+        [TestCase("    Select Case 42 : Case Is > cls.Baz : Foo = 42 : End Select", 32, 39)]
+        [TestCase("    Select Case 42 : Case Is <> cls.Baz : Foo = 42 : End Select", 33, 40)]
+        [TestCase("    Select Case 42 : Case Is >< cls.Baz : Foo = 42 : End Select", 33, 40)]
+        [TestCase("    Select Case 42 : Case Is <= cls.Baz : Foo = 42 : End Select", 33, 40)]
+        [TestCase("    Select Case 42 : Case Is =< cls.Baz : Foo = 42 : End Select", 33, 40)]
+        [TestCase("    Select Case 42 : Case Is >= cls.Baz : Foo = 42 : End Select", 33, 40)]
+        [TestCase("    Select Case 42 : Case Is => cls.Baz : Foo = 42 : End Select", 33, 40)]
+        [TestCase("    Select Case 42 : Case = cls.Baz : Foo = 42 : End Select", 29, 36)]
+        [TestCase("    Select Case 42 : Case < cls.Baz : Foo = 42 : End Select", 29, 36)]
+        [TestCase("    Select Case 42 : Case > cls.Baz : Foo = 42 : End Select", 29, 36)]
+        [TestCase("    Select Case 42 : Case <> cls.Baz : Foo = 42 : End Select", 30, 37)]
+        [TestCase("    Select Case 42 : Case >< cls.Baz : Foo = 42 : End Select", 30, 37)]
+        [TestCase("    Select Case 42 : Case <= cls.Baz : Foo = 42 : End Select", 30, 37)]
+        [TestCase("    Select Case 42 : Case =< cls.Baz : Foo = 42 : End Select", 30, 37)]
+        [TestCase("    Select Case 42 : Case >= cls.Baz : Foo = 42 : End Select", 30, 37)]
+        [TestCase("    Select Case 42 : Case => cls.Baz : Foo = 42 : End Select", 30, 37)]
+        [TestCase("    On cls.Baz GoTo label1, label2", 8, 15)]
+        [TestCase("    On cls.Baz GoSub label1, label2", 8, 15)]
+        [TestCase("    ReDim fooBar(cls.Baz To 42)", 18, 25)]
+        [TestCase("    ReDim fooBar(23 To cls.Baz)", 24, 31)]
+        [TestCase("    ReDim fooBar(23 To 42, cls.Baz To 42)", 28, 35)]
+        [TestCase("    ReDim fooBar(23 To 42, 23 To cls.Baz)", 34, 41)]
+        [TestCase("    ReDim fooBar(cls.Baz)", 18, 25)]
+        [TestCase("    ReDim fooBar(42, cls.Baz)", 22, 29)]
+        [TestCase("    Mid fooBar, cls.Baz, 42 = \"Hello\"", 28, 35)]
+        [TestCase("    Mid fooBar, 23, cls.Baz = \"Hello\"", 32, 39)]
+        [TestCase("    Mid fooBar, 23, 42 = cls.Baz", 37, 44)]
+        [TestCase("    LSet fooBar = cls.Baz", 19, 26)]
+        [TestCase("    RSet fooBar = cls.Baz", 19, 26)]
+        [TestCase("    Error cls.Baz", 11, 18)]
+        [TestCase("    Open cls.Baz As 42 Len = 23", 10, 17)]
+        [TestCase("    Open \"somePath\" As cls.Baz Len = 23", 24, 31)]
+        [TestCase("    Open \"somePath\" As #cls.Baz Len = 23", 25, 32)]
+        [TestCase("    Open \"somePath\" As 23 Len = cls.Baz", 33, 40)]
+        [TestCase("    Close cls.Baz, 23", 11, 18)]
+        [TestCase("    Close 23, #cls.Baz, 23", 16, 23)]
+        [TestCase("    Reset cls.Baz, 23", 11, 18)]
+        [TestCase("    Reset 23, #cls.Baz, 23", 16, 23)]
+        [TestCase("    Seek cls.Baz, 23", 10, 17)]
+        [TestCase("    Seek #cls.Baz, 23", 11, 18)]
+        [TestCase("    Seek 23, cls.Baz", 14, 21)]
+        [TestCase("    Lock cls.Baz, 23 To 42", 10, 17)]
+        [TestCase("    Lock #cls.Baz, 23 To 42", 11, 18)]
+        [TestCase("    Lock 23, cls.Baz To 42", 14, 21)]
+        [TestCase("    Lock 23, 42 To cls.Baz", 20, 27)]
+        [TestCase("    Unlock cls.Baz, 23 To 42", 12, 19)]
+        [TestCase("    Unlock #cls.Baz, 23 To 42", 13, 20)]
+        [TestCase("    Unlock 23, cls.Baz To 42", 16, 23)]
+        [TestCase("    Unlock 23, 42 To cls.Baz", 22, 29)]
+        [TestCase("    Line Input #cls.Baz, fooBar", 17, 24)]
+        [TestCase("    Width #cls.Baz, 42", 12, 19)]
+        [TestCase("    Width #23, cls.Baz", 16, 23)]
+        [TestCase("    Print #cls.Baz, 42", 12, 19)]
+        [TestCase("    Print #23, cls.Baz", 16, 23)]
+        [TestCase("    Print #23, 42, cls.Baz", 20, 27)]
+        [TestCase("    Print #23, 42; cls.Baz", 20, 27)]
+        [TestCase("    Print #23, Spc(cls.Baz)", 20, 27)]
+        [TestCase("    Print #23, 42, Spc(cls.Baz)", 24, 31)]
+        [TestCase("    Print #23, 42; Spc(cls.Baz)", 24, 31)]
+        [TestCase("    Print #23, Tab(cls.Baz)", 20, 27)]
+        [TestCase("    Print #23, 42, Tab(cls.Baz)", 24, 31)]
+        [TestCase("    Print #23, 42; Tab(cls.Baz)", 24, 31)]
+        [TestCase("    Input #cls.Baz, fooBar", 12, 17)]
+        [TestCase("    Put cls.Baz, 42, fooBar", 9, 16)]
+        [TestCase("    Put #cls.Baz, 42, fooBar", 10, 17)]
+        [TestCase("    Put 42, cls.Baz, fooBar", 13, 20)]
+        [TestCase("    Get cls.Baz, 42, fooBar", 9, 16)]
+        [TestCase("    Get #cls.Baz, 42, fooBar", 10, 17)]
+        [TestCase("    Get 42, cls.Baz, fooBar", 13, 20)]
+        public void LetCoercionDefaultMemberAccessHasReferenceToDefaultMemberOnEntireContext(string statement, int selectionStartColumn, int selectionEndColumn)
+        {
+            var class1Code = @"
+Public Function Foo() As Long
+Attribute Foo.VB_UserMemId = 0
+End Function
+";
+
+            var class2Code = @"
+Public Function Baz() As Class1
+Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As new Class2
+    Dim fooBar As Variant
+{statement}
+End Function
+
+Private Sub Bar(arg As Long)
+End Sub
+
+Private Sub Baz(arg As Variant)
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(5, selectionStartColumn, 5, selectionEndColumn);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var defaultMemberReference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).Last();
+                var referencedDeclaration = defaultMemberReference.Declaration;
+
+                var expectedReferencedDeclarationName = "Class1.Foo";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.IsTrue(defaultMemberReference.IsNonIndexedDefaultMemberAccess);
+                Assert.AreEqual(1, defaultMemberReference.DefaultMemberRecursionDepth);
+            }
+        }
+
+        [Test]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        public void LetCoercionDefaultMemberAssignmentHasAssignmentReferenceToDefaultMemberOnEntireContext()
+        {
+            var class1Code = @"
+Public Property Let Foo(arg As Long)
+Attribute Foo.VB_UserMemId = 0
+End Property
+";
+
+            var class2Code = @"
+Public Function Baz() As Class1
+Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As new Class2
+    cls.Baz = 42
+End Function
+
+Private Sub Bar(arg As Long)
+End Sub
+
+Private Sub Baz(arg As Variant)
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(4, 5, 4, 12);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var defaultMemberReference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).Last();
+                var referencedDeclaration = defaultMemberReference.Declaration;
+
+                var expectedReferencedDeclarationName = "Class1.Foo";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.IsTrue(defaultMemberReference.IsNonIndexedDefaultMemberAccess);
+                Assert.AreEqual(1, defaultMemberReference.DefaultMemberRecursionDepth);
+                Assert.IsTrue(defaultMemberReference.IsAssignment);
+            }
+        }
+
+        [Test]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [TestCase("    Set cls.Baz = fooBar", 9, 16)]
+        [TestCase("    Set fooBar = cls.Baz", 18, 25)]
+        [TestCase("    Bar cls.Baz", 9, 16)]
+        [TestCase("    Baz cls.Baz", 18, 25)]
+        [TestCase("    For Each cls In fooBar : Foo = 42 : Next", 14, 17)]
+        [TestCase("    For Each fooBar In cls.Baz : Foo = 42 : Next", 24, 31)]
+        public void NonLetCoercionExpressionHasNoDefaultMemberAccess(string statement, int selectionStartColumn, int selectionEndColumn)
+        {
+            var class1Code = @"
+Public Function Foo() As Long
+Attribute Foo.VB_UserMemId = 0
+End Function
+";
+
+            var class2Code = @"
+Public Function Baz() As Class1
+Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As new Class2
+    Dim fooBar As Variant
+{statement}
+End Function
+
+Private Sub Bar(arg As Object)
+End Sub
+
+Private Sub Baz(arg As Variant)
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(5, selectionStartColumn, 5, selectionEndColumn);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var defaultMemberReference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).Where(referemce => referemce.IsDefaultMemberAccess);
+
+                Assert.IsFalse(defaultMemberReference.Any());
+            }
+        }
+
+        [Test]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        public void LetCoercionDefaultMemberAssignmentHasNonAssignmentReferenceToAccessedMember()
+        {
+            var class1Code = @"
+Public Property Let Foo(arg As Long)
+Attribute Foo.VB_UserMemId = 0
+End Property
+";
+
+            var class2Code = @"
+Public Function Baz() As Class1
+Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As new Class2
+    cls.Baz = 42
+End Function
+
+Private Sub Bar(arg As Long)
+End Sub
+
+Private Sub Baz(arg As Variant)
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(4, 9, 4, 12);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var defaultMemberReference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).First();
+                var referencedDeclaration = defaultMemberReference.Declaration;
+
+                var expectedReferencedDeclarationName = "Class2.Baz";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.IsFalse(defaultMemberReference.IsAssignment);
+            }
+        }
+
+        [Test]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        public void ParameterizedProcedureCoercionDefaultMemberAccessReferenceToDefaultMemberOnEntireContext()
+        {
+            var class1Code = @"
+Public Sub Foo(arg As Long)
+Attribute Foo.VB_UserMemId = 0
+End Sub
+";
+
+            var class2Code = @"
+Public Function Baz() As Class1
+Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As new Class2
+    cls.Baz 42
+End Function
+
+Private Sub Bar(arg As Long)
+End Sub
+
+Private Sub Baz(arg As Variant)
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(4, 5, 4, 12);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var defaultMemberReference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).Last();
+                var referencedDeclaration = defaultMemberReference.Declaration;
+
+                var expectedReferencedDeclarationName = "Class1.Foo";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.IsTrue(defaultMemberReference.IsIndexedDefaultMemberAccess);
+                Assert.AreEqual(1, defaultMemberReference.DefaultMemberRecursionDepth);
+                Assert.IsTrue(defaultMemberReference.IsAssignment);
+            }
+        }
+
+        [Test]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        public void NonParameterizedProcedureCoercionDefaultMemberAccessReferenceToDefaultMemberOnEntireContext()
+        {
+            var class1Code = @"
+Public Sub Foo()
+Attribute Foo.VB_UserMemId = 0
+End Sub
+";
+
+            var class2Code = @"
+Public Function Baz() As Class1
+Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As new Class2
+    cls.Baz
+End Function
+
+Private Sub Bar(arg As Long)
+End Sub
+
+Private Sub Baz(arg As Variant)
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(4, 5, 4, 12);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var defaultMemberReference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).Last();
+                var referencedDeclaration = defaultMemberReference.Declaration;
+
+                var expectedReferencedDeclarationName = "Class1.Foo";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.IsTrue(defaultMemberReference.IsIndexedDefaultMemberAccess);
+                Assert.AreEqual(1, defaultMemberReference.DefaultMemberRecursionDepth);
+                Assert.IsTrue(defaultMemberReference.IsAssignment);
+            }
+        }
+
+        [Test]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        public void ParameterizedProcedureCoercionDefaultMemberAccessReferenceToDefaultMemberOnEntireContext_ExplicitCall()
+        {
+            var class1Code = @"
+Public Sub Foo(arg As Long)
+Attribute Foo.VB_UserMemId = 0
+End Sub
+";
+
+            var class2Code = @"
+Public Function Baz() As Class1
+Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As new Class2
+    Call cls.Baz(42)
+End Function
+
+Private Sub Bar(arg As Long)
+End Sub
+
+Private Sub Baz(arg As Variant)
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(4, 5, 4, 12);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var defaultMemberReference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).Last();
+                var referencedDeclaration = defaultMemberReference.Declaration;
+
+                var expectedReferencedDeclarationName = "Class1.Foo";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.IsTrue(defaultMemberReference.IsIndexedDefaultMemberAccess);
+                Assert.AreEqual(1, defaultMemberReference.DefaultMemberRecursionDepth);
+                Assert.IsTrue(defaultMemberReference.IsAssignment);
+            }
+        }
+
+        [Test]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        public void NonParameterizedProcedureCoercionDefaultMemberAccessReferenceToDefaultMemberOnEntireContext_ExplicitCall()
+        {
+            var class1Code = @"
+Public Sub Foo()
+Attribute Foo.VB_UserMemId = 0
+End Sub
+";
+
+            var class2Code = @"
+Public Function Baz() As Class1
+Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As new Class2
+    Call cls.Baz
+End Function
+
+Private Sub Bar(arg As Long)
+End Sub
+
+Private Sub Baz(arg As Variant)
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(4, 5, 4, 12);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var defaultMemberReference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).Last();
+                var referencedDeclaration = defaultMemberReference.Declaration;
+
+                var expectedReferencedDeclarationName = "Class1.Foo";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.IsTrue(defaultMemberReference.IsIndexedDefaultMemberAccess);
+                Assert.AreEqual(1, defaultMemberReference.DefaultMemberRecursionDepth);
+                Assert.IsTrue(defaultMemberReference.IsAssignment);
             }
         }
     }

@@ -18,10 +18,6 @@ namespace Rubberduck.Parsing.Binding
 
         //This is based on the spec at https://docs.microsoft.com/en-us/openspecs/microsoft_general_purpose_programming_languages/MS-VBAL/f20c9ebc-3365-4614-9788-1cd50a504574
 
-        //We pass _lExpression to the expressions we create instead of passing it along the call chain because this simplifies the handling
-        //when resolving recursive default member calls. For these we use a fake bound simple name expression, which leads to the right resolution.
-        //However, using this on the returned expressions would lead to no identifier references being generated for the original lExpression.
-
         public DictionaryAccessDefaultBinding(
             ParserRuleContext expression,
             IExpressionBinding lExpressionBinding,
