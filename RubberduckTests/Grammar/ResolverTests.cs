@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading;
+using System.Windows.Controls;
 using NUnit.Framework;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -4346,15 +4347,15 @@ End Function
         [TestCase("    Foo = Not cls.Baz", 15, 22)]
         [TestCase("    Bar cls.Baz", 9, 16)]
         [TestCase("    Baz (cls.Baz)", 10, 17)]
-        [TestCase("    Debug.Print cls.Baz", 9, 16)]
-        [TestCase("    Debug.Print 42, cls.Baz", 13, 20)]
-        [TestCase("    Debug.Print 42; cls.Baz", 13, 20)]
-        [TestCase("    Debug.Print Spc(cls.Baz)", 13, 20)]
-        [TestCase("    Debug.Print 42, Spc(cls.Baz)", 17, 24)]
-        [TestCase("    Debug.Print 42; Spc(cls.Baz)", 17, 24)]
-        [TestCase("    Debug.Print Tab(cls.Baz)", 13, 20)]
-        [TestCase("    Debug.Print 42, Tab(cls.Baz)", 17, 24)]
-        [TestCase("    Debug.Print 42; Tab(cls.Baz)", 17, 24)]
+        [TestCase("    Debug.Print cls.Baz", 17, 24)]
+        [TestCase("    Debug.Print 42, cls.Baz", 21, 28)]
+        [TestCase("    Debug.Print 42; cls.Baz", 21, 28)]
+        [TestCase("    Debug.Print Spc(cls.Baz)", 21, 28)]
+        [TestCase("    Debug.Print 42, Spc(cls.Baz)", 25, 32)]
+        [TestCase("    Debug.Print 42; Spc(cls.Baz)", 25, 32)]
+        [TestCase("    Debug.Print Tab(cls.Baz)", 21, 28)]
+        [TestCase("    Debug.Print 42, Tab(cls.Baz)", 25, 32)]
+        [TestCase("    Debug.Print 42; Tab(cls.Baz)", 25, 32)]
         [TestCase("    If cls.Baz Then Foo = 42", 8, 15)]
         [TestCase("    If cls.Baz Then \r\n        Foo = 42 \r\n    End If", 8, 15)]
         [TestCase("    If False Then : ElseIf cls.Baz Then\r\n        Foo = 42 \r\n    End If", 28, 35)]
@@ -4397,9 +4398,9 @@ End Function
         [TestCase("    ReDim fooBar(23 To 42, 23 To cls.Baz)", 34, 41)]
         [TestCase("    ReDim fooBar(cls.Baz)", 18, 25)]
         [TestCase("    ReDim fooBar(42, cls.Baz)", 22, 29)]
-        [TestCase("    Mid fooBar, cls.Baz, 42 = \"Hello\"", 28, 35)]
-        [TestCase("    Mid fooBar, 23, cls.Baz = \"Hello\"", 32, 39)]
-        [TestCase("    Mid fooBar, 23, 42 = cls.Baz", 37, 44)]
+        [TestCase("    Mid(fooBar, cls.Baz, 42) = \"Hello\"", 17, 24)]
+        [TestCase("    Mid(fooBar, 23, cls.Baz) = \"Hello\"", 21, 28)]
+        [TestCase("    Mid(fooBar, 23, 42) = cls.Baz", 27, 34)]
         [TestCase("    LSet fooBar = cls.Baz", 19, 26)]
         [TestCase("    RSet fooBar = cls.Baz", 19, 26)]
         [TestCase("    Error cls.Baz", 11, 18)]
@@ -4409,8 +4410,6 @@ End Function
         [TestCase("    Open \"somePath\" As 23 Len = cls.Baz", 33, 40)]
         [TestCase("    Close cls.Baz, 23", 11, 18)]
         [TestCase("    Close 23, #cls.Baz, 23", 16, 23)]
-        [TestCase("    Reset cls.Baz, 23", 11, 18)]
-        [TestCase("    Reset 23, #cls.Baz, 23", 16, 23)]
         [TestCase("    Seek cls.Baz, 23", 10, 17)]
         [TestCase("    Seek #cls.Baz, 23", 11, 18)]
         [TestCase("    Seek 23, cls.Baz", 14, 21)]
@@ -4435,13 +4434,15 @@ End Function
         [TestCase("    Print #23, Tab(cls.Baz)", 20, 27)]
         [TestCase("    Print #23, 42, Tab(cls.Baz)", 24, 31)]
         [TestCase("    Print #23, 42; Tab(cls.Baz)", 24, 31)]
-        [TestCase("    Input #cls.Baz, fooBar", 12, 17)]
+        [TestCase("    Input #cls.Baz, fooBar", 12, 19)]
         [TestCase("    Put cls.Baz, 42, fooBar", 9, 16)]
         [TestCase("    Put #cls.Baz, 42, fooBar", 10, 17)]
         [TestCase("    Put 42, cls.Baz, fooBar", 13, 20)]
         [TestCase("    Get cls.Baz, 42, fooBar", 9, 16)]
         [TestCase("    Get #cls.Baz, 42, fooBar", 10, 17)]
         [TestCase("    Get 42, cls.Baz, fooBar", 13, 20)]
+        [TestCase("    Name \"somePath\" As cls.Baz", 24, 31)]
+        [TestCase("    Name cls.Baz As \"somePath\"", 10, 17)]
         public void LetCoercionDefaultMemberAccessHasReferenceToDefaultMemberOnEntireContext(string statement, int selectionStartColumn, int selectionEndColumn)
         {
             var class1Code = @"

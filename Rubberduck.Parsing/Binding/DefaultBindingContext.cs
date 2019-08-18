@@ -23,14 +23,20 @@ namespace Rubberduck.Parsing.Binding
             _procedurePointerBindingContext = procedurePointerBindingContext;
         }
 
-        public IBoundExpression Resolve(Declaration module, Declaration parent, IParseTree expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
+        public IBoundExpression Resolve(Declaration module, Declaration parent, IParseTree expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext, bool requiresLetCoercion, bool isLetAssignment)
         {
-            var bindingTree = BuildTree(module, parent, expression, withBlockVariable, statementContext);
+            var bindingTree = BuildTree(module, parent, expression, withBlockVariable, statementContext, requiresLetCoercion, isLetAssignment);
             return bindingTree?.Resolve();
         }
 
-        public IExpressionBinding BuildTree(Declaration module, Declaration parent, IParseTree expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
+        public IExpressionBinding BuildTree(Declaration module, Declaration parent, IParseTree expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext, bool requiresLetCoercion = false, bool isLetAssignment = false)
         {
+            if (requiresLetCoercion && expression is ParserRuleContext context)
+            {
+                var innerExpressionBinding = BuildTree(module, parent, expression, withBlockVariable, statementContext);
+                return new LetCoercionDefaultBinding(context, innerExpressionBinding, isLetAssignment);
+            }
+
             switch (expression)
             {
                 case VBAParser.ExpressionContext expressionContext:
