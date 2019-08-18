@@ -58,13 +58,43 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
     ]
     public class MockArgumentDefinition : IMockArgumentDefinition
     {
-        internal MockArgumentDefinition(MockArgumentType type, object[] values)
+        internal static MockArgumentDefinition CreateIs(object value)
+        {
+            return new MockArgumentDefinition(MockArgumentType.Is, new[] { value });
+        }
+
+        internal static MockArgumentDefinition CreateIsAny()
+        {
+            return new MockArgumentDefinition(MockArgumentType.IsAny, null);
+        }
+
+        internal static MockArgumentDefinition CreateIsIn(object[] values)
+        {
+            return new MockArgumentDefinition(MockArgumentType.IsIn, values);
+        }
+
+        internal static MockArgumentDefinition CreateIsInRange(object start, object end, MockArgumentRange range)
+        {
+            return new MockArgumentDefinition(MockArgumentType.IsInRange, new[] { start, end }, range);
+        }
+
+        internal static MockArgumentDefinition CreateIsNotIn(object[] values)
+        {
+            return new MockArgumentDefinition(MockArgumentType.IsNotIn, values);
+        }
+
+        internal static MockArgumentDefinition CreateIsNotNull()
+        {
+            return new MockArgumentDefinition(MockArgumentType.IsNotNull, null);
+        }
+
+        private MockArgumentDefinition(MockArgumentType type, object[] values)
         {
             Type = type;
             Values = values;
         }
 
-        internal MockArgumentDefinition(MockArgumentType type, object[] values, MockArgumentRange range) : 
+        private MockArgumentDefinition(MockArgumentType type, object[] values, MockArgumentRange range) : 
             this(type, values)
         {
             Range = range;
@@ -101,32 +131,32 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
     {
         public MockArgumentDefinition Is(object Value)
         {
-            return new MockArgumentDefinition(MockArgumentType.Is, new[] {Value});
+            return MockArgumentDefinition.CreateIs(Value);
         }
 
         public MockArgumentDefinition IsAny()
         {
-            return new MockArgumentDefinition(MockArgumentType.IsAny, null);
+            return MockArgumentDefinition.CreateIsAny();
         }
 
         public MockArgumentDefinition IsIn(object[] Values)
         {
-            return new MockArgumentDefinition(MockArgumentType.IsIn, Values);
+            return MockArgumentDefinition.CreateIsIn(Values);
         }
 
         public MockArgumentDefinition IsInRange(object Start, object End, MockArgumentRange Range)
         {
-            return new MockArgumentDefinition(MockArgumentType.IsInRange, new[] {Start, End}, Range);
+            return MockArgumentDefinition.CreateIsInRange(Start, End, Range);
         }
 
         public MockArgumentDefinition IsNotIn(object[] Values)
         {
-            return new MockArgumentDefinition(MockArgumentType.IsNotIn, Values);
+            return MockArgumentDefinition.CreateIsNotIn(Values);
         }
 
         public MockArgumentDefinition IsNotNull()
         {
-            return new MockArgumentDefinition(MockArgumentType.IsNotNull, null);
+            return MockArgumentDefinition.CreateIsNotNull();
         }
     }
 }

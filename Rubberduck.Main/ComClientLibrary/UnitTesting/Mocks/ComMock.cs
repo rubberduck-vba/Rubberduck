@@ -24,20 +24,26 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
         private readonly Type _type;
         private readonly IEnumerable<Type> _supportedInterfaces;
         private readonly ComMocked mocked;
+        private readonly MockArgumentResolver _resolver;
 
         public ComMock(Mock mock, Type type, IEnumerable<Type> supportedInterfaces)
         {
             Mock = mock;
             _type = type;
             _supportedInterfaces = supportedInterfaces;
+            _resolver = new MockArgumentResolver();
 
             Mock.As<IComMocked>().Setup(x => x.Mock).Returns(this);
             mocked = new ComMocked(this, _supportedInterfaces);
         }
 
+        /// <remarks>
+        /// Refer to remarks in <see cref="MockArgumentResolver.ResolveArgs"/> for how the
+        /// parameter <paramref name="Args"/> is handled. 
+        /// </remarks>
         public void SetupWithReturns(string Name, object Value, object Args = null)
         {
-            var args = ResolveArgs(Args);
+            var args = _resolver.ResolveArgs(Args);
             var setupDatas = CreateSetupExpression(Name, args);
 
             foreach (var setupData in setupDatas)
@@ -50,9 +56,13 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             }
         }
 
+        /// <remarks>
+        /// Refer to remarks in <see cref="MockArgumentResolver.ResolveArgs"/> for how the
+        /// parameter <paramref name="Args"/> is handled. 
+        /// </remarks>
         public void SetupWithCallback(string Name, Action Callback, object Args = null)
         {
-            var args = ResolveArgs(Args);
+            var args = _resolver.ResolveArgs(Args);
             var setupDatas = CreateSetupExpression(Name, args);
 
             foreach (var setupData in setupDatas)
@@ -70,88 +80,6 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
         internal Mock Mock { get; }
 
         /// <summary>
-        /// Converts a variant args into the <see cref="MockArgumentDefinitions"/> collection. This supports calls from COM
-        /// using the Variant data type.
-        /// </summary>
-        /// <remarks>
-        /// The procedure needs to handle the following cases where the variant...:
-        ///   1) contains a single value
-        ///   2) contains an Array() of values
-        ///   3) wraps a single <see cref="MockArgumentDefinition"/>
-        ///   4) points to a <see cref="MockArgumentDefinitions"/> collection.
-        ///   5) wraps a single <see cref="Missing"/> object in which case we return a null
-        ///   6) wraps an array of single <see cref="Missing"/> object in which case we return a null
-        /// </remarks>
-        /// <param name="args">Should be a COM Variant that can be cast into valid values as explained in the remarks</param>
-        /// <returns>A <see cref="MockArgumentDefinitions"/> collection or null</returns>
-        private static MockArgumentDefinitions ResolveArgs(object args)
-        {
-            // We must ensure that the arrays are resolved before calling the
-            // single object wrapper to ensure we don't end up wrapping the 
-            // arrays as a single value; do not change the switch order willy-nilly.
-            switch (args)
-            {
-                case Missing missing:
-                    return null;
-                case MockArgumentDefinitions definitions:
-                    return definitions;
-                case MockArgumentDefinition definition:
-                    return WrapArgumentDefinitions(definition);
-                case object[] objects:
-                    if (objects.Length == 1 && objects[0] is Missing)
-                    {
-                        return null;
-                    }
-                    return WrapArgumentDefinitions(objects);
-                case object singleObject:
-                    return WrapArgumentDefinitions(singleObject);
-                default:
-                    return null;
-            }
-        }
-
-        private static MockArgumentDefinitions WrapArgumentDefinitions(object singleObject)
-        {
-            var list = new MockArgumentDefinitions();
-            var inDefinition = new MockArgumentDefinition(MockArgumentType.Is, new[] {singleObject});
-            list.Add(inDefinition);
-            return list;
-        }
-
-        private static MockArgumentDefinitions WrapArgumentDefinitions(object[] objects)
-        {
-            var list = new MockArgumentDefinitions();
-            foreach (var item in objects)
-            {
-                switch (item)
-                {
-                    case MockArgumentDefinition argumentDefinition:
-                        list.Add(argumentDefinition);
-                        break;
-                    case object[] arrayObjects:
-                        var inDefinition = new MockArgumentDefinition(MockArgumentType.IsIn, arrayObjects);
-                        list.Add(inDefinition);
-                        break;
-                    case object singleObject:
-                        var isDefinition =
-                            new MockArgumentDefinition(MockArgumentType.Is, new[] {singleObject});
-                        list.Add(isDefinition);
-                        break;
-                }
-            }
-
-            return list;
-        }
-
-        private static MockArgumentDefinitions WrapArgumentDefinitions(MockArgumentDefinition mockArgumentDefinition)
-        {
-            return new MockArgumentDefinitions
-            {
-                mockArgumentDefinition
-            };
-        }
-
-        /// <summary>
         /// Builds the basic Setup expressions using provided inputs. The return can be then expanded upon for
         /// specifying behaviors of the given Setup.
         /// </summary>
@@ -162,8 +90,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
         {
             var setupDatas = new List<SetupData>();
             var membersToSetup = GetMembers(name);
-            var resolver = new MockArgumentResolver();
-            var parameterExpressions = resolver.ResolveParameters(membersToSetup.Parameters.ToArray(), args);
+            var parameterExpressions = _resolver.ResolveParameters(membersToSetup.Parameters.ToArray(), args);
             var memberType = membersToSetup.ReturnType;
 
             foreach (var member in membersToSetup.MemberInfos)

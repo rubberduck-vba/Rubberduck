@@ -179,16 +179,16 @@ namespace RubberduckTests.ComMock
         [TestCase(0, typeof(decimal), ExpectedResult = 0)]
         [TestCase(-0, typeof(decimal), ExpectedResult = 0)]
         [TestCase(-1, typeof(decimal), ExpectedResult = -1)]
-
+        [TestCase(1.0d, typeof(string), ExpectedResult = "1")]
+        [TestCase(0.0d, typeof(string), ExpectedResult = "0")]
+        // Unstable test case - it will pass in VS runnner but fail in Resharper runnger
+        // [TestCase(-0.0d, typeof(string), ExpectedResult = "0")]
+        [TestCase(-1.0d, typeof(string), ExpectedResult = "-1")]
         [TestCase(true, typeof(string), ExpectedResult = "-1")]
         [TestCase(false, typeof(string), ExpectedResult = "0")]
         [TestCase("1", typeof(string), ExpectedResult = "1")]
         [TestCase("0", typeof(string), ExpectedResult = "0")]
         [TestCase("-1", typeof(string), ExpectedResult = "-1")]
-        [TestCase(1.0, typeof(string), ExpectedResult = "1")]
-        [TestCase(0.0, typeof(string), ExpectedResult = "0")]
-        [TestCase(-0.0, typeof(string), ExpectedResult = "0")]
-        [TestCase(-1.0, typeof(string), ExpectedResult = "-1")]
         [TestCase(1, typeof(string), ExpectedResult = "1")]
         [TestCase(0, typeof(string), ExpectedResult = "0")]
         [TestCase(-0, typeof(string), ExpectedResult = "0")]
@@ -205,7 +205,7 @@ namespace RubberduckTests.ComMock
 
             return result;
         }
-
+        
         [Test]
         [TestCase(true, typeof(DateTime), ExpectedResult = "1899-12-29 00:00:00")]
         [TestCase(false, typeof(DateTime), ExpectedResult = "1899-12-30 00:00:00")]

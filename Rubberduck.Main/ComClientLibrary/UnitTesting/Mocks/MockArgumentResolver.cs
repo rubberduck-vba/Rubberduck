@@ -10,9 +10,103 @@ using NLog;
 
 namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 {
-    public class MockArgumentResolver
+    internal class MockArgumentResolver
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        /// <summary>
+        /// Converts a variant args into the <see cref="MockArgumentDefinitions"/> collection. This supports calls from COM
+        /// using the Variant data type.
+        /// </summary>
+        /// <remarks>
+        /// The procedure needs to handle the following cases where the variant...:
+        ///   1) contains a single value
+        ///   2) contains an Array() of values
+        ///   3) wraps a single <see cref="MockArgumentDefinition"/>
+        ///   4) points to a <see cref="MockArgumentDefinitions"/> collection.
+        ///   5) wraps a single <see cref="Missing"/> object in which case we return a null
+        ///   6) wraps an array of single <see cref="Missing"/> object in which case we return a null
+        ///
+        /// We must ensure that the arrays are resolved before calling the
+        /// single object wrapper to ensure we don't end up wrapping the 
+        /// arrays as a single value; do not change the switch order willy-nilly.
+        ///
+        /// We also need to handle the special cases with <see cref="Missing"/>, because
+        /// the methods <see cref="IComMock.SetupWithReturns"/> and <see cref="IComMock.SetupWithCallback"/>
+        /// will marshal the Args parameter as a variant, which means we receive it as <see cref="Missing"/>,
+        /// not as <c>null</c> if it is omitted. 
+        /// </remarks>
+        /// <param name="args">Should be a COM Variant that can be cast into valid values as explained in the remarks</param>
+        /// <returns>A <see cref="MockArgumentDefinitions"/> collection or null</returns>
+        public MockArgumentDefinitions ResolveArgs(object args)
+        {
+            switch (args)
+            {
+                case Missing missing:
+                    return null;
+                case MockArgumentDefinitions definitions:
+                    return definitions;
+                case MockArgumentDefinition definition:
+                    return WrapArgumentDefinitions(definition);
+                case object[] objects:
+                    if (objects.Length == 1 && objects[0] is Missing)
+                    {
+                        return null;
+                    }
+                    return WrapArgumentDefinitions(objects);
+                case object singleObject:
+                    return WrapArgumentDefinitions(singleObject);
+                default:
+                    return null;
+            }
+        }
+
+        private static MockArgumentDefinitions WrapArgumentDefinitions(object singleObject)
+        {
+            var list = new MockArgumentDefinitions();
+            var isDefinition = MockArgumentDefinition.CreateIs(singleObject);
+            list.Add(isDefinition);
+            return list;
+        }
+
+        private static MockArgumentDefinitions WrapArgumentDefinitions(object[] objects)
+        {
+            var list = new MockArgumentDefinitions();
+            foreach (var item in objects)
+            {
+                switch (item)
+                {
+                    case MockArgumentDefinition argumentDefinition:
+                        list.Add(argumentDefinition);
+                        break;
+                    case object[] arrayObjects:
+                        var inDefinition = MockArgumentDefinition.CreateIsIn(arrayObjects);
+                        list.Add(inDefinition);
+                        break;
+                    case Missing missing:
+                        list.Add(MockArgumentDefinition.CreateIsAny());
+                        break;
+                    case object singleObject:
+                        var isDefinition =
+                            MockArgumentDefinition.CreateIs(singleObject);
+                        list.Add(isDefinition);
+                        break;
+                    case null:
+                        list.Add(MockArgumentDefinition.CreateIsAny());
+                        break;
+                }
+            }
+
+            return list;
+        }
+
+        private static MockArgumentDefinitions WrapArgumentDefinitions(MockArgumentDefinition mockArgumentDefinition)
+        {
+            return new MockArgumentDefinitions
+            {
+                mockArgumentDefinition
+            };
+        }
 
         /// <summary>
         /// Transform the collection of <see cref="MockArgumentDefinition"/> into a <see cref="IReadOnlyList{T}"/>

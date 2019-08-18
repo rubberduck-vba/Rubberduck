@@ -61,7 +61,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
     /// </summary>
     /// <remarks>
     /// The <see cref="VariantChangeType"/> function is the same one used internally by VBA/VB6.
-    /// However, we have to wrap the metadata, which the classes helps with.
+    /// However, we have to wrap the metadata, which the class helps with.
     /// 
     /// See the link for details on how marshaling are handled with <see cref="object"/>
     /// https://docs.microsoft.com/en-us/dotnet/framework/interop/default-marshaling-for-objects
