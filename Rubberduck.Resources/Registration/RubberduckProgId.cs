@@ -16,9 +16,9 @@
         public const string MockProviderProgId = BaseNamespace + "MockProvider";
         public const string ComMockProgId = BaseNamespace + "ComMock";
         public const string ComMockedProgId = BaseNamespace + "ComMocked";
-        public const string MockArgumentDefinitionProgId = BaseNamespace + "MockArgumentDefinition";
-        public const string MockArgumentDefinitionsProgId = BaseNamespace + "MockArgumentDefinitions";
-        public const string MockArgumentCreatorProgId = BaseNamespace + "MockArgumentCreator";
+        public const string SetupArgumentDefinitionProgId = BaseNamespace + "MockArgumentDefinition";
+        public const string SetupArgumentDefinitionsProgId = BaseNamespace + "MockArgumentDefinitions";
+        public const string SetupArgumentCreatorProgId = BaseNamespace + "MockArgumentCreator";
         public const string AssertClassProgId = BaseNamespace + "AssertClass";
         public const string PermissiveAssertClassProgId = BaseNamespace + "PermissiveAssertClass";
         public const string FakesProviderProgId = BaseNamespace + "FakesProvider";

@@ -10,20 +10,20 @@ using NLog;
 
 namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 {
-    internal class MockArgumentResolver
+    internal class SetupArgumentResolver
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
-        /// Converts a variant args into the <see cref="MockArgumentDefinitions"/> collection. This supports calls from COM
+        /// Converts a variant args into the <see cref="SetupArgumentDefinitions"/> collection. This supports calls from COM
         /// using the Variant data type.
         /// </summary>
         /// <remarks>
         /// The procedure needs to handle the following cases where the variant...:
         ///   1) contains a single value
         ///   2) contains an Array() of values
-        ///   3) wraps a single <see cref="MockArgumentDefinition"/>
-        ///   4) points to a <see cref="MockArgumentDefinitions"/> collection.
+        ///   3) wraps a single <see cref="SetupArgumentDefinition"/>
+        ///   4) points to a <see cref="SetupArgumentDefinitions"/> collection.
         ///   5) wraps a single <see cref="Missing"/> object in which case we return a null
         ///   6) wraps an array of single <see cref="Missing"/> object in which case we return a null
         ///
@@ -37,16 +37,16 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
         /// not as <c>null</c> if it is omitted. 
         /// </remarks>
         /// <param name="args">Should be a COM Variant that can be cast into valid values as explained in the remarks</param>
-        /// <returns>A <see cref="MockArgumentDefinitions"/> collection or null</returns>
-        public MockArgumentDefinitions ResolveArgs(object args)
+        /// <returns>A <see cref="SetupArgumentDefinitions"/> collection or null</returns>
+        public SetupArgumentDefinitions ResolveArgs(object args)
         {
             switch (args)
             {
                 case Missing missing:
                     return null;
-                case MockArgumentDefinitions definitions:
+                case SetupArgumentDefinitions definitions:
                     return definitions;
-                case MockArgumentDefinition definition:
+                case SetupArgumentDefinition definition:
                     return WrapArgumentDefinitions(definition);
                 case object[] objects:
                     if (objects.Length == 1 && objects[0] is Missing)
@@ -61,38 +61,38 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             }
         }
 
-        private static MockArgumentDefinitions WrapArgumentDefinitions(object singleObject)
+        private static SetupArgumentDefinitions WrapArgumentDefinitions(object singleObject)
         {
-            var list = new MockArgumentDefinitions();
-            var isDefinition = MockArgumentDefinition.CreateIs(singleObject);
+            var list = new SetupArgumentDefinitions();
+            var isDefinition = SetupArgumentDefinition.CreateIs(singleObject);
             list.Add(isDefinition);
             return list;
         }
 
-        private static MockArgumentDefinitions WrapArgumentDefinitions(object[] objects)
+        private static SetupArgumentDefinitions WrapArgumentDefinitions(object[] objects)
         {
-            var list = new MockArgumentDefinitions();
+            var list = new SetupArgumentDefinitions();
             foreach (var item in objects)
             {
                 switch (item)
                 {
-                    case MockArgumentDefinition argumentDefinition:
+                    case SetupArgumentDefinition argumentDefinition:
                         list.Add(argumentDefinition);
                         break;
                     case object[] arrayObjects:
-                        var inDefinition = MockArgumentDefinition.CreateIsIn(arrayObjects);
+                        var inDefinition = SetupArgumentDefinition.CreateIsIn(arrayObjects);
                         list.Add(inDefinition);
                         break;
                     case Missing missing:
-                        list.Add(MockArgumentDefinition.CreateIsAny());
+                        list.Add(SetupArgumentDefinition.CreateIsAny());
                         break;
                     case object singleObject:
                         var isDefinition =
-                            MockArgumentDefinition.CreateIs(singleObject);
+                            SetupArgumentDefinition.CreateIs(singleObject);
                         list.Add(isDefinition);
                         break;
                     case null:
-                        list.Add(MockArgumentDefinition.CreateIsAny());
+                        list.Add(SetupArgumentDefinition.CreateIsAny());
                         break;
                 }
             }
@@ -100,28 +100,28 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             return list;
         }
 
-        private static MockArgumentDefinitions WrapArgumentDefinitions(MockArgumentDefinition mockArgumentDefinition)
+        private static SetupArgumentDefinitions WrapArgumentDefinitions(SetupArgumentDefinition setupArgumentDefinition)
         {
-            return new MockArgumentDefinitions
+            return new SetupArgumentDefinitions
             {
-                mockArgumentDefinition
+                setupArgumentDefinition
             };
         }
 
         /// <summary>
-        /// Transform the collection of <see cref="MockArgumentDefinition"/> into a <see cref="IReadOnlyList{T}"/>
+        /// Transform the collection of <see cref="SetupArgumentDefinition"/> into a <see cref="IReadOnlyList{T}"/>
         /// </summary>
         /// <remarks>
         /// If a method `Foo` requires one argument, we need to specify the behavior in an expression similar
         /// to this: <c>Mock.Setup(x => x.Foo(It.IsAny())</c>. The class <see cref="It"/> is static so we can
         /// create call expressions directly on it. 
         /// </remarks>
-        /// <param name="parameters">Array of <see cref="ParameterInfo"/> returned from the member for which the <see cref="MockArgumentDefinitions"/> applies to</param>
-        /// <param name="args">The <see cref="MockArgumentDefinitions"/> collection containing user supplied behavior</param>
+        /// <param name="parameters">Array of <see cref="ParameterInfo"/> returned from the member for which the <see cref="SetupArgumentDefinitions"/> applies to</param>
+        /// <param name="args">The <see cref="SetupArgumentDefinitions"/> collection containing user supplied behavior</param>
         /// <returns>A read-only list containing the <see cref="Expression"/> of arguments</returns>
         public IReadOnlyList<Expression> ResolveParameters(
             IReadOnlyList<ParameterInfo> parameters,
-            MockArgumentDefinitions args)
+            SetupArgumentDefinitions args)
         {
             var argsCount = args?.Count ?? 0;
             if (parameters.Count != argsCount)
@@ -152,7 +152,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 
                 switch (definition.Type)
                 {
-                    case MockArgumentType.Is:
+                    case SetupArgumentType.Is:
                         itMemberInfo = itType.GetMethod(nameof(It.Is)).MakeGenericMethod(parameterType);
                         var value = definition.Values[0];
                         if (value != null && value.GetType() != parameterType)
@@ -167,16 +167,16 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
                         var itLambda = Expression.Lambda(bodyExpression, typeExpression);
                         itArgumentExpressions.Add(itLambda);
                         break;
-                    case MockArgumentType.IsAny:
+                    case SetupArgumentType.IsAny:
                         itMemberInfo = Reflection.GetMethodExt(itType, nameof(It.IsAny)).MakeGenericMethod(parameterType);
                         break;
-                    case MockArgumentType.IsIn:
+                    case SetupArgumentType.IsIn:
                         itMemberInfo = Reflection.GetMethodExt(itType, nameof(It.IsIn), typeof(IEnumerable<>)).MakeGenericMethod(parameterType);
                         var arrayInit = Expression.NewArrayInit(parameterType,
                             definition.Values.Select(x => Expression.Convert(Expression.Constant(TryCast(x, parameterType,  out var c) ? c : x), parameterType)));
                         itArgumentExpressions.Add(arrayInit);
                         break;
-                    case MockArgumentType.IsInRange:
+                    case SetupArgumentType.IsInRange:
                         itMemberInfo = Reflection.GetMethodExt(itType, nameof(It.IsInRange), typeof(MethodReflection.T),
                             typeof(MethodReflection.T), typeof(Range)).MakeGenericMethod(parameterType);
                         itArgumentExpressions.Add( Expression.Convert(Expression.Constant(TryCast(definition.Values[0], parameterType, out var from) ? from : definition.Values[0]), parameterType));
@@ -185,13 +185,13 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
                             ? Expression.Constant((Range) definition.Range)
                             : Expression.Constant(Range.Inclusive));
                         break;
-                    case MockArgumentType.IsNotIn:
+                    case SetupArgumentType.IsNotIn:
                         itMemberInfo = Reflection.GetMethodExt(itType, nameof(It.IsNotIn), typeof(IEnumerable<>)).MakeGenericMethod(parameterType);
                         var notArrayInit = Expression.NewArrayInit(parameterType,
                             definition.Values.Select(x => Expression.Convert(Expression.Constant(TryCast(x, parameterType, out var c) ? c : x), parameterType)));
                         itArgumentExpressions.Add(notArrayInit);
                         break;
-                    case MockArgumentType.IsNotNull:
+                    case SetupArgumentType.IsNotNull:
                         itMemberInfo = Reflection.GetMethodExt(itType, nameof(It.IsNotNull)).MakeGenericMethod(parameterType);
                         break;
                     default:

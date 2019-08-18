@@ -52,7 +52,7 @@ namespace RubberduckTests.ComMock
             Assert.AreEqual(2, results.Count);
             foreach (var definition in results)
             {
-                Assert.AreEqual(MockArgumentType.IsAny, definition.Type);    
+                Assert.AreEqual(SetupArgumentType.IsAny, definition.Type);    
             }
         }
 
@@ -66,7 +66,7 @@ namespace RubberduckTests.ComMock
             Assert.AreEqual(2, results.Count);
             foreach (var definition in results)
             {
-                Assert.AreEqual(MockArgumentType.IsAny, definition.Type);
+                Assert.AreEqual(SetupArgumentType.IsAny, definition.Type);
             }
         }
 
@@ -74,13 +74,13 @@ namespace RubberduckTests.ComMock
         public void Resolve_Args_Definition_Returns_Definitions()
         {
             var resolver = ArrangeMockArgumentResolver();
-            var arg = MockArgumentDefinition.CreateIs(1);
+            var arg = SetupArgumentDefinition.CreateIs(1);
             var results = resolver.ResolveArgs(arg);
 
             Assert.AreEqual(1, results.Count);
             foreach (var definition in results)
             {
-                Assert.AreEqual(MockArgumentType.Is, definition.Type);
+                Assert.AreEqual(SetupArgumentType.Is, definition.Type);
                 Assert.AreEqual(1, definition.Values.Single());
             }
         }
@@ -89,13 +89,13 @@ namespace RubberduckTests.ComMock
         public void Resolve_Args_Definition_In_Array_Returns_Definitions()
         {
             var resolver = ArrangeMockArgumentResolver();
-            var arg = new[] { MockArgumentDefinition.CreateIs(1) };
+            var arg = new[] { SetupArgumentDefinition.CreateIs(1) };
             var results = resolver.ResolveArgs(arg);
 
             Assert.AreEqual(1, results.Count);
             foreach (var definition in results)
             {
-                Assert.AreEqual(MockArgumentType.Is, definition.Type);
+                Assert.AreEqual(SetupArgumentType.Is, definition.Type);
                 Assert.AreEqual(1, definition.Values.Single());
             }
         }
@@ -104,7 +104,7 @@ namespace RubberduckTests.ComMock
         public void Resolve_Args_Two_Definition_Returns_Definitions()
         {
             var resolver = ArrangeMockArgumentResolver();
-            var arg = new[] { MockArgumentDefinition.CreateIs(1), MockArgumentDefinition.CreateIs(2) };
+            var arg = new[] { SetupArgumentDefinition.CreateIs(1), SetupArgumentDefinition.CreateIs(2) };
             var results = resolver.ResolveArgs(arg);
 
             Assert.AreEqual(2, results.Count);
@@ -112,7 +112,7 @@ namespace RubberduckTests.ComMock
             var i = 1;
             foreach (var definition in results)
             {
-                Assert.AreEqual(MockArgumentType.Is, definition.Type);
+                Assert.AreEqual(SetupArgumentType.Is, definition.Type);
                 Assert.AreEqual(i++, definition.Values.Single());
             }
         }
@@ -120,10 +120,10 @@ namespace RubberduckTests.ComMock
         [Test]
         public void Resolve_Args_Definitions_Returns_Itself()
         {
-            var definitions = new MockArgumentDefinitions
+            var definitions = new SetupArgumentDefinitions
             {
-                MockArgumentDefinition.CreateIs(1),
-                MockArgumentDefinition.CreateIs(2)
+                SetupArgumentDefinition.CreateIs(1),
+                SetupArgumentDefinition.CreateIs(2)
             };
 
             var resolver = ArrangeMockArgumentResolver();
@@ -142,7 +142,7 @@ namespace RubberduckTests.ComMock
             Assert.AreEqual(2, results.Count);
             foreach (var definition in results)
             {
-                Assert.AreEqual(MockArgumentType.Is, definition.Type);
+                Assert.AreEqual(SetupArgumentType.Is, definition.Type);
             }
         }
 
@@ -159,7 +159,7 @@ namespace RubberduckTests.ComMock
             Assert.AreEqual(1, results.Count);
             foreach (var definition in results)
             {
-                Assert.AreEqual(MockArgumentType.Is, definition.Type);
+                Assert.AreEqual(SetupArgumentType.Is, definition.Type);
             }
         }
 
@@ -173,7 +173,7 @@ namespace RubberduckTests.ComMock
 
             Assert.AreEqual(1, results.Count);
             var result = results.Single();
-            Assert.AreEqual(MockArgumentType.IsIn, result.Type);
+            Assert.AreEqual(SetupArgumentType.IsIn, result.Type);
             Assert.AreEqual(array, result.Values);
         }
 
@@ -190,7 +190,7 @@ namespace RubberduckTests.ComMock
             var i = 0;
             foreach (var definition in results)
             {
-                Assert.AreEqual(MockArgumentType.IsIn, definition.Type);
+                Assert.AreEqual(SetupArgumentType.IsIn, definition.Type);
                 Assert.AreEqual(args[i++], definition.Values);
             }
         }
@@ -205,9 +205,9 @@ namespace RubberduckTests.ComMock
             var results = resolver.ResolveArgs(args);
 
             Assert.AreEqual(2, results.Count);
-            Assert.AreEqual(MockArgumentType.IsIn, results.First().Type);
+            Assert.AreEqual(SetupArgumentType.IsIn, results.First().Type);
             Assert.AreEqual(array, results.First().Values);
-            Assert.AreEqual(MockArgumentType.Is, results.Last().Type);
+            Assert.AreEqual(SetupArgumentType.Is, results.Last().Type);
             Assert.AreEqual(singleObject, results.Last().Values.Single());
         }
 
@@ -221,9 +221,9 @@ namespace RubberduckTests.ComMock
             var results = resolver.ResolveArgs(args);
 
             Assert.AreEqual(2, results.Count);
-            Assert.AreEqual(MockArgumentType.Is, results.First().Type);
+            Assert.AreEqual(SetupArgumentType.Is, results.First().Type);
             Assert.AreEqual(singleObject, results.First().Values.Single());
-            Assert.AreEqual(MockArgumentType.IsIn, results.Last().Type);
+            Assert.AreEqual(SetupArgumentType.IsIn, results.Last().Type);
             Assert.AreEqual(array, results.Last().Values);
         }
 
@@ -256,81 +256,81 @@ namespace RubberduckTests.ComMock
             foreach (var definition in results)
             {
                 var arg = args.ElementAt(i++);
-                Assert.AreEqual(MockArgumentType.Is, definition.Type);
+                Assert.AreEqual(SetupArgumentType.Is, definition.Type);
                 Assert.AreEqual(arg,definition.Values.Single());
             }
         }
 
         [Test]
 
-        [TestCase(MethodSelection.DoInt, MockArgumentType.IsAny, typeof(int), 1)]
-        [TestCase(MethodSelection.DoInt, MockArgumentType.IsAny, typeof(int), 2.2)]
-        [TestCase(MethodSelection.DoInt, MockArgumentType.IsAny, typeof(int), "1")]
-        [TestCase(MethodSelection.DoInt, MockArgumentType.IsAny, typeof(int), null)]
-        [TestCase(MethodSelection.DoString, MockArgumentType.IsAny, typeof(string), 1)]
-        [TestCase(MethodSelection.DoString, MockArgumentType.IsAny, typeof(string), 2.2)]
-        [TestCase(MethodSelection.DoString, MockArgumentType.IsAny, typeof(string), "1")]
-        [TestCase(MethodSelection.DoString, MockArgumentType.IsAny, typeof(string), null)]
-        [TestCase(MethodSelection.DoObject, MockArgumentType.IsAny, typeof(object), 1)]
-        [TestCase(MethodSelection.DoObject, MockArgumentType.IsAny, typeof(object), 2.2)]
-        [TestCase(MethodSelection.DoObject, MockArgumentType.IsAny, typeof(object), "1")]
-        [TestCase(MethodSelection.DoObject, MockArgumentType.IsAny, typeof(object), null)]
+        [TestCase(MethodSelection.DoInt, SetupArgumentType.IsAny, typeof(int), 1)]
+        [TestCase(MethodSelection.DoInt, SetupArgumentType.IsAny, typeof(int), 2.2)]
+        [TestCase(MethodSelection.DoInt, SetupArgumentType.IsAny, typeof(int), "1")]
+        [TestCase(MethodSelection.DoInt, SetupArgumentType.IsAny, typeof(int), null)]
+        [TestCase(MethodSelection.DoString, SetupArgumentType.IsAny, typeof(string), 1)]
+        [TestCase(MethodSelection.DoString, SetupArgumentType.IsAny, typeof(string), 2.2)]
+        [TestCase(MethodSelection.DoString, SetupArgumentType.IsAny, typeof(string), "1")]
+        [TestCase(MethodSelection.DoString, SetupArgumentType.IsAny, typeof(string), null)]
+        [TestCase(MethodSelection.DoObject, SetupArgumentType.IsAny, typeof(object), 1)]
+        [TestCase(MethodSelection.DoObject, SetupArgumentType.IsAny, typeof(object), 2.2)]
+        [TestCase(MethodSelection.DoObject, SetupArgumentType.IsAny, typeof(object), "1")]
+        [TestCase(MethodSelection.DoObject, SetupArgumentType.IsAny, typeof(object), null)]
 
-        [TestCase(MethodSelection.DoInt, MockArgumentType.Is, typeof(int), 1)]
-        [TestCase(MethodSelection.DoInt, MockArgumentType.Is, typeof(int), 2.2)]
-        [TestCase(MethodSelection.DoInt, MockArgumentType.Is, typeof(int), "1")]
-        [TestCase(MethodSelection.DoInt, MockArgumentType.Is, typeof(int), null)]
-        [TestCase(MethodSelection.DoString, MockArgumentType.Is, typeof(string), 1)]
-        [TestCase(MethodSelection.DoString, MockArgumentType.Is, typeof(string), 2.2)]
-        [TestCase(MethodSelection.DoString, MockArgumentType.Is, typeof(string), "1")]
-        [TestCase(MethodSelection.DoString, MockArgumentType.Is, typeof(string), null)]
-        [TestCase(MethodSelection.DoObject, MockArgumentType.Is, typeof(object), 1)]
-        [TestCase(MethodSelection.DoObject, MockArgumentType.Is, typeof(object), 2.2)]
-        [TestCase(MethodSelection.DoObject, MockArgumentType.Is, typeof(object), "1")]
-        [TestCase(MethodSelection.DoObject, MockArgumentType.Is, typeof(object), null)]
+        [TestCase(MethodSelection.DoInt, SetupArgumentType.Is, typeof(int), 1)]
+        [TestCase(MethodSelection.DoInt, SetupArgumentType.Is, typeof(int), 2.2)]
+        [TestCase(MethodSelection.DoInt, SetupArgumentType.Is, typeof(int), "1")]
+        [TestCase(MethodSelection.DoInt, SetupArgumentType.Is, typeof(int), null)]
+        [TestCase(MethodSelection.DoString, SetupArgumentType.Is, typeof(string), 1)]
+        [TestCase(MethodSelection.DoString, SetupArgumentType.Is, typeof(string), 2.2)]
+        [TestCase(MethodSelection.DoString, SetupArgumentType.Is, typeof(string), "1")]
+        [TestCase(MethodSelection.DoString, SetupArgumentType.Is, typeof(string), null)]
+        [TestCase(MethodSelection.DoObject, SetupArgumentType.Is, typeof(object), 1)]
+        [TestCase(MethodSelection.DoObject, SetupArgumentType.Is, typeof(object), 2.2)]
+        [TestCase(MethodSelection.DoObject, SetupArgumentType.Is, typeof(object), "1")]
+        [TestCase(MethodSelection.DoObject, SetupArgumentType.Is, typeof(object), null)]
 
-        [TestCase(MethodSelection.DoInt, MockArgumentType.IsNotNull, typeof(int), 1)]
-        [TestCase(MethodSelection.DoInt, MockArgumentType.IsNotNull, typeof(int), 2.2)]
-        [TestCase(MethodSelection.DoInt, MockArgumentType.IsNotNull, typeof(int), "1")]
-        [TestCase(MethodSelection.DoInt, MockArgumentType.IsNotNull, typeof(int), null)]
-        [TestCase(MethodSelection.DoString, MockArgumentType.IsNotNull, typeof(string), 1)]
-        [TestCase(MethodSelection.DoString, MockArgumentType.IsNotNull, typeof(string), 2.2)]
-        [TestCase(MethodSelection.DoString, MockArgumentType.IsNotNull, typeof(string), "1")]
-        [TestCase(MethodSelection.DoString, MockArgumentType.IsNotNull, typeof(string), null)]
-        [TestCase(MethodSelection.DoObject, MockArgumentType.IsNotNull, typeof(object), 1)]
-        [TestCase(MethodSelection.DoObject, MockArgumentType.IsNotNull, typeof(object), 2.2)]
-        [TestCase(MethodSelection.DoObject, MockArgumentType.IsNotNull, typeof(object), "1")]
-        [TestCase(MethodSelection.DoObject, MockArgumentType.IsNotNull, typeof(object), null)]
+        [TestCase(MethodSelection.DoInt, SetupArgumentType.IsNotNull, typeof(int), 1)]
+        [TestCase(MethodSelection.DoInt, SetupArgumentType.IsNotNull, typeof(int), 2.2)]
+        [TestCase(MethodSelection.DoInt, SetupArgumentType.IsNotNull, typeof(int), "1")]
+        [TestCase(MethodSelection.DoInt, SetupArgumentType.IsNotNull, typeof(int), null)]
+        [TestCase(MethodSelection.DoString, SetupArgumentType.IsNotNull, typeof(string), 1)]
+        [TestCase(MethodSelection.DoString, SetupArgumentType.IsNotNull, typeof(string), 2.2)]
+        [TestCase(MethodSelection.DoString, SetupArgumentType.IsNotNull, typeof(string), "1")]
+        [TestCase(MethodSelection.DoString, SetupArgumentType.IsNotNull, typeof(string), null)]
+        [TestCase(MethodSelection.DoObject, SetupArgumentType.IsNotNull, typeof(object), 1)]
+        [TestCase(MethodSelection.DoObject, SetupArgumentType.IsNotNull, typeof(object), 2.2)]
+        [TestCase(MethodSelection.DoObject, SetupArgumentType.IsNotNull, typeof(object), "1")]
+        [TestCase(MethodSelection.DoObject, SetupArgumentType.IsNotNull, typeof(object), null)]
 
-        [TestCase(MethodSelection.DoInt, MockArgumentType.IsIn, typeof(int), new[] {1, 3, 5})]
-        [TestCase(MethodSelection.DoInt, MockArgumentType.IsIn, typeof(int), new[] {2.2, 4.4, 6.6})]
-        [TestCase(MethodSelection.DoInt, MockArgumentType.IsIn, typeof(int), new[] {"1", "3", "5"})]
-        [TestCase(MethodSelection.DoString, MockArgumentType.IsIn, typeof(string), new[] { 1, 3, 5 })]
-        [TestCase(MethodSelection.DoString, MockArgumentType.IsIn, typeof(string), new[] { 2.2, 4.4, 6.6 })]
-        [TestCase(MethodSelection.DoString, MockArgumentType.IsIn, typeof(string), new[] { "1", "3", "5" })]
-        [TestCase(MethodSelection.DoObject, MockArgumentType.IsIn, typeof(object), new[] { 1, 3, 5 })]
-        [TestCase(MethodSelection.DoObject, MockArgumentType.IsIn, typeof(object), new[] { 2.2, 4.4, 6.6 })]
-        [TestCase(MethodSelection.DoObject, MockArgumentType.IsIn, typeof(object), new[] { "1", "3", "5" })]
+        [TestCase(MethodSelection.DoInt, SetupArgumentType.IsIn, typeof(int), new[] {1, 3, 5})]
+        [TestCase(MethodSelection.DoInt, SetupArgumentType.IsIn, typeof(int), new[] {2.2, 4.4, 6.6})]
+        [TestCase(MethodSelection.DoInt, SetupArgumentType.IsIn, typeof(int), new[] {"1", "3", "5"})]
+        [TestCase(MethodSelection.DoString, SetupArgumentType.IsIn, typeof(string), new[] { 1, 3, 5 })]
+        [TestCase(MethodSelection.DoString, SetupArgumentType.IsIn, typeof(string), new[] { 2.2, 4.4, 6.6 })]
+        [TestCase(MethodSelection.DoString, SetupArgumentType.IsIn, typeof(string), new[] { "1", "3", "5" })]
+        [TestCase(MethodSelection.DoObject, SetupArgumentType.IsIn, typeof(object), new[] { 1, 3, 5 })]
+        [TestCase(MethodSelection.DoObject, SetupArgumentType.IsIn, typeof(object), new[] { 2.2, 4.4, 6.6 })]
+        [TestCase(MethodSelection.DoObject, SetupArgumentType.IsIn, typeof(object), new[] { "1", "3", "5" })]
 
-        [TestCase(MethodSelection.DoInt, MockArgumentType.IsNotIn, typeof(int), new[] { 1, 3, 5 })]
-        [TestCase(MethodSelection.DoInt, MockArgumentType.IsNotIn, typeof(int), new[] { 2.2, 4.4, 6.6 })]
-        [TestCase(MethodSelection.DoInt, MockArgumentType.IsNotIn, typeof(int), new[] { "1", "3", "5" })]
-        [TestCase(MethodSelection.DoString, MockArgumentType.IsNotIn, typeof(string), new[] { 1, 3, 5 })]
-        [TestCase(MethodSelection.DoString, MockArgumentType.IsNotIn, typeof(string), new[] { 2.2, 4.4, 6.6 })]
-        [TestCase(MethodSelection.DoString, MockArgumentType.IsNotIn, typeof(string), new[] { "1", "3", "5" })]
-        [TestCase(MethodSelection.DoObject, MockArgumentType.IsNotIn, typeof(object), new[] { 1, 3, 5 })]
-        [TestCase(MethodSelection.DoObject, MockArgumentType.IsNotIn, typeof(object), new[] { 2.2, 4.4, 6.6 })]
-        [TestCase(MethodSelection.DoObject, MockArgumentType.IsNotIn, typeof(object), new[] { "1", "3", "5" })]
+        [TestCase(MethodSelection.DoInt, SetupArgumentType.IsNotIn, typeof(int), new[] { 1, 3, 5 })]
+        [TestCase(MethodSelection.DoInt, SetupArgumentType.IsNotIn, typeof(int), new[] { 2.2, 4.4, 6.6 })]
+        [TestCase(MethodSelection.DoInt, SetupArgumentType.IsNotIn, typeof(int), new[] { "1", "3", "5" })]
+        [TestCase(MethodSelection.DoString, SetupArgumentType.IsNotIn, typeof(string), new[] { 1, 3, 5 })]
+        [TestCase(MethodSelection.DoString, SetupArgumentType.IsNotIn, typeof(string), new[] { 2.2, 4.4, 6.6 })]
+        [TestCase(MethodSelection.DoString, SetupArgumentType.IsNotIn, typeof(string), new[] { "1", "3", "5" })]
+        [TestCase(MethodSelection.DoObject, SetupArgumentType.IsNotIn, typeof(object), new[] { 1, 3, 5 })]
+        [TestCase(MethodSelection.DoObject, SetupArgumentType.IsNotIn, typeof(object), new[] { 2.2, 4.4, 6.6 })]
+        [TestCase(MethodSelection.DoObject, SetupArgumentType.IsNotIn, typeof(object), new[] { "1", "3", "5" })]
 
         // Cannot use objects for IsInRange because it does not have IComparable
-        [TestCase(MethodSelection.DoInt, MockArgumentType.IsInRange, typeof(int), new[] { 1, 5 })]
-        [TestCase(MethodSelection.DoInt, MockArgumentType.IsInRange, typeof(int), new[] { 2.2, 6.6 })]
-        [TestCase(MethodSelection.DoInt, MockArgumentType.IsInRange, typeof(int), new[] { "1", "5" })]
-        [TestCase(MethodSelection.DoString, MockArgumentType.IsInRange, typeof(string), new[] { 1, 5 })]
-        [TestCase(MethodSelection.DoString, MockArgumentType.IsInRange, typeof(string), new[] { 2.2, 6.6 })]
-        [TestCase(MethodSelection.DoString, MockArgumentType.IsInRange, typeof(string), new[] { "1", "5" })]
+        [TestCase(MethodSelection.DoInt, SetupArgumentType.IsInRange, typeof(int), new[] { 1, 5 })]
+        [TestCase(MethodSelection.DoInt, SetupArgumentType.IsInRange, typeof(int), new[] { 2.2, 6.6 })]
+        [TestCase(MethodSelection.DoInt, SetupArgumentType.IsInRange, typeof(int), new[] { "1", "5" })]
+        [TestCase(MethodSelection.DoString, SetupArgumentType.IsInRange, typeof(string), new[] { 1, 5 })]
+        [TestCase(MethodSelection.DoString, SetupArgumentType.IsInRange, typeof(string), new[] { 2.2, 6.6 })]
+        [TestCase(MethodSelection.DoString, SetupArgumentType.IsInRange, typeof(string), new[] { "1", "5" })]
 
-        public void It_SingleParameter_Tests(MethodSelection methodSelection, MockArgumentType argumentType, Type returnType, object value)
+        public void It_SingleParameter_Tests(MethodSelection methodSelection, SetupArgumentType argumentType, Type returnType, object value)
         {
             ArgumentSetup[] argumentSetups;
             if (value != null && value.GetType().IsArray)
@@ -348,21 +348,21 @@ namespace RubberduckTests.ComMock
             AssertMockArgumentResolver(assertData);
         }
 
-        public static string MockArgumentMapper(MockArgumentType argumentType)
+        public static string MockArgumentMapper(SetupArgumentType argumentType)
         {
             switch (argumentType)
             {
-                case MockArgumentType.Is:
+                case SetupArgumentType.Is:
                     return nameof(It.Is);
-                case MockArgumentType.IsAny:
+                case SetupArgumentType.IsAny:
                     return nameof(It.IsAny);
-                case MockArgumentType.IsIn:
+                case SetupArgumentType.IsIn:
                     return nameof(It.IsIn);
-                case MockArgumentType.IsInRange:
+                case SetupArgumentType.IsInRange:
                     return nameof(It.IsInRange);
-                case MockArgumentType.IsNotIn:
+                case SetupArgumentType.IsNotIn:
                     return nameof(It.IsNotIn);
-                case MockArgumentType.IsNotNull:
+                case SetupArgumentType.IsNotNull:
                     return nameof(It.IsNotNull);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(argumentType), argumentType, null);
@@ -391,7 +391,7 @@ namespace RubberduckTests.ComMock
             }
         }
 
-        internal static ArgumentSetup[] ArrangeArgumentSetup(MockArgumentType argumentType, Type returnType, object[] value)
+        internal static ArgumentSetup[] ArrangeArgumentSetup(SetupArgumentType argumentType, Type returnType, object[] value)
         {
             return new[]
             {
@@ -399,7 +399,7 @@ namespace RubberduckTests.ComMock
             };
         }
 
-        internal static ArgumentSetup[] ArrangeArgumentSetup(MockArgumentType argumentType, Type returnType, object value)
+        internal static ArgumentSetup[] ArrangeArgumentSetup(SetupArgumentType argumentType, Type returnType, object value)
         {
             return new[]
             {
@@ -418,9 +418,9 @@ namespace RubberduckTests.ComMock
             );
         }
 
-        internal static MockArgumentResolver ArrangeMockArgumentResolver()
+        internal static SetupArgumentResolver ArrangeMockArgumentResolver()
         {
-            return new MockArgumentResolver();
+            return new SetupArgumentResolver();
         }
 
         internal void AssertMockArgumentResolver(AssertData data)
@@ -430,30 +430,30 @@ namespace RubberduckTests.ComMock
 
             Assert.IsNotNull(parameterInfos, "Reflection on method failed");
 
-            var mockDefinitions = new MockArgumentDefinitions();
+            var mockDefinitions = new SetupArgumentDefinitions();
             foreach (var setup in data.ArgumentSetups)
             {
-                MockArgumentDefinition definition;
+                SetupArgumentDefinition definition;
                 switch (setup.ArgumentType)
                 {
-                    case MockArgumentType.Is:
-                        definition = MockArgumentDefinition.CreateIs(setup.Value.Single());
+                    case SetupArgumentType.Is:
+                        definition = SetupArgumentDefinition.CreateIs(setup.Value.Single());
                         break;
-                    case MockArgumentType.IsAny:
-                        definition = MockArgumentDefinition.CreateIsAny();
+                    case SetupArgumentType.IsAny:
+                        definition = SetupArgumentDefinition.CreateIsAny();
                         break;
-                    case MockArgumentType.IsIn:
-                        definition = MockArgumentDefinition.CreateIsIn(setup.Value);
+                    case SetupArgumentType.IsIn:
+                        definition = SetupArgumentDefinition.CreateIsIn(setup.Value);
                         break;
-                    case MockArgumentType.IsInRange:
+                    case SetupArgumentType.IsInRange:
                         Assert.AreEqual(2, setup.Value.Length);
-                        definition=MockArgumentDefinition.CreateIsInRange(setup.Value[0], setup.Value[1], MockArgumentRange.Inclusive);
+                        definition=SetupArgumentDefinition.CreateIsInRange(setup.Value[0], setup.Value[1], SetupArgumentRange.Inclusive);
                         break;
-                    case MockArgumentType.IsNotIn:
-                        definition = MockArgumentDefinition.CreateIsNotIn(setup.Value);
+                    case SetupArgumentType.IsNotIn:
+                        definition = SetupArgumentDefinition.CreateIsNotIn(setup.Value);
                         break;
-                    case MockArgumentType.IsNotNull:
-                        definition = MockArgumentDefinition.CreateIsNotNull();
+                    case SetupArgumentType.IsNotNull:
+                        definition = SetupArgumentDefinition.CreateIsNotNull();
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -478,12 +478,12 @@ namespace RubberduckTests.ComMock
 
     internal readonly struct ArgumentSetup
     {
-        public MockArgumentType ArgumentType { get; }
+        public SetupArgumentType ArgumentType { get; }
         public string ItType { get; }
         public Type ReturnType { get; }
         public object[] Value { get; }
         
-        public ArgumentSetup(MockArgumentType argumentType, string itType, Type returnType, object[] value)
+        public ArgumentSetup(SetupArgumentType argumentType, string itType, Type returnType, object[] value)
         {
             ArgumentType = argumentType;
             ItType = itType;
@@ -491,7 +491,7 @@ namespace RubberduckTests.ComMock
             Value = value;
         }
 
-        public ArgumentSetup(MockArgumentType argumentType, string itType, Type returnType, object value)
+        public ArgumentSetup(SetupArgumentType argumentType, string itType, Type returnType, object value)
         {
             ArgumentType = argumentType;
             ItType = itType;

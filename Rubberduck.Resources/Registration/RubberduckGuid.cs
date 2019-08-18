@@ -30,12 +30,12 @@
         public const string MockProviderGuid = UnitTestingGuidspace + "E3" + GuidSuffix;
         public const string IComMockGuid = UnitTestingGuidspace + "E4" + GuidSuffix;
         public const string ComMockGuid = UnitTestingGuidspace + "E5" + GuidSuffix;
-        public const string IMockArgumentDefinitionGuid = UnitTestingGuidspace + "E6" + GuidSuffix;
-        public const string MockArgumentDefinitionGuid = UnitTestingGuidspace + "E7" + GuidSuffix;
-        public const string IMockArgumentDefinitionsGuid = UnitTestingGuidspace + "E8" + GuidSuffix;
-        public const string MockArgumentDefinitionsGuid = UnitTestingGuidspace + "E9" + GuidSuffix;
-        public const string IMockArgumentCreatorGuid = UnitTestingGuidspace + "EA" + GuidSuffix;
-        public const string MockArgumentCreatorGuid = UnitTestingGuidspace + "EB" + GuidSuffix;
+        public const string ISetupArgumentDefinitionGuid = UnitTestingGuidspace + "E6" + GuidSuffix;
+        public const string SetupArgumentDefinitionGuid = UnitTestingGuidspace + "E7" + GuidSuffix;
+        public const string ISetupArgumentDefinitionsGuid = UnitTestingGuidspace + "E8" + GuidSuffix;
+        public const string SetupArgumentDefinitionsGuid = UnitTestingGuidspace + "E9" + GuidSuffix;
+        public const string ISetupArgumentCreatorGuid = UnitTestingGuidspace + "EA" + GuidSuffix;
+        public const string SetupArgumentCreatorGuid = UnitTestingGuidspace + "EB" + GuidSuffix;
         public const string IComMockedGuid = UnitTestingGuidspace + "EC" + GuidSuffix;
         public const string ComMockedGuid = UnitTestingGuidspace + "ED" + GuidSuffix;
 
@@ -60,8 +60,8 @@
         public const string DeclarationTypeGuid = RecordGuidspace + "23" + GuidSuffix;
         public const string AccessibilityGuid = RecordGuidspace + "24" + GuidSuffix;
         public const string ParserStateGuid = RecordGuidspace + "25" + GuidSuffix;
-        public const string MockArgumentRangeGuid = RecordGuidspace + "26" + GuidSuffix;
-        public const string MockArgumentTypeGuid = RecordGuidspace + "27" + GuidSuffix;
+        public const string SetupArgumentRangeGuid = RecordGuidspace + "26" + GuidSuffix;
+        public const string SetupArgumentTypeGuid = RecordGuidspace + "27" + GuidSuffix;
 
         // Debug Guids:
         private const string DebugGuidspace = "69E101";

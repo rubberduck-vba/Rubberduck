@@ -24,21 +24,21 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
         private readonly Type _type;
         private readonly IEnumerable<Type> _supportedInterfaces;
         private readonly ComMocked mocked;
-        private readonly MockArgumentResolver _resolver;
+        private readonly SetupArgumentResolver _resolver;
 
         public ComMock(Mock mock, Type type, IEnumerable<Type> supportedInterfaces)
         {
             Mock = mock;
             _type = type;
             _supportedInterfaces = supportedInterfaces;
-            _resolver = new MockArgumentResolver();
+            _resolver = new SetupArgumentResolver();
 
             Mock.As<IComMocked>().Setup(x => x.Mock).Returns(this);
             mocked = new ComMocked(this, _supportedInterfaces);
         }
 
         /// <remarks>
-        /// Refer to remarks in <see cref="MockArgumentResolver.ResolveArgs"/> for how the
+        /// Refer to remarks in <see cref="SetupArgumentResolver.ResolveArgs"/> for how the
         /// parameter <paramref name="Args"/> is handled. 
         /// </remarks>
         public void SetupWithReturns(string Name, object Value, object Args = null)
@@ -57,7 +57,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
         }
 
         /// <remarks>
-        /// Refer to remarks in <see cref="MockArgumentResolver.ResolveArgs"/> for how the
+        /// Refer to remarks in <see cref="SetupArgumentResolver.ResolveArgs"/> for how the
         /// parameter <paramref name="Args"/> is handled. 
         /// </remarks>
         public void SetupWithCallback(string Name, Action Callback, object Args = null)
@@ -86,7 +86,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
         /// <param name="name">The member name on the mocked's interface</param>
         /// <param name="args">Arguments required for the member, if any. If none are required, pass in null</param>
         /// <returns>An list of <see cref="Expression"/> representing the mock's Setup expression ("mock.Setup(...)") for each implemented interface</returns>
-        private IEnumerable<SetupData> CreateSetupExpression(string name, MockArgumentDefinitions args)
+        private IEnumerable<SetupData> CreateSetupExpression(string name, SetupArgumentDefinitions args)
         {
             var setupDatas = new List<SetupData>();
             var membersToSetup = GetMembers(name);

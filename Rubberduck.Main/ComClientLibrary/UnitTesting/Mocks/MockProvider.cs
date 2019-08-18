@@ -27,7 +27,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
         IComMock Mock(string ProgId, [Optional] string ProjectName);
 
         [DispId(2)]
-        MockArgumentCreator It { get; }
+        SetupArgumentCreator It { get; }
     }
 
     [
@@ -43,7 +43,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 
         public MockProvider()
         {
-            It = new MockArgumentCreator();
+            It = new SetupArgumentCreator();
         }
 
         public IComMock Mock(string ProgId, string ProjectName = null)
@@ -86,7 +86,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             return new ComMock(mock, targetType, supportedTypes);
         }
 
-        public MockArgumentCreator It { get; }
+        public SetupArgumentCreator It { get; }
 
         private static Type GetComDefaultInterface(Type classType)
         {

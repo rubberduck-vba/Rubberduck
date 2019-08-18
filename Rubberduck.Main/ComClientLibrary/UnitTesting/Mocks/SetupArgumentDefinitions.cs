@@ -8,13 +8,13 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 {
     [
         ComVisible(true),
-        Guid(RubberduckGuid.IMockArgumentDefinitionsGuid),
+        Guid(RubberduckGuid.ISetupArgumentDefinitionsGuid),
         InterfaceType(ComInterfaceType.InterfaceIsDual)
     ]
-    public interface IMockArgumentDefinitions : IEnumerable
+    public interface ISetupArgumentDefinitions : IEnumerable
     {
         [DispId(WellKnownDispIds.Value)]
-        MockArgumentDefinition Item(int Index);
+        SetupArgumentDefinition Item(int Index);
 
         [DispId(1)]
         int Count { get; }
@@ -25,31 +25,31 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 
     [
         ComVisible(true),
-        Guid(RubberduckGuid.MockArgumentDefinitionsGuid),
-        ProgId(RubberduckProgId.MockArgumentDefinitionsProgId),
+        Guid(RubberduckGuid.SetupArgumentDefinitionsGuid),
+        ProgId(RubberduckProgId.SetupArgumentDefinitionsProgId),
         ClassInterface(ClassInterfaceType.None),
-        ComDefaultInterface(typeof(IMockArgumentDefinitions))
+        ComDefaultInterface(typeof(ISetupArgumentDefinitions))
     ]
-    public class MockArgumentDefinitions : IMockArgumentDefinitions, IEnumerable<MockArgumentDefinition>
+    public class SetupArgumentDefinitions : ISetupArgumentDefinitions, IEnumerable<SetupArgumentDefinition>
     {
-        private readonly List<MockArgumentDefinition> _definitions;
+        private readonly List<SetupArgumentDefinition> _definitions;
 
-        public MockArgumentDefinitions()
+        public SetupArgumentDefinitions()
         {
-            _definitions = new List<MockArgumentDefinition>();
+            _definitions = new List<SetupArgumentDefinition>();
         }
 
-        public MockArgumentDefinition Item(int Index) => _definitions.ElementAt(Index);
+        public SetupArgumentDefinition Item(int Index) => _definitions.ElementAt(Index);
 
         public int Count => _definitions.Count;
 
-        public IEnumerator<MockArgumentDefinition> GetEnumerator() => _definitions.GetEnumerator();
+        public IEnumerator<SetupArgumentDefinition> GetEnumerator() => _definitions.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => _definitions.GetEnumerator();
         
         public IEnumerator _GetEnumerator() => _definitions.GetEnumerator();
 
-        internal void Add(MockArgumentDefinition definition)
+        internal void Add(SetupArgumentDefinition definition)
         {
             _definitions.Add(definition);
         }

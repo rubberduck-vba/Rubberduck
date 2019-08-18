@@ -371,19 +371,19 @@ namespace RubberduckTests.ComMock
         }
 
         [Test]
-        [TestCase("foobar", "a", "d", MockArgumentRange.Inclusive, "a", "c", "d", "f")]
-        [TestCase("foobar", "b", "e", MockArgumentRange.Inclusive, "a", "c", "d", "f")]
-        [TestCase("foobar", "c", "f", MockArgumentRange.Inclusive, "a", "c", "d", "f")]
-        [TestCase("foobar", "c", "d", MockArgumentRange.Inclusive, "a", "c", "d", "f")]
-        [TestCase("foobar", "a", "f", MockArgumentRange.Inclusive, "a", "c", "d", "f")]
-        [TestCase(null, "d", "d", MockArgumentRange.Inclusive, "a", "c", "d", "f")]
-        [TestCase(null, "a", "a", MockArgumentRange.Inclusive, "a", "c", "d", "f")]
-        [TestCase("foobar", "b", "e", MockArgumentRange.Exclusive, "a", "c", "d", "f")]
-        [TestCase(null, "a", "e", MockArgumentRange.Exclusive, "a", "c", "d", "f")]
-        [TestCase(null, "c", "e", MockArgumentRange.Exclusive, "a", "c", "d", "f")]
-        [TestCase(null, "b", "d", MockArgumentRange.Exclusive, "a", "c", "d", "f")]
-        [TestCase(null, "b", "f", MockArgumentRange.Exclusive, "a", "c", "d", "f")]
-        public void Mock_Setup_Args_Range_Returns_Specified_Value(string expected, string input1, string input2, MockArgumentRange type, string start1, string end1, string start2, string end2)
+        [TestCase("foobar", "a", "d", SetupArgumentRange.Inclusive, "a", "c", "d", "f")]
+        [TestCase("foobar", "b", "e", SetupArgumentRange.Inclusive, "a", "c", "d", "f")]
+        [TestCase("foobar", "c", "f", SetupArgumentRange.Inclusive, "a", "c", "d", "f")]
+        [TestCase("foobar", "c", "d", SetupArgumentRange.Inclusive, "a", "c", "d", "f")]
+        [TestCase("foobar", "a", "f", SetupArgumentRange.Inclusive, "a", "c", "d", "f")]
+        [TestCase(null, "d", "d", SetupArgumentRange.Inclusive, "a", "c", "d", "f")]
+        [TestCase(null, "a", "a", SetupArgumentRange.Inclusive, "a", "c", "d", "f")]
+        [TestCase("foobar", "b", "e", SetupArgumentRange.Exclusive, "a", "c", "d", "f")]
+        [TestCase(null, "a", "e", SetupArgumentRange.Exclusive, "a", "c", "d", "f")]
+        [TestCase(null, "c", "e", SetupArgumentRange.Exclusive, "a", "c", "d", "f")]
+        [TestCase(null, "b", "d", SetupArgumentRange.Exclusive, "a", "c", "d", "f")]
+        [TestCase(null, "b", "f", SetupArgumentRange.Exclusive, "a", "c", "d", "f")]
+        public void Mock_Setup_Args_Range_Returns_Specified_Value(string expected, string input1, string input2, SetupArgumentRange type, string start1, string end1, string start2, string end2)
         {
             var pUnk = IntPtr.Zero;
             var pProxy = IntPtr.Zero;
