@@ -516,6 +516,18 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 : null;
         }
 
+        /// <summary>
+        /// Returns the parameter at index parameterIndex (0-based)
+        /// </summary>
+        public ParameterDeclaration FindParameter(Declaration parameterizedMember, int parameterIndex)
+        {
+            return parameterIndex >= 0
+                && _parametersByParent.TryGetValue(parameterizedMember, out List<ParameterDeclaration> parameters)
+                && parameterIndex < parameters.Count
+                ? parameters[parameterIndex]
+                : null;
+        }
+
         public IEnumerable<ParameterDeclaration> Parameters(Declaration parameterizedMember)
         {
             return _parametersByParent.TryGetValue(parameterizedMember, out List<ParameterDeclaration> result)

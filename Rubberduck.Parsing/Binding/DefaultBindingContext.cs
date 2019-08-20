@@ -49,6 +49,8 @@ namespace Rubberduck.Parsing.Binding
                     return Visit(module, parent, callExpression, withBlockVariable);
                 case VBAParser.BooleanExpressionContext booleanExpressionContext:
                     return Visit(module, parent, booleanExpressionContext, withBlockVariable);
+                case VBAParser.IntegerExpressionContext integerExpressionContext:
+                    return Visit(module, parent, integerExpressionContext, withBlockVariable);
                 default:
                     throw new NotSupportedException($"Unexpected context type {expression.GetType()}");
             }
@@ -242,14 +244,18 @@ namespace Rubberduck.Parsing.Binding
                 {
                     if (expr.positionalArgument() != null)
                     {
-                        convertedList.AddArgument(new ArgumentListArgument(
-                            VisitArgumentBinding(module, parent, expr.positionalArgument().argumentExpression(), withBlockVariable), ArgumentListArgumentType.Positional));
+                        var (binding, context, isAddressOfArgument) = VisitArgumentBinding(module, parent, expr.positionalArgument().argumentExpression(), withBlockVariable);
+                        convertedList.AddArgument(new ArgumentListArgument(binding, context, ArgumentListArgumentType.Positional, isAddressOfArgument));
                     }
                     else if (expr.namedArgument() != null)
                     {
+                        var (binding, context, isAddressOfArgument) = VisitArgumentBinding(module, parent, expr.namedArgument().argumentExpression(), withBlockVariable);
                         convertedList.AddArgument(new ArgumentListArgument(
-                            VisitArgumentBinding(module, parent, expr.namedArgument().argumentExpression(), withBlockVariable), ArgumentListArgumentType.Named,
-                            CreateNamedArgumentExpressionCreator(expr.namedArgument().unrestrictedIdentifier().GetText(), expr.namedArgument().unrestrictedIdentifier())));
+                            binding, 
+                            context, 
+                            ArgumentListArgumentType.Named,
+                            CreateNamedArgumentExpressionCreator(expr.namedArgument().unrestrictedIdentifier().GetText(), expr.namedArgument().unrestrictedIdentifier()),
+                            isAddressOfArgument));
                     }
                 }
             }
@@ -260,40 +266,40 @@ namespace Rubberduck.Parsing.Binding
         {
             return calledProcedure =>
             {
-                ExpressionClassification classification;
-                if (calledProcedure.DeclarationType == DeclarationType.Procedure)
-                {
-                    classification = ExpressionClassification.Subroutine;
-                }
-                else if (calledProcedure.DeclarationType == DeclarationType.Function || calledProcedure.DeclarationType == DeclarationType.LibraryFunction || calledProcedure.DeclarationType == DeclarationType.LibraryProcedure)
-                {
-                    classification = ExpressionClassification.Function;
-                }
-                else
-                {
-                    classification = ExpressionClassification.Property;
-                }
+                var classification = ExpressionClassificationOfProcedure(calledProcedure);
                 var parameter = _declarationFinder.FindParameter(calledProcedure, parameterName);
-                if (parameter != null)
-                {
-                    return new SimpleNameExpression(parameter, classification, context);
-                }
-
-                return null;
+                return parameter != null 
+                    ? new SimpleNameExpression(parameter, classification, context) 
+                    : null;
             };
         }
 
-        private IExpressionBinding VisitArgumentBinding(Declaration module, Declaration parent, VBAParser.ArgumentExpressionContext argumentExpression, IBoundExpression withBlockVariable)
+        private static ExpressionClassification ExpressionClassificationOfProcedure(Declaration procedure)
+        {
+            switch (procedure.DeclarationType)
+            {
+                case DeclarationType.Procedure:
+                    return ExpressionClassification.Subroutine;
+                case DeclarationType.Function:
+                case DeclarationType.LibraryFunction:
+                case DeclarationType.LibraryProcedure:
+                    return ExpressionClassification.Function;
+                default:
+                    return ExpressionClassification.Property;
+            }
+        }
+
+        private (IExpressionBinding binding, ParserRuleContext context, bool isAddressOfArgument) VisitArgumentBinding(Declaration module, Declaration parent, VBAParser.ArgumentExpressionContext argumentExpression, IBoundExpression withBlockVariable)
         {
             if (argumentExpression.expression() != null)
             {
                 var expr = argumentExpression.expression();
-                return Visit(module, parent, expr, withBlockVariable, StatementResolutionContext.Undefined);
+                return (Visit(module, parent, expr, withBlockVariable, StatementResolutionContext.Undefined), expr, false);
             }
             else
             {
                 var expr = argumentExpression.addressOfExpression();
-                return Visit(module, parent, expr, withBlockVariable, StatementResolutionContext.Undefined);
+                return (Visit(module, parent, expr, withBlockVariable, StatementResolutionContext.Undefined), expr, true);
             }
         }
 
@@ -319,7 +325,7 @@ namespace Rubberduck.Parsing.Binding
                 Still, we have a specific binding for it in order to attach a reference to the called default member to the exclamation mark.
              */
             var fakeArgList = new ArgumentList();
-            fakeArgList.AddArgument(new ArgumentListArgument(new LiteralDefaultBinding(nameContext), ArgumentListArgumentType.Positional));
+            fakeArgList.AddArgument(new ArgumentListArgument(new LiteralDefaultBinding(nameContext), nameContext, ArgumentListArgumentType.Positional));
             return new DictionaryAccessDefaultBinding(expression, lExpressionBinding, fakeArgList);
         }
 
@@ -333,7 +339,7 @@ namespace Rubberduck.Parsing.Binding
                 Still, we have a specific binding for it in order to attach a reference to the called default member to the exclamation mark.
              */
             var fakeArgList = new ArgumentList();
-            fakeArgList.AddArgument(new ArgumentListArgument(new LiteralDefaultBinding(nameContext), ArgumentListArgumentType.Positional));
+            fakeArgList.AddArgument(new ArgumentListArgument(new LiteralDefaultBinding(nameContext), nameContext, ArgumentListArgumentType.Positional));
             return new DictionaryAccessDefaultBinding(expression, lExpression, fakeArgList);
         }
 
@@ -357,7 +363,8 @@ namespace Rubberduck.Parsing.Binding
         {
             var expressionParens = expression.expression();
             var expressionBinding = Visit(module, parent, expressionParens, withBlockVariable, StatementResolutionContext.Undefined);
-            return new ParenthesizedDefaultBinding(expression, expressionBinding);
+            var letCoercionBinding = new LetCoercionDefaultBinding(expressionParens, expressionBinding);
+            return new ParenthesizedDefaultBinding(expression, letCoercionBinding);
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.RelationalOpContext expression, IBoundExpression withBlockVariable)
@@ -368,7 +375,9 @@ namespace Rubberduck.Parsing.Binding
             {
                 return VisitTypeOf(module, parent, expression, typeofExpr, expression.expression()[1], withBlockVariable);
             }
-            return VisitBinaryOp(module, parent, expression, expression.expression()[0], expression.expression()[1], withBlockVariable);
+
+            var isIsRelation = expression.IS() != null;
+            return VisitBinaryOp(module, parent, expression, expression.expression()[0], expression.expression()[1], withBlockVariable, isIsRelation);
         }
 
         private IExpressionBinding VisitTypeOf(
@@ -387,12 +396,14 @@ namespace Rubberduck.Parsing.Binding
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.BooleanExpressionContext expression, IBoundExpression withBlockVariable)
         {
-            return Visit(module, parent, expression.expression(), withBlockVariable, StatementResolutionContext.Undefined);
+            var innerExpression = Visit(module, parent, expression.expression(), withBlockVariable, StatementResolutionContext.Undefined);
+            return new LetCoercionDefaultBinding(expression, innerExpression);
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.IntegerExpressionContext expression, IBoundExpression withBlockVariable)
         {
-            return Visit(module, parent, expression.expression(), withBlockVariable, StatementResolutionContext.Undefined);
+            var innerExpression =  Visit(module, parent, expression.expression(), withBlockVariable, StatementResolutionContext.Undefined);
+            return new LetCoercionDefaultBinding(expression, innerExpression);
         }
 
         private static IExpressionBinding Visit(Declaration module, VBAParser.InstanceExprContext expression)
@@ -405,17 +416,26 @@ namespace Rubberduck.Parsing.Binding
             return new LiteralDefaultBinding(expression);
         }
 
-        private IExpressionBinding VisitBinaryOp(Declaration module, Declaration parent, ParserRuleContext context, VBAParser.ExpressionContext left, VBAParser.ExpressionContext right, IBoundExpression withBlockVariable)
+        private IExpressionBinding VisitBinaryOp(Declaration module, Declaration parent, ParserRuleContext context, VBAParser.ExpressionContext left, VBAParser.ExpressionContext right, IBoundExpression withBlockVariable, bool isIsRelation = false)
         {
             var leftBinding = Visit(module, parent, left, withBlockVariable, StatementResolutionContext.Undefined);
             var rightBinding = Visit(module, parent, right, withBlockVariable, StatementResolutionContext.Undefined);
+
+            if (!isIsRelation)
+            {
+                //All but the Is relation require value type arguments.
+                leftBinding = new LetCoercionDefaultBinding(left, leftBinding);
+                rightBinding = new LetCoercionDefaultBinding(right, rightBinding);
+            }
+
             return new BinaryOpDefaultBinding(context, leftBinding, rightBinding);
         }
 
         private IExpressionBinding VisitUnaryOp(Declaration module, Declaration parent, ParserRuleContext context, VBAParser.ExpressionContext expr, IBoundExpression withBlockVariable)
         {
             var exprBinding = Visit(module, parent, expr, withBlockVariable, StatementResolutionContext.Undefined);
-            return new UnaryOpDefaultBinding(context, exprBinding);
+            var letCoercionBinding = new LetCoercionDefaultBinding(expr, exprBinding);
+            return new UnaryOpDefaultBinding(context, letCoercionBinding);
         }
     }
 }

@@ -42,9 +42,10 @@ namespace Rubberduck.Parsing.Binding
 
         private static void ResolveArgumentList(Declaration calledProcedure, ArgumentList argumentList)
         {
-            foreach (var argument in argumentList.Arguments)
+            var arguments = argumentList.Arguments;
+            for (var index = 0; index < arguments.Count; index++)
             {
-                argument.Resolve(calledProcedure);
+                arguments[index].Resolve(calledProcedure, index);
             }
         }
 

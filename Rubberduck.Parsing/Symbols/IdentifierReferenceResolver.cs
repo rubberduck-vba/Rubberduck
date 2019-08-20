@@ -164,7 +164,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private void ResolveDefault(
             ParserRuleContext expression,
-            bool requiresLetCoercion,
+            bool requiresLetCoercion = false,
             StatementResolutionContext statementContext = StatementResolutionContext.Undefined,
             bool isAssignmentTarget = false,
             bool hasExplicitLetStatement = false,
@@ -314,12 +314,12 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Resolve(VBAParser.IfStmtContext context)
         {
-            ResolveDefault(context.booleanExpression(), true);
+            ResolveDefault(context.booleanExpression());
             if (context.elseIfBlock() != null)
             {
                 foreach (var elseIfBlock in context.elseIfBlock())
                 {
-                    ResolveDefault(elseIfBlock.booleanExpression(), true);
+                    ResolveDefault(elseIfBlock.booleanExpression());
                 }
             }
         }
@@ -330,12 +330,12 @@ namespace Rubberduck.Parsing.Symbols
             // single-line-if-statements, we do it here for better understanding.
             if (context.ifWithEmptyThen() != null)
             {
-                ResolveDefault(context.ifWithEmptyThen().booleanExpression(), true);
+                ResolveDefault(context.ifWithEmptyThen().booleanExpression());
                 ResolveListOrLabel(context.ifWithEmptyThen().singleLineElseClause().listOrLabel());
             }
             else
             {
-                ResolveDefault(context.ifWithNonEmptyThen().booleanExpression(), true);
+                ResolveDefault(context.ifWithNonEmptyThen().booleanExpression());
                 ResolveListOrLabel(context.ifWithNonEmptyThen().listOrLabel());
                 if (context.ifWithNonEmptyThen().singleLineElseClause() != null)
                 {
