@@ -58,22 +58,20 @@ namespace Rubberduck.Parsing.Binding
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.CallStmtContext expression, IBoundExpression withBlockVariable)
         {
-            // Call statements always have an argument list.
-            // One of the reasons we're doing this is that an empty argument list could represent a call to a default member,
-            // which requires us to use an IndexDefaultBinding.
             var lExpression = expression.lExpression();
             var lExpressionBinding = Visit(module, parent, lExpression, withBlockVariable, StatementResolutionContext.Undefined);
 
-            if (expression.CALL() != null)
+            if (expression.CALL() == null)
             {
-                return lExpressionBinding is IndexDefaultBinding indexDefaultBinding
-                    ? indexDefaultBinding
-                    : new IndexDefaultBinding(expression.lExpression(), lExpressionBinding, new ArgumentList());
+                var argList = VisitArgumentList(module, parent, expression.argumentList(), withBlockVariable);
+                SetLeftMatch(lExpressionBinding, argList.Arguments.Count);
+                if (argList.HasArguments)
+                {
+                    return new IndexDefaultBinding(expression.lExpression(), lExpressionBinding, argList);
+                }
             }
 
-            var argList = VisitArgumentList(module, parent, expression.argumentList(), withBlockVariable);
-            SetLeftMatch(lExpressionBinding, argList.Arguments.Count);
-            return new IndexDefaultBinding(expression.lExpression(), lExpressionBinding, argList);
+            return new ProcedureCoercionDefaultBinding(expression.lExpression(), lExpressionBinding);
         }
 
         private static void SetLeftMatch(IExpressionBinding binding, int argumentCount)

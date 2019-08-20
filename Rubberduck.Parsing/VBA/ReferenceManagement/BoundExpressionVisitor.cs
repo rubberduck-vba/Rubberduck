@@ -84,6 +84,9 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 case LetCoercionDefaultMemberAccessExpression letCoercionDefaultMemberAccessExpression:
                     Visit(letCoercionDefaultMemberAccessExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement);
                     break;
+                case ProcedureCoercionExpression procedureCoercionExpression:
+                    Visit(procedureCoercionExpression, module, scope, parent);
+                    break;
                 default:
                     throw new NotSupportedException($"Unexpected bound expression type {boundExpression.GetType()}");
             }
@@ -345,21 +348,22 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 {
                     Visit(argument.Expression, module, scope, parent);
                 }
-                //Dictionary access arguments cannot be named.
+                if (argument.NamedArgumentExpression != null)
+                {
+                    Visit(argument.NamedArgumentExpression, module, scope, parent);
+                }
             }
         }
 
         private void AddDefaultMemberReference(
-            DictionaryAccessExpression expression,
+            ProcedureCoercionExpression expression,
             QualifiedModuleName module,
             Declaration scope,
-            Declaration parent,
-            bool isAssignmentTarget,
-            bool hasExplicitLetStatement,
-            bool isSetAssignment)
+            Declaration parent)
         {
-            var callSiteContext = expression.DefaultMemberContext;
-            var identifier = expression.ReferencedDeclaration.IdentifierName;
+            var callSiteContext = expression.Context;
+            var identifier = callSiteContext.GetText();
+            var selection = callSiteContext.GetSelection();
             var callee = expression.ReferencedDeclaration;
             expression.ReferencedDeclaration.AddReference(
                 module,
@@ -368,26 +372,20 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 callSiteContext,
                 identifier,
                 callee,
-                callSiteContext.GetSelection(),
-                FindIdentifierAnnotations(module, callSiteContext.GetSelection().StartLine),
-                isAssignmentTarget,
-                hasExplicitLetStatement,
-                isSetAssignment,
-                isIndexedDefaultMemberAccess: true,
+                selection,
+                FindIdentifierAnnotations(module, selection.StartLine),
+                isNonIndexedDefaultMemberAccess: true,
                 defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth);
         }
 
         private void AddUnboundDefaultMemberReference(
-            DictionaryAccessExpression expression,
+            ProcedureCoercionExpression expression,
             QualifiedModuleName module,
             Declaration scope,
-            Declaration parent,
-            bool isAssignmentTarget,
-            bool hasExplicitLetStatement,
-            bool isSetAssignment)
+            Declaration parent)
         {
-            var callSiteContext = expression.DefaultMemberContext;
-            var identifier = expression.Context.GetText();
+            var callSiteContext = expression.Context;
+            var identifier = callSiteContext.GetText();
             var selection = callSiteContext.GetSelection();
             var callee = expression.ReferencedDeclaration;
             var reference = new IdentifierReference(
@@ -398,11 +396,11 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 selection,
                 callSiteContext,
                 callee,
-                isAssignmentTarget,
-                hasExplicitLetStatement,
+                false,
+                false,
                 FindIdentifierAnnotations(module, selection.StartLine),
-                isSetAssignment,
-                isIndexedDefaultMemberAccess: true,
+                false,
+                isNonIndexedDefaultMemberAccess: true,
                 defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth);
             _declarationFinder.AddUnboundDefaultMemberAccess(reference);
         }
@@ -531,6 +529,83 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 FindIdentifierAnnotations(module, selection.StartLine),
                 false,
                 isNonIndexedDefaultMemberAccess: true,
+                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth);
+            _declarationFinder.AddUnboundDefaultMemberAccess(reference);
+        }
+
+        private void Visit(
+            ProcedureCoercionExpression expression,
+            QualifiedModuleName module,
+            Declaration scope,
+            Declaration parent)
+        {
+            Visit(expression.WrappedExpression, module, scope, parent);
+
+            if (expression.Classification != ExpressionClassification.Unbound
+                && expression.ReferencedDeclaration != null)
+            {
+                AddDefaultMemberReference(expression, module, scope, parent);
+            }
+            else
+            {
+                AddUnboundDefaultMemberReference(expression, module, scope, parent);
+            }
+        }
+
+        private void AddDefaultMemberReference(
+            DictionaryAccessExpression expression,
+            QualifiedModuleName module,
+            Declaration scope,
+            Declaration parent,
+            bool isAssignmentTarget,
+            bool hasExplicitLetStatement,
+            bool isSetAssignment)
+        {
+            var callSiteContext = expression.DefaultMemberContext;
+            var identifier = expression.ReferencedDeclaration.IdentifierName;
+            var callee = expression.ReferencedDeclaration;
+            expression.ReferencedDeclaration.AddReference(
+                module,
+                scope,
+                parent,
+                callSiteContext,
+                identifier,
+                callee,
+                callSiteContext.GetSelection(),
+                FindIdentifierAnnotations(module, callSiteContext.GetSelection().StartLine),
+                isAssignmentTarget,
+                hasExplicitLetStatement,
+                isSetAssignment,
+                isIndexedDefaultMemberAccess: true,
+                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth);
+        }
+
+        private void AddUnboundDefaultMemberReference(
+            DictionaryAccessExpression expression,
+            QualifiedModuleName module,
+            Declaration scope,
+            Declaration parent,
+            bool isAssignmentTarget,
+            bool hasExplicitLetStatement,
+            bool isSetAssignment)
+        {
+            var callSiteContext = expression.DefaultMemberContext;
+            var identifier = expression.Context.GetText();
+            var selection = callSiteContext.GetSelection();
+            var callee = expression.ReferencedDeclaration;
+            var reference = new IdentifierReference(
+                module,
+                scope,
+                parent,
+                identifier,
+                selection,
+                callSiteContext,
+                callee,
+                isAssignmentTarget,
+                hasExplicitLetStatement,
+                FindIdentifierAnnotations(module, selection.StartLine),
+                isSetAssignment,
+                isIndexedDefaultMemberAccess: true,
                 defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth);
             _declarationFinder.AddUnboundDefaultMemberAccess(reference);
         }

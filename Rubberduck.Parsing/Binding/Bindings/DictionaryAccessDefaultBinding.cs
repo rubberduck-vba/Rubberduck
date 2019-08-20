@@ -147,7 +147,7 @@ namespace Rubberduck.Parsing.Binding
                 return new DictionaryAccessExpression(defaultMember, defaultMemberClassification, expression, lExpression, argumentList, defaultMemberContext, recursionDepth, containedExpression);
             }
 
-            if (parameters.Count(param => !param.IsOptional) == 0 
+            if (parameters.All(param => param.IsOptional) 
                 && DEFAULT_MEMBER_RECURSION_LIMIT >= recursionDepth)
             {
                 /*
