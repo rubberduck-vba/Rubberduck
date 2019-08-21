@@ -102,7 +102,7 @@ End Sub
 
         [Test]
         [Category("Inspections")]
-        public void ImplicitDefaultMemberAssignment_ExplicitLetDoesNotReturnResult()
+        public void ImplicitDefaultMemberAssignment_ExplicitLetReturnsResult()
         {
             const string defaultMemberClassCode = @"
 Public Property Let Foo(bar As Long)
@@ -118,7 +118,7 @@ End Sub
 
             var inspectionResults = GetInspectionResults(defaultMemberClassCode, inputCode);
 
-            Assert.AreEqual(0, inspectionResults.Count());
+            Assert.AreEqual(1, inspectionResults.Count());
         }
 
         [Test]

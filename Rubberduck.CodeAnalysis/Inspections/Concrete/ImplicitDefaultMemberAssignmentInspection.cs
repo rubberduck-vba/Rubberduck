@@ -72,7 +72,6 @@ namespace Rubberduck.Inspections.Concrete
         {
             return reference.IsAssignment
                    && reference.IsNonIndexedDefaultMemberAccess
-                   && !reference.HasExplicitLetStatement
                    && !reference.IsIgnoringInspectionResultFor(AnnotationName);
         }
     }
