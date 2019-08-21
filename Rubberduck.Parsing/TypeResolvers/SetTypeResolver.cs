@@ -171,18 +171,17 @@ namespace Rubberduck.Parsing.TypeResolvers
                 throw new NotSupportedException("Called index expression resolution on expression, which is neither a properly built indexExpr nor a properly built whitespaceIndexExpr.");
             }
 
-            var declaration = ResolveIndexExpressionAsMethod(lExpressionOfIndexExpression, containingModule, finder)
-                              ?? ResolveIndexExpressionAsDefaultMemberAccess(lExpressionOfIndexExpression, containingModule, finder);
-                
-            if (declaration != null)
-            {
-                return (declaration, MightHaveSetType(declaration));
-            }
-
             //Passing the indexExpr itself is correct. 
             var arrayDeclaration = ResolveIndexExpressionAsArrayAccess(indexExpr, containingModule, finder);
+            if (arrayDeclaration != null)
+            {
+                return (arrayDeclaration, MightHaveSetTypeOnArrayAccess(arrayDeclaration));
+            }
 
-            return (arrayDeclaration, MightHaveSetTypeOnArrayAccess(arrayDeclaration));
+            var declaration = ResolveIndexExpressionAsDefaultMemberAccess(lExpressionOfIndexExpression, containingModule, finder)
+                ?? ResolveIndexExpressionAsMethod(lExpressionOfIndexExpression, containingModule, finder);
+                              
+            return (declaration, MightHaveSetType(declaration));
         }
 
         private Declaration ResolveIndexExpressionAsMethod(VBAParser.LExpressionContext lExpressionOfIndexExpression, QualifiedModuleName containingModule, DeclarationFinder finder)
