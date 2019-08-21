@@ -395,32 +395,14 @@ namespace Rubberduck.UI.UnitTesting
 
         private void ExecuteCopyResultsCommand(object parameter)
         {
-            const string XML_SPREADSHEET_DATA_FORMAT = "XML Spreadsheet";
-
             ColumnInfo[] columnInfos = { new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Method"), new ColumnInfo("Outcome"), new ColumnInfo("Output"),
                                            new ColumnInfo("Start Time"), new ColumnInfo("End Time"), new ColumnInfo("Duration (ms)", hAlignment.Right) };
 
-            // FIXME do that to the TestMethodViewModel
-            var aResults = Model.Tests.Select(test => test.ToArray()).ToArray();
+            //TODO: Convert to resource string
+            const string resource = "Rubberduck Test Results - {0}";
+            _clipboard.AppendInfo(columnInfos, Model.Tests, resource, true, true, true, true, true);
 
-            var title = string.Format($"Rubberduck Test Results - {DateTime.Now.ToString(CultureInfo.InvariantCulture)}");
-
-            //var textResults = title + Environment.NewLine + string.Join("", _results.Select(result => result.ToString() + Environment.NewLine).ToArray());
-            var csvResults = ExportFormatter.Csv(aResults, title, columnInfos);
-            var htmlResults = ExportFormatter.HtmlClipboardFragment(aResults, title, columnInfos);
-            var rtfResults = ExportFormatter.RTF(aResults, title);
-
-            using (var strm1 = ExportFormatter.XmlSpreadsheetNew(aResults, title, columnInfos))
-            {
-                //Add the formats from richest formatting to least formatting
-                _clipboard.AppendStream(DataFormats.GetDataFormat(XML_SPREADSHEET_DATA_FORMAT).Name, strm1);
-                _clipboard.AppendString(DataFormats.Rtf, rtfResults);
-                _clipboard.AppendString(DataFormats.Html, htmlResults);
-                _clipboard.AppendString(DataFormats.CommaSeparatedValue, csvResults);
-                //_clipboard.AppendString(DataFormats.UnicodeText, textResults);
-
-                _clipboard.Flush();
-            }
+            _clipboard.Flush();
         }
 
         // TODO - FIXME

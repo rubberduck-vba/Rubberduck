@@ -648,33 +648,18 @@ namespace Rubberduck.UI.Inspections
 
         private void ExecuteCopyResultsCommand(object parameter)
         {
-            const string xmlSpreadsheetDataFormat = "XML Spreadsheet";
             if (Results == null)
             {
                 return;
             }
 
             var resultArray = Results.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
-
+            
             var resource = resultArray.Count() == 1
                 ? Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular
                 : Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Plural;
 
-            var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), resultArray.Count());
-
-            var textResults = title + Environment.NewLine + string.Join("", Results.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
-            var csvResults = ExportFormatter.Csv(resultArray, title, ColumnInformation);
-            var htmlResults = ExportFormatter.HtmlClipboardFragment(resultArray, title, ColumnInformation);
-            var rtfResults = ExportFormatter.RTF(resultArray, title);
-
-            // todo: verify that this disposing this stream breaks the xmlSpreadsheetDataFormat
-            var stream = ExportFormatter.XmlSpreadsheetNew(resultArray, title, ColumnInformation);
-            //Add the formats from richest formatting to least formatting
-            _clipboard.AppendStream(DataFormats.GetDataFormat(xmlSpreadsheetDataFormat).Name, stream);
-            _clipboard.AppendString(DataFormats.Rtf, rtfResults);
-            _clipboard.AppendString(DataFormats.Html, htmlResults);
-            _clipboard.AppendString(DataFormats.CommaSeparatedValue, csvResults);
-            _clipboard.AppendString(DataFormats.UnicodeText, textResults);
+            _clipboard.AppendInfo(ColumnInformation, Results as IEnumerable<object>, resource, true, true, true, true, true);
 
             _clipboard.Flush();
         }
