@@ -69,7 +69,9 @@ namespace Rubberduck.UI.Settings
                 if (_inspectionSettingsDescriptionFilter != value)
                 {
                     _inspectionSettingsDescriptionFilter = value;
+                    OnPropertyChanged();
                     InspectionSettings.Filter = FilterResults;
+                    OnPropertyChanged(nameof(InspectionSettings));
                 }
             }
         }
@@ -88,13 +90,13 @@ namespace Rubberduck.UI.Settings
                     _selectedSeverityFilter = value.Replace(" ", string.Empty);
                     OnPropertyChanged();
                     InspectionSettings.Filter = FilterResults;
+                    OnPropertyChanged(nameof(InspectionSettings));
                 }
             }
         }        
 
         private bool FilterResults(object setting)
         {
-            OnPropertyChanged(nameof(InspectionSettings));
             var cis = setting as CodeInspectionSetting;
 
             return cis.Description.ToUpper().Contains(_inspectionSettingsDescriptionFilter.ToUpper())
