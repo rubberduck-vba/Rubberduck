@@ -37,6 +37,28 @@ End Sub
 
         [Test]
         [Category("Inspections")]
+        public void ImplicitDefaultMemberAssignmentOnObject_ReturnsResult()
+        {
+            const string defaultMemberClassCode = @"
+Public Property Let Foo(bar As Long)
+Attribute Foo.VB_UserMemId = 0
+End Property
+";
+
+            const string inputCode = @"
+Public Sub Foo()
+    Dim bar As Object
+    bar = 42
+End Sub
+";
+
+            var inspectionResults = GetInspectionResults(defaultMemberClassCode, inputCode);
+
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void ImplicitDefaultMemberAssignment_IgnoredDoesNotReturnResult()
         {
             const string defaultMemberClassCode = @"
