@@ -69,7 +69,7 @@ namespace Rubberduck.UI.Settings
                 if (_inspectionSettingsDescriptionFilter != value)
                 {
                     _inspectionSettingsDescriptionFilter = value;
-                    InspectionSettings.Filter = item => FilterResults(item);
+                    InspectionSettings.Filter = FilterResults;
                 }
             }
         }
@@ -87,7 +87,7 @@ namespace Rubberduck.UI.Settings
                 {
                     _selectedSeverityFilter = value.Replace(" ", string.Empty);
                     OnPropertyChanged();
-                    InspectionSettings.Filter = item => FilterResults(item);
+                    InspectionSettings.Filter = FilterResults;
                 }
             }
         }        
