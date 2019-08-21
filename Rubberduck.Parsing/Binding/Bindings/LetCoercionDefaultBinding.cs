@@ -83,11 +83,10 @@ namespace Rubberduck.Parsing.Binding
             return ResolveViaDefaultMember(wrappedExpression, asTypeName, asTypeDeclaration, expression, isAssignment);
         }
 
-        private static IBoundExpression CreateFailedExpression(IBoundExpression lExpression)
+        private static IBoundExpression ExpressionForResolutionFailure(IBoundExpression lExpression)
         {
-            var failedExpr = new ResolutionFailedExpression();
-            failedExpr.AddSuccessfullyResolvedExpression(lExpression);
-            return failedExpr;
+            //We return the original expression because no default member resolution can have taken place as there is no appropriate one.
+            return lExpression;
         }
 
         private static IBoundExpression ResolveViaDefaultMember(IBoundExpression wrappedExpression, string asTypeName, Declaration asTypeDeclaration, ParserRuleContext expression, bool isAssignment, int recursionDepth = 1, RecursiveDefaultMemberAccessExpression containedExpression = null)
@@ -104,7 +103,7 @@ namespace Rubberduck.Parsing.Binding
                 || !IsPropertyGetLetFunctionProcedure(defaultMember)
                 || !IsPublic(defaultMember))
             {
-                return CreateFailedExpression(wrappedExpression);
+                return ExpressionForResolutionFailure(wrappedExpression);
             }
 
             var defaultMemberClassification = DefaultMemberClassification(defaultMember);
@@ -134,7 +133,7 @@ namespace Rubberduck.Parsing.Binding
                 }
             }
 
-            return CreateFailedExpression(wrappedExpression);
+            return ExpressionForResolutionFailure(wrappedExpression);
         }
 
         private static IBoundExpression ResolveRecursiveDefaultMember(IBoundExpression wrappedExpression, Declaration defaultMember, ExpressionClassification defaultMemberClassification, ParserRuleContext expression, bool isAssignment, int recursionDepth, RecursiveDefaultMemberAccessExpression containedExpression)

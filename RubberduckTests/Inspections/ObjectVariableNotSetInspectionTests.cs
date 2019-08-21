@@ -115,9 +115,13 @@ End Sub
             var expectResultCount = 1;
             var input =
 @"
+Public Function Item(index As Variant) As Class1
+Attribute Item.VB_UserMemId = 0
+End Function
+
 Private Sub DoSomething()
-    Dim target As Object
-    target = CreateObject(""Scripting.Dictionary"")
+    Dim target As Class1
+    Set target = New Class1
     target(""foo"") = 42
 End Sub
 ";
@@ -153,6 +157,29 @@ Private Sub TestSub(ByRef testParam As Variant)
     testParam.Add 100
 End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "VBA.4.2.xml");
+        }
+
+        [Test]
+        [Category("Inspections")]
+        //Let assignments to a variable with declared type Object resolve to an unbound default member call.
+        //Whether it is legal can only be determined at runtime. However, this creates results for other inspections.
+        public void ObjectVariableNotSet_GivenObjectVariableAssignedObject_ReturnsNoResult()
+        {
+            var expectResultCount = 0;
+            var input =
+                @"
+Public Function Item() As Long
+Attribute Item.VB_UserMemId = 0
+End Function
+
+Private Sub TestSub(ByRef testParam As Variant)
+    Dim target As Object
+    Dim foo As Class1
+    Set foo = New Class1
+    target = foo
+End Sub
+";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
         [Test]
@@ -393,7 +420,7 @@ End Sub";
                 @"
 Private Sub Test()
     Dim bar As Variant
-    Dim baz As Object
+    Dim baz As Class1
     For Each foo In bar
         baz = foo
     Next
@@ -521,7 +548,7 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void ObjectVariableNotSet_AssignmentToVarirableWithDefaultMemberReturningAnObject_OneResult()
+        public void ObjectVariableNotSet_AssignmentToVariableWithDefaultMemberReturningAnObjectOfASpecificClassWithoutParameterlessDefaultMember_OneResult()
         {
             var expectResultCount = 1;
             var input =
@@ -606,7 +633,7 @@ End Sub";
         {
             var builder = new MockVbeBuilder();
             var projectBuilder = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Module1", ComponentType.StandardModule, inputCode);
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode);
 
             foreach (var testLibrary in testLibraries)
             {
