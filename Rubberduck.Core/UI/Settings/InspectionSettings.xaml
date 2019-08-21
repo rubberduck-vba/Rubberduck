@@ -256,10 +256,6 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-        <Style x:Key="HeaderBackground" TargetType="Label">
-            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-            <Setter Property="Background" Value="DarkGray"/>
-        </Style>
         <Style x:Key="HeaderText" TargetType="Label">
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
