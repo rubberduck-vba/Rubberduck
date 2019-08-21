@@ -289,8 +289,8 @@
                                 <Image Source="{StaticResource FilterImage}" Margin="0,5" Width="19" RenderTransformOrigin="0.564,1.859" />
                                 <Label Style="{StaticResource HeaderText}"
                                        Content="{Resx Key=InspectionSettings_FilterByDescription, ResxName=Rubberduck.Resources.RubberduckUI}" Margin="0,5" />
-                                <TextBox MinWidth="125"
-                                         Text="{Binding InspectionSettingsDescriptionFilter, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" Height="26" />
+                                <controls:SearchBox Width="100"
+                                                    Text="{Binding InspectionSettingsDescriptionFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" Height="26" />
                                 <Border Width="10" />
                                 <Label Style="{StaticResource HeaderText}"
                                        Content="{Resx Key=InspectionSettings_FilterBySeverity, ResxName=Rubberduck.Resources.RubberduckUI}" Margin="0,5" />
