@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Windows.Forms;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Resources.CodeExplorer;
