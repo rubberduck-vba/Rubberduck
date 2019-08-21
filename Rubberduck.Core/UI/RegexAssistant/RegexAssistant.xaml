@@ -79,11 +79,15 @@
                     <CheckBox Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=RegexAssistant_IgnoreCaseFlag}"
                                 IsChecked="{Binding IgnoreCaseFlag}"
                                 Margin="0,0,5,0"/>
+                    <CheckBox Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=RegexAssistant_EncloseWhitespaceFlag}"
+                              IsChecked="{Binding SpellOutWhiteSpace}"
+                              Margin="0,0,5,0" />
+
                 </StackPanel>
             </StackPanel>
         </GroupBox>
 
-        <GroupBox Grid.Row="1" Margin="5">
+        <GroupBox Grid.Row="1" Margin="0,5">
             <GroupBox.Header>
                 <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=RegexAssistant_DescriptionResultsLabel}" FontWeight="SemiBold" />
             </GroupBox.Header>
