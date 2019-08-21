@@ -285,18 +285,23 @@
                             <Label Style="{StaticResource HeaderText}"
                                 Content="{Resx Key=CodeInspectionSettings_InspectionSeveritySettingsLabel, ResxName=Rubberduck.Resources.RubberduckUI}" Margin="5,5,0,5" Width="123" />
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                                <Label Content="-" Margin="0,5"/>
-                                <Image Source="{StaticResource FilterImage}" Margin="0,5" Width="19" RenderTransformOrigin="0.564,1.859" />
+                                <StackPanel.Resources>
+                                    <Style TargetType="FrameworkElement">
+                                        <Setter Property="Margin" Value="0,5" />
+                                    </Style>
+                                </StackPanel.Resources>
+                                <Label Content="-" />
+                                <Image Source="{StaticResource FilterImage}" Width="19" />
                                 <Label Style="{StaticResource HeaderText}"
-                                       Content="{Resx Key=InspectionSettings_FilterByDescription, ResxName=Rubberduck.Resources.RubberduckUI}" Margin="0,5" />
+                                       Content="{Resx Key=InspectionSettings_FilterByDescription, ResxName=Rubberduck.Resources.RubberduckUI}" />
                                 <controls:SearchBox Width="100"
-                                                    Text="{Binding InspectionSettingsDescriptionFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" Height="26" />
+                                                    Text="{Binding InspectionSettingsDescriptionFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="26" />
                                 <Border Width="10" />
                                 <Label Style="{StaticResource HeaderText}"
-                                       Content="{Resx Key=InspectionSettings_FilterBySeverity, ResxName=Rubberduck.Resources.RubberduckUI}" Margin="0,5" />
+                                       Content="{Resx Key=InspectionSettings_FilterBySeverity, ResxName=Rubberduck.Resources.RubberduckUI}" />
                                 <ComboBox Width="100"
                                           ItemsSource="{Binding SeverityFilters, UpdateSourceTrigger=PropertyChanged}"
-                                          SelectedItem="{Binding SelectedSeverityFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5" />
+                                          SelectedItem="{Binding SelectedSeverityFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Left"
