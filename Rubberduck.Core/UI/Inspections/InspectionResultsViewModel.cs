@@ -649,20 +649,20 @@ namespace Rubberduck.UI.Inspections
         private void ExecuteCopyResultsCommand(object parameter)
         {
             const string xmlSpreadsheetDataFormat = "XML Spreadsheet";
-            if (_results == null)
+            if (Results == null)
             {
                 return;
             }
 
-            var resultArray = _results.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
+            var resultArray = Results.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
 
-            var resource = _results.Count == 1
+            var resource = resultArray.Count() == 1
                 ? Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular
                 : Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Plural;
 
-            var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _results.Count);
+            var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), resultArray.Count());
 
-            var textResults = title + Environment.NewLine + string.Join("", _results.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
+            var textResults = title + Environment.NewLine + string.Join("", Results.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
             var csvResults = ExportFormatter.Csv(resultArray, title, ColumnInformation);
             var htmlResults = ExportFormatter.HtmlClipboardFragment(resultArray, title, ColumnInformation);
             var rtfResults = ExportFormatter.RTF(resultArray, title);
