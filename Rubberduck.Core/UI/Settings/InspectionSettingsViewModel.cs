@@ -106,10 +106,7 @@ namespace Rubberduck.UI.Settings
         private ListCollectionView _inspectionSettings;
         public ListCollectionView InspectionSettings
         {
-            get
-            {
-                return _inspectionSettings;
-            }
+            get => _inspectionSettings;
 
             set
             {
