@@ -279,11 +279,6 @@ namespace Rubberduck.UI.Inspections
 
         private bool FilterResults(object inspectionResult)
         {
-            if (InspectionDescriptionFilter == string.Empty)
-            {
-                return true;
-            }
-
             var inspectionResultBase = inspectionResult as InspectionResultBase;
             
             return inspectionResultBase.Description.ToUpper().Contains(InspectionDescriptionFilter.ToUpper()); ;
