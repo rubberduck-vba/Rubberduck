@@ -70,6 +70,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Severity.
+        /// </summary>
+        public static string CodeInspection_SeverityFilter {
+            get {
+                return ResourceManager.GetString("CodeInspection_SeverityFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Code Quality Issues.
         /// </summary>
         public static string CodeInspectionSettings_CodeQualityIssues {

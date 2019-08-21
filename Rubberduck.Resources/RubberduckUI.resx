@@ -1517,7 +1517,7 @@ NOTE: Restart is required for the setting to take effect.</value>
     <comment>{0}: Variable Name; {1}: name of conflicting declaration</comment>
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
-    <value>Filter</value>
+    <value>Issue Description</value>
   </data>
   <data name="GroupingStyle_ByName" xml:space="preserve">
     <value>By inspection</value>
