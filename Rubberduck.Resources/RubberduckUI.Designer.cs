@@ -1693,7 +1693,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Filter.
+        ///   Looks up a localized string similar to Issue Description.
         /// </summary>
         public static string GroupingGrid_Filter {
             get {
