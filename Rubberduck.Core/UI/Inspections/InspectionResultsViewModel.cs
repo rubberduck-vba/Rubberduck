@@ -13,6 +13,8 @@ using System.Windows.Data;
 using System.Windows.Input;
 using NLog;
 using Rubberduck.Common;
+using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -257,6 +259,34 @@ namespace Rubberduck.UI.Inspections
                 // updating Filter forces a Refresh
                 Results.Filter = i => InspectionFilter((IInspectionResult)i);
             }
+        }
+
+        private string _inspectionDescriptionFilter = string.Empty;
+        public string InspectionDescriptionFilter
+        {
+            get => _inspectionDescriptionFilter;
+            set
+            {
+                if (_inspectionDescriptionFilter != value)
+                {
+                    _inspectionDescriptionFilter = value;
+                    OnPropertyChanged();
+                    Results.Filter = FilterResults;
+                    OnPropertyChanged(nameof(Results));
+                }
+            }
+        }
+
+        private bool FilterResults(object inspectionResult)
+        {
+            if (InspectionDescriptionFilter == string.Empty)
+            {
+                return true;
+            }
+
+            var inspectionResultBase = inspectionResult as InspectionResultBase;
+            
+            return inspectionResultBase.Description.ToUpper().Contains(InspectionDescriptionFilter.ToUpper()); ;
         }
 
         private bool InspectionFilter(IInspectionResult result)
