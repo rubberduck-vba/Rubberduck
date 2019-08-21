@@ -75,7 +75,7 @@ namespace Rubberduck.Common
 
         private static string CsvEncode(object value)
         {
-            var s = "";
+            var s = string.Empty;
             if (value is string)
             {
                 s = value.ToString();
