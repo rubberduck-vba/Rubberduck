@@ -1537,6 +1537,9 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="hourglass" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Icons\Fugue\hourglass.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="skull_mad" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\skull-mad.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Language_ES" xml:space="preserve">
     <value>Español</value>
   </data>
@@ -1589,6 +1592,30 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="RefactoringFailure_InvalidDeclarationType_multipleValid" xml:space="preserve">
     <value>Declaration type of target '{0}' is '{1}' instead of one of the expected '{2}'.</value>
     <comment>{0}: name of target; {1}: actual declaration type; {2}: expected declaration types</comment>
+  </data>
+  <data name="RegexAssistant_EncloseWhitespaceFlag" xml:space="preserve">
+    <value>Spell out whitespace in the description</value>
+  </data>
+  <data name="RegexAssistant_EncloseWhitespace_EnclosingFormat" xml:space="preserve">
+    <value>&lt;{0}&gt;</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_CarriageReturn" xml:space="preserve">
+    <value>carriage-return</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_CarriageReturnNewLine" xml:space="preserve">
+    <value>carriage-return-new-line</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_NewLine" xml:space="preserve">
+    <value>new-line</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_Space" xml:space="preserve">
+    <value>space</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_Tab" xml:space="preserve">
+    <value>tab</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_UnidentifiedWhitespace" xml:space="preserve">
+    <value>unidentified-whitespace</value>
   </data>
   <data name="TestOutcome_Fail" xml:space="preserve">
     <value>Fail</value>
