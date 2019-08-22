@@ -58,7 +58,7 @@ namespace RubberduckTests.Annotations
         }
 
         [TestCase("VB_ProcData.VB_Invoke_Func", @"A\n14", AnnotationType.ExcelHotKey, "A")]
-        [TestCase("VB_Description", "\"SomeDescription\"", AnnotationType.MemberDescription, "\"SomeDescription\"")]
+        [TestCase("VB_Description", "\"SomeDescription\"", AnnotationType.Description, "\"SomeDescription\"")]
         [TestCase("VB_VarDescription", "\"SomeDescription\"", AnnotationType.VariableDescription, "\"SomeDescription\"")]
         [TestCase("VB_UserMemId", "0", AnnotationType.DefaultMember)]
         [TestCase("VB_UserMemId", "-4", AnnotationType.Enumerator)]

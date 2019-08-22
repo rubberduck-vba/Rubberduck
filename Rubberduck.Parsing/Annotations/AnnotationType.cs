@@ -57,7 +57,7 @@ namespace Rubberduck.Parsing.Annotations
         NoIndent = 1 << 18 | ModuleAnnotation,
         Interface = 1 << 19 | ModuleAnnotation,
         [FlexibleAttributeValueAnnotation("VB_Description", 1)]
-        MemberDescription = 1 << 13 | Attribute | MemberAnnotation,
+        Description = 1 << 13 | Attribute | MemberAnnotation,
         [FixedAttributeValueAnnotation("VB_UserMemId", "0")]
         DefaultMember = 1 << 14 | Attribute | MemberAnnotation,
         [FixedAttributeValueAnnotation("VB_UserMemId", "-4")]

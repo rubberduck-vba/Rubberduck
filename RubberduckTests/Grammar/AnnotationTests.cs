@@ -139,7 +139,7 @@ namespace RubberduckTests.Grammar
         public void DescriptionAnnotation_TypeIsDescription()
         {
             var annotation = new DescriptionAnnotation(new QualifiedSelection(), null, new[] { "Desc"});
-            Assert.AreEqual(AnnotationType.MemberDescription, annotation.AnnotationType);
+            Assert.AreEqual(AnnotationType.Description, annotation.AnnotationType);
         }
 
         [Category("Grammar")]

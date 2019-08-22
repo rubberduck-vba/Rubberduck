@@ -10,7 +10,7 @@ namespace Rubberduck.Parsing.Annotations
     public sealed class DescriptionAnnotation : DescriptionAttributeAnnotationBase
     {
         public DescriptionAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> parameters)
-            : base(AnnotationType.MemberDescription, qualifiedSelection, context, parameters)
+            : base(AnnotationType.Description, qualifiedSelection, context, parameters)
         {}
     }
 }
