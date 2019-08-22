@@ -33,6 +33,7 @@ namespace Rubberduck.Parsing.Annotations
             _creators.Add(AnnotationType.ModuleAttribute.ToString().ToUpperInvariant(), typeof(ModuleAttributeAnnotation));
             _creators.Add(AnnotationType.MemberAttribute.ToString().ToUpperInvariant(), typeof(MemberAttributeAnnotation));
             _creators.Add(AnnotationType.ModuleDescription.ToString().ToUpperInvariant(), typeof(ModuleDescriptionAnnotation));
+            _creators.Add(AnnotationType.ExcelHotKey.ToString().ToUpperInvariant(), typeof(ExcelHotKeyAnnotation));
         }
 
         public IAnnotation Create(VBAParser.AnnotationContext context, QualifiedSelection qualifiedSelection)
