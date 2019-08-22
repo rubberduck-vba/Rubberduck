@@ -8,8 +8,8 @@ namespace Rubberduck.Parsing.Annotations
 {
     public sealed class ExcelHotKeyAnnotation : FlexibleAttributeValueAnnotationBase
     {
-        public ExcelHotKeyAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> parameters) :
-            base(AnnotationType.ExcelHotKey, qualifiedSelection, context, GetHotKeyAttributeValue(parameters))
+        public ExcelHotKeyAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> annotationParameterValues) :
+            base(AnnotationType.ExcelHotKey, qualifiedSelection, context, GetHotKeyAttributeValue(annotationParameterValues))
         { }
 
         private static IEnumerable<string> GetHotKeyAttributeValue(IEnumerable<string> parameters) => 

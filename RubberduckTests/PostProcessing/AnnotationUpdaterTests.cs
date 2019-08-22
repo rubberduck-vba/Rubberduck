@@ -728,7 +728,7 @@ End Sub
                 var fooDeclaration = state.DeclarationFinder
                     .UserDeclarations(DeclarationType.Procedure)
                     .First(decl => decl.IdentifierName == "Foo");
-                var annotationToUpdate = fooDeclaration.Annotations.First(annotation => annotation.AnnotationType == AnnotationType.Description);
+                var annotationToUpdate = fooDeclaration.Annotations.First(annotation => annotation.AnnotationType == AnnotationType.MemberDescription);
                 var annotationUpdater = new AnnotationUpdater();
 
                 annotationUpdater.UpdateAnnotation(rewriteSession, annotationToUpdate, newAnnotation, newAnnotationValues);

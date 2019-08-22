@@ -5,6 +5,7 @@ using Rubberduck.Parsing.Annotations;
 namespace RubberduckTests.Annotations
 {
     [TestFixture]
+    [Category("Annotations")]
     public class AttributeAnnotationProviderTests
     {
         [Test]
@@ -57,13 +58,13 @@ namespace RubberduckTests.Annotations
         }
 
         [TestCase("VB_ProcData.VB_Invoke_Func", @"A\n14", AnnotationType.ExcelHotKey, "A")]
-        [TestCase("VB_Description", "\"SomeDescription\"", AnnotationType.Description, "\"SomeDescription\"")]
+        [TestCase("VB_Description", "\"SomeDescription\"", AnnotationType.MemberDescription, "\"SomeDescription\"")]
         [TestCase("VB_VarDescription", "\"SomeDescription\"", AnnotationType.VariableDescription, "\"SomeDescription\"")]
         [TestCase("VB_UserMemId", "0", AnnotationType.DefaultMember)]
         [TestCase("VB_UserMemId", "-4", AnnotationType.Enumerator)]
-        public void MemberAttributeAnnotationReturnsSpecializedAnnotationsWhereApplicable(string attributeName, string annotationValue, AnnotationType expectedAnnotationType, string expectedValue = null)
+        public void MemberAttributeAnnotationReturnsSpecializedAnnotationsWhereApplicable(string attributeName, string attributeValue, AnnotationType expectedAnnotationType, string expectedValue = null)
         {
-            var attributeValues = new List<string> { annotationValue };
+            var attributeValues = new List<string> { attributeValue };
             var expectedValues = expectedValue != null
                 ? new List<string> { expectedValue }
                 : new List<string>();
