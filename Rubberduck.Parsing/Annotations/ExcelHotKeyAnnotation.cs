@@ -13,7 +13,7 @@ namespace Rubberduck.Parsing.Annotations
         { }
 
         private static IEnumerable<string> GetHotKeyAttributeValue(IEnumerable<string> parameters) => 
-            parameters.Take(1).Select(StripStringLiteralQuotes).Select(v => v[0] + @"\n14").ToList();
+            parameters.Take(1).Select(StripStringLiteralQuotes).Select(v => @"""" + v[0] + @"\n14""").ToList();
 
         private static string StripStringLiteralQuotes(string value) =>
             value.StartsWith("\"") && value.EndsWith("\"") && value.Length > 2
