@@ -8,26 +8,19 @@ namespace Rubberduck.Parsing.Annotations
 {
     public abstract class FlexibleAttributeValueAnnotationBase : AnnotationBase, IAttributeAnnotation
     {
-        protected FlexibleAttributeValueAnnotationBase(AnnotationType annotationType, QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> parameters)
+        public string Attribute { get; }
+        public IReadOnlyList<string> AttributeValues { get; }
+
+        protected FlexibleAttributeValueAnnotationBase(AnnotationType annotationType, QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> attributeValues)
         :base(annotationType, qualifiedSelection, context)
         {
             var flexibleAttributeValueInfo = FlexibleAttributeValueInfo(annotationType);
 
-            if (flexibleAttributeValueInfo == null)
-            {
-                Attribute = string.Empty;
-                AttributeValues = new List<string>();
-                return;
-            }
-
-            Attribute = flexibleAttributeValueInfo.Value.attribute;
-            AttributeValues = parameters?.Take(flexibleAttributeValueInfo.Value.numberOfValues).ToList() ?? new List<string>();
+            Attribute = flexibleAttributeValueInfo.attribute;
+            AttributeValues = attributeValues?.Take(flexibleAttributeValueInfo.numberOfValues).ToList() ?? new List<string>();
         }
 
-        public string Attribute { get; }
-        public IReadOnlyList<string> AttributeValues { get; }
-
-        private static (string attribute, int numberOfValues)? FlexibleAttributeValueInfo(AnnotationType annotationType)
+        private static (string attribute, int numberOfValues) FlexibleAttributeValueInfo(AnnotationType annotationType)
         {
             var type = annotationType.GetType();
             var name = Enum.GetName(type, annotationType);
@@ -38,7 +31,7 @@ namespace Rubberduck.Parsing.Annotations
 
             if (attribute == null)
             {
-                return null;
+                return ("", 0);
             }
 
             return (attribute.AttributeName, attribute.NumberOfParameters);

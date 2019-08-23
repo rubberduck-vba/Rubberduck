@@ -33,6 +33,11 @@ namespace Rubberduck.Parsing.Annotations
             var flexibleValueAttributeAnnotation = FirstMatchingFlexibleAttributeValueAnnotation(annotationTypes, attributeName, attributeValues.Count);
             if (flexibleValueAttributeAnnotation != default)
             {
+                // FIXME special cased bodge for ExcelHotKeyAnnotation to deal with the value transformation:
+                if (flexibleValueAttributeAnnotation == AnnotationType.ExcelHotKey)
+                {
+                    return (flexibleValueAttributeAnnotation, attributeValues.Select(keySpec => keySpec.Substring(0, 1)).ToList());
+                }
                 return (flexibleValueAttributeAnnotation, attributeValues);
             }
 
