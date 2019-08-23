@@ -16,8 +16,14 @@ namespace Rubberduck.Common
         void AppendStream(string formatName, MemoryStream stream);
         void Flush();
         //void AppendInfo(ClipboardFormat xmlSpreadsheetFormat, ClipboardFormat rtfFormat, ClipboardFormat htmlFormat, ClipboardFormat csvFormat, ClipboardFormat unicodeTextFormat);
-        void AppendInfo(ColumnInfo[] columnInfos, IEnumerable<object> results, string titleFormat,
-            bool includeXmlSpreadsheetformat = false, bool includeRtfFormat = false, bool includeHtmlFormat = false, bool includeCsvFormat = false, bool includeUnicodeFormat = false)
+        void AppendInfo(ColumnInfo[] columnInfos,
+            IEnumerable<object> results, 
+            string titleFormat,
+            bool includeXmlSpreadsheetformat = false, 
+            bool includeRtfFormat = false, 
+            bool includeHtmlFormat = false, 
+            bool includeCsvFormat = false, 
+            bool includeUnicodeFormat = false);
     }
 
     public struct ClipboardFormat
@@ -81,7 +87,8 @@ namespace Rubberduck.Common
 
         //public void AppendInfo(ClipboardFormat xmlSpreadsheetFormat, ClipboardFormat rtfFormat, ClipboardFormat htmlFormat, ClipboardFormat csvFormat, ClipboardFormat unicodeTextFormat)
         //TODO: bitFlag
-        public void AppendInfo(ColumnInfo[] columnInfos, IEnumerable<object> results, 
+        public void AppendInfo(ColumnInfo[] columnInfos, 
+            IEnumerable<object> results, 
             string titleFormat,
             bool includeXmlSpreadsheetformat = false,
             bool includeRtfFormat = false,
