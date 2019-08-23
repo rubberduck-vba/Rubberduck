@@ -36,7 +36,7 @@ namespace Rubberduck.Parsing.Annotations
                 // FIXME special cased bodge for ExcelHotKeyAnnotation to deal with the value transformation:
                 if (flexibleValueAttributeAnnotation == AnnotationType.ExcelHotKey)
                 {
-                    return (flexibleValueAttributeAnnotation, attributeValues.Select(keySpec => keySpec.Substring(0, 1)).ToList());
+                    return (flexibleValueAttributeAnnotation, attributeValues.Select(keySpec => '"' + keySpec.Substring(1, 1) + '"').ToList());
                 }
                 return (flexibleValueAttributeAnnotation, attributeValues);
             }
