@@ -72,7 +72,9 @@ namespace Rubberduck.Parsing.Annotations
         ModuleAttribute = 1 << 20 | Attribute | ModuleAnnotation,
         MemberAttribute = 1 << 21 | Attribute | MemberAnnotation | VariableAnnotation,
         [FlexibleAttributeValueAnnotation("VB_VarDescription", 1)]
-        VariableDescription = 1 << 13 | Attribute | VariableAnnotation
+        VariableDescription = 1 << 13 | Attribute | VariableAnnotation,
+        [FlexibleAttributeValueAnnotation("VB_ProcData.VB_Invoke_Func", 1)]
+        ExcelHotKey = 1 << 16 | Attribute | MemberAnnotation
     }
 
     [AttributeUsage(AttributeTargets.Field)]
