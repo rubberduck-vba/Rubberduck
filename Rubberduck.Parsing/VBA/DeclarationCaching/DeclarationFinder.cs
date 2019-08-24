@@ -974,6 +974,9 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         {
             var annotations = FindAnnotations(enclosingProcedure.QualifiedName.QualifiedModuleName, context.Start.Line)
                 .Where(annotation => annotation.AnnotationType.HasFlag(AnnotationType.IdentifierAnnotation));
+
+            var isReDimVariable = IsContainedInReDimedArrayName(context);
+
             var undeclaredLocal =
                 new Declaration(
                     new QualifiedMemberName(enclosingProcedure.QualifiedName.QualifiedModuleName, identifierName),
@@ -988,12 +991,12 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                     context,
                     null,
                     context.GetSelection(),
-                    false,
+                    isReDimVariable,
                     null,
                     true,
                     annotations,
                     null,
-                    true);
+                    !isReDimVariable);
 
             var hasUndeclared = _newUndeclared.ContainsKey(enclosingProcedure.QualifiedName);
             if (hasUndeclared)
@@ -1015,6 +1018,13 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 _newUndeclared.TryAdd(enclosingProcedure.QualifiedName, new ConcurrentBag<Declaration> { undeclaredLocal });
             }
             return undeclaredLocal;
+        }
+
+        private static bool IsContainedInReDimedArrayName(ParserRuleContext context)
+        {
+            var enclosingReDimContext = context.GetAncestor<VBAParser.RedimVariableDeclarationContext>();
+            return enclosingReDimContext != null 
+                   && enclosingReDimContext.expression().GetSelection().Contains(context.GetSelection());
         }
 
 
