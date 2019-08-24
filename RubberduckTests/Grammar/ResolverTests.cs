@@ -2733,6 +2733,52 @@ End Sub
         [Category("Grammar")]
         [Category("Resolver")]
         [Test]
+        public void FunctionTypeNameIsElementTypeName()
+        {
+            var code = @"
+Public Function bar() As Long()
+End Function
+";
+            using (var state = Resolve(code))
+            {
+
+                var declaration = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.Function)
+                    .Single();
+
+                var expectedTypeName = "Long";
+                var actualAsTypeName = declaration.AsTypeName;
+
+                Assert.AreEqual(expectedTypeName, actualAsTypeName);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void PropertyGetTypeNameIsElementTypeName()
+        {
+            var code = @"
+Public Property Get bar() As Long()
+End Property
+";
+            using (var state = Resolve(code))
+            {
+
+                var declaration = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.PropertyGet)
+                    .Single();
+
+                var expectedTypeName = "Long";
+                var actualAsTypeName = declaration.AsTypeName;
+
+                Assert.AreEqual(expectedTypeName, actualAsTypeName);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void ExplicitLetStatement_HasAssignmentFlag()
         {
             var variableDeclarationClass = @"

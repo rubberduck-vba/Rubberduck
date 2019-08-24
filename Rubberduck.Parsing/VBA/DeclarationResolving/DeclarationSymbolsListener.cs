@@ -93,6 +93,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
 
                 var isByRef = argContext.BYREF() != null || argContext.BYVAL() == null;
                 var isParamArray = argContext.PARAMARRAY() != null;
+
                 result = new ParameterDeclaration(
                     new QualifiedMemberName(_qualifiedModuleName, identifierName),
                     _parentDeclaration,
@@ -385,9 +386,12 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                     : asTypeClause.type().GetText()
                 : SymbolList.TypeHintToTypeName[typeHint];
             var isArray = asTypeName.EndsWith("()");
+            var actualAsTypeName = isArray && asTypeName.EndsWith("()")
+                ? asTypeName.Substring(0, asTypeName.Length - 2)
+                : asTypeName;
             var declaration = CreateDeclaration(
                 name,
-                asTypeName,
+                actualAsTypeName,
                 accessibility,
                 DeclarationType.Function,
                 context,
@@ -417,9 +421,12 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                     : asTypeClause.type().GetText()
                 : SymbolList.TypeHintToTypeName[typeHint];
             var isArray = asTypeClause != null && asTypeClause.type().LPAREN() != null;
+            var actualAsTypeName = isArray && asTypeName.EndsWith("()")
+                ? asTypeName.Substring(0, asTypeName.Length - 2)
+                : asTypeName;
             var declaration = CreateDeclaration(
                 name,
-                asTypeName,
+                actualAsTypeName,
                 accessibility,
                 DeclarationType.PropertyGet,
                 context,
