@@ -147,8 +147,8 @@ namespace RubberduckTests.CodeExplorer
         [Test]
         [Category("Code Explorer")]
         [TestCase(DeclarationType.Variable)]
-        [TestCase(DeclarationType.Control)]
-        [TestCase(DeclarationType.Constant, Ignore = "Pending test setup that will actually create one.")]
+        [TestCase(DeclarationType.Control, Ignore = "Pending test setup that will actually create one.")]
+        [TestCase(DeclarationType.Constant)]
         public void TrackedDeclarations_ExcludesMemberEnclosedTypes(DeclarationType excluded)
         {
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations;
