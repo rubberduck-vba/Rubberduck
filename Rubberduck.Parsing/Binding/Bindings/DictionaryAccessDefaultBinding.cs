@@ -61,11 +61,19 @@ namespace Rubberduck.Parsing.Binding
 
         private static IBoundExpression Resolve(IBoundExpression lExpression, ArgumentList argumentList, ParserRuleContext expression)
         {
-            if (lExpression.Classification == ExpressionClassification.ResolutionFailed
-                || !(expression is VBAParser.LExpressionContext lExpressionContext))
+            if (lExpression.Classification == ExpressionClassification.ResolutionFailed)
+            {
+                var failedExpression = (ResolutionFailedExpression) lExpression;
+
+                ResolveArgumentList(null, argumentList);
+                var argumentExpressions = argumentList.Arguments.Select(arg => arg.Expression);
+                return failedExpression.Join(argumentExpressions);
+            }
+
+            if (!(expression is VBAParser.LExpressionContext lExpressionContext))
             {
                 ResolveArgumentList(null, argumentList);
-                return CreateFailedExpression(lExpression, argumentList);
+                return CreateFailedExpression(lExpression, argumentList, expression);
             }
 
             var lDeclaration = lExpression.ReferencedDeclaration;
@@ -84,7 +92,7 @@ namespace Rubberduck.Parsing.Binding
             if (lDeclaration == null)
             {
                 ResolveArgumentList(null, argumentList);
-                return CreateFailedExpression(lExpression, argumentList);
+                return CreateFailedExpression(lExpression, argumentList, expression);
             }
 
             var asTypeName = lDeclaration.AsTypeName;
@@ -93,16 +101,13 @@ namespace Rubberduck.Parsing.Binding
             return ResolveViaDefaultMember(lExpression, asTypeName, asTypeDeclaration, argumentList, lExpressionContext, defaultMemberContext);
         }
 
-        private static IBoundExpression CreateFailedExpression(IBoundExpression lExpression, ArgumentList argumentList)
+        private static IBoundExpression CreateFailedExpression(IBoundExpression lExpression, ArgumentList argumentList, ParserRuleContext context)
         {
-            var failedExpr = new ResolutionFailedExpression();
+            var failedExpr = new ResolutionFailedExpression(context, true);
             failedExpr.AddSuccessfullyResolvedExpression(lExpression);
-            foreach (var arg in argumentList.Arguments)
-            {
-                failedExpr.AddSuccessfullyResolvedExpression(arg.Expression);
-            }
 
-            return failedExpr;
+            var argumentExpressions = argumentList.Arguments.Select(arg => arg.Expression);
+            return failedExpr.Join(argumentExpressions);
         }
 
         private static IBoundExpression ResolveViaDefaultMember(IBoundExpression lExpression, string asTypeName, Declaration asTypeDeclaration, ArgumentList argumentList, ParserRuleContext expression, ParserRuleContext defaultMemberContext, int recursionDepth = 1, RecursiveDefaultMemberAccessExpression containedExpression = null)
@@ -129,7 +134,7 @@ namespace Rubberduck.Parsing.Binding
                 || !IsPublic(defaultMember))
             {
                 ResolveArgumentList(null, argumentList);
-                return CreateFailedExpression(lExpression, argumentList);
+                return CreateFailedExpression(lExpression, argumentList, expression);
             }
 
             var defaultMemberClassification = DefaultMemberClassification(defaultMember);
@@ -159,7 +164,7 @@ namespace Rubberduck.Parsing.Binding
             }
 
             ResolveArgumentList(null, argumentList);
-            return CreateFailedExpression(lExpression, argumentList);
+            return CreateFailedExpression(lExpression, argumentList, expression);
         }
 
         private static bool IsCompatibleWithOneStringArgument(List<ParameterDeclaration> parameters)

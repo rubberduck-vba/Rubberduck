@@ -69,9 +69,9 @@ namespace Rubberduck.Parsing.Binding
             return ResolveViaDefaultMember(wrappedExpression, asTypeName, asTypeDeclaration, expression);
         }
 
-        private static IBoundExpression CreateFailedExpression(IBoundExpression lExpression)
+        private static IBoundExpression CreateFailedExpression(IBoundExpression lExpression, ParserRuleContext context)
         {
-            var failedExpr = new ResolutionFailedExpression();
+            var failedExpr = new ResolutionFailedExpression(context, true);
             failedExpr.AddSuccessfullyResolvedExpression(lExpression);
             return failedExpr;
         }
@@ -90,7 +90,7 @@ namespace Rubberduck.Parsing.Binding
                 || !IsPropertyGetLetFunctionProcedure(defaultMember)
                 || !IsPublic(defaultMember))
             {
-                return CreateFailedExpression(wrappedExpression);
+                return CreateFailedExpression(wrappedExpression, expression);
             }
 
             var defaultMemberClassification = DefaultMemberClassification(defaultMember);
@@ -102,7 +102,7 @@ namespace Rubberduck.Parsing.Binding
                 return new ProcedureCoercionExpression(defaultMember, defaultMemberClassification, expression, wrappedExpression);
             }
 
-            return CreateFailedExpression(wrappedExpression);
+            return CreateFailedExpression(wrappedExpression, expression);
         }
 
         private static bool IsPropertyGetLetFunctionProcedure(Declaration declaration)

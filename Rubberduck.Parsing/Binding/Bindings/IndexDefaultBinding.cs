@@ -67,8 +67,11 @@ namespace Rubberduck.Parsing.Binding
         {
             if (lExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
+                var failedExpression = (ResolutionFailedExpression) lExpression;
+
                 ResolveArgumentList(null, argumentList);
-                return CreateFailedExpression(lExpression, argumentList);
+                var argumentExpressions = argumentList.Arguments.Select(arg => arg.Expression);
+                return failedExpression.Join(argumentExpressions);
             }
 
             if (lExpression.Classification == ExpressionClassification.Unbound)
@@ -119,18 +122,15 @@ namespace Rubberduck.Parsing.Binding
             }
 
             ResolveArgumentList(null, argumentList);
-            return CreateFailedExpression(lExpression, argumentList);
+            return CreateFailedExpression(lExpression, argumentList, expression, defaultMemberResolutionRecursionDepth > 0);
         }
 
-        private static IBoundExpression CreateFailedExpression(IBoundExpression lExpression, ArgumentList argumentList)
+        private static IBoundExpression CreateFailedExpression(IBoundExpression lExpression, ArgumentList argumentList, ParserRuleContext context, bool isDefaultMemberResolution)
         {
-            var failedExpr = new ResolutionFailedExpression();
+            var failedExpr = new ResolutionFailedExpression(context, isDefaultMemberResolution);
             failedExpr.AddSuccessfullyResolvedExpression(lExpression);
-            foreach (var arg in argumentList.Arguments)
-            {
-                failedExpr.AddSuccessfullyResolvedExpression(arg.Expression);
-            }
-            return failedExpr;
+            var argumentExpressions = argumentList.Arguments.Select(arg => arg.Expression);
+            return failedExpr.Join(argumentExpressions);
         }
 
         private IBoundExpression ResolveLExpressionIsVariablePropertyFunctionNoParameters(IBoundExpression lExpression, ArgumentList argumentList, ParserRuleContext expression, int defaultMemberResolutionRecursionDepth, RecursiveDefaultMemberAccessExpression containedExpression)
@@ -160,7 +160,7 @@ namespace Rubberduck.Parsing.Binding
             return ResolveDefaultMember(asTypeName, asTypeDeclaration, argumentList, expression, defaultMemberResolutionRecursionDepth + 1, containedExpression);
         }
 
-        private bool IsVariablePropertyFunctionWithoutParameters(IBoundExpression lExpression)
+        private static bool IsVariablePropertyFunctionWithoutParameters(IBoundExpression lExpression)
         {
             switch(lExpression.Classification)
             {

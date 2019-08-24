@@ -1,17 +1,17 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using Antlr4.Runtime;
 using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Binding;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.Symbols.DeclarationLoaders;
-using Rubberduck.VBEditor;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
-using Rubberduck.Parsing.VBA.ReferenceManagement;
+using Rubberduck.VBEditor;
 
-namespace Rubberduck.Parsing.Symbols
+namespace Rubberduck.Parsing.VBA.ReferenceManagement
 {
     public sealed class IdentifierReferenceResolver
     {
@@ -23,6 +23,7 @@ namespace Rubberduck.Parsing.Symbols
         private Declaration _currentParent;
         private readonly BindingService _bindingService;
         private readonly BoundExpressionVisitor _boundExpressionVisitor;
+        private readonly FailedResolutionVisitor _failedResolutionVisitor;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public IdentifierReferenceResolver(QualifiedModuleName qualifiedModuleName, DeclarationFinder finder)
@@ -44,6 +45,7 @@ namespace Rubberduck.Parsing.Symbols
                 typeBindingContext,
                 procedurePointerBindingContext);
             _boundExpressionVisitor = new BoundExpressionVisitor(finder);
+            _failedResolutionVisitor = new FailedResolutionVisitor(finder);
         }
 
         public void SetCurrentScope()
@@ -70,13 +72,15 @@ namespace Rubberduck.Parsing.Symbols
 
         public void EnterWithBlock(VBAParser.WithStmtContext context)
         {
+            var withExpression = GetInnerMostWithExpression();
             var boundExpression = _bindingService.ResolveDefault(
                 _moduleDeclaration,
                 _currentParent,
                 context.expression(),
-                GetInnerMostWithExpression(),
+                withExpression,
                 StatementResolutionContext.Undefined,
                 false);
+            _failedResolutionVisitor.CollectUnresolved(boundExpression, _currentParent, withExpression);
             _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent);
             // note: pushes null if unresolved
             _withBlockExpressions.Push(boundExpression);
@@ -179,23 +183,8 @@ namespace Rubberduck.Parsing.Symbols
                 statementContext,
                 requiresLetCoercion,
                 isAssignmentTarget);
-            if (boundExpression.Classification == ExpressionClassification.ResolutionFailed)
-            {
-                var lExpression = expression as VBAParser.LExpressionContext
-                                    ?? expression.GetChild<VBAParser.LExpressionContext>(0)
-                                    ?? (expression as VBAParser.LExprContext
-                                        ?? expression.GetChild<VBAParser.LExprContext>(0))?.lExpression();
 
-                if (lExpression != null)
-                {
-                    _declarationFinder.AddUnboundContext(_currentParent, lExpression, withExpression);
-                }
-                else
-                {
-                    Logger.Warn(
-                        $"Default Context: Failed to resolve {expression.GetText()}. Binding as much as we can.");
-                }
-            }
+            _failedResolutionVisitor.CollectUnresolved(boundExpression, _currentParent, withExpression);
 
             _boundExpressionVisitor.AddIdentifierReferences(
                 boundExpression, 
@@ -214,6 +203,8 @@ namespace Rubberduck.Parsing.Symbols
             {
                 Logger.Warn($"Type Context: Failed to resolve {expression.GetText()}. Binding as much as we can.");
             }
+
+            _failedResolutionVisitor.CollectUnresolved(boundExpression, _currentParent, GetInnerMostWithExpression());
             _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent);
         }
 
@@ -635,16 +626,19 @@ namespace Rubberduck.Parsing.Symbols
             // In "For expr1 = expr2" the "expr1 = expr2" part is treated as a single expression.
             var assignmentExpr = ((VBAParser.RelationalOpContext)context.expression()[0]);
             var lExpr = assignmentExpr.expression()[0];
+            var withExpression = GetInnerMostWithExpression();
             var firstExpression = _bindingService.ResolveDefault(
                 _moduleDeclaration,
                 _currentParent,
                 lExpr,
-                GetInnerMostWithExpression(),
+                withExpression,
                 StatementResolutionContext.Undefined,
                 true);
             if (firstExpression.Classification != ExpressionClassification.ResolutionFailed)
             {
                 // each iteration counts as an assignment
+
+                _failedResolutionVisitor.CollectUnresolved(firstExpression, _currentParent, withExpression);
                 _boundExpressionVisitor.AddIdentifierReferences(
                     firstExpression,
                     _qualifiedModuleName,
@@ -657,9 +651,10 @@ namespace Rubberduck.Parsing.Symbols
                 _moduleDeclaration,
                 _currentParent,
                 rExpr,
-                GetInnerMostWithExpression(),
+                withExpression,
                 StatementResolutionContext.Undefined,
                 true);
+            _failedResolutionVisitor.CollectUnresolved(secondExpression, _currentParent, withExpression);
             _boundExpressionVisitor.AddIdentifierReferences(
                 secondExpression,
                 _qualifiedModuleName,
@@ -682,16 +677,18 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Resolve(VBAParser.ForEachStmtContext context)
         {
+            var withExpression = GetInnerMostWithExpression();
             var firstExpression = _bindingService.ResolveDefault(
                 _moduleDeclaration,
                 _currentParent,
                 context.expression()[0],
-                GetInnerMostWithExpression(),
+                withExpression,
                 StatementResolutionContext.Undefined,
                 false);
             if (firstExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
 
+                _failedResolutionVisitor.CollectUnresolved(firstExpression, _currentParent, withExpression);
                 _boundExpressionVisitor.AddIdentifierReferences(
                     firstExpression,
                     _qualifiedModuleName,
@@ -701,6 +698,7 @@ namespace Rubberduck.Parsing.Symbols
             else
             {
                 // each iteration counts as an assignment
+                _failedResolutionVisitor.CollectUnresolved(firstExpression, _currentParent, withExpression);
                 _boundExpressionVisitor.AddIdentifierReferences(
                     firstExpression,
                     _qualifiedModuleName,

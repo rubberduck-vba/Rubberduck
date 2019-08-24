@@ -1,7 +1,8 @@
 using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 
-namespace Rubberduck.Parsing.Symbols
+namespace Rubberduck.Parsing.VBA.ReferenceManagement
 {
     public class IdentifierReferenceListener : VBAParserBaseListener
     {

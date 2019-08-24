@@ -45,7 +45,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return boundExpression;
             }
-            return new ResolutionFailedExpression();
+            return new ResolutionFailedExpression(_expression);
         }
 
         private IBoundExpression ResolveEnclosingModule(string name)
