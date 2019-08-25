@@ -398,9 +398,14 @@ namespace Rubberduck.UI.UnitTesting
             ColumnInfo[] columnInfos = { new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Method"), new ColumnInfo("Outcome"), new ColumnInfo("Output"),
                                            new ColumnInfo("Start Time"), new ColumnInfo("End Time"), new ColumnInfo("Duration (ms)", hAlignment.Right) };
 
-            //TODO: Convert to resource string
-            const string resource = "Rubberduck Test Results - {0}";
-            _clipboard.AppendInfo(columnInfos, Model.Tests, resource, true, true, true, true, true);
+            _clipboard.AppendInfo(columnInfos,
+                Model.Tests,
+                RubberduckUI.TestExplorer_AppendHeader,
+                true,
+                true,
+                true,
+                true,
+                true);
 
             _clipboard.Flush();
         }

@@ -653,13 +653,16 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
-            var resultArray = Results.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
-            
-            var resource = resultArray.Count() == 1
+            var resource = _results.Count == 1
                 ? Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular
                 : Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Plural;
 
-            _clipboard.AppendInfo(ColumnInformation, Results as IEnumerable<object>, resource, true, true, true, true, true);
+            _clipboard.AppendInfo(ColumnInformation,
+                Results, resource, true,
+                true,
+                true,
+                true,
+                true);
 
             _clipboard.Flush();
         }

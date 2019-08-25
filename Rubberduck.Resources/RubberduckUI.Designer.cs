@@ -4096,6 +4096,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rubberduck Test Results - {0}.
+        /// </summary>
+        public static string TestExplorer_AppendHeader {
+            get {
+                return ResourceManager.GetString("TestExplorer_AppendHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fail.
         /// </summary>
         public static string TestOutcome_Fail {

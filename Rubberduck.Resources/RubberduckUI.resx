@@ -1629,4 +1629,7 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="TestOutcome_Unknown" xml:space="preserve">
     <value>Unknown</value>
   </data>
+  <data name="TestExplorer_AppendHeader" xml:space="preserve">
+    <value>Rubberduck Test Results - {0}</value>
+  </data>
 </root>

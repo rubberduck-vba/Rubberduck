@@ -5,6 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using System.Globalization;
+using System.Windows.Data;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.UI.UnitTesting.ViewModels;
+using Rubberduck.Resources;
 
 namespace Rubberduck.Common
 {
@@ -15,27 +20,14 @@ namespace Rubberduck.Common
         void AppendString(string formatName, string data);
         void AppendStream(string formatName, MemoryStream stream);
         void Flush();
-        //void AppendInfo(ClipboardFormat xmlSpreadsheetFormat, ClipboardFormat rtfFormat, ClipboardFormat htmlFormat, ClipboardFormat csvFormat, ClipboardFormat unicodeTextFormat);
         void AppendInfo(ColumnInfo[] columnInfos,
-            IEnumerable<object> results, 
+            object results, 
             string titleFormat,
-            bool includeXmlSpreadsheetformat = false, 
+            bool includeXmlSpreadsheetFormat = false, 
             bool includeRtfFormat = false, 
             bool includeHtmlFormat = false, 
             bool includeCsvFormat = false, 
             bool includeUnicodeFormat = false);
-    }
-
-    public struct ClipboardFormat
-    {
-        public string FormatName;
-        public object Data;
-
-        public ClipboardFormat(string formatName, object data)
-        {
-            FormatName = formatName;
-            Data = data;
-        }
     }
 
     public class ClipboardWriter : IClipboardWriter
@@ -88,18 +80,35 @@ namespace Rubberduck.Common
         //public void AppendInfo(ClipboardFormat xmlSpreadsheetFormat, ClipboardFormat rtfFormat, ClipboardFormat htmlFormat, ClipboardFormat csvFormat, ClipboardFormat unicodeTextFormat)
         //TODO: bitFlag
         public void AppendInfo(ColumnInfo[] columnInfos, 
-            IEnumerable<object> results, 
+            object results, 
             string titleFormat,
-            bool includeXmlSpreadsheetformat = false,
+            bool includeXmlSpreadsheetFormat = false,
             bool includeRtfFormat = false,
             bool includeHtmlFormat = false, 
             bool includeCsvFormat = false, 
             bool includeUnicodeFormat = false)
         {
-            var resultsAsArray = results.Select(result => result.ToArray()).ToArray();
-            var title = string.Format(titleFormat, DateTime.Now.ToString(CultureInfo.InvariantCulture));
+            //var resultsAsArray = results.Select(result => result.ToArray()).ToArray();
+            object[][] resultsAsArray;
+            switch (results)
+            {
+                case IEnumerable<Declaration> declarations:
+                    resultsAsArray = declarations.Select(declaration => declaration.ToArray()).ToArray();
+                    break;
+                case System.Collections.ObjectModel.ObservableCollection<IInspectionResult> inspectionResults:
+                    resultsAsArray = inspectionResults.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
+                    break;
+                case System.Collections.ObjectModel.ObservableCollection<TestMethodViewModel> testMethodViewModels:
+                    resultsAsArray = testMethodViewModels.Select(test => test.ToArray()).ToArray();
+                    break;
+                default:
+                    resultsAsArray = null;
+                    break;
+            }
+            
+            var title = string.Format(RubberduckUI.TestExplorer_AppendHeader, DateTime.Now.ToString(CultureInfo.InvariantCulture));
 
-            if (includeXmlSpreadsheetformat)
+            if (includeXmlSpreadsheetFormat)
             {
                 const string xmlSpreadsheetDataFormat = "XML Spreadsheet";
                 using (var stream = ExportFormatter.XmlSpreadsheetNew(resultsAsArray, title, columnInfos))
@@ -123,10 +132,10 @@ namespace Rubberduck.Common
                 AppendString(DataFormats.CommaSeparatedValue, ExportFormatter.Csv(resultsAsArray, title, columnInfos));
             }
 
-            if (includeUnicodeFormat)
+            if (includeUnicodeFormat && results is ListCollectionView unicodeResults)
             {
-                var unicodeResults = title + Environment.NewLine + string.Join(string.Empty, results.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
-                var unicodeTextFormat = new ClipboardFormat(DataFormats.UnicodeText, unicodeResults);
+                var unicodeTextFormat = title + Environment.NewLine + string.Join(string.Empty, unicodeResults.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
+                AppendString(DataFormats.UnicodeText, unicodeTextFormat);
             }
         }
     }
