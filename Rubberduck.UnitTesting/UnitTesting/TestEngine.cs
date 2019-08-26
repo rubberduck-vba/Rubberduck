@@ -10,7 +10,7 @@ using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Resources.UnitTesting;
-using Rubberduck.VBEditor.ComManagement.TypeLibs;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UnitTesting
@@ -367,11 +367,6 @@ namespace Rubberduck.UnitTesting
         {
             var result = new AssertCompletedEventArgs(TestOutcome.Succeeded);
             var asserted = assertResults.ToList();
-
-            if (asserted.Count(assert => assert.Outcome == TestOutcome.Failed) >= 10)
-            {
-                return new TestResult(TestOutcome.SpectacularFail, result.Message, duration);
-            }
 
             if (asserted.Any(assertion => assertion.Outcome != TestOutcome.Succeeded))
             {

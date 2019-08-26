@@ -22,7 +22,7 @@ namespace Rubberduck.RegexAssistant.i18n {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class AssistantResources {
+    public class AssistantResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Rubberduck.RegexAssistant.i18n.AssistantResources", typeof(AssistantResources).Assembly);
@@ -51,7 +51,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,9 +61,9 @@ namespace Rubberduck.RegexAssistant.i18n {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Matches the ASCII character CR.
+        ///   Looks up a localized string similar to Matches the ASCII character &apos;CR&apos; (carriage return).
         /// </summary>
-        internal static string AtomDescription_CarriageReturn {
+        public static string AtomDescription_CarriageReturn {
             get {
                 return ResourceManager.GetString("AtomDescription_CarriageReturn", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         /// <summary>
         ///   Looks up a localized string similar to Matches any of the following characters: {0}.
         /// </summary>
-        internal static string AtomDescription_CharacterClass {
+        public static string AtomDescription_CharacterClass {
             get {
                 return ResourceManager.GetString("AtomDescription_CharacterClass", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         /// <summary>
         ///   Looks up a localized string similar to Matches any character that is not one of: {0}.
         /// </summary>
-        internal static string AtomDescription_CharacterClass_Inverted {
+        public static string AtomDescription_CharacterClass_Inverted {
             get {
                 return ResourceManager.GetString("AtomDescription_CharacterClass_Inverted", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         /// <summary>
         ///   Looks up a localized string similar to Matches any digit. Equivalent to &quot;[0-9]&quot;.
         /// </summary>
-        internal static string AtomDescription_Digit {
+        public static string AtomDescription_Digit {
             get {
                 return ResourceManager.GetString("AtomDescription_Digit", resourceCulture);
             }
@@ -99,16 +99,16 @@ namespace Rubberduck.RegexAssistant.i18n {
         /// <summary>
         ///   Looks up a localized string similar to Matches any character.
         /// </summary>
-        internal static string AtomDescription_Dot {
+        public static string AtomDescription_Dot {
             get {
                 return ResourceManager.GetString("AtomDescription_Dot", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Matches the &quot;Form-Feed&quot;-character.
+        ///   Looks up a localized string similar to Matches the ASCII character &apos;FF&apos; (form feed).
         /// </summary>
-        internal static string AtomDescription_FormFeed {
+        public static string AtomDescription_FormFeed {
             get {
                 return ResourceManager.GetString("AtomDescription_FormFeed", resourceCulture);
             }
@@ -117,16 +117,16 @@ namespace Rubberduck.RegexAssistant.i18n {
         /// <summary>
         ///   Looks up a localized string similar to Matches a capture group &apos;{0}&apos;.
         /// </summary>
-        internal static string AtomDescription_Group {
+        public static string AtomDescription_Group {
             get {
                 return ResourceManager.GetString("AtomDescription_Group", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Matches the horizontal &quot;Tab&quot;-character.
+        ///   Looks up a localized string similar to Matches the ASCII character &apos;HT&apos; (horizontal tab).
         /// </summary>
-        internal static string AtomDescription_HTab {
+        public static string AtomDescription_HTab {
             get {
                 return ResourceManager.GetString("AtomDescription_HTab", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         /// <summary>
         ///   Looks up a localized string similar to Matches literal &apos;{0}&apos;.
         /// </summary>
-        internal static string AtomDescription_Literal_ActualLiteral {
+        public static string AtomDescription_Literal_ActualLiteral {
             get {
                 return ResourceManager.GetString("AtomDescription_Literal_ActualLiteral", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         /// <summary>
         ///   Looks up a localized string similar to Exactly matches what the capture group at position {0} matched again.
         /// </summary>
-        internal static string AtomDescription_Literal_Backreference {
+        public static string AtomDescription_Literal_Backreference {
             get {
                 return ResourceManager.GetString("AtomDescription_Literal_Backreference", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         /// <summary>
         ///   Looks up a localized string similar to Matches the escaped literal {0}.
         /// </summary>
-        internal static string AtomDescription_Literal_EscapedLiteral {
+        public static string AtomDescription_Literal_EscapedLiteral {
             get {
                 return ResourceManager.GetString("AtomDescription_Literal_EscapedLiteral", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         /// <summary>
         ///   Looks up a localized string similar to Matches the Hexadecimal ASCII value {0}.
         /// </summary>
-        internal static string AtomDescription_Literal_HexCodepoint {
+        public static string AtomDescription_Literal_HexCodepoint {
             get {
                 return ResourceManager.GetString("AtomDescription_Literal_HexCodepoint", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         /// <summary>
         ///   Looks up a localized string similar to Matches the Octal ASCII value {0}.
         /// </summary>
-        internal static string AtomDescription_Literal_OctalCodepoint {
+        public static string AtomDescription_Literal_OctalCodepoint {
             get {
                 return ResourceManager.GetString("AtomDescription_Literal_OctalCodepoint", resourceCulture);
             }
@@ -180,16 +180,16 @@ namespace Rubberduck.RegexAssistant.i18n {
         /// <summary>
         ///   Looks up a localized string similar to Matches the Unicode Codepoint {0}.
         /// </summary>
-        internal static string AtomDescription_Literal_UnicodePoint {
+        public static string AtomDescription_Literal_UnicodePoint {
             get {
                 return ResourceManager.GetString("AtomDescription_Literal_UnicodePoint", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Matches the ASCII character LF, also known as newline.
+        ///   Looks up a localized string similar to Matches the ASCII character &apos;LF&apos; (line feed).
         /// </summary>
-        internal static string AtomDescription_Newline {
+        public static string AtomDescription_Newline {
             get {
                 return ResourceManager.GetString("AtomDescription_Newline", resourceCulture);
             }
@@ -198,7 +198,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         /// <summary>
         ///   Looks up a localized string similar to Matches non-digits. Equivalent to &quot;[^\d]&quot;.
         /// </summary>
-        internal static string AtomDescription_NonDigit {
+        public static string AtomDescription_NonDigit {
             get {
                 return ResourceManager.GetString("AtomDescription_NonDigit", resourceCulture);
             }
@@ -207,7 +207,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         /// <summary>
         ///   Looks up a localized string similar to Matches non-whitespace characters. Equivalent to &quot;[^\s]&quot;.
         /// </summary>
-        internal static string AtomDescription_NonWhitespace {
+        public static string AtomDescription_NonWhitespace {
             get {
                 return ResourceManager.GetString("AtomDescription_NonWhitespace", resourceCulture);
             }
@@ -216,7 +216,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         /// <summary>
         ///   Looks up a localized string similar to Ensures that the current position is at a &quot;non-word-boundary&quot;.
         /// </summary>
-        internal static string AtomDescription_NonWordBoundary {
+        public static string AtomDescription_NonWordBoundary {
             get {
                 return ResourceManager.GetString("AtomDescription_NonWordBoundary", resourceCulture);
             }
@@ -225,16 +225,16 @@ namespace Rubberduck.RegexAssistant.i18n {
         /// <summary>
         ///   Looks up a localized string similar to Matches &quot;non-word characters&quot;. Equivalent to &quot;[^\w]&quot;.
         /// </summary>
-        internal static string AtomDescription_NonWordCharacter {
+        public static string AtomDescription_NonWordCharacter {
             get {
                 return ResourceManager.GetString("AtomDescription_NonWordCharacter", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Matches the vertical &quot;Tab&quot;-character.
+        ///   Looks up a localized string similar to Matches the ASCII character &apos;VT&apos; (vertical tab).
         /// </summary>
-        internal static string AtomDescription_VTab {
+        public static string AtomDescription_VTab {
             get {
                 return ResourceManager.GetString("AtomDescription_VTab", resourceCulture);
             }
@@ -243,7 +243,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         /// <summary>
         ///   Looks up a localized string similar to Matches any whitespace character. Equivalent to &quot;[ \t\r\n\v\f]&quot;.
         /// </summary>
-        internal static string AtomDescription_Whitespace {
+        public static string AtomDescription_Whitespace {
             get {
                 return ResourceManager.GetString("AtomDescription_Whitespace", resourceCulture);
             }
@@ -252,7 +252,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         /// <summary>
         ///   Looks up a localized string similar to Ensures that the current position is at a &quot;word boundary&quot;.
         /// </summary>
-        internal static string AtomDescription_WordBoundary {
+        public static string AtomDescription_WordBoundary {
             get {
                 return ResourceManager.GetString("AtomDescription_WordBoundary", resourceCulture);
             }
@@ -261,7 +261,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         /// <summary>
         ///   Looks up a localized string similar to Matches any &quot;word character&quot;. Equivalent to &quot;[a-zA-Z_0-9]&quot;.
         /// </summary>
-        internal static string AtomDescription_WordCharacter {
+        public static string AtomDescription_WordCharacter {
             get {
                 return ResourceManager.GetString("AtomDescription_WordCharacter", resourceCulture);
             }
@@ -270,7 +270,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         /// <summary>
         ///   Looks up a localized string similar to Matches one of {0} alternatives.
         /// </summary>
-        internal static string ExpressionDescription_AlternativesExpression {
+        public static string ExpressionDescription_AlternativesExpression {
             get {
                 return ResourceManager.GetString("ExpressionDescription_AlternativesExpression", resourceCulture);
             }
@@ -279,16 +279,16 @@ namespace Rubberduck.RegexAssistant.i18n {
         /// <summary>
         ///   Looks up a localized string similar to Matches literal sequence.
         /// </summary>
-        internal static string ExpressionDescription_ConcatenatedExpression {
+        public static string ExpressionDescription_ConcatenatedExpression {
             get {
                 return ResourceManager.GetString("ExpressionDescription_ConcatenatedExpression", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not parse &apos;{0}&apos; as literal. Check your input, please.
+        ///   Looks up a localized string similar to Could not parse &apos;{0}&apos; as literal..
         /// </summary>
-        internal static string ExpressionDescription_ErrorExpression {
+        public static string ExpressionDescription_ErrorExpression {
             get {
                 return ResourceManager.GetString("ExpressionDescription_ErrorExpression", resourceCulture);
             }
@@ -297,7 +297,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         /// <summary>
         ///   Looks up a localized string similar to $ ensures all characters of the string are consumed.
         /// </summary>
-        internal static string PatternDescription_AnchorEnd {
+        public static string PatternDescription_AnchorEnd {
             get {
                 return ResourceManager.GetString("PatternDescription_AnchorEnd", resourceCulture);
             }
@@ -306,7 +306,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         /// <summary>
         ///   Looks up a localized string similar to $ ensures that the line ended or all characters of the input have been consumed.
         /// </summary>
-        internal static string PatternDescription_AnchorEnd_GlobalEnabled {
+        public static string PatternDescription_AnchorEnd_GlobalEnabled {
             get {
                 return ResourceManager.GetString("PatternDescription_AnchorEnd_GlobalEnabled", resourceCulture);
             }
@@ -315,7 +315,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         /// <summary>
         ///   Looks up a localized string similar to ^ ensures we are at the beginning of the string that&apos;s to be matched.
         /// </summary>
-        internal static string PatternDescription_AnchorStart {
+        public static string PatternDescription_AnchorStart {
             get {
                 return ResourceManager.GetString("PatternDescription_AnchorStart", resourceCulture);
             }
@@ -324,7 +324,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         /// <summary>
         ///   Looks up a localized string similar to ^ ensures that the matcher starts at the beginning of a line.
         /// </summary>
-        internal static string PatternDescription_AnchorStart_GlobalEnabled {
+        public static string PatternDescription_AnchorStart_GlobalEnabled {
             get {
                 return ResourceManager.GetString("PatternDescription_AnchorStart_GlobalEnabled", resourceCulture);
             }
@@ -333,25 +333,25 @@ namespace Rubberduck.RegexAssistant.i18n {
         /// <summary>
         ///   Looks up a localized string similar to All matches ignore the case (upper or lower) of literals.
         /// </summary>
-        internal static string PatternDescription_IgnoreCase {
+        public static string PatternDescription_IgnoreCase {
             get {
                 return ResourceManager.GetString("PatternDescription_IgnoreCase", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to at least once.
+        ///   Looks up a localized string similar to at least once (1+).
         /// </summary>
-        internal static string Quantifer_Plus {
+        public static string Quantifer_Plus {
             get {
                 return ResourceManager.GetString("Quantifer_Plus", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to any number of times.
+        ///   Looks up a localized string similar to any number of times (0+).
         /// </summary>
-        internal static string Quantifier_Asterisk {
+        public static string Quantifier_Asterisk {
             get {
                 return ResourceManager.GetString("Quantifier_Asterisk", resourceCulture);
             }
@@ -360,7 +360,7 @@ namespace Rubberduck.RegexAssistant.i18n {
         /// <summary>
         ///   Looks up a localized string similar to between {0} and {1} times.
         /// </summary>
-        internal static string Quantifier_ClosedRange {
+        public static string Quantifier_ClosedRange {
             get {
                 return ResourceManager.GetString("Quantifier_ClosedRange", resourceCulture);
             }
@@ -369,16 +369,16 @@ namespace Rubberduck.RegexAssistant.i18n {
         /// <summary>
         ///   Looks up a localized string similar to exactly {0} times.
         /// </summary>
-        internal static string Quantifier_Exact {
+        public static string Quantifier_Exact {
             get {
                 return ResourceManager.GetString("Quantifier_Exact", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to exactly once.
+        ///   Looks up a localized string similar to exactly once (1).
         /// </summary>
-        internal static string Quantifier_None {
+        public static string Quantifier_None {
             get {
                 return ResourceManager.GetString("Quantifier_None", resourceCulture);
             }
@@ -387,16 +387,16 @@ namespace Rubberduck.RegexAssistant.i18n {
         /// <summary>
         ///   Looks up a localized string similar to at least {0} times.
         /// </summary>
-        internal static string Quantifier_OpenRange {
+        public static string Quantifier_OpenRange {
             get {
                 return ResourceManager.GetString("Quantifier_OpenRange", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to at most once.
+        ///   Looks up a localized string similar to at most once (1-).
         /// </summary>
-        internal static string Quantifier_Optional {
+        public static string Quantifier_Optional {
             get {
                 return ResourceManager.GetString("Quantifier_Optional", resourceCulture);
             }

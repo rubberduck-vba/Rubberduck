@@ -8,33 +8,53 @@ using Rubberduck.UI.Command;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
     public class ExportCommand : CommandBase
     {
-        private static readonly Dictionary<ComponentType, string> ExportableFileExtensions = new Dictionary<ComponentType, string>
+        private static readonly Dictionary<ComponentType, string> VBAExportableFileExtensions = new Dictionary<ComponentType, string>
         {
             { ComponentType.StandardModule, ".bas" },
             { ComponentType.ClassModule, ".cls" },
             { ComponentType.Document, ".cls" },
-            { ComponentType.UserForm, ".frm" }
+            { ComponentType.UserForm, ".frm" }            
+        };
+
+        private static readonly Dictionary<ComponentType, string> VB6ExportableFileExtensions = new Dictionary<ComponentType, string>
+        {
+            { ComponentType.StandardModule, ".bas" },
+            { ComponentType.ClassModule, ".cls" },
+            { ComponentType.VBForm, ".frm" },
+            { ComponentType.MDIForm, ".frm" },
+            { ComponentType.UserControl, ".ctl" },
+            { ComponentType.DocObject, ".dob" },
+            { ComponentType.ActiveXDesigner, ".dsr" },
+            { ComponentType.PropPage, ".pag" },
+            { ComponentType.ResFile, ".res" },            
         };
 
         private readonly IFileSystemBrowserFactory _dialogFactory;
+        private readonly Dictionary<ComponentType, string> _exportableFileExtensions;
 
-        public ExportCommand(IFileSystemBrowserFactory dialogFactory, IMessageBox messageBox, IProjectsProvider projectsProvider)
+        public ExportCommand(IFileSystemBrowserFactory dialogFactory, IMessageBox messageBox, IProjectsProvider projectsProvider, IVBE vbe)
         {
             _dialogFactory = dialogFactory;
             MessageBox = messageBox;
             ProjectsProvider = projectsProvider;
+
+            _exportableFileExtensions =
+                vbe.Kind == VBEKind.Hosted
+                    ? VBAExportableFileExtensions
+                    : VB6ExportableFileExtensions;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
         protected IMessageBox MessageBox { get; }
         protected IProjectsProvider ProjectsProvider { get; }
-
+        
         private bool SpecialEvaluateCanExecute(object parameter)
         {
             if (!(parameter is CodeExplorerComponentViewModel node) ||
@@ -44,7 +64,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
 
             var componentType = node.Declaration.QualifiedName.QualifiedModuleName.ComponentType;
-            return ExportableFileExtensions.Select(s => s.Key).Contains(componentType);
+
+            return _exportableFileExtensions.ContainsKey(componentType);
         }
 
         protected override void OnExecute(object parameter)
@@ -58,9 +79,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             PromptFileNameAndExport(node.Declaration.QualifiedName.QualifiedModuleName);
         }
 
-        protected bool PromptFileNameAndExport(QualifiedModuleName qualifiedModule)
+        public bool PromptFileNameAndExport(QualifiedModuleName qualifiedModule)
         {
-            if (!ExportableFileExtensions.TryGetValue(qualifiedModule.ComponentType, out var extension))
+            if (!_exportableFileExtensions.TryGetValue(qualifiedModule.ComponentType, out var extension))
             {
                 return false;
             }
@@ -83,6 +104,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 }
                 catch (Exception ex)
                 {
+                    Logger.Warn(ex, $"Failed to export component {qualifiedModule.Name}");
                     MessageBox.NotifyWarn(ex.Message, string.Format(Resources.CodeExplorer.CodeExplorerUI.ExportError_Caption, qualifiedModule.ComponentName));
                 }                    
                 return true;

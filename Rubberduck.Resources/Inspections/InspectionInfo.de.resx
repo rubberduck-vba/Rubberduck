@@ -382,4 +382,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
     <value>'While...Wend'-Schleifen sind aus Gründen der Abwärtskompatibilität vorhanden und wurden durch die Einführung von 'Do While...Loop'-Blöcken ersetzt, die die 'Exit Do'-Exit-Anweisung unterstützen. 'While...Wend'-Schleifen können nur beendet werden, wenn die 'While'-Bedingung erfüllt ist.</value>
   </data>
+  <data name="SetAssignmentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>Der VBA-Compiler gibt keinen Fehler aus, wenn ein Objekt einer Variables Set-zugewiesen wird mit einem inkompatiblen Objecttype, d.h. deren Type weder identisch, ein Subtyp noch ein Supertyp ist. In fast allen Fällen führt dies zu einem Laufzeitfehler, der schwerer zu entdecken ist und auf einen Programmierfehler hinweist. In allen anderen Fällen kann der Quallcode so geändert werden, dass er ausschließlich Zuweisungen zwischen kompatiblen deklarierten Typen verwendet.</value>
+  </data>
 </root>

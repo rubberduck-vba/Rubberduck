@@ -3335,6 +3335,24 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;{0}&gt;.
+        /// </summary>
+        public static string RegexAssistant_EncloseWhitespace_EnclosingFormat {
+            get {
+                return ResourceManager.GetString("RegexAssistant_EncloseWhitespace_EnclosingFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spell out whitespace in the description.
+        /// </summary>
+        public static string RegexAssistant_EncloseWhitespaceFlag {
+            get {
+                return ResourceManager.GetString("RegexAssistant_EncloseWhitespaceFlag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Global.
         /// </summary>
         public static string RegexAssistant_GlobalFlag {
@@ -3376,6 +3394,60 @@ namespace Rubberduck.Resources {
         public static string RegexAssistant_RegexPatternLabel {
             get {
                 return ResourceManager.GetString("RegexAssistant_RegexPatternLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to carriage-return.
+        /// </summary>
+        public static string RegexAssistant_SpelledOut_CarriageReturn {
+            get {
+                return ResourceManager.GetString("RegexAssistant_SpelledOut_CarriageReturn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to carriage-return-new-line.
+        /// </summary>
+        public static string RegexAssistant_SpelledOut_CarriageReturnNewLine {
+            get {
+                return ResourceManager.GetString("RegexAssistant_SpelledOut_CarriageReturnNewLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to new-line.
+        /// </summary>
+        public static string RegexAssistant_SpelledOut_NewLine {
+            get {
+                return ResourceManager.GetString("RegexAssistant_SpelledOut_NewLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to space.
+        /// </summary>
+        public static string RegexAssistant_SpelledOut_Space {
+            get {
+                return ResourceManager.GetString("RegexAssistant_SpelledOut_Space", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to tab.
+        /// </summary>
+        public static string RegexAssistant_SpelledOut_Tab {
+            get {
+                return ResourceManager.GetString("RegexAssistant_SpelledOut_Tab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to unidentified-whitespace.
+        /// </summary>
+        public static string RegexAssistant_SpelledOut_UnidentifiedWhitespace {
+            get {
+                return ResourceManager.GetString("RegexAssistant_SpelledOut_UnidentifiedWhitespace", resourceCulture);
             }
         }
         
@@ -4020,6 +4092,42 @@ namespace Rubberduck.Resources {
             get {
                 object obj = ResourceManager.GetObject("SyncArrows", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fail.
+        /// </summary>
+        public static string TestOutcome_Fail {
+            get {
+                return ResourceManager.GetString("TestOutcome_Fail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inconclusive.
+        /// </summary>
+        public static string TestOutcome_Inconclusive {
+            get {
+                return ResourceManager.GetString("TestOutcome_Inconclusive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suceeded.
+        /// </summary>
+        public static string TestOutcome_Succeeded {
+            get {
+                return ResourceManager.GetString("TestOutcome_Succeeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown.
+        /// </summary>
+        public static string TestOutcome_Unknown {
+            get {
+                return ResourceManager.GetString("TestOutcome_Unknown", resourceCulture);
             }
         }
         

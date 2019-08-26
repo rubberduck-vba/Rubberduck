@@ -22,8 +22,7 @@ namespace Rubberduck.UI.UnitTesting
                 { TestOutcome.Succeeded, ToImageSource(RubberduckUI.tick_circle) },
                 { TestOutcome.Failed, ToImageSource(RubberduckUI.cross_circle) },
                 { TestOutcome.Inconclusive, ToImageSource(RubberduckUI.exclamation) },
-                { TestOutcome.Ignored, ToImageSource(RubberduckUI.minus_white) },
-                { TestOutcome.SpectacularFail, ToImageSource(RubberduckUI.skull_mad) }
+                { TestOutcome.Ignored, ToImageSource(RubberduckUI.minus_white) }
             };
 
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)

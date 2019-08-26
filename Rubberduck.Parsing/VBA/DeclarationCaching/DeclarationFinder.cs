@@ -1404,6 +1404,16 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         }
 
         /// <summary>
+        /// Gets all identifier references for an UnrestrictedIdentifierContext.
+        /// </summary>
+        public IEnumerable<IdentifierReference> IdentifierReferences(VBAParser.UnrestrictedIdentifierContext identifierContext, QualifiedModuleName module)
+        {
+            var qualifiedSelection = new QualifiedSelection(module, identifierContext.GetSelection());
+            return IdentifierReferences(qualifiedSelection)
+                .Where(identifierReference => identifierReference.IdentifierName.Equals(identifierContext.GetText()));
+        }
+
+        /// <summary>
         /// Gets all identifier references with the specified selection.
         /// </summary>
         public IEnumerable<IdentifierReference> IdentifierReferences(QualifiedSelection selection)
@@ -1411,6 +1421,26 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             return _referencesBySelection.TryGetValue(selection, out var value)
                 ? value
                 : Enumerable.Empty<IdentifierReference>();
+        }
+
+        /// <summary>
+        /// Gets all identifier references within a qualified selection, ordered by selection (start position, then length)
+        /// </summary>
+        public IEnumerable<IdentifierReference> ContainedIdentifierReferences(QualifiedSelection qualifiedSelection)
+        {
+            return IdentifierReferences(qualifiedSelection.QualifiedName)
+                .Where(reference => qualifiedSelection.Selection.Contains(reference.Selection))
+                .OrderBy(reference => reference.Selection);
+        }
+
+        /// <summary>
+        /// Gets all identifier references containing a qualified selection, ordered by selection (start position, then length)
+        /// </summary>
+        public IEnumerable<IdentifierReference> ContainingIdentifierReferences(QualifiedSelection qualifiedSelection)
+        {
+            return IdentifierReferences(qualifiedSelection.QualifiedName)
+                .Where(reference => reference.Selection.Contains(qualifiedSelection.Selection))
+                .OrderBy(reference => reference.Selection);
         }
 
         /// <summary>

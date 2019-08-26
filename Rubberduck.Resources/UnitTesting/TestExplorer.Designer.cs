@@ -106,6 +106,15 @@ namespace Rubberduck.Resources.UnitTesting {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All.
+        /// </summary>
+        public static string TestExplorer_AllResults {
+            get {
+                return ResourceManager.GetString("TestExplorer_AllResults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Category.
         /// </summary>
         public static string TestExplorer_CategoryName {
@@ -156,6 +165,15 @@ namespace Rubberduck.Resources.UnitTesting {
         public static string TestExplorer_Duration {
             get {
                 return ResourceManager.GetString("TestExplorer_Duration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test Name.
+        /// </summary>
+        public static string TestExplorer_Filter {
+            get {
+                return ResourceManager.GetString("TestExplorer_Filter", resourceCulture);
             }
         }
         
@@ -313,6 +331,24 @@ namespace Rubberduck.Resources.UnitTesting {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ignore test.
+        /// </summary>
+        public static string TestExplorer_TestToggle_Ignore {
+            get {
+                return ResourceManager.GetString("TestExplorer_TestToggle_Ignore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unignore test.
+        /// </summary>
+        public static string TestExplorer_TestToggle_Unignore {
+            get {
+                return ResourceManager.GetString("TestExplorer_TestToggle_Unignore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Total Duration.
         /// </summary>
         public static string TestExplorer_TotalDuration {
@@ -417,15 +453,6 @@ namespace Rubberduck.Resources.UnitTesting {
         public static string TestOutcome_RunSummaryFormat {
             get {
                 return ResourceManager.GetString("TestOutcome_RunSummaryFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Spectacular Failure.
-        /// </summary>
-        public static string TestOutcome_SpectacularFail {
-            get {
-                return ResourceManager.GetString("TestOutcome_SpectacularFail", resourceCulture);
             }
         }
         

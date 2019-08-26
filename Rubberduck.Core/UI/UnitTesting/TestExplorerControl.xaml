@@ -6,12 +6,11 @@
              xmlns:local="clr-namespace:Rubberduck.UI.UnitTesting"
              xmlns:vm="clr-namespace:Rubberduck.UI.UnitTesting.ViewModels"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
-             xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
              Language="{UICulture}"
              mc:Ignorable="d" 
-             d:DesignHeight="400" d:DesignWidth="600"
+             d:DesignHeight="400" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance local:TestExplorerViewModel}">
 
     <UserControl.Resources>
@@ -49,9 +48,19 @@
 
             <BitmapImage x:Key="CopyResultsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/document-copy.png" />
 
+            <BitmapImage x:Key="FilterImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/Funnel.png" />
+            <BitmapImage x:Key="OutcomeUnknown" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/question-white.png" />
+            <BitmapImage x:Key="OutcomeFail" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
+            <BitmapImage x:Key="OutcomeInconclusive" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/exclamation.png" />
+            <BitmapImage x:Key="OutcomeSucceeded" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/tick-circle.png" />
+
+            <BitmapImage x:Key="IgnoreTestImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask-empty.png" />
+            <BitmapImage x:Key="UnignoreTestImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask-undo.png" />
+
             <local:TestOutcomeImageSourceConverter x:Key="OutcomeIconConverter" />
             <converters:MillisecondToTimeMagnitudeConverter x:Key="FormattedTime" />
             <converters:InvertBoolValueConverter x:Key="InvertBoolValue" />
+            <BooleanToVisibilityConverter x:Key="BoolToVisibility" />            
 
             <Style x:Key="ToolbarImageOpacity" TargetType="Image" >
                 <Setter Property="Height" Value="16" />
@@ -82,6 +91,7 @@
                     <local:TestExplorerGroupingBooleanConverter x:Key="OutcomeConverter" />
                     <local:TestExplorerGroupingBooleanConverter x:Key="LocationConverter" />
                     <local:TestExplorerGroupingBooleanConverter x:Key="CategoryConverter" />
+                    <local:TestExplorerOutcomeFilterToBooleanConverter x:Key="OutcomeFilterConverter" />
                     <Style x:Key="ToolBarToggleStyle" TargetType="ToggleButton">
                         <Setter Property="Margin" Value="2" />
                         <Setter Property="BorderBrush" Value="{x:Static SystemColors.ActiveBorderBrush}" />
@@ -216,6 +226,36 @@
 
                 <Separator />
 
+                <Image Source="{StaticResource FilterImage}" />
+
+                <Label Content="{Resx Key=TestExplorer_Filter, ResxName=Rubberduck.Resources.UnitTesting.TestExplorer}" />
+                <controls:SearchBox Width="100"
+                                    Text="{Binding TestNameFilter, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
+
+                <Label Content="{Resx Key=TestExplorer_Outcome, ResxName=Rubberduck.Resources.UnitTesting.TestExplorer}" />
+                <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
+                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=TestOutcome_Unknown}"
+                              IsChecked="{Binding Path=OutcomeFilter, Converter={StaticResource OutcomeFilterConverter}, ConverterParameter={x:Static local:TestExplorerOutcomeFilter.Unknown}}" >
+                    <Image Source="{StaticResource OutcomeUnknown}" />
+                </ToggleButton>
+                <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
+                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=TestOutcome_Fail}"
+                              IsChecked="{Binding Path=OutcomeFilter, Converter={StaticResource OutcomeFilterConverter}, ConverterParameter={x:Static local:TestExplorerOutcomeFilter.Fail}}" >
+                    <Image Source="{StaticResource OutcomeFail}" />
+                </ToggleButton>
+                <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
+                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=TestOutcome_Inconclusive}"
+                              IsChecked="{Binding Path=OutcomeFilter, Converter={StaticResource OutcomeFilterConverter}, ConverterParameter={x:Static local:TestExplorerOutcomeFilter.Inconclusive}}" >
+                    <Image Source="{StaticResource OutcomeInconclusive}" />
+                </ToggleButton>
+                <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
+                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=TestOutcome_Succeeded}"
+                              IsChecked="{Binding Path=OutcomeFilter, Converter={StaticResource OutcomeFilterConverter}, ConverterParameter={x:Static local:TestExplorerOutcomeFilter.Succeeded}}" >
+                    <Image Source="{StaticResource OutcomeSucceeded}" />
+                </ToggleButton>
+
+                <Separator />
+
                 <Button Name="CollapseAll" Command="{Binding CollapseAllCommand}" Margin="2"
                         ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_CollapseAll}">
                     <Image Source="{StaticResource CollapseAllImage}" Style="{StaticResource ToolbarImageOpacity}" />
@@ -276,13 +316,6 @@
                 <TextBlock Margin="2" Padding="4,2,4,2" FontWeight="Bold" VerticalAlignment="Center"
                            Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_SummaryCaption}"/>
                 <TextBlock Style="{StaticResource ResultsTestOutcomeStyle}" Text="{Binding Model.LastTestRunSummary, Mode=OneWay}"/>
-                <StackPanel Orientation="Horizontal" Visibility="{Binding Model.LastTestSpectacularFailCount, Mode=OneWay, Converter={StaticResource NonZeroToVisibility}}" >
-                    <Image Style="{StaticResource TestOutcomeIconStyle}" Source="{StaticResource EasterEggTestImage}" Margin="4,0,4,0"/>
-                    <TextBlock Style="{StaticResource ResultsTestOutcomeStyle}">
-                        <Run Text="{Binding Model.LastTestSpectacularFailCount, Mode=OneWay}"/>
-                        <Run Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_SpectacularFail}"/>
-                    </TextBlock>
-                </StackPanel>
                 <StackPanel Orientation="Horizontal" Visibility="{Binding Model.LastTestFailedCount, Mode=OneWay, Converter={StaticResource NonZeroToVisibility}}" >
                     <Image Style="{StaticResource TestOutcomeIconStyle}" Source="{StaticResource RunFailedTestsImage}" Margin="4,0,4,0"/>
                     <TextBlock Style="{StaticResource ResultsTestOutcomeStyle}">
@@ -402,6 +435,20 @@
                                       Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuRunAll}">
                                 <MenuItem.Icon>
                                     <Image Source="{StaticResource RunAllTestsImage}" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Command="{Binding IgnoreTestCommand}"
+                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_TestToggle_Ignore}"
+                                      Visibility="{Binding DisplayIgnoreTestLabel, Converter={StaticResource BoolToVisibility}}">
+                                <MenuItem.Icon>
+                                    <Image Source="{StaticResource IgnoreTestImage}" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Command="{Binding UnignoreTestCommand}"
+                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_TestToggle_Unignore}"
+                                      Visibility="{Binding DisplayUnignoreTestLabel, Converter={StaticResource BoolToVisibility}}">
+                                <MenuItem.Icon>
+                                    <Image Source="{StaticResource UnignoreTestImage}" />
                                 </MenuItem.Icon>
                             </MenuItem>
                         </ContextMenu>

@@ -19,6 +19,7 @@ using Rubberduck.Resources.Registration;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.ComManagement;
+using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.VbeRuntime;
@@ -68,7 +69,7 @@ namespace Rubberduck
                 _vbeNativeApi = VbeProvider.VbeRuntime;
 #if DEBUG
                 // FOR DEBUGGING/DEVELOPMENT PURPOSES, ALLOW ACCESS TO SOME VBETypeLibsAPI FEATURES FROM VBA
-                _addin.Object = new VBEditor.ComManagement.TypeLibsAPI.VBETypeLibsAPI_Object(_vbe);
+                _addin.Object = new VBETypeLibsAPI_Object(_vbe);
 #endif
 
                 switch (ConnectMode)

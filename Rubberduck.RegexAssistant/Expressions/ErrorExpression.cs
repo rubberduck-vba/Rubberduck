@@ -13,7 +13,7 @@ namespace Rubberduck.RegexAssistant.Expressions
             _errorToken = errorToken ?? throw new ArgumentNullException();
         }
 
-        public string Description => string.Format(AssistantResources.ExpressionDescription_ErrorExpression, _errorToken);
+        public string Description(bool spellOutWhitespace) => string.Format(AssistantResources.ExpressionDescription_ErrorExpression, _errorToken);
 
         public IList<IRegularExpression> Subexpressions => new List<IRegularExpression>();
 

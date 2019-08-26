@@ -382,4 +382,13 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
     <value>'While...Wend' loops exist for backward compatibility and have been superseded by the introduction of 'Do While...Loop' blocks, which support the 'Exit Do' exit statement. 'While...Wend' loops cannot be exited other than fulfilling the 'While' condition.</value>
   </data>
+  <data name="SetAssignmentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>The VBA compiler does not raise an error if an object is set assigned to a variable with an incompatible declared object type, i.e. with an object type that is neither the same type, a supertype nor a subtype. Under almost all circumstances such an assignment leads to a run-time error, which is harder to detect and indicates a bug. In all other situations the code can be changed to use only assignments between compatible declared types.</value>
+  </data>
+  <data name="EmptyMethodInspection" xml:space="preserve">
+    <value>Methods without executable statements may appear to be doing something which they actually don't, and therefore causing unexpected behaviour.</value>
+  </data>
+  <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
+    <value>A class module that is meant to be used as interface for concrete classes should gnerally be abstracted of any implementations. If it is your intention to use this class module as a concrete, you can safely ignore this inspection result.</value>
+  </data>
 </root>
