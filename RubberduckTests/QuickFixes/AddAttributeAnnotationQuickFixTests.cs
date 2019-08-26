@@ -4,6 +4,9 @@ using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
+using RubberduckTests.Mocks;
+using System;
+using System.Linq;
 
 namespace RubberduckTests.QuickFixes
 {
@@ -153,7 +156,9 @@ End Sub";
 
         protected override IQuickFix QuickFix(RubberduckParserState state)
         {
-            return new AddAttributeAnnotationQuickFix(new AnnotationUpdater(), new AttributeAnnotationProvider());
+            // FIXME actually inject the annotations here... 
+            return new AddAttributeAnnotationQuickFix(new AnnotationUpdater(),
+                new AttributeAnnotationProvider(MockParser.GetWellKnownAnnotationTypes().Where(annotation => typeof(IAttributeAnnotation).IsAssignableFrom(annotation))));
         }
     }
 }

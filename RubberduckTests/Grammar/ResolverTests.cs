@@ -1389,10 +1389,9 @@ End Sub
                     item.DeclarationType == DeclarationType.Variable && !item.IsUndeclared);
 
                 var usage = declaration.References.Single();
-                var annotation = (IgnoreAnnotation)usage.Annotations.First();
+                var annotation = (IgnoreAnnotation) usage.Annotations.First();
                 Assert.IsTrue(
                     usage.Annotations.Count() == 1
-                    && annotation.AnnotationType == AnnotationType.Ignore
                     && annotation.InspectionNames.Count() == 1
                     && annotation.InspectionNames.First() == "UnassignedVariableUsage");
             }
@@ -1423,9 +1422,7 @@ End Sub
                 var annotation2 = (IgnoreAnnotation)usage.Annotations.ElementAt(1);
 
                 Assert.AreEqual(2, usage.Annotations.Count());
-                Assert.AreEqual(AnnotationType.Ignore, annotation1.AnnotationType);
-                Assert.AreEqual(AnnotationType.Ignore, annotation2.AnnotationType);
-
+                
                 Assert.IsTrue(usage.Annotations.Any(a => ((IgnoreAnnotation)a).InspectionNames.First() == "UseMeaningfulName"));
                 Assert.IsTrue(usage.Annotations.Any(a => ((IgnoreAnnotation)a).InspectionNames.First() == "UnassignedVariableUsage"));
             }
@@ -1447,9 +1444,9 @@ End Sub";
             {
                 var declaration = state.AllUserDeclarations.First(f => f.DeclarationType == DeclarationType.Procedure);
 
-                Assert.IsTrue(declaration.Annotations.Count() == 2);
-                Assert.IsTrue(declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.TestMethod));
-                Assert.IsTrue(declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.IgnoreTest));
+                Assert.AreEqual(2, declaration.Annotations.Count(), "Annotation count mismatch");
+                Assert.IsTrue(declaration.Annotations.Any(a => a is TestMethodAnnotation));
+                Assert.IsTrue(declaration.Annotations.Any(a => a is IgnoreTestAnnotation));
             }
         }
 
@@ -2882,7 +2879,7 @@ End Sub
 
                 var declaration = state.AllUserDeclarations.Single(item => item.IdentifierName == "orgs");
 
-                var annotation = declaration.Annotations.SingleOrDefault(item => item.AnnotationType == AnnotationType.Ignore);
+                var annotation = declaration.Annotations.SingleOrDefault(item => item is IgnoreAnnotation);
                 Assert.IsNotNull(annotation);
                 Assert.IsTrue(results.SequenceEqual(((IgnoreAnnotation)annotation).InspectionNames));
             }
@@ -2908,7 +2905,7 @@ End Sub
 
                 var declaration = state.AllUserDeclarations.Single(item => item.IdentifierName == "orgs");
 
-                var annotation = declaration.Annotations.SingleOrDefault(item => item.AnnotationType == AnnotationType.Ignore);
+                var annotation = declaration.Annotations.SingleOrDefault(item => item is IgnoreAnnotation);
                 Assert.IsNotNull(annotation);
                 Assert.IsTrue(results.SequenceEqual(((IgnoreAnnotation)annotation).InspectionNames));
             }

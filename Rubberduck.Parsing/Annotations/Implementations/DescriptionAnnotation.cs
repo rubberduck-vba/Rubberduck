@@ -7,10 +7,12 @@ namespace Rubberduck.Parsing.Annotations
     /// <summary>
     /// Used for specifying a member's <c>VB_Description</c> attribute.
     /// </summary>
+    [Annotation("Description", AnnotationTarget.Member)]
+    [FlexibleAttributeValueAnnotation("VB_Description", 1)]
     public sealed class DescriptionAnnotation : DescriptionAttributeAnnotationBase
     {
         public DescriptionAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> parameters)
-            : base(AnnotationType.Description, qualifiedSelection, context, parameters)
+            : base(qualifiedSelection, context, parameters)
         {}
     }
 }

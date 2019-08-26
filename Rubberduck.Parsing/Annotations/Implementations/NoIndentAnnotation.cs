@@ -7,10 +7,11 @@ namespace Rubberduck.Parsing.Annotations
     /// <summary>
     /// Marks a module that Smart Indenter ignores.
     /// </summary>
+    [Annotation("NoIndent", AnnotationTarget.Module)]
     public sealed class NoIndentAnnotation : AnnotationBase
     {
         public NoIndentAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> parameters)
-            : base(AnnotationType.NoIndent, qualifiedSelection, context)
+            : base(qualifiedSelection, context)
         {
         }
     }

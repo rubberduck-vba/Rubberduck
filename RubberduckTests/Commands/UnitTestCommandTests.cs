@@ -321,7 +321,7 @@ End Property
 
                 var testModule = state.DeclarationFinder.FindStdModule($"{TestModuleBaseName}1", project);
 
-                Assert.IsTrue(testModule.Annotations.Any(a => a.AnnotationType == AnnotationType.TestModule));
+                Assert.IsTrue(testModule.Annotations.Any(a => a is TestModuleAnnotation));
 
                 var stubIdentifierNames = new List<string>
                 {
@@ -375,7 +375,7 @@ End Property
 
                 var testModule = state.DeclarationFinder.FindStdModule($"{TestModuleBaseName}1", project);
 
-                Assert.IsTrue(testModule.Annotations.Any(a => a.AnnotationType == AnnotationType.TestModule));
+                Assert.IsTrue(testModule.Annotations.Any(a => a is TestModuleAnnotation));
                 var stubs = state.DeclarationFinder.AllUserDeclarations.Where(d => d.IdentifierName.EndsWith(TestMethodBaseName)).ToList();
 
                 Assert.AreEqual(0, stubs.Count);
@@ -419,7 +419,7 @@ End Enum
 
                 var testModule = state.DeclarationFinder.FindStdModule($"{TestModuleBaseName}1", project);
 
-                Assert.IsTrue(testModule.Annotations.Any(a => a.AnnotationType == AnnotationType.TestModule));
+                Assert.IsTrue(testModule.Annotations.Any(a => a is TestModuleAnnotation));
                 var stubs = state.DeclarationFinder.AllUserDeclarations.Where(d => d.IdentifierName.EndsWith(TestMethodBaseName)).ToList();
 
                 Assert.AreEqual(0, stubs.Count);

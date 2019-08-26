@@ -10,13 +10,15 @@ namespace Rubberduck.Parsing.Annotations
     /// <remarks>
     /// Unit test discovery only inspects modules with a <c>@TestModule</c> annotation.
     /// </remarks>
+    [Annotation("TestModule", AnnotationTarget.Module)]
     public sealed class TestModuleAnnotation : AnnotationBase
     {
+        // TODO investigate unused parameters argument. Possibly needed to match signature for construction through VBAParserAnnotationFactory?!
         public TestModuleAnnotation(
             QualifiedSelection qualifiedSelection,
             VBAParser.AnnotationContext context,
             IEnumerable<string> parameters)
-            : base(AnnotationType.TestModule, qualifiedSelection, context)
+            : base(qualifiedSelection, context)
         {
         }
     }

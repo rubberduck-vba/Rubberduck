@@ -7,8 +7,8 @@ namespace Rubberduck.Parsing.Annotations
 {
     public abstract class FlexibleAttributeAnnotationBase : AnnotationBase, IAttributeAnnotation
     {
-        protected FlexibleAttributeAnnotationBase(AnnotationType annotationType, QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IReadOnlyList<string> parameters) 
-            :base(annotationType, qualifiedSelection, context)
+        protected FlexibleAttributeAnnotationBase(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IReadOnlyList<string> parameters) 
+            :base(qualifiedSelection, context)
         {
             Attribute = parameters?.FirstOrDefault() ?? string.Empty;
             AttributeValues = parameters?.Skip(1).ToList() ?? new List<string>();

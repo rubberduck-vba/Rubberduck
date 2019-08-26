@@ -52,7 +52,7 @@ namespace Rubberduck.Inspections.Concrete
             var annotations = State.AllAnnotations;
 
             var unboundAnnotations = UnboundAnnotations(annotations, userDeclarations, identifierReferences)
-                .Where(annotation => !annotation.AnnotationType.HasFlag(AnnotationType.GeneralAnnotation)
+                .Where(annotation => !annotation.MetaInformation.Target.HasFlag(AnnotationTarget.General)
                                      || annotation.AnnotatedLine == null);
             var attributeAnnotationsInDocuments = AttributeAnnotationsInDocuments(userDeclarations);
 

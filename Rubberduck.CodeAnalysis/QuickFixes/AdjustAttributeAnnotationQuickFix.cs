@@ -39,15 +39,15 @@ namespace Rubberduck.Inspections.QuickFixes
                 }
                 else
                 {
-                    var (newAnnotationType, newAnnotationValues) = _attributeAnnotationProvider.ModuleAttributeAnnotation(attributeName, attributeValues);
-                    _annotationUpdater.UpdateAnnotation(rewriteSession, oldAnnotation, newAnnotationType, newAnnotationValues);
+                    var (newAnnotation, newAnnotationValues) = _attributeAnnotationProvider.ModuleAttributeAnnotation(attributeName, attributeValues);
+                    _annotationUpdater.UpdateAnnotation(rewriteSession, oldAnnotation, newAnnotation, newAnnotationValues);
                 }
             }
             else
             {
                 var attributeBaseName = AttributeBaseName(attributeName, declaration);
-                var (newAnnotationType, newAnnotationValues) = _attributeAnnotationProvider.MemberAttributeAnnotation(attributeBaseName, attributeValues);
-                _annotationUpdater.UpdateAnnotation(rewriteSession, oldAnnotation, newAnnotationType, newAnnotationValues);
+                var (newAnnotation, newAnnotationValues) = _attributeAnnotationProvider.MemberAttributeAnnotation(attributeBaseName, attributeValues);
+                _annotationUpdater.UpdateAnnotation(rewriteSession, oldAnnotation, newAnnotation, newAnnotationValues);
             }
         }
 

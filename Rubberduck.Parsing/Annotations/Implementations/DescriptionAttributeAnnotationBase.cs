@@ -7,8 +7,8 @@ namespace Rubberduck.Parsing.Annotations
 {
     public abstract class DescriptionAttributeAnnotationBase : FlexibleAttributeValueAnnotationBase
     {
-        public DescriptionAttributeAnnotationBase(AnnotationType annotationType, QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> attributeValues)
-            : base(annotationType, qualifiedSelection, context, attributeValues?.Take(1).ToList())
+        public DescriptionAttributeAnnotationBase(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> attributeValues)
+            : base(qualifiedSelection, context, attributeValues?.Take(1).ToList())
         {
             Description = AttributeValues?.FirstOrDefault();
             if ((Description?.StartsWith("\"") ?? false) && Description.EndsWith("\""))

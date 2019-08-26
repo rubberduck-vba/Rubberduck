@@ -52,17 +52,17 @@ namespace Rubberduck.Inspections.QuickFixes
                 .OfType<IgnoreAnnotation>()
                 .FirstOrDefault();
 
-            var annotationType = AnnotationType.Ignore;
+            var annotationInfo = typeof(IgnoreAnnotation).GetCustomAttributes(false).OfType<AnnotationAttribute>().Single();
             if (existingIgnoreAnnotation != null)
             {
                 var annotationValues = existingIgnoreAnnotation.InspectionNames.ToList();
                 annotationValues.Insert(0, result.Inspection.AnnotationName);
-                _annotationUpdater.UpdateAnnotation(rewriteSession, existingIgnoreAnnotation, annotationType, annotationValues);
+                _annotationUpdater.UpdateAnnotation(rewriteSession, existingIgnoreAnnotation, annotationInfo, annotationValues);
             }
             else
             {
                 var annotationValues = new List<string> { result.Inspection.AnnotationName };
-                _annotationUpdater.AddAnnotation(rewriteSession, new QualifiedContext(module, result.Context), annotationType, annotationValues);
+                _annotationUpdater.AddAnnotation(rewriteSession, new QualifiedContext(module, result.Context), annotationInfo, annotationValues);
             }
         }
 
@@ -73,7 +73,7 @@ namespace Rubberduck.Inspections.QuickFixes
                 .OfType<IgnoreModuleAnnotation>()
                 .FirstOrDefault();
 
-            var annotationType = AnnotationType.IgnoreModule;
+            var annotationType = typeof(IgnoreModuleAnnotation).GetCustomAttributes(false).OfType<AnnotationAttribute>().Single();
             if (existingIgnoreModuleAnnotation != null)
             {
                 var annotationValues = existingIgnoreModuleAnnotation.InspectionNames.ToList();

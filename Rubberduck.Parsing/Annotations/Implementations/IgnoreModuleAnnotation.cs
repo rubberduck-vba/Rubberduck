@@ -5,10 +5,14 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Annotations
 {
+    /// <summary>
+    /// This annotation allows ignoring inspection results of defined inspections for a whole module
+    /// </summary>
+    [Annotation("IgnoreModule", AnnotationTarget.Module, true)]
     public sealed class IgnoreModuleAnnotation : AnnotationBase
     {
         public IgnoreModuleAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> parameters)
-            : base(AnnotationType.IgnoreModule, qualifiedSelection, context)
+            : base(qualifiedSelection, context)
         {
             InspectionNames = parameters;
         }
@@ -19,8 +23,6 @@ namespace Rubberduck.Parsing.Annotations
         {
             return !InspectionNames.Any() || InspectionNames.Contains(inspectionName);
         }
-
-        public override bool AllowMultiple { get; } = true;
 
         public override string ToString()
         {

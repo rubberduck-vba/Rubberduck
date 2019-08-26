@@ -5,15 +5,16 @@ using Rubberduck.Parsing.Grammar;
 namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>
-    /// Marks a method that the test engine will execute after all unit tests in a test module have executed.
+    /// Marks a method that the test engine will execute before executing each unit test in a test module.
     /// </summary>
-    public sealed class ModuleCleanupAnnotation : AnnotationBase
+    [Annotation("TestInitialize", AnnotationTarget.Member)]
+    public sealed class TestInitializeAnnotation : AnnotationBase
     {
-        public ModuleCleanupAnnotation(
+        public TestInitializeAnnotation(
             QualifiedSelection qualifiedSelection,
             VBAParser.AnnotationContext context,
             IEnumerable<string> parameters)
-            : base(AnnotationType.ModuleCleanup, qualifiedSelection, context)
+            : base(qualifiedSelection, context)
         {
         }
     }

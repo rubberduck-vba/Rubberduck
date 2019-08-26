@@ -189,9 +189,9 @@ namespace Rubberduck.Parsing.VBA
 
         private void RefreshFinder(IHostApplication host)
         {
-            var oldDecalarationFinder = DeclarationFinder;
+            var oldDeclarationFinder = DeclarationFinder;
             DeclarationFinder = _declarationFinderFactory.Create(AllDeclarationsFromModuleStates, AllAnnotations, AllUnresolvedMemberDeclarationsFromModulestates, AllUnboundDefaultMemberAccessesFromModuleStates, host);
-            _declarationFinderFactory.Release(oldDecalarationFinder);
+            _declarationFinderFactory.Release(oldDeclarationFinder);
         }
 
         public void RefreshDeclarationFinder()

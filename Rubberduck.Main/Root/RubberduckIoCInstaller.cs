@@ -56,6 +56,7 @@ using Rubberduck.VBEditor.Utility;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.VbeRuntime;
+using Rubberduck.Parsing.Annotations;
 
 namespace Rubberduck.Root
 {
@@ -851,6 +852,7 @@ namespace Rubberduck.Root
         private void RegisterParsingEngine(IWindsorContainer container)
         {
             RegisterCustomDeclarationLoadersToParser(container);
+            RegisterAnnotationProcessing(container);
 
             container.Register(Component.For<ICompilationArgumentsProvider, ICompilationArgumentsCache>()
                 .ImplementedBy<CompilationArgumentsCache>()
@@ -942,6 +944,24 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<IProjectsToResolveFromComProjectSelector>()
                 .ImplementedBy<ProjectsToResolveFromComProjectsSelector>()
+                .LifestyleSingleton());
+        }
+
+        private void RegisterAnnotationProcessing(IWindsorContainer container)
+        {
+            var annotations = new List<Type>();
+            foreach (Assembly referenced in AssembliesToRegister())
+            {
+                annotations.AddRange(referenced.ExportedTypes
+                    .Where(candidate => candidate.IsBasedOn(typeof(IAnnotation)) && !candidate.IsAbstract));
+            }
+            container.Register(Component.For<IAnnotationFactory>()
+                .ImplementedBy<VBAParserAnnotationFactory>()
+                .DependsOn(Dependency.OnValue<IEnumerable<Type>>(annotations))
+                .LifestyleSingleton());
+            container.Register(Component.For<IAttributeAnnotationProvider>()
+                .ImplementedBy<AttributeAnnotationProvider>()
+                .DependsOn(Dependency.OnValue<IEnumerable<Type>>(annotations.Where(annotation => annotation.IsBasedOn(typeof(IAttributeAnnotation)))))
                 .LifestyleSingleton());
         }
 

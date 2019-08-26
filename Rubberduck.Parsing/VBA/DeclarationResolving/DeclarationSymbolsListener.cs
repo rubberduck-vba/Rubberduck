@@ -44,10 +44,10 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
 
         private IEnumerable<IAnnotation> FindMemberAnnotations(int firstMemberLine)
         {
-            return FindAnnotations(firstMemberLine, AnnotationType.MemberAnnotation);
+            return FindAnnotations(firstMemberLine, AnnotationTarget.Member);
         }
 
-        private IEnumerable<IAnnotation> FindAnnotations(int firstLine, AnnotationType annotationTypeFlag)
+        private IEnumerable<IAnnotation> FindAnnotations(int firstLine, AnnotationTarget requiredTarget)
         {
             if (_annotations == null)
             {
@@ -56,7 +56,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
 
             if (_annotations.TryGetValue(firstLine, out var scopedAnnotations))
             {
-                return scopedAnnotations.Where(annotation => annotation.AnnotationType.HasFlag(annotationTypeFlag));
+                return scopedAnnotations.Where(annotation => annotation.MetaInformation.Target.HasFlag(requiredTarget));
             }
 
             return Enumerable.Empty<IAnnotation>();
@@ -64,12 +64,12 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
 
         private IEnumerable<IAnnotation> FindVariableAnnotations(int firstVariableLine)
         {
-            return FindAnnotations(firstVariableLine, AnnotationType.VariableAnnotation);
+            return FindAnnotations(firstVariableLine, AnnotationTarget.Variable);
         }
 
         private IEnumerable<IAnnotation> FindGeneralAnnotations(int firstLine)
         {
-            return FindAnnotations(firstLine, AnnotationType.GeneralAnnotation);
+            return FindAnnotations(firstLine, AnnotationTarget.General);
         }
 
         private Declaration CreateDeclaration(

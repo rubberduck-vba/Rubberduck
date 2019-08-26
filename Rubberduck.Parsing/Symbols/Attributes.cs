@@ -130,7 +130,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public IEnumerable<AttributeNode> AttributeNodesFor(IAttributeAnnotation annotation, string memberName = null)
         {
-            if (!annotation.AnnotationType.HasFlag(AnnotationType.Attribute))
+            if (!annotation.GetType().GetInterfaces().Contains(typeof(IAttributeAnnotation)))
             {
                 return Enumerable.Empty<AttributeNode>();
             }

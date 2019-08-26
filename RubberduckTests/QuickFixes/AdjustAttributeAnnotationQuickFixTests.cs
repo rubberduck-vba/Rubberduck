@@ -7,6 +7,8 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
+using System;
+using System.Linq;
 
 namespace RubberduckTests.QuickFixes
 {
@@ -107,7 +109,8 @@ End Sub";
 
         protected override IQuickFix QuickFix(RubberduckParserState state)
         {
-            return new AdjustAttributeAnnotationQuickFix(new AnnotationUpdater(), new AttributeAnnotationProvider());
+            return new AdjustAttributeAnnotationQuickFix(new AnnotationUpdater(), 
+                new AttributeAnnotationProvider(MockParser.GetWellKnownAnnotationTypes().Where(annotation => typeof(IAttributeAnnotation).IsAssignableFrom(annotation))));
         }
     }
 }

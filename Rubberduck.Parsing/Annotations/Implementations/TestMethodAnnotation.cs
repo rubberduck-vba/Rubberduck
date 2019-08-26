@@ -9,14 +9,17 @@ namespace Rubberduck.Parsing.Annotations
     /// <summary>
     /// Marks a method that the test engine will execute as a unit test.
     /// </summary>
+    [Annotation("TestMethod", AnnotationTarget.Member)]
     public sealed class TestMethodAnnotation : AnnotationBase
     {
         public TestMethodAnnotation(
             QualifiedSelection qualifiedSelection,
             VBAParser.AnnotationContext context,
             IEnumerable<string> parameters)
-            : base(AnnotationType.TestMethod, qualifiedSelection, context)
+            : base(qualifiedSelection, context)
         {
+            // FIXME unify handling of quoted arguments to annotations. 
+            // That should probably be part of VBAParserAnnotationFactory's handling of the annotationArguments context
             var firstParameter = parameters.FirstOrDefault();
             if ((firstParameter?.StartsWith("\"") ?? false) && firstParameter.EndsWith("\""))
             {

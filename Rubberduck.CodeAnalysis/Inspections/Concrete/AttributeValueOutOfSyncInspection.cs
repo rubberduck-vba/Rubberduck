@@ -49,7 +49,7 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var declarationsWithAttributeAnnotations = State.DeclarationFinder.AllUserDeclarations
-                .Where(declaration => declaration.Annotations.Any(annotation => annotation.AnnotationType.HasFlag(AnnotationType.Attribute)));
+                .Where(declaration => declaration.Annotations.Any(annotation => annotation is IAttributeAnnotation));
             var results = new List<DeclarationInspectionResult>();
             foreach (var declaration in declarationsWithAttributeAnnotations.Where(decl => decl.QualifiedModuleName.ComponentType != ComponentType.Document))
             {

@@ -42,7 +42,7 @@ End Sub
         bar = vbNullString
     End Sub
 ";
-            var annotationToAdd = AnnotationType.MemberAttribute;
+            var annotationToAdd = new AnnotationAttribute("MemberAttribute", AnnotationTarget.Member);
             var annotationValues = new List<string> { "VB_Ext_Key", "\"Key\"", "\"Value\"" };
 
             string actualCode;
@@ -96,7 +96,7 @@ End Sub
         bar = vbNullString
     End Sub
 ";
-            var annotationToAdd = AnnotationType.ModuleAttribute;
+            var annotationToAdd = new AnnotationAttribute("ModuleAttribute", AnnotationTarget.Module);
             var annotationValues = new List<string> { "VB_Ext_Key", "\"Key\"", "\"Value\"" };
 
             string actualCode;
@@ -143,7 +143,7 @@ End Sub
         bar = vbNullString
     End Sub
 ";
-            var annotationToAdd = AnnotationType.ModuleAttribute;
+            var annotationToAdd = new AnnotationAttribute("ModuleAttribute", AnnotationTarget.Module);
             var annotationValues = new List<string> { "VB_Ext_Key", "\"Key\"", "\"Value\"" };
 
             string actualCode;
@@ -196,7 +196,7 @@ End Sub
         bar = vbNullString
     End Sub
 ";
-            var annotationToAdd = AnnotationType.MemberAttribute;
+            var annotationToAdd = new AnnotationAttribute("MemberAttribute", AnnotationTarget.Member);
             var annotationValues = new List<string> { "VB_Ext_Key", "\"Key\"", "\"Value\"" };
 
             string actualCode;
@@ -254,7 +254,7 @@ End Sub
         bar = vbNullString
     End Sub
 ";
-            var annotationToAdd = AnnotationType.Ignore;
+            var annotationToAdd = new AnnotationAttribute("Ignore", AnnotationTarget.General);
             var annotationValues = new List<string> { "ObsoleteMemberUsage" };
 
             string actualCode;
@@ -301,7 +301,7 @@ End Sub
         bar = vbNullString
     End Sub
 ";
-            var annotationToAdd = AnnotationType.Obsolete;
+            var annotationToAdd = new AnnotationAttribute("Obsolete", AnnotationTarget.Member | AnnotationTarget.Variable);
 
             string actualCode;
             var (component, rewriteSession, state) = TestSetup(inputCode);
@@ -347,7 +347,7 @@ baz As Variant
         bar = vbNullString
     End Sub
 ";
-            var annotationToAdd = AnnotationType.Obsolete;
+            var annotationToAdd = new AnnotationAttribute("Obsolete", AnnotationTarget.Member | AnnotationTarget.Variable);
 
             string actualCode;
             var (component, rewriteSession, state) = TestSetup(inputCode);
@@ -674,7 +674,7 @@ Option Explicit
                 var moduleDeclaration = state.DeclarationFinder
                     .UserDeclarations(DeclarationType.ProceduralModule)
                     .First();
-                var annotationsToRemove = moduleDeclaration.Annotations.Where(annotation => annotation.AnnotationType != AnnotationType.Exposed);
+                var annotationsToRemove = moduleDeclaration.Annotations.Where(annotation => !(annotation is ExposedModuleAnnotation));
                 var annotationUpdater = new AnnotationUpdater();
 
                 annotationUpdater.RemoveAnnotations(rewriteSession, annotationsToRemove);
@@ -718,7 +718,7 @@ End Sub
         bar = vbNullString
     End Sub
 ";
-            var newAnnotation = AnnotationType.MemberAttribute;
+            var newAnnotation = new AnnotationAttribute("MemberAttribute", AnnotationTarget.Member);
             var newAnnotationValues = new List<string> { "VB_ExtKey", "\"Key\"", "\"Value\"" };
 
             string actualCode;
@@ -728,7 +728,7 @@ End Sub
                 var fooDeclaration = state.DeclarationFinder
                     .UserDeclarations(DeclarationType.Procedure)
                     .First(decl => decl.IdentifierName == "Foo");
-                var annotationToUpdate = fooDeclaration.Annotations.First(annotation => annotation.AnnotationType == AnnotationType.Description);
+                var annotationToUpdate = fooDeclaration.Annotations.First(annotation => annotation is DescriptionAnnotation);
                 var annotationUpdater = new AnnotationUpdater();
 
                 annotationUpdater.UpdateAnnotation(rewriteSession, annotationToUpdate, newAnnotation, newAnnotationValues);

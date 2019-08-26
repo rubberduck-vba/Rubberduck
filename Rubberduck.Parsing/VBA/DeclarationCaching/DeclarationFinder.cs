@@ -550,6 +550,12 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 : Enumerable.Empty<IAnnotation>();
         }
 
+        public IEnumerable<IAnnotation> FindAnnotations(QualifiedModuleName module, int annotatedLine, AnnotationTarget target)
+        {
+            return FindAnnotations(module, annotatedLine)
+                .Where(annot => annot.MetaInformation.Target.HasFlag(target));
+        }
+
         public bool IsMatch(string declarationName, string potentialMatchName)
         {
             return string.Equals(declarationName, potentialMatchName, StringComparison.OrdinalIgnoreCase);
@@ -972,11 +978,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
         public Declaration OnUndeclaredVariable(Declaration enclosingProcedure, string identifierName, ParserRuleContext context)
         {
-            var annotations = FindAnnotations(enclosingProcedure.QualifiedName.QualifiedModuleName, context.Start.Line)
-                .Where(annotation => annotation.AnnotationType.HasFlag(AnnotationType.IdentifierAnnotation));
-
+            var annotations = FindAnnotations(enclosingProcedure.QualifiedName.QualifiedModuleName, context.Start.Line,AnnotationTarget.Identifier);
             var isReDimVariable = IsContainedInReDimedArrayName(context);
-
             var undeclaredLocal =
                 new Declaration(
                     new QualifiedMemberName(enclosingProcedure.QualifiedName.QualifiedModuleName, identifierName),
@@ -1038,8 +1041,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             }
 
             var identifier = context.GetChild<VBAParser.UnrestrictedIdentifierContext>(0);
-            var annotations = FindAnnotations(parentDeclaration.QualifiedName.QualifiedModuleName, context.Start.Line)
-                .Where(annotation => annotation.AnnotationType.HasFlag(AnnotationType.IdentifierAnnotation));
+            var annotations = FindAnnotations(parentDeclaration.QualifiedName.QualifiedModuleName, context.Start.Line, AnnotationTarget.Identifier);
 
             var declaration = new UnboundMemberDeclaration(parentDeclaration, identifier,
                 (context is VBAParser.MemberAccessExprContext) ? (ParserRuleContext)context.children[0] : withExpression.Context, 

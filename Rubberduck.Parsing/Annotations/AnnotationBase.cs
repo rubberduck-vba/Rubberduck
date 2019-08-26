@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 
@@ -10,24 +11,23 @@ namespace Rubberduck.Parsing.Annotations
 
         private readonly Lazy<int?> _annotatedLine;
 
-        protected AnnotationBase(AnnotationType annotationType, QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context)
+        protected AnnotationBase(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context)
         {
-            AnnotationType = annotationType;
             QualifiedSelection = qualifiedSelection;
             Context = context;
             _annotatedLine = new Lazy<int?>(GetAnnotatedLine);
+            MetaInformation = GetType().GetCustomAttributes(false).OfType<AnnotationAttribute>().Single();
         }
-
-        public AnnotationType AnnotationType { get; }
+        
         public QualifiedSelection QualifiedSelection { get; }
         public VBAParser.AnnotationContext Context { get; }
+        // sigh... we kinda want to seal this, but can't because it's not inherited from a class...
+        public AnnotationAttribute MetaInformation { get; }
+        public string AnnotationType => MetaInformation.Name;
 
         public int? AnnotatedLine => _annotatedLine.Value;
 
-        public virtual bool AllowMultiple { get; } = false;
-
-        public override string ToString() => $"Annotation Type: {AnnotationType}";
-
+        public override string ToString() => $"Annotation Type: {GetType()}";
 
         private int? GetAnnotatedLine()
         {

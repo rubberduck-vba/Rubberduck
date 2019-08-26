@@ -244,14 +244,14 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
             if (firstModuleBodyLine == null)
             {
                 return annotationsOnWhiteSpaceLines.Values.SelectMany(annotationList => annotationList)
-                    .Where(annotation => annotation.AnnotationType.HasFlag(AnnotationType.ModuleAnnotation));
+                    .Where(annotation => annotation.MetaInformation.Target.HasFlag(AnnotationTarget.Module));
             }
 
             var lastPossibleAnnotatedLine = firstModuleBodyLine.Value;
             var moduleAnnotations = annotationsOnWhiteSpaceLines.Keys
                 .Where(line => (line <= lastPossibleAnnotatedLine))
                 .SelectMany(line => annotationsOnWhiteSpaceLines[line])
-                .Where(annotation => annotation.AnnotationType.HasFlag(AnnotationType.ModuleAnnotation));
+                .Where(annotation => annotation.MetaInformation.Target.HasFlag(AnnotationTarget.Module));
             return moduleAnnotations;
         }
 

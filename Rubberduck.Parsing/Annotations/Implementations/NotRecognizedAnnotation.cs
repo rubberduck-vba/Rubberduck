@@ -5,16 +5,17 @@ using Rubberduck.Parsing.Grammar;
 namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>
-    /// Marks a method that the test engine will execute after executing each unit test in a test module.
+    /// Used for all annotations not recognized by RD.
+    /// Since this is not actually an annotation, it has no valid target
     /// </summary>
-    public sealed class TestCleanupAnnotation : AnnotationBase
+    [Annotation("NotRecognized", 0)]
+    public sealed class NotRecognizedAnnotation : AnnotationBase
     {
-        public TestCleanupAnnotation(
+        public NotRecognizedAnnotation(
             QualifiedSelection qualifiedSelection,
             VBAParser.AnnotationContext context,
             IEnumerable<string> parameters)
-            : base(AnnotationType.TestCleanup, qualifiedSelection, context)
-        {
-        }
+            : base(qualifiedSelection, context)
+        {}
     }
 }

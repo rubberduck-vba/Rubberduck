@@ -55,7 +55,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private string FolderFromAnnotations()
         {
-            var @namespace = Annotations.FirstOrDefault(annotation => annotation.AnnotationType == AnnotationType.Folder);
+            var @namespace = Annotations.OfType<FolderAnnotation>().FirstOrDefault();
             string result;
             if (@namespace == null)
             {
@@ -65,7 +65,7 @@ namespace Rubberduck.Parsing.Symbols
             }
             else
             {
-                var value = ((FolderAnnotation)@namespace).FolderName;
+                var value = @namespace.FolderName;
                 result = value;
             }
             return result;

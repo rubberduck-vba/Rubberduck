@@ -47,7 +47,7 @@ namespace Rubberduck.UI.UnitTesting.ComCommands
             }
             var testModules = _state.AllUserDeclarations.Where(d =>
                             d.DeclarationType == DeclarationType.ProceduralModule &&
-                            d.Annotations.Any(a => a.AnnotationType == AnnotationType.TestModule));
+                            d.Annotations.Any(a => a is TestModuleAnnotation));
 
             try
             {

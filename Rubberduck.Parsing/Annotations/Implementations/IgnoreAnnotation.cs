@@ -8,31 +8,28 @@ namespace Rubberduck.Parsing.Annotations
     /// <summary>
     /// Used for ignoring specific inspection results from a specified set of inspections.
     /// </summary>
+    [Annotation("Ignore", AnnotationTarget.General, true)]
     public sealed class IgnoreAnnotation : AnnotationBase
     {
-        private readonly IEnumerable<string> _inspectionNames;
-
         public IgnoreAnnotation(
             QualifiedSelection qualifiedSelection,
             VBAParser.AnnotationContext context,
             IEnumerable<string> parameters)
-            : base(AnnotationType.Ignore, qualifiedSelection, context)
+            : base(qualifiedSelection, context)
         {
-            _inspectionNames = parameters;
+            InspectionNames = parameters;
         }
 
-        public IEnumerable<string> InspectionNames => _inspectionNames;
+        public IEnumerable<string> InspectionNames { get; }
 
         public bool IsIgnored(string inspectionName)
         {
-            return _inspectionNames.Contains(inspectionName);
+            return InspectionNames.Contains(inspectionName);
         }
-
-        public override bool AllowMultiple { get; } = true;
 
         public override string ToString()
         {
-            return $"Ignored inspections: {string.Join(", ", _inspectionNames)}";
+            return $"Ignored inspections: {string.Join(", ", InspectionNames)}";
         }
     }
 }

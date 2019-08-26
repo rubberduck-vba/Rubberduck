@@ -24,8 +24,7 @@ namespace Rubberduck.UnitTesting
         {
             get
             {
-                var testMethodAnnotation = (TestMethodAnnotation) Declaration.Annotations
-                    .First(annotation => annotation.AnnotationType == AnnotationType.TestMethod);
+                var testMethodAnnotation = Declaration.Annotations.OfType<TestMethodAnnotation>().First();
 
                 var categorization = testMethodAnnotation.Category.Equals(string.Empty) ? TestExplorer.TestExplorer_Uncategorized : testMethodAnnotation.Category;
                 return new TestCategory(categorization);
@@ -37,9 +36,8 @@ namespace Rubberduck.UnitTesting
             return new NavigateCodeEventArgs(new QualifiedSelection(Declaration.QualifiedName.QualifiedModuleName, Declaration.Context.GetSelection()));
         }
 
-        public bool IsIgnored => Declaration.Annotations.Any(annotation => annotation.AnnotationType == AnnotationType.IgnoreTest);
+        public bool IsIgnored => Declaration.Annotations.OfType<IgnoreTestAnnotation>().Any();
         
-
         public bool Equals(TestMethod other) => other != null && Declaration.QualifiedName.Equals(other.Declaration.QualifiedName) && TestCode.Equals(other.TestCode);
 
         public override bool Equals(object obj) => obj is TestMethod method && Equals(method);
