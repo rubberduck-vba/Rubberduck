@@ -3,13 +3,17 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Microsoft.Win32;
+using Rubberduck.VBEditor.Utility;
+using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 
 namespace Rubberduck.Parsing.ComReflection.TypeLibReflection
 {
     public interface ITypeLibQueryService
     {
+        bool TryGetTypeFromITypeInfo(ITypeInfo typeInfo, out Type type);
         bool TryGetProgIdFromClsid(Guid clsid, out string progId);
         bool TryGetTypeInfoFromProgId(string progId, out ITypeInfo typeInfo);
+        string GetOrCreateProgIdFromITypeInfo(ITypeInfo typeInfo);
     }
 
     public class TypeLibQueryService : ITypeLibQueryService
@@ -30,6 +34,46 @@ namespace Rubberduck.Parsing.ComReflection.TypeLibReflection
         /// Provided primarily for uses outside the CW's DI, mainly within Rubberduck.Main.
         /// </summary>
         public static ITypeLibQueryService Instance => LazyInstance.Value;
+
+        public bool TryGetTypeFromITypeInfo(ITypeInfo typeInfo, out Type type)
+        {
+            type = null;
+            var ptr = Marshal.GetComInterfaceForObject(typeInfo, typeof(ITypeInfo));
+            if (ptr == IntPtr.Zero)
+            {
+                return false;
+            }
+
+            using (DisposalActionContainer.Create(ptr, x => Marshal.Release(x)))
+            {
+                type = Marshal.GetTypeForITypeInfo(ptr);
+            }
+
+            return type != null;
+        }
+
+        public string GetOrCreateProgIdFromITypeInfo(ITypeInfo typeInfo)
+        {
+            typeInfo.GetTypeAttr(out var pAttr);
+            if (pAttr != IntPtr.Zero)
+            {
+                using (DisposalActionContainer.Create(pAttr, typeInfo.ReleaseTypeAttr))
+                {
+                    var attr = Marshal.PtrToStructure<TYPEATTR>(pAttr);
+                    var clsid = attr.guid;
+                    if (TryGetProgIdFromClsid(clsid, out var progId))
+                    {
+                        return progId;
+                    }
+                }
+            }
+
+            var typeName = Marshal.GetTypeInfoName(typeInfo);
+            typeInfo.GetContainingTypeLib(out var typeLib, out _);
+            var libName = Marshal.GetTypeLibName(typeLib);
+
+            return string.Concat(libName, ".", typeName);
+        }
 
         public bool TryGetProgIdFromClsid(Guid clsid, out string progId)
         {

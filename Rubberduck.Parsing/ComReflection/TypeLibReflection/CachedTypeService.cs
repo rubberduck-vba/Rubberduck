@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
-using Rubberduck.VBEditor.Utility;
-using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 
 namespace Rubberduck.Parsing.ComReflection.TypeLibReflection
 {
@@ -27,20 +24,23 @@ namespace Rubberduck.Parsing.ComReflection.TypeLibReflection
     public interface ICachedTypeService
     {
         bool TryGetCachedType(string progId, out Type type);
-        bool TryGetCachedType(string progId, string project, out Type type);
+        bool TryGetCachedType(string project, string progId, out Type type);
         bool TryGetCachedType(ITypeInfo typeInfo, out Type type);
         bool TryGetCachedType(ITypeInfo typeInfo, string project, out Type type);
+        Type TryGetCachedTypeFromEquivalentType(string project, string progId, Type type);
     }
 
     public class CachedTypeService : ICachedTypeService
     {
-        private static readonly ConcurrentDictionary<string, Type> TypeCache;
+        private static readonly ConcurrentDictionary<string, ILibraryTypeCache> TypeCaches;
         private static readonly Lazy<CachedTypeService> LazyInstance;
         private static readonly ITypeLibQueryService QueryService;
 
         static CachedTypeService()
         {
-            TypeCache = new ConcurrentDictionary<string, Type>();
+            TypeCaches = new ConcurrentDictionary<string, ILibraryTypeCache>();
+            TypeCaches.TryAdd(string.Empty, new LibraryTypeCache(string.Empty));
+
             LazyInstance = new Lazy<CachedTypeService>(() => new CachedTypeService());
             QueryService = TypeLibQueryService.Instance;
         }
@@ -52,22 +52,25 @@ namespace Rubberduck.Parsing.ComReflection.TypeLibReflection
 
         public bool TryGetCachedType(string progId, out Type type)
         {
-            return TryGetCachedType(progId, null, out type);
+            return TryGetCachedType(string.Empty, progId, out type);
         }
 
-        public bool TryGetCachedType(string progId, string project, out Type type)
+        public bool TryGetCachedType(string project, string progId, out Type type)
         {
-            var key = CreateQualifiedIdentifier(progId, project);
-            if (!TypeCache.TryGetValue(key, out type))
+            if (TryGetValue(project, progId, out type))
             {
-                type = Type.GetTypeFromProgID(progId);
-                if (type != null)
-                {
-                    if (!TryAddTypeInternal(progId, project, ref type))
-                    {
-                        type = null;
-                    }
-                }
+                return type != null;
+            }
+
+            type = Type.GetTypeFromProgID(progId);
+            if (type == null)
+            {
+                return type != null;
+            }
+
+            if (!TryAddTypeInternal(project, progId, ref type))
+            {
+                type = null;
             }
 
             return type != null;
@@ -75,61 +78,39 @@ namespace Rubberduck.Parsing.ComReflection.TypeLibReflection
 
         public bool TryGetCachedType(ITypeInfo typeInfo, out Type type)
         {
-            return TryGetCachedType(typeInfo, null, out type);
+            return TryGetCachedType(typeInfo, string.Empty, out type);
         }
 
         public bool TryGetCachedType(ITypeInfo typeInfo, string project, out Type type)
         {
-            typeInfo.GetTypeAttr(out var pAttr);
-            if (pAttr != IntPtr.Zero)
-            {
-                using (DisposalActionContainer.Create(pAttr, typeInfo.ReleaseTypeAttr))
-                {
-                    var attr = Marshal.PtrToStructure<TYPEATTR>(pAttr);
-                    var clsid = attr.guid;
-                    if (QueryService.TryGetProgIdFromClsid(clsid, out var progId))
-                    {
-                        return TryGetCachedType(typeInfo, progId, project, out type);
-                    }
-                }
-            }
-
-            var typeName = Marshal.GetTypeInfoName(typeInfo);
-            typeInfo.GetContainingTypeLib(out var typeLib, out _);
-            var libName = Marshal.GetTypeLibName(typeLib);
-
-            return TryGetCachedType(typeInfo, string.Concat(libName, ".", typeName), project, out type);
+            var progId = QueryService.GetOrCreateProgIdFromITypeInfo(typeInfo);
+            return TryGetCachedType(typeInfo, project, progId, out type);
         }
 
-        private bool TryGetCachedType(ITypeInfo typeInfo, string progId, string project, out Type type)
+        private bool TryGetCachedType(ITypeInfo typeInfo, string project, string progId, out Type type)
         {
-            var key = CreateQualifiedIdentifier(progId, project);
-            if (TypeCache.TryGetValue(key, out type))
+            if (TryGetValue(project, progId, out type))
             {
                 return type != null;
             }
 
-            var ptr = Marshal.GetComInterfaceForObject(typeInfo, typeof(ITypeInfo));
-            if (ptr == IntPtr.Zero)
+            if (!QueryService.TryGetTypeFromITypeInfo(typeInfo, out type))
+            {
+                return type != null;
+            }
+
+            if (!TryAddTypeInternal(project, progId, ref type))
             {
                 return false;
             }
 
-            using (DisposalActionContainer.Create(ptr, x => Marshal.Release(x)))
-            {
-                type = Marshal.GetTypeForITypeInfo(ptr);
-                if (type == null)
-                {
-                    return false;
-                }
-
-                if (!TryAddTypeInternal(progId, project, ref type))
-                {
-                    return false;
-                }
-            }
-
             return type != null;
+        }
+
+        public Type TryGetCachedTypeFromEquivalentType(string project, string progId, Type type)
+        {
+            var cache = TypeCaches.GetOrAdd(project?.ToLowerInvariant() ?? string.Empty, s => new LibraryTypeCache(s));
+            return cache.GetOrAdd(progId, type);
         }
 
         /// <summary>
@@ -142,39 +123,42 @@ namespace Rubberduck.Parsing.ComReflection.TypeLibReflection
         /// using the <see cref="TypeLibQueryService"/> and call <see cref="Marshal.GetTypeForITypeInfo"/>.
         /// </summary>
         /// <returns>True if the type and all its interface were added. False otherwise</returns>
-        private bool TryAddTypeInternal(string progId, string project, ref Type type)
+        private bool TryAddTypeInternal(string project, string progId, ref Type type)
         {
+            // Using local function because we don't want to accidentally add types without
+            // having went through the logic of checking & obtaining the types.
+            bool TryAdd(string progIdToAdd, Type typeToAdd)
+            {
+                var cache = TypeCaches.GetOrAdd(project?.ToLowerInvariant() ?? string.Empty, s => new LibraryTypeCache(s));
+                return cache.AddType(progIdToAdd, typeToAdd);
+            }
+
             // Ensure we do not cache the generic System.__ComObject, which is useless.
             if (type.Name == "__ComObject")
             {
                 return QueryService.TryGetTypeInfoFromProgId(progId, out var typeInfo) 
-                       && TryGetCachedType(typeInfo, progId, project, out type);
+                       && TryGetCachedType(typeInfo, project?.ToLowerInvariant() ?? string.Empty, progId, out type);
             }
 
-            if (!TypeCache.TryAdd(CreateQualifiedIdentifier(progId, project), type))
+            if (!TryAdd(progId, type))
             {
                 return false;
             }
 
             return type.GetInterfaces()
                 .Where(face => face.FullName != null)
-                .All(face => TypeCache.TryAdd(CreateQualifiedIdentifier(face.FullName, project), face));
+                .All(face => TryAdd(face.FullName, face));
         }
 
-        /// <summary>
-        /// Creates a qualified identifier to uniquely identify a cached type, with optional scoping. Case insensitive.
-        /// </summary>
-        /// <remarks>
-        /// A typical use is to distinguish the types by its ProgID / <see cref="Type.FullName"/>. However,
-        /// if a type comes from a private project there is a potential for a collision. In that case, the
-        /// optional project should be filled in.
-        /// </remarks>
-        /// <param name="progId">Unique name for the type.</param>
-        /// <param name="project">Indicates whether the type belongs to a privately scoped project. Leave null to indicate it's global</param>
-        /// <returns>A fully qualified identifier</returns>
-        private static string CreateQualifiedIdentifier(string progId, string project)
+        private static bool TryGetValue(string project, string progId, out Type type)
         {
-            return string.Concat(project?.ToLowerInvariant(), "::", progId.ToLowerInvariant());
+            if (TypeCaches.TryGetValue(project?.ToLowerInvariant() ?? string.Empty, out var cache))
+            {
+                return cache.TryGetType(progId, out type);
+            }
+
+            type = null;
+            return false;
         }
     }
 }
