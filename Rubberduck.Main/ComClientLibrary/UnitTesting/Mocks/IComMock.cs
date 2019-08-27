@@ -21,5 +21,14 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 
         [DispId(3)]
         void SetupWithCallback(string Name, [MarshalAs(UnmanagedType.FunctionPtr)] Action Callback, [Optional, MarshalAs(UnmanagedType.Struct)] object Args);
+
+        [DispId(4)]
+        IComMock SetupChildMock(string Name, [Optional, MarshalAs(UnmanagedType.Struct)] object Args);
+
+        [DispId(5)]
+        string Project { get; }
+
+        [DispId(6)]
+        string ProgId { get; }
     }
 }

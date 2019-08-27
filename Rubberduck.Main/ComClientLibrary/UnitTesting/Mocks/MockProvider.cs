@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Moq;
@@ -24,10 +25,16 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
     public interface IMockProvider
     {
         [DispId(1)]
-        IComMock Mock(string ProgId, [Optional] string ProjectName);
+        IComMock Mock(string ProgId, [Optional] string Project);
 
         [DispId(2)]
         SetupArgumentCreator It { get; }
+    }
+
+    [ComVisible(false)]
+    internal interface IMockProviderInternal : IMockProvider
+    {
+        IComMock MockChildObject(IComMock ParentObject, Type childType);
     }
 
     [
@@ -37,41 +44,58 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
         ClassInterface(ClassInterfaceType.None),
         ComDefaultInterface(typeof(IMockProvider))
     ]
-    public class MockProvider : IMockProvider
+    public class MockProvider : IMockProviderInternal
     {
-        private static readonly ICachedTypeService TypeCache = CachedTypeService.Instance;
+        private static readonly ICachedTypeService TypeCacheService = CachedTypeService.Instance;
 
         public MockProvider()
         {
             It = new SetupArgumentCreator();
         }
 
-        public IComMock Mock(string ProgId, string ProjectName = null)
+        public IComMock Mock(string ProgId, string Project = null)
         {
-            if (!TypeCache.TryGetCachedType(ProgId, ProjectName, out var classType))
+            // If already cached, we must re-use the type to work around the 
+            // broken type equivalence.
+            if (TypeCacheService.TryGetCachedType(Project, ProgId, out var classType))
             {
-                // In order to mock a COM type, we must acquire a Type. However,
-                // ProgId will only return the coclass, which itself is a collection
-                // of interfaces, so we must take additional steps to obtain the default
-                // interface rather than the class itself.
-                classType = string.IsNullOrWhiteSpace(ProjectName)
-                    ? Type.GetTypeFromProgID(ProgId)
-                    : GetVbaType(ProgId, ProjectName);
-
-                if (classType == null)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(ProgId),
-                        $"The supplied {ProgId} was not found. The class may not be registered or could not be located with the available metadata.");
-                }
+                return CreateComMock(Project, ProgId, classType);
             }
 
+            // In order to mock a COM type, we must acquire a Type. However,
+            // ProgId will only return the coclass, which itself is a collection
+            // of interfaces, so we must take additional steps to obtain the default
+            // interface rather than the class itself.
+            classType = string.IsNullOrWhiteSpace(Project)
+                ? Type.GetTypeFromProgID(ProgId)
+                : GetVbaType(ProgId, Project);
+
+            if (classType == null)
+            {
+                throw new ArgumentOutOfRangeException(nameof(ProgId),
+                    $"The supplied {ProgId} was not found. The class may not be registered or could not be located with the available metadata.");
+            }
+
+            return CreateComMock(Project, ProgId, classType);
+        }
+
+        public IComMock MockChildObject(IComMock ParentObject, Type childType)
+        {
+            var project = ParentObject.Project;
+            var progId = childType.FullName;
+            childType = TypeCacheService.TryGetCachedTypeFromEquivalentType(project, progId, childType);
+            return CreateComMock(project, progId, childType);
+        }
+
+        private ComMock CreateComMock(string project, string progId, Type classType)
+        {
             var targetType = classType.IsInterface ? classType : GetComDefaultInterface(classType);
 
             var closedMockType = typeof(Mock<>).MakeGenericType(targetType);
             var mock = (Mock)Activator.CreateInstance(closedMockType);
 
             // Ensure that the mock implements all the interfaces to cover the case where
-            // no setup is performed on the given interface and to enssure that mock can 
+            // no setup is performed on the given interface and to ensure that mock can 
             // be cast successfully.
             var asGenericMemberInfo = closedMockType.GetMethod("As");
             System.Diagnostics.Debug.Assert(asGenericMemberInfo != null);
@@ -83,7 +107,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
                 asMemberInfo.Invoke(mock, null);
             }
 
-            return new ComMock(mock, targetType, supportedTypes);
+            return new ComMock(this, project, progId, mock, targetType, supportedTypes);
         }
 
         public SetupArgumentCreator It { get; }
@@ -152,7 +176,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
                     continue;
                 }
 
-                if (TypeCache.TryGetCachedType(typeInfo, projectName, out classType))
+                if (TypeCacheService.TryGetCachedType(typeInfo, projectName, out classType))
                 {
                     break;
                 }
