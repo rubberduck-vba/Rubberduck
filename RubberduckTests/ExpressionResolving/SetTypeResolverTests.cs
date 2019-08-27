@@ -1189,7 +1189,6 @@ End Function
 
         [Test]
         [Category("ExpressionResolver")]
-        [Category("ExpressionResolver")]
         [TestCase("Object", null)]
         [TestCase("Class1", "TestProject.Class1")]
         [TestCase("Variant", null)]
@@ -1225,6 +1224,178 @@ End Function
                 .Object;
 
             var setTypeDeclaration = ExpressionTypeDeclaration(vbe, "Module1", expressionSelection);
+            var actualNameOfSetTypeDeclaration = setTypeDeclaration?.QualifiedModuleName.ToString();
+
+            Assert.AreEqual(expectedNameOfSetTypeDeclaration, actualNameOfSetTypeDeclaration);
+        }
+
+        [Test]
+        [Category("ExpressionResolver")]
+        public void IndexedDefaultMemberCallOnFunctionReturnValueHasTypeOfDefaultMember_SetTypeName()
+        {
+            var class1 =
+                @"
+Public Function Foo(baz As Long) As Class2
+Attribute Foo.VB_UserMemId = 0
+End Function
+";
+            var class2 =
+                @"
+Private Function Foo() As Class1
+End Function
+";
+
+            var module1 =
+                $@"
+Private Sub Bar()
+    Dim baz As Variant
+    Dim foo As Class1
+    Set baz = foo.Foo(42) 
+End Sub
+";
+
+            var expressionSelection = new Selection(5, 15, 5, 26);
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, class1)
+                .AddComponent("Class2", ComponentType.ClassModule, class2)
+                .AddComponent("Module1", ComponentType.StandardModule, module1)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
+
+            var expectedSetTypeName = "TestProject.Class2";
+            var actualSetTypeName = ExpressionTypeName(vbe, "Module1", expressionSelection);
+
+            Assert.AreEqual(expectedSetTypeName, actualSetTypeName);
+        }
+
+        [Test]
+        [Category("ExpressionResolver")]
+        public void IndexedDefaultMemberCallOnFunctionReturnValueHasTypeOfDefaultMember_SetTypeDeclaration()
+        {
+            var class1 =
+                @"
+Public Function Foo(baz As Long) As Class2
+Attribute Foo.VB_UserMemId = 0
+End Function
+";
+            var class2 =
+                @"
+Private Function Foo() As Class1
+End Function
+";
+
+            var module1 =
+                $@"
+Private Sub Bar()
+    Dim baz As Variant
+    Dim foo As Class1
+    Set baz = foo.Foo(42) 
+End Sub
+";
+
+            var expressionSelection = new Selection(5, 15, 5, 26);
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, class1)
+                .AddComponent("Class2", ComponentType.ClassModule, class2)
+                .AddComponent("Module1", ComponentType.StandardModule, module1)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
+
+            var setTypeDeclaration = ExpressionTypeDeclaration(vbe, "Module1", expressionSelection);
+
+            var expectedNameOfSetTypeDeclaration = "TestProject.Class2";
+            var actualNameOfSetTypeDeclaration = setTypeDeclaration?.QualifiedModuleName.ToString();
+
+            Assert.AreEqual(expectedNameOfSetTypeDeclaration, actualNameOfSetTypeDeclaration);
+        }
+
+        [Test]
+        [Category("ExpressionResolver")]
+        public void ArrayAccessOnFunctionReturnValueHasTypeOfDefaultMember_SetTypeName()
+        {
+            var class1 =
+                @"
+Public Function Foo() As Class2()
+Attribute Foo.VB_UserMemId = 0
+End Function
+";
+            var class2 =
+                @"
+Private Function Foo() As Class1
+End Function
+";
+
+            var module1 =
+                $@"
+Private Sub Bar()
+    Dim baz As Variant
+    Dim foo As Class1
+    Set baz = foo.Foo(42) 
+End Sub
+";
+
+            var expressionSelection = new Selection(5, 15, 5, 26);
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, class1)
+                .AddComponent("Class2", ComponentType.ClassModule, class2)
+                .AddComponent("Module1", ComponentType.StandardModule, module1)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
+
+            var expectedSetTypeName = "TestProject.Class2";
+            var actualSetTypeName = ExpressionTypeName(vbe, "Module1", expressionSelection);
+
+            Assert.AreEqual(expectedSetTypeName, actualSetTypeName);
+        }
+
+        [Test]
+        [Category("ExpressionResolver")]
+        public void ArrayAccessOnFunctionReturnValueHasTypeOfDefaultMember_SetTypeDeclaration()
+        {
+            var class1 =
+                @"
+Public Function Foo() As Class2()
+Attribute Foo.VB_UserMemId = 0
+End Function
+";
+            var class2 =
+                @"
+Private Function Foo() As Class1
+End Function
+";
+
+            var module1 =
+                $@"
+Private Sub Bar()
+    Dim baz As Variant
+    Dim foo As Class1
+    Set baz = foo.Foo(42) 
+End Sub
+";
+
+            var expressionSelection = new Selection(5, 15, 5, 26);
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, class1)
+                .AddComponent("Class2", ComponentType.ClassModule, class2)
+                .AddComponent("Module1", ComponentType.StandardModule, module1)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
+
+            var setTypeDeclaration = ExpressionTypeDeclaration(vbe, "Module1", expressionSelection);
+
+            var expectedNameOfSetTypeDeclaration = "TestProject.Class2";
             var actualNameOfSetTypeDeclaration = setTypeDeclaration?.QualifiedModuleName.ToString();
 
             Assert.AreEqual(expectedNameOfSetTypeDeclaration, actualNameOfSetTypeDeclaration);

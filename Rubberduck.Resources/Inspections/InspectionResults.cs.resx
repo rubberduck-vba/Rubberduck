@@ -232,7 +232,7 @@
     <value>Lokální proměnná '{0}' není deklarována</value>
   </data>
   <data name="ImplicitDefaultMemberAssignmentInspection" xml:space="preserve">
-    <value>Přidělení '{0}' implicitně přidělí výchozího člena třídy '{1}'</value>
+    <value>Přidělení '{0}' implicitně přidělí výchozího člena třídy '{2}'</value>
   </data>
   <data name="AggregateInspection" xml:space="preserve">
     <value>{0} ({1} výsledky)</value>

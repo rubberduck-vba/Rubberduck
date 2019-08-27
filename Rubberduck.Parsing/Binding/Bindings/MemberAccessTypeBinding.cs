@@ -12,8 +12,7 @@ namespace Rubberduck.Parsing.Binding
         private readonly Declaration _module;
         private readonly Declaration _parent;
         private readonly VBAParser.MemberAccessExprContext _expression;
-        private ParserRuleContext _unrestrictedNameContext;
-        private readonly IExpressionBinding _lExpressionBinding;
+        private readonly ParserRuleContext _unrestrictedNameContext;
 
         public MemberAccessTypeBinding(
             DeclarationFinder declarationFinder,
@@ -29,22 +28,16 @@ namespace Rubberduck.Parsing.Binding
             _module = module;
             _parent = parent;
             _expression = expression;
-            _lExpressionBinding = lExpressionBinding;
+            LExpressionBinding = lExpressionBinding;
             _unrestrictedNameContext = unrestrictedNameContext;
         }
 
-        public IExpressionBinding LExpressionBinding
-        {
-            get
-            {
-                return _lExpressionBinding;
-            }
-        }
+        public IExpressionBinding LExpressionBinding { get; }
 
         public IBoundExpression Resolve()
         {
             IBoundExpression boundExpression = null;
-            var lExpression = _lExpressionBinding.Resolve();
+            var lExpression = LExpressionBinding.Resolve();
             if (lExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
                 return lExpression;
@@ -60,7 +53,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return boundExpression;
             }
-            var failedExpr = new ResolutionFailedExpression();
+            var failedExpr = new ResolutionFailedExpression(_expression);
             failedExpr.AddSuccessfullyResolvedExpression(lExpression);
             return failedExpr;
         }
@@ -100,7 +93,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return boundExpression;
             }
-            return boundExpression;
+            return null;
         }
 
         private IBoundExpression ResolveProject(IBoundExpression lExpression, string name)

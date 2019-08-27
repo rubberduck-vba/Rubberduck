@@ -232,7 +232,7 @@
     <value>Un paramètre était attendu dans l'annotation '{0}'.</value>
   </data>
   <data name="ImplicitDefaultMemberAssignmentInspection" xml:space="preserve">
-    <value>Assignation de '{0}' réfère implicitement au membre par défaut de la classe '{1}'</value>
+    <value>Assignation de '{0}' réfère implicitement au membre par défaut '{1}' de la classe '{2}'</value>
   </data>
   <data name="AggregateInspection" xml:space="preserve">
     <value>{0} ({1} résultats)</value>
