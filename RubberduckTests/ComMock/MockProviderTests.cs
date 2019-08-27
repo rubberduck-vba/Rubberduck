@@ -482,7 +482,7 @@ namespace RubberduckTests.ComMock
                 }
 
                 dynamic mocked = Marshal.GetObjectForIUnknown(pProxy);
-                Assert.AreEqual(expected, mocked.Drives["abc"].Path);
+                Assert.AreEqual(expected, mocked.Drives[input].Path);
             }
             finally
             {
