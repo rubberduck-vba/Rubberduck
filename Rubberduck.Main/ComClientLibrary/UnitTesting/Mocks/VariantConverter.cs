@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.Runtime.InteropServices;
-using Rubberduck.VBEditor.ComManagement.TypeLibsSupport;
 
 namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 {
@@ -94,13 +93,14 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             return ChangeType(value, vt, null);
         }
 
+        private static bool HRESULT_FAILED(int hr) => hr < 0;
         public static object ChangeType(object value, VARENUM vt, CultureInfo cultureInfo)
         {
             object result = null;
             var hr = cultureInfo == null 
                 ? VariantChangeType(ref result, ref value, VariantConversionFlags.NO_FLAGS, vt) 
                 : VariantChangeTypeEx(ref result, ref value, cultureInfo.LCID, VariantConversionFlags.NO_FLAGS, vt);
-            if (ComHelper.HRESULT_FAILED(hr))
+            if (HRESULT_FAILED(hr))
             {
                 throw Marshal.GetExceptionForHR(hr);
             }

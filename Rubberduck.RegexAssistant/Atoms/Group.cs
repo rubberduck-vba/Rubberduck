@@ -23,7 +23,10 @@ namespace Rubberduck.RegexAssistant.Atoms
 
         public string Specifier { get; }
 
-        public string Description => string.Format(AssistantResources.AtomDescription_Group, Specifier);
+        public string Description(bool spellOutWhitespace) => string.Format(AssistantResources.AtomDescription_Group, 
+            spellOutWhitespace && WhitespaceToString.IsFullySpellingOutApplicable(Specifier, out var spelledOutWhiteSpace)
+                ? spelledOutWhiteSpace
+                : Specifier);
 
 
         public override string ToString() => Specifier;

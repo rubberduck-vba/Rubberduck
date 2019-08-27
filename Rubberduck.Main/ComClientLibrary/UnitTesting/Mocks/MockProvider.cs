@@ -167,7 +167,8 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
                 return null;
             }
 
-            var lib = TypeLibWrapper.FromVBProject(project);
+            var provider = new TypeLibWrapperProviderLite();
+            var lib = provider.TypeLibWrapperFromProject(project);
 
             foreach (var typeInfo in lib.TypeInfos)
             {

@@ -172,6 +172,40 @@ End Sub
 
         [Test]
         [Category("Inspections")]
+        public void AssignedByValParameter_NoResultForDefaultMembberAssignment()
+        {
+            var class1 = @"
+Public Property Get Something() As Long
+Attribute Foo.VB_UserMemId = 0
+End Property
+Public Property Let Something(ByVal value As Long)
+Attribute Foo.VB_UserMemId = 0
+End Property
+";
+            var caller = @"
+Option Explicit
+Private Sub DoSomething(ByVal foo As Class1)
+    foo = 42
+End Sub
+";
+            var builder = new MockVbeBuilder();
+            var vbe = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, class1)
+                .AddComponent("Module1", ComponentType.StandardModule, caller)
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new AssignedByValParameterInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.IsFalse(inspectionResults.Any());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "AssignedByValParameterInspection";

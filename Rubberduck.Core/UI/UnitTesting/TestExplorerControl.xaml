@@ -54,9 +54,13 @@
             <BitmapImage x:Key="OutcomeInconclusive" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/exclamation.png" />
             <BitmapImage x:Key="OutcomeSucceeded" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/tick-circle.png" />
 
+            <BitmapImage x:Key="IgnoreTestImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask-empty.png" />
+            <BitmapImage x:Key="UnignoreTestImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask-undo.png" />
+
             <local:TestOutcomeImageSourceConverter x:Key="OutcomeIconConverter" />
             <converters:MillisecondToTimeMagnitudeConverter x:Key="FormattedTime" />
             <converters:InvertBoolValueConverter x:Key="InvertBoolValue" />
+            <BooleanToVisibilityConverter x:Key="BoolToVisibility" />            
 
             <Style x:Key="ToolbarImageOpacity" TargetType="Image" >
                 <Setter Property="Height" Value="16" />
@@ -431,6 +435,20 @@
                                       Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuRunAll}">
                                 <MenuItem.Icon>
                                     <Image Source="{StaticResource RunAllTestsImage}" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Command="{Binding IgnoreTestCommand}"
+                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_TestToggle_Ignore}"
+                                      Visibility="{Binding DisplayIgnoreTestLabel, Converter={StaticResource BoolToVisibility}}">
+                                <MenuItem.Icon>
+                                    <Image Source="{StaticResource IgnoreTestImage}" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Command="{Binding UnignoreTestCommand}"
+                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_TestToggle_Unignore}"
+                                      Visibility="{Binding DisplayUnignoreTestLabel, Converter={StaticResource BoolToVisibility}}">
+                                <MenuItem.Icon>
+                                    <Image Source="{StaticResource UnignoreTestImage}" />
                                 </MenuItem.Icon>
                             </MenuItem>
                         </ContextMenu>

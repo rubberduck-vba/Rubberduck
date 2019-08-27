@@ -14,7 +14,6 @@ namespace RubberduckTests.Inspections
     public class SheetAccessedUsingStringInspectionTests
     {
         [Test]
-        [Ignore("See #4411")]
         [Category("Inspections")]
         public void SheetAccessedUsingString_ReturnsResult_AccessingUsingWorkbookModule()
         {

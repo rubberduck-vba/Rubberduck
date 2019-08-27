@@ -392,7 +392,7 @@ End Function";
 Private Sub DoSomething()
     
     Dim target As Object
-    target = New Object
+    target = New Class1
     
     target.Value = ""forgot something?""
 
@@ -403,7 +403,7 @@ Private Sub DoSomething()
     
     Dim target As Object
     '@Ignore ObjectVariableNotSet
-    target = New Object
+    target = New Class1
     
     target.Value = ""forgot something?""
 
