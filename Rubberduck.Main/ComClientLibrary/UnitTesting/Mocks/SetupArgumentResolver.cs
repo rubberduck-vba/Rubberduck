@@ -148,7 +148,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 
                 var parameterType = parameter.ParameterType;
                 var itArgumentExpressions = new List<Expression>();
-                var typeExpression = Expression.Parameter(parameterType, "x");
+                var typeExpression = Expression.Parameter(parameterType, $"p{i:00}");
 
                 switch (definition.Type)
                 {
@@ -165,7 +165,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 
                         var bodyExpression = Expression.Equal(typeExpression, Expression.Convert(Expression.Constant(value), parameterType));
                         var itLambda = Expression.Lambda(bodyExpression, typeExpression);
-                        itArgumentExpressions.Add(itLambda);
+                        itArgumentExpressions.Add(Expression.Quote(itLambda));
                         break;
                     case SetupArgumentType.IsAny:
                         itMemberInfo = Reflection.GetMethodExt(itType, nameof(It.IsAny)).MakeGenericMethod(parameterType);
@@ -211,13 +211,13 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 
             try
             {
-                convertedValue = Convert.ChangeType(value, type);
+                convertedValue = VariantConverter.ChangeType(value, type);
             }
             catch
             {
                 try
                 {
-                    convertedValue = VariantConverter.ChangeType(value, type);
+                    convertedValue = Convert.ChangeType(value, type);
                 }
                 catch
                 {

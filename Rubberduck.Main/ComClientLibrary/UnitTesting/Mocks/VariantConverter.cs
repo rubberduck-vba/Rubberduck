@@ -164,6 +164,9 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
                     return VARENUM.VT_BSTR;
                 //case Type a when a == typeof(Array):
                 //    return VARENUM.VT_ARRAY;
+                case Type obj when obj == typeof(object):
+                case Type var when var == typeof(VariantWrapper):
+                    return VARENUM.VT_VARIANT;
                 default:
                     throw new NotSupportedException("Unrecognized system type that cannot be mapped to a VARENUM out of the box.");
             }
