@@ -427,7 +427,8 @@ namespace RubberduckTests.ComMock
                 }
                 var closedMockType = typeof(Mock<>).MakeGenericType(targetType);
                 var mock = (Mock)Activator.CreateInstance(closedMockType);
-                var comMock = new Rubberduck.ComClientLibrary.UnitTesting.Mocks.ComMock(mock, targetType, targetType.GetInterfaces());
+                var mockedProvider = new Mock<IMockProviderInternal>();
+                var comMock = new Rubberduck.ComClientLibrary.UnitTesting.Mocks.ComMock(mockedProvider.Object, string.Empty, "Scripting.FileSystemObject", mock, targetType, targetType.GetInterfaces());
                 var comMocked = new ComMocked(comMock, targetType.GetInterfaces());
                 var obj = comMocked;
 
@@ -448,6 +449,40 @@ namespace RubberduckTests.ComMock
                 Assert.AreNotEqual(pUnk, pProxy);
                 Assert.AreNotSame(obj, proxy);
                 Assert.IsInstanceOf<ComMocked>(obj);
+            }
+            finally
+            {
+                if (pProxy != IntPtr.Zero) Marshal.Release(pProxy);
+                if (pUnk != IntPtr.Zero) Marshal.Release(pUnk);
+            }
+        }
+        
+        [Test]
+        [TestCase("foobar", "abc")]
+        public void Mock_Setup_Property_Specified_Args_Returns_Specified_Value(string expected, string input)
+        {
+            var pUnk = IntPtr.Zero;
+            var pProxy = IntPtr.Zero;
+            
+            try
+            {
+                var provider = new MockProvider();
+                var mockFso = provider.Mock("Scripting.FileSystemObject");
+                var mockDrives = mockFso.SetupChildMock("Drives");
+                var mockDrive = mockDrives.SetupChildMock("Item",  provider.It.Is("abc"));
+                mockDrive.SetupWithReturns("Path", "foobar");
+                var obj = mockFso.Object;
+
+                pUnk = Marshal.GetIUnknownForObject(obj);
+
+                var hr = Marshal.QueryInterface(pUnk, ref IID_IFileSystem3, out pProxy);
+                if (hr != 0)
+                {
+                    throw new InvalidCastException("QueryInterface failed on the proxy type");
+                }
+
+                dynamic mocked = Marshal.GetObjectForIUnknown(pProxy);
+                Assert.AreEqual(expected, mocked.Drives["abc"].Path);
             }
             finally
             {
