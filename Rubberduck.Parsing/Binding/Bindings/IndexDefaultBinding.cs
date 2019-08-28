@@ -102,16 +102,16 @@ namespace Rubberduck.Parsing.Binding
 
                             break;
                     }
-                }
 
-                if (IsVariablePropertyFunctionWithoutParameters(lExpression))
-                {
-                    var parameterlessLExpressionAccess = ResolveLExpressionIsVariablePropertyFunctionNoParameters(lExpression, argumentList, expression, defaultMemberResolutionRecursionDepth, containedExpression);
-                    if (parameterlessLExpressionAccess != null)
+                    if (IsVariablePropertyFunctionWithoutParameters(lExpression))
                     {
-                        return parameterlessLExpressionAccess;
+                        var parameterlessLExpressionAccess = ResolveLExpressionIsVariablePropertyFunctionNoParameters(lExpression, argumentList, expression, defaultMemberResolutionRecursionDepth, containedExpression);
+                        if (parameterlessLExpressionAccess != null)
+                        {
+                            return parameterlessLExpressionAccess;
+                        }
                     }
-                }
+                }    
             }
 
             if (lExpression.Classification == ExpressionClassification.Property
