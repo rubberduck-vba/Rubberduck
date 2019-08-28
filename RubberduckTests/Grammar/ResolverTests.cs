@@ -4222,6 +4222,52 @@ End Function
         [Category("Grammar")]
         [Category("Resolver")]
         [Test]
+        public void SimpleNameExpressionForFunctionWithoutArgumentsAnsdFunctionReturningClassWithParameterlessDefaultMemberReferencesFunction()
+        {
+            var classCode = @"
+Public Function Foo() As String
+Attribute Foo.VB_UserMemId = 0
+End Function
+";
+
+            var moduleCode = @"
+Private Sub Bar()
+    Dim baz As Class1
+    Set baz = Foo
+End Sub
+
+Private Function Foo() As Class1 
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(4, 15, 4, 18);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var reference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).Last();
+                var referencedDeclaration = reference.Declaration;
+
+                var expectedReferencedDeclarationName = "Module1.Foo";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
+
+                var expectedAsTypeName = "Class1";
+                var actualAsTypeName = referencedDeclaration.AsTypeName;
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.AreEqual(expectedAsTypeName, actualAsTypeName);
+                Assert.AreEqual(0, reference.DefaultMemberRecursionDepth);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void RecursiveLetCoercionDefaultMemberAccessHasReferenceToFinalDefaultMemberOnEntireContext()
         {
             var class1Code = @"
