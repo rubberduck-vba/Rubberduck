@@ -6,6 +6,7 @@ using Rubberduck.Common;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command;
 using Rubberduck.Resources.CodeExplorer;
+using Rubberduck.Formatters;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -31,14 +32,11 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             ColumnInfo[] ColumnInfos = { new ColumnInfo("Project"), new ColumnInfo("Folder"), new ColumnInfo("Component"), new ColumnInfo("Declaration Type"), new ColumnInfo("Scope"),
                                        new ColumnInfo("Name"), new ColumnInfo("Return Type") };
-            
-            _clipboard.AppendInfo(ColumnInfos,
-                _state.AllUserDeclarations,
-                CodeExplorerUI.CodeExplorer_AppendHeader,
-                true,
-                true,
-                true,
-                true);
+
+            var declarationFormatters = _state.AllUserDeclarations.Select(declaration => new DeclarationFormatter(declaration));
+            var title = string.Format(CodeExplorerUI.CodeExplorer_AppendHeader, DateTime.Now.ToString(CultureInfo.InvariantCulture));
+
+            _clipboard.AppendInfo(ColumnInfos, declarationFormatters, title, ClipboardWriterAppendingInformationFormat.All);
 
             _clipboard.Flush();
         }

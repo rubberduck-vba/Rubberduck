@@ -22,6 +22,7 @@ using Rubberduck.UI.UnitTesting.ViewModels;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.Utility;
 using DataFormats = System.Windows.DataFormats;
+using Rubberduck.Formatters;
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -398,14 +399,10 @@ namespace Rubberduck.UI.UnitTesting
             ColumnInfo[] columnInfos = { new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Method"), new ColumnInfo("Outcome"), new ColumnInfo("Output"),
                                            new ColumnInfo("Start Time"), new ColumnInfo("End Time"), new ColumnInfo("Duration (ms)", hAlignment.Right) };
 
-            _clipboard.AppendInfo(columnInfos,
-                Model.Tests,
-                RubberduckUI.TestExplorer_AppendHeader,
-                true,
-                true,
-                true,
-                true,
-                true);
+            var testExplorerViewModelFormatters = Model.Tests.Select(testMethodViewModel => new TestMethodViewModelFormatter(testMethodViewModel));
+            var title = string.Format(RubberduckUI.TestExplorer_AppendHeader, DateTime.Now.ToString(CultureInfo.InvariantCulture));
+
+            _clipboard.AppendInfo(columnInfos, testExplorerViewModelFormatters, title, ClipboardWriterAppendingInformationFormat.All);
 
             _clipboard.Flush();
         }

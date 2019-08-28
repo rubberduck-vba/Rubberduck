@@ -10,6 +10,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.UnitTesting.ViewModels;
 using Rubberduck.Resources;
+using Rubberduck.ToDoItems;
 
 namespace Rubberduck.Common
 {
@@ -20,14 +21,20 @@ namespace Rubberduck.Common
         void AppendString(string formatName, string data);
         void AppendStream(string formatName, MemoryStream stream);
         void Flush();
-        void AppendInfo(ColumnInfo[] columnInfos,
-            object results, 
+        void AppendInfo<T>(ColumnInfo[] columnInfos,
+            IEnumerable<T> exportableResults,
             string titleFormat,
-            bool includeXmlSpreadsheetFormat = false, 
-            bool includeRtfFormat = false, 
-            bool includeHtmlFormat = false, 
-            bool includeCsvFormat = false, 
-            bool includeUnicodeFormat = false);
+            ClipboardWriterAppendingInformationFormat appendingInformationFormat) where T : IExportable;
+    }
+
+    public enum ClipboardWriterAppendingInformationFormat
+    {
+        XmlSpreadsheetFormat = 1 << 0,
+        RtfFormat = 1 << 1,
+        HtmlFormat = 1 << 2,
+        CsvFormat = 1 << 3,
+        UnicodeFormat = 1 << 4,
+        All = XmlSpreadsheetFormat | RtfFormat | HtmlFormat | CsvFormat | UnicodeFormat
     }
 
     public class ClipboardWriter : IClipboardWriter
@@ -48,7 +55,6 @@ namespace Rubberduck.Common
             }
             _data.SetImage(image);
         }
-
 
         public void AppendString(string formatName, string data)
         {
@@ -77,37 +83,16 @@ namespace Rubberduck.Common
             }
         }
 
-        //public void AppendInfo(ClipboardFormat xmlSpreadsheetFormat, ClipboardFormat rtfFormat, ClipboardFormat htmlFormat, ClipboardFormat csvFormat, ClipboardFormat unicodeTextFormat)
-        //TODO: bitFlag
-        public void AppendInfo(ColumnInfo[] columnInfos, 
-            object results, 
-            string titleFormat,
-            bool includeXmlSpreadsheetFormat = false,
-            bool includeRtfFormat = false,
-            bool includeHtmlFormat = false, 
-            bool includeCsvFormat = false, 
-            bool includeUnicodeFormat = false)
+        public void AppendInfo<T>(ColumnInfo[] columnInfos,
+            IEnumerable<T> results,
+            string title,
+            ClipboardWriterAppendingInformationFormat appendingInformationFormat) where T : IExportable
         {
-            //var resultsAsArray = results.Select(result => result.ToArray()).ToArray();
-            object[][] resultsAsArray;
-            switch (results)
-            {
-                case IEnumerable<Declaration> declarations:
-                    resultsAsArray = declarations.Select(declaration => declaration.ToArray()).ToArray();
-                    break;
-                case System.Collections.ObjectModel.ObservableCollection<IInspectionResult> inspectionResults:
-                    resultsAsArray = inspectionResults.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
-                    break;
-                case System.Collections.ObjectModel.ObservableCollection<TestMethodViewModel> testMethodViewModels:
-                    resultsAsArray = testMethodViewModels.Select(test => test.ToArray()).ToArray();
-                    break;
-                default:
-                    resultsAsArray = null;
-                    break;
-            }
-            
-            var title = string.Format(RubberduckUI.TestExplorer_AppendHeader, DateTime.Now.ToString(CultureInfo.InvariantCulture));
+            object[][] resultsAsArray = results.Select(result => result.ToArray()).ToArray();
 
+            //var title = string.Format(titleFormat, DateTime.Now.ToString(CultureInfo.InvariantCulture));
+
+            var includeXmlSpreadsheetFormat = (appendingInformationFormat & ClipboardWriterAppendingInformationFormat.XmlSpreadsheetFormat) == ClipboardWriterAppendingInformationFormat.XmlSpreadsheetFormat;
             if (includeXmlSpreadsheetFormat)
             {
                 const string xmlSpreadsheetDataFormat = "XML Spreadsheet";
@@ -117,24 +102,28 @@ namespace Rubberduck.Common
                 }
             }
 
+            var includeRtfFormat = (appendingInformationFormat & ClipboardWriterAppendingInformationFormat.RtfFormat) == ClipboardWriterAppendingInformationFormat.RtfFormat;
             if (includeRtfFormat)
             {
                 AppendString(DataFormats.Rtf, ExportFormatter.RTF(resultsAsArray, title));
             }
 
+            var includeHtmlFormat = (appendingInformationFormat & ClipboardWriterAppendingInformationFormat.HtmlFormat) == ClipboardWriterAppendingInformationFormat.HtmlFormat;
             if (includeHtmlFormat)
             {
                 AppendString(DataFormats.Html, ExportFormatter.HtmlClipboardFragment(resultsAsArray, title, columnInfos));
             }
 
+            var includeCsvFormat = (appendingInformationFormat & ClipboardWriterAppendingInformationFormat.CsvFormat) == ClipboardWriterAppendingInformationFormat.CsvFormat;
             if (includeCsvFormat)
             {
                 AppendString(DataFormats.CommaSeparatedValue, ExportFormatter.Csv(resultsAsArray, title, columnInfos));
             }
 
-            if (includeUnicodeFormat && results is ListCollectionView unicodeResults)
+            var includeUnicodeFormat = (appendingInformationFormat & ClipboardWriterAppendingInformationFormat.UnicodeFormat) == ClipboardWriterAppendingInformationFormat.UnicodeFormat;
+            if (includeUnicodeFormat && results is IEnumerable<IExportable> unicodeResults)
             {
-                var unicodeTextFormat = title + Environment.NewLine + string.Join(string.Empty, unicodeResults.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
+                var unicodeTextFormat = title + Environment.NewLine + string.Join(string.Empty, unicodeResults.Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
                 AppendString(DataFormats.UnicodeText, unicodeTextFormat);
             }
         }

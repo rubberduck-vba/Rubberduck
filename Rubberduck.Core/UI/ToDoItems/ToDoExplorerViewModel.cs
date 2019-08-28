@@ -21,6 +21,7 @@ using Rubberduck.Parsing.UIContext;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.SettingsProvider;
 using System.Windows.Controls;
+using Rubberduck.Formatters;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -241,7 +242,6 @@ namespace Rubberduck.UI.ToDoItems
 
         public void ExecuteCopyResultsCommand(object obj)
         {
-            const string xmlSpreadsheetDataFormat = "XML Spreadsheet";
             if (!CanExecuteCopyResultsCommand(obj))
             {
                 return;
@@ -249,29 +249,16 @@ namespace Rubberduck.UI.ToDoItems
 
             ColumnInfo[] columnInfos = { new ColumnInfo("Type"), new ColumnInfo("Description"), new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Line", hAlignment.Right), new ColumnInfo("Column", hAlignment.Right) };
 
-            var resultArray = _items.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
-
             var resource = _items.Count == 1
                 ? ToDoExplorerUI.ToDoExplorer_NumberOfIssuesFound_Singular
                 : ToDoExplorerUI.ToDoExplorer_NumberOfIssuesFound_Plural;
 
             var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _items.Count);
 
-            var textResults = title + Environment.NewLine + string.Join("", _items.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
-            var csvResults = ExportFormatter.Csv(resultArray, title, columnInfos);
-            var htmlResults = ExportFormatter.HtmlClipboardFragment(resultArray, title, columnInfos);
-            var rtfResults = ExportFormatter.RTF(resultArray, title);
-
-            // todo: verify that this disposing this stream breaks the xmlSpreadsheetDataFormat
-            var stream = ExportFormatter.XmlSpreadsheetNew(resultArray, title, columnInfos);
+            var toDoItemFormatter = _items.Select(toDoItem => new ToDoItemFormatter(toDoItem));
 
             IClipboardWriter _clipboard = new ClipboardWriter();
-            //Add the formats from richest formatting to least formatting
-            _clipboard.AppendStream(DataFormats.GetDataFormat(xmlSpreadsheetDataFormat).Name, stream);
-            _clipboard.AppendString(DataFormats.Rtf, rtfResults);
-            _clipboard.AppendString(DataFormats.Html, htmlResults);
-            _clipboard.AppendString(DataFormats.CommaSeparatedValue, csvResults);
-            _clipboard.AppendString(DataFormats.UnicodeText, textResults);
+            _clipboard.AppendInfo(columnInfos, toDoItemFormatter, title, ClipboardWriterAppendingInformationFormat.All);
 
             _clipboard.Flush();
         }

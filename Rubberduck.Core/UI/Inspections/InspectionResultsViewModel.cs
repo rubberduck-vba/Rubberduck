@@ -26,6 +26,7 @@ using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Settings;
 using Rubberduck.VBEditor;
+using Rubberduck.Formatters;
 
 namespace Rubberduck.UI.Inspections
 {
@@ -656,13 +657,11 @@ namespace Rubberduck.UI.Inspections
             var resource = _results.Count == 1
                 ? Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular
                 : Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Plural;
+            var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _results.Count);
 
-            _clipboard.AppendInfo(ColumnInformation,
-                Results, resource, true,
-                true,
-                true,
-                true,
-                true);
+            var inspectionResultsViewModelFormatter = _results.Select(inspectionResult => new InspectionResultFormatter(inspectionResult));
+            
+            _clipboard.AppendInfo(ColumnInformation, inspectionResultsViewModelFormatter, title, ClipboardWriterAppendingInformationFormat.All);
 
             _clipboard.Flush();
         }
