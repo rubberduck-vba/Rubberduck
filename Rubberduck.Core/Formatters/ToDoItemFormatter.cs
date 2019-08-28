@@ -1,5 +1,6 @@
 ﻿using Rubberduck.ToDoItems;
 using Rubberduck.Common;
+using Rubberduck.Resources;
 
 namespace Rubberduck.Formatters
 {
@@ -14,12 +15,19 @@ namespace Rubberduck.Formatters
 
         public object[] ToArray()
         {
-            return _toDoItem.ToArray();
+            var module = _toDoItem.Selection.QualifiedName;
+            return new object[] { _toDoItem.Type, _toDoItem.Description, module.ProjectName, module.ComponentName, _toDoItem.Selection.Selection.StartLine, _toDoItem.Selection.Selection.StartColumn };
         }
 
         public string ToClipboardString()
         {
-            return _toDoItem.ToClipboardString();
+            var module = _toDoItem.Selection.QualifiedName;
+            return string.Format(RubberduckUI.ToDoExplorerToDoItemFormat,
+                _toDoItem.Type,
+                _toDoItem.Description,
+                module.ProjectName,
+                module.ComponentName,
+                _toDoItem.Selection.Selection.StartLine);
         }
     }
 }
