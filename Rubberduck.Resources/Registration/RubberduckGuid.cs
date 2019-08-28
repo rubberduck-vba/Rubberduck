@@ -2,6 +2,9 @@
 {
     public static class RubberduckGuid
     {
+        public const string IID_IUnknown = "00000000-0000-0000-C000-000000000046";
+        public const string IID_IDispatch = "00020400-0000-0000-C000-000000000046";
+
         // Guid Suffix
         private const string GuidSuffix = "-43F0-3B33-B105-9B8188A6F040";
 

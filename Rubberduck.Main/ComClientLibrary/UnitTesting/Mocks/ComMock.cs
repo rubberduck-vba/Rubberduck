@@ -23,7 +23,6 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
         private readonly SetupArgumentResolver _resolver;
         private readonly SetupExpressionBuilder _setupBuilder;
         private readonly IMockProviderInternal _provider;
-        private readonly Type _type;
 
         internal ComMock(IMockProviderInternal provider, string project, string progId, Mock mock, Type type, IEnumerable<Type> supportedInterfaces)
         {
@@ -33,7 +32,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             _provider = provider;
             _resolver = new SetupArgumentResolver();
             _setupBuilder = new SetupExpressionBuilder(type, supportedInterfaces, _resolver);
-            _type = type;
+            MockedType = type;
 
             Mock.As<IComMocked>().Setup(x => x.Mock).Returns(this);
             mocked = new ComMocked(this, supportedInterfaces);
@@ -84,10 +83,10 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
         public IComMock SetupChildMock(string Name, object Args)
         {
             Type type;
-            var memberInfo = _type.GetMember(Name).FirstOrDefault();
+            var memberInfo = MockedType.GetMember(Name).FirstOrDefault();
             if (memberInfo == null)
             {
-                memberInfo = _type.GetInterfaces().SelectMany(face => face.GetMember(Name)).First();
+                memberInfo = MockedType.GetInterfaces().SelectMany(face => face.GetMember(Name)).First();
             }
 
             switch (memberInfo)
@@ -134,5 +133,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
         public object Object => mocked;
 
         internal Mock Mock { get; }
+
+        internal Type MockedType { get; }
     }
 }

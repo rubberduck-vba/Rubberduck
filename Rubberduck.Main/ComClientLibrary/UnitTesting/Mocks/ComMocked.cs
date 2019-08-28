@@ -52,6 +52,21 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
                 {
                     result = Marshal.GetIUnknownForObject(this);
                 }
+                else if (iid == new Guid(RubberduckGuid.IID_IDispatch) && !string.IsNullOrWhiteSpace(Mock.Project))
+                {
+                    // We cannot return IDispatch directly for VBA types but we can return the IUnknown in its place,
+                    // which is sufficient for COM's needs. 
+
+                    var pObject = Marshal.GetComInterfaceForObject(_comMock.Mock.Object, _comMock.MockedType);
+                    searchIid = new Guid(RubberduckGuid.IID_IUnknown);
+                    var hr = Marshal.QueryInterface(pObject, ref searchIid, out result);
+                    Marshal.Release(pObject);
+                    if (hr < 0)
+                    {
+                        ppv = IntPtr.Zero;
+                        return CustomQueryInterfaceResult.Failed;
+                    }
+                }
                 else
                 {
                     // Apparently some COM objects have multiple interface implementations using same GUID
