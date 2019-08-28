@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Windows.Controls;
@@ -7,6 +8,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -4632,6 +4634,59 @@ End Sub
             }
         }
 
+        public void LetCoercionDefaultMemberAccessOnArrayIndexHasReferenceToDefaultMemberOnEntireContext()
+        {
+            var class1Code = @"
+Public Function Foo() As Long
+Attribute Foo.VB_UserMemId = 0
+End Function
+";
+
+            var class2Code = @"
+Public Function Baz() As Class1
+Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As new Class2
+    Dim fooBar As Variant
+    Dim arr(0 To 23) As String
+    fooBar = arr(cls.Baz)
+End Function
+
+Private Sub Bar(arg As Long)
+End Sub
+
+Private Sub Baz(arg As Variant)
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(5, 14, 5, 21);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var defaultMemberReference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).Last();
+                var referencedDeclaration = defaultMemberReference.Declaration;
+
+                var expectedReferencedDeclarationName = "Class1.Foo";
+                var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
+
+                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
+                Assert.IsTrue(defaultMemberReference.IsNonIndexedDefaultMemberAccess);
+                Assert.AreEqual(1, defaultMemberReference.DefaultMemberRecursionDepth);
+            }
+        }
+
         [Test]
         [Category("Grammar")]
         [Category("Resolver")]
@@ -5119,6 +5174,86 @@ End Sub
                 Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
                 Assert.IsTrue(defaultMemberReference.IsNonIndexedDefaultMemberAccess);
                 Assert.AreEqual(1, defaultMemberReference.DefaultMemberRecursionDepth);
+            }
+        }
+
+        [Test]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [TestCase("42, a+b", "arg2", "a+b")]
+        [TestCase("42, a+b", "arg1", "42")]
+        [TestCase("arg2:=42, arg1:=a+b", "arg2", "42")]
+        [TestCase("arg2:=42, arg1:=a+b", "arg1", "a+b")]
+        [TestCase("42, a+b, (\"Hello\" & 42)", "arg3", "(\"Hello\" & 42)")]
+        [TestCase("42, a+b, (\"Hello\" & 42), 15+2", "furtherArgs", "15+2")]
+        public void CorrectArgumentReferencesOnMethodAccess(string arguments, string parameterName, string expectedExpressionText)
+        {
+            var class1Code = @"
+Public Sub Foo(arg1 As Variant, arg2 As Object, Optional arg3 As String, ParamArray furtherArgs)
+End Sub
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As new Class1
+    cls.Foo({arguments})
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var parameter = state.DeclarationFinder.UserDeclarations(DeclarationType.Parameter)
+                    .OfType<ParameterDeclaration>()
+                    .Single(param => param.IdentifierName.Equals(parameterName));
+                var argumentReference = parameter.ArgumentReferences.Single();
+
+                var actualExpressionText = argumentReference.Context.GetText();
+
+                Assert.AreEqual(expectedExpressionText, actualExpressionText);
+            }
+        }
+
+        [Test]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        public void CorrectParamArrayArgumentReferencesOnMethodAccess()
+        {
+            var class1Code = @"
+Public Sub Foo(arg1 As Variant, arg2 As Object, Optional arg3 As String = vbNullString, ParamArray furtherArgs)
+End Sub
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As new Class1
+    cls.Foo(1, 2, 3, 4, 5, 6)
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var parameter = state.DeclarationFinder.UserDeclarations(DeclarationType.Parameter)
+                    .OfType<ParameterDeclaration>()
+                    .Single(param => param.IdentifierName.Equals("furtherArgs"));
+                var argumentReferences = parameter.ArgumentReferences;
+
+                var expectedExpressionTexts = new HashSet<string>{"4", "5", "6"};
+                var actualExpressionTexts = argumentReferences.Select(reference => reference.Context.GetText()).ToList();
+
+                var expectedCount = expectedExpressionTexts.Count;
+                var actualCount = actualExpressionTexts.Count;
+
+                Assert.AreEqual(expectedCount, actualCount);
+                expectedExpressionTexts.UnionWith(actualExpressionTexts);
+                Assert.AreEqual(expectedCount, expectedExpressionTexts.Count);
             }
         }
     }

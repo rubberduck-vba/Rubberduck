@@ -641,12 +641,12 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        public void ClearReferences()
+        public virtual void ClearReferences()
         {
             _references = new ConcurrentDictionary<IdentifierReference, int>();
         }
 
-        public void RemoveReferencesFrom(IReadOnlyCollection<QualifiedModuleName> modulesByWhichToRemoveReferences)
+        public virtual void RemoveReferencesFrom(IReadOnlyCollection<QualifiedModuleName> modulesByWhichToRemoveReferences)
         {
             _references = new ConcurrentDictionary<IdentifierReference, int>(_references.Where(reference => !modulesByWhichToRemoveReferences.Contains(reference.Key.QualifiedModuleName)));
         }

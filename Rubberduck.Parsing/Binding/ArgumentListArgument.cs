@@ -25,20 +25,26 @@ namespace Rubberduck.Parsing.Binding
             ArgumentType = argumentType;
             _namedArgumentExpressionCreator = namedArgumentExpressionCreator;
             _isAddressOfArgument = isAddressOfArgument;
+            ReferencedParameter = null;
         }
 
         public ArgumentListArgumentType ArgumentType { get; }
         public IBoundExpression NamedArgumentExpression { get; private set; }
         public IBoundExpression Expression { get; private set; }
+        public ParameterDeclaration ReferencedParameter { get; private set; }
 
-        public void Resolve(Declaration calledProcedure, int parameterIndex)
+        public void Resolve(Declaration calledProcedure, int parameterIndex, bool isArrayAccess = false)
         {
             var binding = _binding;
             if (calledProcedure != null)
             {
                 NamedArgumentExpression = _namedArgumentExpressionCreator(calledProcedure);
+                ReferencedParameter = ResolveReferencedParameter(calledProcedure, parameterIndex);
 
-                if (!_isAddressOfArgument && !CanBeObject(calledProcedure, parameterIndex))
+                if (!_isAddressOfArgument 
+                    && (isArrayAccess 
+                        ||  ReferencedParameter != null 
+                            && !CanBeObject(ReferencedParameter)))
                 {
                     binding = new LetCoercionDefaultBinding(_context, binding);
                 }
@@ -47,12 +53,11 @@ namespace Rubberduck.Parsing.Binding
             Expression = binding.Resolve();
         }
 
-        private bool CanBeObject(Declaration calledProcedure, int parameterIndex)
+        private ParameterDeclaration ResolveReferencedParameter(Declaration calledProcedure, int parameterIndex)
         {
             if (NamedArgumentExpression != null)
             {
-                var correspondingParameter = NamedArgumentExpression.ReferencedDeclaration as ParameterDeclaration;
-                return CanBeObject(correspondingParameter);
+                return NamedArgumentExpression.ReferencedDeclaration as ParameterDeclaration;
             }
 
             if (parameterIndex >= 0 && calledProcedure is IParameterizedDeclaration parameterizedDeclaration)
@@ -60,15 +65,13 @@ namespace Rubberduck.Parsing.Binding
                 var parameters = parameterizedDeclaration.Parameters.ToList();
                 if (parameterIndex >= parameters.Count)
                 {
-                    return parameters.Any(param => param.IsParamArray);
+                    return parameters.FirstOrDefault(param => param.IsParamArray);
                 }
 
-                var correspondingParameter = parameters[parameterIndex];
-                return CanBeObject(correspondingParameter);
-
+                return parameters[parameterIndex];
             }
 
-            return true;
+            return null;
         }
 
         private bool CanBeObject(ParameterDeclaration parameter)
