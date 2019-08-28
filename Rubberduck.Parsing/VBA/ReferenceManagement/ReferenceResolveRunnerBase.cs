@@ -114,6 +114,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
 
             AddNewUndeclaredVariablesToDeclarations();
             AddNewUnresolvedMemberDeclarations();
+            AddNewUnboundDefaultMemberAccesses();
 
             _toResolve.Clear();
         }
@@ -291,10 +292,21 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
 
         private void AddNewUnresolvedMemberDeclarations()
         {
-            var unresolved = _state.DeclarationFinder.FreshUnresolvedMemberDeclarations;
+            var unresolved = _state.DeclarationFinder.FreshUnresolvedMemberDeclarations
+                .GroupBy(declaration => declaration.QualifiedModuleName);
             foreach (var declaration in unresolved)
             {
-                _state.AddUnresolvedMemberDeclaration(declaration);
+                _state.AddUnresolvedMemberDeclarations(declaration.Key, declaration);
+            }
+        }
+
+        private void AddNewUnboundDefaultMemberAccesses()
+        {
+            var unboundDefaultMembers = _state.DeclarationFinder.FreshUnboundDefaultMemberAccesses
+                .GroupBy(access => access.QualifiedModuleName); ;
+            foreach (var access in unboundDefaultMembers)
+            {
+                _state.AddUnboundDefaultMemberAccesses(access.Key, access);
             }
         }
     }

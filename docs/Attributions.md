@@ -4,13 +4,9 @@
 
 ### [ANTLR](http://www.antlr.org/)
 
-As of v1.2, Rubberduck is empowered by the awesomeness of ANTLR.
-
-> **What is ANTLR?**
+Since v1.2, tokenizing and parsing the VBA code is left to the parsing masters behind Antlr. We write the language's grammatical/syntactical rules into a file that Antlr processes to generate a lexer that can turn a string into a stream of tokens, a parser that turns that stream into a tree structure Rubberduck can work with. Everything starts with Antlr.
 
 > *ANTLR (ANother Tool for Language Recognition) is a powerful parser generator for reading, processing, executing, or translating structured text or binary files. It's widely used to build languages, tools, and frameworks. From a grammar, ANTLR generates a parser that can build and walk parse trees.*
-
-We're not doing half of what we could be doing with this amazing tool. Try it, see for yourself!
 
 ### [AvalonEdit](http://avalonedit.net)
 
@@ -18,7 +14,7 @@ Source code looks a lot better with syntax highlighting, and AvalonEdit excels a
 
 > AvalonEdit is a WPF-based text editor component. It was written by [Daniel Grunwald](https://github.com/dgrunwald) for the [SharpDevelop](http://www.icsharpcode.net/OpenSource/SD/) IDE. Starting with version 5.0, AvalonEdit is released under the [MIT license](http://opensource.org/licenses/MIT).
 
-We're currently only using a tiny bit of this code editor's functionality (more to come!).
+
 
 ### [EasyHook](http://easyhook.github.io/index.html)
 
@@ -33,6 +29,16 @@ EasyHook is released under the [MIT license](https://github.com/EasyHook/EasyHoo
 This library makes localizing WPF applications at runtime using resx files a breeze. Thank you [Grant Frisken](http://www.codeproject.com/script/Membership/View.aspx?mid=1079060)!
 
 > Licensed under [The Code Project Open License](http://www.codeproject.com/info/cpol10.aspx) with the [author's permission](http://www.codeproject.com/Messages/5272045/Re-License.aspx) to re-release under the GPLv3.
+
+### [Moq](https://github.com/moq)
+
+Moq has always been powering Rubberduck's own unit test mocks, but as of v2.5 our VBA unit testing API includes a wrapper that basically lets you use Moq for your VBA unit tests, to configure a mock implementation of any class or interface your VBA code might depend on.
+
+> **What is ANTLR?**
+
+> *ANTLR (ANother Tool for Language Recognition) is a powerful parser generator for reading, processing, executing, or translating structured text or binary files. It's widely used to build languages, tools, and frameworks. From a grammar, ANTLR generates a parser that can build and walk parse trees.*
+
+We're not doing half of what we could be doing with this amazing tool. Try it, see for yourself!
 
 ## Icons
 

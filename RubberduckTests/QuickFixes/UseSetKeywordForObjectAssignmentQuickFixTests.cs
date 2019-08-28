@@ -62,12 +62,12 @@ End Sub
         {
             var inputCode =
                 @"
-Private Function ReturnObject(ByVal source As Object) As Object
+Private Function ReturnObject(ByVal source As Object) As Class1
     ReturnObject = source
 End Function";
             var expectedCode =
                 @"
-Private Function ReturnObject(ByVal source As Object) As Object
+Private Function ReturnObject(ByVal source As Object) As Class1
     Set ReturnObject = source
 End Function";
 

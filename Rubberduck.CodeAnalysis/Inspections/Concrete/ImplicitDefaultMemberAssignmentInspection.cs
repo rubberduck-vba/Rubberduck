@@ -1,10 +1,7 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
@@ -40,28 +37,42 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            var interestingDeclarations =
-                State.AllDeclarations.Where(item =>
-                    item.AsTypeDeclaration != null
-                    && ClassModuleDeclaration.HasDefaultMember(item.AsTypeDeclaration));
+            var boundDefaultMemberAssignments = State.DeclarationFinder
+                .AllIdentifierReferences()
+                .Where(IsRelevantReference);
 
-            var interestingReferences = interestingDeclarations
-                .SelectMany(declaration => declaration.References)
-                .Where(reference =>
-                {
-                    var letStmtContext = reference.Context.GetAncestor<VBAParser.LetStmtContext>();
-                    return reference.IsAssignment 
-                           && letStmtContext != null 
-                           && letStmtContext.LET() == null
-                           && !reference.IsIgnoringInspectionResultFor(AnnotationName);
-                });
+            var boundIssues = boundDefaultMemberAssignments
+                .Select(reference => new IdentifierReferenceInspectionResult(
+                    this,
+                    string.Format(
+                        InspectionResults.ImplicitDefaultMemberAssignmentInspection,
+                        reference.Context.GetText(),
+                        reference.Declaration.IdentifierName,
+                        reference.Declaration.QualifiedModuleName.ToString()),
+                    State,
+                    reference));
 
-            return interestingReferences.Select(reference => new IdentifierReferenceInspectionResult(this,
-                                                                                  string.Format(InspectionResults.ImplicitDefaultMemberAssignmentInspection,
-                                                                                                reference.Declaration.IdentifierName,
-                                                                                                reference.Declaration.AsTypeDeclaration.IdentifierName),
-                                                                                  State,
-                                                                                  reference));
+            var unboundDefaultMemberAssignments = State.DeclarationFinder
+                .AllUnboundDefaultMemberAccesses()
+                .Where(IsRelevantReference);
+
+            var unboundIssues = unboundDefaultMemberAssignments
+                .Select(reference => new IdentifierReferenceInspectionResult(
+                    this,
+                    string.Format(
+                        InspectionResults.ImplicitDefaultMemberAssignmentInspection_Unbound,
+                        reference.Context.GetText()),
+                    State,
+                    reference));
+
+            return boundIssues.Concat(unboundIssues);
+        }
+
+        private bool IsRelevantReference(IdentifierReference reference)
+        {
+            return reference.IsAssignment
+                   && reference.IsNonIndexedDefaultMemberAccess
+                   && !reference.IsIgnoringInspectionResultFor(AnnotationName);
         }
     }
 }

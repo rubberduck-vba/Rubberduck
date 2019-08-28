@@ -42,9 +42,10 @@ namespace Rubberduck.Parsing.Binding
 
         private static void ResolveArgumentList(Declaration calledProcedure, ArgumentList argumentList)
         {
-            foreach (var argument in argumentList.Arguments)
+            var arguments = argumentList.Arguments;
+            for (var index = 0; index < arguments.Count; index++)
             {
-                argument.Resolve(calledProcedure);
+                arguments[index].Resolve(calledProcedure, index);
             }
         }
 
@@ -62,11 +63,21 @@ namespace Rubberduck.Parsing.Binding
         {
             if (lExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
+                var failedExpression = (ResolutionFailedExpression) lExpression;
+
                 ResolveArgumentList(null, argumentList);
-                return CreateFailedExpression(lExpression, argumentList);
+                var argumentExpressions = argumentList.Arguments.Select(arg => arg.Expression);
+                return failedExpression.Join(argumentExpressions);
+            }
+
+            if (!(expression is VBAParser.LExpressionContext lExpressionContext))
+            {
+                ResolveArgumentList(null, argumentList);
+                return CreateFailedExpression(lExpression, argumentList, expression);
             }
 
             var lDeclaration = lExpression.ReferencedDeclaration;
+            var defaultMemberContext = DefaultMemberReferenceContext(lExpressionContext);
 
             if (lExpression.Classification == ExpressionClassification.Unbound)
             {
@@ -75,34 +86,31 @@ namespace Rubberduck.Parsing.Binding
                     is classified as an unbound member with a declared type of Variant, referencing <l-expression> with no member name.
                 */
                 ResolveArgumentList(lDeclaration, argumentList);
-                return new DictionaryAccessExpression(null, ExpressionClassification.Unbound, expression, lExpression, argumentList);
+                return new DictionaryAccessExpression(null, ExpressionClassification.Unbound, expression, lExpression, argumentList, defaultMemberContext,1, null);
             }
 
             if (lDeclaration == null)
             {
                 ResolveArgumentList(null, argumentList);
-                return CreateFailedExpression(lExpression, argumentList);
+                return CreateFailedExpression(lExpression, argumentList, expression);
             }
 
             var asTypeName = lDeclaration.AsTypeName;
             var asTypeDeclaration = lDeclaration.AsTypeDeclaration;
 
-            return ResolveViaDefaultMember(lExpression, asTypeName, asTypeDeclaration, argumentList, expression);
+            return ResolveViaDefaultMember(lExpression, asTypeName, asTypeDeclaration, argumentList, lExpressionContext, defaultMemberContext);
         }
 
-        private static IBoundExpression CreateFailedExpression(IBoundExpression lExpression, ArgumentList argumentList)
+        private static IBoundExpression CreateFailedExpression(IBoundExpression lExpression, ArgumentList argumentList, ParserRuleContext context)
         {
-            var failedExpr = new ResolutionFailedExpression();
+            var failedExpr = new ResolutionFailedExpression(context, true);
             failedExpr.AddSuccessfullyResolvedExpression(lExpression);
-            foreach (var arg in argumentList.Arguments)
-            {
-                failedExpr.AddSuccessfullyResolvedExpression(arg.Expression);
-            }
 
-            return failedExpr;
+            var argumentExpressions = argumentList.Arguments.Select(arg => arg.Expression);
+            return failedExpr.Join(argumentExpressions);
         }
 
-        private static IBoundExpression ResolveViaDefaultMember(IBoundExpression lExpression, string asTypeName, Declaration asTypeDeclaration, ArgumentList argumentList, ParserRuleContext expression, int recursionDepth = 0)
+        private static IBoundExpression ResolveViaDefaultMember(IBoundExpression lExpression, string asTypeName, Declaration asTypeDeclaration, ArgumentList argumentList, ParserRuleContext expression, ParserRuleContext defaultMemberContext, int recursionDepth = 1, RecursiveDefaultMemberAccessExpression containedExpression = null)
         {
             if (Tokens.Variant.Equals(asTypeName, StringComparison.InvariantCultureIgnoreCase) 
                     || Tokens.Object.Equals(asTypeName, StringComparison.InvariantCultureIgnoreCase))
@@ -113,7 +121,7 @@ namespace Rubberduck.Parsing.Binding
                     a declared type of Variant, referencing <l-expression> with no member name. 
                 */
                 ResolveArgumentList(null, argumentList);
-                return new DictionaryAccessExpression(null, ExpressionClassification.Unbound, expression, lExpression, argumentList);
+                return new DictionaryAccessExpression(null, ExpressionClassification.Unbound, expression, lExpression, argumentList, defaultMemberContext, recursionDepth, containedExpression);
             }
 
             /*
@@ -126,7 +134,7 @@ namespace Rubberduck.Parsing.Binding
                 || !IsPublic(defaultMember))
             {
                 ResolveArgumentList(null, argumentList);
-                return CreateFailedExpression(lExpression, argumentList);
+                return CreateFailedExpression(lExpression, argumentList, expression);
             }
 
             var defaultMemberClassification = DefaultMemberClassification(defaultMember);
@@ -141,23 +149,22 @@ namespace Rubberduck.Parsing.Binding
                     declared type.  
                 */
                 ResolveArgumentList(defaultMember, argumentList);
-                return new DictionaryAccessExpression(defaultMember, defaultMemberClassification, expression, lExpression, argumentList);
+                return new DictionaryAccessExpression(defaultMember, defaultMemberClassification, expression, lExpression, argumentList, defaultMemberContext, recursionDepth, containedExpression);
             }
 
-            if (parameters.Count(param => !param.IsOptional) == 0 
-                && DEFAULT_MEMBER_RECURSION_LIMIT > recursionDepth)
+            if (parameters.All(param => param.IsOptional) 
+                && DEFAULT_MEMBER_RECURSION_LIMIT >= recursionDepth)
             {
                 /*
                     This default member cannot accept any parameters. In this case, the static analysis restarts 
                     recursively, as if this default member was specified instead for <l-expression> with the 
                     same <argument-list>.
                 */
-
-                return ResolveRecursiveDefaultMember(defaultMember, defaultMemberClassification, argumentList, expression, recursionDepth);
+                return ResolveRecursiveDefaultMember(lExpression, defaultMember, defaultMemberClassification, argumentList, expression, defaultMemberContext, recursionDepth, containedExpression);
             }
 
             ResolveArgumentList(null, argumentList);
-            return CreateFailedExpression(lExpression, argumentList);
+            return CreateFailedExpression(lExpression, argumentList, expression);
         }
 
         private static bool IsCompatibleWithOneStringArgument(List<ParameterDeclaration> parameters)
@@ -168,19 +175,22 @@ namespace Rubberduck.Parsing.Binding
                        || Tokens.Variant.Equals(parameters[0].AsTypeName, StringComparison.InvariantCultureIgnoreCase));
         }
 
-        private static IBoundExpression ResolveRecursiveDefaultMember(Declaration defaultMember, ExpressionClassification defaultMemberClassification, ArgumentList argumentList, ParserRuleContext expression, int recursionDepth)
+        private static IBoundExpression ResolveRecursiveDefaultMember(IBoundExpression lExpression, Declaration defaultMember, ExpressionClassification defaultMemberClassification, ArgumentList argumentList, ParserRuleContext expression, ParserRuleContext defaultMemberContext, int recursionDepth, RecursiveDefaultMemberAccessExpression containedExpression)
         {
-            var defaultMemberAsLExpression = new SimpleNameExpression(defaultMember, defaultMemberClassification, expression);
             var defaultMemberAsTypeName = defaultMember.AsTypeName;
             var defaultMemberAsTypeDeclaration = defaultMember.AsTypeDeclaration;
 
+            var defaultMemberExpression = new RecursiveDefaultMemberAccessExpression(defaultMember, defaultMemberClassification, defaultMemberContext, recursionDepth, containedExpression);
+
             return ResolveViaDefaultMember(
-                defaultMemberAsLExpression,
+                lExpression,
                 defaultMemberAsTypeName,
                 defaultMemberAsTypeDeclaration,
                 argumentList,
                 expression,
-                recursionDepth + 1);
+                defaultMemberContext,
+                recursionDepth + 1,
+                defaultMemberExpression);
         }
 
         private static bool IsPropertyGetLetFunctionProcedure(Declaration declaration)
@@ -213,6 +223,16 @@ namespace Rubberduck.Parsing.Binding
             }
             
             return ExpressionClassification.Function;
+        }
+
+        private static ParserRuleContext DefaultMemberReferenceContext(VBAParser.LExpressionContext context)
+        {
+            if (context is VBAParser.DictionaryAccessExprContext dictionaryAccess)
+            {
+                return dictionaryAccess.dictionaryAccess();
+            }
+
+            return ((VBAParser.WithDictionaryAccessExprContext)context).dictionaryAccess();
         }
     }
 }
