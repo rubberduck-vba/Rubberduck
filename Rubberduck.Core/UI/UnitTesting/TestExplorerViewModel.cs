@@ -358,9 +358,10 @@ namespace Rubberduck.UI.UnitTesting
 
         private void ExecuteRunSelectedGroupCommand(object obj)
         {
-            var tests = MouseOverTest is null
-                ? MouseOverGroup
-                : Tests.Groups.OfType<CollectionViewGroup>().FirstOrDefault(group => group.Items.Contains(MouseOverTest));
+            //var tests = MouseOverTest is null
+            //    ? MouseOverGroup
+            //    : Tests.Groups.OfType<CollectionViewGroup>().FirstOrDefault(group => group.Items.Contains(MouseOverTest));
+            var tests = GroupContainingSelectedTest(MouseOverTest);
 
             if (tests is null)
             {
@@ -368,6 +369,13 @@ namespace Rubberduck.UI.UnitTesting
             }
 
             Model.ExecuteTests(tests.Items.OfType<TestMethodViewModel>().ToList());
+        }
+
+        private CollectionViewGroup GroupContainingSelectedTest(TestMethodViewModel selectedTest)
+        {
+            return selectedTest is null
+                ? MouseOverGroup
+                : Tests.Groups.OfType<CollectionViewGroup>().FirstOrDefault(group => group.Items.Contains(selectedTest));
         }
 
         private void ExecuteCancelTestRunCommand(object parameter)
@@ -389,11 +397,7 @@ namespace Rubberduck.UI.UnitTesting
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
 
-            var testMethod = parameter == null
-                ? _mousedOverTestMethod
-                : (parameter as TestMethodViewModel).Method;
-
-            AnnotationUpdater.AddAnnotation(rewriteSession, testMethod.Declaration, Parsing.Annotations.AnnotationType.IgnoreTest);
+            AnnotationUpdater.AddAnnotation(rewriteSession, _mousedOverTestMethod.Declaration, Parsing.Annotations.AnnotationType.IgnoreTest);
 
             rewriteSession.TryRewrite();
         }
@@ -401,12 +405,8 @@ namespace Rubberduck.UI.UnitTesting
         private void ExecuteUnignoreTestCommand(object parameter)
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
-
-            var testMethod = parameter == null
-                ? _mousedOverTestMethod
-                : (parameter as TestMethodViewModel).Method;
             
-            var ignoreTestAnnotations = testMethod.Declaration.Annotations
+            var ignoreTestAnnotations = _mousedOverTestMethod.Declaration.Annotations
                 .Where(iannotations => iannotations.AnnotationType == Parsing.Annotations.AnnotationType.IgnoreTest);
 
             foreach (var ignoreTestAnnotation in ignoreTestAnnotations)
@@ -419,18 +419,36 @@ namespace Rubberduck.UI.UnitTesting
 
         private void ExecuteIgnoreGroupCommand (object parameter)
         {
-            foreach (TestMethodViewModel test in _mouseOverGroup.Items)
+            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
+            var testGroup = GroupContainingSelectedTest(MouseOverTest);
+            foreach (TestMethodViewModel test in testGroup.Items)
             {
-                ExecuteIgnoreTestCommand(test);
+                //    var testMethod = parameter == null
+                //        ? _mousedOverTestMethod
+                //        : (parameter as TestMethodViewModel).Method;
+                AnnotationUpdater.AddAnnotation(rewriteSession, test.Method.Declaration, Parsing.Annotations.AnnotationType.IgnoreTest);
             }
+
+            rewriteSession.TryRewrite();
         }
 
         private void ExecuteUnignoreGroupCommand(object parameter)
         {
-            foreach (TestMethodViewModel test in _mouseOverGroup.Items)
+            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
+            var testGroup = GroupContainingSelectedTest(MouseOverTest);
+            foreach (TestMethodViewModel test in testGroup.Items)
             {
-                ExecuteUnignoreTestCommand(test);
+                //ExecuteUnignoreTestCommand(test);
+                var ignoreTestAnnotations = test.Method.Declaration.Annotations
+                    .Where(iannotations => iannotations.AnnotationType == Parsing.Annotations.AnnotationType.IgnoreTest);
+
+                foreach (var ignoreTestAnnotation in ignoreTestAnnotations)
+                {
+                    AnnotationUpdater.RemoveAnnotation(rewriteSession, ignoreTestAnnotation);
+                }
             }
+
+            rewriteSession.TryRewrite();
         }
 
         private void ExecuteCopyResultsCommand(object parameter)
