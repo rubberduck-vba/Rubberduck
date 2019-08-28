@@ -352,6 +352,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} {1} {2} {3} {4} {5}.
+        /// </summary>
+        public static string CodeExplorer_IExportable_DeclarationFormat {
+            get {
+                return ResourceManager.GetString("CodeExplorer_IExportable_DeclarationFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to By module.
         /// </summary>
         public static string CodeInspectionResults_GroupByModule {
