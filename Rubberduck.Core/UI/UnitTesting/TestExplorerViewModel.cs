@@ -73,6 +73,8 @@ namespace Rubberduck.UI.UnitTesting
             ExpandAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandAll);
             IgnoreTestCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteIgnoreTestCommand);
             UnignoreTestCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteUnignoreTestCommand);
+            IgnoreSelectedGroupCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteIgnoreGroupCommand, CanIgnoreSelectedGroupCommand);
+            UnignoreSelectedGroupCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteUnignoreGroupCommand, CanUnignoreSelectedGroupCommand);
 
             RewritingManager = rewritingManager;
             AnnotationUpdater = annotationUpdater;
@@ -275,6 +277,9 @@ namespace Rubberduck.UI.UnitTesting
         public CommandBase IgnoreTestCommand { get; }
         public CommandBase UnignoreTestCommand { get; }
 
+        public CommandBase IgnoreSelectedGroupCommand { get; }
+        public CommandBase UnignoreSelectedGroupCommand { get; }
+
         #endregion
 
         #region Delegates
@@ -292,6 +297,16 @@ namespace Rubberduck.UI.UnitTesting
         private bool CanExecuteSelectedGroupCommand(object obj)
         {
             return !Model.IsBusy && (MouseOverTest != null || MouseOverGroup != null);
+        }
+
+        private bool CanIgnoreSelectedGroupCommand(object obj)
+        {
+            return CanExecuteSelectedGroupCommand(obj);
+        }
+
+        private bool CanUnignoreSelectedGroupCommand(object obj)
+        {
+            return CanExecuteSelectedGroupCommand(obj);
         }
 
         private bool CanExecuteResetResultsCommand(object obj)
@@ -374,7 +389,11 @@ namespace Rubberduck.UI.UnitTesting
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
 
-            AnnotationUpdater.AddAnnotation(rewriteSession, _mousedOverTestMethod.Declaration, Parsing.Annotations.AnnotationType.IgnoreTest);
+            var testMethod = parameter == null
+                ? _mousedOverTestMethod
+                : (parameter as TestMethodViewModel).Method;
+
+            AnnotationUpdater.AddAnnotation(rewriteSession, testMethod.Declaration, Parsing.Annotations.AnnotationType.IgnoreTest);
 
             rewriteSession.TryRewrite();
         }
@@ -382,7 +401,12 @@ namespace Rubberduck.UI.UnitTesting
         private void ExecuteUnignoreTestCommand(object parameter)
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
-            var ignoreTestAnnotations = _mousedOverTestMethod.Declaration.Annotations
+
+            var testMethod = parameter == null
+                ? _mousedOverTestMethod
+                : (parameter as TestMethodViewModel).Method;
+            
+            var ignoreTestAnnotations = testMethod.Declaration.Annotations
                 .Where(iannotations => iannotations.AnnotationType == Parsing.Annotations.AnnotationType.IgnoreTest);
 
             foreach (var ignoreTestAnnotation in ignoreTestAnnotations)
@@ -391,6 +415,22 @@ namespace Rubberduck.UI.UnitTesting
             }
 
             rewriteSession.TryRewrite();
+        }
+
+        private void ExecuteIgnoreGroupCommand (object parameter)
+        {
+            foreach (TestMethodViewModel test in _mouseOverGroup.Items)
+            {
+                ExecuteIgnoreTestCommand(test);
+            }
+        }
+
+        private void ExecuteUnignoreGroupCommand(object parameter)
+        {
+            foreach (TestMethodViewModel test in _mouseOverGroup.Items)
+            {
+                ExecuteUnignoreTestCommand(test);
+            }
         }
 
         private void ExecuteCopyResultsCommand(object parameter)
