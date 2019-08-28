@@ -4,13 +4,6 @@ using System.Windows.Media.Imaging;
 using System.Collections.Generic;
 using System.Linq;
 using System;
-using System.Globalization;
-using System.Windows.Data;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI.UnitTesting.ViewModels;
-using Rubberduck.Resources;
-using Rubberduck.ToDoItems;
 
 namespace Rubberduck.Common
 {
@@ -89,8 +82,6 @@ namespace Rubberduck.Common
             ClipboardWriterAppendingInformationFormat appendingInformationFormat) where T : IExportable
         {
             object[][] resultsAsArray = results.Select(result => result.ToArray()).ToArray();
-
-            //var title = string.Format(titleFormat, DateTime.Now.ToString(CultureInfo.InvariantCulture));
 
             var includeXmlSpreadsheetFormat = (appendingInformationFormat & ClipboardWriterAppendingInformationFormat.XmlSpreadsheetFormat) == ClipboardWriterAppendingInformationFormat.XmlSpreadsheetFormat;
             if (includeXmlSpreadsheetFormat)
