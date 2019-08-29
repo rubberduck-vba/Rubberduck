@@ -232,7 +232,7 @@
     <value>La variable local '{0}' no está declarada.</value>
   </data>
   <data name="ImplicitDefaultMemberAssignmentInspection" xml:space="preserve">
-    <value>La asignación a '{0}' asigna implícitamente al miembro predeterminado de la clase '{1}'.</value>
+    <value>La asignación a '{0}' asigna implícitamente al miembro predeterminado '{1}' de la clase '{2}'.</value>
   </data>
   <data name="AggregateInspection" xml:space="preserve">
     <value>{0} ({1} resultados).</value>

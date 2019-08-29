@@ -93,6 +93,33 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
+        //See issue #4496 at https://github.com/rubberduck-vba/Rubberduck/issues/4496
+        public void ParameterNotUsed_RecursiveDefaultMemberAccess_ReturnsNoResult()
+        {
+            const string inputCode = 
+                @"Public Sub Test(rst As ADODB.Recordset)
+    Debug.Print rst(""Field"")
+End Sub";
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestPRoject", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, inputCode)
+                .AddReference("ADODB", MockVbeBuilder.LibraryPathAdoDb, 6, 1)
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new ParameterNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void ParameterNotUsed_ReturnsResult_InterfaceImplementation()
         {
             //Input

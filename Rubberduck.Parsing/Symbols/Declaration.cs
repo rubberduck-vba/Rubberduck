@@ -363,7 +363,9 @@ namespace Rubberduck.Parsing.Symbols
             bool isAssignmentTarget = false,
             bool hasExplicitLetStatement = false,
             bool isSetAssigned = false,
-            bool isDefaultMemberAccess = false,
+            bool isIndexedDefaultMemberAccess = false,
+            bool isNonIndexedDefaultMemberAccess = false,
+            int defaultMemberRecursionDepth = 0,
             bool isArrayAccess = false
             )
         {
@@ -392,7 +394,9 @@ namespace Rubberduck.Parsing.Symbols
                 hasExplicitLetStatement,
                 annotations,
                 isSetAssigned,
-                isDefaultMemberAccess,
+                isIndexedDefaultMemberAccess,
+                isNonIndexedDefaultMemberAccess,
+                defaultMemberRecursionDepth,
                 isArrayAccess);
             _references.AddOrUpdate(newReference, 1, (key, value) => 1);
         }

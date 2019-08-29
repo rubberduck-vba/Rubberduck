@@ -1,7 +1,8 @@
 using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 
-namespace Rubberduck.Parsing.Symbols
+namespace Rubberduck.Parsing.VBA.ReferenceManagement
 {
     public class IdentifierReferenceListener : VBAParserBaseListener
     {
@@ -172,6 +173,11 @@ namespace Rubberduck.Parsing.Symbols
         }
 
         public override void EnterEraseStmt(VBAParser.EraseStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
+        public override void EnterMidStatement(VBAParser.MidStatementContext context)
         {
             _resolver.Resolve(context);
         }
