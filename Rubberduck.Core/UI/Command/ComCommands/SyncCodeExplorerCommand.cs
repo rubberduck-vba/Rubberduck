@@ -41,8 +41,10 @@ namespace Rubberduck.UI.Command.ComCommands
         private readonly CodeExplorerViewModel _explorer;
 
         public SyncCodeExplorerCommand(
-            IVBE vbe, RubberduckParserState state, 
-            CodeExplorerViewModel explorer, IVbeEvents vbeEvents) 
+            IVBE vbe, 
+            RubberduckParserState state, 
+            CodeExplorerViewModel explorer, 
+            IVbeEvents vbeEvents) 
             : base(vbeEvents)
         {
             _vbe = vbe;
