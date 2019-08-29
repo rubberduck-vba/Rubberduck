@@ -17,6 +17,8 @@ namespace RubberduckTests.QuickFixes
             const string expectedCode =
 @"Option Explicit
 
+Public Sub Test() ' inspection won't yield any results if module is empty (#2621)
+End Sub
 ";
 
             var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new OptionExplicitInspection(state));
