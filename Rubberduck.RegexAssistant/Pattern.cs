@@ -8,9 +8,10 @@ namespace Rubberduck.RegexAssistant
         public IRegularExpression RootExpression;
         readonly MatcherFlags Flags;
 
-        public string Description { get; }
+        private readonly string _description;
+        public string Description(bool spellOutWhitespace) => _description;
 
-        public Pattern(string expression, bool ignoreCase = false, bool global = false)
+        public Pattern(string expression, bool ignoreCase = false, bool global = false, bool spellOutWhitespace = false)
         {
             if (expression == null)
             {
@@ -25,16 +26,20 @@ namespace Rubberduck.RegexAssistant
 
             var start = AnchoredAtStart ? 1 : 0;
             var end = (AnchoredAtEnd ? 1 : 0) + start;
-            RootExpression = VBRegexParser.Parse(expression.Substring(start, expression.Length - end));
-            Description = AssembleDescription();
+
+            _spellOutWhiteSpace = spellOutWhitespace;
+            RootExpression = VBRegexParser.Parse(expression.Substring(start, expression.Length - end), _spellOutWhiteSpace);
+            _description = AssembleDescription();
         }
+
+        private readonly bool _spellOutWhiteSpace;
 
         private string AssembleDescription()
         {
             var result = string.Empty;
             result += CasingDescription;
             result += StartAnchorDescription;
-            result += RootExpression.Description;
+            result += RootExpression.Description(_spellOutWhiteSpace);
             result += EndAnchorDescription;
             return result;
         }

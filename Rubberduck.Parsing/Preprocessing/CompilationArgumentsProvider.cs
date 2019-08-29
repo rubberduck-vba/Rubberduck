@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Rubberduck.Parsing.UIContext;
-using Rubberduck.VBEditor.ComManagement.TypeLibs;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 
 namespace Rubberduck.Parsing.PreProcessing
 {
@@ -29,7 +29,7 @@ namespace Rubberduck.Parsing.PreProcessing
             var task = _uiDispatcher.StartTask(() => {
                 using (var typeLib = _typeLibWrapperProvider.TypeLibWrapperFromProject(projectId))
                 {
-                    return typeLib?.ConditionalCompilationArguments ?? new Dictionary<string, short>();
+                    return typeLib?.VBEExtensions.ConditionalCompilationArguments ?? new Dictionary<string, short>();
                 }
             });
             return task.Result;

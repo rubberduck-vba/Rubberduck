@@ -4,10 +4,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Windows.Annotations;
 using System.Windows.Data;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Interaction.Navigation;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Resources;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
@@ -51,7 +56,9 @@ namespace Rubberduck.UI.UnitTesting
             IClipboardWriter clipboard,
             // ReSharper disable once UnusedParameter.Local - left in place because it will likely be needed for app wide font settings, etc.
             IConfigurationService<Configuration> configService,
-            ISettingsFormFactory settingsFormFactory)
+            ISettingsFormFactory settingsFormFactory,
+            IRewritingManager rewritingManager,
+            IAnnotationUpdater annotationUpdater)
         {
             _clipboard = clipboard;
             _settingsFormFactory = settingsFormFactory;
@@ -66,6 +73,11 @@ namespace Rubberduck.UI.UnitTesting
             OpenTestSettingsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), OpenSettings);
             CollapseAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseAll);
             ExpandAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandAll);
+            IgnoreTestCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteIgnoreTestCommand);
+            UnignoreTestCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteUnignoreTestCommand);
+
+            RewritingManager = rewritingManager;
+            AnnotationUpdater = annotationUpdater;
 
             Model = model;
             Model.TestCompleted += HandleTestCompletion;
@@ -101,6 +113,7 @@ namespace Rubberduck.UI.UnitTesting
                 }
                 _mouseOverTest = value;
                 OnPropertyChanged();
+                RefreshContextMenu();
             }
         }
 
@@ -116,7 +129,14 @@ namespace Rubberduck.UI.UnitTesting
                 }
                 _mouseOverGroup = value;
                 OnPropertyChanged();
+                RefreshContextMenu();
             }
+        }
+
+        private void RefreshContextMenu()
+        {
+            OnPropertyChanged(nameof(DisplayUnignoreTestLabel));
+            OnPropertyChanged(nameof(DisplayIgnoreTestLabel));
         }
 
         private static readonly Dictionary<TestExplorerGrouping, PropertyGroupDescription> GroupDescriptions = new Dictionary<TestExplorerGrouping, PropertyGroupDescription>
@@ -216,6 +236,13 @@ namespace Rubberduck.UI.UnitTesting
             Tests.Refresh();
         }
 
+        public IRewritingManager RewritingManager { get; }
+        public IAnnotationUpdater AnnotationUpdater { get; }
+
+        private TestMethod _mousedOverTestMethod => ((TestMethodViewModel)SelectedItem).Method;
+        public bool DisplayUnignoreTestLabel => SelectedItem != null && _mousedOverTestMethod.IsIgnored;
+        public bool DisplayIgnoreTestLabel => SelectedItem != null && !_mousedOverTestMethod.IsIgnored;
+        
         #region Commands
 
         public ReparseCommand RefreshCommand { get; set; }
@@ -246,6 +273,9 @@ namespace Rubberduck.UI.UnitTesting
 
         public CommandBase CollapseAllCommand { get; }
         public CommandBase ExpandAllCommand { get; }
+
+        public CommandBase IgnoreTestCommand { get; }
+        public CommandBase UnignoreTestCommand { get; }
 
         #endregion
 
@@ -340,6 +370,29 @@ namespace Rubberduck.UI.UnitTesting
             }
 
             Tests.Refresh();
+        }
+
+        private void ExecuteIgnoreTestCommand(object parameter)
+        {
+            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
+
+            AnnotationUpdater.AddAnnotation(rewriteSession, _mousedOverTestMethod.Declaration, Parsing.Annotations.AnnotationType.IgnoreTest);
+
+            rewriteSession.TryRewrite();
+        }
+
+        private void ExecuteUnignoreTestCommand(object parameter)
+        {
+            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
+            var ignoreTestAnnotations = _mousedOverTestMethod.Declaration.Annotations
+                .Where(iannotations => iannotations.AnnotationType == Parsing.Annotations.AnnotationType.IgnoreTest);
+
+            foreach (var ignoreTestAnnotation in ignoreTestAnnotations)
+            {
+                AnnotationUpdater.RemoveAnnotation(rewriteSession, ignoreTestAnnotation);
+            }
+
+            rewriteSession.TryRewrite();
         }
 
         private void ExecuteCopyResultsCommand(object parameter)

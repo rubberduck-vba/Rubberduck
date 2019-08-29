@@ -19,6 +19,7 @@ using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
+using Rubberduck.VBEditor.Extensions;
 
 // ReSharper disable LoopCanBeConvertedToQuery
 
@@ -189,7 +190,7 @@ namespace Rubberduck.Parsing.VBA
         private void RefreshFinder(IHostApplication host)
         {
             var oldDecalarationFinder = DeclarationFinder;
-            DeclarationFinder = _declarationFinderFactory.Create(AllDeclarationsFromModuleStates, AllAnnotations, AllUnresolvedMemberDeclarationsFromModulestates, host);
+            DeclarationFinder = _declarationFinderFactory.Create(AllDeclarationsFromModuleStates, AllAnnotations, AllUnresolvedMemberDeclarationsFromModulestates, AllUnboundDefaultMemberAccessesFromModuleStates, host);
             _declarationFinderFactory.Release(oldDecalarationFinder);
         }
 
@@ -747,6 +748,23 @@ namespace Rubberduck.Parsing.VBA
         }
 
         /// <summary>
+        /// Gets a copy of the unbound default member accesses directly from the module states. (Used for refreshing the DeclarationFinder.)
+        /// </summary>
+        private IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> AllUnboundDefaultMemberAccessesFromModuleStates
+        {
+            get
+            {
+                var defaultMemberAccesses = new Dictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>>();
+                foreach (var (module, state) in _moduleStates)
+                {
+                    defaultMemberAccesses.Add(module, state.UnboundDefaultMemberAccesses);
+                }
+
+                return defaultMemberAccesses;
+            }
+        }
+
+        /// <summary>
         /// Gets a copy of the collected declarations, excluding the built-in ones.
         /// </summary>
         public IEnumerable<Declaration> AllUserDeclarations => DeclarationFinder.AllUserDeclarations;
@@ -801,6 +819,42 @@ namespace Rubberduck.Parsing.VBA
             while (!declarations.TryAdd(declaration, 0) && !declarations.ContainsKey(declaration))
             {
                 Logger.Warn("Could not add unresolved member declaration '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
+            }
+        }
+
+        public void AddUnresolvedMemberDeclarations(QualifiedModuleName module, IEnumerable<UnboundMemberDeclaration> unboundDeclarations)
+        {
+            var declarations = _moduleStates.GetOrAdd(module, new ModuleState(new ConcurrentDictionary<Declaration, byte>())).UnresolvedMemberDeclarations;
+
+            foreach (var declaration in unboundDeclarations)
+            {
+                if (declarations.ContainsKey(declaration))
+                {
+                    while (!declarations.TryRemove(declaration, out var _))
+                    {
+                        Logger.Warn("Could not remove existing unresolved member declaration for '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
+                    }
+                }
+                while (!declarations.TryAdd(declaration, 0) && !declarations.ContainsKey(declaration))
+                {
+                    Logger.Warn("Could not add unresolved member declaration '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
+                }
+            }
+        }
+
+        public void AddUnboundDefaultMemberAccess(IdentifierReference defaultMemberAccess)
+        {
+            var key = defaultMemberAccess.QualifiedModuleName;
+            var moduleState = _moduleStates.GetOrAdd(key, new ModuleState(new ConcurrentDictionary<Declaration, byte>()));
+            moduleState.AddUnboundDefaultMemberAccess(defaultMemberAccess);
+        }
+
+        public void AddUnboundDefaultMemberAccesses(QualifiedModuleName module, IEnumerable<IdentifierReference> defaultMemberAccesses)
+        {
+            var moduleState = _moduleStates.GetOrAdd(module, new ModuleState(new ConcurrentDictionary<Declaration, byte>()));
+            foreach(var defaultMemberAccess in defaultMemberAccesses)
+            {
+                moduleState.AddUnboundDefaultMemberAccess(defaultMemberAccess);
             }
         }
 

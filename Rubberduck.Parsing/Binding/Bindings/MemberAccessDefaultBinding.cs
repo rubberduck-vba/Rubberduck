@@ -99,7 +99,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return boundExpression;
             }
-            return CreateFailedExpression(_lExpression);
+            return CreateFailedExpression(_lExpression, _context);
         }
 
         private IBoundExpression ResolveLExpressionIsVariablePropertyOrFunction()
@@ -174,12 +174,12 @@ namespace Rubberduck.Parsing.Binding
                 return new MemberAccessExpression(subroutine, ExpressionClassification.Subroutine, _context, _unrestrictedNameContext, _lExpression);
             }
             // Assume that no match = failure on our side.
-            return CreateFailedExpression(_lExpression);
+            return CreateFailedExpression(_lExpression, _context);
         }
 
-        private IBoundExpression CreateFailedExpression(IBoundExpression expression)
+        private IBoundExpression CreateFailedExpression(IBoundExpression expression, ParserRuleContext context)
         {
-            var failedExpr = new ResolutionFailedExpression();
+            var failedExpr = new ResolutionFailedExpression(context);
             failedExpr.AddSuccessfullyResolvedExpression(expression);
             return failedExpr;
         }

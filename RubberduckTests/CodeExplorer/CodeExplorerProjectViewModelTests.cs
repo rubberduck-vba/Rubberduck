@@ -127,8 +127,8 @@ namespace RubberduckTests.CodeExplorer
         [Category("Code Explorer")]
         [TestCase(DeclarationType.Parameter)]
         [TestCase(DeclarationType.LineLabel)]
-        [TestCase(DeclarationType.UnresolvedMember)]        // TODO: Inconclusive pending test setup that will actually create one :-/
-        //[TestCase(DeclarationType.BracketedExpression)]   // TODO: This causes a parser error in testing due to no host application.
+        [TestCase(DeclarationType.UnresolvedMember, Ignore = "Pending test setup that will actually create one")]
+        [TestCase(DeclarationType.BracketedExpression, Ignore = "This causes a parser error in testing due to no host application.")]
         public void TrackedDeclarations_ExcludesNonNodeTypes(DeclarationType excluded)
         {
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations;
@@ -147,8 +147,8 @@ namespace RubberduckTests.CodeExplorer
         [Test]
         [Category("Code Explorer")]
         [TestCase(DeclarationType.Variable)]
-        [TestCase(DeclarationType.Control)]
-        [TestCase(DeclarationType.Constant)]    // TODO: Inconclusive pending test setup that will actually create one :-/
+        [TestCase(DeclarationType.Control, Ignore = "Pending test setup that will actually create one.")]
+        [TestCase(DeclarationType.Constant)]
         public void TrackedDeclarations_ExcludesMemberEnclosedTypes(DeclarationType excluded)
         {
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations;

@@ -189,3 +189,4 @@ Rubberduck.CodeAnalysis.xml
 
 #Gradle 
 /.gradle/
+/Rubberduck.CodeAnalysis/Rubberduck.CodeAnalysis.xml

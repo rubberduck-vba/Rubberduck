@@ -15,39 +15,30 @@ namespace Rubberduck.Parsing.Binding
             _declarationFinder = declarationFinder;
         }
 
-        public IBoundExpression Resolve(Declaration module, Declaration parent, IParseTree expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
+        public IBoundExpression Resolve(Declaration module, Declaration parent, IParseTree expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext, bool requiresLetCoercion = false, bool isLetAssignment = false)
         {
             IExpressionBinding bindingTree = BuildTree(module, parent, expression, withBlockVariable, statementContext);
-            if (bindingTree != null)
-            {
-                return bindingTree.Resolve();
-            }
-            return null;
+            return bindingTree?.Resolve();
         }
 
-        public IExpressionBinding BuildTree(Declaration module, Declaration parent, IParseTree expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
+        public IExpressionBinding BuildTree(Declaration module, Declaration parent, IParseTree expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext, bool requiresLetCoercion = false, bool isLetAssignment = false)
         {
             switch (expression)
             {
                 case VBAParser.LExprContext lExprContext:
-                    return Visit(module, parent, lExprContext);
+                    return Visit(module, parent, lExprContext.lExpression());
                 case VBAParser.CtLExprContext ctLExprContext:
-                    return Visit(module, parent, ctLExprContext);
+                    return Visit(module, parent, ctLExprContext.lExpression());
+                case VBAParser.BuiltInTypeExprContext builtInTypeExprContext:
+                    return Visit(builtInTypeExprContext.builtInType());
                 default:
                     throw new NotSupportedException($"Unexpected context type {expression.GetType()}");
             }
         }
 
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.LExprContext expression)
+        private IExpressionBinding Visit(VBAParser.BuiltInTypeContext builtInType)
         {
-            var lexpr = expression.lExpression();
-            return Visit(module, parent, lexpr);
-        }
-
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.CtLExprContext expression)
-        {
-            var lexpr = expression.lExpression();
-            return Visit(module, parent, lexpr);
+            return new BuiltInTypeDefaultBinding(builtInType);
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.LExpressionContext expression)
