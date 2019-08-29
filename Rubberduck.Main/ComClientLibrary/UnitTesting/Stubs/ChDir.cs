@@ -8,7 +8,7 @@ namespace Rubberduck.UnitTesting
     {
         public ChDir()
         {
-            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcChangeDir");
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeNativeApi.DllName, "rtcChangeDir");
 
             InjectDelegate(new ChDirDelegate(ChDirCallback), processAddress);
         }
@@ -25,7 +25,7 @@ namespace Rubberduck.UnitTesting
             TrackUsage("path", pathArg, Tokens.String);
             if (PassThrough)
             {
-                VbeProvider.VbeRuntime.ChangeDir(path);
+                VbeProvider.VbeNativeApi.ChangeDir(path);
             }
         }
     }

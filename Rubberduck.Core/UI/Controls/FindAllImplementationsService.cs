@@ -39,8 +39,8 @@ namespace Rubberduck.UI.Controls
         public bool CanFind(Declaration declaration)
         {
             return declaration is ModuleBodyElementDeclaration moduleBody &&
-                   (moduleBody.IsInterfaceMember || moduleBody.IsInterfaceImplementation) ||
-                   declaration is ClassModuleDeclaration userClass && userClass.IsUserInterface;
+                   moduleBody.Accessibility == Accessibility.Public &&
+                   declaration.ParentDeclaration is ClassModuleDeclaration;
         }
 
         public void FindAllImplementations(Declaration declaration)

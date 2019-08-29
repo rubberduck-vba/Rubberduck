@@ -1,26 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.Events
 {
-    public sealed class VBEEvents : IVBEEvents
+    public sealed class VbeEvents : IVbeEvents
     {
-        private static VBEEvents _instance;
-        private static readonly object Lock = new object();
+        private static VbeEvents _instance;
+        private static readonly object _instanceLock = new object();
         private readonly IVBProjects _projects;
         private readonly Dictionary<string, IVBComponents> _components;
         private readonly Dictionary<string, IReferences> _references;
 
-        public static VBEEvents Initialize(IVBE vbe)
+        private static long _terminated;
+        private const long _true = 1;
+        private const long _false = 0;
+
+        public static VbeEvents Initialize(IVBE vbe)
         {
-            lock (Lock)
+            lock (_instanceLock)
             {
                 if (_instance == null)
                 {
-                    _instance = new VBEEvents(vbe);
+                    _instance = new VbeEvents(vbe);
+                    Interlocked.Exchange(ref _terminated, _false);
                 }
             }
 
@@ -29,19 +35,19 @@ namespace Rubberduck.VBEditor.Events
 
         public static void Terminate()
         {
-            lock (Lock)
+            lock (_instanceLock)
             {
                 if (_instance == null)
                 {
                     return;
                 }
 
-                _instance.Dispose();
+                _instance.TerminateInternal();
                 _instance = null;
             }
         }
 
-        private VBEEvents(IVBE vbe)
+        private VbeEvents(IVBE vbe)
         {
             _components = new Dictionary<string, IVBComponents>();
             _references = new Dictionary<string, IReferences>();
@@ -52,6 +58,11 @@ namespace Rubberduck.VBEditor.Events
             }
             
             _projects = vbe.VBProjects;
+
+            if (_projects.IsWrappingNullReference)
+            {
+                return;
+            }
 
             _projects.AttachEvents();
             _projects.ProjectAdded += ProjectAddedHandler;
@@ -227,51 +238,32 @@ namespace Rubberduck.VBEditor.Events
 
         public event EventHandler EventsTerminated;
 
-        #region IDisposable
+        public bool Terminated => Interlocked.Read(ref _terminated) == _true;
 
-        private bool _disposed;
-        /// <remarks>
-        /// This is a not a true implementation of IDisposable pattern
-        /// because the method is made private and is available only
-        /// via the static method <see cref="Terminate"/> to provide
-        /// a single point of entry for disposing the singleton class
-        /// </remarks>
-        private void Dispose(bool disposing)
+        private void TerminateInternal()
         {
-            if (!_disposed && _projects != null)
+            // If we fail, we at least should advertise that we're now dead
+            Interlocked.Exchange(ref _terminated, _true);
+
+            EventsTerminated?.Invoke(this, EventArgs.Empty);
+            EventsTerminated = delegate { };
+            var projectIds = _components.Keys.ToArray();
+            foreach (var projectid in projectIds)
             {
-                EventsTerminated?.Invoke(this, EventArgs.Empty);
-
-                var projectIds = _components.Keys.ToArray();
-                foreach (var projectid in projectIds)
-                {
-                    UnregisterProjectHandlers(projectid);
-                }
-                
-                _projects.ProjectActivated -= ProjectActivatedHandler;
-                _projects.ProjectRenamed -= ProjectRenamedHandler;
-                _projects.ProjectRemoved -= ProjectRemovedHandler;
-                _projects.ProjectAdded -= ProjectAddedHandler;
-                _projects.DetachEvents();
-                _projects.Dispose();
-                
-                _disposed = true;
+                UnregisterProjectHandlers(projectid);
             }
-        }
 
-        ~VBEEvents()
-        {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            Dispose(false);
-        }
+            if (_projects.IsWrappingNullReference)
+            {
+                return;
+            }
 
-        // This code added to correctly implement the disposable pattern.
-        private void Dispose()
-        {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            _projects.ProjectActivated -= ProjectActivatedHandler;
+            _projects.ProjectRenamed -= ProjectRenamedHandler;
+            _projects.ProjectRemoved -= ProjectRemovedHandler;
+            _projects.ProjectAdded -= ProjectAddedHandler;
+            _projects.DetachEvents();
+            _projects.Dispose();
         }
-        #endregion
     }
 }

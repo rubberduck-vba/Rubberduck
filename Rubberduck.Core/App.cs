@@ -12,6 +12,7 @@ using System.Globalization;
 using System.Linq;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Resources;
+using Rubberduck.Runtime;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.VersionCheck;

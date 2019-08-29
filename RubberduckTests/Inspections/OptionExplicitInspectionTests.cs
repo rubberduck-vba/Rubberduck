@@ -10,11 +10,33 @@ namespace RubberduckTests.Inspections
     [TestFixture]
     public class OptionExplicitInspectionTests
     {
+        private const string OptionExplicitNotSpecified = @"
+Sub DoSomething()
+End Sub";
+
+        [Test]
+        [Category("Inspections")]
+        public void EmptyModule_NoResult()
+        {
+            const string inputCode = @"";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new OptionExplicitInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
+        }
+
         [Test]
         [Category("Inspections")]
         public void NotAlreadySpecified_ReturnsResult()
         {
-            const string inputCode = @"";
+            const string inputCode = OptionExplicitNotSpecified;
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
@@ -50,7 +72,7 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void NotAlreadySpecified_ReturnsMultipleResults()
         {
-            const string inputCode = @"";
+            const string inputCode = OptionExplicitNotSpecified;
 
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
@@ -74,7 +96,7 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void PartiallySpecified_ReturnsResults()
         {
-            const string inputCode1 = @"";
+            const string inputCode1 = OptionExplicitNotSpecified;
             const string inputCode2 = @"Option Explicit";
 
             var builder = new MockVbeBuilder();

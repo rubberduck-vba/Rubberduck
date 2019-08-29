@@ -47,36 +47,45 @@ namespace Rubberduck.UnitTesting
             CodeIsUnderTest = false;
         }
 
-        private T RetrieveOrCreateFunction<T>(Type type) where T : class
+        private T RetrieveOrCreateFunction<T>()
+            where T : StubBase, new()
         {
+            return RetrieveOrCreateFunction(() => new T());
+        }
+
+        private T RetrieveOrCreateFunction<T>(Func<T> factory)
+            where T : StubBase
+        {
+            var type = typeof(T);
+
             CodeIsUnderTest = true;
             if (!ActiveFakes.ContainsKey(type))
             {
-                ActiveFakes.Add(type, (StubBase)Activator.CreateInstance(type));
+                ActiveFakes.Add(type, factory.Invoke());
             }
+
             return ActiveFakes[type] as T;
         }
 
         #region Function Overrides
 
-        public IFake MsgBox => RetrieveOrCreateFunction<IFake>(typeof(MsgBox));
-        public IFake InputBox => RetrieveOrCreateFunction<IFake>(typeof(InputBox));
-        public IStub Beep => RetrieveOrCreateFunction<IStub>(typeof(Beep));
-        public IFake Environ => RetrieveOrCreateFunction<IFake>(typeof(Environ));
-        public IFake Timer => RetrieveOrCreateFunction<IFake>(typeof(Timer));
-        public IFake DoEvents => RetrieveOrCreateFunction<IFake>(typeof(DoEvents));
-        public IFake Shell => RetrieveOrCreateFunction<IFake>(typeof(Shell));
-        public IStub SendKeys => RetrieveOrCreateFunction<IStub>(typeof(SendKeys));
-        public IStub Kill => RetrieveOrCreateFunction<IStub>(typeof(Kill));
-        public IStub MkDir => RetrieveOrCreateFunction<IStub>(typeof(MkDir));
-        public IStub RmDir => RetrieveOrCreateFunction<IStub>(typeof(RmDir));
-        public IStub ChDir => RetrieveOrCreateFunction<IStub>(typeof(ChDir));
-        public IStub ChDrive => RetrieveOrCreateFunction<IStub>(typeof(ChDrive));
-        public IFake CurDir => RetrieveOrCreateFunction<IFake>(typeof(CurDir));
-        public IFake Now => RetrieveOrCreateFunction<IFake>(typeof(Now));
-        public IFake Time => RetrieveOrCreateFunction<IFake>(typeof(Time));
-        public IFake Date => RetrieveOrCreateFunction<IFake>(typeof(Date));
-
+        public IFake MsgBox => RetrieveOrCreateFunction<MsgBox>();
+        public IFake InputBox => RetrieveOrCreateFunction<InputBox>();
+        public IStub Beep => RetrieveOrCreateFunction(() => new Beep(VbeProvider.BeepInterceptor));
+        public IFake Environ => RetrieveOrCreateFunction<Environ>();
+        public IFake Timer => RetrieveOrCreateFunction<Timer>();
+        public IFake DoEvents => RetrieveOrCreateFunction<DoEvents>();
+        public IFake Shell => RetrieveOrCreateFunction<Shell>();
+        public IStub SendKeys => RetrieveOrCreateFunction<SendKeys>();
+        public IStub Kill => RetrieveOrCreateFunction<Kill>();
+        public IStub MkDir => RetrieveOrCreateFunction<MkDir>();
+        public IStub RmDir => RetrieveOrCreateFunction<RmDir>();
+        public IStub ChDir => RetrieveOrCreateFunction<ChDir>();
+        public IStub ChDrive => RetrieveOrCreateFunction<ChDrive>();
+        public IFake CurDir => RetrieveOrCreateFunction<CurDir>();
+        public IFake Now => RetrieveOrCreateFunction<Now>();
+        public IFake Time => RetrieveOrCreateFunction<Time>();
+        public IFake Date => RetrieveOrCreateFunction<Date>();
 
         #endregion
     }

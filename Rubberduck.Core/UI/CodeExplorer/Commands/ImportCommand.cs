@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Resources;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -24,10 +25,16 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IList<string> _importableExtensions;
         private readonly string _filterExtensions;
 
-        public ImportCommand(IVBE vbe, IFileSystemBrowserFactory dialogFactory)
+        public ImportCommand(
+            IVBE vbe, 
+            IFileSystemBrowserFactory dialogFactory, 
+            IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _vbe = vbe;
             _dialogFactory = dialogFactory;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
 
             _importableExtensions =
                 vbe.Kind == VBEKind.Hosted

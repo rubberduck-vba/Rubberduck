@@ -1,3 +1,4 @@
+using Rubberduck.UI.Command.ComCommands;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
 namespace Rubberduck.UI.Command.MenuItems

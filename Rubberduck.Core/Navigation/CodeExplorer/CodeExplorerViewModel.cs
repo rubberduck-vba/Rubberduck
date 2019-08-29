@@ -16,7 +16,8 @@ using System.Windows;
 using System.Windows.Input;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Templates;
-using Rubberduck.UI.UnitTesting.Commands;
+using Rubberduck.UI.Command.ComCommands;
+using Rubberduck.UI.UnitTesting.ComCommands;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Navigation.CodeExplorer

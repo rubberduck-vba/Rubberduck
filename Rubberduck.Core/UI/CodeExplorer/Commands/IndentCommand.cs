@@ -7,6 +7,7 @@ using System.Linq;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Interaction.Navigation;
+using Rubberduck.VBEditor.Events;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -24,7 +25,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IIndenter _indenter;
         private readonly INavigateCommand _navigateCommand;
 
-        public IndentCommand(RubberduckParserState state, IIndenter indenter, INavigateCommand navigateCommand)
+        public IndentCommand(
+            RubberduckParserState state, 
+            IIndenter indenter, 
+            INavigateCommand navigateCommand, 
+            IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _state = state;
             _indenter = indenter;

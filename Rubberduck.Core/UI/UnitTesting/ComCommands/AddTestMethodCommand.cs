@@ -3,25 +3,31 @@ using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.ComCommands;
 using Rubberduck.UnitTesting;
 using Rubberduck.UnitTesting.CodeGeneration;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-namespace Rubberduck.UI.UnitTesting.Commands
+namespace Rubberduck.UI.UnitTesting.ComCommands
 {
     /// <summary>
     /// A command that adds a new test method stub to the active code pane.
     /// </summary>
     [ComVisible(false)]
-    public class AddTestMethodCommand : CommandBase
+    public class AddTestMethodCommand : ComCommandBase
     {
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly ITestCodeGenerator _codeGenerator;
 
-        public AddTestMethodCommand(IVBE vbe, RubberduckParserState state, ITestCodeGenerator codeGenerator)
+        public AddTestMethodCommand(
+            IVBE vbe, 
+            RubberduckParserState state, 
+            ITestCodeGenerator codeGenerator, 
+            IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _vbe = vbe;
             _state = state;

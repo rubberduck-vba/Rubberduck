@@ -190,7 +190,7 @@ namespace RubberduckTests.Mocks
             result.Setup(m => m[It.IsAny<int>()]).Returns<int>(index => Components.ElementAt(index));
             result.Setup(m => m[It.IsAny<string>()]).Returns<string>(name => Components.Single(item => item.Name == name));
             result.SetupGet(m => m.Count).Returns(() => Components.Count);
-
+            
             result.Setup(m => m.Add(It.IsAny<ComponentType>()))
                 .Callback((ComponentType c) =>
                 {
@@ -285,6 +285,10 @@ namespace RubberduckTests.Mocks
             result.SetupGet(m => m.Collection).Returns(() => _vbComponents.Object);
             result.SetupGet(m => m.Type).Returns(() => type);
             result.SetupGet(m => m.HasCodeModule).Returns(true);
+            if (type == ComponentType.UserForm)
+            {
+                result.Setup(m => m.HasDesigner).Returns(true);
+            }
             result.SetupProperty(m => m.Name, name);
             result.SetupGet(m => m.QualifiedModuleName).Returns(() => new QualifiedModuleName(result.Object));
             result.SetupGet(m => m.QualifiedModuleName).Returns(() => new QualifiedModuleName(result.Object));

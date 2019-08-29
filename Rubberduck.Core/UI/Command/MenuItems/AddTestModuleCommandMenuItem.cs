@@ -1,5 +1,5 @@
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
-using Rubberduck.UI.UnitTesting.Commands;
+using Rubberduck.UI.UnitTesting.ComCommands;
 
 namespace Rubberduck.UI.Command.MenuItems
 {

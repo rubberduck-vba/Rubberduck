@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.ComManagement;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -20,7 +21,11 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IProjectsProvider _projectsProvider;
         private readonly IVBE _vbe;
 
-        public OpenDesignerCommand(IProjectsProvider projectsProvider, IVBE vbe)
+        public OpenDesignerCommand(
+            IProjectsProvider projectsProvider, 
+            IVBE vbe, 
+            IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _projectsProvider = projectsProvider;
             _vbe = vbe;

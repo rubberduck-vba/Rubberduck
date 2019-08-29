@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Rubberduck.Interaction;
 using Rubberduck.Navigation.CodeExplorer;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Rename;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.UI.Command.Refactorings.Notifiers;
-using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -25,7 +23,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IRefactoring _refactoring;
         private readonly IRefactoringFailureNotifier _failureNotifier;
 
-        public RenameCommand(RenameRefactoring refactoring, RenameFailedNotifier renameFailedNotifier, IParserStatusProvider parserStatusProvider)
+        public RenameCommand(
+            RenameRefactoring refactoring, 
+            RenameFailedNotifier renameFailedNotifier, 
+            IParserStatusProvider parserStatusProvider, 
+            IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _refactoring = refactoring;
             _failureNotifier = renameFailedNotifier;
@@ -55,7 +58,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 _refactoring.Refactor(node.Declaration);
             }
             catch (RefactoringAbortedException)
-            {}
+            { }
             catch (RefactoringException exception)
             {
                 _failureNotifier.Notify(exception);

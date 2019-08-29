@@ -1,4 +1,6 @@
 ﻿using System.Runtime.InteropServices;
+using Rubberduck.UI.Command.ComCommands;
+using Rubberduck.VBEditor.Events;
 
 namespace Rubberduck.UI.Command
 {
@@ -10,7 +12,9 @@ namespace Rubberduck.UI.Command
     {
         private readonly FindAllReferencesCommand _findAllReferences;
 
-        public FormDesignerFindAllReferencesCommand(FindAllReferencesCommand findAllReferences)
+        public FormDesignerFindAllReferencesCommand(
+            FindAllReferencesCommand findAllReferences, 
+            IVbeEvents vbeEvents)
         {
             _findAllReferences = findAllReferences;
 

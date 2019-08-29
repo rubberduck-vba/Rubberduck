@@ -22,6 +22,7 @@ using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.ComCommands;
 using Rubberduck.UI.Settings;
 using Rubberduck.VBEditor;
 

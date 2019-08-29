@@ -31,6 +31,7 @@ using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
 using Rubberduck.Parsing.VBA.ReferenceManagement;
 using Rubberduck.Refactorings;
+using Rubberduck.Runtime;
 using Rubberduck.Settings;
 using GeneralSettings = Rubberduck.Settings.GeneralSettings;
 using Rubberduck.SettingsProvider;
@@ -64,13 +65,15 @@ namespace Rubberduck.Root
         private readonly IAddIn _addin;
         private readonly GeneralSettings _initialSettings;
         private readonly IVbeNativeApi _vbeNativeApi;
+        private readonly IBeepInterceptor _beepInterceptor;
 
-        public RubberduckIoCInstaller(IVBE vbe, IAddIn addin, GeneralSettings initialSettings, IVbeNativeApi vbeNativeApi)
+        public RubberduckIoCInstaller(IVBE vbe, IAddIn addin, GeneralSettings initialSettings, IVbeNativeApi vbeNativeApi, IBeepInterceptor beepInterceptor)
         {
             _vbe = vbe;
             _addin = addin;
             _initialSettings = initialSettings;
             _vbeNativeApi = vbeNativeApi;
+            _beepInterceptor = beepInterceptor;
         }
 
         //Guidelines and words of caution:
@@ -1003,10 +1006,11 @@ namespace Rubberduck.Root
             //note: This registration makes Castle Windsor inject _vbe_CommandBars in all ICommandBars Parent properties.
             container.Register(Component.For<ICommandBars>().Instance(_vbe.CommandBars));
             container.Register(Component.For<IUiContextProvider>().Instance(UiContextProvider.Instance()).LifestyleSingleton());
-            container.Register(Component.For<IVBEEvents>().Instance(VBEEvents.Initialize(_vbe)).LifestyleSingleton());
+            container.Register(Component.For<IVbeEvents>().Instance(VbeEvents.Initialize(_vbe)).LifestyleSingleton());
             container.Register(Component.For<ITempSourceFileHandler>().Instance(_vbe.TempSourceFileHandler).LifestyleSingleton());
             container.Register(Component.For<IPersistencePathProvider>().Instance(PersistencePathProvider.Instance).LifestyleSingleton());
             container.Register(Component.For<IVbeNativeApi>().Instance(_vbeNativeApi).LifestyleSingleton());
+            container.Register(Component.For<IBeepInterceptor>().Instance(_beepInterceptor).LifestyleSingleton());
         }
     }
 }

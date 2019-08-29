@@ -70,7 +70,7 @@ namespace Rubberduck.API.VBA
         private readonly RubberduckParserState _state;
         private readonly SynchronousParseCoordinator _parser;
         private readonly IVBE _vbe;
-        private readonly IVBEEvents _vbeEvents;
+        private readonly IVbeEvents _vbeEvents;
         private readonly IUiDispatcher _dispatcher;
         private readonly CancellationTokenSource _tokenSource;
 
@@ -91,7 +91,7 @@ namespace Rubberduck.API.VBA
             }
 
             _vbe = RootComWrapperFactory.GetVbeWrapper(vbe);
-            _vbeEvents = VBEEvents.Initialize(_vbe);
+            _vbeEvents = VbeEvents.Initialize(_vbe);
             var declarationFinderFactory = new ConcurrentlyConstructedDeclarationFinderFactory();
             var projectRepository = new ProjectsRepository(_vbe);
             var projectsToBeLoadedFromComSelector = new ProjectsToResolveFromComProjectsSelector(projectRepository);

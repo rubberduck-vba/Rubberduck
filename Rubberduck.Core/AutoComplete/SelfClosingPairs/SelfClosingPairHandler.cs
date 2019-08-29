@@ -91,7 +91,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairs
             // 1-based selection span in the code pane starts at column 1 but really encompasses the entire line.
             var snippetPosition = new Selection(result.SnippetPosition.StartLine, 1, result.SnippetPosition.EndLine, 1);
             result = new CodeString(result.Code, result.CaretPosition, snippetPosition);
-
+            _scpService.ShowIntellisense();
             e.Handled = true;
             return true;
         }
