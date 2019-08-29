@@ -43,6 +43,7 @@ namespace Rubberduck.Inspections.Concrete
                                      && !member.IsIgnoringInspectionResultFor(AnnotationName)))
                 .Select(result => new DeclarationInspectionResult(this,
                                         string.Format(InspectionResults.ImplementedInterfaceMemberInspection,
+                                                    result.QualifiedModuleName.ToString(),
                                                     Resources.RubberduckUI.ResourceManager
                                                         .GetString("DeclarationType_" + result.DeclarationType)
                                                         .Capitalize(),

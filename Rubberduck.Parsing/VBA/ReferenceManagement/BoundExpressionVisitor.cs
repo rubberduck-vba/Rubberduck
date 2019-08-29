@@ -240,8 +240,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             Declaration parent
         )
         {
-            var expression = argument.Expression;
-            var callSiteContext = expression.Context;
+            var callSiteContext = argument.Context;
             var identifier = callSiteContext.GetText();
             var selection = callSiteContext.GetSelection();
             var callee = argument.ReferencedParameter;

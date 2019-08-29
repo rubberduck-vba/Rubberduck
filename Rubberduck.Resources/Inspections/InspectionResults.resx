@@ -435,11 +435,15 @@ In memoriam, 1972-2018</value>
     <comment>{0} Method kind, {1} Method name</comment>
   </data>
   <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
-    <value>Interface class module contains a concrete implementation for {0} '{1}'.</value>
-    <comment>{0} Method kind, {1} Method name</comment>
+    <value>Interface class module '{2}' contains a concrete implementation for {0} '{1}'.</value>
+    <comment>{0} Method kind, {1} Method name, {2} interface class module name</comment>
   </data>
   <data name="ImplicitDefaultMemberAssignmentInspection_Unbound" xml:space="preserve">
     <value>Assignment to '{0}' implicitly assigns to an unbound default member.</value>
     <comment>{0} expression</comment>
+  </data>
+  <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>The argument '{2}' of type '{3}' is passed to the parameter '{0}' of the incompatible type '{1}'.</value>
+    <comment>{0} parameter name, {1} parameter declared type, {2} argument expression text, {3} argument set type name</comment>
   </data>
 </root>

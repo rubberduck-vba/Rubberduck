@@ -9,7 +9,6 @@ namespace Rubberduck.Parsing.Binding
     public sealed class ArgumentListArgument
     {
         private readonly IExpressionBinding _binding;
-        private readonly ParserRuleContext _context;
         private readonly Func<Declaration, IBoundExpression> _namedArgumentExpressionCreator;
         private readonly bool _isAddressOfArgument;
 
@@ -21,7 +20,7 @@ namespace Rubberduck.Parsing.Binding
         public ArgumentListArgument(IExpressionBinding binding, ParserRuleContext context, ArgumentListArgumentType argumentType, Func<Declaration, IBoundExpression> namedArgumentExpressionCreator, bool isAddressOfArgument = false)
         {
             _binding = binding;
-            _context = context;
+            Context = context;
             ArgumentType = argumentType;
             _namedArgumentExpressionCreator = namedArgumentExpressionCreator;
             _isAddressOfArgument = isAddressOfArgument;
@@ -32,6 +31,7 @@ namespace Rubberduck.Parsing.Binding
         public IBoundExpression NamedArgumentExpression { get; private set; }
         public IBoundExpression Expression { get; private set; }
         public ParameterDeclaration ReferencedParameter { get; private set; }
+        public ParserRuleContext Context { get; }
 
         public void Resolve(Declaration calledProcedure, int parameterIndex, bool isArrayAccess = false)
         {
@@ -46,7 +46,7 @@ namespace Rubberduck.Parsing.Binding
                         ||  ReferencedParameter != null 
                             && !CanBeObject(ReferencedParameter)))
                 {
-                    binding = new LetCoercionDefaultBinding(_context, binding);
+                    binding = new LetCoercionDefaultBinding(Context, binding);
                 }
             }
 

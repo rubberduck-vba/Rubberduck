@@ -410,4 +410,13 @@ In Memoriam, 1972-2018</value>
   <data name="ImplicitDefaultMemberAssignmentInspection_Unbound" xml:space="preserve">
     <value>Zuweisung zu '{0}' weist implizit einem nicht gebundenen Standard-Member zu.</value>
   </data>
+  <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>Das Argument '{2}' vom Typ '{3}' wird für den Parameter '{0}' vom inkompatiblen Typ '{1}' übergeben.</value>
+  </data>
+  <data name="EmptyMethodInspection" xml:space="preserve">
+    <value>{0} '{1}'  enthält keine ausführbaren Anweisungen.</value>
+  </data>
+  <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
+    <value>Die Interface-Klasse '{2}' enthält eine Implementierung für die  {0} '{1}'.</value>
+  </data>
 </root>
