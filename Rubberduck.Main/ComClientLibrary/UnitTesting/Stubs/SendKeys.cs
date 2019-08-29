@@ -9,7 +9,7 @@ namespace Rubberduck.UnitTesting
     {
         public SendKeys()
         {
-            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcSendKeys");
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeNativeApi.DllName, "rtcSendKeys");
 
             InjectDelegate(new SendKeysDelegate(SendKeysCallback), processAddress);
         }

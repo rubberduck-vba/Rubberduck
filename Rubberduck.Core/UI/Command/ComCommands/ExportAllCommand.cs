@@ -1,18 +1,23 @@
 using System.IO;
 using System.Windows.Forms;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Resources;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.ComCommands
 {
-    public class ExportAllCommand : CommandBase 
+    public class ExportAllCommand : ComCommandBase 
     {
         private readonly IVBE _vbe;
         private readonly IFileSystemBrowserFactory _factory;
 
-        public ExportAllCommand(IVBE vbe, IFileSystemBrowserFactory folderBrowserFactory)
+        public ExportAllCommand(
+            IVBE vbe, 
+            IFileSystemBrowserFactory folderBrowserFactory, 
+            IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _vbe = vbe;
             _factory = folderBrowserFactory;

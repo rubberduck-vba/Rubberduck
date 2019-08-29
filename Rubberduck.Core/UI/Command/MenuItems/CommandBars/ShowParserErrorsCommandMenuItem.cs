@@ -1,7 +1,7 @@
 using System;
 using System.Drawing;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Properties;
+using Rubberduck.UI.Command.ComCommands;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 

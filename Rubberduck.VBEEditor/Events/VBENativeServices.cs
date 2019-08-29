@@ -48,7 +48,7 @@ namespace Rubberduck.VBEditor.Events
                 WindowFocusChange = delegate { };
                 User32.UnhookWinEvent(_eventHandle);
                 Subclasses.Dispose();
-                VBEEvents.Terminate();
+                VbeEvents.Terminate();
                 _vbe = null;
             }
         }

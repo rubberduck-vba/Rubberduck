@@ -3,25 +3,28 @@ using Rubberduck.Common;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.FindSymbol;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.Utility;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.ComCommands
 {
     /// <summary>
     /// A command that lets user search for and navigate to any identifier.
     /// </summary>
     [ComVisible(false)]
-    public class FindSymbolCommand : CommandBase
+    public class FindSymbolCommand : ComCommandBase
     {
-        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly DeclarationIconCache _iconCache;
         private readonly NavigateCommand _navigateCommand;
 
-        public FindSymbolCommand(IVBE vbe, RubberduckParserState state, ISelectionService selectionService, DeclarationIconCache iconCache)
+        public FindSymbolCommand(
+            RubberduckParserState state, 
+            ISelectionService selectionService,
+            DeclarationIconCache iconCache, 
+            IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
-            _vbe = vbe;
             _state = state;
             _iconCache = iconCache;
 

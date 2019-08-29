@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Rubberduck.Navigation.CodeExplorer;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
@@ -18,7 +19,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private readonly IVBE _vbe;
 
-        public OpenProjectPropertiesCommand(IVBE vbe)
+        public OpenProjectPropertiesCommand(
+            IVBE vbe, 
+            IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _vbe = vbe;
 

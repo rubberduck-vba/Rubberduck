@@ -1,13 +1,9 @@
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.SmartIndenter;
-using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.ComCommands;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using RubberduckTests.Commands;
 using RubberduckTests.Mocks;
 using RubberduckTests.Settings;
 
@@ -315,7 +311,7 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, new Selection(6, 1));
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var indentCommand = new IndentCurrentProcedureCommand(vbe.Object, new Indenter(vbe.Object, () => IndenterSettingsTests.GetMockIndenterSettings()), state);
+                var indentCommand = MockIndenter.ArrangeIndentCurrentProcedureCommand(vbe, new Indenter(vbe.Object, () => IndenterSettingsTests.GetMockIndenterSettings()), state);
                 indentCommand.Execute(null);
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }
@@ -597,7 +593,7 @@ End Sub";
                     s.LinesBetweenProcedures = 1;
                     return s;
                 });
-                var indentCommand = new IndentCurrentProcedureCommand(vbe.Object, indenter, state);
+                var indentCommand = MockIndenter.ArrangeIndentCurrentProcedureCommand(vbe, indenter, state);
                 indentCommand.Execute(null);
 
                 Assert.AreEqual(expected, component.CodeModule.Content());
@@ -631,7 +627,7 @@ End Sub";
                     s.LinesBetweenProcedures = 1;
                     return s;
                 });
-                var indentCommand = new IndentCurrentProcedureCommand(vbe.Object, indenter, state);
+                var indentCommand = MockIndenter.ArrangeIndentCurrentProcedureCommand(vbe, indenter, state);
                 indentCommand.Execute(null);
 
                 Assert.AreEqual(expected, component.CodeModule.Content());

@@ -16,10 +16,10 @@ namespace Rubberduck.Settings
         private static readonly string HostApplication = Path.GetFileName(Application.ExecutablePath).ToUpperInvariant();
         
         private readonly IEnvironmentProvider _environment;
-        private readonly IVBEEvents _events;
+        private readonly IVbeEvents _events;
         private bool _listening;
 
-        public ReferenceConfigProvider(IPersistenceService<ReferenceSettings> persister, IEnvironmentProvider environment, IVBEEvents events)
+        public ReferenceConfigProvider(IPersistenceService<ReferenceSettings> persister, IEnvironmentProvider environment, IVbeEvents events)
             : base(persister, new DefaultSettings<ReferenceSettings, Properties.Settings>())
         {
             _environment = environment;

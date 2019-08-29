@@ -1,17 +1,19 @@
 ﻿using System.Runtime.InteropServices;
 using Rubberduck.UI.ToDoItems;
+using Rubberduck.VBEditor.Events;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.ComCommands
 {
     /// <summary>
     /// A command that displays the To-Do explorer window.
     /// </summary>
     [ComVisible(false)]
-    public class ToDoExplorerCommand : CommandBase
+    public class ToDoExplorerCommand : ComCommandBase
     {
         private readonly ToDoExplorerDockablePresenter _presenter;
 
-        public ToDoExplorerCommand(ToDoExplorerDockablePresenter presenter)
+        public ToDoExplorerCommand(ToDoExplorerDockablePresenter presenter, IVbeEvents vbeEvents)
+            : base(vbeEvents)
         {
             _presenter = presenter;
         }
