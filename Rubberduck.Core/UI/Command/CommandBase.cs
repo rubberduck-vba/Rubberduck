@@ -16,6 +16,7 @@ namespace Rubberduck.UI.Command
         {
             Logger = logger ?? LogManager.GetLogger(GetType().FullName);
             CanExecuteCondition = (parameter => true);
+            OnExecuteCondition = (parameter => true);
         }
 
         protected ILogger Logger { get; }
@@ -23,41 +24,34 @@ namespace Rubberduck.UI.Command
 
         protected Func<object, bool> CanExecuteCondition { get; private set; }
         protected Func<object, bool> OnExecuteCondition { get; private set; }
-        private bool RequireReEvaluationOnExecute => OnExecuteCondition != null;
 
-        protected void AddToCanExecuteEvaluation(Func<object, bool> furtherCanExecuteEvaluation, bool requireReevaluation = false)
+        protected void AddToCanExecuteEvaluation(Func<object, bool> furtherCanExecuteEvaluation, bool requireReevaluationAlso = false)
         {
             if (furtherCanExecuteEvaluation == null)
             {
                 return;
             }
 
-            AddToCanExecuteEvaluation(furtherCanExecuteEvaluation);
+            var currentCanExecuteCondition = CanExecuteCondition;
+            CanExecuteCondition = (parameter) =>
+                currentCanExecuteCondition(parameter) && furtherCanExecuteEvaluation(parameter);
 
-            if (requireReevaluation)
+            if (requireReevaluationAlso)
             {
                 AddToOnExecuteEvaluation(furtherCanExecuteEvaluation);
             }
         }
 
-        private void AddToCanExecuteEvaluation(Func<object, bool> furtherCanExecuteEvaluation)
+        protected void AddToOnExecuteEvaluation(Func<object, bool> furtherCanExecuteEvaluation)
         {
-            var currentCanExecuteCondition = CanExecuteCondition;
-            CanExecuteCondition = (parameter) =>
-                currentCanExecuteCondition(parameter) && furtherCanExecuteEvaluation(parameter);
-        }
+            if (furtherCanExecuteEvaluation == null)
+            {
+                return;
+            }
 
-        private void AddToOnExecuteEvaluation(Func<object, bool> furtherCanExecuteEvaluation)
-        {
-            if (OnExecuteCondition == null)
-            {
-                OnExecuteCondition = furtherCanExecuteEvaluation;
-            }
-            else
-            {
-                var currentOnExecute = OnExecuteCondition;
-                OnExecuteCondition = (parameter) => currentOnExecute(parameter) && furtherCanExecuteEvaluation(parameter);
-            }
+            var currentOnExecute = OnExecuteCondition;
+            OnExecuteCondition = (parameter) => 
+                currentOnExecute(parameter) && furtherCanExecuteEvaluation(parameter);
         }
 
         public bool CanExecute(object parameter)
@@ -83,12 +77,9 @@ namespace Rubberduck.UI.Command
         {
             try
             {
-                if (RequireReEvaluationOnExecute)
+                if (!OnExecuteCondition(parameter))
                 {
-                    if (!OnExecuteCondition(parameter))
-                    {
-                        return;
-                    }
+                    return;
                 }
 
                 OnExecute(parameter);
