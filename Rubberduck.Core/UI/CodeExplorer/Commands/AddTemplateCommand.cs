@@ -33,7 +33,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public AddTemplateCommand(
                 ICodeExplorerAddComponentService addComponentService, 
-                ITemplateProvider provider, IVbeEvents vbeEvents) 
+                ITemplateProvider provider, 
+                IVbeEvents vbeEvents) 
                 : base(vbeEvents)
         {
             _provider = provider;

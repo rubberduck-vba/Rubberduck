@@ -25,7 +25,11 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IList<string> _importableExtensions;
         private readonly string _filterExtensions;
 
-        public ImportCommand(IVBE vbe, IFileSystemBrowserFactory dialogFactory, IVbeEvents vbeEvents) : base(vbeEvents)
+        public ImportCommand(
+            IVBE vbe, 
+            IFileSystemBrowserFactory dialogFactory, 
+            IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _vbe = vbe;
             _dialogFactory = dialogFactory;

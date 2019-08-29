@@ -21,7 +21,11 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly RubberduckParserState _state;
         private readonly FindAllReferencesService _finder;
 
-        public CodeExplorerFindAllReferencesCommand(RubberduckParserState state, FindAllReferencesService finder, IVbeEvents vbeEvents) : base(vbeEvents)
+        public CodeExplorerFindAllReferencesCommand(
+            RubberduckParserState state, 
+            FindAllReferencesService finder, 
+            IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _state = state;
             _finder = finder;

@@ -12,7 +12,9 @@ namespace Rubberduck.UI.UnitTesting.ComCommands
         private readonly AddTestModuleCommand _newUnitTestModuleCommand;
 
         public AddTestModuleWithStubsCommand(
-            IVBE vbe, AddTestModuleCommand newUnitTestModuleCommand, IVbeEvents vbeEvents) 
+            IVBE vbe, 
+            AddTestModuleCommand newUnitTestModuleCommand, 
+            IVbeEvents vbeEvents) 
             : base(vbeEvents)
         {
             _vbe = vbe;

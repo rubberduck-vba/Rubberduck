@@ -8,7 +8,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 {
     public abstract class CodeExplorerCommandBase : ComCommandBase
     {
-        protected CodeExplorerCommandBase(IVbeEvents vbeEvents) : base(vbeEvents)
+        protected CodeExplorerCommandBase(IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }

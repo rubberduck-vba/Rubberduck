@@ -13,7 +13,8 @@ namespace Rubberduck.UI.Command.ComCommands
         private readonly InspectionResultsDockablePresenter _presenter;
 
         public InspectionResultsCommand(
-            InspectionResultsDockablePresenter presenter, IVbeEvents vbeEvents)
+            InspectionResultsDockablePresenter presenter, 
+            IVbeEvents vbeEvents)
             : base(vbeEvents)
         {
             _presenter = presenter;

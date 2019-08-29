@@ -23,7 +23,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IRefactoring _refactoring;
         private readonly IRefactoringFailureNotifier _failureNotifier;
 
-        public RenameCommand(RenameRefactoring refactoring, RenameFailedNotifier renameFailedNotifier, IParserStatusProvider parserStatusProvider, IVbeEvents vbeEvents) : base(vbeEvents)
+        public RenameCommand(
+            RenameRefactoring refactoring, 
+            RenameFailedNotifier renameFailedNotifier, 
+            IParserStatusProvider parserStatusProvider, 
+            IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _refactoring = refactoring;
             _failureNotifier = renameFailedNotifier;

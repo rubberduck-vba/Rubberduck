@@ -22,8 +22,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         };
 
         public AddTestComponentCommand(
-            IVBE vbe, RubberduckParserState state, 
-            ITestCodeGenerator codeGenerator, IVbeEvents vbeEvents)
+            IVBE vbe, 
+            RubberduckParserState state, 
+            ITestCodeGenerator codeGenerator, 
+            IVbeEvents vbeEvents)
             : base(vbe, state, codeGenerator, vbeEvents)
         {
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);

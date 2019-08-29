@@ -14,7 +14,10 @@ namespace Rubberduck.UI.Command.ComCommands
         private readonly RubberduckParserState _state;
 
         public IndentCurrentProcedureCommand(
-            IVBE vbe, IIndenter indenter, RubberduckParserState state, IVbeEvents vbeEvents)
+            IVBE vbe, 
+            IIndenter indenter, 
+            RubberduckParserState state, 
+            IVbeEvents vbeEvents)
             : base(vbeEvents)
         {
             _vbe = vbe;

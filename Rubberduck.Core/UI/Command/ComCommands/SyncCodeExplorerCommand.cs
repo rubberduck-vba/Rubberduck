@@ -18,7 +18,10 @@ namespace Rubberduck.UI.Command.ComCommands
         private readonly RubberduckParserState _state;
         private readonly IVbeEvents _vbeEvents;
 
-        public CodeExplorerSyncProvider(IVBE vbe, RubberduckParserState state, IVbeEvents vbeEvents)
+        public CodeExplorerSyncProvider(
+            IVBE vbe, 
+            RubberduckParserState state, 
+            IVbeEvents vbeEvents)
         {
             _vbe = vbe;
             _state = state;

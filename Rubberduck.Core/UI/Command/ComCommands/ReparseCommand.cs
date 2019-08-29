@@ -32,9 +32,13 @@ namespace Rubberduck.UI.Command.ComCommands
         private readonly GeneralSettings _settings;
 
         public ReparseCommand(
-            IVBE vbe, IConfigurationService<GeneralSettings> settingsProvider, 
-            RubberduckParserState state, IVBETypeLibsAPI typeLibApi, IVbeSettings vbeSettings, 
-            IMessageBox messageBox, IVbeEvents vbeEvents) 
+            IVBE vbe, 
+            IConfigurationService<GeneralSettings> settingsProvider, 
+            RubberduckParserState state, 
+            IVBETypeLibsAPI typeLibApi, 
+            IVbeSettings vbeSettings, 
+            IMessageBox messageBox, 
+            IVbeEvents vbeEvents) 
             : base(vbeEvents)
         {
             _vbe = vbe;

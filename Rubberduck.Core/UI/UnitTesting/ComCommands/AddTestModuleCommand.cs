@@ -19,7 +19,9 @@ namespace Rubberduck.UI.UnitTesting.ComCommands
         private readonly ITestCodeGenerator _codeGenerator;
 
         public AddTestModuleCommand(
-            IVBE vbe, RubberduckParserState state, ITestCodeGenerator codeGenerator,
+            IVBE vbe, 
+            RubberduckParserState state, 
+            ITestCodeGenerator codeGenerator,
             IVbeEvents vbeEvents)
             : base(vbeEvents)
         {

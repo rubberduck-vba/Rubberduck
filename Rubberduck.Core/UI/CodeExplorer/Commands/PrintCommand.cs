@@ -18,7 +18,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private readonly IProjectsProvider _projectsProvider;
 
-        public PrintCommand(IProjectsProvider projectsProvider, IVbeEvents vbeEvents) : base(vbeEvents)
+        public PrintCommand(
+            IProjectsProvider projectsProvider, 
+            IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _projectsProvider = projectsProvider;
 

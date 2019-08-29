@@ -21,7 +21,11 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IProjectsProvider _projectsProvider;
         private readonly IVBE _vbe;
 
-        public OpenDesignerCommand(IProjectsProvider projectsProvider, IVBE vbe, IVbeEvents vbeEvents) : base(vbeEvents)
+        public OpenDesignerCommand(
+            IProjectsProvider projectsProvider, 
+            IVBE vbe, 
+            IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _projectsProvider = projectsProvider;
             _vbe = vbe;

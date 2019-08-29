@@ -25,7 +25,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IIndenter _indenter;
         private readonly INavigateCommand _navigateCommand;
 
-        public IndentCommand(RubberduckParserState state, IIndenter indenter, INavigateCommand navigateCommand, IVbeEvents vbeEvents) : base(vbeEvents)
+        public IndentCommand(
+            RubberduckParserState state, 
+            IIndenter indenter, 
+            INavigateCommand navigateCommand, 
+            IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _state = state;
             _indenter = indenter;

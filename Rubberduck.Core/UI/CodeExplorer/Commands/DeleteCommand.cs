@@ -18,7 +18,13 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IMessageBox _messageBox;
         private readonly IVBE _vbe;
 
-        public DeleteCommand(RemoveCommand removeCommand, IProjectsProvider projectsProvider, IMessageBox messageBox, IVBE vbe, IVbeEvents vbeEvents) : base(vbeEvents)
+        public DeleteCommand(
+            RemoveCommand removeCommand, 
+            IProjectsProvider projectsProvider, 
+            IMessageBox messageBox, 
+            IVBE vbe, 
+            IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _removeCommand = removeCommand;
             _projectsProvider = projectsProvider;

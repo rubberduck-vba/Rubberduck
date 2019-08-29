@@ -20,8 +20,11 @@ namespace Rubberduck.UI.Command.ComCommands
         private readonly FindAllReferencesService _finder;
 
         public FindAllReferencesCommand(
-            RubberduckParserState state, IVBE vbe, ISearchResultsWindowViewModel viewModel, 
-            FindAllReferencesService finder, IVbeEvents vbeEvents)
+            RubberduckParserState state, 
+            IVBE vbe, 
+            ISearchResultsWindowViewModel viewModel, 
+            FindAllReferencesService finder, 
+            IVbeEvents vbeEvents)
             : base(vbeEvents)
         {
             _state = state;

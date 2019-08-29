@@ -13,7 +13,8 @@ namespace Rubberduck.UI.Command
         private readonly FindAllReferencesCommand _findAllReferences;
 
         public FormDesignerFindAllReferencesCommand(
-            FindAllReferencesCommand findAllReferences, IVbeEvents vbeEvents)
+            FindAllReferencesCommand findAllReferences, 
+            IVbeEvents vbeEvents)
         {
             _findAllReferences = findAllReferences;
 

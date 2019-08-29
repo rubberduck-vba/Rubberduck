@@ -26,10 +26,12 @@ namespace Rubberduck.UI.Command.ComCommands
         private readonly IUiDispatcher _uiDispatcher;
 
         public ShowParserErrorsCommand(
-            INavigateCommand navigateCommand, RubberduckParserState state, 
+            INavigateCommand navigateCommand, 
+            RubberduckParserState state, 
             ISearchResultsWindowViewModel viewModel, 
             SearchResultPresenterInstanceManager presenterService,
-            IUiDispatcher uiDispatcher, IVbeEvents vbeEvents)
+            IUiDispatcher uiDispatcher, 
+            IVbeEvents vbeEvents)
             : base(vbeEvents)
         {
             _navigateCommand = navigateCommand;

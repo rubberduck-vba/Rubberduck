@@ -18,7 +18,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private readonly INavigateCommand _openCommand;
 
-        public OpenCommand(INavigateCommand openCommand, IVbeEvents vbeEvents) : base(vbeEvents)
+        public OpenCommand(
+            INavigateCommand openCommand, 
+            IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _openCommand = openCommand;
 
