@@ -8,7 +8,7 @@ namespace Rubberduck.UnitTesting.Fakes
     {
         public InputBox()
         {
-            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcInputBox");
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeNativeApi.DllName, "rtcInputBox");
 
             InjectDelegate(new InputBoxDelegate(InputBoxCallback), processAddress);
         }

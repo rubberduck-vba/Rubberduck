@@ -6,9 +6,10 @@ namespace RubberduckTests.Mocks
 {
     public class MockVbeEvents
     {
-        public static Mock<IVBEEvents> CreateMockVbeEvents(Mock<IVBE> vbe)
+        public static Mock<IVbeEvents> CreateMockVbeEvents(Mock<IVBE> vbe)
         {
-            var result = new Mock<IVBEEvents>();
+            var result = new Mock<IVbeEvents>();
+            result.Setup(r => r.Terminated).Returns(false);
             result.SetupReferenceEqualityIncludingHashCode();
             return result;
         }

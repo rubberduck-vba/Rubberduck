@@ -4,6 +4,7 @@ using Rubberduck.AddRemoveReferences;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Controls;
+using Rubberduck.VBEditor.Events;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -20,7 +21,11 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly RubberduckParserState _state;
         private readonly FindAllReferencesService _finder;
 
-        public CodeExplorerFindAllReferencesCommand(RubberduckParserState state, FindAllReferencesService finder)
+        public CodeExplorerFindAllReferencesCommand(
+            RubberduckParserState state, 
+            FindAllReferencesService finder, 
+            IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _state = state;
             _finder = finder;

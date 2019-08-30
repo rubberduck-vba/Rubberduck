@@ -10,7 +10,7 @@ using RubberduckTests.Mocks;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.SettingsProvider;
 using Rubberduck.ToDoItems;
-using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.ComCommands;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.Utility;
 
@@ -183,14 +183,15 @@ namespace RubberduckTests.TodoExplorer
                 .Build();
 
             var vbe = builder.AddProject(project).Build();
+            var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
 
-            var parser = MockParser.Create(vbe.Object);
+            var parser = MockParser.Create(vbe.Object, vbeEvents:vbeEvents);
             using (var state = parser.State)
             {
                 var cs = GetConfigService(new[] { "TODO", "NOTE", "BUG" });
                 var vm = new ToDoExplorerViewModel(state, cs, null, selectionService, GetMockedUiDispatcher())
                 {
-                    RefreshCommand = new ReparseCommand(vbe.Object, new Mock<IConfigurationService<GeneralSettings>>().Object, state, null, null, null)
+                    RefreshCommand = new ReparseCommand(vbe.Object, new Mock<IConfigurationService<GeneralSettings>>().Object, state, null, null, null, vbeEvents.Object)
                 };
 
                 parser.Parse(new CancellationTokenSource());

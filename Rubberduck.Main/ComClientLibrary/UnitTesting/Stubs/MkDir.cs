@@ -8,7 +8,7 @@ namespace Rubberduck.UnitTesting
     {
         public MkDir()
         {
-            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcMakeDir");
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeNativeApi.DllName, "rtcMakeDir");
 
             InjectDelegate(new MkDirDelegate(MkDirCallback), processAddress);
         }
@@ -25,7 +25,7 @@ namespace Rubberduck.UnitTesting
             TrackUsage("path", pathArg, Tokens.String);
             if (PassThrough)
             {
-                VbeProvider.VbeRuntime.MakeDir(path);
+                VbeProvider.VbeNativeApi.MakeDir(path);
             }
         }
     }

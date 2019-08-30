@@ -4,21 +4,28 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.ComCommands
 {
     /// <summary>
     /// A command that locates all references to a specified identifier, or of the active code module.
     /// </summary>
     [ComVisible(false)]
-    public class FindAllReferencesCommand : CommandBase
+    public class FindAllReferencesCommand : ComCommandBase
     {
         private readonly RubberduckParserState _state;
         private readonly IVBE _vbe;
         private readonly FindAllReferencesService _finder;
 
-        public FindAllReferencesCommand(RubberduckParserState state, IVBE vbe, ISearchResultsWindowViewModel viewModel, FindAllReferencesService finder)
+        public FindAllReferencesCommand(
+            RubberduckParserState state, 
+            IVBE vbe, 
+            ISearchResultsWindowViewModel viewModel, 
+            FindAllReferencesService finder, 
+            IVbeEvents vbeEvents)
+            : base(vbeEvents)
         {
             _state = state;
             _vbe = vbe;

@@ -8,8 +8,8 @@ namespace Rubberduck.UnitTesting.Fakes
     {
         public Environ()
         {
-            var processAddressString = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcEnvironBstr");
-            var processAddressVariant = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcEnvironVar");
+            var processAddressString = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeNativeApi.DllName, "rtcEnvironBstr");
+            var processAddressVariant = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeNativeApi.DllName, "rtcEnvironVar");
 
             InjectDelegate(new EnvironStringDelegate(EnvironStringCallback), processAddressString);
             InjectDelegate(new EnvironVariantDelegate(EnvironVariantCallback), processAddressVariant);

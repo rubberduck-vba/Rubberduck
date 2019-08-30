@@ -11,10 +11,8 @@ using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI.CodeExplorer.Commands;
-using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.ComCommands;
 using RubberduckTests.Mocks;
-using MessageBox = System.Windows.MessageBox;
 
 namespace RubberduckTests.CodeExplorer
 {
@@ -106,7 +104,7 @@ namespace RubberduckTests.CodeExplorer
         [Test]
         public void AddVbForm()
         {
-            using (var explorer = new MockedCodeExplorer(ProjectType.HostProject).SelectFirstModule())
+            using (var explorer = new MockedCodeExplorer(ProjectType.StandardExe).SelectFirstModule())
             {
                 explorer.ExecuteAddVbFormCommand();
                 explorer.VbComponents.Verify(c => c.Add(ComponentType.VBForm), Times.Once);
@@ -133,7 +131,7 @@ namespace RubberduckTests.CodeExplorer
         [Test]
         public void AddMdiForm()
         {
-            using (var explorer = new MockedCodeExplorer(ProjectType.HostProject).SelectFirstModule())
+            using (var explorer = new MockedCodeExplorer(ProjectType.StandardExe).SelectFirstModule())
             {
                 explorer.ExecuteAddMdiFormCommand();
                 explorer.VbComponents.Verify(c => c.Add(ComponentType.MDIForm), Times.Once);
@@ -170,7 +168,7 @@ namespace RubberduckTests.CodeExplorer
         [Test]
         public void AddUserControlForm()
         {
-            using (var explorer = new MockedCodeExplorer(ProjectType.HostProject).SelectFirstModule())
+            using (var explorer = new MockedCodeExplorer(ProjectType.StandardExe).SelectFirstModule())
             {
                 explorer.ExecuteAddUserControlCommand();
                 explorer.VbComponents.Verify(c => c.Add(ComponentType.UserControl), Times.Once);
@@ -197,7 +195,7 @@ namespace RubberduckTests.CodeExplorer
         [Test]
         public void AddPropertyPage()
         {
-            using (var explorer = new MockedCodeExplorer(ProjectType.HostProject).SelectFirstModule())
+            using (var explorer = new MockedCodeExplorer(ProjectType.StandardExe).SelectFirstModule())
             {
                 explorer.ExecuteAddPropertyPageCommand();
                 explorer.VbComponents.Verify(c => c.Add(ComponentType.PropPage), Times.Once);
@@ -224,7 +222,7 @@ namespace RubberduckTests.CodeExplorer
         [Test]
         public void AddUserDocument()
         {
-            using (var explorer = new MockedCodeExplorer(ProjectType.HostProject).SelectFirstModule())
+            using (var explorer = new MockedCodeExplorer(ProjectType.ActiveXExe).SelectFirstModule())
             {
                 explorer.ExecuteAddUserDocumentCommand();
                 explorer.VbComponents.Verify(c => c.Add(ComponentType.DocObject), Times.Once);
@@ -856,6 +854,7 @@ End Sub";
         {
             var builder = new MockVbeBuilder();
             var vbe = builder.Build();
+            var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
             var parser = MockParser.Create(vbe.Object, null, MockVbeEvents.CreateMockVbeEvents(vbe));
             var state = parser.State;
             var dispatcher = new Mock<IUiDispatcher>();
@@ -863,7 +862,8 @@ End Sub";
             dispatcher.Setup(m => m.Invoke(It.IsAny<Action>())).Callback((Action argument) => argument.Invoke());
             dispatcher.Setup(m => m.StartTask(It.IsAny<Action>(), It.IsAny<TaskCreationOptions>())).Returns((Action argument, TaskCreationOptions options) => Task.Factory.StartNew(argument.Invoke, options));
 
-            var viewModel = new CodeExplorerViewModel(state, null, null, null, dispatcher.Object, vbe.Object, null, new CodeExplorerSyncProvider(vbe.Object, state));
+            var viewModel = new CodeExplorerViewModel(state, null, null, null, dispatcher.Object, vbe.Object, null,
+                new CodeExplorerSyncProvider(vbe.Object, state, vbeEvents.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error)

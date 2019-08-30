@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -16,7 +17,11 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _parserState;
 
-        public SetAsStartupProjectCommand(IVBE vbe, RubberduckParserState parserState)
+        public SetAsStartupProjectCommand(
+            IVBE vbe, 
+            RubberduckParserState parserState, 
+            IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _vbe = vbe;
             _parserState = parserState;

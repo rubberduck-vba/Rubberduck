@@ -1,5 +1,7 @@
 ﻿using NUnit.Framework;
 using System.Windows.Forms;
+using Moq;
+using Rubberduck.AutoComplete;
 using Rubberduck.AutoComplete.SelfClosingPairs;
 using Rubberduck.VBEditor;
 
@@ -11,7 +13,7 @@ namespace RubberduckTests.AutoComplete
     {
         private bool Run(SelfClosingPair pair, CodeString original, char input, out TestCodeString testResult)
         {
-            var sut = new SelfClosingPairCompletionService();
+            var sut = ArrangeSelfClosingPairCompletionService();
             if (sut.Execute(pair, original, input, out var result))
             {
                 testResult = new TestCodeString(result);
@@ -24,7 +26,7 @@ namespace RubberduckTests.AutoComplete
 
         private bool Run(SelfClosingPair pair, CodeString original, Keys input, out TestCodeString testResult)
         {
-            var sut = new SelfClosingPairCompletionService();
+            var sut = ArrangeSelfClosingPairCompletionService();
             if (sut.Execute(pair, original, input, out var result))
             {
                 testResult = new TestCodeString(result);
@@ -33,6 +35,12 @@ namespace RubberduckTests.AutoComplete
 
             testResult = null;
             return false;
+        }
+
+        private static SelfClosingPairCompletionService ArrangeSelfClosingPairCompletionService()
+        {
+            var mockCommand = new Mock<IShowQuickInfoCommand>();
+            return new SelfClosingPairCompletionService(mockCommand.Object);
         }
 
         [Test]

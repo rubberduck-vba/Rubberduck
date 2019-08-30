@@ -1,26 +1,29 @@
 ﻿using System.Runtime.InteropServices;
-using NLog;
-using Rubberduck.UI.Command;
+using Rubberduck.Runtime;
+using Rubberduck.UI.Command.ComCommands;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.AutoComplete
 {
-    public interface IShowIntelliSenseCommand
+    public interface IShowQuickInfoCommand
     {
         /// <summary>
-        /// WARNING! Makes an utterly annoying DING! in the VBE if the "QuickInfo" command is unavailable.
+        /// Displays the quick info in the VBE.
+        /// NOTE: By default, it makes an utterly annoying DING! in the VBE if the "QuickInfo" command is unavailable. Hooking is used to suppress the ding.
         /// </summary>
         void Execute();
     }
 
-    public class ShowIntelliSenseCommand : CommandBase, IShowIntelliSenseCommand
+    public class ShowQuickInfoCommand : ComCommandBase, IShowQuickInfoCommand
     {
         private readonly IVBE _vbe;
+        private readonly IBeepInterceptor _beepInterceptor;
 
-        public ShowIntelliSenseCommand(IVBE vbe)
+        public ShowQuickInfoCommand(IVBE vbe, IVbeEvents vbeEvents, IBeepInterceptor beepInterceptor) : base(vbeEvents)
         {
             _vbe = vbe;
-
+            _beepInterceptor = beepInterceptor;
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
@@ -43,11 +46,14 @@ namespace Rubberduck.AutoComplete
 
         protected override void OnExecute(object parameter)
         {
-            const int showIntelliSenseId = 2531;
+            const int showQuickInfoId = 2531;
             using (var commandBars = _vbe.CommandBars)
             {
-                using (var command = commandBars.FindControl(showIntelliSenseId))
+                using (var command = commandBars.FindControl(showQuickInfoId))
                 {
+                    // Ensures that the queued beep message (if any) is suppressed
+                    _beepInterceptor.SuppressBeep(100);
+
                     command.Execute();
                 }
             }

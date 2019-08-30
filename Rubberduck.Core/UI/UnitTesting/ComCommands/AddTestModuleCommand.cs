@@ -1,23 +1,29 @@
 using System.Runtime.InteropServices;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.UI.Command.ComCommands;
+using Rubberduck.UnitTesting.CodeGeneration;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI.Command;
-using Rubberduck.UnitTesting.CodeGeneration;
 
-namespace Rubberduck.UI.UnitTesting.Commands
+namespace Rubberduck.UI.UnitTesting.ComCommands
 {
     /// <summary>
     /// A command that adds a new test module to the active VBAProject.
     /// </summary>
     [ComVisible(false)]
-    public class AddTestModuleCommand : CommandBase
+    public class AddTestModuleCommand : ComCommandBase
     {
         private readonly RubberduckParserState _state;
         private readonly ITestCodeGenerator _codeGenerator;
 
-        public AddTestModuleCommand(IVBE vbe, RubberduckParserState state, ITestCodeGenerator codeGenerator)
+        public AddTestModuleCommand(
+            IVBE vbe, 
+            RubberduckParserState state, 
+            ITestCodeGenerator codeGenerator,
+            IVbeEvents vbeEvents)
+            : base(vbeEvents)
         {
             Vbe = vbe;
             _state = state;

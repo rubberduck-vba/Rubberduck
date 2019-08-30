@@ -16,22 +16,42 @@ namespace Rubberduck.UI.Command
         {
             Logger = logger ?? LogManager.GetLogger(GetType().FullName);
             CanExecuteCondition = (parameter => true);
+            OnExecuteCondition = (parameter => true);
         }
 
         protected ILogger Logger { get; }
         protected abstract void OnExecute(object parameter);
 
         protected Func<object, bool> CanExecuteCondition { get; private set; }
+        protected Func<object, bool> OnExecuteCondition { get; private set; }
 
-        protected void AddToCanExecuteEvaluation(Func<object, bool> furtherCanExecuteEvaluation)
+        protected void AddToCanExecuteEvaluation(Func<object, bool> furtherCanExecuteEvaluation, bool requireReevaluationAlso = false)
         {
             if (furtherCanExecuteEvaluation == null)
             {
                 return;
             }
 
-            var currentCanExecute = CanExecuteCondition;
-            CanExecuteCondition = (parameter) => currentCanExecute(parameter) && furtherCanExecuteEvaluation(parameter);
+            var currentCanExecuteCondition = CanExecuteCondition;
+            CanExecuteCondition = (parameter) =>
+                currentCanExecuteCondition(parameter) && furtherCanExecuteEvaluation(parameter);
+
+            if (requireReevaluationAlso)
+            {
+                AddToOnExecuteEvaluation(furtherCanExecuteEvaluation);
+            }
+        }
+
+        protected void AddToOnExecuteEvaluation(Func<object, bool> furtherCanExecuteEvaluation)
+        {
+            if (furtherCanExecuteEvaluation == null)
+            {
+                return;
+            }
+
+            var currentOnExecute = OnExecuteCondition;
+            OnExecuteCondition = (parameter) => 
+                currentOnExecute(parameter) && furtherCanExecuteEvaluation(parameter);
         }
 
         public bool CanExecute(object parameter)
@@ -57,6 +77,11 @@ namespace Rubberduck.UI.Command
         {
             try
             {
+                if (!OnExecuteCondition(parameter))
+                {
+                    return;
+                }
+
                 OnExecute(parameter);
             }
             catch (Exception exception)

@@ -2,27 +2,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using NLog;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Resources;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
-using Rubberduck.Resources;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.VbeRuntime.Settings;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.ComCommands
 {
     [ComVisible(false)]
     public class ReparseCancellationFlag
     {
-        public bool Canceled { get;  set; }
+        public bool Canceled { get; set; }
     }
 
     [ComVisible(false)]
-    public class ReparseCommand : CommandBase
+    public class ReparseCommand : ComCommandBase
     {
         private readonly IVBE _vbe;
         private readonly IVBETypeLibsAPI _typeLibApi;
@@ -31,7 +31,15 @@ namespace Rubberduck.UI.Command
         private readonly RubberduckParserState _state;
         private readonly GeneralSettings _settings;
 
-        public ReparseCommand(IVBE vbe, IConfigurationService<GeneralSettings> settingsProvider, RubberduckParserState state, IVBETypeLibsAPI typeLibApi, IVbeSettings vbeSettings, IMessageBox messageBox) : base(LogManager.GetCurrentClassLogger())
+        public ReparseCommand(
+            IVBE vbe, 
+            IConfigurationService<GeneralSettings> settingsProvider, 
+            RubberduckParserState state, 
+            IVBETypeLibsAPI typeLibApi, 
+            IVbeSettings vbeSettings, 
+            IMessageBox messageBox, 
+            IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _vbe = vbe;
             _vbeSettings = vbeSettings;

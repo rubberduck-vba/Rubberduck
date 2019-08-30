@@ -9,7 +9,7 @@ namespace Rubberduck.UnitTesting.Fakes
     {
         public Shell()
         {
-            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcShell");
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeNativeApi.DllName, "rtcShell");
 
             InjectDelegate(new ShellDelegate(ShellCallback), processAddress);
         }
@@ -36,7 +36,7 @@ namespace Rubberduck.UnitTesting.Fakes
 
             if (PassThrough)
             {
-                return Convert.ToDouble(VbeProvider.VbeRuntime.Shell(pathname, windowstyle));
+                return Convert.ToDouble(VbeProvider.VbeNativeApi.Shell(pathname, windowstyle));
             }
             return Convert.ToDouble(ReturnValue ?? 0);
         }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.Navigation.CodeExplorer;
+using Rubberduck.VBEditor.Events;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -17,7 +18,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private readonly INavigateCommand _openCommand;
 
-        public OpenCommand(INavigateCommand openCommand)
+        public OpenCommand(
+            INavigateCommand openCommand, 
+            IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _openCommand = openCommand;
 
