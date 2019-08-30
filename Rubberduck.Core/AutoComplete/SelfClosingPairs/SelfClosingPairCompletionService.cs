@@ -19,7 +19,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairs
             _showQuickInfo = showQuickInfo;
         }
 
-        public void ShowIntellisense()
+        public void ShowQuickInfo()
         {
             _showQuickInfo.Execute();
         }
