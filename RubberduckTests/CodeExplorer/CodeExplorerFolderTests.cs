@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -105,10 +106,10 @@ End Sub";
                 var folder = (CodeExplorerCustomFolderViewModel)explorer.ViewModel.SelectedItem;
                 var declarations = project.State.AllUserDeclarations.ToList();
 
-                var annotation = new FolderAnnotation(new QualifiedSelection(project.Declaration.QualifiedModuleName, new Selection(1, 1)), null, new[] { "\"First\"" });
-                var predeclared = new PredeclaredIdAnnotation(new QualifiedSelection(project.Declaration.QualifiedModuleName, new Selection(2, 1)), null, Enumerable.Empty<string>());
+                var annotation = new ParseTreeAnnotation(new FolderAnnotation(), new QualifiedSelection(project.Declaration.QualifiedModuleName, new Selection(1, 1)), new[] { "\"First\"" });
+                var predeclared = new ParseTreeAnnotation(new PredeclaredIdAnnotation(), new QualifiedSelection(project.Declaration.QualifiedModuleName, new Selection(2, 1)), (VBAParser.AnnotationContext)null);
 
-                declarations.Add(GetNewClassDeclaration(project.Declaration, "Foo", new IAnnotation [] { annotation, predeclared }));
+                declarations.Add(GetNewClassDeclaration(project.Declaration, "Foo", new ParseTreeAnnotation[] { annotation, predeclared }));
 
                 project.Synchronize(ref declarations);
                 var added = folder.Children.OfType<CodeExplorerComponentViewModel>().Single();
@@ -137,16 +138,16 @@ End Sub";
                 var folder = (CodeExplorerCustomFolderViewModel)explorer.ViewModel.SelectedItem;
                 var declarations = project.State.AllUserDeclarations.ToList();
 
-                var annotation = new FolderAnnotation(new QualifiedSelection(project.Declaration.QualifiedModuleName, new Selection(2, 1)), null, new[] { "\"First\"" });
-                var predeclared = new PredeclaredIdAnnotation(new QualifiedSelection(project.Declaration.QualifiedModuleName, new Selection(1, 1)), null, Enumerable.Empty<string>());
+                var annotation = new ParseTreeAnnotation(new FolderAnnotation(), new QualifiedSelection(project.Declaration.QualifiedModuleName, new Selection(2, 1)), new[] { "First" });
+                var predeclared = new ParseTreeAnnotation(new PredeclaredIdAnnotation(), new QualifiedSelection(project.Declaration.QualifiedModuleName, new Selection(1, 1)), (VBAParser.AnnotationContext)null);
 
-                declarations.Add(GetNewClassDeclaration(project.Declaration, "Foo", new IAnnotation[] { predeclared, annotation }));
+                declarations.Add(GetNewClassDeclaration(project.Declaration, "Foo", new ParseTreeAnnotation[] { predeclared, annotation }));
 
                 project.Synchronize(ref declarations);
                 var added = folder.Children.OfType<CodeExplorerComponentViewModel>().Single();
 
                 Assert.AreEqual(DeclarationType.ClassModule, added.Declaration.DeclarationType);
-                Assert.AreEqual("\"First\"", added.Declaration.CustomFolder);
+                Assert.AreEqual("First", added.Declaration.CustomFolder);
             }
         }
 
@@ -356,13 +357,13 @@ End Sub";
         private static Declaration GetNewClassDeclaration(Declaration project, string name, string folder = "")
         {
             var annotations = string.IsNullOrEmpty(folder)
-                ? Enumerable.Empty<IAnnotation>()
-                : new[] { new FolderAnnotation(new QualifiedSelection(project.QualifiedModuleName, new Selection(1, 1)), null, new[] { folder }) };
+                ? Enumerable.Empty<ParseTreeAnnotation>()
+                : new[] { new ParseTreeAnnotation(new FolderAnnotation(), new QualifiedSelection(project.QualifiedModuleName, new Selection(1, 1)), new[] { folder }) };
 
             return GetNewClassDeclaration(project, name, annotations);
         }
 
-        private static Declaration GetNewClassDeclaration(Declaration project, string name, IEnumerable<IAnnotation> annotations)
+        private static Declaration GetNewClassDeclaration(Declaration project, string name, IEnumerable<ParseTreeAnnotation> annotations)
         {
             var declaration =
                 new ClassModuleDeclaration(new QualifiedMemberName(project.QualifiedModuleName, name), project, name, true, annotations, new Attributes());

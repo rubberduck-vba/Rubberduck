@@ -218,9 +218,10 @@ End Sub";
 
             var inspectionResults = InspectionResults(inputCode);
             var inspectionResult = inspectionResults.First();
-            Assert.IsInstanceOf<MemberAttributeAnnotation>(inspectionResult.Properties.Annotation);
-            Assert.AreEqual("VB_UserMemId", inspectionResult.Properties.Annotation.Attribute);
-            Assert.AreEqual("-4", inspectionResult.Properties.Annotation.AttributeValues[0]);
+            
+            Assert.IsInstanceOf<MemberAttributeAnnotation>(inspectionResult.Properties.Annotation.Annotation);
+            Assert.AreEqual("VB_UserMemId", inspectionResult.Properties.AttributeName);
+            Assert.AreEqual("-4", ((ParseTreeAnnotation)inspectionResult.Properties.Annotation).AttributeValues()[0]);
             Assert.AreEqual("40", inspectionResult.Properties.AttributeValues[0]);
         }
 

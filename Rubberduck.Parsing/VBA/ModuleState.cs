@@ -21,7 +21,7 @@ namespace Rubberduck.Parsing.VBA
         public ParserState State { get; private set; }
         public int ModuleContentHashCode { get; private set; }
         public List<CommentNode> Comments { get; private set; }
-        public List<IAnnotation> Annotations { get; private set; }
+        public List<ParseTreeAnnotation> Annotations { get; private set; }
         public SyntaxErrorException ModuleException { get; private set; }
         public IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> ModuleAttributes { get; private set; }
         public IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> MembersAllowingAttributes { get; private set; }
@@ -40,7 +40,7 @@ namespace Rubberduck.Parsing.VBA
 
             ModuleContentHashCode = 0;
             Comments = new List<CommentNode>();
-            Annotations = new List<IAnnotation>();
+            Annotations = new List<ParseTreeAnnotation>();
             ModuleException = null;
             ModuleAttributes = new Dictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes>();
             MembersAllowingAttributes = new Dictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext>();
@@ -58,7 +58,7 @@ namespace Rubberduck.Parsing.VBA
             State = state;
             ModuleContentHashCode = 0;
             Comments = new List<CommentNode>();
-            Annotations = new List<IAnnotation>();
+            Annotations = new List<ParseTreeAnnotation>();
             ModuleException = null;
             ModuleAttributes = new Dictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes>();
             MembersAllowingAttributes = new Dictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext>();
@@ -74,7 +74,7 @@ namespace Rubberduck.Parsing.VBA
             State = ParserState.Error;
             ModuleContentHashCode = 0;
             Comments = new List<CommentNode>();
-            Annotations = new List<IAnnotation>();
+            Annotations = new List<ParseTreeAnnotation>();
             ModuleException = moduleException;
             ModuleAttributes = new Dictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes>();
             MembersAllowingAttributes = new Dictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext>();
@@ -123,7 +123,7 @@ namespace Rubberduck.Parsing.VBA
             return this;
         }
 
-        public ModuleState SetAnnotations(List<IAnnotation> annotations)
+        public ModuleState SetAnnotations(List<ParseTreeAnnotation> annotations)
         {
             Annotations = annotations;
             return this;

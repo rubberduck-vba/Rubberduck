@@ -377,7 +377,7 @@ namespace Rubberduck.UI.UnitTesting
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
 
-            AnnotationUpdater.AddAnnotation(rewriteSession, _mousedOverTestMethod.Declaration, typeof(IgnoreTestAnnotation).GetCustomAttributes(false).OfType<AnnotationAttribute>().Single());
+            AnnotationUpdater.AddAnnotation(rewriteSession, _mousedOverTestMethod.Declaration, new IgnoreTestAnnotation());
 
             rewriteSession.TryRewrite();
         }
@@ -386,7 +386,7 @@ namespace Rubberduck.UI.UnitTesting
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
             var ignoreTestAnnotations = _mousedOverTestMethod.Declaration.Annotations
-                .Where(iannotations => iannotations is IgnoreTestAnnotation);
+                .Where(pta => pta.Annotation is IgnoreTestAnnotation);
 
             foreach (var ignoreTestAnnotation in ignoreTestAnnotations)
             {

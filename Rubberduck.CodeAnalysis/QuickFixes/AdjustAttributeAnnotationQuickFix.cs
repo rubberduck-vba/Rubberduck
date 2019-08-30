@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            IAttributeAnnotation oldAnnotation = result.Properties.Annotation;
+            ParseTreeAnnotation oldAnnotation = result.Properties.Annotation;
             string attributeName = result.Properties.AttributeName;
             IReadOnlyList<string> attributeValues = result.Properties.AttributeValues;
 

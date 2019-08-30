@@ -24,14 +24,16 @@ namespace Rubberduck.Inspections.QuickFixes
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
             var declaration = result.Target;
-            IAttributeAnnotation annotation = result.Properties.Annotation;
+            ParseTreeAnnotation annotationInstance = result.Properties.Annotation;
+            IAttributeAnnotation annotation = (IAttributeAnnotation)annotationInstance.Annotation;
             IReadOnlyList<string> attributeValues = result.Properties.AttributeValues;
 
+            var attribute = annotationInstance.Attribute();
             var attributeName = declaration.DeclarationType.HasFlag(DeclarationType.Module)
-                ? annotation.Attribute
-                : $"{declaration.IdentifierName}.{annotation.Attribute}";
+                ? attribute
+                : $"{declaration.IdentifierName}.{attribute}";
 
-            _attributesUpdater.UpdateAttribute(rewriteSession, declaration, attributeName, annotation.AttributeValues, attributeValues);
+            _attributesUpdater.UpdateAttribute(rewriteSession, declaration, attributeName, annotationInstance.AttributeValues(), oldValues: attributeValues);
         }
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.AdjustAttributeValuesQuickFix;

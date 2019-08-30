@@ -39,7 +39,7 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var modulesWithoutFolderAnnotation = State.DeclarationFinder.UserDeclarations(Parsing.Symbols.DeclarationType.Module)
-                .Where(w => !w.Annotations.OfType<FolderAnnotation>().Any())
+                .Where(w => !w.Annotations.Any(pta => pta.Annotation is FolderAnnotation))
                 .ToList();
 
             return modulesWithoutFolderAnnotation

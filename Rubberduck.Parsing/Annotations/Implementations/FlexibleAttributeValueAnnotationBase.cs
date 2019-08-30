@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 
@@ -9,28 +10,34 @@ namespace Rubberduck.Parsing.Annotations
     public abstract class FlexibleAttributeValueAnnotationBase : AnnotationBase, IAttributeAnnotation
     {
         public string Attribute { get; }
-        public IReadOnlyList<string> AttributeValues { get; }
 
-        protected FlexibleAttributeValueAnnotationBase(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> attributeValues)
-        :base(qualifiedSelection, context)
+        private readonly int _numberOfValues;
+
+        protected FlexibleAttributeValueAnnotationBase(string name, AnnotationTarget target, string attribute, int numberOfValues)
+            : base(name, target)
         {
-            var flexibleAttributeValueInfo = FlexibleAttributeValueInfo(GetType());
-
-            Attribute = flexibleAttributeValueInfo.attribute;
-            AttributeValues = attributeValues?.Take(flexibleAttributeValueInfo.numberOfValues).ToList() ?? new List<string>();
+            Attribute = attribute;
+            _numberOfValues = numberOfValues;
         }
 
-        private static (string attribute, int numberOfValues) FlexibleAttributeValueInfo(Type annotationType)
+        public bool MatchesAttributeDefinition(string attributeName, IReadOnlyList<string> attributeValues)
         {
-            var attributeValueInfo = annotationType.GetCustomAttributes(false)
-                .OfType<FlexibleAttributeValueAnnotationAttribute>()
-                .SingleOrDefault();
+            return Attribute == attributeName && _numberOfValues == attributeValues.Count;
+        }
 
-            if (attributeValueInfo == null)
-            {
-                return ("", 0);
-            }
-            return (attributeValueInfo.AttributeName, attributeValueInfo.NumberOfParameters);
+        public virtual IReadOnlyList<string> AnnotationToAttributeValues(IReadOnlyList<string> annotationValues)
+        {
+            return annotationValues.Take(_numberOfValues).Select(v => v.EnQuote()).ToList();
+        }
+
+        public virtual IReadOnlyList<string> AttributeToAnnotationValues(IReadOnlyList<string> attributeValues)
+        {
+            return attributeValues.Take(_numberOfValues).Select(v => v.EnQuote()).ToList();
+        }
+
+        string IAttributeAnnotation.Attribute(IReadOnlyList<string> annotationValues)
+        {
+            return Attribute;
         }
     }
 }

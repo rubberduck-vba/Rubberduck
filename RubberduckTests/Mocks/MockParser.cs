@@ -76,7 +76,7 @@ namespace RubberduckTests.Mocks
             var mainTokenStreamParser = new VBATokenStreamParser(mainParseErrorListenerFactory, mainParseErrorListenerFactory);
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
             var stringParser = new TokenStreamParserStringParserAdapterWithPreprocessing(tokenStreamProvider, mainTokenStreamParser, preprocessor);
-            var vbaParserAnnotationFactory = new VBAParserAnnotationFactory(GetWellKnownAnnotationTypes());
+            var vbaParserAnnotationFactory = new VBAParserAnnotationFactory(GetWellKnownAnnotations());
             var projectManager = new RepositoryProjectManager(projectRepository);
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager();
             var supertypeClearer = new SynchronousSupertypeClearer(state); 
@@ -162,12 +162,13 @@ namespace RubberduckTests.Mocks
             return (parser, rewritingManager);
         }
 
-        public static IEnumerable<Type> GetWellKnownAnnotationTypes()
+        public static IEnumerable<IAnnotation> GetWellKnownAnnotations()
         {
             return Assembly.GetAssembly(typeof(IAnnotation))
                 .GetTypes()
                 .Where(candidate => typeof(IAnnotation).IsAssignableFrom(candidate)
-                    && !candidate.IsAbstract);
+                    && !candidate.IsAbstract)
+                .Select(t => (IAnnotation)Activator.CreateInstance(t));
         }
 
         public static SynchronousParseCoordinator Create(IVBE vbe, RubberduckParserState state, IProjectsRepository projectRepository, string serializedComProjectsPath = null)

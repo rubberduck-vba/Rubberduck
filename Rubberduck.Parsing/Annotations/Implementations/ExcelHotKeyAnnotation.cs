@@ -7,18 +7,19 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Annotations
 {
-    [Annotation("ExcelHotkey", AnnotationTarget.Member)]
-    [FlexibleAttributeValueAnnotation("VB_ProcData.VB_Invoke_Func", 1, true)]
     public sealed class ExcelHotKeyAnnotation : FlexibleAttributeValueAnnotationBase
     {
-        public ExcelHotKeyAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> annotationParameterValues) :
-            base(qualifiedSelection, context, GetHotKeyAttributeValue(annotationParameterValues))
+        public ExcelHotKeyAnnotation()
+            : base("ExcelHotkey", AnnotationTarget.Member, "VB_ProcData.VB_Invoke_Func", 1)
         { }
-        
-        private static IEnumerable<string> GetHotKeyAttributeValue(IEnumerable<string> parameters) => 
-            parameters.Take(1).Select(v => v.UnQuote()[0] + @"\n14".EnQuote()).ToList();
-        
-        public static IEnumerable<string> TransformToAnnotationValues(IEnumerable<string> attributeValues) =>
-            attributeValues.Select(keySpec => keySpec.UnQuote().Substring(0, 1));
+        public override IReadOnlyList<string> AnnotationToAttributeValues(IReadOnlyList<string> annotationValues)
+        {
+            return annotationValues.Take(1).Select(v => v.UnQuote()[0] + @"\n14".EnQuote()).ToList();
+        }
+
+        public override IReadOnlyList<string> AttributeToAnnotationValues(IReadOnlyList<string> attributeValues)
+        {
+            return attributeValues.Select(keySpec => keySpec.UnQuote().Substring(0, 1)).ToList();
+        }
     }
 }

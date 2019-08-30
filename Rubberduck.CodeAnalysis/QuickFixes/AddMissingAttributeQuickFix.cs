@@ -22,13 +22,13 @@ namespace Rubberduck.Inspections.QuickFixes
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
             var declaration = result.Target;
-            IAttributeAnnotation annotation = result.Properties.Annotation;
-
+            ParseTreeAnnotation annotationInstance = result.Properties.Annotation;
+            var attribute = annotationInstance.Attribute();
             var attributeName = declaration.DeclarationType.HasFlag(DeclarationType.Module)
-                ? annotation.Attribute
-                : $"{declaration.IdentifierName}.{annotation.Attribute}";
+                ? attribute
+                : $"{declaration.IdentifierName}.{attribute}";
 
-            _attributesUpdater.AddAttribute(rewriteSession, declaration, attributeName, annotation.AttributeValues);
+            _attributesUpdater.AddAttribute(rewriteSession, declaration, attributeName, annotationInstance.AttributeValues());
         }
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.AddMissingAttributeQuickFix;

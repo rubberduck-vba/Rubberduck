@@ -18,7 +18,7 @@ namespace RubberduckTests.QuickFixes
         public void KnownModuleAttributeWithoutAnnotation_QuickFixWorks()
         {
             const string inputCode =
-                @"Attribute VB_PredeclaredID = True
+                @"Attribute VB_PredeclaredId = True
 Public Sub Foo()
     Const const1 As Integer = 9
 End Sub";
@@ -26,7 +26,7 @@ End Sub";
             //So adding on top is OK.
             const string expectedCode =
                 @"'@PredeclaredId
-Attribute VB_PredeclaredID = True
+Attribute VB_PredeclaredId = True
 Public Sub Foo()
     Const const1 As Integer = 9
 End Sub";
@@ -62,7 +62,7 @@ End Sub";
         public void KnownModuleAttributeWithoutAnnotationWhileOtherAttributeWithAnnotationPresent_QuickFixWorks()
         {
             const string inputCode =
-                @"Attribute VB_PredeclaredID = True
+                @"Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
 '@Exposed
 Public Sub Foo()
@@ -72,7 +72,7 @@ End Sub";
             //So adding on top is OK.
             const string expectedCode =
                 @"'@PredeclaredId
-Attribute VB_PredeclaredID = True
+Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
 '@Exposed
 Public Sub Foo()
@@ -158,7 +158,7 @@ End Sub";
         {
             // FIXME actually inject the annotations here... 
             return new AddAttributeAnnotationQuickFix(new AnnotationUpdater(),
-                new AttributeAnnotationProvider(MockParser.GetWellKnownAnnotationTypes().Where(annotation => typeof(IAttributeAnnotation).IsAssignableFrom(annotation))));
+                new AttributeAnnotationProvider(MockParser.GetWellKnownAnnotations().OfType<IAttributeAnnotation>()));
         }
     }
 }

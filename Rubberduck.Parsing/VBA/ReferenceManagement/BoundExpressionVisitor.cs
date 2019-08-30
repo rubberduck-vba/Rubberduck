@@ -131,7 +131,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 isSetAssignment);
         }
 
-        private IEnumerable<IAnnotation> FindIdentifierAnnotations(QualifiedModuleName module, int line)
+        private IEnumerable<ParseTreeAnnotation> FindIdentifierAnnotations(QualifiedModuleName module, int line)
         {
             return _declarationFinder.FindAnnotations(module, line, AnnotationTarget.Identifier);
         }

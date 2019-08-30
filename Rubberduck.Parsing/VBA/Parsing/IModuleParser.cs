@@ -14,7 +14,7 @@ namespace Rubberduck.Parsing.VBA.Parsing
             IParseTree codePaneParseTree,
             IParseTree attributesParseTree,
             IEnumerable<CommentNode> comments,
-            IEnumerable<IAnnotation> annotations,
+            IEnumerable<ParseTreeAnnotation> annotations,
             IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> attributes,
             IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> membersAllowingAttributes,
             ITokenStream codePaneTokenStream,
@@ -34,7 +34,7 @@ namespace Rubberduck.Parsing.VBA.Parsing
         public IParseTree CodePaneParseTree { get; }
         public IParseTree AttributesParseTree { get; }
         public IEnumerable<CommentNode> Comments { get; }
-        public IEnumerable<IAnnotation> Annotations { get; }
+        public IEnumerable<ParseTreeAnnotation> Annotations { get; }
         public IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> Attributes { get; }
         public IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> MembersAllowingAttributes { get; }
         public ITokenStream CodePaneTokenStream { get; }

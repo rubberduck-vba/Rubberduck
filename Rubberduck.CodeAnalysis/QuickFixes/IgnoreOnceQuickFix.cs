@@ -49,13 +49,13 @@ namespace Rubberduck.Inspections.QuickFixes
             var module = result.QualifiedSelection.QualifiedName;
             var lineToAnnotate = result.QualifiedSelection.Selection.StartLine;
             var existingIgnoreAnnotation = _state.DeclarationFinder.FindAnnotations(module, lineToAnnotate)
-                .OfType<IgnoreAnnotation>()
+                .Where(pta => pta.Annotation is IgnoreAnnotation)
                 .FirstOrDefault();
 
-            var annotationInfo = typeof(IgnoreAnnotation).GetCustomAttributes(false).OfType<AnnotationAttribute>().Single();
+            var annotationInfo = new IgnoreAnnotation();
             if (existingIgnoreAnnotation != null)
             {
-                var annotationValues = existingIgnoreAnnotation.InspectionNames.ToList();
+                var annotationValues = existingIgnoreAnnotation.AnnotationArguments.ToList();
                 annotationValues.Insert(0, result.Inspection.AnnotationName);
                 _annotationUpdater.UpdateAnnotation(rewriteSession, existingIgnoreAnnotation, annotationInfo, annotationValues);
             }
@@ -70,13 +70,13 @@ namespace Rubberduck.Inspections.QuickFixes
         {
             var moduleDeclaration = result.Target;
             var existingIgnoreModuleAnnotation = moduleDeclaration.Annotations
-                .OfType<IgnoreModuleAnnotation>()
+                .Where(pta => pta.Annotation is IgnoreModuleAnnotation)
                 .FirstOrDefault();
 
-            var annotationType = typeof(IgnoreModuleAnnotation).GetCustomAttributes(false).OfType<AnnotationAttribute>().Single();
+            var annotationType = new IgnoreModuleAnnotation();
             if (existingIgnoreModuleAnnotation != null)
             {
-                var annotationValues = existingIgnoreModuleAnnotation.InspectionNames.ToList();
+                var annotationValues = existingIgnoreModuleAnnotation.AnnotationArguments.ToList();
                 annotationValues.Insert(0, result.Inspection.AnnotationName);
                 _annotationUpdater.UpdateAnnotation(rewriteSession, existingIgnoreModuleAnnotation, annotationType, annotationValues);
             }

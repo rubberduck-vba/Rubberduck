@@ -8,20 +8,10 @@ namespace Rubberduck.Parsing.Annotations
     /// <summary>
     /// Used for specifying the Code Explorer folder a appears under.
     /// </summary>
-    [Annotation("Folder", AnnotationTarget.Module)]
     public sealed class FolderAnnotation : AnnotationBase
     {
-        public FolderAnnotation(
-            QualifiedSelection qualifiedSelection,
-            VBAParser.AnnotationContext context,
-            IEnumerable<string> parameters)
-            : base(qualifiedSelection, context)
-        {
-            FolderName = parameters.FirstOrDefault() ?? string.Empty;
-        }
-
-        public string FolderName { get; }
-
-        public override string ToString() => $"Folder: {FolderName}";
+        public FolderAnnotation()
+            : base("Folder", AnnotationTarget.Module)
+        { }
     }
 }

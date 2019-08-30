@@ -6,27 +6,9 @@ namespace Rubberduck.Parsing.Annotations
 {
     public interface IAnnotation
     {
-        QualifiedSelection QualifiedSelection { get; }
-        VBAParser.AnnotationContext Context { get; }
-        int? AnnotatedLine { get; }
-        AnnotationAttribute MetaInformation { get; }
-
-        string AnnotationType { get; }
-    }
-
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public class AnnotationAttribute : Attribute
-    {
-        public string Name { get; }
-        public AnnotationTarget Target { get; }
-        public bool AllowMultiple { get; }
-
-        public AnnotationAttribute(string name, AnnotationTarget target, bool allowMultiple = false)
-        {
-            Name = name;
-            Target = target;
-            AllowMultiple = allowMultiple;
-        }
+        string Name { get; }
+        AnnotationTarget Target { get; }
+        bool AllowMultiple { get; }
     }
 
     [Flags]

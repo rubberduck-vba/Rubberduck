@@ -928,7 +928,10 @@ namespace Rubberduck.Root
             container.Register(Component.For<IModuleParser>()
                 .ImplementedBy<ModuleParser>()
                 .DependsOn(Dependency.OnComponent("codePaneSourceCodeProvider", "CodeModuleSourceCodeHandler"),
-                    Dependency.OnComponent("attributesSourceCodeProvider", "SourceFileSourceCodeHandler"))
+                    Dependency.OnComponent("attributesSourceCodeProvider", "SourceFileSourceCodeHandler")
+                    // TODO not sure whether this explicit registration is necessary
+                    //,Dependency.OnComponent(typeof(IAnnotationFactory), typeof(VBAParserAnnotationFactory))
+                    )
                 .LifestyleSingleton());
             container.Register(Component.For<ITypeLibWrapperProvider>()
                 .ImplementedBy<TypeLibWrapperProvider>()

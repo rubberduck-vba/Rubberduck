@@ -160,10 +160,10 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             }
         }
 
-        private IEnumerable<IAnnotation> FindIdentifierAnnotations(QualifiedModuleName module, int line)
+        private IEnumerable<ParseTreeAnnotation> FindIdentifierAnnotations(QualifiedModuleName module, int line)
         {
             return _declarationFinder.FindAnnotations(module, line)
-                .Where(annotation => annotation.MetaInformation.Target.HasFlag(AnnotationTarget.Identifier));
+                .Where(annotation => annotation.Annotation.Target.HasFlag(AnnotationTarget.Identifier));
         }
 
         private void ResolveDefault(

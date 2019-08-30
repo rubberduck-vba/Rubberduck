@@ -9,122 +9,61 @@ namespace Rubberduck.Parsing.Annotations
     {
         // I want to const this, but can't
         private readonly AnnotationTarget [] distinctTargets = new AnnotationTarget[] { AnnotationTarget.Identifier, AnnotationTarget.Member, AnnotationTarget.Module, AnnotationTarget.Variable };
-        private readonly Dictionary<AnnotationTarget, List<Type>> annotationInfoByTarget
-            = new Dictionary<AnnotationTarget, List<Type>>();
+        private readonly Dictionary<AnnotationTarget, List<IAttributeAnnotation>> annotationInfoByTarget
+            = new Dictionary<AnnotationTarget, List<IAttributeAnnotation>>();
 
-        // FIXME make sure only AttributeAnnotations are injected here
-        public AttributeAnnotationProvider(IEnumerable<Type> attributeAnnotationTypes)
+        private readonly IAttributeAnnotation memberFallback = new MemberAttributeAnnotation();
+        private readonly IAttributeAnnotation moduleFallback = new ModuleAttributeAnnotation();
+        
+        public AttributeAnnotationProvider(IEnumerable<IAttributeAnnotation> attributeAnnotations)
         {
             // set up empty lists to put information into
             foreach (var validTarget in distinctTargets)
             {
-                annotationInfoByTarget[validTarget] = new List<Type>();
+                annotationInfoByTarget[validTarget] = new List<IAttributeAnnotation>();
             }
-            // we're defensively filtering, but theoretically this might be CW's job?
-            foreach (var annotationType in attributeAnnotationTypes.Where(type => type.GetInterfaces().Contains(typeof(IAttributeAnnotation))))
+
+            foreach (var annotation in attributeAnnotations)
             {
-                // Extract the static information about the annotation type from it's AnnotationAttribute
-                var staticInfo = annotationType.GetCustomAttributes(false)
-                    .OfType<AnnotationAttribute>()
-                    .Single();
                 foreach (var validTarget in distinctTargets)
                 {
-                    if (staticInfo.Target.HasFlag(validTarget))
+                    if (annotation.Target.HasFlag(validTarget))
                     {
-                        annotationInfoByTarget[validTarget].Add(annotationType);
+                        annotationInfoByTarget[validTarget].Add(annotation);
                     }
                 }
             }
         }
 
-        public (AnnotationAttribute annotationInfo, IReadOnlyList<string> values) MemberAttributeAnnotation(string attributeBaseName, IReadOnlyList<string> attributeValues)
+        public (IAttributeAnnotation annotation, IReadOnlyList<string> annotationValues) MemberAttributeAnnotation(string attributeBaseName, IReadOnlyList<string> attributeValues)
         {
-            // quasi-const
-            var fallbackType = typeof(MemberAttributeAnnotation);
             // go through all non-module annotations (contrary to only member annotations)
             var memberAnnotationTypes = annotationInfoByTarget[AnnotationTarget.Member]
                 .Concat(annotationInfoByTarget[AnnotationTarget.Variable])
                 .Concat(annotationInfoByTarget[AnnotationTarget.Identifier]);
-            foreach (var type in memberAnnotationTypes)
+            foreach (var annotation in memberAnnotationTypes)
             {
-                if (MatchesAttributeNameAndValue(type, attributeBaseName, attributeValues, out var codePassAnnotationValues))
+                if (annotation.MatchesAttributeDefinition(attributeBaseName, attributeValues))
                 {
-                    return (GetAttribute<AnnotationAttribute>(type), codePassAnnotationValues);
+                    return (annotation, annotation.AttributeToAnnotationValues(attributeValues));
                 }
             }
-            return BuildFallback(attributeBaseName, attributeValues, fallbackType);
+            var fallbackAttributeArguments = new[] { attributeBaseName }.Concat(attributeValues);
+            return (memberFallback, memberFallback.AttributeToAnnotationValues(fallbackAttributeArguments.ToList()));
         }
 
-        public (AnnotationAttribute annotationInfo, IReadOnlyList<string> values) ModuleAttributeAnnotation(string attributeName, IReadOnlyList<string> attributeValues)
+        public (IAttributeAnnotation annotation, IReadOnlyList<string> annotationValues) ModuleAttributeAnnotation(string attributeName, IReadOnlyList<string> attributeValues)
         {
-            // quasi-const
-            var fallbackType = typeof(ModuleAttributeAnnotation);
             var moduleAnnotationTypes = annotationInfoByTarget[AnnotationTarget.Module];
-            foreach (var type in moduleAnnotationTypes)
+            foreach (var annotation in moduleAnnotationTypes)
             {
-                if (MatchesAttributeNameAndValue(type, attributeName, attributeValues, out var codePassAnnotationValues))
+                if (annotation.MatchesAttributeDefinition(attributeName, attributeValues))
                 {
-                    return (GetAttribute<AnnotationAttribute>(type), codePassAnnotationValues);
+                    return (annotation, annotation.AttributeToAnnotationValues(attributeValues));
                 }
             }
-            return BuildFallback(attributeName, attributeValues, fallbackType);
-        }
-
-        private bool MatchesAttributeNameAndValue(Type type, string attributeName, IReadOnlyList<string> attributeValues, out IReadOnlyList<string> codePassAnnotationValues)
-        {
-            codePassAnnotationValues = attributeValues;
-            if (typeof(FlexibleAttributeAnnotationBase).IsAssignableFrom(type))
-            {
-                // this is always the fallback case, which must only be accepted if all other options are exhausted.
-                return false;
-            }
-            if (typeof(FixedAttributeValueAnnotationBase).IsAssignableFrom(type))
-            {
-                var attributeInfo = GetAttribute<FixedAttributeValueAnnotationAttribute>(type);
-                if (attributeInfo.AttributeName.Equals(attributeName, StringComparison.OrdinalIgnoreCase)
-                    && attributeInfo.AttributeValues.SequenceEqual(attributeValues))
-                {
-                    // there is no way to set a value in the annotation, therefore we discard the attribute values
-                    codePassAnnotationValues = new List<string>();
-                    return true;
-                }
-            }
-            if (typeof(FlexibleAttributeValueAnnotationBase).IsAssignableFrom(type))
-            {
-                // obtain flexible attribute information
-                var attributeInfo = GetAttribute<FlexibleAttributeValueAnnotationAttribute>(type);
-                if (attributeInfo.AttributeName.Equals(attributeName, StringComparison.OrdinalIgnoreCase)
-                    && attributeInfo.NumberOfParameters == attributeValues.Count)
-                {
-                    if (attributeInfo.HasCustomTransformation)
-                    {
-                        try {
-                        // dispatch to custom transformation
-                            codePassAnnotationValues = ((IEnumerable<string>)type.GetMethod("TransformToAnnotationValues", new[] { typeof(IEnumerable<string>) })
-                                .Invoke(null, new[] { attributeValues })).ToList();
-                        }
-                        catch (Exception)
-                        {
-                            codePassAnnotationValues = attributeValues;
-                        }
-                    }
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private (AnnotationAttribute annotationInfo, IReadOnlyList<string> values) BuildFallback(string attributeBaseName, IReadOnlyList<string> attributeValues, Type fallbackType)
-        {
-            var fallbackValues = new[] { attributeBaseName }.Concat(attributeValues).ToList();
-            return (GetAttribute<AnnotationAttribute>(fallbackType), fallbackValues);
-        }
-
-        private static T GetAttribute<T>(Type annotationType)
-        {
-            return annotationType.GetCustomAttributes(false)
-                .OfType<T>()
-                .Single();
+            var fallbackAttributeArguments = new[] { attributeName }.Concat(attributeValues);
+            return (moduleFallback, moduleFallback.AttributeToAnnotationValues(fallbackAttributeArguments.ToList()));
         }
     }
 }

@@ -8,17 +8,11 @@ namespace Rubberduck.Parsing.Annotations
     /// <summary>
     /// Used for specifying a member's <c>VB_UserMemId</c> attribute value.
     /// </summary>
-    /// 
-    [Annotation("DefaultMember", AnnotationTarget.Member)]
-    [FixedAttributeValueAnnotation("VB_UserMemId", "0")]
     public sealed class DefaultMemberAnnotation : FixedAttributeValueAnnotationBase
     {
-        public DefaultMemberAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> parameters)
-            : base(qualifiedSelection, context)
+        public DefaultMemberAnnotation()
+            : base("DefaultMember", AnnotationTarget.Member, "VB_UserMemId", new[] { "0" })
         {
-            Description = parameters?.FirstOrDefault() ?? string.Empty;
         }
-
-        public string Description { get; }
     }
 }

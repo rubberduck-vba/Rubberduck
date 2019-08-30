@@ -7,12 +7,10 @@ namespace Rubberduck.Parsing.Annotations
     /// <summary>
     /// Used for specifying a module's <c>VB_PredeclaredId</c> attribute.
     /// </summary>
-    [Annotation("PredeclaredId", AnnotationTarget.Module)]
-    [FixedAttributeValueAnnotation("VB_PredeclaredId", "True")]
     public sealed class PredeclaredIdAnnotation : FixedAttributeValueAnnotationBase
     {
-        public PredeclaredIdAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> parameters)
-            : base(qualifiedSelection, context)
+        public PredeclaredIdAnnotation()
+            : base("PredeclaredId", AnnotationTarget.Module, "VB_PredeclaredId", new[] { "True" })
         {}
     }
 }

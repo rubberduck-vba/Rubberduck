@@ -8,47 +8,29 @@ namespace Rubberduck.Parsing.Annotations
 {
     public sealed class VBAParserAnnotationFactory : IAnnotationFactory
     {
-        private readonly Dictionary<string, Type> _creators = new Dictionary<string, Type>();
+        private readonly Dictionary<string, IAnnotation> _lookup = new Dictionary<string, IAnnotation>();
+        private readonly IAnnotation unrecognized;
 
-        public VBAParserAnnotationFactory(IEnumerable<Type> recognizedAnnotationTypes) 
+        public VBAParserAnnotationFactory(IEnumerable<IAnnotation> recognizedAnnotations) 
         {
-            foreach (var annotationType in recognizedAnnotationTypes)
+            foreach (var annotation in recognizedAnnotations)
             {
-                // Extract the static information about the annotation type from it's AnnotationAttribute
-                var staticInfo = annotationType.GetCustomAttributes(false)
-                    .OfType<AnnotationAttribute>()
-                    .Single();
-                _creators.Add(staticInfo.Name.ToUpperInvariant(), annotationType);
+                if (annotation is NotRecognizedAnnotation)
+                {
+                    unrecognized = annotation;
+                }
+                _lookup.Add(annotation.Name.ToUpperInvariant(), annotation);
             }
         }
 
-        public IAnnotation Create(VBAParser.AnnotationContext context, QualifiedSelection qualifiedSelection)
+        public ParseTreeAnnotation Create(VBAParser.AnnotationContext context, QualifiedSelection qualifiedSelection)
         {
             var annotationName = context.annotationName().GetText();
-            var parameters = AnnotationParametersFromContext(context);
-            return CreateAnnotation(annotationName, parameters, qualifiedSelection, context);
-        }
-
-        private static List<string> AnnotationParametersFromContext(VBAParser.AnnotationContext context)
-        {
-            var parameters = new List<string>();
-            var argList = context.annotationArgList();
-            if (argList != null)
+            if (_lookup.TryGetValue(annotationName.ToUpperInvariant(), out var annotation))
             {
-                parameters.AddRange(argList.annotationArg().Select(arg => arg.GetText()));
+                return new ParseTreeAnnotation(annotation, qualifiedSelection, context);
             }
-            return parameters;
-        }
-
-        private IAnnotation CreateAnnotation(string annotationName, IReadOnlyList<string> parameters,
-            QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context)
-        {
-            if (_creators.TryGetValue(annotationName.ToUpperInvariant(), out var annotationClrType))
-            {
-                return (IAnnotation) Activator.CreateInstance(annotationClrType, qualifiedSelection, context, parameters);
-            }
-
-            return new NotRecognizedAnnotation(qualifiedSelection, context, parameters);
+            return new ParseTreeAnnotation(unrecognized, qualifiedSelection, context);
         }
     }
 }

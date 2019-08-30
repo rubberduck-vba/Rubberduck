@@ -46,8 +46,8 @@ namespace Rubberduck.Inspections.Concrete
             foreach (var declaration in State.AllUserDeclarations)
             {
                 var duplicateAnnotations = declaration.Annotations
-                    .GroupBy(annotation => annotation.GetType())
-                    .Where(group => !group.First().MetaInformation.AllowMultiple && group.Count() > 1);
+                    .GroupBy(pta => pta.Annotation)
+                    .Where(group => !group.First().Annotation.AllowMultiple && group.Count() > 1);
 
                 issues.AddRange(duplicateAnnotations.Select(duplicate =>
                 {

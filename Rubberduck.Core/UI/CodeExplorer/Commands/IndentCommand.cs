@@ -53,14 +53,14 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 case CodeExplorerProjectViewModel project:
                     return _state.AllUserDeclarations
                         .Any(c => c.DeclarationType.HasFlag(DeclarationType.Module) &&
-                                  !c.Annotations.Any(a => a is NoIndentAnnotation) &&
+                                  !c.Annotations.Any(pta => pta.Annotation is NoIndentAnnotation) &&
                                   c.ProjectId == project.Declaration.ProjectId);
                 case CodeExplorerCustomFolderViewModel folder:
                     return folder.Children.OfType<CodeExplorerComponentViewModel>()     //TODO - this has the filter applied.
                         .Select(s => s.Declaration)
-                        .Any(d => !d.Annotations.Any(a => a is NoIndentAnnotation));
+                        .Any(d => !d.Annotations.Any(pta => pta.Annotation is NoIndentAnnotation));
                 case CodeExplorerComponentViewModel model:
-                    return !model.Declaration.Annotations.Any(a => a is NoIndentAnnotation);
+                    return !model.Declaration.Annotations.Any(pta => pta.Annotation is NoIndentAnnotation);
                 case CodeExplorerMemberViewModel member:
                     return member.QualifiedSelection.HasValue; 
                 default:
@@ -85,7 +85,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
                     var componentDeclarations = _state.AllUserDeclarations.Where(c => 
                         c.DeclarationType.HasFlag(DeclarationType.Module) &&
-                        !c.Annotations.Any(a => a is NoIndentAnnotation) &&
+                        !c.Annotations.Any(pta => pta.Annotation is NoIndentAnnotation) &&
                         c.ProjectId == declaration.ProjectId);
 
                     foreach (var componentDeclaration in componentDeclarations)
@@ -99,7 +99,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 {
                     var components = folder.Children.OfType<CodeExplorerComponentViewModel>()   //TODO: this has the filter applied.
                         .Select(s => s.Declaration)
-                        .Where(d => !d.Annotations.Any(a => a is NoIndentAnnotation))
+                        .Where(d => !d.Annotations.Any(pta => pta.Annotation is NoIndentAnnotation))
                         .Select(d => _state.ProjectsProvider.Component(d.QualifiedName.QualifiedModuleName));
 
                     foreach (var component in components)

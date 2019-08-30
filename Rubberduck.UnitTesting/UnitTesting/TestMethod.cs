@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.Resources.UnitTesting;
+using Rubberduck.Common;
 
 namespace Rubberduck.UnitTesting
 {
@@ -24,9 +25,12 @@ namespace Rubberduck.UnitTesting
         {
             get
             {
-                var testMethodAnnotation = Declaration.Annotations.OfType<TestMethodAnnotation>().First();
+                var testMethodAnnotation = Declaration.Annotations.Where(pta => pta.Annotation is TestMethodAnnotation).First();
+                var argument = testMethodAnnotation.AnnotationArguments.FirstOrDefault()?.UnQuote();
 
-                var categorization = testMethodAnnotation.Category.Equals(string.Empty) ? TestExplorer.TestExplorer_Uncategorized : testMethodAnnotation.Category;
+                var categorization = string.IsNullOrWhiteSpace(argument)
+                    ? TestExplorer.TestExplorer_Uncategorized 
+                    : argument;
                 return new TestCategory(categorization);
             }
         }

@@ -5,6 +5,6 @@ namespace Rubberduck.Parsing.Annotations
 {
     public interface IAnnotationFactory
     {
-        IAnnotation Create(VBAParser.AnnotationContext context, QualifiedSelection qualifiedSelection);
+        ParseTreeAnnotation Create(VBAParser.AnnotationContext context, QualifiedSelection qualifiedSelection);
     }
 }

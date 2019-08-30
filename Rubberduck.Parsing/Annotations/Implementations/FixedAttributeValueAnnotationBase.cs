@@ -8,29 +8,36 @@ namespace Rubberduck.Parsing.Annotations
 {
     public abstract class FixedAttributeValueAnnotationBase : AnnotationBase, IAttributeAnnotation
     {
-        protected FixedAttributeValueAnnotationBase(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context)
-            : base(qualifiedSelection, context)
-        {
-            var fixedAttributeValueInfo = FixedAttributeValueInfo(GetType());
+        private readonly string attribute;
+        private readonly IReadOnlyList<string> attributeValues;
 
-            Attribute = fixedAttributeValueInfo.attribute;
-            AttributeValues = fixedAttributeValueInfo.attributeValues;
+        protected FixedAttributeValueAnnotationBase(string name, AnnotationTarget target, string attribute, IEnumerable<string> attributeValues, bool allowMultiple = false)
+            : base(name, target, allowMultiple)
+        {
+            // IEnumerable makes specifying the compile-time constant list easier on us
+            this.attributeValues = attributeValues.ToList();
+            this.attribute = attribute;
         }
 
-        public string Attribute { get; }
-        public IReadOnlyList<string> AttributeValues { get; }
-
-        private static (string attribute, IReadOnlyList<string> attributeValues) FixedAttributeValueInfo(Type annotationType)
+        public IReadOnlyList<string> AnnotationToAttributeValues(IReadOnlyList<string> annotationValues)
         {
-            var attributeValueInfo = annotationType.GetCustomAttributes(false)
-                .OfType<FixedAttributeValueAnnotationAttribute>()
-                .SingleOrDefault();
-            if (attributeValueInfo == null)
-            {
-                return ("", new List<string>());
-            }
+            return attributeValues;
+        }
 
-            return (attributeValueInfo.AttributeName, attributeValueInfo.AttributeValues);
+        public string Attribute(IReadOnlyList<string> annotationValues)
+        {
+            return attribute;
+        }
+
+        public IReadOnlyList<string> AttributeToAnnotationValues(IReadOnlyList<string> attributeValues)
+        {
+            // annotation values must not be specified, because attribute values are fixed in the first place
+            return new List<string>();
+        }
+
+        public bool MatchesAttributeDefinition(string attributeName, IReadOnlyList<string> attributeValues)
+        {
+            return attribute == attributeName && this.attributeValues.SequenceEqual(attributeValues);
         }
     }
 }

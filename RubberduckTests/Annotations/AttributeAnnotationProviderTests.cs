@@ -15,10 +15,10 @@ namespace RubberduckTests.Annotations
         public void FindMemberAnnotationForRandomAttributeReturnsMemberAttributeAnnotation()
         {
             var attributeName = "VB_Whatever";
-            var attributeValues = new List<string>{"SomeValue"};
+            var attributeValues = new List<string>{ "\"SomeValue\"" };
 
             var expectedAnnotationType = "MemberAttribute";
-            var expectedValues = new List<string>{"VB_Whatever", "SomeValue"};
+            var expectedValues = new List<string>{ "VB_Whatever", "\"SomeValue\"" };
 
             var attributeAnnotationProvider = GetAnnotationProvider();
             var (actualAnnotationInfo, actualValues) = attributeAnnotationProvider.MemberAttributeAnnotation(attributeName, attributeValues);
@@ -31,10 +31,10 @@ namespace RubberduckTests.Annotations
         public void FindModuleAnnotationForRandomAttributeReturnsModuleAttributeAnnotation()
         {
             var attributeName = "VB_Whatever";
-            var attributeValues = new List<string> { "SomeValue" };
+            var attributeValues = new List<string> { "\"SomeValue\"" };
 
             var expectedAnnotationType = "ModuleAttribute";
-            var expectedValues = new List<string> { "VB_Whatever", "SomeValue" };
+            var expectedValues = new List<string> { "VB_Whatever", "\"SomeValue\"" };
 
             var attributeAnnotationProvider = GetAnnotationProvider();
             var (annotationInfo, actualValues) = attributeAnnotationProvider.ModuleAttributeAnnotation(attributeName, attributeValues);
@@ -81,7 +81,7 @@ namespace RubberduckTests.Annotations
 
         private AttributeAnnotationProvider GetAnnotationProvider()
         {
-            return new AttributeAnnotationProvider(MockParser.GetWellKnownAnnotationTypes().Where(annot => typeof(IAttributeAnnotation).IsAssignableFrom(annot)));
+            return new AttributeAnnotationProvider(MockParser.GetWellKnownAnnotations().OfType<IAttributeAnnotation>());
         }
 
         private static void AssertEqual(IReadOnlyList<string> expectedList, IReadOnlyList<string> actualList)

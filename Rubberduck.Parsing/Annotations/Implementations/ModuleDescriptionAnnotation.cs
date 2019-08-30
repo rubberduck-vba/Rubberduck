@@ -10,12 +10,10 @@ namespace Rubberduck.Parsing.Annotations
     /// <remarks>
     /// This is a class distinct from Member and Variable descriptions, because annotation scoping is annoyingly complicated and Rubberduck has a <strong>much</strong> easier time if module annotations and member annotations don't have the same name.
     /// </remarks>
-    [Annotation("ModuleDescription", AnnotationTarget.Module)]
-    [FlexibleAttributeValueAnnotation("VB_Description", 1)]
     public sealed class ModuleDescriptionAnnotation : DescriptionAttributeAnnotationBase
     {
-        public ModuleDescriptionAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> parameters)
-            : base(qualifiedSelection, context, parameters)
+        public ModuleDescriptionAnnotation()
+            : base("ModuleDescription", AnnotationTarget.Module, "VB_Description", 1)
         {}
     }
 }

@@ -110,7 +110,7 @@ End Sub";
         protected override IQuickFix QuickFix(RubberduckParserState state)
         {
             return new AdjustAttributeAnnotationQuickFix(new AnnotationUpdater(), 
-                new AttributeAnnotationProvider(MockParser.GetWellKnownAnnotationTypes().Where(annotation => typeof(IAttributeAnnotation).IsAssignableFrom(annotation))));
+                new AttributeAnnotationProvider(MockParser.GetWellKnownAnnotations().OfType<IAttributeAnnotation>()));
         }
     }
 }

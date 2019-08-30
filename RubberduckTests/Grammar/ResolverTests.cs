@@ -1384,16 +1384,16 @@ End Sub
 ";
             using (var state = Resolve(code))
             {
-
                 var declaration = state.AllUserDeclarations.Single(item =>
                     item.DeclarationType == DeclarationType.Variable && !item.IsUndeclared);
 
                 var usage = declaration.References.Single();
-                var annotation = (IgnoreAnnotation) usage.Annotations.First();
+                var annotation = usage.Annotations.First();
+                Assert.IsInstanceOf<IgnoreAnnotation>(annotation.Annotation);
                 Assert.IsTrue(
                     usage.Annotations.Count() == 1
-                    && annotation.InspectionNames.Count() == 1
-                    && annotation.InspectionNames.First() == "UnassignedVariableUsage");
+                    && annotation.AnnotationArguments.Count() == 1
+                    && annotation.AnnotationArguments.First() == "UnassignedVariableUsage");
             }
         }
 
@@ -1418,13 +1418,14 @@ End Sub
 
                 var usage = declaration.References.Single();
 
-                var annotation1 = (IgnoreAnnotation)usage.Annotations.ElementAt(0);
-                var annotation2 = (IgnoreAnnotation)usage.Annotations.ElementAt(1);
+                var annotation1 = usage.Annotations.ElementAt(0);
+                var annotation2 = usage.Annotations.ElementAt(1);
 
                 Assert.AreEqual(2, usage.Annotations.Count());
-                
-                Assert.IsTrue(usage.Annotations.Any(a => ((IgnoreAnnotation)a).InspectionNames.First() == "UseMeaningfulName"));
-                Assert.IsTrue(usage.Annotations.Any(a => ((IgnoreAnnotation)a).InspectionNames.First() == "UnassignedVariableUsage"));
+                Assert.IsInstanceOf<IgnoreAnnotation>(annotation1.Annotation);
+                Assert.IsInstanceOf<IgnoreAnnotation>(annotation2.Annotation);
+                Assert.IsTrue(usage.Annotations.Any(a => a.AnnotationArguments.First() == "UseMeaningfulName"));
+                Assert.IsTrue(usage.Annotations.Any(a => a.AnnotationArguments.First() == "UnassignedVariableUsage"));
             }
         }
 
@@ -1445,8 +1446,8 @@ End Sub";
                 var declaration = state.AllUserDeclarations.First(f => f.DeclarationType == DeclarationType.Procedure);
 
                 Assert.AreEqual(2, declaration.Annotations.Count(), "Annotation count mismatch");
-                Assert.IsTrue(declaration.Annotations.Any(a => a is TestMethodAnnotation));
-                Assert.IsTrue(declaration.Annotations.Any(a => a is IgnoreTestAnnotation));
+                Assert.IsTrue(declaration.Annotations.Any(a => a.Annotation is TestMethodAnnotation));
+                Assert.IsTrue(declaration.Annotations.Any(a => a.Annotation is IgnoreTestAnnotation));
             }
         }
 
@@ -2879,9 +2880,9 @@ End Sub
 
                 var declaration = state.AllUserDeclarations.Single(item => item.IdentifierName == "orgs");
 
-                var annotation = declaration.Annotations.SingleOrDefault(item => item is IgnoreAnnotation);
+                var annotation = declaration.Annotations.SingleOrDefault(item => item.Annotation is IgnoreAnnotation);
                 Assert.IsNotNull(annotation);
-                Assert.IsTrue(results.SequenceEqual(((IgnoreAnnotation)annotation).InspectionNames));
+                Assert.IsTrue(results.SequenceEqual(annotation.AnnotationArguments));
             }
         }
 
@@ -2905,9 +2906,9 @@ End Sub
 
                 var declaration = state.AllUserDeclarations.Single(item => item.IdentifierName == "orgs");
 
-                var annotation = declaration.Annotations.SingleOrDefault(item => item is IgnoreAnnotation);
+                var annotation = declaration.Annotations.SingleOrDefault(item => item.Annotation is IgnoreAnnotation);
                 Assert.IsNotNull(annotation);
-                Assert.IsTrue(results.SequenceEqual(((IgnoreAnnotation)annotation).InspectionNames));
+                Assert.IsTrue(results.SequenceEqual(annotation.AnnotationArguments));
             }
         }
 

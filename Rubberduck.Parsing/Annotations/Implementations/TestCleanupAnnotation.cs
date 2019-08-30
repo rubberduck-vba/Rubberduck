@@ -7,14 +7,10 @@ namespace Rubberduck.Parsing.Annotations
     /// <summary>
     /// Marks a method that the test engine will execute after executing each unit test in a test module.
     /// </summary>
-    [Annotation("TestCleanup", AnnotationTarget.Member)]
     public sealed class TestCleanupAnnotation : AnnotationBase
     {
-        public TestCleanupAnnotation(
-            QualifiedSelection qualifiedSelection,
-            VBAParser.AnnotationContext context,
-            IEnumerable<string> parameters)
-            : base(qualifiedSelection, context)
+        public TestCleanupAnnotation()
+            : base("TestCleanup", AnnotationTarget.Member)
         {
         }
     }

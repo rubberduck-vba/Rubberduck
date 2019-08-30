@@ -17,7 +17,7 @@ namespace Rubberduck.Parsing.VBA
     {
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public void AddAnnotation(IRewriteSession rewriteSession, QualifiedContext context, AnnotationAttribute annotationInfo, IReadOnlyList<string> values = null)
+        public void AddAnnotation(IRewriteSession rewriteSession, QualifiedContext context, IAnnotation annotationInfo, IReadOnlyList<string> values = null)
         {
             var annotationValues = values ?? new List<string>();
 
@@ -68,14 +68,14 @@ namespace Rubberduck.Parsing.VBA
             rewriter.InsertAfter(previousEndOfLine.stop.TokenIndex, codeToAdd);
         }
 
-        private static string AnnotationText(AnnotationAttribute annotationInformation, IReadOnlyList<string> values)
+        private static string AnnotationText(IAnnotation annotationInformation, IReadOnlyList<string> values)
         {
             return AnnotationText(annotationInformation.Name, values);
         }
 
         private static string AnnotationText(string annotationType, IReadOnlyList<string> values)
         {
-            return $"'{AnnotationBase.ANNOTATION_MARKER}{AnnotationBaseText(annotationType, values)}";
+            return $"'{ParseTreeAnnotation.ANNOTATION_MARKER}{AnnotationBaseText(annotationType, values)}";
         }
 
         private static string AnnotationBaseText(string annotationType, IReadOnlyList<string> values)
@@ -99,7 +99,7 @@ namespace Rubberduck.Parsing.VBA
             return previousEol;
         }
 
-        public void AddAnnotation(IRewriteSession rewriteSession, Declaration declaration, AnnotationAttribute annotationInfo, IReadOnlyList<string> values = null)
+        public void AddAnnotation(IRewriteSession rewriteSession, Declaration declaration, IAnnotation annotationInfo, IReadOnlyList<string> values = null)
         {
             var annotationValues = values ?? new List<string>();
 
@@ -124,7 +124,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void AddModuleAnnotation(IRewriteSession rewriteSession, Declaration declaration, AnnotationAttribute annotationInfo, IReadOnlyList<string> annotationValues)
+        private void AddModuleAnnotation(IRewriteSession rewriteSession, Declaration declaration, IAnnotation annotationInfo, IReadOnlyList<string> annotationValues)
         {
             if (!annotationInfo.Target.HasFlag(AnnotationTarget.Module))
             {
@@ -146,7 +146,7 @@ namespace Rubberduck.Parsing.VBA
             rewriter.InsertBefore(0, codeToAdd);
         }
 
-        private void AddVariableAnnotation(IRewriteSession rewriteSession, Declaration declaration, AnnotationAttribute annotationInfo, IReadOnlyList<string> annotationValues)
+        private void AddVariableAnnotation(IRewriteSession rewriteSession, Declaration declaration, IAnnotation annotationInfo, IReadOnlyList<string> annotationValues)
         {
             if (!annotationInfo.Target.HasFlag(AnnotationTarget.Variable))
             {
@@ -165,7 +165,7 @@ namespace Rubberduck.Parsing.VBA
             AddAnnotation(rewriteSession, new QualifiedContext(declaration.QualifiedName, declaration.Context), annotationInfo, annotationValues);
         }
 
-        private void AddMemberAnnotation(IRewriteSession rewriteSession, Declaration declaration, AnnotationAttribute annotationInfo, IReadOnlyList<string> annotationValues)
+        private void AddMemberAnnotation(IRewriteSession rewriteSession, Declaration declaration, IAnnotation annotationInfo, IReadOnlyList<string> annotationValues)
         {
             if (!annotationInfo.Target.HasFlag(AnnotationTarget.Member))
             {
@@ -185,7 +185,7 @@ namespace Rubberduck.Parsing.VBA
         }
 
 
-        public void AddAnnotation(IRewriteSession rewriteSession, IdentifierReference reference, AnnotationAttribute annotationInfo,
+        public void AddAnnotation(IRewriteSession rewriteSession, IdentifierReference reference, IAnnotation annotationInfo,
             IReadOnlyList<string> values = null)
         {
             var annotationValues = values ?? new List<string>();
@@ -214,7 +214,7 @@ namespace Rubberduck.Parsing.VBA
             AddAnnotation(rewriteSession, new QualifiedContext(reference.QualifiedModuleName, reference.Context), annotationInfo, annotationValues);
         }
 
-        public void RemoveAnnotation(IRewriteSession rewriteSession, IAnnotation annotation)
+        public void RemoveAnnotation(IRewriteSession rewriteSession, ParseTreeAnnotation annotation)
         {
             if (annotation == null)
             {
@@ -225,7 +225,7 @@ namespace Rubberduck.Parsing.VBA
             if (rewriteSession.TargetCodeKind != CodeKind.CodePaneCode)
             {
                 _logger.Warn($"Tried to remove an annotation with a rewriter not suitable for annotationss. (target code kind = {rewriteSession.TargetCodeKind})");
-                _logger.Trace($"Tried to remove annotation {annotation.AnnotationType} at {annotation.QualifiedSelection.Selection} in module {annotation.QualifiedSelection.QualifiedName} using a rewriter not suitable for annotations.");
+                _logger.Trace($"Tried to remove annotation {annotation.Annotation.Name} at {annotation.QualifiedSelection.Selection} in module {annotation.QualifiedSelection.QualifiedName} using a rewriter not suitable for annotations.");
                 return;
             }
 
@@ -283,11 +283,11 @@ namespace Rubberduck.Parsing.VBA
         private static void RemoveAnnotationMarker(IModuleRewriter rewriter, VBAParser.AnnotationContext annotationContext)
         {
             var endOfAnnotationMarker = annotationContext.start.TokenIndex - 1;
-            var startOfAnnotationMarker = endOfAnnotationMarker - AnnotationBase.ANNOTATION_MARKER.Length + 1;
+            var startOfAnnotationMarker = endOfAnnotationMarker - ParseTreeAnnotation.ANNOTATION_MARKER.Length + 1;
             rewriter.RemoveRange(startOfAnnotationMarker, endOfAnnotationMarker);
         }
 
-        public void RemoveAnnotations(IRewriteSession rewriteSession, IEnumerable<IAnnotation> annotations)
+        public void RemoveAnnotations(IRewriteSession rewriteSession, IEnumerable<ParseTreeAnnotation> annotations)
         {
             if (annotations == null)
             {
@@ -330,7 +330,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void UpdateAnnotation(IRewriteSession rewriteSession, IAnnotation annotation, AnnotationAttribute annotationInfo, IReadOnlyList<string> newValues = null)
+        public void UpdateAnnotation(IRewriteSession rewriteSession, ParseTreeAnnotation annotation, IAnnotation annotationInfo, IReadOnlyList<string> newValues = null)
         {
             var newAnnotationValues = newValues ?? new List<string>();
 
@@ -344,15 +344,15 @@ namespace Rubberduck.Parsing.VBA
             if (rewriteSession.TargetCodeKind != CodeKind.CodePaneCode)
             {
                 _logger.Warn($"Tried to update an annotation with a rewriter not suitable for annotationss. (target code kind = {rewriteSession.TargetCodeKind})");
-                _logger.Trace($"Tried to update annotation {annotation.AnnotationType} at {annotation.QualifiedSelection.Selection} in module {annotation.QualifiedSelection.QualifiedName} with annotation {annotationInfo.Name} with values {AnnotationValuesText(newAnnotationValues)} using a rewriter not suitable for annotations.");
+                _logger.Trace($"Tried to update annotation {annotation.Annotation.Name} at {annotation.QualifiedSelection.Selection} in module {annotation.QualifiedSelection.QualifiedName} with annotation {annotationInfo.Name} with values {AnnotationValuesText(newAnnotationValues)} using a rewriter not suitable for annotations.");
                 return;
             }
 
             //If there are no common flags, the annotations cannot apply to the same target.
-            if ((annotation.MetaInformation.Target & annotationInfo.Target) == 0)
+            if ((annotation.Annotation.Target & annotationInfo.Target) == 0)
             {
                 _logger.Warn("Tried to replace an annotation with an annotation without common flags.");
-                _logger.Trace($"Tried to replace an annotation {annotation.AnnotationType} with values {AnnotationValuesText(newValues)} at {annotation.QualifiedSelection.Selection} in module {annotation.QualifiedSelection.QualifiedName} with an annotation {annotationInfo.Name} with values {AnnotationValuesText(newAnnotationValues)}, which does not have any common flags.");
+                _logger.Trace($"Tried to replace an annotation {annotation.Annotation.Name} with values {AnnotationValuesText(newValues)} at {annotation.QualifiedSelection.Selection} in module {annotation.QualifiedSelection.QualifiedName} with an annotation {annotationInfo.Name} with values {AnnotationValuesText(newAnnotationValues)}, which does not have any common flags.");
                 return;
             }
             

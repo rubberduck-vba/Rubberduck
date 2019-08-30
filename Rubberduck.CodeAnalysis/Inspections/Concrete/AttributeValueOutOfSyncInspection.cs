@@ -49,23 +49,26 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var declarationsWithAttributeAnnotations = State.DeclarationFinder.AllUserDeclarations
-                .Where(declaration => declaration.Annotations.Any(annotation => annotation is IAttributeAnnotation));
+                .Where(declaration => declaration.Annotations.Any(pta => pta.Annotation is IAttributeAnnotation));
             var results = new List<DeclarationInspectionResult>();
             foreach (var declaration in declarationsWithAttributeAnnotations.Where(decl => decl.QualifiedModuleName.ComponentType != ComponentType.Document))
             {
-                foreach (var annotation in declaration.Annotations.OfType<IAttributeAnnotation>())
+                foreach (var annotationInstance in declaration.Annotations.Where(pta => pta.Annotation is IAttributeAnnotation))
                 {
-                    if (HasDifferingAttributeValues(declaration, annotation, out var attributeValues))
+                    var annotation = annotationInstance.Annotation;
+                    if (HasDifferingAttributeValues(declaration, annotationInstance, out var attributeValues))
                     {
+                        var attributeName = annotationInstance.Attribute();
+
                         var description = string.Format(InspectionResults.AttributeValueOutOfSyncInspection, 
-                            annotation.Attribute, 
+                            attributeName, 
                             string.Join(", ", attributeValues), 
-                            annotation.AnnotationType);
+                            annotation.Name);
 
                         var result = new DeclarationInspectionResult(this, description, declaration,
-                            new QualifiedContext(declaration.QualifiedModuleName, annotation.Context));
-                        result.Properties.Annotation = annotation;
-                        result.Properties.AttributeName = annotation.Attribute;
+                            new QualifiedContext(declaration.QualifiedModuleName, annotationInstance.Context));
+                        result.Properties.Annotation = annotationInstance;
+                        result.Properties.AttributeName = attributeName;
                         result.Properties.AttributeValues = attributeValues;
 
                         results.Add(result);
@@ -76,16 +79,17 @@ namespace Rubberduck.Inspections.Concrete
             return results;
         }
 
-        private static bool HasDifferingAttributeValues(Declaration declaration, IAttributeAnnotation annotation, out IReadOnlyList<string> attributeValues)
+        private static bool HasDifferingAttributeValues(Declaration declaration, ParseTreeAnnotation annotationInstance, out IReadOnlyList<string> attributeValues)
         {
+            var attribute = annotationInstance.Attribute();
             var attributeNodes = declaration.DeclarationType.HasFlag(DeclarationType.Module)
-                                    ? declaration.Attributes.AttributeNodesFor(annotation)
-                                    : declaration.Attributes.AttributeNodesFor(annotation, declaration.IdentifierName);
+                                    ? declaration.Attributes.AttributeNodesFor(annotationInstance)
+                                    : declaration.Attributes.AttributeNodesFor(annotationInstance, declaration.IdentifierName);
 
             foreach (var attributeNode in attributeNodes)
             {
                 var values = attributeNode.Values;
-                if (!annotation.AttributeValues.SequenceEqual(values))
+                if (!annotationInstance.AttributeValues().SequenceEqual(values))
                 {
                     attributeValues = values;
                     return true;

@@ -15,7 +15,7 @@ namespace Rubberduck.Parsing.Symbols
             QualifiedMemberName qualifiedName,
             Declaration projectDeclaration,
             string name,
-            IEnumerable<IAnnotation> annotations,
+            IEnumerable<ParseTreeAnnotation> annotations,
             Attributes attributes)
             : base(qualifiedName, 
                 projectDeclaration,
