@@ -39,7 +39,7 @@ namespace RubberduckTests.TodoExplorer
             using (var state = parser.State)
             {
                 var cs = GetConfigService(new[] { "TODO", "NOTE", "BUG" });
-                var vm = ArranageViewModel(state, cs);
+                var vm = ArrangeViewModel(state, cs);
 
                 parser.Parse(new CancellationTokenSource());
                 if (state.Status >= ParserState.Error)
@@ -74,7 +74,7 @@ namespace RubberduckTests.TodoExplorer
             using (var state = parser.State)
             {
                 var cs = GetConfigService(new[] { "TODO", "NOTE", "BUG" });
-                var vm = ArranageViewModel(state, cs);
+                var vm = ArrangeViewModel(state, cs);
 
                 parser.Parse(new CancellationTokenSource());
                 if (state.Status >= ParserState.Error)
@@ -109,7 +109,7 @@ namespace RubberduckTests.TodoExplorer
             using (var state = parser.State)
             {
                 var cs = GetConfigService(new[] { "TO-DO", "N@TE", "BUG " });
-                var vm = ArranageViewModel(state, cs);
+                var vm = ArrangeViewModel(state, cs);
 
                 parser.Parse(new CancellationTokenSource());
                 if (state.Status >= ParserState.Error)
@@ -143,7 +143,7 @@ namespace RubberduckTests.TodoExplorer
             using (var state = parser.State)
             {
                 var cs = GetConfigService(new[] { "TODO", "NOTE", "BUG" });
-                var vm = ArranageViewModel(state, cs);
+                var vm = ArrangeViewModel(state, cs);
 
                 parser.Parse(new CancellationTokenSource());
                 if (state.Status >= ParserState.Error)
@@ -179,7 +179,7 @@ namespace RubberduckTests.TodoExplorer
             using (var state = parser.State)
             {
                 var cs = GetConfigService(new[] { "TODO", "NOTE", "BUG" });
-                var vm = ArranageViewModel(state, cs);
+                var vm = ArrangeViewModel(state, cs);
                 
                 parser.Parse(new CancellationTokenSource());
                 if (state.Status >= ParserState.Error)
@@ -221,7 +221,7 @@ namespace RubberduckTests.TodoExplorer
             return dispatcher.Object;
         }
 
-        private ToDoExplorerViewModel ArranageViewModel(RubberduckParserState state, IConfigurationService<Configuration> configService)
+        private ToDoExplorerViewModel ArrangeViewModel(RubberduckParserState state, IConfigurationService<Configuration> configService)
         {
             return new ToDoExplorerViewModel(state, configService, null, GetMockedUiDispatcher(), null);
         }
