@@ -35,7 +35,7 @@ namespace Rubberduck.Inspections.CodePathAnalysis
                     break;
             }
 
-            if (declaration.Context == tree)
+            if (ReferenceEquals(declaration.Context, tree))
             {
                 node = new DeclarationNode(tree)
                 {
@@ -43,7 +43,7 @@ namespace Rubberduck.Inspections.CodePathAnalysis
                 };
             }
 
-            var reference = declaration.References.SingleOrDefault(w => w.Context == tree);
+            var reference = declaration.References.SingleOrDefault(w => ReferenceEquals(w.Context, tree));
             if (reference != null)
             {
                 if (reference.IsAssignment)
@@ -81,7 +81,6 @@ namespace Rubberduck.Inspections.CodePathAnalysis
             }
 
             node.Children = children.ToImmutableList();
-
             return node;
         }
     }

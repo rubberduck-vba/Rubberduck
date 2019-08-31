@@ -8,7 +8,7 @@ namespace Rubberduck.Inspections.CodePathAnalysis.Extensions
 {
     public static class NodeExtensions
     {
-        public static IEnumerable<INode> GetFlattenedNodes(this INode node, IEnumerable<Type> excludedTypes)
+        public static IEnumerable<INode> GetFlattenedNodes(this INode node, params Type[] excludedTypes)
         {
             foreach (var child in node.Children)
             {
@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections.CodePathAnalysis.Extensions
             }
         }
 
-        public static IEnumerable<INode> GetNodes(this INode node, IEnumerable<Type> types)
+        public static IEnumerable<INode> GetNodes(this INode node, params Type[] types)
         {
             if (types.Contains(node.GetType()))
             {
@@ -42,7 +42,7 @@ namespace Rubberduck.Inspections.CodePathAnalysis.Extensions
             }
         }
 
-        public static INode GetFirstNode(this INode node, IEnumerable<Type> excludedTypes)
+        public static INode GetFirstNode(this INode node, params Type[] excludedTypes)
         {
             if (!excludedTypes.Contains(node.GetType()))
             {
@@ -56,14 +56,13 @@ namespace Rubberduck.Inspections.CodePathAnalysis.Extensions
         {
             var nodes = new List<IdentifierReference>();
 
-            var blockNodes = node.GetNodes(new[] { typeof(BlockNode) });
+            var blockNodes = node.GetNodes(typeof(BlockNode));
             foreach (var block in blockNodes)
             {
                 INode lastNode = default;
-                foreach (var flattenedNode in block.GetFlattenedNodes(new[] { typeof(GenericNode), typeof(BlockNode) }))
+                foreach (var flattenedNode in block.GetFlattenedNodes(typeof(GenericNode), typeof(BlockNode)))
                 {
-                    if (flattenedNode is AssignmentNode &&
-                        lastNode is AssignmentNode)
+                    if (flattenedNode is AssignmentNode && lastNode is AssignmentNode)
                     {
                         nodes.Add(lastNode.Reference);
                     }
@@ -72,7 +71,7 @@ namespace Rubberduck.Inspections.CodePathAnalysis.Extensions
                 }
 
                 if (lastNode is AssignmentNode &&
-                    block.Children[0].GetFirstNode(new[] { typeof(GenericNode) }) is DeclarationNode)
+                    block.Children[0].GetFirstNode(typeof(GenericNode)) is DeclarationNode)
                 {
                     nodes.Add(lastNode.Reference);
                 }
