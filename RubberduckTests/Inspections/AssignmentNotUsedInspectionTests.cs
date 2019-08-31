@@ -97,6 +97,24 @@ End Sub";
         }
 
         [Test]
+        public void DoesNotMarkVariableDeclaredAndAssignedInsideInnerBlock()
+        {
+            const string code = @"
+Public Function IssueInIfBlock(ByVal someInput As Boolean) As Boolean
+    
+    If someInput Then
+        Dim HasProblems As Boolean
+        HasProblems = True ' triggers ""Assignment is not used"" inspection
+    End If
+    
+    IssueInIfBlock = someInput And HasProblems
+    
+End Function";
+            var results = GetInspectionResults(code);
+            Assert.AreEqual(0, results.Count());
+        }
+
+        [Test]
         // Note: both assignments in the if/else can be marked in the future;
         // I just want feedback before I start mucking around that deep.
         public void DoesNotMarkLastAssignmentInNonDeclarationBlock()
