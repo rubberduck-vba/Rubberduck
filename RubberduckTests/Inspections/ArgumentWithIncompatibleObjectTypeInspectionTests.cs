@@ -120,6 +120,46 @@ End Sub
             Assert.IsFalse(inspectionResults.Any());
         }
 
+        [Test]
+        [Category("Inspections")]
+        public void MissingOptionalArgument_NoResult()
+        {
+            const string interface1 =
+                @"
+Private Sub Foo() 
+End Sub
+";
+            const string class1 =
+                @"Implements Interface1
+
+Private Sub Interface1_Foo()
+End Sub
+";
+
+            const string module1 =
+                @"
+Private Sub DoIt()
+    Bar  , Nothing
+End Sub
+
+Private Sub Bar(Optional baz As Class1 = Nothing, Optional bazBaz As Class1 = Nothing)
+End Sub
+";
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, class1)
+                .AddComponent("Interface1", ComponentType.ClassModule, interface1)
+                .AddComponent("Module1", ComponentType.StandardModule, module1)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
+
+            var inspectionResults = InspectionResults(vbe).ToList();
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
         private static IEnumerable<IInspectionResult> InspectionResults(params (string moduleName, string content, ComponentType componentType)[] testModules)
         {
             var vbe = MockVbeBuilder.BuildFromModules(testModules).Object;

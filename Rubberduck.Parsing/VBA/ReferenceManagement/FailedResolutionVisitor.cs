@@ -70,6 +70,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 case ProcedureCoercionExpression procedureCoercionExpression:
                     Visit(procedureCoercionExpression, parent, withExpression);
                     break;
+                case MissingArgumentExpression missingArgumentExpression:
+                    break;
                 default:
                     throw new NotSupportedException($"Unexpected bound expression type {boundExpression.GetType()}");
             }

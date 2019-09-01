@@ -127,7 +127,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
         private string ArgumentSetTypeName(IdentifierReference argumentReference, DeclarationFinder finder)
         {
-            return SetTypeNameOfExpression((VBAParser.ExpressionContext)argumentReference.Context, argumentReference.QualifiedModuleName, finder);
+            var argumentExpression = argumentReference.Context as VBAParser.ExpressionContext;
+            return SetTypeNameOfExpression(argumentExpression, argumentReference.QualifiedModuleName, finder);
         }
 
         private string SetTypeNameOfExpression(VBAParser.ExpressionContext expression, QualifiedModuleName containingModule, DeclarationFinder finder)

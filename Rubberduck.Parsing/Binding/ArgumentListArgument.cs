@@ -42,6 +42,7 @@ namespace Rubberduck.Parsing.Binding
                 ReferencedParameter = ResolveReferencedParameter(calledProcedure, parameterIndex);
 
                 if (!_isAddressOfArgument 
+                    && !(Context is VBAParser.MissingArgumentContext)
                     && (isArrayAccess 
                         ||  ReferencedParameter != null 
                             && !CanBeObject(ReferencedParameter)))

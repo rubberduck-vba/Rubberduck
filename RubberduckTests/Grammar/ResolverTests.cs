@@ -5186,6 +5186,7 @@ End Sub
         [TestCase("arg2:=42, arg1:=a+b", "arg1", "a+b")]
         [TestCase("42, a+b, (\"Hello\" & 42)", "arg3", "(\"Hello\" & 42)")]
         [TestCase("42, a+b, (\"Hello\" & 42), 15+2", "furtherArgs", "15+2")]
+        [TestCase("42, a+b, , (\"Hello\" & 42), 15+2", "arg3", "")]
         public void CorrectArgumentReferencesOnMethodAccess(string arguments, string parameterName, string expectedExpressionText)
         {
             var class1Code = @"
