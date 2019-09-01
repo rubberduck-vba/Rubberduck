@@ -42,8 +42,8 @@ namespace Rubberduck.UI.ToDoItems
             RubberduckParserState state,
             IConfigurationService<Configuration> configService, 
             ISettingsFormFactory settingsFormFactory, 
-            ISelectionService selectionService, 
-            IUiDispatcher uiDispatcher)
+            IUiDispatcher uiDispatcher,
+            INavigateCommand navigateCommand)
         {
             _state = state;
             _configService = configService;
@@ -51,6 +51,7 @@ namespace Rubberduck.UI.ToDoItems
             _uiDispatcher = uiDispatcher;
             _state.StateChanged += HandleStateChanged;
 
+            NavigateCommand = navigateCommand;
             RefreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(),
                 _ =>
                 {
@@ -191,9 +192,9 @@ namespace Rubberduck.UI.ToDoItems
             });
         }
 
-        public INavigateCommand NavigateCommand { get; set; }
+        public INavigateCommand NavigateCommand { get; }
 
-        public CommandBase RefreshCommand { get; set; }
+        public CommandBase RefreshCommand { get; }
 
         public CommandBase RemoveCommand { get; }
 
