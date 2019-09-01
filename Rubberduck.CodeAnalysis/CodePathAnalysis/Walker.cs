@@ -12,6 +12,12 @@ namespace Rubberduck.Inspections.CodePathAnalysis
     {
         public INode GenerateTree(IParseTree tree, Declaration declaration)
         {
+            AssignmentNode lastAssignment = null;
+            return GenerateTree(tree, declaration, ref lastAssignment);
+        }
+
+        public INode GenerateTree(IParseTree tree, Declaration declaration, ref AssignmentNode lastAssignment)
+        {
             INode node = default;
             switch (tree)
             {
@@ -48,7 +54,7 @@ namespace Rubberduck.Inspections.CodePathAnalysis
             {
                 if (reference.IsAssignment)
                 {
-                    node = new AssignmentNode(tree)
+                    node = lastAssignment = new AssignmentNode(tree)
                     {
                         Reference = reference
                     };
@@ -59,6 +65,7 @@ namespace Rubberduck.Inspections.CodePathAnalysis
                     {
                         Reference = reference
                     };
+                    lastAssignment?.AddUsage(node);
                 }
             }
 
@@ -70,7 +77,7 @@ namespace Rubberduck.Inspections.CodePathAnalysis
             var children = new List<INode>();
             for (var i = 0; i < tree.ChildCount; i++)
             {
-                var nextChild = GenerateTree(tree.GetChild(i), declaration);
+                var nextChild = GenerateTree(tree.GetChild(i), declaration, ref lastAssignment);
                 nextChild.SortOrder = i;
                 nextChild.Parent = node;
 

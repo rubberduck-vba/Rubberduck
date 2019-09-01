@@ -63,19 +63,21 @@ namespace Rubberduck.Inspections.Concrete
 
                 var tree = _walker.GenerateTree(parentScopeDeclaration.Context, variable);
 
-                var references = tree.GetIdentifierReferences();
+                var references = tree.GetUnusedAssignmentIdentifierReferences()
+                    .Where(r => !(r.Context.Parent is VBAParser.SetStmtContext setStmtContext &&
+                          setStmtContext.expression().GetText().Equals(Tokens.Nothing)))
+                    .ToArray();
                 // ignore set-assignments to 'Nothing'
-                nodes.AddRange(references.Where(r =>
-                    !(r.Context.Parent is VBAParser.SetStmtContext setStmtContext &&
-                    setStmtContext.expression().GetText().Equals(Tokens.Nothing))));
+                nodes.AddRange(references);
             }
 
-            return nodes
+            var results = nodes
                 .Where(issue => !issue.IsIgnoringInspectionResultFor(AnnotationName)
                             // Ignoring the Declaration disqualifies all assignments
                             && !issue.Declaration.IsIgnoringInspectionResultFor(AnnotationName))
                 .Select(issue => new IdentifierReferenceInspectionResult(this, Description, State, issue))
                 .ToList();
+            return results;
         }
     }
 }

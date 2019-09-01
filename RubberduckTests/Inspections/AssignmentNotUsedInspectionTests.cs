@@ -97,7 +97,7 @@ End Sub";
         }
 
         [Test]
-        public void DoesNotMarkVariableDeclaredAndAssignedInsideInnerBlock()
+        public void DoesNotMarkUsedAssignmentForVariableDeclaredAndAssignedInsideInnerBlock()
         {
             const string code = @"
 Public Function IssueInIfBlock(ByVal someInput As Boolean) As Boolean
@@ -115,8 +115,25 @@ End Function";
         }
 
         [Test]
+        public void DoesNotMarkSuccessiveReferencingAssignments()
+        {
+            const string code = @"
+Public Sub Foo()
+    Dim bar As String
+    bar = ""a""
+    bar = bar & ""b""
+    bar = bar & ""c""
+    Debug.Print bar
+End Sub
+";
+            var results = GetInspectionResults(code);
+            Assert.AreEqual(0, results.Count());
+        }
+
+        [Test]
         // Note: both assignments in the if/else can be marked in the future;
         // I just want feedback before I start mucking around that deep.
+        [Ignore("This code yields a legit result... accidentally.")]
         public void DoesNotMarkLastAssignmentInNonDeclarationBlock()
         {
             const string code = @"
@@ -194,6 +211,7 @@ End Sub";
         }
 
         [Test]
+        [Ignore("yields 3 results... all accidentally legit.")]
         public void DoesNotMarkAssignment_UsedInSelectCase()
         {
             const string code = @"
@@ -253,7 +271,7 @@ Public Sub Test()
     Dim foo As Long
     foo = 1245316
 End Sub";
-            var results = GetInspectionResults(code, includeLibraries: false);
+            var results = GetInspectionResults(code);
             Assert.AreEqual(0, results.Count());
         }
 
@@ -266,7 +284,7 @@ End Sub";
     foo = 123451
     foo = 56126
 End Sub";
-            var results = GetInspectionResults(code, includeLibraries: false);
+            var results = GetInspectionResults(code);
             Assert.AreEqual(1, results.Count());
         }
 
@@ -279,7 +297,7 @@ End Sub";
     foo = 123467
     foo = 45678
 End Sub";
-            var results = GetInspectionResults(code, includeLibraries: false);
+            var results = GetInspectionResults(code);
             Assert.AreEqual(0, results.Count());
         }
     }

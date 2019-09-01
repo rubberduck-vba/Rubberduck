@@ -42,6 +42,12 @@ namespace Rubberduck.Inspections.CodePathAnalysis.Extensions
             }
         }
 
+        /// <summary>
+        /// Starting with the specified root, recursively searches for the first node in a node tree that isn't one of the optionally specified excluded types.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="excludedTypes"></param>
+        /// <returns></returns>
         public static INode GetFirstNode(this INode node, params Type[] excludedTypes)
         {
             if (!excludedTypes.Contains(node.GetType()))
@@ -52,32 +58,38 @@ namespace Rubberduck.Inspections.CodePathAnalysis.Extensions
             return GetFirstNode(node.Children[0], excludedTypes);
         }
 
-        public static List<IdentifierReference> GetIdentifierReferences(this INode node)
+        public static IEnumerable<IdentifierReference> GetUnusedAssignmentIdentifierReferences(this INode node)
         {
-            var nodes = new List<IdentifierReference>();
+            var nodes = new List<(AssignmentNode, IdentifierReference)>();
 
             var blockNodes = node.GetNodes(typeof(BlockNode));
+            INode lastNode = default;
             foreach (var block in blockNodes)
             {
-                INode lastNode = default;
-                foreach (var flattenedNode in block.GetFlattenedNodes(typeof(GenericNode), typeof(BlockNode)))
+                var flattened = block.GetFlattenedNodes(typeof(GenericNode), typeof(BlockNode))
+                    .OrderBy(n => n.Reference?.Selection.StartLine ?? n.SortOrder)
+                    .ThenByDescending(n => n.Reference?.Selection.StartColumn)
+                    .ToArray(); // INode.SortOrder puts LHS first
+                foreach (var flattenedNode in flattened)
                 {
-                    if (flattenedNode is AssignmentNode && lastNode is AssignmentNode)
+                    if (flattenedNode is AssignmentNode && lastNode is AssignmentNode assignmentNode)
                     {
-                        nodes.Add(lastNode.Reference);
+                        nodes.Add((assignmentNode, assignmentNode.Reference));
                     }
 
                     lastNode = flattenedNode;
                 }
 
-                if (lastNode is AssignmentNode &&
-                    block.Children[0].GetFirstNode(typeof(GenericNode)) is DeclarationNode)
+                var firstNonGenericNode = block.Children[0].GetFirstNode(typeof(GenericNode));
+                if (lastNode is AssignmentNode node1 && firstNonGenericNode is DeclarationNode)
                 {
-                    nodes.Add(lastNode.Reference);
+                    nodes.Add((node1, node1.Reference));
                 }
             }
 
-            return nodes;
+            return nodes
+                .Where(n => !n.Item1.Usages.Any())
+                .Select(n => n.Item2);
         }
     }
 }
