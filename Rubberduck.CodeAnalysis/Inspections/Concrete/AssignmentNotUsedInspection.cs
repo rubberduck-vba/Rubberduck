@@ -57,8 +57,7 @@ namespace Rubberduck.Inspections.Concrete
             foreach (var variable in variables)
             {
                 var parentScopeDeclaration = variable.ParentScopeDeclaration;
-
-                if (parentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module) || variable.IsStatic)
+                if (variable.Accessibility == Accessibility.Static)
                 {
                     // ignore module-level and static variables... for now
                     continue;

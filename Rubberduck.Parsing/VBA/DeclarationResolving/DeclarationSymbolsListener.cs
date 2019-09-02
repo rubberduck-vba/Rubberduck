@@ -313,6 +313,19 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
             return (Accessibility)Enum.Parse(typeof(Accessibility), visibility, true);
         }
 
+        private Accessibility GetLocalVariableAccessibility(VBAParser.VariableSubStmtContext context)
+        {
+            if (context.Parent.Parent is VBAParser.VariableStmtContext variable &&
+                _currentScopeDeclaration is ModuleBodyElementDeclaration member)
+            {
+                return variable.STATIC() != null || member.IsStatic
+                    ? Accessibility.Static
+                    : Accessibility.Implicit;
+            }
+
+            return Accessibility.Implicit;
+        }
+
         /// <summary>
         /// Sets current scope to module-level.
         /// </summary>
@@ -663,7 +676,16 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
         public override void EnterVariableSubStmt(VBAParser.VariableSubStmtContext context)
         {
             var parent = (VBAParser.VariableStmtContext)context.Parent.Parent;
-            var accessibility = GetMemberAccessibility(parent.visibility());
+            Accessibility accessibility;
+            if (_currentScopeDeclaration is ModuleBodyElementDeclaration)
+            {
+                // local variable is Static if current member has Static modifier:
+                accessibility = GetLocalVariableAccessibility(context);
+            }
+            else
+            {
+                accessibility = GetMemberAccessibility(parent.visibility());
+            }
             var identifier = context.identifier();
             if (identifier == null)
             {

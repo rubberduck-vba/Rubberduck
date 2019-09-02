@@ -137,15 +137,14 @@ End Sub
 Sub Foo()
     Dim i As Integer
     i = 0
-    If i = 9 Then
-        i = 8
+    If i = 9 Then '<~ reads i=0
+        i = 8 '<~ unused
     Else
-        i = 8
+        i = 8 '<~ unused
     End If
-    Debug.Print i
 End Sub";
             var results = GetInspectionResults(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(2, results.Count());
         }
 
         [Test]
@@ -186,7 +185,7 @@ Sub foo()
     Dim i As Integer
     i = 0
 
-    While i < 10
+    While i < 10 '<~ i=0 has a read here
         i = i + 1
     Wend
 End Sub";
@@ -201,7 +200,7 @@ End Sub";
 Sub foo()
     Dim i As Integer
     i = 0
-    Do While i < 10
+    Do While i < 10 ' <~ i=0 has a read here
     Loop
 End Sub";
             var results = GetInspectionResults(code);
@@ -215,7 +214,7 @@ End Sub";
 Sub foo()
     Dim i As Integer
     i = 0
-    Select Case i
+    Select Case i ' <~ i=0 has a read here
         Case 0
             i = 1
         Case 1
@@ -227,7 +226,7 @@ Sub foo()
     End Select
 End Sub";
             var results = GetInspectionResults(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(4, results.Count());
         }
 
         [Test]
@@ -279,7 +278,7 @@ End Sub";
     Dim foo As Long
     '@Ignore AssignmentNotUsed
     foo = 123451
-    foo = 56126
+    foo = 56126 '<~ not used
 End Sub";
             var results = GetInspectionResults(code);
             Assert.AreEqual(1, results.Count());
@@ -322,7 +321,7 @@ End Function";
             const string code = @"Public Sub Test()
 Static foo As Long
 foo = 42 ' <~ blatantly not used
-foo = 0
+foo = 0 ' <~ not used either
 End Sub";
             var results = GetInspectionResults(code);
             Assert.AreEqual(2, results.Count());
@@ -336,7 +335,7 @@ End Sub";
 Dim foo As Long
 If True Then ' <~ condition expression is not evaluated
 foo = 42 ' <~ blatantly not used
-foo = 0
+foo = 0 ' <~ not used either
 End If
 End Sub";
             var results = GetInspectionResults(code);
