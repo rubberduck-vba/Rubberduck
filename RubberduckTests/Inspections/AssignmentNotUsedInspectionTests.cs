@@ -297,5 +297,50 @@ End Sub";
             var results = GetInspectionResults(code);
             Assert.AreEqual(0, results.Count());
         }
+
+        [Test]
+        public void DoesNotMarkAssignment_ToStaticVariable()
+        {
+            const string code = @"Public Function IssueWithStaticVariable() As Boolean
+
+    Static SomeProperty As String
+    If SomeProperty = ""dummy"" Then
+        IssueWithStaticVariable = True
+    End If
+    SomeProperty = ""new dynamic value"" ' triggers ""Assignment is not used"" inspection
+    
+End Function";
+
+            var results = GetInspectionResults(code);
+            Assert.AreEqual(0, results.Count());
+        }
+
+        [Test]
+        [Ignore("Static variables are ignored for now.")]
+        public void MarksUnusedStaticVariableAssignment()
+        {
+            const string code = @"Public Sub Test()
+Static foo As Long
+foo = 42 ' <~ blatantly not used
+foo = 0
+End Sub";
+            var results = GetInspectionResults(code);
+            Assert.AreEqual(1, results.Count());
+        }
+
+        [Test]
+        [Ignore("Conditional assignments are ignored for now.")]
+        public void MarksUnusedConditionalVariableAssignment()
+        {
+            const string code = @"Public Sub Test()
+Dim foo As Long
+If True Then ' <~ condition expression is not evaluated
+foo = 42 ' <~ blatantly not used
+foo = 0
+End If
+End Sub";
+            var results = GetInspectionResults(code);
+            Assert.AreEqual(1, results.Count());
+        }
     }
 }

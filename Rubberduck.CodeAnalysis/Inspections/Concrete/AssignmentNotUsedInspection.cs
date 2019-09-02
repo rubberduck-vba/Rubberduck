@@ -50,26 +50,28 @@ namespace Rubberduck.Inspections.Concrete
         {
             var variables = State.DeclarationFinder
                     .UserDeclarations(DeclarationType.Variable)
-                    .Where(d => !d.IsArray);
+                    .Where(d => !d.IsArray)
+                .Cast<VariableDeclaration>();
 
             var nodes = new List<IdentifierReference>();
             foreach (var variable in variables)
             {
                 var parentScopeDeclaration = variable.ParentScopeDeclaration;
 
-                if (parentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module))
+                if (parentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module) || variable.IsStatic)
                 {
-                    // ignore module-level variables... for now
+                    // ignore module-level and static variables... for now
                     continue;
                 }
 
                 var tree = _walker.GenerateTree(parentScopeDeclaration.Context, variable);
+                var assignments = tree.GetAssignmentNodes();
 
-                var references = tree.GetAssignmentNodes()
+                var references = assignments
                     .Where(node => !node.IsConditional && 
-                                   !node.IsInsideLoop &&
-                                   !node.Usages.Any(use => use is ReferenceNode refNode && !refNode.IsConditional) && 
-                                   !IsSetAssignmentToNothing(node))
+                               !node.IsInsideLoop &&
+                               !node.Usages.Any(use => use is ReferenceNode refNode && !refNode.IsConditional) && 
+                               !IsSetAssignmentToNothing(node))
                     .Select(node => node.Reference);
 
                 nodes.AddRange(references);
