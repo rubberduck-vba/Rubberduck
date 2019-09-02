@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections.CodePathAnalysis.Extensions
 {
@@ -42,22 +41,6 @@ namespace Rubberduck.Inspections.CodePathAnalysis.Extensions
             }
         }
 
-        /// <summary>
-        /// Starting with the specified root, recursively searches for the first node in a node tree that isn't one of the optionally specified excluded types.
-        /// </summary>
-        /// <param name="node"></param>
-        /// <param name="excludedTypes"></param>
-        /// <returns></returns>
-        public static INode GetFirstNode(this INode node, params Type[] excludedTypes)
-        {
-            if (!excludedTypes.Contains(node.GetType()))
-            {
-                return node;
-            }
-
-            return GetFirstNode(node.Children[0], excludedTypes);
-        }
-
         public static IEnumerable<AssignmentNode> GetAssignmentNodes(this INode node)
         {
             var nodes = new List<AssignmentNode>();
@@ -71,9 +54,6 @@ namespace Rubberduck.Inspections.CodePathAnalysis.Extensions
                 {
                     switch (current)
                     {
-                        case BranchNode branchNode:
-                            //previous = default;
-                            break;
                         case AssignmentNode assignmentNode:
                             previous = assignmentNode;
                             nodes.Add(previous);
