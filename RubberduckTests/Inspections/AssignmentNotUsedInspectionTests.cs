@@ -209,7 +209,6 @@ End Sub";
         }
 
         [Test]
-        //[Ignore("yields 3 results... all accidentally legit.")]
         public void DoesNotMarkAssignment_UsedInSelectCase()
         {
             const string code = @"
