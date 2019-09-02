@@ -542,9 +542,9 @@ namespace RubberduckTests.ComMock
         [TestCase("abc", "abc", true)]
         [TestCase("abc", "def", false)]
         [TestCase("abc", "", false)]
-        [TestCase("", "abc", false)] 
+        [TestCase("", "abc", false)]
         [TestCase("", "", true)]
-        [TestCase("", null, false)] 
+        [TestCase("", null, false)]
         [TestCase(1, 1, true)]
         [TestCase(1, 2, false)]
         [TestCase(1, null, false)]
@@ -552,6 +552,49 @@ namespace RubberduckTests.ComMock
         // For null as expected, any values will be true
         [TestCase(null, "", true)]
         [TestCase(null, 1, true)]
+        public void Test_ItByRef_Value_Is<T>(T expected, T input, bool areEqual)
+        {
+            Test_ItByRef_Is(expected, input, areEqual);
+        }
+
+        [Test]
+        public void Test_ItByRef_Object_Is_NotSame()
+        {
+            var obj1 = new Mock<object>();
+            obj1.As<ITest1>();
+            var obj2 = new Mock<object>();
+            obj2.As<ITest1>();
+
+            Test_ItByRef_Is(obj1.Object, obj2.Object, false);
+        }
+
+        [Test]
+        public void Test_ItByRef_Object_Is_DifferentFace_Same()
+        {
+            var obj1 = new Mock<ITest1>();
+            var obj2 = obj1.As<ITest2>();
+
+            Test_ItByRef_Is((object)obj1.Object, (object)obj2.Object, true);
+        }
+
+        [Test]
+        public void Test_ItByRef_Object_Is_Null_NotSame()
+        {
+            var obj1 = new Mock<object>();
+            obj1.As<ITest1>();
+
+            Test_ItByRef_Is(obj1.Object, null, false);
+        }
+
+        [Test]
+        public void Test_ItByRef_Object_Is_Same()
+        {
+            var obj1 = new Mock<object>();
+            obj1.As<ITest1>();
+
+            Test_ItByRef_Is(obj1.Object, obj1.Object, true);
+        }
+
         public void Test_ItByRef_Is<T>(T expected, T input, bool areEqual)
         {
             var actual = TestRef(ref ItByRef<T>.Is(input, x => EqualityComparer<T>.Default.Equals(x, expected)).Value);
@@ -571,30 +614,6 @@ namespace RubberduckTests.ComMock
         {
             return refValue == null ? null : string.Concat("ref ", refValue.ToString());
         }
-
-        /*
-        [Test]
-        public void derp()
-        {
-            var input = "abc";
-            var mockFso = new Mock<Scripting.FileSystemObject>();
-            
-            var mockDrives = new Mock<Scripting.Drives>();
-            var mockDrive = new Mock<Scripting.Drive>();
-
-            mockFso.Setup(x => x.Drives).Returns(mockDrives.Object);
-            mockFso.As<Scripting.IFileSystem3>().Setup(x => x.Drives).Returns(mockDrives.Object);
-            mockFso.As<Scripting.IFileSystem>().Setup(x => x.Drives).Returns(mockDrives.Object);
-            mockDrives.Setup(x => x[It.Is<object>(p => p.Equals(input))]).Returns(mockDrive.Object);
-            mockDrive.Setup(x => x.Path).Returns("foobar");
-            
-            dynamic mocked = mockFso.Object;
-
-            Assert.AreEqual("foobar", mockFso.Object.Drives[input].Path);       // passes
-            Assert.AreEqual("foobar", mocked.Drives[input].Path);               // fails
-            // Assert.AreEqual("foobar", mocked.Drives.Item(input).Path);          // never would have worked
-        }
-        */
 
         /* Commented to remove the PIA reference to Scripting library, but keeping code in one day they fix type equivalence?
         [Test]
