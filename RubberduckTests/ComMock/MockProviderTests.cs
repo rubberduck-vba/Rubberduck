@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Moq;
 using NUnit.Framework;
@@ -16,8 +17,13 @@ namespace RubberduckTests.ComMock
         // the tests work, it's best to stick to only COM objects that are a part of 
         // Windows such as Scripting library (scrrun.dll)
 
-        private static Guid CLSID_FileSystemObject = new Guid("0D43FE01-F093-11CF-8940-00A0C9054228");
-        private static Guid IID_IFileSystem3 = new Guid("2A0B9D10-4B87-11D3-A97A-00104B365C9F");
+        private const string CLSID_FileSystemObject_String = "0D43FE01-F093-11CF-8940-00A0C9054228";
+        private const string IID_FileSystem3_String = "2A0B9D10-4B87-11D3-A97A-00104B365C9F";
+        private const string IID_FileSystem_String = "0AB5A3D0-E5B6-11D0-ABF5-00A0C90FFFC0";
+
+        private static Guid CLSID_FileSystemObject = new Guid(CLSID_FileSystemObject_String);
+        private static Guid IID_IFileSystem3 = new Guid(IID_FileSystem3_String);
+        private static Guid IID_IFileSystem = new Guid(IID_FileSystem_String);
 
         [Test]
         public void MockProvider_Returns_ComMocked()
@@ -42,8 +48,7 @@ namespace RubberduckTests.ComMock
                 var obj = mock.Object;
 
                 pUnk = Marshal.GetIUnknownForObject(obj);
-                var comGuid = new Guid("2A0B9D10-4B87-11D3-A97A-00104B365C9F"); //Scripting.IFileSystem3
-                Marshal.QueryInterface(pUnk, ref comGuid, out pCom);
+                Marshal.QueryInterface(pUnk, ref IID_IFileSystem3, out pCom);
                 Assert.AreNotEqual(IntPtr.Zero, pCom);
             }
             finally
@@ -456,10 +461,51 @@ namespace RubberduckTests.ComMock
                 if (pUnk != IntPtr.Zero) Marshal.Release(pUnk);
             }
         }
-        
+
         [Test]
-        [TestCase("foobar", "abc")]
-        public void Mock_Setup_Property_Specified_Args_Returns_Specified_Value(string expected, string input)
+        [TestCase(IID_FileSystem3_String, true, "abc")]
+        [TestCase(IID_FileSystem_String, true, "abc")]
+        [TestCase(IID_FileSystem3_String, false, "def")]
+        [TestCase(IID_FileSystem_String, false, "def")]
+        [TestCase(IID_FileSystem3_String, false, "")]
+        [TestCase(IID_FileSystem_String, false, "")]
+        public void Mock_Setup_Property_Specified_Args_Returns_Specified_Object(string IID, bool expected, string input)
+        {
+            var pUnk = IntPtr.Zero;
+            var pProxy = IntPtr.Zero;
+
+            try
+            {
+                var provider = new MockProvider();
+                var mockFso = provider.Mock("Scripting.FileSystemObject");
+                var mockDrives = mockFso.SetupChildMock("Drives");
+                var mockDrive = mockDrives.SetupChildMock("Item", provider.It.Is("abc"));
+                mockDrive.SetupWithReturns("Path", "foobar");
+                var obj = mockFso.Object;
+
+                pUnk = Marshal.GetIUnknownForObject(obj);
+
+                var iid = new Guid(IID);
+                var hr = Marshal.QueryInterface(pUnk, ref iid, out pProxy);
+                if (hr != 0)
+                {
+                    throw new InvalidCastException("QueryInterface failed on the proxy type");
+                }
+
+                dynamic mocked = Marshal.GetObjectForIUnknown(pProxy);
+                Assert.AreEqual(expected, mocked.Drives[input] != null);
+            }
+            finally
+            {
+                if (pProxy != IntPtr.Zero) Marshal.Release(pProxy);
+                if (pUnk != IntPtr.Zero) Marshal.Release(pUnk);
+            }
+        }
+
+        [Test]
+        [TestCase(IID_FileSystem3_String, "foobar", "abc")]
+        [TestCase(IID_FileSystem_String, "foobar", "abc")]
+        public void Mock_Setup_Property_Specified_Args_Returns_Specified_Value(string IID, string expected, string input)
         {
             var pUnk = IntPtr.Zero;
             var pProxy = IntPtr.Zero;
@@ -475,7 +521,8 @@ namespace RubberduckTests.ComMock
 
                 pUnk = Marshal.GetIUnknownForObject(obj);
 
-                var hr = Marshal.QueryInterface(pUnk, ref IID_IFileSystem3, out pProxy);
+                var iid = new Guid(IID);
+                var hr = Marshal.QueryInterface(pUnk, ref iid, out pProxy);
                 if (hr != 0)
                 {
                     throw new InvalidCastException("QueryInterface failed on the proxy type");
@@ -490,6 +537,64 @@ namespace RubberduckTests.ComMock
                 if (pUnk != IntPtr.Zero) Marshal.Release(pUnk);
             }
         }
+
+        [Test]
+        [TestCase("abc", "abc", true)]
+        [TestCase("abc", "def", false)]
+        [TestCase("abc", "", false)]
+        [TestCase("", "abc", false)] 
+        [TestCase("", "", true)]
+        [TestCase("", null, false)] 
+        [TestCase(1, 1, true)]
+        [TestCase(1, 2, false)]
+        [TestCase(1, null, false)]
+
+        // For null as expected, any values will be true
+        [TestCase(null, "", true)]
+        [TestCase(null, 1, true)]
+        public void Test_ItByRef_Is<T>(T expected, T input, bool areEqual)
+        {
+            var actual = TestRef(ref ItByRef<T>.Is(input, x => EqualityComparer<T>.Default.Equals(x, expected)).Value);
+
+            var test = expected == null ? null : string.Concat("ref ", expected.ToString());
+            if (areEqual)
+            {
+                Assert.AreEqual(test, actual);
+            }
+            else
+            {
+                Assert.AreNotEqual(test, actual);
+            }
+        }
+        
+        private static string TestRef<T>(ref T refValue)
+        {
+            return refValue == null ? null : string.Concat("ref ", refValue.ToString());
+        }
+
+        /*
+        [Test]
+        public void derp()
+        {
+            var input = "abc";
+            var mockFso = new Mock<Scripting.FileSystemObject>();
+            
+            var mockDrives = new Mock<Scripting.Drives>();
+            var mockDrive = new Mock<Scripting.Drive>();
+
+            mockFso.Setup(x => x.Drives).Returns(mockDrives.Object);
+            mockFso.As<Scripting.IFileSystem3>().Setup(x => x.Drives).Returns(mockDrives.Object);
+            mockFso.As<Scripting.IFileSystem>().Setup(x => x.Drives).Returns(mockDrives.Object);
+            mockDrives.Setup(x => x[It.Is<object>(p => p.Equals(input))]).Returns(mockDrive.Object);
+            mockDrive.Setup(x => x.Path).Returns("foobar");
+            
+            dynamic mocked = mockFso.Object;
+
+            Assert.AreEqual("foobar", mockFso.Object.Drives[input].Path);       // passes
+            Assert.AreEqual("foobar", mocked.Drives[input].Path);               // fails
+            // Assert.AreEqual("foobar", mocked.Drives.Item(input).Path);          // never would have worked
+        }
+        */
 
         /* Commented to remove the PIA reference to Scripting library, but keeping code in one day they fix type equivalence?
         [Test]

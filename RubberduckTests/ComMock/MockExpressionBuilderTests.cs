@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using Moq;
 using NUnit.Framework;
@@ -28,7 +29,7 @@ namespace RubberduckTests.ComMock
             var expression = ArrangeSetupDoExpression();
 
             builder.As(typeof(ITest1))
-                .Setup(expression)
+                .Setup(expression, ArrangeForwardedArgs())
                 .Execute();
         }
 
@@ -40,7 +41,7 @@ namespace RubberduckTests.ComMock
             var expression = ArrangeSetupDoThisExpression();
 
             builder.As(typeof(ITest1))
-                .Setup(expression)
+                .Setup(expression, ArrangeForwardedArgs())
                 .Execute();
         }
 
@@ -52,7 +53,7 @@ namespace RubberduckTests.ComMock
             var expression = ArrangeSetupDoThisExpression();
 
             builder.As(typeof(ITest1))
-                   .Setup(expression, typeof(int))
+                   .Setup(expression, ArrangeForwardedArgs(), typeof(int))
                    .Execute();
         }
 
@@ -65,7 +66,7 @@ namespace RubberduckTests.ComMock
             var expression = ArrangeSetupDoThisExpression();
 
             builder.As(typeof(ITest1))
-                .Setup(expression, typeof(int))
+                .Setup(expression, ArrangeForwardedArgs(), typeof(int))
                 .Returns(expected, typeof(int))
                 .Execute();
 
@@ -83,13 +84,18 @@ namespace RubberduckTests.ComMock
             var expression = ArrangeSetupDoExpression();
 
             builder.As(typeof(ITest1))
-                .Setup(expression)
+                .Setup(expression, ArrangeForwardedArgs())
                 .Callback(action)
                 .Execute();
 
             mock.Object.Do();
 
             Assert.AreEqual(expected, actual);
+        }
+
+        private static IReadOnlyDictionary<ParameterExpression, object> ArrangeForwardedArgs()
+        {
+            return new Dictionary<ParameterExpression, object>();
         }
 
         private static Expression ArrangeSetupDoExpression()

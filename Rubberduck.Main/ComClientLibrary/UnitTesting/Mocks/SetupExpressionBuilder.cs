@@ -4,9 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using Moq;
-using Rubberduck.Parsing.VBA.Extensions;
 
 namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 {
@@ -35,7 +33,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             var setupDatas = new List<SetupData>();
             var membersToSetup = GetMembers(name);
             var resolver = new SetupArgumentResolver();
-            var parameterExpressions = resolver.ResolveParameters(membersToSetup.Parameters.ToArray(), args);
+            var (parameterExpressions, forwardedArgs) = resolver.ResolveParameters(membersToSetup.Parameters.ToArray(), args);
             var memberType = membersToSetup.ReturnType;
 
             foreach (var member in membersToSetup.MemberInfos)
@@ -66,7 +64,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
                 // Finalize the expression within the Setup's lambda. 
                 var expression = Expression.Lambda(memberAccessExpression, typeExpression);
 
-                setupDatas.Add(new SetupData(expression, member.Key, memberType));
+                setupDatas.Add(new SetupData(expression, member.Key, memberType, forwardedArgs));
             }
 
             return setupDatas;
@@ -212,11 +210,17 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
         /// </summary>
         internal Type ReturnType { get; }
 
-        internal SetupData(Expression setupExpression, Type declaringType, Type returnType)
+        /// <summary>
+        /// Any arguments that needs to be passed into the final lambda; usually used for ref parameters
+        /// </summary>
+        internal IReadOnlyDictionary<ParameterExpression, object> Args { get; }
+
+        internal SetupData(Expression setupExpression, Type declaringType, Type returnType, IReadOnlyDictionary<ParameterExpression, object> args = null)
         {
             SetupExpression = setupExpression;
             DeclaringType = declaringType;
             ReturnType = returnType;
+            Args = args ?? new Dictionary<ParameterExpression, object>();
         }
     }
 }

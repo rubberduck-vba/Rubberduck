@@ -119,7 +119,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
         /// <param name="parameters">Array of <see cref="ParameterInfo"/> returned from the member for which the <see cref="SetupArgumentDefinitions"/> applies to</param>
         /// <param name="args">The <see cref="SetupArgumentDefinitions"/> collection containing user supplied behavior</param>
         /// <returns>A read-only list containing the <see cref="Expression"/> of arguments</returns>
-        public IReadOnlyList<Expression> ResolveParameters(
+        public (IReadOnlyList<Expression> expressions, IReadOnlyDictionary<ParameterExpression, object> forwardedArgs) ResolveParameters(
             IReadOnlyList<ParameterInfo> parameters,
             SetupArgumentDefinitions args)
         {
@@ -132,10 +132,11 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 
             if (parameters.Count == 0)
             {
-                return null;
+                return (null, null);
             }
 
             var resolvedArguments = new List<Expression>();
+            var forwardedArgs = new Dictionary<ParameterExpression, object>();
             for (var i = 0; i < parameters.Count; i++)
             {
                 Debug.Assert(args != null, nameof(args) + " != null");
@@ -143,66 +144,162 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
                 var parameter = parameters[i];
                 var definition = args.Item(i);
 
-                var itType = typeof(It);
-                MethodInfo itMemberInfo;
-
+                var (elementType, isRef, isOut) = GetParameterType(parameter);
                 var parameterType = parameter.ParameterType;
-                var itArgumentExpressions = new List<Expression>();
-                var typeExpression = Expression.Parameter(parameterType, $"p{i:00}");
 
-                switch (definition.Type)
+                Expression setupExpression;
+                if (isRef || isOut)
                 {
-                    case SetupArgumentType.Is:
-                        itMemberInfo = itType.GetMethod(nameof(It.Is)).MakeGenericMethod(parameterType);
-                        var value = definition.Values[0];
-                        if (value != null && value.GetType() != parameterType)
-                        {
-                            if (TryCast(value, parameterType, out var convertedValue))
-                            {
-                                value = convertedValue;
-                            }
-                        }
-
-                        var bodyExpression = Expression.Equal(typeExpression, Expression.Convert(Expression.Constant(value), parameterType));
-                        var itLambda = Expression.Lambda(bodyExpression, typeExpression);
-                        itArgumentExpressions.Add(Expression.Quote(itLambda));
-                        break;
-                    case SetupArgumentType.IsAny:
-                        itMemberInfo = Reflection.GetMethodExt(itType, nameof(It.IsAny)).MakeGenericMethod(parameterType);
-                        break;
-                    case SetupArgumentType.IsIn:
-                        itMemberInfo = Reflection.GetMethodExt(itType, nameof(It.IsIn), typeof(IEnumerable<>)).MakeGenericMethod(parameterType);
-                        var arrayInit = Expression.NewArrayInit(parameterType,
-                            definition.Values.Select(x => Expression.Convert(Expression.Constant(TryCast(x, parameterType,  out var c) ? c : x), parameterType)));
-                        itArgumentExpressions.Add(arrayInit);
-                        break;
-                    case SetupArgumentType.IsInRange:
-                        itMemberInfo = Reflection.GetMethodExt(itType, nameof(It.IsInRange), typeof(MethodReflection.T),
-                            typeof(MethodReflection.T), typeof(Range)).MakeGenericMethod(parameterType);
-                        itArgumentExpressions.Add( Expression.Convert(Expression.Constant(TryCast(definition.Values[0], parameterType, out var from) ? from : definition.Values[0]), parameterType));
-                        itArgumentExpressions.Add( Expression.Convert(Expression.Constant(TryCast(definition.Values[1], parameterType, out var to) ? to : definition.Values[1]), parameterType));
-                        itArgumentExpressions.Add(definition.Range != null
-                            ? Expression.Constant((Range) definition.Range)
-                            : Expression.Constant(Range.Inclusive));
-                        break;
-                    case SetupArgumentType.IsNotIn:
-                        itMemberInfo = Reflection.GetMethodExt(itType, nameof(It.IsNotIn), typeof(IEnumerable<>)).MakeGenericMethod(parameterType);
-                        var notArrayInit = Expression.NewArrayInit(parameterType,
-                            definition.Values.Select(x => Expression.Convert(Expression.Constant(TryCast(x, parameterType, out var c) ? c : x), parameterType)));
-                        itArgumentExpressions.Add(notArrayInit);
-                        break;
-                    case SetupArgumentType.IsNotNull:
-                        itMemberInfo = Reflection.GetMethodExt(itType, nameof(It.IsNotNull)).MakeGenericMethod(parameterType);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    setupExpression = BuildRefArgumentExpression(i, definition, parameterType, elementType, ref forwardedArgs);
+                }
+                else
+                {
+                    setupExpression = BuildValueArgumentExpression(i, definition, parameterType);
                 }
 
-                var callExpression = Expression.Call(itMemberInfo, itArgumentExpressions);
-                resolvedArguments.Add(callExpression);
+                resolvedArguments.Add(setupExpression);
             }
 
-            return resolvedArguments;
+            return (resolvedArguments, forwardedArgs);
+        }
+
+        private Expression BuildValueArgumentExpression(int index, SetupArgumentDefinition definition, Type parameterType)
+        {
+            var itType = typeof(It);
+            MethodInfo itMemberInfo;
+
+            var itArgumentExpressions = new List<Expression>();
+            var typeExpression = Expression.Parameter(parameterType, $"p{index:00}");
+
+            switch (definition.Type)
+            {
+                case SetupArgumentType.Is:
+                    itMemberInfo = itType.GetMethod(nameof(It.Is)).MakeGenericMethod(parameterType);
+                    var value = definition.Values[0];
+                    if (value != null && value.GetType() != parameterType)
+                    {
+                        if (TryCast(value, parameterType, out var convertedValue))
+                        {
+                            value = convertedValue;
+                        }
+                    }
+
+                    Expression bodyExpression;
+                    if (parameterType == typeof(object))
+                    {
+                        // Avoid incorrectly comparing by reference
+                        var equalsInfo = Reflection.GetMethod(() => default(object).Equals(default(object)));
+
+                        bodyExpression = Expression.Call(typeExpression, equalsInfo,
+                            Expression.Convert(Expression.Constant(value), parameterType));
+                    }
+                    else
+                    {
+                        bodyExpression = Expression.Equal(typeExpression, Expression.Convert(Expression.Constant(value), parameterType));
+                    }
+                    var itLambda = Expression.Lambda(bodyExpression, typeExpression);
+                    itArgumentExpressions.Add(Expression.Quote(itLambda));
+                    break;
+                case SetupArgumentType.IsAny:
+                    itMemberInfo = Reflection.GetMethodExt(itType, nameof(It.IsAny)).MakeGenericMethod(parameterType);
+                    break;
+                case SetupArgumentType.IsIn:
+                    itMemberInfo = Reflection.GetMethodExt(itType, nameof(It.IsIn), typeof(IEnumerable<>)).MakeGenericMethod(parameterType);
+                    var arrayInit = Expression.NewArrayInit(parameterType,
+                        definition.Values.Select(x => Expression.Convert(Expression.Constant(TryCast(x, parameterType, out var c) ? c : x), parameterType)));
+                    itArgumentExpressions.Add(arrayInit);
+                    break;
+                case SetupArgumentType.IsInRange:
+                    itMemberInfo = Reflection.GetMethodExt(itType, nameof(It.IsInRange), typeof(MethodReflection.T),
+                        typeof(MethodReflection.T), typeof(Range)).MakeGenericMethod(parameterType);
+                    itArgumentExpressions.Add(Expression.Convert(Expression.Constant(TryCast(definition.Values[0], parameterType, out var from) ? from : definition.Values[0]), parameterType));
+                    itArgumentExpressions.Add(Expression.Convert(Expression.Constant(TryCast(definition.Values[1], parameterType, out var to) ? to : definition.Values[1]), parameterType));
+                    itArgumentExpressions.Add(definition.Range != null
+                        ? Expression.Constant((Range)definition.Range)
+                        : Expression.Constant(Range.Inclusive));
+                    break;
+                case SetupArgumentType.IsNotIn:
+                    itMemberInfo = Reflection.GetMethodExt(itType, nameof(It.IsNotIn), typeof(IEnumerable<>)).MakeGenericMethod(parameterType);
+                    var notArrayInit = Expression.NewArrayInit(parameterType,
+                        definition.Values.Select(x => Expression.Convert(Expression.Constant(TryCast(x, parameterType, out var c) ? c : x), parameterType)));
+                    itArgumentExpressions.Add(notArrayInit);
+                    break;
+                case SetupArgumentType.IsNotNull:
+                    itMemberInfo = Reflection.GetMethodExt(itType, nameof(It.IsNotNull)).MakeGenericMethod(parameterType);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return Expression.Call(itMemberInfo, itArgumentExpressions);
+        }
+
+        private Expression BuildRefArgumentExpression(int index, SetupArgumentDefinition definition, Type refType, Type elementType, ref Dictionary<ParameterExpression, object> forwardedArgs)
+        {
+            ParameterExpression parameterExpression;
+            switch (definition.Type)
+            {
+                case SetupArgumentType.Is:
+                    /* Example of how to call a mock w/ ref parameter
+                        public void Test()
+                        {
+                            string o = "1";
+                            var mock = new Mock<Hola>();            
+
+                            mock.Setup(x => x.DoSomething(ref o))
+                                .Callback(new DoSomethingAction((ref string a) => a = "2"));
+
+                            mock.Object.DoSomething(ref o);
+
+                            Assert.Equal("2", o)
+                        }
+                     */
+                    // TODO: Create a collection of variables with constant assignments to put in the setup expression?
+                    // TODO: or better yet, try and pass the definition's value directly as a ref? 
+                    // TODO: need to take care that the args passed into DynamicInvoke do not need to be ref'd - it should be
+                    // TODO: passed in as values then made ref within the expression tree.
+                    var name = $"p{index:00}";
+                    parameterExpression = Expression.Parameter(elementType, name);
+                    forwardedArgs.Add(parameterExpression, definition.Values[0]);
+                    return parameterExpression;
+                case SetupArgumentType.IsAny:
+                    var itRefType = typeof(It.Ref<>).MakeGenericType(elementType);
+                    var itMemberInfo = itRefType.GetField(nameof(It.IsAny));
+                    parameterExpression = Expression.Parameter(itRefType, "r");
+                    return Expression.Field(parameterExpression, itMemberInfo);
+                case SetupArgumentType.IsIn:
+                    throw new NotSupportedException($"The {nameof(SetupArgumentType.IsIn)} type is not implemented for ref argument");
+                case SetupArgumentType.IsInRange:
+                    throw new NotSupportedException($"The {nameof(SetupArgumentType.IsInRange)} type is not implemented for ref argument");
+                case SetupArgumentType.IsNotIn:
+                    throw new NotSupportedException($"The {nameof(SetupArgumentType.IsNotIn)} type is not implemented for ref argument");
+                case SetupArgumentType.IsNotNull:
+                    throw new NotSupportedException($"The {nameof(SetupArgumentType.IsNotIn)} type is not implemented for ref argument");
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private static (Type type, bool isRef, bool isOut) GetParameterType(ParameterInfo parameterInfo)
+        {
+            var isRef = false;
+            var isOut = false;
+            var parameterType = parameterInfo.ParameterType;
+
+            if (parameterType.IsByRef && parameterInfo.IsOut)
+            {
+                isOut = true;
+            }
+
+            if (!parameterType.IsByRef && !parameterInfo.IsOut)
+            {
+                return (parameterType, isRef, isOut);
+            }
+
+            isRef = true;
+            parameterType = parameterType.HasElementType ? parameterType.GetElementType() : parameterType;
+
+            return (parameterType, isRef, isOut);
         }
 
         private static bool TryCast(object value, Type type, out object convertedValue)

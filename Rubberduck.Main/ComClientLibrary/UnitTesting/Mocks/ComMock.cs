@@ -55,7 +55,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             {
                 var builder = MockExpressionBuilder.Create(Mock);
                 builder.As(setupData.DeclaringType)
-                    .Setup(setupData.SetupExpression, setupData.ReturnType)
+                    .Setup(setupData.SetupExpression, setupData.Args, setupData.ReturnType)
                     .Returns(Value, setupData.ReturnType)
                     .Execute();
             }
@@ -74,7 +74,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             {
                 var builder = MockExpressionBuilder.Create(Mock);
                 builder.As(setupData.DeclaringType)
-                    .Setup(setupData.SetupExpression)
+                    .Setup(setupData.SetupExpression, setupData.Args)
                     .Callback(Callback)
                     .Execute();
             }

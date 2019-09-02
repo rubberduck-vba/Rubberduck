@@ -461,7 +461,7 @@ namespace RubberduckTests.ComMock
                 mockDefinitions.Add(definition);
             }
 
-            var expressions = resolver.ResolveParameters(parameterInfos, mockDefinitions);
+            var (expressions, args) = resolver.ResolveParameters(parameterInfos, mockDefinitions);
 
             Assert.AreEqual(parameterInfos.Length, expressions.Count);
 

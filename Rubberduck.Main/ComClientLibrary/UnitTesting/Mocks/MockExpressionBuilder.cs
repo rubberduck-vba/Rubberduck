@@ -14,8 +14,8 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 
     public interface IRuntimeSetup : IRuntimeMock, IRuntimeCallback, IRuntimeExecute
     {
-        IRuntimeCallback Setup(Expression setupExpression);
-        IRuntimeReturns Setup(Expression setupExpression, Type returnType);
+        IRuntimeCallback Setup(Expression setupExpression, IReadOnlyDictionary<ParameterExpression, object> forwardedArgs);
+        IRuntimeReturns Setup(Expression setupExpression, IReadOnlyDictionary<ParameterExpression, object> forwardedArgs, Type returnType);
     }
 
     public interface IRuntimeCallback : IRuntimeExecute
@@ -45,9 +45,11 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
         private readonly Mock _mock;
         private readonly Type _mockType;
         private readonly ParameterExpression _mockParameterExpression;
+        private readonly List<object> _args;
+        private readonly List<ParameterExpression> _lambdaArguments;
+
         private Expression _expression;
         private Type _currentType;
-        private List<object> _args;
 
         public static IRuntimeMock Create(Mock runtimeMock)
         {
@@ -60,6 +62,10 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             _mockType = _mock.GetType();
             _mockParameterExpression = Expression.Parameter(_mockType, "mock");
             _args = new List<object>();
+            _lambdaArguments = new List<ParameterExpression>
+            {
+                _mockParameterExpression
+            };
         }
 
         public IRuntimeSetup As(Type targetInterface)
@@ -70,31 +76,41 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             return this;
         }
 
-        public IRuntimeCallback Setup(Expression setupExpression)
+        public IRuntimeCallback Setup(Expression setupExpression, IReadOnlyDictionary<ParameterExpression, object> forwardedArgs)
         {
             switch (setupExpression.Type.GetGenericArguments().Length)
             {
                 case 2:
                     // It's a returning method so we need to use the Func version of Setup and ignore the return.
-                    Setup(setupExpression, setupExpression.Type.GetGenericArguments()[1]);
+                    Setup(setupExpression, forwardedArgs, setupExpression.Type.GetGenericArguments()[1]);
                     return this;
                 case 1:
                     var setupMethodInfo = MockMemberInfos.Setup(_currentType, null);
                     // Quoting the setup lambda expression ensures that closures will be applied
                     _expression = Expression.Call(_expression, setupMethodInfo, Expression.Quote(setupExpression));
                     _currentType = setupMethodInfo.ReturnType;
+                    if (forwardedArgs.Any())
+                    {
+                        _lambdaArguments.AddRange(forwardedArgs.Keys);
+                        _args.AddRange(forwardedArgs.Values);
+                    }
                     return this;
                 default:
                     throw new NotSupportedException("Setup can only handle 1 or 2 arguments as an input");
             }
         }
 
-        public IRuntimeReturns Setup(Expression setupExpression, Type returnType)
+        public IRuntimeReturns Setup(Expression setupExpression, IReadOnlyDictionary<ParameterExpression, object> forwardedArgs, Type returnType)
         {
             var setupMethodInfo = MockMemberInfos.Setup(_currentType, returnType);
             // Quoting the setup lambda expression ensures that closures will be applied
             _expression = Expression.Call(_expression, setupMethodInfo, Expression.Quote(setupExpression));
             _currentType = setupMethodInfo.ReturnType;
+            if (forwardedArgs.Any())
+            {
+                _lambdaArguments.AddRange(forwardedArgs.Keys);
+                _args.AddRange(forwardedArgs.Values);
+            }
             return this;
         }
 
@@ -104,12 +120,12 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             var callbackType = callbackMethodInfo.DeclaringType;
 
             var valueParameterExpression = Expression.Parameter(callback.GetType(), "value");
+            _lambdaArguments.Add(valueParameterExpression);
 
             var castCallbackExpression = Expression.Convert(_expression, callbackType);
             var callCallbackExpression =
                 Expression.Call(castCallbackExpression, callbackMethodInfo, valueParameterExpression);
-            _expression = Expression.Lambda(callCallbackExpression, _mockParameterExpression,
-                valueParameterExpression);
+            _expression = Expression.Lambda(callCallbackExpression, _lambdaArguments);
             _currentType = callbackMethodInfo.ReturnType;
             _args.Add(callback);
             return this;
@@ -121,10 +137,11 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             var returnsType = returnsMethodInfo.DeclaringType;
 
             var valueParameterExpression = Expression.Parameter(type, $"value{_args.Count}");
+            _lambdaArguments.Add(valueParameterExpression);
 
             var castReturnExpression = Expression.Convert(_expression, returnsType);
             var returnsCallExpression = Expression.Call(castReturnExpression, returnsMethodInfo, valueParameterExpression);
-            _expression = Expression.Lambda(returnsCallExpression, _mockParameterExpression, valueParameterExpression);
+            _expression = Expression.Lambda(returnsCallExpression, _lambdaArguments);
             _currentType = returnsMethodInfo.ReturnType;
             _args.Add(value);
             return this;
