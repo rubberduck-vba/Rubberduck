@@ -58,38 +58,34 @@ namespace Rubberduck.Inspections.CodePathAnalysis.Extensions
             return GetFirstNode(node.Children[0], excludedTypes);
         }
 
-        public static IEnumerable<IdentifierReference> GetUnusedAssignmentIdentifierReferences(this INode node)
+        public static IEnumerable<AssignmentNode> GetAssignmentNodes(this INode node)
         {
-            var nodes = new List<(AssignmentNode, IdentifierReference)>();
+            var nodes = new List<AssignmentNode>();
 
-            var blockNodes = node.GetNodes(typeof(BlockNode));
-            INode lastNode = default;
-            foreach (var block in blockNodes)
+            var blocks = node.GetNodes(typeof(BlockNode));
+            AssignmentNode previous = default;
+            foreach (var block in blocks)
             {
-                var flattened = block.GetFlattenedNodes(typeof(GenericNode), typeof(BlockNode))
-                    .OrderBy(n => n.Reference?.Selection.StartLine ?? n.SortOrder)
-                    .ThenByDescending(n => n.Reference?.Selection.StartColumn)
-                    .ToArray(); // INode.SortOrder puts LHS first
-                foreach (var flattenedNode in flattened)
+                var flattened = block.GetFlattenedNodes(typeof(GenericNode), typeof(BlockNode));
+                foreach (var current in flattened)
                 {
-                    if (flattenedNode is AssignmentNode && lastNode is AssignmentNode assignmentNode)
+                    switch (current)
                     {
-                        nodes.Add((assignmentNode, assignmentNode.Reference));
+                        case BranchNode branchNode:
+                            //previous = default;
+                            break;
+                        case AssignmentNode assignmentNode:
+                            previous = assignmentNode;
+                            nodes.Add(previous);
+                            break;
+                        case ReferenceNode referenceNode:
+                            previous?.AddUsage(referenceNode);
+                            break;
                     }
-
-                    lastNode = flattenedNode;
-                }
-
-                var firstNonGenericNode = block.Children[0].GetFirstNode(typeof(GenericNode));
-                if (lastNode is AssignmentNode node1 && firstNonGenericNode is DeclarationNode)
-                {
-                    nodes.Add((node1, node1.Reference));
                 }
             }
 
-            return nodes
-                .Where(n => !n.Item1.Usages.Any())
-                .Select(n => n.Item2);
+            return nodes;
         }
     }
 }

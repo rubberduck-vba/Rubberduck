@@ -6,6 +6,7 @@ using Rubberduck.Inspections.CodePathAnalysis;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Inspections.CodePathAnalysis.Extensions;
 using System.Linq;
+using Rubberduck.Inspections.CodePathAnalysis.Nodes;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Inspections.Inspections.Extensions;
@@ -58,16 +59,19 @@ namespace Rubberduck.Inspections.Concrete
 
                 if (parentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module))
                 {
+                    // ignore module-level variables... for now
                     continue;
                 }
 
                 var tree = _walker.GenerateTree(parentScopeDeclaration.Context, variable);
 
-                var references = tree.GetUnusedAssignmentIdentifierReferences()
-                    .Where(r => !(r.Context.Parent is VBAParser.SetStmtContext setStmtContext &&
-                          setStmtContext.expression().GetText().Equals(Tokens.Nothing)))
-                    .ToArray();
-                // ignore set-assignments to 'Nothing'
+                var references = tree.GetAssignmentNodes()
+                    .Where(node => !node.IsConditional && 
+                                   !node.IsInsideLoop &&
+                                   !node.Usages.Any(use => use is ReferenceNode refNode && !refNode.IsConditional) && 
+                                   !IsSetAssignmentToNothing(node))
+                    .Select(node => node.Reference);
+
                 nodes.AddRange(references);
             }
 
@@ -78,6 +82,10 @@ namespace Rubberduck.Inspections.Concrete
                 .Select(issue => new IdentifierReferenceInspectionResult(this, Description, State, issue))
                 .ToList();
             return results;
+
+            bool IsSetAssignmentToNothing(AssignmentNode node) =>
+                node.Reference.Context.Parent is VBAParser.SetStmtContext setStmt &&
+                setStmt.expression().GetText().Equals(Tokens.Nothing);
         }
     }
 }

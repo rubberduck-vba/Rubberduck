@@ -74,6 +74,7 @@ namespace Rubberduck.Parsing.Symbols
                 attributes)
         { }
 
+
         /// <inheritdoc/>
         protected override bool Implements(IInterfaceExposable member)
         {
@@ -91,5 +92,6 @@ namespace Rubberduck.Parsing.Symbols
         }
 
         public override BlockContext Block => ((PropertySetStmtContext)Context).block();
+        public override bool IsStatic => ((PropertySetStmtContext)Context).STATIC() != null;
     }
 }

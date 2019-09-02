@@ -16,7 +16,7 @@ namespace Rubberduck.Inspections.CodePathAnalysis
             return GenerateTree(tree, declaration, ref lastAssignment);
         }
 
-        public INode GenerateTree(IParseTree tree, Declaration declaration, ref AssignmentNode lastAssignment)
+        public INode GenerateTree(IParseTree tree, Declaration declaration, ref AssignmentNode lastAssignment, bool isConditional = false, bool isInsideLoop = false)
         {
             INode node = default;
             switch (tree)
@@ -26,6 +26,7 @@ namespace Rubberduck.Inspections.CodePathAnalysis
                 case VBAParser.WhileWendStmtContext _:
                 case VBAParser.DoLoopStmtContext _:
                     node = new LoopNode(tree);
+                    isInsideLoop = true;
                     break;
                 case VBAParser.IfStmtContext _:
                 case VBAParser.ElseBlockContext _:
@@ -35,6 +36,7 @@ namespace Rubberduck.Inspections.CodePathAnalysis
                 case VBAParser.CaseClauseContext _:
                 case VBAParser.CaseElseClauseContext _:
                     node = new BranchNode(tree);
+                    isConditional = true;
                     break;
                 case VBAParser.BlockContext _:
                     node = new BlockNode(tree);
@@ -54,14 +56,14 @@ namespace Rubberduck.Inspections.CodePathAnalysis
             {
                 if (reference.IsAssignment)
                 {
-                    node = lastAssignment = new AssignmentNode(tree)
+                    node = lastAssignment = new AssignmentNode(tree, isConditional, isInsideLoop)
                     {
                         Reference = reference
                     };
                 }
                 else
                 {
-                    node = new ReferenceNode(tree)
+                    node = new ReferenceNode(tree, isConditional)
                     {
                         Reference = reference
                     };
@@ -75,15 +77,43 @@ namespace Rubberduck.Inspections.CodePathAnalysis
             }
 
             var children = new List<INode>();
-            for (var i = 0; i < tree.ChildCount; i++)
+            VBAParser.ExpressionContext rhs = null;
+            VBAParser.LExpressionContext lhs = null;
+            if (tree is VBAParser.LetStmtContext letStmt)
             {
-                var nextChild = GenerateTree(tree.GetChild(i), declaration, ref lastAssignment);
-                nextChild.SortOrder = i;
-                nextChild.Parent = node;
+                rhs = letStmt.expression();
+                lhs = letStmt.lExpression();
+            }
+            else if (tree is VBAParser.SetStmtContext setStmt)
+            {
+                rhs = setStmt.expression();
+                lhs = setStmt.lExpression();
+            }
 
-                if (nextChild.Children.Any() || nextChild.GetType() != typeof(GenericNode))
+            if (rhs != null)
+            {
+                // add RHS before LHS to match evaluation order
+
+                var rhsNode = GenerateTree(rhs, declaration, ref lastAssignment, isConditional, isInsideLoop);
+                rhsNode.Parent = node;
+                children.Add(rhsNode);
+
+                var lhsNode = GenerateTree(lhs, declaration, ref lastAssignment, isConditional, isInsideLoop);
+                lhsNode.Parent = node;
+                children.Add(lhsNode);
+            }
+            else
+            {
+                for (var i = 0; i < tree.ChildCount; i++)
                 {
-                    children.Add(nextChild);
+                    var nextChild = GenerateTree(tree.GetChild(i), declaration, ref lastAssignment, isConditional, isInsideLoop);
+                    nextChild.SortOrder = i;
+                    nextChild.Parent = node;
+
+                    if (nextChild.Children.Any() || nextChild.GetType() != typeof(GenericNode))
+                    {
+                        children.Add(nextChild);
+                    }
                 }
             }
 

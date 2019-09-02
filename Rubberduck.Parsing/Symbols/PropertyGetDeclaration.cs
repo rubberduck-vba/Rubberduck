@@ -96,5 +96,6 @@ namespace Rubberduck.Parsing.Symbols
         }
 
         public override BlockContext Block => ((PropertyGetStmtContext)Context).block();
+        public override bool IsStatic => ((PropertyGetStmtContext)Context).STATIC() != null;
     }
 }

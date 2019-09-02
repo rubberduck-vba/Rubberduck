@@ -2,7 +2,6 @@
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
@@ -50,6 +49,15 @@ namespace Rubberduck.Parsing.Symbols
                 classModule.AddMember(this);
             }
         }
+
+        /// <summary>
+        /// True if a variable is declared with the <c>Static</c> keyword, or declared in a procedure scope that uses this keyword.
+        /// </summary>
+        /// <remarks>
+        /// In VBA/VB6, a Static variable keeps its value between procedure calls.
+        /// </remarks>
+        public bool IsStatic => ParentScopeDeclaration is ModuleBodyElementDeclaration parent && parent.IsStatic
+                                || Context is VBAParser.VariableStmtContext context && context.STATIC() != null;
 
         /// <inheritdoc/>
         public string ImplementingIdentifierName => this.ImplementingIdentifierName();

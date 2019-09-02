@@ -161,5 +161,6 @@ namespace Rubberduck.Parsing.Symbols
         }
 
         public abstract BlockContext Block { get; }
+        public abstract bool IsStatic { get; }
     }
 }

@@ -192,6 +192,7 @@ namespace Rubberduck.Inspections
                 catch (Exception e)
                 {
                     LogManager.GetCurrentClassLogger().Warn(e);
+                    throw;
                 }
             }
 

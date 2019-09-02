@@ -131,10 +131,7 @@ End Sub
         }
 
         [Test]
-        // Note: both assignments in the if/else can be marked in the future;
-        // I just want feedback before I start mucking around that deep.
-        [Ignore("This code yields a legit result... accidentally.")]
-        public void DoesNotMarkLastAssignmentInNonDeclarationBlock()
+        public void DoesNotMarkConditionalAssignmentsInIfElseBlock()
         {
             const string code = @"
 Sub Foo()
@@ -145,6 +142,7 @@ Sub Foo()
     Else
         i = 8
     End If
+    Debug.Print i
 End Sub";
             var results = GetInspectionResults(code);
             Assert.AreEqual(0, results.Count());
@@ -211,7 +209,7 @@ End Sub";
         }
 
         [Test]
-        [Ignore("yields 3 results... all accidentally legit.")]
+        //[Ignore("yields 3 results... all accidentally legit.")]
         public void DoesNotMarkAssignment_UsedInSelectCase()
         {
             const string code = @"

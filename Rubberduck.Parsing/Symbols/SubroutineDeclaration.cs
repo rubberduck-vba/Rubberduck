@@ -1,7 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.ComReflection;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
@@ -78,5 +77,6 @@ namespace Rubberduck.Parsing.Symbols
         }
 
         public override BlockContext Block => ((SubStmtContext)Context).block();
+        public override bool IsStatic => ((SubStmtContext)Context).STATIC() != null;
     }
 }

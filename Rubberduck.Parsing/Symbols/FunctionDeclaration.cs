@@ -1,7 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.ComReflection;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +37,7 @@ namespace Rubberduck.Parsing.Symbols
                 context,
                 attributesPassContext,
                 selection,
-                isArray,               
+                isArray,
                 isUserDefined,
                 annotations,
                 attributes)
@@ -79,5 +78,6 @@ namespace Rubberduck.Parsing.Symbols
         }
 
         public override BlockContext Block => ((FunctionStmtContext)Context).block();
+        public override bool IsStatic => ((FunctionStmtContext)Context).STATIC() != null;
     }
 }
