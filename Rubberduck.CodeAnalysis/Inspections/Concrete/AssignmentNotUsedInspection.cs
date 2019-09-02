@@ -68,9 +68,7 @@ namespace Rubberduck.Inspections.Concrete
                 var assignments = tree.GetAssignmentNodes();
 
                 var references = assignments
-                    .Where(node => !node.IsConditional && 
-                               !node.IsInsideLoop &&
-                               !node.Usages.Any(use => use is ReferenceNode refNode && !refNode.IsConditional) && 
+                    .Where(node => !node.Usages.Any() && 
                                !IsSetAssignmentToNothing(node))
                     .Select(node => node.Reference);
 

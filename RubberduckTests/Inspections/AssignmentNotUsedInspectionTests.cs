@@ -325,11 +325,11 @@ foo = 42 ' <~ blatantly not used
 foo = 0
 End Sub";
             var results = GetInspectionResults(code);
-            Assert.AreEqual(1, results.Count());
+            Assert.AreEqual(2, results.Count());
         }
 
         [Test]
-        [Ignore("Conditional assignments are ignored for now.")]
+        //[Ignore("Conditional assignments are ignored for now.")]
         public void MarksUnusedConditionalVariableAssignment()
         {
             const string code = @"Public Sub Test()
@@ -340,7 +340,7 @@ foo = 0
 End If
 End Sub";
             var results = GetInspectionResults(code);
-            Assert.AreEqual(1, results.Count());
+            Assert.AreEqual(2, results.Count());
         }
     }
 }

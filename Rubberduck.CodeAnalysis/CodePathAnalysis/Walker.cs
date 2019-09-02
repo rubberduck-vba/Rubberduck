@@ -68,6 +68,7 @@ namespace Rubberduck.Inspections.CodePathAnalysis
                         Reference = reference
                     };
                     lastAssignment?.AddUsage(node);
+                    isConditional = false;
                 }
             }
 
