@@ -57,7 +57,7 @@ namespace Rubberduck.Parsing.Symbols
         /// In VBA/VB6, a Static variable keeps its value between procedure calls.
         /// </remarks>
         public bool IsStatic => ParentScopeDeclaration is ModuleBodyElementDeclaration parent && parent.IsStatic
-                                || Context is VBAParser.VariableStmtContext context && context.STATIC() != null;
+                                || Context.Parent.Parent is VBAParser.VariableStmtContext context && context.STATIC() != null;
 
         /// <inheritdoc/>
         public string ImplementingIdentifierName => this.ImplementingIdentifierName();
