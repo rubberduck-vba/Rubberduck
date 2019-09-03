@@ -10,7 +10,8 @@ namespace Rubberduck.Inspections.CodePathAnalysis.Nodes
         {
         }
 
-        private readonly IList<INode> _usages = new List<INode>();
+        private readonly HashSet<INode> _usages = new HashSet<INode>();
+
         /// <summary>
         /// Gets all nodes reading this assignment's value.
         /// </summary>

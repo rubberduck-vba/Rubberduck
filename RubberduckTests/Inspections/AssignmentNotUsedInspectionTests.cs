@@ -57,7 +57,7 @@ End Sub
         public void IgnoresImplicitReDimmedArray()
         {
             const string code = @"
-Sub test()
+Sub Test()
     Dim foo As Variant
     ReDim foo(1 To 10)
     foo(1) = 42
@@ -329,6 +329,22 @@ End Sub";
         }
 
         [Test]
+        public void MarksElseBlockAssignmentNotUsed()
+        {
+            const string code = @"Public Sub Test()
+Dim foo As Long
+foo = 42
+If True Then
+  Debug.Print foo
+Else
+  foo = 10
+End If
+End Sub";
+            var results = GetInspectionResults(code);
+            Assert.AreEqual(2, results.Count());
+        }
+
+        [Test]
         public void MarksUnusedConditionalVariableAssignment()
         {
             const string code = @"Public Sub Test()
@@ -347,7 +363,7 @@ End Sub";
         {
             const string code = @"Public Sub Test()
 Dim foo As Long
-If True Then ' <~ condition expression is not evaluated
+If foo > 0 Or foo <> foo + 1 Then ' <~ condition expression is not evaluated, but that's 3 refs against no assignment
   If False Then
     foo = 42 ' <~ not used
   End If
