@@ -316,8 +316,9 @@ End Function";
         }
 
         [Test]
-        [Ignore("Static variables are ignored for now.")]
-        public void MarksUnusedStaticVariableAssignment()
+        // todo handle static variables
+        //[Ignore("Static variables are ignored for now.")]
+        public void /*Marks*/IgnoresUnusedStaticVariableAssignment()
         {
             const string code = @"Public Sub Test()
 Static foo As Long
@@ -325,7 +326,7 @@ foo = 42 ' <~ blatantly not used
 foo = 0 ' <~ not used either
 End Sub";
             var results = GetInspectionResults(code);
-            Assert.AreEqual(2, results.Count());
+            Assert.AreEqual(/*2*/ 0, results.Count());
         }
 
         [Test]
