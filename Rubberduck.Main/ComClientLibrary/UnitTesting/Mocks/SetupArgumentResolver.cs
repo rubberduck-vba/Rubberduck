@@ -150,11 +150,11 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
                 Expression setupExpression;
                 if (isRef || isOut)
                 {
-                    setupExpression = BuildRefArgumentExpression(i, definition, parameterType, elementType, ref forwardedArgs);
+                    setupExpression = BuildPassByRefArgumentExpression(i, definition, parameterType, elementType, ref forwardedArgs);
                 }
                 else
                 {
-                    setupExpression = BuildValueArgumentExpression(i, definition, parameterType);
+                    setupExpression = BuildPassByValueArgumentExpression(i, definition, parameterType);
                 }
 
                 resolvedArguments.Add(setupExpression);
@@ -163,7 +163,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             return (resolvedArguments, forwardedArgs);
         }
 
-        private Expression BuildValueArgumentExpression(int index, SetupArgumentDefinition definition, Type parameterType)
+        private Expression BuildPassByValueArgumentExpression(int index, SetupArgumentDefinition definition, Type parameterType)
         {
             var itType = typeof(It);
             MethodInfo itMemberInfo;
@@ -174,7 +174,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             switch (definition.Type)
             {
                 case SetupArgumentType.Is:
-                    itMemberInfo = itType.GetMethod(nameof(It.Is)).MakeGenericMethod(parameterType);
+                    itMemberInfo = itType.GetMethods().Single(x => x.Name == nameof(It.Is) && x.IsGenericMethodDefinition && x.GetParameters().All(y => y.ParameterType.GetGenericArguments().All(z => z.GetGenericTypeDefinition() == typeof(Func<,>)))).MakeGenericMethod(parameterType);
                     var value = definition.Values[0];
                     if (value != null && value.GetType() != parameterType)
                     {
@@ -234,7 +234,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             return Expression.Call(itMemberInfo, itArgumentExpressions);
         }
 
-        private Expression BuildRefArgumentExpression(int index, SetupArgumentDefinition definition, Type refType, Type elementType, ref Dictionary<ParameterExpression, object> forwardedArgs)
+        private Expression BuildPassByRefArgumentExpression(int index, SetupArgumentDefinition definition, Type refType, Type elementType, ref Dictionary<ParameterExpression, object> forwardedArgs)
         {
             ParameterExpression parameterExpression;
             switch (definition.Type)
@@ -259,14 +259,24 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
                     // TODO: need to take care that the args passed into DynamicInvoke do not need to be ref'd - it should be
                     // TODO: passed in as values then made ref within the expression tree.
                     var name = $"p{index:00}";
-                    parameterExpression = Expression.Parameter(elementType, name);
-                    forwardedArgs.Add(parameterExpression, definition.Values[0]);
+                /*
+                    var forwardedArgExpression = Expression.Parameter(elementType, name);
+                    // forwardedArgs.Add(forwardedArgExpression, definition.Values[0]);
+
+                    var conditionExpression = Expression.Lambda();
+                    var itByRefType = typeof(ItByRef<>).MakeGenericType(elementType);
+                    var itMemberInfo = Reflection.GetMethodExt(itByRefType, nameof(ItByRef<object>.Is));
+                    var itByRefExpression = Expression.Call(itMemberInfo, forwardedArgExpression, null);
+
+                    parameterExpression = Expression.Field();
                     return parameterExpression;
+                */
+                    return null;
                 case SetupArgumentType.IsAny:
                     var itRefType = typeof(It.Ref<>).MakeGenericType(elementType);
-                    var itMemberInfo = itRefType.GetField(nameof(It.IsAny));
+                    var itFieldInfo = itRefType.GetField(nameof(It.IsAny));
                     parameterExpression = Expression.Parameter(itRefType, "r");
-                    return Expression.Field(parameterExpression, itMemberInfo);
+                    return Expression.Field(parameterExpression, itFieldInfo);
                 case SetupArgumentType.IsIn:
                     throw new NotSupportedException($"The {nameof(SetupArgumentType.IsIn)} type is not implemented for ref argument");
                 case SetupArgumentType.IsInRange:
