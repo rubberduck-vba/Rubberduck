@@ -353,15 +353,15 @@ End Sub";
         {
             const string code = @"Public Sub Test()
 Dim foo As Long
-foo = 42
+foo = 42 '<~ will be considered as not used
 If True Then
   Debug.Print foo
 Else
-  foo = 10
+  foo = 10 '<~ not used
 End If
 End Sub";
             var results = GetInspectionResults(code);
-            Assert.AreEqual(1, results.Count());
+            Assert.AreEqual(2, results.Count());
         }
 
         [Test]

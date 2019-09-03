@@ -46,21 +46,14 @@ namespace Rubberduck.Inspections.CodePathAnalysis.Extensions
             var nodes = new List<AssignmentNode>();
 
             var blocks = node.GetNodes(typeof(BlockNode));
-            AssignmentNode previous = default;
             foreach (var block in blocks)
             {
                 var flattened = block.GetFlattenedNodes(typeof(GenericNode), typeof(BlockNode));
                 foreach (var current in flattened)
                 {
-                    switch (current)
+                    if (current is AssignmentNode assignmentNode)
                     {
-                        case AssignmentNode assignmentNode:
-                            previous = assignmentNode;
-                            nodes.Add(previous);
-                            break;
-                        case ReferenceNode referenceNode:
-                            previous?.AddUsage(referenceNode);
-                            break;
+                        nodes.Add(assignmentNode);
                     }
                 }
             }
