@@ -5,6 +5,7 @@ using Rubberduck.Parsing.Symbols;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using Antlr4.Runtime;
 
 namespace Rubberduck.Inspections.CodePathAnalysis
 {
@@ -13,12 +14,14 @@ namespace Rubberduck.Inspections.CodePathAnalysis
         public INode GenerateTree(IParseTree tree, Declaration declaration)
         {
             AssignmentNode lastAssignment = null;
-            return GenerateTree(tree, declaration, ref lastAssignment);
+            bool isBranchCondition = false;
+            return GenerateTree(tree, declaration, ref lastAssignment, ref isBranchCondition);
         }
 
-        public INode GenerateTree(IParseTree tree, Declaration declaration, ref AssignmentNode lastAssignment, bool isConditional = false, bool isInsideLoop = false)
+        public INode GenerateTree(IParseTree tree, Declaration declaration, ref AssignmentNode lastAssignment, ref bool isBranchCondition)
         {
             INode node = default;
+            VBAParser.BooleanExpressionContext branchCondition;
             switch (tree)
             {
                 case VBAParser.ForNextStmtContext _:
@@ -26,20 +29,53 @@ namespace Rubberduck.Inspections.CodePathAnalysis
                 case VBAParser.WhileWendStmtContext _:
                 case VBAParser.DoLoopStmtContext _:
                     node = new LoopNode(tree);
-                    isInsideLoop = true;
                     break;
+
                 case VBAParser.IfStmtContext _:
+                    node = new BranchNode(tree);
+                    isBranchCondition = true;
+                    break;
                 case VBAParser.ElseBlockContext _:
+                    node = new BranchNode(tree);
+                    lastAssignment = null;
+                    isBranchCondition = false;
+                    break;
                 case VBAParser.ElseIfBlockContext _:
+                    node = new BranchNode(tree);
+                    isBranchCondition = true;
+                    break;
                 case VBAParser.SingleLineIfStmtContext _:
+                    node = new BranchNode(tree);
+                    isBranchCondition = true;
+                    break;
                 case VBAParser.SingleLineElseClauseContext _:
+                    node = new BranchNode(tree);
+                    lastAssignment = null;
+                    isBranchCondition = false;
+                    break;
                 case VBAParser.CaseClauseContext _:
+                    node = new BranchNode(tree);
+                    isBranchCondition = true;
+                    break;
                 case VBAParser.CaseElseClauseContext _:
                     node = new BranchNode(tree);
-                    isConditional = true;
+                    lastAssignment = null;
                     break;
+
                 case VBAParser.BlockContext _:
                     node = new BlockNode(tree);
+                    if (isBranchCondition)
+                    {
+                        lastAssignment = null;
+                        isBranchCondition = false;
+                    }
+                    break;
+                case VBAParser.MainBlockStmtContext _:
+                    if (isBranchCondition)
+                    {
+                        lastAssignment = null;
+                        isBranchCondition = false;
+                    }
                     break;
             }
 
@@ -56,19 +92,18 @@ namespace Rubberduck.Inspections.CodePathAnalysis
             {
                 if (reference.IsAssignment)
                 {
-                    node = lastAssignment = new AssignmentNode(tree, isConditional, isInsideLoop)
+                    node = lastAssignment = new AssignmentNode(tree)
                     {
                         Reference = reference
                     };
                 }
                 else
                 {
-                    node = new ReferenceNode(tree, isConditional)
+                    node = new ReferenceNode(tree, lastAssignment)
                     {
                         Reference = reference
                     };
                     lastAssignment?.AddUsage(node);
-                    isConditional = false;
                 }
             }
 
@@ -77,7 +112,7 @@ namespace Rubberduck.Inspections.CodePathAnalysis
                 node = new GenericNode(tree);
             }
 
-            var children = new List<INode>();
+            var children = new HashSet<INode>();
             VBAParser.ExpressionContext rhs = null;
             VBAParser.LExpressionContext lhs = null;
             if (tree is VBAParser.LetStmtContext letStmt)
@@ -95,11 +130,11 @@ namespace Rubberduck.Inspections.CodePathAnalysis
             {
                 // add RHS before LHS to match evaluation order
 
-                var rhsNode = GenerateTree(rhs, declaration, ref lastAssignment, isConditional, isInsideLoop);
+                var rhsNode = GenerateTree(rhs, declaration, ref lastAssignment, ref isBranchCondition);
                 rhsNode.Parent = node;
                 children.Add(rhsNode);
 
-                var lhsNode = GenerateTree(lhs, declaration, ref lastAssignment, isConditional, isInsideLoop);
+                var lhsNode = GenerateTree(lhs, declaration, ref lastAssignment, ref isBranchCondition);
                 lhsNode.Parent = node;
                 children.Add(lhsNode);
             }
@@ -107,7 +142,7 @@ namespace Rubberduck.Inspections.CodePathAnalysis
             {
                 for (var i = 0; i < tree.ChildCount; i++)
                 {
-                    var nextChild = GenerateTree(tree.GetChild(i), declaration, ref lastAssignment, isConditional, isInsideLoop);
+                    var nextChild = GenerateTree(tree.GetChild(i), declaration, ref lastAssignment, ref isBranchCondition);
                     nextChild.SortOrder = i;
                     nextChild.Parent = node;
 

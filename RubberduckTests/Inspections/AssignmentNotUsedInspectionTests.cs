@@ -131,7 +131,7 @@ End Sub
         }
 
         [Test]
-        public void DoesNotMarkConditionalAssignmentsInIfElseBlock()
+        public void MarksUnusedAssignmentsInIfElseBlock()
         {
             const string code = @"
 Sub Foo()
@@ -140,7 +140,7 @@ Sub Foo()
     If i = 9 Then '<~ reads i=0
         i = 8 '<~ unused
     Else
-        i = 8 '<~ unused
+        i = 1 '<~ unused
     End If
 End Sub";
             var results = GetInspectionResults(code);
@@ -178,19 +178,20 @@ End Sub";
         }
 
         [Test]
-        public void DoesNotMarkAssignment_UsedInWhileWend()
+        public void MarksUnusedAssignment_InWhileWend()
         {
             const string code = @"
 Sub foo()
-    Dim i As Integer
+    Dim i As Integer, j As Integer
     i = 0
 
     While i < 10 '<~ i=0 has a read here
-        i = i + 1
+        i = i + 1 '<~ current i has a read here
+        j = i '<~ not used
     Wend
 End Sub";
             var results = GetInspectionResults(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(1, results.Count());
         }
 
         [Test]
@@ -234,7 +235,7 @@ End Sub";
         {
             const string code = @"
 Public Sub Test()
-Dim my_fso   As Scripting.FileSystemObject
+Dim my_fso As Scripting.FileSystemObject
 Set my_fso = New Scripting.FileSystemObject
 
 Debug.Print my_fso.GetFolder(""C:\Windows"").DateLastModified
@@ -250,7 +251,7 @@ End Sub";
         {
             const string code = @"
 Public Sub Test()
-Dim my_fso   As Scripting.FileSystemObject
+Dim my_fso As Scripting.FileSystemObject
 Set my_fso = New Scripting.FileSystemObject
 
 Set my_fso = Nothing
@@ -328,7 +329,6 @@ End Sub";
         }
 
         [Test]
-        //[Ignore("Conditional assignments are ignored for now.")]
         public void MarksUnusedConditionalVariableAssignment()
         {
             const string code = @"Public Sub Test()
@@ -340,6 +340,23 @@ End If
 End Sub";
             var results = GetInspectionResults(code);
             Assert.AreEqual(2, results.Count());
+        }
+
+        [Test]
+        public void MarksUnusedNestedConditionalVariableAssignment()
+        {
+            const string code = @"Public Sub Test()
+Dim foo As Long
+If True Then ' <~ condition expression is not evaluated
+  If False Then
+    foo = 42 ' <~ not used
+  End If
+  foo = 0
+  Debug.Print foo
+End If
+End Sub";
+            var results = GetInspectionResults(code);
+            Assert.AreEqual(1, results.Count());
         }
     }
 }

@@ -4,11 +4,11 @@ namespace Rubberduck.Inspections.CodePathAnalysis.Nodes
 {
     public class ReferenceNode : NodeBase
     {
-        public ReferenceNode(IParseTree tree, bool isConditional) : base(tree)
+        public ReferenceNode(IParseTree tree, AssignmentNode value) : base(tree)
         {
-            IsConditional = isConditional;
+            ValueNode = value;
         }
 
-        public bool IsConditional { get; }
+        public AssignmentNode ValueNode { get; }
     }
 }
