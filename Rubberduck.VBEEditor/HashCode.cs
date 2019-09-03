@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Rubberduck.VBEditor
 {
-    public static class HashCode
+    public static class HashCode // todo: move to Rubberduck.JunkDrawer (also todo: rename Rubberduck.JunkDrawer)
     {
         [SuppressMessage("ReSharper", "ForCanBeConvertedToForeach")]
         [SuppressMessage("ReSharper", "LoopCanBeConvertedToQuery")]
