@@ -21,6 +21,15 @@ namespace RubberduckTests.ComMock
         void DoObject(object something);
     }
 
+    public interface ITestRef
+    {
+        void DoInt(ref int something);
+        void DoString(ref string something);
+        void DoObject(ref object something);
+
+        int ReturnInt(ref int something);
+    }
+
     public class ConvertibleTest : IConvertible
     {
         private readonly TypeCode _code;

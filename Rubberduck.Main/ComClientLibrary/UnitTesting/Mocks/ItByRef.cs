@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Moq;
 
 namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 {
@@ -7,16 +9,24 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
         // Only a field of a class can be passed by-ref.
         public T Value;
 
-        public static ItByRef<T> Is(T input, Func<T, bool> condition)
+        public delegate void ByRefCallback(ref T input);
+
+        public ByRefCallback Callback { get; }
+
+        public static ItByRef<T> Is(T initialValue)
         {
-            return condition(input) 
-                ? new ItByRef<T>(input) 
-                : new ItByRef<T>(default);
+            return Is(initialValue, null);
         }
 
-        private ItByRef(T input)
+        public static ItByRef<T> Is(T initialValue, ByRefCallback action)
         {
-            Value = input;
+            return new ItByRef<T>(initialValue, action);
+        }
+
+        private ItByRef(T initialValue, ByRefCallback callback)
+        {
+            Value = initialValue;
+            Callback = callback;
         }
     }
 }

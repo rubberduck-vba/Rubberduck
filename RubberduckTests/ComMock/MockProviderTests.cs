@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Moq;
 using NUnit.Framework;
@@ -536,83 +535,6 @@ namespace RubberduckTests.ComMock
                 if (pProxy != IntPtr.Zero) Marshal.Release(pProxy);
                 if (pUnk != IntPtr.Zero) Marshal.Release(pUnk);
             }
-        }
-
-        [Test]
-        [TestCase("abc", "abc", true)]
-        [TestCase("abc", "def", false)]
-        [TestCase("abc", "", false)]
-        [TestCase("", "abc", false)]
-        [TestCase("", "", true)]
-        [TestCase("", null, false)]
-        [TestCase(1, 1, true)]
-        [TestCase(1, 2, false)]
-        [TestCase(1, null, false)]
-
-        // For null as expected, any values will be true
-        [TestCase(null, "", true)]
-        [TestCase(null, 1, true)]
-        public void Test_ItByRef_Value_Is<T>(T expected, T input, bool areEqual)
-        {
-            Test_ItByRef_Is(expected, input, areEqual);
-        }
-
-        [Test]
-        public void Test_ItByRef_Object_Is_NotSame()
-        {
-            var obj1 = new Mock<object>();
-            obj1.As<ITest1>();
-            var obj2 = new Mock<object>();
-            obj2.As<ITest1>();
-
-            Test_ItByRef_Is(obj1.Object, obj2.Object, false);
-        }
-
-        [Test]
-        public void Test_ItByRef_Object_Is_DifferentFace_Same()
-        {
-            var obj1 = new Mock<ITest1>();
-            var obj2 = obj1.As<ITest2>();
-
-            Test_ItByRef_Is((object)obj1.Object, (object)obj2.Object, true);
-        }
-
-        [Test]
-        public void Test_ItByRef_Object_Is_Null_NotSame()
-        {
-            var obj1 = new Mock<object>();
-            obj1.As<ITest1>();
-
-            Test_ItByRef_Is(obj1.Object, null, false);
-        }
-
-        [Test]
-        public void Test_ItByRef_Object_Is_Same()
-        {
-            var obj1 = new Mock<object>();
-            obj1.As<ITest1>();
-
-            Test_ItByRef_Is(obj1.Object, obj1.Object, true);
-        }
-
-        public void Test_ItByRef_Is<T>(T expected, T input, bool areEqual)
-        {
-            var actual = TestRef(ref ItByRef<T>.Is(input, x => EqualityComparer<T>.Default.Equals(x, expected)).Value);
-
-            var test = expected == null ? null : string.Concat("ref ", expected.ToString());
-            if (areEqual)
-            {
-                Assert.AreEqual(test, actual);
-            }
-            else
-            {
-                Assert.AreNotEqual(test, actual);
-            }
-        }
-        
-        private static string TestRef<T>(ref T refValue)
-        {
-            return refValue == null ? null : string.Concat("ref ", refValue.ToString());
         }
 
         /* Commented to remove the PIA reference to Scripting library, but keeping code in one day they fix type equivalence?
