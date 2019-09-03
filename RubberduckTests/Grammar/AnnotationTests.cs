@@ -1,8 +1,10 @@
 using NUnit.Framework;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.VBEditor;
+using RubberduckTests.Mocks;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RubberduckTests.Grammar
 {
@@ -39,6 +41,24 @@ namespace RubberduckTests.Grammar
         {
             IAnnotation annotation = (IAnnotation)Activator.CreateInstance(annotationType);
             Assert.AreEqual(expectedName, annotation.Name);
+        }
+
+        [TestCase]
+        public void AnnotationTypes_AllHave_SomeName()
+        {
+            foreach (var annotation in MockParser.WellKnownAnnotations())
+            {
+                Assert.IsNotEmpty(annotation.Name);
+            }
+        }
+
+        [TestCase]
+        public void AnnotationTypes_HaveDistinctNames()
+        {
+            var annotations = MockParser.WellKnownAnnotations();
+            var names = annotations.Select(a => a.Name).Distinct();
+
+            Assert.AreEqual(annotations.Count(), names.Count());
         }
 
         [TestCase(typeof(IgnoreAnnotation))]

@@ -19,14 +19,14 @@ namespace Rubberduck.Parsing.Annotations
                 {
                     unrecognized = annotation;
                 }
-                _lookup.Add(annotation.Name.ToUpperInvariant(), annotation);
+                _lookup.Add(annotation.Name.ToLowerInvariant(), annotation);
             }
         }
 
-        public ParseTreeAnnotation Create(VBAParser.AnnotationContext context, QualifiedSelection qualifiedSelection)
+        public IParseTreeAnnotation Create(VBAParser.AnnotationContext context, QualifiedSelection qualifiedSelection)
         {
             var annotationName = context.annotationName().GetText();
-            if (_lookup.TryGetValue(annotationName.ToUpperInvariant(), out var annotation))
+            if (_lookup.TryGetValue(annotationName.ToLowerInvariant(), out var annotation))
             {
                 return new ParseTreeAnnotation(annotation, qualifiedSelection, context);
             }

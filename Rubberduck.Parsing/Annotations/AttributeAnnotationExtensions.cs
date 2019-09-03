@@ -8,23 +8,14 @@ namespace Rubberduck.Parsing.Annotations
 {
     public static class AttributeAnnotationExtensions
     {
-        public static string Attribute(this ParseTreeAnnotation annotationInstance)
+        public static string Attribute(this IAttributeAnnotation annotation, IParseTreeAnnotation annotationInstance)
         {
-            if (annotationInstance.Annotation is IAttributeAnnotation annotation)
-            {
-                return annotation.Attribute(annotationInstance.AnnotationArguments);
-            }
-            return null;
+            return annotation.Attribute(annotationInstance.AnnotationArguments);
         }
 
-        public static IReadOnlyList<string> AttributeValues(this ParseTreeAnnotation annotationInstance)
+        public static IReadOnlyList<string> AttributeValues(this IAttributeAnnotation annotation, IParseTreeAnnotation instance)
         {
-            if (annotationInstance.Annotation is IAttributeAnnotation annotation)
-            {
-                return annotation.AnnotationToAttributeValues(annotationInstance.AnnotationArguments);
-            }
-            return null;
-
+            return annotation.AnnotationToAttributeValues(instance.AnnotationArguments);
         }
     }
 }

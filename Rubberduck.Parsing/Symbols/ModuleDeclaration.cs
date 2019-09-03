@@ -13,7 +13,7 @@ namespace Rubberduck.Parsing.Symbols
             string name,
             DeclarationType declarationType,
             bool isUserDefined,
-            IEnumerable<ParseTreeAnnotation> annotations,
+            IEnumerable<IParseTreeAnnotation> annotations,
             Attributes attributes,
             bool isWithEvents = false)
             : base(
@@ -46,7 +46,7 @@ namespace Rubberduck.Parsing.Symbols
             _members.Add(member);
         }
 
-        internal void RemoveAnnotations(ICollection<ParseTreeAnnotation> annotationsToRemove)
+        internal void RemoveAnnotations(ICollection<IParseTreeAnnotation> annotationsToRemove)
         {
             _annotations = _annotations?.Where(annotation => !annotationsToRemove.Contains(annotation)).ToList();
         }

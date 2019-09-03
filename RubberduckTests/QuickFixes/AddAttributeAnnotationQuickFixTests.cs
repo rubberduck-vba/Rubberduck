@@ -156,9 +156,8 @@ End Sub";
 
         protected override IQuickFix QuickFix(RubberduckParserState state)
         {
-            // FIXME actually inject the annotations here... 
             return new AddAttributeAnnotationQuickFix(new AnnotationUpdater(),
-                new AttributeAnnotationProvider(MockParser.GetWellKnownAnnotations().OfType<IAttributeAnnotation>()));
+                new AttributeAnnotationProvider(MockParser.WellKnownAnnotations().OfType<IAttributeAnnotation>()));
         }
     }
 }

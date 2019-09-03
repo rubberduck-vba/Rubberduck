@@ -65,7 +65,7 @@ namespace Rubberduck.Inspections.Concrete
                     new QualifiedContext(annotation.QualifiedSelection.QualifiedName, annotation.Context)));
         }
 
-        private static IEnumerable<ParseTreeAnnotation> UnboundAnnotations(IEnumerable<ParseTreeAnnotation> annotations, IEnumerable<Declaration> userDeclarations, IEnumerable<IdentifierReference> identifierReferences)
+        private static IEnumerable<IParseTreeAnnotation> UnboundAnnotations(IEnumerable<IParseTreeAnnotation> annotations, IEnumerable<Declaration> userDeclarations, IEnumerable<IdentifierReference> identifierReferences)
         {
             var boundAnnotationsSelections = userDeclarations
                 .SelectMany(declaration => declaration.Annotations)
@@ -76,7 +76,7 @@ namespace Rubberduck.Inspections.Concrete
             return annotations.Where(annotation => !boundAnnotationsSelections.Contains(annotation.QualifiedSelection)).ToList();
         }
 
-        private static IEnumerable<ParseTreeAnnotation> AttributeAnnotationsInDocuments(IEnumerable<Declaration> userDeclarations)
+        private static IEnumerable<IParseTreeAnnotation> AttributeAnnotationsInDocuments(IEnumerable<Declaration> userDeclarations)
         {
             var declarationsInDocuments = userDeclarations
                 .Where(declaration => declaration.QualifiedModuleName.ComponentType == ComponentType.Document);

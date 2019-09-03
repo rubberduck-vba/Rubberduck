@@ -66,7 +66,8 @@ namespace Rubberduck.Inspections.Inspections.Concrete
             {
                 var replacementDocumentation = declaration.Annotations
                     .First(pta => pta.Annotation is ObsoleteAnnotation)
-                    .AnnotationArguments.FirstOrDefault() ?? string.Empty;
+                    .AnnotationArguments
+                    .FirstOrDefault() ?? string.Empty;
 
                 issues.AddRange(declaration.References.Select(reference =>
                     new IdentifierReferenceInspectionResult(this,

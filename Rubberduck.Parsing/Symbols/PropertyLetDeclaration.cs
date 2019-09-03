@@ -21,7 +21,7 @@ namespace Rubberduck.Parsing.Symbols
             ParserRuleContext attributesPassContext,
             Selection selection,
             bool isUserDefined,
-            IEnumerable<ParseTreeAnnotation> annotations,
+            IEnumerable<IParseTreeAnnotation> annotations,
             Attributes attributes)
             : base(
                 name,

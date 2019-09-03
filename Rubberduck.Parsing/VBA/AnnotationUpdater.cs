@@ -214,7 +214,7 @@ namespace Rubberduck.Parsing.VBA
             AddAnnotation(rewriteSession, new QualifiedContext(reference.QualifiedModuleName, reference.Context), annotationInfo, annotationValues);
         }
 
-        public void RemoveAnnotation(IRewriteSession rewriteSession, ParseTreeAnnotation annotation)
+        public void RemoveAnnotation(IRewriteSession rewriteSession, IParseTreeAnnotation annotation)
         {
             if (annotation == null)
             {
@@ -287,7 +287,7 @@ namespace Rubberduck.Parsing.VBA
             rewriter.RemoveRange(startOfAnnotationMarker, endOfAnnotationMarker);
         }
 
-        public void RemoveAnnotations(IRewriteSession rewriteSession, IEnumerable<ParseTreeAnnotation> annotations)
+        public void RemoveAnnotations(IRewriteSession rewriteSession, IEnumerable<IParseTreeAnnotation> annotations)
         {
             if (annotations == null)
             {
@@ -330,7 +330,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void UpdateAnnotation(IRewriteSession rewriteSession, ParseTreeAnnotation annotation, IAnnotation annotationInfo, IReadOnlyList<string> newValues = null)
+        public void UpdateAnnotation(IRewriteSession rewriteSession, IParseTreeAnnotation annotation, IAnnotation annotationInfo, IReadOnlyList<string> newValues = null)
         {
             var newAnnotationValues = newValues ?? new List<string>();
 

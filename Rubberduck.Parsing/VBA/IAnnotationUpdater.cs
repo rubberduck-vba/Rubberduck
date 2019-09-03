@@ -11,8 +11,8 @@ namespace Rubberduck.Parsing.VBA
         void AddAnnotation(IRewriteSession rewriteSession, Declaration declaration, IAnnotation newAnnotation, IReadOnlyList<string> values = null);
         void AddAnnotation(IRewriteSession rewriteSession, IdentifierReference reference, IAnnotation newAnnotation, IReadOnlyList<string> values = null);
         void AddAnnotation(IRewriteSession rewriteSession, QualifiedContext context, IAnnotation newAnnotation, IReadOnlyList<string> values = null);
-        void RemoveAnnotation(IRewriteSession rewriteSession, ParseTreeAnnotation annotation);
-        void RemoveAnnotations(IRewriteSession rewriteSession, IEnumerable<ParseTreeAnnotation> annotations);
-        void UpdateAnnotation(IRewriteSession rewriteSession, ParseTreeAnnotation oldAnnotation, IAnnotation newAnnotation, IReadOnlyList<string> newValues = null);
+        void RemoveAnnotation(IRewriteSession rewriteSession, IParseTreeAnnotation annotation);
+        void RemoveAnnotations(IRewriteSession rewriteSession, IEnumerable<IParseTreeAnnotation> annotations);
+        void UpdateAnnotation(IRewriteSession rewriteSession, IParseTreeAnnotation oldAnnotation, IAnnotation newAnnotation, IReadOnlyList<string> newValues = null);
     }
 }

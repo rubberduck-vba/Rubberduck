@@ -28,7 +28,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         private readonly ConcurrentDictionary<QualifiedMemberName, ConcurrentBag<Declaration>> _newUndeclared;
         private readonly ConcurrentBag<UnboundMemberDeclaration> _newUnresolved;
         private List<UnboundMemberDeclaration> _unresolved;
-        private IDictionary<(QualifiedModuleName module, int annotatedLine), List<ParseTreeAnnotation>> _annotations;
+        private IDictionary<(QualifiedModuleName module, int annotatedLine), List<IParseTreeAnnotation>> _annotations;
         private IDictionary<Declaration, List<ParameterDeclaration>> _parametersByParent;
         private IDictionary<DeclarationType, List<Declaration>> _userDeclarationsByType;
         private IDictionary<QualifiedSelection, List<Declaration>> _declarationsBySelection;
@@ -67,7 +67,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         
         public DeclarationFinder(
             IReadOnlyList<Declaration> declarations, 
-            IEnumerable<ParseTreeAnnotation> annotations, 
+            IEnumerable<IParseTreeAnnotation> annotations, 
             IReadOnlyList<UnboundMemberDeclaration> unresolvedMemberDeclarations,
             IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> unboundDefaultMemberAccesses, 
             IHostApplication hostApp = null)
@@ -91,7 +91,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             collectionConstructionActions.ForEach(action => action.Invoke());
         }
 
-        private List<Action> CollectionConstructionActions(IReadOnlyList<Declaration> declarations, IEnumerable<ParseTreeAnnotation> annotations, 
+        private List<Action> CollectionConstructionActions(IReadOnlyList<Declaration> declarations, IEnumerable<IParseTreeAnnotation> annotations, 
             IReadOnlyList<UnboundMemberDeclaration> unresolvedMemberDeclarations)
         {
             var actions = new List<Action>
@@ -543,25 +543,25 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 : Enumerable.Empty<Declaration>();
         }
 
-        public IEnumerable<ParseTreeAnnotation> FindAnnotations(QualifiedModuleName module, int annotatedLine)
+        public IEnumerable<IParseTreeAnnotation> FindAnnotations(QualifiedModuleName module, int annotatedLine)
         {
             return _annotations.TryGetValue((module, annotatedLine), out var result) 
                 ? result 
-                : Enumerable.Empty<ParseTreeAnnotation>();
+                : Enumerable.Empty<IParseTreeAnnotation>();
         }
 
-        public IEnumerable<ParseTreeAnnotation> FindAnnotations(QualifiedModuleName module, int annotatedLine, Type annotationType)
+        public IEnumerable<IParseTreeAnnotation> FindAnnotations(QualifiedModuleName module, int annotatedLine, Type annotationType)
         {
             return FindAnnotations(module, annotatedLine).Where(pta => pta.Annotation.GetType() == annotationType);
         }
 
-        public IEnumerable<ParseTreeAnnotation> FindAnnotations<T>(QualifiedModuleName module, int annotatedLine) 
+        public IEnumerable<IParseTreeAnnotation> FindAnnotations<T>(QualifiedModuleName module, int annotatedLine) 
              where T : IAnnotation
         {
             return FindAnnotations(module, annotatedLine, typeof(T));
         }
 
-        public IEnumerable<ParseTreeAnnotation> FindAnnotations(QualifiedModuleName module, int annotatedLine, AnnotationTarget target)
+        public IEnumerable<IParseTreeAnnotation> FindAnnotations(QualifiedModuleName module, int annotatedLine, AnnotationTarget target)
         {
             return FindAnnotations(module, annotatedLine)
                 .Where(annot => annot.Annotation.Target.HasFlag(target));

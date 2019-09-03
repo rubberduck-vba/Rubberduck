@@ -72,16 +72,20 @@ namespace Rubberduck.Inspections.Concrete
             return results;
         }
 
-        private static bool MissesCorrespondingAttribute(Declaration declaration, ParseTreeAnnotation annotation)
+        private static bool MissesCorrespondingAttribute(Declaration declaration, IParseTreeAnnotation annotationInstance)
         {
-            var attribute = annotation.Attribute();
+            if (!(annotationInstance.Annotation is IAttributeAnnotation annotation))
+            {
+                return false;
+            }
+            var attribute = annotation.Attribute(annotationInstance);
             if (string.IsNullOrEmpty(attribute))
             {
                 return false;
             }
             return declaration.DeclarationType.HasFlag(DeclarationType.Module)
-                ? !declaration.Attributes.HasAttributeFor(annotation)
-                : !declaration.Attributes.HasAttributeFor(annotation, declaration.IdentifierName);
+                ? !declaration.Attributes.HasAttributeFor(annotationInstance)
+                : !declaration.Attributes.HasAttributeFor(annotationInstance, declaration.IdentifierName);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections.QuickFixes
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
             var duplicateAnnotations = result.Target.Annotations
-                .Where(pta => pta.Annotation == result.Properties.AnnotationType)
+                .Where(pta => pta.Annotation == result.Properties.Annotation)
                 .OrderBy(annotation => annotation.AnnotatedLine)
                 .Skip(1)
                 .ToList();

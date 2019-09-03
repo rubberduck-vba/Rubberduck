@@ -12,6 +12,7 @@ namespace Rubberduck.Parsing.Annotations
         public ExcelHotKeyAnnotation()
             : base("ExcelHotkey", AnnotationTarget.Member, "VB_ProcData.VB_Invoke_Func", 1)
         { }
+
         public override IReadOnlyList<string> AnnotationToAttributeValues(IReadOnlyList<string> annotationValues)
         {
             return annotationValues.Take(1).Select(v => v.UnQuote()[0] + @"\n14".EnQuote()).ToList();

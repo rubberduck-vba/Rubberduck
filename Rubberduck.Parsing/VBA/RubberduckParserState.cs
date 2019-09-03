@@ -674,11 +674,11 @@ namespace Rubberduck.Parsing.VBA
             return moduleState.Comments;
         }
 
-        public List<ParseTreeAnnotation> AllAnnotations
+        public List<IParseTreeAnnotation> AllAnnotations
         {
             get
             {
-                var annotations = new List<ParseTreeAnnotation>();
+                var annotations = new List<IParseTreeAnnotation>();
                 foreach (var state in _moduleStates.Values)
                 {
                     annotations.AddRange(state.Annotations);
@@ -688,19 +688,19 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public IEnumerable<ParseTreeAnnotation> GetModuleAnnotations(QualifiedModuleName module)
+        public IEnumerable<IParseTreeAnnotation> GetModuleAnnotations(QualifiedModuleName module)
         {
             if (_moduleStates.TryGetValue(module, out var result))
             {
                 return result.Annotations;
             }
 
-            return Enumerable.Empty<ParseTreeAnnotation>();
+            return Enumerable.Empty<IParseTreeAnnotation>();
         }
 
-        public void SetModuleAnnotations(QualifiedModuleName module, IEnumerable<ParseTreeAnnotation> annotations)
+        public void SetModuleAnnotations(QualifiedModuleName module, IEnumerable<IParseTreeAnnotation> annotations)
         {
-            _moduleStates[module].SetAnnotations(new List<ParseTreeAnnotation>(annotations));
+            _moduleStates[module].SetAnnotations(new List<IParseTreeAnnotation>(annotations));
         }
 
         /// <summary>

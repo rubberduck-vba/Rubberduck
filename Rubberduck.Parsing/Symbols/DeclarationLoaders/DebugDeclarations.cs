@@ -81,7 +81,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 parentProject,
                 "DebugModule",
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 }
                 
@@ -101,7 +101,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 parentProject, 
                 "DebugClass", 
                 false, 
-                new List<ParseTreeAnnotation>(), 
+                new List<IParseTreeAnnotation>(), 
                 new Attributes(), 
                 true);
         }
@@ -129,7 +129,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 false, 
                 null,
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
         }
 
@@ -145,7 +145,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 null,
                 Selection.Home, 
                 false,
-                new List<ParseTreeAnnotation>(), 
+                new List<IParseTreeAnnotation>(), 
                 new Attributes());
         }
 
@@ -161,7 +161,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 null,
                 Selection.Home, 
                 false,
-                new List<ParseTreeAnnotation>(), 
+                new List<IParseTreeAnnotation>(), 
                 new Attributes());
         }
     }

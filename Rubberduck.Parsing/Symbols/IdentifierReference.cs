@@ -22,7 +22,7 @@ namespace Rubberduck.Parsing.Symbols
             Declaration declaration, 
             bool isAssignmentTarget = false,
             bool hasExplicitLetStatement = false, 
-            IEnumerable<ParseTreeAnnotation> annotations = null,
+            IEnumerable<IParseTreeAnnotation> annotations = null,
             bool isSetAssigned = false,
             bool isIndexedDefaultMemberAccess = false,
             bool isNonIndexedDefaultMemberAccess = false,
@@ -43,7 +43,7 @@ namespace Rubberduck.Parsing.Symbols
             IsNonIndexedDefaultMemberAccess = isNonIndexedDefaultMemberAccess;
             DefaultMemberRecursionDepth = defaultMemberRecursionDepth;
             IsArrayAccess = isArrayAccess;
-            Annotations = annotations ?? new List<ParseTreeAnnotation>();
+            Annotations = annotations ?? new List<IParseTreeAnnotation>();
         }
 
         public QualifiedModuleName QualifiedModuleName { get; }
@@ -79,7 +79,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration Declaration { get; }
 
-        public IEnumerable<ParseTreeAnnotation> Annotations { get; }
+        public IEnumerable<IParseTreeAnnotation> Annotations { get; }
 
         public bool HasExplicitLetStatement { get; }
 

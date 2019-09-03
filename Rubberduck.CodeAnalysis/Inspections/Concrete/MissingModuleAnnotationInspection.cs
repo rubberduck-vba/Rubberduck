@@ -97,11 +97,14 @@ namespace Rubberduck.Inspections.Concrete
             if (attribute.Name == "VB_Ext_Key")
             {
                 return !declaration.Annotations.Where(pta => pta.Annotation is IAttributeAnnotation)
-                    .Any(annotation => annotation.Attribute().Equals("VB_Ext_Key") && attribute.Values[0].Equals(annotation.AttributeValues()[0]));
+                    .Any(pta => {
+                        var annotation = (IAttributeAnnotation)pta.Annotation;
+                        return annotation.Attribute(pta).Equals("VB_Ext_Key") && attribute.Values[0].Equals(annotation.AttributeValues(pta)[0]);
+                    });
             }
 
             return !declaration.Annotations.Where(pta => pta.Annotation is IAttributeAnnotation)
-                .Any(annotation => annotation.Attribute().Equals(attribute.Name));
+                .Any(pta => ((IAttributeAnnotation)pta.Annotation).Attribute(pta).Equals(attribute.Name));
         }
     }
 }

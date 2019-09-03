@@ -7,18 +7,18 @@ namespace Rubberduck.Parsing.Annotations
 {
     public sealed class AnnotationListener : VBAParserBaseListener
     {
-        private readonly List<ParseTreeAnnotation> _annotations;
+        private readonly List<IParseTreeAnnotation> _annotations;
         private readonly IAnnotationFactory _factory;
         private readonly QualifiedModuleName _qualifiedName;
 
         public AnnotationListener(IAnnotationFactory factory, QualifiedModuleName qualifiedName)
         {
-            _annotations = new List<ParseTreeAnnotation>();
+            _annotations = new List<IParseTreeAnnotation>();
             _factory = factory;
             _qualifiedName = qualifiedName;
         }
 
-        public IEnumerable<ParseTreeAnnotation> Annotations => _annotations;
+        public IEnumerable<IParseTreeAnnotation> Annotations => _annotations;
 
         public override void ExitAnnotation([NotNull] VBAParser.AnnotationContext context)
         {

@@ -803,8 +803,8 @@ End Sub"
         public void RenamePresenter_WarnsAboutControlEventHandlerRename_AbortsOnDeniedConfirmation()
         {
             var qmn = new QualifiedModuleName("TestProject", string.Empty, "TestComponent");
-            var testDeclaration = new FunctionDeclaration(new QualifiedMemberName(qmn, "Foo"), null, null, "Variant", null, string.Empty, Accessibility.Public, null, null, Selection.Home, false, true, Enumerable.Empty<ParseTreeAnnotation>(), null);
-            var originalTargetDeclaration = new FunctionDeclaration(new QualifiedMemberName(qmn, "Bar"), null, null, "Variant", null, string.Empty, Accessibility.Public, null, null, Selection.Home, false, true, Enumerable.Empty<ParseTreeAnnotation>(), null);
+            var testDeclaration = new FunctionDeclaration(new QualifiedMemberName(qmn, "Foo"), null, null, "Variant", null, string.Empty, Accessibility.Public, null, null, Selection.Home, false, true, Enumerable.Empty<IParseTreeAnnotation>(), null);
+            var originalTargetDeclaration = new FunctionDeclaration(new QualifiedMemberName(qmn, "Bar"), null, null, "Variant", null, string.Empty, Accessibility.Public, null, null, Selection.Home, false, true, Enumerable.Empty<IParseTreeAnnotation>(), null);
 
             var model = new RenameModel(originalTargetDeclaration)
             {
@@ -822,8 +822,8 @@ End Sub"
         public void RenamePresenter_WarnsAboutControlEventHandlerRename_ContinuesAfterConfirmation()
         {
             var qmn = new QualifiedModuleName("TestProject", string.Empty, "TestComponent");
-            var testDeclaration = new FunctionDeclaration(new QualifiedMemberName(qmn, "Foo"), null, null, "Variant", null, string.Empty, Accessibility.Public, null, null, Selection.Home, false, true, Enumerable.Empty<ParseTreeAnnotation>(), null);
-            var originalTargetDeclaration = new FunctionDeclaration(new QualifiedMemberName(qmn, "Bar"), null, null, "Variant", null, string.Empty, Accessibility.Public, null, null, Selection.Home, false, true, Enumerable.Empty<ParseTreeAnnotation>(), null);
+            var testDeclaration = new FunctionDeclaration(new QualifiedMemberName(qmn, "Foo"), null, null, "Variant", null, string.Empty, Accessibility.Public, null, null, Selection.Home, false, true, Enumerable.Empty<IParseTreeAnnotation>(), null);
+            var originalTargetDeclaration = new FunctionDeclaration(new QualifiedMemberName(qmn, "Bar"), null, null, "Variant", null, string.Empty, Accessibility.Public, null, null, Selection.Home, false, true, Enumerable.Empty<IParseTreeAnnotation>(), null);
 
             var model = new RenameModel(originalTargetDeclaration)
             {
@@ -1232,8 +1232,8 @@ End Function"
         public void RenamePresenter_WarnsAboutEventHandlerRename_AbortsOnDeniedConfirmation()
         {
             var qmn = new QualifiedModuleName("TestProject", string.Empty, "TestComponent");
-            var testDeclaration = new FunctionDeclaration(new QualifiedMemberName(qmn, "Foo"), null, null, "Variant", null, string.Empty, Accessibility.Public, null, null, Selection.Home, false, true, Enumerable.Empty<ParseTreeAnnotation>(), null);
-            var originalTargetDeclaration = new FunctionDeclaration(new QualifiedMemberName(qmn, "Bar"), null, null, "Variant", null, string.Empty, Accessibility.Public, null, null, Selection.Home, false, true, Enumerable.Empty<ParseTreeAnnotation>(), null);
+            var testDeclaration = new FunctionDeclaration(new QualifiedMemberName(qmn, "Foo"), null, null, "Variant", null, string.Empty, Accessibility.Public, null, null, Selection.Home, false, true, Enumerable.Empty<IParseTreeAnnotation>(), null);
+            var originalTargetDeclaration = new FunctionDeclaration(new QualifiedMemberName(qmn, "Bar"), null, null, "Variant", null, string.Empty, Accessibility.Public, null, null, Selection.Home, false, true, Enumerable.Empty<IParseTreeAnnotation>(), null);
 
             var model = new RenameModel(originalTargetDeclaration)
             {
@@ -1251,8 +1251,8 @@ End Function"
         public void RenamePresenter_WarnsAboutEventHandlerRename_ContinuesAfterConfirmation()
         {
             var qmn = new QualifiedModuleName("TestProject", string.Empty, "TestComponent");
-            var testDeclaration = new FunctionDeclaration(new QualifiedMemberName(qmn, "Foo"), null, null, "Variant", null, string.Empty, Accessibility.Public, null, null, Selection.Home, false, true, Enumerable.Empty<ParseTreeAnnotation>(), null);
-            var originalTargetDeclaration = new FunctionDeclaration(new QualifiedMemberName(qmn, "Bar"), null, null, "Variant", null, string.Empty, Accessibility.Public, null, null, Selection.Home, false, true, Enumerable.Empty<ParseTreeAnnotation>(), null);
+            var testDeclaration = new FunctionDeclaration(new QualifiedMemberName(qmn, "Foo"), null, null, "Variant", null, string.Empty, Accessibility.Public, null, null, Selection.Home, false, true, Enumerable.Empty<IParseTreeAnnotation>(), null);
+            var originalTargetDeclaration = new FunctionDeclaration(new QualifiedMemberName(qmn, "Bar"), null, null, "Variant", null, string.Empty, Accessibility.Public, null, null, Selection.Home, false, true, Enumerable.Empty<IParseTreeAnnotation>(), null);
 
             var model = new RenameModel(originalTargetDeclaration)
             {
@@ -1501,8 +1501,8 @@ End Sub"
         public void RenamePresenter_WarnsAboutInterfaceVariableImplementationRename_AbortsOnDeniedConfirmation()
         {
             var qmn = new QualifiedModuleName("TestProject", string.Empty, "TestComponent");
-            var testDeclaration = new FunctionDeclaration(new QualifiedMemberName(qmn,"Foo"), null, null, "Variant", null, string.Empty, Accessibility.Public, null, null, Selection.Home, false, true, Enumerable.Empty<ParseTreeAnnotation>(), null);
-            var originalTargetDeclaration = new FunctionDeclaration(new QualifiedMemberName(qmn, "Bar"), null, null, "Variant", null, string.Empty, Accessibility.Public, null, null, Selection.Home, false, true, Enumerable.Empty<ParseTreeAnnotation>(), null);
+            var testDeclaration = new FunctionDeclaration(new QualifiedMemberName(qmn,"Foo"), null, null, "Variant", null, string.Empty, Accessibility.Public, null, null, Selection.Home, false, true, Enumerable.Empty<IParseTreeAnnotation>(), null);
+            var originalTargetDeclaration = new FunctionDeclaration(new QualifiedMemberName(qmn, "Bar"), null, null, "Variant", null, string.Empty, Accessibility.Public, null, null, Selection.Home, false, true, Enumerable.Empty<IParseTreeAnnotation>(), null);
 
             var model = new RenameModel(originalTargetDeclaration)
             {
@@ -1520,8 +1520,8 @@ End Sub"
         public void RenamePresenter_WarnsAboutInterfaceVariableImplementationRename_ContinuesAfterConfirmation()
         {
             var qmn = new QualifiedModuleName("TestProject", string.Empty, "TestComponent");
-            var testDeclaration = new FunctionDeclaration(new QualifiedMemberName(qmn, "Foo"), null, null, "Variant", null, string.Empty, Accessibility.Public, null, null, Selection.Home, false, true, Enumerable.Empty<ParseTreeAnnotation>(), null);
-            var originalTargetDeclaration = new FunctionDeclaration(new QualifiedMemberName(qmn, "Bar"), null, null, "Variant", null, string.Empty, Accessibility.Public, null, null, Selection.Home, false, true, Enumerable.Empty<ParseTreeAnnotation>(), null);
+            var testDeclaration = new FunctionDeclaration(new QualifiedMemberName(qmn, "Foo"), null, null, "Variant", null, string.Empty, Accessibility.Public, null, null, Selection.Home, false, true, Enumerable.Empty<IParseTreeAnnotation>(), null);
+            var originalTargetDeclaration = new FunctionDeclaration(new QualifiedMemberName(qmn, "Bar"), null, null, "Variant", null, string.Empty, Accessibility.Public, null, null, Selection.Home, false, true, Enumerable.Empty<IParseTreeAnnotation>(), null);
 
             var model = new RenameModel(originalTargetDeclaration)
             {

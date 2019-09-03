@@ -119,7 +119,7 @@ namespace Rubberduck.Parsing.VBA.Parsing
             
         }
 
-        private (IEnumerable<CommentNode> Comments, IEnumerable<ParseTreeAnnotation> Annotations) CommentsAndAnnotations(QualifiedModuleName module, IParseTree tree)
+        private (IEnumerable<CommentNode> Comments, IEnumerable<IParseTreeAnnotation> Annotations) CommentsAndAnnotations(QualifiedModuleName module, IParseTree tree)
         {
             var commentListener = new CommentListener();
             var annotationListener = new AnnotationListener(_annotationFactory, module);

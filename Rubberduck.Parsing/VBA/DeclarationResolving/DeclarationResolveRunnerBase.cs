@@ -175,7 +175,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
         private ModuleDeclaration NewModuleDeclaration(
             QualifiedModuleName qualifiedModuleName,
             IParseTree tree,
-            IDictionary<int, List<ParseTreeAnnotation>> annotationsOnWhiteSpaceLines,
+            IDictionary<int, List<IParseTreeAnnotation>> annotationsOnWhiteSpaceLines,
             IDictionary<(string scopeIdentifier, DeclarationType scopeType),Attributes> attributes,
             Declaration projectDeclaration)
         {
@@ -231,7 +231,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
             return moduleAttributes;
         }
 
-        private static IEnumerable<ParseTreeAnnotation> FindModuleAnnotations(IParseTree tree, IDictionary<int, List<ParseTreeAnnotation>> annotationsOnWhiteSpaceLines)
+        private static IEnumerable<IParseTreeAnnotation> FindModuleAnnotations(IParseTree tree, IDictionary<int, List<IParseTreeAnnotation>> annotationsOnWhiteSpaceLines)
         {
             if (annotationsOnWhiteSpaceLines == null)
             {

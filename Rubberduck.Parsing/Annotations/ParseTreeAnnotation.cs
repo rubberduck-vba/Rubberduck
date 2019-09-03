@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Parsing.Annotations
 {
-    public class ParseTreeAnnotation
+    public class ParseTreeAnnotation : IParseTreeAnnotation
     {
         public const string ANNOTATION_MARKER = "@";
 
@@ -23,36 +23,20 @@ namespace Rubberduck.Parsing.Annotations
             AnnotationArguments = AnnotationParametersFromContext(Context);
         }
 
-        // FIXME annotation constructor for unit-testing purposes alone!
-        internal ParseTreeAnnotation(IAnnotation annotation, QualifiedSelection qualifiedSelection, IEnumerable<string> arguments)
-        {
-            Annotation = annotation;
-            QualifiedSelection = qualifiedSelection;
-            _annotatedLine = new Lazy<int?>(() => null);
-            Context = null;
-            AnnotationArguments = arguments.ToList();
-        }
-
-        // needs to be accessible to IllegalAnnotationInspection
         public QualifiedSelection QualifiedSelection { get; }
         public VBAParser.AnnotationContext Context { get; }
         public int? AnnotatedLine => _annotatedLine.Value;
 
-        // needs to be accessible to all external consumers
         public IAnnotation Annotation { get; }
         public IReadOnlyList<string> AnnotationArguments { get; }
 
-        private static List<string> AnnotationParametersFromContext(VBAParser.AnnotationContext context)
+        private List<string> AnnotationParametersFromContext(VBAParser.AnnotationContext context)
         {
             var parameters = new List<string>();
             var argList = context?.annotationArgList();
             if (argList != null)
             {
-                // CAUTION! THIS MUST NOT ADJUST THE QUOTING BEHAVIOUR!
-                // the reason for that is the different quoting requirements for attributes.
-                // some attributes require quoted values, some require unquoted values.
-                // we currently don't have a mechanism to specify which needs which
-                parameters.AddRange(argList.annotationArg().Select(arg => arg.GetText()));
+                parameters.AddRange(Annotation.ProcessAnnotationArguments(argList.annotationArg().Select(arg => arg.GetText())));
             }
             return parameters;
         }

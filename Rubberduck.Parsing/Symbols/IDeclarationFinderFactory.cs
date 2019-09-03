@@ -10,7 +10,7 @@ namespace Rubberduck.Parsing.Symbols
     {
         DeclarationFinder Create(
             IReadOnlyList<Declaration> declarations, 
-            IEnumerable<ParseTreeAnnotation> annotations, 
+            IEnumerable<IParseTreeAnnotation> annotations, 
             IReadOnlyList<UnboundMemberDeclaration> unresolvedMemberDeclarations, 
             IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> unboundDefaultMemberAccesses, 
             IHostApplication hostApp);

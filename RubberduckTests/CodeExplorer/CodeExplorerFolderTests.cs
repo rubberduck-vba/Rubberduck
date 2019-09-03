@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Moq;
+using NUnit.Framework;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
@@ -106,16 +107,21 @@ End Sub";
                 var folder = (CodeExplorerCustomFolderViewModel)explorer.ViewModel.SelectedItem;
                 var declarations = project.State.AllUserDeclarations.ToList();
 
-                var annotation = new ParseTreeAnnotation(new FolderAnnotation(), new QualifiedSelection(project.Declaration.QualifiedModuleName, new Selection(1, 1)), new[] { "\"First\"" });
+                var mockedAnnotation = new Mock<IParseTreeAnnotation>();
+                mockedAnnotation.Setup(m => m.Annotation).Returns(new FolderAnnotation());
+                mockedAnnotation.Setup(m => m.QualifiedSelection).Returns(new QualifiedSelection(project.Declaration.QualifiedModuleName, new Selection(1, 1)));
+                // returns unquoted argument because the FolderAnnotation's argument processing is never invoked in the mock
+                mockedAnnotation.Setup(m => m.AnnotationArguments).Returns(new[] { "First" }.ToList());
+                var annotation = mockedAnnotation.Object;
                 var predeclared = new ParseTreeAnnotation(new PredeclaredIdAnnotation(), new QualifiedSelection(project.Declaration.QualifiedModuleName, new Selection(2, 1)), (VBAParser.AnnotationContext)null);
 
-                declarations.Add(GetNewClassDeclaration(project.Declaration, "Foo", new ParseTreeAnnotation[] { annotation, predeclared }));
+                declarations.Add(GetNewClassDeclaration(project.Declaration, "Foo", new IParseTreeAnnotation[] { annotation, predeclared }));
 
                 project.Synchronize(ref declarations);
                 var added = folder.Children.OfType<CodeExplorerComponentViewModel>().Single();
 
                 Assert.AreEqual(DeclarationType.ClassModule, added.Declaration.DeclarationType);
-                Assert.AreEqual("\"First\"", added.Declaration.CustomFolder);
+                Assert.AreEqual("First", added.Declaration.CustomFolder);
             }
         }
 
@@ -138,10 +144,15 @@ End Sub";
                 var folder = (CodeExplorerCustomFolderViewModel)explorer.ViewModel.SelectedItem;
                 var declarations = project.State.AllUserDeclarations.ToList();
 
-                var annotation = new ParseTreeAnnotation(new FolderAnnotation(), new QualifiedSelection(project.Declaration.QualifiedModuleName, new Selection(2, 1)), new[] { "First" });
+                var mockedAnnotation = new Mock<IParseTreeAnnotation>();
+                mockedAnnotation.Setup(m => m.Annotation).Returns(new FolderAnnotation());
+                mockedAnnotation.Setup(m => m.QualifiedSelection).Returns(new QualifiedSelection(project.Declaration.QualifiedModuleName, new Selection(2, 1)));
+                // returns unquoted argument because the FolderAnnotation's argument processing is never invoked in the mock
+                mockedAnnotation.Setup(m => m.AnnotationArguments).Returns(new[] { "First" }.ToList());
+                var annotation = mockedAnnotation.Object;
                 var predeclared = new ParseTreeAnnotation(new PredeclaredIdAnnotation(), new QualifiedSelection(project.Declaration.QualifiedModuleName, new Selection(1, 1)), (VBAParser.AnnotationContext)null);
 
-                declarations.Add(GetNewClassDeclaration(project.Declaration, "Foo", new ParseTreeAnnotation[] { predeclared, annotation }));
+                declarations.Add(GetNewClassDeclaration(project.Declaration, "Foo", new IParseTreeAnnotation[] { predeclared, annotation }));
 
                 project.Synchronize(ref declarations);
                 var added = folder.Children.OfType<CodeExplorerComponentViewModel>().Single();
@@ -356,14 +367,19 @@ End Sub";
 
         private static Declaration GetNewClassDeclaration(Declaration project, string name, string folder = "")
         {
+            var mockedFolderAnnotation = new Mock<IParseTreeAnnotation>();
+            mockedFolderAnnotation.Setup(m => m.Annotation).Returns(new FolderAnnotation());
+            mockedFolderAnnotation.Setup(m => m.AnnotationArguments).Returns(new[] { folder }.ToList());
+            mockedFolderAnnotation.Setup(m => m.QualifiedSelection).Returns(new QualifiedSelection(project.QualifiedModuleName, new Selection(1, 1)));
+
             var annotations = string.IsNullOrEmpty(folder)
-                ? Enumerable.Empty<ParseTreeAnnotation>()
-                : new[] { new ParseTreeAnnotation(new FolderAnnotation(), new QualifiedSelection(project.QualifiedModuleName, new Selection(1, 1)), new[] { folder }) };
+                ? Enumerable.Empty<IParseTreeAnnotation>()
+                : new[] { mockedFolderAnnotation.Object };
 
             return GetNewClassDeclaration(project, name, annotations);
         }
 
-        private static Declaration GetNewClassDeclaration(Declaration project, string name, IEnumerable<ParseTreeAnnotation> annotations)
+        private static Declaration GetNewClassDeclaration(Declaration project, string name, IEnumerable<IParseTreeAnnotation> annotations)
         {
             var declaration =
                 new ClassModuleDeclaration(new QualifiedMemberName(project.QualifiedModuleName, name), project, name, true, annotations, new Attributes());

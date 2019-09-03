@@ -40,7 +40,7 @@ namespace Rubberduck.UnitTesting
             return new NavigateCodeEventArgs(new QualifiedSelection(Declaration.QualifiedName.QualifiedModuleName, Declaration.Context.GetSelection()));
         }
 
-        public bool IsIgnored => Declaration.Annotations.OfType<IgnoreTestAnnotation>().Any();
+        public bool IsIgnored => Declaration.Annotations.Any(a => a.Annotation is IgnoreTestAnnotation);
         
         public bool Equals(TestMethod other) => other != null && Declaration.QualifiedName.Equals(other.Declaration.QualifiedName) && TestCode.Equals(other.TestCode);
 

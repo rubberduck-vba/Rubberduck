@@ -55,10 +55,11 @@ namespace Rubberduck.Inspections.Concrete
             {
                 foreach (var annotationInstance in declaration.Annotations.Where(pta => pta.Annotation is IAttributeAnnotation))
                 {
-                    var annotation = annotationInstance.Annotation;
+                    // cast is safe given the predicate in the foreach
+                    var annotation = (IAttributeAnnotation)annotationInstance.Annotation;
                     if (HasDifferingAttributeValues(declaration, annotationInstance, out var attributeValues))
                     {
-                        var attributeName = annotationInstance.Attribute();
+                        var attributeName = annotation.Attribute(annotationInstance);
 
                         var description = string.Format(InspectionResults.AttributeValueOutOfSyncInspection, 
                             attributeName, 
@@ -79,9 +80,14 @@ namespace Rubberduck.Inspections.Concrete
             return results;
         }
 
-        private static bool HasDifferingAttributeValues(Declaration declaration, ParseTreeAnnotation annotationInstance, out IReadOnlyList<string> attributeValues)
+        private static bool HasDifferingAttributeValues(Declaration declaration, IParseTreeAnnotation annotationInstance, out IReadOnlyList<string> attributeValues)
         {
-            var attribute = annotationInstance.Attribute();
+            if (!(annotationInstance.Annotation is IAttributeAnnotation annotation))
+            {
+                attributeValues = new List<string>();
+                return false;
+            }
+            var attribute = annotation.Attribute(annotationInstance);
             var attributeNodes = declaration.DeclarationType.HasFlag(DeclarationType.Module)
                                     ? declaration.Attributes.AttributeNodesFor(annotationInstance)
                                     : declaration.Attributes.AttributeNodesFor(annotationInstance, declaration.IdentifierName);
@@ -89,7 +95,7 @@ namespace Rubberduck.Inspections.Concrete
             foreach (var attributeNode in attributeNodes)
             {
                 var values = attributeNode.Values;
-                if (!annotationInstance.AttributeValues().SequenceEqual(values))
+                if (!annotation.AttributeValues(annotationInstance).SequenceEqual(values))
                 {
                     attributeValues = values;
                     return true;

@@ -143,7 +143,7 @@ End Sub";
                 vbaDeclaration,
                 "Conversion",
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var fileSystemModule = new ProceduralModuleDeclaration(
@@ -151,7 +151,7 @@ End Sub";
                 vbaDeclaration,
                 "FileSystem",
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var interactionModule = new ProceduralModuleDeclaration(
@@ -159,7 +159,7 @@ End Sub";
                 vbaDeclaration,
                 "Interaction",
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var stringsModule = new ProceduralModuleDeclaration(
@@ -167,7 +167,7 @@ End Sub";
                 vbaDeclaration,
                 "Strings",
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var dateTimeModule = new ProceduralModuleDeclaration(
@@ -175,7 +175,7 @@ End Sub";
                 vbaDeclaration,
                 "Strings",
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var hiddenModule = new ProceduralModuleDeclaration(
@@ -183,7 +183,7 @@ End Sub";
                 vbaDeclaration,
                 "_HiddenModule",
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
 
@@ -200,7 +200,7 @@ End Sub";
                 Selection.Home,
                 false,
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var environFunction = new FunctionDeclaration(
@@ -216,7 +216,7 @@ End Sub";
                 Selection.Home,
                 false,
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var rtrimFunction = new FunctionDeclaration(
@@ -232,7 +232,7 @@ End Sub";
                 Selection.Home,
                 false,
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var chrFunction = new FunctionDeclaration(
@@ -248,7 +248,7 @@ End Sub";
                 Selection.Home,
                 false,
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var formatFunction = new FunctionDeclaration(
@@ -264,7 +264,7 @@ End Sub";
                 Selection.Home,
                 false,
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var firstFormatParam = new ParameterDeclaration(
@@ -311,7 +311,7 @@ End Sub";
                 Selection.Home,
                 false,
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var firstRightParam = new ParameterDeclaration(
@@ -338,7 +338,7 @@ End Sub";
                 Selection.Home,
                 false,
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var leftbFunction = new FunctionDeclaration(
@@ -354,7 +354,7 @@ End Sub";
                 Selection.Home,
                 false,
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var firstLeftBParam = new ParameterDeclaration(
@@ -381,7 +381,7 @@ End Sub";
                 Selection.Home,
                 false,
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var leftFunction = new FunctionDeclaration(
@@ -397,7 +397,7 @@ End Sub";
                 Selection.Home,
                 false,
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var firstLeftParam = new ParameterDeclaration(
@@ -424,7 +424,7 @@ End Sub";
                 Selection.Home,
                 false,
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var firstRightBParam = new ParameterDeclaration(
@@ -451,7 +451,7 @@ End Sub";
                 Selection.Home,
                 false,
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var firstMidBParam = new ParameterDeclaration(
@@ -488,7 +488,7 @@ End Sub";
                 Selection.Home,
                 false,
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var trimFunction = new FunctionDeclaration(
@@ -504,7 +504,7 @@ End Sub";
                 Selection.Home,
                 false,
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var ltrimFunction = new FunctionDeclaration(
@@ -520,7 +520,7 @@ End Sub";
                 Selection.Home,
                 false,
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var midFunction = new FunctionDeclaration(
@@ -536,7 +536,7 @@ End Sub";
                 Selection.Home,
                 false,
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var firstMidParam = new ParameterDeclaration(
@@ -573,7 +573,7 @@ End Sub";
                 Selection.Home,
                 false,
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var octFunction = new FunctionDeclaration(
@@ -589,7 +589,7 @@ End Sub";
                 Selection.Home,
                 false,
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var errorFunction = new FunctionDeclaration(
@@ -605,7 +605,7 @@ End Sub";
                 Selection.Home,
                 false,
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var strFunction = new FunctionDeclaration(
@@ -621,7 +621,7 @@ End Sub";
                 Selection.Home,
                 false,
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var curDirFunction = new FunctionDeclaration(
@@ -637,7 +637,7 @@ End Sub";
                 Selection.Home,
                 false,
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var datePropertyGet = new PropertyGetDeclaration(
@@ -653,7 +653,7 @@ End Sub";
                 new Selection(),
                 false,
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
 
@@ -670,7 +670,7 @@ End Sub";
                 new Selection(),
                 false,
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var inputbFunction = new FunctionDeclaration(
@@ -686,7 +686,7 @@ End Sub";
                 Selection.Home,
                 false,
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var firstInputBParam = new ParameterDeclaration(
@@ -723,7 +723,7 @@ End Sub";
                 Selection.Home,
                 false,
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 
             var firstInputParam = new ParameterDeclaration(

@@ -37,7 +37,7 @@ namespace Rubberduck.Parsing.Symbols
             bool isArray,
             VBAParser.AsTypeClauseContext asTypeContext,
             bool isUserDefined = true,
-            IEnumerable<ParseTreeAnnotation> annotations = null,
+            IEnumerable<IParseTreeAnnotation> annotations = null,
             Attributes attributes = null,
             bool undeclared = false)
             : this(
@@ -76,7 +76,7 @@ namespace Rubberduck.Parsing.Symbols
             bool isArray,
             VBAParser.AsTypeClauseContext asTypeContext,
             bool isUserDefined = true,
-            IEnumerable<ParseTreeAnnotation> annotations = null,
+            IEnumerable<IParseTreeAnnotation> annotations = null,
             Attributes attributes = null)
             : this(
                   qualifiedName,
@@ -114,7 +114,7 @@ namespace Rubberduck.Parsing.Symbols
             bool isArray,
             VBAParser.AsTypeClauseContext asTypeContext,
             bool isUserDefined = true,
-            IEnumerable<ParseTreeAnnotation> annotations = null,
+            IEnumerable<IParseTreeAnnotation> annotations = null,
             Attributes attributes = null)
         {
             QualifiedName = qualifiedName;            
@@ -275,8 +275,8 @@ namespace Rubberduck.Parsing.Symbols
         private ConcurrentDictionary<IdentifierReference, int> _references = new ConcurrentDictionary<IdentifierReference, int>();
         public IEnumerable<IdentifierReference> References => _references.Keys;
 
-        protected IEnumerable<ParseTreeAnnotation> _annotations;
-        public IEnumerable<ParseTreeAnnotation> Annotations => _annotations ?? new List<ParseTreeAnnotation>();
+        protected IEnumerable<IParseTreeAnnotation> _annotations;
+        public IEnumerable<IParseTreeAnnotation> Annotations => _annotations ?? new List<IParseTreeAnnotation>();
 
         private readonly Attributes _attributes;
         public Attributes Attributes => _attributes;
@@ -359,7 +359,7 @@ namespace Rubberduck.Parsing.Symbols
             string identifier,
             Declaration callee,
             Selection selection,
-            IEnumerable<ParseTreeAnnotation> annotations,
+            IEnumerable<IParseTreeAnnotation> annotations,
             bool isAssignmentTarget = false,
             bool hasExplicitLetStatement = false,
             bool isSetAssigned = false,

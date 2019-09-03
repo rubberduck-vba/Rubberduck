@@ -218,10 +218,12 @@ End Sub";
 
             var inspectionResults = InspectionResults(inputCode);
             var inspectionResult = inspectionResults.First();
-            
-            Assert.IsInstanceOf<MemberAttributeAnnotation>(inspectionResult.Properties.Annotation.Annotation);
+
+            var pta = (IParseTreeAnnotation)inspectionResult.Properties.Annotation;
+
+            Assert.IsInstanceOf<MemberAttributeAnnotation>(pta.Annotation);
             Assert.AreEqual("VB_UserMemId", inspectionResult.Properties.AttributeName);
-            Assert.AreEqual("-4", ((ParseTreeAnnotation)inspectionResult.Properties.Annotation).AttributeValues()[0]);
+            Assert.AreEqual("-4", ((IAttributeAnnotation)pta.Annotation).AttributeValues(pta)[0]);
             Assert.AreEqual("40", inspectionResult.Properties.AttributeValues[0]);
         }
 

@@ -54,7 +54,7 @@ namespace Rubberduck.Inspections.Concrete
                     var result = new DeclarationInspectionResult(
                         this, string.Format(InspectionResults.DuplicatedAnnotationInspection, duplicate.Key.ToString()), declaration);
 
-                    result.Properties.AnnotationType = duplicate.Key;
+                    result.Properties.Annotation = duplicate.Key;
                     return result;
                 }));
             }

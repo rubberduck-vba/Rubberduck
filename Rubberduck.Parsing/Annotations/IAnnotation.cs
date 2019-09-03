@@ -1,6 +1,7 @@
 ﻿using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 using System;
+using System.Collections.Generic;
 
 namespace Rubberduck.Parsing.Annotations
 {
@@ -9,6 +10,8 @@ namespace Rubberduck.Parsing.Annotations
         string Name { get; }
         AnnotationTarget Target { get; }
         bool AllowMultiple { get; }
+
+        IReadOnlyList<string> ProcessAnnotationArguments(IEnumerable<string> arguments);
     }
 
     [Flags]

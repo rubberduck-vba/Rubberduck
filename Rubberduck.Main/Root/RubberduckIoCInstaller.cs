@@ -928,10 +928,7 @@ namespace Rubberduck.Root
             container.Register(Component.For<IModuleParser>()
                 .ImplementedBy<ModuleParser>()
                 .DependsOn(Dependency.OnComponent("codePaneSourceCodeProvider", "CodeModuleSourceCodeHandler"),
-                    Dependency.OnComponent("attributesSourceCodeProvider", "SourceFileSourceCodeHandler")
-                    // TODO not sure whether this explicit registration is necessary
-                    //,Dependency.OnComponent(typeof(IAnnotationFactory), typeof(VBAParserAnnotationFactory))
-                    )
+                    Dependency.OnComponent("attributesSourceCodeProvider", "SourceFileSourceCodeHandler"))
                 .LifestyleSingleton());
             container.Register(Component.For<ITypeLibWrapperProvider>()
                 .ImplementedBy<TypeLibWrapperProvider>()
@@ -952,20 +949,14 @@ namespace Rubberduck.Root
 
         private void RegisterAnnotationProcessing(IWindsorContainer container)
         {
-            var annotations = new List<Type>();
             foreach (Assembly referenced in AssembliesToRegister())
             {
-                annotations.AddRange(referenced.ExportedTypes
-                    .Where(candidate => candidate.IsBasedOn(typeof(IAnnotation)) && !candidate.IsAbstract));
+                container.Register(Classes.FromAssembly(referenced)
+                    .IncludeNonPublicTypes()
+                    .BasedOn<IAnnotation>()
+                    .WithServiceAllInterfaces()
+                    .LifestyleSingleton());
             }
-            container.Register(Component.For<IAnnotationFactory>()
-                .ImplementedBy<VBAParserAnnotationFactory>()
-                .DependsOn(Dependency.OnValue<IEnumerable<Type>>(annotations))
-                .LifestyleSingleton());
-            container.Register(Component.For<IAttributeAnnotationProvider>()
-                .ImplementedBy<AttributeAnnotationProvider>()
-                .DependsOn(Dependency.OnValue<IEnumerable<Type>>(annotations.Where(annotation => annotation.IsBasedOn(typeof(IAttributeAnnotation)))))
-                .LifestyleSingleton());
         }
 
         private void RegisterTypeLibApi(IWindsorContainer container)

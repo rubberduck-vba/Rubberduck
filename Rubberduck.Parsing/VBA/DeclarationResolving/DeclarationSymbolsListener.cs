@@ -18,7 +18,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
         private Declaration _currentScopeDeclaration;
         private Declaration _parentDeclaration;
 
-        private readonly IDictionary<int, List<ParseTreeAnnotation>> _annotations;
+        private readonly IDictionary<int, List<IParseTreeAnnotation>> _annotations;
         private readonly IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> _attributes;
         private readonly IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> _membersAllowingAttributes;
 
@@ -27,7 +27,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
 
         public DeclarationSymbolsListener(
             Declaration moduleDeclaration,
-            IDictionary<int, List<ParseTreeAnnotation>> annotations,
+            IDictionary<int, List<IParseTreeAnnotation>> annotations,
             IDictionary<(string scopeIdentifier, DeclarationType scopeType),
             Attributes> attributes,
             IDictionary<(string scopeIdentifier, DeclarationType scopeType),
@@ -42,12 +42,12 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
             SetCurrentScope();
         }
 
-        private IEnumerable<ParseTreeAnnotation> FindMemberAnnotations(int firstMemberLine)
+        private IEnumerable<IParseTreeAnnotation> FindMemberAnnotations(int firstMemberLine)
         {
             return FindAnnotations(firstMemberLine, AnnotationTarget.Member);
         }
 
-        private IEnumerable<ParseTreeAnnotation> FindAnnotations(int firstLine, AnnotationTarget requiredTarget)
+        private IEnumerable<IParseTreeAnnotation> FindAnnotations(int firstLine, AnnotationTarget requiredTarget)
         {
             if (_annotations == null)
             {
@@ -59,15 +59,15 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                 return scopedAnnotations.Where(annotation => annotation.Annotation.Target.HasFlag(requiredTarget));
             }
 
-            return Enumerable.Empty<ParseTreeAnnotation>();
+            return Enumerable.Empty<IParseTreeAnnotation>();
         }
 
-        private IEnumerable<ParseTreeAnnotation> FindVariableAnnotations(int firstVariableLine)
+        private IEnumerable<IParseTreeAnnotation> FindVariableAnnotations(int firstVariableLine)
         {
             return FindAnnotations(firstVariableLine, AnnotationTarget.Variable);
         }
 
-        private IEnumerable<ParseTreeAnnotation> FindGeneralAnnotations(int firstLine)
+        private IEnumerable<IParseTreeAnnotation> FindGeneralAnnotations(int firstLine)
         {
             return FindAnnotations(firstLine, AnnotationTarget.General);
         }

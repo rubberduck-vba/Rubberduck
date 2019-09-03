@@ -457,7 +457,7 @@ namespace RubberduckTests.CodeExplorer
                   project,
                   PredeclaredClassName,
                   true,
-                  Enumerable.Empty<ParseTreeAnnotation>(),
+                  Enumerable.Empty<IParseTreeAnnotation>(),
                   attributes);
         }
     }

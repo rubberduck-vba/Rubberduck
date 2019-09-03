@@ -24,7 +24,7 @@ namespace Rubberduck.Parsing.Symbols
                   Declaration projectDeclaration,
                   string name,
                   bool isUserDefined,
-                  IEnumerable<ParseTreeAnnotation> annotations,
+                  IEnumerable<IParseTreeAnnotation> annotations,
                   Attributes attributes,
                   bool isWithEvents = false,
                   bool hasDefaultInstanceVariable = false,
@@ -62,7 +62,7 @@ namespace Rubberduck.Parsing.Symbols
                     parent,
                     coClass.Name,
                     false,
-                    new List<ParseTreeAnnotation>(),
+                    new List<IParseTreeAnnotation>(),
                     attributes,
                     coClass.EventInterfaces.Any(),
                     coClass.IsAppObject,
@@ -86,7 +86,7 @@ namespace Rubberduck.Parsing.Symbols
                 parent,
                 @interface.Name,
                 false,
-                new List<ParseTreeAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 attributes)
         { }
 

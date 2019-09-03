@@ -14,7 +14,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         
         public ConcurrentlyConstructedDeclarationFinder(
             IReadOnlyList<Declaration> declarations, 
-            IEnumerable<ParseTreeAnnotation> annotations, 
+            IEnumerable<IParseTreeAnnotation> annotations, 
             IReadOnlyList<UnboundMemberDeclaration> unresolvedMemberDeclarations,
             IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> unboundDefaultMemberAccesses, 
             IHostApplication hostApp = null) 

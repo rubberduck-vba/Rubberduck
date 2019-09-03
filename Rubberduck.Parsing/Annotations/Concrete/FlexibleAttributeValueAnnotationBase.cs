@@ -9,20 +9,19 @@ namespace Rubberduck.Parsing.Annotations
 {
     public abstract class FlexibleAttributeValueAnnotationBase : AnnotationBase, IAttributeAnnotation
     {
-        public string Attribute { get; }
-
+        private readonly string _attribute;
         private readonly int _numberOfValues;
 
         protected FlexibleAttributeValueAnnotationBase(string name, AnnotationTarget target, string attribute, int numberOfValues)
             : base(name, target)
         {
-            Attribute = attribute;
+            _attribute = attribute;
             _numberOfValues = numberOfValues;
         }
 
         public bool MatchesAttributeDefinition(string attributeName, IReadOnlyList<string> attributeValues)
         {
-            return Attribute == attributeName && _numberOfValues == attributeValues.Count;
+            return _attribute == attributeName && _numberOfValues == attributeValues.Count;
         }
 
         public virtual IReadOnlyList<string> AnnotationToAttributeValues(IReadOnlyList<string> annotationValues)
@@ -35,9 +34,9 @@ namespace Rubberduck.Parsing.Annotations
             return attributeValues.Take(_numberOfValues).Select(v => v.EnQuote()).ToList();
         }
 
-        string IAttributeAnnotation.Attribute(IReadOnlyList<string> annotationValues)
+        public string Attribute(IReadOnlyList<string> annotationValues)
         {
-            return Attribute;
+            return _attribute;
         }
     }
 }

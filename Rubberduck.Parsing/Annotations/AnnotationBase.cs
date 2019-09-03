@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
@@ -16,6 +17,11 @@ namespace Rubberduck.Parsing.Annotations
             Name = name;
             Target = target;
             AllowMultiple = allowMultiple;
+        }
+
+        public virtual IReadOnlyList<string> ProcessAnnotationArguments(IEnumerable<string> arguments)
+        {
+            return arguments.ToList();
         }
     }
 }

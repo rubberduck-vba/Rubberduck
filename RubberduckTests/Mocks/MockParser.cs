@@ -76,7 +76,7 @@ namespace RubberduckTests.Mocks
             var mainTokenStreamParser = new VBATokenStreamParser(mainParseErrorListenerFactory, mainParseErrorListenerFactory);
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
             var stringParser = new TokenStreamParserStringParserAdapterWithPreprocessing(tokenStreamProvider, mainTokenStreamParser, preprocessor);
-            var vbaParserAnnotationFactory = new VBAParserAnnotationFactory(GetWellKnownAnnotations());
+            var vbaParserAnnotationFactory = new VBAParserAnnotationFactory(WellKnownAnnotations());
             var projectManager = new RepositoryProjectManager(projectRepository);
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager();
             var supertypeClearer = new SynchronousSupertypeClearer(state); 
@@ -162,7 +162,7 @@ namespace RubberduckTests.Mocks
             return (parser, rewritingManager);
         }
 
-        public static IEnumerable<IAnnotation> GetWellKnownAnnotations()
+        public static IEnumerable<IAnnotation> WellKnownAnnotations()
         {
             return Assembly.GetAssembly(typeof(IAnnotation))
                 .GetTypes()

@@ -81,7 +81,7 @@ namespace RubberduckTests.Annotations
 
         private AttributeAnnotationProvider GetAnnotationProvider()
         {
-            return new AttributeAnnotationProvider(MockParser.GetWellKnownAnnotations().OfType<IAttributeAnnotation>());
+            return new AttributeAnnotationProvider(MockParser.WellKnownAnnotations().OfType<IAttributeAnnotation>());
         }
 
         private static void AssertEqual(IReadOnlyList<string> expectedList, IReadOnlyList<string> actualList)
