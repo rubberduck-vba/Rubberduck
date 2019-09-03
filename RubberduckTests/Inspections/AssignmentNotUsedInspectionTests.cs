@@ -261,6 +261,25 @@ End Sub";
         }
 
         [Test]
+        public void MarksUnusedAssignmentInDoLoopBody()
+        {
+            const string code = @"
+Public Sub IssueInDoLoop()
+
+    Dim Idx As Long
+    Idx = 1
+    Do
+        Dim SomeBreakCondition As Boolean
+        SomeBreakCondition = True '<~ should not trip inspection...
+        Idx = Idx + 1 '<~ not used
+    Loop Until SomeBreakCondition '<~ ...because of this use
+    
+End Sub";
+            var results = GetInspectionResults(code);
+            Assert.AreEqual(1, results.Count());
+        }
+
+        [Test]
         public void DoesNotMarkResults_InIgnoredModule()
         {
             const string code = @"'@IgnoreModule 
@@ -342,7 +361,7 @@ Else
 End If
 End Sub";
             var results = GetInspectionResults(code);
-            Assert.AreEqual(2, results.Count());
+            Assert.AreEqual(1, results.Count());
         }
 
         [Test]
