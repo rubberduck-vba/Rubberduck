@@ -15,73 +15,73 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
+	/// <summary>
+	/// Locates arguments passed to functions or procedures for object parameters which the do not have a compatible declared type. 
+	/// </summary>
+	/// <why>
+	/// The VBA compiler does not check whether different object types are compatible. Instead there is a runtime error whenever the types are incompatible.
+	/// </why>
+	/// <example hasResult="true">
+	/// <![CDATA[
+	/// IInterface:
+	///
+	/// Public Sub DoSomething()
+	/// End Sub
+	///
+	/// ------------------------------
+	/// Class1:
+	///
+	///'No Implements IInterface
+	/// 
+	/// Public Sub DoSomething()
+	/// End Sub
+	///
+	/// ------------------------------
+	/// Module1:
+	/// 
+	/// Public Sub DoIt()
+	///     Dim cls As Class1
+	///     Set cls = New Class1
+	///     Foo cls 
+	/// End Sub
+	///
+	/// Public Sub Foo(cls As IInterface)
+	/// End Sub
+	/// ]]>
+	/// </example>
+	/// <example hasResult="false">
+	/// <![CDATA[
+	/// IInterface:
+	///
+	/// Public Sub DoSomething()
+	/// End Sub
+	///
+	/// ------------------------------
+	/// Class1:
+	///
+	/// Implements IInterface
+	/// 
+	/// Private Sub IInterface_DoSomething()
+	/// End Sub
+	///
+	/// ------------------------------
+	/// Module1:
+	/// 
+	/// Public Sub DoIt()
+	///     Dim cls As Class1
+	///     Set cls = New Class1
+	///     Foo cls 
+	/// End Sub
+	///
+	/// Public Sub Foo(cls As IInterface)
+	/// End Sub
+	/// ]]>
+	/// </example>
     public class ArgumentWithIncompatibleObjectTypeInspection : InspectionBase
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly ISetTypeResolver _setTypeResolver;
 
-        /// <summary>
-        /// Locates arguments passed to functions or procedures for object parameters which the do not have a compatible declared type. 
-        /// </summary>
-        /// <why>
-        /// The VBA compiler does not check whether different object types are compatible. Instead there is a runtime error whenever the types are incompatible.
-        /// </why>
-        /// <example hasResult="true">
-        /// <![CDATA[
-        /// IInterface:
-        ///
-        /// Public Sub DoSomething()
-        /// End Sub
-        ///
-        /// ------------------------------
-        /// Class1:
-        ///
-        ///'No Implements IInterface
-        /// 
-        /// Public Sub DoSomething()
-        /// End Sub
-        ///
-        /// ------------------------------
-        /// Module1:
-        /// 
-        /// Public Sub DoIt()
-        ///     Dim cls As Class1
-        ///     Set cls = New Class1
-        ///     Foo cls 
-        /// End Sub
-        ///
-        /// Public Sub Foo(cls As IInterface)
-        /// End Sub
-        /// ]]>
-        /// </example>
-        /// <example hasResult="false">
-        /// <![CDATA[
-        /// IInterface:
-        ///
-        /// Public Sub DoSomething()
-        /// End Sub
-        ///
-        /// ------------------------------
-        /// Class1:
-        ///
-        /// Implements IInterface
-        /// 
-        /// Private Sub IInterface_DoSomething()
-        /// End Sub
-        ///
-        /// ------------------------------
-        /// Module1:
-        /// 
-        /// Public Sub DoIt()
-        ///     Dim cls As Class1
-        ///     Set cls = New Class1
-        ///     Foo cls 
-        /// End Sub
-        ///
-        /// Public Sub Foo(cls As IInterface)
-        /// End Sub
-        /// ]]>
-        /// </example>
         public ArgumentWithIncompatibleObjectTypeInspection(RubberduckParserState state, ISetTypeResolver setTypeResolver)
             : base(state)
         {
