@@ -9,7 +9,6 @@ namespace Rubberduck.Parsing.Binding
     public sealed class ArgumentListArgument
     {
         private readonly IExpressionBinding _binding;
-        private readonly ParserRuleContext _context;
         private readonly Func<Declaration, IBoundExpression> _namedArgumentExpressionCreator;
         private readonly bool _isAddressOfArgument;
 
@@ -21,38 +20,45 @@ namespace Rubberduck.Parsing.Binding
         public ArgumentListArgument(IExpressionBinding binding, ParserRuleContext context, ArgumentListArgumentType argumentType, Func<Declaration, IBoundExpression> namedArgumentExpressionCreator, bool isAddressOfArgument = false)
         {
             _binding = binding;
-            _context = context;
+            Context = context;
             ArgumentType = argumentType;
             _namedArgumentExpressionCreator = namedArgumentExpressionCreator;
             _isAddressOfArgument = isAddressOfArgument;
+            ReferencedParameter = null;
         }
 
         public ArgumentListArgumentType ArgumentType { get; }
         public IBoundExpression NamedArgumentExpression { get; private set; }
         public IBoundExpression Expression { get; private set; }
+        public ParameterDeclaration ReferencedParameter { get; private set; }
+        public ParserRuleContext Context { get; }
 
-        public void Resolve(Declaration calledProcedure, int parameterIndex)
+        public void Resolve(Declaration calledProcedure, int parameterIndex, bool isArrayAccess = false)
         {
             var binding = _binding;
             if (calledProcedure != null)
             {
                 NamedArgumentExpression = _namedArgumentExpressionCreator(calledProcedure);
+                ReferencedParameter = ResolveReferencedParameter(calledProcedure, parameterIndex);
 
-                if (!_isAddressOfArgument && !CanBeObject(calledProcedure, parameterIndex))
+                if (!_isAddressOfArgument 
+                    && !(Context is VBAParser.MissingArgumentContext)
+                    && (isArrayAccess 
+                        ||  ReferencedParameter != null 
+                            && !CanBeObject(ReferencedParameter)))
                 {
-                    binding = new LetCoercionDefaultBinding(_context, binding);
+                    binding = new LetCoercionDefaultBinding(Context, binding);
                 }
             }
 
             Expression = binding.Resolve();
         }
 
-        private bool CanBeObject(Declaration calledProcedure, int parameterIndex)
+        private ParameterDeclaration ResolveReferencedParameter(Declaration calledProcedure, int parameterIndex)
         {
             if (NamedArgumentExpression != null)
             {
-                var correspondingParameter = NamedArgumentExpression.ReferencedDeclaration as ParameterDeclaration;
-                return CanBeObject(correspondingParameter);
+                return NamedArgumentExpression.ReferencedDeclaration as ParameterDeclaration;
             }
 
             if (parameterIndex >= 0 && calledProcedure is IParameterizedDeclaration parameterizedDeclaration)
@@ -60,15 +66,13 @@ namespace Rubberduck.Parsing.Binding
                 var parameters = parameterizedDeclaration.Parameters.ToList();
                 if (parameterIndex >= parameters.Count)
                 {
-                    return parameters.Any(param => param.IsParamArray);
+                    return parameters.FirstOrDefault(param => param.IsParamArray);
                 }
 
-                var correspondingParameter = parameters[parameterIndex];
-                return CanBeObject(correspondingParameter);
-
+                return parameters[parameterIndex];
             }
 
-            return true;
+            return null;
         }
 
         private bool CanBeObject(ParameterDeclaration parameter)

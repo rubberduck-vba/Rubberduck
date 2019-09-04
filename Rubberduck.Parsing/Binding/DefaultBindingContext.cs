@@ -255,6 +255,16 @@ namespace Rubberduck.Parsing.Binding
                             CreateNamedArgumentExpressionCreator(expr.namedArgument().unrestrictedIdentifier().GetText(), expr.namedArgument().unrestrictedIdentifier()),
                             isAddressOfArgument));
                     }
+                    else if(expr.missingArgument() != null)
+                    {
+                        var missingArgumentContext = expr.missingArgument();
+                        var binding = new MissingArgumentBinding(missingArgumentContext);
+                        convertedList.AddArgument(new ArgumentListArgument(
+                            binding,
+                            missingArgumentContext,
+                            ArgumentListArgumentType.Missing,
+                            false));
+                    }
                 }
             }
             return convertedList;

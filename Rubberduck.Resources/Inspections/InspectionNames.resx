@@ -395,4 +395,7 @@
   <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
     <value>Implemented member of interface class</value>
   </data>
+  <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>Argument with incompatible object type</value>
+  </data>
 </root>

@@ -3,6 +3,7 @@
     public enum ArgumentListArgumentType
     {
         Positional,
-        Named
+        Named,
+        Missing
     }
 }

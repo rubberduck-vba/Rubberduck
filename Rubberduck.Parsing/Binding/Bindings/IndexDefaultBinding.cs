@@ -44,12 +44,12 @@ namespace Rubberduck.Parsing.Binding
             _argumentList = argumentList;
         }
 
-        private static void ResolveArgumentList(Declaration calledProcedure, ArgumentList argumentList)
+        private static void ResolveArgumentList(Declaration calledProcedure, ArgumentList argumentList, bool isArrayAccess = false)
         {
             var arguments = argumentList.Arguments;
             for (var index = 0; index < arguments.Count; index++)
             {
-                arguments[index].Resolve(calledProcedure, index);
+                arguments[index].Resolve(calledProcedure, index, isArrayAccess);
             }
         }
 
@@ -71,7 +71,7 @@ namespace Rubberduck.Parsing.Binding
 
                 ResolveArgumentList(null, argumentList);
                 var argumentExpressions = argumentList.Arguments.Select(arg => arg.Expression);
-                return failedExpression.Join(argumentExpressions);
+                return failedExpression.Join(expression, argumentExpressions);
             }
 
             if (lExpression.Classification == ExpressionClassification.Unbound)
@@ -130,7 +130,7 @@ namespace Rubberduck.Parsing.Binding
             var failedExpr = new ResolutionFailedExpression(context, isDefaultMemberResolution);
             failedExpr.AddSuccessfullyResolvedExpression(lExpression);
             var argumentExpressions = argumentList.Arguments.Select(arg => arg.Expression);
-            return failedExpr.Join(argumentExpressions);
+            return failedExpr.Join(context, argumentExpressions);
         }
 
         private IBoundExpression ResolveLExpressionIsVariablePropertyFunctionNoParameters(IBoundExpression lExpression, ArgumentList argumentList, ParserRuleContext expression, int defaultMemberResolutionRecursionDepth, RecursiveDefaultMemberAccessExpression containedExpression)
@@ -359,7 +359,7 @@ namespace Rubberduck.Parsing.Binding
                     TODO: Implement compatibility checking
                  */
 
-                ResolveArgumentList(indexedDeclaration.AsTypeDeclaration, argumentList);
+                ResolveArgumentList(indexedDeclaration, argumentList, true);
                 return new IndexExpression(indexedDeclaration, ExpressionClassification.Variable, expression, _lExpression, argumentList, isArrayAccess: true, defaultMemberRecursionDepth: defaultMemberRecursionDepth, containedDefaultMemberRecursionExpression: containedExpression);
             }
 
