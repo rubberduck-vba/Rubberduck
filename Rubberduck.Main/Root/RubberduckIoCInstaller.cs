@@ -189,6 +189,8 @@ namespace Rubberduck.Root
             RegisterSpecialFactories(container);
             RegisterFactories(container, assembliesToRegister);
 
+            RegisterInstanceProvider(container);
+
             ApplyDefaultInterfaceConvention(container, assembliesToRegister);
         }
 
@@ -288,7 +290,8 @@ namespace Rubberduck.Root
                             && !type.Name.EndsWith("ConfigProvider")
                             && !type.Name.EndsWith("FakesProvider")
                             && !type.GetInterfaces().Contains(typeof(IInspection))
-                            && type.NotDisabledOrExperimental(_initialSettings))
+                            && type.NotDisabledOrExperimental(_initialSettings)
+                            && type != typeof(InstanceProvider))
                     .WithService.DefaultInterfaces()
                     .LifestyleTransient()
                 );
@@ -309,6 +312,20 @@ namespace Rubberduck.Root
                     .Configure(c => c.AsFactory())
                     .LifestyleSingleton());
             }
+        }
+
+        private void RegisterInstanceProvider(IWindsorContainer container)
+        {
+            /*
+            container.Register(Types.FromAssemblyContaining<InstanceProvider>()
+                .IncludeNonPublicTypes()
+                .Where(type => type == typeof(InstanceProvider))
+                .WithServiceSelf()
+                .LifestyleTransient()
+            );*/
+            container.Register(
+                Component.For<InstanceProvider>()
+                    .LifestyleSingleton());
         }
 
         private void RegisterSourceCodeHandlers(IWindsorContainer container)
@@ -846,7 +863,8 @@ namespace Rubberduck.Root
                 .Single();
             container.Kernel.ComponentModelBuilder.RemoveContributor(propInjector);
 
-            container.Kernel.ComponentModelBuilder.AddContributor(new RubberduckPropertiesInspector());
+            container.Kernel.ComponentModelBuilder.AddContributor(new RubberduckViewModelPropertiesInspector());
+            container.Kernel.ComponentModelBuilder.AddContributor(new RubberduckInstanceProviderPropertiesInspector());
         }
 
         private void RegisterParsingEngine(IWindsorContainer container)

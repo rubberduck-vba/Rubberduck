@@ -1,21 +1,17 @@
-﻿using Castle.Core;
-using Castle.MicroKernel;
-using Castle.MicroKernel.ModelBuilder;
-using Castle.MicroKernel.ModelBuilder.Inspectors;
-using Castle.MicroKernel.SubSystems.Conversion;
-using Rubberduck.UI;
-using Rubberduck.UI.Command;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using Castle.Core;
+using Castle.MicroKernel;
+using Castle.MicroKernel.ModelBuilder;
+using Rubberduck.UI;
+using Rubberduck.UI.Command;
 
 namespace Rubberduck.Root
 {
     // Loosely based on https://github.com/castleproject/Windsor/blob/36fbebd9a471f88b43044f39704dc5f19e669e6f/src/Castle.Windsor/MicroKernel/ModelBuilder/Inspectors/PropertiesDependenciesModelInspector.cs
-    class RubberduckPropertiesInspector : IContributeComponentModelConstruction
+    internal class RubberduckViewModelPropertiesInspector : IContributeComponentModelConstruction
     {
         public void ProcessModel(IKernel kernel, ComponentModel model)
         {
@@ -27,11 +23,7 @@ namespace Rubberduck.Root
                 return;
             }
 
-            var properties = GetProperties(model, targetType)
-                .Where(property => property.CanWrite
-                        && property.GetSetMethod() != null
-                        && property.PropertyType.IsBasedOn(typeof(CommandBase))
-                        && !property.PropertyType.IsAbstract);
+            var properties = GetProperties(model, targetType);
            
             foreach (var property in properties)
             {
@@ -45,10 +37,14 @@ namespace Rubberduck.Root
             return new PropertySet(property, dependency);
         }
 
-        private List<PropertyInfo> GetProperties(ComponentModel model, Type targetType)
+        private IEnumerable<PropertyInfo> GetProperties(ComponentModel model, Type targetType)
         {
-            var bindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
-            return targetType.GetProperties(bindingFlags).ToList();
+            const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
+            return targetType.GetProperties(bindingFlags).ToList()
+                .Where(property => property.CanWrite
+                                   && property.GetSetMethod() != null
+                                   && property.PropertyType.IsBasedOn(typeof(CommandBase))
+                                   && !property.PropertyType.IsAbstract);
         }
     }
 }
