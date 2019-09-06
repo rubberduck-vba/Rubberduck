@@ -304,6 +304,7 @@ namespace Rubberduck.Root
                     .Where(type => type.IsInterface 
                                    && type.Name.EndsWith("Factory") 
                                    && !type.Name.Equals("IFakesFactory")
+                                   && !type.Name.Equals("IAnnotationFactory")
                                    && type.NotDisabledOrExperimental(_initialSettings))
                     .WithService.Self()
                     .Configure(c => c.AsFactory())
@@ -957,6 +958,9 @@ namespace Rubberduck.Root
                     .WithServiceAllInterfaces()
                     .LifestyleSingleton());
             }
+            container.Register(Component.For<IAnnotationFactory>()
+                .ImplementedBy<VBAParserAnnotationFactory>()
+                .LifestyleSingleton());
         }
 
         private void RegisterTypeLibApi(IWindsorContainer container)

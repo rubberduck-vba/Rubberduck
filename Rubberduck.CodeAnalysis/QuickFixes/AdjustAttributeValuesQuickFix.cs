@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Annotations;
@@ -25,7 +26,8 @@ namespace Rubberduck.Inspections.QuickFixes
         {
             var declaration = result.Target;
             IParseTreeAnnotation annotationInstance = result.Properties.Annotation;
-            // FIXME consider dealing with the implicit assumption here?
+
+            Debug.Assert(annotationInstance.Annotation is IAttributeAnnotation);
             IAttributeAnnotation annotation = (IAttributeAnnotation)annotationInstance.Annotation;
             IReadOnlyList<string> attributeValues = result.Properties.AttributeValues;
 
