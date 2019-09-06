@@ -11,22 +11,28 @@ using Rubberduck.Common;
 namespace Rubberduck.Inspections.Concrete
 {
     /// <summary>
-    /// Identifies implemented members of class modules that are used as interfaces.
+    /// Identifies members of class modules that are used as interfaces, but that have a concrete implementation.
     /// </summary>
     /// <why>
-    /// Interfaces provide a unified programmatic access to different objects, and therefore are rarely instantiated as concrete objects.
+    /// Interfaces provide an abstract, unified programmatic access to different objects; concrete implementations of their members should be in a separate module that 'Implements' the interface.
     /// </why>
     /// <example hasResults="false">
     /// <![CDATA[
-    /// Sub Foo()
-    ///     ' ...
+    /// Option Explicit
+    /// '@Interface
+    ///
+    /// Public Sub DoSomething()
+    /// ' empty interface stub
     /// End Sub
     /// ]]>
     /// </example>
     /// <example hasResults="true">
     /// <![CDATA[
-    /// Sub Foo()
-    ///     MsgBox "?"
+    /// Option Explicit
+    /// '@Interface
+    ///
+    /// Public Sub DoSomething()
+    ///     MsgBox "Hello from interface!"
     /// End Sub
     /// ]]>
     /// </example>
@@ -43,6 +49,7 @@ namespace Rubberduck.Inspections.Concrete
                                      && !member.IsIgnoringInspectionResultFor(AnnotationName)))
                 .Select(result => new DeclarationInspectionResult(this,
                                         string.Format(InspectionResults.ImplementedInterfaceMemberInspection,
+                                                    result.QualifiedModuleName.ToString(),
                                                     Resources.RubberduckUI.ResourceManager
                                                         .GetString("DeclarationType_" + result.DeclarationType)
                                                         .Capitalize(),

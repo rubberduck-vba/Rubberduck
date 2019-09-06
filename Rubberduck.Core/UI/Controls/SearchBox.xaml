@@ -48,7 +48,7 @@
         <Button Name="SearchButton"  Grid.Column="1" Command="{Binding ClearSearchCommand}" 
                 BorderBrush="{x:Static SystemColors.ControlLightBrush}"
                 Background="Transparent"
-                Width="20" Height="20" Padding="0" Margin="0,1"
+                Width="20" Height="20" Padding="0"
                 xmlns:sys="clr-namespace:System;assembly=mscorlib">
             <Button.Resources>
                 <converters:SearchImageSourceConverter x:Key="SearchToIcon" />

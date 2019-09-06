@@ -79,6 +79,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The argument &apos;{2}&apos; of type &apos;{3}&apos; is passed to the parameter &apos;{0}&apos; of the incompatible type &apos;{1}&apos;..
+        /// </summary>
+        public static string ArgumentWithIncompatibleObjectTypeInspection {
+            get {
+                return ResourceManager.GetString("ArgumentWithIncompatibleObjectTypeInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Parameter &apos;{0}&apos; is passed &apos;ByVal&apos; and assigned a value..
         /// </summary>
         public static string AssignedByValParameterInspection {
@@ -304,7 +313,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Interface class module contains a concrete implementation for {0} &apos;{1}&apos;..
+        ///   Looks up a localized string similar to Interface class module &apos;{2}&apos; contains a concrete implementation for {0} &apos;{1}&apos;..
         /// </summary>
         public static string ImplementedInterfaceMemberInspection {
             get {

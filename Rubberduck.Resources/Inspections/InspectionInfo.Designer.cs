@@ -70,6 +70,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The VBA compiler does not raise an error if an object is passed as an argument for a parameter with an incompatible declared object type, i.e. with an object type that is neither the same type, a supertype nor a subtype. Under almost all circumstances passing such an argument leads to a run-time error, which is harder to detect and indicates a bug. In all other situations the code can be changed to use only assignments between compatible declared types..
+        /// </summary>
+        public static string ArgumentWithIncompatibleObjectTypeInspection {
+            get {
+                return ResourceManager.GetString("ArgumentWithIncompatibleObjectTypeInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Parameter is passed by value, but is assigned a new value/reference. Consider making a local copy instead if the caller isn&apos;t supposed to know the new value. If the caller should see the new value, the parameter should be passed ByRef instead, and you have a bug..
         /// </summary>
         public static string AssignedByValParameterInspection {
@@ -295,7 +304,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A class module that is meant to be used as interface for concrete classes should gnerally be abstracted of any implementations. If it is your intention to use this class module as a concrete, you can safely ignore this inspection result..
+        ///   Looks up a localized string similar to A class module that is meant to be used as interface for concrete classes should generally be abstracted of any implementations. If it is your intention to use this class module as a concrete, you can safely ignore this inspection result..
         /// </summary>
         public static string ImplementedInterfaceMemberInspection {
             get {

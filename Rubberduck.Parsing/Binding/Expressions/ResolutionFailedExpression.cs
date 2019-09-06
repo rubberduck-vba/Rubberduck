@@ -15,8 +15,8 @@ namespace Rubberduck.Parsing.Binding
             IsJoinedExpression = false;
         }
 
-        public ResolutionFailedExpression(params ResolutionFailedExpression[] expressions)
-            : base(null, ExpressionClassification.ResolutionFailed, null)
+        public ResolutionFailedExpression(ParserRuleContext context, params ResolutionFailedExpression[] expressions)
+            : base(null, ExpressionClassification.ResolutionFailed, context)
         {
             IsDefaultMemberResolution = false;
             IsJoinedExpression = true;
@@ -41,17 +41,17 @@ namespace Rubberduck.Parsing.Binding
 
     public static class ResolutionFailedExpressionExtensions
     {
-        public static ResolutionFailedExpression Join(this ResolutionFailedExpression expression, params IBoundExpression[] otherExpressions)
+        public static ResolutionFailedExpression Join(this ResolutionFailedExpression expression, ParserRuleContext context, params IBoundExpression[] otherExpressions)
         {
-            return expression.Join((IEnumerable<IBoundExpression>)otherExpressions);
+            return expression.Join(context, (IEnumerable<IBoundExpression>)otherExpressions);
         }
 
-        public static ResolutionFailedExpression Join(this ResolutionFailedExpression expression, IEnumerable<IBoundExpression> otherExpressions)
+        public static ResolutionFailedExpression Join(this ResolutionFailedExpression expression, ParserRuleContext context, IEnumerable<IBoundExpression> otherExpressions)
         {
             var otherExprs = otherExpressions.ToList();
 
             var failedExpressions = otherExprs.OfType<ResolutionFailedExpression>().Concat(new []{expression}).ToArray();
-            var failedExpression = new ResolutionFailedExpression(failedExpressions);
+            var failedExpression = new ResolutionFailedExpression(context, failedExpressions);
 
             var successfulExpressions = otherExprs.Where(expr => expr.Classification != ExpressionClassification.ResolutionFailed);
 

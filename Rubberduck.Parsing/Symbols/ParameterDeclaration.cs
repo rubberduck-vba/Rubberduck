@@ -1,4 +1,8 @@
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA.Extensions;
@@ -118,5 +122,44 @@ namespace Rubberduck.Parsing.Symbols
         public bool IsImplicitByRef { get; }
         public bool IsParamArray { get; set; }
         public string DefaultValue { get; set; } = string.Empty;
+
+        private ConcurrentDictionary<IdentifierReference, int> _argumentReferences = new ConcurrentDictionary<IdentifierReference, int>();
+        public IEnumerable<IdentifierReference> ArgumentReferences => _argumentReferences.Keys;
+
+        public void AddArgumentReference(
+            QualifiedModuleName module,
+            Declaration scope,
+            Declaration parent,
+            ParserRuleContext callSiteContext,
+            string identifier,
+            Declaration callee,
+            Selection selection,
+            IEnumerable<IParseTreeAnnotation> annotations)
+        {
+            var newReference = new IdentifierReference(
+                module,
+                scope,
+                parent,
+                identifier,
+                selection,
+                callSiteContext,
+                callee,
+                false,
+                false,
+                annotations);
+            _argumentReferences.AddOrUpdate(newReference, 1, (key, value) => 1);
+        }
+
+        public override void ClearReferences()
+        {
+            _argumentReferences = new ConcurrentDictionary<IdentifierReference, int>();
+            base.ClearReferences();
+        }
+
+        public override void RemoveReferencesFrom(IReadOnlyCollection<QualifiedModuleName> modulesByWhichToRemoveReferences)
+        {
+            _argumentReferences = new ConcurrentDictionary<IdentifierReference, int>(_argumentReferences.Where(reference => !modulesByWhichToRemoveReferences.Contains(reference.Key.QualifiedModuleName)));
+            base.RemoveReferencesFrom(modulesByWhichToRemoveReferences);
+        }
     }
 }

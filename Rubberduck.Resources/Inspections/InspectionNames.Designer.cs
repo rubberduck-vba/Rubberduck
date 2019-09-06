@@ -70,6 +70,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Argument with incompatible object type.
+        /// </summary>
+        public static string ArgumentWithIncompatibleObjectTypeInspection {
+            get {
+                return ResourceManager.GetString("ArgumentWithIncompatibleObjectTypeInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ByVal parameter is assigned.
         /// </summary>
         public static string AssignedByValParameterInspection {

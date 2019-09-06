@@ -3,7 +3,6 @@ using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -17,7 +16,7 @@ using Rubberduck.VBEditor;
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
 	/// <summary>
-	/// Locates assignments to object variables for which the RHS does not have a compatible declared type. 
+	/// Locates arguments passed to functions or procedures for object parameters which the do not have a compatible declared type. 
 	/// </summary>
 	/// <why>
 	/// The VBA compiler does not check whether different object types are compatible. Instead there is a runtime error whenever the types are incompatible.
@@ -42,10 +41,11 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 	/// 
 	/// Public Sub DoIt()
 	///     Dim cls As Class1
-	///     Dim intrfc As IInterface
-	///
 	///     Set cls = New Class1
-	///     Set intrfc = cls 
+	///     Foo cls 
+	/// End Sub
+	///
+	/// Public Sub Foo(cls As IInterface)
 	/// End Sub
 	/// ]]>
 	/// </example>
@@ -69,19 +69,20 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 	/// 
 	/// Public Sub DoIt()
 	///     Dim cls As Class1
-	///     Dim intrfc As IInterface
-	///
 	///     Set cls = New Class1
-	///     Set intrfc = cls 
+	///     Foo cls 
+	/// End Sub
+	///
+	/// Public Sub Foo(cls As IInterface)
 	/// End Sub
 	/// ]]>
 	/// </example>
-    public class SetAssignmentWithIncompatibleObjectTypeInspection : InspectionBase
+    public class ArgumentWithIncompatibleObjectTypeInspection : InspectionBase
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly ISetTypeResolver _setTypeResolver;
 
-        public SetAssignmentWithIncompatibleObjectTypeInspection(RubberduckParserState state, ISetTypeResolver setTypeResolver)
+        public ArgumentWithIncompatibleObjectTypeInspection(RubberduckParserState state, ISetTypeResolver setTypeResolver)
             : base(state)
         {
             _declarationFinderProvider = state;
@@ -95,56 +96,53 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         {
             var finder = _declarationFinderProvider.DeclarationFinder;
 
-            var setAssignments = finder.AllIdentifierReferences().Where(reference => reference.IsSetAssignment);
-
-            var offendingAssignments = setAssignments
+            var strictlyTypedObjectParameters = finder.DeclarationsWithType(DeclarationType.Parameter)
                 .Where(ToBeConsidered)
-                .Select(setAssignment => SetAssignmentWithAssignedTypeName(setAssignment, finder))
-                .Where(setAssignmentWithAssignedTypeName => setAssignmentWithAssignedTypeName.assignedTypeName != null
-                                                            && !SetAssignmentPossiblyLegal(setAssignmentWithAssignedTypeName));
+                .OfType<ParameterDeclaration>();
 
-            return offendingAssignments
-                .Where(setAssignmentWithAssignedTypeName => !IsIgnored(setAssignmentWithAssignedTypeName.setAssignment))
-                .Select(setAssignmentWithAssignedTypeName => InspectionResult(setAssignmentWithAssignedTypeName, _declarationFinderProvider));
+            var offendingArguments = strictlyTypedObjectParameters
+                .SelectMany(param => param.ArgumentReferences)
+                .Select(argumentReference => ArgumentReferenceWithArgumentTypeName(argumentReference, finder))
+                .Where(argumentReferenceWithTypeName =>  argumentReferenceWithTypeName.argumentTypeName != null
+                                                         && !ArgumentPossiblyLegal(
+                                                             argumentReferenceWithTypeName.argumentReference.Declaration, 
+                                                             argumentReferenceWithTypeName.argumentTypeName));
+
+            return offendingArguments
+                .Where(argumentReferenceWithTypeName => !IsIgnored(argumentReferenceWithTypeName.Item1))
+                .Select(argumentReference => InspectionResult(argumentReference, _declarationFinderProvider));
         }
 
-        private static bool ToBeConsidered(IdentifierReference reference)
+        private static bool ToBeConsidered(Declaration declaration)
         {
-            var declaration = reference.Declaration;
             return declaration != null
                    && declaration.AsTypeDeclaration != null
                    && declaration.IsObject;
         }
 
-        private (IdentifierReference setAssignment, string assignedTypeName) SetAssignmentWithAssignedTypeName(IdentifierReference setAssignment, DeclarationFinder finder)
+        private (IdentifierReference argumentReference, string argumentTypeName) ArgumentReferenceWithArgumentTypeName(IdentifierReference argumentReference, DeclarationFinder finder)
         {
-            return (setAssignment, SetTypeNameOfExpression(RHS(setAssignment), setAssignment.QualifiedModuleName, finder));
+            return (argumentReference, ArgumentSetTypeName(argumentReference, finder));
         }
 
-        private VBAParser.ExpressionContext RHS(IdentifierReference setAssignment)
+        private string ArgumentSetTypeName(IdentifierReference argumentReference, DeclarationFinder finder)
         {
-            return setAssignment.Context.GetAncestor<VBAParser.SetStmtContext>().expression();
+            var argumentExpression = argumentReference.Context as VBAParser.ExpressionContext;
+            return SetTypeNameOfExpression(argumentExpression, argumentReference.QualifiedModuleName, finder);
         }
 
         private string SetTypeNameOfExpression(VBAParser.ExpressionContext expression, QualifiedModuleName containingModule, DeclarationFinder finder)
         {
             return _setTypeResolver.SetTypeName(expression, containingModule);
         }
-        
-        private bool SetAssignmentPossiblyLegal((IdentifierReference setAssignment, string assignedTypeName) setAssignmentWithAssignedType)
-        {
-            var (setAssignment, assignedTypeName) = setAssignmentWithAssignedType;
-            
-            return SetAssignmentPossiblyLegal(setAssignment.Declaration, assignedTypeName);
-        }
 
-        private bool SetAssignmentPossiblyLegal(Declaration declaration, string assignedTypeName)
+        private bool ArgumentPossiblyLegal(Declaration parameterDeclaration , string assignedTypeName)
         {
-            return assignedTypeName == declaration.FullAsTypeName
+            return assignedTypeName == parameterDeclaration.FullAsTypeName
                 || assignedTypeName == Tokens.Variant
                 || assignedTypeName == Tokens.Object
-                || HasBaseType(declaration, assignedTypeName)
-                || HasSubType(declaration, assignedTypeName);
+                || HasBaseType(parameterDeclaration, assignedTypeName)
+                || HasSubType(parameterDeclaration, assignedTypeName);
         }
 
         private bool HasBaseType(Declaration declaration, string typeName)
@@ -176,20 +174,21 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                    || assignment.Declaration.IsIgnoringInspectionResultFor(AnnotationName);
         }
 
-        private IInspectionResult InspectionResult((IdentifierReference setAssignment, string assignedTypeName) setAssignmentWithAssignedType, IDeclarationFinderProvider declarationFinderProvider)
+        private IInspectionResult InspectionResult((IdentifierReference argumentReference, string argumentTypeName) argumentReferenceWithTypeName, IDeclarationFinderProvider declarationFinderProvider)
         {
-            var (setAssignment, assignedTypeName) = setAssignmentWithAssignedType;
+            var (argumentReference, argumentTypeName) = argumentReferenceWithTypeName;
             return new IdentifierReferenceInspectionResult(this,
-                ResultDescription(setAssignment, assignedTypeName),
+                ResultDescription(argumentReference, argumentTypeName),
                 declarationFinderProvider,
-                setAssignment);
+                argumentReference);
         }
 
-        private string ResultDescription(IdentifierReference setAssignment, string assignedTypeName)
+        private string ResultDescription(IdentifierReference argumentReference, string argumentTypeName)
         {
-            var declarationName = setAssignment.Declaration.IdentifierName;
-            var variableTypeName = setAssignment.Declaration.FullAsTypeName;
-            return string.Format(InspectionResults.SetAssignmentWithIncompatibleObjectTypeInspection, declarationName, variableTypeName, assignedTypeName);
+            var parameterName = argumentReference.Declaration.IdentifierName;
+            var parameterTypeName = argumentReference.Declaration.FullAsTypeName;
+            var argumentExpression = argumentReference.Context.GetText();
+            return string.Format(InspectionResults.SetAssignmentWithIncompatibleObjectTypeInspection, parameterName, parameterTypeName, argumentExpression, argumentTypeName);
         }
     }
 }
