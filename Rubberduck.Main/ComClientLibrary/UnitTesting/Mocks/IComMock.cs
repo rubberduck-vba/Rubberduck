@@ -17,7 +17,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
         object Object { [return: MarshalAs(UnmanagedType.IDispatch)] get; }
 
         [DispId(2)]
-        void SetupWithReturns(string Name, object Value, [Optional, MarshalAs(UnmanagedType.Struct)] object Args);
+        void SetupWithReturns(string Name, [MarshalAs(UnmanagedType.Struct)] object Value, [Optional, MarshalAs(UnmanagedType.Struct)] object Args);
 
         [DispId(3)]
         void SetupWithCallback(string Name, [MarshalAs(UnmanagedType.FunctionPtr)] Action Callback, [Optional, MarshalAs(UnmanagedType.Struct)] object Args);

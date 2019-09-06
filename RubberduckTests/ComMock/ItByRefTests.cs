@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using Moq;
 using NUnit.Framework;
 using Rubberduck.ComClientLibrary.UnitTesting.Mocks;
@@ -76,5 +78,60 @@ namespace RubberduckTests.ComMock
             Assert.AreEqual(0, negativeActual);
         }
 
+        [Test]
+        public void ItByRefMemberInfos_Is()
+        {
+            Assert.IsNotNull(ItByRefMemberInfos.Is(typeof(int)));
+        }
+
+        [Test]
+        [TestCase(nameof(ITestRef.DoInt), 1)]
+        [TestCase(nameof(ITestRef.DoString), "abc")]
+        public void Test_ByRef_Setup(string memberName, object value)
+        {
+            var definitions = new SetupArgumentDefinitions
+            {
+                SetupArgumentDefinition.CreateIs(value)
+            };
+            var resolver = new SetupArgumentResolver();
+            var builder = new SetupExpressionBuilder(typeof(ITestRef), new List<Type>(), resolver);
+            
+            var mock = new Mock<ITestRef>();
+            var setupDatas = builder.CreateExpression(memberName, definitions);
+            var setupData = setupDatas.First();
+
+            var called = false;
+            void Action()
+            {
+                called = true;
+            }
+
+            MockExpressionBuilder.Create(mock)
+                .As(typeof(ITestRef))
+                .Setup(setupData.SetupExpression, setupData.Args)
+                .Callback(Action)
+                .Execute();
+
+            object refParam = null;
+            switch (memberName)
+            {
+                case nameof(ITestRef.DoInt):
+                    var refInt = (int) value;
+                    mock.Object.DoInt(ref refInt);
+                    refParam = refInt;
+                    break;
+                case nameof(ITestRef.DoString):
+                    var refString = (string) value;
+                    mock.Object.DoString(ref refString);
+                    refParam = refString;
+                    break;
+                default:
+                    Assert.Fail("Missing case for a member call");
+                    return;
+            }
+            
+            Assert.AreEqual(true, called);
+            Assert.AreEqual(value, refParam);
+        }
     }
 }

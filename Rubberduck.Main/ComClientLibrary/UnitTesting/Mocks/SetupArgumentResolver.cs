@@ -236,7 +236,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 
         private Expression BuildPassByRefArgumentExpression(int index, SetupArgumentDefinition definition, Type refType, Type elementType, ref Dictionary<ParameterExpression, object> forwardedArgs)
         {
-            ParameterExpression parameterExpression;
+            Expression parameterExpression;
             switch (definition.Type)
             {
                 case SetupArgumentType.Is:
@@ -259,19 +259,11 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
                     // TODO: need to take care that the args passed into DynamicInvoke do not need to be ref'd - it should be
                     // TODO: passed in as values then made ref within the expression tree.
                     var name = $"p{index:00}";
-                /*
-                    var forwardedArgExpression = Expression.Parameter(elementType, name);
-                    // forwardedArgs.Add(forwardedArgExpression, definition.Values[0]);
-
-                    var conditionExpression = Expression.Lambda();
-                    var itByRefType = typeof(ItByRef<>).MakeGenericType(elementType);
-                    var itMemberInfo = Reflection.GetMethodExt(itByRefType, nameof(ItByRef<object>.Is));
-                    var itByRefExpression = Expression.Call(itMemberInfo, forwardedArgExpression, null);
-
-                    parameterExpression = Expression.Field();
+                    var itByRef = ItByRefMemberInfos.Is(elementType).Invoke(null, new [] {definition.Values[0]});
+                    var forwardedArgExpression = Expression.Parameter(itByRef.GetType(), name);
+                    forwardedArgs.Add(forwardedArgExpression, itByRef);
+                    parameterExpression = Expression.Field(forwardedArgExpression, ItByRefMemberInfos.Value(elementType));
                     return parameterExpression;
-                */
-                    return null;
                 case SetupArgumentType.IsAny:
                     var itRefType = typeof(It.Ref<>).MakeGenericType(elementType);
                     var itFieldInfo = itRefType.GetField(nameof(It.IsAny));

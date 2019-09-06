@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Moq;
-
-namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
+﻿namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 {
     public class ItByRef<T>
     {
