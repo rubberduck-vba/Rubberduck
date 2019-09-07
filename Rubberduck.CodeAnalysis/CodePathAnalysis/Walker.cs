@@ -14,11 +14,10 @@ namespace Rubberduck.Inspections.CodePathAnalysis
         public INode GenerateTree(IParseTree tree, Declaration declaration)
         {
             AssignmentNode lastAssignment = null;
-            bool isBranchCondition = false;
-            return GenerateTree(tree, declaration, ref lastAssignment, ref isBranchCondition);
+            return GenerateTree(tree, declaration, ref lastAssignment);
         }
 
-        public INode GenerateTree(IParseTree tree, Declaration declaration, ref AssignmentNode lastAssignment, ref bool isBranchCondition)
+        public INode GenerateTree(IParseTree tree, Declaration declaration, ref AssignmentNode lastAssignment)
         {
             INode node = default;
             VBAParser.BooleanExpressionContext branchCondition;
@@ -33,29 +32,23 @@ namespace Rubberduck.Inspections.CodePathAnalysis
 
                 case VBAParser.IfStmtContext _:
                     node = new BranchNode(tree);
-                    isBranchCondition = true;
                     break;
                 case VBAParser.ElseBlockContext _:
                     node = new BranchNode(tree);
                     lastAssignment = null;
-                    isBranchCondition = false;
                     break;
                 case VBAParser.ElseIfBlockContext _:
                     node = new BranchNode(tree);
-                    isBranchCondition = true;
                     break;
                 case VBAParser.SingleLineIfStmtContext _:
                     node = new BranchNode(tree);
-                    isBranchCondition = true;
                     break;
                 case VBAParser.SingleLineElseClauseContext _:
                     node = new BranchNode(tree);
                     lastAssignment = null;
-                    isBranchCondition = false;
                     break;
                 case VBAParser.CaseClauseContext _:
                     node = new BranchNode(tree);
-                    isBranchCondition = true;
                     break;
                 case VBAParser.CaseElseClauseContext _:
                     node = new BranchNode(tree);
@@ -64,18 +57,6 @@ namespace Rubberduck.Inspections.CodePathAnalysis
 
                 case VBAParser.BlockContext _:
                     node = new BlockNode(tree);
-                    if (isBranchCondition)
-                    {
-                        lastAssignment = null;
-                        isBranchCondition = false;
-                    }
-                    break;
-                case VBAParser.MainBlockStmtContext _:
-                    if (isBranchCondition)
-                    {
-                        lastAssignment = null;
-                        isBranchCondition = false;
-                    }
                     break;
             }
 
@@ -130,11 +111,11 @@ namespace Rubberduck.Inspections.CodePathAnalysis
             {
                 // add RHS before LHS to match evaluation order
 
-                var rhsNode = GenerateTree(rhs, declaration, ref lastAssignment, ref isBranchCondition);
+                var rhsNode = GenerateTree(rhs, declaration, ref lastAssignment);
                 rhsNode.Parent = node;
                 children.Add(rhsNode);
 
-                var lhsNode = GenerateTree(lhs, declaration, ref lastAssignment, ref isBranchCondition);
+                var lhsNode = GenerateTree(lhs, declaration, ref lastAssignment);
                 lhsNode.Parent = node;
                 children.Add(lhsNode);
             }
@@ -142,7 +123,7 @@ namespace Rubberduck.Inspections.CodePathAnalysis
             {
                 for (var i = 0; i < tree.ChildCount; i++)
                 {
-                    var nextChild = GenerateTree(tree.GetChild(i), declaration, ref lastAssignment, ref isBranchCondition);
+                    var nextChild = GenerateTree(tree.GetChild(i), declaration, ref lastAssignment);
                     nextChild.SortOrder = i;
                     nextChild.Parent = node;
 
