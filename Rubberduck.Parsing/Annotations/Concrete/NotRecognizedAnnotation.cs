@@ -6,14 +6,12 @@ namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>
     /// Used for all annotations not recognized by RD.
+    /// Since this is not actually an annotation, it has no valid target
     /// </summary>
     public sealed class NotRecognizedAnnotation : AnnotationBase
     {
-        public NotRecognizedAnnotation(
-            QualifiedSelection qualifiedSelection,
-            VBAParser.AnnotationContext context,
-            IEnumerable<string> parameters)
-            : base(AnnotationType.NotRecognized, qualifiedSelection, context)
-        {}
+        public NotRecognizedAnnotation()
+            : base("NotRecognized", 0)
+        { }
     }
 }

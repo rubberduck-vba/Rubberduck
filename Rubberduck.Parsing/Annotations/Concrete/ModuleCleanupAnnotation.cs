@@ -9,12 +9,8 @@ namespace Rubberduck.Parsing.Annotations
     /// </summary>
     public sealed class ModuleCleanupAnnotation : AnnotationBase
     {
-        public ModuleCleanupAnnotation(
-            QualifiedSelection qualifiedSelection,
-            VBAParser.AnnotationContext context,
-            IEnumerable<string> parameters)
-            : base(AnnotationType.ModuleCleanup, qualifiedSelection, context)
-        {
-        }
+        public ModuleCleanupAnnotation()
+            : base("ModuleCleanup", AnnotationTarget.Member)
+        { }
     }
 }

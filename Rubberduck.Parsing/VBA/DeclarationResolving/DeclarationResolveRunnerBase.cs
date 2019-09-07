@@ -175,7 +175,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
         private ModuleDeclaration NewModuleDeclaration(
             QualifiedModuleName qualifiedModuleName,
             IParseTree tree,
-            IDictionary<int, List<IAnnotation>> annotationsOnWhiteSpaceLines,
+            IDictionary<int, List<IParseTreeAnnotation>> annotationsOnWhiteSpaceLines,
             IDictionary<(string scopeIdentifier, DeclarationType scopeType),Attributes> attributes,
             Declaration projectDeclaration)
         {
@@ -231,7 +231,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
             return moduleAttributes;
         }
 
-        private static IEnumerable<IAnnotation> FindModuleAnnotations(IParseTree tree, IDictionary<int, List<IAnnotation>> annotationsOnWhiteSpaceLines)
+        private static IEnumerable<IParseTreeAnnotation> FindModuleAnnotations(IParseTree tree, IDictionary<int, List<IParseTreeAnnotation>> annotationsOnWhiteSpaceLines)
         {
             if (annotationsOnWhiteSpaceLines == null)
             {
@@ -244,14 +244,14 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
             if (firstModuleBodyLine == null)
             {
                 return annotationsOnWhiteSpaceLines.Values.SelectMany(annotationList => annotationList)
-                    .Where(annotation => annotation.AnnotationType.HasFlag(AnnotationType.ModuleAnnotation));
+                    .Where(annotation => annotation.Annotation.Target.HasFlag(AnnotationTarget.Module));
             }
 
             var lastPossibleAnnotatedLine = firstModuleBodyLine.Value;
             var moduleAnnotations = annotationsOnWhiteSpaceLines.Keys
                 .Where(line => (line <= lastPossibleAnnotatedLine))
                 .SelectMany(line => annotationsOnWhiteSpaceLines[line])
-                .Where(annotation => annotation.AnnotationType.HasFlag(AnnotationType.ModuleAnnotation));
+                .Where(annotation => annotation.Annotation.Target.HasFlag(AnnotationTarget.Module));
             return moduleAnnotations;
         }
 

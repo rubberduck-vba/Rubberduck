@@ -1,10 +1,14 @@
+using System;
 using System.Collections.Generic;
 
 namespace Rubberduck.Parsing.Annotations
 {
     public interface IAttributeAnnotation : IAnnotation
     {
-        string Attribute { get; }
-        IReadOnlyList<string> AttributeValues { get; }
+        bool MatchesAttributeDefinition(string attributeName, IReadOnlyList<string> attributeValues);
+        string Attribute(IReadOnlyList<string> annotationValues);
+
+        IReadOnlyList<string> AnnotationToAttributeValues(IReadOnlyList<string> annotationValues);
+        IReadOnlyList<string> AttributeToAnnotationValues(IReadOnlyList<string> attributeValues);
     }
 }

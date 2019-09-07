@@ -9,8 +9,8 @@ namespace Rubberduck.Parsing.Annotations
     /// </summary>
     public sealed class ExposedModuleAnnotation : FixedAttributeValueAnnotationBase
     {
-        public ExposedModuleAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> parameters)
-            : base(AnnotationType.Exposed, qualifiedSelection, context)
+        public ExposedModuleAnnotation()
+            : base("Exposed", AnnotationTarget.Module, "VB_Exposed", new[] { "True" })
         {}
     }
 }

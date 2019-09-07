@@ -13,7 +13,7 @@ namespace Rubberduck.Parsing.Symbols
             string name,
             DeclarationType declarationType,
             bool isUserDefined,
-            IEnumerable<IAnnotation> annotations,
+            IEnumerable<IParseTreeAnnotation> annotations,
             Attributes attributes,
             bool isWithEvents = false)
             : base(
@@ -46,7 +46,7 @@ namespace Rubberduck.Parsing.Symbols
             _members.Add(member);
         }
 
-        internal void RemoveAnnotations(ICollection<IAnnotation> annotationsToRemove)
+        internal void RemoveAnnotations(ICollection<IParseTreeAnnotation> annotationsToRemove)
         {
             _annotations = _annotations?.Where(annotation => !annotationsToRemove.Contains(annotation)).ToList();
         }
@@ -55,7 +55,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private string FolderFromAnnotations()
         {
-            var @namespace = Annotations.FirstOrDefault(annotation => annotation.AnnotationType == AnnotationType.Folder);
+            var @namespace = Annotations.Where(a => a.Annotation is FolderAnnotation).FirstOrDefault();
             string result;
             if (@namespace == null)
             {
@@ -65,8 +65,8 @@ namespace Rubberduck.Parsing.Symbols
             }
             else
             {
-                var value = ((FolderAnnotation)@namespace).FolderName;
-                result = value;
+                var value = @namespace.AnnotationArguments.FirstOrDefault();
+                result = value ?? "";
             }
             return result;
         }

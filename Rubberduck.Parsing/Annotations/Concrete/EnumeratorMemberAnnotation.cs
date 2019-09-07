@@ -9,8 +9,8 @@ namespace Rubberduck.Parsing.Annotations
     /// </summary>
     public sealed class EnumeratorMemberAnnotation : FixedAttributeValueAnnotationBase
     {
-        public EnumeratorMemberAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> parameters)
-            : base(AnnotationType.Enumerator, qualifiedSelection, context)
+        public EnumeratorMemberAnnotation()
+            : base("Enumerator", AnnotationTarget.Member, "VB_UserMemId", new[] { "-4" })
         {}
     }
 }

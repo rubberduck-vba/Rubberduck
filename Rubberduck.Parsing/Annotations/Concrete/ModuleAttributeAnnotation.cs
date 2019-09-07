@@ -4,10 +4,13 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Annotations
 {
+    /// <summary>
+    /// This annotation allows specifying arbitrary VB_Attribute entries.
+    /// </summary>
     public class ModuleAttributeAnnotation : FlexibleAttributeAnnotationBase
     {
-        public ModuleAttributeAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IReadOnlyList<string> parameters) 
-        :base(AnnotationType.ModuleAttribute, qualifiedSelection, context, parameters)
+        public ModuleAttributeAnnotation() 
+        : base("ModuleAttribute", AnnotationTarget.Module)
         {}
     }
 }

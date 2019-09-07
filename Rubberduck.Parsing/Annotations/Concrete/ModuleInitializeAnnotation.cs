@@ -9,12 +9,8 @@ namespace Rubberduck.Parsing.Annotations
     /// </summary>
     public sealed class ModuleInitializeAnnotation : AnnotationBase
     {
-        public ModuleInitializeAnnotation(
-            QualifiedSelection qualifiedSelection,
-            VBAParser.AnnotationContext context,
-            IEnumerable<string> parameters)
-            : base(AnnotationType.ModuleInitialize, qualifiedSelection, context)
-        {
-        }
+        public ModuleInitializeAnnotation()
+            : base("ModuleInitialize", AnnotationTarget.Member)
+        { }
     }
 }

@@ -134,7 +134,7 @@ namespace Rubberduck.Parsing.Symbols
             string identifier,
             Declaration callee,
             Selection selection,
-            IEnumerable<IAnnotation> annotations)
+            IEnumerable<IParseTreeAnnotation> annotations)
         {
             var newReference = new IdentifierReference(
                 module,

@@ -12,7 +12,7 @@ namespace Rubberduck.Inspections.Inspections.Extensions
         public static bool IsIgnoringInspectionResultFor(this IdentifierReference reference, string inspectionName)
         {
             return reference.ParentScoping.HasModuleIgnoreFor(inspectionName) ||
-                reference.Annotations.OfType<IgnoreAnnotation>().Any(ignore => ignore.IsIgnored(inspectionName));
+                reference.Annotations.Any(ignore => ignore.Annotation is IgnoreAnnotation && ignore.AnnotationArguments.Contains(inspectionName));
         }
 
         public static bool IsIgnoringInspectionResultFor(this Declaration declaration, string inspectionName)
@@ -29,12 +29,13 @@ namespace Rubberduck.Inspections.Inspections.Extensions
         {
             return parserContext.ModuleName.IsIgnoringInspectionResultFor(parserContext.Context.Start.Line, declarationFinder, inspectionName);
         }
+
         private static bool IsIgnoringInspectionResultFor(this QualifiedModuleName module, int line, DeclarationFinder declarationFinder, string inspectionName)
         {
-            var lineScopedAnnotations = declarationFinder.FindAnnotations(module, line).OfType<IgnoreAnnotation>();
+            var lineScopedAnnotations = declarationFinder.FindAnnotations<IgnoreAnnotation>(module, line);
             var moduleDeclaration = declarationFinder.Members(module).First(decl => decl.DeclarationType.HasFlag(DeclarationType.Module));
 
-            var isLineIgnored = lineScopedAnnotations.Any(annotation => annotation.IsIgnored(inspectionName));
+            var isLineIgnored = lineScopedAnnotations.Any(annotation => annotation.AnnotationArguments.Contains(inspectionName));
             var isModuleIgnored = moduleDeclaration.HasModuleIgnoreFor(inspectionName);
 
             return isLineIgnored || isModuleIgnored;
@@ -43,15 +44,15 @@ namespace Rubberduck.Inspections.Inspections.Extensions
         private static bool HasModuleIgnoreFor(this Declaration declaration, string inspectionName)
         {
             return Declaration.GetModuleParent(declaration)?.Annotations
-                .OfType<IgnoreModuleAnnotation>()
-                .Any(ignoreModule => ignoreModule.IsIgnored(inspectionName)) ?? false;
+                .Where(pta => pta.Annotation is IgnoreModuleAnnotation)
+                .Any(ignoreModule => !ignoreModule.AnnotationArguments.Any() || ignoreModule.AnnotationArguments.Contains(inspectionName)) ?? false;
         }
 
         private static bool HasIgnoreFor(this Declaration declaration, string inspectionName)
         {
             return declaration?.Annotations
-                .OfType<IgnoreAnnotation>()
-                .Any(ignore => ignore.IsIgnored(inspectionName)) ?? false;
+                .Where(pta => pta.Annotation is IgnoreAnnotation)
+                .Any(ignore => ignore.AnnotationArguments.Contains(inspectionName)) ?? false;
         }
     }
 }

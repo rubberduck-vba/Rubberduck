@@ -15,8 +15,7 @@ namespace Rubberduck.Parsing.Grammar
         {
             public ParserRuleContext AnnotatedContext { get; internal set; }
 
-            public AnnotationType AnnotationType => (AnnotationType) Enum.Parse(typeof (AnnotationType), 
-                Identifier.GetName(this.annotationName().unrestrictedIdentifier()));
+            public string AnnotationType => Identifier.GetName(this.annotationName().unrestrictedIdentifier());
         }
 
         public partial class ModuleAttributesContext : IAnnotatedContext // holds module-scoped annotations

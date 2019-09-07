@@ -94,7 +94,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 Selection.Home,
                 false,
                 false,
-                new List<IAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
         }
 
@@ -133,7 +133,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 Selection.Home,
                 false,
                 false,
-                new List<IAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
         }
     }

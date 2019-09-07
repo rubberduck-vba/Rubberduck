@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Annotations;
@@ -24,14 +25,18 @@ namespace Rubberduck.Inspections.QuickFixes
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
             var declaration = result.Target;
-            IAttributeAnnotation annotation = result.Properties.Annotation;
+            IParseTreeAnnotation annotationInstance = result.Properties.Annotation;
+
+            Debug.Assert(annotationInstance.Annotation is IAttributeAnnotation);
+            IAttributeAnnotation annotation = (IAttributeAnnotation)annotationInstance.Annotation;
             IReadOnlyList<string> attributeValues = result.Properties.AttributeValues;
 
+            var attribute = annotation.Attribute(annotationInstance);
             var attributeName = declaration.DeclarationType.HasFlag(DeclarationType.Module)
-                ? annotation.Attribute
-                : $"{declaration.IdentifierName}.{annotation.Attribute}";
+                ? attribute
+                : $"{declaration.IdentifierName}.{attribute}";
 
-            _attributesUpdater.UpdateAttribute(rewriteSession, declaration, attributeName, annotation.AttributeValues, attributeValues);
+            _attributesUpdater.UpdateAttribute(rewriteSession, declaration, attributeName, annotation.AttributeValues(annotationInstance), oldValues: attributeValues);
         }
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.AdjustAttributeValuesQuickFix;

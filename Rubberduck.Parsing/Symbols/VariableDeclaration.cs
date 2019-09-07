@@ -23,7 +23,7 @@ namespace Rubberduck.Parsing.Symbols
             Selection selection,
             bool isArray,
             VBAParser.AsTypeClauseContext asTypeContext,
-            IEnumerable<IAnnotation> annotations = null,
+            IEnumerable<IParseTreeAnnotation> annotations = null,
             Attributes attributes = null)
             : base(
                 qualifiedName,

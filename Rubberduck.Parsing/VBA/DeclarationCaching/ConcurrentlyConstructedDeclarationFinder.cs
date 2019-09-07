@@ -11,10 +11,10 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
     public class ConcurrentlyConstructedDeclarationFinder : DeclarationFinder
     {
         private const int _maxDegreeOfConstructionParallelism = -1;
-
+        
         public ConcurrentlyConstructedDeclarationFinder(
             IReadOnlyList<Declaration> declarations, 
-            IEnumerable<IAnnotation> annotations, 
+            IEnumerable<IParseTreeAnnotation> annotations, 
             IReadOnlyList<UnboundMemberDeclaration> unresolvedMemberDeclarations,
             IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> unboundDefaultMemberAccesses, 
             IHostApplication hostApp = null) 
