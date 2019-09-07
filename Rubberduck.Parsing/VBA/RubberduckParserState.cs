@@ -190,7 +190,13 @@ namespace Rubberduck.Parsing.VBA
         private void RefreshFinder(IHostApplication host)
         {
             var oldDecalarationFinder = DeclarationFinder;
-            DeclarationFinder = _declarationFinderFactory.Create(AllDeclarationsFromModuleStates, AllAnnotations, AllUnresolvedMemberDeclarationsFromModulestates, AllUnboundDefaultMemberAccessesFromModuleStates, host);
+            DeclarationFinder = _declarationFinderFactory.Create(
+                AllDeclarationsFromModuleStates, 
+                AllAnnotations, 
+                AllUnresolvedMemberDeclarationsFromModulestates, 
+                AllUnboundDefaultMemberAccessesFromModuleStates,
+                AllFailedLetCoercionsFromModuleStates,
+                host);
             _declarationFinderFactory.Release(oldDecalarationFinder);
         }
 
@@ -765,6 +771,23 @@ namespace Rubberduck.Parsing.VBA
         }
 
         /// <summary>
+        /// Gets a copy of the failed Let coercions directly from the module states. (Used for refreshing the DeclarationFinder.)
+        /// </summary>
+        private IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> AllFailedLetCoercionsFromModuleStates
+        {
+            get
+            {
+                var failedLetCoercions = new Dictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>>();
+                foreach (var (module, state) in _moduleStates)
+                {
+                    failedLetCoercions.Add(module, state.FailedLetCoercions);
+                }
+
+                return failedLetCoercions;
+            }
+        }
+
+        /// <summary>
         /// Gets a copy of the collected declarations, excluding the built-in ones.
         /// </summary>
         public IEnumerable<Declaration> AllUserDeclarations => DeclarationFinder.AllUserDeclarations;
@@ -842,19 +865,21 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void AddUnboundDefaultMemberAccess(IdentifierReference defaultMemberAccess)
-        {
-            var key = defaultMemberAccess.QualifiedModuleName;
-            var moduleState = _moduleStates.GetOrAdd(key, new ModuleState(new ConcurrentDictionary<Declaration, byte>()));
-            moduleState.AddUnboundDefaultMemberAccess(defaultMemberAccess);
-        }
-
         public void AddUnboundDefaultMemberAccesses(QualifiedModuleName module, IEnumerable<IdentifierReference> defaultMemberAccesses)
         {
             var moduleState = _moduleStates.GetOrAdd(module, new ModuleState(new ConcurrentDictionary<Declaration, byte>()));
             foreach(var defaultMemberAccess in defaultMemberAccesses)
             {
                 moduleState.AddUnboundDefaultMemberAccess(defaultMemberAccess);
+            }
+        }
+
+        public void AddFailedLetCoercions(QualifiedModuleName module, IEnumerable<IdentifierReference> failedLetCoercions)
+        {
+            var moduleState = _moduleStates.GetOrAdd(module, new ModuleState(new ConcurrentDictionary<Declaration, byte>()));
+            foreach (var failedLetCoercion in failedLetCoercions)
+            {
+                moduleState.AddFailedLetCoercion(failedLetCoercion);
             }
         }
 

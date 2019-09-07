@@ -12,7 +12,8 @@ namespace Rubberduck.Parsing.Symbols
             IReadOnlyList<Declaration> declarations, 
             IEnumerable<IAnnotation> annotations, 
             IReadOnlyList<UnboundMemberDeclaration> unresolvedMemberDeclarations, 
-            IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> unboundDefaultMemberAccesses, 
+            IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> unboundDefaultMemberAccesses,
+            IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> failedLetCoercions,
             IHostApplication hostApp);
         void Release(DeclarationFinder declarationFinder);
     }

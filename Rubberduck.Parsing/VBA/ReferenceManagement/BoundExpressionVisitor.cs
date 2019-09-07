@@ -505,6 +505,10 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             {
                 AddDefaultMemberReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement);
             }
+            else if (expression.Classification == ExpressionClassification.ResolutionFailed)
+            {
+                AddFailedLetCoercionReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement);
+            }
             else
             {
                 AddUnboundDefaultMemberReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement);
@@ -565,6 +569,35 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 isNonIndexedDefaultMemberAccess: true,
                 defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth);
             _declarationFinder.AddUnboundDefaultMemberAccess(reference);
+        }
+
+        private void AddFailedLetCoercionReference(
+            LetCoercionDefaultMemberAccessExpression expression,
+            QualifiedModuleName module,
+            Declaration scope,
+            Declaration parent,
+            bool isAssignmentTarget,
+            bool hasExplicitLetStatement)
+        {
+            var callSiteContext = expression.Context;
+            var identifier = callSiteContext.GetText();
+            var selection = callSiteContext.GetSelection();
+            var callee = expression.ReferencedDeclaration;
+            var reference = new IdentifierReference(
+                module,
+                scope,
+                parent,
+                identifier,
+                selection,
+                callSiteContext,
+                callee,
+                isAssignmentTarget,
+                hasExplicitLetStatement,
+                FindIdentifierAnnotations(module, selection.StartLine),
+                false,
+                isNonIndexedDefaultMemberAccess: true,
+                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth);
+            _declarationFinder.AddFailedLetCoercionReference(reference);
         }
 
         private void Visit(

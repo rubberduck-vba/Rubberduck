@@ -115,6 +115,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             AddNewUndeclaredVariablesToDeclarations();
             AddNewUnresolvedMemberDeclarations();
             AddNewUnboundDefaultMemberAccesses();
+            AddNewFailedLetCoercions();
 
             _toResolve.Clear();
         }
@@ -307,6 +308,16 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             foreach (var access in unboundDefaultMembers)
             {
                 _state.AddUnboundDefaultMemberAccesses(access.Key, access);
+            }
+        }
+
+        private void AddNewFailedLetCoercions()
+        {
+            var failedLetCoercions = _state.DeclarationFinder.FreshFailedLetCoercions
+                .GroupBy(coercion => coercion.QualifiedModuleName);
+            foreach (var coercion in failedLetCoercions)
+            {
+                _state.AddFailedLetCoercions(coercion.Key, coercion);
             }
         }
     }

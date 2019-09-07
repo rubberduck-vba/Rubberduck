@@ -26,11 +26,13 @@ namespace Rubberduck.Parsing.VBA
         public IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> ModuleAttributes { get; private set; }
         public IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> MembersAllowingAttributes { get; private set; }
         public IReadOnlyCollection<IdentifierReference> UnboundDefaultMemberAccesses => _unboundDefaultMemberAccesses;
+        public IReadOnlyCollection<IdentifierReference> FailedLetCoercions => _failedLetCoercions;
 
         public bool IsNew { get; private set; }
         public bool IsMarkedAsModified { get; private set; }
 
         private readonly HashSet<IdentifierReference> _unboundDefaultMemberAccesses = new HashSet<IdentifierReference>();
+        private readonly HashSet<IdentifierReference> _failedLetCoercions = new HashSet<IdentifierReference>();
 
         public ModuleState(ConcurrentDictionary<Declaration, byte> declarations)
         {
@@ -160,6 +162,18 @@ namespace Rubberduck.Parsing.VBA
                 && !_unboundDefaultMemberAccesses.Contains(defaultMemberAccess))
             {
                 _unboundDefaultMemberAccesses.Add(defaultMemberAccess);
+            }
+
+            return this;
+        }
+
+        public ModuleState AddFailedLetCoercion(IdentifierReference failedLetCoercion)
+        {
+            if (failedLetCoercion.IsDefaultMemberAccess
+                && failedLetCoercion.Declaration == null
+                && !_failedLetCoercions.Contains(failedLetCoercion))
+            {
+                _failedLetCoercions.Add(failedLetCoercion);
             }
 
             return this;

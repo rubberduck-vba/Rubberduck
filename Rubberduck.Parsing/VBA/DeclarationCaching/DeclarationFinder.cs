@@ -25,6 +25,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         private IDictionary<string, List<Declaration>> _declarationsByName;
         private IDictionary<QualifiedModuleName, List<Declaration>> _declarations;
         private readonly ConcurrentDictionary<QualifiedModuleName, ConcurrentBag<IdentifierReference>> _newUnboundDefaultMemberAccesses;
+        private readonly ConcurrentDictionary<QualifiedModuleName, ConcurrentBag<IdentifierReference>> _newFailedLetCoersions;
         private readonly ConcurrentDictionary<QualifiedMemberName, ConcurrentBag<Declaration>> _newUndeclared;
         private readonly ConcurrentBag<UnboundMemberDeclaration> _newUnresolved;
         private List<UnboundMemberDeclaration> _unresolved;
@@ -40,6 +41,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         private IDictionary<QualifiedMemberName, List<IdentifierReference>> _referencesByMember;
 
         private readonly IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> _unboundDefaultMemberAccesses;
+        private readonly IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> _failedLetCoercions;
 
         private Lazy<IDictionary<DeclarationType, List<Declaration>>> _builtInDeclarationsByType;
         private Lazy<IDictionary<Declaration, List<Declaration>>> _handlersByWithEventsField;
@@ -69,15 +71,18 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             IReadOnlyList<Declaration> declarations, 
             IEnumerable<IAnnotation> annotations, 
             IReadOnlyList<UnboundMemberDeclaration> unresolvedMemberDeclarations,
-            IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> unboundDefaultMemberAccesses, 
+            IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> unboundDefaultMemberAccesses,
+            IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> failedLetCoercions,
             IHostApplication hostApp = null)
         {
             _hostApp = hostApp;
             _unboundDefaultMemberAccesses = unboundDefaultMemberAccesses;
+            _failedLetCoercions = failedLetCoercions;
 
             _newUndeclared = new ConcurrentDictionary<QualifiedMemberName, ConcurrentBag<Declaration>>(new Dictionary<QualifiedMemberName, ConcurrentBag<Declaration>>());
             _newUnresolved = new ConcurrentBag<UnboundMemberDeclaration>(new List<UnboundMemberDeclaration>());
             _newUnboundDefaultMemberAccesses = new ConcurrentDictionary<QualifiedModuleName, ConcurrentBag<IdentifierReference>>();
+            _newFailedLetCoersions = new ConcurrentDictionary<QualifiedModuleName, ConcurrentBag<IdentifierReference>>();
 
             var collectionConstructionActions = CollectionConstructionActions(declarations, annotations, unresolvedMemberDeclarations);
             ExecuteCollectionConstructionActions(collectionConstructionActions);
@@ -352,6 +357,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         public IEnumerable<UnboundMemberDeclaration> FreshUnresolvedMemberDeclarations => _newUnresolved.ToList();
 
         public IEnumerable<IdentifierReference> FreshUnboundDefaultMemberAccesses => _newUnboundDefaultMemberAccesses.AllValues();
+
+        public IEnumerable<IdentifierReference> FreshFailedLetCoercions => _newFailedLetCoersions.AllValues();
 
         public IEnumerable<UnboundMemberDeclaration> UnresolvedMemberDeclarations => _unresolved;
 
@@ -1054,6 +1061,12 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             accesses.Add(defaultMemberAccess);
         }
 
+        public void AddFailedLetCoercionReference(IdentifierReference failedLetCoercion)
+        {
+            var accesses = _newFailedLetCoersions.GetOrAdd(failedLetCoercion.QualifiedModuleName, new ConcurrentBag<IdentifierReference>());
+            accesses.Add(failedLetCoercion);
+        }
+
         public Declaration OnBracketedExpression(string expression, ParserRuleContext context)
         {
             var hostApp = FindProject(_hostApp == null ? "VBA" : _hostApp.ApplicationName);
@@ -1518,6 +1531,25 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         public IEnumerable<IdentifierReference> AllUnboundDefaultMemberAccesses()
         {
             return _unboundDefaultMemberAccesses.Values
+                .SelectMany(defaultMemberAccess => defaultMemberAccess);
+        }
+
+        /// <summary>
+        /// Gets the failed Let coercions in a module.
+        /// </summary>
+        public IReadOnlyCollection<IdentifierReference> FailedLetCoercions(QualifiedModuleName module)
+        {
+            return _failedLetCoercions.TryGetValue(module, out var failedLetCoercions)
+                ? failedLetCoercions
+                : new HashSet<IdentifierReference>();
+        }
+
+        /// <summary>
+        /// Gets all failed Let coercions.
+        /// </summary>
+        public IEnumerable<IdentifierReference> FailedLetCoercions()
+        {
+            return _failedLetCoercions.Values
                 .SelectMany(defaultMemberAccess => defaultMemberAccess);
         }
     }

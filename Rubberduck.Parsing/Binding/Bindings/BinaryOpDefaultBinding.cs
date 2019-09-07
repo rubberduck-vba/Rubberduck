@@ -26,13 +26,13 @@ namespace Rubberduck.Parsing.Binding
             if (leftExpr.Classification == ExpressionClassification.ResolutionFailed)
             {
                 var failedExpr = (ResolutionFailedExpression) leftExpr;
-                return failedExpr.Join(_context, rightExpr);
+                return failedExpr.JoinAsFailedResolution(_context, rightExpr);
             }
 
             if (rightExpr.Classification == ExpressionClassification.ResolutionFailed)
             {
                 var failedExpr = (ResolutionFailedExpression)rightExpr;
-                return failedExpr.Join(_context, leftExpr);
+                return failedExpr.JoinAsFailedResolution(_context, leftExpr);
             }
 
             return new BinaryOpExpression(null, _context, leftExpr, rightExpr);

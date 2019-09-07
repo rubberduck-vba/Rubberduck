@@ -16,9 +16,10 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             IReadOnlyList<Declaration> declarations, 
             IEnumerable<IAnnotation> annotations, 
             IReadOnlyList<UnboundMemberDeclaration> unresolvedMemberDeclarations,
-            IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> unboundDefaultMemberAccesses, 
+            IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> unboundDefaultMemberAccesses,
+            IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> failedLetCoercions,
             IHostApplication hostApp = null) 
-            :base(declarations, annotations, unresolvedMemberDeclarations, unboundDefaultMemberAccesses, hostApp)
+            :base(declarations, annotations, unresolvedMemberDeclarations, unboundDefaultMemberAccesses, failedLetCoercions, hostApp)
         {}
 
         protected override void ExecuteCollectionConstructionActions(List<Action> collectionConstructionActions)

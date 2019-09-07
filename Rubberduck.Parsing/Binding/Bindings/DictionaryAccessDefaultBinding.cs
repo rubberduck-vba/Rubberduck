@@ -67,7 +67,7 @@ namespace Rubberduck.Parsing.Binding
 
                 ResolveArgumentList(null, argumentList);
                 var argumentExpressions = argumentList.Arguments.Select(arg => arg.Expression);
-                return failedExpression.Join(expression, argumentExpressions);
+                return failedExpression.JoinAsFailedResolution(expression, argumentExpressions);
             }
 
             if (!(expression is VBAParser.LExpressionContext lExpressionContext))
@@ -107,7 +107,7 @@ namespace Rubberduck.Parsing.Binding
             failedExpr.AddSuccessfullyResolvedExpression(lExpression);
 
             var argumentExpressions = argumentList.Arguments.Select(arg => arg.Expression);
-            return failedExpr.Join(context, argumentExpressions);
+            return failedExpr.JoinAsFailedResolution(context, argumentExpressions);
         }
 
         private static IBoundExpression ResolveViaDefaultMember(IBoundExpression lExpression, string asTypeName, Declaration asTypeDeclaration, ArgumentList argumentList, ParserRuleContext expression, ParserRuleContext defaultMemberContext, int recursionDepth = 1, RecursiveDefaultMemberAccessExpression containedExpression = null)

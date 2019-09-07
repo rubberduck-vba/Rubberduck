@@ -39,14 +39,14 @@ namespace Rubberduck.Parsing.Binding
         }
     }
 
-    public static class ResolutionFailedExpressionExtensions
+    public static class FailedResolutionExpressionExtensions
     {
-        public static ResolutionFailedExpression Join(this ResolutionFailedExpression expression, ParserRuleContext context, params IBoundExpression[] otherExpressions)
+        public static ResolutionFailedExpression JoinAsFailedResolution(this ResolutionFailedExpression expression, ParserRuleContext context, params IBoundExpression[] otherExpressions)
         {
-            return expression.Join(context, (IEnumerable<IBoundExpression>)otherExpressions);
+            return expression.JoinAsFailedResolution(context, (IEnumerable<IBoundExpression>)otherExpressions);
         }
 
-        public static ResolutionFailedExpression Join(this ResolutionFailedExpression expression, ParserRuleContext context, IEnumerable<IBoundExpression> otherExpressions)
+        public static ResolutionFailedExpression JoinAsFailedResolution(this ResolutionFailedExpression expression, ParserRuleContext context, IEnumerable<IBoundExpression> otherExpressions)
         {
             var otherExprs = otherExpressions.ToList();
 
@@ -56,6 +56,25 @@ namespace Rubberduck.Parsing.Binding
             var successfulExpressions = otherExprs.Where(expr => expr.Classification != ExpressionClassification.ResolutionFailed);
 
             failedExpression.AddSuccessfullyResolvedExpressions(successfulExpressions);
+
+            return failedExpression;
+        }
+
+        public static ResolutionFailedExpression JoinAsFailedResolution(this LetCoercionDefaultMemberAccessExpression expression, ParserRuleContext context, params IBoundExpression[] otherExpressions)
+        {
+            return expression.JoinAsFailedResolution(context, (IEnumerable<IBoundExpression>)otherExpressions);
+        }
+
+        public static ResolutionFailedExpression JoinAsFailedResolution(this LetCoercionDefaultMemberAccessExpression expression, ParserRuleContext context, IEnumerable<IBoundExpression> otherExpressions)
+        {
+            var otherExprs = otherExpressions.ToList();
+
+            var resolutionFailedExpressions = otherExprs.OfType<ResolutionFailedExpression>().ToArray();
+            var failedExpression = new ResolutionFailedExpression(context, resolutionFailedExpressions);
+
+            var otherChildExpressions = otherExprs.Where(expr => expr.Classification != ExpressionClassification.ResolutionFailed).Concat(new []{expression});
+
+            failedExpression.AddSuccessfullyResolvedExpressions(otherChildExpressions);
 
             return failedExpression;
         }
