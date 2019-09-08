@@ -12,12 +12,10 @@ namespace Rubberduck.Parsing.Annotations
     {
         public string ReplacementDocumentation { get; }
 
-        public ObsoleteAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> parameters)
-            : base(AnnotationType.Obsolete, qualifiedSelection, context)
-        {
-            var firstParameter = parameters.FirstOrDefault();
+        public ObsoleteAnnotation()
+            : base("Obsolete", AnnotationTarget.Member | AnnotationTarget.Variable)
+        { }
 
-            ReplacementDocumentation = string.IsNullOrWhiteSpace(firstParameter) ? "" : firstParameter;
-        }
+        // FIXME correctly handle the fact that the replacement documentation is only the first parameter!
     }
 }

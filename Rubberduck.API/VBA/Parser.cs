@@ -25,6 +25,7 @@ using Rubberduck.VBEditor.Utility;
 using Rubberduck.Root;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.SourceCodeHandling;
+using Rubberduck.Parsing.Annotations;
 
 namespace Rubberduck.API.VBA
 {
@@ -106,6 +107,8 @@ namespace Rubberduck.API.VBA
             var preprocessorErrorListenerFactory = new PreprocessingParseErrorListenerFactory();
             var preprocessorParser = new VBAPreprocessorParser(preprocessorErrorListenerFactory, preprocessorErrorListenerFactory);
             var preprocessor = new VBAPreprocessor(preprocessorParser, compilationsArgumentsCache);
+            // FIXME inject annotations to allow Rubberduck api users to access Annotations from VBA code
+            var annotationProcessor = new VBAParserAnnotationFactory(new List<IAnnotation>());
             var mainParseErrorListenerFactory = new MainParseErrorListenerFactory();
             var mainTokenStreamParser = new VBATokenStreamParser(mainParseErrorListenerFactory, mainParseErrorListenerFactory);
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
@@ -139,7 +142,8 @@ namespace Rubberduck.API.VBA
             var moduleParser = new ModuleParser(
                 codePaneSourceCodeHandler,
                 attributesSourceCodeHandler,
-                stringParser);
+                stringParser,
+                annotationProcessor);
             var parseRunner = new ParseRunner(
                 _state,
                 parserStateManager,

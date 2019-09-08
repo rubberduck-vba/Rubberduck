@@ -142,7 +142,7 @@ namespace RubberduckTests.Inspections
             var declarationFinderProviderMock = new Mock<IDeclarationFinderProvider>();
             var declaratioFinder = new DeclarationFinder(
                 new List<Declaration>(), 
-                new List<IAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new List<UnboundMemberDeclaration>(), 
                 new Dictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>>(),
                 new Dictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>>());
@@ -175,7 +175,7 @@ namespace RubberduckTests.Inspections
             var declarationFinderProviderMock = new Mock<IDeclarationFinderProvider>();
             var declarationFinder = new DeclarationFinder(
                 new List<Declaration>(), 
-                new List<IAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new List<UnboundMemberDeclaration>(), 
                 new Dictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>>(),
                 new Dictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>>());

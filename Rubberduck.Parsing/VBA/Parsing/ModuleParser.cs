@@ -22,14 +22,16 @@ namespace Rubberduck.Parsing.VBA.Parsing
         private readonly ISourceCodeProvider _codePaneSourceCodeProvider;
         private readonly ISourceCodeProvider _attributesSourceCodeProvider;
         private readonly IStringParser _parser;
+        private readonly IAnnotationFactory _annotationFactory;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public ModuleParser(ISourceCodeProvider codePaneSourceCodeProvider, ISourceCodeProvider attributesSourceCodeProvider, IStringParser parser)
+        public ModuleParser(ISourceCodeProvider codePaneSourceCodeProvider, ISourceCodeProvider attributesSourceCodeProvider, IStringParser parser, IAnnotationFactory annotationFactory)
         {
             _codePaneSourceCodeProvider = codePaneSourceCodeProvider;
             _attributesSourceCodeProvider = attributesSourceCodeProvider;
             _parser = parser;
+            _annotationFactory = annotationFactory;
         }
 
         public ModuleParseResults Parse(QualifiedModuleName module, CancellationToken cancellationToken, TokenStreamRewriter rewriter = null)
@@ -117,10 +119,10 @@ namespace Rubberduck.Parsing.VBA.Parsing
             
         }
 
-        private (IEnumerable<CommentNode> Comments, IEnumerable<IAnnotation> Annotations) CommentsAndAnnotations(QualifiedModuleName module, IParseTree tree)
+        private (IEnumerable<CommentNode> Comments, IEnumerable<IParseTreeAnnotation> Annotations) CommentsAndAnnotations(QualifiedModuleName module, IParseTree tree)
         {
             var commentListener = new CommentListener();
-            var annotationListener = new AnnotationListener(new VBAParserAnnotationFactory(), module);
+            var annotationListener = new AnnotationListener(_annotationFactory, module);
             var combinedListener = new CombinedParseTreeListener(new IParseTreeListener[] {commentListener, annotationListener});
             ParseTreeWalker.Default.Walk(combinedListener, tree);
             var comments = QualifyAndUnionComments(module, commentListener.Comments, commentListener.RemComments);

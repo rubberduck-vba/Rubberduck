@@ -88,16 +88,18 @@ namespace Rubberduck.Inspections.Concrete
             }
 
             var attributeBaseName = AttributeBaseName(declaration, attribute);
-
-            //VB_Ext_Key attributes are special in that identity also depends on the first value, the key.
+            // VB_Ext_Key attributes are special in that identity also depends on the first value, the key.
             if (attributeBaseName == "VB_Ext_Key")
             {
-                return !declaration.Annotations.OfType<IAttributeAnnotation>()
-                    .Any(annotation => annotation.Attribute.Equals("VB_Ext_Key") && attribute.Values[0].Equals(annotation.AttributeValues[0]));
+                return !declaration.Annotations.Where(pta => pta.Annotation is IAttributeAnnotation)
+                    .Any(pta => {
+                            var annotation = (IAttributeAnnotation)pta.Annotation;
+                            return annotation.Attribute(pta).Equals("VB_Ext_Key") && attribute.Values[0].Equals(annotation.AttributeValues(pta)[0]);
+                        });
             }
 
-            return !declaration.Annotations.OfType<IAttributeAnnotation>()
-                .Any(annotation => annotation.Attribute.Equals(attributeBaseName));
+            return !declaration.Annotations.Where(pta => pta.Annotation is IAttributeAnnotation)
+                .Any(pta => ((IAttributeAnnotation)pta.Annotation).Attribute(pta).Equals(attributeBaseName));
         }
 
         private static string AttributeBaseName(Declaration declaration, AttributeNode attribute)

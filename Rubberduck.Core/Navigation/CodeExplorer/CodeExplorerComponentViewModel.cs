@@ -52,7 +52,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                                      Declaration.Attributes.HasPredeclaredIdAttribute(out _);
 
         public bool IsTestModule => Declaration.DeclarationType == DeclarationType.ProceduralModule
-                                    && Declaration.Annotations.Any(annotation => annotation.AnnotationType == AnnotationType.TestModule);
+                                    && Declaration.Annotations.Any(annotation => annotation is TestModuleAnnotation);
 
         public override void Synchronize(ref List<Declaration> updated)
         {

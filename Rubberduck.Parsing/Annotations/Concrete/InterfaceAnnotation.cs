@@ -9,9 +9,8 @@ namespace Rubberduck.Parsing.Annotations
     /// </summary>
     public sealed class InterfaceAnnotation : AnnotationBase
     {
-        public InterfaceAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> parameters)
-            : base(AnnotationType.Interface, qualifiedSelection, context)
-        {
-        }
+        public InterfaceAnnotation()
+            : base("Interface", AnnotationTarget.Module)
+        { }
     }
 }

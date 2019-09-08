@@ -189,7 +189,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void RefreshFinder(IHostApplication host)
         {
-            var oldDecalarationFinder = DeclarationFinder;
+            var oldDeclarationFinder = DeclarationFinder;
             DeclarationFinder = _declarationFinderFactory.Create(
                 AllDeclarationsFromModuleStates, 
                 AllAnnotations, 
@@ -197,7 +197,7 @@ namespace Rubberduck.Parsing.VBA
                 AllUnboundDefaultMemberAccessesFromModuleStates,
                 AllFailedLetCoercionsFromModuleStates,
                 host);
-            _declarationFinderFactory.Release(oldDecalarationFinder);
+            _declarationFinderFactory.Release(oldDeclarationFinder);
         }
 
         public void RefreshDeclarationFinder()
@@ -680,11 +680,11 @@ namespace Rubberduck.Parsing.VBA
             return moduleState.Comments;
         }
 
-        public List<IAnnotation> AllAnnotations
+        public List<IParseTreeAnnotation> AllAnnotations
         {
             get
             {
-                var annotations = new List<IAnnotation>();
+                var annotations = new List<IParseTreeAnnotation>();
                 foreach (var state in _moduleStates.Values)
                 {
                     annotations.AddRange(state.Annotations);
@@ -694,19 +694,19 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public IEnumerable<IAnnotation> GetModuleAnnotations(QualifiedModuleName module)
+        public IEnumerable<IParseTreeAnnotation> GetModuleAnnotations(QualifiedModuleName module)
         {
             if (_moduleStates.TryGetValue(module, out var result))
             {
                 return result.Annotations;
             }
 
-            return Enumerable.Empty<IAnnotation>();
+            return Enumerable.Empty<IParseTreeAnnotation>();
         }
 
-        public void SetModuleAnnotations(QualifiedModuleName module, IEnumerable<IAnnotation> annotations)
+        public void SetModuleAnnotations(QualifiedModuleName module, IEnumerable<IParseTreeAnnotation> annotations)
         {
-            _moduleStates[module].SetAnnotations(new List<IAnnotation>(annotations));
+            _moduleStates[module].SetAnnotations(new List<IParseTreeAnnotation>(annotations));
         }
 
         /// <summary>

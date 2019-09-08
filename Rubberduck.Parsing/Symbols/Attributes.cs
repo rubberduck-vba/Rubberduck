@@ -123,27 +123,27 @@ namespace Rubberduck.Parsing.Symbols
             return $"{memberName}.{attributeBaseName}";
         }
 
-        public bool HasAttributeFor(IAttributeAnnotation annotation, string memberName = null)
+        public bool HasAttributeFor(IParseTreeAnnotation annotation, string memberName = null)
         {
             return AttributeNodesFor(annotation, memberName).Any();
         }
 
-        public IEnumerable<AttributeNode> AttributeNodesFor(IAttributeAnnotation annotation, string memberName = null)
+        public IEnumerable<AttributeNode> AttributeNodesFor(IParseTreeAnnotation annotationInstance, string memberName = null)
         {
-            if (!annotation.AnnotationType.HasFlag(AnnotationType.Attribute))
+            if (!(annotationInstance.Annotation is IAttributeAnnotation annotation))
             {
                 return Enumerable.Empty<AttributeNode>();
             }
+            var attribute = annotation.Attribute(annotationInstance);
 
             var attributeName = memberName != null
-                ? MemberAttributeName(annotation.Attribute, memberName)
-                : annotation.Attribute;
-
+                ? MemberAttributeName(attribute, memberName)
+                : attribute;
             //VB_Ext_Key annotation depend on the defined key for identity.
-            if (annotation.Attribute.Equals("VB_Ext_Key", StringComparison.OrdinalIgnoreCase))
+            if (attribute.Equals("VB_Ext_Key", StringComparison.OrdinalIgnoreCase))
             {
                 return this.Where(a => a.Name.Equals(attributeName, StringComparison.OrdinalIgnoreCase)
-                                     && a.Values[0] == annotation.AttributeValues[0]);
+                                     && a.Values[0] == annotation.AttributeValues(annotationInstance)[0]);
             }
 
             return this.Where(a => a.Name.Equals(attributeName, StringComparison.OrdinalIgnoreCase));

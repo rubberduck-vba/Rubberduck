@@ -9,8 +9,8 @@ namespace Rubberduck.Parsing.Annotations
     /// </summary>
     public sealed class PredeclaredIdAnnotation : FixedAttributeValueAnnotationBase
     {
-        public PredeclaredIdAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> parameters)
-            : base(AnnotationType.PredeclaredId, qualifiedSelection, context)
+        public PredeclaredIdAnnotation()
+            : base("PredeclaredId", AnnotationTarget.Module, "VB_PredeclaredId", new[] { "True" })
         {}
     }
 }

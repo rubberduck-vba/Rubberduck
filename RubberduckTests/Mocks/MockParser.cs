@@ -25,6 +25,7 @@ using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.Utility;
+using Rubberduck.Parsing.Annotations;
 
 namespace RubberduckTests.Mocks
 {
@@ -75,6 +76,7 @@ namespace RubberduckTests.Mocks
             var mainTokenStreamParser = new VBATokenStreamParser(mainParseErrorListenerFactory, mainParseErrorListenerFactory);
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
             var stringParser = new TokenStreamParserStringParserAdapterWithPreprocessing(tokenStreamProvider, mainTokenStreamParser, preprocessor);
+            var vbaParserAnnotationFactory = new VBAParserAnnotationFactory(WellKnownAnnotations());
             var projectManager = new RepositoryProjectManager(projectRepository);
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager();
             var supertypeClearer = new SynchronousSupertypeClearer(state); 
@@ -106,7 +108,8 @@ namespace RubberduckTests.Mocks
             var moduleParser = new ModuleParser(
                 codePaneSourceCodeHandler, 
                 attributesSourceCodeHandler, 
-                stringParser);
+                stringParser,
+                vbaParserAnnotationFactory);
             var parseRunner = new SynchronousParseRunner(
                 state,
                 parserStateManager,
@@ -157,6 +160,15 @@ namespace RubberduckTests.Mocks
                 rewritingManager);
 
             return (parser, rewritingManager);
+        }
+
+        public static IEnumerable<IAnnotation> WellKnownAnnotations()
+        {
+            return Assembly.GetAssembly(typeof(IAnnotation))
+                .GetTypes()
+                .Where(candidate => typeof(IAnnotation).IsAssignableFrom(candidate)
+                    && !candidate.IsAbstract)
+                .Select(t => (IAnnotation)Activator.CreateInstance(t));
         }
 
         public static SynchronousParseCoordinator Create(IVBE vbe, RubberduckParserState state, IProjectsRepository projectRepository, string serializedComProjectsPath = null)

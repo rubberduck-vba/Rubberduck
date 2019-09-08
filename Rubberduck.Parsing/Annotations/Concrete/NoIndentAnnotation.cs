@@ -9,9 +9,8 @@ namespace Rubberduck.Parsing.Annotations
     /// </summary>
     public sealed class NoIndentAnnotation : AnnotationBase
     {
-        public NoIndentAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> parameters)
-            : base(AnnotationType.NoIndent, qualifiedSelection, context)
-        {
-        }
+        public NoIndentAnnotation()
+            : base("NoIndent", AnnotationTarget.Module)
+        { }
     }
 }

@@ -10,6 +10,7 @@ using NLog;
 using Rubberduck.Common;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources;
@@ -376,7 +377,7 @@ namespace Rubberduck.UI.UnitTesting
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
 
-            AnnotationUpdater.AddAnnotation(rewriteSession, _mousedOverTestMethod.Declaration, Parsing.Annotations.AnnotationType.IgnoreTest);
+            AnnotationUpdater.AddAnnotation(rewriteSession, _mousedOverTestMethod.Declaration, new IgnoreTestAnnotation());
 
             rewriteSession.TryRewrite();
         }
@@ -385,7 +386,7 @@ namespace Rubberduck.UI.UnitTesting
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
             var ignoreTestAnnotations = _mousedOverTestMethod.Declaration.Annotations
-                .Where(iannotations => iannotations.AnnotationType == Parsing.Annotations.AnnotationType.IgnoreTest);
+                .Where(pta => pta.Annotation is IgnoreTestAnnotation);
 
             foreach (var ignoreTestAnnotation in ignoreTestAnnotations)
             {

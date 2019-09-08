@@ -9,9 +9,8 @@ namespace Rubberduck.Parsing.Annotations
     /// </summary>
     public sealed class IgnoreTestAnnotation : AnnotationBase
     {
-        public IgnoreTestAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> parameters)
-            : base(AnnotationType.IgnoreTest, qualifiedSelection, context)
-        {
-        }
+        public IgnoreTestAnnotation()
+            : base("IgnoreTest", AnnotationTarget.Member)
+        { }
     }
 }
