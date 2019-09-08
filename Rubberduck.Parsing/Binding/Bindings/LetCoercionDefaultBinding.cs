@@ -83,10 +83,11 @@ namespace Rubberduck.Parsing.Binding
             return ResolveViaDefaultMember(wrappedExpression, asTypeName, asTypeDeclaration, expression, isAssignment);
         }
 
-        private static IBoundExpression ExpressionForResolutionFailure(IBoundExpression lExpression)
+        private static IBoundExpression ExpressionForResolutionFailure(IBoundExpression wrappedExpression, ParserRuleContext expression)
         {
-            //We return the original expression because no default member resolution can have taken place as there is no appropriate one.
-            return lExpression;
+            var contextTExt = expression.GetText();
+            //We return a LetCoercionExpression classified as failed to enable us to save this failed coercion.
+            return new LetCoercionDefaultMemberAccessExpression(null, ExpressionClassification.ResolutionFailed, expression, wrappedExpression, 1, null);
         }
 
         private static IBoundExpression ResolveViaDefaultMember(IBoundExpression wrappedExpression, string asTypeName, Declaration asTypeDeclaration, ParserRuleContext expression, bool isAssignment, int recursionDepth = 1, RecursiveDefaultMemberAccessExpression containedExpression = null)
@@ -103,7 +104,7 @@ namespace Rubberduck.Parsing.Binding
                 || !IsPropertyGetLetFunctionProcedure(defaultMember)
                 || !IsPublic(defaultMember))
             {
-                return ExpressionForResolutionFailure(wrappedExpression);
+                return ExpressionForResolutionFailure(wrappedExpression, expression);
             }
 
             var defaultMemberClassification = DefaultMemberClassification(defaultMember);
@@ -133,7 +134,7 @@ namespace Rubberduck.Parsing.Binding
                 }
             }
 
-            return ExpressionForResolutionFailure(wrappedExpression);
+            return ExpressionForResolutionFailure(wrappedExpression, expression);
         }
 
         private static IBoundExpression ResolveRecursiveDefaultMember(IBoundExpression wrappedExpression, Declaration defaultMember, ExpressionClassification defaultMemberClassification, ParserRuleContext expression, bool isAssignment, int recursionDepth, RecursiveDefaultMemberAccessExpression containedExpression)

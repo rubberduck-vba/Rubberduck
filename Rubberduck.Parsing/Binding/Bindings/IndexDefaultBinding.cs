@@ -67,11 +67,9 @@ namespace Rubberduck.Parsing.Binding
         {
             if (lExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
-                var failedExpression = (ResolutionFailedExpression) lExpression;
-
                 ResolveArgumentList(null, argumentList);
                 var argumentExpressions = argumentList.Arguments.Select(arg => arg.Expression);
-                return failedExpression.JoinAsFailedResolution(expression, argumentExpressions);
+                return lExpression.JoinAsFailedResolution(expression, argumentExpressions);
             }
 
             if (lExpression.Classification == ExpressionClassification.Unbound)

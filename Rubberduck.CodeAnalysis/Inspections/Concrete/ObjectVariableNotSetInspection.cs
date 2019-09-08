@@ -7,6 +7,7 @@ using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -42,11 +43,38 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
+            var finder = State.DeclarationFinder;
 
-            return InterestingReferences().Select(reference =>
-                new IdentifierReferenceInspectionResult(this,
-                    string.Format(InspectionResults.ObjectVariableNotSetInspection, reference.Declaration.IdentifierName),
-                    State, reference));
+            var failedLetResolutionAssignments = FailedLetResolutionAssignments(finder);
+            var interestingOtherReferences = InterestingReferences();
+
+            return failedLetResolutionAssignments.Concat(interestingOtherReferences)
+                .Select(reference =>
+                    new IdentifierReferenceInspectionResult(
+                        this,
+                        string.Format(InspectionResults.ObjectVariableNotSetInspection, reference.IdentifierName),
+                        State, 
+                        reference));
+        }
+
+        private IEnumerable<IdentifierReference> FailedLetResolutionAssignments(DeclarationFinder finder)
+        {
+            var results = new List<IdentifierReference>();
+            foreach (var moduleDeclaration in finder.UserDeclarations(DeclarationType.Module))
+            {
+                if (moduleDeclaration == null || moduleDeclaration.IsIgnoringInspectionResultFor(AnnotationName))
+                {
+                    continue;
+                }
+
+                var failedLetCoercionAssignmentsInModule = finder
+                    .FailedLetCoercions(moduleDeclaration.QualifiedModuleName)
+                    .Where(reference => reference.IsAssignment);
+
+                results.AddRange(failedLetCoercionAssignmentsInModule);
+            }
+
+            return results.Where(reference => !reference.IsIgnoringInspectionResultFor(AnnotationName));
         }
 
         private IEnumerable<IdentifierReference> InterestingReferences()

@@ -558,7 +558,7 @@ Private Sub Test()
     Dim bar As Variant    
     foo = bar
 End Sub";
-            //The default member of Recordset is Fields, which is an object.
+            //The default member of Recordset is Fields, which is an object and only has a paramterized default member.
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "ADODB.6.1");
         }
 

@@ -15,7 +15,7 @@ namespace Rubberduck.Parsing.Binding
             IsJoinedExpression = false;
         }
 
-        public ResolutionFailedExpression(ParserRuleContext context, params ResolutionFailedExpression[] expressions)
+        public ResolutionFailedExpression(ParserRuleContext context, IEnumerable<IBoundExpression> expressions)
             : base(null, ExpressionClassification.ResolutionFailed, context)
         {
             IsDefaultMemberResolution = false;
@@ -41,42 +41,15 @@ namespace Rubberduck.Parsing.Binding
 
     public static class FailedResolutionExpressionExtensions
     {
-        public static ResolutionFailedExpression JoinAsFailedResolution(this ResolutionFailedExpression expression, ParserRuleContext context, params IBoundExpression[] otherExpressions)
+        public static ResolutionFailedExpression JoinAsFailedResolution(this IBoundExpression expression, ParserRuleContext context, params IBoundExpression[] otherExpressions)
         {
             return expression.JoinAsFailedResolution(context, (IEnumerable<IBoundExpression>)otherExpressions);
         }
 
-        public static ResolutionFailedExpression JoinAsFailedResolution(this ResolutionFailedExpression expression, ParserRuleContext context, IEnumerable<IBoundExpression> otherExpressions)
+        public static ResolutionFailedExpression JoinAsFailedResolution(this IBoundExpression expression, ParserRuleContext context, IEnumerable<IBoundExpression> otherExpressions)
         {
-            var otherExprs = otherExpressions.ToList();
-
-            var failedExpressions = otherExprs.OfType<ResolutionFailedExpression>().Concat(new []{expression}).ToArray();
-            var failedExpression = new ResolutionFailedExpression(context, failedExpressions);
-
-            var successfulExpressions = otherExprs.Where(expr => expr.Classification != ExpressionClassification.ResolutionFailed);
-
-            failedExpression.AddSuccessfullyResolvedExpressions(successfulExpressions);
-
-            return failedExpression;
-        }
-
-        public static ResolutionFailedExpression JoinAsFailedResolution(this LetCoercionDefaultMemberAccessExpression expression, ParserRuleContext context, params IBoundExpression[] otherExpressions)
-        {
-            return expression.JoinAsFailedResolution(context, (IEnumerable<IBoundExpression>)otherExpressions);
-        }
-
-        public static ResolutionFailedExpression JoinAsFailedResolution(this LetCoercionDefaultMemberAccessExpression expression, ParserRuleContext context, IEnumerable<IBoundExpression> otherExpressions)
-        {
-            var otherExprs = otherExpressions.ToList();
-
-            var resolutionFailedExpressions = otherExprs.OfType<ResolutionFailedExpression>().ToArray();
-            var failedExpression = new ResolutionFailedExpression(context, resolutionFailedExpressions);
-
-            var otherChildExpressions = otherExprs.Where(expr => expr.Classification != ExpressionClassification.ResolutionFailed).Concat(new []{expression});
-
-            failedExpression.AddSuccessfullyResolvedExpressions(otherChildExpressions);
-
-            return failedExpression;
+            var expressions = otherExpressions.Concat(new[] {expression});
+            return new ResolutionFailedExpression(context, expressions);
         }
     }
 }
