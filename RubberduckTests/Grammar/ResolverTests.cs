@@ -5672,7 +5672,7 @@ End Sub
         [TestCase("    For Each fooBar In cls.Baz : Foo = 42 : Next", 24, 31)]
         [TestCase("    Foo = cls.Baz Is fooBar", 11, 18)]
         [TestCase("    Foo = fooBar Is cls.Baz", 21, 28)]
-        public void NonLetCoercionExpressionHasNoFeiledLetCoercionReference(string statement, int selectionStartColumn, int selectionEndColumn)
+        public void NonLetCoercionExpressionHasNoFailedLetCoercionReference(string statement, int selectionStartColumn, int selectionEndColumn)
         {
             var class1Code = @"
 Public Function Foo() As Long

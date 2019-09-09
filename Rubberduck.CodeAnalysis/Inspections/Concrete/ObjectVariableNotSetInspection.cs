@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -7,7 +9,10 @@ using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -45,10 +50,9 @@ namespace Rubberduck.Inspections.Concrete
         {
             var finder = State.DeclarationFinder;
 
-            var failedLetResolutionAssignments = FailedLetResolutionAssignments(finder);
-            var interestingOtherReferences = InterestingReferences();
+            var failedLetResolutionResults = FailedLetResolutionResults(finder);
 
-            return failedLetResolutionAssignments.Concat(interestingOtherReferences)
+            return failedLetResolutionResults
                 .Select(reference =>
                     new IdentifierReferenceInspectionResult(
                         this,
@@ -57,7 +61,7 @@ namespace Rubberduck.Inspections.Concrete
                         reference));
         }
 
-        private IEnumerable<IdentifierReference> FailedLetResolutionAssignments(DeclarationFinder finder)
+        private IEnumerable<IdentifierReference> FailedLetResolutionResults(DeclarationFinder finder)
         {
             var results = new List<IdentifierReference>();
             foreach (var moduleDeclaration in finder.UserDeclarations(DeclarationType.Module))
@@ -67,33 +71,55 @@ namespace Rubberduck.Inspections.Concrete
                     continue;
                 }
 
-                var failedLetCoercionAssignmentsInModule = finder
-                    .FailedLetCoercions(moduleDeclaration.QualifiedModuleName)
-                    .Where(reference => reference.IsAssignment);
-
+                var module = moduleDeclaration.QualifiedModuleName;
+                var failedLetCoercionAssignmentsInModule = FailedLetResolutionAssignments(module, finder);
+                var possiblyObjectLhsLetAssignmentsWithFailedLetResolutionOnRhs = PossiblyObjectLhsLetAssignmentsWithNonValueOnRhs(module, finder);
                 results.AddRange(failedLetCoercionAssignmentsInModule);
+                results.AddRange(possiblyObjectLhsLetAssignmentsWithFailedLetResolutionOnRhs);
             }
 
             return results.Where(reference => !reference.IsIgnoringInspectionResultFor(AnnotationName));
         }
 
-        private IEnumerable<IdentifierReference> InterestingReferences()
+        private static IEnumerable<IdentifierReference> FailedLetResolutionAssignments(QualifiedModuleName module, DeclarationFinder finder)
         {
-            var result = new List<IdentifierReference>();
-            foreach (var moduleReferences in State.DeclarationFinder.IdentifierReferences())
-            {
-                var module = State.DeclarationFinder.ModuleDeclaration(moduleReferences.Key);
-                if (module == null || !module.IsUserDefined || module.IsIgnoringInspectionResultFor(AnnotationName))
-                {
-                    // module isn't user code (?), or this inspection is ignored at module-level
-                    continue;
-                }
+            return finder.FailedLetCoercions(module)
+                .Where(reference => reference.IsAssignment);
+        }
 
-                result.AddRange(moduleReferences.Value.Where(reference => !reference.IsSetAssignment
-                    && VariableRequiresSetAssignmentEvaluator.RequiresSetAssignment(reference, State)));
-            }
+        private static IEnumerable<IdentifierReference> PossiblyObjectLhsLetAssignmentsWithNonValueOnRhs(QualifiedModuleName module, DeclarationFinder finder)
+        {
+            return PossiblyObjectLhsLetAssignments(module, finder)
+                .Where(tpl => finder.FailedLetCoercions(module)
+                        .Any(reference => reference.Selection.Equals(tpl.rhs.GetSelection()))
+                        || Tokens.Nothing.Equals(tpl.rhs.GetText(), StringComparison.InvariantCultureIgnoreCase))
+                .Select(tpl => tpl.assignment);
+        }
 
-            return result.Where(reference => !reference.IsIgnoringInspectionResultFor(AnnotationName));
+        private static IEnumerable<(IdentifierReference assignment, ParserRuleContext rhs)> PossiblyObjectLhsLetAssignments(QualifiedModuleName module, DeclarationFinder finder)
+        {
+            return PossiblyObjectNonSetAssignments(module, finder)
+                .Select(reference => (reference, RhsOfLetAssignment(reference)))
+                .Where(tpl => tpl.Item2 != null);
+        }
+
+        private static ParserRuleContext RhsOfLetAssignment(IdentifierReference letAssignment)
+        {
+            var letStatement = letAssignment.Context.Parent as VBAParser.LetStmtContext;
+            return letStatement?.expression();
+        }
+
+        private static IEnumerable<IdentifierReference> PossiblyObjectNonSetAssignments(QualifiedModuleName module, DeclarationFinder finder)
+        {
+            var assignments = finder.IdentifierReferences(module)
+                .Where(reference => reference.IsAssignment
+                                    && !reference.IsSetAssignment
+                                    && (reference.IsNonIndexedDefaultMemberAccess 
+                                        || Tokens.Variant.Equals(reference.Declaration.AsTypeName, StringComparison.InvariantCultureIgnoreCase)));
+            var unboundAssignments = finder.UnboundDefaultMemberAccesses(module)
+                .Where(reference => reference.IsAssignment);
+
+            return assignments.Concat(unboundAssignments);
         }
     }
 }
