@@ -419,4 +419,7 @@ In Memoriam, 1972-2018</value>
   <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
     <value>Die Interface-Klasse '{2}' enthält eine Implementierung für die  {0} '{1}'.</value>
   </data>
+  <data name="ValueRequiredInspection" xml:space="preserve">
+    <value>An einer Stelle, die einen Wert verlangt, wird der Ausdruck '{0}' vom Objekttyp '{1}'  verwendet, der keinen passendes Standardmember hat.</value>
+  </data>
 </root>

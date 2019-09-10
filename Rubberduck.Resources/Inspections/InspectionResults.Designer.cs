@@ -928,6 +928,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to In a context that requires a value type, the expression &apos;{0}&apos; of object type &apos;{1}&apos; is used that does not have a suitable default member..
+        /// </summary>
+        public static string ValueRequiredInspection {
+            get {
+                return ResourceManager.GetString("ValueRequiredInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Variable &apos;{0}&apos; is not assigned..
         /// </summary>
         public static string VariableNotAssignedInspection {

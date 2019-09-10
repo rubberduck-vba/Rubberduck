@@ -1563,7 +1563,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         public IEnumerable<IdentifierReference> FailedLetCoercions()
         {
             return _failedLetCoercions.Values
-                .SelectMany(defaultMemberAccess => defaultMemberAccess);
+                .SelectMany(coercion => coercion);
         }
     }
 }

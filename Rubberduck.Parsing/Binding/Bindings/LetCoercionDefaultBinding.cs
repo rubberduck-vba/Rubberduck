@@ -85,9 +85,8 @@ namespace Rubberduck.Parsing.Binding
 
         private static IBoundExpression ExpressionForResolutionFailure(IBoundExpression wrappedExpression, ParserRuleContext expression)
         {
-            var contextTExt = expression.GetText();
             //We return a LetCoercionExpression classified as failed to enable us to save this failed coercion.
-            return new LetCoercionDefaultMemberAccessExpression(null, ExpressionClassification.ResolutionFailed, expression, wrappedExpression, 1, null);
+            return new LetCoercionDefaultMemberAccessExpression(wrappedExpression.ReferencedDeclaration, ExpressionClassification.ResolutionFailed, expression, wrappedExpression, 1, null);
         }
 
         private static IBoundExpression ResolveViaDefaultMember(IBoundExpression wrappedExpression, string asTypeName, Declaration asTypeDeclaration, ParserRuleContext expression, bool isAssignment, int recursionDepth = 1, RecursiveDefaultMemberAccessExpression containedExpression = null)
@@ -96,7 +95,7 @@ namespace Rubberduck.Parsing.Binding
                     || Tokens.Object.Equals(asTypeName, StringComparison.InvariantCultureIgnoreCase))
             {
                 // We cannot know the the default member in this case, so return an unbound member call.
-                return new LetCoercionDefaultMemberAccessExpression(null, ExpressionClassification.Unbound, expression, wrappedExpression, recursionDepth, containedExpression);
+                return new LetCoercionDefaultMemberAccessExpression(wrappedExpression.ReferencedDeclaration, ExpressionClassification.Unbound, expression, wrappedExpression, recursionDepth, containedExpression);
             }
 
             var defaultMember = (asTypeDeclaration as ClassModuleDeclaration)?.DefaultMember;

@@ -378,4 +378,7 @@
   <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
     <value>Implementierte Methode einer Interface-Klasse</value>
   </data>
+  <data name="ValueRequiredInspection" xml:space="preserve">
+    <value>Objekt statt Wert verwendet</value>
+  </data>
 </root>

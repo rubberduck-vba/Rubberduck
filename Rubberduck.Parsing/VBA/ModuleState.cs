@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Annotations;
@@ -25,8 +26,8 @@ namespace Rubberduck.Parsing.VBA
         public SyntaxErrorException ModuleException { get; private set; }
         public IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> ModuleAttributes { get; private set; }
         public IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> MembersAllowingAttributes { get; private set; }
-        public IReadOnlyCollection<IdentifierReference> UnboundDefaultMemberAccesses => _unboundDefaultMemberAccesses;
-        public IReadOnlyCollection<IdentifierReference> FailedLetCoercions => _failedLetCoercions;
+        public IReadOnlyCollection<IdentifierReference> UnboundDefaultMemberAccesses => _unboundDefaultMemberAccesses.ToList();
+        public IReadOnlyCollection<IdentifierReference> FailedLetCoercions => _failedLetCoercions.ToList();
 
         public bool IsNew { get; private set; }
         public bool IsMarkedAsModified { get; private set; }
@@ -158,7 +159,6 @@ namespace Rubberduck.Parsing.VBA
         public ModuleState AddUnboundDefaultMemberAccess(IdentifierReference defaultMemberAccess)
         {
             if (defaultMemberAccess.IsDefaultMemberAccess
-                && defaultMemberAccess.Declaration == null
                 && !_unboundDefaultMemberAccesses.Contains(defaultMemberAccess))
             {
                 _unboundDefaultMemberAccesses.Add(defaultMemberAccess);
@@ -167,16 +167,25 @@ namespace Rubberduck.Parsing.VBA
             return this;
         }
 
+        public void ClearUnboundDefaultMemberAccesses()
+        {
+            _unboundDefaultMemberAccesses.Clear();
+        }
+
         public ModuleState AddFailedLetCoercion(IdentifierReference failedLetCoercion)
         {
             if (failedLetCoercion.IsDefaultMemberAccess
-                && failedLetCoercion.Declaration == null
                 && !_failedLetCoercions.Contains(failedLetCoercion))
             {
                 _failedLetCoercions.Add(failedLetCoercion);
             }
 
             return this;
+        }
+
+        public void ClearFailedLetCoercions()
+        {
+            _failedLetCoercions.Clear();
         }
 
         public void MarkAsModified()
@@ -197,6 +206,8 @@ namespace Rubberduck.Parsing.VBA
             Comments?.Clear();
             Annotations?.Clear();
             ModuleAttributes?.Clear();
+            _unboundDefaultMemberAccesses?.Clear();
+            _failedLetCoercions?.Clear();
 
             _isDisposed = true;
         }

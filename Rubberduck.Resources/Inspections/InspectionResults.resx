@@ -446,4 +446,8 @@ In memoriam, 1972-2018</value>
     <value>The argument '{2}' of type '{3}' is passed to the parameter '{0}' of the incompatible type '{1}'.</value>
     <comment>{0} parameter name, {1} parameter declared type, {2} argument expression text, {3} argument set type name</comment>
   </data>
+  <data name="ValueRequiredInspection" xml:space="preserve">
+    <value>In a context that requires a value type, the expression '{0}' of object type '{1}' is used that does not have a suitable default member.</value>
+    <comment>{0} expression; {1} type</comment>
+  </data>
 </root>

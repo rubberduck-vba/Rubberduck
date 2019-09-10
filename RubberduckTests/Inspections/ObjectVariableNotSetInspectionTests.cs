@@ -8,13 +8,12 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class ObjectVariableNotSetInspectionTests
+    public class ObjectVariableNotSetInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
@@ -1379,16 +1378,7 @@ End Sub
             Assert.AreEqual(expectedSelection, actualSelection);
         }
 
-        private static IEnumerable<IInspectionResult> InspectionResults(IVBE vbe)
-        {
-            using (var state = MockParser.CreateAndParse(vbe))
-            {
-                var inspection = InspectionUnderTest(state);
-                return inspection.GetInspectionResults(CancellationToken.None);
-            }
-        }
-
-        private static IInspection InspectionUnderTest(RubberduckParserState state)
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
             return new ObjectVariableNotSetInspection(state);
         }

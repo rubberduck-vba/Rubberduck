@@ -125,6 +125,11 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             _referenceRemover.RemoveReferencesBy(toResolve, token);
             _moduleToModuleReferenceManager.ClearModuleToModuleReferencesFromModule(toResolve);
             _moduleToModuleReferenceManager.ClearModuleToModuleReferencesToModule(toResolve);
+            foreach (var module in toResolve)
+            {
+                _state.ClearUnboundDefaultMemberAccesses(module);
+                _state.ClearFailedLetCoercions(module);
+            }
         }
 
         private void ExecuteCompilationPasses(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)

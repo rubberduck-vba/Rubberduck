@@ -193,7 +193,7 @@ namespace Rubberduck.Parsing.VBA
             DeclarationFinder = _declarationFinderFactory.Create(
                 AllDeclarationsFromModuleStates, 
                 AllAnnotations, 
-                AllUnresolvedMemberDeclarationsFromModulestates, 
+                AllUnresolvedMemberDeclarationsFromModuleStates, 
                 AllUnboundDefaultMemberAccessesFromModuleStates,
                 AllFailedLetCoercionsFromModuleStates,
                 host);
@@ -739,7 +739,7 @@ namespace Rubberduck.Parsing.VBA
         /// <summary>
         /// Gets a copy of the unresolved member declarations directly from the module states. (Used for refreshing the DeclarationFinder.)
         /// </summary>
-        private IReadOnlyList<UnboundMemberDeclaration> AllUnresolvedMemberDeclarationsFromModulestates
+        private IReadOnlyList<UnboundMemberDeclaration> AllUnresolvedMemberDeclarationsFromModuleStates
         {
             get
             {
@@ -874,12 +874,28 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        public void ClearUnboundDefaultMemberAccesses(QualifiedModuleName module)
+        {
+            if (_moduleStates.TryGetValue(module, out var moduleState))
+            {
+                moduleState.ClearUnboundDefaultMemberAccesses();
+            }
+        }
+
         public void AddFailedLetCoercions(QualifiedModuleName module, IEnumerable<IdentifierReference> failedLetCoercions)
         {
             var moduleState = _moduleStates.GetOrAdd(module, new ModuleState(new ConcurrentDictionary<Declaration, byte>()));
             foreach (var failedLetCoercion in failedLetCoercions)
             {
                 moduleState.AddFailedLetCoercion(failedLetCoercion);
+            }
+        }
+
+        public void ClearFailedLetCoercions(QualifiedModuleName module)
+        {
+            if (_moduleStates.TryGetValue(module, out var moduleState))
+            {
+                moduleState.ClearFailedLetCoercions();
             }
         }
 

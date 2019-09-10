@@ -398,4 +398,7 @@
   <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
     <value>Argument with incompatible object type</value>
   </data>
+  <data name="ValueRequiredInspection" xml:space="preserve">
+    <value>Object used where a value is required</value>
+  </data>
 </root>

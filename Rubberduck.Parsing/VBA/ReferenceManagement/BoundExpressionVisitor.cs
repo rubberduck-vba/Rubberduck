@@ -499,18 +499,21 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
 
             Visit(expression.WrappedExpression, module, scope, parent);
 
-            if (expression.Classification != ExpressionClassification.Unbound
-                && expression.ReferencedDeclaration != null)
+            switch (expression.Classification)
             {
-                AddDefaultMemberReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement);
-            }
-            else if (expression.Classification == ExpressionClassification.ResolutionFailed)
-            {
-                AddFailedLetCoercionReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement);
-            }
-            else
-            {
-                AddUnboundDefaultMemberReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement);
+                case ExpressionClassification.ResolutionFailed:
+                    AddFailedLetCoercionReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement);
+                    break;
+                case ExpressionClassification.Unbound:
+                    AddUnboundDefaultMemberReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement);
+                    break;
+                default:
+                    if (expression.ReferencedDeclaration != null)
+                    {
+                        AddDefaultMemberReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement);
+                    }
+
+                    break;
             }
         }
 

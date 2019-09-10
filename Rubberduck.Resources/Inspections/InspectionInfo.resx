@@ -392,6 +392,9 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>A class module that is meant to be used as interface for concrete classes should generally be abstracted of any implementations. If it is your intention to use this class module as a concrete, you can safely ignore this inspection result.</value>
   </data>
   <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
-    <value>The VBA compiler does not raise an error if an object is passed as an argument for a parameter with an incompatible declared object type, i.e. with an object type that is neither the same type, a supertype nor a subtype. Under almost all circumstances passing such an argument leads to a run-time error, which is harder to detect and indicates a bug. In all other situations the code can be changed to use only assignments between compatible declared types.</value>
+    <value>The VBA compiler does not raise an error if an object is passed as an argument for a parameter with an incompatible declared object type, i.e. with an object type that is neither the same type, a supertype nor a subtype. Under almost all circumstances passing such an argument leads to a run-time error, which is harder to detect and indicates a bug. In all other situations the code can be changed to only pass arguments of compatible declared types.</value>
+  </data>
+  <data name="ValueRequiredInspection" xml:space="preserve">
+    <value>The VBA compiler does not raise an error if an object is used in a place that requires a value type and the object's declared type does not have a suitable default member. Under almost all circumstances, this leads to a run-time error, which is harder to detect and indicates a bug.</value>
   </data>
 </root>
