@@ -64,8 +64,13 @@ namespace Rubberduck.Parsing.Symbols
         /// </summary>
         public Declaration ParentNonScoping { get; }
 
+        /// <summary>
+        /// True if this reference is the assignment target.
+        /// </summary>
         public bool IsAssignment { get; }
-
+        /// <summary>
+        /// True if the assignment uses the 'Set' keyword.
+        /// </summary>
         public bool IsSetAssignment { get; }
 
         public bool IsIndexedDefaultMemberAccess { get; }

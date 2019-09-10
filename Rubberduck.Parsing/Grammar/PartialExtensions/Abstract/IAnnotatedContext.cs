@@ -4,8 +4,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
-// ReSharper disable once CheckNamespace
-namespace Rubberduck.Parsing.Grammar
+namespace Rubberduck.Parsing.Grammar.Abstract
 {
     public interface IAnnotatedContext
     {
@@ -19,11 +18,5 @@ namespace Rubberduck.Parsing.Grammar
 
         void Annotate(VBAParser.AnnotationContext annotation);
         void AddAttributes(Attributes attributes);
-    }
-
-    public interface IAnnotatingContext
-    {
-        ParserRuleContext AnnotatedContext { get; }
-        AnnotationType AnnotationType { get; }
     }
 }

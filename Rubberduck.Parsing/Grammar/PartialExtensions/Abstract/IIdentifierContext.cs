@@ -1,7 +1,6 @@
 ﻿using Antlr4.Runtime.Misc;
 
-// ReSharper disable once CheckNamespace
-namespace Rubberduck.Parsing.Grammar
+namespace Rubberduck.Parsing.Grammar.Abstract
 {
     public interface IIdentifierContext
     {
