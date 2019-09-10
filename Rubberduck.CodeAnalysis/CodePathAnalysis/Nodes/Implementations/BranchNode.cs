@@ -2,7 +2,7 @@
 
 namespace Rubberduck.Inspections.CodePathAnalysis.Nodes
 {
-    public class BranchNode : NodeBase, IBranchNode
+    public class BranchNode : StatementNode, IBranchNode
     {
         public BranchNode(IParseTree tree) : base(tree) { }
     }

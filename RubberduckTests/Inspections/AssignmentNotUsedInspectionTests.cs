@@ -20,7 +20,7 @@ namespace RubberduckTests.Inspections
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
-                var inspection = new AssignmentNotUsedInspection(state, new Walker());
+                var inspection = new AssignmentNotUsedInspection(state, new ProcedureTreeVisitor());
                 var inspector = InspectionsHelper.GetInspector(inspection);
                 return inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             }

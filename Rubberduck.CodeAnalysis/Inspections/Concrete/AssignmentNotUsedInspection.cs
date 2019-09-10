@@ -39,11 +39,11 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class AssignmentNotUsedInspection : InspectionBase
     {
-        private readonly Walker _walker;
+        private readonly ProcedureTreeVisitor _procedureTreeVisitor;
 
-        public AssignmentNotUsedInspection(RubberduckParserState state, Walker walker)
+        public AssignmentNotUsedInspection(RubberduckParserState state, ProcedureTreeVisitor procedureTreeVisitor)
             : base(state) {
-            _walker = walker;
+            _procedureTreeVisitor = procedureTreeVisitor;
         }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
@@ -54,24 +54,30 @@ namespace Rubberduck.Inspections.Concrete
                 .Cast<VariableDeclaration>();
 
             var nodes = new List<IdentifierReference>();
-            foreach (var variable in variables)
+            foreach (var procedure in variables.GroupBy(v => v.QualifiedName))
             {
-                var parentScopeDeclaration = variable.ParentScopeDeclaration;
-                if (variable.Accessibility == Accessibility.Static)
+                var scope = procedure.Key;
+                var state = new ProcedureTreeVisitorState(State, scope);
+                var tree = _procedureTreeVisitor.GenerateTree(scope, state);
+                // todo: actually walk the tree
+                foreach (var variable in procedure)
                 {
-                    // ignore module-level and static variables... for now
-                    continue;
+                    var parentScopeDeclaration = variable.ParentScopeDeclaration;
+                    if (variable.Accessibility == Accessibility.Static)
+                    {
+                        // ignore module-level and static variables... for now
+                        continue;
+                    }
+
+                    var assignments = state.Assignments(variable);
+
+                    var references = assignments
+                        .Where(node => !node.Usages.Any() &&
+                                       !IsSetAssignmentToNothing(node))
+                        .Select(node => node.Reference);
+
+                    nodes.AddRange(references);
                 }
-
-                var tree = _walker.GenerateTree(parentScopeDeclaration.Context, variable);
-                var assignments = tree.GetAssignmentNodes();
-
-                var references = assignments
-                    .Where(node => !node.Usages.Any() && 
-                               !IsSetAssignmentToNothing(node))
-                    .Select(node => node.Reference);
-
-                nodes.AddRange(references);
             }
 
             var results = nodes

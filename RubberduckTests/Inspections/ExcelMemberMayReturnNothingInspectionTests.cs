@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading;
 using NUnit.Framework;
+using Rubberduck.Inspections.CodePathAnalysis;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -25,8 +26,8 @@ End Sub
 
             using (var state = ArrangeParserAndParse(inputCode))
             {
-
-                var inspection = new ExcelMemberMayReturnNothingInspection(state);
+                var visitor = new ProcedureTreeVisitor();
+                var inspection = new ExcelMemberMayReturnNothingInspection(state, visitor);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
@@ -48,8 +49,8 @@ End Sub
 
             using (var state = ArrangeParserAndParse(inputCode))
             {
-
-                var inspection = new ExcelMemberMayReturnNothingInspection(state);
+                var visitor = new ProcedureTreeVisitor();
+                var inspection = new ExcelMemberMayReturnNothingInspection(state, visitor);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
@@ -71,8 +72,8 @@ End Sub
 
             using (var state = ArrangeParserAndParse(inputCode))
             {
-
-                var inspection = new ExcelMemberMayReturnNothingInspection(state);
+                var visitor = new ProcedureTreeVisitor();
+                var inspection = new ExcelMemberMayReturnNothingInspection(state, visitor);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
@@ -95,8 +96,8 @@ End Sub
 
             using (var state = ArrangeParserAndParse(inputCode))
             {
-
-                var inspection = new ExcelMemberMayReturnNothingInspection(state);
+                var visitor = new ProcedureTreeVisitor();
+                var inspection = new ExcelMemberMayReturnNothingInspection(state, visitor);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
@@ -121,8 +122,8 @@ End Sub
 
             using (var state = ArrangeParserAndParse(inputCode))
             {
-
-                var inspection = new ExcelMemberMayReturnNothingInspection(state);
+                var visitor = new ProcedureTreeVisitor();
+                var inspection = new ExcelMemberMayReturnNothingInspection(state, visitor);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
@@ -145,8 +146,8 @@ End Sub
 
             using (var state = ArrangeParserAndParse(inputCode))
             {
-
-                var inspection = new ExcelMemberMayReturnNothingInspection(state);
+                var visitor = new ProcedureTreeVisitor();
+                var inspection = new ExcelMemberMayReturnNothingInspection(state, visitor);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
@@ -171,8 +172,8 @@ End Sub
 
             using (var state = ArrangeParserAndParse(inputCode))
             {
-
-                var inspection = new ExcelMemberMayReturnNothingInspection(state);
+                var visitor = new ProcedureTreeVisitor();
+                var inspection = new ExcelMemberMayReturnNothingInspection(state, visitor);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
@@ -197,8 +198,8 @@ End Sub
 
             using (var state = ArrangeParserAndParse(inputCode))
             {
-
-                var inspection = new ExcelMemberMayReturnNothingInspection(state);
+                var visitor = new ProcedureTreeVisitor();
+                var inspection = new ExcelMemberMayReturnNothingInspection(state, visitor);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
@@ -223,8 +224,8 @@ End Sub
 
             using (var state = ArrangeParserAndParse(inputCode))
             {
-
-                var inspection = new ExcelMemberMayReturnNothingInspection(state);
+                var visitor = new ProcedureTreeVisitor();
+                var inspection = new ExcelMemberMayReturnNothingInspection(state, visitor);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
@@ -247,8 +248,8 @@ End Sub
 
             using (var state = ArrangeParserAndParse(inputCode))
             {
-
-                var inspection = new ExcelMemberMayReturnNothingInspection(state);
+                var visitor = new ProcedureTreeVisitor();
+                var inspection = new ExcelMemberMayReturnNothingInspection(state, visitor);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
@@ -271,8 +272,8 @@ End Sub
 
             using (var state = ArrangeParserAndParse(inputCode))
             {
-
-                var inspection = new ExcelMemberMayReturnNothingInspection(state);
+                var visitor = new ProcedureTreeVisitor();
+                var inspection = new ExcelMemberMayReturnNothingInspection(state, visitor);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
@@ -297,8 +298,8 @@ End Sub
 
             using (var state = ArrangeParserAndParse(inputCode))
             {
-
-                var inspection = new ExcelMemberMayReturnNothingInspection(state);
+                var visitor = new ProcedureTreeVisitor();
+                var inspection = new ExcelMemberMayReturnNothingInspection(state, visitor);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.CodePathAnalysis;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -41,7 +42,7 @@ namespace Rubberduck.Inspections.Concrete
     [RequiredLibrary("Excel")]
     public class ExcelMemberMayReturnNothingInspection : MemberAccessMayReturnNothingInspectionBase
     {
-        public ExcelMemberMayReturnNothingInspection(RubberduckParserState state) : base(state) { }
+        public ExcelMemberMayReturnNothingInspection(RubberduckParserState state, ProcedureTreeVisitor visitor) : base(state, visitor) { }
 
         private static readonly List<string> ExcelMembers = new List<string>
         {

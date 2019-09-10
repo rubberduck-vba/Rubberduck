@@ -2,7 +2,7 @@
 
 namespace Rubberduck.Inspections.CodePathAnalysis.Nodes
 {
-    public class LoopNode : NodeBase, ILoopNode
+    public class LoopNode : StatementNode, ILoopNode
     {
         public LoopNode(IParseTree tree) : base(tree) { }
     }
