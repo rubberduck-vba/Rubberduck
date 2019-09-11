@@ -1,14 +1,7 @@
-﻿using System.Collections.Concurrent;
-using Antlr4.Runtime.Tree;
+﻿using Antlr4.Runtime.Tree;
 using Rubberduck.Inspections.CodePathAnalysis.Nodes;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Diagnostics;
 using System.Linq;
-using Antlr4.Runtime;
-using Rubberduck.Parsing;
 using Rubberduck.VBEditor;
 using VBAParser = Rubberduck.Parsing.Grammar.VBAParser;
 
@@ -144,7 +137,7 @@ namespace Rubberduck.Inspections.CodePathAnalysis
                 }
             }
 
-            state.CurrentNode.Children = children.ToImmutableList();
+            state.CurrentNode.Children = children.ToList();
             return state.CurrentNode;
         }        
     }
