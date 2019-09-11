@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Symbols;
@@ -12,12 +11,12 @@ namespace Rubberduck.Inspections.CodePathAnalysis.Nodes
     {
         protected NodeBase(IParseTree tree)
         {
-            Children = new List<INode>().ToImmutableList();
+            Children = new List<INode>().ToList();
             ParseTree = tree;
         }
 
         public int SortOrder { get; set; }
-        public ImmutableList<INode> Children { get; set; }
+        public IReadOnlyList<INode> Children { get; set; }
         public INode Parent { get; set; }
         public IParseTree ParseTree { get; }
         public Declaration Declaration { get; set; }

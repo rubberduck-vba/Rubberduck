@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Rubberduck.Parsing.Symbols;
-using System.Collections.Immutable;
 using Antlr4.Runtime.Tree;
 
 namespace Rubberduck.Inspections.CodePathAnalysis.Nodes
@@ -8,7 +7,7 @@ namespace Rubberduck.Inspections.CodePathAnalysis.Nodes
     public interface INode
     {
         int SortOrder { get; set; }
-        ImmutableList<INode> Children { get; set; }
+        IReadOnlyList<INode> Children { get; set; }
         IEnumerable<TNode> Ancestors<TNode>();
         IEnumerable<TNode> Descendants<TNode>();
         INode Parent { get; set; }

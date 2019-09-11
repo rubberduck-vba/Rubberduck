@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Inspections.CodePathAnalysis.Nodes;
@@ -16,12 +15,10 @@ namespace Rubberduck.Inspections.CodePathAnalysis
         {
             var finder = finderProvider.DeclarationFinder;
 
-            Declarations = finder.AllDeclarations
-                .Where(d => d.QualifiedName.Equals(scope) || (d.ParentScopeDeclaration?.QualifiedName.Equals(scope) ?? false))
-                .ToImmutableHashSet();
+            Declarations = new HashSet<Declaration>(finder.AllDeclarations
+                .Where(d => d.QualifiedName.Equals(scope) || (d.ParentScopeDeclaration?.QualifiedName.Equals(scope) ?? false)));
 
-            IdentifierReferences = finder.IdentifierReferences(scope)
-                .ToImmutableHashSet();
+            IdentifierReferences = new HashSet<IdentifierReference>(finder.IdentifierReferences(scope));
         }
 
         public IEnumerable<Declaration> Declarations { get; }

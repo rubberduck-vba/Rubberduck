@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Grammar.PartialExtensions.Abstract;
+using Rubberduck.Parsing.Grammar.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
