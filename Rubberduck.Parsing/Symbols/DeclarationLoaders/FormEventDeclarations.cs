@@ -94,7 +94,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 false,
                 null,
                 false,
-                new List<IAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
         }
 
@@ -113,7 +113,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 false,
                 null,
                 false,
-                new List<IAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
         }
 
@@ -132,7 +132,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 false,
                 null,
                 false,
-                new List<IAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
         }
 
@@ -151,7 +151,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 false,
                 null,
                 false,
-                new List<IAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
         }
 
@@ -194,7 +194,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 false,
                 null,
                 false,
-                new List<IAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
         }
 
@@ -213,7 +213,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 false,
                 null,
                 false,
-                new List<IAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
         }
 

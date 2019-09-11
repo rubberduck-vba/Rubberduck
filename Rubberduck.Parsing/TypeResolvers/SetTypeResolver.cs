@@ -22,6 +22,11 @@ namespace Rubberduck.Parsing.TypeResolvers
 
         public Declaration SetTypeDeclaration(VBAParser.ExpressionContext expression, QualifiedModuleName containingModule)
         {
+            if (expression == null)
+            {
+                return null;
+            }
+
             switch (expression)
             {
                 case VBAParser.LExprContext lExpression:
@@ -53,6 +58,11 @@ namespace Rubberduck.Parsing.TypeResolvers
 
         public string SetTypeName(VBAParser.ExpressionContext expression, QualifiedModuleName containingModule)
         {
+            if (expression == null)
+            {
+                return null;
+            }
+
             switch (expression)
             {
                 case VBAParser.LExprContext lExpression:

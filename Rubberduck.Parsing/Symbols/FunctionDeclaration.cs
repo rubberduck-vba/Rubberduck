@@ -23,7 +23,7 @@ namespace Rubberduck.Parsing.Symbols
             Selection selection,
             bool isArray,
             bool isUserDefined,
-            IEnumerable<IAnnotation> annotations,
+            IEnumerable<IParseTreeAnnotation> annotations,
             Attributes attributes)
             : base(
                 name,

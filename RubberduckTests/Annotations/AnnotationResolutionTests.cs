@@ -571,10 +571,10 @@ End Function";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var declaration = state.DeclarationFinder.UserDeclarations(DeclarationType.Function).Single();
-                var annotation = declaration.Annotations.OfType<DescriptionAnnotation>().Single();
+                var annotation = declaration.Annotations.Where(pta => pta.Annotation is DescriptionAnnotation).Single();
 
-                var expectedAnnotationArgument = "Function description";
-                var actualAnnotationArgument = annotation.Description;
+                var expectedAnnotationArgument = "\"Function description\"";
+                var actualAnnotationArgument = annotation.AnnotationArguments[0];
 
                 Assert.AreEqual(expectedAnnotationArgument, actualAnnotationArgument);
             }
@@ -594,10 +594,10 @@ End Function";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var declaration = state.DeclarationFinder.UserDeclarations(DeclarationType.Function).Single();
-                var annotation = declaration.Annotations.OfType<DescriptionAnnotation>().Single();
+                var annotation = declaration.Annotations.Where(pta => pta.Annotation is DescriptionAnnotation).Single();
 
-                var expectedAnnotationArgument = "Function description";
-                var actualAnnotationArgument = annotation.Description;
+                var expectedAnnotationArgument = "\"Function description\"";
+                var actualAnnotationArgument = annotation.AnnotationArguments[0];
 
                 Assert.AreEqual(expectedAnnotationArgument, actualAnnotationArgument);
             }

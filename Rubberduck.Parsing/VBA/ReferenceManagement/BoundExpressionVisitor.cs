@@ -87,6 +87,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 case ProcedureCoercionExpression procedureCoercionExpression:
                     Visit(procedureCoercionExpression, module, scope, parent);
                     break;
+                case MissingArgumentExpression missingArgumentExpression:
+                    break;
                 default:
                     throw new NotSupportedException($"Unexpected bound expression type {boundExpression.GetType()}");
             }
@@ -131,10 +133,9 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 isSetAssignment);
         }
 
-        private IEnumerable<IAnnotation> FindIdentifierAnnotations(QualifiedModuleName module, int line)
+        private IEnumerable<IParseTreeAnnotation> FindIdentifierAnnotations(QualifiedModuleName module, int line)
         {
-            return _declarationFinder.FindAnnotations(module, line)
-                .Where(annotation => annotation.AnnotationType.HasFlag(AnnotationType.IdentifierAnnotation));
+            return _declarationFinder.FindAnnotations(module, line, AnnotationTarget.Identifier);
         }
 
         private void Visit(
@@ -217,6 +218,11 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             // Argument lists are not affected by the resolution of the target of the index expression.
             foreach (var argument in expression.ArgumentList.Arguments)
             {
+                if (argument.ReferencedParameter != null)
+                {
+                    AddArgumentReference(argument, module, scope, parent);
+                }
+
                 if (argument.Expression != null)
                 {
                     Visit(argument.Expression, module, scope, parent);
@@ -226,6 +232,28 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                     Visit(argument.NamedArgumentExpression, module, scope, parent);
                 }
             }
+        }
+
+        private void AddArgumentReference(
+            ArgumentListArgument argument,
+            QualifiedModuleName module,
+            Declaration scope,
+            Declaration parent
+        )
+        {
+            var callSiteContext = argument.Context;
+            var identifier = callSiteContext.GetText();
+            var selection = callSiteContext.GetSelection();
+            var callee = argument.ReferencedParameter;
+            argument.ReferencedParameter.AddArgumentReference(
+                module,
+                scope,
+                parent,
+                callSiteContext,
+                identifier,
+                callee,
+                selection,
+                FindIdentifierAnnotations(module, selection.StartLine));
         }
 
         private void AddArrayAccessReference(
@@ -344,6 +372,11 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             // Argument List not affected by being unbound.
             foreach (var argument in expression.ArgumentList.Arguments)
             {
+                if (argument.ReferencedParameter != null)
+                {
+                    AddArgumentReference(argument, module, scope, parent);
+                }
+
                 if (argument.Expression != null)
                 {
                     Visit(argument.Expression, module, scope, parent);

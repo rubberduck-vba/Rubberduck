@@ -10,7 +10,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
     {
         public DeclarationFinder Create(
             IReadOnlyList<Declaration> declarations, 
-            IEnumerable<IAnnotation> annotations, 
+            IEnumerable<IParseTreeAnnotation> annotations, 
             IReadOnlyList<UnboundMemberDeclaration> unresolvedMemberDeclarations,
             IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> unboundDefaultMemberAccesses,
             IHostApplication hostApp)

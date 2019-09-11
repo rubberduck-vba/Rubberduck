@@ -369,4 +369,13 @@
   <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
     <value>Verwendung der veralteten 'While...Wend'-Anweisung</value>
   </data>
+  <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>Argument mit nicht kompatiblem Objekttyp</value>
+  </data>
+  <data name="EmptyMethodInspection" xml:space="preserve">
+    <value>Lehre Methode</value>
+  </data>
+  <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
+    <value>Implementierte Methode einer Interface-Klasse</value>
+  </data>
 </root>

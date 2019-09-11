@@ -34,7 +34,7 @@ namespace Rubberduck.UI.Command.ComCommands
                 return pane != null 
                        && !pane.IsWrappingNullReference 
                        && target != null 
-                       && target.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent);
+                       && !target.Annotations.Any(a => a is NoIndentAnnotation);
             }
         }
 

@@ -52,7 +52,7 @@ namespace Rubberduck.Inspections.Concrete
             var annotations = State.AllAnnotations;
 
             var unboundAnnotations = UnboundAnnotations(annotations, userDeclarations, identifierReferences)
-                .Where(annotation => !annotation.AnnotationType.HasFlag(AnnotationType.GeneralAnnotation)
+                .Where(annotation => !annotation.Annotation.Target.HasFlag(AnnotationTarget.General)
                                      || annotation.AnnotatedLine == null);
             var attributeAnnotationsInDocuments = AttributeAnnotationsInDocuments(userDeclarations);
 
@@ -65,7 +65,7 @@ namespace Rubberduck.Inspections.Concrete
                     new QualifiedContext(annotation.QualifiedSelection.QualifiedName, annotation.Context)));
         }
 
-        private static IEnumerable<IAnnotation> UnboundAnnotations(IEnumerable<IAnnotation> annotations, IEnumerable<Declaration> userDeclarations, IEnumerable<IdentifierReference> identifierReferences)
+        private static IEnumerable<IParseTreeAnnotation> UnboundAnnotations(IEnumerable<IParseTreeAnnotation> annotations, IEnumerable<Declaration> userDeclarations, IEnumerable<IdentifierReference> identifierReferences)
         {
             var boundAnnotationsSelections = userDeclarations
                 .SelectMany(declaration => declaration.Annotations)
@@ -76,11 +76,11 @@ namespace Rubberduck.Inspections.Concrete
             return annotations.Where(annotation => !boundAnnotationsSelections.Contains(annotation.QualifiedSelection)).ToList();
         }
 
-        private static IEnumerable<IAnnotation> AttributeAnnotationsInDocuments(IEnumerable<Declaration> userDeclarations)
+        private static IEnumerable<IParseTreeAnnotation> AttributeAnnotationsInDocuments(IEnumerable<Declaration> userDeclarations)
         {
             var declarationsInDocuments = userDeclarations
                 .Where(declaration => declaration.QualifiedModuleName.ComponentType == ComponentType.Document);
-            return declarationsInDocuments.SelectMany(doc => doc.Annotations).OfType<IAttributeAnnotation>();
+            return declarationsInDocuments.SelectMany(doc => doc.Annotations).Where(pta => pta.Annotation is IAttributeAnnotation);
         }
     }
 }

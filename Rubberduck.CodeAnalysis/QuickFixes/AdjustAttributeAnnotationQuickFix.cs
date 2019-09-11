@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            IAttributeAnnotation oldAnnotation = result.Properties.Annotation;
+            IParseTreeAnnotation oldAnnotation = result.Properties.Annotation;
             string attributeName = result.Properties.AttributeName;
             IReadOnlyList<string> attributeValues = result.Properties.AttributeValues;
 
@@ -39,15 +39,15 @@ namespace Rubberduck.Inspections.QuickFixes
                 }
                 else
                 {
-                    var (newAnnotationType, newAnnotationValues) = _attributeAnnotationProvider.ModuleAttributeAnnotation(attributeName, attributeValues);
-                    _annotationUpdater.UpdateAnnotation(rewriteSession, oldAnnotation, newAnnotationType, newAnnotationValues);
+                    var (newAnnotation, newAnnotationValues) = _attributeAnnotationProvider.ModuleAttributeAnnotation(attributeName, attributeValues);
+                    _annotationUpdater.UpdateAnnotation(rewriteSession, oldAnnotation, newAnnotation, newAnnotationValues);
                 }
             }
             else
             {
                 var attributeBaseName = AttributeBaseName(attributeName, declaration);
-                var (newAnnotationType, newAnnotationValues) = _attributeAnnotationProvider.MemberAttributeAnnotation(attributeBaseName, attributeValues);
-                _annotationUpdater.UpdateAnnotation(rewriteSession, oldAnnotation, newAnnotationType, newAnnotationValues);
+                var (newAnnotation, newAnnotationValues) = _attributeAnnotationProvider.MemberAttributeAnnotation(attributeBaseName, attributeValues);
+                _annotationUpdater.UpdateAnnotation(rewriteSession, oldAnnotation, newAnnotation, newAnnotationValues);
             }
         }
 
