@@ -13,9 +13,10 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             IReadOnlyList<UnboundMemberDeclaration> unresolvedMemberDeclarations, 
             IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> unboundDefaultMemberAccesses,
             IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> failedLetCoercions,
+            IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> failedProcedureCoercions,
             IHostApplication hostApp)
         {
-            return new DeclarationFinder(declarations, annotations, unresolvedMemberDeclarations, unboundDefaultMemberAccesses, failedLetCoercions, hostApp);
+            return new DeclarationFinder(declarations, annotations, unresolvedMemberDeclarations, unboundDefaultMemberAccesses, failedLetCoercions, failedProcedureCoercions, hostApp);
         }
 
         public void Release(DeclarationFinder declarationFinder)

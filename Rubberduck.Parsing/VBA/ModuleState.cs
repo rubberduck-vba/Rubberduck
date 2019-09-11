@@ -26,14 +26,17 @@ namespace Rubberduck.Parsing.VBA
         public SyntaxErrorException ModuleException { get; private set; }
         public IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> ModuleAttributes { get; private set; }
         public IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> MembersAllowingAttributes { get; private set; }
+
         public IReadOnlyCollection<IdentifierReference> UnboundDefaultMemberAccesses => _unboundDefaultMemberAccesses.ToList();
         public IReadOnlyCollection<IdentifierReference> FailedLetCoercions => _failedLetCoercions.ToList();
+        public IReadOnlyCollection<IdentifierReference> FailedProcedureCoercions => _failedProcedureCoercions.ToList();
 
         public bool IsNew { get; private set; }
         public bool IsMarkedAsModified { get; private set; }
 
         private readonly HashSet<IdentifierReference> _unboundDefaultMemberAccesses = new HashSet<IdentifierReference>();
         private readonly HashSet<IdentifierReference> _failedLetCoercions = new HashSet<IdentifierReference>();
+        private readonly HashSet<IdentifierReference> _failedProcedureCoercions = new HashSet<IdentifierReference>();
 
         public ModuleState(ConcurrentDictionary<Declaration, byte> declarations)
         {
@@ -172,12 +175,12 @@ namespace Rubberduck.Parsing.VBA
             _unboundDefaultMemberAccesses.Clear();
         }
 
-        public ModuleState AddFailedLetCoercion(IdentifierReference failedLetCoercion)
+        public ModuleState AddFailedLetCoercion(IdentifierReference failedProcedureCoercion)
         {
-            if (failedLetCoercion.IsDefaultMemberAccess
-                && !_failedLetCoercions.Contains(failedLetCoercion))
+            if (failedProcedureCoercion.IsDefaultMemberAccess
+                && !_failedLetCoercions.Contains(failedProcedureCoercion))
             {
-                _failedLetCoercions.Add(failedLetCoercion);
+                _failedLetCoercions.Add(failedProcedureCoercion);
             }
 
             return this;
@@ -186,6 +189,22 @@ namespace Rubberduck.Parsing.VBA
         public void ClearFailedLetCoercions()
         {
             _failedLetCoercions.Clear();
+        }
+
+        public ModuleState AddFailedProcedureCoercion(IdentifierReference failedLetCoercion)
+        {
+            if (failedLetCoercion.IsDefaultMemberAccess
+                && !_failedProcedureCoercions.Contains(failedLetCoercion))
+            {
+                _failedProcedureCoercions.Add(failedLetCoercion);
+            }
+
+            return this;
+        }
+
+        public void ClearFailedProcedureCoercions()
+        {
+            _failedProcedureCoercions.Clear();
         }
 
         public void MarkAsModified()
@@ -208,7 +227,8 @@ namespace Rubberduck.Parsing.VBA
             ModuleAttributes?.Clear();
             _unboundDefaultMemberAccesses?.Clear();
             _failedLetCoercions?.Clear();
-
+            _failedProcedureCoercions?.Clear();
+            
             _isDisposed = true;
         }
     }

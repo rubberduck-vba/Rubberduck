@@ -610,14 +610,21 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
         {
             Visit(expression.WrappedExpression, module, scope, parent);
 
-            if (expression.Classification != ExpressionClassification.Unbound
-                && expression.ReferencedDeclaration != null)
+            switch (expression.Classification)
             {
-                AddDefaultMemberReference(expression, module, scope, parent);
-            }
-            else
-            {
-                AddUnboundDefaultMemberReference(expression, module, scope, parent);
+                case ExpressionClassification.ResolutionFailed:
+                    AddFailedProcedureCoercionReference(expression, module, scope, parent);
+                    break;
+                case ExpressionClassification.Unbound:
+                    AddUnboundDefaultMemberReference(expression, module, scope, parent);
+                    break;
+                default:
+                    if (expression.ReferencedDeclaration != null)
+                    {
+                        AddDefaultMemberReference(expression, module, scope, parent);
+                    }
+
+                    break;
             }
         }
 
@@ -677,6 +684,33 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 isIndexedDefaultMemberAccess: true,
                 defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth);
             _declarationFinder.AddUnboundDefaultMemberAccess(reference);
+        }
+
+        private void AddFailedProcedureCoercionReference(
+            ProcedureCoercionExpression expression,
+            QualifiedModuleName module,
+            Declaration scope,
+            Declaration parent)
+        {
+            var callSiteContext = expression.Context;
+            var identifier = callSiteContext.GetText();
+            var selection = callSiteContext.GetSelection();
+            var callee = expression.ReferencedDeclaration;
+            var reference = new IdentifierReference(
+                module,
+                scope,
+                parent,
+                identifier,
+                selection,
+                callSiteContext,
+                callee,
+                false,
+                false,
+                FindIdentifierAnnotations(module, selection.StartLine),
+                false,
+                isNonIndexedDefaultMemberAccess: true,
+                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth);
+            _declarationFinder.AddFailedProcedureCoercionReference(reference);
         }
 
         private void Visit(

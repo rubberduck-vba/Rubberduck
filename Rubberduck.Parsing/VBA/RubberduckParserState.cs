@@ -196,6 +196,7 @@ namespace Rubberduck.Parsing.VBA
                 AllUnresolvedMemberDeclarationsFromModuleStates, 
                 AllUnboundDefaultMemberAccessesFromModuleStates,
                 AllFailedLetCoercionsFromModuleStates,
+                AllFailedProcedureCoercionsFromModuleStates,
                 host);
             _declarationFinderFactory.Release(oldDeclarationFinder);
         }
@@ -788,6 +789,23 @@ namespace Rubberduck.Parsing.VBA
         }
 
         /// <summary>
+        /// Gets a copy of the failed procedure coercions directly from the module states. (Used for refreshing the DeclarationFinder.)
+        /// </summary>
+        private IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> AllFailedProcedureCoercionsFromModuleStates
+        {
+            get
+            {
+                var failedProcedureCoercions = new Dictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>>();
+                foreach (var (module, state) in _moduleStates)
+                {
+                    failedProcedureCoercions.Add(module, state.FailedProcedureCoercions);
+                }
+
+                return failedProcedureCoercions;
+            }
+        }
+
+        /// <summary>
         /// Gets a copy of the collected declarations, excluding the built-in ones.
         /// </summary>
         public IEnumerable<Declaration> AllUserDeclarations => DeclarationFinder.AllUserDeclarations;
@@ -896,6 +914,23 @@ namespace Rubberduck.Parsing.VBA
             if (_moduleStates.TryGetValue(module, out var moduleState))
             {
                 moduleState.ClearFailedLetCoercions();
+            }
+        }
+
+        public void AddFailedProcedureCoercions(QualifiedModuleName module, IEnumerable<IdentifierReference> failedProcedureCoercions)
+        {
+            var moduleState = _moduleStates.GetOrAdd(module, new ModuleState(new ConcurrentDictionary<Declaration, byte>()));
+            foreach (var failedProcedureCoercion in failedProcedureCoercions)
+            {
+                moduleState.AddFailedProcedureCoercion(failedProcedureCoercion);
+            }
+        }
+
+        public void ClearFailedProcedureCoercions(QualifiedModuleName module)
+        {
+            if (_moduleStates.TryGetValue(module, out var moduleState))
+            {
+                moduleState.ClearFailedProcedureCoercions();
             }
         }
 
