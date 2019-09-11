@@ -5181,6 +5181,296 @@ End Sub
         [Test]
         [Category("Grammar")]
         [Category("Resolver")]
+        [Ignore("Temporarily ignored until a way is found to save the failed procedure coercions for parameterized calls.")]
+        public void FailedParameterizedProcedureCoercionReferenceOnEntireContext()
+        {
+            var class1Code = @"
+Public Sub Foo(arg As Long)
+End Sub
+";
+
+            var class2Code = @"
+Public Function Baz() As Class1
+    Set Baz = New Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As new Class2
+    cls.Baz 42
+End Function
+
+Private Sub Bar(arg As Long)
+End Sub
+
+Private Sub Baz(arg As Variant)
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var failedProcedureCoercion = state.DeclarationFinder
+                    .FailedProcedureCoercions(module)
+                    .Single();
+
+                var expectedSelection = new Selection(4, 5, 4, 12);
+                var actualSelection = failedProcedureCoercion.Selection;
+
+                Assert.AreEqual(expectedSelection, actualSelection);
+            }
+        }
+
+        [Test]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        public void FailedNonParameterizedProcedureCoercionReferenceOnEntireContext()
+        {
+            var class1Code = @"
+Public Sub Foo()
+End Sub
+";
+
+            var class2Code = @"
+Public Function Baz() As Class1
+    Set Baz = New Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As new Class2
+    cls
+End Function
+
+Private Sub Bar(arg As Long)
+End Sub
+
+Private Sub Baz(arg As Variant)
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var failedProcedureCoercion = state.DeclarationFinder
+                    .FailedProcedureCoercions(module)
+                    .Single();
+
+                var expectedSelection = new Selection(4, 5, 4, 8);
+                var actualSelection = failedProcedureCoercion.Selection;
+
+                Assert.AreEqual(expectedSelection, actualSelection);
+            }
+        }
+
+        [Test]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Ignore("Temporarily ignored until a way is found to save the failed procedure coercions for parameterized calls.")]
+        public void FailedParameterizedProcedureCoercionReferenceOnEntireContext_ExplicitCall()
+        {
+            var class1Code = @"
+Public Sub Foo(arg As Long)
+End Sub
+";
+
+            var class2Code = @"
+Public Function Baz() As Class1
+    Set Baz = New Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As new Class2
+    Call cls.Baz(42)
+End Function
+
+Private Sub Bar(arg As Long)
+End Sub
+
+Private Sub Baz(arg As Variant)
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var failedProcedureCoercion = state.DeclarationFinder
+                    .FailedProcedureCoercions(module)
+                    .Single();
+
+                var expectedSelection = new Selection(4, 10, 4, 17);
+                var actualSelection = failedProcedureCoercion.Selection;
+
+                Assert.AreEqual(expectedSelection, actualSelection);
+            }
+        }
+
+        [Test]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        public void FailedNonParameterizedProcedureCoercionReferenceOnEntireContext_ExplicitCall()
+        {
+            var class1Code = @"
+Public Sub Foo()
+End Sub
+";
+
+            var class2Code = @"
+Public Function Baz() As Class1
+    Set Baz = New Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As new Class2
+    Call cls
+End Function
+
+Private Sub Bar(arg As Long)
+End Sub
+
+Private Sub Baz(arg As Variant)
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var failedProcedureCoercion = state.DeclarationFinder
+                    .FailedProcedureCoercions(module)
+                    .Single();
+
+                var expectedSelection = new Selection(4, 10, 4, 13);
+                var actualSelection = failedProcedureCoercion.Selection;
+
+                Assert.AreEqual(expectedSelection, actualSelection);
+            }
+        }
+
+        [Test]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        public void FailedNonParameterizedProcedureCoercionOnArrayAccessReferenceOnEntireContext()
+        {
+            var class1Code = @"
+Public Sub Foo()
+End Sub
+";
+
+            var class2Code = @"
+Public Function Baz() As Class1()
+    Set Baz = New Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As new Class2
+    cls.Baz(42)
+End Function
+
+Private Sub Bar(arg As Long)
+End Sub
+
+Private Sub Baz(arg As Variant)
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var failedProcedureCoercion = state.DeclarationFinder
+                    .FailedProcedureCoercions(module)
+                    .Single();
+
+                var expectedSelection = new Selection(4, 5, 4, 16);
+                var actualSelection = failedProcedureCoercion.Selection;
+
+                Assert.AreEqual(expectedSelection, actualSelection);
+            }
+        }
+
+        [Test]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        public void FailedNonParameterizedProcedureCoercionOnArrayAccessReferenceOnEntireContext_ExplicitCall()
+        {
+            var class1Code = @"
+Public Sub Foo()
+End Sub
+";
+
+            var class2Code = @"
+Public Function Baz() As Class1()
+    Set Baz = New Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As new Class2
+    Call cls.Baz(42)
+End Function
+
+Private Sub Bar(arg As Long)
+End Sub
+
+Private Sub Baz(arg As Variant)
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var failedProcedureCoercion = state.DeclarationFinder
+                    .FailedProcedureCoercions(module)
+                    .Single();
+
+                var expectedSelection = new Selection(4, 10, 4, 21);
+                var actualSelection = failedProcedureCoercion.Selection;
+
+                Assert.AreEqual(expectedSelection, actualSelection);
+            }
+        }
+
+        [Test]
+        [Category("Grammar")]
+        [Category("Resolver")]
         [TestCase("42, a+b", "arg2", "a+b")]
         [TestCase("42, a+b", "arg1", "42")]
         [TestCase("arg2:=42, arg1:=a+b", "arg2", "42")]

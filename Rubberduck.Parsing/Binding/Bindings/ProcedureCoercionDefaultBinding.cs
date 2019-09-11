@@ -69,11 +69,9 @@ namespace Rubberduck.Parsing.Binding
             return ResolveViaDefaultMember(wrappedExpression, asTypeName, asTypeDeclaration, expression);
         }
 
-        private static IBoundExpression CreateFailedExpression(IBoundExpression lExpression, ParserRuleContext context)
+        private static IBoundExpression CreateFailedExpression(IBoundExpression wrappedExpression, ParserRuleContext context)
         {
-            var failedExpr = new ResolutionFailedExpression(context, true);
-            failedExpr.AddSuccessfullyResolvedExpression(lExpression);
-            return failedExpr;
+            return new ProcedureCoercionExpression(wrappedExpression.ReferencedDeclaration, ExpressionClassification.ResolutionFailed, context, wrappedExpression);
         }
 
         private static IBoundExpression ResolveViaDefaultMember(IBoundExpression wrappedExpression, string asTypeName, Declaration asTypeDeclaration, ParserRuleContext expression)
@@ -82,7 +80,7 @@ namespace Rubberduck.Parsing.Binding
                     || Tokens.Object.Equals(asTypeName, StringComparison.InvariantCultureIgnoreCase))
             {
                 // We cannot know the the default member in this case, so return an unbound member call.
-                return new ProcedureCoercionExpression(null, ExpressionClassification.Unbound, expression, wrappedExpression);
+                return new ProcedureCoercionExpression(wrappedExpression.ReferencedDeclaration, ExpressionClassification.Unbound, expression, wrappedExpression);
             }
 
             var defaultMember = (asTypeDeclaration as ClassModuleDeclaration)?.DefaultMember;
