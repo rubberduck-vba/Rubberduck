@@ -1047,26 +1047,32 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 (context is VBAParser.MemberAccessExprContext) ? (ParserRuleContext)context.children[0] : withExpression.Context, 
                 annotations);
 
-            var failedResolutions = _newFailedResolutionStores.GetOrAdd(declaration.QualifiedModuleName, new ConcurrentFailedResolutionStore());
-            failedResolutions.AddUnresolvedMemberDeclaration(declaration);
+            var store = _newFailedResolutionStores.GetOrAdd(declaration.QualifiedModuleName, new ConcurrentFailedResolutionStore());
+            store.AddUnresolvedMemberDeclaration(declaration);
         }
 
         public void AddUnboundDefaultMemberAccess(IdentifierReference defaultMemberAccess)
         {
-            var failedResolutions = _newFailedResolutionStores.GetOrAdd(defaultMemberAccess.QualifiedModuleName, new ConcurrentFailedResolutionStore());
-            failedResolutions.AddUnboundDefaultMemberAccess(defaultMemberAccess);
+            var store = _newFailedResolutionStores.GetOrAdd(defaultMemberAccess.QualifiedModuleName, new ConcurrentFailedResolutionStore());
+            store.AddUnboundDefaultMemberAccess(defaultMemberAccess);
         }
 
         public void AddFailedLetCoercionReference(IdentifierReference failedLetCoercion)
         {
-            var failedResolutions = _newFailedResolutionStores.GetOrAdd(failedLetCoercion.QualifiedModuleName, new ConcurrentFailedResolutionStore());
-            failedResolutions.AddFailedLetCoercion(failedLetCoercion);
+            var store = _newFailedResolutionStores.GetOrAdd(failedLetCoercion.QualifiedModuleName, new ConcurrentFailedResolutionStore());
+            store.AddFailedLetCoercion(failedLetCoercion);
         }
 
         public void AddFailedProcedureCoercionReference(IdentifierReference failedProcedureCoercion)
         {
-            var failedResolutions = _newFailedResolutionStores.GetOrAdd(failedProcedureCoercion.QualifiedModuleName, new ConcurrentFailedResolutionStore());
-            failedResolutions.AddFailedProcedureCoercion(failedProcedureCoercion);
+            var store = _newFailedResolutionStores.GetOrAdd(failedProcedureCoercion.QualifiedModuleName, new ConcurrentFailedResolutionStore());
+            store.AddFailedProcedureCoercion(failedProcedureCoercion);
+        }
+
+        public void AddFailedIndexedDefaultMemberResolution(IdentifierReference failedProcedureCoercion)
+        {
+            var store = _newFailedResolutionStores.GetOrAdd(failedProcedureCoercion.QualifiedModuleName, new ConcurrentFailedResolutionStore());
+            store.AddFailedIndexedDefaultMemberResolution(failedProcedureCoercion);
         }
 
         public Declaration OnBracketedExpression(string expression, ParserRuleContext context)
@@ -1591,6 +1597,25 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         {
             return _failedResolutionStores.Values
                 .SelectMany(store => store.UnresolvedMemberDeclarations);
+        }
+
+        /// <summary>
+        /// Gets the failed indexed default member accesses in a module.
+        /// </summary>
+        public IReadOnlyCollection<IdentifierReference> FailedIndexedDefaultMemberAccesses(QualifiedModuleName module)
+        {
+            return _failedResolutionStores.TryGetValue(module, out var store)
+                ? store.FailedIndexedDefaultMemberResolutions
+                : new HashSet<IdentifierReference>();
+        }
+
+        /// <summary>
+        /// Gets all failed indexed default member accesses.
+        /// </summary>
+        public IEnumerable<IdentifierReference> FailedIndexedDefaultMemberAccesses()
+        {
+            return _failedResolutionStores.Values
+                .SelectMany(store => store.FailedIndexedDefaultMemberResolutions);
         }
     }
 }
