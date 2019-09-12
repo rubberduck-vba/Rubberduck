@@ -10,6 +10,7 @@ using Rubberduck.Parsing.Binding;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.Extensions;
+using Rubberduck.Parsing.VBA.ReferenceManagement;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -24,12 +25,11 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         private readonly IHostApplication _hostApp;
         private IDictionary<string, List<Declaration>> _declarationsByName;
         private IDictionary<QualifiedModuleName, List<Declaration>> _declarations;
-        private readonly ConcurrentDictionary<QualifiedModuleName, ConcurrentBag<IdentifierReference>> _newUnboundDefaultMemberAccesses;
-        private readonly ConcurrentDictionary<QualifiedModuleName, ConcurrentBag<IdentifierReference>> _newFailedLetCoercions;
-        private readonly ConcurrentDictionary<QualifiedModuleName, ConcurrentBag<IdentifierReference>> _newFailedProcedureCoercions;
+
+        private readonly IReadOnlyDictionary<QualifiedModuleName, IFailedResolutionStore> _failedResolutionStores;
+        private readonly ConcurrentDictionary<QualifiedModuleName, IMutableFailedResolutionStore> _newFailedResolutionStores;
         private readonly ConcurrentDictionary<QualifiedMemberName, ConcurrentBag<Declaration>> _newUndeclared;
-        private readonly ConcurrentBag<UnboundMemberDeclaration> _newUnresolved;
-        private List<UnboundMemberDeclaration> _unresolved;
+
         private IDictionary<(QualifiedModuleName module, int annotatedLine), List<IParseTreeAnnotation>> _annotations;
         private IDictionary<Declaration, List<ParameterDeclaration>> _parametersByParent;
         private IDictionary<DeclarationType, List<Declaration>> _userDeclarationsByType;
@@ -40,10 +40,6 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         private IReadOnlyDictionary<QualifiedModuleName, IReadOnlyList<IdentifierReference>> _referencesByModule;
         private IReadOnlyDictionary<string, IReadOnlyList<IdentifierReference>> _referencesByProjectId;
         private IDictionary<QualifiedMemberName, List<IdentifierReference>> _referencesByMember;
-
-        private readonly IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> _unboundDefaultMemberAccesses;
-        private readonly IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> _failedLetCoercions;
-        private readonly IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> _failedProcedureCoercions;
 
         private Lazy<IDictionary<DeclarationType, List<Declaration>>> _builtInDeclarationsByType;
         private Lazy<IDictionary<Declaration, List<Declaration>>> _handlersByWithEventsField;
@@ -72,24 +68,16 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         public DeclarationFinder(
             IReadOnlyList<Declaration> declarations, 
             IEnumerable<IParseTreeAnnotation> annotations, 
-            IReadOnlyList<UnboundMemberDeclaration> unresolvedMemberDeclarations,
-            IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> unboundDefaultMemberAccesses,
-            IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> failedLetCoercions,
-            IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> failedProcedureCoercions,
+            IReadOnlyDictionary<QualifiedModuleName, IFailedResolutionStore> failedResolutionStores,
             IHostApplication hostApp = null)
         {
             _hostApp = hostApp;
-            _unboundDefaultMemberAccesses = unboundDefaultMemberAccesses;
-            _failedLetCoercions = failedLetCoercions;
-            _failedProcedureCoercions = failedProcedureCoercions;
+            _failedResolutionStores = failedResolutionStores;
 
-            _newUndeclared = new ConcurrentDictionary<QualifiedMemberName, ConcurrentBag<Declaration>>(new Dictionary<QualifiedMemberName, ConcurrentBag<Declaration>>());
-            _newUnresolved = new ConcurrentBag<UnboundMemberDeclaration>(new List<UnboundMemberDeclaration>());
-            _newUnboundDefaultMemberAccesses = new ConcurrentDictionary<QualifiedModuleName, ConcurrentBag<IdentifierReference>>();
-            _newFailedLetCoercions = new ConcurrentDictionary<QualifiedModuleName, ConcurrentBag<IdentifierReference>>();
-            _newFailedProcedureCoercions = new ConcurrentDictionary<QualifiedModuleName, ConcurrentBag<IdentifierReference>>();
+            _newFailedResolutionStores = new ConcurrentDictionary<QualifiedModuleName, IMutableFailedResolutionStore>();
+            _newUndeclared = new ConcurrentDictionary<QualifiedMemberName, ConcurrentBag<Declaration>>();
 
-            var collectionConstructionActions = CollectionConstructionActions(declarations, annotations, unresolvedMemberDeclarations);
+            var collectionConstructionActions = CollectionConstructionActions(declarations, annotations);
             ExecuteCollectionConstructionActions(collectionConstructionActions);
 
             //Temporal coupling: the initializers of the lazy collections use the regular collections filled above.
@@ -101,14 +89,10 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             collectionConstructionActions.ForEach(action => action.Invoke());
         }
 
-        private List<Action> CollectionConstructionActions(IReadOnlyList<Declaration> declarations, IEnumerable<IParseTreeAnnotation> annotations, 
-            IReadOnlyList<UnboundMemberDeclaration> unresolvedMemberDeclarations)
+        private List<Action> CollectionConstructionActions(IReadOnlyList<Declaration> declarations, IEnumerable<IParseTreeAnnotation> annotations)
         {
             var actions = new List<Action>
             {
-                () =>
-                    _unresolved = unresolvedMemberDeclarations
-                        .ToList(),
                 () =>
                     _annotations = annotations
                         .Where(a => a.AnnotatedLine.HasValue)
@@ -357,13 +341,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         }
 
         //This does not need a lock because enumerators over a ConcurrentBag uses a snapshot.    
-        public IEnumerable<UnboundMemberDeclaration> FreshUnresolvedMemberDeclarations => _newUnresolved.ToList();
         public IEnumerable<Declaration> FreshUndeclared => _newUndeclared.AllValues();
-        public IEnumerable<IdentifierReference> FreshUnboundDefaultMemberAccesses => _newUnboundDefaultMemberAccesses.AllValues();
-        public IEnumerable<IdentifierReference> FreshFailedLetCoercions => _newFailedLetCoercions.AllValues();
-        public IEnumerable<IdentifierReference> FreshFailedProcedureCoercions => _newFailedProcedureCoercions.AllValues();
-
-        public IEnumerable<UnboundMemberDeclaration> UnresolvedMemberDeclarations => _unresolved;
+        public IReadOnlyDictionary<QualifiedModuleName, IFailedResolutionStore> FreshFailedResolutionStores => _newFailedResolutionStores.ToDictionary(kvp => kvp.Key, kvp => (IFailedResolutionStore)new FailedResolutionStore(kvp.Value));  
 
         public IEnumerable<Declaration> Members(Declaration module)
         {
@@ -1068,25 +1047,26 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 (context is VBAParser.MemberAccessExprContext) ? (ParserRuleContext)context.children[0] : withExpression.Context, 
                 annotations);
 
-            _newUnresolved.Add(declaration);
+            var failedResolutions = _newFailedResolutionStores.GetOrAdd(declaration.QualifiedModuleName, new ConcurrentFailedResolutionStore());
+            failedResolutions.AddUnresolvedMemberDeclaration(declaration);
         }
 
         public void AddUnboundDefaultMemberAccess(IdentifierReference defaultMemberAccess)
         {
-            var accesses = _newUnboundDefaultMemberAccesses.GetOrAdd(defaultMemberAccess.QualifiedModuleName, new ConcurrentBag<IdentifierReference>());
-            accesses.Add(defaultMemberAccess);
+            var failedResolutions = _newFailedResolutionStores.GetOrAdd(defaultMemberAccess.QualifiedModuleName, new ConcurrentFailedResolutionStore());
+            failedResolutions.AddUnboundDefaultMemberAccess(defaultMemberAccess);
         }
 
         public void AddFailedLetCoercionReference(IdentifierReference failedLetCoercion)
         {
-            var failedCoercions = _newFailedLetCoercions.GetOrAdd(failedLetCoercion.QualifiedModuleName, new ConcurrentBag<IdentifierReference>());
-            failedCoercions.Add(failedLetCoercion);
+            var failedResolutions = _newFailedResolutionStores.GetOrAdd(failedLetCoercion.QualifiedModuleName, new ConcurrentFailedResolutionStore());
+            failedResolutions.AddFailedLetCoercion(failedLetCoercion);
         }
 
         public void AddFailedProcedureCoercionReference(IdentifierReference failedProcedureCoercion)
         {
-            var failedCoercions = _newFailedProcedureCoercions.GetOrAdd(failedProcedureCoercion.QualifiedModuleName, new ConcurrentBag<IdentifierReference>());
-            failedCoercions.Add(failedProcedureCoercion);
+            var failedResolutions = _newFailedResolutionStores.GetOrAdd(failedProcedureCoercion.QualifiedModuleName, new ConcurrentFailedResolutionStore());
+            failedResolutions.AddFailedProcedureCoercion(failedProcedureCoercion);
         }
 
         public Declaration OnBracketedExpression(string expression, ParserRuleContext context)
@@ -1542,8 +1522,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         /// </summary>
         public IReadOnlyCollection<IdentifierReference> UnboundDefaultMemberAccesses(QualifiedModuleName module)
         {
-            return _unboundDefaultMemberAccesses.TryGetValue(module, out var defaultMemberAccesses)
-                ? defaultMemberAccesses
+            return _failedResolutionStores.TryGetValue(module, out var store)
+                ? store.UnboundDefaultMemberAccesses
                 : new HashSet<IdentifierReference>();
         }
 
@@ -1552,8 +1532,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         /// </summary>
         public IEnumerable<IdentifierReference> AllUnboundDefaultMemberAccesses()
         {
-            return _unboundDefaultMemberAccesses.Values
-                .SelectMany(defaultMemberAccess => defaultMemberAccess);
+            return _failedResolutionStores.Values
+                .SelectMany(store => store.UnboundDefaultMemberAccesses);
         }
 
         /// <summary>
@@ -1561,8 +1541,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         /// </summary>
         public IReadOnlyCollection<IdentifierReference> FailedLetCoercions(QualifiedModuleName module)
         {
-            return _failedLetCoercions.TryGetValue(module, out var failedLetCoercions)
-                ? failedLetCoercions
+            return _failedResolutionStores.TryGetValue(module, out var store)
+                ? store.FailedLetCoercions
                 : new HashSet<IdentifierReference>();
         }
 
@@ -1571,8 +1551,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         /// </summary>
         public IEnumerable<IdentifierReference> FailedLetCoercions()
         {
-            return _failedLetCoercions.Values
-                .SelectMany(coercion => coercion);
+            return _failedResolutionStores.Values
+                .SelectMany(store => store.FailedLetCoercions);
         }
 
         /// <summary>
@@ -1580,8 +1560,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         /// </summary>
         public IReadOnlyCollection<IdentifierReference> FailedProcedureCoercions(QualifiedModuleName module)
         {
-            return _failedProcedureCoercions.TryGetValue(module, out var failedProcedureCoercions)
-                ? failedProcedureCoercions
+            return _failedResolutionStores.TryGetValue(module, out var store)
+                ? store.FailedProcedureCoercions
                 : new HashSet<IdentifierReference>();
         }
 
@@ -1590,8 +1570,27 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         /// </summary>
         public IEnumerable<IdentifierReference> FailedProcedureCoercions()
         {
-            return _failedProcedureCoercions.Values
-                .SelectMany(coercion => coercion);
+            return _failedResolutionStores.Values
+                .SelectMany(store => store.FailedProcedureCoercions);
+        }
+
+        /// <summary>
+        /// Gets the unresolved member call declarations to a members in a module.
+        /// </summary>
+        public IReadOnlyCollection<UnboundMemberDeclaration> UnresolvedMemberDeclarations(QualifiedModuleName module)
+        {
+            return _failedResolutionStores.TryGetValue(module, out var store)
+                ? store.UnresolvedMemberDeclarations
+                : new HashSet<UnboundMemberDeclaration>();
+        }
+
+        /// <summary>
+        /// Gets all unresolved member call declarations.
+        /// </summary>
+        public IEnumerable<UnboundMemberDeclaration> UnresolvedMemberDeclarations()
+        {
+            return _failedResolutionStores.Values
+                .SelectMany(store => store.UnresolvedMemberDeclarations);
         }
     }
 }

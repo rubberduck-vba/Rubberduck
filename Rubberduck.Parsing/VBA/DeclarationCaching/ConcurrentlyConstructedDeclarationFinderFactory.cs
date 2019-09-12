@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA.ReferenceManagement;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -10,14 +11,11 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
     {
         public DeclarationFinder Create(
             IReadOnlyList<Declaration> declarations, 
-            IEnumerable<IParseTreeAnnotation> annotations, 
-            IReadOnlyList<UnboundMemberDeclaration> unresolvedMemberDeclarations,
-            IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> unboundDefaultMemberAccesses,
-            IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> failedLetCoercions,
-            IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> failedProcedureCoercions,
+            IEnumerable<IParseTreeAnnotation> annotations,
+            IReadOnlyDictionary<QualifiedModuleName, IFailedResolutionStore> failedResolutionStores,
             IHostApplication hostApp)
         {
-            return new ConcurrentlyConstructedDeclarationFinder(declarations, annotations, unresolvedMemberDeclarations, unboundDefaultMemberAccesses, failedLetCoercions, failedProcedureCoercions, hostApp);
+            return new ConcurrentlyConstructedDeclarationFinder(declarations, annotations, failedResolutionStores, hostApp);
         }
 
         public void Release(DeclarationFinder declarationFinder)

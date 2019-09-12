@@ -12,6 +12,7 @@ using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.Parsing.VBA.ReferenceManagement.CompilationPasses;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Parsing.VBA.ReferenceManagement
@@ -113,10 +114,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             parsingStageTimer.Restart();
 
             AddNewUndeclaredVariablesToDeclarations();
-            AddNewUnresolvedMemberDeclarations();
-            AddNewUnboundDefaultMemberAccesses();
-            AddNewFailedLetCoercions();
-            AddNewFailedProcedureCoercions();
+            AddNewFailedResolutions();
 
             _toResolve.Clear();
         }
@@ -128,9 +126,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             _moduleToModuleReferenceManager.ClearModuleToModuleReferencesToModule(toResolve);
             foreach (var module in toResolve)
             {
-                _state.ClearUnboundDefaultMemberAccesses(module);
-                _state.ClearFailedLetCoercions(module);
-                _state.ClearFailedProcedureCoercions(module);
+                _state.ClearFailedResolutions(module);
             }
         }
 
@@ -298,43 +294,12 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             }
         }
 
-        private void AddNewUnresolvedMemberDeclarations()
+        private void AddNewFailedResolutions()
         {
-            var unresolved = _state.DeclarationFinder.FreshUnresolvedMemberDeclarations
-                .GroupBy(declaration => declaration.QualifiedModuleName);
-            foreach (var declaration in unresolved)
+            var failedResolutionStores = _state.DeclarationFinder.FreshFailedResolutionStores;
+            foreach (var (module, store) in failedResolutionStores)
             {
-                _state.AddUnresolvedMemberDeclarations(declaration.Key, declaration);
-            }
-        }
-
-        private void AddNewUnboundDefaultMemberAccesses()
-        {
-            var unboundDefaultMembers = _state.DeclarationFinder.FreshUnboundDefaultMemberAccesses
-                .GroupBy(access => access.QualifiedModuleName); ;
-            foreach (var access in unboundDefaultMembers)
-            {
-                _state.AddUnboundDefaultMemberAccesses(access.Key, access);
-            }
-        }
-
-        private void AddNewFailedLetCoercions()
-        {
-            var failedLetCoercions = _state.DeclarationFinder.FreshFailedLetCoercions
-                .GroupBy(coercion => coercion.QualifiedModuleName);
-            foreach (var coercion in failedLetCoercions)
-            {
-                _state.AddFailedLetCoercions(coercion.Key, coercion);
-            }
-        }
-
-        private void AddNewFailedProcedureCoercions()
-        {
-            var failedProcedureCoercions = _state.DeclarationFinder.FreshFailedProcedureCoercions
-                .GroupBy(coercion => coercion.QualifiedModuleName);
-            foreach (var coercion in failedProcedureCoercions)
-            {
-                _state.AddFailedProcedureCoercions(coercion.Key, coercion);
+                _state.AddFailedResolutions(module, store);
             }
         }
     }

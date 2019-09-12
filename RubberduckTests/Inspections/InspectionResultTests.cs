@@ -8,6 +8,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Parsing.VBA.ReferenceManagement;
 using Rubberduck.UI.Inspections;
 using Rubberduck.VBEditor;
 
@@ -143,10 +144,7 @@ namespace RubberduckTests.Inspections
             var declaratioFinder = new DeclarationFinder(
                 new List<Declaration>(), 
                 new List<IParseTreeAnnotation>(),
-                new List<UnboundMemberDeclaration>(), 
-                new Dictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>>(),
-                new Dictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>>(),
-                new Dictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>>());
+                new Dictionary<QualifiedModuleName, IFailedResolutionStore>());
             declarationFinderProviderMock.SetupGet(m => m.DeclarationFinder).Returns(declaratioFinder);
             var inspectionResult = new IdentifierReferenceInspectionResult(inspectionMock.Object, string.Empty, declarationFinderProviderMock.Object, identifierReference);
 
@@ -177,10 +175,7 @@ namespace RubberduckTests.Inspections
             var declarationFinder = new DeclarationFinder(
                 new List<Declaration>(), 
                 new List<IParseTreeAnnotation>(),
-                new List<UnboundMemberDeclaration>(), 
-                new Dictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>>(),
-                new Dictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>>(),
-                new Dictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>>());
+                new Dictionary<QualifiedModuleName, IFailedResolutionStore>());
             declarationFinderProviderMock.SetupGet(m => m.DeclarationFinder).Returns(declarationFinder);
             var inspectionResult = new IdentifierReferenceInspectionResult(inspectionMock.Object, string.Empty, declarationFinderProviderMock.Object, identifierReference);
 
