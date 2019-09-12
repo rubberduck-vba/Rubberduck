@@ -709,6 +709,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Object used where a procedure is required.
+        /// </summary>
+        public static string ProcedureRequiredInspection {
+            get {
+                return ResourceManager.GetString("ProcedureRequiredInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Redundant &apos;ByRef&apos; modifier.
         /// </summary>
         public static string RedundantByRefModifierInspection {

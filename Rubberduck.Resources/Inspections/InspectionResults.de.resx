@@ -422,4 +422,7 @@ In Memoriam, 1972-2018</value>
   <data name="ValueRequiredInspection" xml:space="preserve">
     <value>An einer Stelle, die einen Wert verlangt, wird der Ausdruck '{0}' vom Objekttyp '{1}'  verwendet, der keinen passendes Standardmember hat.</value>
   </data>
+  <data name="ProcedureRequiredInspection" xml:space="preserve">
+    <value>An einer Stelle, die eine Prozedur erfordert, wird der Ausdruck '{0}' vom Objekttyp '{1}'  verwendet, der keinen passendes Standardmember hat.</value>
+  </data>
 </root>

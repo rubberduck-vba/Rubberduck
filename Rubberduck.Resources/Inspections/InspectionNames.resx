@@ -401,4 +401,7 @@
   <data name="ValueRequiredInspection" xml:space="preserve">
     <value>Object used where a value is required</value>
   </data>
+  <data name="ProcedureRequiredInspection" xml:space="preserve">
+    <value>Object used where a procedure is required</value>
+  </data>
 </root>

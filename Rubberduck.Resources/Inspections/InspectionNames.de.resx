@@ -381,4 +381,7 @@
   <data name="ValueRequiredInspection" xml:space="preserve">
     <value>Objekt statt Wert verwendet</value>
   </data>
+  <data name="ProcedureRequiredInspection" xml:space="preserve">
+    <value>Objekt statt Prozedur verwendet</value>
+  </data>
 </root>

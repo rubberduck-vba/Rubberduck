@@ -709,6 +709,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The VBA compiler does not raise an error if an object variable is used in a place that requires a procedure and the object&apos;s declared type does not have a suitable default member. Under almost all circumstances, this leads to a run-time error, which is harder to detect and indicates a bug..
+        /// </summary>
+        public static string ProcedureRequiredInspection {
+            get {
+                return ResourceManager.GetString("ProcedureRequiredInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to By default, all parameters are passed by reference, so it is not necessary to include the &apos;ByRef&apos; modifier..
         /// </summary>
         public static string RedundantByRefModifierInspection {

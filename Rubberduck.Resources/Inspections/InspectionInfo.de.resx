@@ -397,4 +397,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="ValueRequiredInspection" xml:space="preserve">
     <value>Der VBA-Compiler gibt keinen Fehler aus, wenn ein Objekt an einer Stelle verwendet wird, die einen Wert verlangt, und der deklarierte Type des Objekts keinen passenden Standardmember hat. In fast allen Fällen führt dies zu einem Laufzeitfehler, der schwerer zu entdecken ist und auf einen Programmierfehler hinweist.</value>
   </data>
+  <data name="ProcedureRequiredInspection" xml:space="preserve">
+    <value>Der VBA-Compiler gibt keinen Fehler aus, wenn eine Objektvariable an einer Stelle verwendet wird, die eine Prozedur erfordert, und der deklarierte Type des Objekts keinen passenden Standardmember hat. In fast allen Fällen führt dies zu einem Laufzeitfehler, der schwerer zu entdecken ist und auf einen Programmierfehler hinweist.</value>
+  </data>
 </root>

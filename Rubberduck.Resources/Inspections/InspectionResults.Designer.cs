@@ -727,6 +727,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to In a context that requires a procedure, the expression &apos;{0}&apos; of object type &apos;{1}&apos; is used that does not have a suitable default member..
+        /// </summary>
+        public static string ProcedureRequiredInspection {
+            get {
+                return ResourceManager.GetString("ProcedureRequiredInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Procedure &apos;{0}&apos; can be written as a function..
         /// </summary>
         public static string ProcedureShouldBeFunctionInspection {
