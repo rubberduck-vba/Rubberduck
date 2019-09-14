@@ -117,7 +117,7 @@ namespace Rubberduck.Parsing.Binding
                 return new LetCoercionDefaultMemberAccessExpression(defaultMember, defaultMemberClassification, expression, wrappedExpression, recursionDepth, containedExpression);
             }
 
-            if (parameters.All(parameter => parameter.IsOptional))
+            if (parameters.All(parameter => parameter.IsOptional || parameter.IsParamArray))
             {
                 if (!defaultMember.IsObject)
                 {

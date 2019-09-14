@@ -108,6 +108,14 @@ namespace Rubberduck.Parsing.Binding
             return failedExpr.JoinAsFailedResolution(context, argumentExpressions);
         }
 
+        private static IBoundExpression CreateFailedDefaultMemberAccessExpression(IBoundExpression lExpression, ArgumentList argumentList, ParserRuleContext context)
+        {
+            var failedExpr = new DictionaryAccessExpression(lExpression.ReferencedDeclaration, ExpressionClassification.ResolutionFailed, context, lExpression, argumentList, context);
+
+            var argumentExpressions = argumentList.Arguments.Select(arg => arg.Expression);
+            return failedExpr.JoinAsFailedResolution(context, argumentExpressions.Concat(new []{ lExpression }));
+        }
+
         private static IBoundExpression ResolveViaDefaultMember(IBoundExpression lExpression, string asTypeName, Declaration asTypeDeclaration, ArgumentList argumentList, ParserRuleContext expression, ParserRuleContext defaultMemberContext, int recursionDepth = 1, RecursiveDefaultMemberAccessExpression containedExpression = null)
         {
             if (Tokens.Variant.Equals(asTypeName, StringComparison.InvariantCultureIgnoreCase) 
@@ -132,7 +140,7 @@ namespace Rubberduck.Parsing.Binding
                 || !IsPublic(defaultMember))
             {
                 ResolveArgumentList(null, argumentList);
-                return CreateFailedExpression(lExpression, argumentList, expression);
+                return CreateFailedDefaultMemberAccessExpression(lExpression, argumentList, expression);
             }
 
             var defaultMemberClassification = DefaultMemberClassification(defaultMember);
@@ -147,7 +155,7 @@ namespace Rubberduck.Parsing.Binding
                     declared type.  
                 */
                 ResolveArgumentList(defaultMember, argumentList);
-                return new DictionaryAccessExpression(defaultMember, defaultMemberClassification, expression, lExpression, argumentList, defaultMemberContext, recursionDepth, containedExpression);
+                return new DictionaryAccessExpression(defaultMember, ExpressionClassification.Variable, expression, lExpression, argumentList, defaultMemberContext, recursionDepth, containedExpression);
             }
 
             if (parameters.All(param => param.IsOptional) 
@@ -162,13 +170,13 @@ namespace Rubberduck.Parsing.Binding
             }
 
             ResolveArgumentList(null, argumentList);
-            return CreateFailedExpression(lExpression, argumentList, expression);
+            return CreateFailedDefaultMemberAccessExpression(lExpression, argumentList, expression);
         }
 
         private static bool IsCompatibleWithOneStringArgument(List<ParameterDeclaration> parameters)
         {
             return parameters.Count > 0 
-                   && parameters.Count(param => !param.IsOptional) <= 1 
+                   && parameters.Count(param => !param.IsOptional && !param.IsParamArray) <= 1 
                    && (Tokens.String.Equals(parameters[0].AsTypeName, StringComparison.InvariantCultureIgnoreCase)
                        || Tokens.Variant.Equals(parameters[0].AsTypeName, StringComparison.InvariantCultureIgnoreCase));
         }
