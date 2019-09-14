@@ -1,10 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -1376,6 +1376,48 @@ End Sub
             var actualSelection = inspectionResult.QualifiedSelection.Selection;
 
             Assert.AreEqual(expectedSelection, actualSelection);
+        }
+
+        [Test]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [TestCase("    cls.Baz = fooBar")]
+        [TestCase("    Let cls.Baz = fooBar")]
+        //This prevents problems with some types in libraries like OLE_COLOR, which are not really classes.
+        //See issue #4997 at https://github.com/rubberduck-vba/Rubberduck/issues/4997
+        public void PropertyLetOnLHS_NoResult(string statement)
+        {
+            var class1Code = @"
+Public Function Foo() As Long
+Attribute Foo.VB_UserMemId = 0
+End Function
+";
+
+            var class2Code = @"
+Public Property Let Baz(RHS As Class1)
+End Property
+
+Public Property Get Baz() As Class1
+Attribute Baz.VB_UserMemId = 0
+End Property
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As New Class2
+    Dim fooBar As New Class1
+{statement}
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var inspectionResults = InspectionResults(vbe.Object);
+
+            Assert.IsFalse(inspectionResults.Any());
         }
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)

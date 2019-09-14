@@ -63,7 +63,8 @@ namespace Rubberduck.Parsing.Binding
                 || !wrappedDeclaration.IsObject 
                     && !(wrappedDeclaration.IsObjectArray 
                         && wrappedExpression is IndexExpression indexExpression 
-                        && indexExpression.IsArrayAccess))
+                        && indexExpression.IsArrayAccess)
+                || wrappedDeclaration.DeclarationType == DeclarationType.PropertyLet)
             {
                 return wrappedExpression;
             }

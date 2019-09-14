@@ -4635,6 +4635,56 @@ End Sub
         [Test]
         [Category("Grammar")]
         [Category("Resolver")]
+        [TestCase("    cls.Baz = fooBar", 5, 12)]
+        [TestCase("    Let cls.Baz = fooBar", 9, 16)]
+        //This prevents problems with some types in libraries like OLE_COLOR, which are not really classes.
+        public void LetCoercionOnPropertyLetNeverDoesAnything(string statement, int selectionStartColumn, int selectionEndColumn)
+        {
+            var class1Code = @"
+Public Function Foo() As Long
+Attribute Foo.VB_UserMemId = 0
+End Function
+";
+
+            var class2Code = @"
+Public Property Let Baz(RHS As Class1)
+End Property
+
+Public Property Get Baz() As Class1
+Attribute Baz.VB_UserMemId = 0
+End Property
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As New Class2
+    Dim fooBar As New Class1
+{statement}
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(5, selectionStartColumn, 5, selectionEndColumn);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var defaultMemberReferences = state.DeclarationFinder.IdentifierReferences(qualifiedSelection);
+                var failedLetCoercionReferences = state.DeclarationFinder.FailedLetCoercions(module);
+
+                Assert.IsFalse(defaultMemberReferences.Any());
+                Assert.IsFalse(failedLetCoercionReferences.Any());
+            }
+        }
+
+        [Test]
+        [Category("Grammar")]
+        [Category("Resolver")]
         public void LetCoercionDefaultMemberAccessOnArrayIndexHasReferenceToDefaultMemberOnEntireContext()
         {
             var class1Code = @"
