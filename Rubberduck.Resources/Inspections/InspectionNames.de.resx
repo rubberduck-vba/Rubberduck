@@ -384,4 +384,7 @@
   <data name="ProcedureRequiredInspection" xml:space="preserve">
     <value>Objekt statt Prozedur verwendet</value>
   </data>
+  <data name="DefaultMemberRequiredInspection" xml:space="preserve">
+    <value>Standardmemberzugriff ohne Standardmember</value>
+  </data>
 </root>

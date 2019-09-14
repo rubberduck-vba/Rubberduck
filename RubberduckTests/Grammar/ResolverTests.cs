@@ -5181,8 +5181,7 @@ End Sub
         [Test]
         [Category("Grammar")]
         [Category("Resolver")]
-        [Ignore("Temporarily ignored until a way is found to save the failed procedure coercions for parameterized calls.")]
-        public void FailedParameterizedProcedureCoercionReferenceOnEntireContext()
+        public void FailedParameterizedProcedureCoercionFailedIndexedDefaultMemberAccessReferenceOnEntireContext()
         {
             var class1Code = @"
 Public Sub Foo(arg As Long)
@@ -5217,7 +5216,7 @@ End Sub
             {
                 var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
                 var failedProcedureCoercion = state.DeclarationFinder
-                    .FailedProcedureCoercions(module)
+                    .FailedIndexedDefaultMemberAccesses(module)
                     .Single();
 
                 var expectedSelection = new Selection(4, 5, 4, 12);
@@ -5278,8 +5277,7 @@ End Sub
         [Test]
         [Category("Grammar")]
         [Category("Resolver")]
-        [Ignore("Temporarily ignored until a way is found to save the failed procedure coercions for parameterized calls.")]
-        public void FailedParameterizedProcedureCoercionReferenceOnEntireContext_ExplicitCall()
+        public void FailedParameterizedProcedureCoercionFailedIndexedDefaultMemberAccessReferenceOnEntireContext_ExplicitCall()
         {
             var class1Code = @"
 Public Sub Foo(arg As Long)
@@ -5314,10 +5312,10 @@ End Sub
             {
                 var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
                 var failedProcedureCoercion = state.DeclarationFinder
-                    .FailedProcedureCoercions(module)
+                    .FailedIndexedDefaultMemberAccesses(module)
                     .Single();
 
-                var expectedSelection = new Selection(4, 10, 4, 17);
+                var expectedSelection = new Selection(4, 10, 4, 21);
                 var actualSelection = failedProcedureCoercion.Selection;
 
                 Assert.AreEqual(expectedSelection, actualSelection);

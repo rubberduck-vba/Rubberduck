@@ -404,4 +404,7 @@
   <data name="ProcedureRequiredInspection" xml:space="preserve">
     <value>Object used where a procedure is required</value>
   </data>
+  <data name="DefaultMemberRequiredInspection" xml:space="preserve">
+    <value>Indexed default member access without default member</value>
+  </data>
 </root>

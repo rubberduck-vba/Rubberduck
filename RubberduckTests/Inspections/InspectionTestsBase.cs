@@ -2,6 +2,7 @@
 using System.Threading;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 
@@ -10,6 +11,24 @@ namespace RubberduckTests.Inspections
     public abstract class InspectionTestsBase
     {
         protected abstract IInspection InspectionUnderTest(RubberduckParserState state);
+
+        public IEnumerable<IInspectionResult> InspectionResultsForStandardModule(string code)
+        {
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out _).Object;
+            return InspectionResults(vbe);
+        }
+
+        public IEnumerable<IInspectionResult> InspectionResultsForModules(params (string name, string content, ComponentType componentType)[] modules)
+        {
+            var vbe = MockVbeBuilder.BuildFromModules(modules).Object;
+            return InspectionResults(vbe);
+        }
+
+        public IEnumerable<IInspectionResult> InspectionResultsForModules(IEnumerable<(string name, string content, ComponentType componentType)> modules)
+        {
+            var vbe = MockVbeBuilder.BuildFromModules(modules).Object;
+            return InspectionResults(vbe);
+        }
 
         public IEnumerable<IInspectionResult> InspectionResults(IVBE vbe)
         {

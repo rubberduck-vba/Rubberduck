@@ -124,6 +124,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The VBA compiler does not raise an error if an indexed default member call is required but the object&apos;s declared type does not have a suitable default member. Under almost all circumstances, this leads to a run-time error, which is harder to detect and indicates a bug..
+        /// </summary>
+        public static string DefaultMemberRequiredInspection {
+            get {
+                return ResourceManager.GetString("DefaultMemberRequiredInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Consider naming your VBA project..
         /// </summary>
         public static string DefaultProjectNameInspection {

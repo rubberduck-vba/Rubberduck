@@ -425,4 +425,7 @@ In Memoriam, 1972-2018</value>
   <data name="ProcedureRequiredInspection" xml:space="preserve">
     <value>An einer Stelle, die eine Prozedur erfordert, wird der Ausdruck '{0}' vom Objekttyp '{1}'  verwendet, der keinen passendes Standardmember hat.</value>
   </data>
+  <data name="DefaultMemberRequiredInspection" xml:space="preserve">
+    <value>Der Ausdruck '{0}' erfordert einen Standardmemberzugriff, aber der Typ '{1}' hat keinen passenden Standardmember.</value>
+  </data>
 </root>
