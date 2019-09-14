@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +14,7 @@ namespace Rubberduck.Parsing.Grammar.Abstract.CodePathAnalysis
         /// <summary>
         /// Gets all references to this assignment in the specified <see cref="IExecutionContext"/>.
         /// </summary>
-        IImmutableSet<IReferenceNode> References(IExecutionContext context);
+        IReadOnlyList<IReferenceNode> References(IExecutionContext context);
         /// <summary>
         /// Adds a reference to the value of this assignment operation in the specified <see cref="IExecutionContext"/>.
         /// </summary>

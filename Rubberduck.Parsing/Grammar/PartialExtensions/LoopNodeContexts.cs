@@ -17,7 +17,7 @@ namespace Rubberduck.Parsing.Grammar
             public bool HasExecuted(IExecutionContext context) 
                 => _hasExecuted.TryGetValue(context, out var value) && value;
 
-            public void Execute(IExecutionContext context)
+            public void Execute(IExecutionContext context) 
                 => _hasExecuted[context] = true;
 
             public IEvaluatableNode ConditionExpression { get; set; }
@@ -31,7 +31,7 @@ namespace Rubberduck.Parsing.Grammar
             public bool HasExecuted(IExecutionContext context) 
                 => _hasExecuted.TryGetValue(context, out var value) && value;
 
-            public void Execute(IExecutionContext context)
+            public void Execute(IExecutionContext context) 
                 => _hasExecuted[context] = true;
 
             public IEvaluatableNode ConditionExpression { get; set; }
@@ -44,7 +44,7 @@ namespace Rubberduck.Parsing.Grammar
             public bool HasExecuted(IExecutionContext context) 
                 => _hasExecuted.TryGetValue(context, out var value) && value;
 
-            public void Execute(IExecutionContext context)
+            public void Execute(IExecutionContext context) 
                 => _hasExecuted[context] = true;
 
             public IEvaluatableNode ConditionExpression { get; set; }

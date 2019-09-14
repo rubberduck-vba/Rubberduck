@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing.Grammar.Abstract;
+using Rubberduck.Parsing.Grammar.Abstract.CodePathAnalysis;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Parsing.Grammar
