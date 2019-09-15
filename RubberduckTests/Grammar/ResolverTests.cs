@@ -6503,5 +6503,72 @@ End Function
                 Assert.IsFalse(failedAccesses.Any());
             }
         }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        [TestCase("String", "bar = \"Hello \" & Foo(Nothing)")]
+        [TestCase("Class1", "Set Foo = Foo(Nothing)")]
+        public void RecursiveFunctionCall_NoFailedIndexedDefaultMemberResolution(string functionReturnTypeName, string statement)
+        {
+            var classCode = @"
+Public Function Foo(index As Variant) As Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo(ByVal cls As Class1) As {functionReturnTypeName} 
+    If Not(cls Is Nothing) Then
+        Dim bar As Variant
+        {statement}
+    End If
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var failedAccesses = state.DeclarationFinder.FailedIndexedDefaultMemberAccesses(module);
+
+                Assert.IsFalse(failedAccesses.Any());
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        [TestCase("", "Call Foo")]
+        [TestCase("", "Call Foo()")]
+        [TestCase("", "Foo")]
+        [TestCase("ByVal arg As Variant", "Call Foo(arg)")]
+        [TestCase("ByVal arg As Variant", "Foo arg")]
+        public void RecursiveProcedureCall_NoFailedProcedureCoercionReference(string argumentList, string statement)
+        {
+            var classCode = @"
+Public Function Foo(index As Variant) As Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo({argumentList}) As Class1
+    {statement}
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var failedAccesses = state.DeclarationFinder.FailedProcedureCoercions();
+
+                Assert.IsFalse(failedAccesses.Any());
+            }
+        }
     }
 }

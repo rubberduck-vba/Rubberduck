@@ -11,6 +11,7 @@ namespace Rubberduck.Parsing.Binding
         private readonly ParserRuleContext _expression;
         private readonly IExpressionBinding _wrappedExpressionBinding;
         private readonly bool _hasExplicitCall;
+        private readonly Declaration _parent;
         private IBoundExpression _wrappedExpression;
 
         //This is a wrapper used to model procedure coercion in call statements without arguments.
@@ -19,11 +20,13 @@ namespace Rubberduck.Parsing.Binding
         public ProcedureCoercionDefaultBinding(
             ParserRuleContext expression,
             IExpressionBinding wrappedExpressionBinding,
-            bool hasExplicitCall)
+            bool hasExplicitCall,
+            Declaration parent)
             : this(
                 expression,
                 (IBoundExpression)null,
-                hasExplicitCall)
+                hasExplicitCall,
+                parent)
         {
             _wrappedExpressionBinding = wrappedExpressionBinding;
         }
@@ -31,11 +34,13 @@ namespace Rubberduck.Parsing.Binding
         public ProcedureCoercionDefaultBinding(
             ParserRuleContext expression,
             IBoundExpression wrappedExpression,
-            bool hasExplicitCall)
+            bool hasExplicitCall,
+            Declaration parent)
         {
             _expression = expression;
             _wrappedExpression = wrappedExpression;
             _hasExplicitCall = hasExplicitCall;
+            _parent = parent;
         }
 
         public IBoundExpression Resolve()
@@ -45,10 +50,10 @@ namespace Rubberduck.Parsing.Binding
                 _wrappedExpression = _wrappedExpressionBinding.Resolve();
             }
 
-            return Resolve(_wrappedExpression, _expression, _hasExplicitCall);
+            return Resolve(_wrappedExpression, _expression, _hasExplicitCall, _parent);
         }
 
-        private static IBoundExpression Resolve(IBoundExpression wrappedExpression, ParserRuleContext expression, bool hasExplicitCall)
+        private static IBoundExpression Resolve(IBoundExpression wrappedExpression, ParserRuleContext expression, bool hasExplicitCall, Declaration parent)
         {
             //Procedure coercion only happens for expressions classified as variables.
             if (wrappedExpression.Classification != ExpressionClassification.Variable)
@@ -56,6 +61,7 @@ namespace Rubberduck.Parsing.Binding
                 return wrappedExpression;
             }
 
+            //The wrapped declaration is not of a specific class type or Object.
             var wrappedDeclaration = wrappedExpression.ReferencedDeclaration;
             if (wrappedDeclaration == null
                 || !wrappedDeclaration.IsObject
@@ -66,7 +72,13 @@ namespace Rubberduck.Parsing.Binding
                 return wrappedExpression;
             }
 
-            //The wrapped declaration is of a specific class type or Object.
+            //Recursive function call
+            //The reference to the function is originally resolved as a variable because that is appropriate for the return value variable of the same name.
+            if (wrappedExpression.Classification == ExpressionClassification.Variable
+                && wrappedDeclaration.Equals(parent))
+            {
+                return wrappedExpression;
+            }
 
             var asTypeName = wrappedDeclaration.AsTypeName;
             var asTypeDeclaration = wrappedDeclaration.AsTypeDeclaration;
