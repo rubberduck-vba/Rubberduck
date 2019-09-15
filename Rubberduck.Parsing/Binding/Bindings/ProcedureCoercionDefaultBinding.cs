@@ -10,6 +10,7 @@ namespace Rubberduck.Parsing.Binding
     {
         private readonly ParserRuleContext _expression;
         private readonly IExpressionBinding _wrappedExpressionBinding;
+        private readonly bool _hasExplicitCall;
         private IBoundExpression _wrappedExpression;
 
         //This is a wrapper used to model procedure coercion in call statements without arguments.
@@ -17,20 +18,24 @@ namespace Rubberduck.Parsing.Binding
 
         public ProcedureCoercionDefaultBinding(
             ParserRuleContext expression,
-            IExpressionBinding wrappedExpressionBinding)
+            IExpressionBinding wrappedExpressionBinding,
+            bool hasExplicitCall)
             : this(
                 expression,
-                (IBoundExpression)null)
+                (IBoundExpression)null,
+                hasExplicitCall)
         {
             _wrappedExpressionBinding = wrappedExpressionBinding;
         }
 
         public ProcedureCoercionDefaultBinding(
             ParserRuleContext expression,
-            IBoundExpression wrappedExpression)
+            IBoundExpression wrappedExpression,
+            bool hasExplicitCall)
         {
             _expression = expression;
             _wrappedExpression = wrappedExpression;
+            _hasExplicitCall = hasExplicitCall;
         }
 
         public IBoundExpression Resolve()
@@ -40,10 +45,10 @@ namespace Rubberduck.Parsing.Binding
                 _wrappedExpression = _wrappedExpressionBinding.Resolve();
             }
 
-            return Resolve(_wrappedExpression, _expression);
+            return Resolve(_wrappedExpression, _expression, _hasExplicitCall);
         }
 
-        private static IBoundExpression Resolve(IBoundExpression wrappedExpression, ParserRuleContext expression)
+        private static IBoundExpression Resolve(IBoundExpression wrappedExpression, ParserRuleContext expression, bool hasExplicitCall)
         {
             //Procedure coercion only happens for expressions classified as variables.
             if (wrappedExpression.Classification != ExpressionClassification.Variable)
@@ -55,8 +60,8 @@ namespace Rubberduck.Parsing.Binding
             if (wrappedDeclaration == null
                 || !wrappedDeclaration.IsObject
                     && !(wrappedDeclaration.IsObjectArray
-                        && wrappedExpression is IndexExpression indexExpression
-                        && indexExpression.IsArrayAccess))
+                        && wrappedExpression is IndexExpression arrayExpression
+                        && arrayExpression.IsArrayAccess))
             {
                 return wrappedExpression;
             }
@@ -66,14 +71,21 @@ namespace Rubberduck.Parsing.Binding
             var asTypeName = wrappedDeclaration.AsTypeName;
             var asTypeDeclaration = wrappedDeclaration.AsTypeDeclaration;
 
+            //If there is an explicit call, a non-array (access) index expression or dictionary access expression already count as procedure call.
+            if (hasExplicitCall
+                && (wrappedExpression is IndexExpression indexExpression 
+                        && !indexExpression.IsArrayAccess
+                    || wrappedExpression is DictionaryAccessExpression))
+            {
+                return wrappedExpression;
+            }
+
             return ResolveViaDefaultMember(wrappedExpression, asTypeName, asTypeDeclaration, expression);
         }
 
-        private static IBoundExpression CreateFailedExpression(IBoundExpression lExpression, ParserRuleContext context)
+        private static IBoundExpression CreateFailedExpression(IBoundExpression wrappedExpression, ParserRuleContext context)
         {
-            var failedExpr = new ResolutionFailedExpression(context, true);
-            failedExpr.AddSuccessfullyResolvedExpression(lExpression);
-            return failedExpr;
+            return new ProcedureCoercionExpression(wrappedExpression.ReferencedDeclaration, ExpressionClassification.ResolutionFailed, context, wrappedExpression);
         }
 
         private static IBoundExpression ResolveViaDefaultMember(IBoundExpression wrappedExpression, string asTypeName, Declaration asTypeDeclaration, ParserRuleContext expression)
@@ -82,7 +94,7 @@ namespace Rubberduck.Parsing.Binding
                     || Tokens.Object.Equals(asTypeName, StringComparison.InvariantCultureIgnoreCase))
             {
                 // We cannot know the the default member in this case, so return an unbound member call.
-                return new ProcedureCoercionExpression(null, ExpressionClassification.Unbound, expression, wrappedExpression);
+                return new ProcedureCoercionExpression(wrappedExpression.ReferencedDeclaration, ExpressionClassification.Unbound, expression, wrappedExpression);
             }
 
             var defaultMember = (asTypeDeclaration as ClassModuleDeclaration)?.DefaultMember;
@@ -96,7 +108,7 @@ namespace Rubberduck.Parsing.Binding
             var defaultMemberClassification = DefaultMemberClassification(defaultMember);
 
             var parameters = ((IParameterizedDeclaration)defaultMember).Parameters.ToList();
-            if (parameters.All(parameter => parameter.IsOptional))
+            if (parameters.All(parameter => parameter.IsOptional || parameter.IsParamArray))
             {
                 //We found some default member accepting the empty argument list. So, we are done.
                 return new ProcedureCoercionExpression(defaultMember, defaultMemberClassification, expression, wrappedExpression);

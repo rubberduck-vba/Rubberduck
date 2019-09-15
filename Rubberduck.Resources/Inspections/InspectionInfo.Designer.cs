@@ -70,7 +70,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The VBA compiler does not raise an error if an object is passed as an argument for a parameter with an incompatible declared object type, i.e. with an object type that is neither the same type, a supertype nor a subtype. Under almost all circumstances passing such an argument leads to a run-time error, which is harder to detect and indicates a bug. In all other situations the code can be changed to use only assignments between compatible declared types..
+        ///   Looks up a localized string similar to The VBA compiler does not raise an error if an object is passed as an argument for a parameter with an incompatible declared object type, i.e. with an object type that is neither the same type, a supertype nor a subtype. Under almost all circumstances passing such an argument leads to a run-time error, which is harder to detect and indicates a bug. In all other situations the code can be changed to only pass arguments of compatible declared types..
         /// </summary>
         public static string ArgumentWithIncompatibleObjectTypeInspection {
             get {
@@ -120,6 +120,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string ConstantNotUsedInspection {
             get {
                 return ResourceManager.GetString("ConstantNotUsedInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The VBA compiler does not raise an error if an indexed default member call is required but the object&apos;s declared type does not have a suitable default member. Under almost all circumstances, this leads to a run-time error 91 &apos;Object or With block variable not set&apos; or 438 &apos;Object doesn&apos;t support this property or method&apos; depending on whether the object has the value &apos;Nothing&apos; or not, which is harder to detect and indicates a bug..
+        /// </summary>
+        public static string DefaultMemberRequiredInspection {
+            get {
+                return ResourceManager.GetString("DefaultMemberRequiredInspection", resourceCulture);
             }
         }
         
@@ -538,7 +547,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to As far as Rubberduck can tell, this variable is an object variable, assigned without the &apos;Set&apos; keyword. This causes run-time error 91 &apos;Object or With block variable not set&apos;..
+        ///   Looks up a localized string similar to As far as Rubberduck can tell, this variable is an object variable, assigned without the &apos;Set&apos; keyword. This causes run-time error 91 &apos;Object or With block variable not set&apos; or 438 &apos;Object doesn&apos;t support this property or method&apos; depending on whether the variable has the value &apos;Nothing&apos; or not..
         /// </summary>
         public static string ObjectVariableNotSetInspection {
             get {
@@ -709,6 +718,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The VBA compiler does not raise an error if an object variable is used in a place that requires a procedure and the object&apos;s declared type does not have a suitable default member. Under almost all circumstances, this leads to a run-time error 91 &apos;Object or With block variable not set&apos; or 438 &apos;Object doesn&apos;t support this property or method&apos; depending on whether the object has the value &apos;Nothing&apos; or not, which is harder to detect and indicates a bug..
+        /// </summary>
+        public static string ProcedureRequiredInspection {
+            get {
+                return ResourceManager.GetString("ProcedureRequiredInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to By default, all parameters are passed by reference, so it is not necessary to include the &apos;ByRef&apos; modifier..
         /// </summary>
         public static string RedundantByRefModifierInspection {
@@ -850,6 +868,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string UseMeaningfulNameInspection {
             get {
                 return ResourceManager.GetString("UseMeaningfulNameInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The VBA compiler does not raise an error if an object is used in a place that requires a value type and the object&apos;s declared type does not have a suitable default member. Under almost all circumstances, this leads to a run-time error 91 &apos;Object or With block variable not set&apos; or 438 &apos;Object doesn&apos;t support this property or method&apos; depending on whether the object has the value &apos;Nothing&apos; or not, which is harder to detect and indicates a bug..
+        /// </summary>
+        public static string ValueRequiredInspection {
+            get {
+                return ResourceManager.GetString("ValueRequiredInspection", resourceCulture);
             }
         }
         

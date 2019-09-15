@@ -124,6 +124,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The expression &apos;{0}&apos; requires a default member access, but the type &apos;{0}&apos; does not have a suitable default member..
+        /// </summary>
+        public static string DefaultMemberRequiredInspection {
+            get {
+                return ResourceManager.GetString("DefaultMemberRequiredInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Project &apos;{0}&apos; has default name..
         /// </summary>
         public static string DefaultProjectNameInspection {
@@ -727,6 +736,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to In a context that requires a procedure, the expression &apos;{0}&apos; of object type &apos;{1}&apos; is used that does not have a suitable default member..
+        /// </summary>
+        public static string ProcedureRequiredInspection {
+            get {
+                return ResourceManager.GetString("ProcedureRequiredInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Procedure &apos;{0}&apos; can be written as a function..
         /// </summary>
         public static string ProcedureShouldBeFunctionInspection {
@@ -924,6 +942,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string UntypedFunctionUsageInspection {
             get {
                 return ResourceManager.GetString("UntypedFunctionUsageInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In a context that requires a value type, the expression &apos;{0}&apos; of object type &apos;{1}&apos; is used that does not have a suitable default member..
+        /// </summary>
+        public static string ValueRequiredInspection {
+            get {
+                return ResourceManager.GetString("ValueRequiredInspection", resourceCulture);
             }
         }
         

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
@@ -7,13 +6,13 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
+using Rubberduck.Parsing.VBA.ReferenceManagement;
 
 namespace Rubberduck.Parsing.VBA
 {
     public class ModuleState
     {
-        public ConcurrentDictionary<Declaration, byte> Declarations { get; private set; }
-        public ConcurrentDictionary<UnboundMemberDeclaration, byte> UnresolvedMemberDeclarations { get; private set; }
+        public ICollection<Declaration> Declarations { get; }
         public ITokenStream CodePaneTokenStream { get; private set; }
         public ITokenStream AttributesTokenStream { get; private set; }
         public IParseTree ParseTree { get; private set; }
@@ -25,17 +24,16 @@ namespace Rubberduck.Parsing.VBA
         public SyntaxErrorException ModuleException { get; private set; }
         public IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> ModuleAttributes { get; private set; }
         public IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> MembersAllowingAttributes { get; private set; }
-        public IReadOnlyCollection<IdentifierReference> UnboundDefaultMemberAccesses => _unboundDefaultMemberAccesses;
+
+        public IFailedResolutionStore FailedResolutionStore { get; private set; }
 
         public bool IsNew { get; private set; }
         public bool IsMarkedAsModified { get; private set; }
 
-        private readonly HashSet<IdentifierReference> _unboundDefaultMemberAccesses = new HashSet<IdentifierReference>();
-
-        public ModuleState(ConcurrentDictionary<Declaration, byte> declarations)
+        public ModuleState(ICollection<Declaration> declarations)
         {
             Declarations = declarations;
-            UnresolvedMemberDeclarations = new ConcurrentDictionary<UnboundMemberDeclaration, byte>();
+            FailedResolutionStore = new FailedResolutionStore();
             ParseTree = null;
 
             ModuleContentHashCode = 0;
@@ -52,8 +50,8 @@ namespace Rubberduck.Parsing.VBA
 
         public ModuleState(ParserState state)
         {
-            Declarations = new ConcurrentDictionary<Declaration, byte>();
-            UnresolvedMemberDeclarations = new ConcurrentDictionary<UnboundMemberDeclaration, byte>();
+            Declarations = new HashSet<Declaration>();
+            FailedResolutionStore = new FailedResolutionStore();
             ParseTree = null;
             State = state;
             ModuleContentHashCode = 0;
@@ -68,8 +66,8 @@ namespace Rubberduck.Parsing.VBA
 
         public ModuleState(SyntaxErrorException moduleException)
         {
-            Declarations = new ConcurrentDictionary<Declaration, byte>();
-            UnresolvedMemberDeclarations = new ConcurrentDictionary<UnboundMemberDeclaration, byte>();
+            Declarations = new HashSet<Declaration>();
+            FailedResolutionStore = new FailedResolutionStore();
             ParseTree = null;
             State = ParserState.Error;
             ModuleContentHashCode = 0;
@@ -153,16 +151,15 @@ namespace Rubberduck.Parsing.VBA
             return this;
         }
 
-        public ModuleState AddUnboundDefaultMemberAccess(IdentifierReference defaultMemberAccess)
+        public ModuleState SetFailedResolutionStore(IFailedResolutionStore store)
         {
-            if (defaultMemberAccess.IsDefaultMemberAccess
-                && defaultMemberAccess.Declaration == null
-                && !_unboundDefaultMemberAccesses.Contains(defaultMemberAccess))
-            {
-                _unboundDefaultMemberAccesses.Add(defaultMemberAccess);
-            }
-
+            FailedResolutionStore = store;
             return this;
+        }
+
+        public void ClearFailedResolutionStore()
+        {
+            FailedResolutionStore = new FailedResolutionStore();
         }
 
         public void MarkAsModified()
@@ -183,7 +180,7 @@ namespace Rubberduck.Parsing.VBA
             Comments?.Clear();
             Annotations?.Clear();
             ModuleAttributes?.Clear();
-
+            
             _isDisposed = true;
         }
     }

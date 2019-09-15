@@ -69,9 +69,11 @@ namespace Rubberduck.Parsing.Binding
                 {
                     return new IndexDefaultBinding(expression.lExpression(), lExpressionBinding, argList);
                 }
+
+                return new ProcedureCoercionDefaultBinding(expression.lExpression(), lExpressionBinding, false);
             }
 
-            return new ProcedureCoercionDefaultBinding(expression.lExpression(), lExpressionBinding);
+            return new ProcedureCoercionDefaultBinding(expression.lExpression(), lExpressionBinding, true);
         }
 
         private static void SetLeftMatch(IExpressionBinding binding, int argumentCount)
