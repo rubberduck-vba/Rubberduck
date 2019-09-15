@@ -215,7 +215,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Eine selbstzugewiesene Objektvariablendeklaration in einer Prozedur kann das Verhalten beim Nulling verändern. Dies kann zu unvorhergesehen Verhalten des Codes führen.</value>
   </data>
   <data name="ObjectVariableNotSetInspection" xml:space="preserve">
-    <value>Rubberduck hat festgestellt, dass die Variable eine Objektvariable ist, die ohne 'Set'-Schlüsselwort zugewiesen wird. Dies führt zu dem Laufzeitfehler '91': Objektvariable oder With-Blockvariable nicht festgelegt</value>
+    <value>Rubberduck hat festgestellt, dass die Variable eine Objektvariable ist, die ohne 'Set'-Schlüsselwort zugewiesen wird. Dies führt zu dem Laufzeitfehler 91 'Objektvariable oder With-Blockvariable nicht festgelegt' oder 438 'Objekt unterstützt diese Eigenschaft oder Methode nicht' abhängig davon, ob die Variable den Wert 'Nothing' hat oder nicht.</value>
   </data>
   <data name="MissingAnnotationArgumentInspection" xml:space="preserve">
     <value>Eine Annotation in einem Kommentar konnte nicht gelesen werden. Die korrekte Syntax ist: '@Annotation([parameter])'\nBeispiel: '@Folder("Parent.Child")'</value>
@@ -395,12 +395,12 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Eine Klasse, die dafür gedacht ist von anderen Klassen als Interface genutzt zu werden, sollte gewöhnlicher Weise keine Implementierungen enthalten. Falls die Intention ist diese Klasse direkt als konkrete Klasse zu verwenden, kann dieses Inspektionsresultat ignoriert werden.</value>
   </data>
   <data name="ValueRequiredInspection" xml:space="preserve">
-    <value>Der VBA-Compiler gibt keinen Fehler aus, wenn ein Objekt an einer Stelle verwendet wird, die einen Wert verlangt, und der deklarierte Type des Objekts keinen passenden Standardmember hat. In fast allen Fällen führt dies zu einem Laufzeitfehler, der schwerer zu entdecken ist und auf einen Programmierfehler hinweist.</value>
+    <value>Der VBA-Compiler gibt keinen Fehler aus, wenn ein Objekt an einer Stelle verwendet wird, die einen Wert verlangt, und der deklarierte Type des Objekts keinen passenden Standardmember hat. In fast allen Fällen führt dies zu einem Laufzeitfehler 91 'Objektvariable oder With-Blockvariable nicht festgelegt' oder 438 'Objekt unterstützt diese Eigenschaft oder Methode nicht' abhängig davon, ob die Variable den Wert 'Nothing' hat oder nicht, der schwerer zu entdecken ist und auf einen Programmierfehler hinweist.</value>
   </data>
   <data name="ProcedureRequiredInspection" xml:space="preserve">
-    <value>Der VBA-Compiler gibt keinen Fehler aus, wenn eine Objektvariable an einer Stelle verwendet wird, die eine Prozedur erfordert, und der deklarierte Type des Objekts keinen passenden Standardmember hat. In fast allen Fällen führt dies zu einem Laufzeitfehler, der schwerer zu entdecken ist und auf einen Programmierfehler hinweist.</value>
+    <value>Der VBA-Compiler gibt keinen Fehler aus, wenn eine Objektvariable an einer Stelle verwendet wird, die eine Prozedur erfordert, und der deklarierte Type des Objekts keinen passenden Standardmember hat. In fast allen Fällen führt dies zu einem Laufzeitfehler91 'Objektvariable oder With-Blockvariable nicht festgelegt' oder 438 'Objekt unterstützt diese Eigenschaft oder Methode nicht' abhängig davon, ob die Variable den Wert 'Nothing' hat oder nicht, der schwerer zu entdecken ist und auf einen Programmierfehler hinweist.</value>
   </data>
   <data name="DefaultMemberRequiredInspection" xml:space="preserve">
-    <value>Der VBA-Compiler gibt keinen Fehler aus, wenn ein Standardmemberzugriff nötig ist, aber der der deklarierte Type des Objekts keinen passenden Standardmember hat. In fast allen Fällen führt dies zu einem Laufzeitfehler, der schwerer zu entdecken ist und auf einen Programmierfehler hinweist.</value>
+    <value>Der VBA-Compiler gibt keinen Fehler aus, wenn ein Standardmemberzugriff nötig ist, aber der der deklarierte Type des Objekts keinen passenden Standardmember hat. In fast allen Fällen führt dies zu einem Laufzeitfehler91 'Objektvariable oder With-Blockvariable nicht festgelegt' oder 438 'Objekt unterstützt diese Eigenschaft oder Methode nicht' abhängig davon, ob die Variable den Wert 'Nothing' hat oder nicht, der schwerer zu entdecken ist und auf einen Programmierfehler hinweist.</value>
   </data>
 </root>

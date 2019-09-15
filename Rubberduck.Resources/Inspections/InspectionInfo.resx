@@ -221,7 +221,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>A member is written as a function, but used as a procedure. Unless the function is recursive, consider converting the 'Function' into a 'Sub'. If the function is recursive, none of its external callers are using the returned value.</value>
   </data>
   <data name="ObjectVariableNotSetInspection" xml:space="preserve">
-    <value>As far as Rubberduck can tell, this variable is an object variable, assigned without the 'Set' keyword. This causes run-time error 91 'Object or With block variable not set'.</value>
+    <value>As far as Rubberduck can tell, this variable is an object variable, assigned without the 'Set' keyword. This causes run-time error 91 'Object or With block variable not set' or 438 'Object doesn't support this property or method' depending on whether the variable has the value 'Nothing' or not.</value>
   </data>
   <data name="MissingAnnotationArgumentInspection" xml:space="preserve">
     <value>An annotation parameter is missing or incorrectly specified. The correct syntax is : '@Annotation([parameter])\nExample: '@Folder("Parent.Child")</value>
@@ -395,12 +395,12 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>The VBA compiler does not raise an error if an object is passed as an argument for a parameter with an incompatible declared object type, i.e. with an object type that is neither the same type, a supertype nor a subtype. Under almost all circumstances passing such an argument leads to a run-time error, which is harder to detect and indicates a bug. In all other situations the code can be changed to only pass arguments of compatible declared types.</value>
   </data>
   <data name="ValueRequiredInspection" xml:space="preserve">
-    <value>The VBA compiler does not raise an error if an object is used in a place that requires a value type and the object's declared type does not have a suitable default member. Under almost all circumstances, this leads to a run-time error, which is harder to detect and indicates a bug.</value>
+    <value>The VBA compiler does not raise an error if an object is used in a place that requires a value type and the object's declared type does not have a suitable default member. Under almost all circumstances, this leads to a run-time error 91 'Object or With block variable not set' or 438 'Object doesn't support this property or method' depending on whether the object has the value 'Nothing' or not, which is harder to detect and indicates a bug.</value>
   </data>
   <data name="ProcedureRequiredInspection" xml:space="preserve">
-    <value>The VBA compiler does not raise an error if an object variable is used in a place that requires a procedure and the object's declared type does not have a suitable default member. Under almost all circumstances, this leads to a run-time error, which is harder to detect and indicates a bug.</value>
+    <value>The VBA compiler does not raise an error if an object variable is used in a place that requires a procedure and the object's declared type does not have a suitable default member. Under almost all circumstances, this leads to a run-time error 91 'Object or With block variable not set' or 438 'Object doesn't support this property or method' depending on whether the object has the value 'Nothing' or not, which is harder to detect and indicates a bug.</value>
   </data>
   <data name="DefaultMemberRequiredInspection" xml:space="preserve">
-    <value>The VBA compiler does not raise an error if an indexed default member call is required but the object's declared type does not have a suitable default member. Under almost all circumstances, this leads to a run-time error, which is harder to detect and indicates a bug.</value>
+    <value>The VBA compiler does not raise an error if an indexed default member call is required but the object's declared type does not have a suitable default member. Under almost all circumstances, this leads to a run-time error 91 'Object or With block variable not set' or 438 'Object doesn't support this property or method' depending on whether the object has the value 'Nothing' or not, which is harder to detect and indicates a bug.</value>
   </data>
 </root>
