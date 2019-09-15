@@ -124,7 +124,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The expression &apos;{0}&apos; requires a default member access, but the type &apos;{0}&apos; does not have a suitable default member..
+        ///   Looks up a localized string similar to The expression &apos;{0}&apos; requires a default member access, but the type &apos;{1}&apos; does not have a suitable default member..
         /// </summary>
         public static string DefaultMemberRequiredInspection {
             get {
