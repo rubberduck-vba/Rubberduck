@@ -455,7 +455,7 @@ In memoriam, 1972-2018</value>
     <comment>{0} expression; {1} type</comment>
   </data>
   <data name="DefaultMemberRequiredInspection" xml:space="preserve">
-    <value>The expression '{0}' requires a default member access, but the type '{0}' does not have a suitable default member.</value>
+    <value>The expression '{0}' requires a default member access, but the type '{1}' does not have a suitable default member.</value>
     <comment>{0} expression; {1} type</comment>
   </data>
 </root>

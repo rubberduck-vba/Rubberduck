@@ -476,6 +476,35 @@ End Sub
             Assert.IsFalse(inspectionResults.Any());
         }
 
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        [TestCase("", "Call Foo")]
+        [TestCase("", "Call Foo()")]
+        [TestCase("", "Foo")]
+        [TestCase("ByVal arg As Variant", "Call Foo(arg)")]
+        [TestCase("ByVal arg As Variant", "Foo arg")]
+        public void RecursiveProcedureCall_NoResult(string argumentList, string statement)
+        {
+            var classCode = @"
+Public Function Foo(index As Variant) As Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo({argumentList}) As Class1
+    {statement}
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var inspectionResults = InspectionResults(vbe.Object);
+           Assert.IsFalse(inspectionResults.Any());
+        }
+
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {

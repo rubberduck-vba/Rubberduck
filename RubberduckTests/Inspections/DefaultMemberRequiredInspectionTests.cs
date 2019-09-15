@@ -367,6 +367,36 @@ End Function
             Assert.IsFalse(inspectionResults.Any());
         }
 
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        [TestCase("String", "bar = \"Hello \" & Foo(Nothing)")]
+        [TestCase("Class1", "Set Foo = Foo(Nothing)")]
+        public void RecursiveFunctionCall_NoResult(string functionReturnTypeName, string statement)
+        {
+            var classCode = @"
+Public Function Foo(index As Variant) As Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo(ByVal cls As Class1) As {functionReturnTypeName} 
+    If Not(cls Is Nothing) Then
+        Dim bar As Variant
+        {statement}
+    End If
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var inspectionResults = InspectionResults(vbe.Object);
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
             return new DefaultMemberRequiredInspection(state);

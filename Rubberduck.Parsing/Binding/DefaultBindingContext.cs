@@ -67,13 +67,13 @@ namespace Rubberduck.Parsing.Binding
                 SetLeftMatch(lExpressionBinding, argList.Arguments.Count);
                 if (argList.HasArguments)
                 {
-                    return new IndexDefaultBinding(expression.lExpression(), lExpressionBinding, argList);
+                    return new IndexDefaultBinding(expression.lExpression(), lExpressionBinding, argList, parent);
                 }
 
-                return new ProcedureCoercionDefaultBinding(expression.lExpression(), lExpressionBinding, false);
+                return new ProcedureCoercionDefaultBinding(expression.lExpression(), lExpressionBinding, false, parent);
             }
 
-            return new ProcedureCoercionDefaultBinding(expression.lExpression(), lExpressionBinding, true);
+            return new ProcedureCoercionDefaultBinding(expression.lExpression(), lExpressionBinding, true, parent);
         }
 
         private static void SetLeftMatch(IExpressionBinding binding, int argumentCount)
@@ -217,7 +217,7 @@ namespace Rubberduck.Parsing.Binding
             var lExpressionBinding = Visit(module, parent, lExpression, withBlockVariable, StatementResolutionContext.Undefined);
             var argumentListBinding = VisitArgumentList(module, parent, expression.argumentList(), withBlockVariable);
             SetLeftMatch(lExpressionBinding, argumentListBinding.Arguments.Count);
-            return new IndexDefaultBinding(expression, lExpressionBinding, argumentListBinding);
+            return new IndexDefaultBinding(expression, lExpressionBinding, argumentListBinding, parent);
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.WhitespaceIndexExprContext expression, IBoundExpression withBlockVariable)
@@ -226,7 +226,7 @@ namespace Rubberduck.Parsing.Binding
             var lExpressionBinding = Visit(module, parent, lExpression, withBlockVariable, StatementResolutionContext.Undefined);
             var argumentListBinding = VisitArgumentList(module, parent, expression.argumentList(), withBlockVariable);
             SetLeftMatch(lExpressionBinding, argumentListBinding.Arguments.Count);
-            return new IndexDefaultBinding(expression, lExpressionBinding, argumentListBinding);
+            return new IndexDefaultBinding(expression, lExpressionBinding, argumentListBinding, parent);
         }
 
         private ArgumentList VisitArgumentList(Declaration module, Declaration parent, VBAParser.ArgumentListContext argumentList, IBoundExpression withBlockVariable)
