@@ -1302,6 +1302,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 return Enumerable.Empty<Declaration>();
             }
 
+            var identifierMatches = MatchName(newName).Where(match => match.Project == renameTarget.Project);
 
             if (!identifierMatches.Any())
             {
