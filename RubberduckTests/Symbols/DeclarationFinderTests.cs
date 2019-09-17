@@ -453,7 +453,7 @@ End Sub
         [TestCase(projectOneModuleName, ExpectedResult = 0)]  //Duplicate module name found in a separate project
         [TestCase(projectTwoModuleName, ExpectedResult = 1)] //Duplicate module name found in the same project
         [Category("Resolver")]
-        public int DeclarationFinder_RenameCodeModule_RespectsProjectScope(string proposedTestModuleName)
+        public int DeclarationFinder_NameConflictDetectionRespectsProjectScope(string proposedTestModuleName)
         {
 
             string renameTargetModuleName = "TargetModule";
