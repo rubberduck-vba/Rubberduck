@@ -25,7 +25,10 @@ namespace Rubberduck.Parsing.Symbols
                   attributes)
         { }
 
-        public ProceduralModuleDeclaration(ComModule statics, Declaration parent, QualifiedModuleName module,
+        public ProceduralModuleDeclaration(
+            ComModule statics, 
+            Declaration parent, 
+            QualifiedModuleName module,
             Attributes attributes)
             : this(
                 module.QualifyMemberName(statics.Name),
