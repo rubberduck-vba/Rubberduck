@@ -1302,7 +1302,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 return Enumerable.Empty<Declaration>();
             }
 
-            var identifierMatches = MatchName(newName).ToList();
+
             if (!identifierMatches.Any())
             {
                 return Enumerable.Empty<Declaration>();
@@ -1326,8 +1326,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                                 && !UsesScopeResolution(renameTargetRef.Context.Parent)))
                 || idm.DeclarationType.HasFlag(DeclarationType.Variable)
                     && idm.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Module)
-                    && renameTarget.References.Any(renameTargetRef => renameTargetRef.QualifiedModuleName == idm.ParentDeclaration.QualifiedModuleName))
-                .ToList();
+                    && renameTarget.References.Any(renameTargetRef => renameTargetRef.QualifiedModuleName == idm.ParentDeclaration.QualifiedModuleName));
 
             if (referenceConflicts.Any())
             {
