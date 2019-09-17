@@ -342,6 +342,65 @@ End Sub
             Assert.IsFalse(inspectionResults.Any());
         }
 
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void ParamArray_NoResult()
+        {
+            var classCode = @"
+Public Function Foo(index As Variant) As Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo(ParamArray args() As Variant) As Variant
+End Function
+
+Private Function Test() As Variant
+    Dim bar As Class1
+    Set bar = New Class1
+    Test = Foo(bar)
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var inspectionResults = InspectionResults(vbe.Object);
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void ParamArrayInLibrary_NoResult()
+        {
+            var classCode = @"
+Public Function Foo(index As Variant) As Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Test() As Variant
+    Dim bar As Class1
+    Set bar = New Class1
+    Test = Array(bar)
+End Function
+";
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, classCode)
+                .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            var inspectionResults = InspectionResults(vbe.Object);
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
             return new ValueRequiredInspection(state);

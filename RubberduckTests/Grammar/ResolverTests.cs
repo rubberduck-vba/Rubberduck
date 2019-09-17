@@ -6570,5 +6570,72 @@ End Function
                 Assert.IsFalse(failedAccesses.Any());
             }
         }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void ParamArray_NoFailedLetCoercionReference()
+        {
+            var classCode = @"
+Public Function Foo(index As Variant) As Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo(ParamArray args() As Variant) As Variant
+End Function
+
+Private Function Test() As Variant
+    Dim bar As Class1
+    Set bar = New Class1
+    Test = Foo(bar)
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var failedAccesses = state.DeclarationFinder.FailedLetCoercions();
+
+                Assert.IsFalse(failedAccesses.Any());
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void ParamArrayFromLibrary_NoFailedLetCoercionReference()
+        {
+            var classCode = @"
+Public Function Foo(index As Variant) As Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Test() As Variant
+    Dim bar As Class1
+    Set bar = New Class1
+    Test = Array(bar)
+End Function
+";
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, classCode)
+                .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var failedAccesses = state.DeclarationFinder.FailedLetCoercions();
+
+                Assert.IsFalse(failedAccesses.Any());
+            }
+        }
     }
 }
