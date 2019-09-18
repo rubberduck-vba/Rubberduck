@@ -450,10 +450,10 @@ End Sub
         //https://github.com/rubberduck-vba/Rubberduck/issues/4969
         private const string projectOneModuleName = "projectOneModule";
         private const string projectTwoModuleName = "projectTwoModule";
-        [TestCase(projectOneModuleName, ExpectedResult = 0)]  //Duplicate module name found in a separate project
-        [TestCase(projectTwoModuleName, ExpectedResult = 1)] //Duplicate module name found in the same project
+        [TestCase(projectOneModuleName, 0)]  //Duplicate module name found in a separate project
+        [TestCase(projectTwoModuleName, 1)] //Duplicate module name found in the same project
         [Category("Resolver")]
-        public int DeclarationFinder_NameConflictDetectionRespectsProjectScope(string proposedTestModuleName)
+        public void DeclarationFinder_NameConflictDetectionRespectsProjectScope(string proposedTestModuleName, int expectedCount)
         {
 
             string renameTargetModuleName = "TargetModule";
@@ -476,11 +476,12 @@ End Sub
 
             using(var parser = MockParser.CreateAndParse(vbe))
             {
-                var target = parser.DeclarationFinder.AllDeclarations
+                var target = parser.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule)
                     .FirstOrDefault(item => item.IdentifierName.Equals(renameTargetModuleName));
 
                 var results = parser.DeclarationFinder.FindNewDeclarationNameConflicts(proposedTestModuleName, target);
-                return results.Count();
+
+                Assert.AreEqual(expectedCount, results.Count());
             }
         }
 
