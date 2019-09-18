@@ -844,7 +844,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Detects Case Clauses that will never execute. .
+        ///   Looks up a localized string similar to A &apos;Case&apos; condition either always evaluates to False, causes a run-time error, or the cumulative effect of prior &apos;Case&apos; statements represents all possible values or a superset of the &apos;Case&apos; statement&apos;s values.  As a result, the &apos;Case&apos; block will never execute and is &quot;dead code&quot;, or the &apos;Case&apos; statement is a run-time error waiting to happen. Consider removing, reordering, or modifying the &apos;Case&apos; statement..
         /// </summary>
         public static string UnreachableCaseInspection {
             get {

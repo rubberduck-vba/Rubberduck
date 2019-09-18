@@ -892,7 +892,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unreachable Case Else: all matches exist within prior Case statement(s)..
+        ///   Looks up a localized string similar to &apos;Case Else&apos; statement is unreachable.
         /// </summary>
         public static string UnreachableCaseInspection_CaseElse {
             get {
@@ -901,7 +901,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unreachable: Case Statement contains invalid range clause(s)..
+        ///   Looks up a localized string similar to &apos;Case&apos; statement Range Clauses must be expressed &apos;[x] To [y]&apos; where [x] is less than or equal to [y]&apos;.
         /// </summary>
         public static string UnreachableCaseInspection_InherentlyUnreachable {
             get {
@@ -910,7 +910,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unreachable: Case Statement will cause a Run-time error 6 (Overflow)..
+        ///   Looks up a localized string similar to &apos;Case&apos; statement will cause run-time error 6 (Overflow).
         /// </summary>
         public static string UnreachableCaseInspection_Overflow {
             get {
@@ -919,7 +919,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unreachable: Case Statement will cause a Run-time error 13 (Mismatch)..
+        ///   Looks up a localized string similar to &apos;Case&apos; statement will cause run-time error 13 (type mismatch)..
         /// </summary>
         public static string UnreachableCaseInspection_TypeMismatch {
             get {
@@ -928,7 +928,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unreachable: Never matches or is equivalent to a prior Case statement..
+        ///   Looks up a localized string similar to &apos;Case&apos; statement is unreachable.
         /// </summary>
         public static string UnreachableCaseInspection_Unreachable {
             get {
