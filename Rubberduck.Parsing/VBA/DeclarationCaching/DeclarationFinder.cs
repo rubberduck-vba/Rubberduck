@@ -1302,7 +1302,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 return Enumerable.Empty<Declaration>();
             }
 
-            var identifierMatches = MatchName(newName).ToList();
+            var identifierMatches = MatchName(newName).Where(match => match.ProjectId == renameTarget.ProjectId);
+
             if (!identifierMatches.Any())
             {
                 return Enumerable.Empty<Declaration>();
@@ -1327,7 +1328,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 || idm.DeclarationType.HasFlag(DeclarationType.Variable)
                     && idm.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Module)
                     && renameTarget.References.Any(renameTargetRef => renameTargetRef.QualifiedModuleName == idm.ParentDeclaration.QualifiedModuleName))
-                .ToList();
+                    .ToList();
 
             if (referenceConflicts.Any())
             {
@@ -1342,7 +1343,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                     renameTargetModule,
                     renameTarget.ParentDeclaration,
                     idm)
-                    && IsConflictingMember(renameTarget, renameTargetModule, idm));
+                    && IsConflictingMember(renameTarget, renameTargetModule, idm))
+                    .ToList();
 
             return declarationConflicts;
         }
