@@ -12,8 +12,7 @@ namespace RubberduckTests.Inspections
     public class ProcedureRequiredInspectionTests : InspectionTestsBase
     {
         [Test]
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         //This will be handled by another inspection, since it is a failed indexed default member resolution.
         public void FailedParameterizedProcedureCoercionReferenceOnEntireContext()
         {
@@ -51,8 +50,7 @@ End Sub
         }
 
         [Test]
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         public void FailedNonParameterizedProcedureCoercionReferenceOnEntireContext()
         {
             var class1Code = @"
@@ -89,8 +87,7 @@ End Sub
         }
 
         [Test]
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         //This will be handled by another inspection, since it is a failed indexed default member resolution.
         public void FailedParameterizedProcedureCoercionReferenceOnEntireContext_ExplicitCall()
         {
@@ -128,8 +125,7 @@ End Sub
         }
 
         [Test]
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         public void FailedNonParameterizedProcedureCoercionReferenceOnEntireContext_ExplicitCall()
         {
             var class1Code = @"
@@ -166,8 +162,7 @@ End Sub
         }
 
         [Test]
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         public void FailedNonParameterizedProcedureCoercionOnArrayAccessReferenceOnEntireContext()
         {
             var class1Code = @"
@@ -204,8 +199,7 @@ End Sub
         }
 
         [Test]
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         public void FailedNonParameterizedProcedureCoercionOnArrayAccessReferenceOnEntireContext_ExplicitCall()
         {
             var class1Code = @"
@@ -240,9 +234,9 @@ End Sub
             var inspectionResults = InspectionResults(vbe.Object);
             Assert.AreEqual(1, inspectionResults.Count());
         }
+
         [Test]
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         public void SuccessfulParameterizedProcedureCoercionReferenceOnEntireContext()
         {
             var class1Code = @"
@@ -280,8 +274,7 @@ End Sub
         }
 
         [Test]
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         public void SuccessfulNonParameterizedProcedureCoercionReferenceOnEntireContext()
         {
             var class1Code = @"
@@ -319,8 +312,7 @@ End Sub
         }
 
         [Test]
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         public void SuccessfulParameterizedProcedureCoercionReferenceOnEntireContext_ExplicitCall()
         {
             var class1Code = @"
@@ -358,8 +350,7 @@ End Sub
         }
 
         [Test]
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         public void SuccessfulNonParameterizedProcedureCoercionReferenceOnEntireContext_ExplicitCall()
         {
             var class1Code = @"
@@ -397,8 +388,7 @@ End Sub
         }
 
         [Test]
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         public void SuccessfulNonParameterizedProcedureCoercionOnArrayAccessReferenceOnEntireContext()
         {
             var class1Code = @"
@@ -437,8 +427,7 @@ End Sub
         }
 
         [Test]
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         public void SuccessfulNonParameterizedProcedureCoercionOnArrayAccessReferenceOnEntireContext_ExplicitCall()
         {
             var class1Code = @"
@@ -476,8 +465,7 @@ End Sub
             Assert.IsFalse(inspectionResults.Any());
         }
 
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         [Test]
         [TestCase("", "Call Foo")]
         [TestCase("", "Call Foo()")]
