@@ -65,7 +65,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResult="true">
+    /// <example hasResult="false">
     /// <![CDATA[
     /// Public Enum ProductID
     ///     Widget = 1
