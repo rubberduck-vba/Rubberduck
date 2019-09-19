@@ -305,7 +305,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Empty modules and classes either point to not yet implemented functionality or represent unnecessary baggage that can hurt the maintainability of a project.</value>
   </data>
   <data name="UnreachableCaseInspection" xml:space="preserve">
-    <value>Detects Case Clauses that will never execute. </value>
+    <value>A 'Case' condition either always evaluates to False, causes a run-time error, or the cumulative effect of prior 'Case' statements represents all possible values or a superset of the 'Case' statement's values.  As a result, the 'Case' block will never execute and is "dead code", or the 'Case' statement is a run-time error waiting to happen. Consider removing, reordering, or modifying the 'Case' statement.</value>
   </data>
   <data name="UnhandledOnErrorResumeNextInspection" xml:space="preserve">
     <value>Error handling should be restored after using 'On Error Resume Next'.</value>

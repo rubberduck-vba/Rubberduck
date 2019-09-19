@@ -303,18 +303,6 @@
   <data name="EmptyModuleInspection" xml:space="preserve">
     <value>Modul/třída {0} je prázdná.</value>
   </data>
-  <data name="UnreachableCaseInspection" xml:space="preserve">
-    <value>Není schopno dosáhnout na 'Case' klauzuli '{0}'</value>
-  </data>
-  <data name="UnreachableCaseInspection_CaseElse" xml:space="preserve">
-    <value>Nedosažitelný 'Case Else': Všechny potřebné hodnoty jsou vyřešeny předchozím 'Case' příkazem/příkazy</value>
-  </data>
-  <data name="UnreachableCaseInspection_TypeMismatch" xml:space="preserve">
-    <value>Neplatný Typ: 'Case' Příkaz nemůže být vyhodnocen jako typ příkazu 'Select'</value>
-  </data>
-  <data name="UnreachableCaseInspection_Unreachable" xml:space="preserve">
-    <value>Nedosažitelné: 'Case' příkaz je vyřešen předchozím 'Case' příkazem/příkazy</value>
-  </data>
   <data name="UnhandledOnErrorResumeNextInspection" xml:space="preserve">
     <value>Errory jsou ignorovány, avšak už nikdy neřešeny</value>
   </data>
@@ -335,12 +323,6 @@
   </data>
   <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
     <value>'{0}' je deklarováno zastaralou 'CDecl' volací konvencí.</value>
-  </data>
-  <data name="UnreachableCaseInspection_InherentlyUnreachable" xml:space="preserve">
-    <value>Nedostupné: Case Statement obsahuje klauzuli(e) o neplatném rozsahu.</value>
-  </data>
-  <data name="UnreachableCaseInspection_Overflow" xml:space="preserve">
-    <value>Nedostupné: Case Statement způsobí Run-time chybu č. 6 (Přetečení)</value>
   </data>
   <data name="DuplicatedAnnotationInspection" xml:space="preserve">
     <value>Anotace '{0}' je duplikována.</value>
