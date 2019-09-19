@@ -304,9 +304,6 @@ Si le paramètre peut être nul, ignorer ce résultat; passer une valeur nulle �
   <data name="EmptyModuleInspection" xml:space="preserve">
     <value>Les modules et classes vides démontrent des fonctionnalités pas encore implémentées ou représentent un fardeau non nécessaire pouvant nuire à la maintenance du projet.</value>
   </data>
-  <data name="UnreachableCaseInspection" xml:space="preserve">
-    <value>Détecte les clauses 'Case' qui ne peuvent être exécutées.</value>
-  </data>
   <data name="UnhandledOnErrorResumeNextInspection" xml:space="preserve">
     <value>La gestion d'erreurs devrait être restaurée après l'utilisation de 'On Error Resume Next'</value>
   </data>

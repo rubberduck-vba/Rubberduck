@@ -303,18 +303,6 @@
   <data name="EmptyModuleInspection" xml:space="preserve">
     <value>El módulo/clase '{0}' está vacío.</value>
   </data>
-  <data name="UnreachableCaseInspection" xml:space="preserve">
-    <value>No se puede llegar a la cláusula de caso '{0}'.</value>
-  </data>
-  <data name="UnreachableCaseInspection_CaseElse" xml:space="preserve">
-    <value>Caso inalcanzable: Todas las coincidencias existen en las declaraciones de casos anteriores.</value>
-  </data>
-  <data name="UnreachableCaseInspection_TypeMismatch" xml:space="preserve">
-    <value>Inaccesible: La declaración del caso causará el error 13 en tiempo de ejecución (No coincidencia).</value>
-  </data>
-  <data name="UnreachableCaseInspection_Unreachable" xml:space="preserve">
-    <value>Inaccesible: Nunca coincide o es equivalente a una declaración previa del Caso.</value>
-  </data>
   <data name="UnhandledOnErrorResumeNextInspection" xml:space="preserve">
     <value>Los errores se ignoran pero nunca se manejan de nuevo.</value>
   </data>
@@ -335,12 +323,6 @@
   </data>
   <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
     <value>'{0}' se declara usando la convención de llamada obsoleta 'CDecl'.</value>
-  </data>
-  <data name="UnreachableCaseInspection_InherentlyUnreachable" xml:space="preserve">
-    <value>Inaccesible: La declaración del caso contiene cláusulas de rango no válidas.</value>
-  </data>
-  <data name="UnreachableCaseInspection_Overflow" xml:space="preserve">
-    <value>Inaccesible: La declaración del caso causará el error 6 en tiempo de ejecución (desbordamiento).</value>
   </data>
   <data name="DuplicatedAnnotationInspection" xml:space="preserve">
     <value>La anotación '{0}' está duplicada.</value>

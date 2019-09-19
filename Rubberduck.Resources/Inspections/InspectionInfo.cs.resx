@@ -229,9 +229,6 @@ Jestliže může být parametr prázdný, ignorujte výsledek této inspekce; p�
   <data name="UnhandledOnErrorResumeNextInspection" xml:space="preserve">
     <value>Manipulace s chybami by měla být obnovena po použití 'On Error Resume Next'.</value>
   </data>
-  <data name="UnreachableCaseInspection" xml:space="preserve">
-    <value>Detekuje klauzule případů, které se nikdy nevykonají.</value>
-  </data>
   <data name="EmptyModuleInspection" xml:space="preserve">
     <value>Prázdné moduly a třídy buďto odkazují na dosud neimplementovanou funkcionalitu, nebo představují zbytečnou zátěž, která může poškodit udržovatelnost projektu.</value>
   </data>
