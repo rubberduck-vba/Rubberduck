@@ -75,10 +75,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     /// 
     /// Public Sub ExampleEnumCaseElse(ByVal product As ProductID)
     ///
-    ///     'Enums are evaluated as the 'Long' type, so even though all the 
-    ///     'ProductID enum values have a 'Case' statement, the 'Case Else' 
-    ///     'can still be reached for any value of the 'product' parameter that is not
-    ///     'a ProductID.
+    ///     'Enums are evaluated as the 'Long' data type.  So, in this example,
+    ///     'even though all the ProductID enum values have a 'Case' statement, 
+    ///     'the 'Case Else' will still execute for any value of the 'product' 
+    ///     'parameter that is not a ProductID.
     ///
     ///     Select Case product
     ///         Case Widget
