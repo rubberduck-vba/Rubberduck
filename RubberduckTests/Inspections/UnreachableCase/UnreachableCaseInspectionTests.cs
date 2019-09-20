@@ -2263,24 +2263,24 @@ End Sub";
         [Category("Inspections")]
         public void UnreachableCaseInspection_AdditionString()
         {
+            //Resolving ""2"" + ""1"" to 21 (correct) yields 3 unreachable cases
+            //Resolving ""2"" + ""1"" to 3 (incorrect) would yield 1 unreachable case
             string inputCode =
 @"
-private Const AVALUE As Double = 15
+Sub FirstSub(bar As Double)
 
-Sub FirstSub()
-
-    Dim bar As Double
-    bar = 22
     Select Case bar
-        Case 4
-        Case 20 + 2
-        Case ""2"" + ""2""
+        Case ""2"" + ""1""
+        Case 21
             'Unreachable
-        Case AVALUE + ""7""
+        Case 3 * 7
             'Unreachable
+        Case (""1"" + ""0"") * 3 - 9 
+            'Unreachable
+        Case 3
     End Select
 End Sub";
-            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 3);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 
