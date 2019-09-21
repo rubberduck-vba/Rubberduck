@@ -291,4 +291,7 @@
   <data name="ReplaceWhileWendWithDoWhileLoopQuickFix" xml:space="preserve">
     <value>'While...Wend' durch'Do While...Loop' ersetzen</value>
   </data>
+  <data name="ExpandBangNotationQuickFix" xml:space="preserve">
+    <value>Ersetze die Ausrufezeichennotation durch einen expliziten Aufruf</value>
+  </data>
 </root>
