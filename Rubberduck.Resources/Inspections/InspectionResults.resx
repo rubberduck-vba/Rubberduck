@@ -458,4 +458,8 @@ In memoriam, 1972-2018</value>
     <value>The expression '{0}' requires a default member access, but the type '{1}' does not have a suitable default member.</value>
     <comment>{0} expression; {1} type</comment>
   </data>
+  <data name="UseOfBangNotationInspection" xml:space="preserve">
+    <value>The expression '{0}' contains a use of bang notation.</value>
+    <comment>{0} expression</comment>
+  </data>
 </root>

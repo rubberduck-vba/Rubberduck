@@ -118,6 +118,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             var callSiteContext = expression.Context;
             var identifier = expression.Context.GetText();
             var callee = expression.ReferencedDeclaration;
+            var selection = callSiteContext.GetSelection();
             expression.ReferencedDeclaration.AddReference(
                 module,
                 scope,
@@ -125,8 +126,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 callSiteContext,
                 identifier,
                 callee,
-                callSiteContext.GetSelection(),
-                FindIdentifierAnnotations(module, callSiteContext.GetSelection().StartLine),
+                selection,
+                FindIdentifierAnnotations(module, selection.StartLine),
                 isAssignmentTarget,
                 hasExplicitLetStatement,
                 isSetAssignment);
@@ -157,6 +158,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             var callSiteContext = expression.UnrestrictedNameContext;
             var identifier = expression.UnrestrictedNameContext.GetText();
             var callee = expression.ReferencedDeclaration;
+            var selection = callSiteContext.GetSelection();
             expression.ReferencedDeclaration.AddReference(
                 module,
                 scope,
@@ -164,8 +166,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 callSiteContext,
                 identifier,
                 callee,
-                callSiteContext.GetSelection(),
-                FindIdentifierAnnotations(module, callSiteContext.GetSelection().StartLine),
+                selection,
+                FindIdentifierAnnotations(module, selection.StartLine),
                 isAssignmentTarget,
                 hasExplicitLetStatement,
                 isSetAssignment);
@@ -712,8 +714,9 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             bool isSetAssignment)
         {
             var callSiteContext = expression.DefaultMemberContext;
-            var identifier = expression.ReferencedDeclaration.IdentifierName;
+            var identifier = expression.Context.GetText();
             var callee = expression.ReferencedDeclaration;
+            var selection = callSiteContext.GetSelection();
             expression.ReferencedDeclaration.AddReference(
                 module,
                 scope,
@@ -721,8 +724,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 callSiteContext,
                 identifier,
                 callee,
-                callSiteContext.GetSelection(),
-                FindIdentifierAnnotations(module, callSiteContext.GetSelection().StartLine),
+                selection,
+                FindIdentifierAnnotations(module, selection.StartLine),
                 isAssignmentTarget,
                 hasExplicitLetStatement,
                 isSetAssignment,
@@ -847,6 +850,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
         {
             var callSiteContext = expression.Context;
             var identifier = expression.Context.GetText();
+            var selection = callSiteContext.GetSelection();
             var callee = expression.ReferencedDeclaration;
             expression.ReferencedDeclaration.AddReference(
                 module,
@@ -855,8 +859,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 callSiteContext,
                 identifier,
                 callee,
-                callSiteContext.GetSelection(),
-                FindIdentifierAnnotations(module, callSiteContext.GetSelection().StartLine),
+                selection,
+                FindIdentifierAnnotations(module, selection.StartLine),
                 isAssignmentTarget,
                 hasExplicitLetStatement,
                 isSetAssignment);

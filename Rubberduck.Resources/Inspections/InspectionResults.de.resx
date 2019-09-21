@@ -428,4 +428,7 @@ In Memoriam, 1972-2018</value>
   <data name="DefaultMemberRequiredInspection" xml:space="preserve">
     <value>Der Ausdruck '{0}' erfordert einen Standardmemberzugriff, aber der Typ '{1}' hat keinen passenden Standardmember.</value>
   </data>
+  <data name="UseOfBangNotationInspection" xml:space="preserve">
+    <value>Der Ausdruck '{0}' verwendet Ausrufezeichennotation.</value>
+  </data>
 </root>

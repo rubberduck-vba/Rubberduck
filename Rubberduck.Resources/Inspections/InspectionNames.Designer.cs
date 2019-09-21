@@ -871,6 +871,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use of bang notation.
+        /// </summary>
+        public static string UseOfBangNotationInspection {
+            get {
+                return ResourceManager.GetString("UseOfBangNotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Object used where a value is required.
         /// </summary>
         public static string ValueRequiredInspection {

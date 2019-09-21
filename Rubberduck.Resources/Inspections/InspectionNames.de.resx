@@ -387,4 +387,7 @@
   <data name="DefaultMemberRequiredInspection" xml:space="preserve">
     <value>Standardmemberzugriff ohne Standardmember</value>
   </data>
+  <data name="UseOfBangNotationInspection" xml:space="preserve">
+    <value>Verwendung der Ausrufezeichennotation</value>
+  </data>
 </root>
