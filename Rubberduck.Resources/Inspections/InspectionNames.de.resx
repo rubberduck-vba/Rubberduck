@@ -390,4 +390,7 @@
   <data name="UseOfBangNotationInspection" xml:space="preserve">
     <value>Verwendung der Ausrufezeichennotation</value>
   </data>
+  <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
+    <value>Verwendung rekursiver Ausrufezeichennotation</value>
+  </data>
 </root>

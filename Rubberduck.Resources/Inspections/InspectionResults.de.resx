@@ -431,4 +431,7 @@ In Memoriam, 1972-2018</value>
   <data name="UseOfBangNotationInspection" xml:space="preserve">
     <value>Der Ausdruck '{0}' verwendet Ausrufezeichennotation.</value>
   </data>
+  <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
+    <value>Der Ausdruck '{0}' verwendet rekursive Ausrufezeichennotation.</value>
+  </data>
 </root>
