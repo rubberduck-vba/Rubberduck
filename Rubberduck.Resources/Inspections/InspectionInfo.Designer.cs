@@ -890,6 +890,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bang notation, formally known as dictionary access expression, looks like it is strongly typed. However, it is actually a stringly  typed access to the paramterized default member of the object it is used on. This is especially misleading the default member cannot be determined at compile time..
+        /// </summary>
+        public static string UseOfUnboundBangNotationInspection {
+            get {
+                return ResourceManager.GetString("UseOfUnboundBangNotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The VBA compiler does not raise an error if an object is used in a place that requires a value type and the object&apos;s declared type does not have a suitable default member. Under almost all circumstances, this leads to a run-time error 91 &apos;Object or With block variable not set&apos; or 438 &apos;Object doesn&apos;t support this property or method&apos; depending on whether the object has the value &apos;Nothing&apos; or not, which is harder to detect and indicates a bug..
         /// </summary>
         public static string ValueRequiredInspection {

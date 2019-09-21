@@ -393,4 +393,7 @@
   <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
     <value>Verwendung rekursiver Ausrufezeichennotation</value>
   </data>
+  <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
+    <value>Verwendung nicht gebundener Ausrufezeichennotation</value>
+  </data>
 </root>

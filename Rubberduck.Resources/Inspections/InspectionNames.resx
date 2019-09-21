@@ -413,4 +413,7 @@
   <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
     <value>Use of recursive bang notation</value>
   </data>
+  <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
+    <value>Use of unbound bang notation</value>
+  </data>
 </root>

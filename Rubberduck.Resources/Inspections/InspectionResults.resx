@@ -466,4 +466,8 @@ In memoriam, 1972-2018</value>
     <value>The expression '{0}' contains a use of recursive bang notation.</value>
     <comment>{0} expression</comment>
   </data>
+  <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
+    <value>The expression '{0}' contains a use of unbound bang notation.</value>
+    <comment>{0} expression</comment>
+  </data>
 </root>
