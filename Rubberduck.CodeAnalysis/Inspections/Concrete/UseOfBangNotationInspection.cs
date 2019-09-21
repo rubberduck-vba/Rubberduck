@@ -1,14 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
+﻿using Rubberduck.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.VBEditor;
+using Rubberduck.Parsing.Inspections;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -57,40 +53,15 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class UseOfBangNotationInspection : InspectionBase
+    public sealed class UseOfBangNotationInspection : IdentifierReferenceInspectionBase
     {
         public UseOfBangNotationInspection(RubberduckParserState state)
-            : base(state) { }
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+            : base(state)
         {
-            var results = new List<IInspectionResult>();
-            foreach (var moduleDeclaration in State.DeclarationFinder.UserDeclarations(DeclarationType.Module))
-            {
-                if (moduleDeclaration == null || moduleDeclaration.IsIgnoringInspectionResultFor(AnnotationName))
-                {
-                    continue;
-                }
-
-                var module = moduleDeclaration.QualifiedModuleName;
-                results.AddRange(DoGetInspectionResults(module));
-            }
-
-            return results;
+            Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
-        {
-            var usesOfBang = State.DeclarationFinder
-                .IdentifierReferences(module)
-                .Where(IsRelevantReference);
-
-            return usesOfBang
-                .Select(useOfBang => InspectionResult(useOfBang, State))
-                .ToList();
-        }
-
-        private bool IsRelevantReference(IdentifierReference reference)
+        protected override bool IsResultReference(IdentifierReference reference)
         {
             return reference.IsIndexedDefaultMemberAccess
                    && reference.DefaultMemberRecursionDepth == 1
@@ -98,17 +69,9 @@ namespace Rubberduck.Inspections.Concrete
                    && !reference.IsIgnoringInspectionResultFor(AnnotationName);
         }
 
-        private IInspectionResult InspectionResult(IdentifierReference dictionaryAccess, IDeclarationFinderProvider declarationFinderProvider)
+        protected override string ResultDescription(IdentifierReference reference)
         {
-            return new IdentifierReferenceInspectionResult(this,
-                ResultDescription(dictionaryAccess),
-                declarationFinderProvider,
-                dictionaryAccess);
-        }
-
-        private string ResultDescription(IdentifierReference dictionaryAccess)
-        {
-            var expression = dictionaryAccess.IdentifierName;
+            var expression = reference.IdentifierName;
             return string.Format(InspectionResults.UseOfBangNotationInspection, expression);
         }
     }

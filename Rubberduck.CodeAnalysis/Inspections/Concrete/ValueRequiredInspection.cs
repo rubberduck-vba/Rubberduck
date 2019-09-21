@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources.Inspections;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
@@ -57,46 +55,27 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public class ValueRequiredInspection : InspectionBase
+    public class ValueRequiredInspection : IdentifierReferenceInspectionBase
     {
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
-
         public ValueRequiredInspection(RubberduckParserState state)
             : base(state)
         {
-            _declarationFinderProvider = state;
-
             //This will most likely cause a runtime error. The exceptions are rare and should be refactored or made explicit with an @Ignore annotation.
             Severity = CodeInspectionSeverity.Error;
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module)
         {
-            var finder = _declarationFinderProvider.DeclarationFinder;
-
-            //Assignments are already covered by the ObjectVariableNotSetInspection.
-            var failedLetCoercionAccesses = finder.FailedLetCoercions()
-                .Where(failedLetCoercion => !failedLetCoercion.IsAssignment);
-
-            return failedLetCoercionAccesses
-                .Where(failedLetCoercion => !IsIgnored(failedLetCoercion))
-                .Select(failedLetCoercion => InspectionResult(failedLetCoercion, _declarationFinderProvider));
+            return DeclarationFinderProvider.DeclarationFinder.FailedLetCoercions(module);
         }
 
-        private bool IsIgnored(IdentifierReference assignment)
+        protected override bool IsResultReference(IdentifierReference failedLetCoercion)
         {
-            return assignment.IsIgnoringInspectionResultFor(AnnotationName);
+            return !failedLetCoercion.IsAssignment
+                   && !failedLetCoercion.IsIgnoringInspectionResultFor(AnnotationName);
         }
 
-        private IInspectionResult InspectionResult(IdentifierReference failedLetCoercion, IDeclarationFinderProvider declarationFinderProvider)
-        {
-            return new IdentifierReferenceInspectionResult(this,
-                ResultDescription(failedLetCoercion),
-                declarationFinderProvider,
-                failedLetCoercion);
-        }
-
-        private string ResultDescription(IdentifierReference failedLetCoercion)
+        protected override string ResultDescription(IdentifierReference failedLetCoercion)
         {
             var expression = failedLetCoercion.IdentifierName;
             var typeName = failedLetCoercion.Declaration?.FullAsTypeName;
