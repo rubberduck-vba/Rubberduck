@@ -4790,6 +4790,7 @@ End Sub
                 Assert.IsTrue(defaultMemberReference.IsNonIndexedDefaultMemberAccess);
                 Assert.AreEqual(1, defaultMemberReference.DefaultMemberRecursionDepth);
                 Assert.IsTrue(defaultMemberReference.IsAssignment);
+                Assert.IsFalse(defaultMemberReference.IsProcedureCoercion);
             }
         }
 
@@ -4906,60 +4907,6 @@ End Sub
         [Test]
         [Category("Grammar")]
         [Category("Resolver")]
-        public void ParameterizedProcedureCoercionDefaultMemberAccessReferenceToDefaultMemberOnEntireContext()
-        {
-            var class1Code = @"
-Public Sub Foo(arg As Long)
-Attribute Foo.VB_UserMemId = 0
-End Sub
-";
-
-            var class2Code = @"
-Public Function Baz() As Class1
-Attribute Baz.VB_UserMemId = 0
-    Set Baz = New Class1
-End Function
-";
-
-            var moduleCode = $@"
-Private Function Foo() As Variant 
-    Dim cls As new Class2
-    cls.Baz 42
-End Function
-
-Private Sub Bar(arg As Long)
-End Sub
-
-Private Sub Baz(arg As Variant)
-End Sub
-";
-
-            var vbe = MockVbeBuilder.BuildFromModules(
-                ("Class1", class1Code, ComponentType.ClassModule),
-                ("Class2", class2Code, ComponentType.ClassModule),
-                ("Module1", moduleCode, ComponentType.StandardModule));
-
-            var selection = new Selection(4, 5, 4, 12);
-
-            using (var state = Resolve(vbe.Object))
-            {
-                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
-                var qualifiedSelection = new QualifiedSelection(module, selection);
-                var defaultMemberReference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).Last();
-                var referencedDeclaration = defaultMemberReference.Declaration;
-
-                var expectedReferencedDeclarationName = "Class1.Foo";
-                var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
-
-                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
-                Assert.IsTrue(defaultMemberReference.IsIndexedDefaultMemberAccess);
-                Assert.AreEqual(1, defaultMemberReference.DefaultMemberRecursionDepth);
-            }
-        }
-
-        [Test]
-        [Category("Grammar")]
-        [Category("Resolver")]
         public void NonParameterizedProcedureCoercionDefaultMemberAccessReferenceToDefaultMemberOnEntireContext()
         {
             var class1Code = @"
@@ -5007,6 +4954,7 @@ End Sub
 
                 Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
                 Assert.IsTrue(defaultMemberReference.IsNonIndexedDefaultMemberAccess);
+                Assert.IsTrue(defaultMemberReference.IsProcedureCoercion);
                 Assert.AreEqual(1, defaultMemberReference.DefaultMemberRecursionDepth);
             }
         }
@@ -5014,10 +4962,10 @@ End Sub
         [Test]
         [Category("Grammar")]
         [Category("Resolver")]
-        public void ParameterizedProcedureCoercionDefaultMemberAccessReferenceToDefaultMemberOnEntireContext_ExplicitCall()
+        public void NonParameterizedUnboundProcedureCoercionDefaultMemberAccessReferenceToDefaultMemberOnEntireContext()
         {
             var class1Code = @"
-Public Sub Foo(arg As Long)
+Public Sub Foo()
 Attribute Foo.VB_UserMemId = 0
 End Sub
 ";
@@ -5031,8 +4979,8 @@ End Function
 
             var moduleCode = $@"
 Private Function Foo() As Variant 
-    Dim cls As new Class2
-    Call cls.Baz(42)
+    Dim cls As Object
+    cls
 End Function
 
 Private Sub Bar(arg As Long)
@@ -5047,20 +4995,17 @@ End Sub
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
-            var selection = new Selection(4, 10, 4, 17);
+            var selection = new Selection(4, 5, 4, 8);
 
             using (var state = Resolve(vbe.Object))
             {
                 var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
-                var qualifiedSelection = new QualifiedSelection(module, selection);
-                var defaultMemberReference = state.DeclarationFinder.IdentifierReferences(qualifiedSelection).Last();
-                var referencedDeclaration = defaultMemberReference.Declaration;
+                var defaultMemberReference = state.DeclarationFinder
+                    .UnboundDefaultMemberAccesses(module)
+                    .Last(reference => reference.Selection.Equals(selection));
 
-                var expectedReferencedDeclarationName = "Class1.Foo";
-                var actualReferencedDeclarationName = $"{referencedDeclaration.ComponentName}.{referencedDeclaration.IdentifierName}";
-
-                Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
-                Assert.IsTrue(defaultMemberReference.IsIndexedDefaultMemberAccess);
+                Assert.IsTrue(defaultMemberReference.IsNonIndexedDefaultMemberAccess);
+                Assert.IsTrue(defaultMemberReference.IsProcedureCoercion);
                 Assert.AreEqual(1, defaultMemberReference.DefaultMemberRecursionDepth);
             }
         }
@@ -5115,6 +5060,58 @@ End Sub
 
                 Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
                 Assert.IsTrue(defaultMemberReference.IsNonIndexedDefaultMemberAccess);
+                Assert.IsTrue(defaultMemberReference.IsProcedureCoercion);
+                Assert.AreEqual(1, defaultMemberReference.DefaultMemberRecursionDepth);
+            }
+        }
+
+        [Test]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        public void NonParameterizedUnboundProcedureCoercionDefaultMemberAccessReferenceToDefaultMemberOnEntireContext_ExplicitCall()
+        {
+            var class1Code = @"
+Public Sub Foo()
+Attribute Foo.VB_UserMemId = 0
+End Sub
+";
+
+            var class2Code = @"
+Public Function Baz() As Class1
+Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As Object
+    Call cls
+End Function
+
+Private Sub Bar(arg As Long)
+End Sub
+
+Private Sub Baz(arg As Variant)
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var selection = new Selection(4, 10, 4, 13);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == "Module1");
+                var defaultMemberReference = state.DeclarationFinder
+                    .UnboundDefaultMemberAccesses(module)
+                    .Last(reference => reference.Selection.Equals(selection));
+
+                Assert.IsTrue(defaultMemberReference.IsNonIndexedDefaultMemberAccess);
+                Assert.IsTrue(defaultMemberReference.IsProcedureCoercion);
                 Assert.AreEqual(1, defaultMemberReference.DefaultMemberRecursionDepth);
             }
         }
@@ -5169,6 +5166,7 @@ End Sub
 
                 Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
                 Assert.IsTrue(defaultMemberReference.IsNonIndexedDefaultMemberAccess);
+                Assert.IsTrue(defaultMemberReference.IsProcedureCoercion);
                 Assert.AreEqual(1, defaultMemberReference.DefaultMemberRecursionDepth);
             }
         }
@@ -5224,6 +5222,7 @@ End Sub
 
                 Assert.AreEqual(expectedReferencedDeclarationName, actualReferencedDeclarationName);
                 Assert.IsTrue(defaultMemberReference.IsNonIndexedDefaultMemberAccess);
+                Assert.IsTrue(defaultMemberReference.IsProcedureCoercion);
                 Assert.AreEqual(1, defaultMemberReference.DefaultMemberRecursionDepth);
             }
         }
