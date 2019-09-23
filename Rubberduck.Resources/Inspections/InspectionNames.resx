@@ -402,7 +402,7 @@
     <value>Object used where a value is required</value>
   </data>
   <data name="ProcedureRequiredInspection" xml:space="preserve">
-    <value>Object used where a procedure is required</value>
+    <value>Object without default member used where a procedure is required</value>
   </data>
   <data name="DefaultMemberRequiredInspection" xml:space="preserve">
     <value>Indexed default member access without default member</value>
@@ -415,5 +415,8 @@
   </data>
   <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
     <value>Use of unbound bang notation</value>
+  </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
+    <value>Object used where a procedure is required</value>
   </data>
 </root>
