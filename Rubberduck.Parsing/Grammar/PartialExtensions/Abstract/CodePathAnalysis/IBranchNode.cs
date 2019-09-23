@@ -10,11 +10,11 @@
     public interface IBranchNode : IExecutableNode
     {
         /// <summary>
-        /// Gets or sets the <see cref="IEvaluatableNode"/> that contains the conditional expression for branching.
+        /// Gets the <see cref="IEvaluatableNode"/> that contains the conditional expression for branching.
         /// </summary>
         /// <remarks>
         /// The expression would be <c>null</c> for e.g. an <c>Else</c> block, or 
         /// </remarks>
-        IEvaluatableNode ConditionExpression { get; set; }
+        IEvaluatableNode ConditionExpression { get; }
     }
 }

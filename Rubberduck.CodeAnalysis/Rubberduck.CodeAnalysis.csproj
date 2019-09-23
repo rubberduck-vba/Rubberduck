@@ -65,7 +65,4 @@
       <LastGenOutput>CodeInspectionDefaults.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="CodePathAnalysis\Execution\" />
-  </ItemGroup>
 </Project>

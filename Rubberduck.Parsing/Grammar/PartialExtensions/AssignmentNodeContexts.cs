@@ -23,6 +23,8 @@ namespace Rubberduck.Parsing.Grammar
             private readonly IDictionary<IExecutionContext, IList<IReferenceNode>> _references
                 = new Dictionary<IExecutionContext, IList<IReferenceNode>>();
 
+            public bool IsReachable { get; set; }
+
             public void AddReference(IReferenceNode node, IExecutionContext context) 
             {
                 if (!_references.TryGetValue(context, out var refs) || refs is null)
@@ -55,6 +57,8 @@ namespace Rubberduck.Parsing.Grammar
 
             private readonly IDictionary<IExecutionContext, IList<IReferenceNode>> _references
                 = new Dictionary<IExecutionContext, IList<IReferenceNode>>();
+
+            public bool IsReachable { get; set; }
 
             public void AddReference(IReferenceNode node, IExecutionContext context) 
             {

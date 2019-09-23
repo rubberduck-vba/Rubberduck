@@ -11,42 +11,35 @@ namespace Rubberduck.Parsing.Grammar
     {
         public partial class ForNextStmtContext : ILoopNode
         {
-            private readonly IDictionary<IExecutionContext, bool> _hasExecuted
-                = new Dictionary<IExecutionContext, bool>();
+            public void Execute(IExecutionContext context)
+            {
+                IsReachable = true;
+            }
 
-            public bool HasExecuted(IExecutionContext context) 
-                => _hasExecuted.TryGetValue(context, out var value) && value;
-
-            public void Execute(IExecutionContext context) 
-                => _hasExecuted[context] = true;
+            public bool IsReachable { get; set; }
 
             public IEvaluatableNode ConditionExpression { get; set; }
         }
 
         public partial class ForEachStmtContext : ILoopNode
         {
-            private readonly IDictionary<IExecutionContext, bool> _hasExecuted
-                = new Dictionary<IExecutionContext, bool>();
+            public void Execute(IExecutionContext context)
+            {
+                IsReachable = true;
+            }
 
-            public bool HasExecuted(IExecutionContext context) 
-                => _hasExecuted.TryGetValue(context, out var value) && value;
-
-            public void Execute(IExecutionContext context) 
-                => _hasExecuted[context] = true;
+            public bool IsReachable { get; set; }
 
             public IEvaluatableNode ConditionExpression { get; set; }
         }
         public partial class DoLoopStmtContext : ILoopNode
         {
-            private readonly IDictionary<IExecutionContext, bool> _hasExecuted
-                = new Dictionary<IExecutionContext, bool>();
+            public void Execute(IExecutionContext context)
+            {
+                IsReachable = true;
+            }
 
-            public bool HasExecuted(IExecutionContext context) 
-                => _hasExecuted.TryGetValue(context, out var value) && value;
-
-            public void Execute(IExecutionContext context) 
-                => _hasExecuted[context] = true;
-
+            public bool IsReachable { get; set; }
             public IEvaluatableNode ConditionExpression { get; set; }
         }
     }

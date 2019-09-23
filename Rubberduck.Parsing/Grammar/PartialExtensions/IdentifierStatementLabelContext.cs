@@ -22,6 +22,9 @@ namespace Rubberduck.Parsing.Grammar
                     return tokenInterval;
                 }
             }
+
+            public bool IsReachable { get; set; }
+
             public Attributes Attributes { get; } = new Attributes();
             public int AttributeTokenIndex => Start.TokenIndex - 1;
 

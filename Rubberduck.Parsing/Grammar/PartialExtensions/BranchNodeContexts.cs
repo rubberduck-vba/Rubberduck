@@ -20,7 +20,9 @@ namespace Rubberduck.Parsing.Grammar
             public void Execute(IExecutionContext context) 
                 => _hasExecuted[context] = true;
 
-            public IEvaluatableNode ConditionExpression { get; set; }
+            public IEvaluatableNode ConditionExpression => this.booleanExpression();
+
+            public bool IsReachable { get; set; }
         }
 
         public partial class SingleLineIfStmtContext : IBranchNode
@@ -34,10 +36,14 @@ namespace Rubberduck.Parsing.Grammar
             public void Execute(IExecutionContext context) 
                 => _hasExecuted[context] = true;
 
-            public IEvaluatableNode ConditionExpression { get; set; }
+            public IEvaluatableNode ConditionExpression 
+                => this.ifWithEmptyThen()?.booleanExpression() 
+                ?? this.ifWithNonEmptyThen()?.booleanExpression();
+
+            public bool IsReachable { get; set; }
         }
 
-        public partial class IfWithEmptyThenStmtContext : IBranchNode
+        public partial class IfWithEmptyThenContext : IBranchNode
         {
             private readonly IDictionary<IExecutionContext, bool> _hasExecuted
                 = new Dictionary<IExecutionContext, bool>();
@@ -48,7 +54,9 @@ namespace Rubberduck.Parsing.Grammar
             public void Execute(IExecutionContext context) 
                 => _hasExecuted[context] = true;
 
-            public IEvaluatableNode ConditionExpression { get; set; }
+            public IEvaluatableNode ConditionExpression
+                => this.booleanExpression();
+            public bool IsReachable { get; set; }
         }
 
         public partial class IfWithNonEmptyThenContext : IBranchNode
@@ -62,7 +70,9 @@ namespace Rubberduck.Parsing.Grammar
             public void Execute(IExecutionContext context) 
                 => _hasExecuted[context] = true;
 
-            public IEvaluatableNode ConditionExpression { get; set; }
+            public IEvaluatableNode ConditionExpression
+                => this.booleanExpression();
+            public bool IsReachable { get; set; }
         }
 
         public partial class ElseIfBlockContext : IBranchNode
@@ -76,7 +86,9 @@ namespace Rubberduck.Parsing.Grammar
             public void Execute(IExecutionContext context) 
                 => _hasExecuted[context] = true;
 
-            public IEvaluatableNode ConditionExpression { get; set; }
+            public IEvaluatableNode ConditionExpression
+                => this.booleanExpression();
+            public bool IsReachable { get; set; }
         }
     }
 }

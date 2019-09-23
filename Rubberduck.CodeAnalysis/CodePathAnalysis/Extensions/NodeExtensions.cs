@@ -1,10 +1,32 @@
-﻿using Rubberduck.Inspections.CodePathAnalysis.Nodes;
+﻿using Antlr4.Runtime.Tree;
+using Rubberduck.Inspections.CodePathAnalysis.Nodes;
+using Rubberduck.Parsing.Grammar.Abstract.CodePathAnalysis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Rubberduck.Inspections.CodePathAnalysis.Extensions
 {
+    public static class IParseTreeExtensions
+    {
+        public static IEnumerable<IExtendedNode> FlattenExtendedNodes(this IParseTree tree)
+        {
+            for (var childIndex = 0; childIndex < tree.ChildCount; childIndex++)
+            {
+                var child = tree.GetChild(childIndex);
+                if (child is IExtendedNode node)
+                {
+                    yield return node;
+                }
+
+                foreach (var descendant in child.FlattenExtendedNodes())
+                {
+                    yield return descendant;
+                }
+            }
+        }
+    }
+
     public static class NodeExtensions
     {
         public static IEnumerable<INode> GetFlattenedNodes(this INode node, params Type[] excludedTypes)

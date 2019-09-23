@@ -13,6 +13,7 @@ using Rubberduck.Refactorings.Exceptions.Rename;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.Utility;
+using Rubberduck.Parsing.Grammar.Abstract;
 
 namespace Rubberduck.Refactorings.Rename
 {

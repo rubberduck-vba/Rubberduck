@@ -5,15 +5,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rubberduck.Parsing.Grammar.PartialExtensions
+namespace Rubberduck.Parsing.Grammar
 {
     public partial class VBAParser
     {
-        public partial class BlockStmtContext : IExecutableNode
+        public partial class BooleanExpressionContext : IEvaluatableNode
         {
-            public void Execute(IExecutionContext context)
+            public T Evaluate<T>(IExecutionContext context)
             {
+                if (typeof(T) != typeof(bool))
+                {
+                    throw new NotSupportedException();
+                }
+
                 IsReachable = true;
+                return default;
             }
 
             public bool IsReachable { get; set; }
