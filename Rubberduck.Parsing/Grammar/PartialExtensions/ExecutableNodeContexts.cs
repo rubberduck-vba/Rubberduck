@@ -9,7 +9,7 @@ namespace Rubberduck.Parsing.Grammar
 {
     public partial class VBAParser
     {
-        public partial class CallStmtContext : IExecutableNode
+        public partial class EraseStmtContext : IExecutableNode
         {
             public void Execute(IExecutionContext context)
             {
@@ -19,22 +19,42 @@ namespace Rubberduck.Parsing.Grammar
             public bool IsReachable { get; set; }
         }
 
-        public partial class ExitStmtContext : IExecutableNode
+        public partial class MidStatementContext : IExecutableNode
         {
-            public ExitStmtContext()
-            {
-                ExitsScope = (this.EXIT_SUB()
-                        ?? this.EXIT_FUNCTION()
-                        ?? this.EXIT_PROPERTY()
-                        ) != null;
-            }
-
             public void Execute(IExecutionContext context)
             {
                 IsReachable = true;
             }
 
-            public bool ExitsScope { get; }
+            public bool IsReachable { get; set; }
+        }
+
+        public partial class LSetStmtContext : IExecutableNode
+        {
+            public void Execute(IExecutionContext context)
+            {
+                IsReachable = true;
+            }
+
+            public bool IsReachable { get; set; }
+        }
+
+        public partial class RSetStmtContext : IExecutableNode
+        {
+            public void Execute(IExecutionContext context)
+            {
+                IsReachable = true;
+            }
+
+            public bool IsReachable { get; set; }
+        }
+
+        public partial class RedimStmtContext : IExecutableNode
+        {
+            public void Execute(IExecutionContext context)
+            {
+                IsReachable = true;
+            }
 
             public bool IsReachable { get; set; }
         }
@@ -49,7 +69,87 @@ namespace Rubberduck.Parsing.Grammar
             public bool IsReachable { get; set; }
         }
 
-        public partial class DebugPrintStmtContext : IExecutableNode
+        public partial class StopStmtContext : IExecutableNode
+        {
+            public void Execute(IExecutionContext context)
+            {
+                IsReachable = true;
+            }
+
+            public bool IsReachable { get; set; }
+        }
+
+        public partial class WithStmtContext : IExecutableNode
+        {
+            public void Execute(IExecutionContext context)
+            {
+                IsReachable = true;
+            }
+
+            public bool IsReachable { get; set; }
+        }
+
+        public partial class LineSpecialFormContext : IExecutableNode
+        {
+            public void Execute(IExecutionContext context)
+            {
+                IsReachable = true;
+            }
+
+            public bool IsReachable { get; set; }
+        }
+
+        public partial class CircleSpecialFormContext : IExecutableNode
+        {
+            public void Execute(IExecutionContext context)
+            {
+                IsReachable = true;
+            }
+
+            public bool IsReachable { get; set; }
+        }
+
+        public partial class ScaleSpecialFormContext : IExecutableNode
+        {
+            public void Execute(IExecutionContext context)
+            {
+                IsReachable = true;
+            }
+
+            public bool IsReachable { get; set; }
+        }
+
+        public partial class PSetSpecialFormContext: IExecutableNode
+        {
+            public void Execute(IExecutionContext context)
+            {
+                IsReachable = true;
+            }
+
+            public bool IsReachable { get; set; }
+        }
+
+        public partial class CallStmtContext : IExecutableNode
+        {
+            public void Execute(IExecutionContext context)
+            {
+                IsReachable = true;
+            }
+
+            public bool IsReachable { get; set; }
+        }
+
+        public partial class NameStmtContext : IExecutableNode
+        {
+            public void Execute(IExecutionContext context)
+            {
+                IsReachable = true;
+            }
+
+            public bool IsReachable { get; set; }
+        }
+
+        public partial class ResetStmtContext : IExecutableNode
         {
             public void Execute(IExecutionContext context)
             {
@@ -70,6 +170,106 @@ namespace Rubberduck.Parsing.Grammar
         }
 
         public partial class CloseStmtContext : IExecutableNode
+        {
+            public void Execute(IExecutionContext context)
+            {
+                IsReachable = true;
+            }
+
+            public bool IsReachable { get; set; }
+        }
+
+        public partial class SeekStmtContext : IExecutableNode
+        {
+            public void Execute(IExecutionContext context)
+            {
+                IsReachable = true;
+            }
+
+            public bool IsReachable { get; set; }
+        }
+
+        public partial class LockStmtContext : IExecutableNode
+        {
+            public void Execute(IExecutionContext context)
+            {
+                IsReachable = true;
+            }
+
+            public bool IsReachable { get; set; }
+        }
+
+        public partial class LineInputStmtContext : IExecutableNode
+        {
+            public void Execute(IExecutionContext context)
+            {
+                IsReachable = true;
+            }
+
+            public bool IsReachable { get; set; }
+        }
+
+        public partial class WidthStmtContext : IExecutableNode
+        {
+            public void Execute(IExecutionContext context)
+            {
+                IsReachable = true;
+            }
+
+            public bool IsReachable { get; set; }
+        }
+
+        public partial class DebugPrintStmtContext : IExecutableNode
+        {
+            public void Execute(IExecutionContext context)
+            {
+                IsReachable = true;
+            }
+
+            public bool IsReachable { get; set; }
+        }
+
+        public partial class PrintStmtContext : IExecutableNode
+        {
+            public void Execute(IExecutionContext context)
+            {
+                IsReachable = true;
+            }
+
+            public bool IsReachable { get; set; }
+        }
+
+        public partial class WriteStmtContext : IExecutableNode
+        {
+            public void Execute(IExecutionContext context)
+            {
+                IsReachable = true;
+            }
+
+            public bool IsReachable { get; set; }
+        }
+
+        public partial class InputStmtContext : IExecutableNode
+        {
+            public void Execute(IExecutionContext context)
+            {
+                IsReachable = true;
+            }
+
+            public bool IsReachable { get; set; }
+        }
+
+        public partial class PutStmtContext : IExecutableNode
+        {
+            public void Execute(IExecutionContext context)
+            {
+                IsReachable = true;
+            }
+
+            public bool IsReachable { get; set; }
+        }
+
+        public partial class GetStmtContext : IExecutableNode
         {
             public void Execute(IExecutionContext context)
             {

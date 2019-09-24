@@ -8,6 +8,9 @@ using Rubberduck.Inspections.CodePathAnalysis.Extensions;
 using Rubberduck.Parsing.Grammar;
 using System;
 using System.Diagnostics;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing;
+using Antlr4.Runtime;
 
 namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution.ExtendedNodeVisitor
 {
@@ -15,9 +18,13 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution.ExtendedNodeVisitor
     {
         private readonly IExtendedNode[] _nodes;
         private readonly HashSet<ILabelNode> _labels;
+        private readonly HashSet<IdentifierReference> _refs;
 
-        public ExtendedNodeVisitor(ModuleBodyElementDeclaration member)
+        public ExtendedNodeVisitor(ModuleBodyElementDeclaration member, IDeclarationFinderProvider provider)
         {
+            var finder = provider.DeclarationFinder;
+            _refs = new HashSet<IdentifierReference>(finder.IdentifierReferences(member.QualifiedName));
+
             _nodes = member.Context.FlattenExtendedNodes().ToArray();
             _labels = new HashSet<ILabelNode>(_nodes.OfType<ILabelNode>());
         }
@@ -26,8 +33,22 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution.ExtendedNodeVisitor
 
         private readonly List<CodePath> _allPaths = new List<CodePath>();
         private readonly Stack<CodePath> _currentPath = new Stack<CodePath>();
+        private readonly MergedPath _mergedPath = new MergedPath();
 
         private int _position = 0;
+
+        private void EnterExecutionPath()
+        {
+            var path = new CodePath();
+            _allPaths.Add(path);
+            _currentPath.Push(path);
+        }
+
+        private void ExitExecutionPath()
+        {
+            var path = _currentPath.Pop();
+            _mergedPath.Merge(path);
+        }
 
         public CodePath[] GetAllCodePaths()
         {
@@ -55,14 +76,23 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution.ExtendedNodeVisitor
             HitNode(node);
             switch(node)
             {
+                case IAssignmentNode assignment:
+                    if (assignment.Target == null)
+                    {
+                        assignment.Target = _refs
+                            .SingleOrDefault(r => r.IsAssignment && r.Context.GetSelection().IsContainedIn(assignment as ParserRuleContext));
+                    }
+                    return VisitExtendedNode(assignment);
+                case IExitNode exitNode:
+                    return VisitExtendedNode(exitNode);
                 case IBranchNode branchNode:
                     return VisitExtendedNode(branchNode);
                 case IJumpNode jumpNode:
                     return VisitExtendedNode(jumpNode);
-                case IExecutableNode exeNode:
-                    return VisitExtendedNode(exeNode);
                 case IEvaluatableNode evalNode:
                     return VisitExtendedNode(evalNode);
+                case IExecutableNode exeNode:
+                    return VisitExtendedNode(exeNode);
                 
                 default:
                     return Array.Empty<CodePath>();
@@ -72,21 +102,18 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution.ExtendedNodeVisitor
         private void HitNode(IExtendedNode node)
         {
             node.IsReachable = true;
-            _currentPath.Peek().Add(node);
+            var path = _currentPath.Peek();
+            path.Add(node);
+            _mergedPath.Add(node);
             _position++; // note: a jump node can change this.
-        }
-
-        private CodePath[] VisitExtendedNode(IEvaluatableNode node)
-        {
-            return Array.Empty<CodePath>();
         }
 
         private CodePath[] VisitExtendedNode(IExecutableNode node)
         {
             var paths = new List<CodePath>();
-            if (node is VBAParser.ExitStmtContext exit && exit.ExitsScope)
+            if (node is IExitNode exit && exit.ExitsScope)
             {
-                throw new Exception("ExitStmtContext.ExitsScope"); // todo: don't throw anything
+                throw new Exception("ExitStmtContext.ExitsScope"); // todo: don't throw anything... somehow
             }
 
             var body = ((IParseTree)node).FlattenExtendedNodes();
@@ -116,37 +143,41 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution.ExtendedNodeVisitor
 
         public static readonly int MaxPathIterations = 8;
 
-        private readonly IDictionary<IJumpNode, int> _jumps
-            = new Dictionary<IJumpNode, int>();
-
         private CodePath[] VisitExtendedNode(IJumpNode node)
-        {            
-            if (_jumps.ContainsKey(node))
+        {
+            var jumps = new Dictionary<IJumpNode, int>();
+            if (jumps.ContainsKey(node))
             {
-                if (_jumps[node] >= MaxPathIterations)
+                if (jumps[node] >= MaxPathIterations)
                 {
                     throw new MaxIterationsReachedException(node);
                 }
-                _jumps[node] = _jumps[node]++;
+                jumps[node] = jumps[node]++;
             }
             else
             {
-                _jumps.Add(node, 1);
+                jumps.Add(node, 1);
             }
             _position = Array.IndexOf(_nodes, node.Target);
             return Array.Empty<CodePath>();
         }
 
-        private void EnterExecutionPath()
+        private CodePath[] VisitExtendedNode(IEvaluatableNode node)
         {
-            var path = new CodePath();
-            _allPaths.Add(path);
-            _currentPath.Push(path);
-        }
-
-        private void ExitExecutionPath()
-        {
-            _currentPath.Pop();
+            var refs = _refs.Where(r => ((ParserRuleContext)node).ContainsTokenIndex(r.Context.Start.TokenIndex));
+            foreach (var identifierRef in refs)
+            {
+                var path = _currentPath.Peek();
+                if (identifierRef.IsAssignment)
+                {
+                    path.OnAssignment(identifierRef);
+                }
+                else
+                {
+                    path.OnReference(identifierRef, node);
+                }
+            }
+            return Array.Empty<CodePath>();
         }
     }
 }

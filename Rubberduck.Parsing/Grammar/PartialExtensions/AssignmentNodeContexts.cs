@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Parsing.Grammar.Abstract.CodePathAnalysis;
+using Rubberduck.Parsing.Symbols;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,9 @@ namespace Rubberduck.Parsing.Grammar
                 = new Dictionary<IExecutionContext, IList<IReferenceNode>>();
 
             public bool IsReachable { get; set; }
+
+            public IdentifierReference Target { get; set; }
+            
 
             public void AddReference(IReferenceNode node, IExecutionContext context) 
             {
@@ -59,6 +63,7 @@ namespace Rubberduck.Parsing.Grammar
                 = new Dictionary<IExecutionContext, IList<IReferenceNode>>();
 
             public bool IsReachable { get; set; }
+            public IdentifierReference Target { get; set; }
 
             public void AddReference(IReferenceNode node, IExecutionContext context) 
             {

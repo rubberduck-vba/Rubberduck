@@ -1,4 +1,5 @@
-﻿using Antlr4.Runtime.Tree;
+﻿using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 using NUnit.Framework;
 using Rubberduck.CodeAnalysis.CodePathAnalysis.Execution;
 using Rubberduck.CodeAnalysis.CodePathAnalysis.Execution.ExtendedNodeVisitor;
@@ -45,7 +46,7 @@ End Sub
         }
 
         [Test][Category("CodePathAnalysis")]
-        public void BranchingCodePathsInput_CodeAfterBranchIsStillInFirstPath()
+        public void BranchingCodePathsInput_CodeAfterBranchIsInBothPaths()
         {
             const string inputCode = @"Option Explicit
 Public Sub DoSomething()
@@ -56,13 +57,12 @@ Public Sub DoSomething()
     Debug.Print ""still in path 1""
 End Sub
 ";
-            var path = GetCodePaths(inputCode).FirstOrDefault();
-            if (path?.Count == 0) { Assert.Inconclusive("CodePath is empty"); }
+            var paths = GetCodePaths(inputCode);
+            if (paths.Count() != 2) { Assert.Inconclusive("Expecting 2 code paths"); }
 
-            Assert.IsTrue(typeof(IExecutableNode).IsAssignableFrom(path[0].GetType()), "Expecting IExecutableNode at index 0.");
-            Assert.IsTrue(typeof(IBranchNode).IsAssignableFrom(path[1].GetType()), "Expecting IBranchNode at index 1.");
-            Assert.IsTrue(typeof(IEvaluatableNode).IsAssignableFrom(path[2].GetType()), "Expecting IBranchNode at index 2.");
-            Assert.IsTrue(typeof(IExecutableNode).IsAssignableFrom(path[3].GetType()), "Expecting IExecutableNode at index 3.");
+            var lastNode = paths.Select(path => path[path.Count - 1]);
+            Assert.IsTrue(lastNode.All(n => n is IEvaluatableNode));
+            Assert.AreEqual("\"Still in path 1\"", ((ParserRuleContext)lastNode.First()).GetText());
         }
 
         private IEnumerable<CodePath> GetCodePaths(string inputCode)
@@ -74,7 +74,7 @@ End Sub
                 {
                     if (member is ModuleBodyElementDeclaration element)
                     {
-                        var visitor = new ExtendedNodeVisitor(element);
+                        var visitor = new ExtendedNodeVisitor(element, state);
                         result.AddRange(visitor.GetAllCodePaths());
                     }
                 }

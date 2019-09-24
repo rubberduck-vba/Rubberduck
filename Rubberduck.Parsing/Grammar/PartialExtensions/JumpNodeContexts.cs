@@ -53,7 +53,7 @@ namespace Rubberduck.Parsing.Grammar
             public IExtendedNode Target { get; set; }
         }
 
-        public partial class GoSubStmtContext : IJumpReferenceNode
+        public partial class GoSubStmtContext : IJumpNode
         {
             public void Execute(IExecutionContext context)
             {
@@ -62,6 +62,26 @@ namespace Rubberduck.Parsing.Grammar
 
             public bool IsReachable { get; set; }
             public IExtendedNode Target { get; set; }
+        }
+
+        public partial class ExitStmtContext : IExitNode
+        {
+            public ExitStmtContext()
+            {
+                ExitsScope = (this.EXIT_SUB()
+                        ?? this.EXIT_FUNCTION()
+                        ?? this.EXIT_PROPERTY()
+                        ) != null;
+            }
+
+            public void Execute(IExecutionContext context)
+            {
+                IsReachable = true;
+            }
+
+            public bool ExitsScope { get; }
+
+            public bool IsReachable { get; set; }
         }
     }
 }
