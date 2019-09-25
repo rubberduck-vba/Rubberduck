@@ -25,6 +25,22 @@ namespace Rubberduck.Parsing.Grammar
             public bool IsReachable { get; set; }
         }
 
+        public partial class OutputListContext : IEvaluatableNode
+        {
+            public T Evaluate<T>(IExecutionContext context)
+            {
+                if (typeof(T) != typeof(bool))
+                {
+                    throw new NotSupportedException();
+                }
+
+                IsReachable = true;
+                return default;
+            }
+
+            public bool IsReachable { get; set; }
+        }
+
         public partial class SimpleNameExprContext : IEvaluatableNode
         {
             public T Evaluate<T>(IExecutionContext context)

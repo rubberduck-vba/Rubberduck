@@ -9,16 +9,40 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution
     public class CodePath
     {
         private readonly List<IExtendedNode> _nodes;
+
         private readonly Dictionary<IdentifierReference, Stack<IAssignmentNode>> _refs
             = new Dictionary<IdentifierReference, Stack<IAssignmentNode>>();
+        
         private readonly Dictionary<IAssignmentNode, Stack<IEvaluatableNode>> _assignmentReads
             = new Dictionary<IAssignmentNode, Stack<IEvaluatableNode>>();
-        private readonly List<IEvaluatableNode> _unassignedReads;
 
         public CodePath(IEnumerable<IExtendedNode> nodes = null, bool isErrorPath = false)
         {
             _nodes = new List<IExtendedNode>(nodes ?? Enumerable.Empty<IExtendedNode>());
             IsErrorPath = isErrorPath;
+        }
+
+        internal void SeedRefs(Dictionary<IdentifierReference, Stack<IAssignmentNode>> refs)
+        {
+            foreach (var kvp in refs)
+            {
+                if (_refs[kvp.Key] == null)
+                {
+                    _refs[kvp.Key] = new Stack<IAssignmentNode>();
+                }
+                var lastRef = kvp.Value.Peek();
+                if (lastRef != null)
+                {
+                    _refs[kvp.Key].Push(lastRef);
+                }
+            }
+        }
+
+        internal CodePath Clone()
+        {
+            var result = new CodePath(isErrorPath:this.IsErrorPath);
+            result.SeedRefs(_refs);
+            return result;
         }
 
         public bool IsErrorPath { get; }
@@ -84,14 +108,14 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution
             }
         }
 
-        public IEvaluatableNode[] UnassignedReads 
-            => _unassignedReads.ToArray();
-
         public IAssignmentNode[] UnreferencedAssignments 
             => _assignmentReads.Where(kvp => !kvp.Value.Any()).Select(kvp => kvp.Key).ToArray();
 
         public IExtendedNode[] UnreachableNodes 
             => _nodes.Where(node => !node.IsReachable).ToArray();
+
+        public override string ToString() 
+            => string.Join("\n", _nodes.Select((node, index) => $"[{index}]:{node.GetType().Name}"));
     }
 
     internal class MergedPath

@@ -62,7 +62,7 @@ End Sub
 
             var lastNode = paths.Select(path => path[path.Count - 1]);
             Assert.IsTrue(lastNode.All(n => n is IEvaluatableNode));
-            Assert.AreEqual("\"Still in path 1\"", ((ParserRuleContext)lastNode.First()).GetText());
+            Assert.AreEqual("\"still in path 1\"", ((ParserRuleContext)lastNode.First()).GetText());
         }
 
         private IEnumerable<CodePath> GetCodePaths(string inputCode)

@@ -29,9 +29,7 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution.ExtendedNodeVisitor
             _labels = new HashSet<ILabelNode>(_nodes.OfType<ILabelNode>());
         }
 
-        private readonly List<IExtendedNode> _traversed = new List<IExtendedNode>();
-
-        private readonly List<CodePath> _allPaths = new List<CodePath>();
+        private readonly HashSet<CodePath> _allPaths = new HashSet<CodePath>();
         private readonly Stack<CodePath> _currentPath = new Stack<CodePath>();
         private readonly MergedPath _mergedPath = new MergedPath();
 
@@ -39,7 +37,8 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution.ExtendedNodeVisitor
 
         private void EnterExecutionPath()
         {
-            var path = new CodePath();
+            var current = _currentPath.Any() ? _currentPath.Peek() : null;
+            var path = current?.Clone() ?? new CodePath();
             _allPaths.Add(path);
             _currentPath.Push(path);
         }
@@ -52,20 +51,26 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution.ExtendedNodeVisitor
 
         public CodePath[] GetAllCodePaths()
         {
+            var traversed = new List<IExtendedNode>(); // todo: remove
+
             _position = 0;
             EnterExecutionPath();
 
             while (_position < _nodes.Length)
             {
                 var node = _nodes[_position];
-                if (node == _traversed.LastOrDefault())
+                if (node == traversed.LastOrDefault())
                 {
                     // which is more likely:
                     // a self-referencing goto-loop, or a bug somewhere?
                     Debug.Assert(false);
                 }
-                _traversed.Add(node);
-                _allPaths.AddRange(VisitExtendedNode(node));
+                traversed.Add(node);
+                var paths = VisitExtendedNode(node);
+                foreach (var path in paths)
+                {
+                    _allPaths.Add(path);
+                }
             }
 
             return _allPaths.ToArray();
@@ -73,7 +78,6 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution.ExtendedNodeVisitor
 
         private CodePath[] VisitExtendedNode(IExtendedNode node)
         {
-            HitNode(node);
             switch(node)
             {
                 case IAssignmentNode assignment:
@@ -110,6 +114,7 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution.ExtendedNodeVisitor
 
         private CodePath[] VisitExtendedNode(IExecutableNode node)
         {
+            HitNode(node);
             var paths = new List<CodePath>();
             if (node is IExitNode exit && exit.ExitsScope)
             {
@@ -127,6 +132,7 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution.ExtendedNodeVisitor
 
         private CodePath[] VisitExtendedNode(IBranchNode node)
         {
+            HitNode(node);
             HitNode(node.ConditionExpression);
             var paths = new List<CodePath>();
             EnterExecutionPath();
@@ -145,6 +151,7 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution.ExtendedNodeVisitor
 
         private CodePath[] VisitExtendedNode(IJumpNode node)
         {
+            HitNode(node);
             var jumps = new Dictionary<IJumpNode, int>();
             if (jumps.ContainsKey(node))
             {
@@ -164,6 +171,7 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution.ExtendedNodeVisitor
 
         private CodePath[] VisitExtendedNode(IEvaluatableNode node)
         {
+            HitNode(node);
             var refs = _refs.Where(r => ((ParserRuleContext)node).ContainsTokenIndex(r.Context.Start.TokenIndex));
             foreach (var identifierRef in refs)
             {
