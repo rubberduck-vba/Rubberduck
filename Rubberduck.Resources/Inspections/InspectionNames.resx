@@ -419,4 +419,13 @@
   <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
     <value>Object used where a procedure is required</value>
   </data>
+  <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Use of an indexed default member access</value>
+  </data>
+  <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Use of an indexed recursive default member access</value>
+  </data>
+  <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Use of an indexed unbound default member access</value>
+  </data>
 </root>

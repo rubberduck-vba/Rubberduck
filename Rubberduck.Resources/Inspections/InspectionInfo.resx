@@ -415,4 +415,13 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
     <value>Using an object with a default member in a place that requires a procedure leads to an implicit invocation of the default member. This is most likely unintentional and negatively affects readability.</value>
   </data>
+  <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
+    <value>A default member access hides away which member is actually called. Although it is apparent that some call is made in the case of an indexed default member access being explicit is usually better for readability.</value>
+  </data>
+  <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>A default member access hides away which member is actually called. Although it is apparent that some call is made in the case of an indexed default member access being explicit is usually better for readability. This especially holds if the accessed default member is not on the interface of the object itself but has to be resolved via a chain of default member calls.</value>
+  </data>
+  <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>A default member access hides away which member is actually called. Although it is apparent that some call is made in the case of an indexed default member access being explicit is usually better for readability. This is especially true if the default member cannot be determined at compile time. In addition, should there not be a suitable default member at runtime, an error 438 'Object doesn't support this property or method' will be raised.</value>
+  </data>
 </root>

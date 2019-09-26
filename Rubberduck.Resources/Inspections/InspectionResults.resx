@@ -478,4 +478,16 @@ In memoriam, 1972-2018</value>
     <value>The expression '{0}' is used in a context that requires a procedure, which leads to a call to a default member that cannot be determined at compile time.</value>
     <comment>{0} expression</comment>
   </data>
+  <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
+    <value>The expression '{0}' contains an indexed default member access to '{1}'.</value>
+    <comment>{0} expression; {1} default member</comment>
+  </data>
+  <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>The expression '{0}' contains an indexed recursive default member access to '{1}'.</value>
+    <comment>{0} expression; {1} default member</comment>
+  </data>
+  <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>The expression '{0}' contains an indexed unbound default member access.</value>
+    <comment>{0} expression</comment>
+  </data>
 </root>

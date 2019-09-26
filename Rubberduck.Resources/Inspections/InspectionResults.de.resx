@@ -425,4 +425,13 @@ In Memoriam, 1972-2018</value>
   <data name="ObjectWhereProcedureIsRequiredInspection_Unbound" xml:space="preserve">
     <value>Der Ausdruck '{0}' wird an einer Stelle verwendet, die nach einer Prozedur verlangt, was zu einem Aufruf eines Standardmembers führt, welcher erst zur Laufzeit bestimmt werden kann.</value>
   </data>
+  <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Der Ausdruck '{0}' enthält einen parametrisierten Zugriff auf den Standardmember '{1}'.</value>
+  </data>
+  <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Der Ausdruck '{0}' enthält einen parametrisierten rekursiven Standardmemberzugriff auf '{1}'.</value>
+  </data>
+  <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Der Ausdruck '{0}' enthält einen parametrisierten nicht gebundenen Standardmemberzugriff '{1}'.</value>
+  </data>
 </root>

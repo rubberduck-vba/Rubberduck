@@ -412,4 +412,13 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
     <value>Wenn ein Objekt mit einem Standardmember an einer Stelle verwendet wird, die nach einer Prozedur verlangt, wird implizit der Standardmember aufgerufen. Die ist wahrscheinlich nicht beabsichtigt, minder aber zu Mindest die Lesbarkeit des Programms.</value>
   </data>
+  <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Zugriffe auf Standardmember verstecken, welcher Member aufgerufen wird. Auch wenn im Fall eines paramtrisierten Zugriffs ersichtlich ist, dass ein Zugriff erfolgt, so ist es in der Regel für die Lesbarkeit zuträglich explizit zu sein.</value>
+  </data>
+  <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Zugriffe auf Standardmember verstecken, welcher Member aufgerufen wird. Auch wenn im Fall eines paramtrisierten Zugriffs ersichtlich ist, dass ein Zugriff erfolgt, so ist es in der Regel für die Lesbarkeit zuträglich explizit zu sein. Dies trifft besonders zu, wenn der Standardmember nicht auf dem Interface des Objekts selber zu finden ist uns stattdessen mittels einer Kette von Standrdmemberzugriffen erreicht werden muss.</value>
+  </data>
+  <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Zugriffe auf Standardmember verstecken, welcher Member aufgerufen wird. Auch wenn im Fall eines paramtrisierten Zugriffs ersichtlich ist, dass ein Zugriff erfolgt, so ist es in der Regel für die Lesbarkeit zuträglich explizit zu sein. Dies trifft insbesondere zu, wenn der Standardmember erst zur Laufzeit ermittelt werden kann. Sollte dann kein passender Standardmember existieren, kommt es zu einem Fehler 438 'Objekt unterstützt diese Eigenschaft oder Methode nicht'.</value>
+  </data>
 </root>

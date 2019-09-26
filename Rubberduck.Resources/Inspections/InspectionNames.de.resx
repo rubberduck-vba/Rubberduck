@@ -399,4 +399,13 @@
   <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
     <value>Objekt an Stell einer Prozedur verwendet</value>
   </data>
+  <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Parametrisierter Zugriff auf einen Standardmember</value>
+  </data>
+  <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Parametrisierter rekursiver Zugriff auf einen Standardmember</value>
+  </data>
+  <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Parametrisierter nicht gebundener Zugriff auf einen Standardmember</value>
+  </data>
 </root>

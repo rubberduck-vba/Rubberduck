@@ -302,7 +302,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             bool isSetAssignment)
         {
             var callSiteContext = expression.LExpression.Context;
-            var identifier = callSiteContext.GetText();
+            var identifier = expression.Context.GetText();
             var selection = callSiteContext.GetSelection();
             var callee = expression.ReferencedDeclaration;
             expression.ReferencedDeclaration.AddReference(
@@ -331,7 +331,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             bool isSetAssignment)
         {
             var callSiteContext = expression.LExpression.Context;
-            var identifier = callSiteContext.GetText();
+            var identifier = expression.Context.GetText();
             var selection = callSiteContext.GetSelection();
             var callee = expression.ReferencedDeclaration;
             var reference = new IdentifierReference(
