@@ -147,9 +147,9 @@ namespace Rubberduck.Parsing
             {
                 return default;
             }
-            if (context is TContext)
+            if (context is TContext found)
             {
-                return (TContext)System.Convert.ChangeType(context, typeof(TContext));
+                return found;
             }
             return GetAncestor_Recursive<TContext>((ParserRuleContext)context.Parent);
         }

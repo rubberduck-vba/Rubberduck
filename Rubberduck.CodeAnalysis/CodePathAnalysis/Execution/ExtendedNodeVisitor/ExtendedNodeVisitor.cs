@@ -155,7 +155,11 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution.ExtendedNodeVisitor
 
             foreach (var item in body)
             {
-                if (item is IBranchNode) { break; }
+                if (item is IBranchNode branch && branch.ConditionExpression == null) 
+                {
+                    // else block must exit current path
+                    break; 
+                }
                 paths.AddRange(VisitExtendedNode(item));                
             }
 
@@ -194,7 +198,14 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution.ExtendedNodeVisitor
                 var path = _currentPath.Peek();
                 if (identifierRef.IsAssignment)
                 {
-                    path.OnAssignment(identifierRef);
+                    if (((ParserRuleContext)node).TryGetAncestor<IAssignmentNode>(out var assignment))
+                    {
+                        path.OnAssignment(identifierRef, assignment);
+                    }
+                    else
+                    {
+                        Debug.Assert(false, "Assignment node ancestor not found.");
+                    }
                 }
                 else
                 {

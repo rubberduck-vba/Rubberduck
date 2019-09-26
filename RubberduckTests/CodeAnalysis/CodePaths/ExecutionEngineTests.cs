@@ -81,7 +81,39 @@ End Sub
             var paths = GetCodePaths(inputCode);
             Assert.AreEqual(3, paths.Count());
         }
-            
+
+        [Test][Category("CodePathAnalysis")]
+        public void ElseBlockHasParentPathAssignmentMetadata()
+        {
+            const string inputCode = @"Option Explicit
+Public Sub DoSomething()
+    Dim foo
+    foo = 1
+    If True Then
+        foo = 2
+    Else
+        foo = 3
+    End If
+End Sub
+";
+            var paths = GetCodePaths(inputCode);
+            foreach (var path in paths.Select((p, i) => (p, i)))
+            {
+                var fistAssignment = path.p.AllAssignments
+                    .Where(a => a.Key.IdentifierName == "foo")
+                    .Select(a => ((ParserRuleContext)a.Value.Last()).GetText())
+                    .First();
+
+                var lastAssignment = path.p.AllAssignments
+                    .Where(a => a.Key.IdentifierName == "foo")
+                    .Select(a => ((ParserRuleContext)a.Value.Peek()).GetText())
+                    .Last();
+
+                Assert.AreEqual("foo = 1", fistAssignment);
+                Assert.AreEqual("foo = " + (path.i + 1).ToString(), lastAssignment);
+            }
+        }
+        
         private IEnumerable<CodePath> GetCodePaths(string inputCode)
         {
             using (var state = MockParser.ParseString(inputCode, out var qmn))

@@ -26,9 +26,9 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution
         {
             foreach (var kvp in refs)
             {
-                if (_refs[kvp.Key] == null)
+                if (!_refs.ContainsKey(kvp.Key) || _refs[kvp.Key] == null)
                 {
-                    _refs[kvp.Key] = new Stack<IAssignmentNode>();
+                    _refs.Add(kvp.Key, new Stack<IAssignmentNode>());
                 }
                 var lastRef = kvp.Value.Peek();
                 if (lastRef != null)
@@ -56,14 +56,22 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution
         public int Count 
             => _nodes.Count;
 
-        internal void OnAssignment(IdentifierReference reference)
+        internal void OnAssignment(IdentifierReference reference, IAssignmentNode node = null)
         {
             Debug.Assert(reference.IsAssignment);
+
+            if (!_refs.ContainsKey(reference))
+            {
+                _refs.Add(reference, new Stack<IAssignmentNode>());
+            }
+
             if (_refs[reference] == null)
             {
                 _refs[reference] = new Stack<IAssignmentNode>();
             }
-            var assignment = LastAssignment(reference);
+
+            var assignment = node ?? LastAssignment(reference);
+
             _refs[reference].Push(assignment);
             _assignmentReads[assignment] = new Stack<IEvaluatableNode>();
         }
@@ -88,11 +96,13 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution
             }
         }
 
+        internal IDictionary<IdentifierReference, Stack<IAssignmentNode>> AllAssignments => _refs;
+
         internal IAssignmentNode LastAssignment(IdentifierReference reference)
         {
             if (_refs.TryGetValue(reference, out var stack))
             {
-                return stack?.Peek();
+                return (stack?.Any() ?? false) ? stack.Peek() : null;
             }
             return null;
         }
