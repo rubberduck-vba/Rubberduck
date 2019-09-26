@@ -59,6 +59,8 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution.ExtendedNodeVisitor
             while (_position < _nodes.Length)
             {
                 var node = _nodes[_position];
+
+                #region safety net code to be deleted
                 if (node == traversed.LastOrDefault())
                 {
                     // which is more likely:
@@ -66,7 +68,8 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution.ExtendedNodeVisitor
                     Debug.Assert(false);
                 }
                 traversed.Add(node);
-
+                #endregion
+                
                 var paths = VisitExtendedNode(node);
                 foreach (var path in paths)
                 {
@@ -106,6 +109,11 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution.ExtendedNodeVisitor
 
         private void HitNode(IExtendedNode node)
         {
+            if (node == null)
+            {
+                return;
+            }
+
             node.IsReachable = true;
             var path = _currentPath.Peek();
             path.Add(node);
@@ -134,14 +142,21 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution.ExtendedNodeVisitor
         private CodePath[] VisitExtendedNode(IBranchNode node)
         {
             HitNode(node);
-            HitNode(node.ConditionExpression);
+            if (node.ConditionExpression != null)
+            {
+                // node is evaluated in current path
+                HitNode(node.ConditionExpression); 
+            }
             var paths = new List<CodePath>();
             EnterExecutionPath();
             
-            var body = ((IParseTree)node).FlattenExtendedNodes().OfType<IExecutableNode>();
+            var body = ((IParseTree)node).FlattenExtendedNodes()
+                .Where(n => typeof(IExecutableNode).IsAssignableFrom(n.GetType()));
+
             foreach (var item in body)
             {
-                paths.AddRange(VisitExtendedNode(item));
+                if (item is IBranchNode) { break; }
+                paths.AddRange(VisitExtendedNode(item));                
             }
 
             ExitExecutionPath();

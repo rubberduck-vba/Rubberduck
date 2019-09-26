@@ -90,5 +90,20 @@ namespace Rubberduck.Parsing.Grammar
                 => this.booleanExpression();
             public bool IsReachable { get; set; }
         }
+
+        public partial class ElseBlockContext : IBranchNode
+        {
+            private readonly IDictionary<IExecutionContext, bool> _hasExecuted
+                = new Dictionary<IExecutionContext, bool>();
+            
+            public bool HasExecuted(IExecutionContext context)
+                => _hasExecuted.TryGetValue(context, out var value) && value;
+
+            public void Execute(IExecutionContext context) 
+                => _hasExecuted[context] = true;
+
+            public IEvaluatableNode ConditionExpression => null;
+            public bool IsReachable { get; set; } 
+        }
     }
 }

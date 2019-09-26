@@ -12,9 +12,6 @@
         /// <summary>
         /// Gets the <see cref="IEvaluatableNode"/> that contains the conditional expression for branching.
         /// </summary>
-        /// <remarks>
-        /// The expression would be <c>null</c> for e.g. an <c>Else</c> block, or 
-        /// </remarks>
         IEvaluatableNode ConditionExpression { get; }
     }
 }

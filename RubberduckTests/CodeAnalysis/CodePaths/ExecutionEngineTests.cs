@@ -65,6 +65,23 @@ End Sub
             Assert.AreEqual("\"I'm in both path 1 and path 2\"", ((ParserRuleContext)lastNode[1]).GetText());
         }
 
+        [Test][Category("CodePathAnalysis")]
+        public void ElseBlockIsCodePath()
+        {
+            const string inputCode = @"Option Explicit
+Public Sub DoSomething()
+    Debug.Print ""In path 1""
+    If True Then
+        MsgBox ""hello from path 2""
+    Else
+        Debug.Print ""hello from path 3""
+    End If
+End Sub
+";
+            var paths = GetCodePaths(inputCode);
+            Assert.AreEqual(3, paths.Count());
+        }
+            
         private IEnumerable<CodePath> GetCodePaths(string inputCode)
         {
             using (var state = MockParser.ParseString(inputCode, out var qmn))
