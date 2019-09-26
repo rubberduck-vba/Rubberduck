@@ -15,7 +15,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
         public ExpandDefaultMemberQuickFix(IDeclarationFinderProvider declarationFinderProvider)
-        : base(typeof(ObjectWhereProcedureIsRequiredInspection))
+        : base(typeof(ObjectWhereProcedureIsRequiredInspection), typeof(IndexedDefaultMemberAccessInspection), typeof(IndexedRecursiveDefaultMemberAccessInspection))
         {
             _declarationFinderProvider = declarationFinderProvider;
         }
