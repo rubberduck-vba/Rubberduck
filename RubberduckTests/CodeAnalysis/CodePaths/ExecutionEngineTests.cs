@@ -54,15 +54,15 @@ Public Sub DoSomething()
     If True Then
         MsgBox ""hello from path 2""
     End If
-    Debug.Print ""still in path 1""
+    Debug.Print ""I'm in both path 1 and path 2""
 End Sub
 ";
             var paths = GetCodePaths(inputCode);
             if (paths.Count() != 2) { Assert.Inconclusive("Expecting 2 code paths"); }
 
-            var lastNode = paths.Select(path => path[path.Count - 1]);
-            Assert.IsTrue(lastNode.All(n => n is IEvaluatableNode));
-            Assert.AreEqual("\"still in path 1\"", ((ParserRuleContext)lastNode.First()).GetText());
+            var lastNode = paths.Select(path => path[path.Count - 1]).ToArray();
+            Assert.AreEqual("\"I'm in both path 1 and path 2\"", ((ParserRuleContext)lastNode[0]).GetText());
+            Assert.AreEqual("\"I'm in both path 1 and path 2\"", ((ParserRuleContext)lastNode[1]).GetText());
         }
 
         private IEnumerable<CodePath> GetCodePaths(string inputCode)

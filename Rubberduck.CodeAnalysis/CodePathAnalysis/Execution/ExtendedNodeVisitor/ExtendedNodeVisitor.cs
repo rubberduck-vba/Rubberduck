@@ -66,6 +66,7 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution.ExtendedNodeVisitor
                     Debug.Assert(false);
                 }
                 traversed.Add(node);
+
                 var paths = VisitExtendedNode(node);
                 foreach (var path in paths)
                 {
@@ -137,7 +138,7 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution.ExtendedNodeVisitor
             var paths = new List<CodePath>();
             EnterExecutionPath();
             
-            var body = ((IParseTree)node).FlattenExtendedNodes().Skip(1); // skip ConditionExpression
+            var body = ((IParseTree)node).FlattenExtendedNodes().OfType<IExecutableNode>();
             foreach (var item in body)
             {
                 paths.AddRange(VisitExtendedNode(item));
