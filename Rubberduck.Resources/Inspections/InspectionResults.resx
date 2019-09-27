@@ -490,4 +490,16 @@ In memoriam, 1972-2018</value>
     <value>The expression '{0}' contains an indexed unbound default member access.</value>
     <comment>{0} expression</comment>
   </data>
+  <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
+    <value>On the expression '{0}', there is an implicit default member access to '{1}'.</value>
+    <comment>{0} expression; {1} default member</comment>
+  </data>
+  <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>On the expression '{0}', there is an implicit recursive default member access to '{1}'.</value>
+    <comment>{0} expression; {1} default member</comment>
+  </data>
+  <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>On the expression '{0}', there is an implicit unbound default member access.</value>
+    <comment>{0} expression</comment>
+  </data>
 </root>

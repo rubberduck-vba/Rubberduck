@@ -36,7 +36,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             Declaration parent,
             bool isAssignmentTarget = false,
             bool hasExplicitLetStatement = false,
-            bool isSetAssignment = false)
+            bool isSetAssignment = false,
+            bool hasArrayAccess = false)
         {
             switch (boundExpression)
             {
@@ -78,7 +79,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 case BuiltInTypeExpression builtInTypeExpression:
                     break;
                 case RecursiveDefaultMemberAccessExpression recursiveDefaultMemberAccessExpression:
-                    Visit(recursiveDefaultMemberAccessExpression, module, scope, parent, hasExplicitLetStatement);
+                    Visit(recursiveDefaultMemberAccessExpression, module, scope, parent, hasExplicitLetStatement, hasArrayAccess);
                     break;
                 case LetCoercionDefaultMemberAccessExpression letCoercionDefaultMemberAccessExpression:
                     Visit(letCoercionDefaultMemberAccessExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement);
@@ -185,7 +186,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             var containedExpression = expression.ContainedDefaultMemberRecursionExpression;
             if (containedExpression != null)
             {
-                Visit(containedExpression, module, scope, parent, hasExplicitLetStatement: hasExplicitLetStatement);
+                Visit(containedExpression, module, scope, parent, hasExplicitLetStatement: hasExplicitLetStatement, hasArrayAccess: expression.IsArrayAccess);
             }
 
             if (expression.IsDefaultMemberAccess)
@@ -492,7 +493,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             QualifiedModuleName module,
             Declaration scope,
             Declaration parent,
-            bool hasExplicitLetStatement)
+            bool hasExplicitLetStatement,
+            bool hasArrayAccess)
         {
             var containedExpression = expression.ContainedDefaultMemberRecursionExpression;
             if (containedExpression != null)
@@ -503,7 +505,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             if (expression.Classification != ExpressionClassification.Unbound
                 && expression.ReferencedDeclaration != null)
             {
-                AddDefaultMemberReference(expression, module, parent, scope, hasExplicitLetStatement);
+                AddDefaultMemberReference(expression, module, parent, scope, hasExplicitLetStatement, !hasArrayAccess);
             }
         }
 
@@ -512,7 +514,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             QualifiedModuleName module,
             Declaration scope,
             Declaration parent,
-            bool hasExplicitLetStatement)
+            bool hasExplicitLetStatement,
+            bool isInnerRecursiveDefaultMemberAccess)
         {
             var callSiteContext = expression.Context;
             var identifier = callSiteContext.GetText();
@@ -529,7 +532,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 FindIdentifierAnnotations(module, selection.StartLine),
                 hasExplicitLetStatement: hasExplicitLetStatement,
                 isNonIndexedDefaultMemberAccess: true,
-                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth);
+                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth,
+                isInnerRecursiveDefaultMemberAccess: isInnerRecursiveDefaultMemberAccess);
         }
 
         private void AddFailedIndexedDefaultMemberReference(

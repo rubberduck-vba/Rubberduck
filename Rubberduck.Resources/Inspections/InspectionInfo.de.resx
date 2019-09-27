@@ -421,4 +421,13 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
     <value>Zugriffe auf Standardmember verstecken, welcher Member aufgerufen wird. Auch wenn im Fall eines paramtrisierten Zugriffs ersichtlich ist, dass ein Zugriff erfolgt, so ist es in der Regel für die Lesbarkeit zuträglich explizit zu sein. Dies trifft insbesondere zu, wenn der Standardmember erst zur Laufzeit ermittelt werden kann. Sollte dann kein passender Standardmember existieren, kommt es zu einem Fehler 438 'Objekt unterstützt diese Eigenschaft oder Methode nicht'.</value>
   </data>
+  <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Zugriffe auf Standardmember verstecken, welcher Member aufgerufen wird. Dies ist besonders verwirrend, wenn in dem Ausdruck selber keine Indikation vorhanden ist, dass ein solcher Zugriff erfolgt. Dies kann dazu führen, dass Fehler durch vergessene Memberaufrufe nicht erkannt werden.</value>
+  </data>
+  <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Zugriffe auf Standardmember verstecken, welcher Member aufgerufen wird. Dies ist besonders verwirrend, wenn in dem Ausdruck selber keine Indikation vorhanden ist, dass ein solcher Zugriff erfolgt, und zudem der Standardmember nicht auf dem Interface des Objekts selber zu finden ist. Dies kann dazu führen, dass Fehler durch vergessene Memberaufrufe nicht erkannt werden.</value>
+  </data>
+  <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Zugriffe auf Standardmember verstecken, welcher Member aufgerufen wird. Dies ist besonders verwirrend, wenn in dem Ausdruck selber keine Indikation vorhanden ist, dass ein solcher Zugriff erfolgt, und zudem der Standardmember erst zur Laufzeit ermittelt werden kann. Dies kann dazu führen, dass Fehler durch vergessene Memberaufrufe nicht erkannt werden. Sollte weiterhin zur Laufzeit kein Standardmember auf dem Objekt existsieren, so kommt es zu einem Fehler 438 'Objekt unterstützt diese Eigenschaft oder Methode nicht'.</value>
+  </data>
 </root>

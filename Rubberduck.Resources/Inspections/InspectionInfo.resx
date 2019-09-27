@@ -424,4 +424,13 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
     <value>A default member access hides away which member is actually called. Although it is apparent that some call is made in the case of an indexed default member access being explicit is usually better for readability. This is especially true if the default member cannot be determined at compile time. In addition, should there not be a suitable default member at runtime, an error 438 'Object doesn't support this property or method' will be raised.</value>
   </data>
+  <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Default member accesses hide away the actually called member. This is especially misleading if there is no indication in the expression that such a call is made. It can cause errors in which a member was forgotten to be called to go unnoticed.</value>
+  </data>
+  <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Default member accesses hide away the actually called member. This is especially misleading if there is no indication in the expression that such a call is made and the final default member is not on the interface of the object itself. In particular, this can cause errors in which a member was forgotten to be called to go unnoticed.</value>
+  </data>
+  <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Default member accesses hide away the actually called member. This is especially misleading if there is no indication in the expression that such a call is made and if the default member cannot be determined from the declared type of the object. As a consequence, errors in which a member was forgotten to be called can go unnoticed and should there not be a suitable default member at runtime, an error 438 'Object doesn't support this property or method' will be raised.</value>
+  </data>
 </root>

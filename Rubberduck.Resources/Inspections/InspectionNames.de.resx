@@ -408,4 +408,13 @@
   <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
     <value>Parametrisierter nicht gebundener Zugriff auf einen Standardmember</value>
   </data>
+  <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Impliziter Zugriff auf einen Standardmember</value>
+  </data>
+  <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Impliziter rekursiver Zugriff auf einen Standardmember</value>
+  </data>
+  <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Impliziter nicht gebundener Zugriff auf einen Standardmember</value>
+  </data>
 </root>

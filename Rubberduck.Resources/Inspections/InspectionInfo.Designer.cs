@@ -349,6 +349,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Default member accesses hide away the actually called member. This is especially misleading if there is no indication in the expression that such a call is made. It can cause errors in which a member was forgotten to be called to go unnoticed..
+        /// </summary>
+        public static string ImplicitDefaultMemberAccessInspection {
+            get {
+                return ResourceManager.GetString("ImplicitDefaultMemberAccessInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Such assignments look like they are assigning an object variable to a value type on the surface, but they are actually assigning that object&apos;s default member, implicitly. Consider referring to the default member explicitly, for improved readability..
         /// </summary>
         public static string ImplicitDefaultMemberAssignmentInspection {
@@ -363,6 +372,24 @@ namespace Rubberduck.Resources.Inspections {
         public static string ImplicitPublicMemberInspection {
             get {
                 return ResourceManager.GetString("ImplicitPublicMemberInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default member accesses hide away the actually called member. This is especially misleading if there is no indication in the expression that such a call is made and the final default member is not on the interface of the object itself. In particular, this can cause errors in which a member was forgotten to be called to go unnoticed..
+        /// </summary>
+        public static string ImplicitRecursiveDefaultMemberAccessInspection {
+            get {
+                return ResourceManager.GetString("ImplicitRecursiveDefaultMemberAccessInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default member accesses hide away the actually called member. This is especially misleading if there is no indication in the expression that such a call is made and if the default member cannot be determined from the declared type of the object. As a consequence, errors in which a member was forgotten to be called can go unnoticed and should there not be a suitable default member at runtime, an error 438 &apos;Object doesn&apos;t support this property or method&apos; will be raised..
+        /// </summary>
+        public static string ImplicitUnboundDefaultMemberAccessInspection {
+            get {
+                return ResourceManager.GetString("ImplicitUnboundDefaultMemberAccessInspection", resourceCulture);
             }
         }
         

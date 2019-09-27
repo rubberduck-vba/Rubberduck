@@ -358,6 +358,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to On the expression &apos;{0}&apos;, there is an implicit default member access to &apos;{1}&apos;..
+        /// </summary>
+        public static string ImplicitDefaultMemberAccessInspection {
+            get {
+                return ResourceManager.GetString("ImplicitDefaultMemberAccessInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Assignment to &apos;{0}&apos; implicitly assigns to default member &apos;{1}&apos; of class &apos;{2}&apos;..
         /// </summary>
         public static string ImplicitDefaultMemberAssignmentInspection {
@@ -381,6 +390,24 @@ namespace Rubberduck.Resources.Inspections {
         public static string ImplicitPublicMemberInspection {
             get {
                 return ResourceManager.GetString("ImplicitPublicMemberInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On the expression &apos;{0}&apos;, there is an implicit recursive default member access to &apos;{1}&apos;..
+        /// </summary>
+        public static string ImplicitRecursiveDefaultMemberAccessInspection {
+            get {
+                return ResourceManager.GetString("ImplicitRecursiveDefaultMemberAccessInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On the expression &apos;{0}&apos;, there is an implicit unbound default member access..
+        /// </summary>
+        public static string ImplicitUnboundDefaultMemberAccessInspection {
+            get {
+                return ResourceManager.GetString("ImplicitUnboundDefaultMemberAccessInspection", resourceCulture);
             }
         }
         

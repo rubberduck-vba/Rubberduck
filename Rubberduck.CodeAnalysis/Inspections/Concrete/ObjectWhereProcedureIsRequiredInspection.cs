@@ -24,7 +24,7 @@ namespace Rubberduck.Inspections.Concrete
     /// <module name="Class1" type="Class Module">
     /// <![CDATA[
     /// Public Function Foo() As Long
-    /// Attibute VB_UserMemId = 0
+    /// Attibute Foo.VB_UserMemId = 0
     ///     Foo = 42
     /// End Function
     /// ]]>
@@ -41,7 +41,7 @@ namespace Rubberduck.Inspections.Concrete
     /// <module name="Class1" type="Class Module">
     /// <![CDATA[
     /// Public Function Foo() As Long
-    /// Attibute VB_UserMemId = 0
+    /// Attibute Foo.VB_UserMemId = 0
     ///     Foo = 42
     /// End Function
     /// ]]>

@@ -432,6 +432,15 @@ In Memoriam, 1972-2018</value>
     <value>Der Ausdruck '{0}' enthält einen parametrisierten rekursiven Standardmemberzugriff auf '{1}'.</value>
   </data>
   <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Der Ausdruck '{0}' enthält einen parametrisierten nicht gebundenen Standardmemberzugriff '{1}'.</value>
+    <value>Der Ausdruck '{0}' enthält einen parametrisierten nicht gebundenen Standardmemberzugriff.</value>
+  </data>
+  <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Für den Ausdruck '{0}' kommt es zu einem impliziten Zugriff auf den Standardmember '{1}'.</value>
+  </data>
+  <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Für den Ausdruck '{0}' kommt es zu einem impliziten rekursiven Standardmemberzugriff auf '{1}'.</value>
+  </data>
+  <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Für den Ausdruck '{0}' kommt es zu einem impliziten nicht gebundenen Standardmemberzugriff.</value>
   </data>
 </root>

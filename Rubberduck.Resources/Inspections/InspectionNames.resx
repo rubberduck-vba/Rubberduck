@@ -420,12 +420,21 @@
     <value>Object used where a procedure is required</value>
   </data>
   <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Use of an indexed default member access</value>
+    <value>Indexed default member access</value>
   </data>
   <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Use of an indexed recursive default member access</value>
+    <value>Indexed recursive default member access</value>
   </data>
   <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
-    <value>Use of an indexed unbound default member access</value>
+    <value>Indexed unbound default member access</value>
+  </data>
+  <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Implicit default member access</value>
+  </data>
+  <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Implicit recursive default member access</value>
+  </data>
+  <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Implicit unbound default member access</value>
   </data>
 </root>

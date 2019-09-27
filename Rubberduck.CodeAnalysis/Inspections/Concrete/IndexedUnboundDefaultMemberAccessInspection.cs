@@ -19,7 +19,7 @@ namespace Rubberduck.Inspections.Concrete
     /// </why>
     /// <example hasResult="true">
     /// <![CDATA[
-    /// Public Sub DoSomething(ByVal arg As Object)
+    /// Public Sub DoSomething(ByVal rst As Object)
     ///     Dim bar As Variant
     ///     bar = rst("MyField")
     /// End Sub
@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     /// <example hasResult="false">
     /// <![CDATA[
-    /// Public Sub DoSomething(ByVal arg As Object)
+    /// Public Sub DoSomething(ByVal rst As Object)
     ///     Dim bar As Variant
     ///     bar = rst.Fields.Item("MyField")
     /// End Sub

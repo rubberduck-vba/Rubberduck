@@ -19,7 +19,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Class1:
     ///
     /// Public Function Foo(ByVal arg As Long) As Long
-    /// Attibute VB_UserMemId = 0
+    /// Attibute Foo.VB_UserMemId = 0
     ///     Foo = 42
     /// End Function
     ///
@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Class1:
     ///
     /// Public Function Foo(ByVal arg As Long) As Long
-    /// Attibute VB_UserMemId = 0
+    /// Attibute Foo.VB_UserMemId = 0
     ///     Foo = 42
     /// End Function
     ///
