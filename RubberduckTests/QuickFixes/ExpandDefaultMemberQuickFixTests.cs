@@ -375,7 +375,7 @@ End Function
         }
 
         [Test]
-        [Category("Inspections")]
+        [Category("QuickFixes")]
         public void RecursiveIndexedDefaultMemberAccessOnDefaultMemberArrayAccess_QuickFixWorks()
         {
             var class1Code = @"
@@ -417,6 +417,185 @@ End Function
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
             var actualModuleCode = ApplyQuickFixToAllInspectionResults(vbe.Object, "Module1", state => new IndexedRecursiveDefaultMemberAccessInspection(state), CodeKind.AttributesCode);
+            Assert.AreEqual(expectedModuleCode, actualModuleCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        [TestCase("Foo = cls", "Foo = cls.Foo")]
+        [TestCase("cls = bar", "cls.Foo = bar")]
+        public void OrdinaryImplicitDefaultMemberAccessExpression_QuickFixWorks(string statement, string resultStatement)
+        {
+            var class1Code = @"
+Public Function Foo() As Long
+Attribute Foo.VB_UserMemId = 0
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Long 
+    Dim cls As New Class1
+    Dim bar As Long
+    {statement}
+End Function
+";
+
+            var expectedModuleCode = $@"
+Private Function Foo() As Long 
+    Dim cls As New Class1
+    Dim bar As Long
+    {resultStatement}
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var actualModuleCode = ApplyQuickFixToAllInspectionResults(vbe.Object, "Module1", state => new ImplicitDefaultMemberAccessInspection(state), CodeKind.AttributesCode);
+            Assert.AreEqual(expectedModuleCode, actualModuleCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        [TestCase("Foo = cls", "Foo = cls.Foo().Baz")]
+        [TestCase("cls = bar", "cls.Foo().Baz = bar")]
+        public void RecursiveImplicitDefaultMemberAccessExpression_QuickFixWorks(string statement, string resultStatement)
+        {
+            var class1Code = @"
+Public Function Foo() As Class2
+Attribute Foo.VB_UserMemId = 0
+End Function
+";
+
+            var class2Code = @"
+Public Function Baz() As Long
+Attribute Baz.VB_UserMemId = 0
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Long 
+    Dim cls As New Class1
+    Dim bar As Long
+    {statement}
+End Function
+";
+
+            var expectedModuleCode = $@"
+Private Function Foo() As Long 
+    Dim cls As New Class1
+    Dim bar As Long
+    {resultStatement}
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var actualModuleCode = ApplyQuickFixToAllInspectionResults(vbe.Object, "Module1", state => new ImplicitRecursiveDefaultMemberAccessInspection(state), CodeKind.AttributesCode);
+            Assert.AreEqual(expectedModuleCode, actualModuleCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        [TestCase("Foo = cls(0)", "Foo = cls.Foo(0).Baz")]
+        [TestCase("cls(0) = bar", "cls.Foo(0).Baz = bar")]
+        public void OrdinaryImplicitDefaultMemberAccessOnDefaultMemberArrayAccess_QuickFixWorks(string statement, string resultStatement)
+        {
+            var class1Code = @"
+Public Function Foo() As Class2()
+Attribute Foo.VB_UserMemId = 0
+End Function
+";
+
+            var class2Code = @"
+Public Function Baz() As Long
+Attribute Baz.VB_UserMemId = 0
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Long 
+    Dim cls As New Class1
+    Dim bar As Long
+    {statement}
+End Function
+";
+
+            var expectedModuleCode = $@"
+Private Function Foo() As Long 
+    Dim cls As New Class1
+    Dim bar As Long
+    {resultStatement}
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var actualModuleCode = ApplyQuickFixToAllInspectionResults(vbe.Object, "Module1", state => new ImplicitDefaultMemberAccessInspection(state), CodeKind.AttributesCode);
+            Assert.AreEqual(expectedModuleCode, actualModuleCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        [TestCase("Foo = cls(0)", "Foo = cls.Barz().Foo(0).Bar().Baz")]
+        [TestCase("cls(0) = bar", "cls.Barz().Foo(0).Bar().Baz = bar")]
+        public void RecursiveImplicitDefaultMemberAccessOnRecursiveDefaultMemberArrayAccess_QuickFixWorks(string statement, string resultStatement)
+        {
+            var class1Code = @"
+Public Function Foo() As Class4()
+Attribute Foo.VB_UserMemId = 0
+End Function
+";
+
+            var class2Code = @"
+Public Function Baz() As Long
+Attribute Baz.VB_UserMemId = 0
+End Function
+";
+
+            var class3Code = @"
+Public Function Barz() As Class1
+Attribute Barz.VB_UserMemId = 0
+End Function
+";
+
+            var class4Code = @"
+Public Function Bar() As Class2
+Attribute Bar.VB_UserMemId = 0
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Long 
+    Dim cls As New Class3
+    Dim bar As Long
+    {statement}
+End Function
+";
+
+            var expectedModuleCode = $@"
+Private Function Foo() As Long 
+    Dim cls As New Class3
+    Dim bar As Long
+    {resultStatement}
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Class3", class3Code, ComponentType.ClassModule),
+                ("Class4", class4Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var actualModuleCode = ApplyQuickFixToAllInspectionResults(vbe.Object, "Module1", state => new ImplicitRecursiveDefaultMemberAccessInspection(state), CodeKind.AttributesCode);
             Assert.AreEqual(expectedModuleCode, actualModuleCode);
         }
 
