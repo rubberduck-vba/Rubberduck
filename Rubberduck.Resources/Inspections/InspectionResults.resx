@@ -236,10 +236,6 @@
     <value>Local variable '{0}' is not declared.</value>
     <comment>{0} variable name</comment>
   </data>
-  <data name="ImplicitDefaultMemberAssignmentInspection" xml:space="preserve">
-    <value>Assignment to '{0}' implicitly assigns to default member '{1}' of class '{2}'.</value>
-    <comment>{0} expression; {1} default member name; {2} class of default member</comment>
-  </data>
   <data name="AggregateInspection" xml:space="preserve">
     <value>{0} ({1} results).</value>
     <comment>{0} inspection description, {1} result count</comment>
@@ -437,10 +433,6 @@ In memoriam, 1972-2018</value>
   <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
     <value>Interface class module '{2}' contains a concrete implementation for {0} '{1}'.</value>
     <comment>{0} Method kind, {1} Method name, {2} interface class module name</comment>
-  </data>
-  <data name="ImplicitDefaultMemberAssignmentInspection_Unbound" xml:space="preserve">
-    <value>Assignment to '{0}' implicitly assigns to an unbound default member.</value>
-    <comment>{0} expression</comment>
   </data>
   <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
     <value>The argument '{2}' of type '{3}' is passed to the parameter '{0}' of the incompatible type '{1}'.</value>

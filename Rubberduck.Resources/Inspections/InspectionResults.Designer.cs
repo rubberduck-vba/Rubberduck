@@ -367,24 +367,6 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Assignment to &apos;{0}&apos; implicitly assigns to default member &apos;{1}&apos; of class &apos;{2}&apos;..
-        /// </summary>
-        public static string ImplicitDefaultMemberAssignmentInspection {
-            get {
-                return ResourceManager.GetString("ImplicitDefaultMemberAssignmentInspection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Assignment to &apos;{0}&apos; implicitly assigns to an unbound default member..
-        /// </summary>
-        public static string ImplicitDefaultMemberAssignmentInspection_Unbound {
-            get {
-                return ResourceManager.GetString("ImplicitDefaultMemberAssignmentInspection_Unbound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Member &apos;{0}&apos; is implicitly public..
         /// </summary>
         public static string ImplicitPublicMemberInspection {

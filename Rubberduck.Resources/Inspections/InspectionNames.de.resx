@@ -231,9 +231,6 @@
   <data name="ApplicationWorksheetFunctionInspection" xml:space="preserve">
     <value>Laufzeitgebundener Aufruf an WorksheetFunction</value>
   </data>
-  <data name="ImplicitDefaultMemberAssignmentInspection" xml:space="preserve">
-    <value>Implizite Zuweisung an Standard-Member</value>
-  </data>
   <data name="HostSpecificExpressionInspection" xml:space="preserve">
     <value>Hostspezifischer geklammerter Ausdruck wird nur zur Laufzeit ausgewertet</value>
   </data>

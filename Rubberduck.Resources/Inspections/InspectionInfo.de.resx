@@ -238,9 +238,6 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="ApplicationWorksheetFunctionInspection" xml:space="preserve">
     <value>Das Excel Application-Objekt implementiert das WorksheetFunction interface direkt. Alle Aufrufe an WorksheetFunction-Member werden als laufzeitgebunden behandelt und Fehler im aufgerufenen Member werden in ein Variant des Typs VbVarType.Error gekapselt. Dadurch können Fehler nicht mit Fehleranweisungen behandelt werden und gegenüber skriptzeitgebundenen Aufrufen sinkt die Performanz. Ziehen Sie in Erwägung Application.WorksheetFunction explizit aufzurufen. Bedenken Sie: Falls dieser Aufruf in der Vergangenheit Fehler erzeugt hat, wurden diese ignoriert. Es sollte eine Fehlerbehandlung vorhanden sein, bevor Sie die schnelle Korrektur anwenden.</value>
   </data>
-  <data name="ImplicitDefaultMemberAssignmentInspection" xml:space="preserve">
-    <value>Solche Zuweisungen sehen aus als wiesen sie einer Objektvariable an einen Werttyp zu, aber tatsächlich wird der Standardmember des Objekts implizit zugewiesen. Um die Lesbarkeit zu verbessern, erwägen Sie explizit auf den Standardmember zuzugreifen.</value>
-  </data>
   <data name="HostSpecificExpressionInspection" xml:space="preserve">
     <value>Geklammerte Ausdrücke werden von der Hostanwendung zur Laufzeit ausgewertet, was bedeutet, dass VBA den Ausdruck nicht zur Kompilierzeit validieren kann. Erwägen sie, das hostspezifische Objektmodell zu verwenden.</value>
   </data>

@@ -231,9 +231,6 @@
   <data name="UndeclaredVariableInspection" xml:space="preserve">
     <value>Variable no declarada</value>
   </data>
-  <data name="ImplicitDefaultMemberAssignmentInspection" xml:space="preserve">
-    <value>Asignación implícita de miembros por defecto</value>
-  </data>
   <data name="HungarianNotationInspection" xml:space="preserve">
     <value>Variable utiliza la notación húngara.</value>
   </data>

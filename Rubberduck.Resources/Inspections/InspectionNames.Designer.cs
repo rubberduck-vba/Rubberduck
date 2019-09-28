@@ -358,15 +358,6 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Implicit default member assignment.
-        /// </summary>
-        public static string ImplicitDefaultMemberAssignmentInspection {
-            get {
-                return ResourceManager.GetString("ImplicitDefaultMemberAssignmentInspection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Implicitly public member.
         /// </summary>
         public static string ImplicitPublicMemberInspection {

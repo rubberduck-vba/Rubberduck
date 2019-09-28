@@ -358,15 +358,6 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Such assignments look like they are assigning an object variable to a value type on the surface, but they are actually assigning that object&apos;s default member, implicitly. Consider referring to the default member explicitly, for improved readability..
-        /// </summary>
-        public static string ImplicitDefaultMemberAssignmentInspection {
-            get {
-                return ResourceManager.GetString("ImplicitDefaultMemberAssignmentInspection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Module members are public by default, which can be counter-intuitive. Consider specifying explicit access modifiers to avoid ambiguity..
         /// </summary>
         public static string ImplicitPublicMemberInspection {

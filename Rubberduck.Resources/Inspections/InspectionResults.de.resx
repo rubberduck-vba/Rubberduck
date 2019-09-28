@@ -236,9 +236,6 @@
   <data name="ApplicationWorksheetFunctionInspection" xml:space="preserve">
     <value>Laufzeitgebundene Nutzung des Application.{0} Members.</value>
   </data>
-  <data name="ImplicitDefaultMemberAssignmentInspection" xml:space="preserve">
-    <value>Zuweisung zu '{0}' weist implizit dem Standard-Member '{1}' von Klasse  '{2}' zu</value>
-  </data>
   <data name="HostSpecificExpressionInspection" xml:space="preserve">
     <value>Ausdruck '{0}' kann zur Kompilierzeit nicht validiert werden.</value>
   </data>
@@ -388,9 +385,6 @@ In Memoriam, 1972-2018</value>
   </data>
   <data name="SetAssignmentWithIncompatibleObjectTypeInspection" xml:space="preserve">
     <value>Der Variablen '{0}' vom deklarierten Typ '{1}' wird eine Wert des inkompatiblen Typs '{2}' Set-zugewiesen.</value>
-  </data>
-  <data name="ImplicitDefaultMemberAssignmentInspection_Unbound" xml:space="preserve">
-    <value>Zuweisung zu '{0}' weist implizit einem nicht gebundenen Standard-Member zu.</value>
   </data>
   <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
     <value>Das Argument '{2}' vom Typ '{3}' wird für den Parameter '{0}' vom inkompatiblen Typ '{1}' übergeben.</value>
