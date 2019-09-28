@@ -16,16 +16,7 @@ namespace Rubberduck.Inspections.Concrete
     /// </why>
     /// <example hasResult="true">
     /// <![CDATA[
-    /// Class1:
-    ///
-    /// Public Function Foo() As Long
-    /// Attibute Foo.VB_UserMemId = 0
-    ///     Foo = 42
-    /// End Function
-    ///
-    /// Module:
-    /// 
-    /// Public Sub DoSomething(ByVal arg As Class1)
+    /// Public Sub DoSomething(ByVal arg As ADODB.Field)
     ///     Dim bar As Variant
     ///     bar = arg
     /// End Sub
@@ -49,18 +40,9 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     /// <example hasResult="false">
     /// <![CDATA[
-    /// Class1:
-    ///
-    /// Public Function Foo() As Long
-    /// Attibute Foo.VB_UserMemId = 0
-    ///     Foo = 42
-    /// End Function
-    ///
-    /// Module:
-    /// 
-    /// Public Sub DoSomething(ByVal arg As Class1)
+    /// Public Sub DoSomething(ByVal arg As ADODB.Field)
     ///     Dim bar As Variant
-    ///     bar = arg.Foo()
+    ///     bar = arg.Value
     /// End Sub
     /// ]]>
     /// </example>
