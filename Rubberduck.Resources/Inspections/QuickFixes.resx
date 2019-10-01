@@ -291,4 +291,7 @@
   <data name="ReplaceWhileWendWithDoWhileLoopQuickFix" xml:space="preserve">
     <value>Replace 'While...Wend' with 'Do While...Loop'</value>
   </data>
+  <data name="ExpandBangNotationQuickFix" xml:space="preserve">
+    <value>Replace bang notation with explicit access</value>
+  </data>
 </root>

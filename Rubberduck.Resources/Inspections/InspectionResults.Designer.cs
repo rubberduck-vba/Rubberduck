@@ -946,6 +946,33 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The expression &apos;{0}&apos; uses bang notation..
+        /// </summary>
+        public static string UseOfBangNotationInspection {
+            get {
+                return ResourceManager.GetString("UseOfBangNotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The expression &apos;{0}&apos; uses a recursive bang operator..
+        /// </summary>
+        public static string UseOfRecursiveBangNotationInspection {
+            get {
+                return ResourceManager.GetString("UseOfRecursiveBangNotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The expression &apos;{0}&apos; uses an unbound bang operator..
+        /// </summary>
+        public static string UseOfUnboundBangNotationInspection {
+            get {
+                return ResourceManager.GetString("UseOfUnboundBangNotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to In a context that requires a value type, the expression &apos;{0}&apos; of object type &apos;{1}&apos; is used that does not have a suitable default member..
         /// </summary>
         public static string ValueRequiredInspection {

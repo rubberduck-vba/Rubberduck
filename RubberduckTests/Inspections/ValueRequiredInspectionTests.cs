@@ -13,8 +13,7 @@ namespace RubberduckTests.Inspections
     public class ValueRequiredInspectionTests : InspectionTestsBase
     {
         [Test]
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         [TestCase("    Bar cls.Baz")]
         [TestCase("    Baz (cls.Baz)")]
         [TestCase("    Debug.Print cls.Baz")]
@@ -151,8 +150,7 @@ End Sub
         }
 
         [Test]
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         [TestCase("    Foo = cls.Baz")]
         [TestCase("    Let Foo = cls.Baz")]
         [TestCase("    Foo = cls.Baz + 42")]
@@ -239,8 +237,7 @@ End Sub
         }
 
         [Test]
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         [TestCase("    Foo = cls.Baz")]
         [TestCase("    Let Foo = cls.Baz")]
         [TestCase("    fooBaz(42) = cls.Baz")]
@@ -297,8 +294,7 @@ End Sub
         }
 
         [Test]
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         [TestCase("    cls.Baz = 42")]
         [TestCase("    Let cls.Baz = 42")]
         [TestCase("    cls.Bar(42) = 42")]
@@ -342,8 +338,7 @@ End Sub
             Assert.IsFalse(inspectionResults.Any());
         }
 
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         [Test]
         public void ParamArray_NoResult()
         {
@@ -371,8 +366,7 @@ End Function
             Assert.IsFalse(inspectionResults.Any());
         }
 
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         [Test]
         public void ParamArrayInLibrary_NoResult()
         {

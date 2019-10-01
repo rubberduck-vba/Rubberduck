@@ -407,4 +407,13 @@
   <data name="DefaultMemberRequiredInspection" xml:space="preserve">
     <value>Indexed default member access without default member</value>
   </data>
+  <data name="UseOfBangNotationInspection" xml:space="preserve">
+    <value>Use of bang notation</value>
+  </data>
+  <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
+    <value>Use of recursive bang notation</value>
+  </data>
+  <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
+    <value>Use of unbound bang notation</value>
+  </data>
 </root>

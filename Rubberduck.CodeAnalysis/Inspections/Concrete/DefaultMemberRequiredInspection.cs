@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources.Inspections;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
@@ -55,43 +53,26 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public class DefaultMemberRequiredInspection : InspectionBase
+    public class DefaultMemberRequiredInspection : IdentifierReferenceInspectionBase
     {
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
-
         public DefaultMemberRequiredInspection(RubberduckParserState state)
             : base(state)
         {
-            _declarationFinderProvider = state;
-
             //This will most likely cause a runtime error. The exceptions are rare and should be refactored or made explicit with an @Ignore annotation.
             Severity = CodeInspectionSeverity.Error;
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module)
         {
-            var finder = _declarationFinderProvider.DeclarationFinder;
-
-            var failedIndexedDefaultMemberAccesses = finder.FailedIndexedDefaultMemberAccesses();
-            return failedIndexedDefaultMemberAccesses
-                .Where(failedIndexedDefaultMemberAccess => !IsIgnored(failedIndexedDefaultMemberAccess))
-                .Select(failedIndexedDefaultMemberAccess => InspectionResult(failedIndexedDefaultMemberAccess, _declarationFinderProvider));
+            return DeclarationFinderProvider.DeclarationFinder.FailedIndexedDefaultMemberAccesses(module);
         }
 
-        private bool IsIgnored(IdentifierReference assignment)
+        protected override bool IsResultReference(IdentifierReference failedIndexedDefaultMemberAccess)
         {
-            return assignment.IsIgnoringInspectionResultFor(AnnotationName);
+            return !failedIndexedDefaultMemberAccess.IsIgnoringInspectionResultFor(AnnotationName);
         }
 
-        private IInspectionResult InspectionResult(IdentifierReference failedCoercion, IDeclarationFinderProvider declarationFinderProvider)
-        {
-            return new IdentifierReferenceInspectionResult(this,
-                ResultDescription(failedCoercion),
-                declarationFinderProvider,
-                failedCoercion);
-        }
-
-        private string ResultDescription(IdentifierReference failedIndexedDefaultMemberAccess)
+        protected override string ResultDescription(IdentifierReference failedIndexedDefaultMemberAccess)
         {
             var expression = failedIndexedDefaultMemberAccess.IdentifierName;
             var typeName = failedIndexedDefaultMemberAccess.Declaration?.FullAsTypeName;

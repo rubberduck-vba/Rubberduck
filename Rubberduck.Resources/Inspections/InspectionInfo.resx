@@ -403,4 +403,13 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="DefaultMemberRequiredInspection" xml:space="preserve">
     <value>The VBA compiler does not raise an error if an indexed default member call is required but the object's declared type does not have a suitable default member. Under almost all circumstances, this leads to a run-time error 91 'Object or With block variable not set' or 438 'Object doesn't support this property or method' depending on whether the object has the value 'Nothing' or not, which is harder to detect and indicates a bug.</value>
   </data>
+  <data name="UseOfBangNotationInspection" xml:space="preserve">
+    <value>Bang notation, formally known as dictionary access expression, looks like it is strongly typed. However, it is actually a stringly-typed access to the parameterized default member of the object it is used on.</value>
+  </data>
+  <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
+    <value>Bang notation, formally known as dictionary access expression, looks like it is strongly typed. However, it is actually a stringly-typed access to the parameterized default member of the object it is used on. This is especially misleading if the parameterized default member is not on the object itself and can only be reached by calling the parameterless default member first.</value>
+  </data>
+  <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
+    <value>Bang notation, formally known as dictionary access expression, looks like it is strongly typed. However, it is actually a stringly-typed access to the parameterized default member of the object it is used on. This is especially misleading the default member cannot be determined at compile time.</value>
+  </data>
 </root>

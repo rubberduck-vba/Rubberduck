@@ -400,4 +400,13 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="DefaultMemberRequiredInspection" xml:space="preserve">
     <value>Der VBA-Compiler gibt keinen Fehler aus, wenn ein Standardmemberzugriff nötig ist, aber der der deklarierte Type des Objekts keinen passenden Standardmember hat. In fast allen Fällen führt dies zu einem Laufzeitfehler91 'Objektvariable oder With-Blockvariable nicht festgelegt' oder 438 'Objekt unterstützt diese Eigenschaft oder Methode nicht' abhängig davon, ob die Variable den Wert 'Nothing' hat oder nicht, der schwerer zu entdecken ist und auf einen Programmierfehler hinweist.</value>
   </data>
+  <data name="UseOfBangNotationInspection" xml:space="preserve">
+    <value>Die Ausrufezeichennotation erweckt den Eindruck, dass es sich um einen Zugriff handelt, der Typchecks unterliegt. Allerdings handelt es sich lediglich um einen Zugriff auf den Standardmember des Objekts, auf das sie angewendet wird, bei dem das Argument als Zeichenkette übergeben wird.</value>
+  </data>
+  <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
+    <value>Die Ausrufezeichennotation erweckt den Eindruck, dass es sich um einen Zugriff handelt, der Typchecks unterliegt. Allerdings handelt es sich lediglich um einen Zugriff auf den Standardmember des Objekts, auf das sie angewendet wird, bei dem das Argument als Zeichenkette übergeben wird. Dies ist besonders verwirrend, wenn der Standardmember des Objekts selber keine Zeichenkette akzeptiert und deshalb ein rekursiver Zugriff auf den parameterlosen Standardmember erfolgen muss.</value>
+  </data>
+  <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
+    <value>Die Ausrufezeichennotation erweckt den Eindruck, dass es sich um einen Zugriff handelt, der Typchecks unterliegt. Allerdings handelt es sich lediglich um einen Zugriff auf den Standardmember des Objekts, auf das sie angewendet wird, bei dem das Argument als Zeichenkette übergeben wird. Dies ist besonders verwirrend, wenn der Standardmember nicht zum Zeitpunkt des Kompilierens ermittelt werden kann.</value>
+  </data>
 </root>
