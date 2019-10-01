@@ -48,7 +48,7 @@ namespace Rubberduck.Inspections.Concrete
     /// <example hasResult="false">
     /// <![CDATA[
     /// Public Function MyName(ByVal rst As ADODB.Recordset) As Variant
-    ///     MyName = rst.Fields!Name.Value
+    ///     MyName = rst.Fields!Name.Value 'see "UseOfBangNotation" inspection
     /// End Function
     /// ]]>
     /// </example>

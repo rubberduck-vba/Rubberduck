@@ -946,7 +946,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The expression &apos;{0}&apos; contains a use of bang notation..
+        ///   Looks up a localized string similar to The expression &apos;{0}&apos; uses bang notation..
         /// </summary>
         public static string UseOfBangNotationInspection {
             get {
@@ -955,7 +955,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The expression &apos;{0}&apos; contains a use of recursive bang notation..
+        ///   Looks up a localized string similar to The expression &apos;{0}&apos; uses a recursive bang operator..
         /// </summary>
         public static string UseOfRecursiveBangNotationInspection {
             get {
@@ -964,7 +964,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The expression &apos;{0}&apos; contains a use of unbound bang notation..
+        ///   Looks up a localized string similar to The expression &apos;{0}&apos; uses an unbound bang operator..
         /// </summary>
         public static string UseOfUnboundBangNotationInspection {
             get {

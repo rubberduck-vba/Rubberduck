@@ -459,15 +459,15 @@ In memoriam, 1972-2018</value>
     <comment>{0} expression; {1} type</comment>
   </data>
   <data name="UseOfBangNotationInspection" xml:space="preserve">
-    <value>The expression '{0}' contains a use of bang notation.</value>
+    <value>The expression '{0}' uses bang notation.</value>
     <comment>{0} expression</comment>
   </data>
   <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
-    <value>The expression '{0}' contains a use of recursive bang notation.</value>
+    <value>The expression '{0}' uses a recursive bang operator.</value>
     <comment>{0} expression</comment>
   </data>
   <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
-    <value>The expression '{0}' contains a use of unbound bang notation.</value>
+    <value>The expression '{0}' uses an unbound bang operator.</value>
     <comment>{0} expression</comment>
   </data>
 </root>

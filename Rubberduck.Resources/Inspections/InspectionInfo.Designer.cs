@@ -872,7 +872,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bang notation, formally known as dictionary access expression, looks like it is strongly typed. However, it is actually a stringly  typed access to the paramterized default member of the object it is used on..
+        ///   Looks up a localized string similar to Bang notation, formally known as dictionary access expression, looks like it is strongly typed. However, it is actually a stringly-typed access to the parameterized default member of the object it is used on..
         /// </summary>
         public static string UseOfBangNotationInspection {
             get {
@@ -881,7 +881,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bang notation, formally known as dictionary access expression, looks like it is strongly typed. However, it is actually a stringly  typed access to the paramterized default member of the object it is used on. This is especially misleading if the parameterized default member is not on the object itself and can only be reached by calling the parameterless default member first. .
+        ///   Looks up a localized string similar to Bang notation, formally known as dictionary access expression, looks like it is strongly typed. However, it is actually a stringly-typed access to the parameterized default member of the object it is used on. This is especially misleading if the parameterized default member is not on the object itself and can only be reached by calling the parameterless default member first..
         /// </summary>
         public static string UseOfRecursiveBangNotationInspection {
             get {
@@ -890,7 +890,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bang notation, formally known as dictionary access expression, looks like it is strongly typed. However, it is actually a stringly  typed access to the paramterized default member of the object it is used on. This is especially misleading the default member cannot be determined at compile time..
+        ///   Looks up a localized string similar to Bang notation, formally known as dictionary access expression, looks like it is strongly typed. However, it is actually a stringly-typed access to the parameterized default member of the object it is used on. This is especially misleading the default member cannot be determined at compile time..
         /// </summary>
         public static string UseOfUnboundBangNotationInspection {
             get {
