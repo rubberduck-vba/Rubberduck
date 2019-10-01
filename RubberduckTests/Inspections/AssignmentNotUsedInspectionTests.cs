@@ -6,6 +6,7 @@ using RubberduckTests.Mocks;
 using System.Linq;
 using System.Threading;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.CodePathAnalysis.Execution.ExtendedNodeVisitor;
 
 namespace RubberduckTests.Inspections
 {
@@ -20,7 +21,7 @@ namespace RubberduckTests.Inspections
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
-                var inspection = new AssignmentNotUsedInspection(state, new ProcedureTreeVisitor());
+                var inspection = new AssignmentNotUsedInspection(state, new ExtendedNodeVisitorFactory());
                 var inspector = InspectionsHelper.GetInspector(inspection);
                 return inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             }

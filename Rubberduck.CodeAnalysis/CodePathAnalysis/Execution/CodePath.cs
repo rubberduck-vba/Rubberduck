@@ -109,7 +109,7 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution
             }
             else
             {
-                var assignment = LastAssignment(reference);
+                var assignment = LastAssignment(reference.Declaration);
                 if (assignment != null && _assignmentReads.TryGetValue(assignment, out _))
                 {
                     _assignmentReads[assignment].Push(node);
@@ -127,7 +127,14 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution
             {
                 return (stack?.Any() ?? false) ? stack.Peek() : null;
             }
+            
             return null;
+        }
+
+        internal IAssignmentNode LastAssignment(Declaration declaration)
+        {
+            var key = _refs.Keys.Last(k => k.Declaration.Equals(declaration));
+            return LastAssignment(key);
         }
 
         internal void Add(IExtendedNode node) 

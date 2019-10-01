@@ -10,6 +10,8 @@ using Rubberduck.Inspections.CodePathAnalysis.Nodes;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.CodeAnalysis.CodePathAnalysis.Execution.ExtendedNodeVisitor;
+using Rubberduck.Parsing.Grammar.Abstract.CodePathAnalysis;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -39,57 +41,59 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class AssignmentNotUsedInspection : InspectionBase
     {
-        private readonly ProcedureTreeVisitor _procedureTreeVisitor;
+        IExtendedNodeVisitorFactory _visitorFactory;
 
-        public AssignmentNotUsedInspection(RubberduckParserState state, ProcedureTreeVisitor procedureTreeVisitor)
-            : base(state) {
-            _procedureTreeVisitor = procedureTreeVisitor;
+        public AssignmentNotUsedInspection(RubberduckParserState state, IExtendedNodeVisitorFactory factory)
+            : base(state) 
+        {
+            _visitorFactory = factory;
         }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
+            var procedures = State.DeclarationFinder
+                    .UserDeclarations(DeclarationType.Member)
+                    .Cast<ModuleBodyElementDeclaration>();
+
             var variables = State.DeclarationFinder
                     .UserDeclarations(DeclarationType.Variable)
                     .Where(d => !d.IsArray)
                 .Cast<VariableDeclaration>();
 
             var nodes = new List<IdentifierReference>();
-            foreach (var procedure in variables.GroupBy(v => v.QualifiedName))
-            {
-                var scope = procedure.Key;
-                var state = new ProcedureTreeVisitorState(State, scope);
-                var tree = _procedureTreeVisitor.GenerateTree(scope, state);
-                // todo: actually walk the tree
-                foreach (var variable in procedure)
+            foreach (var procedure in procedures)
+            {                
+                var visitor = _visitorFactory.Create(procedure, State);
+                var paths = visitor.GetAllCodePaths();
+
+                foreach (var variable in variables)
                 {
-                    var parentScopeDeclaration = variable.ParentScopeDeclaration;
-                    if (variable.Accessibility == Accessibility.Static)
+                    if (variable.Accessibility == Accessibility.Static
+                        || variable.IsIgnoringInspectionResultFor(AnnotationName))
                     {
                         // ignore module-level and static variables... for now
+                        // ..also bail out if inspection is ignored at the declaration level.
                         continue;
                     }
 
-                    var assignments = state.Assignments(variable);
-
-                    var references = assignments
-                        .Where(node => !node.Usages.Any() &&
-                                       !IsSetAssignmentToNothing(node))
-                        .Select(node => node.Reference);
-
-                    nodes.AddRange(references);
+                    var assignments = from path in paths
+                                      from assignment in path.UnreferencedAssignments
+                                      where assignment.IsReachable
+                                         && assignment.Target.Declaration.Equals(variable)
+                                         && !IsSetAssignmentToNothing(assignment)
+                                         && !assignment.Target.IsIgnoringInspectionResultFor(AnnotationName)
+                                      select assignment.Target;
+                    nodes.AddRange(assignments);
                 }
             }
 
             var results = nodes
-                .Where(issue => !issue.IsIgnoringInspectionResultFor(AnnotationName)
-                            // Ignoring the Declaration disqualifies all assignments
-                            && !issue.Declaration.IsIgnoringInspectionResultFor(AnnotationName))
                 .Select(issue => new IdentifierReferenceInspectionResult(this, Description, State, issue))
                 .ToList();
             return results;
 
-            bool IsSetAssignmentToNothing(AssignmentNode node) =>
-                node.Reference.Context.Parent is VBAParser.SetStmtContext setStmt &&
+            bool IsSetAssignmentToNothing(IAssignmentNode node) =>
+                node.Target.Context.Parent is VBAParser.SetStmtContext setStmt &&
                 setStmt.expression().GetText().Equals(Tokens.Nothing);
         }
     }

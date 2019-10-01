@@ -14,6 +14,16 @@ using Antlr4.Runtime;
 
 namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution.ExtendedNodeVisitor
 {
+    public interface IExtendedNodeVisitorFactory
+    {
+        ExtendedNodeVisitor Create(ModuleBodyElementDeclaration member, IDeclarationFinderProvider provider);
+    }
+
+    public class ExtendedNodeVisitorFactory : IExtendedNodeVisitorFactory
+    {
+        public ExtendedNodeVisitor Create(ModuleBodyElementDeclaration member, IDeclarationFinderProvider provider) => new ExtendedNodeVisitor(member, provider);
+    }
+
     public class ExtendedNodeVisitor
     {
         private readonly IExtendedNode[] _nodes;
@@ -95,6 +105,8 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution.ExtendedNodeVisitor
                     return VisitExtendedNode(exitNode);
                 case IBranchNode branchNode:
                     return VisitExtendedNode(branchNode);
+                case ILoopNode loopNode:
+                    return VisitExtendedNode(loopNode);
                 case IJumpNode jumpNode:
                     return VisitExtendedNode(jumpNode);
                 case IEvaluatableNode evalNode:
@@ -145,7 +157,7 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution.ExtendedNodeVisitor
             if (node.ConditionExpression != null)
             {
                 // node is evaluated in current path
-                HitNode(node.ConditionExpression); 
+                HitNode(node.ConditionExpression);
             }
             var paths = new List<CodePath>();
             EnterExecutionPath();

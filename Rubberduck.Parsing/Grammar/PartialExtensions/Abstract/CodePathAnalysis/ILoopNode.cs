@@ -8,6 +8,6 @@
         /// <summary>
         /// Gets or sets the conditional expression that determines whether the loop is entered or exited.
         /// </summary>
-        IEvaluatableNode ConditionExpression { get; set; }
+        IEvaluatableNode ConditionExpression { get; }
     }
 }
