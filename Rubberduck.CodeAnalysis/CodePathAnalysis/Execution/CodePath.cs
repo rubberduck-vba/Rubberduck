@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.Grammar.Abstract.CodePathAnalysis;
+﻿using Antlr4.Runtime;
+using Rubberduck.Parsing.Grammar.Abstract.CodePathAnalysis;
 using Rubberduck.Parsing.Symbols;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,6 +16,9 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution
         
         private readonly Dictionary<IAssignmentNode, Stack<IEvaluatableNode>> _assignmentReads
             = new Dictionary<IAssignmentNode, Stack<IEvaluatableNode>>();
+
+        private readonly HashSet<IAssignmentNode> _seededRefs 
+            = new HashSet<IAssignmentNode>();
 
         public CodePath(IEnumerable<IExtendedNode> nodes = null, bool isErrorPath = false)
         {
@@ -34,6 +38,7 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution
                 if (lastRef != null)
                 {
                     _refs[kvp.Key].Push(lastRef);
+                    _seededRefs.Add(lastRef);
                 }
             }
         }
@@ -55,6 +60,26 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution
 
         public int Count 
             => _nodes.Count;
+
+        /// <summary>
+        /// Gets all assignment nodes of this path, plus the last assignment node of the previous path.
+        /// No assignment nodes for a reference means there is no assignment.
+        /// Use <see cref="Assignments"/> to get the assignment nodes for this path.
+        /// </summary>
+        internal IDictionary<IdentifierReference, Stack<IAssignmentNode>> AssignmentMetadata 
+            => _refs;
+
+        /// <summary>
+        /// Gets all assignment nodes of this path.
+        /// No assignment nodes for a reference means it isn't assigned *in this code path*.
+        /// </summary>
+        internal IDictionary<IdentifierReference, IAssignmentNode[]> Assignments
+            => _refs.Select(kvp => new 
+                {
+                    kvp.Key, 
+                    Value = kvp.Value.Where(v => !_seededRefs.Contains(v)).ToArray()
+                })
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
         internal void OnAssignment(IdentifierReference reference, IAssignmentNode node = null)
         {
@@ -95,8 +120,6 @@ namespace Rubberduck.CodeAnalysis.CodePathAnalysis.Execution
                 }
             }
         }
-
-        internal IDictionary<IdentifierReference, Stack<IAssignmentNode>> AllAssignments => _refs;
 
         internal IAssignmentNode LastAssignment(IdentifierReference reference)
         {

@@ -99,19 +99,33 @@ End Sub
             var paths = GetCodePaths(inputCode);
             foreach (var path in paths.Select((p, i) => (p, i)))
             {
-                var fistAssignment = path.p.AllAssignments
+                var node = path.p
+                    .AssignmentMetadata
                     .Where(a => a.Key.IdentifierName == "foo")
-                    .Select(a => ((ParserRuleContext)a.Value.Last()).GetText())
-                    .First();
-
-                var lastAssignment = path.p.AllAssignments
-                    .Where(a => a.Key.IdentifierName == "foo")
-                    .Select(a => ((ParserRuleContext)a.Value.Peek()).GetText())
-                    .Last();
-
-                Assert.AreEqual("foo = 1", fistAssignment);
-                Assert.AreEqual("foo = " + (path.i + 1).ToString(), lastAssignment);
+                    .First().Value.Peek();
+                Assert.AreEqual("foo = 1", ((ParserRuleContext)node).GetText());
             }
+        }
+
+        [Test][Category("CodePathAnalysis")]
+        public void SelectCaseBlockIsCodePath()
+        {
+            const string inputCode = @"Option Explicit
+Public Sub DoSomething()
+    Dim foo
+    foo = 1
+    Select Case foo
+        Case 1
+            foo = 2
+        Case 2
+            foo = 3
+        Case 3
+            foo = 4
+    End Select
+End Sub
+";
+            var paths = GetCodePaths(inputCode);
+            Assert.AreEqual(4, paths.Count());
         }
         
         private IEnumerable<CodePath> GetCodePaths(string inputCode)

@@ -105,5 +105,35 @@ namespace Rubberduck.Parsing.Grammar
             public IEvaluatableNode ConditionExpression => null;
             public bool IsReachable { get; set; } 
         }
+
+        public partial class CaseClauseContext : IBranchNode
+        {
+            private readonly IDictionary<IExecutionContext, bool> _hasExecuted
+                = new Dictionary<IExecutionContext, bool>();
+            
+            public bool HasExecuted(IExecutionContext context)
+                => _hasExecuted.TryGetValue(context, out var value) && value;
+
+            public void Execute(IExecutionContext context) 
+                => _hasExecuted[context] = true;
+
+            public IEvaluatableNode ConditionExpression => null;
+            public bool IsReachable { get; set; } 
+        }
+
+        public partial class CaseElseClauseContext : IBranchNode
+        {
+            private readonly IDictionary<IExecutionContext, bool> _hasExecuted
+                = new Dictionary<IExecutionContext, bool>();
+            
+            public bool HasExecuted(IExecutionContext context)
+                => _hasExecuted.TryGetValue(context, out var value) && value;
+
+            public void Execute(IExecutionContext context) 
+                => _hasExecuted[context] = true;
+
+            public IEvaluatableNode ConditionExpression => null;
+            public bool IsReachable { get; set; } 
+        }
     }
 }
