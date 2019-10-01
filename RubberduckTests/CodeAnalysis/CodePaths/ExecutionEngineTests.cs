@@ -127,7 +127,64 @@ End Sub
             var paths = GetCodePaths(inputCode);
             Assert.AreEqual(4, paths.Count());
         }
-        
+
+        [Test][Category("CodePathAnalysis")]
+        public void SelectCaseElseBlockIsCodePath()
+        {
+            const string inputCode = @"Option Explicit
+Public Sub DoSomething()
+    Dim foo
+    foo = 1
+    Select Case foo
+        Case 1
+            foo = 2
+        Case 2
+            foo = 3
+        Case Else
+            foo = 4
+    End Select
+End Sub
+";
+            var paths = GetCodePaths(inputCode);
+            Assert.AreEqual(4, paths.Count());
+        }
+
+        [Test][Category("CodePathAnalysis")]
+        public void FindsUnusedAssignment()
+        {
+            const string inputCode = @"Option Explicit
+Public Sub DoSomething()
+    Dim foo
+    foo = 1
+    foo = 2
+    Debug.Print foo
+End Sub
+";
+            var paths = GetCodePaths(inputCode);
+            var firstAssignmentUses = paths.Single().Assignments.First().Value.ToArray();
+
+            Assert.AreEqual(0, firstAssignmentUses.Length);
+        }
+
+        [Test][Category("CodePathAnalysis")]
+        public void FindsConditionallyUnusedAssignment()
+        {
+            const string inputCode = @"Option Explicit
+Public Sub DoSomething()
+    Dim foo
+    foo = 1
+    If True Then
+        foo = 2
+    End If
+    Debug.Print foo
+End Sub
+";
+            var paths = GetCodePaths(inputCode);
+            var firstAssignmentUses = paths.First().Assignments.First().Value.ToArray();
+
+            Assert.AreEqual(0, firstAssignmentUses.Length);
+        }
+
         private IEnumerable<CodePath> GetCodePaths(string inputCode)
         {
             using (var state = MockParser.ParseString(inputCode, out var qmn))
