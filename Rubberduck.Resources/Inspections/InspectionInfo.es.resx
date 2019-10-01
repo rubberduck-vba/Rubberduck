@@ -304,9 +304,6 @@ Si el parámetro puede ser nulo, ignore el resultado de esta inspección; pasar 
   <data name="EmptyModuleInspection" xml:space="preserve">
     <value>Los módulos y clases vacíos apuntan a una funcionalidad aún no implementada o representan un equipaje innecesario que puede perjudicar la mantenibilidad de un proyecto.</value>
   </data>
-  <data name="UnreachableCaseInspection" xml:space="preserve">
-    <value>Detecta cláusulas de casos que nunca se ejecutarán.</value>
-  </data>
   <data name="UnhandledOnErrorResumeNextInspection" xml:space="preserve">
     <value>El manejo de errores se debe restaurar después de usar 'On Error Resume Next'.</value>
   </data>
