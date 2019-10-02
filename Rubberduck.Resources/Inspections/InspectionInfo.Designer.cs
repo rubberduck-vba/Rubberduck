@@ -556,7 +556,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Using an object with a default member in a place that requires a procedure leads to a call to the default member. This is most likely an error, but at least not obvious..
+        ///   Looks up a localized string similar to Using an object with a default member in a place that requires a procedure leads to an implicit invocation of the default member. This is most likely unintentional and negatively affects readability..
         /// </summary>
         public static string ObjectWhereProcedureIsRequiredInspection {
             get {

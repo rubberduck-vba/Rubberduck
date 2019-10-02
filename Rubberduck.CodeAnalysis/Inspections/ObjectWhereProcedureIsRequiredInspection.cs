@@ -6,7 +6,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
@@ -22,36 +21,38 @@ namespace Rubberduck.Inspections.Concrete
     /// This behavior is not obvious and most likely an error. 
     /// </why>
     /// <example hasResult="true">
+    /// <module name="Class1" type="Class Module">
     /// <![CDATA[
-    /// Class1:
-    ///
     /// Public Function Foo() As Long
     /// Attibute VB_UserMemId = 0
     ///     Foo = 42
     /// End Function
-    ///
-    /// Module:
-    /// 
+    /// ]]>
+    /// </module>
+    /// <module name="Module" type="Standard Module">
+    /// <![CDATA[
     /// Public Sub DoSomething(ByVal arg As Class1)
     ///     arg
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="Class1" type="Class Module">
     /// <![CDATA[
-    /// Class1:
-    ///
     /// Public Function Foo() As Long
     /// Attibute VB_UserMemId = 0
     ///     Foo = 42
     /// End Function
-    ///
-    /// Module:
-    /// 
+    /// ]]>
+    /// </module>
+    /// <module name="Module" type="Standard Module">
+    /// <![CDATA[
     /// Public Sub DoSomething(ByVal arg As Class1)
     ///     arg.Foo
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     public sealed class ObjectWhereProcedureIsRequiredInspection : InspectionBase
     {
