@@ -64,7 +64,12 @@ moduleConfigProperty :
 ;
 
 moduleConfigElement :
-    (unrestrictedIdentifier | lExpression) whiteSpace? EQ whiteSpace? (shortcut | resource | expression) endOfStatement
+    (unrestrictedIdentifier | lExpression) whiteSpace? EQ whiteSpace? (shortcut | resource | expression | germanStyleFloatingPointNumber) endOfStatement
+;
+
+germanStyleFloatingPointNumber : 
+    INTEGERLITERAL COMMA INTEGERLITERAL
+    | COMMA INTEGERLITERAL
 ;
 
 shortcut :
