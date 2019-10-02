@@ -258,9 +258,9 @@ lineWidth : expression;
 // and let the resolver handle it.
 debugPrintStmt : debugPrint (whiteSpace outputList)?;
 // We split it up into separate rules so that we have context classes generated that can be used in declarations/references.
-debugPrint : debugModule whiteSpace? DOT whiteSpace? debugPrintSub;
+debugPrint : debugModule whiteSpace? DOT whiteSpace? printMethod;
 debugModule : DEBUG;
-debugPrintSub : PRINT;
+printMethod : PRINT;
 printStmt : PRINT whiteSpace markedFileNumber whiteSpace? COMMA (whiteSpace? outputList)?;
 
 // 5.4.5.8.1 Output Lists
@@ -667,7 +667,7 @@ expression :
     | expression whiteSpace? EQV whiteSpace? expression                                             # logicalEqvOp
     | expression whiteSpace? IMP whiteSpace? expression                                             # logicalImpOp
     | literalExpression                                                                             # literalExpr
-    | builtInType                                                                                   # builtInTypeExpr
+    | {!IsTokenType(TokenTypeAtRelativePosition(2),LPAREN)}? builtInType                            # builtInTypeExpr
     | lExpression                                                                                   # lExpr
 ;
 
@@ -686,6 +686,7 @@ variantLiteralIdentifier : EMPTY | NULL;
 
 lExpression :
     lExpression LPAREN whiteSpace? argumentList? whiteSpace? RPAREN                                                 # indexExpr
+    | lExpression mandatoryLineContinuation? DOT mandatoryLineContinuation? printMethod (whiteSpace outputList)?    # objectPrintExpr
     | lExpression mandatoryLineContinuation? DOT mandatoryLineContinuation? unrestrictedIdentifier                  # memberAccessExpr
     | lExpression mandatoryLineContinuation? dictionaryAccess mandatoryLineContinuation? unrestrictedIdentifier     # dictionaryAccessExpr
     | ME                                                                                                            # instanceExpr

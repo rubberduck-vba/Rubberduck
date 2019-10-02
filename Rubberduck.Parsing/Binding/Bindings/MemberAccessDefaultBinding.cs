@@ -46,6 +46,29 @@ namespace Rubberduck.Parsing.Binding
             Declaration project,
             Declaration module,
             Declaration parent,
+            VBAParser.ObjectPrintExprContext expression,
+            IExpressionBinding lExpressionBinding,
+            StatementResolutionContext statementContext,
+            ParserRuleContext unrestrictedNameContext)
+            : this(
+                declarationFinder,
+                project,
+                module,
+                parent,
+                expression,
+                null,
+                Tokens.Print,
+                statementContext,
+                unrestrictedNameContext)
+        {
+            _lExpressionBinding = lExpressionBinding;
+        }
+
+        public MemberAccessDefaultBinding(
+            DeclarationFinder declarationFinder,
+            Declaration project,
+            Declaration module,
+            Declaration parent,
             ParserRuleContext expression,
             IBoundExpression lExpression,
             string name,

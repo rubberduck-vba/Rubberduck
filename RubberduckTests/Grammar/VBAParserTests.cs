@@ -2329,7 +2329,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression");
         }
 
-        
+
         [Test]
         public void TestArrayWithTypeSuffix()
         {
@@ -2468,7 +2468,20 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//printStmt");
         }
 
-        
+
+        [Test]
+        public void TestObjectPrintStmt()
+        {
+            string code = @"
+Sub Test()
+    Dim obj As Object
+    obj.Print ""Hello "";""World"", ""!"" ;
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//outputList");
+        }
+
+
         [Test]
         public void TestDebugPrintStmtNoArguments()
         {

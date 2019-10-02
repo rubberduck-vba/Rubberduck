@@ -2,6 +2,7 @@
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using System;
+using System.Collections.Generic;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 
@@ -29,7 +30,26 @@ namespace Rubberduck.Parsing.Binding
             return bindingTree?.Resolve();
         }
 
-        public IExpressionBinding BuildTree(Declaration module, Declaration parent, IParseTree expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext, bool requiresLetCoercion = false, bool isLetAssignment = false)
+        public IExpressionBinding BuildTree(
+            Declaration module, 
+            Declaration parent, 
+            IParseTree expression, 
+            IBoundExpression withBlockVariable, 
+            StatementResolutionContext statementContext,
+            bool requiresLetCoercion = false, 
+            bool isLetAssignment = false)
+        {
+            return Visit(
+                module,
+                parent,
+                expression,
+                withBlockVariable,
+                statementContext,
+                requiresLetCoercion,
+                isLetAssignment);
+        }
+
+        public IExpressionBinding Visit(Declaration module, Declaration parent, IParseTree expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext, bool requiresLetCoercion = false, bool isLetAssignment = false)
         {
             if (requiresLetCoercion && expression is ParserRuleContext context)
             {
@@ -51,6 +71,8 @@ namespace Rubberduck.Parsing.Binding
                     return Visit(module, parent, booleanExpressionContext, withBlockVariable);
                 case VBAParser.IntegerExpressionContext integerExpressionContext:
                     return Visit(module, parent, integerExpressionContext, withBlockVariable);
+                case VBAParser.OutputListContext outputListContext:
+                    return Visit(module, parent, outputListContext, withBlockVariable);
                 default:
                     throw new NotSupportedException($"Unexpected context type {expression.GetType()}");
             }
@@ -160,6 +182,8 @@ namespace Rubberduck.Parsing.Binding
                     return Visit(module, parent, dictionaryAccessExprContext, withBlockVariable);
                 case VBAParser.WithDictionaryAccessExprContext withDictionaryAccessExprContext:
                     return Visit(module, parent, withDictionaryAccessExprContext, withBlockVariable);
+                case VBAParser.ObjectPrintExprContext objectPrintExprContext:
+                    return Visit(module, parent, objectPrintExprContext, withBlockVariable);
                 default:
                     throw new NotSupportedException($"Unexpected lExpression type {expression.GetType()}");
             }
@@ -208,7 +232,36 @@ namespace Rubberduck.Parsing.Binding
         {
             var lExpression = expression.lExpression();
             var lExpressionBinding = Visit(module, parent, lExpression, withBlockVariable, StatementResolutionContext.Undefined);
-            return new MemberAccessDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpressionBinding, statementContext, expression.unrestrictedIdentifier());
+            return new MemberAccessDefaultBinding(
+                _declarationFinder, 
+                Declaration.GetProjectParent(parent), 
+                module, 
+                parent, 
+                expression, 
+                lExpressionBinding,
+                statementContext, 
+                expression.unrestrictedIdentifier());
+        }
+
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.ObjectPrintExprContext expression, IBoundExpression withBlockVariable)
+        {
+            var lExpression = expression.lExpression();
+            var lExpressionBinding = Visit(module, parent, lExpression, withBlockVariable, StatementResolutionContext.Undefined);
+            var memberAccessBinding = new MemberAccessDefaultBinding(
+                _declarationFinder,
+                Declaration.GetProjectParent(parent),
+                module,
+                parent,
+                expression,
+                lExpressionBinding,
+                StatementResolutionContext.Undefined,
+                expression.printMethod());
+            var outputListBinding = Visit(
+                module,
+                parent,
+                expression.outputList(),
+                withBlockVariable);
+            return new ObjectPrintDefaultBinding(expression, memberAccessBinding, outputListBinding);
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.IndexExprContext expression, IBoundExpression withBlockVariable)
@@ -414,6 +467,49 @@ namespace Rubberduck.Parsing.Binding
         {
             var innerExpression =  Visit(module, parent, expression.expression(), withBlockVariable, StatementResolutionContext.Undefined);
             return new LetCoercionDefaultBinding(expression, innerExpression);
+        }
+
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.OutputListContext outputListContext, IBoundExpression withBlockVariable)
+        {
+            var itemBindings = new List<IExpressionBinding>();
+            foreach (var outputItem in outputListContext.outputItem())
+            {
+                if (outputItem.outputClause() != null)
+                {
+                    if (outputItem.outputClause().spcClause() != null)
+                    {
+                        itemBindings.Add(Visit(
+                            module, 
+                            parent, 
+                            outputItem.outputClause().spcClause().spcNumber().expression(), 
+                            withBlockVariable, 
+                            StatementResolutionContext.Undefined, 
+                            requiresLetCoercion: true));
+                    }
+                    if (outputItem.outputClause().tabClause() != null && outputItem.outputClause().tabClause().tabNumberClause() != null)
+                    {
+                        itemBindings.Add(Visit(
+                            module, 
+                            parent, 
+                            outputItem.outputClause().tabClause().tabNumberClause().tabNumber().expression(), 
+                            withBlockVariable, 
+                            StatementResolutionContext.Undefined, 
+                            requiresLetCoercion: true));
+                    }
+                    if (outputItem.outputClause().outputExpression() != null)
+                    {
+                        itemBindings.Add(Visit(
+                            module,
+                            parent,
+                            outputItem.outputClause().outputExpression().expression(),
+                            withBlockVariable,
+                            StatementResolutionContext.Undefined,
+                            requiresLetCoercion: true));
+                    }
+                }
+            }
+
+            return new OutputListDefaultBinding(outputListContext, itemBindings);
         }
 
         private static IExpressionBinding Visit(Declaration module, VBAParser.InstanceExprContext expression)

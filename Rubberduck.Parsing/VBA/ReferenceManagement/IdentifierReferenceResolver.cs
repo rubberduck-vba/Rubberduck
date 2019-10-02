@@ -841,12 +841,12 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                     _qualifiedModuleName,
                     _currentScope,
                     _currentParent,
-                    context.debugPrint().debugPrintSub(),
-                    context.debugPrint().debugPrintSub().GetText(),
+                    context.debugPrint().printMethod(),
+                    context.debugPrint().printMethod().GetText(),
                     debugPrint,
-                    context.debugPrint().debugPrintSub().GetSelection(),
+                    context.debugPrint().printMethod().GetSelection(),
                     FindIdentifierAnnotations(_qualifiedModuleName,
-                        context.debugPrint().debugPrintSub().GetSelection().StartLine));
+                        context.debugPrint().printMethod().GetSelection().StartLine));
             }
             else
             {
