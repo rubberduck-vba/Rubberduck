@@ -513,28 +513,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
 
         private void ResolveOutputList(VBAParser.OutputListContext outputList)
         {
-            if (outputList == null)
-            {
-                return;
-            }
-            foreach (var outputItem in outputList.outputItem())
-            {
-                if (outputItem.outputClause() != null)
-                {
-                    if (outputItem.outputClause().spcClause() != null)
-                    {
-                        ResolveDefault(outputItem.outputClause().spcClause().spcNumber().expression(), true);
-                    }
-                    if (outputItem.outputClause().tabClause() != null && outputItem.outputClause().tabClause().tabNumberClause() != null)
-                    {
-                        ResolveDefault(outputItem.outputClause().tabClause().tabNumberClause().tabNumber().expression(), true);
-                    }
-                    if (outputItem.outputClause().outputExpression() != null)
-                    {
-                        ResolveDefault(outputItem.outputClause().outputExpression().expression(), true);
-                    }
-                }
-            }
+            ResolveDefault(outputList);
         }
 
         public void Resolve(VBAParser.InputStmtContext context)
