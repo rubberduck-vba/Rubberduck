@@ -176,10 +176,12 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                             asTypeName, 
                             asTypeContext, 
                             accessibility, 
-                            context, 
+                            context,
+                            attributesPassContext,
                             selection, 
                             true,
-                            FindMemberAnnotations(selection.StartLine));
+                            FindMemberAnnotations(selection.StartLine),
+                            attributes);
                         break;
                     case DeclarationType.PropertyGet:
                         result = new PropertyGetDeclaration(

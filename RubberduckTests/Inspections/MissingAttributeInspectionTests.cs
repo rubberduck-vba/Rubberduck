@@ -5,6 +5,7 @@ using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
@@ -385,6 +386,33 @@ Private Sub Foo()
     '@VariableDescription(""Desc"")
     Dim bar As Variant
 End Sub
+";
+
+            var inspectionResults = InspectionResults(inputCode);
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MissingMemberAttributeOnDeclareStatement_OneResult()
+        {
+            const string inputCode =
+                @"'@Description(""Desc"")
+Private Declare Sub CopyMemory Lib ""kernel32.dll"" Alias ""RtlMoveMemory"" (ByRef Destination As Any, ByRef Source As Any, ByVal length As Long)
+";
+
+            var inspectionResults = InspectionResults(inputCode);
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MemberAttributeAnnotationOnDeclareStatement_WithAttribute_NoResult()
+        {
+            const string inputCode =
+                @"'@Description(""Desc"")
+Private Declare Sub CopyMemory Lib ""kernel32.dll"" Alias ""RtlMoveMemory"" (ByRef Destination As Any, ByRef Source As Any, ByVal length As Long)
+Attribute CopyMemory.VB_Description = ""Desc""
 ";
 
             var inspectionResults = InspectionResults(inputCode);
