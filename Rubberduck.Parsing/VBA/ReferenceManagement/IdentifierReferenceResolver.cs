@@ -797,47 +797,5 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 }
             }
         }
-
-        public void Resolve(VBAParser.DebugPrintStmtContext context)
-        {
-            if (DebugDeclarations.DebugPrint != null)
-            {
-                // Because Debug.Print has a special argument (an output list) instead
-                // of normal arguments we can't treat it as a function call.
-                var debugPrint = DebugDeclarations.DebugPrint;
-                var debugModule = debugPrint.ParentDeclaration;
-                debugModule.AddReference(
-                    _qualifiedModuleName,
-                    _currentScope,
-                    _currentParent,
-                    context.debugPrint().debugModule(),
-                    context.debugPrint().debugModule().GetText(),
-                    debugModule,
-                    context.debugPrint().debugModule().GetSelection(),
-                    FindIdentifierAnnotations(_qualifiedModuleName,
-                        context.debugPrint().debugModule().GetSelection().StartLine));
-                debugPrint.AddReference(
-                    _qualifiedModuleName,
-                    _currentScope,
-                    _currentParent,
-                    context.debugPrint().printMethod(),
-                    context.debugPrint().printMethod().GetText(),
-                    debugPrint,
-                    context.debugPrint().printMethod().GetSelection(),
-                    FindIdentifierAnnotations(_qualifiedModuleName,
-                        context.debugPrint().printMethod().GetSelection().StartLine));
-            }
-            else
-            {
-                Logger.Warn("Debug.Print (custom declaration) has not been loaded, skipping resolving Debug.Print call.");
-            }
-
-            //The output list should be resolved no matter whether we have a declaration for Debug.Print or not.
-            var outputList = context.outputList();
-            if (outputList != null)
-            {
-                ResolveOutputList(outputList);
-            }
-        }
     }
 }

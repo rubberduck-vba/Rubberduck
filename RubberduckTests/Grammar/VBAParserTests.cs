@@ -2578,7 +2578,7 @@ Sub Test()
     Debug.Print
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt");
+            AssertTree(parseResult.Item1, parseResult.Item2, "//printMethod");
         }
 
         
@@ -2590,7 +2590,7 @@ Sub Test()
     Debug.Print ""Anything""
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt/outputList");
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression/outputList");
         }
 
         
@@ -2602,7 +2602,7 @@ Sub Test()
     Debug.Print 1;
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt/outputList");
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression/outputList");
         }
 
         
@@ -2614,7 +2614,7 @@ Sub Test()
     Debug.Print 1,
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt/outputList");
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression/outputList");
         }
 
         
@@ -2631,7 +2631,7 @@ Sub Test()
     Next
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt", matches => matches.Count == 4);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//printMethod", matches => matches.Count == 4);
         }
 
         
@@ -2646,7 +2646,7 @@ Sub Test()
     End If
 End Sub";
             var parseResult = Parse(code, PredictionMode.Sll);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt", matches => matches.Count == 2);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//printMethod", matches => matches.Count == 2);
         }
 
         
@@ -2660,7 +2660,7 @@ Sub Test()
     Next i
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt", matches => matches.Count == 1);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//printMethod", matches => matches.Count == 1);
         }
 
         

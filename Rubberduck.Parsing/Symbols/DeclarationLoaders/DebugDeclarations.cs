@@ -9,7 +9,6 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
 {
     public class DebugDeclarations : ICustomDeclarationLoader
     {
-        public static Declaration DebugPrint;
         private readonly IDeclarationFinderProvider _finderProvider;
 
         public DebugDeclarations(IDeclarationFinderProvider finderProvider)
@@ -57,12 +56,6 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
             var debugObject = DebugObjectDeclaration(debugModule);
             var debugAssert = DebugAssertDeclaration(debugClass);
             var debugPrint = DebugPrintDeclaration(debugClass);
-
-            // Debug.Print has the same special syntax as the print and write statement.
-            // Because of that it is treated specially in the grammar and normally wouldn't be resolved.
-            // Since we still want it to be resolved we make it easier for the resolver to access the debug print
-            // declaration by exposing it in this way.
-            DebugPrint = debugPrint;
 
             return new List<Declaration> { 
                 debugModule,

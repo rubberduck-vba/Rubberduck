@@ -331,10 +331,5 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
         {
             _resolver.Resolve(context);
         }
-
-        public override void EnterDebugPrintStmt([NotNull] VBAParser.DebugPrintStmtContext context)
-        {
-            _resolver.Resolve(context);
-        }
     }
 }
