@@ -58,7 +58,7 @@ End Sub";
         {
             const string inputCode =
                 @"'@Description(""Desc"")
-#If Win64 Then
+#If False Then
     Private Sub Bar(ByVal arg As Long)
 #Else
     Private Sub Foo(ByVal arg As Long)
@@ -67,7 +67,7 @@ End Sub";
 
             const string expectedCode =
                     @"'@Description(""Desc"")
-#If Win64 Then
+#If False Then
     Private Sub Bar(ByVal arg As Long)
 #Else
     Private Sub Foo(ByVal arg As Long)
@@ -104,16 +104,16 @@ Attribute CopyMemory.VB_Description = ""Desc""
         {
             const string inputCode =
                 @"'@Description(""Desc"")
-#If Win64 Then
-    Private Declare Sub CopyMemory Lib ""kernel32.dll"" Alias ""RtlMoveMemory"" (ByRef Destination As Any, ByRef Source As Any, ByVal length As Long)
+#If False Then
+    Private Declare PtrSafe Sub CopyMemory Lib ""kernel32.dll"" Alias ""RtlMoveMemory"" (ByRef Destination As Any, ByRef Source As Any, ByVal length As Long)
 #Else
     Private Declare Sub CopyMemory Lib ""kernel32.dll"" Alias ""RtlMoveMemory""(ByRef Destination As Any, ByRef Source As Any, ByVal length As Long)
 #End If";
 
             const string expectedCode =
                 @"'@Description(""Desc"")
-#If Win64 Then
-    Private Declare Sub CopyMemory Lib ""kernel32.dll"" Alias ""RtlMoveMemory"" (ByRef Destination As Any, ByRef Source As Any, ByVal length As Long)
+#If False Then
+    Private Declare PtrSafe Sub CopyMemory Lib ""kernel32.dll"" Alias ""RtlMoveMemory"" (ByRef Destination As Any, ByRef Source As Any, ByVal length As Long)
 #Else
     Private Declare Sub CopyMemory Lib ""kernel32.dll"" Alias ""RtlMoveMemory""(ByRef Destination As Any, ByRef Source As Any, ByVal length As Long)
 Attribute CopyMemory.VB_Description = ""Desc""

@@ -1041,6 +1041,50 @@ End
 
 
         [Test]
+        public void MixedStyleFloatingPointsInFormsPart()
+        {
+            string code = @"
+Begin VB.Form Form1
+   Caption = ""Main""
+   ClientHeight = 2970
+   ClientLeft = 60
+   ClientTop = 450
+   ClientWidth = 8250
+   LinkTopic = ""Form1""
+   ScaleHeight = 2970
+   ScaleWidth = 8250
+   StartUpPosition = 2  'CenterScreen
+   Begin MSDataGridLib.DataGrid DataGrid1
+      Bindings = ""frmMain.frx"":0000
+      Height = 2055
+      Left = 2520
+      TabIndex = 0
+      Top = 120
+      Width = 5655
+      _ExtentX = 9975
+      _ExtentY = 3625
+      _Version = 393216
+      HeadLines = 1
+      RowHeight = 15
+      AllowAddNew = -1  'True
+      BeginProperty HeadFont {0BE35203-8F91-11CE-9DE3-00AA004BB851}
+            Name = ""MS Sans Serif""
+         Size = 8,25
+         Charset = 0
+         Weight = 400.4
+         Underline = 0   'False
+         Italic = 0   'False
+         Strikethrough = 0   'False
+      EndProperty
+   End
+End
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//germanStyleFloatingPointNumber", matches => matches.Count == 1);
+        }
+
+
+        [Test]
         public void TestNestedVbFormModuleConfigWithMultipleProperties()
         {
             string code = @"

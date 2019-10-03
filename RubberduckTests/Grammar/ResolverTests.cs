@@ -2234,6 +2234,27 @@ End Sub";
         [Category("Grammar")]
         [Category("Resolver")]
         [Test]
+        public void ObjectPrintExprsSeparatedByStatementSeparator_IsReferenceToLocalVariable()
+        {
+            var code = @"
+Sub Test()
+    Dim obj As Object
+    Dim referenced As String
+    obj.Print referenced;referenced, referenced , referenced ; : obj.Print referenced; referenced , referenced ;
+End Sub";
+            using (var state = Resolve(code))
+            {
+
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+
+                Assert.AreEqual(7, declaration.References.Count());
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void WriteStmt_IsReferenceToLocalVariable()
         {
             var code = @"
