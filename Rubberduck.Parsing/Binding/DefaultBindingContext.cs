@@ -73,6 +73,8 @@ namespace Rubberduck.Parsing.Binding
                     return Visit(module, parent, integerExpressionContext, withBlockVariable);
                 case VBAParser.OutputListContext outputListContext:
                     return Visit(module, parent, outputListContext, withBlockVariable);
+                case VBAParser.PrintStmtContext printStmtContext:
+                    return Visit(module, parent, printStmtContext, withBlockVariable);
                 default:
                     throw new NotSupportedException($"Unexpected context type {expression.GetType()}");
             }
@@ -262,6 +264,25 @@ namespace Rubberduck.Parsing.Binding
                 expression.outputList(),
                 withBlockVariable);
             return new ObjectPrintDefaultBinding(expression, memberAccessBinding, outputListBinding);
+        }
+
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.PrintStmtContext expression, IBoundExpression withBlockVariable)
+        {
+            var printMethodContext = expression.printMethod();
+            var simpleNameBinding = new SimpleNameDefaultBinding(
+                _declarationFinder,
+                Declaration.GetProjectParent(parent),
+                module,
+                parent,
+                printMethodContext,
+                printMethodContext.GetText(),
+                StatementResolutionContext.Undefined);
+            var outputListBinding = Visit(
+                module,
+                parent,
+                expression.outputList(),
+                withBlockVariable);
+            return new ObjectPrintDefaultBinding(expression, simpleNameBinding, outputListBinding);
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.IndexExprContext expression, IBoundExpression withBlockVariable)

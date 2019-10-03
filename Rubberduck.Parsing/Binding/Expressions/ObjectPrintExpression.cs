@@ -6,15 +6,15 @@ namespace Rubberduck.Parsing.Binding
     {
         public ObjectPrintExpression(
             ParserRuleContext context,
-            IBoundExpression memberAccessExpression,
+            IBoundExpression printMethodExpression,
             IBoundExpression outputListBoundExpression)
             : base(null, ExpressionClassification.Subroutine, context)
         {
-            MemberAccessExpressions = memberAccessExpression;
+            PrintMethodExpressions = printMethodExpression;
             OutputListExpression = outputListBoundExpression;
         }
 
-        public IBoundExpression MemberAccessExpressions { get; }
+        public IBoundExpression PrintMethodExpressions { get; }
         public IBoundExpression OutputListExpression { get; }
     }
 }

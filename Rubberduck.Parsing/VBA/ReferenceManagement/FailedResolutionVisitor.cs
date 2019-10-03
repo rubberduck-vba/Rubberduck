@@ -116,7 +116,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
         private void Visit(ObjectPrintExpression expression, Declaration parent, IBoundExpression withExpression)
         {
             Visit(expression.OutputListExpression, parent, withExpression);
-            Visit(expression.MemberAccessExpressions, parent, withExpression);
+            Visit(expression.PrintMethodExpressions, parent, withExpression);
         }
 
         private void Visit(OutputListExpression expression, Declaration parent, IBoundExpression withExpression)

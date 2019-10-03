@@ -2244,11 +2244,46 @@ Sub Test()
 End Sub";
             using (var state = Resolve(code))
             {
-
                 var declaration = state.AllUserDeclarations.Single(item =>
                     item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
 
                 Assert.AreEqual(7, declaration.References.Count());
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        //This form is legal inside VB6 forms and other classes implementing the IVBPrint COM interface.
+        //To simplify the test we use a dummy Sub in the class instead, which cannot be defined in regular VBA.
+        public void UnqualifiedObjectPrintExpr_IsReferencePrintOnContainingModule()
+        {
+            var code = @"
+Sub Test()
+    Dim obj As Object
+    Dim referenced As String
+    Print referenced;referenced, referenced , referenced ;
+End Sub
+
+Public Sub Print()
+End Sub
+";
+            using (var state = Resolve(code, false, ComponentType.ClassModule))
+            {
+                var referencedDeclaration = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.Variable)
+                    .Single(item => item.IdentifierName == "referenced");
+                var printDeclaration = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.Procedure)
+                    .Single(item => item.IdentifierName == "Print");
+                var printReference = printDeclaration.References.Single();
+
+                var module = state.DeclarationFinder.AllModules.Single(qmn => qmn.ComponentType == ComponentType.ClassModule);
+                var expectedPrintSelection = new QualifiedSelection(module, new Selection(5, 5,5, 10));
+                var actualPrintSelection = new QualifiedSelection(printReference.QualifiedModuleName, printReference.Selection);
+
+                Assert.AreEqual(4, referencedDeclaration.References.Count());
+                Assert.AreEqual(expectedPrintSelection, actualPrintSelection);
             }
         }
 

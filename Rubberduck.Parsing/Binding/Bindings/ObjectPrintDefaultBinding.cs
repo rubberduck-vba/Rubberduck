@@ -5,24 +5,24 @@ namespace Rubberduck.Parsing.Binding
     public sealed class ObjectPrintDefaultBinding : IExpressionBinding
     {
         private readonly ParserRuleContext _context;
-        private readonly IExpressionBinding _memberAccessBinding;
+        private readonly IExpressionBinding _printMethodBinding;
         private readonly IExpressionBinding _outputListBinding;
 
         public ObjectPrintDefaultBinding(
             ParserRuleContext context,
-            IExpressionBinding memberAccessBinding,
+            IExpressionBinding printMethodBinding,
             IExpressionBinding outputListBinding)
         {
             _context = context;
-            _memberAccessBinding = memberAccessBinding;
+            _printMethodBinding = printMethodBinding;
             _outputListBinding = outputListBinding;
         }
 
         public IBoundExpression Resolve()
         {
-            var memberAccessExpression = _memberAccessBinding.Resolve();
+            var printMethodExpression = _printMethodBinding.Resolve();
             var outputListExpression = _outputListBinding.Resolve();
-            return new ObjectPrintExpression(_context, memberAccessExpression, outputListExpression);
+            return new ObjectPrintExpression(_context, printMethodExpression, outputListExpression);
         }
     }
 }
