@@ -409,4 +409,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
     <value>Die Ausrufezeichennotation erweckt den Eindruck, dass es sich um einen Zugriff handelt, der Typchecks unterliegt. Allerdings handelt es sich lediglich um einen Zugriff auf den Standardmember des Objekts, auf das sie angewendet wird, bei dem das Argument als Zeichenkette übergeben wird. Dies ist besonders verwirrend, wenn der Standardmember nicht zum Zeitpunkt des Kompilierens ermittelt werden kann.</value>
   </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
+    <value>Wenn ein Objekt mit einem Standardmember an einer Stelle verwendet wird, die nach einer Prozedur verlangt, wird implizit der Standardmember aufgerufen. Die ist wahrscheinlich nicht beabsichtigt, minder aber zu Mindest die Lesbarkeit des Programms.</value>
+  </data>
 </root>

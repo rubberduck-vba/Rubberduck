@@ -455,7 +455,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 selection,
                 FindIdentifierAnnotations(module, selection.StartLine),
                 isNonIndexedDefaultMemberAccess: true,
-                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth);
+                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth,
+                isProcedureCoercion: true);
         }
 
         private void AddUnboundDefaultMemberReference(
@@ -481,7 +482,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 FindIdentifierAnnotations(module, selection.StartLine),
                 false,
                 isNonIndexedDefaultMemberAccess: true,
-                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth);
+                defaultMemberRecursionDepth: expression.DefaultMemberRecursionDepth,
+                isProcedureCoercion: true);
             _declarationFinder.AddUnboundDefaultMemberAccess(reference);
         }
 

@@ -556,6 +556,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Object used where a procedure is required.
+        /// </summary>
+        public static string ObjectWhereProcedureIsRequiredInspection {
+            get {
+                return ResourceManager.GetString("ObjectWhereProcedureIsRequiredInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use of &apos;CDecl&apos; calling convention on Windows.
         /// </summary>
         public static string ObsoleteCallingConventionInspection {
@@ -718,7 +727,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Object used where a procedure is required.
+        ///   Looks up a localized string similar to Object without default member used where a procedure is required.
         /// </summary>
         public static string ProcedureRequiredInspection {
             get {

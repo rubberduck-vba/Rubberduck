@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Linq;
+using NUnit.Framework;
 using Rubberduck.CodeAnalysis.QuickFixes;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -9,35 +10,37 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
-    public class ExpandBangNotationQuickFixTests : QuickFixTestBase
+    [TestFixture]
+    public class ExpandDefaultMemberQuickFixTests : QuickFixTestBase
     {
         [Test]
         [Category("QuickFixes")]
         public void DictionaryAccessExpression_QuickFixWorks()
         {
             var class1Code = @"
-Public Function Foo(bar As String) As Class2
+Public Sub Foo()
 Attribute Foo.VB_UserMemId = 0
-End Function
+End Sub
 ";
 
             var class2Code = @"
-Public Function Baz(bar As String) As Class2
+Public Function Baz() As Class1
 Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class1
 End Function
 ";
 
-            var moduleCode = @"
-Private Function Foo() As Class2 
-    Dim cls As New Class1
-    Set Foo = cls!newClassObject
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As New Class2
+    cls
 End Function
 ";
 
-            var expectedModuleCode = @"
-Private Function Foo() As Class2 
-    Dim cls As New Class1
-    Set Foo = cls.Foo(""newClassObject"")
+            var expectedModuleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As New Class2
+    cls.Baz
 End Function
 ";
 
@@ -46,37 +49,38 @@ End Function
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
-            var actualModuleCode = ApplyQuickFixToFirstInspectionResult(vbe.Object, "Module1", state => new UseOfBangNotationInspection(state), CodeKind.AttributesCode);
+            var actualModuleCode = ApplyQuickFixToFirstInspectionResult(vbe.Object, "Module1", state => new ObjectWhereProcedureIsRequiredInspection(state), CodeKind.AttributesCode);
             Assert.AreEqual(expectedModuleCode, actualModuleCode);
         }
 
         [Test]
         [Category("QuickFixes")]
-        public void RecursiveDictionaryAccessExpression_QuickFixWorks()
+        public void NonParameterizedProcedureCoercion_ExplicitCall_QuickFixWorks()
         {
             var class1Code = @"
-Public Function Foo() As Class2
+Public Sub Foo()
 Attribute Foo.VB_UserMemId = 0
-End Function
+End Sub
 ";
 
             var class2Code = @"
-Public Function Baz(bar As String) As Class2
+Public Function Baz() As Class1
 Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class1
 End Function
 ";
 
-            var moduleCode = @"
-Private Function Foo() As Class2 
-    Dim cls As New Class1
-    Set Foo = cls!newClassObject
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As New Class2
+    Call cls
 End Function
 ";
 
-            var expectedModuleCode = @"
-Private Function Foo() As Class2 
-    Dim cls As New Class1
-    Set Foo = cls.Foo().Baz(""newClassObject"")
+            var expectedModuleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As New Class2
+    Call cls.Baz
 End Function
 ";
 
@@ -85,39 +89,38 @@ End Function
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
-            var actualModuleCode = ApplyQuickFixToFirstInspectionResult(vbe.Object, "Module1", state => new UseOfRecursiveBangNotationInspection(state), CodeKind.AttributesCode);
+            var actualModuleCode = ApplyQuickFixToFirstInspectionResult(vbe.Object, "Module1", state => new ObjectWhereProcedureIsRequiredInspection(state), CodeKind.AttributesCode);
             Assert.AreEqual(expectedModuleCode, actualModuleCode);
         }
 
         [Test]
         [Category("QuickFixes")]
-        public void WithDictionaryAccessExpression_QuickFixWorks()
+        public void NonParameterizedProcedureCoercionDefaultMemberAccessOnDefaultMemberArrayAccess_QuickFixWorks()
         {
             var class1Code = @"
-Public Function Foo(bar As String) As Class2
+Public Sub Foo()
 Attribute Foo.VB_UserMemId = 0
-End Function
+End Sub
 ";
 
             var class2Code = @"
-Public Function Baz(bar As String) As Class2
+Public Function Baz() As Class1()
 Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class1
 End Function
 ";
 
-            var moduleCode = @"
-Private Function Foo() As Class2 
-    With New Class1
-        Set Foo = !newClassObject
-    End With
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As New Class2
+    cls(42)
 End Function
 ";
 
-            var expectedModuleCode = @"
-Private Function Foo() As Class2 
-    With New Class1
-        Set Foo = .Foo(""newClassObject"")
-    End With
+            var expectedModuleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As New Class2
+    cls(42).Foo
 End Function
 ";
 
@@ -126,39 +129,38 @@ End Function
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
-            var actualModuleCode = ApplyQuickFixToFirstInspectionResult(vbe.Object, "Module1", state => new UseOfBangNotationInspection(state), CodeKind.AttributesCode);
+            var actualModuleCode = ApplyQuickFixToFirstInspectionResult(vbe.Object, "Module1", state => new ObjectWhereProcedureIsRequiredInspection(state), CodeKind.AttributesCode);
             Assert.AreEqual(expectedModuleCode, actualModuleCode);
         }
 
         [Test]
         [Category("QuickFixes")]
-        public void RecursiveWithDictionaryAccessExpression_QuickFixWorks()
+        public void NonParameterizedProcedureCoercionDefaultMemberAccessOnDefaultMemberArrayAccess_ExplicitCall_QuickFixWorks()
         {
             var class1Code = @"
-Public Function Foo() As Class2
+Public Sub Foo()
 Attribute Foo.VB_UserMemId = 0
-End Function
+End Sub
 ";
 
             var class2Code = @"
-Public Function Baz(bar As String) As Class2
+Public Function Baz() As Class1()
 Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class1
 End Function
 ";
 
-            var moduleCode = @"
-Private Function Foo() As Class2 
-    With New Class1
-        Set Foo = !newClassObject
-    End With
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As New Class2
+    Call cls(42)
 End Function
 ";
 
-            var expectedModuleCode = @"
-Private Function Foo() As Class2 
-    With New Class1
-        Set Foo = .Foo().Baz(""newClassObject"")
-    End With
+            var expectedModuleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As New Class2
+    Call cls(42).Foo
 End Function
 ";
 
@@ -167,13 +169,13 @@ End Function
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
-            var actualModuleCode = ApplyQuickFixToFirstInspectionResult(vbe.Object, "Module1", state => new UseOfRecursiveBangNotationInspection(state), CodeKind.AttributesCode);
+            var actualModuleCode = ApplyQuickFixToFirstInspectionResult(vbe.Object, "Module1", state => new ObjectWhereProcedureIsRequiredInspection(state), CodeKind.AttributesCode);
             Assert.AreEqual(expectedModuleCode, actualModuleCode);
         }
 
         protected override IQuickFix QuickFix(RubberduckParserState state)
         {
-            return new ExpandBangNotationQuickFix(state);
+            return new ExpandDefaultMemberQuickFix(state);
         }
     }
 }

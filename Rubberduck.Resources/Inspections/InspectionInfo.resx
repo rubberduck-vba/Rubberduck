@@ -412,4 +412,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
     <value>Bang notation, formally known as dictionary access expression, looks like it is strongly typed. However, it is actually a stringly-typed access to the parameterized default member of the object it is used on. This is especially misleading the default member cannot be determined at compile time.</value>
   </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
+    <value>Using an object with a default member in a place that requires a procedure leads to an implicit invocation of the default member. This is most likely unintentional and negatively affects readability.</value>
+  </data>
 </root>

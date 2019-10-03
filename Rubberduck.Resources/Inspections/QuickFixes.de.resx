@@ -294,4 +294,7 @@
   <data name="ExpandBangNotationQuickFix" xml:space="preserve">
     <value>Ersetze die Ausrufezeichennotation durch einen expliziten Aufruf</value>
   </data>
+  <data name="ExpandDefaultMemberQuickFix" xml:space="preserve">
+    <value>Füge einen expliziten Zugriff auf den Standardmember ein</value>
+  </data>
 </root>
