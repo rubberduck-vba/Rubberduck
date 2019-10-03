@@ -17,8 +17,8 @@ namespace Rubberduck.Inspections.Concrete
     /// Identifies places in which an object is used but a procedure is required and a default member exists on the object.
     /// </summary>
     /// <why>
-    /// Providing an object in a place in which a procedure is required leads to a call to the objects default member.
-    /// This behavior is not obvious and most likely an error. 
+    /// Providing an object where a procedure is required leads to an implicit call to the object's default member.
+    /// This behavior is not obvious, and most likely unintended.
     /// </why>
     /// <example hasResult="true">
     /// <module name="Class1" type="Class Module">
