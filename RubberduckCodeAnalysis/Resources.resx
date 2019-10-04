@@ -177,6 +177,15 @@
     <value>Missing Guid Attribute</value>
     <comment>The title of the diagnostic.</comment>
   </data>
+  <data name="MissingHasResultAttribute" xml:space="preserve">
+    <value>'example' element requires a 'hasresult' attribute (bool), which isn't supplied.</value>
+  </data>
+  <data name="MissingHasResultAttributeDescription" xml:space="preserve">
+    <value>This attribute value will be used to clearly identify which examples are for code that triggers an inspection, vs examples for code that doesn't.</value>
+  </data>
+  <data name="MissingHasResultAttributeMessageFormat" xml:space="preserve">
+    <value>'example' element has no 'hasresult' attribute.</value>
+  </data>
   <data name="MissingInspectionReferenceTag" xml:space="preserve">
     <value>Missing xml-doc 'reference' tag</value>
   </data>
@@ -215,6 +224,24 @@
   </data>
   <data name="MissingInterfaceTypeTitle" xml:space="preserve">
     <value>Missing InterfaceType Attribute</value>
+  </data>
+  <data name="MissingModuleTag" xml:space="preserve">
+    <value>XML documentation example is missing a 'module' tag.</value>
+  </data>
+  <data name="MissingModuleTagDescription" xml:space="preserve">
+    <value>All inspection xml-doc examples should include one or more 'module' tag with a 'name' attribute.</value>
+  </data>
+  <data name="MissingModuleTagMessageFormat" xml:space="preserve">
+    <value>'example' element has no 'module' child.</value>
+  </data>
+  <data name="MissingNameAttribute" xml:space="preserve">
+    <value>Missing 'name' attribute.</value>
+  </data>
+  <data name="MissingNameAttributeDescription" xml:space="preserve">
+    <value>This attribute value will be used to clearly identify each module in a code example.</value>
+  </data>
+  <data name="MissingNameAttributeMessageFormat" xml:space="preserve">
+    <value>A '{0}' element requires a 'name' attribute value.</value>
   </data>
   <data name="MissingProgIdDescription" xml:space="preserve">
     <value>COM-visible classes must have an explicit ProgId attribute. This is required to avoid verisoning problems. Refer to RubberduckProgId constants.</value>

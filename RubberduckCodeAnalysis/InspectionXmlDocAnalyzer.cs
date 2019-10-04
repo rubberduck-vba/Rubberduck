@@ -65,6 +65,39 @@ namespace RubberduckCodeAnalysis
             new LocalizableResourceString(nameof(Resources.MissingExampleTagDescription), Resources.ResourceManager, typeof(Resources))
         );
 
+        private const string MissingModuleTag = "MissingModuleTag";
+        private static readonly DiagnosticDescriptor MissingModuleTagRule = new DiagnosticDescriptor(
+            MissingModuleTag,
+            new LocalizableResourceString(nameof(Resources.MissingModuleTag), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.MissingModuleTagMessageFormat), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.XmlDocAnalyzerCategory), Resources.ResourceManager, typeof(Resources)).ToString(),
+            DiagnosticSeverity.Info,
+            true,
+            new LocalizableResourceString(nameof(Resources.MissingModuleTagDescription), Resources.ResourceManager, typeof(Resources))
+            );
+
+        private const string MissingNameAttribute = "MissingNameAttribute";
+        private static readonly DiagnosticDescriptor MissingNameAttributeRule = new DiagnosticDescriptor(
+            MissingNameAttribute,
+            new LocalizableResourceString(nameof(Resources.MissingNameAttribute), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.MissingNameAttributeMessageFormat), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.XmlDocAnalyzerCategory), Resources.ResourceManager, typeof(Resources)).ToString(),
+            DiagnosticSeverity.Error,
+            true,
+            new LocalizableResourceString(nameof(Resources.MissingNameAttributeDescription), Resources.ResourceManager, typeof(Resources))
+            );
+
+        private const string MissingHasResultAttribute = "MissingHasResultAttribute";
+        private static readonly DiagnosticDescriptor MissingHasResultAttributeRule = new DiagnosticDescriptor(
+            MissingNameAttribute,
+            new LocalizableResourceString(nameof(Resources.MissingHasResultAttribute), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.MissingHasResultAttributeMessageFormat), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.XmlDocAnalyzerCategory), Resources.ResourceManager, typeof(Resources)).ToString(),
+            DiagnosticSeverity.Error,
+            true,
+            new LocalizableResourceString(nameof(Resources.MissingHasResultAttributeDescription), Resources.ResourceManager, typeof(Resources))
+            );
+
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
             ImmutableArray.Create(MissingSummaryTagRule, MissingWhyTagRule, MissingReferenceTagRule, MissingRequiredLibAttributeRule);
 
@@ -119,6 +152,15 @@ namespace RubberduckCodeAnalysis
 
         private static void CheckReferenceTag(SymbolAnalysisContext context, INamedTypeSymbol symbol, XDocument xml, IEnumerable<AttributeData> requiredLibAttributes)
         {
+            foreach (var referenceElement in xml.Elements("reference"))
+            {
+                if (!referenceElement.Attributes().Any(a => a.Name.Equals("name")))
+                {
+                    var diagnostic = Diagnostic.Create(MissingNameAttributeRule, symbol.Locations[0], symbol.Name);
+                    context.ReportDiagnostic(diagnostic);
+                }
+            }
+
             var xmlRefLibs = xml.Elements("reference").Select(e => e.Attribute("name")?.Value).ToList();
             foreach (var attribute in requiredLibAttributes)
             {
@@ -151,6 +193,25 @@ namespace RubberduckCodeAnalysis
             {
                 var diagnostic = Diagnostic.Create(MissingExampleTagRule, symbol.Locations[0], symbol.Name);
                 context.ReportDiagnostic(diagnostic);
+                return;
+            }
+
+            var examples = xml.Elements("example");
+            foreach (var example in examples)
+            {
+                if (!example.Attributes().Any(a => a.Name.Equals("hasresult")))
+                {
+                    var diagnostic = Diagnostic.Create(MissingHasResultAttributeRule, symbol.Locations[0], symbol.Name);
+                    context.ReportDiagnostic(diagnostic);
+                    return;
+                }
+
+                if (!example.Elements("module").Any())
+                {
+                    var diagnostic = Diagnostic.Create(MissingModuleTagRule, symbol.Locations[0], symbol.Name);
+                    context.ReportDiagnostic(diagnostic);
+                    return;
+                }
             }
         }
     }
