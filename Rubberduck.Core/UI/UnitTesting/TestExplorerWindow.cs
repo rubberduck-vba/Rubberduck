@@ -18,10 +18,7 @@ namespace Rubberduck.UI.UnitTesting
         public TestExplorerViewModel ViewModel { get; }
 
         // FIXME bare ClassId... not good
-        public string ClassId
-        {
-            get { return "9CF1392A-2DC9-48A6-AC0B-E601A9802608"; }
-        }
+        public string ClassId => "9CF1392A-2DC9-48A6-AC0B-E601A9802608";
 
         public string Caption => TestExplorer.TestExplorerWindow_Caption;
     }
