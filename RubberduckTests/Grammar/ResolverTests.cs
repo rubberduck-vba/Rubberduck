@@ -2238,7 +2238,6 @@ End Sub";
         {
             var code = @"
 Sub Test()
-    Dim obj As Object
     Dim referenced As String
     obj.Print referenced;referenced, referenced , referenced ; : obj.Print referenced; referenced , referenced ;
 End Sub";
