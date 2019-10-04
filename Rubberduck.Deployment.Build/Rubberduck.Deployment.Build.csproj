@@ -9,6 +9,9 @@
   </PropertyGroup>
   <Import Project="..\RubberduckBaseMetaProject.csproj" />
   <ItemGroup>
+    <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.Build.Tasks.v4.0" />
     <Reference Include="Microsoft.Build.Utilities.v4.0">
