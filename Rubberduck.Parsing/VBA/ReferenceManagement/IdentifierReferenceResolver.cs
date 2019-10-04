@@ -501,21 +501,13 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
 
         public void Resolve(VBAParser.PrintStmtContext context)
         {
-            if (context.markedFileNumber() != null)
-            {
-                ResolvePrintStatement(context);
-            }
-            else
-            {
-                //Since there is no file handle, this must be an unqualified print member call in a VB6 form.  
-                ResolveDefault(context);
-            }
-        }
-
-        public void ResolvePrintStatement(VBAParser.PrintStmtContext context)
-        {
             ResolveDefault(context.markedFileNumber().expression(), true);
             ResolveOutputList(context.outputList());
+        }
+
+        public void Resolve(VBAParser.UnqualifiedObjectPrintStmtContext context)
+        {
+            ResolveDefault(context);
         }
 
         public void Resolve(VBAParser.WriteStmtContext context)

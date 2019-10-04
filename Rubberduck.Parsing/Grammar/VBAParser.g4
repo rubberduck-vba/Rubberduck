@@ -172,6 +172,7 @@ mainBlockStmt :
     | circleSpecialForm
     | scaleSpecialForm
     | pSetSpecialForm
+    | unqualifiedObjectPrintStmt
     | callStmt
     | nameStmt
 ;
@@ -257,10 +258,10 @@ lineWidth : expression;
 
 
 // 5.4.5.8   Print Statement
-//We make the part regarding the file handle optional to support VB6's print statement in forms.
-//It is an invocation of the Print member of the enclosing form, which also takes an output list as argument.
+//The unqualifiedObjectPrintStmt is an invocation of the Print member of the enclosing form or report, which also takes an output list as argument.
 printMethod : PRINT;
-printStmt : printMethod (whiteSpace markedFileNumber whiteSpace? COMMA)? (whiteSpace? outputList)?;
+printStmt : printMethod whiteSpace markedFileNumber whiteSpace? COMMA (whiteSpace? outputList)?;
+unqualifiedObjectPrintStmt : printMethod (whiteSpace outputList)?;
 
 // 5.4.5.8.1 Output Lists
 outputList : outputItem (whiteSpace? outputItem)*;

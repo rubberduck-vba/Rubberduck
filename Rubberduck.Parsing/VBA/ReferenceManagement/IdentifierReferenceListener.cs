@@ -237,6 +237,11 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             _resolver.Resolve(context);
         }
 
+        public override void EnterUnqualifiedObjectPrintStmt([NotNull] VBAParser.UnqualifiedObjectPrintStmtContext context)
+        {
+            _resolver.Resolve(context);
+        }
+
         public override void EnterWriteStmt([NotNull] VBAParser.WriteStmtContext context)
         {
             _resolver.Resolve(context);
