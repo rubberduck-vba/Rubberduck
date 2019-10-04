@@ -1159,7 +1159,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                      (Declaration.GetModuleParent(p) == null ||
                       Declaration.GetModuleParent(p).DeclarationType == moduleType));
             var accessibleMembers = memberMatches.Where(m => AccessibilityCheck.IsMemberAccessible(callingProject, callingModule, callingParent, m));
-            var match = accessibleMembers.FirstOrDefault();
+            var match = accessibleMembers.FirstOrDefault(member => !(member.IdentifierName.Equals("Assert") 
+                                                                     && member.QualifiedModuleName.ComponentName.Equals("Debug")));
             return match;
         }
 

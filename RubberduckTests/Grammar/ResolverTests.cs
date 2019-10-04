@@ -2,13 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Windows.Controls;
 using NUnit.Framework;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -6711,6 +6709,80 @@ End Function
                 var failedAccesses = state.DeclarationFinder.FailedLetCoercions();
 
                 Assert.IsFalse(failedAccesses.Any());
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void AssertWithoutDebug_NoReferenceToDebugAssert()
+        {
+            var classCode = @"
+Public Function Foo(index As Variant) As Class1
+    Assert
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Test() As Variant
+    Assert
+End Function
+";
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, classCode)
+                .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var debugAssertDeclaration = state.DeclarationFinder
+                    .BuiltInDeclarations(DeclarationType.Procedure)
+                    .Single(declaration => declaration.IdentifierName.Equals("Assert")
+                                           && declaration.QualifiedModuleName.ComponentName.Equals("Debug"));
+                var debugAssertReferences = debugAssertDeclaration.References;
+
+                Assert.IsFalse(debugAssertReferences.Any());
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void AssertWithDebug_ReferenceToDebugAssert()
+        {
+            var classCode = @"
+Public Function Foo(index As Variant) As Class1
+    Debug.Assert False
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Test() As Variant
+    Debug.Assert False
+End Function
+";
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, classCode)
+                .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var debugAssertDeclaration = state.DeclarationFinder
+                    .BuiltInDeclarations(DeclarationType.Procedure)
+                    .Single(declaration => declaration.IdentifierName.Equals("Assert")
+                                           && declaration.QualifiedModuleName.ComponentName.Equals("Debug"));
+                var debugAssertReferences = debugAssertDeclaration.References;
+
+                Assert.AreEqual(2, debugAssertReferences.Count());
             }
         }
     }
