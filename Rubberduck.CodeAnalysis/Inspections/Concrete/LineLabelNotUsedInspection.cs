@@ -21,7 +21,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Line labels are useful for GoTo, GoSub, Resume, and On Error statements; but the intent of a line label
     /// can be confusing if it isn't referenced by any such instruction.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Public Sub DoSomething()
     /// '    On Error GoTo ErrHandler ' (commented-out On Error statement leaves line label unreferenced)
@@ -32,7 +32,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     On Error GoTo ErrHandler

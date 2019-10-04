@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections.Concrete
     /// A Variant/Error value cannot be coerced into any other data type, be it for assignment or comparison.
     /// 
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Private Sub Example()
     ///     Debug.Print Application.Sum(Array(1, 2, 3), 4, 5, "ABC") ' outputs "Error 2015" (no run-time error is raised).
@@ -39,7 +39,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Private Sub Example()
     ///     Debug.Print Application.WorksheetFunction.Sum(Array(1, 2, 3), 4, 5, "ABC") ' raises error 1004

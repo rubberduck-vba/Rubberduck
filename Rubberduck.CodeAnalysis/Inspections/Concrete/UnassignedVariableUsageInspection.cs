@@ -24,7 +24,7 @@ namespace Rubberduck.Inspections.Concrete
     /// <remarks>
     /// This inspection may produce false positives when the variable is an array, or if it's passed by reference (ByRef) to a procedure that assigns it.
     /// </remarks>
-    /// <example hasResults="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim i As Long
@@ -32,7 +32,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim i As Long

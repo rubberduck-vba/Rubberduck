@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Empty code blocks are redundant, dead code that should be removed. They can also be misleading about their intent:
     /// an empty block may be signalling an unfinished thought or an oversight.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Boolean)
     ///     If foo Then
@@ -30,7 +30,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Boolean)
     ///     If foo Then

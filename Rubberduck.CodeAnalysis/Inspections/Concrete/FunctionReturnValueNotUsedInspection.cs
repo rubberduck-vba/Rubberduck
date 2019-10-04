@@ -23,7 +23,7 @@ namespace Rubberduck.Inspections.Concrete
     /// It's possible that not all call sites need the return value, but if the value is systematically discarded then this
     /// means the function is side-effecting, and thus should probably be a 'Sub' procedure instead.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     GetFoo ' return value is not captured
@@ -34,7 +34,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Function
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Long

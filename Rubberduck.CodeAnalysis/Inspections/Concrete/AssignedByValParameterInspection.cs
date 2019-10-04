@@ -18,7 +18,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Mutating the inputs destroys the initial state, and makes the intent ambiguous: if the calling code is meant
     /// to be able to access the modified values, then the parameter should be passed ByRef; the ByVal modifier might be a bug.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     foo = foo + 1 ' is the caller supposed to see the updated value?
@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     Dim bar As Long

@@ -21,14 +21,14 @@ namespace Rubberduck.Inspections.Concrete
     /// Rubberduck annotations mean to document the presence of hidden VB attributes; this inspection flags modules that
     /// do not have a Rubberduck annotation corresponding to the hidden VB attribute.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Attribute VB_PredeclaredId = True
     /// Option Explicit
     /// ' ...
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Attribute VB_PredeclaredId = True
     /// '@PredeclaredId

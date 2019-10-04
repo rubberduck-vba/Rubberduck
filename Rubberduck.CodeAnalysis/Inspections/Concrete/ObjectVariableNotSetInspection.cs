@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Omitting the 'Set' keyword will Let-coerce the right-hand side (RHS) of the assignment expression. If the RHS is an object variable,
     /// then the assignment is implicitly assigning to that object's default member, which may raise run-time error 91 at run-time.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Object
@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Object

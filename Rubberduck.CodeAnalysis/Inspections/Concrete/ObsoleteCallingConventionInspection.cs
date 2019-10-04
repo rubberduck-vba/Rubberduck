@@ -20,12 +20,12 @@ namespace Rubberduck.Inspections.Inspections.Concrete
     /// The CDecl calling convention is only implemented in VBA for Mac; if Rubberduck can see it (Rubberduck only runs on Windows),
     /// then the declaration is using an unsupported (no-op) calling convention on Windows.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Private Declare Sub Beep CDecl Lib "kernel32" (dwFreq As Any, dwDuration As Any)
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Private Declare Sub Beep Lib "kernel32" (dwFreq As Any, dwDuration As Any)
     /// ]]>

@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// When splitting a long list of parameters across multiple lines, care should be taken to avoid splitting a parameter declaration in two.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long, ByVal _ 
     ///                              bar As Long)
@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long, _ 
     ///                        ByVal bar As Long)

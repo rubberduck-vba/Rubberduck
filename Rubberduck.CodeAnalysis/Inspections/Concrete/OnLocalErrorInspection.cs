@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// All errors are "local" - the keyword is redundant/confusing and should be removed.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     On Local Error GoTo ErrHandler
@@ -31,7 +31,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     On Error GoTo ErrHandler

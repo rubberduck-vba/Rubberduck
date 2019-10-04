@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections.Concrete
     /// is more robust, and will be less likely to throw run-time error 1004 or produce unexpected results
     /// when the active sheet isn't the expected one.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Private Sub Example()
     ///     Dim foo As Range
@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Private Sub Example()
     ///     Dim foo As Range

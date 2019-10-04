@@ -21,13 +21,13 @@ namespace Rubberduck.Inspections.Inspections.Concrete
     /// Another good reason to avoid numeric suffixes: if the function is meant to be used as a UDF in a cell formula,
     /// the worksheet cell by the same name takes precedence and gets the reference, and the function is never invoked.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Public Function FOO1234()
     /// End Function
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Public Function Foo()
     /// End Function

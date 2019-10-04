@@ -16,7 +16,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Range.Find methods return a Range object reference that refers to the cell containing the search string;
     /// this object reference will be Nothing if the search didn't turn up any results, and a member call against Nothing will raise run-time error 91.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Private Sub Example()
     ///     Dim foo As Range
@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Private Sub Example()
     ///     Dim foo As Range

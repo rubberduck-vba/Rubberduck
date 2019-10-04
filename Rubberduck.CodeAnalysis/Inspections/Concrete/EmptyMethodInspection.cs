@@ -18,14 +18,14 @@ namespace Rubberduck.Inspections.Concrete
     /// Methods containing no executable statements are misleading as they appear to be doing something which they actually don't.
     /// This might be the result of delaying the actual implementation for a later stage of development, and then forgetting all about that.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Sub Foo()
     ///     ' ...
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Sub Foo()
     ///     MsgBox "?"

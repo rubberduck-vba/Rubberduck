@@ -16,14 +16,14 @@ namespace Rubberduck.Inspections.Concrete
     /// Host-evaluated expressions should be implementable using the host application's object model.
     /// If the expression yields an object, member calls against that object are late-bound.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     [A1].Value = 42
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     ActiveSheet.Range("A1").Value = 42

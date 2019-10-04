@@ -19,7 +19,7 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// A variable can be declared and even assigned, but if its value is never referenced, it's effectively an unused variable.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim value As Long ' declared
@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim value As Long

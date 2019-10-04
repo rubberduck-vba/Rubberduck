@@ -21,7 +21,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Not all unused parameters can/should be removed: ignore any inspection results for 
     /// event handler procedures and interface members that Rubberduck isn't recognizing as such.
     /// </remarks>
-    /// <example hasResults="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Option Explicit
     /// 

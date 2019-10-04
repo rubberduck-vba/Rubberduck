@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     /// <remarks>
     /// Not all unreachable 'Case' blocks may be flagged, depending on expression complexity.
     /// </remarks>
-    /// <example hasResults="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Private Sub Example(ByVal value As Long)
     ///     Select Case value

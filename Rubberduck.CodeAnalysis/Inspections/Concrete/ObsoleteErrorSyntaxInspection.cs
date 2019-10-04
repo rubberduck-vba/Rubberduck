@@ -19,14 +19,14 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// The legacy syntax is obsolete; prefer 'Err.Raise' instead.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Error 5 ' raises run-time error 5
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Err.Raise 5 ' raises run-time error 5

@@ -14,7 +14,7 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// Rubberduck annotations should not be specified more than once for a given module, member, variable, or expression.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// '@Folder("Bar")
     /// '@Folder("Foo")
@@ -24,7 +24,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// '@Folder("Foo.Bar")
     ///

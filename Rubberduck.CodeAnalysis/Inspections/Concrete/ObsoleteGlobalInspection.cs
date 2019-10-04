@@ -16,13 +16,13 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// The legacy syntax is obsolete; use the 'Public' keyword instead.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Option Explicit
     /// Global Foo As Long
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Option Explicit
     /// Public Foo As Long
