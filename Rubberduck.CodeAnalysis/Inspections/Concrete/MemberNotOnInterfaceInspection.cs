@@ -44,7 +44,7 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            var unresolved = State.DeclarationFinder.UnresolvedMemberDeclarations
+            var unresolved = State.DeclarationFinder.UnresolvedMemberDeclarations()
                 .Where(decl => !decl.IsIgnoringInspectionResultFor(AnnotationName)).ToList();
 
             var targets = Declarations.Where(decl => decl.AsTypeDeclaration != null &&

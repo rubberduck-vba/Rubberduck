@@ -305,18 +305,6 @@
   <data name="EmptyModuleInspection" xml:space="preserve">
     <value>Modul/Klasse {0} ist leer.</value>
   </data>
-  <data name="UnreachableCaseInspection" xml:space="preserve">
-    <value>Die Case-Klausel '{0}' kann nicht erreicht werden</value>
-  </data>
-  <data name="UnreachableCaseInspection_CaseElse" xml:space="preserve">
-    <value>Nicht erreichbares Case Else: Alle möglichen Werte sind durch vorangehende Klausel(n) abgedeckt.</value>
-  </data>
-  <data name="UnreachableCaseInspection_TypeMismatch" xml:space="preserve">
-    <value>Inakzeptabler Typ: Die Case-Anweisung kann nicht als derselbe Typ wie die Select-Anweisung ausgewertet werden.</value>
-  </data>
-  <data name="UnreachableCaseInspection_Unreachable" xml:space="preserve">
-    <value>Unerreichbar: Case-Klausel ist bereits von anderen Klausel(n) abgehandelt.</value>
-  </data>
   <data name="UnhandledOnErrorResumeNextInspection" xml:space="preserve">
     <value>Fehler werden ignoriert aber nie wieder behandelt.</value>
   </data>
@@ -337,12 +325,6 @@
   </data>
   <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
     <value>'{0}' wurde mit der unter Windows nicht erlaubten 'CDecl'-Aufrufkonvention deklariert.</value>
-  </data>
-  <data name="UnreachableCaseInspection_InherentlyUnreachable" xml:space="preserve">
-    <value>Unerreichbar: Case-Klausel enthält unzulässige Bereichsdefinition(en).</value>
-  </data>
-  <data name="UnreachableCaseInspection_Overflow" xml:space="preserve">
-    <value>Unerreichbar: Case-Klausel wird einen Laufzeitfehler 6 - 'Überlauf' erzeugen.</value>
   </data>
   <data name="DuplicatedAnnotationInspection" xml:space="preserve">
     <value>Annotation '{0}' wurde mehrfach spezifiziert.</value>
@@ -418,5 +400,29 @@ In Memoriam, 1972-2018</value>
   </data>
   <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
     <value>Die Interface-Klasse '{2}' enthält eine Implementierung für die  {0} '{1}'.</value>
+  </data>
+  <data name="ValueRequiredInspection" xml:space="preserve">
+    <value>An einer Stelle, die einen Wert verlangt, wird der Ausdruck '{0}' vom Objekttyp '{1}'  verwendet, der keinen passendes Standardmember hat.</value>
+  </data>
+  <data name="ProcedureRequiredInspection" xml:space="preserve">
+    <value>An einer Stelle, die eine Prozedur erfordert, wird der Ausdruck '{0}' vom Objekttyp '{1}'  verwendet, der keinen passendes Standardmember hat.</value>
+  </data>
+  <data name="DefaultMemberRequiredInspection" xml:space="preserve">
+    <value>Der Ausdruck '{0}' erfordert einen Standardmemberzugriff, aber der Typ '{1}' hat keinen passenden Standardmember.</value>
+  </data>
+  <data name="UseOfBangNotationInspection" xml:space="preserve">
+    <value>Der Ausdruck '{0}' verwendet Ausrufezeichennotation.</value>
+  </data>
+  <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
+    <value>Der Ausdruck '{0}' verwendet rekursive Ausrufezeichennotation.</value>
+  </data>
+  <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
+    <value>Der Ausdruck '{0}' verwendet nicht gebundene Ausrufezeichennotation.</value>
+  </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
+    <value>Der Ausdruck '{0}' wird an einer Stelle verwendet, die nach einer Prozedur verlangt, was zu einem Aufruf des Standardmembers '{1}' führt.</value>
+  </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection_Unbound" xml:space="preserve">
+    <value>Der Ausdruck '{0}' wird an einer Stelle verwendet, die nach einer Prozedur verlangt, was zu einem Aufruf eines Standardmembers führt, welcher erst zur Laufzeit bestimmt werden kann.</value>
   </data>
 </root>

@@ -36,7 +36,7 @@ namespace Rubberduck.Parsing.ComReflection
 
         [DataMember(IsRequired = true)]
         private string _valueType = Tokens.Object;
-        public string ValueType => IsArray ? $"{_valueType}()" : _valueType;
+        public string ValueType => _valueType;
 
         [DataMember(IsRequired = true)]
         private Guid _enumGuid = Guid.Empty;

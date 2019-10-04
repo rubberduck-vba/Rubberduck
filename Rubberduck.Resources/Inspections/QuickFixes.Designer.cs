@@ -196,6 +196,24 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Replace bang notation with explicit access.
+        /// </summary>
+        public static string ExpandBangNotationQuickFix {
+            get {
+                return ResourceManager.GetString("ExpandBangNotationQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make default member access explicit.
+        /// </summary>
+        public static string ExpandDefaultMemberQuickFix {
+            get {
+                return ResourceManager.GetString("ExpandDefaultMemberQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ignore once.
         /// </summary>
         public static string IgnoreOnce {

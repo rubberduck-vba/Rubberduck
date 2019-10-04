@@ -19,6 +19,7 @@ using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
+using Rubberduck.Parsing.VBA.ReferenceManagement;
 using Rubberduck.VBEditor.Extensions;
 
 // ReSharper disable LoopCanBeConvertedToQuery
@@ -190,7 +191,11 @@ namespace Rubberduck.Parsing.VBA
         private void RefreshFinder(IHostApplication host)
         {
             var oldDeclarationFinder = DeclarationFinder;
-            DeclarationFinder = _declarationFinderFactory.Create(AllDeclarationsFromModuleStates, AllAnnotations, AllUnresolvedMemberDeclarationsFromModulestates, AllUnboundDefaultMemberAccessesFromModuleStates, host);
+            DeclarationFinder = _declarationFinderFactory.Create(
+                AllDeclarationsFromModuleStates, 
+                AllAnnotations,
+                AllFailedResolutionsFromModuleStates,
+                host);
             _declarationFinderFactory.Release(oldDeclarationFinder);
         }
 
@@ -718,7 +723,7 @@ namespace Rubberduck.Parsing.VBA
                 var declarations = new List<Declaration>();
                 foreach (var state in _moduleStates.Values.Where(state => state.Declarations != null))
                 {
-                    declarations.AddRange(state.Declarations.Keys);
+                    declarations.AddRange(state.Declarations);
                 }
 
                 return declarations;
@@ -727,40 +732,23 @@ namespace Rubberduck.Parsing.VBA
 
         private bool ThereAreDeclarations()
         {
-            return _moduleStates.Values.Any(state => state.Declarations != null && state.Declarations.Keys.Any());
+            return _moduleStates.Values.Any(state => state.Declarations != null && state.Declarations.Any());
         }
 
         /// <summary>
-        /// Gets a copy of the unresolved member declarations directly from the module states. (Used for refreshing the DeclarationFinder.)
+        /// Gets a copy of the failed resolution stores directly from the module states. (Used for refreshing the DeclarationFinder.)
         /// </summary>
-        private IReadOnlyList<UnboundMemberDeclaration> AllUnresolvedMemberDeclarationsFromModulestates
+        private IReadOnlyDictionary<QualifiedModuleName, IFailedResolutionStore> AllFailedResolutionsFromModuleStates
         {
             get
             {
-                var declarations = new List<UnboundMemberDeclaration>();
-                foreach (var state in _moduleStates.Values.Where(state => state.UnresolvedMemberDeclarations != null))
-                {
-                    declarations.AddRange(state.UnresolvedMemberDeclarations.Keys);
-                }
-
-                return declarations;
-            }
-        }
-
-        /// <summary>
-        /// Gets a copy of the unbound default member accesses directly from the module states. (Used for refreshing the DeclarationFinder.)
-        /// </summary>
-        private IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> AllUnboundDefaultMemberAccessesFromModuleStates
-        {
-            get
-            {
-                var defaultMemberAccesses = new Dictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>>();
+                var failedResolutionStores = new Dictionary<QualifiedModuleName, IFailedResolutionStore>();
                 foreach (var (module, state) in _moduleStates)
                 {
-                    defaultMemberAccesses.Add(module, state.UnboundDefaultMemberAccesses);
+                    failedResolutionStores.Add(module, state.FailedResolutionStore);
                 }
 
-                return defaultMemberAccesses;
+                return failedResolutionStores;
             }
         }
 
@@ -785,76 +773,30 @@ namespace Rubberduck.Parsing.VBA
         public void AddDeclaration(Declaration declaration)
         {
             var key = declaration.QualifiedName.QualifiedModuleName;
-            var declarations = _moduleStates.GetOrAdd(key, new ModuleState(new ConcurrentDictionary<Declaration, byte>())).Declarations;
+            var declarations = _moduleStates.GetOrAdd(key, new ModuleState(new HashSet<Declaration>())).Declarations;
 
-            if (declarations.ContainsKey(declaration))
+            if (declarations.Contains(declaration))
             {
-                byte _;
-                while (!declarations.TryRemove(declaration, out _))
+                while (!declarations.Remove(declaration))
                 {
                     Logger.Warn("Could not remove existing declaration for '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
                 }
             }
-            while (!declarations.TryAdd(declaration, 0) && !declarations.ContainsKey(declaration))
-            {
-                Logger.Warn("Could not add declaration '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
-            }
+
+            declarations.Add(declaration);
         }
 
-        /// <summary>
-        /// Adds the specified <see cref="UnboundMemberDeclaration"/> to the collection (replaces existing).
-        /// </summary>
-        public void AddUnresolvedMemberDeclaration(UnboundMemberDeclaration declaration)
+        public void AddFailedResolutions(QualifiedModuleName module, IFailedResolutionStore store)
         {
-            var key = declaration.QualifiedName.QualifiedModuleName;
-            var declarations = _moduleStates.GetOrAdd(key, new ModuleState(new ConcurrentDictionary<Declaration, byte>())).UnresolvedMemberDeclarations;
-
-            if (declarations.ContainsKey(declaration))
-            {
-                while (!declarations.TryRemove(declaration, out var _))
-                {
-                    Logger.Warn("Could not remove existing unresolved member declaration for '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
-                }
-            }
-            while (!declarations.TryAdd(declaration, 0) && !declarations.ContainsKey(declaration))
-            {
-                Logger.Warn("Could not add unresolved member declaration '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
-            }
+            var moduleState = _moduleStates.GetOrAdd(module, new ModuleState(new HashSet<Declaration>()));
+            moduleState.SetFailedResolutionStore(store);
         }
 
-        public void AddUnresolvedMemberDeclarations(QualifiedModuleName module, IEnumerable<UnboundMemberDeclaration> unboundDeclarations)
+        public void ClearFailedResolutions(QualifiedModuleName module)
         {
-            var declarations = _moduleStates.GetOrAdd(module, new ModuleState(new ConcurrentDictionary<Declaration, byte>())).UnresolvedMemberDeclarations;
-
-            foreach (var declaration in unboundDeclarations)
+            if (_moduleStates.TryGetValue(module, out var moduleState))
             {
-                if (declarations.ContainsKey(declaration))
-                {
-                    while (!declarations.TryRemove(declaration, out var _))
-                    {
-                        Logger.Warn("Could not remove existing unresolved member declaration for '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
-                    }
-                }
-                while (!declarations.TryAdd(declaration, 0) && !declarations.ContainsKey(declaration))
-                {
-                    Logger.Warn("Could not add unresolved member declaration '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
-                }
-            }
-        }
-
-        public void AddUnboundDefaultMemberAccess(IdentifierReference defaultMemberAccess)
-        {
-            var key = defaultMemberAccess.QualifiedModuleName;
-            var moduleState = _moduleStates.GetOrAdd(key, new ModuleState(new ConcurrentDictionary<Declaration, byte>()));
-            moduleState.AddUnboundDefaultMemberAccess(defaultMemberAccess);
-        }
-
-        public void AddUnboundDefaultMemberAccesses(QualifiedModuleName module, IEnumerable<IdentifierReference> defaultMemberAccesses)
-        {
-            var moduleState = _moduleStates.GetOrAdd(module, new ModuleState(new ConcurrentDictionary<Declaration, byte>()));
-            foreach(var defaultMemberAccess in defaultMemberAccesses)
-            {
-                moduleState.AddUnboundDefaultMemberAccess(defaultMemberAccess);
+                moduleState.ClearFailedResolutionStore();
             }
         }
 
@@ -1026,9 +968,7 @@ namespace Rubberduck.Parsing.VBA
         public bool RemoveDeclaration(Declaration declaration)
         {
             var key = declaration.QualifiedName.QualifiedModuleName;
-
-            byte _;
-            return _moduleStates[key].Declarations.TryRemove(declaration, out _);
+            return _moduleStates[key].Declarations.Remove(declaration);
         }
 
         /// <inheritdoc />

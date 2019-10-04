@@ -124,6 +124,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Indexed default member access without default member.
+        /// </summary>
+        public static string DefaultMemberRequiredInspection {
+            get {
+                return ResourceManager.GetString("DefaultMemberRequiredInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Project name is not specified.
         /// </summary>
         public static string DefaultProjectNameInspection {
@@ -547,6 +556,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Object used where a procedure is required.
+        /// </summary>
+        public static string ObjectWhereProcedureIsRequiredInspection {
+            get {
+                return ResourceManager.GetString("ObjectWhereProcedureIsRequiredInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use of &apos;CDecl&apos; calling convention on Windows.
         /// </summary>
         public static string ObsoleteCallingConventionInspection {
@@ -709,6 +727,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Object without default member used where a procedure is required.
+        /// </summary>
+        public static string ProcedureRequiredInspection {
+            get {
+                return ResourceManager.GetString("ProcedureRequiredInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Redundant &apos;ByRef&apos; modifier.
         /// </summary>
         public static string RedundantByRefModifierInspection {
@@ -849,6 +876,42 @@ namespace Rubberduck.Resources.Inspections {
         public static string UseMeaningfulNameInspection {
             get {
                 return ResourceManager.GetString("UseMeaningfulNameInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use of bang notation.
+        /// </summary>
+        public static string UseOfBangNotationInspection {
+            get {
+                return ResourceManager.GetString("UseOfBangNotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use of recursive bang notation.
+        /// </summary>
+        public static string UseOfRecursiveBangNotationInspection {
+            get {
+                return ResourceManager.GetString("UseOfRecursiveBangNotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use of unbound bang notation.
+        /// </summary>
+        public static string UseOfUnboundBangNotationInspection {
+            get {
+                return ResourceManager.GetString("UseOfUnboundBangNotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Object used where a value is required.
+        /// </summary>
+        public static string ValueRequiredInspection {
+            get {
+                return ResourceManager.GetString("ValueRequiredInspection", resourceCulture);
             }
         }
         

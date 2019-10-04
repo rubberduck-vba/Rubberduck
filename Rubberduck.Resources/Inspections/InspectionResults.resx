@@ -321,13 +321,13 @@
     <value>Case clause '{0}' cannot be reached.</value>
   </data>
   <data name="UnreachableCaseInspection_CaseElse" xml:space="preserve">
-    <value>Unreachable Case Else: all matches exist within prior Case statement(s).</value>
+    <value>'Case Else' statement is unreachable</value>
   </data>
   <data name="UnreachableCaseInspection_TypeMismatch" xml:space="preserve">
-    <value>Unreachable: Case Statement will cause a Run-time error 13 (Mismatch).</value>
+    <value>'Case' statement will cause run-time error 13 (type mismatch).</value>
   </data>
   <data name="UnreachableCaseInspection_Unreachable" xml:space="preserve">
-    <value>Unreachable: Never matches or is equivalent to a prior Case statement.</value>
+    <value>'Case' statement is unreachable</value>
   </data>
   <data name="UnhandledOnErrorResumeNextInspection" xml:space="preserve">
     <value>Errors are ignored but never handled again.</value>
@@ -353,10 +353,10 @@
     <comment>{0} Procedure name</comment>
   </data>
   <data name="UnreachableCaseInspection_InherentlyUnreachable" xml:space="preserve">
-    <value>Unreachable: Case Statement contains invalid range clause(s).</value>
+    <value>'Case' statement Range Clauses must be expressed '[x] To [y]' where [x] is less than or equal to [y]'</value>
   </data>
   <data name="UnreachableCaseInspection_Overflow" xml:space="preserve">
-    <value>Unreachable: Case Statement will cause a Run-time error 6 (Overflow).</value>
+    <value>'Case' statement will cause run-time error 6 (Overflow)</value>
   </data>
   <data name="DuplicatedAnnotationInspection" xml:space="preserve">
     <value>Annotation '{0}' is duplicated.</value>
@@ -445,5 +445,37 @@ In memoriam, 1972-2018</value>
   <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
     <value>The argument '{2}' of type '{3}' is passed to the parameter '{0}' of the incompatible type '{1}'.</value>
     <comment>{0} parameter name, {1} parameter declared type, {2} argument expression text, {3} argument set type name</comment>
+  </data>
+  <data name="ValueRequiredInspection" xml:space="preserve">
+    <value>In a context that requires a value type, the expression '{0}' of object type '{1}' is used that does not have a suitable default member.</value>
+    <comment>{0} expression; {1} type</comment>
+  </data>
+  <data name="ProcedureRequiredInspection" xml:space="preserve">
+    <value>In a context that requires a procedure, the expression '{0}' of object type '{1}' is used that does not have a suitable default member.</value>
+    <comment>{0} expression; {1} type</comment>
+  </data>
+  <data name="DefaultMemberRequiredInspection" xml:space="preserve">
+    <value>The expression '{0}' requires a default member access, but the type '{1}' does not have a suitable default member.</value>
+    <comment>{0} expression; {1} type</comment>
+  </data>
+  <data name="UseOfBangNotationInspection" xml:space="preserve">
+    <value>The expression '{0}' uses bang notation.</value>
+    <comment>{0} expression</comment>
+  </data>
+  <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
+    <value>The expression '{0}' uses a recursive bang operator.</value>
+    <comment>{0} expression</comment>
+  </data>
+  <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
+    <value>The expression '{0}' uses an unbound bang operator.</value>
+    <comment>{0} expression</comment>
+  </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
+    <value>The expression '{0}' is used in a context that requires a procedure, which leads to a call to the default member '{1}'.</value>
+    <comment>{0} expression; {1} default member</comment>
+  </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection_Unbound" xml:space="preserve">
+    <value>The expression '{0}' is used in a context that requires a procedure, which leads to a call to a default member that cannot be determined at compile time.</value>
+    <comment>{0} expression</comment>
   </data>
 </root>

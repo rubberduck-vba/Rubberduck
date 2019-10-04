@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA.ReferenceManagement;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -15,10 +16,9 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         public ConcurrentlyConstructedDeclarationFinder(
             IReadOnlyList<Declaration> declarations, 
             IEnumerable<IParseTreeAnnotation> annotations, 
-            IReadOnlyList<UnboundMemberDeclaration> unresolvedMemberDeclarations,
-            IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> unboundDefaultMemberAccesses, 
+            IReadOnlyDictionary<QualifiedModuleName, IFailedResolutionStore> failedResolutionStores,
             IHostApplication hostApp = null) 
-            :base(declarations, annotations, unresolvedMemberDeclarations, unboundDefaultMemberAccesses, hostApp)
+            :base(declarations, annotations, failedResolutionStores, hostApp)
         {}
 
         protected override void ExecuteCollectionConstructionActions(List<Action> collectionConstructionActions)

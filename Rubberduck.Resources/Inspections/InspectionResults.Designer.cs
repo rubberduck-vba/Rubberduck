@@ -124,6 +124,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The expression &apos;{0}&apos; requires a default member access, but the type &apos;{1}&apos; does not have a suitable default member..
+        /// </summary>
+        public static string DefaultMemberRequiredInspection {
+            get {
+                return ResourceManager.GetString("DefaultMemberRequiredInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Project &apos;{0}&apos; has default name..
         /// </summary>
         public static string DefaultProjectNameInspection {
@@ -574,6 +583,24 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The expression &apos;{0}&apos; is used in a context that requires a procedure, which leads to a call to the default member &apos;{1}&apos;..
+        /// </summary>
+        public static string ObjectWhereProcedureIsRequiredInspection {
+            get {
+                return ResourceManager.GetString("ObjectWhereProcedureIsRequiredInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The expression &apos;{0}&apos; is used in a context that requires a procedure, which leads to a call to a default member that cannot be determined at compile time..
+        /// </summary>
+        public static string ObjectWhereProcedureIsRequiredInspection_Unbound {
+            get {
+                return ResourceManager.GetString("ObjectWhereProcedureIsRequiredInspection_Unbound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; is declared using the obsolete &apos;CDecl&apos; calling convention..
         /// </summary>
         public static string ObsoleteCallingConventionInspection {
@@ -727,6 +754,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to In a context that requires a procedure, the expression &apos;{0}&apos; of object type &apos;{1}&apos; is used that does not have a suitable default member..
+        /// </summary>
+        public static string ProcedureRequiredInspection {
+            get {
+                return ResourceManager.GetString("ProcedureRequiredInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Procedure &apos;{0}&apos; can be written as a function..
         /// </summary>
         public static string ProcedureShouldBeFunctionInspection {
@@ -874,7 +910,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unreachable Case Else: all matches exist within prior Case statement(s)..
+        ///   Looks up a localized string similar to &apos;Case Else&apos; statement is unreachable.
         /// </summary>
         public static string UnreachableCaseInspection_CaseElse {
             get {
@@ -883,7 +919,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unreachable: Case Statement contains invalid range clause(s)..
+        ///   Looks up a localized string similar to &apos;Case&apos; statement Range Clauses must be expressed &apos;[x] To [y]&apos; where [x] is less than or equal to [y]&apos;.
         /// </summary>
         public static string UnreachableCaseInspection_InherentlyUnreachable {
             get {
@@ -892,7 +928,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unreachable: Case Statement will cause a Run-time error 6 (Overflow)..
+        ///   Looks up a localized string similar to &apos;Case&apos; statement will cause run-time error 6 (Overflow).
         /// </summary>
         public static string UnreachableCaseInspection_Overflow {
             get {
@@ -901,7 +937,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unreachable: Case Statement will cause a Run-time error 13 (Mismatch)..
+        ///   Looks up a localized string similar to &apos;Case&apos; statement will cause run-time error 13 (type mismatch)..
         /// </summary>
         public static string UnreachableCaseInspection_TypeMismatch {
             get {
@@ -910,7 +946,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unreachable: Never matches or is equivalent to a prior Case statement..
+        ///   Looks up a localized string similar to &apos;Case&apos; statement is unreachable.
         /// </summary>
         public static string UnreachableCaseInspection_Unreachable {
             get {
@@ -924,6 +960,42 @@ namespace Rubberduck.Resources.Inspections {
         public static string UntypedFunctionUsageInspection {
             get {
                 return ResourceManager.GetString("UntypedFunctionUsageInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The expression &apos;{0}&apos; uses bang notation..
+        /// </summary>
+        public static string UseOfBangNotationInspection {
+            get {
+                return ResourceManager.GetString("UseOfBangNotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The expression &apos;{0}&apos; uses a recursive bang operator..
+        /// </summary>
+        public static string UseOfRecursiveBangNotationInspection {
+            get {
+                return ResourceManager.GetString("UseOfRecursiveBangNotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The expression &apos;{0}&apos; uses an unbound bang operator..
+        /// </summary>
+        public static string UseOfUnboundBangNotationInspection {
+            get {
+                return ResourceManager.GetString("UseOfUnboundBangNotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In a context that requires a value type, the expression &apos;{0}&apos; of object type &apos;{1}&apos; is used that does not have a suitable default member..
+        /// </summary>
+        public static string ValueRequiredInspection {
+            get {
+                return ResourceManager.GetString("ValueRequiredInspection", resourceCulture);
             }
         }
         
