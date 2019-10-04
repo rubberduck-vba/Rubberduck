@@ -2275,7 +2275,7 @@ End Sub
                 var printReference = printDeclaration.References.Single();
 
                 var module = state.DeclarationFinder.AllModules.Single(qmn => qmn.ComponentType == ComponentType.ClassModule);
-                var expectedPrintSelection = new QualifiedSelection(module, new Selection(5, 5,5, 10));
+                var expectedPrintSelection = new QualifiedSelection(module, new Selection(4, 5,4, 10));
                 var actualPrintSelection = new QualifiedSelection(printReference.QualifiedModuleName, printReference.Selection);
 
                 Assert.AreEqual(4, referencedDeclaration.References.Count());
