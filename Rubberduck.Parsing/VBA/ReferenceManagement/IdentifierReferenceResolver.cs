@@ -502,7 +502,11 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
         public void Resolve(VBAParser.PrintStmtContext context)
         {
             ResolveDefault(context.markedFileNumber().expression(), true);
-            ResolveOutputList(context.outputList());
+            var outputList = context.outputList();
+            if (outputList != null)
+            {
+                ResolveOutputList(outputList);
+            }
         }
 
         public void Resolve(VBAParser.UnqualifiedObjectPrintStmtContext context)
@@ -513,7 +517,11 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
         public void Resolve(VBAParser.WriteStmtContext context)
         {
             ResolveDefault(context.markedFileNumber().expression(), true);
-            ResolveOutputList(context.outputList());
+            var outputList = context.outputList();
+            if (outputList != null)
+            {
+                ResolveOutputList(outputList);
+            }
         }
 
         private void ResolveOutputList(VBAParser.OutputListContext outputList)

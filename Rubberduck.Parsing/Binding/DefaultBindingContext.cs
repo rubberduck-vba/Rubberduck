@@ -258,11 +258,14 @@ namespace Rubberduck.Parsing.Binding
                 lExpressionBinding,
                 StatementResolutionContext.Undefined,
                 expression.printMethod());
-            var outputListBinding = Visit(
-                module,
-                parent,
-                expression.outputList(),
-                withBlockVariable);
+            var outputListContext = expression.outputList();
+            var outputListBinding = outputListContext != null
+                ? Visit(
+                    module,
+                    parent,
+                    outputListContext,
+                    withBlockVariable)
+                : null;
             return new ObjectPrintDefaultBinding(expression, memberAccessBinding, outputListBinding);
         }
 
@@ -277,11 +280,14 @@ namespace Rubberduck.Parsing.Binding
                 printMethodContext,
                 printMethodContext.GetText(),
                 StatementResolutionContext.Undefined);
-            var outputListBinding = Visit(
-                module,
-                parent,
-                expression.outputList(),
-                withBlockVariable);
+            var outputListContext = expression.outputList();
+            var outputListBinding = outputListContext != null 
+                ? Visit(
+                    module,
+                    parent,
+                    outputListContext,
+                    withBlockVariable)
+                : null;
             return new ObjectPrintDefaultBinding(expression, simpleNameBinding, outputListBinding);
         }
 

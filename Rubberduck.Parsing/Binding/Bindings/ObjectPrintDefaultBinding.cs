@@ -21,7 +21,7 @@ namespace Rubberduck.Parsing.Binding
         public IBoundExpression Resolve()
         {
             var printMethodExpression = _printMethodBinding.Resolve();
-            var outputListExpression = _outputListBinding.Resolve();
+            var outputListExpression = _outputListBinding?.Resolve();
             return new ObjectPrintExpression(_context, printMethodExpression, outputListExpression);
         }
     }

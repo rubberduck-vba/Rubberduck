@@ -185,7 +185,12 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             Declaration scope,
             Declaration parent)
         {
-            Visit(expression.OutputListExpression, module, scope, parent);
+            var outputListExpression = expression.OutputListExpression;
+            if (outputListExpression != null)
+            {
+                Visit(expression.OutputListExpression, module, scope, parent);
+            }
+
             Visit(expression.PrintMethodExpressions, module, scope, parent);
         }
 

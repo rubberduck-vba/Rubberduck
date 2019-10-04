@@ -115,7 +115,12 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
 
         private void Visit(ObjectPrintExpression expression, Declaration parent, IBoundExpression withExpression)
         {
-            Visit(expression.OutputListExpression, parent, withExpression);
+            var outputListExpression = expression.OutputListExpression;
+            if (outputListExpression != null)
+            {
+                Visit(expression.OutputListExpression, parent, withExpression);
+            }
+
             Visit(expression.PrintMethodExpressions, parent, withExpression);
         }
 
