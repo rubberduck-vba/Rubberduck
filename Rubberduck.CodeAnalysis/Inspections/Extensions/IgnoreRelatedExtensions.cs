@@ -1,8 +1,11 @@
-﻿using Rubberduck.Parsing;
+﻿using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
+using System;
 using System.Linq;
 
 namespace Rubberduck.Inspections.Inspections.Extensions
@@ -28,6 +31,21 @@ namespace Rubberduck.Inspections.Inspections.Extensions
         public static bool IsIgnoringInspectionResultFor(this QualifiedContext parserContext, DeclarationFinder declarationFinder, string inspectionName)
         {
             return parserContext.ModuleName.IsIgnoringInspectionResultFor(parserContext.Context.Start.Line, declarationFinder, inspectionName);
+        }
+
+        public static bool IsIgnoringInspectionResult(this IInspectionResult result, DeclarationFinder declarationFinder)
+        {
+            switch (result)
+            {
+                case DeclarationInspectionResult dr:
+                    return dr.Target.IsIgnoringInspectionResultFor(dr.Inspection.AnnotationName);
+                case IdentifierReferenceInspectionResult irr:
+                    return irr.QualifiedName.IsIgnoringInspectionResultFor(irr.Context.Start.Line, declarationFinder, irr.Inspection.AnnotationName);
+                case QualifiedContextInspectionResult qcr:
+                    return qcr.QualifiedName.IsIgnoringInspectionResultFor(qcr.Context.Start.Line, declarationFinder, qcr.Inspection.AnnotationName);
+                default:
+                    return false;
+            }
         }
 
         private static bool IsIgnoringInspectionResultFor(this QualifiedModuleName module, int line, DeclarationFinder declarationFinder, string inspectionName)
