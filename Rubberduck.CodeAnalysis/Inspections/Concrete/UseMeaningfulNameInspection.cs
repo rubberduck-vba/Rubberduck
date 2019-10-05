@@ -9,6 +9,7 @@ using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Common;
 using Rubberduck.Resources;
 using Rubberduck.SettingsProvider;
 using static Rubberduck.Parsing.Grammar.VBAParser;
@@ -67,8 +68,8 @@ namespace Rubberduck.Inspections.Concrete
                                 (declaration.ParentDeclaration == null || 
                                     !IgnoreDeclarationTypes.Contains(declaration.ParentDeclaration.DeclarationType) &&
                                     !handlers.Contains(declaration.ParentDeclaration)) &&
-                                !whitelistedNames.Contains(declaration.IdentifierName) &&
-                                !VariableNameValidator.IsMeaningfulName(declaration.IdentifierName));
+                                    !whitelistedNames.Contains(declaration.IdentifierName) &&
+                                    !VBAIdentifierValidator.IsMeaningfulIdentifier(declaration.IdentifierName));
 
             return (from issue in issues select CreateInspectionResult(this, issue))
                 .ToList();
