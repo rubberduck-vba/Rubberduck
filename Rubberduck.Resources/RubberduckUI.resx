@@ -171,6 +171,9 @@
   <data name="NameLabelText" xml:space="preserve">
     <value>Name:</value>
   </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
   <data name="SaveAndClose" xml:space="preserve">
     <value>Save &amp; Close</value>
   </data>
