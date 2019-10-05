@@ -102,16 +102,19 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
             catch (Exception e)
             {
-#if DEBUG
-                if (e.HResult != (int)KnownComHResults.E_VBA_COMPILEERROR)
-                {
-                    // When debugging we want to know if there are any other errors returned by the compiler as
-                    // the error code might be useful.
-                    throw new ArgumentException("Unrecognised VBE compiler error: \n" + e.ToString());
-                }
-#endif
+                ThrowOnUnrecongizedCompileError(e);
 
                 return false;
+            }
+        }
+
+        private static void ThrowOnUnrecongizedCompileError(Exception e)
+        {
+            if (e.HResult != (int) KnownComHResults.E_VBA_COMPILEERROR)
+            {
+                // When debugging we want to know if there are any other errors returned by the compiler as
+                // the error code might be useful.
+                throw new ArgumentException("Unrecognized VBE compiler error: \n" + e.ToString());
             }
         }
 

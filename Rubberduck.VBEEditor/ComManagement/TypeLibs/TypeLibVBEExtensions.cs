@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
@@ -91,14 +92,18 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
             catch (Exception e)
             {
-#if DEBUG
-                if (e.HResult != (int)KnownComHResults.E_VBA_COMPILEERROR)
-                {
-                    // this is for debug purposes, to see if the compiler ever returns other errors on failure
-                    throw new InvalidOperationException("Unrecognised VBE compiler error: \n" + e.ToString());
-                }
-#endif
+                ThrowOnUnrecongizedCompilerError(e);
                 return false;
+            }
+        }
+
+        [Conditional("DEBUG")]
+        private static void ThrowOnUnrecongizedCompilerError(Exception e)
+        {
+            if (e.HResult != (int) KnownComHResults.E_VBA_COMPILEERROR)
+            {
+                // this is for debug purposes, to see if the compiler ever returns other errors on failure
+                throw new InvalidOperationException("Unrecognized VBE compiler error: \n" + e.ToString());
             }
         }
 
