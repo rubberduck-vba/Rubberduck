@@ -96,8 +96,7 @@ namespace Rubberduck.Inspections.Concrete
                 && !IsParameterOfDeclaredLibraryFunction(parameter)
                 && (parameter.AsTypeDeclaration == null 
                     || (!parameter.AsTypeDeclaration.DeclarationType.HasFlag(DeclarationType.ClassModule)
-                        && parameter.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType 
-                        && parameter.AsTypeDeclaration.DeclarationType != DeclarationType.Enumeration))
+                        && parameter.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType))
                 && !parameter.References.Any(reference => reference.IsAssignment)
                 && !IsPotentiallyUsedAsByRefParameter(parameter);
             return canPossiblyBeChangedToBePassedByVal;

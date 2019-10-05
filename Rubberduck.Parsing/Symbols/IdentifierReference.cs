@@ -27,7 +27,8 @@ namespace Rubberduck.Parsing.Symbols
             bool isIndexedDefaultMemberAccess = false,
             bool isNonIndexedDefaultMemberAccess = false,
             int defaultMemberRecursionDepth = 0,
-            bool isArrayAccess = false)
+            bool isArrayAccess = false,
+            bool isProcedureCoercion = false)
         {
             ParentScoping = parentScopingDeclaration;
             ParentNonScoping = parentNonScopingDeclaration;
@@ -43,6 +44,7 @@ namespace Rubberduck.Parsing.Symbols
             IsNonIndexedDefaultMemberAccess = isNonIndexedDefaultMemberAccess;
             DefaultMemberRecursionDepth = defaultMemberRecursionDepth;
             IsArrayAccess = isArrayAccess;
+            IsProcedureCoercion = isProcedureCoercion;
             Annotations = annotations ?? new List<IParseTreeAnnotation>();
         }
 
@@ -71,6 +73,7 @@ namespace Rubberduck.Parsing.Symbols
         public bool IsIndexedDefaultMemberAccess { get; }
         public bool IsNonIndexedDefaultMemberAccess { get; }
         public bool IsDefaultMemberAccess => IsIndexedDefaultMemberAccess || IsNonIndexedDefaultMemberAccess;
+        public bool IsProcedureCoercion { get; }
         public int DefaultMemberRecursionDepth { get; }
 
         public bool IsArrayAccess { get; }

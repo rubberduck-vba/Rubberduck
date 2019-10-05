@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources.Inspections;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
@@ -53,43 +51,26 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public class ProcedureRequiredInspection : InspectionBase
+    public class ProcedureRequiredInspection : IdentifierReferenceInspectionBase
     {
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
-
         public ProcedureRequiredInspection(RubberduckParserState state)
             : base(state)
         {
-            _declarationFinderProvider = state;
-
             //This will most likely cause a runtime error. The exceptions are rare and should be refactored or made explicit with an @Ignore annotation.
             Severity = CodeInspectionSeverity.Error;
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module)
         {
-            var finder = _declarationFinderProvider.DeclarationFinder;
-
-            var failedProcedureCoercions = finder.FailedProcedureCoercions();
-            return failedProcedureCoercions
-                .Where(failedCoercion => !IsIgnored(failedCoercion))
-                .Select(failedCoercion => InspectionResult(failedCoercion, _declarationFinderProvider));
+            return DeclarationFinderProvider.DeclarationFinder.FailedProcedureCoercions(module);
         }
 
-        private bool IsIgnored(IdentifierReference assignment)
+        protected override bool IsResultReference(IdentifierReference failedCoercion)
         {
-            return assignment.IsIgnoringInspectionResultFor(AnnotationName);
+            return !failedCoercion.IsIgnoringInspectionResultFor(AnnotationName);
         }
 
-        private IInspectionResult InspectionResult(IdentifierReference failedCoercion, IDeclarationFinderProvider declarationFinderProvider)
-        {
-            return new IdentifierReferenceInspectionResult(this,
-                ResultDescription(failedCoercion),
-                declarationFinderProvider,
-                failedCoercion);
-        }
-
-        private string ResultDescription(IdentifierReference failedCoercion)
+        protected override string ResultDescription(IdentifierReference failedCoercion)
         {
             var expression = failedCoercion.IdentifierName;
             var typeName = failedCoercion.Declaration?.FullAsTypeName;

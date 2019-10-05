@@ -458,4 +458,24 @@ In memoriam, 1972-2018</value>
     <value>The expression '{0}' requires a default member access, but the type '{1}' does not have a suitable default member.</value>
     <comment>{0} expression; {1} type</comment>
   </data>
+  <data name="UseOfBangNotationInspection" xml:space="preserve">
+    <value>The expression '{0}' uses bang notation.</value>
+    <comment>{0} expression</comment>
+  </data>
+  <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
+    <value>The expression '{0}' uses a recursive bang operator.</value>
+    <comment>{0} expression</comment>
+  </data>
+  <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
+    <value>The expression '{0}' uses an unbound bang operator.</value>
+    <comment>{0} expression</comment>
+  </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
+    <value>The expression '{0}' is used in a context that requires a procedure, which leads to a call to the default member '{1}'.</value>
+    <comment>{0} expression; {1} default member</comment>
+  </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection_Unbound" xml:space="preserve">
+    <value>The expression '{0}' is used in a context that requires a procedure, which leads to a call to a default member that cannot be determined at compile time.</value>
+    <comment>{0} expression</comment>
+  </data>
 </root>

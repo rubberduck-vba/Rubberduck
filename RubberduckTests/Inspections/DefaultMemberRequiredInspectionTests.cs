@@ -13,9 +13,7 @@ namespace RubberduckTests.Inspections
     [TestFixture]
     public class DefaultMemberRequiredInspectionTests : InspectionTestsBase
     {
-
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         [Test]
         public void ChainedDictionaryAccessFailedAtEnd_OneResult()
         {
@@ -53,8 +51,7 @@ End Function
             Assert.AreEqual(expectedSelection, actualSelection);
         }
 
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         [Test]
         public void ChainedDictionaryAccessExpressionFailedAtStart_OneResult()
         {
@@ -92,8 +89,7 @@ End Function
             Assert.AreEqual(expectedSelection, actualSelection);
         }
 
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         [Test]
         public void FailedDictionaryAccessExpressionWithIndexedDefaultMemberAccess_OneResult()
         {
@@ -131,8 +127,7 @@ End Function
             Assert.AreEqual(expectedSelection, actualSelection);
         }
 
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         [Test]
         public void FailedIndexExpressionOnVariable_WithoutArguments_OneResult()
         {
@@ -161,8 +156,7 @@ End Function
             Assert.AreEqual(expectedSelection, actualSelection);
         }
 
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         [Test]
         public void FailedIndexExpressionOnVariable_WithArguments_OneResult()
         {
@@ -191,8 +185,7 @@ End Function
             Assert.AreEqual(expectedSelection, actualSelection);
         }
 
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         [Test]
         public void FailedIndexExpressionOnArrayAccess_WithoutArguments_OneResult()
         {
@@ -221,8 +214,7 @@ End Function
             Assert.AreEqual(expectedSelection, actualSelection);
         }
 
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         [Test]
         public void FailedIndexExpressionOnArrayAccess_WithArguments_OneResult()
         {
@@ -251,8 +243,7 @@ End Function
             Assert.AreEqual(expectedSelection, actualSelection);
         }
 
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         [Test]
         public void FailedIndexExpressionOnOtherIndexExpression_WithoutArguments_OneResult()
         {
@@ -281,8 +272,7 @@ End Function
             Assert.AreEqual(expectedSelection, actualSelection);
         }
 
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         [Test]
         public void FailedIndexExpressionOnOtherIndexExpression_WithArguments_OneResult()
         {
@@ -311,8 +301,7 @@ End Function
             Assert.AreEqual(expectedSelection, actualSelection);
         }
 
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         [Test]
         public void FailedIndexExpressionOnParameterlessFunction_WithArguments_OneResult()
         {
@@ -341,8 +330,7 @@ End Function
             Assert.AreEqual(expectedSelection, actualSelection);
         }
 
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         [Test]
         public void FailedIndexExpressionOnFunctionWithParameters_NoResult()
         {
@@ -367,8 +355,7 @@ End Function
             Assert.IsFalse(inspectionResults.Any());
         }
 
-        [Category("Grammar")]
-        [Category("Resolver")]
+        [Category("Inspections")]
         [Test]
         [TestCase("String", "bar = \"Hello \" & Foo(Nothing)")]
         [TestCase("Class1", "Set Foo = Foo(Nothing)")]

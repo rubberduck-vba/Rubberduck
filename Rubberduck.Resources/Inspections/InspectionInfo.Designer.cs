@@ -556,6 +556,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Using an object with a default member in a place that requires a procedure leads to an implicit invocation of the default member. This is most likely unintentional and negatively affects readability..
+        /// </summary>
+        public static string ObjectWhereProcedureIsRequiredInspection {
+            get {
+                return ResourceManager.GetString("ObjectWhereProcedureIsRequiredInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Windows implementations of Visual Basic only support the StdCall calling convention. The CDecl calling convention is only supported in Macintosh versions of VBA. Use of this keyword in Windows will result in runtime error 49 - &apos;Bad DLL calling convention&apos;. If this procedure is only intended to be used on Macintosh hosts, it should be conditionally compiled..
         /// </summary>
         public static string ObsoleteCallingConventionInspection {
@@ -868,6 +877,33 @@ namespace Rubberduck.Resources.Inspections {
         public static string UseMeaningfulNameInspection {
             get {
                 return ResourceManager.GetString("UseMeaningfulNameInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bang notation, formally known as dictionary access expression, looks like it is strongly typed. However, it is actually a stringly-typed access to the parameterized default member of the object it is used on..
+        /// </summary>
+        public static string UseOfBangNotationInspection {
+            get {
+                return ResourceManager.GetString("UseOfBangNotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bang notation, formally known as dictionary access expression, looks like it is strongly typed. However, it is actually a stringly-typed access to the parameterized default member of the object it is used on. This is especially misleading if the parameterized default member is not on the object itself and can only be reached by calling the parameterless default member first..
+        /// </summary>
+        public static string UseOfRecursiveBangNotationInspection {
+            get {
+                return ResourceManager.GetString("UseOfRecursiveBangNotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bang notation, formally known as dictionary access expression, looks like it is strongly typed. However, it is actually a stringly-typed access to the parameterized default member of the object it is used on. This is especially misleading the default member cannot be determined at compile time..
+        /// </summary>
+        public static string UseOfUnboundBangNotationInspection {
+            get {
+                return ResourceManager.GetString("UseOfUnboundBangNotationInspection", resourceCulture);
             }
         }
         

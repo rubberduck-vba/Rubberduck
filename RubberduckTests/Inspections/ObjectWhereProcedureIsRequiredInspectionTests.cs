@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using NUnit.Framework;
-using Rubberduck.CodeAnalysis.Inspections.Concrete;
+using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -9,276 +9,15 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class ProcedureRequiredInspectionTests : InspectionTestsBase
+    public class ObjectWhereProcedureIsRequiredInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
-        //This will be handled by another inspection, since it is a failed indexed default member resolution.
-        public void FailedParameterizedProcedureCoercionReferenceOnEntireContext()
-        {
-            var class1Code = @"
-Public Sub Foo(arg As Long)
-End Sub
-";
-
-            var class2Code = @"
-Public Function Baz() As Class1
-    Set Baz = New Class1
-End Function
-";
-
-            var moduleCode = $@"
-Private Function Foo() As Variant 
-    Dim cls As new Class2
-    cls.Baz 42
-End Function
-
-Private Sub Bar(arg As Long)
-End Sub
-
-Private Sub Baz(arg As Variant)
-End Sub
-";
-
-            var vbe = MockVbeBuilder.BuildFromModules(
-                ("Class1", class1Code, ComponentType.ClassModule),
-                ("Class2", class2Code, ComponentType.ClassModule),
-                ("Module1", moduleCode, ComponentType.StandardModule));
-
-            var inspectionResults = InspectionResults(vbe.Object);
-            Assert.IsFalse(inspectionResults.Any());
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void FailedNonParameterizedProcedureCoercionReferenceOnEntireContext()
+        public void NonParameterizedProcedureCoercion_OneResult()
         {
             var class1Code = @"
 Public Sub Foo()
-End Sub
-";
-
-            var class2Code = @"
-Public Function Baz() As Class1
-    Set Baz = New Class1
-End Function
-";
-
-            var moduleCode = $@"
-Private Function Foo() As Variant 
-    Dim cls As new Class2
-    cls
-End Function
-
-Private Sub Bar(arg As Long)
-End Sub
-
-Private Sub Baz(arg As Variant)
-End Sub
-";
-
-            var vbe = MockVbeBuilder.BuildFromModules(
-                ("Class1", class1Code, ComponentType.ClassModule),
-                ("Class2", class2Code, ComponentType.ClassModule),
-                ("Module1", moduleCode, ComponentType.StandardModule));
-
-            var inspectionResults = InspectionResults(vbe.Object);
-            Assert.AreEqual(1,inspectionResults.Count());
-        }
-
-        [Test]
-        [Category("Inspections")]
-        //This will be handled by another inspection, since it is a failed indexed default member resolution.
-        public void FailedParameterizedProcedureCoercionReferenceOnEntireContext_ExplicitCall()
-        {
-            var class1Code = @"
-Public Sub Foo(arg As Long)
-End Sub
-";
-
-            var class2Code = @"
-Public Function Baz() As Class1
-    Set Baz = New Class1
-End Function
-";
-
-            var moduleCode = $@"
-Private Function Foo() As Variant 
-    Dim cls As new Class2
-    Call cls.Baz(42)
-End Function
-
-Private Sub Bar(arg As Long)
-End Sub
-
-Private Sub Baz(arg As Variant)
-End Sub
-";
-
-            var vbe = MockVbeBuilder.BuildFromModules(
-                ("Class1", class1Code, ComponentType.ClassModule),
-                ("Class2", class2Code, ComponentType.ClassModule),
-                ("Module1", moduleCode, ComponentType.StandardModule));
-
-            var inspectionResults = InspectionResults(vbe.Object);
-            Assert.IsFalse(inspectionResults.Any());
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void FailedNonParameterizedProcedureCoercionReferenceOnEntireContext_ExplicitCall()
-        {
-            var class1Code = @"
-Public Sub Foo()
-End Sub
-";
-
-            var class2Code = @"
-Public Function Baz() As Class1
-    Set Baz = New Class1
-End Function
-";
-
-            var moduleCode = $@"
-Private Function Foo() As Variant 
-    Dim cls As new Class2
-    Call cls
-End Function
-
-Private Sub Bar(arg As Long)
-End Sub
-
-Private Sub Baz(arg As Variant)
-End Sub
-";
-
-            var vbe = MockVbeBuilder.BuildFromModules(
-                ("Class1", class1Code, ComponentType.ClassModule),
-                ("Class2", class2Code, ComponentType.ClassModule),
-                ("Module1", moduleCode, ComponentType.StandardModule));
-
-            var inspectionResults = InspectionResults(vbe.Object);
-            Assert.AreEqual(1, inspectionResults.Count());
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void FailedNonParameterizedProcedureCoercionOnArrayAccessReferenceOnEntireContext()
-        {
-            var class1Code = @"
-Public Sub Foo()
-End Sub
-";
-
-            var class2Code = @"
-Public Function Baz() As Class1()
-    Set Baz = New Class1
-End Function
-";
-
-            var moduleCode = $@"
-Private Function Foo() As Variant 
-    Dim cls As new Class2
-    cls.Baz(42)
-End Function
-
-Private Sub Bar(arg As Long)
-End Sub
-
-Private Sub Baz(arg As Variant)
-End Sub
-";
-
-            var vbe = MockVbeBuilder.BuildFromModules(
-                ("Class1", class1Code, ComponentType.ClassModule),
-                ("Class2", class2Code, ComponentType.ClassModule),
-                ("Module1", moduleCode, ComponentType.StandardModule));
-
-            var inspectionResults = InspectionResults(vbe.Object);
-            Assert.AreEqual(1, inspectionResults.Count());
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void FailedNonParameterizedProcedureCoercionOnArrayAccessReferenceOnEntireContext_ExplicitCall()
-        {
-            var class1Code = @"
-Public Sub Foo()
-End Sub
-";
-
-            var class2Code = @"
-Public Function Baz() As Class1()
-    Set Baz = New Class1
-End Function
-";
-
-            var moduleCode = $@"
-Private Function Foo() As Variant 
-    Dim cls As new Class2
-    Call cls.Baz(42)
-End Function
-
-Private Sub Bar(arg As Long)
-End Sub
-
-Private Sub Baz(arg As Variant)
-End Sub
-";
-
-            var vbe = MockVbeBuilder.BuildFromModules(
-                ("Class1", class1Code, ComponentType.ClassModule),
-                ("Class2", class2Code, ComponentType.ClassModule),
-                ("Module1", moduleCode, ComponentType.StandardModule));
-
-            var inspectionResults = InspectionResults(vbe.Object);
-            Assert.AreEqual(1, inspectionResults.Count());
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void SuccessfulParameterizedProcedureCoercionReferenceOnEntireContext()
-        {
-            var class1Code = @"
-Public Sub Foo(arg As Long)
-End Sub
-";
-
-            var class2Code = @"
-Public Function Baz() As Class1
-Attribute Baz.VB_UserMemId = 0
-    Set Baz = New Class1
-End Function
-";
-
-            var moduleCode = $@"
-Private Function Foo() As Variant 
-    Dim cls As new Class2
-    cls.Baz 42
-End Function
-
-Private Sub Bar(arg As Long)
-End Sub
-
-Private Sub Baz(arg As Variant)
-End Sub
-";
-
-            var vbe = MockVbeBuilder.BuildFromModules(
-                ("Class1", class1Code, ComponentType.ClassModule),
-                ("Class2", class2Code, ComponentType.ClassModule),
-                ("Module1", moduleCode, ComponentType.StandardModule));
-
-            var inspectionResults = InspectionResults(vbe.Object);
-            Assert.IsFalse(inspectionResults.Any());
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void SuccessfulNonParameterizedProcedureCoercionReferenceOnEntireContext()
-        {
-            var class1Code = @"
-Public Sub Foo()
+Attribute Foo.VB_UserMemId = 0
 End Sub
 ";
 
@@ -308,15 +47,16 @@ End Sub
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
             var inspectionResults = InspectionResults(vbe.Object);
-            Assert.IsFalse(inspectionResults.Any());
+            Assert.AreEqual(1, inspectionResults.Count());
         }
 
         [Test]
         [Category("Inspections")]
-        public void SuccessfulParameterizedProcedureCoercionReferenceOnEntireContext_ExplicitCall()
+        public void NonParameterizedUnboundProcedureCoercion_OneResultWithExpandDefaultMemberQuickFixDisabled()
         {
             var class1Code = @"
-Public Sub Foo(arg As Long)
+Public Sub Foo()
+Attribute Foo.VB_UserMemId = 0
 End Sub
 ";
 
@@ -329,8 +69,8 @@ End Function
 
             var moduleCode = $@"
 Private Function Foo() As Variant 
-    Dim cls As new Class2
-    Call cls.Baz(42)
+    Dim cls As Object
+    cls
 End Function
 
 Private Sub Bar(arg As Long)
@@ -346,15 +86,96 @@ End Sub
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
             var inspectionResults = InspectionResults(vbe.Object);
-            Assert.IsFalse(inspectionResults.Any());
+            var result = inspectionResults.Single();
+            Assert.AreEqual("ExpandDefaultMemberQuickFix", result.Properties.DisableFixes);
+        }
+        [Test]
+        [Category("Inspections")]
+        //This is an indexed default member access and in the corresponding inspection. 
+        public void ParameterizedProcedureCoercion_NoResult()
+        {
+            var class1Code = @"
+Public Sub Foo()
+Attribute Foo.VB_UserMemId = 0
+End Sub
+";
+
+            var class2Code = @"
+Public Function Baz(arg As Long) As Class1
+Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As new Class2
+    cls 42
+End Function
+
+Private Sub Bar(arg As Long)
+End Sub
+
+Private Sub Baz(arg As Variant)
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var inspectionResults = InspectionResults(vbe.Object);
+            Assert.AreEqual(0, inspectionResults.Count());
         }
 
         [Test]
         [Category("Inspections")]
-        public void SuccessfulNonParameterizedProcedureCoercionReferenceOnEntireContext_ExplicitCall()
+        //This is an indexed default member access and in the corresponding inspection. 
+        public void ParameterizedUnboundProcedureCoercion_NoResult()
         {
             var class1Code = @"
 Public Sub Foo()
+Attribute Foo.VB_UserMemId = 0
+End Sub
+";
+
+            var class2Code = @"
+Public Function Baz(arg As Long) As Class1
+Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As Object
+    cls 42
+End Function
+
+Private Sub Bar(arg As Long)
+End Sub
+
+Private Sub Baz(arg As Variant)
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var inspectionResults = InspectionResults(vbe.Object);
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void NonParameterizedProcedureCoercion_ExplicitCall_OneResult()
+        {
+            var class1Code = @"
+Public Sub Foo()
+Attribute Foo.VB_UserMemId = 0
 End Sub
 ";
 
@@ -384,12 +205,132 @@ End Sub
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
             var inspectionResults = InspectionResults(vbe.Object);
-            Assert.IsFalse(inspectionResults.Any());
+            Assert.AreEqual(1, inspectionResults.Count());
         }
 
         [Test]
         [Category("Inspections")]
-        public void SuccessfulNonParameterizedProcedureCoercionOnArrayAccessReferenceOnEntireContext()
+        public void NonParameterizedUnboundProcedureCoercion_ExplicitCall_OneResultWithExpandDefaultMemberQuickFixDisabled()
+        {
+            var class1Code = @"
+Public Sub Foo()
+Attribute Foo.VB_UserMemId = 0
+End Sub
+";
+
+            var class2Code = @"
+Public Function Baz() As Class1
+Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As Object
+    Call cls
+End Function
+
+Private Sub Bar(arg As Long)
+End Sub
+
+Private Sub Baz(arg As Variant)
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var inspectionResults = InspectionResults(vbe.Object);
+            var result = inspectionResults.Single();
+            Assert.AreEqual("ExpandDefaultMemberQuickFix", result.Properties.DisableFixes);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        //This is an indexed default member access and in the corresponding inspection. 
+        public void ParameterizedProcedureCoercion_ExplicitCall_NoResult()
+        {
+            var class1Code = @"
+Public Sub Foo()
+Attribute Foo.VB_UserMemId = 0
+End Sub
+";
+
+            var class2Code = @"
+Public Function Baz(arg As Long) As Class1
+Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As new Class2
+    Call cls(42)
+End Function
+
+Private Sub Bar(arg As Long)
+End Sub
+
+Private Sub Baz(arg As Variant)
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var inspectionResults = InspectionResults(vbe.Object);
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        //This is an indexed default member access and in the corresponding inspection. 
+        public void ParameterizedUnboundProcedureCoercion_ExplicitCall_NoResult()
+        {
+            var class1Code = @"
+Public Sub Foo()
+Attribute Foo.VB_UserMemId = 0
+End Sub
+";
+
+            var class2Code = @"
+Public Function Baz(arg As Long) As Class1
+Attribute Baz.VB_UserMemId = 0
+    Set Baz = New Class1
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As Object
+    Call cls(42)
+End Function
+
+Private Sub Bar(arg As Long)
+End Sub
+
+Private Sub Baz(arg As Variant)
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var inspectionResults = InspectionResults(vbe.Object);
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void NonParameterizedProcedureCoercionDefaultMemberAccessOnArrayAccess_OneResult()
         {
             var class1Code = @"
 Public Sub Foo()
@@ -423,12 +364,12 @@ End Sub
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
             var inspectionResults = InspectionResults(vbe.Object);
-            Assert.IsFalse(inspectionResults.Any());
+            Assert.AreEqual(1, inspectionResults.Count());
         }
 
         [Test]
         [Category("Inspections")]
-        public void SuccessfulNonParameterizedProcedureCoercionOnArrayAccessReferenceOnEntireContext_ExplicitCall()
+        public void NonParameterizedProcedureCoercionDefaultMemberAccessOnArrayAccess_ExplicitCall_OneResult()
         {
             var class1Code = @"
 Public Sub Foo()
@@ -462,41 +403,12 @@ End Sub
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
             var inspectionResults = InspectionResults(vbe.Object);
-            Assert.IsFalse(inspectionResults.Any());
+            Assert.AreEqual(1, inspectionResults.Count());
         }
-
-        [Category("Inspections")]
-        [Test]
-        [TestCase("", "Call Foo")]
-        [TestCase("", "Call Foo()")]
-        [TestCase("", "Foo")]
-        [TestCase("ByVal arg As Variant", "Call Foo(arg)")]
-        [TestCase("ByVal arg As Variant", "Foo arg")]
-        public void RecursiveProcedureCall_NoResult(string argumentList, string statement)
-        {
-            var classCode = @"
-Public Function Foo(index As Variant) As Class1
-End Function
-";
-
-            var moduleCode = $@"
-Private Function Foo({argumentList}) As Class1
-    {statement}
-End Function
-";
-
-            var vbe = MockVbeBuilder.BuildFromModules(
-                ("Class1", classCode, ComponentType.ClassModule),
-                ("Module1", moduleCode, ComponentType.StandardModule));
-
-            var inspectionResults = InspectionResults(vbe.Object);
-           Assert.IsFalse(inspectionResults.Any());
-        }
-
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
-            return new ProcedureRequiredInspection(state);
+            return new ObjectWhereProcedureIsRequiredInspection(state);
         }
     }
 }

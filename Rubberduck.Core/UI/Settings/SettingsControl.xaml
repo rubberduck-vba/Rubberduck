@@ -147,7 +147,7 @@
                             Margin="5,0"
                             Padding="10,0"
                             Command="{Binding ResetButtonCommand}" />
-                    <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=OK}"
+                    <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SaveAndClose}"
                             Grid.Column="1"
                             Height="20"
                             Margin="5,0"

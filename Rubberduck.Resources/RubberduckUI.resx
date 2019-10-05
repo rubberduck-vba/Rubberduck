@@ -172,7 +172,10 @@
     <value>Name:</value>
   </data>
   <data name="OK" xml:space="preserve">
-    <value>Ok</value>
+    <value>OK</value>
+  </data>
+  <data name="SaveAndClose" xml:space="preserve">
+    <value>Save &amp; Close</value>
   </data>
   <data name="RenameDialog_Caption" xml:space="preserve">
     <value>Rubberduck - Rename</value>

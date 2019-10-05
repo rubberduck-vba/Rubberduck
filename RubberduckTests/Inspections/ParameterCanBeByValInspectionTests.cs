@@ -1577,6 +1577,30 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
+        public void ParameterCanBeByVal_EnumMemberParameterCanBeByVal()
+        {
+            //Input
+            const string inputCode = @"Option Explicit
+Public Enum TestEnum
+    Foo
+    Bar
+End Enum
+
+Private Sub DoSomething(e As TestEnum)
+    Debug.Print e
+End Sub";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new ParameterCanBeByValInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual("e", inspectionResults.Single().Target.IdentifierName);
+            }
+        }
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ParameterCanBeByValInspection";

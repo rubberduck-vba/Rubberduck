@@ -583,6 +583,24 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The expression &apos;{0}&apos; is used in a context that requires a procedure, which leads to a call to the default member &apos;{1}&apos;..
+        /// </summary>
+        public static string ObjectWhereProcedureIsRequiredInspection {
+            get {
+                return ResourceManager.GetString("ObjectWhereProcedureIsRequiredInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The expression &apos;{0}&apos; is used in a context that requires a procedure, which leads to a call to a default member that cannot be determined at compile time..
+        /// </summary>
+        public static string ObjectWhereProcedureIsRequiredInspection_Unbound {
+            get {
+                return ResourceManager.GetString("ObjectWhereProcedureIsRequiredInspection_Unbound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; is declared using the obsolete &apos;CDecl&apos; calling convention..
         /// </summary>
         public static string ObsoleteCallingConventionInspection {
@@ -942,6 +960,33 @@ namespace Rubberduck.Resources.Inspections {
         public static string UntypedFunctionUsageInspection {
             get {
                 return ResourceManager.GetString("UntypedFunctionUsageInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The expression &apos;{0}&apos; uses bang notation..
+        /// </summary>
+        public static string UseOfBangNotationInspection {
+            get {
+                return ResourceManager.GetString("UseOfBangNotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The expression &apos;{0}&apos; uses a recursive bang operator..
+        /// </summary>
+        public static string UseOfRecursiveBangNotationInspection {
+            get {
+                return ResourceManager.GetString("UseOfRecursiveBangNotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The expression &apos;{0}&apos; uses an unbound bang operator..
+        /// </summary>
+        public static string UseOfUnboundBangNotationInspection {
+            get {
+                return ResourceManager.GetString("UseOfUnboundBangNotationInspection", resourceCulture);
             }
         }
         

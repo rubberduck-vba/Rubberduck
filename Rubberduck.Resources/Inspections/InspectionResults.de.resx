@@ -410,4 +410,19 @@ In Memoriam, 1972-2018</value>
   <data name="DefaultMemberRequiredInspection" xml:space="preserve">
     <value>Der Ausdruck '{0}' erfordert einen Standardmemberzugriff, aber der Typ '{1}' hat keinen passenden Standardmember.</value>
   </data>
+  <data name="UseOfBangNotationInspection" xml:space="preserve">
+    <value>Der Ausdruck '{0}' verwendet Ausrufezeichennotation.</value>
+  </data>
+  <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
+    <value>Der Ausdruck '{0}' verwendet rekursive Ausrufezeichennotation.</value>
+  </data>
+  <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
+    <value>Der Ausdruck '{0}' verwendet nicht gebundene Ausrufezeichennotation.</value>
+  </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
+    <value>Der Ausdruck '{0}' wird an einer Stelle verwendet, die nach einer Prozedur verlangt, was zu einem Aufruf des Standardmembers '{1}' führt.</value>
+  </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection_Unbound" xml:space="preserve">
+    <value>Der Ausdruck '{0}' wird an einer Stelle verwendet, die nach einer Prozedur verlangt, was zu einem Aufruf eines Standardmembers führt, welcher erst zur Laufzeit bestimmt werden kann.</value>
+  </data>
 </root>
