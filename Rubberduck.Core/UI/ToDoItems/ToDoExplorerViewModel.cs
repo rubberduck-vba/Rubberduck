@@ -18,7 +18,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources.ToDoExplorer;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.UIContext;
-using Rubberduck.VBEditor.Utility;
 using Rubberduck.SettingsProvider;
 using System.Windows.Controls;
 
