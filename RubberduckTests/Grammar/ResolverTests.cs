@@ -6812,13 +6812,13 @@ End Function
 
             using (var state = Resolve(vbe.Object))
             {
-                var debugAssertDeclaration = state.DeclarationFinder
+                var debugPrintDeclaration = state.DeclarationFinder
                     .BuiltInDeclarations(DeclarationType.Procedure)
                     .Single(declaration => declaration.IdentifierName.Equals("Print")
                                            && declaration.QualifiedModuleName.ComponentName.Equals("Debug"));
-                var debugAssertReferences = debugAssertDeclaration.References;
+                var debugPrintReferences = debugPrintDeclaration.References;
 
-                Assert.IsFalse(debugAssertReferences.Any());
+                Assert.IsFalse(debugPrintReferences.Any());
             }
         }
 
@@ -6849,13 +6849,13 @@ End Function
 
             using (var state = Resolve(vbe.Object))
             {
-                var debugAssertDeclaration = state.DeclarationFinder
+                var debugPrintDeclaration = state.DeclarationFinder
                     .BuiltInDeclarations(DeclarationType.Procedure)
                     .Single(declaration => declaration.IdentifierName.Equals("Print")
                                            && declaration.QualifiedModuleName.ComponentName.Equals("Debug"));
-                var debugAssertReferences = debugAssertDeclaration.References;
+                var debugPrintReferences = debugPrintDeclaration.References;
 
-                Assert.AreEqual(2, debugAssertReferences.Count());
+                Assert.AreEqual(2, debugPrintReferences.Count());
             }
         }
     }
