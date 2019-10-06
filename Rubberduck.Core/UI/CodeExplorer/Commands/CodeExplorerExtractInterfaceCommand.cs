@@ -38,8 +38,6 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             return _state.Status == ParserState.Ready &&
                    parameter is CodeExplorerComponentViewModel node &&
-                   //node.Declaration.DeclarationType.HasFlag(DeclarationType.ClassModule) &&
-                   //node.Children.Any(child => child.Declaration.DeclarationType.HasFlag(DeclarationType.Member));
                    ExtractInterfaceRefactoring.CanExecute((RubberduckParserState)_state, node.QualifiedSelection.Value.QualifiedName);
         }
 
