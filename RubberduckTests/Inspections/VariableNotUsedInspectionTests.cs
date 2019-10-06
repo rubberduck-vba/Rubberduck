@@ -2,12 +2,14 @@ using System.Linq;
 using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class VariableNotUsedInspectionTests
+    public class VariableNotUsedInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
@@ -17,7 +19,7 @@ namespace RubberduckTests.Inspections
 @"Sub Foo()
     Dim var1 As String
 End Sub";
-            Assert.AreEqual(1, GetTestResultCount(inputCode));
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -30,7 +32,7 @@ End Sub";
     Dim var2 As Date
 End Sub";
 
-            Assert.AreEqual(2, GetTestResultCount(inputCode));
+            Assert.AreEqual(2, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -39,7 +41,7 @@ End Sub";
         {
             const string inputCode =
 @"Sub Foo()
-    Dim var1 as String
+    Dim var1 As String
     var1 = ""test""
 
     Goo var1
@@ -48,7 +50,7 @@ End Sub
 Sub Goo(ByVal arg1 As String)
 End Sub";
 
-            Assert.AreEqual(0, GetTestResultCount(inputCode));
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -57,10 +59,10 @@ End Sub";
         {
             const string inputCode =
 @"Sub Foo()
-    Dim var1 as Integer
+    Dim var1 As Integer
     var1 = 8
 
-    Dim var2 as String
+    Dim var2 As String
 
     Goo var1
 End Sub
@@ -68,7 +70,7 @@ End Sub
 Sub Goo(ByVal arg1 As Integer)
 End Sub";
 
-            Assert.AreEqual(1, GetTestResultCount(inputCode));
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -81,7 +83,7 @@ End Sub";
     Dim var1 As String
 End Sub";
 
-            Assert.AreEqual(0, GetTestResultCount(inputCode));
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -94,7 +96,7 @@ End Sub";
     Name ""foo"" As var1
 End Sub";
 
-            Assert.AreEqual(0, GetTestResultCount(inputCode));
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/5088        
@@ -108,7 +110,7 @@ End Sub";
     var1 = ""test""
 End Sub";
 
-            Assert.AreEqual(1, GetTestResultCount(inputCode));
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -123,22 +125,12 @@ End Sub";
     var2 = 8
 End Sub";
 
-            Assert.AreEqual(1, GetTestResultCount(inputCode));
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
-        private int GetTestResultCount(string inputCode)
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
-            var resultCount = 0;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new VariableNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                resultCount = inspectionResults.Count();
-            }
-            return resultCount;
+            return new VariableNotUsedInspection(state);
         }
     }
 }
