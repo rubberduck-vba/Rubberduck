@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using NLog;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
@@ -135,5 +136,36 @@ namespace Rubberduck.Refactorings.ExtractInterface
             DeclarationType.Document,
             DeclarationType.UserForm
         };
+
+        public static bool CanExecute(RubberduckParserState state, QualifiedModuleName qualifiedName)
+        {
+            var interfaceClass = state.AllUserDeclarations.SingleOrDefault(item =>
+                item.QualifiedName.QualifiedModuleName.Equals(qualifiedName)
+                && ModuleTypes.Contains(item.DeclarationType));
+
+            if (interfaceClass == null)
+            {
+                return false;
+            }
+
+            // interface class must have members to be implementable
+            var hasMembers = state.AllUserDeclarations.Any(item =>
+                item.DeclarationType.HasFlag(DeclarationType.Member)
+                && item.ParentDeclaration != null
+                && item.ParentDeclaration.Equals(interfaceClass));
+
+            if (!hasMembers)
+            {
+                return false;
+            }
+
+            var parseTree = state.GetParseTree(interfaceClass.QualifiedName.QualifiedModuleName);
+            var context = ((Antlr4.Runtime.ParserRuleContext)parseTree).GetDescendents<VBAParser.ImplementsStmtContext>();
+
+            // true if active code pane is for a class/document/form module
+            return !context.Any()
+                   && !state.IsNewOrModified(interfaceClass.QualifiedModuleName)
+                   && !state.IsNewOrModified(qualifiedName);
+        }
     }
 }
