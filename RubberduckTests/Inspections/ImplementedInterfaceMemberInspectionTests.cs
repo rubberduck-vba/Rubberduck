@@ -4,11 +4,13 @@ using NUnit.Framework;
 using RubberduckTests.Mocks;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class ImplementedInterfaceMemberInspectionTests
+    public class ImplementedInterfaceMemberInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
@@ -120,6 +122,35 @@ End Sub";
             CheckActualEmptyBlockCountEqualsExpected(interfaceCode, concreteCode, 1);
         }
 
+        //https://github.com/rubberduck-vba/Rubberduck/issues/5143
+        [TestCase(@"MsgBox ""?""","", 1)]   //No implementers, only the annotation marks interface class
+        [TestCase("", "", 0)]   //Annotated only, but no implementers - no result
+        [TestCase(@"MsgBox ""?""", "Implements IClass1", 1)] //Annotated and an Implementer yields a single inspection result
+        [Category("Inspections")]
+        public void ImplementedInterfaceMember_AnnotatedOnly_ReturnsResult(string interfaceBody, string implementsStatement, int expected)
+        {
+            string interfaceCode =
+$@"
+'@Interface
+
+Public Sub DoSomething(ByVal a As Integer)
+End Sub
+Public Sub DoSomethingElse(ByVal a As Integer)
+    {interfaceBody}
+End Sub";
+            string concreteCode =
+$@"
+
+{implementsStatement}
+
+Private Sub IClass_DoSomething(ByVal a As Integer)
+    MsgBox ""?""
+End Sub
+Public Sub IClass_DoSomethingElse(ByVal a As Integer)
+End Sub";
+            CheckActualEmptyBlockCountEqualsExpected(interfaceCode, concreteCode, expected);
+        }
+
         private void CheckActualEmptyBlockCountEqualsExpected(string interfaceCode, string concreteCode, int expectedCount)
         {
             var builder = new MockVbeBuilder();
@@ -129,16 +160,13 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
+            var inspectionResults = InspectionResults(vbe.Object);
+            Assert.AreEqual(expectedCount, inspectionResults.Count());
+        }
 
-                var inspection = new ImplementedInterfaceMemberInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(expectedCount, actualResults.Count());
-            }
-
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new ImplementedInterfaceMemberInspection(state);
         }
     }
 }
