@@ -150,12 +150,11 @@ namespace Rubberduck.Inspections.Concrete
             var whitelistedNames = settings.WhitelistedIdentifiers.Select(s => s.Identifier).ToList();
 
             var hungarians = UserDeclarations
-                .Where(declaration => !whitelistedNames.Contains(declaration.IdentifierName) &&
-                                      TargetDeclarationTypes.Contains(declaration.DeclarationType) &&
-                                      !IgnoredProcedureTypes.Contains(declaration.DeclarationType) && 
-                                      !IgnoredProcedureTypes.Contains(declaration.ParentDeclaration.DeclarationType) &&
-                                      HungarianIdentifierRegex.IsMatch(declaration.IdentifierName) &&
-                                      !declaration.IsIgnoringInspectionResultFor(AnnotationName))
+                .Where(declaration => !whitelistedNames.Contains(declaration.IdentifierName)
+                                      && TargetDeclarationTypes.Contains(declaration.DeclarationType)
+                                      && !IgnoredProcedureTypes.Contains(declaration.DeclarationType)
+                                      && !IgnoredProcedureTypes.Contains(declaration.ParentDeclaration.DeclarationType)
+                                      && HungarianIdentifierRegex.IsMatch(declaration.IdentifierName))
                 .Select(issue => new DeclarationInspectionResult(this,
                                                       string.Format(Resources.Inspections.InspectionResults.IdentifierNameInspection,
                                                                     RubberduckUI.ResourceManager.GetString($"DeclarationType_{issue.DeclarationType}", CultureInfo.CurrentUICulture),

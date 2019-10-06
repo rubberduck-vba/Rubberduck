@@ -65,8 +65,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             return reference.IsIndexedDefaultMemberAccess
                    && reference.DefaultMemberRecursionDepth == 1
-                   && reference.Context is VBAParser.DictionaryAccessContext
-                   && !reference.IsIgnoringInspectionResultFor(AnnotationName);
+                   && reference.Context is VBAParser.DictionaryAccessContext;
         }
 
         protected override string ResultDescription(IdentifierReference reference)

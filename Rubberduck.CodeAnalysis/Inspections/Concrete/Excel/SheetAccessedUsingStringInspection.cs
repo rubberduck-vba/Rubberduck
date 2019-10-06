@@ -73,8 +73,7 @@ namespace Rubberduck.Inspections.Concrete
                 .ToList();
 
             var references = targetProperties.SelectMany(declaration => declaration.References
-                .Where(reference => !reference.IsIgnoringInspectionResultFor(AnnotationName) &&
-                                    IsAccessedWithStringLiteralParameter(reference))
+                .Where(reference => IsAccessedWithStringLiteralParameter(reference))
                 .Select(reference => new IdentifierReferenceInspectionResult(this,
                     InspectionResults.SheetAccessedUsingStringInspection, State, reference)));
 

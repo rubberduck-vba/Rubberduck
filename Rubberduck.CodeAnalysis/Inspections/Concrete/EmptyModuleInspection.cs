@@ -43,8 +43,7 @@ namespace Rubberduck.Inspections.Concrete
                 .ToHashSet();
 
             var emptyModuleDeclarations = State.DeclarationFinder.UserDeclarations(DeclarationType.Module)
-                .Where(declaration => emptyModules.Contains(declaration.QualifiedName.QualifiedModuleName)
-                                        && !declaration.IsIgnoringInspectionResultFor(AnnotationName));
+                .Where(declaration => emptyModules.Contains(declaration.QualifiedName.QualifiedModuleName));
 
             return emptyModuleDeclarations.Select(declaration =>
                 new DeclarationInspectionResult(this, string.Format(InspectionResults.EmptyModuleInspection, declaration.IdentifierName), declaration));

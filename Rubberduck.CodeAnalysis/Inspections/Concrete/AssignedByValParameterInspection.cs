@@ -47,7 +47,6 @@ namespace Rubberduck.Inspections.Concrete
             var parameters = State.DeclarationFinder.UserDeclarations(DeclarationType.Parameter)
                 .Cast<ParameterDeclaration>()
                 .Where(item => !item.IsByRef 
-                    && !item.IsIgnoringInspectionResultFor(AnnotationName)
                     && item.References.Any(reference => reference.IsAssignment));
 
             return parameters

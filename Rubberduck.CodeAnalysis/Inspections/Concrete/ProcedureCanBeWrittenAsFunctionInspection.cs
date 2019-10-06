@@ -73,7 +73,6 @@ namespace Rubberduck.Inspections.Concrete
                                     && HasArgumentReferencesWithIsAssignmentFlagged(context))
                 .Select(context => GetSubStmtParentDeclaration(context))
                 .Where(decl => decl != null && 
-                                !decl.IsIgnoringInspectionResultFor(AnnotationName) &&
                                 !ignored.Contains(decl) &&
                                 userDeclarations.Where(item => item.IsWithEvents)
                                    .All(withEvents => userDeclarations.FindEventProcedures(withEvents) == null) &&

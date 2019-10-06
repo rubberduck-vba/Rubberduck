@@ -67,7 +67,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
         protected override bool IsResultReference(IdentifierReference failedCoercion)
         {
-            return !failedCoercion.IsIgnoringInspectionResultFor(AnnotationName);
+            // return true because no special ignore checking is required
+            return true;
         }
 
         protected override string ResultDescription(IdentifierReference failedCoercion)
