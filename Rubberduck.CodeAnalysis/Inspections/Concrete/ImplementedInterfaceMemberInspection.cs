@@ -7,11 +7,12 @@ using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Common;
+using System;
 
 namespace Rubberduck.Inspections.Concrete
 {
     /// <summary>
-    /// Identifies members of class modules that are used as interfaces, but that have a concrete implementation.
+    /// Identifies class modules that define an interface with one or more members containing a concrete implementation.
     /// </summary>
     /// <why>
     /// Interfaces provide an abstract, unified programmatic access to different objects; concrete implementations of their members should be in a separate module that 'Implements' the interface.
@@ -43,7 +44,13 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            return State.DeclarationFinder.FindAllUserInterfaces()
+            var annotatedAsInterface = State.DeclarationFinder.Classes
+                .Where(cls => cls.Annotations.Any(an => an.Annotation.Name.Equals("Interface"))).Cast<ClassModuleDeclaration>();
+
+            var implementedAndOrAnnotatedInterfaceModules = State.DeclarationFinder.FindAllUserInterfaces()
+                .Union(annotatedAsInterface);
+
+            return implementedAndOrAnnotatedInterfaceModules
                 .SelectMany(interfaceModule => interfaceModule.Members
                     .Where(member => ((ModuleBodyElementDeclaration)member).Block.ContainsExecutableStatements(true)
                                      && !member.IsIgnoringInspectionResultFor(AnnotationName)))
