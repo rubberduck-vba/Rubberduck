@@ -40,7 +40,7 @@ End Sub
 Public Sub IClass1_DoSomethingElse(ByVal a As Integer)
     MsgBox ""?""
 End Sub";
-            CheckActualEmptyBlockCountEqualsExpected(interfaceCode, concreteCode, 0);
+            CheckActualEmptyBlockCountEqualsExpected(("IClass1", interfaceCode), ("Class1", concreteCode), 0);
         }
 
         [Test]
@@ -61,7 +61,7 @@ Private Sub IClass1_DoSomething(ByVal a As Integer)
 End Sub
 Public Sub IClass1_DoSomethingElse(ByVal a As Integer)
 End Sub";
-            CheckActualEmptyBlockCountEqualsExpected(interfaceCode, concreteCode, 1);
+            CheckActualEmptyBlockCountEqualsExpected(("IClass1", interfaceCode), ("Class1", concreteCode), 1);
         }
 
         [Test]
@@ -83,7 +83,7 @@ End Sub";
     MsgBox ""?""
 End Sub";
 
-            CheckActualEmptyBlockCountEqualsExpected(interfaceCode, concreteCode, 0);
+            CheckActualEmptyBlockCountEqualsExpected(("IClass1", interfaceCode), ("Class1", concreteCode), 0);
         }
 
         [Test]
@@ -119,7 +119,7 @@ End Sub";
 Sub IClass1_Qux()
 End Sub";
 
-            CheckActualEmptyBlockCountEqualsExpected(interfaceCode, concreteCode, 1);
+            CheckActualEmptyBlockCountEqualsExpected(("IClass1", interfaceCode), ("Class1", concreteCode), 1);
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/5143
@@ -129,7 +129,7 @@ End Sub";
         [Category("Inspections")]
         public void ImplementedInterfaceMember_AnnotatedOnly_ReturnsResult(string interfaceBody, string implementsStatement, int expected)
         {
-            string interfaceCode =
+            var interfaceCode =
 $@"
 '@Interface
 
@@ -138,30 +138,28 @@ End Sub
 Public Sub DoSomethingElse(ByVal a As Integer)
     {interfaceBody}
 End Sub";
-            string concreteCode =
+            var concreteCode =
 $@"
 
 {implementsStatement}
 
-Private Sub IClass_DoSomething(ByVal a As Integer)
+Private Sub IClass1_DoSomething(ByVal a As Integer)
     MsgBox ""?""
 End Sub
-Public Sub IClass_DoSomethingElse(ByVal a As Integer)
+Public Sub IClass1_DoSomethingElse(ByVal a As Integer)
 End Sub";
-            CheckActualEmptyBlockCountEqualsExpected(interfaceCode, concreteCode, expected);
+            CheckActualEmptyBlockCountEqualsExpected(("IClass1", interfaceCode), ("Class1", concreteCode), expected);
         }
 
-        private void CheckActualEmptyBlockCountEqualsExpected(string interfaceCode, string concreteCode, int expectedCount)
+        private void CheckActualEmptyBlockCountEqualsExpected((string identifier, string code) interfaceDef, (string identifier, string code) implementerDef, int expectedCount)
         {
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("IClass1", ComponentType.ClassModule, interfaceCode)
-                .AddComponent("Class1", ComponentType.ClassModule, concreteCode)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
+            var modules = new(string, string, ComponentType)[]
+            {
+                (interfaceDef.identifier, interfaceDef.code, ComponentType.ClassModule),
+                (implementerDef.identifier, implementerDef.code, ComponentType.ClassModule)
+            };
 
-            var inspectionResults = InspectionResults(vbe.Object);
-            Assert.AreEqual(expectedCount, inspectionResults.Count());
+            Assert.AreEqual(expectedCount, InspectionResultsForModules(modules).Count());
         }
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
