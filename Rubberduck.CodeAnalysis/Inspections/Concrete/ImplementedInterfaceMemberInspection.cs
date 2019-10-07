@@ -8,6 +8,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Common;
 using System;
+using Rubberduck.Parsing.Annotations;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -45,7 +46,7 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var annotatedAsInterface = State.DeclarationFinder.Classes
-                .Where(cls => cls.Annotations.Any(an => an.Annotation.Name.Equals("Interface"))).Cast<ClassModuleDeclaration>();
+                .Where(cls => cls.Annotations.Any(an => an.Annotation is InterfaceAnnotation)).Cast<ClassModuleDeclaration>();
 
             var implementedAndOrAnnotatedInterfaceModules = State.DeclarationFinder.FindAllUserInterfaces()
                 .Union(annotatedAsInterface);
