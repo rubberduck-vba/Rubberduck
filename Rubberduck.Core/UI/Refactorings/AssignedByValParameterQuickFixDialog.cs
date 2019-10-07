@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
 using Rubberduck.Common;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings.Common;
 using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Refactorings
@@ -52,32 +54,28 @@ namespace Rubberduck.UI.Refactorings
             {
                 return string.Empty;
             }
+
             if (_isConflictingName(NewName))
             {
                 return string.Format(RubberduckUI.AssignedByValDialog_NewNameAlreadyUsedFormat, NewName);
             }
-            if (VariableNameValidator.StartsWithDigit(NewName))
+
+            if (VBAIdentifierValidator.TryMatchInvalidIdentifierCriteria(NewName, DeclarationType.Variable, out var invalidMessage))
             {
-                return RubberduckUI.AssignedByValDialog_DoesNotStartWithLetter;
+                return invalidMessage;
             }
-            if (VariableNameValidator.HasSpecialCharacters(NewName))
+
+            if (VBAIdentifierValidator.TryMatchMeaninglessIdentifierCriteria(NewName, out var meaninglessNameMessage))
             {
-                return RubberduckUI.AssignedByValDialog_InvalidCharacters;
+                return string.Format(RubberduckUI.AssignedByValDialog_MeaninglessNameFormat, meaninglessNameMessage);
             }
-            if (VariableNameValidator.IsReservedIdentifier(NewName))
-            {
-                return string.Format(RubberduckUI.AssignedByValDialog_ReservedKeywordFormat, NewName);
-            }
-            if (!VariableNameValidator.IsMeaningfulName(NewName))
-            {
-                return string.Format(RubberduckUI.AssignedByValDialog_QuestionableEntryFormat, NewName);
-            }
+
             return string.Empty;
         }
 
         private void SetControlsProperties()
         {
-            var isValid = VariableNameValidator.IsValidName(NewName);
+            var isValid = VBAIdentifierValidator.IsValidIdentifier(NewName, DeclarationType.Variable);
             OkButton.Visible = isValid;
             OkButton.Enabled = isValid;
             InvalidNameValidationIcon.Visible = !isValid;

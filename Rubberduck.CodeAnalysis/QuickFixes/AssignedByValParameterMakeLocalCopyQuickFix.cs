@@ -13,6 +13,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using System.Diagnostics;
+using Rubberduck.Refactorings.Common;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
@@ -75,7 +76,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        private bool IsNameCollision(string newName)
+        private bool IsNameCollision(string newName) 
             => _declarationFinderProvider.DeclarationFinder.FindNewDeclarationNameConflicts(newName, _quickFixTarget).Any();
 
         private string GetDefaultLocalIdentifier(Declaration target)
@@ -99,7 +100,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private bool IsValidVariableName(string variableName)
         {
-            return VariableNameValidator.IsValidName(variableName)
+            return VBAIdentifierValidator.IsValidIdentifier(variableName, DeclarationType.Variable)
                 && !IsNameCollision(variableName);
         }
 
