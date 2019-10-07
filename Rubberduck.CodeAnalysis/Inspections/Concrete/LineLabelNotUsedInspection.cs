@@ -54,7 +54,6 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(declaration =>
                     !declaration.IsWithEvents
                     && declaration.Context is IdentifierStatementLabelContext
-                    && !declaration.IsIgnoringInspectionResultFor(AnnotationName)
                     && (!declaration.References.Any() || declaration.References.All(reference => reference.IsAssignment)));
 
             return declarations.Select(issue => 

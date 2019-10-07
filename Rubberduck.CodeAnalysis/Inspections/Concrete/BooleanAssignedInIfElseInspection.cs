@@ -48,7 +48,6 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts
-                .Where(result => !result.IsIgnoringInspectionResultFor(State.DeclarationFinder, AnnotationName))
                 .Select(result => new QualifiedContextInspectionResult(this,
                                                        string.Format(InspectionResults.BooleanAssignedInIfElseInspection,
                                                             (((VBAParser.IfStmtContext)result.Context).block().GetDescendent<VBAParser.LetStmtContext>()).lExpression().GetText().Trim()),

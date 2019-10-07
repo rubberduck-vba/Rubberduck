@@ -52,8 +52,11 @@ namespace Rubberduck.Inspections.Concrete
                     && (declaration.DeclarationType.HasFlag(DeclarationType.Module) 
                         || declaration.AttributesPassContext != null));
             var results = new List<DeclarationInspectionResult>();
-            foreach (var declaration in declarationsWithAttributeAnnotations.Where(decl => decl.QualifiedModuleName.ComponentType != ComponentType.Document
-                                                                                                   && !decl.IsIgnoringInspectionResultFor(AnnotationName)))
+
+            // prefilter declarations to reduce searchspace
+            var interestingDeclarations = declarationsWithAttributeAnnotations.Where(decl => decl.QualifiedModuleName.ComponentType != ComponentType.Document
+                                                                                                   && !decl.IsIgnoringInspectionResultFor(AnnotationName));
+            foreach (var declaration in interestingDeclarations)
             {
                 foreach (var annotationInstance in declaration.Annotations.Where(pta => pta.Annotation is IAttributeAnnotation))
                 {

@@ -66,7 +66,7 @@ namespace Rubberduck.Inspections.Concrete
             var results = new List<IdentifierReference>();
             foreach (var moduleDeclaration in finder.UserDeclarations(DeclarationType.Module))
             {
-                if (moduleDeclaration == null || moduleDeclaration.IsIgnoringInspectionResultFor(AnnotationName))
+                if (moduleDeclaration == null)
                 {
                     continue;
                 }
@@ -78,7 +78,7 @@ namespace Rubberduck.Inspections.Concrete
                 results.AddRange(possiblyObjectLhsLetAssignmentsWithFailedLetResolutionOnRhs);
             }
 
-            return results.Where(reference => !reference.IsIgnoringInspectionResultFor(AnnotationName));
+            return results;
         }
 
         private static IEnumerable<IdentifierReference> FailedLetResolutionAssignments(QualifiedModuleName module, DeclarationFinder finder)

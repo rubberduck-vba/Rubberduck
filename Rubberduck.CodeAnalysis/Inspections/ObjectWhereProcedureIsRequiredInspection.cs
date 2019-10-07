@@ -70,7 +70,7 @@ namespace Rubberduck.Inspections.Concrete
             var results = new List<IInspectionResult>();
             foreach (var moduleDeclaration in State.DeclarationFinder.UserDeclarations(DeclarationType.Module))
             {
-                if (moduleDeclaration == null || moduleDeclaration.IsIgnoringInspectionResultFor(AnnotationName))
+                if (moduleDeclaration == null)
                 {
                     continue;
                 }
@@ -102,8 +102,7 @@ namespace Rubberduck.Inspections.Concrete
 
         private bool IsResultReference(IdentifierReference reference)
         {
-            return reference.IsProcedureCoercion
-                   && !reference.IsIgnoringInspectionResultFor(AnnotationName);
+            return reference.IsProcedureCoercion;
         }
 
         private IInspectionResult BoundInspectionResult(IdentifierReference reference, IDeclarationFinderProvider declarationFinderProvider)

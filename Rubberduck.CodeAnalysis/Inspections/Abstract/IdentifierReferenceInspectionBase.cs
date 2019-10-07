@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections.Abstract
             var results = new List<IInspectionResult>();
             foreach (var moduleDeclaration in State.DeclarationFinder.UserDeclarations(DeclarationType.Module))
             {
-                if (moduleDeclaration == null || moduleDeclaration.IsIgnoringInspectionResultFor(AnnotationName))
+                if (moduleDeclaration == null)
                 {
                     continue;
                 }

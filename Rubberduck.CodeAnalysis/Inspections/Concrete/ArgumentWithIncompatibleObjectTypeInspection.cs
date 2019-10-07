@@ -109,7 +109,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                                                              argumentReferenceWithTypeName.argumentTypeName));
 
             return offendingArguments
-                .Where(argumentReferenceWithTypeName => !IsIgnored(argumentReferenceWithTypeName.Item1))
+                // Ignoring the Declaration disqualifies all assignments
+                .Where(argumentReferenceWithTypeName => !argumentReferenceWithTypeName.Item1.Declaration.IsIgnoringInspectionResultFor(AnnotationName))
                 .Select(argumentReference => InspectionResult(argumentReference, _declarationFinderProvider));
         }
 
@@ -165,13 +166,6 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             }
 
             return classType.Supertypes.Select(supertype => supertype.QualifiedModuleName.ToString()).Contains(typeName);
-        }
-
-        private bool IsIgnored(IdentifierReference assignment)
-        {
-            return assignment.IsIgnoringInspectionResultFor(AnnotationName)
-                   // Ignoring the Declaration disqualifies all assignments
-                   || assignment.Declaration.IsIgnoringInspectionResultFor(AnnotationName);
         }
 
         private IInspectionResult InspectionResult((IdentifierReference argumentReference, string argumentTypeName) argumentReferenceWithTypeName, IDeclarationFinderProvider declarationFinderProvider)
