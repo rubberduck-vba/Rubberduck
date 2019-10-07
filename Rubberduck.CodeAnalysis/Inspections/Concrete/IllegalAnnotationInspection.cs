@@ -56,7 +56,12 @@ namespace Rubberduck.Inspections.Concrete
                                      || annotation.AnnotatedLine == null);
             var attributeAnnotationsInDocuments = AttributeAnnotationsInDocuments(userDeclarations);
 
-            var illegalAnnotations = unboundAnnotations.Concat(attributeAnnotationsInDocuments).ToHashSet();
+            var attributeAnnotationsOnDeclarationsNotAllowingAttributes = AttributeAnnotationsOnDeclarationsNotAllowingAttributes(userDeclarations);
+
+            var illegalAnnotations = unboundAnnotations
+                .Concat(attributeAnnotationsInDocuments)
+                .Concat(attributeAnnotationsOnDeclarationsNotAllowingAttributes)
+                .ToHashSet();
 
             return illegalAnnotations.Select(annotation => 
                 new QualifiedContextInspectionResult(
@@ -81,6 +86,15 @@ namespace Rubberduck.Inspections.Concrete
             var declarationsInDocuments = userDeclarations
                 .Where(declaration => declaration.QualifiedModuleName.ComponentType == ComponentType.Document);
             return declarationsInDocuments.SelectMany(doc => doc.Annotations).Where(pta => pta.Annotation is IAttributeAnnotation);
+        }
+
+        private static IEnumerable<IParseTreeAnnotation> AttributeAnnotationsOnDeclarationsNotAllowingAttributes(IEnumerable<Declaration> userDeclarations)
+        {
+            return userDeclarations
+                .Where(declaration => declaration.AttributesPassContext == null 
+                                      && !declaration.DeclarationType.HasFlag(DeclarationType.Module))
+                .SelectMany(declaration => declaration.Annotations)
+                .Where(parseTreeAnnotation => parseTreeAnnotation.Annotation is IAttributeAnnotation);
         }
     }
 }

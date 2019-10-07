@@ -45,7 +45,6 @@ namespace Rubberduck.Inspections.Concrete
                          .Union(State.DeclarationFinder.UserDeclarations(DeclarationType.Parameter))
                          where (item.DeclarationType != DeclarationType.Parameter || (item.DeclarationType == DeclarationType.Parameter && !item.IsArray))
                          && item.DeclarationType != DeclarationType.Control
-                         && !item.IsIgnoringInspectionResultFor(AnnotationName)
                          && !item.IsTypeSpecified
                          && !item.IsUndeclared
                          select new DeclarationInspectionResult(this, string.Format(InspectionResults.ImplicitVariantDeclarationInspection, item.DeclarationType, item.IdentifierName), item);

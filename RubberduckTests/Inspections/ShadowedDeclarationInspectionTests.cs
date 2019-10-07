@@ -5111,6 +5111,157 @@ Public {sameName} As String";
 
         [Test]
         [Category("Inspections")]
+        [TestCase("", "As Object", "")]    //Variable
+        [TestCase("Function", "As Object", "End Function")]
+        [TestCase("Sub", "", "End Sub")]
+        [TestCase("Property Get", "As Object", "End Property")]
+        [TestCase("Property Let", "", "End Property")]
+        [TestCase("Property Set", "", "End Property")]
+        public void ShadowedDeclaration_DoesNotReturnResult_AssertBecauseOfDebugAssert(string memberType, string asTypeClause, string endTag)
+        {
+            var code =
+                $@"Public {memberType} Assert() {asTypeClause} 
+{endTag}";
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("TestClass", ComponentType.ClassModule, code)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            IEnumerable<IInspectionResult> inspectionResults;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new ShadowedDeclarationInspection(state);
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+            }
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ShadowedDeclaration_DoesNotReturnResult_LocalAssertVariableAssertBecauseOfDebugAssert()
+        {
+            var code =
+                @"Public Sub Foo()
+    Dim Assert As Long
+End Sub";
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("TestClass", ComponentType.ClassModule, code)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            IEnumerable<IInspectionResult> inspectionResults;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new ShadowedDeclarationInspection(state);
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+            }
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ShadowedDeclaration_DoesNotReturnResult_AssertParameterAssertBecauseOfDebugAssert()
+        {
+            var code =
+                @"Public Sub Foo(Assert As Boolean)
+End Sub";
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("TestClass", ComponentType.ClassModule, code)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            IEnumerable<IInspectionResult> inspectionResults;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new ShadowedDeclarationInspection(state);
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+            }
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [TestCase("", "As Object", "")]    //Variable
+        [TestCase("Function", "As Object", "End Function")]
+        [TestCase("Sub", "", "End Sub")]
+        [TestCase("Property Get", "As Object", "End Property")]
+        [TestCase("Property Let", "", "End Property")]
+        [TestCase("Property Set", "", "End Property")]
+        public void ShadowedDeclaration_ReturnResult_LocalAssertVariableAssertBecauseOfNonDebugAssert(string memberType, string asTypeClause, string endTag)
+        {
+            var code =
+                $@"Public {memberType} Assert() {asTypeClause} 
+{endTag}
+
+Public Sub Foo()
+    Dim Assert As Long
+End Sub";
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("TestClass", ComponentType.ClassModule, code)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            IEnumerable<IInspectionResult> inspectionResults;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new ShadowedDeclarationInspection(state);
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+            }
+
+            Assert.AreEqual(1,inspectionResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [TestCase("", "As Object", "")]    //Variable
+        [TestCase("Function", "As Object", "End Function")]
+        [TestCase("Sub", "", "End Sub")]
+        [TestCase("Property Get", "As Object", "End Property")]
+        [TestCase("Property Let", "", "End Property")]
+        [TestCase("Property Set", "", "End Property")]
+        public void ShadowedDeclaration_ReturnResult_AssertParameterAssertBecauseOfNonDebugAssert(string memberType, string asTypeClause, string endTag)
+        {
+            var code =
+                $@"Public {memberType} Assert() {asTypeClause} 
+{endTag}
+
+Public Sub Foo(Assert As Boolean)
+End Sub";
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("TestClass", ComponentType.ClassModule, code)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            IEnumerable<IInspectionResult> inspectionResults;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new ShadowedDeclarationInspection(state);
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+            }
+
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_Ignored_DoesNotReturnResult()
         {
             string ignoredDeclarationCode =

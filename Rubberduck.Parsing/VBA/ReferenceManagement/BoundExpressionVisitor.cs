@@ -89,6 +89,12 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                     break;
                 case MissingArgumentExpression missingArgumentExpression:
                     break;
+                case OutputListExpression outputListExpression:
+                    Visit(outputListExpression, module, scope, parent);
+                    break;
+                case ObjectPrintExpression objectPrintExpression:
+                    Visit(objectPrintExpression, module, scope, parent);
+                    break;
                 default:
                     throw new NotSupportedException($"Unexpected bound expression type {boundExpression.GetType()}");
             }
@@ -172,6 +178,33 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 isAssignmentTarget,
                 hasExplicitLetStatement,
                 isSetAssignment);
+        }
+
+        private void Visit(
+            ObjectPrintExpression expression,
+            QualifiedModuleName module,
+            Declaration scope,
+            Declaration parent)
+        {
+            var outputListExpression = expression.OutputListExpression;
+            if (outputListExpression != null)
+            {
+                Visit(expression.OutputListExpression, module, scope, parent);
+            }
+
+            Visit(expression.PrintMethodExpressions, module, scope, parent);
+        }
+
+        private void Visit(
+            OutputListExpression expression,
+            QualifiedModuleName module,
+            Declaration scope,
+            Declaration parent)
+        {
+            foreach (var itemExpression in expression.ItemExpressions)
+            {
+                Visit(itemExpression, module, scope, parent);
+            }
         }
 
         private void Visit(

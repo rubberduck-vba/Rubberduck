@@ -71,8 +71,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
         protected override bool IsResultReference(IdentifierReference failedLetCoercion)
         {
-            return !failedLetCoercion.IsAssignment
-                   && !failedLetCoercion.IsIgnoringInspectionResultFor(AnnotationName);
+            return !failedLetCoercion.IsAssignment;
         }
 
         protected override string ResultDescription(IdentifierReference failedLetCoercion)

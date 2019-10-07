@@ -45,8 +45,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             return State.DeclarationFinder.FindAllUserInterfaces()
                 .SelectMany(interfaceModule => interfaceModule.Members
-                    .Where(member => ((ModuleBodyElementDeclaration)member).Block.ContainsExecutableStatements(true)
-                                     && !member.IsIgnoringInspectionResultFor(AnnotationName)))
+                    .Where(member => ((ModuleBodyElementDeclaration)member).Block.ContainsExecutableStatements(true)))
                 .Select(result => new DeclarationInspectionResult(this,
                                         string.Format(InspectionResults.ImplementedInterfaceMemberInspection,
                                                     result.QualifiedModuleName.ToString(),

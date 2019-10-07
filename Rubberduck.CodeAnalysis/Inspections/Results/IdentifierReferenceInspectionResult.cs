@@ -11,6 +11,8 @@ namespace Rubberduck.Inspections.Results
 {
     public class IdentifierReferenceInspectionResult : InspectionResultBase
     {
+        public IdentifierReference Reference { get; }
+
         public IdentifierReferenceInspectionResult(IInspection inspection, string description, IDeclarationFinderProvider declarationFinderProvider, IdentifierReference reference, dynamic properties = null) :
             base(inspection,
                  description,
@@ -21,6 +23,7 @@ namespace Rubberduck.Inspections.Results
                  GetQualifiedMemberName(declarationFinderProvider, reference),
                  (object)properties)
         {
+            Reference = reference;
         }
 
         private static QualifiedMemberName? GetQualifiedMemberName(IDeclarationFinderProvider declarationFinderProvider, IdentifierReference reference)
