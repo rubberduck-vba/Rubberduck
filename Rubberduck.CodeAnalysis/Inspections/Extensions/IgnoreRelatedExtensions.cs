@@ -5,7 +5,6 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
-using System;
 using System.Linq;
 
 namespace Rubberduck.Inspections.Inspections.Extensions
@@ -37,12 +36,12 @@ namespace Rubberduck.Inspections.Inspections.Extensions
         {
             switch (result)
             {
-                case DeclarationInspectionResult dr:
-                    return dr.Target.IsIgnoringInspectionResultFor(dr.Inspection.AnnotationName);
-                case IdentifierReferenceInspectionResult irr:
-                    return irr.QualifiedName.IsIgnoringInspectionResultFor(irr.Context.Start.Line, declarationFinder, irr.Inspection.AnnotationName);
-                case QualifiedContextInspectionResult qcr:
-                    return qcr.QualifiedName.IsIgnoringInspectionResultFor(qcr.Context.Start.Line, declarationFinder, qcr.Inspection.AnnotationName);
+                case DeclarationInspectionResult declarationResult:
+                    return declarationResult.Target.IsIgnoringInspectionResultFor(declarationResult.Inspection.AnnotationName);
+                case IdentifierReferenceInspectionResult identifierReferenceResult:
+                    return identifierReferenceResult.Reference.IsIgnoringInspectionResultFor(identifierReferenceResult.Inspection.AnnotationName);
+                case QualifiedContextInspectionResult qualifiedContextResult:
+                    return qualifiedContextResult.QualifiedName.IsIgnoringInspectionResultFor(qualifiedContextResult.Context.Start.Line, declarationFinder, qualifiedContextResult.Inspection.AnnotationName);
                 default:
                     return false;
             }
