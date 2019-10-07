@@ -10,7 +10,7 @@ using Rubberduck.VBEditor;
 namespace Rubberduck.Inspections.Concrete
 {
     /// <summary>
-    /// Identifies the use indexed default member accesses for which the default member cannot be determined at compile time.
+    /// Identifies the use of indexed default member accesses for which the default member cannot be determined at compile time.
     /// </summary>
     /// <why>
     /// Default member accesses hide away the actually called member. This is especially misleading if there is no indication in the expression that such a call is made

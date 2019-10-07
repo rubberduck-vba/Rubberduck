@@ -9,7 +9,7 @@ using Rubberduck.Parsing.Inspections;
 namespace Rubberduck.Inspections.Concrete
 {
     /// <summary>
-    /// Identifies the use indexed default member accesses that require a recursive default member resolution.
+    /// Identifies the use of indexed default member accesses that require a recursive default member resolution.
     /// </summary>
     /// <why>
     /// An indexed default member access hides away the actually called member. This is especially problematic if the corresponding parameterized default member is not on the interface of the object itself.

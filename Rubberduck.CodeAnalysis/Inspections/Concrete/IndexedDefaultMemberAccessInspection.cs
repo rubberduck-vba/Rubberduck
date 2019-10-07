@@ -9,42 +9,24 @@ using Rubberduck.Parsing.Inspections;
 namespace Rubberduck.Inspections.Concrete
 {
     /// <summary>
-    /// Identifies the use indexed default member accesses.
+    /// Identifies the use of indexed default member accesses.
     /// </summary>
     /// <why>
     /// An indexed default member access hides away the actually called member.
     /// </why>
     /// <example hasResult="true">
     /// <![CDATA[
-    /// Class1:
-    ///
-    /// Public Function Foo(ByVal arg As Long) As Long
-    /// Attibute Foo.VB_UserMemId = 0
-    ///     Foo = 42
-    /// End Function
-    ///
-    /// Module:
-    /// 
-    /// Public Sub DoSomething(ByVal arg As Class1)
+    /// Public Sub DoSomething(ByVal coll As Collection)
     ///     Dim bar As Variant
-    ///     bar = arg(23)
+    ///     bar = coll(23)
     /// End Sub
     /// ]]>
     /// </example>
     /// <example hasResult="false">
     /// <![CDATA[
-    /// Class1:
-    ///
-    /// Public Function Foo(ByVal arg As Long) As Long
-    /// Attibute Foo.VB_UserMemId = 0
-    ///     Foo = 42
-    /// End Function
-    ///
-    /// Module:
-    /// 
-    /// Public Sub DoSomething(ByVal arg As Class1)
+    /// Public Sub DoSomething(ByVal coll As Collection)
     ///     Dim bar As Variant
-    ///     bar = arg.Foo(23)
+    ///     bar = coll.Item(23)
     /// End Sub
     /// ]]>
     /// </example>

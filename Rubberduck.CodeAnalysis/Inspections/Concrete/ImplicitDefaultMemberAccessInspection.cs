@@ -8,7 +8,7 @@ using Rubberduck.Parsing.Inspections;
 namespace Rubberduck.Inspections.Concrete
 {
     /// <summary>
-    /// Identifies the use non-indexed default member accesses.
+    /// Identifies the use of non-indexed default member accesses.
     /// </summary>
     /// <why>
     /// Default member accesses hide away the actually called member. This is especially misleading if there is no indication in the expression that such a call is made
@@ -24,16 +24,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     /// <example hasResult="true">
     /// <![CDATA[
-    /// Class1:
-    ///
-    /// Public Property Let Foo(RHS As Long)
-    /// Attibute Foo.VB_UserMemId = 0
-    /// End Function
-    ///
-    /// Module:
-    /// 
-    /// Public Sub DoSomething(ByVal arg As Class1)
-    ///     Dim bar As Variant
+    /// Public Sub DoSomething(ByVal arg As ADODB.Connection)
+    ///     Dim bar As String
     ///     arg = bar
     /// End Sub
     /// ]]>
@@ -48,17 +40,9 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     /// <example hasResult="false">
     /// <![CDATA[
-    /// Class1:
-    ///
-    /// Public Property Let Foo(RHS As Long)
-    /// Attibute Foo.VB_UserMemId = 0
-    /// End Function
-    ///
-    /// Module:
-    /// 
-    /// Public Sub DoSomething(ByVal arg As Class1)
-    ///     Dim bar As Variant
-    ///     arg.Foo = bar
+    /// Public Sub DoSomething(ByVal arg As ADODB.Connection)
+    ///     Dim bar As String
+    ///     arg.ConnectionString = bar
     /// End Sub
     /// ]]>
     public sealed class ImplicitDefaultMemberAccessInspection : IdentifierReferenceInspectionBase

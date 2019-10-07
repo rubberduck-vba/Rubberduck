@@ -11,7 +11,7 @@ using Rubberduck.VBEditor;
 namespace Rubberduck.Inspections.Concrete
 {
     /// <summary>
-    /// Identifies the use indexed default member accesses for which the default member cannot be determined at compile time.
+    /// Identifies the use of indexed default member accesses for which the default member cannot be determined at compile time.
     /// </summary>
     /// <why>
     /// An indexed default member access hides away the actually called member. This is especially problematic if the default member cannot be determined from the declared type of the object.
