@@ -70,6 +70,12 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 case ProcedureCoercionExpression procedureCoercionExpression:
                     Visit(procedureCoercionExpression, parent, withExpression);
                     break;
+                case OutputListExpression outputListExpression:
+                    Visit(outputListExpression, parent, withExpression);
+                    break;
+                case ObjectPrintExpression objectPrintExpression:
+                    Visit(objectPrintExpression, parent, withExpression);
+                    break;
                 case MissingArgumentExpression missingArgumentExpression:
                     break;
                 default:
@@ -105,6 +111,25 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
         private void Visit(MemberAccessExpression expression, Declaration parent, IBoundExpression withExpression)
         {
             Visit(expression.LExpression, parent, withExpression);
+        }
+
+        private void Visit(ObjectPrintExpression expression, Declaration parent, IBoundExpression withExpression)
+        {
+            var outputListExpression = expression.OutputListExpression;
+            if (outputListExpression != null)
+            {
+                Visit(expression.OutputListExpression, parent, withExpression);
+            }
+
+            Visit(expression.PrintMethodExpressions, parent, withExpression);
+        }
+
+        private void Visit(OutputListExpression expression, Declaration parent, IBoundExpression withExpression)
+        {
+            foreach (var itemExpression in expression.ItemExpressions)
+            {
+                Visit(itemExpression, parent, withExpression);
+            }
         }
 
         private void Visit(IndexExpression expression, Declaration parent, IBoundExpression withExpression)
