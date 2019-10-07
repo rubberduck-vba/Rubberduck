@@ -13,6 +13,7 @@ using Rubberduck.Refactorings.Exceptions.Rename;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.Utility;
+using NLog;
 
 namespace Rubberduck.Refactorings.Rename
 {
@@ -25,12 +26,16 @@ namespace Rubberduck.Refactorings.Rename
         private readonly IProjectsProvider _projectsProvider;
         private readonly IDictionary<DeclarationType, Action<RenameModel, IRewriteSession>> _renameActions;
 
+        private readonly IParseManager _parseManager;
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public RenameRefactoring(IRefactoringPresenterFactory factory, IDeclarationFinderProvider declarationFinderProvider, IProjectsProvider projectsProvider, IRewritingManager rewritingManager, ISelectionService selectionService)
+
+        public RenameRefactoring(IRefactoringPresenterFactory factory, IDeclarationFinderProvider declarationFinderProvider, IParseManager parseManager, IProjectsProvider projectsProvider, IRewritingManager rewritingManager, ISelectionService selectionService)
         :base(rewritingManager, selectionService, factory)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _projectsProvider = projectsProvider;
+            _parseManager = parseManager;
 
             _renameActions = new Dictionary<DeclarationType, Action<RenameModel, IRewriteSession>>
             {
@@ -63,7 +68,6 @@ namespace Rubberduck.Refactorings.Rename
             return model;
         }
 
-        //FIXME: The parser needs to be suspended during the refactoring in case a component (or project) gets renamed because the VBE API object rename causes a separate reparse. 
         protected override void RefactorImpl(RenameModel model)
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
@@ -331,6 +335,16 @@ namespace Rubberduck.Refactorings.Rename
 
         private void RenameModule(RenameModel model, IRewriteSession rewriteSession)
         {
+            //The parser needs to be suspended during the refactoring of a component because the VBE API object rename causes a separate reparse. 
+            var suspendResult = _parseManager.OnSuspendParser(this, new[] { ParserState.Ready }, () => RenameModuleInternal(model, rewriteSession));
+            if (suspendResult != SuspensionResult.Completed)
+            {
+                _logger.Warn("RenameModule failed.");
+            }
+        }
+
+        private void RenameModuleInternal(RenameModel model, IRewriteSession rewriteSession)
+        {
             RenameReferences(model.Target, model.NewName, rewriteSession);
 
             if (model.Target.DeclarationType.HasFlag(DeclarationType.ClassModule))
@@ -397,8 +411,18 @@ namespace Rubberduck.Refactorings.Rename
             }
         }
 
-        //TODO: Implement renaming references to the project in code.
         private void RenameProject(RenameModel model, IRewriteSession rewriteSession)
+        {
+            //The parser needs to be suspended during the refactoring of a project because the VBE API object rename causes a separate reparse. 
+            var suspendResult = _parseManager.OnSuspendParser(this, new[] { ParserState.Ready }, () => RenameProjectInternal(model, rewriteSession));
+            if (suspendResult != SuspensionResult.Completed)
+            {
+                _logger.Warn("RenameProject failed.");
+            }
+        }
+
+        //TODO: Implement renaming references to the project in code.
+        private void RenameProjectInternal(RenameModel model, IRewriteSession rewriteSession)
         {
             var project = _projectsProvider.Project(model.Target.ProjectId);
 
