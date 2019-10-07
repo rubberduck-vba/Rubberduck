@@ -61,7 +61,6 @@ namespace Rubberduck.Inspections.Concrete
                                                             && !IsAssigned(function));
 
             return unassigned
-                .Where(declaration => !declaration.IsIgnoringInspectionResultFor(AnnotationName))
                 .Select(issue =>
                     new DeclarationInspectionResult(this,
                                          string.Format(InspectionResults.NonReturningFunctionInspection, issue.IdentifierName),

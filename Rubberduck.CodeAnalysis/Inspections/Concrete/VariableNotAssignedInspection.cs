@@ -53,8 +53,7 @@ namespace Rubberduck.Inspections.Concrete
                     !declaration.IsWithEvents
                     && State.DeclarationFinder.MatchName(declaration.AsTypeName).All(item => item.DeclarationType != DeclarationType.UserDefinedType) // UDT variables don't need to be assigned
                     && !declaration.IsSelfAssigned
-                    && !declaration.References.Any(reference => reference.IsAssignment || IsAssignedByRefArgument(reference.ParentScoping, reference)))
-                .Where(result => !result.IsIgnoringInspectionResultFor(AnnotationName));
+                    && !declaration.References.Any(reference => reference.IsAssignment || IsAssignedByRefArgument(reference.ParentScoping, reference)));
 
             return declarations.Select(issue => 
                 new DeclarationInspectionResult(this, string.Format(InspectionResults.VariableNotAssignedInspection, issue.IdentifierName), issue));

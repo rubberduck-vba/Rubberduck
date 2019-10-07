@@ -502,39 +502,31 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
         public void Resolve(VBAParser.PrintStmtContext context)
         {
             ResolveDefault(context.markedFileNumber().expression(), true);
-            ResolveOutputList(context.outputList());
+            var outputList = context.outputList();
+            if (outputList != null)
+            {
+                ResolveOutputList(outputList);
+            }
+        }
+
+        public void Resolve(VBAParser.UnqualifiedObjectPrintStmtContext context)
+        {
+            ResolveDefault(context);
         }
 
         public void Resolve(VBAParser.WriteStmtContext context)
         {
             ResolveDefault(context.markedFileNumber().expression(), true);
-            ResolveOutputList(context.outputList());
+            var outputList = context.outputList();
+            if (outputList != null)
+            {
+                ResolveOutputList(outputList);
+            }
         }
 
         private void ResolveOutputList(VBAParser.OutputListContext outputList)
         {
-            if (outputList == null)
-            {
-                return;
-            }
-            foreach (var outputItem in outputList.outputItem())
-            {
-                if (outputItem.outputClause() != null)
-                {
-                    if (outputItem.outputClause().spcClause() != null)
-                    {
-                        ResolveDefault(outputItem.outputClause().spcClause().spcNumber().expression(), true);
-                    }
-                    if (outputItem.outputClause().tabClause() != null && outputItem.outputClause().tabClause().tabNumberClause() != null)
-                    {
-                        ResolveDefault(outputItem.outputClause().tabClause().tabNumberClause().tabNumber().expression(), true);
-                    }
-                    if (outputItem.outputClause().outputExpression() != null)
-                    {
-                        ResolveDefault(outputItem.outputClause().outputExpression().expression(), true);
-                    }
-                }
-            }
+            ResolveDefault(outputList);
         }
 
         public void Resolve(VBAParser.InputStmtContext context)
@@ -816,48 +808,6 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 {
                     ResolveDefault(enumMember.expression(), false);
                 }
-            }
-        }
-
-        public void Resolve(VBAParser.DebugPrintStmtContext context)
-        {
-            if (DebugDeclarations.DebugPrint != null)
-            {
-                // Because Debug.Print has a special argument (an output list) instead
-                // of normal arguments we can't treat it as a function call.
-                var debugPrint = DebugDeclarations.DebugPrint;
-                var debugModule = debugPrint.ParentDeclaration;
-                debugModule.AddReference(
-                    _qualifiedModuleName,
-                    _currentScope,
-                    _currentParent,
-                    context.debugPrint().debugModule(),
-                    context.debugPrint().debugModule().GetText(),
-                    debugModule,
-                    context.debugPrint().debugModule().GetSelection(),
-                    FindIdentifierAnnotations(_qualifiedModuleName,
-                        context.debugPrint().debugModule().GetSelection().StartLine));
-                debugPrint.AddReference(
-                    _qualifiedModuleName,
-                    _currentScope,
-                    _currentParent,
-                    context.debugPrint().debugPrintSub(),
-                    context.debugPrint().debugPrintSub().GetText(),
-                    debugPrint,
-                    context.debugPrint().debugPrintSub().GetSelection(),
-                    FindIdentifierAnnotations(_qualifiedModuleName,
-                        context.debugPrint().debugPrintSub().GetSelection().StartLine));
-            }
-            else
-            {
-                Logger.Warn("Debug.Print (custom declaration) has not been loaded, skipping resolving Debug.Print call.");
-            }
-
-            //The output list should be resolved no matter whether we have a declaration for Debug.Print or not.
-            var outputList = context.outputList();
-            if (outputList != null)
-            {
-                ResolveOutputList(outputList);
             }
         }
     }

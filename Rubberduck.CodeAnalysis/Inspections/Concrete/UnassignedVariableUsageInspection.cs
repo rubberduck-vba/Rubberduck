@@ -71,7 +71,6 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(d => d.References.Any() && !excludedDeclarations.Any(excl => DeclarationReferencesContainsReference(excl, d)))
                 .SelectMany(d => d.References.Where(r => !IsAssignedByRefArgument(r.ParentScoping, r)))
                 .Distinct()
-                .Where(r => !r.IsIgnoringInspectionResultFor(AnnotationName))
                 .Where(r => !r.Context.TryGetAncestor<VBAParser.RedimStmtContext>(out _) && !IsArraySubscriptAssignment(r))
                 .Select(r => new IdentifierReferenceInspectionResult(this,
                     string.Format(InspectionResults.UnassignedVariableUsageInspection, r.IdentifierName),

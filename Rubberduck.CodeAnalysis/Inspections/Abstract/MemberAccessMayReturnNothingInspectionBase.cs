@@ -29,7 +29,9 @@ namespace Rubberduck.Inspections.Abstract
             }
 
             var output = new List<IInspectionResult>();
-            foreach (var reference in interesting.Where(use => !use.IsIgnoringInspectionResultFor(AnnotationName)))
+            // prefilter to reduce search space
+            var prefilteredReferences = interesting.Where(use => !use.IsIgnoringInspectionResultFor(AnnotationName));
+            foreach (var reference in prefilteredReferences)
             {
                 var access = reference.Context.GetAncestor<VBAParser.MemberAccessExprContext>();
                 var usageContext = access.Parent is VBAParser.IndexExprContext

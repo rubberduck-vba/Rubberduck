@@ -67,12 +67,10 @@ namespace Rubberduck.Inspections.Concrete
 
             return members
                 .SelectMany(declaration => declaration.References)
-                .Where(issue => !issue.IsIgnoringInspectionResultFor(AnnotationName))
                 .Select(issue => new IdentifierReferenceInspectionResult(this,
                                                       string.Format(InspectionResults.ImplicitActiveSheetReferenceInspection, issue.Declaration.IdentifierName),
                                                       State,
-                                                      issue))
-                .ToList();
+                                                      issue));
         }
     }
 }
