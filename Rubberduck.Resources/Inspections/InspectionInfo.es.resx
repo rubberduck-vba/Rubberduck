@@ -232,9 +232,6 @@ Si el parámetro puede ser nulo, ignore el resultado de esta inspección; pasar 
   <data name="UndeclaredVariableInspection" xml:space="preserve">
     <value>El código que utiliza variables no declaradas no se compila cuando se especifica Option Explicit. Las variables no declaradas siempre son Variant, un tipo de datos que incurre en gastos generales y almacenamiento innecesarios.</value>
   </data>
-  <data name="ImplicitDefaultMemberAssignmentInspection" xml:space="preserve">
-    <value>Dichas asignaciones parecen que asignan una variable de objeto a un tipo de valor en la superficie, pero en realidad están asignando el miembro predeterminado de ese objeto, de manera implícita. Considere referirse explícitamente al miembro predeterminado, para mejorar la legibilidad.</value>
-  </data>
   <data name="HungarianNotationInspection" xml:space="preserve">
     <value>La notación húngara hace que el código sea menos legible, y es redundante cuando se usan variables fuertemente tipificadas y nombres significativos.</value>
   </data>
