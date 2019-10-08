@@ -14,6 +14,7 @@ using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.Utility;
 using NLog;
+using Rubberduck.Resources;
 
 namespace Rubberduck.Refactorings.Rename
 {
@@ -339,7 +340,8 @@ namespace Rubberduck.Refactorings.Rename
             var suspendResult = _parseManager.OnSuspendParser(this, new[] { ParserState.Ready }, () => RenameModuleInternal(model, rewriteSession));
             if (suspendResult != SuspensionResult.Completed)
             {
-                _logger.Warn("RenameModule failed.");
+                _logger.Warn($"RenameModule failed because a parser suspension request could not be fulfilled.The request's result was '{suspendResult.ToString()}'.");
+                throw new OperationCanceledException(RubberduckUI.RefactoringFailure_BaseMessage);
             }
         }
 
@@ -417,7 +419,8 @@ namespace Rubberduck.Refactorings.Rename
             var suspendResult = _parseManager.OnSuspendParser(this, new[] { ParserState.Ready }, () => RenameProjectInternal(model, rewriteSession));
             if (suspendResult != SuspensionResult.Completed)
             {
-                _logger.Warn("RenameProject failed.");
+                _logger.Warn($"RenameProject failed because a parser suspension request could not be fulfilled.The request's result was '{suspendResult.ToString()}'.");
+                throw new OperationCanceledException(RubberduckUI.RefactoringFailure_BaseMessage);
             }
         }
 

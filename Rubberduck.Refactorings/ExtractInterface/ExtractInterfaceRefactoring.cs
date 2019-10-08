@@ -7,6 +7,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.ImplementInterface;
+using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.Utility;
@@ -67,7 +68,8 @@ namespace Rubberduck.Refactorings.ExtractInterface
             var suspendResult = _parseManager.OnSuspendParser(this, new[] {ParserState.Ready}, () => AddInterfaceInternal(model));
             if (suspendResult != SuspensionResult.Completed)
             {
-                _logger.Warn("Extract interface failed.");
+                _logger.Warn($"Extract interface failed because a parser suspension request could not be fulfilled.The request's result was '{suspendResult.ToString()}'.");
+                throw new OperationCanceledException(RubberduckUI.RefactoringFailure_BaseMessage);
             }
         }
 
