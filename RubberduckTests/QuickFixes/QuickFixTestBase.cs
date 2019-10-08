@@ -105,6 +105,20 @@ namespace RubberduckTests.QuickFixes
             quickFix.Fix(resultToFix, rewriteSession);
         }
 
+        protected string ApplyQuickFixToAllInspectionResults(
+            IVBE vbe,
+            string componentName,
+            Func<RubberduckParserState, IInspection> inspectionFactory,
+            CodeKind codeKind = CodeKind.CodePaneCode)
+        {
+            return ApplyQuickFixToAppropriateInspectionResults(
+                vbe,
+                componentName,
+                inspectionFactory,
+                ApplyToAllResults,
+                codeKind);
+        }
+
         protected string ApplyQuickFixToAllInspectionResults(string inputCode,
             Func<RubberduckParserState, IInspection> inspectionFactory,
             CodeKind codeKind = CodeKind.CodePaneCode)
