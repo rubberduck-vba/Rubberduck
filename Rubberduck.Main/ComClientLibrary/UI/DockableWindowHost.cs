@@ -386,7 +386,7 @@ namespace Rubberduck.UI
 
             control.Dock = DockStyle.Fill;
             _userControl.Controls.Add(control);
-
+            
             AdjustSize();
         }
 
@@ -429,6 +429,39 @@ namespace Rubberduck.UI
             }
         }
 
+        private const int WM_SYSCOMMAND = 0x112;
+        private const int MF_BYPOSITION = 0x400;
+        private const int ToggleDockableMenuId = 1000;
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
+        [DllImport("user32.dll")]
+        private static extern bool InsertMenu(IntPtr hMenu, int wPosition, int wFlags, int wIDNewItem, string lpNewItem);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, IntPtr lParam);
+
+        private static void InsertDockableToggle(IntPtr handle)
+        {
+            var menuHandle = GetSystemMenu(handle, false);
+
+            if (menuHandle == IntPtr.Zero)
+            {
+                Debug.Print("No menu handle");
+                return;
+            }
+
+            if (!InsertMenu(menuHandle, 5, MF_BYPOSITION, ToggleDockableMenuId, "Dockable"))
+            {
+                Debug.Print("Failed to insert a menu item for dockable command");
+            }
+        }
+
+        private static void ToggleDockable(IntPtr hWndVBE)
+        {
+            SendMessage(hWndVBE, 0x1044, 0xB5, IntPtr.Zero);
+        }
+
         [ComVisible(false)]
         public class ParentWindow : SubclassingWindow
         {
@@ -452,6 +485,14 @@ namespace Rubberduck.UI
             {
                 switch ((uint)msg)
                 {
+                    case (uint)WM.SYSCOMMAND:
+                        switch (wParam.ToInt32())
+                        {
+                            case ToggleDockableMenuId:
+                                ToggleDockable(_vbeHwnd);
+                                break;
+                        }
+                        break;
                     case (uint)WM.SIZE:
                         var args = new SubClassingWindowEventArgs(lParam);
                         if (!_closing) OnCallBackEvent(args);
