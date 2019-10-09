@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor.Events;
@@ -30,6 +31,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _refactoring = refactoring;
             _failureNotifier = failureNotifier;
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+            AddToOnExecuteEvaluation(FurtherCanExecuteEvaluation);
         }
 
         public sealed override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
@@ -38,19 +40,28 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             return _state.Status == ParserState.Ready &&
                    parameter is CodeExplorerComponentViewModel node &&
-                   ExtractInterfaceRefactoring.CanExecute((RubberduckParserState)_state, node.QualifiedSelection.Value.QualifiedName);
+                   _refactoring.CanExecute((RubberduckParserState)_state, node.QualifiedSelection.Value.QualifiedName);
+        }
+
+        private bool FurtherCanExecuteEvaluation(object parameter)
+        {
+            return _state.Status == ParserState.Ready &&
+                parameter is CodeExplorerItemViewModel node &&
+                node.Declaration != null;
         }
 
         protected override void OnExecute(object parameter)
         {
-            if (_state.Status != ParserState.Ready ||
-                !(parameter is CodeExplorerItemViewModel node) ||
-                node.Declaration == null)
+            try
             {
-                return;
+                _refactoring.Refactor(((CodeExplorerItemViewModel)parameter).Declaration);
             }
-
-            _refactoring.Refactor(node.Declaration);
+            catch (RefactoringAbortedException)
+            { }
+            catch (RefactoringException exception)
+            {
+                _failureNotifier.Notify(exception);
+            }
         }
     }
 }

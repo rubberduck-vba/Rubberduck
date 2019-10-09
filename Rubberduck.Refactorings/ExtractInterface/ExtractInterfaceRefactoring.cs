@@ -137,7 +137,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             DeclarationType.UserForm
         };
 
-        public static bool CanExecute(RubberduckParserState state, QualifiedModuleName qualifiedName)
+        public bool CanExecute(RubberduckParserState state, QualifiedModuleName qualifiedName)
         {
             var interfaceClass = state.AllUserDeclarations.SingleOrDefault(item =>
                 item.QualifiedName.QualifiedModuleName.Equals(qualifiedName)

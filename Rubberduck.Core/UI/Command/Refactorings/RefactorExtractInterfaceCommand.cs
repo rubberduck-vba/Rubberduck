@@ -32,7 +32,7 @@ namespace Rubberduck.UI.Command.Refactorings
             {
                 return false;
             }
-            return ExtractInterfaceRefactoring.CanExecute(_state, activeSelection.Value.QualifiedName);
+            return ((ExtractInterfaceRefactoring)Refactoring).CanExecute(_state, activeSelection.Value.QualifiedName);
         }
 
         private static readonly IReadOnlyList<DeclarationType> ModuleTypes = new[]
