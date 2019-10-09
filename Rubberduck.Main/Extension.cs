@@ -211,7 +211,9 @@ namespace Rubberduck
             catch (Exception exception)
             {
                 _logger.Fatal(exception);
-                System.Windows.Forms.MessageBox.Show(
+                // TODO Use Rubberduck Interaction instead and provide exception stack trace as
+                // an optional "more info" collapsible section to eliminate the conditional.
+                MessageBox.Show(
 #if DEBUG
                     exception.ToString(),
 #else
