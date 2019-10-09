@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged;
@@ -108,6 +109,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }
 
+        [Conditional("DEBUG")]
         private static void ThrowOnUnrecongizedCompileError(Exception e)
         {
             if (e.HResult != (int) KnownComHResults.E_VBA_COMPILEERROR)
