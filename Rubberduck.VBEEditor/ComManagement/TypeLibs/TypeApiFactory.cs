@@ -26,7 +26,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             return wrapper;
         }
 
-        [Conditional("DEBUG")]
         [Conditional("TRACE_TYPEAPI")]
         private static void TraceWrapper(ref ITypeLibWrapper wrapper)
         {
@@ -47,7 +46,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             return wrapper;
         }
 
-        [Conditional("DEBUG")]
         [Conditional("TRACE_TYPEAPI")]
         private static void TraceWrapper(ref ITypeInfoWrapper wrapper)
         {

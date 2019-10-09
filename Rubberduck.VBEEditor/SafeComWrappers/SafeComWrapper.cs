@@ -157,7 +157,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers
             }
         }
 
-        [Conditional("DEBUG")]
         [Conditional("LOG_COM_RELEASE")]
         private void LogComRelease()
         {

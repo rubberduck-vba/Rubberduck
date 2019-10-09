@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
@@ -256,7 +255,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
                 Debug.Assert(iid_local != Guid.Empty, "Empty IID passed in");
             });
 
-            Debug.Print($"Entering {nameof(QueryInterface)}; {nameof(pUnk)}: {FormatPtr(pUnk)}, {nameof(iid)}: {iid.ToString()}");
             Trace(TraceAction.Entering, pUnk, args: (nameof(iid), iid.ToString()));
             var result = Marshal.QueryInterface(pUnk, ref iid, out ppv);
             Trace(TraceAction.Leaving, pUnk, args: new (string Name, object Value)[]
@@ -312,7 +310,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
             Assert(() =>
             {
                 var ptr = Marshal.GetIUnknownForObject(o);
-                Debug.Print($"Entering {nameof(ReleaseComObject)}; {nameof(o)}: {FormatPtr(ptr)}, {o.GetType().Name}");
                 var debugResult = Marshal.Release(ptr);
                 Debug.Assert(debugResult > 0,
                     $"The ref count is at zero or is invalid before calling the {nameof(Marshal.ReleaseComObject)}.");
@@ -403,8 +400,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
             Executing
         }
 
-
-        [Conditional("DEBUG")]
         [Conditional("TRACE_MARSHAL")]
         private static void Trace(TraceAction action, IntPtr pUnk, [CallerMemberName]string MethodName = null, params (string Name, object Value)[] args)
         {
@@ -418,7 +413,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
             Debug.Print($"{Enum.GetName(typeof(TraceAction), action)} {MethodName}; {nameof(pUnk)}: {FormatPtr(pUnk)} {argPrint}");
         }
 
-        [Conditional("DEBUG")]
         [Conditional("TRACE_MARSHAL")]
         private static void Trace(TraceAction action, [CallerMemberName]string MethodName = null, params (string Name, object Value)[] args)
         {
@@ -431,21 +425,18 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
             Debug.Print($"{Enum.GetName(typeof(TraceAction), action)} {MethodName}; {argPrint}");
         }
 
-        [Conditional("DEBUG")]
         [Conditional("TRACE_MARSHAL")]
         private static void Assert(Action assert)
         {
             assert.Invoke();
         }
 
-        [Conditional("DEBUG")]
         [Conditional("REF_COUNT")]
         private static void PrintRefCount(object o, int result)
         {
             Debug.Print($"{nameof(ReleaseComObject)}:: COM Object: {o.GetType().Name} ref count {result}");
         }
 
-        [Conditional("DEBUG")]
         [Conditional("REF_COUNT")]
         private static void PrintRefCount(IntPtr pUnk, [CallerMemberName] string methodName = null, int refCount = 0)
         {
@@ -468,14 +459,12 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
             }
         }
 
-        [Conditional("DEBUG")]
         [Conditional("REF_COUNT")]
         private static void PrintAlloc(IntPtr pUnmanaged, [CallerMemberName] string methodName = null)
         {
             Debug.Print($"{methodName}:: Unmanaged pointer allocated: {FormatPtr(pUnmanaged)}");
         }
 
-        [Conditional("DEBUG")]
         [Conditional("REF_COUNT")]
         private static void PrintFree(IntPtr pUnmanaged, [CallerMemberName] string methodName = null)
         {

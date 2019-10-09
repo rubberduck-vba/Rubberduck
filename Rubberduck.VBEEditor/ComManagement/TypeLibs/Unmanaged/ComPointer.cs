@@ -168,7 +168,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
             _disposed = true;
         }
 
-        [Conditional("DEBUG")]
         [Conditional("TRACE_COM_POINTERS")]
         private void TraceRelease(int rcwCount, ref bool addRef)
         {

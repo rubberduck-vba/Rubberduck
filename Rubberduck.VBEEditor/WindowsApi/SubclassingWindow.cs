@@ -95,7 +95,6 @@ namespace Rubberduck.VBEditor.WindowsApi
             return DefSubclassProc(hWnd, msg, wParam, lParam);
         }
 
-        [Conditional("DEBUG")]
         [Conditional("THIRSTY_DUCK")]
         [Conditional("THIRSTY_DUCK_WM")]
         private static void PeekMessagePump(IntPtr hWnd, IntPtr msg, IntPtr wParam, IntPtr lParam)

@@ -295,7 +295,6 @@ namespace Rubberduck.VBEditor.Events
             return name.ToString();
         }
 
-        [Conditional("DEBUG")]
         [Conditional("THIRSTY_DUCK_EVT")]
         private static void PeekMessagePump(uint eventType, IntPtr hwnd, int idObject, int idChild)
         {
