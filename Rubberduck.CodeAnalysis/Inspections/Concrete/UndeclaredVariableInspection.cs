@@ -41,7 +41,7 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                .Where(item => item.IsUndeclared && !item.IsIgnoringInspectionResultFor(AnnotationName))
+                .Where(item => item.IsUndeclared)
                 .Select(item => new DeclarationInspectionResult(this, string.Format(InspectionResults.UndeclaredVariableInspection, item.IdentifierName), item));
         }
     }

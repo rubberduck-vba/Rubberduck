@@ -46,8 +46,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             var results = State.DeclarationFinder.UserDeclarations(DeclarationType.Constant)
                 .Where(declaration => declaration.Context != null
-                    && !declaration.References.Any()
-                    && !declaration.IsIgnoringInspectionResultFor(AnnotationName))
+                    && !declaration.References.Any())
                 .ToList();
 
             return results.Select(issue => 

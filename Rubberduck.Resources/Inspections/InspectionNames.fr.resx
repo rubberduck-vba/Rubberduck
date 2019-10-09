@@ -228,9 +228,6 @@
   <data name="MissingAnnotationArgumentInspection" xml:space="preserve">
     <value>Paramètre d'annotation manquant</value>
   </data>
-  <data name="ImplicitDefaultMemberAssignmentInspection" xml:space="preserve">
-    <value>Assignation implicite au membre par défaut</value>
-  </data>
   <data name="ApplicationWorksheetFunctionInspection" xml:space="preserve">
     <value>Appel de fonction WorksheetFunction à liaison tardive.</value>
   </data>

@@ -40,7 +40,7 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var issues = from item in State.DeclarationFinder.UserDeclarations(DeclarationType.Function)
-                         where !item.IsTypeSpecified && !item.IsIgnoringInspectionResultFor(AnnotationName)
+                         where !item.IsTypeSpecified 
                          let issue = new {Declaration = item, QualifiedContext = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)}
                          select new DeclarationInspectionResult(this,
                                                      string.Format(InspectionResults.ImplicitVariantReturnTypeInspection, item.IdentifierName),

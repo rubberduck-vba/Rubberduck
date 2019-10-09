@@ -55,8 +55,9 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var results = new List<IInspectionResult>();
-
-            foreach (var context in Listener.Contexts.Where(context => !context.IsIgnoringInspectionResultFor(State.DeclarationFinder, AnnotationName)))
+            // do prefiltering to reduce searchspace
+            var prefilteredContexts = Listener.Contexts.Where(context => !context.IsIgnoringInspectionResultFor(State.DeclarationFinder, AnnotationName));
+            foreach (var context in prefilteredContexts)
             {
                 string lines;
                 var component = State.ProjectsProvider.Component(context.ModuleName);

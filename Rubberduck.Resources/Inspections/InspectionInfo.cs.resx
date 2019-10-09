@@ -262,9 +262,6 @@ Jestliže může být parametr prázdný, ignorujte výsledek této inspekce; p�
   <data name="UndeclaredVariableInspection" xml:space="preserve">
     <value>Kód, ve kterém se nacházejí nedeklarované proměnné, a přitom je specifikována volba 'Option Explicit', nelze úspěšně zkompilovat. Nedeklarované proměnné jsou vždy typu Variant, datový typ, který způsobuje zbytečné nároky na výkon a paměť.</value>
   </data>
-  <data name="ImplicitDefaultMemberAssignmentInspection" xml:space="preserve">
-    <value>Tato přiřazení na povrchu vypadají, že se snaží přiřadit objektovou proměnnou na proměnnou typu hodnota, avšak skutečnost je taková, že se snaží přiřadit implicitně výchozího člena objektu. Pro zvýšení čitelnosti zvažte explicitní referenci výchozího člena objektu.</value>
-  </data>
   <data name="ObsoleteMemberUsageInspection" xml:space="preserve">
     <value>Tato metoda je označena jako '@Obsolete'. Neměla by být nadále používána, měla by existovat lepší alternativa.</value>
   </data>

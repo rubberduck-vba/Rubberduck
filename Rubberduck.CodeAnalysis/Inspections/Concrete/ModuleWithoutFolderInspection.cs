@@ -43,7 +43,6 @@ namespace Rubberduck.Inspections.Concrete
                 .ToList();
 
             return modulesWithoutFolderAnnotation
-                .Where(declaration => !declaration.IsIgnoringInspectionResultFor(AnnotationName))
                 .Select(declaration =>
                 new DeclarationInspectionResult(this, string.Format(InspectionResults.ModuleWithoutFolderInspection, declaration.IdentifierName), declaration));
         }

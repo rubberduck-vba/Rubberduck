@@ -630,13 +630,14 @@ End Sub
             var vbe = new MockVbeBuilder()
                 .ProjectBuilder("foo", ProjectProtection.Unprotected)
                 .AddComponent("foo", ComponentType.StandardModule, code, new Selection(6, 6))
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
                 .AddProjectToVbeBuilder()
                 .Build();
 
             var parser = MockParser.Create(vbe.Object);
             parser.Parse(new CancellationTokenSource());
 
-            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable).Single();
+            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable).Single(declaration => declaration.IdentifierName.Equals("foo"));
             var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
 
             Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
@@ -659,13 +660,14 @@ End Sub
             var vbe = new MockVbeBuilder()
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(6, 6))
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
                 .AddProjectToVbeBuilder()
                 .Build();
 
             var parser = MockParser.Create(vbe.Object);
             parser.Parse(new CancellationTokenSource());
 
-            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable).Single();
+            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable).Single(declaration => declaration.IdentifierName.Equals("foo"));
             var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
 
             Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);

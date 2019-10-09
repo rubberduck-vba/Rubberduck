@@ -60,7 +60,7 @@ namespace Rubberduck.Inspections.Inspections.Concrete
 
             return (from function in candidates.Where(decl => ValidCellIdRegex.IsMatch(decl.IdentifierName))
                     let row = Convert.ToUInt32(ValidCellIdRegex.Matches(function.IdentifierName)[0].Groups["Row"].Value)
-                    where row > 0 && row <= MaximumExcelRows && !function.IsIgnoringInspectionResultFor(AnnotationName)
+                    where row > 0 && row <= MaximumExcelRows
                     select new DeclarationInspectionResult(this,
                         string.Format(InspectionResults.ExcelUdfNameIsValidCellReferenceInspection, function.IdentifierName),
                         function))

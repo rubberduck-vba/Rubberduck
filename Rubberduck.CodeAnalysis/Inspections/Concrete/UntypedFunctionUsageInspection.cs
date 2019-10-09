@@ -70,8 +70,7 @@ namespace Rubberduck.Inspections.Concrete
                         item.Scope.StartsWith("VBE7.DLL;"));
 
             return declarations.SelectMany(declaration => declaration.References
-                .Where(item => _tokens.Contains(item.IdentifierName) &&
-                               !item.IsIgnoringInspectionResultFor(AnnotationName))
+                .Where(item => _tokens.Contains(item.IdentifierName))
                 .Select(item => new IdentifierReferenceInspectionResult(this,
                                                      string.Format(InspectionResults.UntypedFunctionUsageInspection, item.Declaration.IdentifierName),
                                                      State,

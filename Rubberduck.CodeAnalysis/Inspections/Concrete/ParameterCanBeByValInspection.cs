@@ -74,7 +74,6 @@ namespace Rubberduck.Inspections.Concrete
                 .AddRange(parameters.Where(parameter => CanBeChangedToBePassedByVal(parameter, eventScopeDeclarations, interfaceScopeDeclarations)));
 
             return parametersThatCanBeChangedToBePassedByVal
-                .Where(parameter => !parameter.IsIgnoringInspectionResultFor(AnnotationName))
                 .Select(parameter => new DeclarationInspectionResult(this, string.Format(InspectionResults.ParameterCanBeByValInspection, parameter.IdentifierName), parameter));
         }
 
