@@ -44,8 +44,8 @@ namespace Rubberduck.Refactorings.Rename
                 {DeclarationType.Parameter, RenameParameter},
                 {DeclarationType.Event, RenameEvent},
                 {DeclarationType.Variable, RenameVariable},
-                {DeclarationType.Module, RenameModule},
-                {DeclarationType.Project, RenameProject}
+                {DeclarationType.Module, RenameModuleWithSuspendedParser},
+                {DeclarationType.Project, RenameProjectWithSuspendedParser}
             };
         }
 
@@ -334,18 +334,11 @@ namespace Rubberduck.Refactorings.Rename
             }
         }
 
-        private void RenameModule(RenameModel model, IRewriteSession rewriteSession)
-        {
-            //The parser needs to be suspended during the refactoring of a component because the VBE API object rename causes a separate reparse. 
-            var suspendResult = _parseManager.OnSuspendParser(this, new[] { ParserState.Ready }, () => RenameModuleInternal(model, rewriteSession));
-            if (suspendResult != SuspensionResult.Completed)
-            {
-                _logger.Warn($"RenameModule failed because a parser suspension request could not be fulfilled.The request's result was '{suspendResult.ToString()}'.");
-                throw new OperationCanceledException(RubberduckUI.RefactoringFailure_BaseMessage);
-            }
-        }
+        //The parser needs to be suspended during the refactoring of a component because the VBE API object rename causes a separate reparse. 
+        private void RenameModuleWithSuspendedParser(RenameModel model, IRewriteSession rewriteSession)
+            => SuspendParserForRefactoring(nameof(RenameModule), () => RenameModule(model, rewriteSession));
 
-        private void RenameModuleInternal(RenameModel model, IRewriteSession rewriteSession)
+        private void RenameModule(RenameModel model, IRewriteSession rewriteSession)
         {
             RenameReferences(model.Target, model.NewName, rewriteSession);
 
@@ -413,19 +406,12 @@ namespace Rubberduck.Refactorings.Rename
             }
         }
 
-        private void RenameProject(RenameModel model, IRewriteSession rewriteSession)
-        {
-            //The parser needs to be suspended during the refactoring of a project because the VBE API object rename causes a separate reparse. 
-            var suspendResult = _parseManager.OnSuspendParser(this, new[] { ParserState.Ready }, () => RenameProjectInternal(model, rewriteSession));
-            if (suspendResult != SuspensionResult.Completed)
-            {
-                _logger.Warn($"RenameProject failed because a parser suspension request could not be fulfilled.The request's result was '{suspendResult.ToString()}'.");
-                throw new OperationCanceledException(RubberduckUI.RefactoringFailure_BaseMessage);
-            }
-        }
+        //The parser needs to be suspended during the refactoring of a project because the VBE API object rename causes a separate reparse. 
+        private void RenameProjectWithSuspendedParser(RenameModel model, IRewriteSession rewriteSession)
+            => SuspendParserForRefactoring(nameof(RenameProject), () => RenameProject(model, rewriteSession));
 
         //TODO: Implement renaming references to the project in code.
-        private void RenameProjectInternal(RenameModel model, IRewriteSession rewriteSession)
+        private void RenameProject(RenameModel model, IRewriteSession rewriteSession)
         {
             var project = _projectsProvider.Project(model.Target.ProjectId);
 
@@ -498,6 +484,16 @@ namespace Rubberduck.Refactorings.Rename
                             || ev.IdentifierName.StartsWith("UserForm_")
                             || ev.IdentifierName.StartsWith("auto_"))
                     .Select(dec => dec.IdentifierName).ToList();
+        }
+
+        private void SuspendParserForRefactoring(string procedureName, Action busyAction)
+        {
+            var suspendResult = _parseManager.OnSuspendParser(this, new[] { ParserState.Ready }, busyAction);
+            if (suspendResult != SuspensionResult.Completed)
+            {
+                _logger.Warn($"{procedureName} failed because a parser suspension request could not be fulfilled.  The request's result was '{suspendResult.ToString()}'.");
+                throw new SuspendParserFailureException();
+            }
         }
     }
 }

@@ -2585,7 +2585,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ok.
+        ///   Looks up a localized string similar to OK.
         /// </summary>
         public static string OK {
             get {
@@ -2980,6 +2980,15 @@ namespace Rubberduck.Resources {
         public static string RefactoringFailure_NoTargetDeclarationForSelection {
             get {
                 return ResourceManager.GetString("RefactoringFailure_NoTargetDeclarationForSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to suspend the Parser to perform the refactoring operation.
+        /// </summary>
+        public static string RefactoringFailure_SuspendParserFailure {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_SuspendParserFailure", resourceCulture);
             }
         }
         
@@ -3743,9 +3752,9 @@ namespace Rubberduck.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Target control &apos;{0}&apos; not found..
         /// </summary>
-        public static string RenameFailure_TargetContriolNotFound {
+        public static string RenameFailure_TargetControlNotFound {
             get {
-                return ResourceManager.GetString("RenameFailure_TargetContriolNotFound", resourceCulture);
+                return ResourceManager.GetString("RenameFailure_TargetControlNotFound", resourceCulture);
             }
         }
         
@@ -3962,6 +3971,15 @@ namespace Rubberduck.Resources {
         public static string Run {
             get {
                 return ResourceManager.GetString("Run", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save &amp; Close.
+        /// </summary>
+        public static string SaveAndClose {
+            get {
+                return ResourceManager.GetString("SaveAndClose", resourceCulture);
             }
         }
         
