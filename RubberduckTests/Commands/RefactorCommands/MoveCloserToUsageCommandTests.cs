@@ -100,7 +100,8 @@ End Sub";
             var msgBox = new Mock<IMessageBox>().Object;
             var refactoring = new MoveCloserToUsageRefactoring(state, rewritingManager, selectionService);
             var notifier = new MoveCloserToUsageFailedNotifier(msgBox);
-            return new RefactorMoveCloserToUsageCommand(refactoring, notifier, state, selectionService);
+            var selectedDeclarationService = new SelectedDeclarationService(selectionService, state);
+            return new RefactorMoveCloserToUsageCommand(refactoring, notifier, state, selectionService, selectedDeclarationService);
         }
 
         protected override IVBE SetupAllowingExecution()

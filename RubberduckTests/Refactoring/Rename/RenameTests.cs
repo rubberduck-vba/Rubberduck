@@ -3166,7 +3166,8 @@ End Property";
 
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
         {
-            return new RenameRefactoring(factory, state, state?.ProjectsProvider, rewritingManager, selectionService);
+            var selectedDeclarationService = new SelectedDeclarationService(selectionService, state);
+            return new RenameRefactoring(factory, state, state?.ProjectsProvider, rewritingManager, selectionService, selectedDeclarationService);
         }
 
         #endregion

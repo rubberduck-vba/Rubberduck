@@ -10,11 +10,18 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorMoveCloserToUsageCommand : RefactorCodePaneCommandBase
     {
         private readonly RubberduckParserState _state;
+        private readonly ISelectedDeclarationService _selectedDeclarationService;
 
-        public RefactorMoveCloserToUsageCommand(MoveCloserToUsageRefactoring refactoring, MoveCloserToUsageFailedNotifier moveCloserToUsageFailedNotifier, RubberduckParserState state, ISelectionService selectionService)
+        public RefactorMoveCloserToUsageCommand(
+            MoveCloserToUsageRefactoring refactoring, 
+            MoveCloserToUsageFailedNotifier moveCloserToUsageFailedNotifier, 
+            RubberduckParserState state, 
+            ISelectionService selectionService,
+            ISelectedDeclarationService selectedDeclarationService)
             :base(refactoring, moveCloserToUsageFailedNotifier, selectionService, state)
         {
             _state = state;
+            _selectedDeclarationService = selectedDeclarationService;
 
             AddToCanExecuteEvaluation(SpecializedEvaluateCanExecute);
         }
@@ -32,14 +39,7 @@ namespace Rubberduck.UI.Command.Refactorings
 
         private Declaration GetTarget()
         {
-            var activeSelection = SelectionService.ActiveSelection();
-            if (!activeSelection.HasValue)
-            {
-                return null;
-            }
-
-            var target = _state.DeclarationFinder.FindSelectedDeclaration(activeSelection.Value);
-            return target;
+            return _selectedDeclarationService.SelectedDeclaration();
         }
     }
 }

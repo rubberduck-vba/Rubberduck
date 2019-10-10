@@ -11,11 +11,18 @@ namespace Rubberduck.UI.Command.Refactorings
     public class CodePaneRefactorRenameCommand : RefactorCodePaneCommandBase
     {
         private readonly RubberduckParserState _state;
+        private readonly ISelectedDeclarationService _selectedDeclarationService;
 
-        public CodePaneRefactorRenameCommand(RenameRefactoring refactoring, RenameFailedNotifier renameFailedNotifier, RubberduckParserState state, ISelectionService selectionService) 
+        public CodePaneRefactorRenameCommand(
+            RenameRefactoring refactoring, 
+            RenameFailedNotifier renameFailedNotifier, 
+            RubberduckParserState state, 
+            ISelectionService selectionService,
+            ISelectedDeclarationService selectedDeclarationService) 
             : base (refactoring, renameFailedNotifier, selectionService, state)
         {
             _state = state;
+            _selectedDeclarationService = selectedDeclarationService;
 
             AddToCanExecuteEvaluation(SpecializedEvaluateCanExecute);
         }
@@ -31,13 +38,7 @@ namespace Rubberduck.UI.Command.Refactorings
 
         private Declaration GetTarget()
         {
-            var activeSelection = SelectionService.ActiveSelection();
-            if (!activeSelection.HasValue)
-            {
-                return null;
-            }
-
-            return _state.DeclarationFinder.FindSelectedDeclaration(activeSelection.Value);
+            return _selectedDeclarationService.SelectedDeclaration();
         }
     }
 }

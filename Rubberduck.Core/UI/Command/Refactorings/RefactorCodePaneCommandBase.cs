@@ -1,6 +1,4 @@
-﻿using System;
-using NLog;
-using Rubberduck.Parsing.VBA;
+﻿using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.UI.Command.Refactorings.Notifiers;

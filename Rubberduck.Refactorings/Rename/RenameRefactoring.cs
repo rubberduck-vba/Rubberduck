@@ -22,14 +22,22 @@ namespace Rubberduck.Refactorings.Rename
         private const string PrependUnderscoreFormat = "_{0}";
 
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        private readonly ISelectedDeclarationService _selectedDeclarationService;
         private readonly IProjectsProvider _projectsProvider;
         private readonly IDictionary<DeclarationType, Action<RenameModel, IRewriteSession>> _renameActions;
 
 
-        public RenameRefactoring(IRefactoringPresenterFactory factory, IDeclarationFinderProvider declarationFinderProvider, IProjectsProvider projectsProvider, IRewritingManager rewritingManager, ISelectionService selectionService)
+        public RenameRefactoring(
+            IRefactoringPresenterFactory factory, 
+            IDeclarationFinderProvider declarationFinderProvider,
+            IProjectsProvider projectsProvider, 
+            IRewritingManager rewritingManager, 
+            ISelectionService selectionService,
+            ISelectedDeclarationService selectedDeclarationService)
         :base(rewritingManager, selectionService, factory)
         {
             _declarationFinderProvider = declarationFinderProvider;
+            _selectedDeclarationService = selectedDeclarationService;
             _projectsProvider = projectsProvider;
 
             _renameActions = new Dictionary<DeclarationType, Action<RenameModel, IRewriteSession>>
@@ -45,8 +53,7 @@ namespace Rubberduck.Refactorings.Rename
 
         protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
         {
-            return _declarationFinderProvider.DeclarationFinder
-                .FindSelectedDeclaration(targetSelection);
+            return _selectedDeclarationService.SelectedDeclaration(targetSelection);
         }
 
         protected override RenameModel InitializeModel(Declaration target)
