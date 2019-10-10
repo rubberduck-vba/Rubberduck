@@ -125,6 +125,10 @@ namespace Rubberduck.Root
             RegisterParsingEngine(container);
             RegisterTypeLibApi(container);
 
+            container.Register(Component.For<ISelectedDeclarationService>()
+                .ImplementedBy<SelectedDeclarationService>()
+                .LifestyleSingleton());
+
             container.Register(Component.For<IRewritingManager>()
                 .ImplementedBy<RewritingManager>()
                 .LifestyleSingleton());
