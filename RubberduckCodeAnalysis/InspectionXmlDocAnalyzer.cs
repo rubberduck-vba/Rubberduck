@@ -150,15 +150,20 @@ namespace RubberduckCodeAnalysis
             }
         }
 
+        private static void CheckNameAttribute(SymbolAnalysisContext context, XElement element, Location location)
+        {
+            if (!element.Attributes().Any(a => a.Name.Equals("name")))
+            {
+                var diagnostic = Diagnostic.Create(MissingNameAttributeRule, location, element.Name);
+                context.ReportDiagnostic(diagnostic);
+            }
+        }
+
         private static void CheckReferenceElement(SymbolAnalysisContext context, INamedTypeSymbol symbol, XDocument xml, IEnumerable<AttributeData> requiredLibAttributes)
         {
             foreach (var referenceElement in xml.Elements("reference"))
             {
-                if (!referenceElement.Attributes().Any(a => a.Name.Equals("name")))
-                {
-                    var diagnostic = Diagnostic.Create(MissingNameAttributeRule, symbol.Locations[0], symbol.Name);
-                    context.ReportDiagnostic(diagnostic);
-                }
+                CheckNameAttribute(context, referenceElement, symbol.Locations[0]);
             }
             
             var xmlRefLibs = xml.Elements("reference").Select(e => e.Attribute("name")?.Value).ToList();
@@ -203,14 +208,17 @@ namespace RubberduckCodeAnalysis
                 {
                     var diagnostic = Diagnostic.Create(MissingHasResultAttributeRule, symbol.Locations[0], symbol.Name);
                     context.ReportDiagnostic(diagnostic);
-                    return;
                 }
 
                 if (!example.Elements("module").Any())
                 {
                     var diagnostic = Diagnostic.Create(MissingModuleElementRule, symbol.Locations[0], symbol.Name);
                     context.ReportDiagnostic(diagnostic);
-                    return;
+                }
+
+                foreach (var module in example.Elements("module"))
+                {
+                    CheckNameAttribute(context, module, symbol.Locations[0]);
                 }
             }
         }

@@ -151,6 +151,83 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         }
 
         [Test][Category("InspectionXmlDoc")]
+        public void MissingReferenceElement()
+        {
+            var test = @"
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
+{
+    /// <summary>
+    /// blablabla
+    /// </summary>
+    /// <example hasresult=""true"">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
+    [RequiredLibrary(""Excel"")]
+    public sealed class SomeInspection : IInspection { }
+}
+";
+
+            var diagnostics = GetDiagnostics(test);
+            Assert.IsTrue(diagnostics.Any(d => d.Descriptor.Id == InspectionXmlDocAnalyzer.MissingReferenceElement));
+        }
+
+        [Test][Category("InspectionXmlDoc")]
+        public void MissingReferenceElement_Negative()
+        {
+            var test = @"
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
+{
+    /// <summary>
+    /// blablabla
+    /// </summary>
+    /// <reference name=""Excel"" />
+    /// <example hasresult=""true"">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
+    [RequiredLibrary(""Excel"")]
+    public sealed class SomeInspection : IInspection { }
+}
+";
+
+            var diagnostics = GetDiagnostics(test);
+            Assert.IsFalse(diagnostics.Any(d => d.Descriptor.Id == InspectionXmlDocAnalyzer.MissingReferenceElement));
+        }
+
+        [Test][Category("InspectionXmlDoc")]
+        public void MissingNameAttribute_ReferenceElement()
+        {
+            var test = @"
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
+{
+    /// <summary>
+    /// blablabla
+    /// </summary>
+    /// <reference bad=""Excel"" />
+    /// <example hasresult=""true"">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
+    [RequiredLibrary(""Excel"")]
+    public sealed class SomeInspection : IInspection { }
+}
+";
+
+            var diagnostics = GetDiagnostics(test);
+            Assert.IsTrue(diagnostics.Any(d => d.Descriptor.Id == InspectionXmlDocAnalyzer.MissingNameAttribute));
+        }
+
+        [Test][Category("InspectionXmlDoc")]
         public void MissingInspectionWhyElement_Negative()
         {
             var test = @"
