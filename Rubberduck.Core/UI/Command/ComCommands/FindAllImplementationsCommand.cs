@@ -3,7 +3,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.ComCommands
 {
@@ -13,47 +13,39 @@ namespace Rubberduck.UI.Command.ComCommands
     [ComVisible(false)]
     public class FindAllImplementationsCommand : ComCommandBase
     {
-        private readonly RubberduckParserState _state;
-        private readonly IVBE _vbe;
+        private readonly ISelectedDeclarationService _selectedDeclarationService;
+        private readonly IParserStatusProvider _parserStatusProvider;
         private readonly FindAllImplementationsService _finder;
 
         public FindAllImplementationsCommand(
-            RubberduckParserState state, 
-            IVBE vbe, 
+            IParserStatusProvider parserStatusProvider,
+            ISelectedDeclarationService selectedDeclarationService, 
             ISearchResultsWindowViewModel viewModel, 
             FindAllImplementationsService finder, 
             IVbeEvents vbeEvents)
             : base(vbeEvents)
         {
             _finder = finder;
-            _state = state;
-            _vbe = vbe;
+            _selectedDeclarationService = selectedDeclarationService;
+            _parserStatusProvider = parserStatusProvider;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
         private bool SpecialEvaluateCanExecute(object parameter)
         {
-            if (_state.Status != ParserState.Ready)
+            if (_parserStatusProvider.Status != ParserState.Ready)
             {
                 return false;
             }
 
-            using (var codePane = _vbe.ActiveCodePane)
-            {
-                if (codePane == null || codePane.IsWrappingNullReference)
-                {
-                    return false;
-                }
-
-                var target = FindTarget(parameter);
-                return _finder.CanFind(target);
-            }
+            var target = FindTarget(parameter);
+            return target != null && _finder.CanFind(target);
         }
 
         protected override void OnExecute(object parameter)
         {
-            if (_state.Status != ParserState.Ready)
+            if (_parserStatusProvider.Status != ParserState.Ready)
             {
                 return;
             }
@@ -74,10 +66,9 @@ namespace Rubberduck.UI.Command.ComCommands
                 return declaration;
             }
 
-            using (var activePane = _vbe.ActiveCodePane)
-            {
-                return _state.FindSelectedDeclaration(activePane);
-            }
+            var selectedDeclaration = _selectedDeclarationService.SelectedDeclaration();
+
+            return selectedDeclaration;
         }
     }
 }
