@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.Symbols;
+﻿using System.Linq;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
 
@@ -44,6 +45,17 @@ namespace Rubberduck.Parsing.VBA
         public Declaration SelectedDeclaration(QualifiedSelection qualifiedSelection)
         {
             return _declarationFinderProvider.DeclarationFinder?.FindSelectedDeclaration(qualifiedSelection);
+        }
+
+        public ModuleDeclaration SelectedModule()
+        {
+            var activeSelection = _selectionService.ActiveSelection();
+            return activeSelection.HasValue
+                ? _declarationFinderProvider.DeclarationFinder?
+                    .UserDeclarations(DeclarationType.Module)
+                    .OfType<ModuleDeclaration>()
+                    .FirstOrDefault(module => module.QualifiedModuleName.Equals(activeSelection.Value.QualifiedName))
+                : null;
         }
     }
 }

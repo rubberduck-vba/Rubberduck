@@ -5,32 +5,24 @@ using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.ComCommands
 {
     [ComVisible(false)]
     public class NoIndentAnnotationCommand : ComCommandBase
     {
-        private readonly IVBE _vbe;
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
-        private readonly ISelectionService _selectionService;
+        private readonly ISelectedDeclarationService _selectedDeclarationService;
         private readonly IAnnotationUpdater _annotationUpdater;
         private readonly IRewritingManager _rewritingManager;
 
         public NoIndentAnnotationCommand(
-            IVBE vbe, 
-            IDeclarationFinderProvider declarationFinderProvider, 
-            ISelectionService selectionService,
+            ISelectedDeclarationService selectedDeclarationService,
             IRewritingManager rewritingManager,
             IAnnotationUpdater annotationUpdater,
             IVbeEvents vbeEvents)
             : base(vbeEvents)
         {
-            _vbe = vbe;
-            _declarationFinderProvider = declarationFinderProvider;
-            _selectionService = selectionService;
+            _selectedDeclarationService = selectedDeclarationService;
             _rewritingManager = rewritingManager;
             _annotationUpdater = annotationUpdater;
 
@@ -65,15 +57,7 @@ namespace Rubberduck.UI.Command.ComCommands
                 return declaration;
             }
 
-            var activeSelection = _selectionService.ActiveSelection();
-            if (!activeSelection.HasValue)
-            {
-                return null;
-            }
-
-            return _declarationFinderProvider.DeclarationFinder?
-                .UserDeclarations(DeclarationType.Module)
-                .FirstOrDefault(module => module.QualifiedModuleName.Equals(activeSelection.Value.QualifiedName));
+            return _selectedDeclarationService.SelectedModule();
         }
     }
 }

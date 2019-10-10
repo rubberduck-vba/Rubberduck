@@ -41,7 +41,9 @@ namespace RubberduckTests.Commands
 
         internal static NoIndentAnnotationCommand ArrangeNoIndentAnnotationCommand(Mock<IVBE> vbe, RubberduckParserState state, IRewritingManager rewritingManager, Mock<IVbeEvents> vbeEvents)
         {
-            return new NoIndentAnnotationCommand(vbe.Object, state, new SelectionService(vbe.Object, state.ProjectsProvider), rewritingManager, new AnnotationUpdater(), vbeEvents.Object);
+            var selectionService = new SelectionService(vbe.Object, state.ProjectsProvider);
+            var selectedDeclarationService = new SelectedDeclarationService(selectionService, state);
+            return new NoIndentAnnotationCommand(selectedDeclarationService, rewritingManager, new AnnotationUpdater(), vbeEvents.Object);
         }
 
         internal static IndentCurrentProcedureCommand ArrangeIndentCurrentProcedureCommand(Mock<IVBE> vbe,
