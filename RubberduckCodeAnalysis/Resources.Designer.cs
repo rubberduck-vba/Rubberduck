@@ -232,6 +232,33 @@ namespace RubberduckCodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;example&apos; element requires a &apos;hasresult&apos; attribute (bool), which isn&apos;t supplied..
+        /// </summary>
+        public static string MissingHasResultAttribute {
+            get {
+                return ResourceManager.GetString("MissingHasResultAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This attribute value will be used to clearly identify which examples are for code that triggers an inspection, vs examples for code that doesn&apos;t..
+        /// </summary>
+        public static string MissingHasResultAttributeDescription {
+            get {
+                return ResourceManager.GetString("MissingHasResultAttributeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;example&apos; element has no &apos;hasresult&apos; attribute..
+        /// </summary>
+        public static string MissingHasResultAttributeMessageFormat {
+            get {
+                return ResourceManager.GetString("MissingHasResultAttributeMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Missing xml-doc &apos;reference&apos; tag.
         /// </summary>
         public static string MissingInspectionReferenceTag {
@@ -345,6 +372,60 @@ namespace RubberduckCodeAnalysis {
         public static string MissingInterfaceTypeTitle {
             get {
                 return ResourceManager.GetString("MissingInterfaceTypeTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XML documentation example is missing a &apos;module&apos; tag..
+        /// </summary>
+        public static string MissingModuleTag {
+            get {
+                return ResourceManager.GetString("MissingModuleTag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All inspection xml-doc examples should include one or more &apos;module&apos; tag with a &apos;name&apos; attribute..
+        /// </summary>
+        public static string MissingModuleTagDescription {
+            get {
+                return ResourceManager.GetString("MissingModuleTagDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;example&apos; element has no &apos;module&apos; child..
+        /// </summary>
+        public static string MissingModuleTagMessageFormat {
+            get {
+                return ResourceManager.GetString("MissingModuleTagMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing &apos;name&apos; attribute..
+        /// </summary>
+        public static string MissingNameAttribute {
+            get {
+                return ResourceManager.GetString("MissingNameAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This attribute value will be used to clearly identify each module in a code example..
+        /// </summary>
+        public static string MissingNameAttributeDescription {
+            get {
+                return ResourceManager.GetString("MissingNameAttributeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A &apos;{0}&apos; element requires a &apos;name&apos; attribute value..
+        /// </summary>
+        public static string MissingNameAttributeMessageFormat {
+            get {
+                return ResourceManager.GetString("MissingNameAttributeMessageFormat", resourceCulture);
             }
         }
         
