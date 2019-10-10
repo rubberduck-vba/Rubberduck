@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Forms;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.WindowsApi;
@@ -429,46 +430,76 @@ namespace Rubberduck.UI
             }
         }
 
-        private const int WM_SYSCOMMAND = 0x112;
-        private const int MF_BYPOSITION = 0x400;
-        private const int ToggleDockableMenuId = 1000;
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
-        [DllImport("user32.dll")]
-        private static extern bool InsertMenu(IntPtr hMenu, int wPosition, int wFlags, int wIDNewItem, string lpNewItem);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, IntPtr lParam);
-
-        private static void InsertDockableToggle(IntPtr handle)
-        {
-            var menuHandle = GetSystemMenu(handle, false);
-
-            if (menuHandle == IntPtr.Zero)
-            {
-                Debug.Print("No menu handle");
-                return;
-            }
-
-            if (!InsertMenu(menuHandle, 5, MF_BYPOSITION, ToggleDockableMenuId, "Dockable"))
-            {
-                Debug.Print("Failed to insert a menu item for dockable command");
-            }
-        }
-
         private static void ToggleDockable(IntPtr hWndVBE)
         {
-            SendMessage(hWndVBE, 0x1044, 0xB5, IntPtr.Zero);
+            NativeMethods.SendMessage(hWndVBE, 0x1044, (IntPtr)0xB5, IntPtr.Zero);
         }
 
         [ComVisible(false)]
         public class ParentWindow : SubclassingWindow
         {
+            private const int MF_BYPOSITION = 0x400;
+
             public event SubClassingWindowEventHandler CallBackEvent;
             public delegate void SubClassingWindowEventHandler(object sender, SubClassingWindowEventArgs e);
 
             private readonly IntPtr _vbeHwnd;
+
+            private IntPtr _containerHwnd;
+            private ToolWindowState _windowState;
+            private IntPtr _menuHandle;
+
+            private enum ToolWindowState
+            {
+                Unknown,
+                Docked,
+                Floating,
+                Undockable
+            }
+
+            private ToolWindowState GetWindowState(IntPtr containerHwnd)
+            {
+                var className = new StringBuilder(255);
+                if (NativeMethods.GetClassName(containerHwnd, className, className.Capacity) > 0)
+                {
+                    switch (className.ToString())
+                    {
+                        case "wndclass_desked_gsk":
+                            return ToolWindowState.Docked;
+                        case "VBFloatingPalette":
+                            return ToolWindowState.Floating;
+                        case "DockingView":
+                            return ToolWindowState.Undockable;
+                    }
+                }
+
+                return ToolWindowState.Unknown;
+            }
+
+            private void DisplayUndockableContextMenu(IntPtr handle, IntPtr lParam)
+            {
+                if (_menuHandle == IntPtr.Zero)
+                {
+                    _menuHandle = NativeMethods.CreatePopupMenu();
+
+                    if (_menuHandle == IntPtr.Zero)
+                    {
+                        Debug.Print("Cannot create menu handle");
+                        return;
+                    }
+
+                    if (!NativeMethods.InsertMenu(_menuHandle, 0, MF_BYPOSITION, (UIntPtr)WM.RUBBERDUCK_UNDOCKABLE_CONTEXT_MENU, "Dockable" + char.MinValue))
+                    {
+                        Debug.Print("Failed to insert a menu item for dockable command");
+                    }
+                }
+
+                var param = new LParam {Value = (uint)lParam};
+                if (!NativeMethods.TrackPopupMenuEx(_menuHandle, 0x0, param.LowWord, param.HighWord, handle, IntPtr.Zero ))
+                {
+                    Debug.Print("Failed to set the context menu for undockable tool windows");
+                };
+            }
 
             private void OnCallBackEvent(SubClassingWindowEventArgs e)
             {
@@ -485,10 +516,24 @@ namespace Rubberduck.UI
             {
                 switch ((uint)msg)
                 {
-                    case (uint)WM.SYSCOMMAND:
+                    case (uint)WM.WINDOWPOSCHANGED:
+                        var containerHwnd = GetParent(hWnd);
+                        if (containerHwnd != _containerHwnd)
+                        {
+                            _containerHwnd = containerHwnd;
+                            _windowState = GetWindowState(_containerHwnd);
+                        }
+                        break;
+                    case (uint)WM.CONTEXTMENU:
+                        if (_windowState == ToolWindowState.Undockable)
+                        {
+                            DisplayUndockableContextMenu(hWnd, lParam);
+                        }
+                        break;
+                    case (uint)WM.COMMAND:
                         switch (wParam.ToInt32())
                         {
-                            case ToggleDockableMenuId:
+                            case (int)WM.RUBBERDUCK_UNDOCKABLE_CONTEXT_MENU:
                                 ToggleDockable(_vbeHwnd);
                                 break;
                         }
@@ -502,6 +547,15 @@ namespace Rubberduck.UI
                         break;
                     case (uint)WM.KILLFOCUS:
                         if (!_closing) User32.SendMessage(_vbeHwnd, WM.RUBBERDUCK_CHILD_FOCUS, Hwnd, IntPtr.Zero);
+                        break;
+                    case (uint)WM.DESTROY:
+                        if (_menuHandle != IntPtr.Zero)
+                        {
+                            if (!NativeMethods.DestroyMenu(_menuHandle))
+                            {
+                                Debug.Print($"Failed to destroy the menu handle {_menuHandle}");
+                            }
+                        }
                         break;
                 }
                 return base.SubClassProc(hWnd, msg, wParam, lParam, uIdSubclass, dwRefData);
