@@ -10,37 +10,37 @@ namespace RubberduckCodeAnalysis
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class InspectionXmlDocAnalyzer : DiagnosticAnalyzer
     {
-        public const string MissingInspectionSummaryElement = "MissingInspectionSummaryTag";
-        private static readonly DiagnosticDescriptor MissingSummaryTagRule = new DiagnosticDescriptor(
+        public const string MissingInspectionSummaryElement = "MissingInspectionSummaryElement";
+        private static readonly DiagnosticDescriptor MissingSummaryElementRule = new DiagnosticDescriptor(
             MissingInspectionSummaryElement,
-            new LocalizableResourceString(nameof(Resources.MissingInspectionSummaryTag), Resources.ResourceManager, typeof(Resources)),
-            new LocalizableResourceString(nameof(Resources.MissingInspectionSummaryTagMessageFormat), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.MissingInspectionSummaryElement), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.MissingInspectionSummaryElementMessageFormat), Resources.ResourceManager, typeof(Resources)),
             new LocalizableResourceString(nameof(Resources.XmlDocAnalyzerCategory), Resources.ResourceManager, typeof(Resources)).ToString(),
             DiagnosticSeverity.Error,
             true,
-            new LocalizableResourceString(nameof(Resources.MissingInspectionSummaryTagDescription), Resources.ResourceManager, typeof(Resources))
+            new LocalizableResourceString(nameof(Resources.MissingInspectionSummaryElementDescription), Resources.ResourceManager, typeof(Resources))
             );
 
-        public const string MissingInspectionWhyElement = "MissingInspectionWhyTag";
-        private static readonly DiagnosticDescriptor MissingWhyTagRule = new DiagnosticDescriptor(
+        public const string MissingInspectionWhyElement = "MissingInspectionWhyElement";
+        private static readonly DiagnosticDescriptor MissingWhyElementRule = new DiagnosticDescriptor(
             MissingInspectionWhyElement,
-            new LocalizableResourceString(nameof(Resources.MissingInspectionWhyTag), Resources.ResourceManager, typeof(Resources)),
-            new LocalizableResourceString(nameof(Resources.MissingInspectionWhyTagMessageFormat), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.MissingInspectionWhyElement), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.MissingInspectionWhyElementMessageFormat), Resources.ResourceManager, typeof(Resources)),
             new LocalizableResourceString(nameof(Resources.XmlDocAnalyzerCategory), Resources.ResourceManager, typeof(Resources)).ToString(),
             DiagnosticSeverity.Error,
             true,
-            new LocalizableResourceString(nameof(Resources.MissingInspectionWhyTagDescription), Resources.ResourceManager, typeof(Resources))
+            new LocalizableResourceString(nameof(Resources.MissingInspectionWhyElementDescription), Resources.ResourceManager, typeof(Resources))
             );
 
-        public const string MissingReferenceElement = "MissingReferenceTag";
-        private static readonly DiagnosticDescriptor MissingReferenceTagRule = new DiagnosticDescriptor(
+        public const string MissingReferenceElement = "MissingReferenceElement";
+        private static readonly DiagnosticDescriptor MissingReferenceElementRule = new DiagnosticDescriptor(
             MissingReferenceElement,
-            new LocalizableResourceString(nameof(Resources.MissingInspectionReferenceTag), Resources.ResourceManager, typeof(Resources)),
-            new LocalizableResourceString(nameof(Resources.MissingInspectionReferenceTagMessageFormat), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.MissingInspectionReferenceElement), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.MissingInspectionReferenceElementMessageFormat), Resources.ResourceManager, typeof(Resources)),
             new LocalizableResourceString(nameof(Resources.XmlDocAnalyzerCategory), Resources.ResourceManager, typeof(Resources)).ToString(),
             DiagnosticSeverity.Error,
             true,
-            new LocalizableResourceString(nameof(Resources.MissingInspectionReferenceTagDescription), Resources.ResourceManager, typeof(Resources))
+            new LocalizableResourceString(nameof(Resources.MissingInspectionReferenceElementDescription), Resources.ResourceManager, typeof(Resources))
         );
 
         public const string MissingRequiredLibraryAttribute = "MissingRequiredLibraryAttribute";
@@ -54,26 +54,26 @@ namespace RubberduckCodeAnalysis
             new LocalizableResourceString(nameof(Resources.MissingRequiredLibAttributeDescription), Resources.ResourceManager, typeof(Resources))
         );
 
-        public const string MissingExampleElement = "MissingExampleTag";
-        private static readonly DiagnosticDescriptor MissingExampleTagRule = new DiagnosticDescriptor(
+        public const string MissingExampleElement = "MissingExampleElement";
+        private static readonly DiagnosticDescriptor MissingExampleElementRule = new DiagnosticDescriptor(
             MissingExampleElement,
-            new LocalizableResourceString(nameof(Resources.MissingExampleTag), Resources.ResourceManager, typeof(Resources)),
-            new LocalizableResourceString(nameof(Resources.MissingExampleTagMessageFormat), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.MissingExampleElement), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.MissingExampleElementMessageFormat), Resources.ResourceManager, typeof(Resources)),
             new LocalizableResourceString(nameof(Resources.XmlDocAnalyzerCategory), Resources.ResourceManager, typeof(Resources)).ToString(),
             DiagnosticSeverity.Warning,
             true,
-            new LocalizableResourceString(nameof(Resources.MissingExampleTagDescription), Resources.ResourceManager, typeof(Resources))
+            new LocalizableResourceString(nameof(Resources.MissingExampleElementDescription), Resources.ResourceManager, typeof(Resources))
         );
 
-        public const string MissingModuleElement = "MissingModuleTag";
-        private static readonly DiagnosticDescriptor MissingModuleTagRule = new DiagnosticDescriptor(
+        public const string MissingModuleElement = "MissingModuleElement";
+        private static readonly DiagnosticDescriptor MissingModuleElementRule = new DiagnosticDescriptor(
             MissingModuleElement,
-            new LocalizableResourceString(nameof(Resources.MissingModuleTag), Resources.ResourceManager, typeof(Resources)),
-            new LocalizableResourceString(nameof(Resources.MissingModuleTagMessageFormat), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.MissingModuleElement), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.MissingModuleElementMessageFormat), Resources.ResourceManager, typeof(Resources)),
             new LocalizableResourceString(nameof(Resources.XmlDocAnalyzerCategory), Resources.ResourceManager, typeof(Resources)).ToString(),
             DiagnosticSeverity.Info,
             true,
-            new LocalizableResourceString(nameof(Resources.MissingModuleTagDescription), Resources.ResourceManager, typeof(Resources))
+            new LocalizableResourceString(nameof(Resources.MissingModuleElementDescription), Resources.ResourceManager, typeof(Resources))
             );
 
         public const string MissingNameAttribute = "MissingNameAttribute";
@@ -99,7 +99,7 @@ namespace RubberduckCodeAnalysis
             );
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
-            ImmutableArray.Create(MissingSummaryTagRule, MissingWhyTagRule, MissingReferenceTagRule, MissingRequiredLibAttributeRule);
+            ImmutableArray.Create(MissingSummaryElementRule, MissingWhyElementRule, MissingReferenceElementRule, MissingRequiredLibAttributeRule);
 
         public override void Initialize(AnalysisContext context)
         {
@@ -116,12 +116,12 @@ namespace RubberduckCodeAnalysis
 
             var xml = XDocument.Load(namedTypeSymbol.GetDocumentationCommentXml());
 
-            CheckSummaryTag(context, namedTypeSymbol, xml);
-            CheckWhyTag(context, namedTypeSymbol, xml);
-            CheckExampleTag(context, namedTypeSymbol, xml);
+            CheckSummaryElement(context, namedTypeSymbol, xml);
+            CheckWhyElement(context, namedTypeSymbol, xml);
+            CheckExampleElement(context, namedTypeSymbol, xml);
 
             var requiredLibraryAttributes = namedTypeSymbol.GetAttributes().Where(a => a.AttributeClass.Name == "RequiredLibraryAttribute").ToList();
-            CheckReferenceTag(context, namedTypeSymbol, xml, requiredLibraryAttributes);
+            CheckReferenceElement(context, namedTypeSymbol, xml, requiredLibraryAttributes);
             CheckRequiredLibAttribute(context, namedTypeSymbol, xml, requiredLibraryAttributes);
         }
 
@@ -132,25 +132,25 @@ namespace RubberduckCodeAnalysis
                 && namedTypeSymbol.AllInterfaces.Any(i => i.Name == "IInspection");
         }
 
-        private static void CheckSummaryTag(SymbolAnalysisContext context, INamedTypeSymbol symbol, XDocument xml)
+        private static void CheckSummaryElement(SymbolAnalysisContext context, INamedTypeSymbol symbol, XDocument xml)
         {
             if (xml.Element("summary") == null)
             {
-                var diagnostic = Diagnostic.Create(MissingSummaryTagRule, symbol.Locations[0], symbol.Name);
+                var diagnostic = Diagnostic.Create(MissingSummaryElementRule, symbol.Locations[0], symbol.Name);
                 context.ReportDiagnostic(diagnostic);
             }
         }
 
-        private static void CheckWhyTag(SymbolAnalysisContext context, INamedTypeSymbol symbol, XDocument xml)
+        private static void CheckWhyElement(SymbolAnalysisContext context, INamedTypeSymbol symbol, XDocument xml)
         {
             if (xml.Element("why") == null)
             {
-                var diagnostic = Diagnostic.Create(MissingWhyTagRule, symbol.Locations[0], symbol.Name);
+                var diagnostic = Diagnostic.Create(MissingWhyElementRule, symbol.Locations[0], symbol.Name);
                 context.ReportDiagnostic(diagnostic);
             }
         }
 
-        private static void CheckReferenceTag(SymbolAnalysisContext context, INamedTypeSymbol symbol, XDocument xml, IEnumerable<AttributeData> requiredLibAttributes)
+        private static void CheckReferenceElement(SymbolAnalysisContext context, INamedTypeSymbol symbol, XDocument xml, IEnumerable<AttributeData> requiredLibAttributes)
         {
             foreach (var referenceElement in xml.Elements("reference"))
             {
@@ -167,7 +167,7 @@ namespace RubberduckCodeAnalysis
                 var requiredLib = attribute.ConstructorArguments[0].Value.ToString();
                 if (xmlRefLibs.All(lib => lib != requiredLib))
                 {
-                    var diagnostic = Diagnostic.Create(MissingReferenceTagRule, symbol.Locations[0], symbol.Name, requiredLib);
+                    var diagnostic = Diagnostic.Create(MissingReferenceElementRule, symbol.Locations[0], symbol.Name, requiredLib);
                     context.ReportDiagnostic(diagnostic);
                 }
             }
@@ -187,11 +187,11 @@ namespace RubberduckCodeAnalysis
             }
         }
 
-        private static void CheckExampleTag(SymbolAnalysisContext context, INamedTypeSymbol symbol, XDocument xml)
+        private static void CheckExampleElement(SymbolAnalysisContext context, INamedTypeSymbol symbol, XDocument xml)
         {
             if (!xml.Elements("example").Any())
             {
-                var diagnostic = Diagnostic.Create(MissingExampleTagRule, symbol.Locations[0], symbol.Name);
+                var diagnostic = Diagnostic.Create(MissingExampleElementRule, symbol.Locations[0], symbol.Name);
                 context.ReportDiagnostic(diagnostic);
                 return;
             }
@@ -208,7 +208,7 @@ namespace RubberduckCodeAnalysis
 
                 if (!example.Elements("module").Any())
                 {
-                    var diagnostic = Diagnostic.Create(MissingModuleTagRule, symbol.Locations[0], symbol.Name);
+                    var diagnostic = Diagnostic.Create(MissingModuleElementRule, symbol.Locations[0], symbol.Name);
                     context.ReportDiagnostic(diagnostic);
                     return;
                 }
