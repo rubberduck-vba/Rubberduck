@@ -49,6 +49,7 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(decl => decl.Attributes.Any());
 
             var declarationsToInspect = moduleDeclarationsWithAttributes
+                // prefilter declarations to reduce searchspace
                 .Where(decl => decl.QualifiedModuleName.ComponentType != ComponentType.Document
                                && !decl.IsIgnoringInspectionResultFor(AnnotationName));
 
@@ -93,16 +94,18 @@ namespace Rubberduck.Inspections.Concrete
             {
                 return false;
             }
-
             //VB_Ext_Key attributes are special in that identity also depends on the first value, the key.
             if (attribute.Name == "VB_Ext_Key")
             {
-                return !declaration.Annotations.OfType<IAttributeAnnotation>()
-                    .Any(annotation => annotation.Attribute.Equals("VB_Ext_Key") && attribute.Values[0].Equals(annotation.AttributeValues[0]));
+                return !declaration.Annotations.Where(pta => pta.Annotation is IAttributeAnnotation)
+                    .Any(pta => {
+                        var annotation = (IAttributeAnnotation)pta.Annotation;
+                        return annotation.Attribute(pta).Equals("VB_Ext_Key") && attribute.Values[0].Equals(annotation.AttributeValues(pta)[0]);
+                    });
             }
 
-            return !declaration.Annotations.OfType<IAttributeAnnotation>()
-                .Any(annotation => annotation.Attribute.Equals(attribute.Name));
+            return !declaration.Annotations.Where(pta => pta.Annotation is IAttributeAnnotation)
+                .Any(pta => ((IAttributeAnnotation)pta.Annotation).Attribute(pta).Equals(attribute.Name));
         }
     }
 }

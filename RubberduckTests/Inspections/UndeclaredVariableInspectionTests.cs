@@ -23,6 +23,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
@@ -49,6 +50,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
@@ -71,6 +73,36 @@ End Sub";
 Sub Test()
     a = 42
     Debug.Print a
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
+                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new UndeclaredVariableInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.IsFalse(inspectionResults.Any());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        //ReDim acts as a declaration if the array is not declared already.
+        //See issue #2522 at https://github.com/rubberduck-vba/Rubberduck/issues/2522
+        public void UndeclaredVariable_ReturnsNoResultForReDim()
+        {
+            const string inputCode =
+                @"
+Sub Test()
+    Dim bar As Variant
+    ReDim arr(1 To 42) 
+    bar = arr
 End Sub";
 
             var builder = new MockVbeBuilder();
@@ -103,6 +135,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 

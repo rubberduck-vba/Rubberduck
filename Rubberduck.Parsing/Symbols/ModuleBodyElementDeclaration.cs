@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using static Rubberduck.Parsing.Grammar.VBAParser;
 
@@ -27,7 +24,7 @@ namespace Rubberduck.Parsing.Symbols
             Selection selection,
             bool isArray,
             bool isUserDefined,
-            IEnumerable<IAnnotation> annotations,
+            IEnumerable<IParseTreeAnnotation> annotations,
             Attributes attributes)
             : base(
                 name,

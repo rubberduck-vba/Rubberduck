@@ -17,7 +17,7 @@ using Rubberduck.Inspections.Inspections.Extensions;
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     /// <summary>
-    /// Flags 'Case' blocks that are semantically unreachable.
+    /// Flags 'Case' blocks that will never execute.
     /// </summary>
     /// <why>
     /// Unreachable code is certainly unintended, and is probably either redundant, or a bug.
@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     /// <remarks>
     /// Not all unreachable 'Case' blocks may be flagged, depending on expression complexity.
     /// </remarks>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
     /// <![CDATA[
     /// Private Sub Example(ByVal value As Long)
     ///     Select Case value
@@ -36,6 +36,76 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     ///         Case Is < 100
     ///             ' ...
     ///         Case < 0 ' unreachable: case is covered by a preceding condition.
+    ///             ' ...
+    ///     End Select
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResult="true">
+    /// <![CDATA[
+    /// 
+    /// 'If the cumulative result of multiple 'Case' statements
+    /// 'cover the entire range of possible values for a data type,
+    /// 'then all remaining 'Case' statements are unreachable
+    /// 
+    /// Private Sub ExampleAllValuesCoveredIntegral(ByVal value As Long, ByVal result As Long)
+    ///     Select Case result
+    ///         Case Is < 100
+    ///             ' ...
+    ///         Case Is > -100 
+    ///             ' ...
+    ///   'all possible values are covered by preceding 'Case' statements 
+    ///         Case value * value  ' unreachable
+    ///             ' ...
+    ///         Case value + value  ' unreachable
+    ///             ' ...
+    ///         Case Else       ' unreachable 
+    ///             ' ...
+    ///     End Select
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResult="false">
+    /// <![CDATA[
+    /// Public Enum ProductID
+    ///     Widget = 1
+    ///     Gadget = 2
+    ///     Gizmo = 3
+    /// End Enum
+    /// 
+    /// Public Sub ExampleEnumCaseElse(ByVal product As ProductID)
+    ///
+    ///     'Enums are evaluated as the 'Long' data type.  So, in this example,
+    ///     'even though all the ProductID enum values have a 'Case' statement, 
+    ///     'the 'Case Else' will still execute for any value of the 'product' 
+    ///     'parameter that is not a ProductID.
+    ///
+    ///     Select Case product
+    ///         Case Widget
+    ///             ' ...
+    ///         Case Gadget
+    ///             ' ...
+    ///         Case Gizmo
+    ///             ' ...
+    ///         Case Else 'is reachable
+    ///             ' Raise an error for unrecognized/unhandled ProductID
+    ///     End Select
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResult="true">
+    /// <![CDATA[
+    /// 
+    /// 'The inspecion flags Range Clauses that are not of the required form:
+    /// '[x] To [y] where [x] less than or equal to [y]
+    /// 
+    /// Private Sub ExampleInvalidRangeExpression(ByVal value As String)
+    ///     Select Case value
+    ///         Case "Beginning" To "End"
+    ///             ' ...
+    ///         Case "Start" To "Finish" ' unreachable: incorrect form.
+    ///             ' ...
+    ///         Case Else 
     ///             ' ...
     ///     End Select
     /// End Sub
@@ -75,6 +145,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             _inspectionResults = new List<IInspectionResult>();
             var qualifiedSelectCaseStmts = Listener.Contexts
+                // ignore filtering here to make the search space smaller
                 .Where(result => !result.IsIgnoringInspectionResultFor(State.DeclarationFinder, AnnotationName));
 
             ParseTreeValueVisitor.OnValueResultCreated += ValueResults.OnNewValueResult;

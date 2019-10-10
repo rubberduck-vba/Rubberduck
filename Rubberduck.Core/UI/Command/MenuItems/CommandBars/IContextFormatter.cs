@@ -1,7 +1,9 @@
+using System;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Resources;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.Command.MenuItems.CommandBars
 {
@@ -46,96 +48,97 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
         private string FormatDeclaration(Declaration declaration, bool multipleControls = false)
         {
-            var formattedDeclaration = string.Empty;
             var moduleName = declaration.QualifiedName.QualifiedModuleName;
-            var typeName = declaration.HasTypeHint
-                ? SymbolList.TypeHintToTypeName[declaration.TypeHint]
-                : declaration.AsTypeName;
             var declarationType = RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType, Settings.Settings.Culture);
 
-            if (multipleControls)
-            {
-                typeName = RubberduckUI.ContextMultipleControlsSelection;
-            }
-            else if (declaration is ValuedDeclaration)
-            {
-                var valued = (ValuedDeclaration)declaration;
-                typeName = "(" + declarationType + (string.IsNullOrEmpty(typeName) ? string.Empty : ":" + typeName) +
-                           (string.IsNullOrEmpty(valued.Expression) ? string.Empty : $" = {valued.Expression}") + ")";
+            var typeName = TypeName(declaration, multipleControls, declarationType);
+            var formattedDeclaration = FormattedDeclaration(declaration, typeName, moduleName, declarationType);
+            return formattedDeclaration.Trim();
+        }
 
-            }
-            else if (declaration is ParameterDeclaration)
+        private static string FormattedDeclaration(
+            Declaration declaration, 
+            string typeName,
+            QualifiedModuleName moduleName, 
+            string declarationType)
+        {
+            if (declaration.ParentDeclaration != null)
             {
-                var parameter = (ParameterDeclaration)declaration;
-                typeName = "(" + declarationType + (string.IsNullOrEmpty(typeName) ? string.Empty : ":" + typeName) +
-                           (string.IsNullOrEmpty(parameter.DefaultValue) ? string.Empty : $" = {parameter.DefaultValue}") + ")";
-            }
-            else
-            {
-                typeName = "(" + declarationType + (string.IsNullOrEmpty(typeName) ? string.Empty : ":" + typeName) + ")";
-            }
+                if (declaration.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Member))
+                {
+                    // locals, parameters
+                    return $"{declaration.ParentDeclaration.QualifiedName}:{declaration.IdentifierName} {typeName}";
+                }
 
-            if (declaration.DeclarationType.HasFlag(DeclarationType.Project) || declaration.DeclarationType == DeclarationType.BracketedExpression)
-            {
-                var filename = System.IO.Path.GetFileName(declaration.QualifiedName.QualifiedModuleName.ProjectPath);
-                formattedDeclaration = string.Format("{0}{1}{2} ({3})", filename, string.IsNullOrEmpty(filename) ? string.Empty : ";", declaration.IdentifierName, declarationType);
-            }
-            else if (declaration.DeclarationType.HasFlag(DeclarationType.Module))
-            {
-                formattedDeclaration = moduleName + " (" + declarationType + ")";
-            }
-            
+                if (declaration.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Module))
+                {
+                    // fields
+                    var withEvents = declaration.IsWithEvents ? "(WithEvents) " : string.Empty;
+                    return $"{withEvents}{moduleName}.{declaration.IdentifierName} {typeName}";
+                }
+            } 
+
             if (declaration.DeclarationType.HasFlag(DeclarationType.Member))
             {
-                formattedDeclaration = declaration.QualifiedName.ToString();
+                var formattedDeclaration = declaration.QualifiedName.ToString();
                 if (declaration.DeclarationType == DeclarationType.Function
                     || declaration.DeclarationType == DeclarationType.PropertyGet)
                 {
                     formattedDeclaration += typeName;
                 }
+
+                return formattedDeclaration;
             }
             
-            if (declaration.DeclarationType == DeclarationType.Enumeration
-                || declaration.DeclarationType == DeclarationType.UserDefinedType)
+            if (declaration.DeclarationType.HasFlag(DeclarationType.Module))
             {
-                formattedDeclaration = !declaration.IsUserDefined
-                    // built-in enums & UDT's don't have a module
-                    ? System.IO.Path.GetFileName(moduleName.ProjectPath) + ";" + moduleName.ProjectName + "." + declaration.IdentifierName
-                    : moduleName.ToString();
+                return $"{moduleName} ({declarationType})";
             }
-            else if (declaration.DeclarationType == DeclarationType.EnumerationMember
-                || declaration.DeclarationType == DeclarationType.UserDefinedTypeMember)
+            
+            switch (declaration.DeclarationType)
             {
-                formattedDeclaration = string.Format("{0}.{1}.{2} {3}",
-                    !declaration.IsUserDefined
-                        ? System.IO.Path.GetFileName(moduleName.ProjectPath) + ";" + moduleName.ProjectName 
-                        : moduleName.ToString(), 
-                    declaration.ParentDeclaration.IdentifierName, 
-                    declaration.IdentifierName,
-                    typeName);
-            }
-            else if (declaration.DeclarationType == DeclarationType.ComAlias)
-            {
-                formattedDeclaration = string.Format("{0};{1}.{2} (alias:{3})",
-                    System.IO.Path.GetFileName(moduleName.ProjectPath), moduleName.ProjectName,
-                    declaration.IdentifierName, declaration.AsTypeName);
-            }
-
-            var subscripts = declaration.IsArray ? "()" : string.Empty;
-            if (declaration.ParentDeclaration != null && declaration.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Member))
-            {
-                // locals, parameters
-                formattedDeclaration = string.Format("{0}:{1}{2} {3}", declaration.ParentDeclaration.QualifiedName, declaration.IdentifierName, subscripts, typeName);
+                case DeclarationType.Project:
+                case DeclarationType.BracketedExpression:
+                    var filename = System.IO.Path.GetFileName(declaration.QualifiedName.QualifiedModuleName.ProjectPath);
+                    return $"{filename}{(string.IsNullOrEmpty(filename) ? string.Empty : ";")}{declaration.IdentifierName} ({declarationType})";
+                case DeclarationType.Enumeration:
+                case DeclarationType.UserDefinedType:
+                    return !declaration.IsUserDefined
+                        // built-in enums & UDT's don't have a module
+                        ? $"{System.IO.Path.GetFileName(moduleName.ProjectPath)};{moduleName.ProjectName}.{declaration.IdentifierName}"
+                        : moduleName.ToString();
+                case DeclarationType.EnumerationMember:
+                case DeclarationType.UserDefinedTypeMember:
+                    return declaration.IsUserDefined
+                        ? $"{moduleName}.{declaration.ParentDeclaration.IdentifierName}.{declaration.IdentifierName} {typeName}"
+                        : $"{System.IO.Path.GetFileName(moduleName.ProjectPath)};{moduleName.ProjectName}.{declaration.ParentDeclaration.IdentifierName}.{declaration.IdentifierName} {typeName}";
+                case DeclarationType.ComAlias:
+                    return $"{System.IO.Path.GetFileName(moduleName.ProjectPath)};{moduleName.ProjectName}.{declaration.IdentifierName} (alias:{declaration.AsTypeName})";
             }
 
-            if (declaration.ParentDeclaration != null && declaration.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Module))
+            return string.Empty;
+        }
+
+        private static string TypeName(Declaration declaration, bool multipleControls, string declarationType)
+        {
+            if (multipleControls)
             {
-                // fields
-                var withEvents = declaration.IsWithEvents ? "(WithEvents) " : string.Empty;
-                formattedDeclaration = string.Format("{0}{1}.{2} {3}", withEvents, moduleName, declaration.IdentifierName, typeName);
+                return RubberduckUI.ContextMultipleControlsSelection;
             }
 
-            return formattedDeclaration.Trim();
+            var typeName = declaration.IsArray
+                ? $"{declaration.AsTypeName}()"
+                : declaration.AsTypeName;
+
+            switch (declaration)
+            {
+                case ValuedDeclaration valued:
+                    return $"({declarationType}{(string.IsNullOrEmpty(typeName) ? string.Empty : ":" + typeName)}{(string.IsNullOrEmpty(valued.Expression) ? string.Empty : $" = {valued.Expression}")})";
+                case ParameterDeclaration parameter:
+                    return $"({declarationType}{(string.IsNullOrEmpty(typeName) ? string.Empty : ":" + typeName)}{(string.IsNullOrEmpty(parameter.DefaultValue) ? string.Empty : $" = {parameter.DefaultValue}")})";
+                default:
+                    return $"({declarationType}{(string.IsNullOrEmpty(typeName) ? string.Empty : ":" + typeName)})";
+            }
         }
     }
 }

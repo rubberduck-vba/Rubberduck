@@ -8,10 +8,11 @@ using System.Threading;
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
+    [Category("Inspections")]
+    [Category("UnderscoreInPublicMember")]
     public class UnderscoreInPublicClassModuleMemberInspectionTests
     {
         [Test]
-        [Category("Inspections")]
         public void BasicExample_Sub()
         {
             const string inputCode =
@@ -29,7 +30,48 @@ End Sub";
         }
 
         [Test]
-        [Category("Inspections")]
+        public void Basic_Ignored()
+        {
+            const string inputCode =
+                @"'@Ignore UnderscoreInPublicClassModuleMember
+Public Sub This_Is_Ignored()
+End Sub
+
+Public Sub This_Should_Be_Marked()
+End Sub";
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new UnderscoreInPublicClassModuleMemberInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        public void Basic_IgnoreModule()
+        {
+            const string inputCode =
+                @"'@IgnoreModule UnderscoreInPublicClassModuleMember
+Public Sub This_Is_Ignored()
+End Sub
+
+Public Sub This_Is_Also_Ignored()
+End Sub";
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new UnderscoreInPublicClassModuleMemberInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
+        }
+
+        [Test]
         public void BasicExample_Function()
         {
             const string inputCode =
@@ -47,7 +89,6 @@ End Function";
         }
 
         [Test]
-        [Category("Inspections")]
         public void BasicExample_Property()
         {
             const string inputCode =
@@ -65,7 +106,6 @@ End Property";
         }
 
         [Test]
-        [Category("Inspections")]
         public void StandardModule()
         {
             const string inputCode =
@@ -83,7 +123,6 @@ End Sub";
         }
 
         [Test]
-        [Category("Inspections")]
         public void NoUnderscore()
         {
             const string inputCode =
@@ -101,7 +140,6 @@ End Sub";
         }
 
         [Test]
-        [Category("Inspections")]
         public void FriendMember_WithUnderscore()
         {
             const string inputCode =
@@ -119,7 +157,6 @@ End Sub";
         }
 
         [Test]
-        [Category("Inspections")]
         public void Implicit_WithUnderscore()
         {
             const string inputCode =
@@ -137,7 +174,6 @@ End Sub";
         }
 
         [Test]
-        [Category("Inspections")]
         public void ImplementsInterface()
         {
             const string inputCode1 =

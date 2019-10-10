@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
-using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 
 // ReSharper disable once CheckNamespace; namespace MUST be the same as Antlr-generated VBAParser types.
 namespace Rubberduck.Parsing.Grammar
@@ -15,8 +12,7 @@ namespace Rubberduck.Parsing.Grammar
         {
             public ParserRuleContext AnnotatedContext { get; internal set; }
 
-            public AnnotationType AnnotationType => (AnnotationType) Enum.Parse(typeof (AnnotationType), 
-                Identifier.GetName(this.annotationName().unrestrictedIdentifier()));
+            public string AnnotationType => Identifier.GetName(this.annotationName().unrestrictedIdentifier());
         }
 
         public partial class ModuleAttributesContext : IAnnotatedContext // holds module-scoped annotations
@@ -111,6 +107,44 @@ namespace Rubberduck.Parsing.Grammar
             public void AddAttributes(Attributes attributes)
             {
                 foreach(var attribute in attributes)
+                {
+                    Attributes.Add(new AttributeNode(attribute.Name, attribute.Values));
+                }
+            }
+            #endregion
+        }
+
+        public partial class DeclareStmtContext : IIdentifierContext, IAnnotatedContext
+        {
+            #region IIdentifierContext
+
+            public Interval IdentifierTokens
+            {
+                get
+                {
+                    Interval tokenInterval;
+                    Identifier.GetName(this, out tokenInterval);
+                    return tokenInterval;
+                }
+            }
+
+            #endregion
+
+            #region IAnnotatedContext
+            public Attributes Attributes { get; } = new Attributes();
+            public int AttributeTokenIndex => Stop.TokenIndex + 1;
+
+            private readonly List<AnnotationContext> _annotations = new List<AnnotationContext>();
+            public IEnumerable<AnnotationContext> Annotations => _annotations;
+
+            public void Annotate(AnnotationContext annotation)
+            {
+                _annotations.Add(annotation);
+            }
+
+            public void AddAttributes(Attributes attributes)
+            {
+                foreach (var attribute in attributes)
                 {
                     Attributes.Add(new AttributeNode(attribute.Name, attribute.Values));
                 }

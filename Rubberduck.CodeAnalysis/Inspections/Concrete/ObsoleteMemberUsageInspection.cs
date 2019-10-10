@@ -58,15 +58,16 @@ namespace Rubberduck.Inspections.Inspections.Concrete
         {
             var declarations = State.AllUserDeclarations
                 .Where(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Member) &&
-                                      declaration.Annotations.Any(annotation =>annotation.AnnotationType == AnnotationType.Obsolete));
+                                      declaration.Annotations.Any(pta => pta.Annotation is ObsoleteAnnotation));
 
             var issues = new List<IdentifierReferenceInspectionResult>();
 
             foreach (var declaration in declarations)
             {
-                var replacementDocumentation =
-                ((ObsoleteAnnotation) declaration.Annotations.First(annotation =>
-                    annotation.AnnotationType == AnnotationType.Obsolete)).ReplacementDocumentation;
+                var replacementDocumentation = declaration.Annotations
+                    .First(pta => pta.Annotation is ObsoleteAnnotation)
+                    .AnnotationArguments
+                    .FirstOrDefault() ?? string.Empty;
 
                 issues.AddRange(declaration.References.Select(reference =>
                     new IdentifierReferenceInspectionResult(this,

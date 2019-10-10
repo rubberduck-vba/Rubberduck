@@ -1,4 +1,5 @@
-﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+﻿using Rubberduck.Runtime;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.VbeRuntime;
 
 namespace Rubberduck
@@ -16,19 +17,23 @@ namespace Rubberduck
     /// </remarks>
     internal static class VbeProvider
     {
-        internal static void Initialize(IVBE vbe)
+        internal static void Initialize(IVBE vbe, IVbeNativeApi vbeNativeApi, IBeepInterceptor beepInterceptor)
         {
             Vbe = vbe;
-            VbeRuntime = new VbeNativeApiAccessor();
+            VbeNativeApi = vbeNativeApi;
+            BeepInterceptor = beepInterceptor;
         }
 
         internal static void Terminate()
         {
             Vbe = null;
-            VbeRuntime = null;
+            VbeNativeApi = null;
+            BeepInterceptor?.Dispose();
+            BeepInterceptor = null;
         }
 
         internal static IVBE Vbe { get; private set; }
-        internal static IVbeNativeApi VbeRuntime { get; private set; }
+        internal static IVbeNativeApi VbeNativeApi { get; private set; }
+        internal static IBeepInterceptor BeepInterceptor { get; private set; }
     }
 }

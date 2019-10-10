@@ -56,7 +56,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return boundExpression;
             }
-            var failedExpr = new ResolutionFailedExpression();
+            var failedExpr = new ResolutionFailedExpression(_expression);
             failedExpr.AddSuccessfullyResolvedExpression(lExpression);
             return failedExpr;
         }

@@ -215,7 +215,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Eine selbstzugewiesene Objektvariablendeklaration in einer Prozedur kann das Verhalten beim Nulling verändern. Dies kann zu unvorhergesehen Verhalten des Codes führen.</value>
   </data>
   <data name="ObjectVariableNotSetInspection" xml:space="preserve">
-    <value>Rubberduck hat festgestellt, dass die Variable eine Objektvariable ist, die ohne 'Set'-Schlüsselwort zugewiesen wird. Dies führt zu dem Laufzeitfehler '91': Objektvariable oder With-Blockvariable nicht festgelegt</value>
+    <value>Rubberduck hat festgestellt, dass die Variable eine Objektvariable ist, die ohne 'Set'-Schlüsselwort zugewiesen wird. Dies führt zu dem Laufzeitfehler 91 'Objektvariable oder With-Blockvariable nicht festgelegt' oder 438 'Objekt unterstützt diese Eigenschaft oder Methode nicht' abhängig davon, ob die Variable den Wert 'Nothing' hat oder nicht.</value>
   </data>
   <data name="MissingAnnotationArgumentInspection" xml:space="preserve">
     <value>Eine Annotation in einem Kommentar konnte nicht gelesen werden. Die korrekte Syntax ist: '@Annotation([parameter])'\nBeispiel: '@Folder("Parent.Child")'</value>
@@ -237,9 +237,6 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   </data>
   <data name="ApplicationWorksheetFunctionInspection" xml:space="preserve">
     <value>Das Excel Application-Objekt implementiert das WorksheetFunction interface direkt. Alle Aufrufe an WorksheetFunction-Member werden als laufzeitgebunden behandelt und Fehler im aufgerufenen Member werden in ein Variant des Typs VbVarType.Error gekapselt. Dadurch können Fehler nicht mit Fehleranweisungen behandelt werden und gegenüber skriptzeitgebundenen Aufrufen sinkt die Performanz. Ziehen Sie in Erwägung Application.WorksheetFunction explizit aufzurufen. Bedenken Sie: Falls dieser Aufruf in der Vergangenheit Fehler erzeugt hat, wurden diese ignoriert. Es sollte eine Fehlerbehandlung vorhanden sein, bevor Sie die schnelle Korrektur anwenden.</value>
-  </data>
-  <data name="ImplicitDefaultMemberAssignmentInspection" xml:space="preserve">
-    <value>Solche Zuweisungen sehen aus als wiesen sie einer Objektvariable an einen Werttyp zu, aber tatsächlich wird der Standardmember des Objekts implizit zugewiesen. Um die Lesbarkeit zu verbessern, erwägen Sie explizit auf den Standardmember zuzugreifen.</value>
   </data>
   <data name="HostSpecificExpressionInspection" xml:space="preserve">
     <value>Geklammerte Ausdrücke werden von der Hostanwendung zur Laufzeit ausgewertet, was bedeutet, dass VBA den Ausdruck nicht zur Kompilierzeit validieren kann. Erwägen sie, das hostspezifische Objektmodell zu verwenden.</value>
@@ -303,9 +300,6 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   </data>
   <data name="EmptyModuleInspection" xml:space="preserve">
     <value>Leere Module und Klassen weisen entweder auf noch nicht implementierte Funktionalitäten hin oder stellen unnötigen Ballast dar, der die Wartbarkeit eines Projekts behindern kann.</value>
-  </data>
-  <data name="UnreachableCaseInspection" xml:space="preserve">
-    <value>Erkennt "Case"-Klauseln, die nie ausgeführt werden können.</value>
   </data>
   <data name="UnhandledOnErrorResumeNextInspection" xml:space="preserve">
     <value>Fehlerbehandlung sollte nach Verwendung von 'On Error Resume Next' wiederhergestellt werden.</value>
@@ -383,6 +377,54 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>'While...Wend'-Schleifen sind aus Gründen der Abwärtskompatibilität vorhanden und wurden durch die Einführung von 'Do While...Loop'-Blöcken ersetzt, die die 'Exit Do'-Exit-Anweisung unterstützen. 'While...Wend'-Schleifen können nur beendet werden, wenn die 'While'-Bedingung erfüllt ist.</value>
   </data>
   <data name="SetAssignmentWithIncompatibleObjectTypeInspection" xml:space="preserve">
-    <value>Der VBA-Compiler gibt keinen Fehler aus, wenn ein Objekt einer Variables Set-zugewiesen wird mit einem inkompatiblen Objecttype, d.h. deren Type weder identisch, ein Subtyp noch ein Supertyp ist. In fast allen Fällen führt dies zu einem Laufzeitfehler, der schwerer zu entdecken ist und auf einen Programmierfehler hinweist. In allen anderen Fällen kann der Quallcode so geändert werden, dass er ausschließlich Zuweisungen zwischen kompatiblen deklarierten Typen verwendet.</value>
+    <value>Der VBA-Compiler gibt keinen Fehler aus, wenn ein Objekt einer Variables Set-zugewiesen wird mit einem inkompatiblen Objekttype, d.h. deren Typ weder identisch, ein Subtyp noch ein Supertyp ist. In fast allen Fällen führt dies zu einem Laufzeitfehler, der schwerer zu entdecken ist und auf einen Programmierfehler hinweist. In allen anderen Fällen kann der Quallcode so geändert werden, dass er ausschließlich Zuweisungen zwischen kompatiblen deklarierten Typen verwendet.</value>
+  </data>
+  <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>Der VBA-Compiler gibt keinen Fehler aus, wenn ein Objekt als Argument für einen Parameter übergeben wird mit einem inkompatiblen Objekttype, d.h. dessen Typ weder identisch, ein Subtyp noch ein Supertyp ist. In fast allen Fällen führt dies zu einem Laufzeitfehler, der schwerer zu entdecken ist und auf einen Programmierfehler hinweist. In allen anderen Fällen kann der Quallcode so geändert werden, dass ausschließlich Argumente mit kompatiblen deklarierten Typen verwendet werden.</value>
+  </data>
+  <data name="EmptyMethodInspection" xml:space="preserve">
+    <value>Methoden ohne ausführbare Anweisungen können den Eindruck erwecken, dass sie etwas tun, was sie eigentlich nicht tun. Dies kann zu unerwartetem Verhalten führen.</value>
+  </data>
+  <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
+    <value>Eine Klasse, die dafür gedacht ist von anderen Klassen als Interface genutzt zu werden, sollte gewöhnlicher Weise keine Implementierungen enthalten. Falls die Intention ist diese Klasse direkt als konkrete Klasse zu verwenden, kann dieses Inspektionsresultat ignoriert werden.</value>
+  </data>
+  <data name="ValueRequiredInspection" xml:space="preserve">
+    <value>Der VBA-Compiler gibt keinen Fehler aus, wenn ein Objekt an einer Stelle verwendet wird, die einen Wert verlangt, und der deklarierte Type des Objekts keinen passenden Standardmember hat. In fast allen Fällen führt dies zu einem Laufzeitfehler 91 'Objektvariable oder With-Blockvariable nicht festgelegt' oder 438 'Objekt unterstützt diese Eigenschaft oder Methode nicht' abhängig davon, ob die Variable den Wert 'Nothing' hat oder nicht, der schwerer zu entdecken ist und auf einen Programmierfehler hinweist.</value>
+  </data>
+  <data name="ProcedureRequiredInspection" xml:space="preserve">
+    <value>Der VBA-Compiler gibt keinen Fehler aus, wenn eine Objektvariable an einer Stelle verwendet wird, die eine Prozedur erfordert, und der deklarierte Type des Objekts keinen passenden Standardmember hat. In fast allen Fällen führt dies zu einem Laufzeitfehler91 'Objektvariable oder With-Blockvariable nicht festgelegt' oder 438 'Objekt unterstützt diese Eigenschaft oder Methode nicht' abhängig davon, ob die Variable den Wert 'Nothing' hat oder nicht, der schwerer zu entdecken ist und auf einen Programmierfehler hinweist.</value>
+  </data>
+  <data name="DefaultMemberRequiredInspection" xml:space="preserve">
+    <value>Der VBA-Compiler gibt keinen Fehler aus, wenn ein Standardmemberzugriff nötig ist, aber der der deklarierte Type des Objekts keinen passenden Standardmember hat. In fast allen Fällen führt dies zu einem Laufzeitfehler91 'Objektvariable oder With-Blockvariable nicht festgelegt' oder 438 'Objekt unterstützt diese Eigenschaft oder Methode nicht' abhängig davon, ob die Variable den Wert 'Nothing' hat oder nicht, der schwerer zu entdecken ist und auf einen Programmierfehler hinweist.</value>
+  </data>
+  <data name="UseOfBangNotationInspection" xml:space="preserve">
+    <value>Die Ausrufezeichennotation erweckt den Eindruck, dass es sich um einen Zugriff handelt, der Typchecks unterliegt. Allerdings handelt es sich lediglich um einen Zugriff auf den Standardmember des Objekts, auf das sie angewendet wird, bei dem das Argument als Zeichenkette übergeben wird.</value>
+  </data>
+  <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
+    <value>Die Ausrufezeichennotation erweckt den Eindruck, dass es sich um einen Zugriff handelt, der Typchecks unterliegt. Allerdings handelt es sich lediglich um einen Zugriff auf den Standardmember des Objekts, auf das sie angewendet wird, bei dem das Argument als Zeichenkette übergeben wird. Dies ist besonders verwirrend, wenn der Standardmember des Objekts selber keine Zeichenkette akzeptiert und deshalb ein rekursiver Zugriff auf den parameterlosen Standardmember erfolgen muss.</value>
+  </data>
+  <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
+    <value>Die Ausrufezeichennotation erweckt den Eindruck, dass es sich um einen Zugriff handelt, der Typchecks unterliegt. Allerdings handelt es sich lediglich um einen Zugriff auf den Standardmember des Objekts, auf das sie angewendet wird, bei dem das Argument als Zeichenkette übergeben wird. Dies ist besonders verwirrend, wenn der Standardmember nicht zum Zeitpunkt des Kompilierens ermittelt werden kann.</value>
+  </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
+    <value>Wenn ein Objekt mit einem Standardmember an einer Stelle verwendet wird, die nach einer Prozedur verlangt, wird implizit der Standardmember aufgerufen. Die ist wahrscheinlich nicht beabsichtigt, minder aber zu Mindest die Lesbarkeit des Programms.</value>
+  </data>
+  <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Zugriffe auf Standardmember verstecken, welcher Member aufgerufen wird. Auch wenn im Fall eines paramtrisierten Zugriffs ersichtlich ist, dass ein Zugriff erfolgt, so ist es in der Regel für die Lesbarkeit zuträglich explizit zu sein.</value>
+  </data>
+  <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Zugriffe auf Standardmember verstecken, welcher Member aufgerufen wird. Auch wenn im Fall eines paramtrisierten Zugriffs ersichtlich ist, dass ein Zugriff erfolgt, so ist es in der Regel für die Lesbarkeit zuträglich explizit zu sein. Dies trifft besonders zu, wenn der Standardmember nicht auf dem Interface des Objekts selber zu finden ist uns stattdessen mittels einer Kette von Standrdmemberzugriffen erreicht werden muss.</value>
+  </data>
+  <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Zugriffe auf Standardmember verstecken, welcher Member aufgerufen wird. Auch wenn im Fall eines paramtrisierten Zugriffs ersichtlich ist, dass ein Zugriff erfolgt, so ist es in der Regel für die Lesbarkeit zuträglich explizit zu sein. Dies trifft insbesondere zu, wenn der Standardmember erst zur Laufzeit ermittelt werden kann. Sollte dann kein passender Standardmember existieren, kommt es zu einem Fehler 438 'Objekt unterstützt diese Eigenschaft oder Methode nicht'.</value>
+  </data>
+  <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Zugriffe auf Standardmember verstecken, welcher Member aufgerufen wird. Dies ist besonders verwirrend, wenn in dem Ausdruck selber keine Indikation vorhanden ist, dass ein solcher Zugriff erfolgt. Dies kann dazu führen, dass Fehler durch vergessene Memberaufrufe nicht erkannt werden.</value>
+  </data>
+  <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Zugriffe auf Standardmember verstecken, welcher Member aufgerufen wird. Dies ist besonders verwirrend, wenn in dem Ausdruck selber keine Indikation vorhanden ist, dass ein solcher Zugriff erfolgt, und zudem der Standardmember nicht auf dem Interface des Objekts selber zu finden ist. Dies kann dazu führen, dass Fehler durch vergessene Memberaufrufe nicht erkannt werden.</value>
+  </data>
+  <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Zugriffe auf Standardmember verstecken, welcher Member aufgerufen wird. Dies ist besonders verwirrend, wenn in dem Ausdruck selber keine Indikation vorhanden ist, dass ein solcher Zugriff erfolgt, und zudem der Standardmember erst zur Laufzeit ermittelt werden kann. Dies kann dazu führen, dass Fehler durch vergessene Memberaufrufe nicht erkannt werden. Sollte weiterhin zur Laufzeit kein Standardmember auf dem Objekt existsieren, so kommt es zu einem Fehler 438 'Objekt unterstützt diese Eigenschaft oder Methode nicht'.</value>
   </data>
 </root>

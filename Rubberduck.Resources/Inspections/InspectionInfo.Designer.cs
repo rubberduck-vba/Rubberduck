@@ -70,6 +70,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The VBA compiler does not raise an error if an object is passed as an argument for a parameter with an incompatible declared object type, i.e. with an object type that is neither the same type, a supertype nor a subtype. Under almost all circumstances passing such an argument leads to a run-time error, which is harder to detect and indicates a bug. In all other situations the code can be changed to only pass arguments of compatible declared types..
+        /// </summary>
+        public static string ArgumentWithIncompatibleObjectTypeInspection {
+            get {
+                return ResourceManager.GetString("ArgumentWithIncompatibleObjectTypeInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Parameter is passed by value, but is assigned a new value/reference. Consider making a local copy instead if the caller isn&apos;t supposed to know the new value. If the caller should see the new value, the parameter should be passed ByRef instead, and you have a bug..
         /// </summary>
         public static string AssignedByValParameterInspection {
@@ -111,6 +120,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string ConstantNotUsedInspection {
             get {
                 return ResourceManager.GetString("ConstantNotUsedInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The VBA compiler does not raise an error if an indexed default member call is required but the object&apos;s declared type does not have a suitable default member. Under almost all circumstances, this leads to a run-time error 91 &apos;Object or With block variable not set&apos; or 438 &apos;Object doesn&apos;t support this property or method&apos; depending on whether the object has the value &apos;Nothing&apos; or not, which is harder to detect and indicates a bug..
+        /// </summary>
+        public static string DefaultMemberRequiredInspection {
+            get {
+                return ResourceManager.GetString("DefaultMemberRequiredInspection", resourceCulture);
             }
         }
         
@@ -295,7 +313,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A class module that is meant to be used as interface for concrete classes should gnerally be abstracted of any implementations. If it is your intention to use this class module as a concrete, you can safely ignore this inspection result..
+        ///   Looks up a localized string similar to A class module that is meant to be used as interface for concrete classes should generally be abstracted of any implementations. If it is your intention to use this class module as a concrete, you can safely ignore this inspection result..
         /// </summary>
         public static string ImplementedInterfaceMemberInspection {
             get {
@@ -331,11 +349,11 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Such assignments look like they are assigning an object variable to a value type on the surface, but they are actually assigning that object&apos;s default member, implicitly. Consider referring to the default member explicitly, for improved readability..
+        ///   Looks up a localized string similar to Default member accesses hide away the actually called member. This is especially misleading if there is no indication in the expression that such a call is made. It can cause errors in which a member was forgotten to be called to go unnoticed..
         /// </summary>
-        public static string ImplicitDefaultMemberAssignmentInspection {
+        public static string ImplicitDefaultMemberAccessInspection {
             get {
-                return ResourceManager.GetString("ImplicitDefaultMemberAssignmentInspection", resourceCulture);
+                return ResourceManager.GetString("ImplicitDefaultMemberAccessInspection", resourceCulture);
             }
         }
         
@@ -349,11 +367,56 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Default member accesses hide away the actually called member. This is especially misleading if there is no indication in the expression that such a call is made and the final default member is not on the interface of the object itself. In particular, this can cause errors in which a member was forgotten to be called to go unnoticed..
+        /// </summary>
+        public static string ImplicitRecursiveDefaultMemberAccessInspection {
+            get {
+                return ResourceManager.GetString("ImplicitRecursiveDefaultMemberAccessInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default member accesses hide away the actually called member. This is especially misleading if there is no indication in the expression that such a call is made and if the default member cannot be determined from the declared type of the object. As a consequence, errors in which a member was forgotten to be called can go unnoticed and should there not be a suitable default member at runtime, an error 438 &apos;Object doesn&apos;t support this property or method&apos; will be raised..
+        /// </summary>
+        public static string ImplicitUnboundDefaultMemberAccessInspection {
+            get {
+                return ResourceManager.GetString("ImplicitUnboundDefaultMemberAccessInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Members with a return value implicitly return a &apos;Variant&apos; unless specified otherwise. Consider returning an explicit &apos;Variant&apos; when the return type isn&apos;t known, or specify it explicitly..
         /// </summary>
         public static string ImplicitVariantReturnTypeInspection {
             get {
                 return ResourceManager.GetString("ImplicitVariantReturnTypeInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A default member access hides away which member is actually called. Although it is apparent that some call is made in the case of an indexed default member access being explicit is usually better for readability..
+        /// </summary>
+        public static string IndexedDefaultMemberAccessInspection {
+            get {
+                return ResourceManager.GetString("IndexedDefaultMemberAccessInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A default member access hides away which member is actually called. Although it is apparent that some call is made in the case of an indexed default member access being explicit is usually better for readability. This especially holds if the accessed default member is not on the interface of the object itself but has to be resolved via a chain of default member calls..
+        /// </summary>
+        public static string IndexedRecursiveDefaultMemberAccessInspection {
+            get {
+                return ResourceManager.GetString("IndexedRecursiveDefaultMemberAccessInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A default member access hides away which member is actually called. Although it is apparent that some call is made in the case of an indexed default member access being explicit is usually better for readability. This is especially true if the default member cannot be determined at compile time. In addition, should there not be a suitable default member at runtime, an error 438 &apos;Object doesn&apos;t support this property or method&apos; will be raised..
+        /// </summary>
+        public static string IndexedUnboundDefaultMemberAccessInspection {
+            get {
+                return ResourceManager.GetString("IndexedUnboundDefaultMemberAccessInspection", resourceCulture);
             }
         }
         
@@ -529,11 +592,20 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to As far as Rubberduck can tell, this variable is an object variable, assigned without the &apos;Set&apos; keyword. This causes run-time error 91 &apos;Object or With block variable not set&apos;..
+        ///   Looks up a localized string similar to As far as Rubberduck can tell, this variable is an object variable, assigned without the &apos;Set&apos; keyword. This causes run-time error 91 &apos;Object or With block variable not set&apos; or 438 &apos;Object doesn&apos;t support this property or method&apos; depending on whether the variable has the value &apos;Nothing&apos; or not..
         /// </summary>
         public static string ObjectVariableNotSetInspection {
             get {
                 return ResourceManager.GetString("ObjectVariableNotSetInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Using an object with a default member in a place that requires a procedure leads to an implicit invocation of the default member. This is most likely unintentional and negatively affects readability..
+        /// </summary>
+        public static string ObjectWhereProcedureIsRequiredInspection {
+            get {
+                return ResourceManager.GetString("ObjectWhereProcedureIsRequiredInspection", resourceCulture);
             }
         }
         
@@ -700,6 +772,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The VBA compiler does not raise an error if an object variable is used in a place that requires a procedure and the object&apos;s declared type does not have a suitable default member. Under almost all circumstances, this leads to a run-time error 91 &apos;Object or With block variable not set&apos; or 438 &apos;Object doesn&apos;t support this property or method&apos; depending on whether the object has the value &apos;Nothing&apos; or not, which is harder to detect and indicates a bug..
+        /// </summary>
+        public static string ProcedureRequiredInspection {
+            get {
+                return ResourceManager.GetString("ProcedureRequiredInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to By default, all parameters are passed by reference, so it is not necessary to include the &apos;ByRef&apos; modifier..
         /// </summary>
         public static string RedundantByRefModifierInspection {
@@ -817,7 +898,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Detects Case Clauses that will never execute. .
+        ///   Looks up a localized string similar to A &apos;Case&apos; condition either always evaluates to False, causes a run-time error, or the cumulative effect of prior &apos;Case&apos; statements represents all possible values or a superset of the &apos;Case&apos; statement&apos;s values.  As a result, the &apos;Case&apos; block will never execute and is &quot;dead code&quot;, or the &apos;Case&apos; statement is a run-time error waiting to happen. Consider removing, reordering, or modifying the &apos;Case&apos; statement..
         /// </summary>
         public static string UnreachableCaseInspection {
             get {
@@ -841,6 +922,42 @@ namespace Rubberduck.Resources.Inspections {
         public static string UseMeaningfulNameInspection {
             get {
                 return ResourceManager.GetString("UseMeaningfulNameInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bang notation, formally known as dictionary access expression, looks like it is strongly typed. However, it is actually a stringly-typed access to the parameterized default member of the object it is used on..
+        /// </summary>
+        public static string UseOfBangNotationInspection {
+            get {
+                return ResourceManager.GetString("UseOfBangNotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bang notation, formally known as dictionary access expression, looks like it is strongly typed. However, it is actually a stringly-typed access to the parameterized default member of the object it is used on. This is especially misleading if the parameterized default member is not on the object itself and can only be reached by calling the parameterless default member first..
+        /// </summary>
+        public static string UseOfRecursiveBangNotationInspection {
+            get {
+                return ResourceManager.GetString("UseOfRecursiveBangNotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bang notation, formally known as dictionary access expression, looks like it is strongly typed. However, it is actually a stringly-typed access to the parameterized default member of the object it is used on. This is especially misleading the default member cannot be determined at compile time..
+        /// </summary>
+        public static string UseOfUnboundBangNotationInspection {
+            get {
+                return ResourceManager.GetString("UseOfUnboundBangNotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The VBA compiler does not raise an error if an object is used in a place that requires a value type and the object&apos;s declared type does not have a suitable default member. Under almost all circumstances, this leads to a run-time error 91 &apos;Object or With block variable not set&apos; or 438 &apos;Object doesn&apos;t support this property or method&apos; depending on whether the object has the value &apos;Nothing&apos; or not, which is harder to detect and indicates a bug..
+        /// </summary>
+        public static string ValueRequiredInspection {
+            get {
+                return ResourceManager.GetString("ValueRequiredInspection", resourceCulture);
             }
         }
         

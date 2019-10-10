@@ -37,7 +37,7 @@ namespace Rubberduck.Parsing.Symbols
             bool isArray,
             VBAParser.AsTypeClauseContext asTypeContext,
             bool isUserDefined = true,
-            IEnumerable<IAnnotation> annotations = null,
+            IEnumerable<IParseTreeAnnotation> annotations = null,
             Attributes attributes = null,
             bool undeclared = false)
             : this(
@@ -76,7 +76,7 @@ namespace Rubberduck.Parsing.Symbols
             bool isArray,
             VBAParser.AsTypeClauseContext asTypeContext,
             bool isUserDefined = true,
-            IEnumerable<IAnnotation> annotations = null,
+            IEnumerable<IParseTreeAnnotation> annotations = null,
             Attributes attributes = null)
             : this(
                   qualifiedName,
@@ -114,7 +114,7 @@ namespace Rubberduck.Parsing.Symbols
             bool isArray,
             VBAParser.AsTypeClauseContext asTypeContext,
             bool isUserDefined = true,
-            IEnumerable<IAnnotation> annotations = null,
+            IEnumerable<IParseTreeAnnotation> annotations = null,
             Attributes attributes = null)
         {
             QualifiedName = qualifiedName;            
@@ -275,8 +275,8 @@ namespace Rubberduck.Parsing.Symbols
         private ConcurrentDictionary<IdentifierReference, int> _references = new ConcurrentDictionary<IdentifierReference, int>();
         public IEnumerable<IdentifierReference> References => _references.Keys;
 
-        protected IEnumerable<IAnnotation> _annotations;
-        public IEnumerable<IAnnotation> Annotations => _annotations ?? new List<IAnnotation>();
+        protected IEnumerable<IParseTreeAnnotation> _annotations;
+        public IEnumerable<IParseTreeAnnotation> Annotations => _annotations ?? new List<IParseTreeAnnotation>();
 
         private readonly Attributes _attributes;
         public Attributes Attributes => _attributes;
@@ -359,12 +359,16 @@ namespace Rubberduck.Parsing.Symbols
             string identifier,
             Declaration callee,
             Selection selection,
-            IEnumerable<IAnnotation> annotations,
+            IEnumerable<IParseTreeAnnotation> annotations,
             bool isAssignmentTarget = false,
             bool hasExplicitLetStatement = false,
             bool isSetAssigned = false,
-            bool isDefaultMemberAccess = false,
-            bool isArrayAccess = false
+            bool isIndexedDefaultMemberAccess = false,
+            bool isNonIndexedDefaultMemberAccess = false,
+            int defaultMemberRecursionDepth = 0,
+            bool isArrayAccess = false,
+            bool isProcedureCoercion = false,
+            bool isInnerRecursiveDefaultMemberAccess = false
             )
         {
             var oldReference = _references.FirstOrDefault(r =>
@@ -392,8 +396,12 @@ namespace Rubberduck.Parsing.Symbols
                 hasExplicitLetStatement,
                 annotations,
                 isSetAssigned,
-                isDefaultMemberAccess,
-                isArrayAccess);
+                isIndexedDefaultMemberAccess,
+                isNonIndexedDefaultMemberAccess,
+                defaultMemberRecursionDepth,
+                isArrayAccess,
+                isProcedureCoercion,
+                isInnerRecursiveDefaultMemberAccess);
             _references.AddOrUpdate(newReference, 1, (key, value) => 1);
         }
 
@@ -637,12 +645,12 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        public void ClearReferences()
+        public virtual void ClearReferences()
         {
             _references = new ConcurrentDictionary<IdentifierReference, int>();
         }
 
-        public void RemoveReferencesFrom(IReadOnlyCollection<QualifiedModuleName> modulesByWhichToRemoveReferences)
+        public virtual void RemoveReferencesFrom(IReadOnlyCollection<QualifiedModuleName> modulesByWhichToRemoveReferences)
         {
             _references = new ConcurrentDictionary<IdentifierReference, int>(_references.Where(reference => !modulesByWhichToRemoveReferences.Contains(reference.Key.QualifiedModuleName)));
         }

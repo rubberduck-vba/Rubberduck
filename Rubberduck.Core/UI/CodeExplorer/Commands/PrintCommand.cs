@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.VBEditor.ComManagement;
+using Rubberduck.VBEditor.Events;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -17,7 +18,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private readonly IProjectsProvider _projectsProvider;
 
-        public PrintCommand(IProjectsProvider projectsProvider)
+        public PrintCommand(
+            IProjectsProvider projectsProvider, 
+            IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _projectsProvider = projectsProvider;
 

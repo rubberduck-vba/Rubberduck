@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Templates;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers;
 
@@ -30,7 +31,11 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly ITemplateProvider _provider;
         private readonly ICodeExplorerAddComponentService _addComponentService;
 
-        public AddTemplateCommand(ICodeExplorerAddComponentService addComponentService, ITemplateProvider provider) 
+        public AddTemplateCommand(
+                ICodeExplorerAddComponentService addComponentService, 
+                ITemplateProvider provider, 
+                IVbeEvents vbeEvents) 
+                : base(vbeEvents)
         {
             _provider = provider;
             _addComponentService = addComponentService;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Navigation.CodeExplorer;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
@@ -19,7 +20,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private readonly ICodeExplorerAddComponentService _addComponentService;
 
-        protected AddComponentCommandBase(ICodeExplorerAddComponentService addComponentService)
+        protected AddComponentCommandBase(
+            ICodeExplorerAddComponentService addComponentService, IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _addComponentService = addComponentService;
 

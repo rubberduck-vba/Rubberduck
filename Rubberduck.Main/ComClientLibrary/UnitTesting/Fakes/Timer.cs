@@ -8,7 +8,7 @@ namespace Rubberduck.UnitTesting.Fakes
     {
         public Timer()
         {
-            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcGetTimer");
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeNativeApi.DllName, "rtcGetTimer");
 
             InjectDelegate(new TimerDelegate(TimerCallback), processAddress);
         }
@@ -30,7 +30,7 @@ namespace Rubberduck.UnitTesting.Fakes
 
             if (PassThrough)
             {
-                return VbeProvider.VbeRuntime.GetTimer();
+                return VbeProvider.VbeNativeApi.GetTimer();
             }
             return Convert.ToSingle(ReturnValue ?? 0);
         } 

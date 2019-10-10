@@ -172,14 +172,14 @@ End Sub
 
         [Test]
         [Category("Inspections")]
-        public void AssignedByValParameter_NoResultForDefaultMembberAssignment()
+        public void AssignedByValParameter_NoResultForDefaultMemberAssignment()
         {
             var class1 = @"
 Public Property Get Something() As Long
-Attribute Foo.VB_UserMemId = 0
+Attribute Something.VB_UserMemId = 0
 End Property
+
 Public Property Let Something(ByVal value As Long)
-Attribute Foo.VB_UserMemId = 0
 End Property
 ";
             var caller = @"

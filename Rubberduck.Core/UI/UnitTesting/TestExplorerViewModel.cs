@@ -4,19 +4,19 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Windows.Annotations;
 using System.Windows.Data;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Interaction.Navigation;
-using Rubberduck.Parsing;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Resources;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.ComCommands;
 using Rubberduck.UI.Settings;
+using Rubberduck.UI.UnitTesting.ComCommands;
 using Rubberduck.UI.UnitTesting.Commands;
 using Rubberduck.UI.UnitTesting.ViewModels;
 using Rubberduck.UnitTesting;
@@ -374,7 +374,7 @@ namespace Rubberduck.UI.UnitTesting
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
 
-            AnnotationUpdater.AddAnnotation(rewriteSession, _mousedOverTestMethod.Declaration, Parsing.Annotations.AnnotationType.IgnoreTest);
+            AnnotationUpdater.AddAnnotation(rewriteSession, _mousedOverTestMethod.Declaration, new IgnoreTestAnnotation());
 
             rewriteSession.TryRewrite();
         }
@@ -383,7 +383,7 @@ namespace Rubberduck.UI.UnitTesting
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
             var ignoreTestAnnotations = _mousedOverTestMethod.Declaration.Annotations
-                .Where(iannotations => iannotations.AnnotationType == Parsing.Annotations.AnnotationType.IgnoreTest);
+                .Where(pta => pta.Annotation is IgnoreTestAnnotation);
 
             foreach (var ignoreTestAnnotation in ignoreTestAnnotations)
             {

@@ -12,6 +12,7 @@ using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using System;
 
 namespace RubberduckTests.Symbols
 {
@@ -445,6 +446,45 @@ End Sub
             Assert.AreEqual(isConflict, conflicts.Where(cf => cf.IdentifierName.Equals(nameToCheck)).Any(), ConflictMessage(isConflict, nameToCheck, conflicts));
         }
 
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/4969
+        private const string projectOneModuleName = "projectOneModule";
+        private const string projectTwoModuleName = "projectTwoModule";
+        [TestCase(projectOneModuleName, 0)]  //Duplicate module name found in a separate project
+        [TestCase(projectTwoModuleName, 1)] //Duplicate module name found in the same project
+        [Category("Resolver")]
+        public void DeclarationFinder_NameConflictDetectionRespectsProjectScope(string proposedTestModuleName, int expectedCount)
+        {
+
+            string renameTargetModuleName = "TargetModule";
+
+            string moduleContent = $"Private Sub Foo(){Environment.NewLine}End Sub";
+
+            var projectOneContent = new TestComponentSpecification[]
+            {
+                new TestComponentSpecification(projectOneModuleName, moduleContent, ComponentType.StandardModule)
+            };
+
+            var projectTwoContent = new TestComponentSpecification[]
+            {
+                new TestComponentSpecification(renameTargetModuleName, moduleContent, ComponentType.StandardModule),
+                new TestComponentSpecification(projectTwoModuleName, moduleContent, ComponentType.StandardModule)
+            };
+
+            var vbe = BuildProjects(new (string, IEnumerable<TestComponentSpecification>)[]
+                {("ProjectOne", projectOneContent),("ProjectTwo", projectTwoContent)});
+
+            using(var parser = MockParser.CreateAndParse(vbe))
+            {
+                var target = parser.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule)
+                    .FirstOrDefault(item => item.IdentifierName.Equals(renameTargetModuleName));
+
+                var results = parser.DeclarationFinder.FindNewDeclarationNameConflicts(proposedTestModuleName, target);
+
+                Assert.AreEqual(expectedCount, results.Count());
+            }
+        }
+
         private static string ConflictMessage(bool isConflict, string name, IEnumerable<Declaration> conflicts)
         {
             return isConflict ? $"Identifier '{name}' is a conflict but was not identified" : $"Identifier '{name}' was incorrectly found as a conflict";
@@ -499,13 +539,32 @@ End Sub
 
         private IVBE BuildProject(string projectName, List<TestComponentSpecification> testComponents)
         {
+            var projectDefs = new (string, IEnumerable<TestComponentSpecification>)[] { (projectName, testComponents) };
+            return BuildProjects(projectDefs);
+        }
+
+        private IVBE BuildProjects(IEnumerable<(string ProjectName, IEnumerable<TestComponentSpecification> TestComponents)> projectDefinitions)
+        {
             var builder = new MockVbeBuilder();
+            foreach (var projectDef in projectDefinitions)
+            {
+                builder = AddProject(builder, projectDef.ProjectName, projectDef.TestComponents);
+            }
+            return builder.Build().Object;
+        }
+
+        private MockVbeBuilder AddProject(MockVbeBuilder builder, string projectName, IEnumerable<TestComponentSpecification> testComponents)
+        {
             var enclosingProjectBuilder = builder.ProjectBuilder(projectName, ProjectProtection.Unprotected);
 
-            testComponents.ForEach(c => enclosingProjectBuilder.AddComponent(c.Name, c.ModuleType, c.Content));
+            foreach (var testComponent in testComponents)
+            {
+                enclosingProjectBuilder.AddComponent(testComponent.Name, testComponent.ModuleType, testComponent.Content);
+            }
+
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
-            return builder.Build().Object;
+            return builder;
         }
 
         private IVBComponent RetrieveComponent(AccessibilityTestsDataObject tdo, string componentName)
@@ -571,13 +630,14 @@ End Sub
             var vbe = new MockVbeBuilder()
                 .ProjectBuilder("foo", ProjectProtection.Unprotected)
                 .AddComponent("foo", ComponentType.StandardModule, code, new Selection(6, 6))
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
                 .AddProjectToVbeBuilder()
                 .Build();
 
             var parser = MockParser.Create(vbe.Object);
             parser.Parse(new CancellationTokenSource());
 
-            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable).Single();
+            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable).Single(declaration => declaration.IdentifierName.Equals("foo"));
             var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
 
             Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
@@ -600,13 +660,14 @@ End Sub
             var vbe = new MockVbeBuilder()
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(6, 6))
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
                 .AddProjectToVbeBuilder()
                 .Build();
 
             var parser = MockParser.Create(vbe.Object);
             parser.Parse(new CancellationTokenSource());
 
-            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable).Single();
+            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable).Single(declaration => declaration.IdentifierName.Equals("foo"));
             var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
 
             Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
@@ -2122,7 +2183,7 @@ End Property
 
         private static void AddReference(Declaration toDeclaration, Declaration fromModuleDeclaration, ParserRuleContext context = null)
         {
-            toDeclaration.AddReference(toDeclaration.QualifiedName.QualifiedModuleName, fromModuleDeclaration, fromModuleDeclaration, context, toDeclaration.IdentifierName, toDeclaration, Selection.Home, new List<Rubberduck.Parsing.Annotations.IAnnotation>());
+            toDeclaration.AddReference(toDeclaration.QualifiedName.QualifiedModuleName, fromModuleDeclaration, fromModuleDeclaration, context, toDeclaration.IdentifierName, toDeclaration, Selection.Home, new List<Rubberduck.Parsing.Annotations.IParseTreeAnnotation>());
         }
     }
 }

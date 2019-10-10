@@ -22,10 +22,14 @@ namespace Rubberduck.Parsing.Symbols
             Declaration declaration, 
             bool isAssignmentTarget = false,
             bool hasExplicitLetStatement = false, 
-            IEnumerable<IAnnotation> annotations = null,
+            IEnumerable<IParseTreeAnnotation> annotations = null,
             bool isSetAssigned = false,
-            bool isDefaultMemberAccess = false,
-            bool isArrayAccess = false)
+            bool isIndexedDefaultMemberAccess = false,
+            bool isNonIndexedDefaultMemberAccess = false,
+            int defaultMemberRecursionDepth = 0,
+            bool isArrayAccess = false,
+            bool isProcedureCoercion = false,
+            bool isInnerRecursiveDefaultMemberAccess = false)
         {
             ParentScoping = parentScopingDeclaration;
             ParentNonScoping = parentNonScopingDeclaration;
@@ -37,9 +41,13 @@ namespace Rubberduck.Parsing.Symbols
             HasExplicitLetStatement = hasExplicitLetStatement;
             IsAssignment = isAssignmentTarget;
             IsSetAssignment = isSetAssigned;
-            IsDefaultMemberAccess = isDefaultMemberAccess;
+            IsIndexedDefaultMemberAccess = isIndexedDefaultMemberAccess;
+            IsNonIndexedDefaultMemberAccess = isNonIndexedDefaultMemberAccess;
+            DefaultMemberRecursionDepth = defaultMemberRecursionDepth;
             IsArrayAccess = isArrayAccess;
-            Annotations = annotations ?? new List<IAnnotation>();
+            IsProcedureCoercion = isProcedureCoercion;
+            Annotations = annotations ?? new List<IParseTreeAnnotation>();
+            IsInnerRecursiveDefaultMemberAccess = isInnerRecursiveDefaultMemberAccess;
         }
 
         public QualifiedModuleName QualifiedModuleName { get; }
@@ -64,7 +72,12 @@ namespace Rubberduck.Parsing.Symbols
 
         public bool IsSetAssignment { get; }
 
-        public bool IsDefaultMemberAccess { get; }
+        public bool IsIndexedDefaultMemberAccess { get; }
+        public bool IsNonIndexedDefaultMemberAccess { get; }
+        public bool IsDefaultMemberAccess => IsIndexedDefaultMemberAccess || IsNonIndexedDefaultMemberAccess;
+        public bool IsProcedureCoercion { get; }
+        public bool IsInnerRecursiveDefaultMemberAccess { get; }
+        public int DefaultMemberRecursionDepth { get; }
 
         public bool IsArrayAccess { get; }
 
@@ -72,7 +85,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration Declaration { get; }
 
-        public IEnumerable<IAnnotation> Annotations { get; }
+        public IEnumerable<IParseTreeAnnotation> Annotations { get; }
 
         public bool HasExplicitLetStatement { get; }
 
@@ -125,7 +138,8 @@ namespace Rubberduck.Parsing.Symbols
             return other != null
                 && other.QualifiedModuleName.Equals(QualifiedModuleName)
                 && other.Selection.Equals(Selection)
-                && other.Declaration.Equals(Declaration);
+                && (other.Declaration != null && other.Declaration.Equals(Declaration)
+                    || other.Declaration == null && Declaration == null);
         }
 
         public override bool Equals(object obj)
@@ -135,7 +149,9 @@ namespace Rubberduck.Parsing.Symbols
 
         public override int GetHashCode()
         {
-            return HashCode.Compute(QualifiedModuleName, Selection, Declaration);
+            return Declaration != null
+                ? HashCode.Compute(QualifiedModuleName, Selection, Declaration)
+                : HashCode.Compute(QualifiedModuleName, Selection);
         }
     }
 }

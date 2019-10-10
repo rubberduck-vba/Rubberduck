@@ -75,6 +75,7 @@ namespace Rubberduck.Inspections.Concrete
                                                            members.Contains(decl.IdentifierName));
 
             return from usage in usages
+                   // filtering on references isn't the default ignore filtering
                    from reference in usage.References.Where(use => !use.IsIgnoringInspectionResultFor(AnnotationName))
                    let qualifiedSelection = new QualifiedSelection(reference.QualifiedModuleName, reference.Selection)
                    select new IdentifierReferenceInspectionResult(this,

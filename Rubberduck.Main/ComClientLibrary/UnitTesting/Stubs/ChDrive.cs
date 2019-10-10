@@ -8,7 +8,7 @@ namespace Rubberduck.UnitTesting
     {
         public ChDrive()
         {
-            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcChangeDrive");
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeNativeApi.DllName, "rtcChangeDrive");
 
             InjectDelegate(new ChDriveDelegate(ChDriveCallback), processAddress);
         }
@@ -25,7 +25,7 @@ namespace Rubberduck.UnitTesting
             TrackUsage("driveletter", driveletterArg, Tokens.String);
             if (PassThrough)
             {
-                VbeProvider.VbeRuntime.ChangeDrive(driveletter);
+                VbeProvider.VbeNativeApi.ChangeDrive(driveletter);
             }
         }
     }

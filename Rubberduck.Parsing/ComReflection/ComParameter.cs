@@ -73,7 +73,7 @@ namespace Rubberduck.Parsing.ComReflection
 
         [DataMember(IsRequired = true)]
         private ComTypeName _typeName;
-        public string TypeName => IsArray ? $"{_typeName.Name}()" : _typeName.Name;
+        public string TypeName => _typeName.Name;
 
         [DataMember(IsRequired = true)]
         ComMember Parent { get; set; }

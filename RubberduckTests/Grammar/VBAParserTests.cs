@@ -995,7 +995,95 @@ End
             AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfigProperty", matches => matches.Count == 1);
         }
 
-        
+
+        [Test]
+        public void GermanStyleFloatingPointsInFormsPart()
+        {
+            string code = @"
+Begin VB.Form Form1
+   Caption = ""Main""
+   ClientHeight = 2970
+   ClientLeft = 60
+   ClientTop = 450
+   ClientWidth = 8250
+   LinkTopic = ""Form1""
+   ScaleHeight = 2970
+   ScaleWidth = 8250
+   StartUpPosition = 2  'CenterScreen
+   Begin MSDataGridLib.DataGrid DataGrid1
+      Bindings = ""frmMain.frx"":0000
+      Height = 2055
+      Left = 2520
+      TabIndex = 0
+      Top = 120
+      Width = 5655
+      _ExtentX = 9975
+      _ExtentY = 3625
+      _Version = 393216
+      HeadLines = 1
+      RowHeight = 15
+      AllowAddNew = -1  'True
+      BeginProperty HeadFont {0BE35203-8F91-11CE-9DE3-00AA004BB851}
+            Name = ""MS Sans Serif""
+         Size = 8,25
+         Charset = 0
+         Weight = 400
+         Underline = 0   'False
+         Italic = 0   'False
+         Strikethrough = 0   'False
+      EndProperty
+   End
+End
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//germanStyleFloatingPointNumber", matches => matches.Count == 1);
+        }
+
+
+        [Test]
+        public void MixedStyleFloatingPointsInFormsPart()
+        {
+            string code = @"
+Begin VB.Form Form1
+   Caption = ""Main""
+   ClientHeight = 2970
+   ClientLeft = 60
+   ClientTop = 450
+   ClientWidth = 8250
+   LinkTopic = ""Form1""
+   ScaleHeight = 2970
+   ScaleWidth = 8250
+   StartUpPosition = 2  'CenterScreen
+   Begin MSDataGridLib.DataGrid DataGrid1
+      Bindings = ""frmMain.frx"":0000
+      Height = 2055
+      Left = 2520
+      TabIndex = 0
+      Top = 120
+      Width = 5655
+      _ExtentX = 9975
+      _ExtentY = 3625
+      _Version = 393216
+      HeadLines = 1
+      RowHeight = 15
+      AllowAddNew = -1  'True
+      BeginProperty HeadFont {0BE35203-8F91-11CE-9DE3-00AA004BB851}
+            Name = ""MS Sans Serif""
+         Size = 8,25
+         Charset = 0
+         Weight = 400.4
+         Underline = 0   'False
+         Italic = 0   'False
+         Strikethrough = 0   'False
+      EndProperty
+   End
+End
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//germanStyleFloatingPointNumber", matches => matches.Count == 1);
+        }
+
+
         [Test]
         public void TestNestedVbFormModuleConfigWithMultipleProperties()
         {
@@ -2329,7 +2417,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression");
         }
 
-        
+
         [Test]
         public void TestArrayWithTypeSuffix()
         {
@@ -2468,7 +2556,20 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//printStmt");
         }
 
-        
+
+        [Test]
+        public void TestObjectPrintStmt()
+        {
+            string code = @"
+Sub Test()
+    Dim obj As Object
+    obj.Print ""Hello "";""World"", ""!"" ;
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//outputList");
+        }
+
+
         [Test]
         public void TestDebugPrintStmtNoArguments()
         {
@@ -2477,7 +2578,7 @@ Sub Test()
     Debug.Print
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt");
+            AssertTree(parseResult.Item1, parseResult.Item2, "//printMethod");
         }
 
         
@@ -2489,7 +2590,7 @@ Sub Test()
     Debug.Print ""Anything""
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt/outputList");
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression/outputList");
         }
 
         
@@ -2501,7 +2602,7 @@ Sub Test()
     Debug.Print 1;
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt/outputList");
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression/outputList");
         }
 
         
@@ -2513,7 +2614,7 @@ Sub Test()
     Debug.Print 1,
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt/outputList");
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression/outputList");
         }
 
         
@@ -2530,7 +2631,7 @@ Sub Test()
     Next
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt", matches => matches.Count == 4);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//printMethod", matches => matches.Count == 4);
         }
 
         
@@ -2545,7 +2646,7 @@ Sub Test()
     End If
 End Sub";
             var parseResult = Parse(code, PredictionMode.Sll);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt", matches => matches.Count == 2);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//printMethod", matches => matches.Count == 2);
         }
 
         
@@ -2559,7 +2660,7 @@ Sub Test()
     Next i
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt", matches => matches.Count == 1);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//printMethod", matches => matches.Count == 1);
         }
 
         
@@ -3769,7 +3870,7 @@ End Type
             AssertTree(parseResult.Item1, parseResult.Item2, "//unrestrictedIdentifier", matches => matches.Count == 1);
         }
 
-        
+
         [Test]
         public void ParserAcceptsPSetMemberInUDT()
         {

@@ -105,7 +105,7 @@ namespace Rubberduck.UI.Converters
                     return value is ICodeExplorerNode node &&
                            node.Declaration != null &&
                            DeclarationIcons.ContainsKey(node.Declaration.DeclarationType)
-                        ? node.Declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.TestMethod)
+                        ? node.Declaration.Annotations.Any(a => a is TestMethodAnnotation)
                             ? TestMethodIcon
                             : DeclarationIcons[node.Declaration.DeclarationType]
                         : ExceptionIcon;

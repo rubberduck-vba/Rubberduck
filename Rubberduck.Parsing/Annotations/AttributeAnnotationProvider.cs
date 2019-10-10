@@ -1,109 +1,69 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Rubberduck.Parsing.Annotations
 {
     public class AttributeAnnotationProvider : IAttributeAnnotationProvider
     {
-        public (AnnotationType annotationType, IReadOnlyList<string> values) ModuleAttributeAnnotation(
-            string attributeName, 
-            IReadOnlyList<string> attributeValues)
-        {
-            var moduleAnnotations = ModuleAnnotations();
-            return AttributeAnnotation(
-                moduleAnnotations, 
-                attributeName, 
-                attributeValues,
-                AnnotationType.ModuleAttribute);
-        }
+        // I want to const this, but can't
+        private readonly AnnotationTarget [] distinctTargets = new AnnotationTarget[] { AnnotationTarget.Identifier, AnnotationTarget.Member, AnnotationTarget.Module, AnnotationTarget.Variable };
+        private readonly Dictionary<AnnotationTarget, List<IAttributeAnnotation>> annotationInfoByTarget
+            = new Dictionary<AnnotationTarget, List<IAttributeAnnotation>>();
 
-        private (AnnotationType annotationType, IReadOnlyList<string> values) AttributeAnnotation(
-            IReadOnlyList<AnnotationType> annotationTypes,
-            string attributeName,
-            IReadOnlyList<string> attributeValues,
-            AnnotationType fallbackFlexibleAttributeAnnotationType)
+        private readonly IAttributeAnnotation memberFallback = new MemberAttributeAnnotation();
+        private readonly IAttributeAnnotation moduleFallback = new ModuleAttributeAnnotation();
+        
+        public AttributeAnnotationProvider(IEnumerable<IAttributeAnnotation> attributeAnnotations)
         {
-            var fixedValueAttributeAnnotation = FirstMatchingFixedAttributeValueAnnotation(annotationTypes, attributeName, attributeValues);
-            if (fixedValueAttributeAnnotation != default)
+            // set up empty lists to put information into
+            foreach (var validTarget in distinctTargets)
             {
-                return (fixedValueAttributeAnnotation, new List<string>());
+                annotationInfoByTarget[validTarget] = new List<IAttributeAnnotation>();
             }
 
-            var flexibleValueAttributeAnnotation = FirstMatchingFlexibleAttributeValueAnnotation(annotationTypes, attributeName, attributeValues.Count);
-            if (flexibleValueAttributeAnnotation != default)
+            foreach (var annotation in attributeAnnotations)
             {
-                // FIXME special cased bodge for ExcelHotKeyAnnotation to deal with the value transformation:
-                if (flexibleValueAttributeAnnotation == AnnotationType.ExcelHotKey)
+                foreach (var validTarget in distinctTargets)
                 {
-                    return (flexibleValueAttributeAnnotation, attributeValues.Select(keySpec => '"' + keySpec.Substring(1, 1) + '"').ToList());
+                    if (annotation.Target.HasFlag(validTarget))
+                    {
+                        annotationInfoByTarget[validTarget].Add(annotation);
+                    }
                 }
-                return (flexibleValueAttributeAnnotation, attributeValues);
             }
-
-            var annotationValues = WithNewValuePrepended(attributeValues, attributeName);
-            return (fallbackFlexibleAttributeAnnotationType, annotationValues);
         }
 
-        private static IReadOnlyList<AnnotationType> ModuleAnnotations()
+        public (IAttributeAnnotation annotation, IReadOnlyList<string> annotationValues) MemberAttributeAnnotation(string attributeBaseName, IReadOnlyList<string> attributeValues)
         {
-            var type = typeof(AnnotationType);
-            return Enum.GetValues(type)
-                .Cast<AnnotationType>()
-                .Where(annotationType => annotationType.HasFlag(AnnotationType.ModuleAnnotation))
-                .ToList();
+            // go through all non-module annotations (contrary to only member annotations)
+            var memberAnnotationTypes = annotationInfoByTarget[AnnotationTarget.Member]
+                .Concat(annotationInfoByTarget[AnnotationTarget.Variable])
+                .Concat(annotationInfoByTarget[AnnotationTarget.Identifier]);
+            foreach (var annotation in memberAnnotationTypes)
+            {
+                if (annotation.MatchesAttributeDefinition(attributeBaseName, attributeValues))
+                {
+                    return (annotation, annotation.AttributeToAnnotationValues(attributeValues));
+                }
+            }
+            var fallbackAttributeArguments = new[] { attributeBaseName }.Concat(attributeValues);
+            return (memberFallback, memberFallback.AttributeToAnnotationValues(fallbackAttributeArguments.ToList()));
         }
 
-        private static AnnotationType FirstMatchingFixedAttributeValueAnnotation(
-            IEnumerable<AnnotationType> annotationTypes,
-            string attributeName,
-            IEnumerable<string> attributeValues)
+        public (IAttributeAnnotation annotation, IReadOnlyList<string> annotationValues) ModuleAttributeAnnotation(string attributeName, IReadOnlyList<string> attributeValues)
         {
-            var type = typeof(AnnotationType);
-            return annotationTypes.FirstOrDefault(annotationType => type.GetField(Enum.GetName(type, annotationType))
-                .GetCustomAttributes(false)
-                .OfType<FixedAttributeValueAnnotationAttribute>()
-                .Any(attribute => attribute.AttributeName.Equals(attributeName, StringComparison.OrdinalIgnoreCase)
-                                  && attribute.AttributeValues.SequenceEqual(attributeValues)));
-        }
-
-        private static AnnotationType FirstMatchingFlexibleAttributeValueAnnotation(
-            IEnumerable<AnnotationType> annotationTypes,
-            string attributeName,
-            int valueCount)
-        {
-            var type = typeof(AnnotationType);
-            return annotationTypes.FirstOrDefault(annotationType => type.GetField(Enum.GetName(type, annotationType))
-                .GetCustomAttributes(false)
-                .OfType<FlexibleAttributeValueAnnotationAttribute>()
-                .Any(attribute => attribute.AttributeName.Equals(attributeName, StringComparison.OrdinalIgnoreCase)
-                                  && attribute.NumberOfParameters == valueCount));
-        }
-
-        private IReadOnlyList<string> WithNewValuePrepended(IReadOnlyList<string> oldList, string newValue)
-        {
-            var newList = oldList.ToList();
-            newList.Insert(0, newValue);
-            return newList;
-        }
-
-        public (AnnotationType annotationType, IReadOnlyList<string> values) MemberAttributeAnnotation(string attributeBaseName, IReadOnlyList<string> attributeValues)
-        {
-            var nonModuleAnnotations = NonModuleAnnotations();
-            return AttributeAnnotation(
-                nonModuleAnnotations,
-                attributeBaseName,
-                attributeValues,
-                AnnotationType.MemberAttribute);
-        }
-
-        private static IReadOnlyList<AnnotationType> NonModuleAnnotations()
-        {
-            var type = typeof(AnnotationType);
-            return Enum.GetValues(type)
-                .Cast<AnnotationType>()
-                .Where(annotationType => !annotationType.HasFlag(AnnotationType.ModuleAnnotation))
-                .ToList();
+            var moduleAnnotationTypes = annotationInfoByTarget[AnnotationTarget.Module];
+            foreach (var annotation in moduleAnnotationTypes)
+            {
+                if (annotation.MatchesAttributeDefinition(attributeName, attributeValues))
+                {
+                    return (annotation, annotation.AttributeToAnnotationValues(attributeValues));
+                }
+            }
+            var fallbackAttributeArguments = new[] { attributeName }.Concat(attributeValues);
+            return (moduleFallback, moduleFallback.AttributeToAnnotationValues(fallbackAttributeArguments.ToList()));
         }
     }
 }

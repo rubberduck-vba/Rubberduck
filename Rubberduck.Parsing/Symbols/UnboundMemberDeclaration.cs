@@ -16,7 +16,7 @@ namespace Rubberduck.Parsing.Symbols
         /// </summary>
         public ParserRuleContext CallingContext { get; private set; }
 
-        public UnboundMemberDeclaration(Declaration parentDeclaration, ParserRuleContext unboundIdentifier, ParserRuleContext callingContext, IEnumerable<IAnnotation> annotations) :
+        public UnboundMemberDeclaration(Declaration parentDeclaration, ParserRuleContext unboundIdentifier, ParserRuleContext callingContext, IEnumerable<IParseTreeAnnotation> annotations) :
             base(new QualifiedMemberName(parentDeclaration.QualifiedName.QualifiedModuleName, unboundIdentifier.GetText()),
                 parentDeclaration,
                 parentDeclaration,

@@ -264,10 +264,9 @@ End Sub";
             }
         }
 
-        //See https://github.com/rubberduck-vba/Rubberduck/issues/4308 
         [Test]
         [Category("Inspections")]
-        [Ignore("To be unignored in a PR fixing issue 4308.")]
+        //See https://github.com/rubberduck-vba/Rubberduck/issues/4308 
         public void MemberNotOnInterface_ProcedureArgument()
         {
             const string inputCode =
@@ -278,6 +277,282 @@ End Sub";
 End Sub
 
 Private Sub Bar(baz As Long)
+End Sub";
+
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
+                var inspection = new MemberNotOnInterfaceInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MemberNotOnInterface_FunctionArgument()
+        {
+            const string inputCode =
+                @"Sub Foo()
+    Dim fooBaz As Dictionary
+    Dim fooBar As Variant 
+    Set fooBaz = New Dictionary 
+    fooBar = Bar(fooBaz.FooBar)
+End Sub
+
+Private Function Bar(baz As Long) As Variant
+End Function";
+
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
+                var inspection = new MemberNotOnInterfaceInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MemberNotOnInterface_Expression()
+        {
+            const string inputCode =
+                @"Sub Foo()
+    Dim fooBaz As Dictionary
+    Dim fooBar As Variant 
+    Set fooBaz = New Dictionary 
+    fooBar = 1 + fooBaz.FooBar
+End Sub
+
+Private Function Bar(baz As Long) As Variant
+End Function";
+
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
+                var inspection = new MemberNotOnInterfaceInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MemberNotOnInterface_Expression_BothSides()
+        {
+            const string inputCode =
+                @"Sub Foo()
+    Dim fooBaz As Dictionary
+    Dim fooBar As Variant 
+    Set fooBaz = New Dictionary 
+    fooBar = fooBaz.NotThere + fooBaz.FooBar
+End Sub
+
+Private Function Bar(baz As Long) As Variant
+End Function";
+
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
+                var inspection = new MemberNotOnInterfaceInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(2, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MemberNotOnInterface_DeepExpression()
+        {
+            const string inputCode =
+                @"Sub Foo()
+    Dim fooBaz As Dictionary
+    Dim fooBar As Variant 
+    Set fooBaz = New Dictionary 
+    fooBar = 1 + (1 + (1 + (1 + fooBaz.FooBar)))
+End Sub
+
+Private Function Bar(baz As Long) As Variant
+End Function";
+
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
+                var inspection = new MemberNotOnInterfaceInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MemberNotOnInterface_ExpressionInFunctionArgument()
+        {
+            const string inputCode =
+                @"Sub Foo()
+    Dim fooBaz As Dictionary
+    Dim fooBar As Variant 
+    Set fooBaz = New Dictionary 
+    fooBar = Bar(1 + fooBaz.FooBar)
+End Sub
+
+Private Function Bar(baz As Long) As Variant
+End Function";
+
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
+                var inspection = new MemberNotOnInterfaceInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MemberNotOnInterface_FunctionArgumentInFunctionArgument()
+        {
+            const string inputCode =
+                @"Sub Foo()
+    Dim fooBaz As Dictionary
+    Dim fooBar As Variant 
+    Set fooBaz = New Dictionary 
+    fooBar = Bar(Bar(fooBaz.FooBar))
+End Sub
+
+Private Function Bar(baz As Long) As Variant
+End Function";
+
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
+                var inspection = new MemberNotOnInterfaceInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MemberNotOnInterface_FunctionArgumentInExpressionInFunctionArgument()
+        {
+            const string inputCode =
+                @"Sub Foo()
+    Dim fooBaz As Dictionary
+    Dim fooBar As Variant 
+    Set fooBaz = New Dictionary 
+    fooBar = Bar(1 + Bar(fooBaz.FooBar))
+End Sub
+
+Private Function Bar(baz As Long) As Variant
+End Function";
+
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
+                var inspection = new MemberNotOnInterfaceInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MemberNotOnInterface_FunctionArgumentInExpressionInProcedureArgument()
+        {
+            const string inputCode =
+                @"Sub Foo()
+    Dim fooBaz As Dictionary
+    Dim fooBar As Variant 
+    Set fooBaz = New Dictionary 
+    Barr 1 + Bar(fooBaz.FooBar)
+End Sub
+
+Private Function Bar(baz As Long) As Variant
+End Function
+
+Private Sub Barr(baz As Long)
+End Sub";
+
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
+                var inspection = new MemberNotOnInterfaceInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MemberNotOnInterface_FunctionArgumentInExpressionInProcedureArgument_ExplicitCall()
+        {
+            const string inputCode =
+                @"Sub Foo()
+    Dim fooBaz As Dictionary
+    Dim fooBar As Variant 
+    Set fooBaz = New Dictionary 
+    Call Barr(1 + Bar(fooBaz.FooBar))
+End Sub
+
+Private Function Bar(baz As Long) As Variant
+End Function
+
+Private Sub Barr(baz As Long)
+End Sub";
+
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
+                var inspection = new MemberNotOnInterfaceInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MemberNotOnInterface_InOutputList()
+        {
+            const string inputCode =
+                @"Sub Foo()
+    Dim fooBaz As Dictionary
+    Dim fooBar As Variant 
+    Set fooBaz = New Dictionary 
+    Debug.Print fooBaz.FooBar; Spc(fooBaz.NotThere); Tab(fooBaz.Neither)
+End Sub
+
+Private Function Bar(baz As Long) As Variant
+End Function
+
+Private Sub Barr(baz As Long)
+End Sub";
+
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
+                var inspection = new MemberNotOnInterfaceInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(3, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MemberNotOnInterface_FunctionArgumentInExpressionInOutputList()
+        {
+            const string inputCode =
+                @"Sub Foo()
+    Dim fooBaz As Dictionary
+    Dim fooBar As Variant 
+    Set fooBaz = New Dictionary 
+    Debug.Print 1 + Bar(fooBaz.FooBar)
+End Sub
+
+Private Function Bar(baz As Long) As Variant
+End Function
+
+Private Sub Barr(baz As Long)
 End Sub";
 
             using (var state = ArrangeParserAndParse(inputCode))

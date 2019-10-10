@@ -7,6 +7,7 @@ using System.Linq;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Interaction.Navigation;
+using Rubberduck.VBEditor.Events;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -24,7 +25,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IIndenter _indenter;
         private readonly INavigateCommand _navigateCommand;
 
-        public IndentCommand(RubberduckParserState state, IIndenter indenter, INavigateCommand navigateCommand)
+        public IndentCommand(
+            RubberduckParserState state, 
+            IIndenter indenter, 
+            INavigateCommand navigateCommand, 
+            IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _state = state;
             _indenter = indenter;
@@ -47,14 +53,14 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 case CodeExplorerProjectViewModel project:
                     return _state.AllUserDeclarations
                         .Any(c => c.DeclarationType.HasFlag(DeclarationType.Module) &&
-                                  c.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent) &&
+                                  !c.Annotations.Any(pta => pta.Annotation is NoIndentAnnotation) &&
                                   c.ProjectId == project.Declaration.ProjectId);
                 case CodeExplorerCustomFolderViewModel folder:
                     return folder.Children.OfType<CodeExplorerComponentViewModel>()     //TODO - this has the filter applied.
                         .Select(s => s.Declaration)
-                        .Any(d => d.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent));
+                        .Any(d => !d.Annotations.Any(pta => pta.Annotation is NoIndentAnnotation));
                 case CodeExplorerComponentViewModel model:
-                    return model.Declaration.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent);
+                    return !model.Declaration.Annotations.Any(pta => pta.Annotation is NoIndentAnnotation);
                 case CodeExplorerMemberViewModel member:
                     return member.QualifiedSelection.HasValue; 
                 default:
@@ -79,7 +85,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
                     var componentDeclarations = _state.AllUserDeclarations.Where(c => 
                         c.DeclarationType.HasFlag(DeclarationType.Module) &&
-                        c.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent) &&
+                        !c.Annotations.Any(pta => pta.Annotation is NoIndentAnnotation) &&
                         c.ProjectId == declaration.ProjectId);
 
                     foreach (var componentDeclaration in componentDeclarations)
@@ -93,7 +99,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 {
                     var components = folder.Children.OfType<CodeExplorerComponentViewModel>()   //TODO: this has the filter applied.
                         .Select(s => s.Declaration)
-                        .Where(d => d.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent))
+                        .Where(d => !d.Annotations.Any(pta => pta.Annotation is NoIndentAnnotation))
                         .Select(d => _state.ProjectsProvider.Component(d.QualifiedName.QualifiedModuleName));
 
                     foreach (var component in components)

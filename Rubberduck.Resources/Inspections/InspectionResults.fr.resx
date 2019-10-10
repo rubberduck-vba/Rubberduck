@@ -231,9 +231,6 @@
   <data name="MissingAnnotationArgumentInspection" xml:space="preserve">
     <value>Un paramètre était attendu dans l'annotation '{0}'.</value>
   </data>
-  <data name="ImplicitDefaultMemberAssignmentInspection" xml:space="preserve">
-    <value>Assignation de '{0}' réfère implicitement au membre par défaut de la classe '{1}'</value>
-  </data>
   <data name="AggregateInspection" xml:space="preserve">
     <value>{0} ({1} résultats)</value>
   </data>
@@ -306,18 +303,6 @@
   <data name="EmptyModuleInspection" xml:space="preserve">
     <value>Le module/classe {0} est vide.</value>
   </data>
-  <data name="UnreachableCaseInspection" xml:space="preserve">
-    <value>Le bloc '{0}' est inatteignable</value>
-  </data>
-  <data name="UnreachableCaseInspection_CaseElse" xml:space="preserve">
-    <value>Le bloc 'Case Else' est inatteignable : toutes les valeurs possibles sont prises en charge par les blocs 'Case' précédents.</value>
-  </data>
-  <data name="UnreachableCaseInspection_TypeMismatch" xml:space="preserve">
-    <value>Type invalide : l'expression 'Case' ne peut être évaluée selon le type de l'expression 'Select'.</value>
-  </data>
-  <data name="UnreachableCaseInspection_Unreachable" xml:space="preserve">
-    <value>Bloc inatteignable : l'expression 'Case' est prise en charge par un bloc 'Case' précédent.</value>
-  </data>
   <data name="UnhandledOnErrorResumeNextInspection" xml:space="preserve">
     <value>La gestion d'erreurs est désactivée sans être réactivée.</value>
   </data>
@@ -365,12 +350,6 @@
   </data>
   <data name="UnderscoreInPublicClassModuleMemberInspection" xml:space="preserve">
     <value>Le nom du membre public '{0}' contient un caractère de soulignement.</value>
-  </data>
-  <data name="UnreachableCaseInspection_InherentlyUnreachable" xml:space="preserve">
-    <value>Bloc inatteignable: l'expression 'Case' contient une clause invalide.</value>
-  </data>
-  <data name="UnreachableCaseInspection_Overflow" xml:space="preserve">
-    <value>Bloc inatteignable: l'expression 'Case' causera une erreur d'exécution 6 : Overflow.</value>
   </data>
   <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
     <value>La valeur de l'attribut {0} ({1}) est désynchronisée avec l'annotation {2}.</value>

@@ -66,6 +66,7 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(x => InterestingMembers.Contains(x.IdentifierName) && InterestingClasses.Contains(x.ParentDeclaration?.IdentifierName))
                 .ToList();
 
+            // only inspects references, must filter ignores manually, because default filtering doesn't work here
             var members = targetProperties.SelectMany(item =>
                 item.References.Where(reference => !reference.IsIgnoringInspectionResultFor(AnnotationName)));
 

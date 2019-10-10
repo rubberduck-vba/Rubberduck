@@ -22,13 +22,17 @@ namespace Rubberduck.Parsing.Binding
         {
             var leftExpr = _left.Resolve();
             var rightExpr = _right.Resolve();
-            if (leftExpr.Classification == ExpressionClassification.ResolutionFailed || rightExpr.Classification == ExpressionClassification.ResolutionFailed)
+
+            if (leftExpr.Classification == ExpressionClassification.ResolutionFailed)
             {
-                var failedExpr = new ResolutionFailedExpression();
-                failedExpr.AddSuccessfullyResolvedExpression(leftExpr);
-                failedExpr.AddSuccessfullyResolvedExpression(rightExpr);
-                return failedExpr;
+                return leftExpr.JoinAsFailedResolution(_context, rightExpr);
             }
+
+            if (rightExpr.Classification == ExpressionClassification.ResolutionFailed)
+            {
+                return rightExpr.JoinAsFailedResolution(_context, leftExpr);
+            }
+
             return new BinaryOpExpression(null, _context, leftExpr, rightExpr);
         }
     }

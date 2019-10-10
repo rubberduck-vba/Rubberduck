@@ -5,6 +5,7 @@ using System.Linq;
 using Rubberduck.Interaction;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.VBEditor.ComManagement;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -17,7 +18,13 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IMessageBox _messageBox;
         private readonly IVBE _vbe;
 
-        public DeleteCommand(RemoveCommand removeCommand, IProjectsProvider projectsProvider, IMessageBox messageBox, IVBE vbe)
+        public DeleteCommand(
+            RemoveCommand removeCommand, 
+            IProjectsProvider projectsProvider, 
+            IMessageBox messageBox, 
+            IVBE vbe, 
+            IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _removeCommand = removeCommand;
             _projectsProvider = projectsProvider;

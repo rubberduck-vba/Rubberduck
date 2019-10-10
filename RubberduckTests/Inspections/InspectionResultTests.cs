@@ -8,6 +8,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Parsing.VBA.ReferenceManagement;
 using Rubberduck.UI.Inspections;
 using Rubberduck.VBEditor;
 
@@ -140,8 +141,10 @@ namespace RubberduckTests.Inspections
             var modifiedModules = new HashSet<QualifiedModuleName> { declarationModule };
 
             var declarationFinderProviderMock = new Mock<IDeclarationFinderProvider>();
-            var declaratioFinder = new DeclarationFinder(new List<Declaration>(), new List<IAnnotation>(),
-                new List<UnboundMemberDeclaration>());
+            var declaratioFinder = new DeclarationFinder(
+                new List<Declaration>(), 
+                new List<IParseTreeAnnotation>(),
+                new Dictionary<QualifiedModuleName, IFailedResolutionStore>());
             declarationFinderProviderMock.SetupGet(m => m.DeclarationFinder).Returns(declaratioFinder);
             var inspectionResult = new IdentifierReferenceInspectionResult(inspectionMock.Object, string.Empty, declarationFinderProviderMock.Object, identifierReference);
 
@@ -169,9 +172,11 @@ namespace RubberduckTests.Inspections
             var modifiedModules = new HashSet<QualifiedModuleName> { otherModule };
 
             var declarationFinderProviderMock = new Mock<IDeclarationFinderProvider>();
-            var declaratioFinder = new DeclarationFinder(new List<Declaration>(), new List<IAnnotation>(),
-                new List<UnboundMemberDeclaration>());
-            declarationFinderProviderMock.SetupGet(m => m.DeclarationFinder).Returns(declaratioFinder);
+            var declarationFinder = new DeclarationFinder(
+                new List<Declaration>(), 
+                new List<IParseTreeAnnotation>(),
+                new Dictionary<QualifiedModuleName, IFailedResolutionStore>());
+            declarationFinderProviderMock.SetupGet(m => m.DeclarationFinder).Returns(declarationFinder);
             var inspectionResult = new IdentifierReferenceInspectionResult(inspectionMock.Object, string.Empty, declarationFinderProviderMock.Object, identifierReference);
 
             Assert.IsFalse(inspectionResult.ChangesInvalidateResult(modifiedModules));

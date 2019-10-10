@@ -102,6 +102,34 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
+        //See issue #4994 at https://github.com/rubberduck-vba/Rubberduck/issues/4994
+        public void ConstantNotUsed_ConstantOnlyUsedInMidStatement_DoesNotReturnResult()
+        {
+            const string inputCode =
+                @"Function UnAccent(ByVal inputString As String) As String
+          Dim Index As Long, Position As Long
+         Const ACCENTED_CHARS As String = ""ŠšŸÀÁÂÃÄÅÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖÙÚÛÜİàáâãäåçèéêëìíîïğñòóôõöùúûüıÿøØŸœŒ""
+         Const ANSICHARACTERS As String = ""SZszYAAAAAACEEEEIIIIDNOOOOOUUUUYaaaaaaceeeeiiiidnooooouuuuyyoOYoO""
+   For Index = 1 To Len(inputString)
+     Position = InStr(ACCENTED_CHARS, Mid$(inputString, Index, 1))
+     If Position Then Mid$(inputString, Index) = Mid$(ANSICHARACTERS, Position, 1)
+    Next
+     UnAccent = inputString
+End Function";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new ConstantNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void ConstantNotUsed_IgnoreModule_All_YieldsNoResult()
         {
             const string inputCode =

@@ -46,15 +46,15 @@ namespace Rubberduck.Inspections.Concrete
             foreach (var declaration in State.AllUserDeclarations)
             {
                 var duplicateAnnotations = declaration.Annotations
-                    .GroupBy(annotation => annotation.AnnotationType)
-                    .Where(group => !group.First().AllowMultiple && group.Count() > 1);
+                    .GroupBy(pta => pta.Annotation)
+                    .Where(group => !group.First().Annotation.AllowMultiple && group.Count() > 1);
 
                 issues.AddRange(duplicateAnnotations.Select(duplicate =>
                 {
                     var result = new DeclarationInspectionResult(
                         this, string.Format(InspectionResults.DuplicatedAnnotationInspection, duplicate.Key.ToString()), declaration);
 
-                    result.Properties.AnnotationType = duplicate.Key;
+                    result.Properties.Annotation = duplicate.Key;
                     return result;
                 }));
             }

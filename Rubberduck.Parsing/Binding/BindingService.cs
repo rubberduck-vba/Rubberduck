@@ -34,9 +34,9 @@ namespace Rubberduck.Parsing.Binding
             return _declarationFinder.FindLabel(procedure, label);
         }
 
-        public IBoundExpression ResolveDefault(Declaration module, Declaration parent, ParserRuleContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
+        public IBoundExpression ResolveDefault(Declaration module, Declaration parent, ParserRuleContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext, bool requiresLetCoercion, bool isLetAssignment = false)
         {
-            return _defaultBindingContext.Resolve(module, parent, expression, withBlockVariable, statementContext);
+            return _defaultBindingContext.Resolve(module, parent, expression, withBlockVariable, statementContext, requiresLetCoercion, isLetAssignment);
         }
 
         public IBoundExpression ResolveType(Declaration module, Declaration parent, ParserRuleContext expression)

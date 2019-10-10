@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Rubberduck.Navigation.CodeExplorer;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -11,8 +12,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     {
         private static readonly ProjectType[] Types = { ProjectType.StandardExe, ProjectType.ActiveXExe };
 
-        public AddMDIFormCommand(ICodeExplorerAddComponentService addComponentService)
-            : base(addComponentService)
+        public AddMDIFormCommand(
+            ICodeExplorerAddComponentService addComponentService, IVbeEvents vbeEvents) 
+            : base(addComponentService, vbeEvents) 
         {
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
