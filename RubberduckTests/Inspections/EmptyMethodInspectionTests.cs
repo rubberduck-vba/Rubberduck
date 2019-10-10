@@ -4,20 +4,21 @@ using NUnit.Framework;
 using RubberduckTests.Mocks;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class EmptyMethodInspectionTests
+    public class EmptyMethodInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
         public void EmptyMethodBlock_InspectionName()
         {
-            const string expectedName = nameof(EmptyMethodInspection);
             var inspection = new EmptyMethodInspection(null);
 
-            Assert.AreEqual(expectedName, inspection.Name);
+            Assert.AreEqual(nameof(EmptyMethodInspection), inspection.Name);
         }
 
         [Test]
@@ -28,7 +29,7 @@ namespace RubberduckTests.Inspections
                 @"Sub Foo()
     MsgBox ""?""
 End Sub";
-            CheckActualEmptyBlockCountEqualsExpected(inputCode, 0);
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -38,7 +39,7 @@ End Sub";
             const string inputCode =
                 @"Sub Foo()
 End Sub";
-            CheckActualEmptyBlockCountEqualsExpected(inputCode, 1);
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -65,7 +66,7 @@ End Sub";
                 @"'@Ignore EmptyMethod
 Sub Foo()
 End Sub";
-            CheckActualEmptyBlockCountEqualsExpected(inputCode, 0);
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -87,7 +88,7 @@ End Sub";
                 $@"Sub Foo()
 {statement}
 End Sub";
-            CheckActualEmptyBlockCountEqualsExpected(inputCode, 1);
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -114,20 +115,7 @@ End Sub
 Sub Foo()
     MsgBox ""?""
 End Sub";
-            CheckActualEmptyBlockCountEqualsExpected(inputCode, 0);
-        }
-
-        private void CheckActualEmptyBlockCountEqualsExpected(string inputCode, int expectedCount)
-        {
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new EmptyMethodInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(expectedCount, actualResults.Count());
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         private void CheckActualEmptyBlockCountEqualsExpected(string interfaceCode, string concreteCode, int expectedCount)
@@ -137,18 +125,14 @@ End Sub";
                 .AddComponent("IClass1", ComponentType.ClassModule, interfaceCode)
                 .AddComponent("Class1", ComponentType.ClassModule, concreteCode)
                 .Build();
-            var vbe = builder.AddProject(project).Build();
+            var vbe = builder.AddProject(project).Build().Object;
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
+            Assert.AreEqual(expectedCount, InspectionResults(vbe).Count());
+        }
 
-                var inspection = new EmptyMethodInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(expectedCount, actualResults.Count());
-            }
-
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new EmptyMethodInspection(state);
         }
     }
 }
