@@ -1,10 +1,12 @@
 ﻿using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.ComCommands
 {
@@ -12,16 +14,25 @@ namespace Rubberduck.UI.Command.ComCommands
     public class NoIndentAnnotationCommand : ComCommandBase
     {
         private readonly IVBE _vbe;
-        private readonly RubberduckParserState _state;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        private readonly ISelectionService _selectionService;
+        private readonly IAnnotationUpdater _annotationUpdater;
+        private readonly IRewritingManager _rewritingManager;
 
         public NoIndentAnnotationCommand(
             IVBE vbe, 
-            RubberduckParserState state, 
+            IDeclarationFinderProvider declarationFinderProvider, 
+            ISelectionService selectionService,
+            IRewritingManager rewritingManager,
+            IAnnotationUpdater annotationUpdater,
             IVbeEvents vbeEvents)
             : base(vbeEvents)
         {
             _vbe = vbe;
-            _state = state;
+            _declarationFinderProvider = declarationFinderProvider;
+            _selectionService = selectionService;
+            _rewritingManager = rewritingManager;
+            _annotationUpdater = annotationUpdater;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
@@ -29,29 +40,22 @@ namespace Rubberduck.UI.Command.ComCommands
         private bool SpecialEvaluateCanExecute(object parameter)
         {
             var target = FindTarget(parameter);
-            using (var pane = _vbe.ActiveCodePane)
-            {
-                return pane != null 
-                       && !pane.IsWrappingNullReference 
-                       && target != null 
-                       && !target.Annotations.Any(a => a is NoIndentAnnotation);
-            }
+            return target != null
+                   && target.DeclarationType.HasFlag(DeclarationType.Module)
+                   && !target.Annotations.Any(a => a.Annotation is NoIndentAnnotation);
         }
 
         protected override void OnExecute(object parameter)
         {
-            using (var activePane = _vbe.ActiveCodePane)
+            var target = FindTarget(parameter);
+            if (target == null)
             {
-                if (activePane == null || activePane.IsWrappingNullReference)
-                {
-                    return;
-                }
-
-                using (var codeModule = activePane.CodeModule)
-                {
-                    codeModule.InsertLines(1, "'@NoIndent");
-                }
+                return;
             }
+
+            var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
+            _annotationUpdater.AddAnnotation(rewriteSession, target, new NoIndentAnnotation());
+            rewriteSession.TryRewrite();
         }
 
         private Declaration FindTarget(object parameter)
@@ -61,18 +65,15 @@ namespace Rubberduck.UI.Command.ComCommands
                 return declaration;
             }
 
-            Declaration selectedDeclaration;
-            using (var activePane = _vbe.ActiveCodePane)
+            var activeSelection = _selectionService.ActiveSelection();
+            if (!activeSelection.HasValue)
             {
-                selectedDeclaration = _state.FindSelectedDeclaration(activePane);
+                return null;
             }
 
-            while (selectedDeclaration != null && selectedDeclaration.DeclarationType.HasFlag(DeclarationType.Module))
-            {
-                selectedDeclaration = selectedDeclaration.ParentDeclaration;
-            }
-
-            return selectedDeclaration;
+            return _declarationFinderProvider.DeclarationFinder?
+                .UserDeclarations(DeclarationType.Module)
+                .FirstOrDefault(module => module.QualifiedModuleName.Equals(activeSelection.Value.QualifiedName));
         }
     }
 }

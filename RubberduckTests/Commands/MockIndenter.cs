@@ -1,9 +1,11 @@
 using Moq;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI.Command.ComCommands;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Commands
@@ -32,16 +34,14 @@ namespace RubberduckTests.Commands
             return new IndentCurrentModuleCommand(vbe.Object, indenter, state, vbeEvents.Object);
         }
 
-        internal static NoIndentAnnotationCommand ArrangeNoIndentAnnotationCommand(Mock<IVBE> vbe,
-            RubberduckParserState state)
+        internal static NoIndentAnnotationCommand ArrangeNoIndentAnnotationCommand(Mock<IVBE> vbe, RubberduckParserState state, IRewritingManager rewritingManager)
         {
-            return ArrangeNoIndentAnnotationCommand(vbe, state, MockVbeEvents.CreateMockVbeEvents(vbe));
+            return ArrangeNoIndentAnnotationCommand(vbe, state, rewritingManager, MockVbeEvents.CreateMockVbeEvents(vbe));
         }
 
-        internal static NoIndentAnnotationCommand ArrangeNoIndentAnnotationCommand(Mock<IVBE> vbe,
-            RubberduckParserState state, Mock<IVbeEvents> vbeEvents)
+        internal static NoIndentAnnotationCommand ArrangeNoIndentAnnotationCommand(Mock<IVBE> vbe, RubberduckParserState state, IRewritingManager rewritingManager, Mock<IVbeEvents> vbeEvents)
         {
-            return new NoIndentAnnotationCommand(vbe.Object, state, vbeEvents.Object);
+            return new NoIndentAnnotationCommand(vbe.Object, state, new SelectionService(vbe.Object, state.ProjectsProvider), rewritingManager, new AnnotationUpdater(), vbeEvents.Object);
         }
 
         internal static IndentCurrentProcedureCommand ArrangeIndentCurrentProcedureCommand(Mock<IVBE> vbe,
