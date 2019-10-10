@@ -16,6 +16,7 @@ namespace RubberduckCodeAnalysis.Test
         {
             const string iinspection = @"
 public interface IInspection { }
+public class RequiredLibraryAttribute : System.Attribute { }
 ";
             return GetSortedDiagnostics(new[] { iinspection + code }, LanguageNames.CSharp, GetCSharpDiagnosticAnalyzer());
         }

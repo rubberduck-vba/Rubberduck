@@ -89,7 +89,7 @@ namespace RubberduckCodeAnalysis
 
         public const string MissingHasResultAttribute = "MissingHasResultAttribute";
         private static readonly DiagnosticDescriptor MissingHasResultAttributeRule = new DiagnosticDescriptor(
-            MissingNameAttribute,
+            MissingHasResultAttribute,
             new LocalizableResourceString(nameof(Resources.MissingHasResultAttribute), Resources.ResourceManager, typeof(Resources)),
             new LocalizableResourceString(nameof(Resources.MissingHasResultAttributeMessageFormat), Resources.ResourceManager, typeof(Resources)),
             new LocalizableResourceString(nameof(Resources.XmlDocAnalyzerCategory), Resources.ResourceManager, typeof(Resources)).ToString(),
@@ -98,8 +98,16 @@ namespace RubberduckCodeAnalysis
             new LocalizableResourceString(nameof(Resources.MissingHasResultAttributeDescription), Resources.ResourceManager, typeof(Resources))
             );
 
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
-            ImmutableArray.Create(MissingSummaryElementRule, MissingWhyElementRule, MissingReferenceElementRule, MissingRequiredLibAttributeRule);
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(
+            MissingSummaryElementRule, 
+            MissingWhyElementRule, 
+            MissingReferenceElementRule, 
+            MissingRequiredLibAttributeRule,
+            MissingHasResultAttributeRule,
+            MissingNameAttributeRule,
+            MissingModuleElementRule,
+            MissingExampleElementRule
+            );
 
         public override void Initialize(AnalysisContext context)
         {
@@ -114,7 +122,7 @@ namespace RubberduckCodeAnalysis
                 return;
             }
 
-            var xml = XDocument.Load(namedTypeSymbol.GetDocumentationCommentXml());
+            var xml = XDocument.Parse(namedTypeSymbol.GetDocumentationCommentXml()).Element("member");
 
             CheckSummaryElement(context, namedTypeSymbol, xml);
             CheckWhyElement(context, namedTypeSymbol, xml);
@@ -128,11 +136,11 @@ namespace RubberduckCodeAnalysis
         private static bool IsInspectionClass(INamedTypeSymbol namedTypeSymbol)
         {
             return namedTypeSymbol.TypeKind == TypeKind.Class && !namedTypeSymbol.IsAbstract
-                && namedTypeSymbol.ContainingNamespace.Name.StartsWith("Rubberduck.CodeAnalysis.Inspections.Concrete")
+                && namedTypeSymbol.ContainingNamespace.ToString().StartsWith("Rubberduck.CodeAnalysis.Inspections.Concrete")
                 && namedTypeSymbol.AllInterfaces.Any(i => i.Name == "IInspection");
         }
 
-        private static void CheckSummaryElement(SymbolAnalysisContext context, INamedTypeSymbol symbol, XDocument xml)
+        private static void CheckSummaryElement(SymbolAnalysisContext context, INamedTypeSymbol symbol, XElement xml)
         {
             if (xml.Element("summary") == null)
             {
@@ -141,7 +149,7 @@ namespace RubberduckCodeAnalysis
             }
         }
 
-        private static void CheckWhyElement(SymbolAnalysisContext context, INamedTypeSymbol symbol, XDocument xml)
+        private static void CheckWhyElement(SymbolAnalysisContext context, INamedTypeSymbol symbol, XElement xml)
         {
             if (xml.Element("why") == null)
             {
@@ -159,11 +167,17 @@ namespace RubberduckCodeAnalysis
             }
         }
 
-        private static void CheckReferenceElement(SymbolAnalysisContext context, INamedTypeSymbol symbol, XDocument xml, IEnumerable<AttributeData> requiredLibAttributes)
+        private static void CheckReferenceElement(SymbolAnalysisContext context, INamedTypeSymbol symbol, XElement xml, IEnumerable<AttributeData> requiredLibAttributes)
         {
-            foreach (var referenceElement in xml.Elements("reference"))
+            if (requiredLibAttributes.Any() && !xml.Elements("reference").Any())
             {
-                CheckNameAttribute(context, referenceElement, symbol.Locations[0]);
+                var diagnostic = Diagnostic.Create(MissingReferenceElementRule, symbol.Locations[0], symbol.Name);
+                context.ReportDiagnostic(diagnostic);
+            }
+
+            foreach (var element in xml.Elements("reference"))
+            {
+                CheckNameAttribute(context, element, symbol.Locations[0]);
             }
             
             var xmlRefLibs = xml.Elements("reference").Select(e => e.Attribute("name")?.Value).ToList();
@@ -172,13 +186,13 @@ namespace RubberduckCodeAnalysis
                 var requiredLib = attribute.ConstructorArguments[0].Value.ToString();
                 if (xmlRefLibs.All(lib => lib != requiredLib))
                 {
-                    var diagnostic = Diagnostic.Create(MissingReferenceElementRule, symbol.Locations[0], symbol.Name, requiredLib);
+                    var diagnostic = Diagnostic.Create(MissingReferenceElementRule, symbol.Locations[0], symbol.Name);
                     context.ReportDiagnostic(diagnostic);
                 }
             }
         }
 
-        private static void CheckRequiredLibAttribute(SymbolAnalysisContext context, INamedTypeSymbol symbol, XDocument xml, IEnumerable<AttributeData> requiredLibAttributes)
+        private static void CheckRequiredLibAttribute(SymbolAnalysisContext context, INamedTypeSymbol symbol, XElement xml, IEnumerable<AttributeData> requiredLibAttributes)
         {
             var requiredLibs = requiredLibAttributes.Select(a => a.ConstructorArguments[0].Value.ToString()).ToList();
             foreach (var element in xml.Elements("reference"))
@@ -192,7 +206,7 @@ namespace RubberduckCodeAnalysis
             }
         }
 
-        private static void CheckExampleElement(SymbolAnalysisContext context, INamedTypeSymbol symbol, XDocument xml)
+        private static void CheckExampleElement(SymbolAnalysisContext context, INamedTypeSymbol symbol, XElement xml)
         {
             if (!xml.Elements("example").Any())
             {
@@ -204,15 +218,15 @@ namespace RubberduckCodeAnalysis
             var examples = xml.Elements("example");
             foreach (var example in examples)
             {
-                if (!example.Attributes().Any(a => a.Name.Equals("hasresult")))
+                if (!example.Attributes().Any(a => a.Name.LocalName.Equals("hasresult")))
                 {
-                    var diagnostic = Diagnostic.Create(MissingHasResultAttributeRule, symbol.Locations[0], symbol.Name);
+                    var diagnostic = Diagnostic.Create(MissingHasResultAttributeRule, symbol.Locations[0]);
                     context.ReportDiagnostic(diagnostic);
                 }
 
                 if (!example.Elements("module").Any())
                 {
-                    var diagnostic = Diagnostic.Create(MissingModuleElementRule, symbol.Locations[0], symbol.Name);
+                    var diagnostic = Diagnostic.Create(MissingModuleElementRule, symbol.Locations[0]);
                     context.ReportDiagnostic(diagnostic);
                 }
 

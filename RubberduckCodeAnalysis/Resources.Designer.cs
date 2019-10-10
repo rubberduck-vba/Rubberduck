@@ -277,7 +277,7 @@ namespace RubberduckCodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to XML documentation for type &apos;{0}&apos; is missing a &apos;&lt;reference name=&quot;{1}&quot;&gt;&apos; element..
+        ///   Looks up a localized string similar to XML documentation for type &apos;{0}&apos; is missing a &apos;reference&apos; element..
         /// </summary>
         public static string MissingInspectionReferenceElementMessageFormat {
             get {

@@ -193,7 +193,7 @@
     <value>XML documentation for inspections with a [RequiredLibraryAttribute] must include a &lt;reference&gt; element with a 'name' attribute with the same value as the [RequiredLibraryAttribute]. For example [RequiredLibrary("Excel")] mandates &lt;reference name="Excel" /&gt;.</value>
   </data>
   <data name="MissingInspectionReferenceElementMessageFormat" xml:space="preserve">
-    <value>XML documentation for type '{0}' is missing a '&lt;reference name="{1}"&gt;' element.</value>
+    <value>XML documentation for type '{0}' is missing a 'reference' element.</value>
   </data>
   <data name="MissingInspectionSummaryElement" xml:space="preserve">
     <value>Missing xml-doc 'summary' element</value>
