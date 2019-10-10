@@ -10,7 +10,7 @@ namespace RubberduckCodeAnalysis
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class InspectionXmlDocAnalyzer : DiagnosticAnalyzer
     {
-        private const string MissingInspectionSummaryElement = "MissingInspectionSummaryTag";
+        public const string MissingInspectionSummaryElement = "MissingInspectionSummaryTag";
         private static readonly DiagnosticDescriptor MissingSummaryTagRule = new DiagnosticDescriptor(
             MissingInspectionSummaryElement,
             new LocalizableResourceString(nameof(Resources.MissingInspectionSummaryTag), Resources.ResourceManager, typeof(Resources)),
@@ -21,7 +21,7 @@ namespace RubberduckCodeAnalysis
             new LocalizableResourceString(nameof(Resources.MissingInspectionSummaryTagDescription), Resources.ResourceManager, typeof(Resources))
             );
 
-        private const string MissingInspectionWhyElement = "MissingInspectionWhyTag";
+        public const string MissingInspectionWhyElement = "MissingInspectionWhyTag";
         private static readonly DiagnosticDescriptor MissingWhyTagRule = new DiagnosticDescriptor(
             MissingInspectionWhyElement,
             new LocalizableResourceString(nameof(Resources.MissingInspectionWhyTag), Resources.ResourceManager, typeof(Resources)),
@@ -32,7 +32,7 @@ namespace RubberduckCodeAnalysis
             new LocalizableResourceString(nameof(Resources.MissingInspectionWhyTagDescription), Resources.ResourceManager, typeof(Resources))
             );
 
-        private const string MissingReferenceElement = "MissingReferenceTag";
+        public const string MissingReferenceElement = "MissingReferenceTag";
         private static readonly DiagnosticDescriptor MissingReferenceTagRule = new DiagnosticDescriptor(
             MissingReferenceElement,
             new LocalizableResourceString(nameof(Resources.MissingInspectionReferenceTag), Resources.ResourceManager, typeof(Resources)),
@@ -43,7 +43,7 @@ namespace RubberduckCodeAnalysis
             new LocalizableResourceString(nameof(Resources.MissingInspectionReferenceTagDescription), Resources.ResourceManager, typeof(Resources))
         );
 
-        private const string MissingRequiredLibraryAttribute = "MissingRequiredLibraryAttribute";
+        public const string MissingRequiredLibraryAttribute = "MissingRequiredLibraryAttribute";
         private static readonly DiagnosticDescriptor MissingRequiredLibAttributeRule = new DiagnosticDescriptor(
             MissingRequiredLibraryAttribute,
             new LocalizableResourceString(nameof(Resources.MissingRequiredLibAttribute), Resources.ResourceManager, typeof(Resources)),
@@ -54,7 +54,7 @@ namespace RubberduckCodeAnalysis
             new LocalizableResourceString(nameof(Resources.MissingRequiredLibAttributeDescription), Resources.ResourceManager, typeof(Resources))
         );
 
-        private const string MissingExampleElement = "MissingExampleTag";
+        public const string MissingExampleElement = "MissingExampleTag";
         private static readonly DiagnosticDescriptor MissingExampleTagRule = new DiagnosticDescriptor(
             MissingExampleElement,
             new LocalizableResourceString(nameof(Resources.MissingExampleTag), Resources.ResourceManager, typeof(Resources)),
@@ -65,7 +65,7 @@ namespace RubberduckCodeAnalysis
             new LocalizableResourceString(nameof(Resources.MissingExampleTagDescription), Resources.ResourceManager, typeof(Resources))
         );
 
-        private const string MissingModuleElement = "MissingModuleTag";
+        public const string MissingModuleElement = "MissingModuleTag";
         private static readonly DiagnosticDescriptor MissingModuleTagRule = new DiagnosticDescriptor(
             MissingModuleElement,
             new LocalizableResourceString(nameof(Resources.MissingModuleTag), Resources.ResourceManager, typeof(Resources)),
@@ -76,7 +76,7 @@ namespace RubberduckCodeAnalysis
             new LocalizableResourceString(nameof(Resources.MissingModuleTagDescription), Resources.ResourceManager, typeof(Resources))
             );
 
-        private const string MissingNameAttribute = "MissingNameAttribute";
+        public const string MissingNameAttribute = "MissingNameAttribute";
         private static readonly DiagnosticDescriptor MissingNameAttributeRule = new DiagnosticDescriptor(
             MissingNameAttribute,
             new LocalizableResourceString(nameof(Resources.MissingNameAttribute), Resources.ResourceManager, typeof(Resources)),
@@ -87,7 +87,7 @@ namespace RubberduckCodeAnalysis
             new LocalizableResourceString(nameof(Resources.MissingNameAttributeDescription), Resources.ResourceManager, typeof(Resources))
             );
 
-        private const string MissingHasResultAttribute = "MissingHasResultAttribute";
+        public const string MissingHasResultAttribute = "MissingHasResultAttribute";
         private static readonly DiagnosticDescriptor MissingHasResultAttributeRule = new DiagnosticDescriptor(
             MissingNameAttribute,
             new LocalizableResourceString(nameof(Resources.MissingHasResultAttribute), Resources.ResourceManager, typeof(Resources)),
