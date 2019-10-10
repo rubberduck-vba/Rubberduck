@@ -189,28 +189,28 @@
   <data name="MissingInspectionReferenceElement" xml:space="preserve">
     <value>Missing xml-doc 'reference' element</value>
   </data>
-  <data name="MissingInspectionReferenceTagDescription" xml:space="preserve">
+  <data name="MissingInspectionReferenceElementDescription" xml:space="preserve">
     <value>XML documentation for inspections with a [RequiredLibraryAttribute] must include a &lt;reference&gt; element with a 'name' attribute with the same value as the [RequiredLibraryAttribute]. For example [RequiredLibrary("Excel")] mandates &lt;reference name="Excel" /&gt;.</value>
   </data>
-  <data name="MissingInspectionReferenceTagMessageFormat" xml:space="preserve">
+  <data name="MissingInspectionReferenceElementMessageFormat" xml:space="preserve">
     <value>XML documentation for type '{0}' is missing a '&lt;reference name="{1}"&gt;' element.</value>
   </data>
   <data name="MissingInspectionSummaryElement" xml:space="preserve">
     <value>Missing xml-doc 'summary' element</value>
   </data>
-  <data name="MissingInspectionSummaryTagDescription" xml:space="preserve">
+  <data name="MissingInspectionSummaryElementDescription" xml:space="preserve">
     <value>All inspections must have a short &lt;summary&gt; xml-doc comment describing what the inspection is looking for, that reads comfortably in IntelliSense.</value>
   </data>
-  <data name="MissingInspectionSummaryTagMessageFormat" xml:space="preserve">
+  <data name="MissingInspectionSummaryElementMessageFormat" xml:space="preserve">
     <value>XML documentation for type '{0}' is missing a &lt;summary&gt; element.</value>
   </data>
   <data name="MissingInspectionWhyElement" xml:space="preserve">
     <value>Missing xml-doc 'why' element</value>
   </data>
-  <data name="MissingInspectionWhyTagDescription" xml:space="preserve">
+  <data name="MissingInspectionWhyElementDescription" xml:space="preserve">
     <value>Inspections xml-doc must have a 'why' element that contains a paragraph explaining the reasoning behind the inspection.</value>
   </data>
-  <data name="MissingInspectionWhyTagMessageFormat" xml:space="preserve">
+  <data name="MissingInspectionWhyElementMessageFormat" xml:space="preserve">
     <value>XML documentation for type '{0}' is missing a &lt;why&gt; element.</value>
   </data>
   <data name="MissingInterfaceTypeDescription" xml:space="preserve">
@@ -226,12 +226,12 @@
     <value>Missing InterfaceType Attribute</value>
   </data>
   <data name="MissingModuleElement" xml:space="preserve">
-    <value>XML documentation example is missing a 'module' tag.</value>
+    <value>XML documentation example is missing a 'module' element.</value>
   </data>
-  <data name="MissingModuleTagDescription" xml:space="preserve">
-    <value>All inspection xml-doc examples should include one or more 'module' tag with a 'name' attribute.</value>
+  <data name="MissingModuleElementDescription" xml:space="preserve">
+    <value>All inspection xml-doc examples should include one or more 'module' element with a 'name' attribute.</value>
   </data>
-  <data name="MissingModuleTagMessageFormat" xml:space="preserve">
+  <data name="MissingModuleElementMessageFormat" xml:space="preserve">
     <value>'example' element has no 'module' child.</value>
   </data>
   <data name="MissingNameAttribute" xml:space="preserve">
@@ -259,7 +259,7 @@
     <value>Missing 'RequiredLibrary' attribute</value>
   </data>
   <data name="MissingRequiredLibAttributeDescription" xml:space="preserve">
-    <value>The &lt;reference name="RequiredLibrary" /&gt; element means to document the presence of a [RequiredLibraryAttribute]. If the attribute is correctly missing, the xml-doc tag should be removed.</value>
+    <value>The &lt;reference name="RequiredLibrary" /&gt; element means to document the presence of a [RequiredLibraryAttribute]. If the attribute is correctly missing, the xml-doc element should be removed.</value>
   </data>
   <data name="MissingRequiredLibAttributeMessageFormat" xml:space="preserve">
     <value>XML documentation of type '{0}' includes a &lt;reference&gt; element, but no corresponding [RequiredLibraryAttribute] is decorating the inspection type. Expected: [RequiredLibrary("{1}")].</value>

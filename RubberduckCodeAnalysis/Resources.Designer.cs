@@ -270,18 +270,18 @@ namespace RubberduckCodeAnalysis {
         /// <summary>
         ///   Looks up a localized string similar to XML documentation for inspections with a [RequiredLibraryAttribute] must include a &lt;reference&gt; element with a &apos;name&apos; attribute with the same value as the [RequiredLibraryAttribute]. For example [RequiredLibrary(&quot;Excel&quot;)] mandates &lt;reference name=&quot;Excel&quot; /&gt;..
         /// </summary>
-        public static string MissingInspectionReferenceTagDescription {
+        public static string MissingInspectionReferenceElementDescription {
             get {
-                return ResourceManager.GetString("MissingInspectionReferenceTagDescription", resourceCulture);
+                return ResourceManager.GetString("MissingInspectionReferenceElementDescription", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to XML documentation for type &apos;{0}&apos; is missing a &apos;&lt;reference name=&quot;{1}&quot;&gt;&apos; element..
         /// </summary>
-        public static string MissingInspectionReferenceTagMessageFormat {
+        public static string MissingInspectionReferenceElementMessageFormat {
             get {
-                return ResourceManager.GetString("MissingInspectionReferenceTagMessageFormat", resourceCulture);
+                return ResourceManager.GetString("MissingInspectionReferenceElementMessageFormat", resourceCulture);
             }
         }
         
@@ -297,18 +297,18 @@ namespace RubberduckCodeAnalysis {
         /// <summary>
         ///   Looks up a localized string similar to All inspections must have a short &lt;summary&gt; xml-doc comment describing what the inspection is looking for, that reads comfortably in IntelliSense..
         /// </summary>
-        public static string MissingInspectionSummaryTagDescription {
+        public static string MissingInspectionSummaryElementDescription {
             get {
-                return ResourceManager.GetString("MissingInspectionSummaryTagDescription", resourceCulture);
+                return ResourceManager.GetString("MissingInspectionSummaryElementDescription", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to XML documentation for type &apos;{0}&apos; is missing a &lt;summary&gt; element..
         /// </summary>
-        public static string MissingInspectionSummaryTagMessageFormat {
+        public static string MissingInspectionSummaryElementMessageFormat {
             get {
-                return ResourceManager.GetString("MissingInspectionSummaryTagMessageFormat", resourceCulture);
+                return ResourceManager.GetString("MissingInspectionSummaryElementMessageFormat", resourceCulture);
             }
         }
         
@@ -324,18 +324,18 @@ namespace RubberduckCodeAnalysis {
         /// <summary>
         ///   Looks up a localized string similar to Inspections xml-doc must have a &apos;why&apos; element that contains a paragraph explaining the reasoning behind the inspection..
         /// </summary>
-        public static string MissingInspectionWhyTagDescription {
+        public static string MissingInspectionWhyElementDescription {
             get {
-                return ResourceManager.GetString("MissingInspectionWhyTagDescription", resourceCulture);
+                return ResourceManager.GetString("MissingInspectionWhyElementDescription", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to XML documentation for type &apos;{0}&apos; is missing a &lt;why&gt; element..
         /// </summary>
-        public static string MissingInspectionWhyTagMessageFormat {
+        public static string MissingInspectionWhyElementMessageFormat {
             get {
-                return ResourceManager.GetString("MissingInspectionWhyTagMessageFormat", resourceCulture);
+                return ResourceManager.GetString("MissingInspectionWhyElementMessageFormat", resourceCulture);
             }
         }
         
@@ -376,7 +376,7 @@ namespace RubberduckCodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to XML documentation example is missing a &apos;module&apos; tag..
+        ///   Looks up a localized string similar to XML documentation example is missing a &apos;module&apos; element..
         /// </summary>
         public static string MissingModuleElement {
             get {
@@ -385,20 +385,20 @@ namespace RubberduckCodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to All inspection xml-doc examples should include one or more &apos;module&apos; tag with a &apos;name&apos; attribute..
+        ///   Looks up a localized string similar to All inspection xml-doc examples should include one or more &apos;module&apos; element with a &apos;name&apos; attribute..
         /// </summary>
-        public static string MissingModuleTagDescription {
+        public static string MissingModuleElementDescription {
             get {
-                return ResourceManager.GetString("MissingModuleTagDescription", resourceCulture);
+                return ResourceManager.GetString("MissingModuleElementDescription", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to &apos;example&apos; element has no &apos;module&apos; child..
         /// </summary>
-        public static string MissingModuleTagMessageFormat {
+        public static string MissingModuleElementMessageFormat {
             get {
-                return ResourceManager.GetString("MissingModuleTagMessageFormat", resourceCulture);
+                return ResourceManager.GetString("MissingModuleElementMessageFormat", resourceCulture);
             }
         }
         
@@ -475,7 +475,7 @@ namespace RubberduckCodeAnalysis {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The &lt;reference name=&quot;RequiredLibrary&quot; /&gt; element means to document the presence of a [RequiredLibraryAttribute]. If the attribute is correctly missing, the xml-doc tag should be removed..
+        ///   Looks up a localized string similar to The &lt;reference name=&quot;RequiredLibrary&quot; /&gt; element means to document the presence of a [RequiredLibraryAttribute]. If the attribute is correctly missing, the xml-doc element should be removed..
         /// </summary>
         public static string MissingRequiredLibAttributeDescription {
             get {
