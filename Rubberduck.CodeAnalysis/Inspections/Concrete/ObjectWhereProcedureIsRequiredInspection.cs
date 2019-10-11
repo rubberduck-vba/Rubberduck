@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Providing an object where a procedure is required leads to an implicit call to the object's default member.
     /// This behavior is not obvious, and most likely unintended.
     /// </why>
-    /// <example hasResult="true">
+    /// <example hasresult="true">
     /// <module name="Class1" type="Class Module">
     /// <![CDATA[
     /// Public Function Foo() As Long
@@ -37,7 +37,7 @@ namespace Rubberduck.Inspections.Concrete
     /// ]]>
     /// </module>
     /// </example>
-    /// <example hasResult="false">
+    /// <example hasresult="false">
     /// <module name="Class1" type="Class Module">
     /// <![CDATA[
     /// Public Function Foo() As Long
