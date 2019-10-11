@@ -22,9 +22,6 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
                         invalidDeclarationType.TargetDeclaration.QualifiedModuleName,
                         invalidDeclarationType.TargetDeclaration.DeclarationType,
                         DeclarationType.ClassModule);
-                case SuspendParserFailureException suspendParserFailure:
-                    Logger.Warn(suspendParserFailure);
-                    return Resources.RubberduckUI.RefactoringFailure_SuspendParserFailure;
                 default:
                     return base.Message(exception);
             }

@@ -24,9 +24,6 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
                     return string.Format(Resources.RubberduckUI.RenameFailure_TargetControlNotFound, controlNotFound.TargetDeclaration.QualifiedName);
                 case TargetDeclarationIsStandardEventHandlerException standardHandler:
                     return string.Format(Resources.RubberduckUI.RenameFailure_StandardEventHandler, standardHandler.TargetDeclaration.QualifiedName);
-                case SuspendParserFailureException suspendParserFailure:
-                    Logger.Warn(suspendParserFailure);
-                    return Resources.RubberduckUI.RefactoringFailure_SuspendParserFailure;
                 default:
                     return base.Message(exception);
             }
