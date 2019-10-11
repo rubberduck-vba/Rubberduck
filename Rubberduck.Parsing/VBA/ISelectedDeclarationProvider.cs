@@ -8,6 +8,8 @@ namespace Rubberduck.Parsing.VBA
         Declaration SelectedDeclaration();
         Declaration SelectedDeclaration(QualifiedModuleName module);
         Declaration SelectedDeclaration(QualifiedSelection qualifiedSelection);
+        ProjectDeclaration SelectedProject();
         ModuleDeclaration SelectedModule();
+        ModuleBodyElementDeclaration SelectedMember();
     }
 }

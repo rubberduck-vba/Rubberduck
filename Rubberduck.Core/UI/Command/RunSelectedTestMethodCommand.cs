@@ -3,20 +3,19 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command
 {
     public class RunSelectedTestMethodCommand : CommandBase
     {
         private readonly ITestEngine _engine;
-        private readonly ISelectionProvider _selectionProvider;
+        private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
         private readonly IDeclarationFinderProvider _finderProvider;
 
-        public RunSelectedTestMethodCommand(ITestEngine engine, ISelectionProvider selectionProvider, IDeclarationFinderProvider finderProvider) 
+        public RunSelectedTestMethodCommand(ITestEngine engine, ISelectedDeclarationProvider selectedDeclarationProvider, IDeclarationFinderProvider finderProvider) 
         {
             _engine = engine;
-            _selectionProvider = selectionProvider;
+            _selectedDeclarationProvider = selectedDeclarationProvider;
             _finderProvider = finderProvider;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
@@ -43,15 +42,17 @@ namespace Rubberduck.UI.Command
 
         private Declaration FindDeclarationFromSelection()
         {
-            var active = _selectionProvider?.ActiveSelection();
-            if (!active.HasValue)
-            {
-                return null;
-            }
+            var selectedMember = _selectedDeclarationProvider.SelectedMember();
+            return IsTestMethod(selectedMember)
+                ? selectedMember
+                : null;
+        }
 
-            return _finderProvider.DeclarationFinder.FindDeclarationsContainingSelection(active.Value)
-                .SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Procedure &&
-                                                declaration.Annotations.Any(annotation => annotation is TestMethodAnnotation));
+        private bool IsTestMethod(Declaration member)
+        {
+            return member.DeclarationType == DeclarationType.Procedure
+                   && member.Annotations.Any(parseTreeAnnotation =>
+                       parseTreeAnnotation.Annotation is TestMethodAnnotation);
         }
     }
 }

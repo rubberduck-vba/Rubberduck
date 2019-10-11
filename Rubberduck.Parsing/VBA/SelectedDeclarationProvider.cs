@@ -47,6 +47,17 @@ namespace Rubberduck.Parsing.VBA
             return _declarationFinderProvider.DeclarationFinder?.FindSelectedDeclaration(qualifiedSelection);
         }
 
+        public ProjectDeclaration SelectedProject()
+        {
+            var activeSelection = _selectionProvider.ActiveSelection();
+            return activeSelection.HasValue
+                ? _declarationFinderProvider.DeclarationFinder?
+                    .UserDeclarations(DeclarationType.Project)
+                    .OfType<ProjectDeclaration>()
+                    .FirstOrDefault(project => project.ProjectId.Equals(activeSelection.Value.QualifiedName.ProjectId))
+                : null;
+        }
+
         public ModuleDeclaration SelectedModule()
         {
             var activeSelection = _selectionProvider.ActiveSelection();
@@ -55,6 +66,18 @@ namespace Rubberduck.Parsing.VBA
                     .UserDeclarations(DeclarationType.Module)
                     .OfType<ModuleDeclaration>()
                     .FirstOrDefault(module => module.QualifiedModuleName.Equals(activeSelection.Value.QualifiedName))
+                : null;
+        }
+
+        public ModuleBodyElementDeclaration SelectedMember()
+        {
+            var activeSelection = _selectionProvider.ActiveSelection();
+            return activeSelection.HasValue
+                ? _declarationFinderProvider.DeclarationFinder?
+                    .UserDeclarations(DeclarationType.Member)
+                    .OfType<ModuleBodyElementDeclaration>()
+                    .FirstOrDefault(member => member.QualifiedModuleName.Equals(activeSelection.Value.QualifiedName)
+                        && member.Context.GetSelection().Contains(activeSelection.Value.Selection))
                 : null;
         }
     }
