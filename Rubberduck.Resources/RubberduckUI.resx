@@ -1182,7 +1182,7 @@ Would you like to import them to Rubberduck?</value>
     <value>Unexpected Error</value>
   </data>
   <data name="Command_Reparse_CompileOnDemandEnabled" xml:space="preserve">
-    <value>The VBEsetting "Compile On Demand" is currently enabled. This is not recommended as this may hide compilation errors and cause problems with parsing. Do you want to parse anyway?</value>
+    <value>The VBE setting "Compile On Demand" is currently enabled. This is not recommended as this may hide compilation errors and cause problems with parsing. Do you want to parse anyway?</value>
   </data>
   <data name="Command_Reparse_CompileOnDemandEnabled_Caption" xml:space="preserve">
     <value>Compile On Demand Setting</value>
@@ -1627,7 +1627,7 @@ NOTE: Restart is required for the setting to take effect.</value>
     <value>Inconclusive</value>
   </data>
   <data name="TestOutcome_Succeeded" xml:space="preserve">
-    <value>Suceeded</value>
+    <value>Succeeded</value>
   </data>
   <data name="TestOutcome_Unknown" xml:space="preserve">
     <value>Unknown</value>
