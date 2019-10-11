@@ -1,4 +1,5 @@
 ﻿using System;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.VBEditor
 {
@@ -11,6 +12,8 @@ namespace Rubberduck.VBEditor
         }
 
         public QualifiedModuleName QualifiedName { get; }
+
+        public string QualifiedNameAndComponentType => $"{QualifiedName} - {QualifiedName.ComponentType}";
 
         public Selection Selection { get; }
 

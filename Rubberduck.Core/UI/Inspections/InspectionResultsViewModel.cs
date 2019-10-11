@@ -216,7 +216,7 @@ namespace Rubberduck.UI.Inspections
         {
             { InspectionResultGrouping.Type, new PropertyGroupDescription("Inspection", new InspectionTypeConverter()) },
             { InspectionResultGrouping.Name, new PropertyGroupDescription("Inspection.Name") },
-            { InspectionResultGrouping.Location, new PropertyGroupDescription("QualifiedSelection.QualifiedName") },
+            { InspectionResultGrouping.Location, new PropertyGroupDescription("QualifiedSelection.QualifiedNameAndComponentType") },
             { InspectionResultGrouping.Severity, new PropertyGroupDescription("Inspection.Severity") }
         };
 
