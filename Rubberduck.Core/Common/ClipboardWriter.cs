@@ -14,14 +14,16 @@ namespace Rubberduck.Common
         void AppendString(string formatName, string data);
         void AppendStream(string formatName, MemoryStream stream);
         void Flush();
-        void AppendInfo<T>(ColumnInfo[] columnInfos,
-            IEnumerable<T> exportableResults,
-            string titleFormat,
-            ClipboardWriterAppendingInformationFormat appendingInformationFormat) where T : IExportable;
+    void AppendInfo<T>(ColumnInfo[] columnInfos,
+        IEnumerable<IExportable> exportableResults,
+        string titleFormat,
+        ClipboardWriterAppendingInformationFormat appendingInformationFormat) where T : IExportable;
     }
 
+    [Flags]
     public enum ClipboardWriterAppendingInformationFormat
     {
+        None = 0,
         XmlSpreadsheetFormat = 1 << 0,
         RtfFormat = 1 << 1,
         HtmlFormat = 1 << 2,
@@ -77,14 +79,13 @@ namespace Rubberduck.Common
         }
 
         public void AppendInfo<T>(ColumnInfo[] columnInfos,
-            IEnumerable<T> results,
+            IEnumerable<IExportable> results,
             string title,
             ClipboardWriterAppendingInformationFormat appendingInformationFormat) where T : IExportable
         {
             object[][] resultsAsArray = results.Select(result => result.ToArray()).ToArray();
 
-            var includeXmlSpreadsheetFormat = (appendingInformationFormat & ClipboardWriterAppendingInformationFormat.XmlSpreadsheetFormat) == ClipboardWriterAppendingInformationFormat.XmlSpreadsheetFormat;
-            if (includeXmlSpreadsheetFormat)
+            if (appendingInformationFormat.HasFlag(ClipboardWriterAppendingInformationFormat.XmlSpreadsheetFormat))
             {
                 const string xmlSpreadsheetDataFormat = "XML Spreadsheet";
                 using (var stream = ExportFormatter.XmlSpreadsheetNew(resultsAsArray, title, columnInfos))
@@ -93,26 +94,22 @@ namespace Rubberduck.Common
                 }
             }
 
-            var includeRtfFormat = (appendingInformationFormat & ClipboardWriterAppendingInformationFormat.RtfFormat) == ClipboardWriterAppendingInformationFormat.RtfFormat;
-            if (includeRtfFormat)
+            if (appendingInformationFormat.HasFlag(ClipboardWriterAppendingInformationFormat.RtfFormat))
             {
                 AppendString(DataFormats.Rtf, ExportFormatter.RTF(resultsAsArray, title));
             }
 
-            var includeHtmlFormat = (appendingInformationFormat & ClipboardWriterAppendingInformationFormat.HtmlFormat) == ClipboardWriterAppendingInformationFormat.HtmlFormat;
-            if (includeHtmlFormat)
+            if (appendingInformationFormat.HasFlag(ClipboardWriterAppendingInformationFormat.HtmlFormat))
             {
                 AppendString(DataFormats.Html, ExportFormatter.HtmlClipboardFragment(resultsAsArray, title, columnInfos));
             }
 
-            var includeCsvFormat = (appendingInformationFormat & ClipboardWriterAppendingInformationFormat.CsvFormat) == ClipboardWriterAppendingInformationFormat.CsvFormat;
-            if (includeCsvFormat)
+            if (appendingInformationFormat.HasFlag(ClipboardWriterAppendingInformationFormat.CsvFormat))
             {
                 AppendString(DataFormats.CommaSeparatedValue, ExportFormatter.Csv(resultsAsArray, title, columnInfos));
             }
 
-            var includeUnicodeFormat = (appendingInformationFormat & ClipboardWriterAppendingInformationFormat.UnicodeFormat) == ClipboardWriterAppendingInformationFormat.UnicodeFormat;
-            if (includeUnicodeFormat && results is IEnumerable<IExportable> unicodeResults)
+            if (appendingInformationFormat.HasFlag(ClipboardWriterAppendingInformationFormat.UnicodeFormat) && results is IEnumerable<IExportable> unicodeResults)
             {
                 var unicodeTextFormat = title + Environment.NewLine + string.Join(string.Empty, unicodeResults.Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
                 AppendString(DataFormats.UnicodeText, unicodeTextFormat);
