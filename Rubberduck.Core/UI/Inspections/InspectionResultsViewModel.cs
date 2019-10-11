@@ -524,8 +524,7 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
-            var selectedResult = SelectedItem as IInspectionResult;
-            if (selectedResult == null)
+            if (!(SelectedItem is IInspectionResult selectedResult))
             {
                 return;
             }
@@ -552,12 +551,11 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
-            var selectedResult = SelectedItem as IInspectionResult;
-            if (selectedResult == null)
+            if (!(SelectedItem is IInspectionResult selectedResult))
             {
                 return;
             }
-            
+
             _quickFixProvider.FixInModule(_defaultFix, selectedResult.QualifiedSelection,
                 selectedResult.Inspection.GetType(), Results.OfType<IInspectionResult>());
         }
