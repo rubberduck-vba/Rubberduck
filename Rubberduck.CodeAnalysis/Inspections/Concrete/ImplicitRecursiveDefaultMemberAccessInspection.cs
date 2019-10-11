@@ -14,7 +14,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Default member accesses hide away the actually called member. This is especially misleading if there is no indication in the expression that such a call is made
     /// and the final default member is not on the interface of the object itself. In particular, this can cause errors in which a member was forgotten to be called to go unnoticed.
     /// </why>
-    /// <example hasResult="true">
+    /// <example hasresult="true">
     /// <module name="Class1" type="Class Module">
     /// <![CDATA[
     /// Public Function Foo() As Class2
@@ -40,7 +40,7 @@ namespace Rubberduck.Inspections.Concrete
     /// ]]>
     /// </module>
     /// </example>
-    /// <example hasResult="false">
+    /// <example hasresult="false">
     /// <module name="Class1" type="Class Module">
     /// <![CDATA[
     /// Public Function Foo() As Class2
