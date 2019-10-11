@@ -14,7 +14,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Default member accesses hide away the actually called member. This is especially misleading if there is no indication in the expression that such a call is made
     /// and can cause errors in which a member was forgotten to be called to go unnoticed.
     /// </why>
-    /// <example hasResult="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal arg As ADODB.Field)
     ///     Dim bar As Variant
@@ -22,7 +22,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResult="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal arg As ADODB.Connection)
     ///     Dim bar As String
@@ -30,7 +30,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResult="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal arg As ADODB.Field)
     ///     Dim bar As Variant
@@ -38,7 +38,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResult="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal arg As ADODB.Connection)
     ///     Dim bar As String
