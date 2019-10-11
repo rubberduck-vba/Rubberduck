@@ -213,33 +213,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variable names must begin with a letter..
-        /// </summary>
-        public static string AssignedByValDialog_DoesNotStartWithLetter {
-            get {
-                return ResourceManager.GetString("AssignedByValDialog_DoesNotStartWithLetter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Variable names cannot contain special characters other than underscores..
-        /// </summary>
-        public static string AssignedByValDialog_InvalidCharacters {
-            get {
-                return ResourceManager.GetString("AssignedByValDialog_InvalidCharacters", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The local variable cannot be the same as the &apos;{0}&apos; parameter it replaces.
-        /// </summary>
-        public static string AssignedByValDialog_IsByValIdentifierFormat {
-            get {
-                return ResourceManager.GetString("AssignedByValDialog_IsByValIdentifierFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {0} Consider choosing a different name..
         /// </summary>
         public static string AssignedByValDialog_MeaninglessNameFormat {
@@ -254,24 +227,6 @@ namespace Rubberduck.Resources {
         public static string AssignedByValDialog_NewNameAlreadyUsedFormat {
             get {
                 return ResourceManager.GetString("AssignedByValDialog_NewNameAlreadyUsedFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The identifier &apos;{0}&apos; will trigger a &quot;Use meaningful name&quot; inspection result. Consider choosing a different name..
-        /// </summary>
-        public static string AssignedByValDialog_QuestionableEntryFormat {
-            get {
-                return ResourceManager.GetString("AssignedByValDialog_QuestionableEntryFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is a reserved keyword..
-        /// </summary>
-        public static string AssignedByValDialog_ReservedKeywordFormat {
-            get {
-                return ResourceManager.GetString("AssignedByValDialog_ReservedKeywordFormat", resourceCulture);
             }
         }
         
@@ -1711,7 +1666,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Issue Description.
+        ///   Looks up a localized string similar to filter by description.
         /// </summary>
         public static string GroupingGrid_Filter {
             get {
