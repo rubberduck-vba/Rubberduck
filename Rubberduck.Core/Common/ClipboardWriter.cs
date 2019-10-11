@@ -14,10 +14,10 @@ namespace Rubberduck.Common
         void AppendString(string formatName, string data);
         void AppendStream(string formatName, MemoryStream stream);
         void Flush();
-    void AppendInfo<T>(ColumnInfo[] columnInfos,
-        IEnumerable<IExportable> exportableResults,
-        string titleFormat,
-        ClipboardWriterAppendingInformationFormat appendingInformationFormat) where T : IExportable;
+        void AppendInfo(ColumnInfo[] columnInfos,
+            IEnumerable<IExportable> exportableResults,
+            string titleFormat,
+        ClipboardWriterAppendingInformationFormat appendingInformationFormat);
     }
 
     [Flags]
@@ -78,10 +78,10 @@ namespace Rubberduck.Common
             }
         }
 
-        public void AppendInfo<T>(ColumnInfo[] columnInfos,
+        public void AppendInfo(ColumnInfo[] columnInfos,
             IEnumerable<IExportable> results,
             string title,
-            ClipboardWriterAppendingInformationFormat appendingInformationFormat) where T : IExportable
+            ClipboardWriterAppendingInformationFormat appendingInformationFormat)
         {
             object[][] resultsAsArray = results.Select(result => result.ToArray()).ToArray();
 
