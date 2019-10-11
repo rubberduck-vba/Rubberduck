@@ -1520,7 +1520,7 @@ NOTE: Restart is required for the setting to take effect.</value>
     <comment>{0}: Variable Name; {1}: name of conflicting declaration</comment>
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
-    <value>filter by description</value>
+    <value>Issue Description</value>
   </data>
   <data name="GroupingStyle_ByName" xml:space="preserve">
     <value>By inspection</value>
@@ -1631,5 +1631,12 @@ NOTE: Restart is required for the setting to take effect.</value>
   </data>
   <data name="TestOutcome_Unknown" xml:space="preserve">
     <value>Unknown</value>
+  </data>
+  <data name="TestExplorer_AppendHeader" xml:space="preserve">
+    <value>Rubberduck Test Results - {0}</value>
+  </data>
+  <data name="CodeExplorer_IExportable_DeclarationFormat" xml:space="preserve">
+    <value>{0} {1} {2} {3} {4} {5}</value>
+    <comment>{0}=Project; {1}=Folder; {2}=Component; {3}=DeclarationType; {4}=Scope; {5}=Name</comment>
   </data>
 </root>

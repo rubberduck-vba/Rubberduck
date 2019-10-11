@@ -352,6 +352,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} {1} {2} {3} {4} {5}.
+        /// </summary>
+        public static string CodeExplorer_IExportable_DeclarationFormat {
+            get {
+                return ResourceManager.GetString("CodeExplorer_IExportable_DeclarationFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to By module.
         /// </summary>
         public static string CodeInspectionResults_GroupByModule {
@@ -4092,6 +4101,15 @@ namespace Rubberduck.Resources {
             get {
                 object obj = ResourceManager.GetObject("SyncArrows", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck Test Results - {0}.
+        /// </summary>
+        public static string TestExplorer_AppendHeader {
+            get {
+                return ResourceManager.GetString("TestExplorer_AppendHeader", resourceCulture);
             }
         }
         
