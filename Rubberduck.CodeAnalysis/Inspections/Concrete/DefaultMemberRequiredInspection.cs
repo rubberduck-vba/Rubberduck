@@ -69,7 +69,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
         protected override bool IsResultReference(IdentifierReference failedIndexedDefaultMemberAccess)
         {
-            return !failedIndexedDefaultMemberAccess.IsIgnoringInspectionResultFor(AnnotationName);
+            return true;
         }
 
         protected override string ResultDescription(IdentifierReference failedIndexedDefaultMemberAccess)

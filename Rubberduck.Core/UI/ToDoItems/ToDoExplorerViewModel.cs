@@ -21,6 +21,7 @@ using Rubberduck.Parsing.UIContext;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.SettingsProvider;
 using System.Windows.Controls;
+using Rubberduck.Formatters;
 
 namespace Rubberduck.UI.ToDoItems
 {

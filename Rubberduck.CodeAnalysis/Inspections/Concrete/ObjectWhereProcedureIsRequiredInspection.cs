@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
@@ -24,7 +24,7 @@ namespace Rubberduck.Inspections.Concrete
     /// <module name="Class1" type="Class Module">
     /// <![CDATA[
     /// Public Function Foo() As Long
-    /// Attibute VB_UserMemId = 0
+    /// Attibute Foo.VB_UserMemId = 0
     ///     Foo = 42
     /// End Function
     /// ]]>
@@ -41,7 +41,7 @@ namespace Rubberduck.Inspections.Concrete
     /// <module name="Class1" type="Class Module">
     /// <![CDATA[
     /// Public Function Foo() As Long
-    /// Attibute VB_UserMemId = 0
+    /// Attibute Foo.VB_UserMemId = 0
     ///     Foo = 42
     /// End Function
     /// ]]>
@@ -70,7 +70,7 @@ namespace Rubberduck.Inspections.Concrete
             var results = new List<IInspectionResult>();
             foreach (var moduleDeclaration in State.DeclarationFinder.UserDeclarations(DeclarationType.Module))
             {
-                if (moduleDeclaration == null || moduleDeclaration.IsIgnoringInspectionResultFor(AnnotationName))
+                if (moduleDeclaration == null)
                 {
                     continue;
                 }
@@ -102,8 +102,7 @@ namespace Rubberduck.Inspections.Concrete
 
         private bool IsResultReference(IdentifierReference reference)
         {
-            return reference.IsProcedureCoercion
-                   && !reference.IsIgnoringInspectionResultFor(AnnotationName);
+            return reference.IsProcedureCoercion;
         }
 
         private IInspectionResult BoundInspectionResult(IdentifierReference reference, IDeclarationFinderProvider declarationFinderProvider)

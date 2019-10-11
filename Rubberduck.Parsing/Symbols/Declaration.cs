@@ -132,7 +132,7 @@ namespace Rubberduck.Parsing.Symbols
             AttributesPassContext = attributesPassContext;
             IsUserDefined = isUserDefined;
             _annotations = annotations;
-            _attributes = attributes ?? new Attributes();
+            Attributes = attributes ?? new Attributes();
 
             ProjectId = QualifiedName.QualifiedModuleName.ProjectId;
             var projectDeclaration = GetProjectParent(parentDeclaration);
@@ -278,8 +278,7 @@ namespace Rubberduck.Parsing.Symbols
         protected IEnumerable<IParseTreeAnnotation> _annotations;
         public IEnumerable<IParseTreeAnnotation> Annotations => _annotations ?? new List<IParseTreeAnnotation>();
 
-        private readonly Attributes _attributes;
-        public Attributes Attributes => _attributes;
+        public Attributes Attributes { get; }
 
         /// <summary>
         /// Gets an attribute value that contains the docstring for a member.
@@ -290,14 +289,14 @@ namespace Rubberduck.Parsing.Symbols
             {
                 string literalDescription;
 
-                var memberAttribute = _attributes.SingleOrDefault(a => a.Name == $"{IdentifierName}.VB_Description");
+                var memberAttribute = Attributes.SingleOrDefault(a => a.Name == $"{IdentifierName}.VB_Description");
                 if (memberAttribute != null)
                 {
                     literalDescription = memberAttribute.Values.SingleOrDefault() ?? string.Empty;
                     return CorrectlyFormatedDescription(literalDescription);
                 }
 
-                var moduleAttribute = _attributes.SingleOrDefault(a => a.Name == "VB_Description");
+                var moduleAttribute = Attributes.SingleOrDefault(a => a.Name == "VB_Description");
                 if (moduleAttribute != null)
                 {
                     literalDescription = moduleAttribute.Values.SingleOrDefault() ?? string.Empty;
@@ -327,7 +326,7 @@ namespace Rubberduck.Parsing.Symbols
         /// Gets an attribute value indicating whether a member is an enumerator provider.
         /// Types with such a member support For Each iteration.
         /// </summary>
-        public bool IsEnumeratorMember => _attributes.Any(a => a.Name.EndsWith("VB_UserMemId") && a.Values.Contains("-4"));
+        public bool IsEnumeratorMember => Attributes.Any(a => a.Name.EndsWith("VB_UserMemId") && a.Values.Contains("-4"));
 
         public virtual bool IsObject => !IsArray && IsObjectOrObjectArray;
 
@@ -367,7 +366,8 @@ namespace Rubberduck.Parsing.Symbols
             bool isNonIndexedDefaultMemberAccess = false,
             int defaultMemberRecursionDepth = 0,
             bool isArrayAccess = false,
-            bool isProcedureCoercion = false
+            bool isProcedureCoercion = false,
+            bool isInnerRecursiveDefaultMemberAccess = false
             )
         {
             var oldReference = _references.FirstOrDefault(r =>
@@ -399,7 +399,8 @@ namespace Rubberduck.Parsing.Symbols
                 isNonIndexedDefaultMemberAccess,
                 defaultMemberRecursionDepth,
                 isArrayAccess,
-                isProcedureCoercion);
+                isProcedureCoercion,
+                isInnerRecursiveDefaultMemberAccess);
             _references.AddOrUpdate(newReference, 1, (key, value) => 1);
         }
 

@@ -15,6 +15,7 @@ using NLog;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -27,6 +28,7 @@ using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.ComCommands;
 using Rubberduck.UI.Settings;
 using Rubberduck.VBEditor;
+using Rubberduck.Formatters;
 
 namespace Rubberduck.UI.Inspections
 {

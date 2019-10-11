@@ -145,6 +145,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             _inspectionResults = new List<IInspectionResult>();
             var qualifiedSelectCaseStmts = Listener.Contexts
+                // ignore filtering here to make the search space smaller
                 .Where(result => !result.IsIgnoringInspectionResultFor(State.DeclarationFinder, AnnotationName));
 
             ParseTreeValueVisitor.OnValueResultCreated += ValueResults.OnNewValueResult;

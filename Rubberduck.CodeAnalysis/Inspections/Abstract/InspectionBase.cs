@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -105,7 +104,9 @@ namespace Rubberduck.Inspections.Abstract
         {
             var _stopwatch = new Stopwatch();
             _stopwatch.Start();
-            var result = DoGetInspectionResults();
+            var declarationFinder = State.DeclarationFinder;
+            var result = DoGetInspectionResults()
+                .Where(ir => !ir.IsIgnoringInspectionResult(declarationFinder));
             _stopwatch.Stop();
             _logger.Trace("Intercepted invocation of '{0}.{1}' returned {2} objects.", GetType().Name, nameof(DoGetInspectionResults), result.Count());
             _logger.Trace("Intercepted invocation of '{0}.{1}' ran for {2}ms", GetType().Name, nameof(DoGetInspectionResults), _stopwatch.ElapsedMilliseconds);
