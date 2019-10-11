@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
 
@@ -18,67 +20,124 @@ namespace Rubberduck.Parsing.VBA
 
         public Declaration SelectedDeclaration()
         {
-            var selection = _selectionProvider.ActiveSelection();
-            return SelectedDeclaration(selection);
+            return FromActiveSelection(SelectedDeclaration)();
         }
 
-        private Declaration SelectedDeclaration(QualifiedSelection? qualifiedSelection)
+        private Func<T> FromActiveSelection<T>(Func<QualifiedSelection, T> func)
+            where T: class
         {
-            return qualifiedSelection.HasValue
-                ? SelectedDeclaration(qualifiedSelection.Value)
-                : null;
+            return () =>
+            {
+                var activeSelection = _selectionProvider.ActiveSelection();
+                return activeSelection.HasValue
+                    ? func(activeSelection.Value)
+                    : null;
+            };
         }
 
         public Declaration SelectedDeclaration(QualifiedModuleName module)
         {
-            var selection = _selectionProvider.Selection(module);
-            return SelectedDeclaration(module, selection);
+            return FromModuleSelection(SelectedDeclaration)(module);
         }
 
-        private Declaration SelectedDeclaration(QualifiedModuleName module, Selection? selection)
+        private Func<QualifiedModuleName, T> FromModuleSelection<T>(Func<QualifiedSelection, T> func) 
+            where T : class
         {
-            return selection.HasValue
-                ? SelectedDeclaration(new QualifiedSelection(module, selection.Value))
-                : null;
+            return (module) =>
+            {
+                var selection = _selectionProvider.Selection(module);
+                if (!selection.HasValue)
+                {
+                    return null;
+                }
+                var qualifiedSelection = new QualifiedSelection(module, selection.Value);
+                return func(qualifiedSelection);
+            };
         }
 
         public Declaration SelectedDeclaration(QualifiedSelection qualifiedSelection)
         {
-            return _declarationFinderProvider.DeclarationFinder?.FindSelectedDeclaration(qualifiedSelection);
+            var finder = _declarationFinderProvider.DeclarationFinder;
+
+            var canditateViaReference = SelectedDeclarationViaReference(qualifiedSelection, finder);
+            if (canditateViaReference != null)
+            {
+                return canditateViaReference;
+            }
+
+            var canditateViaDeclaration = SelectedDeclarationViaDeclaration(qualifiedSelection, finder);
+            if (canditateViaDeclaration != null)
+            {
+                return canditateViaDeclaration;
+            }
+
+            return SelectedModule(qualifiedSelection);
         }
 
-        public ProjectDeclaration SelectedProject()
+        private static Declaration SelectedDeclarationViaReference(QualifiedSelection qualifiedSelection, DeclarationFinder finder)
         {
-            var activeSelection = _selectionProvider.ActiveSelection();
-            return activeSelection.HasValue
-                ? _declarationFinderProvider.DeclarationFinder?
-                    .UserDeclarations(DeclarationType.Project)
-                    .OfType<ProjectDeclaration>()
-                    .FirstOrDefault(project => project.ProjectId.Equals(activeSelection.Value.QualifiedName.ProjectId))
-                : null;
+            var referencesInModule = finder.IdentifierReferences(qualifiedSelection.QualifiedName);
+            return referencesInModule
+                .Where(reference => reference.IsSelected(qualifiedSelection))
+                .Select(reference => reference.Declaration)
+                .OrderByDescending(declaration => declaration.DeclarationType)
+                // they're sorted by type, so a local comes before the procedure it's in
+                .FirstOrDefault();
         }
 
-        public ModuleDeclaration SelectedModule()
+        private static Declaration SelectedDeclarationViaDeclaration(QualifiedSelection qualifiedSelection, DeclarationFinder finder)
         {
-            var activeSelection = _selectionProvider.ActiveSelection();
-            return activeSelection.HasValue
-                ? _declarationFinderProvider.DeclarationFinder?
-                    .UserDeclarations(DeclarationType.Module)
-                    .OfType<ModuleDeclaration>()
-                    .FirstOrDefault(module => module.QualifiedModuleName.Equals(activeSelection.Value.QualifiedName))
-                : null;
+            var declarationsInModule = finder.Members(qualifiedSelection.QualifiedName);
+            return declarationsInModule
+                .Where(declaration => declaration.IsSelected(qualifiedSelection))
+                .OrderByDescending(declaration => declaration.DeclarationType)
+                // they're sorted by type, so a local comes before the procedure it's in
+                .FirstOrDefault();
         }
 
         public ModuleBodyElementDeclaration SelectedMember()
         {
-            var activeSelection = _selectionProvider.ActiveSelection();
-            return activeSelection.HasValue
-                ? _declarationFinderProvider.DeclarationFinder?
-                    .UserDeclarations(DeclarationType.Member)
-                    .OfType<ModuleBodyElementDeclaration>()
-                    .FirstOrDefault(member => member.QualifiedModuleName.Equals(activeSelection.Value.QualifiedName)
-                        && member.Context.GetSelection().Contains(activeSelection.Value.Selection))
-                : null;
+            return FromActiveSelection(SelectedMember)();
+        }
+
+        public ModuleBodyElementDeclaration SelectedMember(QualifiedModuleName module)
+        {
+            return FromModuleSelection(SelectedMember)(module);
+        }
+
+        public ModuleBodyElementDeclaration SelectedMember(QualifiedSelection qualifiedSelection)
+        {
+            return _declarationFinderProvider.DeclarationFinder?
+                .UserDeclarations(DeclarationType.Member)
+                .OfType<ModuleBodyElementDeclaration>()
+                .FirstOrDefault(member => member.QualifiedModuleName.Equals(qualifiedSelection.QualifiedName)
+                                          && member.Context.GetSelection().Contains(qualifiedSelection.Selection));
+        }
+
+        public ModuleDeclaration SelectedModule()
+        {
+            return FromActiveSelection(SelectedModule)();
+        }
+
+        public ModuleDeclaration SelectedModule(QualifiedSelection qualifiedSelection)
+        {
+            return _declarationFinderProvider.DeclarationFinder?
+                .UserDeclarations(DeclarationType.Module)
+                .OfType<ModuleDeclaration>()
+                .FirstOrDefault(module => module.QualifiedModuleName.Equals(qualifiedSelection.QualifiedName));
+        }
+
+        public ProjectDeclaration SelectedProject()
+        {
+            return FromActiveSelection(SelectedProject)();
+        }
+
+        public ProjectDeclaration SelectedProject(QualifiedSelection qualifiedSelection)
+        {
+            return _declarationFinderProvider.DeclarationFinder?
+                .UserDeclarations(DeclarationType.Project)
+                .OfType<ProjectDeclaration>()
+                .FirstOrDefault(project => project.ProjectId.Equals(qualifiedSelection.QualifiedName.ProjectId));
         }
     }
 }

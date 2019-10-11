@@ -33,7 +33,6 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         private IDictionary<(QualifiedModuleName module, int annotatedLine), List<IParseTreeAnnotation>> _annotations;
         private IDictionary<Declaration, List<ParameterDeclaration>> _parametersByParent;
         private IDictionary<DeclarationType, List<Declaration>> _userDeclarationsByType;
-        private IDictionary<QualifiedSelection, List<Declaration>> _declarationsBySelection;
        
         private IReadOnlyList<IdentifierReference> _identifierReferences;
         private IDictionary<QualifiedSelection, List<IdentifierReference>> _referencesBySelection;
@@ -106,12 +105,6 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                     _declarationsByName = declarations
                         .GroupBy(declaration => declaration.IdentifierName.ToLowerInvariant())
                         .ToDictionary(),
-                () =>
-                    _declarationsBySelection = declarations
-                        .Where(declaration => declaration.IsUserDefined)
-                        .GroupBy(GetGroupingKey)
-                        .ToDictionary(),
-
                 () =>
                     _parametersByParent = declarations
                         .Where(declaration => declaration.DeclarationType == DeclarationType.Parameter)
@@ -272,73 +265,6 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                     })
                     .ToDictionary(item => item.WithEventsField, item => item.Handlers.ToList());
             return handlersByWithEventsField;
-        }
-
-        public Declaration FindSelectedDeclaration(QualifiedSelection qualifiedSelection)
-        {
-            var matches = new List<Declaration>();
-
-            // statistically we'll be on an IdentifierReference more often than on a Declaration:
-            if (_referencesByModule.TryGetValue(qualifiedSelection.QualifiedName, out var referencesInModule))
-            {
-                matches = referencesInModule
-                    .Where(reference => reference.IsSelected(qualifiedSelection))
-                    .OrderByDescending(reference => reference.Declaration.DeclarationType)
-                    .Select(reference => reference.Declaration)
-                    .Distinct()
-                    .ToList();
-            }
-
-            if (!matches.Any() && _declarations.TryGetValue(qualifiedSelection.QualifiedName, out var declarationsInModule))
-            {
-                matches = declarationsInModule
-                    .Where(declaration => declaration.IsSelected(qualifiedSelection))
-                    .OrderByDescending(declaration => declaration.DeclarationType)
-                    .Distinct()
-                    .ToList();
-            }
-
-            switch (matches.Count)
-            {
-                case 0:
-                    return ModuleDeclaration(qualifiedSelection.QualifiedName);
-
-                case 1:
-                    return matches.Single();
-
-                default:
-                    // they're sorted by type, so a local comes before the procedure it's in
-                    return matches.FirstOrDefault();
-            }
-        }
-
-        public Declaration FindSelectedDeclaration(ICodePane activeCodePane)
-        {
-            if (activeCodePane == null || activeCodePane.IsWrappingNullReference)
-            {
-                return null;
-            }
-
-            var qualifiedSelection = activeCodePane.GetQualifiedSelection();
-            if (!qualifiedSelection.HasValue || qualifiedSelection.Value.Equals(default))
-            {
-                return null;
-            }
-
-            return FindSelectedDeclaration(qualifiedSelection.Value);
-        }
-
-        /// <summary>
-        /// Finds all declarations containing the passed selection.
-        /// </summary>
-        /// <param name="selection">The QualifiedSelection to find declarations for.</param>
-        /// <returns>An IEnumerable of matches.</returns>
-        public IEnumerable<Declaration> FindDeclarationsContainingSelection(QualifiedSelection selection)
-        {
-            return _declarationsBySelection.Keys
-                .Where(key => key.Contains(selection))
-                .SelectMany(key => _declarationsBySelection[key])
-                .Distinct();
         }
 
         //This does not need a lock because enumerators over a ConcurrentBag uses a snapshot.    
@@ -1303,7 +1229,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 return Enumerable.Empty<Declaration>();
             }
 
-            var identifierMatches = MatchName(newName).Where(match => match.ProjectId == renameTarget.ProjectId);
+            var identifierMatches = MatchName(newName).Where(match => match.ProjectId == renameTarget.ProjectId).ToList();
 
             if (!identifierMatches.Any())
             {
