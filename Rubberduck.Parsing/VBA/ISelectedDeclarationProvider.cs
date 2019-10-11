@@ -3,7 +3,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public interface ISelectedDeclarationService
+    public interface ISelectedDeclarationProvider
     {
         Declaration SelectedDeclaration();
         Declaration SelectedDeclaration(QualifiedModuleName module);

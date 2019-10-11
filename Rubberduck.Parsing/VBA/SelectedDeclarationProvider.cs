@@ -5,20 +5,20 @@ using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Parsing.VBA
 {
-    public class SelectedDeclarationService : ISelectedDeclarationService
+    public class SelectedDeclarationProvider : ISelectedDeclarationProvider
     {
-        private readonly ISelectionService _selectionService;
+        private readonly ISelectionProvider _selectionProvider;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
-        public SelectedDeclarationService(ISelectionService selectionService, IDeclarationFinderProvider declarationFinderProvider)
+        public SelectedDeclarationProvider(ISelectionProvider selectionProvider, IDeclarationFinderProvider declarationFinderProvider)
         {
-            _selectionService = selectionService;
+            _selectionProvider = selectionProvider;
             _declarationFinderProvider = declarationFinderProvider;
         }
 
         public Declaration SelectedDeclaration()
         {
-            var selection = _selectionService.ActiveSelection();
+            var selection = _selectionProvider.ActiveSelection();
             return SelectedDeclaration(selection);
         }
 
@@ -31,7 +31,7 @@ namespace Rubberduck.Parsing.VBA
 
         public Declaration SelectedDeclaration(QualifiedModuleName module)
         {
-            var selection = _selectionService.Selection(module);
+            var selection = _selectionProvider.Selection(module);
             return SelectedDeclaration(module, selection);
         }
 
@@ -49,7 +49,7 @@ namespace Rubberduck.Parsing.VBA
 
         public ModuleDeclaration SelectedModule()
         {
-            var activeSelection = _selectionService.ActiveSelection();
+            var activeSelection = _selectionProvider.ActiveSelection();
             return activeSelection.HasValue
                 ? _declarationFinderProvider.DeclarationFinder?
                     .UserDeclarations(DeclarationType.Module)

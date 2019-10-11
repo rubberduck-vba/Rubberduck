@@ -58,7 +58,7 @@ End Sub";
             var factory = new Mock<IRefactoringPresenterFactory>().Object;
             var refactoring = new EncapsulateFieldRefactoring(state, null, factory, rewritingManager, selectionService);
             var notifier = new EncapsulateFieldFailedNotifier(msgBox);
-            var selectedDeclarationService = new SelectedDeclarationService(selectionService, state);
+            var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
             return new RefactorEncapsulateFieldCommand(refactoring, notifier, state, selectionService, selectedDeclarationService);
         }
 

@@ -32,7 +32,7 @@ namespace Rubberduck.UI.Command.ComCommands
         public SyncCodeExplorerCommand GetSyncCommand(CodeExplorerViewModel explorer)
         {
             var selectionService = new SelectionService(_vbe, _state.ProjectsProvider);
-            var selectedDeclarationService = new SelectedDeclarationService(selectionService, _state);
+            var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, _state);
             return new SyncCodeExplorerCommand(_vbe, _state, _state, selectedDeclarationService, explorer, _vbeEvents);
         }
     }
@@ -41,7 +41,7 @@ namespace Rubberduck.UI.Command.ComCommands
     {
         private readonly IVBE _vbe;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
-        private readonly ISelectedDeclarationService _selectedDeclarationService;
+        private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
         private readonly IParserStatusProvider _parserStatusProvider;
         private readonly CodeExplorerViewModel _explorer;
 
@@ -49,14 +49,14 @@ namespace Rubberduck.UI.Command.ComCommands
             IVBE vbe,
             IDeclarationFinderProvider declarationFinderProvider, 
             IParserStatusProvider parserStatusProvider,
-            ISelectedDeclarationService selectedDeclarationService,
+            ISelectedDeclarationProvider selectedDeclarationProvider,
             CodeExplorerViewModel explorer, 
             IVbeEvents vbeEvents) 
             : base(vbeEvents)
         {
             _vbe = vbe;
             _declarationFinderProvider = declarationFinderProvider;
-            _selectedDeclarationService = selectedDeclarationService;
+            _selectedDeclarationProvider = selectedDeclarationProvider;
             _parserStatusProvider = parserStatusProvider;
             _explorer = explorer;
 
@@ -92,7 +92,7 @@ namespace Rubberduck.UI.Command.ComCommands
 
         private Declaration FindTargetDeclaration()
         {
-            return _selectedDeclarationService.SelectedDeclaration()
+            return _selectedDeclarationProvider.SelectedDeclaration()
                 ?? ActiveProjectDeclaration();
         }
 

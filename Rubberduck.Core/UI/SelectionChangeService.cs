@@ -25,12 +25,12 @@ namespace Rubberduck.UI
         private Declaration _lastSelectedDeclaration;
         private readonly IVBE _vbe;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
-        private readonly ISelectedDeclarationService _selectedDeclarationService;
+        private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
 
-        public SelectionChangeService(IVBE vbe, IDeclarationFinderProvider declarationFinderProvider, ISelectedDeclarationService selectedDeclarationService)
+        public SelectionChangeService(IVBE vbe, IDeclarationFinderProvider declarationFinderProvider, ISelectedDeclarationProvider selectedDeclarationProvider)
         {
             _declarationFinderProvider = declarationFinderProvider;
-            _selectedDeclarationService = selectedDeclarationService;
+            _selectedDeclarationProvider = selectedDeclarationProvider;
             _vbe = vbe;
             VbeNativeServices.SelectionChanged += OnVbeSelectionChanged;
             VbeNativeServices.WindowFocusChange += OnVbeFocusChanged;
@@ -40,7 +40,7 @@ namespace Rubberduck.UI
         {
             Task.Run(() =>
             {
-                var selectedDeclaration = _selectedDeclarationService.SelectedDeclaration();
+                var selectedDeclaration = _selectedDeclarationProvider.SelectedDeclaration();
                 var eventArgs = new DeclarationChangedEventArgs(_vbe, selectedDeclaration);
                 DispatchSelectedDeclaration(eventArgs);
             });
@@ -73,7 +73,7 @@ namespace Rubberduck.UI
                                     return;
                                 }
 
-                                var selectedDeclaration = _selectedDeclarationService.SelectedDeclaration(selection.Value);
+                                var selectedDeclaration = _selectedDeclarationProvider.SelectedDeclaration(selection.Value);
                                 var eventArgs = new DeclarationChangedEventArgs(_vbe, selectedDeclaration);
                                 DispatchSelectedDeclaration(eventArgs);
                             }

@@ -385,7 +385,7 @@ End Sub";
             Mock<IVbeEvents> vbeEvents)
         {
             var selectionService = new SelectionService(vbe.Object, state.ProjectsProvider);
-            var selectedDeclarationService = new SelectedDeclarationService(selectionService, state);
+            var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
             return new FindAllImplementationsCommand(state, selectedDeclarationService, viewModel, finder, vbeEvents.Object);
         }
     }

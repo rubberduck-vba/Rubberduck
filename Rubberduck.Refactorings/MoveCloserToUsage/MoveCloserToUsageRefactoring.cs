@@ -17,8 +17,11 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
-        public MoveCloserToUsageRefactoring(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager, ISelectionService selectionService)
-        :base(rewritingManager, selectionService)
+        public MoveCloserToUsageRefactoring(
+            IDeclarationFinderProvider declarationFinderProvider, 
+            IRewritingManager rewritingManager,
+            ISelectionProvider selectionProvider)
+        :base(rewritingManager, selectionProvider)
         {
             _declarationFinderProvider = declarationFinderProvider;
         }

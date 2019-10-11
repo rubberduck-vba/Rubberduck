@@ -10,13 +10,13 @@ namespace Rubberduck.UI.Command
     public class RunSelectedTestMethodCommand : CommandBase
     {
         private readonly ITestEngine _engine;
-        private readonly ISelectionService _selectionService;
+        private readonly ISelectionProvider _selectionProvider;
         private readonly IDeclarationFinderProvider _finderProvider;
 
-        public RunSelectedTestMethodCommand(ITestEngine engine, ISelectionService selectionService, IDeclarationFinderProvider finderProvider) 
+        public RunSelectedTestMethodCommand(ITestEngine engine, ISelectionProvider selectionProvider, IDeclarationFinderProvider finderProvider) 
         {
             _engine = engine;
-            _selectionService = selectionService;
+            _selectionProvider = selectionProvider;
             _finderProvider = finderProvider;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
@@ -43,13 +43,13 @@ namespace Rubberduck.UI.Command
 
         private Declaration FindDeclarationFromSelection()
         {
-            var active = _selectionService?.ActiveSelection();
+            var active = _selectionProvider?.ActiveSelection();
             if (!active.HasValue)
             {
                 return null;
             }
 
-            return _finderProvider.DeclarationFinder.FindDeclarationsForSelection(active.Value)
+            return _finderProvider.DeclarationFinder.FindDeclarationsContainingSelection(active.Value)
                 .SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Procedure &&
                                                 declaration.Annotations.Any(annotation => annotation is TestMethodAnnotation));
         }

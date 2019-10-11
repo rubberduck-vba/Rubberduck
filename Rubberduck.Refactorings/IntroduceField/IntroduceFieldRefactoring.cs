@@ -16,8 +16,11 @@ namespace Rubberduck.Refactorings.IntroduceField
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
-        public IntroduceFieldRefactoring(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager, ISelectionService selectionService)
-        :base(rewritingManager, selectionService)
+        public IntroduceFieldRefactoring(
+            IDeclarationFinderProvider declarationFinderProvider, 
+            IRewritingManager rewritingManager,
+            ISelectionProvider selectionProvider)
+        :base(rewritingManager, selectionProvider)
         {
             _declarationFinderProvider = declarationFinderProvider;
         }

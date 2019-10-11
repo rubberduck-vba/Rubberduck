@@ -16,14 +16,14 @@ namespace Rubberduck.UI.Command.ComCommands
     {
         private readonly IParserStatusProvider _parserStatusProvider;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
-        private readonly ISelectedDeclarationService _selectedDeclarationService;
+        private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
         private readonly IVBE _vbe;
         private readonly FindAllReferencesService _finder;
 
         public FindAllReferencesCommand(
             IParserStatusProvider parserStatusProvider,
             IDeclarationFinderProvider declarationFinderProvider,
-            ISelectedDeclarationService selectedDeclarationService,
+            ISelectedDeclarationProvider selectedDeclarationProvider,
             IVBE vbe, 
             ISearchResultsWindowViewModel viewModel, 
             FindAllReferencesService finder, 
@@ -32,7 +32,7 @@ namespace Rubberduck.UI.Command.ComCommands
         {
             _parserStatusProvider = parserStatusProvider;
             _declarationFinderProvider = declarationFinderProvider;
-            _selectedDeclarationService = selectedDeclarationService;
+            _selectedDeclarationProvider = selectedDeclarationProvider;
             _vbe = vbe;
             _finder = finder;
 
@@ -105,7 +105,7 @@ namespace Rubberduck.UI.Command.ComCommands
 
         private Declaration FindCodePaneTarget()
         {
-            return _selectedDeclarationService.SelectedDeclaration();
+            return _selectedDeclarationProvider.SelectedDeclaration();
         }
 
         //Assumes the component has a designer.

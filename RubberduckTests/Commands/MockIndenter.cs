@@ -42,7 +42,7 @@ namespace RubberduckTests.Commands
         internal static NoIndentAnnotationCommand ArrangeNoIndentAnnotationCommand(Mock<IVBE> vbe, RubberduckParserState state, IRewritingManager rewritingManager, Mock<IVbeEvents> vbeEvents)
         {
             var selectionService = new SelectionService(vbe.Object, state.ProjectsProvider);
-            var selectedDeclarationService = new SelectedDeclarationService(selectionService, state);
+            var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
             return new NoIndentAnnotationCommand(selectedDeclarationService, rewritingManager, new AnnotationUpdater(), vbeEvents.Object);
         }
 

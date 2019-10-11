@@ -11,8 +11,12 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly RubberduckParserState _state;
 
-        public RefactorIntroduceParameterCommand (IntroduceParameterRefactoring refactoring, IntroduceParameterFailedNotifier introduceParameterFailedNotifier, RubberduckParserState state, ISelectionService selectionService)
-            :base(refactoring, introduceParameterFailedNotifier, selectionService, state)
+        public RefactorIntroduceParameterCommand (
+            IntroduceParameterRefactoring refactoring, 
+            IntroduceParameterFailedNotifier introduceParameterFailedNotifier, 
+            RubberduckParserState state,
+            ISelectionProvider selectionProvider)
+            :base(refactoring, introduceParameterFailedNotifier, selectionProvider, state)
         {
             _state = state;
 
@@ -30,7 +34,7 @@ namespace Rubberduck.UI.Command.Refactorings
 
         private Declaration GetTarget()
         {
-            var activeSelection = SelectionService.ActiveSelection();
+            var activeSelection = SelectionProvider.ActiveSelection();
             if (!activeSelection.HasValue)
             {
                 return null;

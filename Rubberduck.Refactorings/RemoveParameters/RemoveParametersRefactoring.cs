@@ -17,8 +17,12 @@ namespace Rubberduck.Refactorings.RemoveParameters
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
-        public RemoveParametersRefactoring(IDeclarationFinderProvider declarationFinderProvider, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
-        :base(rewritingManager, selectionService, factory)
+        public RemoveParametersRefactoring(
+            IDeclarationFinderProvider declarationFinderProvider, 
+            IRefactoringPresenterFactory factory, 
+            IRewritingManager rewritingManager,
+            ISelectionProvider selectionProvider)
+        :base(rewritingManager, selectionProvider, factory)
         {
             _declarationFinderProvider = declarationFinderProvider;
         }

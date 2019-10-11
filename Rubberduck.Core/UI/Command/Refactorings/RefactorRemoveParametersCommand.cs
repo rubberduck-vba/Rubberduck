@@ -14,8 +14,12 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly RubberduckParserState _state;
 
-        public RefactorRemoveParametersCommand(RemoveParametersRefactoring refactoring, RemoveParameterFailedNotifier removeParameterFailedNotifier, RubberduckParserState state, ISelectionService selectionService) 
-            : base (refactoring, removeParameterFailedNotifier, selectionService, state)
+        public RefactorRemoveParametersCommand(
+            RemoveParametersRefactoring refactoring, 
+            RemoveParameterFailedNotifier removeParameterFailedNotifier, 
+            RubberduckParserState state,
+            ISelectionProvider selectionProvider) 
+            : base (refactoring, removeParameterFailedNotifier, selectionProvider, state)
         {
             _state = state;
 
@@ -24,7 +28,7 @@ namespace Rubberduck.UI.Command.Refactorings
 
         private bool SpecializedEvaluateCanExecute(object parameter)
         {
-            var activeSelection = SelectionService.ActiveSelection();
+            var activeSelection = SelectionProvider.ActiveSelection();
             if (!activeSelection.HasValue)
             {
                 return false;

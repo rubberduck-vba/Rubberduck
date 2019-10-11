@@ -100,7 +100,7 @@ End Sub";
             var msgBox = new Mock<IMessageBox>().Object;
             var refactoring = new MoveCloserToUsageRefactoring(state, rewritingManager, selectionService);
             var notifier = new MoveCloserToUsageFailedNotifier(msgBox);
-            var selectedDeclarationService = new SelectedDeclarationService(selectionService, state);
+            var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
             return new RefactorMoveCloserToUsageCommand(refactoring, notifier, state, selectionService, selectedDeclarationService);
         }
 

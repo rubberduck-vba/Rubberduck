@@ -11,18 +11,18 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorEncapsulateFieldCommand : RefactorCodePaneCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly ISelectedDeclarationService _selectedDeclarationService;
+        private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
 
         public RefactorEncapsulateFieldCommand(
             EncapsulateFieldRefactoring refactoring, 
             EncapsulateFieldFailedNotifier encapsulateFieldFailedNotifier, 
             RubberduckParserState state, 
-            ISelectionService selectionService,
-            ISelectedDeclarationService selectedDeclarationService)
-            : base(refactoring, encapsulateFieldFailedNotifier, selectionService, state)
+            ISelectionProvider selectionProvider,
+            ISelectedDeclarationProvider selectedDeclarationProvider)
+            : base(refactoring, encapsulateFieldFailedNotifier, selectionProvider, state)
         {
             _state = state;
-            _selectedDeclarationService = selectedDeclarationService;
+            _selectedDeclarationProvider = selectedDeclarationProvider;
 
             AddToCanExecuteEvaluation(SpecializedEvaluateCanExecute);
         }
@@ -39,7 +39,7 @@ namespace Rubberduck.UI.Command.Refactorings
 
         private Declaration GetTarget()
         {
-            return _selectedDeclarationService.SelectedDeclaration();
+            return _selectedDeclarationProvider.SelectedDeclaration();
         }
     }
 }

@@ -13,20 +13,20 @@ namespace Rubberduck.UI.Command.ComCommands
     [ComVisible(false)]
     public class FindAllImplementationsCommand : ComCommandBase
     {
-        private readonly ISelectedDeclarationService _selectedDeclarationService;
+        private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
         private readonly IParserStatusProvider _parserStatusProvider;
         private readonly FindAllImplementationsService _finder;
 
         public FindAllImplementationsCommand(
             IParserStatusProvider parserStatusProvider,
-            ISelectedDeclarationService selectedDeclarationService, 
+            ISelectedDeclarationProvider selectedDeclarationProvider, 
             ISearchResultsWindowViewModel viewModel, 
             FindAllImplementationsService finder, 
             IVbeEvents vbeEvents)
             : base(vbeEvents)
         {
             _finder = finder;
-            _selectedDeclarationService = selectedDeclarationService;
+            _selectedDeclarationProvider = selectedDeclarationProvider;
             _parserStatusProvider = parserStatusProvider;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
@@ -66,7 +66,7 @@ namespace Rubberduck.UI.Command.ComCommands
                 return declaration;
             }
 
-            var selectedDeclaration = _selectedDeclarationService.SelectedDeclaration();
+            var selectedDeclaration = _selectedDeclarationProvider.SelectedDeclaration();
 
             return selectedDeclaration;
         }

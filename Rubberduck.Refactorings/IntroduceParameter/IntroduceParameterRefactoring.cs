@@ -28,8 +28,12 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             DeclarationType.PropertySet
         };
 
-        public IntroduceParameterRefactoring(IDeclarationFinderProvider declarationFinderProvider, IMessageBox messageBox, IRewritingManager rewritingManager, ISelectionService selectionService)
-        :base(rewritingManager, selectionService)
+        public IntroduceParameterRefactoring(
+            IDeclarationFinderProvider declarationFinderProvider, 
+            IMessageBox messageBox, 
+            IRewritingManager rewritingManager,
+            ISelectionProvider selectionProvider)
+        :base(rewritingManager, selectionProvider)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _messageBox = messageBox;

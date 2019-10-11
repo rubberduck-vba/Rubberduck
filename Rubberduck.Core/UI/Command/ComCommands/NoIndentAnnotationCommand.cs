@@ -11,18 +11,18 @@ namespace Rubberduck.UI.Command.ComCommands
     [ComVisible(false)]
     public class NoIndentAnnotationCommand : ComCommandBase
     {
-        private readonly ISelectedDeclarationService _selectedDeclarationService;
+        private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
         private readonly IAnnotationUpdater _annotationUpdater;
         private readonly IRewritingManager _rewritingManager;
 
         public NoIndentAnnotationCommand(
-            ISelectedDeclarationService selectedDeclarationService,
+            ISelectedDeclarationProvider selectedDeclarationProvider,
             IRewritingManager rewritingManager,
             IAnnotationUpdater annotationUpdater,
             IVbeEvents vbeEvents)
             : base(vbeEvents)
         {
-            _selectedDeclarationService = selectedDeclarationService;
+            _selectedDeclarationProvider = selectedDeclarationProvider;
             _rewritingManager = rewritingManager;
             _annotationUpdater = annotationUpdater;
 
@@ -57,7 +57,7 @@ namespace Rubberduck.UI.Command.ComCommands
                 return declaration;
             }
 
-            return _selectedDeclarationService.SelectedModule();
+            return _selectedDeclarationProvider.SelectedModule();
         }
     }
 }
