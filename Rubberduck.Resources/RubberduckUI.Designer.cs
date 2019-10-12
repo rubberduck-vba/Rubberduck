@@ -4355,7 +4355,7 @@ namespace Rubberduck.Resources {
         ///   Looks up a localized string similar to You are currently running Rubberduck version {0}.
         ///Good news! Version {1} ({2}) is now available.
         ///
-        ///To review the change log and upgrade Rubberduck, click &apos;Yes&apos;.
+        ///To review the change log and manually upgrade Rubberduck, click &apos;Yes&apos;.
         ///
         ///This dialog is showing because version checks are enabled. You can turn off this feature in Rubberduck &gt; Settings..
         /// </summary>

@@ -1049,7 +1049,7 @@ Would you like to import them to Rubberduck?</value>
     <value>You are currently running Rubberduck version {0}.
 Good news! Version {1} ({2}) is now available.
 
-To review the change log and upgrade Rubberduck, click 'Yes'.
+To review the change log and manually upgrade Rubberduck, click 'Yes'.
 
 This dialog is showing because version checks are enabled. You can turn off this feature in Rubberduck &gt; Settings.</value>
     <comment>{0}=local; {1}=latest; {2}=buildtype (release/pre-release)</comment>

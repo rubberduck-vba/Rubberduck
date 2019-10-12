@@ -978,7 +978,7 @@ End Sub</value>
     <value>Vous utilisez présentement la version {0}.
 Bonne nouvelle, la version {1} ({2}) est maintenant disponible!
 
-Cliquez 'Oui' pour lire les changements apportés et télécharger cette nouvelle version.
+Cliquez 'Oui' pour lire les changements apportés et télécharger manuellement cette nouvelle version.
 
 Ce message s'affiche parce que la vérification d'une nouvelle version au démarrage est activée.
 Vous pouvez désactiver cette fonctionnalité dans le menu Rubberduck &gt; Paramètres.</value>
