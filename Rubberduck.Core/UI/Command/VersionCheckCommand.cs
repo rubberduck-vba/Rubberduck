@@ -66,7 +66,10 @@ namespace Rubberduck.UI.Command
                 return;
             }
 
-            _process.Start("https://github.com/rubberduck-vba/Rubberduck/releases/latest");
+            var url = includePreRelease
+                ? "https://github.com/rubberduck-vba/Rubberduck/releases"
+                : "https://github.com/rubberduck-vba/Rubberduck/releases/latest";
+            _process.Start(url);
         }
     }
 }
