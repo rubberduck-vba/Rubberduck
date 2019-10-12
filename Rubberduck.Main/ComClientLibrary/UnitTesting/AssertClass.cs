@@ -308,6 +308,7 @@ namespace Rubberduck.UnitTesting
             if (equals ^ flattenedActual.SequenceEqual(flattenedExpected, comparer))
             {
                 AssertHandler.OnAssertFailed(message, methodName);
+                return;
             }
 
             AssertHandler.OnAssertSucceeded();
