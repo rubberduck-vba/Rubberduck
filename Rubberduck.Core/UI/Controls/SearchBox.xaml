@@ -24,7 +24,11 @@
                  Panel.ZIndex="2" 
                  VerticalContentAlignment="Center"
                  Width="Auto"
-                 Grid.Row="0" Grid.Column="0"/>
+                 Grid.Row="0" Grid.Column="0">
+            <TextBox.InputBindings>
+                <KeyBinding Command="{Binding Path=ClearSearchCommand}" Key="Esc"/>
+            </TextBox.InputBindings>
+        </TextBox>
         <!-- this is the actual hint container, it's BELOW the displaying control -->
         <TextBox Text="{Binding Path=Hint, ElementName=Root, Mode=OneWay}" 
                  Background="{Binding Path=Background, ElementName=Root}" 
@@ -44,6 +48,11 @@
                     </Style.Triggers>
                 </Style>
             </TextBox.Style>
+            <TextBox.InputBindings>
+                <KeyBinding Key="Esc"
+                Modifiers="Control" 
+                Command="{Binding ClearSearchCommand}" />
+            </TextBox.InputBindings>
         </TextBox>
         <Button Name="SearchButton"  Grid.Column="1" Command="{Binding ClearSearchCommand}" 
                 BorderBrush="{x:Static SystemColors.ControlLightBrush}"
