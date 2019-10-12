@@ -7,10 +7,10 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
+    [Category("EncapsulatePublicFieldInspection")]
     public class EncapsulatePublicFieldInspectionTests
     {
         [Test]
-        [Category("Inspections")]
         public void PublicField_ReturnsResult()
         {
             const string inputCode =
@@ -18,7 +18,6 @@ namespace RubberduckTests.Inspections
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-
                 var inspection = new EncapsulatePublicFieldInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
@@ -27,7 +26,21 @@ namespace RubberduckTests.Inspections
         }
 
         [Test]
-        [Category("Inspections")]
+        public void GlobalField_ReturnsResult()
+        {
+            const string inputCode =
+                @"Global fizz As Boolean";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new EncapsulatePublicFieldInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
         public void MultiplePublicFields_ReturnMultipleResult()
         {
             const string inputCode =
@@ -46,7 +59,6 @@ Public buzz As Integer, _
         }
 
         [Test]
-        [Category("Inspections")]
         public void PrivateField_DoesNotReturnResult()
         {
             const string inputCode =
@@ -54,7 +66,6 @@ Public buzz As Integer, _
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-
                 var inspection = new EncapsulatePublicFieldInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
@@ -63,7 +74,6 @@ Public buzz As Integer, _
         }
 
         [Test]
-        [Category("Inspections")]
         public void PublicNonField_DoesNotReturnResult()
         {
             const string inputCode =
@@ -72,7 +82,6 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-
                 var inspection = new EncapsulatePublicFieldInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
@@ -81,7 +90,6 @@ End Sub";
         }
 
         [Test]
-        [Category("Inspections")]
         public void PublicField_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
@@ -90,7 +98,6 @@ Public fizz As Boolean";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-
                 var inspection = new EncapsulatePublicFieldInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
@@ -99,7 +106,6 @@ Public fizz As Boolean";
         }
 
         [Test]
-        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "EncapsulatePublicFieldInspection";
