@@ -21,8 +21,7 @@ namespace RubberduckTests.Inspections
 End Sub
 ";
             var modules = new(string, string, ComponentType)[] { ("Class1", inputCode, ComponentType.ClassModule) };
-            var libraries = new string[] { "Excel" };
-            Assert.AreEqual(1, InspectionResultsForModules(modules, libraries).Count());
+            Assert.AreEqual(1, InspectionResultsForModules(modules, "Excel").Count());
         }
 
         [Test]
@@ -39,8 +38,7 @@ End Sub
 ";
 
             var modules = new(string, string, ComponentType)[] { ("Class1", inputCode, ComponentType.ClassModule) };
-            var libraries = new string[] { "Excel" };
-            Assert.AreEqual(0, InspectionResultsForModules(modules, libraries).Count());
+            Assert.AreEqual(0, InspectionResultsForModules(modules, "Excel").Count());
         }
 
         [Test]
