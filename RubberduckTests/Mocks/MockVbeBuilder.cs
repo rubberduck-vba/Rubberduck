@@ -56,7 +56,8 @@ namespace RubberduckTests.Mocks
 
         private static readonly Dictionary<string, Action<MockProjectBuilder>> addLibraryRefActions = new Dictionary<string, Action<MockProjectBuilder>>
         {
-            ["Excel"] = (MockProjectBuilder builder) => builder.AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
+            ["Excel"] = (MockProjectBuilder builder) => builder.AddReference("Excel", LibraryPathMsExcel, 1, 8, true),
+            ["VBA"] = (MockProjectBuilder builder) => builder.AddReference("VBA", LibraryPathVBA, 4, 2, true)
         };
 
         //private Mock<IWindows> _vbWindows;
