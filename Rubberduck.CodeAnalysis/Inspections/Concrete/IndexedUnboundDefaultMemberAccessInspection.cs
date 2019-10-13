@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections.Concrete
     /// An indexed default member access hides away the actually called member. This is especially problematic if the default member cannot be determined from the declared type of the object.
     /// Should there not be a suitable default member at runtime, an error 438 'Object doesn't support this property or method' will be raised.
     /// </why>
-    /// <example hasResult="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal rst As Object)
     ///     Dim bar As Variant
@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResult="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal rst As Object)
     ///     Dim bar As Variant

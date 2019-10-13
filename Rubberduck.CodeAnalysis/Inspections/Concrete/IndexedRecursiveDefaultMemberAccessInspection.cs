@@ -14,7 +14,7 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// An indexed default member access hides away the actually called member. This is especially problematic if the corresponding parameterized default member is not on the interface of the object itself.
     /// </why>
-    /// <example hasResult="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal rst As ADODB.Recordset)
     ///     Dim bar As Variant
@@ -22,7 +22,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResult="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal rst As ADODB.Recordset)
     ///     Dim bar As Variant

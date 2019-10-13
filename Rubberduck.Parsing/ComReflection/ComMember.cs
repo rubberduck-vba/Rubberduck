@@ -27,9 +27,7 @@ namespace Rubberduck.Parsing.ComReflection
 
     [DataContract]
     [KnownType(typeof(ComBase))]
-#if DEBUG
     [DebuggerDisplay("{" + nameof(MemberDeclaration) + "}")]
-#endif
     public class ComMember : ComBase
     {
         [DataMember(IsRequired = true)]
@@ -143,8 +141,7 @@ namespace Rubberduck.Parsing.ComReflection
                 Parameters.Last().IsParamArray = true;
             }
         }
-#if DEBUG
-        // ReSharper disable once UnusedMember.Local
+
         private string MemberDeclaration
         {
             get
@@ -174,6 +171,5 @@ namespace Rubberduck.Parsing.ComReflection
                 return $"{(IsHidden || IsRestricted ? "Private" : "Public")} {type} {Name}{(AsTypeName == null ? string.Empty : $" As {AsTypeName.TypeName}")}";
             }
         }
-#endif
     }
 }

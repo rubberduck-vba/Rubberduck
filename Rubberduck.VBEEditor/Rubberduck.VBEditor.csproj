@@ -10,6 +10,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants></DefineConstants>
+    <NoWarn>1701;1702;;4011;1001;7035;1053;1591</NoWarn>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
   <ItemGroup>

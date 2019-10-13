@@ -565,12 +565,19 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-#if DEBUG
+            DebugParserState(state, stateCounts);
+            
+            return result;
+        }
+
+        [Conditional("DEBUG")]
+        private static void DebugParserState(ParserState state, int[] stateCounts)
+        {
             if (state == ParserState.Ready)
             {
                 for (var i = 0; i < stateCounts.Length; i++)
                 {
-                    if (i == (int)ParserState.Ready || i == (int)ParserState.None)
+                    if (i == (int) ParserState.Ready || i == (int) ParserState.None)
                     {
                         continue;
                     }
@@ -581,9 +588,6 @@ namespace Rubberduck.Parsing.VBA
                     }
                 }
             }
-#endif
-            
-            return result;
         }
 
         public ParserState GetOrCreateModuleState(QualifiedModuleName module)

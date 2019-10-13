@@ -128,7 +128,12 @@
                               IsChecked="{Binding ShowSplashAtStartup}" />
 
                     <CheckBox Margin="5,0,0,5" Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GeneralSettings_CheckVersion}"
-                              IsChecked="{Binding CheckVersionAtStartup}" />
+                              IsChecked="{Binding CheckVersionAtStartup}"
+                              x:Name="IsVersionCheckEnabled"/>
+                    <CheckBox Margin="15,0,0,5" Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GeneralSettings_IncludePreRelease}"
+                              IsChecked="{Binding IncludePreRelease}"
+                              IsEnabled="{Binding IsChecked, ElementName=IsVersionCheckEnabled}"/>
+                    
                     <CheckBox Margin="5,0,0,5" Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GeneralSettings_CompileBeforeParse}"
                               IsChecked="{Binding CompileBeforeParse}" />
                     <CheckBox Margin="5,0,0,5" Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GeneralSettings_SetDpiUnaware}"

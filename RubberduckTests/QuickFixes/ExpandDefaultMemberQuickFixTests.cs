@@ -88,7 +88,7 @@ End Function
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
-            var actualModuleCode = ApplyQuickFixToFirstInspectionResult(vbe.Object, "Module1", state => new ObjectWhereProcedureIsRequiredInspection(state), CodeKind.AttributesCode);
+            var actualModuleCode = ApplyQuickFixToFirstInspectionResult(vbe.Object, "Module1", state => new ObjectWhereProcedureIsRequiredInspection(state));
             Assert.AreEqual(expectedModuleCode, actualModuleCode);
         }
 
@@ -128,7 +128,7 @@ End Function
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
-            var actualModuleCode = ApplyQuickFixToFirstInspectionResult(vbe.Object, "Module1", state => new ObjectWhereProcedureIsRequiredInspection(state), CodeKind.AttributesCode);
+            var actualModuleCode = ApplyQuickFixToFirstInspectionResult(vbe.Object, "Module1", state => new ObjectWhereProcedureIsRequiredInspection(state));
             Assert.AreEqual(expectedModuleCode, actualModuleCode);
         }
 
@@ -168,7 +168,7 @@ End Function
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
-            var actualModuleCode = ApplyQuickFixToFirstInspectionResult(vbe.Object, "Module1", state => new ObjectWhereProcedureIsRequiredInspection(state), CodeKind.AttributesCode);
+            var actualModuleCode = ApplyQuickFixToFirstInspectionResult(vbe.Object, "Module1", state => new ObjectWhereProcedureIsRequiredInspection(state));
             Assert.AreEqual(expectedModuleCode, actualModuleCode);
         }
 
@@ -207,7 +207,7 @@ End Function
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
-            var actualModuleCode = ApplyQuickFixToAllInspectionResults(vbe.Object, "Module1", state => new IndexedDefaultMemberAccessInspection(state), CodeKind.AttributesCode);
+            var actualModuleCode = ApplyQuickFixToAllInspectionResults(vbe.Object, "Module1", state => new IndexedDefaultMemberAccessInspection(state));
             Assert.AreEqual(expectedModuleCode, actualModuleCode);
         }
 
@@ -246,7 +246,7 @@ End Function
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
-            var actualModuleCode = ApplyQuickFixToAllInspectionResults(vbe.Object, "Module1", state => new IndexedRecursiveDefaultMemberAccessInspection(state), CodeKind.AttributesCode);
+            var actualModuleCode = ApplyQuickFixToAllInspectionResults(vbe.Object, "Module1", state => new IndexedRecursiveDefaultMemberAccessInspection(state));
             Assert.AreEqual(expectedModuleCode, actualModuleCode);
         }
 
@@ -285,7 +285,7 @@ End Function
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
-            var actualModuleCode = ApplyQuickFixToAllInspectionResults(vbe.Object, "Module1", state => new IndexedDefaultMemberAccessInspection(state), CodeKind.AttributesCode);
+            var actualModuleCode = ApplyQuickFixToAllInspectionResults(vbe.Object, "Module1", state => new IndexedDefaultMemberAccessInspection(state));
             Assert.AreEqual(expectedModuleCode, actualModuleCode);
         }
 
@@ -324,7 +324,7 @@ End Function
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
-            var actualModuleCode = ApplyQuickFixToAllInspectionResults(vbe.Object, "Module1", state => new IndexedRecursiveDefaultMemberAccessInspection(state), CodeKind.AttributesCode);
+            var actualModuleCode = ApplyQuickFixToAllInspectionResults(vbe.Object, "Module1", state => new IndexedRecursiveDefaultMemberAccessInspection(state));
             Assert.AreEqual(expectedModuleCode, actualModuleCode);
         }
 
@@ -370,7 +370,7 @@ End Function
                 ("Class3", class3Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
-            var actualModuleCode = ApplyQuickFixToAllInspectionResults(vbe.Object, "Module1", state => new IndexedDefaultMemberAccessInspection(state), CodeKind.AttributesCode);
+            var actualModuleCode = ApplyQuickFixToAllInspectionResults(vbe.Object, "Module1", state => new IndexedDefaultMemberAccessInspection(state));
             Assert.AreEqual(expectedModuleCode, actualModuleCode);
         }
 
@@ -416,7 +416,7 @@ End Function
                 ("Class3", class3Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
-            var actualModuleCode = ApplyQuickFixToAllInspectionResults(vbe.Object, "Module1", state => new IndexedRecursiveDefaultMemberAccessInspection(state), CodeKind.AttributesCode);
+            var actualModuleCode = ApplyQuickFixToAllInspectionResults(vbe.Object, "Module1", state => new IndexedRecursiveDefaultMemberAccessInspection(state));
             Assert.AreEqual(expectedModuleCode, actualModuleCode);
         }
 
@@ -452,7 +452,7 @@ End Function
                 ("Class1", class1Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
-            var actualModuleCode = ApplyQuickFixToAllInspectionResults(vbe.Object, "Module1", state => new ImplicitDefaultMemberAccessInspection(state), CodeKind.AttributesCode);
+            var actualModuleCode = ApplyQuickFixToAllInspectionResults(vbe.Object, "Module1", state => new ImplicitDefaultMemberAccessInspection(state));
             Assert.AreEqual(expectedModuleCode, actualModuleCode);
         }
 
@@ -495,7 +495,7 @@ End Function
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
-            var actualModuleCode = ApplyQuickFixToAllInspectionResults(vbe.Object, "Module1", state => new ImplicitRecursiveDefaultMemberAccessInspection(state), CodeKind.AttributesCode);
+            var actualModuleCode = ApplyQuickFixToAllInspectionResults(vbe.Object, "Module1", state => new ImplicitRecursiveDefaultMemberAccessInspection(state));
             Assert.AreEqual(expectedModuleCode, actualModuleCode);
         }
 
@@ -538,7 +538,7 @@ End Function
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
-            var actualModuleCode = ApplyQuickFixToAllInspectionResults(vbe.Object, "Module1", state => new ImplicitDefaultMemberAccessInspection(state), CodeKind.AttributesCode);
+            var actualModuleCode = ApplyQuickFixToAllInspectionResults(vbe.Object, "Module1", state => new ImplicitDefaultMemberAccessInspection(state));
             Assert.AreEqual(expectedModuleCode, actualModuleCode);
         }
 
@@ -595,7 +595,52 @@ End Function
                 ("Class4", class4Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
-            var actualModuleCode = ApplyQuickFixToAllInspectionResults(vbe.Object, "Module1", state => new ImplicitRecursiveDefaultMemberAccessInspection(state), CodeKind.AttributesCode);
+            var actualModuleCode = ApplyQuickFixToAllInspectionResults(vbe.Object, "Module1", state => new ImplicitRecursiveDefaultMemberAccessInspection(state));
+            Assert.AreEqual(expectedModuleCode, actualModuleCode);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void BothSidesOfAssignmentHaveDefaultMemberAccess_NoExplicitLet_QuickFixWorks()
+        {
+            var class1Code = @"
+Public Function Foo() As Long
+Attribute Foo.VB_UserMemId = 0
+End Function
+";
+
+            var class2Code = @"
+Public Property Let Baz(RHS As Long)
+Attribute Baz.VB_UserMemId = 0
+End Property
+";
+
+            var moduleCode = $@"
+Private Sub Bar() 
+    Dim cls1 As Class1
+    Dim cls2 As Class2
+    Set cls1 = New Class1
+    Set cls2 = New Class2
+    cls2 = cls1
+End Sub
+";
+
+            var expectedModuleCode = $@"
+Private Sub Bar() 
+    Dim cls1 As Class1
+    Dim cls2 As Class2
+    Set cls1 = New Class1
+    Set cls2 = New Class2
+    cls2.Baz = cls1.Foo
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Class2", class2Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var actualModuleCode = ApplyQuickFixToAllInspectionResults(vbe.Object, "Module1", state => new SuspiciousLetAssignmentInspection(state));
             Assert.AreEqual(expectedModuleCode, actualModuleCode);
         }
 
