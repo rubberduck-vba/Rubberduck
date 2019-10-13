@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using NLog;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -24,15 +25,26 @@ namespace Rubberduck.Inspections.Abstract
         {
             if (!inspections.All(s => s.GetInterfaces().Any(a => a == typeof(IInspection))))
             {
-#if DEBUG
-                throw new ArgumentException($"Parameters must implement {nameof(IInspection)}", nameof(inspections));
-#else
+                var dieNow = false;
+                MustThrowException(ref dieNow);
+                if (dieNow)
+                {
+                    throw new ArgumentException($"Parameters must implement {nameof(IInspection)}",
+                        nameof(inspections));
+                }
+
                 inspections.Where(s => s.GetInterfaces().All(i => i != typeof(IInspection))).ToList()
                     .ForEach(i => Logger.Error($"Type {i.Name} does not implement {nameof(IInspection)}"));
-#endif
             }
 
             _supportedInspections = inspections.ToHashSet();
+        }
+
+        // ReSharper disable once RedundantAssignment : conditional must be void but we can use ref
+        [Conditional("DEBUG")] 
+        private static void MustThrowException(ref bool dieNow)
+        {
+            dieNow = true;
         }
 
         public void RemoveInspections(params Type[] inspections)

@@ -119,9 +119,9 @@ namespace Rubberduck.Parsing.VBA
                 const string errorMessage =
                     "A suspension action was attempted while a read lock was held. This indicates a bug in the code logic as suspension should not be requested from same thread that has a read lock.";
                 Logger.Error(errorMessage);
-#if DEBUG
+
                 Debug.Assert(false, errorMessage);
-#endif
+
                 return;
             }
 
@@ -239,13 +239,10 @@ namespace Rubberduck.Parsing.VBA
             _parserStateManager.SetStatusAndFireStateChanged(this, ParserState.LoadingReference, token);
             token.ThrowIfCancellationRequested();
 
-            //TODO: Remove the conditional compilation after loading from typelibs actually works.
-#if LOAD_USER_COM_PROJECTS
             RefreshUserComProjects(toParse, newProjectIds);
             token.ThrowIfCancellationRequested();
 
             SyncDeclarationsFromUserComProjects(toParse, token, toReresolveReferences);
-#endif
 
             SyncComReferences(toParse, token, toReresolveReferences);
             token.ThrowIfCancellationRequested();
