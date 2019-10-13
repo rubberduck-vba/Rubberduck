@@ -106,6 +106,13 @@ namespace Rubberduck.Parsing.VBA
 
         private static Declaration SelectedDeclarationViaDeclaration(QualifiedSelection qualifiedSelection, DeclarationFinder finder)
         {
+            //There cannot be the identifier of a reference at this selection, but the module itself has this selection.
+            //Resolving to the module would skip several valid alternatives.
+            if (qualifiedSelection.Selection.Equals(Selection.Home))
+            {
+                return null;
+            }
+
             var declarationsInModule = finder.Members(qualifiedSelection.QualifiedName);
             return declarationsInModule
                 .Where(declaration => declaration.IsSelected(qualifiedSelection))

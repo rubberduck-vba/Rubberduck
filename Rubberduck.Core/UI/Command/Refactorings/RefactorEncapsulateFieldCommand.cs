@@ -32,14 +32,20 @@ namespace Rubberduck.UI.Command.Refactorings
             var target = GetTarget();
 
             return target != null
-                && target.DeclarationType == DeclarationType.Variable
-                && !target.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member)
                 && !_state.IsNewOrModified(target.QualifiedModuleName);
         }
 
         private Declaration GetTarget()
         {
-            return _selectedDeclarationProvider.SelectedDeclaration();
+            var selectedDeclaration = _selectedDeclarationProvider.SelectedDeclaration();
+            if (selectedDeclaration == null
+                || selectedDeclaration.DeclarationType != DeclarationType.Variable
+                || selectedDeclaration.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member))
+            {
+                return null;
+            }
+
+            return selectedDeclaration;
         }
     }
 }

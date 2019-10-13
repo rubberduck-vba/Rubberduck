@@ -588,6 +588,29 @@ End Sub";
 
         [Category("Resolver")]
         [Test]
+        public void SelectionInsideVariableDeclarationAtStartOfModule_VariableSelected()
+        {
+            const string code = @"Private myModuleVariable As Long
+
+
+Public Sub DoIt()
+    Dim myLocalVariable As Long
+
+    myModuleVariable = myLocalVariable
+End Sub";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(1, 1))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            var (expected, actual) = DeclarationsFromParse(vbe.Object, DeclarationType.Variable, "myModuleVariable");
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Category("Resolver")]
+        [Test]
         public void SelectionInsideModuleBodyElementAndOnNothingElse_ModuleBodyElementSelected()
         {
             const string code = @"
@@ -666,6 +689,32 @@ End Sub";
 
         [Category("Resolver")]
         [Test]
+        public void SelectionInsideModuleBodyElementAroundVariableDeclarationButNotContainedInIt_ContainingModuleBodyElementSelected()
+        {
+            const string code = @"
+Private Const myConst As Long = 42
+
+Private myModuleVariable As Long
+
+
+Public Sub DoIt()
+    Dim myLocalVariable As Long
+      
+    myModuleVariable = myLocalVariable
+End Sub";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(8, 1, 8, 32))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            var (expected, actual) = DeclarationsFromParse(vbe.Object, DeclarationType.Procedure, "DoIt");
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Category("Resolver")]
+        [Test]
         public void SelectionOutsideModuleBodyElementAndOnNothingElse_ModuleSelected()
         {
             const string code = @"
@@ -734,6 +783,32 @@ End Sub";
             var vbe = new MockVbeBuilder()
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(2, 2))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            var (expected, actual) = DeclarationsFromParse(vbe.Object, DeclarationType.ProceduralModule, "TestModule");
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Category("Resolver")]
+        [Test]
+        public void SelectionAroundMemberButNotContained_ModuleSelected()
+        {
+            const string code = @"
+Private Const myConst As Long = 42
+
+Private myModuleVariable As Long
+
+
+Public Sub DoIt()
+    Dim myLocalVariable As Long
+      
+    myModuleVariable = myLocalVariable
+End Sub";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(6, 1, 11,8))
                 .AddProjectToVbeBuilder()
                 .Build();
 

@@ -17,6 +17,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
     public class EncapsulateFieldRefactoring : InteractiveRefactoringBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
         private readonly IIndenter _indenter;
         
         public EncapsulateFieldRefactoring(
@@ -24,18 +25,26 @@ namespace Rubberduck.Refactorings.EncapsulateField
             IIndenter indenter, 
             IRefactoringPresenterFactory factory, 
             IRewritingManager rewritingManager,
-            ISelectionProvider selectionProvider)
+            ISelectionProvider selectionProvider,
+            ISelectedDeclarationProvider selectedDeclarationProvider)
         :base(rewritingManager, selectionProvider, factory)
         {
             _declarationFinderProvider = declarationFinderProvider;
+            _selectedDeclarationProvider = selectedDeclarationProvider;
             _indenter = indenter;
         }
 
         protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
         {
-            return _declarationFinderProvider.DeclarationFinder
-                .UserDeclarations(DeclarationType.Variable)
-                .FindVariable(targetSelection);
+            var selectedDeclaration = _selectedDeclarationProvider.SelectedDeclaration(targetSelection);
+            if (selectedDeclaration == null
+                || selectedDeclaration.DeclarationType != DeclarationType.Variable
+                || selectedDeclaration.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member))
+            {
+                return null;
+            }
+
+            return selectedDeclaration;
         }
 
         protected override EncapsulateFieldModel InitializeModel(Declaration target)

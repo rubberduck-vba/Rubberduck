@@ -32,14 +32,21 @@ namespace Rubberduck.UI.Command.Refactorings
 
             return target != null
                    && !_state.IsNewOrModified(target.QualifiedModuleName)
-                   && (target.DeclarationType == DeclarationType.Variable
-                       || target.DeclarationType == DeclarationType.Constant)
                    && target.References.Any();
         }
 
         private Declaration GetTarget()
         {
-            return _selectedDeclarationProvider.SelectedDeclaration();
+            var selectedDeclaration = _selectedDeclarationProvider.SelectedDeclaration();
+            if (selectedDeclaration == null
+                || (selectedDeclaration.DeclarationType != DeclarationType.Variable
+                    && selectedDeclaration.DeclarationType != DeclarationType.Constant)
+                || !selectedDeclaration.References.Any())
+            {
+                return null;
+            }
+
+            return selectedDeclaration;
         }
     }
 }

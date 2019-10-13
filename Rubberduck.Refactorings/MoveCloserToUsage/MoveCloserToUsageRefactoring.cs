@@ -16,21 +16,30 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
     public class MoveCloserToUsageRefactoring : RefactoringBase
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
 
         public MoveCloserToUsageRefactoring(
             IDeclarationFinderProvider declarationFinderProvider, 
             IRewritingManager rewritingManager,
-            ISelectionProvider selectionProvider)
+            ISelectionProvider selectionProvider,
+            ISelectedDeclarationProvider selectedDeclarationProvider)
         :base(rewritingManager, selectionProvider)
         {
             _declarationFinderProvider = declarationFinderProvider;
+            _selectedDeclarationProvider = selectedDeclarationProvider;
         }
 
         protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
         {
-            return _declarationFinderProvider.DeclarationFinder
-                .UserDeclarations(DeclarationType.Variable)
-                .FindVariable(targetSelection);
+            var selectedDeclaration = _selectedDeclarationProvider.SelectedDeclaration(targetSelection);
+            if (selectedDeclaration == null
+                || (selectedDeclaration.DeclarationType != DeclarationType.Variable
+                    && selectedDeclaration.DeclarationType != DeclarationType.Constant))
+            {
+                return null;
+            }
+
+            return selectedDeclaration;
         }
 
         public override void Refactor(Declaration target)
