@@ -184,6 +184,26 @@ End Function
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
+        [Test]
+        [Category("Inspections")]
+        public void JaggedArray_NoResult()
+        {
+            var moduleCode = @"
+Private Function Foo() As Variant 
+    Dim outerArray() As Variant
+    Dim firstInnerArray() As Variant
+    Dim secondInnerArray() As Variant
+    outerArray = Array(firstInnerArray, secondInnerArray)
+    Foo = outerArray(0)(0)
+End Function
+";
+
+            var inspectionResults = InspectionResultsForStandardModule(moduleCode);
+
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
             return new IndexedUnboundDefaultMemberAccessInspection(state);
