@@ -1,22 +1,21 @@
 ﻿using System.Linq;
-using System.Threading;
 using NUnit.Framework;
-using RubberduckTests.Mocks;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class EmptyWhileWendBlockInspectionTests
+    public class EmptyWhileWendBlockInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
         public void EmptyWhileWendBlock_InspectionName()
         {
-            const string expectedName = nameof(EmptyWhileWendBlockInspection);
             var inspection = new EmptyWhileWendBlockInspection(null);
 
-            Assert.AreEqual(expectedName, inspection.Name);
+            Assert.AreEqual(nameof(EmptyWhileWendBlockInspection), inspection.Name);
         }
 
         [Test]
@@ -34,7 +33,7 @@ namespace RubberduckTests.Inspections
         LTotal = LTotal + 1
     Wend
 End Sub";
-            CheckActualEmptyBlockCountEqualsExpected(inputCode, 0);
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -52,21 +51,12 @@ End Sub";
         'LTotal = LTotal + 1
     Wend
 End Sub";
-            CheckActualEmptyBlockCountEqualsExpected(inputCode, 1);
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
-        private void CheckActualEmptyBlockCountEqualsExpected(string inputCode, int expectedCount)
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new EmptyWhileWendBlockInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(expectedCount, actualResults.Count());
-            }
+            return new EmptyWhileWendBlockInspection(state);
         }
     }
 }
