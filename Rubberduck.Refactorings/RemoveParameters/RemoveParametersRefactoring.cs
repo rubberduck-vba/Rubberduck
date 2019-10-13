@@ -16,22 +16,31 @@ namespace Rubberduck.Refactorings.RemoveParameters
     public class RemoveParametersRefactoring : InteractiveRefactoringBase<IRemoveParametersPresenter, RemoveParametersModel>
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
 
         public RemoveParametersRefactoring(
             IDeclarationFinderProvider declarationFinderProvider, 
             IRefactoringPresenterFactory factory, 
             IRewritingManager rewritingManager,
-            ISelectionProvider selectionProvider)
+            ISelectionProvider selectionProvider,
+            ISelectedDeclarationProvider selectedDeclarationProvider)
         :base(rewritingManager, selectionProvider, factory)
         {
             _declarationFinderProvider = declarationFinderProvider;
+            _selectedDeclarationProvider = selectedDeclarationProvider;
         }
 
         protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
         {
-            return _declarationFinderProvider.DeclarationFinder
-                .AllUserDeclarations
-                .FindTarget(targetSelection, ValidDeclarationTypes);
+            var selectedDeclaration = _selectedDeclarationProvider.SelectedDeclaration(targetSelection);
+            if (!ValidDeclarationTypes.Contains(selectedDeclaration.DeclarationType))
+            {
+                return selectedDeclaration.DeclarationType == DeclarationType.Parameter
+                    ? _selectedDeclarationProvider.SelectedMember(targetSelection)
+                    : null;
+            }
+
+            return selectedDeclaration;
         }
 
         protected override RemoveParametersModel InitializeModel(Declaration target)

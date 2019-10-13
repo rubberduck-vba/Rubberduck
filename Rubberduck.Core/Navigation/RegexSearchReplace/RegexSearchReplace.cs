@@ -6,6 +6,7 @@ using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -16,14 +17,16 @@ namespace Rubberduck.Navigation.RegexSearchReplace
     public class RegexSearchReplace : IRegexSearchReplace
     {
         private readonly IVBE _vbe;
-        private readonly IParseCoordinator _parser;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly ISelectionService _selectionService;
+        private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
 
-        public RegexSearchReplace(IVBE vbe, IParseCoordinator parser, ISelectionService selectionService)
+        public RegexSearchReplace(IVBE vbe, IDeclarationFinderProvider declarationFinderProvider, ISelectionService selectionService, ISelectedDeclarationProvider selectedDeclarationProvider)
         {
             _vbe = vbe;
-            _parser = parser;
+            _declarationFinderProvider = declarationFinderProvider;
             _selectionService = selectionService;
+            _selectedDeclarationProvider = selectedDeclarationProvider;
             _search = new Dictionary<RegexSearchReplaceScope, Func<string, IEnumerable<RegexSearchResult>>>
             {
                 { RegexSearchReplaceScope.Selection, SearchSelection},
@@ -125,7 +128,6 @@ namespace Rubberduck.Navigation.RegexSearchReplace
                         DeclarationType.PropertySet
                     };
 
-            var state = _parser.State;
             using (var pane = _vbe.ActiveCodePane)
             {
                 if (pane == null || pane.IsWrappingNullReference)
@@ -144,7 +146,8 @@ namespace Rubberduck.Navigation.RegexSearchReplace
                         return new List<RegexSearchResult>();
                     }
 
-                    var block = (ParserRuleContext)state.AllDeclarations
+                    var block = (ParserRuleContext)_declarationFinderProvider.DeclarationFinder
+                        .AllDeclarations
                         .FindTarget(qualifiedSelection.Value, declarationTypes)
                         .Context
                         .Parent;

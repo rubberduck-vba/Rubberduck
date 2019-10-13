@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Runtime.InteropServices;
-using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.RemoveParameters;
@@ -13,15 +12,18 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorRemoveParametersCommand : RefactorCodePaneCommandBase
     {
         private readonly RubberduckParserState _state;
+        private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
 
         public RefactorRemoveParametersCommand(
             RemoveParametersRefactoring refactoring, 
             RemoveParameterFailedNotifier removeParameterFailedNotifier, 
             RubberduckParserState state,
-            ISelectionProvider selectionProvider) 
+            ISelectionProvider selectionProvider,
+            ISelectedDeclarationProvider selectedDeclarationProvider) 
             : base (refactoring, removeParameterFailedNotifier, selectionProvider, state)
         {
             _state = state;
+            _selectedDeclarationProvider = selectedDeclarationProvider;
 
             AddToCanExecuteEvaluation(SpecializedEvaluateCanExecute);
         }
@@ -34,24 +36,34 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var member = _state.DeclarationFinder.AllUserDeclarations.FindTarget(activeSelection.Value, ValidDeclarationTypes);
-            if (member == null)
+            var member = GetTarget();
+            if (member == null || _state.IsNewOrModified(member.QualifiedModuleName))
             {
                 return false;
             }
 
-            if (_state.IsNewOrModified(member.QualifiedModuleName))
-            {
-                return false;
-            }
-
-            var parameters = _state.DeclarationFinder.UserDeclarations(DeclarationType.Parameter)
+            var parameters = _state.DeclarationFinder
+                .UserDeclarations(DeclarationType.Parameter)
                 .Where(item => member.Equals(item.ParentScopeDeclaration))
                 .ToList();
+
             return member.DeclarationType == DeclarationType.PropertyLet
                    || member.DeclarationType == DeclarationType.PropertySet
                 ? parameters.Count > 1
                 : parameters.Any();
+        }
+
+        private Declaration GetTarget()
+        {
+            var selectedDeclaration = _selectedDeclarationProvider.SelectedDeclaration();
+            if (!ValidDeclarationTypes.Contains(selectedDeclaration.DeclarationType))
+            {
+                return selectedDeclaration.DeclarationType == DeclarationType.Parameter
+                    ? _selectedDeclarationProvider.SelectedMember()
+                    : null;
+            }
+
+            return selectedDeclaration;
         }
 
         private static readonly DeclarationType[] ValidDeclarationTypes =
