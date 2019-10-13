@@ -1,140 +1,38 @@
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using RubberduckTests.Mocks;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class ImplicitPublicMemberInspectionTests
+    public class ImplicitPublicMemberInspectionTests : InspectionTestsBase
     {
-        [Test]
+        [TestCase("Sub Foo()\r\nEnd Sub", 1)]
+        [TestCase("Function Foo() As Boolean\r\nEnd Function", 1)]
+        [TestCase("Sub Foo()\r\nEnd Sub\r\n\r\nSub Goo()\r\nEnd Sub", 2)]
+        [TestCase("Private Sub Foo()\r\nEnd Sub\r\n\r\nSub Goo()\r\nEnd Sub", 1)]
+        [TestCase("Private Sub Foo()\r\nEnd Sub", 0)]
+        [TestCase("'@Ignore ImplicitPublicMember\r\nSub Foo()\r\nEnd Sub", 0)]
         [Category("Inspections")]
-        public void ImplicitPublicMember_ReturnsResult_Sub()
+        public void ImplicitPublicMember_Various(string inputCode, int expectedCount)
         {
-            const string inputCode = @"
-Sub Foo()
-End Sub
-";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ImplicitPublicMemberInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ImplicitPublicMember_ReturnsResult_Function()
-        {
-            const string inputCode =
-                @"Function Foo() As Boolean
-    Foo = True
-End Function";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ImplicitPublicMemberInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ImplicitPublicMember_ReturnsResult_MultipleSubs()
-        {
-            const string inputCode =
-                @"Sub Foo()
-End Sub
-
-Sub Goo()
-End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ImplicitPublicMemberInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(2, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ImplicitPublicMember_DoesNotReturnResult()
-        {
-            const string inputCode =
-                @"Private Sub Foo()
-End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ImplicitPublicMemberInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ImplicitPublicMember_Ignored_DoesNotReturnResult_Sub()
-        {
-            const string inputCode = @"
-'@Ignore ImplicitPublicMember
-Sub Foo()
-End Sub
-";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ImplicitPublicMemberInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ImplicitPublicMember_ReturnsResult_SomeImplicitlyPublicSubs()
-        {
-            const string inputCode =
-                @"Private Sub Foo()
-End Sub
-
-Sub Goo()
-End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ImplicitPublicMemberInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(expectedCount, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
         [Category("Inspections")]
         public void InspectionName()
         {
-            const string inspectionName = "ImplicitPublicMemberInspection";
             var inspection = new ImplicitPublicMemberInspection(null);
 
-            Assert.AreEqual(inspectionName, inspection.Name);
+            Assert.AreEqual(nameof(ImplicitPublicMemberInspection), inspection.Name);
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new ImplicitPublicMemberInspection(state);
         }
     }
 }
