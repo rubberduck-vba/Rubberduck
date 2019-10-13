@@ -33,7 +33,13 @@ namespace RubberduckTests.Inspections
 
         public IEnumerable<IInspectionResult> InspectionResultsForModules(IEnumerable<(string name, string content, ComponentType componentType)> modules, IEnumerable<string> libraries)
         {
-             var vbe = MockVbeBuilder.BuildFromModules(modules, libraries).Object;
+            var vbe = MockVbeBuilder.BuildFromModules(modules, libraries).Object;
+            return InspectionResults(vbe);
+        }
+
+        public IEnumerable<IInspectionResult> InspectionResultsForModules(IEnumerable<(string name, string content, ComponentType componentType)> modules, string library)
+        {
+            var vbe = MockVbeBuilder.BuildFromModules(modules, library).Object;
             return InspectionResults(vbe);
         }
 
