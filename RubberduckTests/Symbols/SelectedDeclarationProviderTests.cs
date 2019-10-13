@@ -532,7 +532,217 @@ End Sub";
             Assert.AreEqual(expected, actual);
         }
 
-        private (Declaration specifiedDeclaration, Declaration selectedDeclaration) DeclarationsFromParse(
+        [Category("Resolver")]
+        [Test]
+        public void SelectionInsideConstantDeclaration_ConstantSelected()
+        {
+            const string code = @"
+Private Const myConst As Long = 42
+
+Private myModuleVariable As Long
+
+
+Public Sub DoIt()
+    Dim myLocalVariable As Long
+
+    myModuleVariable = myLocalVariable
+End Sub";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(2, 2))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            var (expected, actual) = DeclarationsFromParse(vbe.Object, DeclarationType.Constant, "myConst");
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Category("Resolver")]
+        [Test]
+        [TestCase(4, 2, "myModuleVariable")]
+        [TestCase(8, 6, "myLocalVariable")]
+        public void SelectionInsideVariableDeclaration_VariableSelected(int selectedLine, int selectedColumn, string expectedVariableName)
+        {
+            const string code = @"
+Private Const myConst As Long = 42
+
+Private myModuleVariable As Long
+
+
+Public Sub DoIt()
+    Dim myLocalVariable As Long
+
+    myModuleVariable = myLocalVariable
+End Sub";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(selectedLine, selectedColumn))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            var (expected, actual) = DeclarationsFromParse(vbe.Object, DeclarationType.Variable, expectedVariableName);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Category("Resolver")]
+        [Test]
+        public void SelectionInsideModuleBodyElementAndOnNothingElse_ModuleBodyElementSelected()
+        {
+            const string code = @"
+Private Const myConst As Long = 42
+
+Private myModuleVariable As Long
+
+
+Public Sub DoIt()
+    Dim myLocalVariable As Long
+      
+    myModuleVariable = myLocalVariable
+End Sub";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(9, 5))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            var (expected, actual) = DeclarationsFromParse(vbe.Object, DeclarationType.Procedure, "DoIt");
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Category("Resolver")]
+        [Test]
+        public void SelectionInsideVariableDeclaringReDimButNotOnIdentifier_ContainingModuleBodyElementSelected()
+        {
+            const string code = @"
+Private Const myConst As Long = 42
+
+Private myModuleVariable As Long
+
+
+Public Sub DoIt()
+    ReDim arr(23 To 42) As Long
+      
+    myModuleVariable = arr(33)
+End Sub";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(8, 7))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            var (expected, actual) = DeclarationsFromParse(vbe.Object, DeclarationType.Procedure, "DoIt");
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Category("Resolver")]
+        [Test]
+        public void SelectionInsideVariableDeclarationStatementForMultipleLocalVariables_ContainingModuleBodyElementSelected()
+        {
+            const string code = @"
+Private Const myConst As Long = 42
+
+Private myModuleVariable As Long
+
+
+Public Sub DoIt()
+    Dim myLocalVariable As Long, myOtherLocalVariable As String
+      
+    myModuleVariable = myLocalVariable
+End Sub";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(8, 6))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            var (expected, actual) = DeclarationsFromParse(vbe.Object, DeclarationType.Procedure, "DoIt");
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Category("Resolver")]
+        [Test]
+        public void SelectionOutsideModuleBodyElementAndOnNothingElse_ModuleSelected()
+        {
+            const string code = @"
+Private Const myConst As Long = 42
+
+Private myModuleVariable As Long
+
+
+Public Sub DoIt()
+    Dim myLocalVariable As Long
+      
+    myModuleVariable = myLocalVariable
+End Sub";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(6, 1))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            var (expected, actual) = DeclarationsFromParse(vbe.Object, DeclarationType.ProceduralModule, "TestModule");
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Category("Resolver")]
+        [Test]
+        public void SelectionInsideVariableDeclarationStatementForMultipleModuleVariables_ModuleSelected()
+        {
+            const string code = @"
+Private Const myConst As Long = 42
+
+Private myModuleVariable As Long, myOtherModuleVariable As String
+
+
+Public Sub DoIt()
+    Dim myLocalVariable As Long
+      
+    myModuleVariable = myLocalVariable
+End Sub";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(4, 2))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            var (expected, actual) = DeclarationsFromParse(vbe.Object, DeclarationType.ProceduralModule, "TestModule");
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Category("Resolver")]
+        [Test]
+        public void SelectionInsideConstantDeclarationStatementForMultipleModuleConstants_ModuleSelected()
+        {
+            const string code = @"
+Private Const myConst As Long = 42, myOtherConstant As Long = 23
+
+Private myModuleVariable As Long
+
+
+Public Sub DoIt()
+    Dim myLocalVariable As Long
+      
+    myModuleVariable = myLocalVariable
+End Sub";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(2, 2))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            var (expected, actual) = DeclarationsFromParse(vbe.Object, DeclarationType.ProceduralModule, "TestModule");
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        private static (Declaration specifiedDeclaration, Declaration selectedDeclaration) DeclarationsFromParse(
             IVBE vbe,
             DeclarationType declarationType, 
             string declarationName,

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
@@ -71,6 +72,24 @@ namespace Rubberduck.Parsing.VBA
                 return canditateViaDeclaration;
             }
 
+            var canditateViaVariableDeclaration = SelectedDeclarationViaVariableDeclarationStatement(qualifiedSelection, finder);
+            if (canditateViaVariableDeclaration != null)
+            {
+                return canditateViaVariableDeclaration;
+            }
+
+            var canditateViaConstantDeclaration = SelectedDeclarationViaConstantDeclarationStatement(qualifiedSelection, finder);
+            if (canditateViaConstantDeclaration != null)
+            {
+                return canditateViaConstantDeclaration;
+            }
+
+            var canditateViaContainingMember = SelectedMember(qualifiedSelection);
+            if (canditateViaContainingMember != null)
+            {
+                return canditateViaContainingMember;
+            }
+
             return SelectedModule(qualifiedSelection);
         }
 
@@ -93,6 +112,75 @@ namespace Rubberduck.Parsing.VBA
                 .OrderByDescending(declaration => declaration.DeclarationType)
                 // they're sorted by type, so a local comes before the procedure it's in
                 .FirstOrDefault();
+        }
+
+        private static Declaration SelectedDeclarationViaVariableDeclarationStatement(QualifiedSelection qualifiedSelection, DeclarationFinder finder)
+        {
+            var variablesInModule = finder.Members(qualifiedSelection.QualifiedName)
+                .Where(declaration => declaration.DeclarationType == DeclarationType.Variable);
+
+            //This is annoying to do in method syntax LINQ. So this FirstOrDefault is done by hand.
+            foreach (var variableDeclaration in variablesInModule)
+            {
+                var declarationSelection = SingleVariableDeclarationStatementSelection(variableDeclaration.Context as VBAParser.VariableSubStmtContext);
+                if (declarationSelection.HasValue && declarationSelection.Value.Contains(qualifiedSelection.Selection))
+                {
+                    return variableDeclaration;
+                }
+            }
+
+            return null;
+        }
+
+        private static Selection? SingleVariableDeclarationStatementSelection(VBAParser.VariableSubStmtContext context)
+        {
+            if (context is null)
+            {
+                return null;
+            }
+
+            var declaredVariableList = (VBAParser.VariableListStmtContext) context.Parent;
+            if (declaredVariableList.variableSubStmt().Length != 1)
+            {
+                return null;
+            }
+
+            var declarationContext = (VBAParser.VariableStmtContext) declaredVariableList.Parent;
+            return declarationContext.GetSelection();
+        }
+
+        private static Declaration SelectedDeclarationViaConstantDeclarationStatement(QualifiedSelection qualifiedSelection, DeclarationFinder finder)
+        {
+            var constantsInModule = finder.Members(qualifiedSelection.QualifiedName)
+                .Where(declaration => declaration.DeclarationType == DeclarationType.Constant);
+
+            //This is annoying to do in method syntax LINQ. So this FirstOrDefault is done by hand.
+            foreach (var constantDeclaration in constantsInModule)
+            {
+                var declarationSelection = SingleConstantDeclarationStatementSelection(constantDeclaration.Context as VBAParser.ConstSubStmtContext);
+                if (declarationSelection.HasValue && declarationSelection.Value.Contains(qualifiedSelection.Selection))
+                {
+                    return constantDeclaration;
+                }
+            }
+
+            return null;
+        }
+
+        private static Selection? SingleConstantDeclarationStatementSelection(VBAParser.ConstSubStmtContext context)
+        {
+            if (context is null)
+            {
+                return null;
+            }
+
+            var declarationContext = (VBAParser.ConstStmtContext)context.Parent;
+            if (declarationContext.constSubStmt().Length != 1)
+            {
+                return null;
+            }
+
+            return declarationContext.GetSelection();
         }
 
         public ModuleBodyElementDeclaration SelectedMember()
