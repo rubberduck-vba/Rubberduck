@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
@@ -27,6 +28,12 @@ namespace RubberduckTests.Inspections
         public IEnumerable<IInspectionResult> InspectionResultsForModules(IEnumerable<(string name, string content, ComponentType componentType)> modules)
         {
             var vbe = MockVbeBuilder.BuildFromModules(modules).Object;
+            return InspectionResults(vbe);
+        }
+
+        public IEnumerable<IInspectionResult> InspectionResultsForModules(IEnumerable<(string name, string content, ComponentType componentType)> modules, IEnumerable<string> libraries)
+        {
+             var vbe = MockVbeBuilder.BuildFromModules(modules, libraries).Object;
             return InspectionResults(vbe);
         }
 
