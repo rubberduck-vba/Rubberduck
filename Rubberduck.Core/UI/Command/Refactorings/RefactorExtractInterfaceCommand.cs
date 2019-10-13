@@ -34,12 +34,5 @@ namespace Rubberduck.UI.Command.Refactorings
             }
             return ((ExtractInterfaceRefactoring)Refactoring).CanExecute(_state, activeSelection.Value.QualifiedName);
         }
-
-        private static readonly IReadOnlyList<DeclarationType> ModuleTypes = new[]
-        {
-            DeclarationType.ClassModule,
-            DeclarationType.UserForm,
-            DeclarationType.Document,
-        };
     }
 }
