@@ -11,6 +11,10 @@
   <PropertyGroup>
     <DocumentationFile>Rubberduck.CodeAnalysis.xml</DocumentationFile>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningsAsErrors>NU1605</WarningsAsErrors>
+    <NoWarn>1701;1702;;4011;1001;7035;1053;1591</NoWarn>
+  </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
 
   <ItemGroup>

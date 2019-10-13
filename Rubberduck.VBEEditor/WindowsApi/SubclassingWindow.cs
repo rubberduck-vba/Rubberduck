@@ -86,7 +86,19 @@ namespace Rubberduck.VBEditor.WindowsApi
                 return DefSubclassProc(hWnd, msg, wParam, lParam);
             }
 
-#if (DEBUG && (THIRSTY_DUCK || THIRSTY_DUCK_WM))
+            PeekMessagePump(hWnd, msg, wParam, lParam);
+
+            if ((uint) msg == (uint) WM.DESTROY)
+            {
+                Dispose();
+            }
+            return DefSubclassProc(hWnd, msg, wParam, lParam);
+        }
+
+        [Conditional("THIRSTY_DUCK")]
+        [Conditional("THIRSTY_DUCK_WM")]
+        private static void PeekMessagePump(IntPtr hWnd, IntPtr msg, IntPtr wParam, IntPtr lParam)
+        {
             //This is an output window firehose kind of like spy++. Prepare for some spam.
             var windowClassName = ToClassName(hWnd);
             if (WM_MAP.Lookup.TryGetValue((uint) msg, out var wmName))
@@ -99,14 +111,8 @@ namespace Rubberduck.VBEditor.WindowsApi
             }
 
 
-            Debug.WriteLine($"MSG: 0x{(uint)msg:X4} ({wmName}), Hwnd 0x{(uint)hWnd:X4} ({windowClassName}), wParam 0x{(uint)wParam:X4}, lParam 0x{(uint)lParam:X4}");
-#endif
-
-            if ((uint) msg == (uint) WM.DESTROY)
-            {
-                Dispose();
-            }
-            return DefSubclassProc(hWnd, msg, wParam, lParam);
+            Debug.WriteLine(
+                $"MSG: 0x{(uint) msg:X4} ({wmName}), Hwnd 0x{(uint) hWnd:X4} ({windowClassName}), wParam 0x{(uint) wParam:X4}, lParam 0x{(uint) lParam:X4}");
         }
 
         private bool _disposed;

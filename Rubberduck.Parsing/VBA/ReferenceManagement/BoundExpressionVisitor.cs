@@ -250,6 +250,11 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 Visit(expression.LExpression, module, scope, parent, hasExplicitLetStatement: hasExplicitLetStatement);
                 AddArrayAccessReference(expression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
             }
+            else if (expression.Classification == ExpressionClassification.Unbound
+                     && expression.ReferencedDeclaration == null)
+            {
+                Visit(expression.LExpression, module, scope, parent);
+            }
             else
             {
                 // Index expressions are a bit special in that they can refer to parameterized properties and functions.

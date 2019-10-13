@@ -494,4 +494,8 @@ In memoriam, 1972-2018</value>
     <value>On the expression '{0}', there is an implicit unbound default member access.</value>
     <comment>{0} expression</comment>
   </data>
+  <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
+    <value>There is an assignment from the default member of the result of expression '{1}' to that of the expression '{0}'.</value>
+    <comment>{0} lhsExpression; {1} rhsExpression</comment>
+  </data>
 </root>

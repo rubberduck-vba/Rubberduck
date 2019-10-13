@@ -12,9 +12,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
-#if !DEBUG
     [Disabled]
-#endif
     [ComVisible(false)]
     public class RefactorExtractMethodCommand : CommandBase
     {

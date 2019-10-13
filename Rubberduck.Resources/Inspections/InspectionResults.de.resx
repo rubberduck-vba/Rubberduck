@@ -437,4 +437,7 @@ In Memoriam, 1972-2018</value>
   <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
     <value>Für den Ausdruck '{0}' kommt es zu einem impliziten nicht gebundenen Standardmemberzugriff.</value>
   </data>
+  <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
+    <value>Es wird vom Standardmember des Resultats des Ausdrucks '{1}' dem des Resultats des Ausdrucks '{0}' zugewiesen.</value>
+  </data>
 </root>
