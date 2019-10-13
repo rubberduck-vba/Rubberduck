@@ -34,7 +34,7 @@
                  Background="{Binding Path=Background, ElementName=Root}" 
                  Width="{Binding Path=ActualWidth, ElementName=ValueContainer}"
                  Height="{Binding Path=ActualHeight, ElementName=ValueContainer}"
-                 Panel.ZIndex="1"
+                 Panel.ZIndex="1" IsTabStop="False" IsReadOnly="True"
                  VerticalContentAlignment="Center"
                  Grid.Row="0" Grid.Column="0">
             <TextBox.Style>
@@ -48,11 +48,6 @@
                     </Style.Triggers>
                 </Style>
             </TextBox.Style>
-            <TextBox.InputBindings>
-                <KeyBinding Key="Esc"
-                Modifiers="Control" 
-                Command="{Binding ClearSearchCommand}" />
-            </TextBox.InputBindings>
         </TextBox>
         <Button Name="SearchButton"  Grid.Column="1" Command="{Binding ClearSearchCommand}" 
                 BorderBrush="{x:Static SystemColors.ControlLightBrush}"
