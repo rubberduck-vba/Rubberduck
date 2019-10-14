@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class MissingModuleAnnotationInspectionTests
+    public class MissingModuleAnnotationInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
@@ -436,12 +436,13 @@ End Sub";
 
         private IEnumerable<IInspectionResult> InspectionResults(string inputCode, ComponentType componentType = ComponentType.StandardModule)
         {
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, componentType, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new MissingModuleAnnotationInspection(state);
-                return inspection.GetInspectionResults(CancellationToken.None);
-            }
+            var vbe = MockVbeBuilder.BuildFromModules((MockVbeBuilder.TestModuleName, inputCode, componentType));
+            return InspectionResults(vbe.Object);
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new MissingModuleAnnotationInspection(state);
         }
     }
 }
