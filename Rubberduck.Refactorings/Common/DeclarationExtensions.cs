@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using Antlr4.Runtime;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources;
@@ -31,45 +30,9 @@ namespace Rubberduck.Common
             DeclarationType.PropertySet
         };
 
-        /// <summary>
-        /// Gets all declarations of the specified <see cref="DeclarationType"/>.
-        /// </summary>
-        public static IEnumerable<Declaration> OfType(this IEnumerable<Declaration> declarations, DeclarationType declarationType)
-        {
-            return declarations.Where(declaration =>
-                declaration.DeclarationType == declarationType);
-        }
-
-        /// <summary>
-        /// Gets all declarations of any one of the specified <see cref="DeclarationType"/> values.
-        /// </summary>
-        public static IEnumerable<Declaration> OfType(this IEnumerable<Declaration> declarations, params DeclarationType[] declarationTypes)
-        {
-            return declarations.Where(declaration =>
-                declarationTypes.Any(type => declaration.DeclarationType == type));
-        }
-
         public static IEnumerable<Declaration> Named(this IEnumerable<Declaration> declarations, string name)
         {
             return declarations.Where(declaration => declaration.IdentifierName == name);
-        }
-
-        /// <summary>
-        /// Gets the declaration for all identifiers declared in or below the specified scope.
-        /// </summary>
-        public static IEnumerable<Declaration> InScope(this IEnumerable<Declaration> declarations, string scope)
-        {
-            return string.IsNullOrEmpty(scope) 
-                ? declarations 
-                : declarations.Where(declaration => declaration.Scope.StartsWith(scope));
-        }
-
-        /// <summary>
-        /// Gets the declaration for all identifiers declared in or below the specified scope.
-        /// </summary>
-        public static IEnumerable<Declaration> InScope(this IEnumerable<Declaration> declarations, Declaration parent)
-        {
-            return declarations.Where(declaration => declaration.ParentScope == parent.Scope);
         }
 
         /// <summary>
@@ -98,16 +61,6 @@ namespace Rubberduck.Common
             }
             
             return handlers;
-        }
-
-        /// <summary>
-        /// Gets the <see cref="Declaration"/> of the specified <see cref="DeclarationType"/>, 
-        /// at the specified <see cref="QualifiedSelection"/>.
-        /// Returns the declaration if selection is on an identifier reference.
-        /// </summary>
-        public static Declaration FindSelectedDeclaration(this IEnumerable<Declaration> declarations, QualifiedSelection selection, DeclarationType type, Func<Declaration, Selection> selector = null)
-        {
-            return FindSelectedDeclaration(declarations, selection, new[] { type }, selector);
         }
 
         /// <summary>
@@ -227,75 +180,6 @@ namespace Rubberduck.Common
         private static IEnumerable<Declaration> GetTypeMembers(this IEnumerable<Declaration> declarations, Declaration type)
         {
             return declarations.Where(item => Equals(item.ParentScopeDeclaration, type));
-        }
-
-        /// <summary>
-        /// Returns the declaration contained in a qualified selection.
-        /// To get the selection of a variable or field, use FindVariable(QualifiedSelection)
-        /// </summary>
-        /// <param name="declarations"></param>
-        /// <param name="selection"></param>
-        /// <param name="validDeclarationTypes"></param>
-        /// <returns></returns>
-        public static Declaration FindTarget(this IEnumerable<Declaration> declarations, QualifiedSelection selection, DeclarationType[] validDeclarationTypes)
-        {
-            var items = declarations.ToList();
-
-            // TODO: Due to the new binding mechanism this can have more than one match (e.g. in the case of index expressions + simple name expressions)
-            // Left as is for now because the binding is not fully integrated yet.
-            var target = items
-                .Where(item => item.IsUserDefined && validDeclarationTypes.Contains(item.DeclarationType))
-                .FirstOrDefault(item => item.IsSelected(selection)
-                                     || item.References.Any(r => r.IsSelected(selection)));
-
-            if (target != null)
-            {
-                return target;
-            }
-
-            var targets = items
-                .Where(item => item.IsUserDefined
-                               && item.ComponentName == selection.QualifiedName.ComponentName
-                               && validDeclarationTypes.Contains(item.DeclarationType));
-
-            var currentSelection = new Selection(0, 0, int.MaxValue, int.MaxValue);
-
-            foreach (var declaration in targets.Where(item => item.Context != null))
-            {
-                var activeSelection = new Selection(declaration.Context.Start.Line,
-                                                    declaration.Context.Start.Column,
-                                                    declaration.Context.Stop.Line,
-                                                    declaration.Context.Stop.Column);
-
-                if (currentSelection.Contains(activeSelection) && activeSelection.Contains(selection.Selection))
-                {
-                    target = declaration;
-                    currentSelection = activeSelection;
-                }
-
-                foreach (var reference in declaration.References)
-                {
-                    var proc = (ParserRuleContext)reference.Context.Parent;
-                    var paramList = proc ;
-
-                    if (paramList == null)
-                    {
-                        continue;
-                    }
-
-                    activeSelection = new Selection(paramList.Start.Line,
-                                                    paramList.Start.Column,
-                                                    paramList.Stop.Line,
-                                                    paramList.Stop.Column + paramList.Stop.Text.Length + 1);
-
-                    if (currentSelection.Contains(activeSelection) && activeSelection.Contains(selection.Selection))
-                    {
-                        target = reference.Declaration;
-                        currentSelection = activeSelection;
-                    }
-                }
-            }
-            return target;
         }
     }
 }
