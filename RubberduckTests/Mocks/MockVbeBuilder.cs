@@ -17,8 +17,10 @@ namespace RubberduckTests.Mocks
     [SuppressMessage("Microsoft.Design", "CA1001")] //CA1001 is complaining about RubberduckTests.Mocks.Windows, which doesn't need to be disposed in this context.
     public class MockVbeBuilder
     {
-        public const string TestProjectName = "TestProject1";
-        public const string TestModuleName = "TestModule1";
+        //provide ability for inspection tests to modify the default
+        //Project and Module names (e.g., the defaults are flagged by MeaninglessName inspection)
+        public static string TestProjectName { set; get; } = "TestProject1";
+        public static string TestModuleName { set; get; } = "TestModule1";
         private readonly Mock<IVBE> _vbe;
         private readonly Mock<IVbeEvents> _vbeEvents;
 

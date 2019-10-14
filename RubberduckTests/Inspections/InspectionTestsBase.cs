@@ -13,20 +13,31 @@ namespace RubberduckTests.Inspections
     {
         protected abstract IInspection InspectionUnderTest(RubberduckParserState state);
 
+        //provide ability for inspection tests to modify the default
+        //Project and Module names (e.g., the MockVbeBuilder defaults are flagged by MeaninglessName inspection)
+        public string TestProjectName { set; get; } = MockVbeBuilder.TestProjectName;
+        public string TestModuleName { set; get; } = MockVbeBuilder.TestModuleName;
+
         public IEnumerable<IInspectionResult> InspectionResultsForStandardModule(string code)
         {
+            MockVbeBuilder.TestProjectName = TestProjectName;
+            MockVbeBuilder.TestModuleName = TestModuleName;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out _).Object;
             return InspectionResults(vbe);
         }
 
         public IEnumerable<IInspectionResult> InspectionResultsForModules(params (string name, string content, ComponentType componentType)[] modules)
         {
+            MockVbeBuilder.TestProjectName = TestProjectName;
+            MockVbeBuilder.TestModuleName = TestModuleName;
             var vbe = MockVbeBuilder.BuildFromModules(modules).Object;
             return InspectionResults(vbe);
         }
 
         public IEnumerable<IInspectionResult> InspectionResultsForModules(IEnumerable<(string name, string content, ComponentType componentType)> modules)
         {
+            MockVbeBuilder.TestProjectName = TestProjectName;
+            MockVbeBuilder.TestModuleName = TestModuleName;
             var vbe = MockVbeBuilder.BuildFromModules(modules).Object;
             return InspectionResults(vbe);
         }
@@ -42,6 +53,8 @@ namespace RubberduckTests.Inspections
 
         public IEnumerable<IInspectionResult> InspectionResultsForModules(IEnumerable<(string name, string content, ComponentType componentType)> modules, IEnumerable<string> libraries)
         {
+            MockVbeBuilder.TestProjectName = TestProjectName;
+            MockVbeBuilder.TestModuleName = TestModuleName;
             var vbe = MockVbeBuilder.BuildFromModules(modules, libraries).Object;
             return InspectionResults(vbe);
         }
