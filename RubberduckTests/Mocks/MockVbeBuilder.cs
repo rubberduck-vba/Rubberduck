@@ -59,6 +59,7 @@ namespace RubberduckTests.Mocks
             ["Excel"] = (MockProjectBuilder builder) => builder.AddReference("Excel", LibraryPathMsExcel, 1, 8, true),
             ["VBA"] = (MockProjectBuilder builder) => builder.AddReference("VBA", LibraryPathVBA, 4, 2, true),
             ["Scripting"] = (MockProjectBuilder builder) => builder.AddReference("Scripting", LibraryPathScripting, 1, 0, true),
+            ["ADODB"] = (MockProjectBuilder builder) => builder.AddReference("ADODB", LibraryPathAdoDb, 6, 1, false),
         };
 
         //private Mock<IWindows> _vbWindows;
@@ -221,12 +222,6 @@ namespace RubberduckTests.Mocks
         {
             return BuildFromModules((IEnumerable<(string name, string content, ComponentType componentType)>)modules);
         }
-
-        /// <summary>
-        /// Builds a mock VBE containing one project with one or more modules using a single library reference
-        /// </summary>
-        public static Mock<IVBE> BuildFromModules(IEnumerable<(string name, string content, ComponentType componentType)> modules, string libraryName)
-            => BuildFromModules(modules, new string[] { libraryName });
 
         /// <summary>
         /// Builds a mock VBE containing one project with one or more modules using one or more libraries.
