@@ -31,15 +31,18 @@ namespace RubberduckTests.Inspections
             return InspectionResults(vbe);
         }
 
+        public IEnumerable<IInspectionResult> InspectionResultsForModules((string name, string content, ComponentType componentType) module, string library)
+            => InspectionResultsForModules(new (string, string, ComponentType)[] { module }, new string[] { library });
+
+        public IEnumerable<IInspectionResult> InspectionResultsForModules(IEnumerable<(string name, string content, ComponentType componentType)> modules, string library)
+            => InspectionResultsForModules(modules, new string[] { library });
+
+        public IEnumerable<IInspectionResult> InspectionResultsForModules((string name, string content, ComponentType componentType) module, IEnumerable<string> libraries)
+            => InspectionResultsForModules(new(string, string, ComponentType)[] { module }, libraries);
+
         public IEnumerable<IInspectionResult> InspectionResultsForModules(IEnumerable<(string name, string content, ComponentType componentType)> modules, IEnumerable<string> libraries)
         {
             var vbe = MockVbeBuilder.BuildFromModules(modules, libraries).Object;
-            return InspectionResults(vbe);
-        }
-
-        public IEnumerable<IInspectionResult> InspectionResultsForModules(IEnumerable<(string name, string content, ComponentType componentType)> modules, string library)
-        {
-            var vbe = MockVbeBuilder.BuildFromModules(modules, library).Object;
             return InspectionResults(vbe);
         }
 
