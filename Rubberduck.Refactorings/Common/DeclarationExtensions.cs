@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Resources;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 // ReSharper disable LocalizableElement
@@ -15,26 +12,6 @@ namespace Rubberduck.Common
 {
     public static class DeclarationExtensions
     {
-
-        public static string ToLocalizedString(this DeclarationType type)
-        {
-            return RubberduckUI.ResourceManager.GetString("DeclarationType_" + type, CultureInfo.CurrentUICulture);
-        }
-
-        public static readonly DeclarationType[] ProcedureTypes =
-        {
-            DeclarationType.Procedure,
-            DeclarationType.Function,
-            DeclarationType.PropertyGet,
-            DeclarationType.PropertyLet,
-            DeclarationType.PropertySet
-        };
-
-        public static IEnumerable<Declaration> Named(this IEnumerable<Declaration> declarations, string name)
-        {
-            return declarations.Where(declaration => declaration.IdentifierName == name);
-        }
-
         /// <summary>
         /// Finds all event handler procedures for specified control declaration.
         /// </summary>
@@ -61,35 +38,6 @@ namespace Rubberduck.Common
             }
             
             return handlers;
-        }
-
-        /// <summary>
-        /// Gets the <see cref="Declaration"/> of the specified <see cref="DeclarationType"/>, 
-        /// at the specified <see cref="QualifiedSelection"/>.
-        /// Returns the declaration if selection is on an identifier reference.
-        /// </summary>
-        public static Declaration FindSelectedDeclaration(this IEnumerable<Declaration> declarations, QualifiedSelection selection, IEnumerable<DeclarationType> types, Func<Declaration, Selection> selector = null)
-        {
-            var userDeclarations = declarations.Where(item => item.IsUserDefined);
-            var items = userDeclarations.Where(item => types.Contains(item.DeclarationType)
-                && item.QualifiedName.QualifiedModuleName == selection.QualifiedName).ToList();
-
-            var declaration = items.SingleOrDefault(item =>
-                selector?.Invoke(item).Contains(selection.Selection) ?? item.Selection.Contains(selection.Selection));
-
-            if (declaration != null)
-            {
-                return declaration;
-            }
-
-            // if we haven't returned yet, then we must be on an identifier reference.
-            declaration = items.SingleOrDefault(item => item.IsUserDefined
-                && types.Contains(item.DeclarationType)
-                && item.References.Any(reference =>
-                reference.QualifiedModuleName == selection.QualifiedName
-                && reference.Selection.Contains(selection.Selection)));
-
-            return declaration;
         }
 
         public static IEnumerable<Declaration> FindFormEventHandlers(this RubberduckParserState state)
@@ -124,7 +72,7 @@ namespace Rubberduck.Common
             return handlers.ToList();
         }
 
-            /// <summary>
+        /// <summary>
         /// Gets a tuple containing the <c>WithEvents</c> declaration and the corresponding handler,
         /// for each type implementing this event.
         /// </summary>
@@ -165,7 +113,9 @@ namespace Rubberduck.Common
                 return new Declaration[]{};
             }
 
-            var members = GetTypeMembers(items, type).ToList();
+            var members = items
+                .Where(item => Equals(item.ParentScopeDeclaration, type))
+                .ToList();
             var events = members.Where(member => member.DeclarationType == DeclarationType.Event);
             var handlerNames = events.Select(e => withEventsDeclaration.IdentifierName + '_' + e.IdentifierName);
 
@@ -175,11 +125,6 @@ namespace Rubberduck.Common
                                                && item.DeclarationType == DeclarationType.Procedure
                                                && handlerNames.Any(name => item.IdentifierName == name))
                 .ToList();
-        }
-
-        private static IEnumerable<Declaration> GetTypeMembers(this IEnumerable<Declaration> declarations, Declaration type)
-        {
-            return declarations.Where(item => Equals(item.ParentScopeDeclaration, type));
         }
     }
 }

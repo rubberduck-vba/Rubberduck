@@ -77,9 +77,10 @@ namespace Rubberduck.Refactorings.ExtractMethod
             _selectedCode = selectedCode;
             _rowsToRemove = new List<Selection>();
 
-            var sourceMember = items.FindSelectedDeclaration(
+            var sourceMember = FindSelectedDeclaration(
+                items,
                 selection,
-                DeclarationExtensions.ProcedureTypes,
+                ExtractedMethod.ProcedureTypes,
                 d => ((ParserRuleContext)d.Context.Parent).GetSelection());
 
             if (sourceMember == null)
@@ -109,6 +110,30 @@ namespace Rubberduck.Refactorings.ExtractMethod
             _extractedMethod.SetReturnValue = false;
             _extractedMethod.Parameters = _paramClassify.ExtractedParameters.ToList();
 
+        }
+
+        private static Declaration FindSelectedDeclaration(IEnumerable<Declaration> declarations, QualifiedSelection selection, IEnumerable<DeclarationType> types, Func<Declaration, Selection> selector = null)
+        {
+            var userDeclarations = declarations.Where(item => item.IsUserDefined);
+            var items = userDeclarations.Where(item => types.Contains(item.DeclarationType)
+                                                       && item.QualifiedName.QualifiedModuleName == selection.QualifiedName).ToList();
+
+            var declaration = items.SingleOrDefault(item =>
+                selector?.Invoke(item).Contains(selection.Selection) ?? item.Selection.Contains(selection.Selection));
+
+            if (declaration != null)
+            {
+                return declaration;
+            }
+
+            // if we haven't returned yet, then we must be on an identifier reference.
+            declaration = items.SingleOrDefault(item => item.IsUserDefined
+                                                        && types.Contains(item.DeclarationType)
+                                                        && item.References.Any(reference =>
+                                                            reference.QualifiedModuleName == selection.QualifiedName
+                                                            && reference.Selection.Contains(selection.Selection)));
+
+            return declaration;
         }
 
         public IEnumerable<Selection> splitSelection(Selection selection, IEnumerable<Declaration> declarations)
