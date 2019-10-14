@@ -62,7 +62,7 @@ End Sub";
                 @"Sub Foo(ByVal arg1 As Integer, ByRef arg2 As Date)
 End Sub";
 
-            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
