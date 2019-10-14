@@ -1,7 +1,7 @@
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
@@ -9,23 +9,16 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class MemberNotOnInterfaceInspectionTests
+    public class MemberNotOnInterfaceInspectionTests : InspectionTestsBase
     {
-        private static RubberduckParserState ArrangeParserAndParse(string inputCode, string library = "Scripting")
+        private int ArrangeParserAndGetResultCount(string inputCode, string library)
         {
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("Codez", ComponentType.StandardModule, inputCode)
-                .AddReference(library,
-                    library.Equals("Scripting") ? MockVbeBuilder.LibraryPathScripting : MockVbeBuilder.LibraryPathMsExcel,
-                    1,
-                    library.Equals("Scripting") ? 0 : 8,
-                    true)
-                .Build();
+            var modules = new(string, string, ComponentType)[]
+            {
+                ("Codez", inputCode, ComponentType.StandardModule)
+            };
 
-            var vbe = builder.AddProject(project).Build();
-
-            return MockParser.CreateAndParse(vbe.Object);
+            return InspectionResultsForModules(modules, library).Count();
         }
 
         [Test]
@@ -38,14 +31,7 @@ namespace RubberduckTests.Inspections
     Set dict = New Dictionary
     dict.NonMember
 End Sub";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
         }
 
         [Test]
@@ -58,14 +44,7 @@ End Sub";
     Set dict = New Dictionary
     dict.NonMember
 End Sub";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
         }
 
         [Test]
@@ -76,14 +55,7 @@ End Sub";
                 @"Sub Foo()
     Application.NonMember
 End Sub";
-
-            using (var state = ArrangeParserAndParse(inputCode, "Excel"))
-            {
-                var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Excel"));
         }
 
         [Test]
@@ -94,14 +66,7 @@ End Sub";
                 @"Sub Foo(dict As Dictionary)
     dict.NonMember
 End Sub";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
         }
 
         [Test]
@@ -114,14 +79,7 @@ End Sub";
     Set dict = New Dictionary
     Debug.Print dict.Count
 End Sub";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
         }
 
         [Test]
@@ -133,14 +91,7 @@ End Sub";
     Dim x As File
     Debug.Print x.NonMember
 End Sub";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
         }
 
         [Test]
@@ -154,14 +105,7 @@ End Sub";
         .NonMember
     End With
 End Sub";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
         }
 
         [Test]
@@ -174,14 +118,7 @@ End Sub";
     Set dict = New Dictionary
     dict!SomeIdentifier = 42
 End Sub";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
         }
 
         [Test]
@@ -195,14 +132,7 @@ End Sub";
         !SomeIdentifier = 42
     End With
 End Sub";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
         }
 
         [Test]
@@ -213,14 +143,7 @@ End Sub";
                 @"Sub Foo()
     Dim dict As Scripting.Dictionary
 End Sub";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
         }
 
         [Test]
@@ -234,14 +157,7 @@ End Sub";
     '@Ignore MemberNotOnInterface
     dict.NonMember
 End Sub";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
         }
 
         [Test]
@@ -254,14 +170,7 @@ End Sub";
         .FooBar
     End With
 End Sub";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
         }
 
         [Test]
@@ -278,14 +187,7 @@ End Sub
 
 Private Sub Bar(baz As Long)
 End Sub";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
         }
 
         [Test]
@@ -302,14 +204,7 @@ End Sub
 
 Private Function Bar(baz As Long) As Variant
 End Function";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
         }
 
         [Test]
@@ -326,14 +221,7 @@ End Sub
 
 Private Function Bar(baz As Long) As Variant
 End Function";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
         }
 
         [Test]
@@ -350,14 +238,7 @@ End Sub
 
 Private Function Bar(baz As Long) As Variant
 End Function";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(2, inspectionResults.Count());
-            }
+            Assert.AreEqual(2, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
         }
 
         [Test]
@@ -374,14 +255,7 @@ End Sub
 
 Private Function Bar(baz As Long) As Variant
 End Function";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
         }
 
         [Test]
@@ -398,14 +272,7 @@ End Sub
 
 Private Function Bar(baz As Long) As Variant
 End Function";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
         }
 
         [Test]
@@ -422,14 +289,7 @@ End Sub
 
 Private Function Bar(baz As Long) As Variant
 End Function";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
         }
 
         [Test]
@@ -446,14 +306,7 @@ End Sub
 
 Private Function Bar(baz As Long) As Variant
 End Function";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
         }
 
         [Test]
@@ -473,14 +326,7 @@ End Function
 
 Private Sub Barr(baz As Long)
 End Sub";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
         }
 
         [Test]
@@ -500,14 +346,7 @@ End Function
 
 Private Sub Barr(baz As Long)
 End Sub";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
         }
 
         [Test]
@@ -527,14 +366,7 @@ End Function
 
 Private Sub Barr(baz As Long)
 End Sub";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(3, inspectionResults.Count());
-            }
+            Assert.AreEqual(3, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
         }
 
         [Test]
@@ -554,14 +386,7 @@ End Function
 
 Private Sub Barr(baz As Long)
 End Sub";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
         }
 
         [Test]
@@ -574,14 +399,7 @@ End Sub";
         !FooBar = 42
     End With
 End Sub";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
         }
 
         [Test]
@@ -594,14 +412,7 @@ End Sub";
         .Add 42, 42
     End With
 End Sub";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
         }
 
         [Test]
@@ -643,14 +454,7 @@ End Sub
             vbeBuilder.AddProject(projectBuilder.Build());
             var vbe = vbeBuilder.Build();
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsTrue(inspectionResults.Any());
-            }
-
+            Assert.IsTrue(InspectionResults(vbe.Object).Any());
         }
 
         [Test]
@@ -671,13 +475,12 @@ End Sub";
             vbeBuilder.AddProject(projectBuilder.Build());
             var vbe = vbeBuilder.Build();
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new MemberNotOnInterfaceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+            Assert.AreEqual(0, InspectionResults(vbe.Object));
+        }
 
-                Assert.IsTrue(!inspectionResults.Any());
-            }
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new MemberNotOnInterfaceInspection(state);
         }
     }
 }
