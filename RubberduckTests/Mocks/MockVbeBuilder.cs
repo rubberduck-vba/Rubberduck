@@ -67,7 +67,7 @@ namespace RubberduckTests.Mocks
 
         private Mock<IVBProjects> _vbProjects;
         private readonly ICollection<IVBProject> _projects = new List<IVBProject>();
-        
+
         private Mock<ICodePanes> _vbCodePanes;
         private readonly ICollection<ICodePane> _codePanes = new List<ICodePane>();
 
@@ -222,6 +222,12 @@ namespace RubberduckTests.Mocks
         {
             return BuildFromModules((IEnumerable<(string name, string content, ComponentType componentType)>)modules);
         }
+
+        /// <summary>
+        /// Builds a mock VBE containing one project with one module and one library.
+        /// </summary>
+        public static Mock<IVBE> BuildFromModules((string name, string content, ComponentType componentType) module, string library)
+            => BuildFromModules(new (string, string, ComponentType)[] { module }, new string[] {library});
 
         /// <summary>
         /// Builds a mock VBE containing one project with one or more modules using one or more libraries.
