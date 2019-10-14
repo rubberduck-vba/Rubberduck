@@ -9,11 +9,12 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
+using Rubberduck.Parsing.Inspections.Abstract;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class UntypedFunctionUsageInspectionTests
+    public class UntypedFunctionUsageInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
@@ -24,13 +25,7 @@ namespace RubberduckTests.Inspections
     Dim str As String
     str = Left(""test"", 1)
 End Sub";
-
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
+            var vbe = MockVbeBuilder.BuildFromModules(("MyClass", inputCode, ComponentType.ClassModule),"VBA");
 
             var parser = MockParser.Create(vbe.Object);
             using (var state = parser.State)
@@ -60,11 +55,7 @@ End Sub";
     str = Left$(""test"", 1)
 End Sub";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
+            var vbe = MockVbeBuilder.BuildFromModules(("MyClass", inputCode, ComponentType.ClassModule));
 
             var parser = MockParser.Create(vbe.Object);
             using (var state = parser.State)
@@ -96,12 +87,7 @@ End Sub";
     str = Left(""test"", 1)
 End Sub";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
+            var vbe = MockVbeBuilder.BuildFromModules(("MyClass", inputCode, ComponentType.ClassModule), "VBA");
 
             var parser = MockParser.Create(vbe.Object);
             using (var state = parser.State)
@@ -125,10 +111,9 @@ End Sub";
         [Category("Inspections")]
         public void InspectionName()
         {
-            const string inspectionName = "UntypedFunctionUsageInspection";
             var inspection = new UntypedFunctionUsageInspection(null);
 
-            Assert.AreEqual(inspectionName, inspection.Name);
+            Assert.AreEqual(nameof(UntypedFunctionUsageInspection), inspection.Name);
         }
 
         private List<Declaration> GetBuiltInDeclarations()
@@ -797,6 +782,11 @@ End Sub";
                 firstInputParam,
                 secondInputParam
             };
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new UntypedFunctionUsageInspection(state);
         }
     }
 }
