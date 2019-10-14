@@ -1,14 +1,15 @@
 ﻿using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class EmptyModuleInspectionTests
+    public class EmptyModuleInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
@@ -26,16 +27,7 @@ DefBool B: DefByte Y: DefInt I: DefLng L: DefLngLng N: DefLngPtr P: DefCur C: De
 
 'Here, neither! _
 ";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -53,294 +45,48 @@ DefBool B: DefByte Y: DefInt I: DefLng L: DefLngLng N: DefLngPtr P: DefCur C: De
 
 'Here, neither! _
 ";
-
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
-        [Test]
+        [TestCase("Private Function Foo() As String\r\nEnd Function")]
+        [TestCase("Private Sub Foo() As String\r\nEnd Sub")]
+        [TestCase("Public Property Get Foo()\r\nEnd Property")]
+        [TestCase("Public Property Set Foo(rhs As Variant)\r\nEnd Property")]
+        [TestCase("Public Property Let Foo(rhs As Variant)\r\nEnd Property")]
+        [TestCase("Private Enum Foo\r\nBar\r\nEnd Enum")]
+        [TestCase("Private Type Foo\r\nBar As String\r\nEnd Type")]
+        [TestCase("Public Type Foo\r\nBar As String\r\nEnd Type")]
+        [TestCase("Private foo As String")]
+        [TestCase("Private Const foo As Long = 6")]
+        [TestCase("Public Event Foo(bar As Variant)")]
+        [TestCase("'@IgnoreModule EmptyModule")]
         [Category("Inspections")]
-        public void ModuleWithFunction_DoesNotReturnResult()
+        public void ModulesWithVariousContent_NoResults(string inputCode)
         {
-            const string inputCode =
-                @"Private Function Foo() As String
-End Function
-";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
-        [Test]
+        [TestCase("")]
+        [TestCase("'@IgnoreModule EmptyModule")]
         [Category("Inspections")]
-        public void ModuleWithProcedure_DoesNotReturnResult()
+        public void EmptyDocumentModules_NoResults(string inputCode)
         {
-            const string inputCode =
-                @"Private Sub Foo()
-End Sub
-";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ModuleWithPropertyGet_DoesNotReturnResult()
-        {
-            const string inputCode =
-                @"Public Property Get Foo()
-End Property
-";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ModuleWithPropertySet_DoesNotReturnResult()
-        {
-            const string inputCode =
-                @"Public Property Set Foo(rhs As Variant)
-End Property
-";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ModuleWithPropertyLet_DoesNotReturnResult()
-        {
-            const string inputCode =
-                @"Public Property Let Foo(rhs As Variant)
-End Property
-";
-
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.UserForm, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ModuleWithEnum_DoesNotReturnResult()
-        {
-            const string inputCode =
-                @"Private Enum Foo
-Bar
-End Enum
-";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ModuleWithPrivateUDT_DoesNotReturnResult()
-        {
-            const string inputCode =
-                @"Private Type Foo
-Bar As String
-End Type
-";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ModuleWithPublicUDT_DoesNotReturnResult()
-        {
-            const string inputCode =
-                @"Public Type Foo
-Bar As String
-End Type
-";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ModuleWithInstanceVariable_DoesNotReturnResult()
-        {
-            const string inputCode =
-                @"Private foo As String";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ModuleWithConstant_DoesNotReturnResult()
-        {
-            const string inputCode =
-                @"Private Const foo As String = """"";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ModuleWithEvent_DoesNotReturnResult()
-        {
-            const string inputCode =
-                @"Public Event Foo(bar As Variant)";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void EmptyDocumentModule_DoesNotReturnResult()
-        {
-            const string inputCode = "";
-
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.Document, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void EmptyUserForm_DoesNotReturnResult()
-        {
-            const string inputCode = "";
-
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.Document, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void EmptyModule_Ignored_DoesNotReturnResult()
-        {
-            const string inputCode = "'@IgnoreModule EmptyModule";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new EmptyModuleInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.Document, out _).Object;
+            Assert.AreEqual(0, InspectionResults(vbe).Count());
         }
 
         [Test]
         [Category("Inspections")]
         public void InspectionName()
         {
-            const string inspectionName = "EmptyModuleInspection";
             var inspection = new EmptyModuleInspection(null);
 
-            Assert.AreEqual(inspectionName, inspection.Name);
+            Assert.AreEqual(nameof(EmptyModuleInspection), inspection.Name);
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new EmptyModuleInspection(state);
         }
     }
 }
