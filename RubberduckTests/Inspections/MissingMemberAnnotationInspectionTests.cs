@@ -188,11 +188,7 @@ End Sub";
 
         private IEnumerable<IInspectionResult> InspectionResults(string inputCode, ComponentType componentType = ComponentType.StandardModule)
         {
-            var modules = new(string, string, ComponentType)[]
-            {
-                (MockVbeBuilder.TestModuleName, inputCode, componentType)
-            };
-            var vbe = MockVbeBuilder.BuildFromModules(modules);
+            var vbe = MockVbeBuilder.BuildFromModules((MockVbeBuilder.TestModuleName, inputCode, componentType));
             return InspectionResults(vbe.Object);
         }
 
