@@ -232,9 +232,7 @@ namespace RubberduckTests.VBEditor.Variants
         [TestCase(-0.5d, typeof(DateTime), ExpectedResult = "1899-12-30 12:00:00")]
         public string Test_ObjectConversion_SimpleValues_To_Date(object value, Type targetType)
         {
-            var culture = new CultureInfo("en-US");
-            var result = VariantConverter.ChangeType(value, targetType, culture);
-
+            var result = VariantConverter.ChangeType(value, targetType);
             if (result is DateTime dt)
             {
                 return dt.ToString(TheOneTrueDateFormat);
@@ -414,43 +412,5 @@ namespace RubberduckTests.VBEditor.Variants
             var result = VariantConverter.ChangeType(convertible, VARENUM.VT_EMPTY);
             Assert.IsNull(result);
         }
-
-        /*
-        [Test]
-        public void Test_Array_Conversion()
-        {
-            var array = new List<byte>
-            {
-                0x48,
-                0x00,
-                0x65,
-                0x00,
-                0x6C,
-                0x00,
-                0x6C,
-                0x00,
-                0x6F,
-                0x00,
-                0x2C,
-                0x00,
-                0x20,
-                0x00,
-                0x77,
-                0x00,
-                0x6F,
-                0x00,
-                0x72,
-                0x00,
-                0x6C,
-                0x00,
-                0x64,
-                0x00,
-                0x21,
-                0x00
-            };
-            var result = VariantConversion.VariantChangeType(array, VARENUM.VT_BSTR);
-            Assert.AreEqual("Hello, world!", result);
-        }
-        */
     }
 }
