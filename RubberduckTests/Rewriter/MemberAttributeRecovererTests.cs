@@ -250,5 +250,72 @@ End Function";
                 Assert.AreEqual(expectedCodeWithoutRecovery, actualCodeWithoutRecovery);
             }
         }
+
+        [Test]
+        [Category("Rewriter")]
+        [TestCase("Attribute Foo.VB_UserMemId = 0", "", "")]
+        [TestCase("", "Attribute Foo.VB_UserMemId = 0", "")]
+        [TestCase("", "", "Attribute Foo.VB_UserMemId = 0")]
+        [TestCase("Attribute Foo.VB_Description = \"myPropertyGet\"", "Attribute Foo.VB_Description = \"myPropertyLet\"", "")]
+        [TestCase("", "Attribute Foo.VB_Description = \"myPropertyLet\"", "Attribute Foo.VB_Description = \"myPropertySet\"")]
+        [TestCase("Attribute Foo.VB_Description = \"myPropertyGet\"", "", "Attribute Foo.VB_Description = \"myPropertySet\"")]
+        [TestCase("Attribute Foo.VB_Description = \"myPropertyGet\"", "Attribute Foo.VB_Description = \"myPropertyLet\"", "Attribute Foo.VB_Description = \"myPropertySet\"")]
+        public void RecoveringAttributesRecoversTheAttributesInTheModulesProvided_ViaModule_PropertiesAreHandlesSeparately(string getAttributes, string letAttributes, string setAttributes)
+        {
+            var inputCode =
+                $@"Public Property Get Foo() As Variant
+{getAttributes}
+End Property
+
+Public Property Let Foo(ByVal RHS As Long)
+{letAttributes}
+End Property
+
+Public Property Set Foo(ByVal RHs As Object)
+{setAttributes}
+End Property";
+
+            var expectedCodeWithRecovery = inputCode;
+
+            var expectedCodeWithoutRecovery =
+                $@"Public Property Get Foo() As Variant{(string.IsNullOrEmpty(getAttributes) ? Environment.NewLine : string.Empty)}
+End Property
+
+Public Property Let Foo(ByVal RHS As Long){(string.IsNullOrEmpty(letAttributes) ? Environment.NewLine : string.Empty)}
+End Property
+
+Public Property Set Foo(ByVal RHs As Object){(string.IsNullOrEmpty(setAttributes) ? Environment.NewLine : string.Empty)}
+End Property";
+
+            var vbe = MockVbeBuilder.BuildFromStdModules(("RecoveryModule", inputCode), ("NoRecoveryModule", inputCode)).Object;
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
+            using (state)
+            {
+                var attributesUpdater = new AttributesUpdater(state);
+                var mockFailureNotifier = new Mock<IMemberAttributeRecoveryFailureNotifier>();
+                var memberAttributeRecoverer = new MemberAttributeRecoverer(state, state, attributesUpdater, mockFailureNotifier.Object);
+                memberAttributeRecoverer.RewritingManager = rewritingManager;
+
+                var recoveryModule = state.DeclarationFinder.UserDeclarations(DeclarationType.Module)
+                    .First(decl => decl.IdentifierName.Equals("RecoveryModule")).QualifiedModuleName;
+                var noRecoveryModule = state.DeclarationFinder.UserDeclarations(DeclarationType.Module)
+                    .First(decl => decl.IdentifierName.Equals("NoRecoveryModule")).QualifiedModuleName;
+
+                var modulesToRecoverAttributesIn = new List<QualifiedModuleName> { recoveryModule };
+
+                memberAttributeRecoverer.RecoverCurrentMemberAttributesAfterNextParse(modulesToRecoverAttributesIn);
+
+                var rewriteSession = rewritingManager.CheckOutCodePaneSession();
+                var declarationsForWhichToRemoveAttributes = state.DeclarationFinder.UserDeclarations(DeclarationType.Property);
+                RemoveAttributes(declarationsForWhichToRemoveAttributes, rewriteSession);
+
+                ExecuteAndWaitForParserState(state, () => rewriteSession.TryRewrite(), ParserState.Ready);
+
+                var actualCodeWithRecovery = state.ProjectsProvider.Component(recoveryModule).CodeModule.Content();
+                var actualCodeWithoutRecovery = state.ProjectsProvider.Component(noRecoveryModule).CodeModule.Content();
+                Assert.AreEqual(expectedCodeWithRecovery, actualCodeWithRecovery);
+                Assert.AreEqual(expectedCodeWithoutRecovery, actualCodeWithoutRecovery);
+            }
+        }
     }
 }
