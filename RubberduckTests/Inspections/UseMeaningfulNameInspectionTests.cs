@@ -1,10 +1,7 @@
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Moq;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
@@ -17,11 +14,28 @@ namespace RubberduckTests.Inspections
     [TestFixture]
     public class UseMeaningfulNameInspectionTests : InspectionTestsBase
     {
-        public UseMeaningfulNameInspectionTests()
+        private string _initialDefaultProjectName;
+        private string _initialDefaultModuleName;
+
+        //(10/15/2019)The default MockVbeBuilder default identifiers "TestProject1" and "TestModule1"
+        //are flagged by this inspection and interfere with the intended test results.
+        //Modify these static property values during setup to remove the unintended results. 
+        //Reset the values during teardown to prevent failure of subsequent test classes using the 
+        //default names during setup or expected vs actual asserts.
+        [OneTimeSetUp]
+        public void CacheDefaultNames()
         {
-            //The default InspectionTestsBase names are flag as meaningless names (end with a number)
-            TestProjectName = "VBAProject";
-            TestModuleName = "TestModule";
+            _initialDefaultProjectName = MockVbeBuilder.TestProjectName;
+            _initialDefaultModuleName = MockVbeBuilder.TestModuleName;
+            MockVbeBuilder.TestProjectName = "VBAProject";
+            MockVbeBuilder.TestModuleName = "TestModule";
+        }
+
+        [OneTimeTearDown]
+        public void RestoreDefaultIdentifiers()
+        {
+            MockVbeBuilder.TestProjectName = _initialDefaultProjectName;
+            MockVbeBuilder.TestModuleName = _initialDefaultModuleName;
         }
 
         [Test]
