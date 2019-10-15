@@ -17,8 +17,6 @@ namespace RubberduckTests.Mocks
     [SuppressMessage("Microsoft.Design", "CA1001")] //CA1001 is complaining about RubberduckTests.Mocks.Windows, which doesn't need to be disposed in this context.
     public class MockVbeBuilder
     {
-        //provide ability for inspection tests to modify the default
-        //Project and Module names (e.g., the defaults are flagged by MeaninglessName inspection)
         public static string TestProjectName { set; get; } = "TestProject1";
         public static string TestModuleName { set; get; } = "TestModule1";
         private readonly Mock<IVBE> _vbe;
@@ -56,12 +54,13 @@ namespace RubberduckTests.Mocks
             ["ADOR"] = LibraryPathAdoRecordset
         };
 
-        private static readonly Dictionary<string, Action<MockProjectBuilder>> addLibraryRefActions = new Dictionary<string, Action<MockProjectBuilder>>
+        private static readonly Dictionary<string, Action<MockProjectBuilder>> addReferenceActions = new Dictionary<string, Action<MockProjectBuilder>>
         {
             ["Excel"] = (MockProjectBuilder builder) => builder.AddReference("Excel", LibraryPathMsExcel, 1, 8, true),
             ["VBA"] = (MockProjectBuilder builder) => builder.AddReference("VBA", LibraryPathVBA, 4, 2, true),
             ["Scripting"] = (MockProjectBuilder builder) => builder.AddReference("Scripting", LibraryPathScripting, 1, 0, true),
             ["ADODB"] = (MockProjectBuilder builder) => builder.AddReference("ADODB", LibraryPathAdoDb, 6, 1, false),
+            ["MSForms"] = (MockProjectBuilder builder) => builder.AddReference("MSForms", LibraryPathMsForms, 2, 0, true),
         };
 
         //private Mock<IWindows> _vbWindows;
@@ -218,18 +217,16 @@ namespace RubberduckTests.Mocks
         }
 
         /// <summary>
-        /// Builds a mock VBE containing one project with multiple modules.
-        /// </summary>
-        public static Mock<IVBE> BuildFromModules(IEnumerable<Action<MockProjectBuilder>> AddReferenceLibraryActions, params (string name, string content, ComponentType componentType)[] modules)
-        {
-            return BuildFromModules((IEnumerable<(string name, string content, ComponentType componentType)>)modules);
-        }
-
-        /// <summary>
         /// Builds a mock VBE containing one project with one module and one library.
         /// </summary>
         public static Mock<IVBE> BuildFromModules((string name, string content, ComponentType componentType) module, string library)
-            => BuildFromModules(new (string, string, ComponentType)[] { module }, new string[] {library});
+            => BuildFromModules(new(string, string, ComponentType)[] { module }, new string[] { library });
+
+        /// <summary>
+        /// Builds a mock VBE containing one project with one module and multiple libraries.
+        /// </summary>
+        public static Mock<IVBE> BuildFromModules((string name, string content, ComponentType componentType) module, IEnumerable<string> libraries)
+            => BuildFromModules(new(string, string, ComponentType)[] { module }, libraries);
 
         /// <summary>
         /// Builds a mock VBE containing one project with one or more modules using one or more libraries.
@@ -246,7 +243,7 @@ namespace RubberduckTests.Mocks
 
             foreach (var name in libraryNames)
             {
-                addLibraryRefActions[name](builder);
+                addReferenceActions[name](builder);
             }
 
             var project = builder.Build();
