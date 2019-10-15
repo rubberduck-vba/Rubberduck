@@ -14,16 +14,7 @@ namespace RubberduckTests.Inspections
     public class ApplicationWorksheetFunctionInspectionTests : InspectionTestsBase
     {
         private IEnumerable<IInspectionResult> GetInspectionResultsUsingExcelLibrary(string inputCode)
-        {
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("Module1", ComponentType.StandardModule, inputCode)
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
-                .Build();
-
-            var vbe = builder.AddProject(project).Build().Object;
-            return InspectionResults(vbe);
-        }
+            => InspectionResultsForModules(("Module1", inputCode, ComponentType.StandardModule), "Excel");
 
         [Test]
         [Category("Inspections")]
