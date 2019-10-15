@@ -5,7 +5,6 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
@@ -187,10 +186,7 @@ End Sub";
         }
 
         private IEnumerable<IInspectionResult> InspectionResults(string inputCode, ComponentType componentType = ComponentType.StandardModule)
-        {
-            var vbe = MockVbeBuilder.BuildFromModules((MockVbeBuilder.TestModuleName, inputCode, componentType));
-            return InspectionResults(vbe.Object);
-        }
+            => InspectionResultsForModules(("TestModule", inputCode, componentType));
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
