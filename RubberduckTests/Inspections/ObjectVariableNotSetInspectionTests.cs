@@ -1,14 +1,10 @@
-using System;
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
@@ -144,7 +140,7 @@ Private Sub Workbook_Open()
     target = Range(""A1"")
     target.Value = ""all good""
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel.1.8.xml");
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel");
         }
 
         [Test]
@@ -160,7 +156,7 @@ Private Sub TestSub(ByRef testParam As Variant)
     testParam = target
     testParam.Add 100
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "VBA.4.2.xml");
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "VBA");
         }
 
         [Test]
@@ -196,7 +192,7 @@ End Sub
 Private Sub TestSub(ByRef testParam As Variant)
     testParam = New Collection     
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "VBA.4.2.xml");
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "VBA");
         }
 
         [Test]
@@ -229,7 +225,7 @@ Private Sub Workbook_Open()
     target.Value = ""forgot something?""
 
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel.1.8.xml");
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel");
         }
 
         [Test]
@@ -247,7 +243,7 @@ Private Sub Workbook_Open()
     target.Value = ""All good""
 
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel.1.8.xml");
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel");
         }
 
         [Test]
@@ -289,7 +285,7 @@ Private Sub TestSelfAssigned()
     Dim arg1 As new Collection
     arg1.Add 7
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "VBA.4.2.xml");
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "VBA");
         }
 
         [Test]
@@ -346,7 +342,7 @@ End Sub";
 Private Function Test() As Collection
     Test = New Collection
 End Function";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "VBA.4.2.xml");
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "VBA");
         }
 
         [Test]
@@ -497,7 +493,7 @@ Private Sub Test()
     bar.Add ""x"", ""x""
     foo = ""Test"" & bar.Item(""x"")
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "VBA.4.2");
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "VBA");
         }
 
         [Test]
@@ -531,7 +527,7 @@ Private Sub Test()
     Dim bar As Variant    
     bar = foo
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel.1.8.xml");
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel");
         }
 
         [Test]
@@ -547,7 +543,7 @@ Private Sub Test()
     bar = foo
 End Sub";
             //The default member of Recordset is Fields, which is an object.
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "ADODB.6.1");
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "ADODB");
         }
 
         [Test]
@@ -563,7 +559,7 @@ Private Sub Test()
     foo = bar
 End Sub";
             //The default member of Recordset is Fields, which is an object and only has a paramterized default member.
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "ADODB.6.1");
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "ADODB");
         }
 
         [Test]
@@ -577,7 +573,7 @@ Private Sub Test()
     Dim foo As Variant  
     foo = New Connection
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "ADODB.6.1");
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "ADODB");
         }
 
         [Test]
@@ -592,7 +588,7 @@ Private Sub Test()
     foo = New Recordset
 End Sub";
             //The default member of Recordset is Fields, which is an object.
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "ADODB.6.1");
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "ADODB");
         }
 
         [Test]
@@ -762,12 +758,11 @@ Private Sub Baz(arg As Variant)
 End Sub
 ";
 
-            var vbe = MockVbeBuilder.BuildFromModules(
+            var inspectionResults = InspectionResultsForModules(
                 ("Class1", class1Code, ComponentType.ClassModule),
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
-            var inspectionResults = InspectionResults(vbe.Object);
             Assert.IsFalse(inspectionResults.Any());
         }
 
@@ -850,12 +845,11 @@ Private Sub Baz(arg As Variant)
 End Sub
 ";
 
-            var vbe = MockVbeBuilder.BuildFromModules(
+            var inspectionResults = InspectionResultsForModules(
                 ("Class1", class1Code, ComponentType.ClassModule),
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
-            var inspectionResults = InspectionResults(vbe.Object);
             Assert.IsFalse(inspectionResults.Any());
         }
 
@@ -942,13 +936,12 @@ Private Sub Baz(arg As Variant)
 End Sub
 ";
 
-            var vbe = MockVbeBuilder.BuildFromModules(
+            var inspectionResults = InspectionResultsForModules(
                 ("Class1", class1Code, ComponentType.ClassModule),
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Class3", class3Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
-            var inspectionResults = InspectionResults(vbe.Object);
             Assert.IsFalse(inspectionResults.Any());
         }
 
@@ -1035,13 +1028,12 @@ Private Sub Baz(arg As Variant)
 End Sub
 ";
 
-            var vbe = MockVbeBuilder.BuildFromModules(
+            var inspectionResults = InspectionResultsForModules(
                 ("Class1", class1Code, ComponentType.ClassModule),
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Class3", class3Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
-            var inspectionResults = InspectionResults(vbe.Object);
             Assert.IsFalse(inspectionResults.Any());
         }
 
@@ -1128,13 +1120,12 @@ Private Sub Baz(arg As Variant)
 End Sub
 ";
 
-            var vbe = MockVbeBuilder.BuildFromModules(
+            var inspectionResults = InspectionResultsForModules(
                 ("Class1", class1Code, ComponentType.ClassModule),
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Class3", class3Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
-            var inspectionResults = InspectionResults(vbe.Object);
             Assert.IsFalse(inspectionResults.Any());
         }
 
@@ -1186,13 +1177,12 @@ Private Sub Baz(arg As Variant)
 End Sub
 ";
 
-            var vbe = MockVbeBuilder.BuildFromModules(
+            var inspectionResults = InspectionResultsForModules(
                 ("Class1", class1Code, ComponentType.ClassModule),
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Class3", class3Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
-            var inspectionResults = InspectionResults(vbe.Object);
             var inspectionResult = inspectionResults.Single();
 
             var expectedSelection = new Selection(6, selectionStartColumn, 6, selectionEndColumn);
@@ -1249,13 +1239,12 @@ Private Sub Baz(arg As Variant)
 End Sub
 ";
 
-            var vbe = MockVbeBuilder.BuildFromModules(
+            var inspectionResults = InspectionResultsForModules(
                 ("Class1", class1Code, ComponentType.ClassModule),
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Class3", class3Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
-            var inspectionResults = InspectionResults(vbe.Object);
             var inspectionResult = inspectionResults.Single();
 
             var expectedSelection = new Selection(6, selectionStartColumn, 6, selectionEndColumn);
@@ -1312,13 +1301,12 @@ Private Sub Baz(arg As Variant)
 End Sub
 ";
 
-            var vbe = MockVbeBuilder.BuildFromModules(
+            var inspectionResults = InspectionResultsForModules(
                 ("Class1", class1Code, ComponentType.ClassModule),
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Class3", class3Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
-            var inspectionResults = InspectionResults(vbe.Object);
             var inspectionResult = inspectionResults.Single();
 
             var expectedSelection = new Selection(6, selectionStartColumn, 6, selectionEndColumn);
@@ -1364,12 +1352,11 @@ Private Sub Baz(arg As Variant)
 End Sub
 ";
 
-            var vbe = MockVbeBuilder.BuildFromModules(
+            var inspectionResults = InspectionResultsForModules(
                 ("Class1", class1Code, ComponentType.ClassModule),
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
-            var inspectionResults = InspectionResults(vbe.Object);
             var inspectionResult = inspectionResults.Single();
 
             var expectedSelection = new Selection(4, selectionStartColumn, 4, selectionEndColumn);
@@ -1410,12 +1397,10 @@ Private Function Foo() As Variant
 End Function
 ";
 
-            var vbe = MockVbeBuilder.BuildFromModules(
+            var inspectionResults = InspectionResultsForModules(
                 ("Class1", class1Code, ComponentType.ClassModule),
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
-
-            var inspectionResults = InspectionResults(vbe.Object);
 
             Assert.IsFalse(inspectionResults.Any());
         }
@@ -1427,30 +1412,8 @@ End Function
 
         private void AssertInputCodeYieldsExpectedInspectionResultCount(string inputCode, int expected, params string[] testLibraries)
         {
-            var builder = new MockVbeBuilder();
-            var projectBuilder = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode);
-
-            foreach (var testLibrary in testLibraries)
-            {
-                var libraryDescriptionComponents = testLibrary.Split('.');
-                var libraryName = libraryDescriptionComponents[0];
-                var libraryPath = MockVbeBuilder.LibraryPaths[libraryName];
-                int majorVersion = Int32.Parse(libraryDescriptionComponents[1]);
-                int minorVersion = Int32.Parse(libraryDescriptionComponents[2]);
-                projectBuilder.AddReference(libraryName, libraryPath, majorVersion, minorVersion, true);
-            }
-
-            var project = projectBuilder.Build();
-            var vbe = builder.AddProject(project).Build();
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = InspectionUnderTest(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(expected, inspectionResults.Count());
-            }
+            var inspectionResults = InspectionResultsForModules(("Class1", inputCode, ComponentType.ClassModule), testLibraries);
+            Assert.AreEqual(expected, inspectionResults.Count());
         }
     }
 }
