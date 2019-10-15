@@ -12,14 +12,7 @@ namespace RubberduckTests.Inspections
     public class MemberNotOnInterfaceInspectionTests : InspectionTestsBase
     {
         private int ArrangeParserAndGetResultCount(string inputCode, string library)
-        {
-            var modules = new(string, string, ComponentType)[]
-            {
-                ("Codez", inputCode, ComponentType.StandardModule)
-            };
-
-            return InspectionResultsForModules(modules, library).Count();
-        }
+            => InspectionResultsForModules(("Codez", inputCode, ComponentType.StandardModule), library).Count();
 
         [Test]
         [Category("Inspections")]
@@ -445,6 +438,7 @@ Sub FizzBuzz()
 
 End Sub
 ";
+
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("testproject", ProjectProtection.Unprotected);
             projectBuilder.MockUserFormBuilder("UserForm1", userForm1Code).AddFormToProjectBuilder()
@@ -463,7 +457,7 @@ End Sub
         public void MemberNotOnInterface_DoesNotReturnResult_ControlObject()
         {
             const string inputCode =
-                @"Sub Foo(bar as MSForms.TextBox)
+                @"Sub Foo(bar As MSForms.TextBox)
     Debug.Print bar.Left
 End Sub";
 
@@ -475,7 +469,7 @@ End Sub";
             vbeBuilder.AddProject(projectBuilder.Build());
             var vbe = vbeBuilder.Build();
 
-            Assert.AreEqual(0, InspectionResults(vbe.Object));
+            Assert.AreEqual(0, InspectionResults(vbe.Object).Count());
         }
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
