@@ -1,7 +1,5 @@
 ﻿using System.Linq;
-using System.Threading;
 using NUnit.Framework;
-using RubberduckTests.Mocks;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -120,14 +118,11 @@ End Sub";
 
         private void CheckActualEmptyBlockCountEqualsExpected(string interfaceCode, string concreteCode, int expectedCount)
         {
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("IClass1", ComponentType.ClassModule, interfaceCode)
-                .AddComponent("Class1", ComponentType.ClassModule, concreteCode)
-                .Build();
-            var vbe = builder.AddProject(project).Build().Object;
+            var results = InspectionResultsForModules(
+                ("IClass1", interfaceCode, ComponentType.ClassModule),
+                ("Class1", concreteCode, ComponentType.ClassModule));
 
-            Assert.AreEqual(expectedCount, InspectionResults(vbe).Count());
+            Assert.AreEqual(expectedCount, results.Count());
         }
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
