@@ -196,25 +196,7 @@ namespace RubberduckTests.Mocks
         /// Builds a mock VBE containing one project with multiple modules.
         /// </summary>
         public static Mock<IVBE> BuildFromModules(IEnumerable<(string name, string content, ComponentType componentType)> modules)
-        {
-            var vbeBuilder = new MockVbeBuilder();
-
-            var builder = vbeBuilder.ProjectBuilder(TestProjectName, ProjectProtection.Unprotected);
-            foreach (var (name, content, componentType) in modules)
-            {
-                builder.AddComponent(name, componentType, content);
-            }
-
-            var project = builder.Build();
-            var vbe = vbeBuilder.AddProject(project).Build();
-
-            var component = project.Object.VBComponents[0];
-
-            vbe.Object.ActiveVBProject = project.Object;
-            vbe.Object.ActiveCodePane = component.CodeModule.CodePane;
-
-            return vbe;
-        }
+            => BuildFromModules(modules, Enumerable.Empty<string>());
 
         /// <summary>
         /// Builds a mock VBE containing one project with one module and one library.
@@ -229,7 +211,7 @@ namespace RubberduckTests.Mocks
             => BuildFromModules(new(string, string, ComponentType)[] { module }, libraries);
 
         /// <summary>
-        /// Builds a mock VBE containing one project with one or more modules using one or more libraries.
+        /// Builds a mock VBE containing one project with multiple modules and libraries.
         /// </summary>
         public static Mock<IVBE> BuildFromModules(IEnumerable<(string name, string content, ComponentType componentType)> modules, IEnumerable<string> libraryNames)
         {
