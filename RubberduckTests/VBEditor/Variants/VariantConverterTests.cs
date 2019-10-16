@@ -206,6 +206,10 @@ namespace RubberduckTests.VBEditor.Variants
             return result;
         }
 
+        /// <remarks>
+        /// This assumes en-US locale. 
+        /// See <see cref="Test_US_format_String_To_Date_Localized"/> for localization behavior
+        /// </remarks>
         [Test]
         [TestCase(true, typeof(DateTime), ExpectedResult = "1899-12-29 00:00:00")]
         [TestCase(false, typeof(DateTime), ExpectedResult = "1899-12-30 00:00:00")]
@@ -216,6 +220,7 @@ namespace RubberduckTests.VBEditor.Variants
         [TestCase("04/12/2000", typeof(DateTime), ExpectedResult = "2000-04-12 00:00:00")]
         [TestCase("12/04/2000", typeof(DateTime), ExpectedResult = "2000-12-04 00:00:00")]
         [TestCase("13/04/2000", typeof(DateTime), ExpectedResult = "2000-04-13 00:00:00")]
+        [TestCase("04/13/2000", typeof(DateTime), ExpectedResult = "2000-04-13 00:00:00")]
         [TestCase(1.0, typeof(DateTime), ExpectedResult = "1899-12-31 00:00:00")]
         [TestCase(0.0, typeof(DateTime), ExpectedResult = "1899-12-30 00:00:00")]
         [TestCase(-0.0, typeof(DateTime), ExpectedResult = "1899-12-30 00:00:00")]
@@ -232,7 +237,36 @@ namespace RubberduckTests.VBEditor.Variants
         [TestCase(-0.5d, typeof(DateTime), ExpectedResult = "1899-12-30 12:00:00")]
         public string Test_ObjectConversion_SimpleValues_To_Date(object value, Type targetType)
         {
-            var result = VariantConverter.ChangeType(value, targetType);
+            var culture = new CultureInfo("en-US");
+            var result = VariantConverter.ChangeType(value, targetType, culture);
+            if (result is DateTime dt)
+            {
+                return dt.ToString(TheOneTrueDateFormat);
+            }
+
+            // Invalid result
+            return string.Empty;
+        }
+
+        /// <remarks>
+        /// Note that de-DE results differ from fr-CA and en-US
+        /// </remarks>
+        [TestCase("fr-CA", "04/12/2000", typeof(DateTime), ExpectedResult = "2000-04-12 00:00:00")]
+        [TestCase("fr-CA", "12/04/2000", typeof(DateTime), ExpectedResult = "2000-12-04 00:00:00")]
+        [TestCase("fr-CA", "13/04/2000", typeof(DateTime), ExpectedResult = "2000-04-13 00:00:00")]
+        [TestCase("fr-CA", "04/13/2000", typeof(DateTime), ExpectedResult = "2000-04-13 00:00:00")]
+        [TestCase("de-DE", "04/12/2000", typeof(DateTime), ExpectedResult = "2000-12-04 00:00:00")]
+        [TestCase("de-DE", "12/04/2000", typeof(DateTime), ExpectedResult = "2000-04-12 00:00:00")]
+        [TestCase("de-DE", "13/04/2000", typeof(DateTime), ExpectedResult = "2000-04-13 00:00:00")]
+        [TestCase("de-DE", "04/13/2000", typeof(DateTime), ExpectedResult = "2000-04-13 00:00:00")]
+        [TestCase("en-US", "04/12/2000", typeof(DateTime), ExpectedResult = "2000-04-12 00:00:00")]
+        [TestCase("en-US", "12/04/2000", typeof(DateTime), ExpectedResult = "2000-12-04 00:00:00")]
+        [TestCase("en-US", "13/04/2000", typeof(DateTime), ExpectedResult = "2000-04-13 00:00:00")]
+        [TestCase("en-US", "04/13/2000", typeof(DateTime), ExpectedResult = "2000-04-13 00:00:00")]
+        public string Test_US_format_String_To_Date_Localized(string locale, object value, Type targetType)
+        {
+            var culture = new CultureInfo(locale);
+            var result = VariantConverter.ChangeType(value, targetType, culture);
             if (result is DateTime dt)
             {
                 return dt.ToString(TheOneTrueDateFormat);
