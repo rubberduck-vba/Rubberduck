@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.Serialization;
@@ -22,16 +23,28 @@ namespace Rubberduck.Parsing.ComReflection
             CheckCharacters = false
         };
 
-        private static readonly XmlWriterSettings WriterSettings = new XmlWriterSettings
+        private static readonly XmlWriterSettings WriterSettings = CreateWriterSettings();
+        
+        private static XmlWriterSettings CreateWriterSettings()
         {
-            NamespaceHandling = NamespaceHandling.OmitDuplicates,
-            CheckCharacters = false,
-#if PRETTY_XML
-            Indent = true,
-            IndentChars = ("\t"),
-            NewLineChars = Environment.NewLine
-#endif
-        };
+            var settings = new XmlWriterSettings
+            {
+                NamespaceHandling = NamespaceHandling.OmitDuplicates,
+                CheckCharacters = false
+            };
+
+            PrettifyWriter(ref settings);
+
+            return settings;
+        }
+
+        [Conditional("PRETTY_XML")]
+        private static void PrettifyWriter(ref XmlWriterSettings settings)
+        {
+            settings.Indent = true;
+            settings.IndentChars = ("\t");
+            settings.NewLineChars = Environment.NewLine;
+        }
 
         public XmlComProjectSerializer(string path = null)
         {

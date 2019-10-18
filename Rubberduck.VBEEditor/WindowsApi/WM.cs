@@ -946,12 +946,8 @@ namespace Rubberduck.VBEditor.WindowsApi
         RUBBERDUCK_UNDOCKABLE_CONTEXT_MENU = USER + 0x0F01
     }
 
-#if (DEBUG && (THIRSTY_DUCK || THIRSTY_DUCK_WM))
-
     public static class WM_MAP
     {
         public static readonly Dictionary<uint, string> Lookup = EnumHelper.ToDictionary<WM, uint>();
     }
-
-#endif
 }

@@ -6,24 +6,19 @@ using RubberduckTests.Mocks;
 using System.Linq;
 using System.Threading;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
     [Category("Inspections")]
     [Category("AssignmentNotUsed")]
-    public class AssignmentNotUsedInspectionTests
+    public class AssignmentNotUsedInspectionTests : InspectionTestsBase
     {
-        private IEnumerable<IInspectionResult> GetInspectionResults(string code, bool includeLibraries = false)
+        private IEnumerable<IInspectionResult> InspectionResultsForStandardModuleUsingStdLibs(string code)
         {
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out _, referenceStdLibs: includeLibraries);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new AssignmentNotUsedInspection(state, new Walker());
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                return inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out _, referenceStdLibs: true).Object;
+            return InspectionResults(vbe);
         }
 
         [Test]
@@ -35,7 +30,7 @@ Sub Foo()
     bar(1) = 42
 End Sub
 ";
-            var results = GetInspectionResults(code);
+            var results = InspectionResultsForStandardModule(code);
             Assert.AreEqual(0, results.Count());
         }
 
@@ -49,7 +44,7 @@ Sub Foo()
     bar(1) = ""Z""
 End Sub
 ";
-            var results = GetInspectionResults(code);
+            var results = InspectionResultsForStandardModule(code);
             Assert.AreEqual(0, results.Count());
         }
 
@@ -63,7 +58,7 @@ Sub test()
     foo(1) = 42
 End Sub
 ";
-            var results = GetInspectionResults(code);
+            var results = InspectionResultsForStandardModule(code);
             Assert.AreEqual(0, results.Count());
         }
 
@@ -80,7 +75,7 @@ End Sub
 
 Sub Bar(ByVal i As Integer)
 End Sub";
-            var results = GetInspectionResults(code);
+            var results = InspectionResultsForStandardModule(code);
             Assert.AreEqual(1, results.Count());
         }
 
@@ -92,7 +87,7 @@ Sub Foo()
     Dim i As Integer
     i = 9
 End Sub";
-            var results = GetInspectionResults(code);
+            var results = InspectionResultsForStandardModule(code);
             Assert.AreEqual(1, results.Count());
         }
 
@@ -111,7 +106,7 @@ Sub Foo()
         i = 8
     End If
 End Sub";
-            var results = GetInspectionResults(code);
+            var results = InspectionResultsForStandardModule(code);
             Assert.AreEqual(0, results.Count());
         }
 
@@ -127,7 +122,7 @@ End Sub
 
 Sub Bar(ByVal i As Integer)
 End Sub";
-            var results = GetInspectionResults(code);
+            var results = InspectionResultsForStandardModule(code);
             Assert.AreEqual(0, results.Count());
         }
 
@@ -141,7 +136,7 @@ Sub foo()
     For counter = i To 2
     Next
 End Sub";
-            var results = GetInspectionResults(code);
+            var results = InspectionResultsForStandardModule(code);
             Assert.AreEqual(0, results.Count());
         }
 
@@ -157,7 +152,7 @@ Sub foo()
         i = i + 1
     Wend
 End Sub";
-            var results = GetInspectionResults(code);
+            var results = InspectionResultsForStandardModule(code);
             Assert.AreEqual(0, results.Count());
         }
 
@@ -171,7 +166,7 @@ Sub foo()
     Do While i < 10
     Loop
 End Sub";
-            var results = GetInspectionResults(code);
+            var results = InspectionResultsForStandardModule(code);
             Assert.AreEqual(0, results.Count());
         }
 
@@ -193,7 +188,7 @@ Sub foo()
             i = -1
     End Select
 End Sub";
-            var results = GetInspectionResults(code);
+            var results = InspectionResultsForStandardModule(code);
             Assert.AreEqual(0, results.Count());
         }
 
@@ -209,7 +204,7 @@ Debug.Print my_fso.GetFolder(""C:\Windows"").DateLastModified
 
 Set my_fso = Nothing
 End Sub";
-            var results = GetInspectionResults(code, includeLibraries:true);
+            var results = InspectionResultsForStandardModuleUsingStdLibs(code);
             Assert.AreEqual(0, results.Count());
         }
 
@@ -223,7 +218,7 @@ Set my_fso = New Scripting.FileSystemObject
 
 Set my_fso = Nothing
 End Sub";
-            var results = GetInspectionResults(code, includeLibraries: true);
+            var results = InspectionResultsForStandardModuleUsingStdLibs(code);
             Assert.AreEqual(1, results.Count());
         }
 
@@ -235,7 +230,7 @@ Public Sub Test()
     Dim foo As Long
     foo = 1245316
 End Sub";
-            var results = GetInspectionResults(code, includeLibraries: false);
+            var results = InspectionResultsForStandardModule(code);
             Assert.AreEqual(0, results.Count());
         }
 
@@ -248,7 +243,7 @@ End Sub";
     foo = 123451
     foo = 56126
 End Sub";
-            var results = GetInspectionResults(code, includeLibraries: false);
+            var results = InspectionResultsForStandardModule(code);
             Assert.AreEqual(1, results.Count());
         }
 
@@ -261,8 +256,13 @@ End Sub";
     foo = 123467
     foo = 45678
 End Sub";
-            var results = GetInspectionResults(code, includeLibraries: false);
+            var results = InspectionResultsForStandardModule(code);
             Assert.AreEqual(0, results.Count());
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new AssignmentNotUsedInspection(state, new Walker());
         }
     }
 }

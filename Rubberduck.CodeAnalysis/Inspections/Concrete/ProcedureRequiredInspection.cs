@@ -15,7 +15,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// <why>
     /// The VBA compiler does not check whether the necessary default member is present. Instead there is a runtime error whenever the runtime type fails to have the default member.
     /// </why>
-    /// <example hasResult="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Class1:
     ///
@@ -33,7 +33,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResult="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Class1:
     ///
@@ -67,7 +67,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
         protected override bool IsResultReference(IdentifierReference failedCoercion)
         {
-            return !failedCoercion.IsIgnoringInspectionResultFor(AnnotationName);
+            // return true because no special ignore checking is required
+            return true;
         }
 
         protected override string ResultDescription(IdentifierReference failedCoercion)

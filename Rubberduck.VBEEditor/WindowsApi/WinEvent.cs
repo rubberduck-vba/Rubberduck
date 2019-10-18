@@ -91,12 +91,8 @@ namespace Rubberduck.VBEditor.WindowsApi
         NativeOM = -16     
     }
 
-#if (THIRSTY_DUCK || THIRSTY_DUCK_EVT)
-
     public static class WinEventMap
     {
         public static readonly Dictionary<int, string> Lookup = EnumHelper.ToDictionary<WinEvent, int>();
     }
-
-#endif
 }

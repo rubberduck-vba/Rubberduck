@@ -176,10 +176,12 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                             asTypeName, 
                             asTypeContext, 
                             accessibility, 
-                            context, 
+                            context,
+                            attributesPassContext,
                             selection, 
                             true,
-                            FindMemberAnnotations(selection.StartLine));
+                            FindMemberAnnotations(selection.StartLine),
+                            attributes);
                         break;
                     case DeclarationType.PropertyGet:
                         result = new PropertyGetDeclaration(
@@ -827,7 +829,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
         public override void EnterEnumerationStmt_Constant(VBAParser.EnumerationStmt_ConstantContext context)
         {
             AddDeclaration(CreateDeclaration(
-                context.identifier().GetText(),
+                WithBracketsRemoved(context.identifier().GetText()),
                 "Long",
                 Accessibility.Implicit,
                 DeclarationType.EnumerationMember,
@@ -836,6 +838,16 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                 false,
                 null,
                 null));
+        }
+
+        private static string WithBracketsRemoved(string enumElementName)
+        {
+            if (enumElementName.StartsWith("[") && enumElementName.EndsWith("]"))
+            {
+                return enumElementName.Substring(1, enumElementName.Length - 2);
+            }
+
+            return enumElementName;
         }
 
         public override void EnterOptionPrivateModuleStmt(VBAParser.OptionPrivateModuleStmtContext context)

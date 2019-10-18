@@ -349,11 +349,11 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Implicit default member assignment.
+        ///   Looks up a localized string similar to Implicit default member access.
         /// </summary>
-        public static string ImplicitDefaultMemberAssignmentInspection {
+        public static string ImplicitDefaultMemberAccessInspection {
             get {
-                return ResourceManager.GetString("ImplicitDefaultMemberAssignmentInspection", resourceCulture);
+                return ResourceManager.GetString("ImplicitDefaultMemberAccessInspection", resourceCulture);
             }
         }
         
@@ -367,11 +367,56 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Implicit recursive default member access.
+        /// </summary>
+        public static string ImplicitRecursiveDefaultMemberAccessInspection {
+            get {
+                return ResourceManager.GetString("ImplicitRecursiveDefaultMemberAccessInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implicit unbound default member access.
+        /// </summary>
+        public static string ImplicitUnboundDefaultMemberAccessInspection {
+            get {
+                return ResourceManager.GetString("ImplicitUnboundDefaultMemberAccessInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Member return type is implicitly &apos;Variant&apos;.
         /// </summary>
         public static string ImplicitVariantReturnTypeInspection {
             get {
                 return ResourceManager.GetString("ImplicitVariantReturnTypeInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indexed default member access.
+        /// </summary>
+        public static string IndexedDefaultMemberAccessInspection {
+            get {
+                return ResourceManager.GetString("IndexedDefaultMemberAccessInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indexed recursive default member access.
+        /// </summary>
+        public static string IndexedRecursiveDefaultMemberAccessInspection {
+            get {
+                return ResourceManager.GetString("IndexedRecursiveDefaultMemberAccessInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indexed unbound default member access.
+        /// </summary>
+        public static string IndexedUnboundDefaultMemberAccessInspection {
+            get {
+                return ResourceManager.GetString("IndexedUnboundDefaultMemberAccessInspection", resourceCulture);
             }
         }
         
@@ -813,6 +858,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string StopKeywordInspection {
             get {
                 return ResourceManager.GetString("StopKeywordInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suspicious Let assignment.
+        /// </summary>
+        public static string SuspiciousLetAssignmentInspection {
+            get {
+                return ResourceManager.GetString("SuspiciousLetAssignmentInspection", resourceCulture);
             }
         }
         

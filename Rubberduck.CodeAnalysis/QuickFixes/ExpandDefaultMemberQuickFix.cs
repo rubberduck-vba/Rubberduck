@@ -4,6 +4,7 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
@@ -15,7 +16,13 @@ namespace Rubberduck.CodeAnalysis.QuickFixes
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
         public ExpandDefaultMemberQuickFix(IDeclarationFinderProvider declarationFinderProvider)
-        : base(typeof(ObjectWhereProcedureIsRequiredInspection))
+        : base(
+            typeof(ObjectWhereProcedureIsRequiredInspection), 
+            typeof(IndexedDefaultMemberAccessInspection), 
+            typeof(IndexedRecursiveDefaultMemberAccessInspection), 
+            typeof(ImplicitDefaultMemberAccessInspection), 
+            typeof(ImplicitRecursiveDefaultMemberAccessInspection),
+            typeof(SuspiciousLetAssignmentInspection))
         {
             _declarationFinderProvider = declarationFinderProvider;
         }
@@ -28,6 +35,14 @@ namespace Rubberduck.CodeAnalysis.QuickFixes
             var lExpressionContext = result.Context;
             var selection = result.QualifiedSelection;
             InsertDefaultMember(lExpressionContext, selection, finder, rewriter);
+
+            if (result.Inspection is SuspiciousLetAssignmentInspection)
+            {
+                IdentifierReference rhsReference = result.Properties.RhSReference;
+                var rhsLExpressionContext = rhsReference.Context;
+                var rhsSelection = rhsReference.QualifiedSelection;
+                InsertDefaultMember(rhsLExpressionContext, rhsSelection, finder, rewriter);
+            }
         }
 
         private void InsertDefaultMember(ParserRuleContext lExpressionContext, QualifiedSelection selection, DeclarationFinder finder, IModuleRewriter rewriter)
