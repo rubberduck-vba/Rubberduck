@@ -119,9 +119,9 @@ namespace Rubberduck.Parsing.VBA
                 const string errorMessage =
                     "A suspension action was attempted while a read lock was held. This indicates a bug in the code logic as suspension should not be requested from same thread that has a read lock.";
                 Logger.Error(errorMessage);
-#if DEBUG
+
                 Debug.Assert(false, errorMessage);
-#endif
+
                 return;
             }
 
@@ -239,13 +239,7 @@ namespace Rubberduck.Parsing.VBA
             _parserStateManager.SetStatusAndFireStateChanged(this, ParserState.LoadingReference, token);
             token.ThrowIfCancellationRequested();
 
-            //TODO: Remove the conditional compilation after loading from typelibs actually works.
-#if LOAD_USER_COM_PROJECTS
-            RefreshUserComProjects(toParse, newProjectIds);
-            token.ThrowIfCancellationRequested();
-
-            SyncDeclarationsFromUserComProjects(toParse, token, toReresolveReferences);
-#endif
+            ProcessUserComProjects(ref token, ref toParse, ref toReresolveReferences, ref newProjectIds);
 
             SyncComReferences(toParse, token, toReresolveReferences);
             token.ThrowIfCancellationRequested();
@@ -338,6 +332,17 @@ namespace Rubberduck.Parsing.VBA
             //This is the point where the change of the overall state to Ready is triggered on the success path.
             _parserStateManager.EvaluateOverallParserState(token);
             token.ThrowIfCancellationRequested();
+        }
+
+        //TODO: Remove the conditional compilation after loading from typelibs actually works.
+        //TODO: Improve the handling to avoid host crashing. See https://github.com/rubberduck-vba/Rubberduck/issues/5217
+        [Conditional("LOAD_USER_COM_PROJECTS")]
+        private void ProcessUserComProjects(ref CancellationToken token, ref IReadOnlyCollection<QualifiedModuleName> toParse, ref HashSet<QualifiedModuleName> toReresolveReferences, ref IReadOnlyCollection<string> newProjectIds)
+        {
+            RefreshUserComProjects(toParse, newProjectIds);
+            token.ThrowIfCancellationRequested();
+
+            SyncDeclarationsFromUserComProjects(toParse, token, toReresolveReferences);
         }
 
         private void SyncComReferences(IReadOnlyCollection<QualifiedModuleName> toParse, CancellationToken token, HashSet<QualifiedModuleName> toReresolveReferences)

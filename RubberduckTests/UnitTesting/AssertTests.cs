@@ -1,3 +1,4 @@
+using System;
 using NUnit.Framework;
 using Rubberduck.UnitTesting;
 
@@ -68,11 +69,10 @@ namespace RubberduckTests.UnitTesting
 
         [Category("Unit Testing")]
         [Test]
-        [Ignore("Would require passing COM objects for proper verification")]
         public void AreSameShouldSucceedWithSameReferences()
         {
             var assert = new AssertClass();
-            var obj1 = new object();
+            var obj1 = GetComObject();
             var obj2 = obj1;
             assert.AreSame(obj1, obj2);
 
@@ -81,12 +81,11 @@ namespace RubberduckTests.UnitTesting
 
         [Category("Unit Testing")]
         [Test]
-        [Ignore("Would require passing COM objects for proper verification")]
         public void AreSameShouldFailWithDifferentReferences()
         {
             var assert = new AssertClass();
-            var obj1 = new object();
-            var obj2 = new object();
+            var obj1 = GetComObject();
+            var obj2 = GetComObject();
             assert.AreSame(obj1, obj2);
 
             Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
@@ -104,34 +103,31 @@ namespace RubberduckTests.UnitTesting
 
         [Category("Unit Testing")]
         [Test]
-        [Ignore("Would require passing COM objects for proper verification")]
         public void AreSameShouldFailWithActualNullReference()
         {
             var assert = new AssertClass();
-            assert.AreSame(new object(), null);
+            assert.AreSame(GetComObject(), null);
 
             Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
         }
 
         [Category("Unit Testing")]
         [Test]
-        [Ignore("Would require passing COM objects for proper verification")]
         public void AreSameShouldFailWithExpectedNullReference()
         {
             var assert = new AssertClass();
-            assert.AreSame(null, new object());
+            assert.AreSame(null, GetComObject());
 
             Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
         }
 
         [Category("Unit Testing")]
         [Test]
-        [Ignore("Would require passing COM objects for proper verification")]
         public void AreNotSameShouldSucceedWithDifferentReferences()
         {
             var assert = new AssertClass();
-            var obj1 = new object();
-            var obj2 = new object();
+            var obj1 = GetComObject();
+            var obj2 = GetComObject();
             assert.AreNotSame(obj1, obj2);
 
             Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
@@ -139,11 +135,10 @@ namespace RubberduckTests.UnitTesting
 
         [Category("Unit Testing")]
         [Test]
-        [Ignore("Would require passing COM objects for proper verification")]
         public void AreNotSameShouldSuccedWithOneNullReference()
         {
             var assert = new AssertClass();
-            assert.AreNotSame(new object(), null);
+            assert.AreNotSame(GetComObject(), null);
 
             Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
         }
@@ -160,11 +155,10 @@ namespace RubberduckTests.UnitTesting
 
         [Category("Unit Testing")]
         [Test]
-        [Ignore("Would require passing COM objects for proper verification")]
         public void AreNotSameShouldFailWithSameReferences()
         {
             var assert = new AssertClass();
-            var obj1 = new object();
+            var obj1 = GetComObject();
             var obj2 = obj1;
             assert.AreNotSame(obj1, obj2);
 
@@ -355,5 +349,8 @@ namespace RubberduckTests.UnitTesting
 
             Assert.AreEqual(TestOutcome.Inconclusive, _args.Outcome);
         }
+
+        private static Type GetComObjectType() => Type.GetTypeFromProgID("Scripting.FileSystemObject");
+        private object GetComObject() => Activator.CreateInstance(GetComObjectType());
     }
 }

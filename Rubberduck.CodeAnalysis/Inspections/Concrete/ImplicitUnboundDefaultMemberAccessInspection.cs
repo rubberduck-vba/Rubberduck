@@ -17,14 +17,14 @@ namespace Rubberduck.Inspections.Concrete
     /// and if the default member cannot be determined from the declared type of the object. As a consequence, errors in which a member was forgotten to be called can go unnoticed
     /// and should there not be a suitable default member at runtime, an error 438 'Object doesn't support this property or method' will be raised.
     /// </why>
-    /// <example hasResult="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal arg As Object)
     ///     Dim bar As Variant
     ///     bar = arg
     /// End Sub
     /// ]]>
-    /// <example hasResult="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal arg As Object)
     ///     Dim bar As Variant
@@ -32,14 +32,14 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResult="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal arg As Object)
     ///     Dim bar As Variant
     ///     bar = arg.SomeValueReturningMember
     /// End Sub
     /// ]]>
-    /// <example hasResult="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal arg As Object)
     ///     Dim bar As Variant

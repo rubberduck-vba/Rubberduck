@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.Notifiers
@@ -44,7 +46,7 @@ namespace Rubberduck.UI.Notifiers
             }
         }
 
-        public void NotifyMembersForRecoveryNotFound(IEnumerable<QualifiedMemberName> membersNotFound)
+        public void NotifyMembersForRecoveryNotFound(IEnumerable<(QualifiedMemberName memberName, DeclarationType memberType)> membersNotFound)
         {
             var message = MembersNotFoundMessage(membersNotFound);
             var caption = Resources.RubberduckUI.MemberAttributeRecoveryFailureCaption;
@@ -52,10 +54,11 @@ namespace Rubberduck.UI.Notifiers
             _messageBox.NotifyWarn(message, caption);
         }
 
-        private string MembersNotFoundMessage(IEnumerable<QualifiedMemberName> membersNotFound)
+        private string MembersNotFoundMessage(IEnumerable<(QualifiedMemberName memberName, DeclarationType memberType)> membersNotFound)
         {
-            var missingMemberList = $"{Environment.NewLine}{string.Join(Environment.NewLine, membersNotFound)}";
-            return string.Format(Resources.RubberduckUI.MemberAttributeRecoveryMembersNotFoundMessage, missingMemberList); ;
+            var missingMemberTexts = membersNotFound.Select(tpl => $"{tpl.memberName} ({tpl.memberType})");
+            var missingMemberList = $"{Environment.NewLine}{string.Join(Environment.NewLine, missingMemberTexts)}";
+            return string.Format(Resources.RubberduckUI.MemberAttributeRecoveryMembersNotFoundMessage, missingMemberList);
         }
     }
 }

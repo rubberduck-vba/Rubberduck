@@ -33,9 +33,8 @@ namespace Rubberduck.Parsing.Symbols
         {
             ParentScoping = parentScopingDeclaration;
             ParentNonScoping = parentNonScopingDeclaration;
-            QualifiedModuleName = qualifiedName;
+            QualifiedSelection = new QualifiedSelection(qualifiedName, selection);
             IdentifierName = identifierName;
-            Selection = selection;
             Context = context;
             Declaration = declaration;
             HasExplicitLetStatement = hasExplicitLetStatement;
@@ -50,11 +49,11 @@ namespace Rubberduck.Parsing.Symbols
             IsInnerRecursiveDefaultMemberAccess = isInnerRecursiveDefaultMemberAccess;
         }
 
-        public QualifiedModuleName QualifiedModuleName { get; }
+        public QualifiedSelection QualifiedSelection { get; }
+        public QualifiedModuleName QualifiedModuleName => QualifiedSelection.QualifiedName;
+        public Selection Selection => QualifiedSelection.Selection;
 
         public string IdentifierName { get; }
-
-        public Selection Selection { get; }
 
         /// <summary>
         /// Gets the scoping <see cref="Declaration"/> that contains this identifier reference,

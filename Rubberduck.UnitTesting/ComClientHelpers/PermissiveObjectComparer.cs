@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Rubberduck.VBEditor.Variants;
 
 namespace Rubberduck.UnitTesting.ComClientHelpers
 {
@@ -13,42 +14,19 @@ namespace Rubberduck.UnitTesting.ComClientHelpers
         /// <returns>VBA equity</returns>
         public new bool Equals(object x, object y)
         {
-            var expected = x;
-            var actual = y;
+            if (x == null)
+            {
+                return y == null;
+            }
 
-            // try promoting integral types first.
-            if (expected is ulong && actual is ulong)
+            if (y == null)
             {
-                return (ulong)x == (ulong)y;
+                return false;
             }
-            // then try promoting to floating point
-            if (expected is double && actual is double)
-            {
-                // ReSharper disable once CompareOfFloatsByEqualityOperator - We're cool with that.
-                return (double)x == (double)y;
-            }
-            // that shouldn't actually happen, since decimal is the only numeric ValueType in its category
-            // this means we should've gotten the same types earlier in the Assert method
-            if (expected is decimal && actual is decimal)
-            {
-                return (decimal)x == (decimal)y;
-            }
-            // worst case scenario for numbers
-            // since we're inside VBA though, double is the more appropriate type to compare, 
-            // because that is what's used internally anyways, see https://support.microsoft.com/en-us/kb/78113
-            if ((expected is decimal && actual is double) || (expected is double && actual is decimal))
-            {
-                // ReSharper disable once CompareOfFloatsByEqualityOperator - We're still cool with that.
-                return (double)x == (double)y;
-            }
-            // no number-type promotions are applicable. 2nd to last straw: string "promotion"
-            if (expected is string || actual is string)
-            {
-                expected = expected.ToString();
-                actual = actual.ToString();
-                return expected.Equals(actual);
-            }
-            return x.Equals(y);
+            
+            var converted = VariantConverter.ChangeType(y, x.GetType());
+
+            return x.Equals(converted);
         }
 
         /// <summary>

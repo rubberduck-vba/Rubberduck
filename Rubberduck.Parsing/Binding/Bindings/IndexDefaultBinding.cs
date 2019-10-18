@@ -298,14 +298,21 @@ namespace Rubberduck.Parsing.Binding
                 named arguments. In this case, the index expression is classified as an unbound member with 
                 a declared type of Variant, referencing <l-expression> with no member name. 
              */
-            if (
-                (Tokens.Variant.Equals(asTypeName, StringComparison.InvariantCultureIgnoreCase)
-                    || Tokens.Object.Equals(asTypeName, StringComparison.InvariantCultureIgnoreCase))
+            if (Tokens.Variant.Equals(asTypeName, StringComparison.InvariantCultureIgnoreCase)
+                && !argumentList.HasNamedArguments)
+            {
+                ResolveArgumentList(null, argumentList);
+                //We do not treat unbound accesses on variables of type Variant as default member accesses because they could be array accesses as well. 
+                return new IndexExpression(null, ExpressionClassification.Unbound, expression, _lExpression, argumentList, isDefaultMemberAccess: false, defaultMemberRecursionDepth: defaultMemberResolutionRecursionDepth, containedDefaultMemberRecursionExpression: containedExpression);
+            }
+
+            if (Tokens.Object.Equals(asTypeName, StringComparison.InvariantCultureIgnoreCase)
                 && !argumentList.HasNamedArguments)
             {
                 ResolveArgumentList(null, argumentList);
                 return new IndexExpression(null, ExpressionClassification.Unbound, expression, _lExpression, argumentList, isDefaultMemberAccess: true, defaultMemberRecursionDepth: defaultMemberResolutionRecursionDepth, containedDefaultMemberRecursionExpression: containedExpression);
             }
+
             /*
                 The declared type of <l-expression> is a specific class, which has a public default Property 
                 Get, Property Let, function or subroutine, and one of the following is true:
