@@ -49,7 +49,7 @@ DefBool B: DefByte Y: DefInt I: DefLng L: DefLngLng N: DefLngPtr P: DefCur C: De
         }
 
         [TestCase("Private Function Foo() As String\r\nEnd Function")]
-        [TestCase("Private Sub Foo() As String\r\nEnd Sub")]
+        [TestCase("Private Sub Foo()\r\nEnd Sub")]
         [TestCase("Public Property Get Foo()\r\nEnd Property")]
         [TestCase("Public Property Set Foo(rhs As Variant)\r\nEnd Property")]
         [TestCase("Public Property Let Foo(rhs As Variant)\r\nEnd Property")]
