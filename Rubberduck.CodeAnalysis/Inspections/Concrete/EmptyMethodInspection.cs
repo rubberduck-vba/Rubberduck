@@ -43,7 +43,7 @@ namespace Rubberduck.Inspections.Concrete
 
             return State.DeclarationFinder.UserDeclarations(DeclarationType.Member)
                 .Where(member => !allInterfaces.Any(userInterface => userInterface.QualifiedModuleName == member.QualifiedModuleName)
-                                 && !((ModuleBodyElementDeclaration)member).Block.ContainsExecutableStatements())
+                                 && !(member is ModuleBodyElementDeclaration mbe && mbe.Block.ContainsExecutableStatements()))
 
                 .Select(result => new DeclarationInspectionResult(this,
                                         string.Format(InspectionResults.EmptyMethodInspection,
