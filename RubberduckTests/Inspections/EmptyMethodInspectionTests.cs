@@ -118,6 +118,17 @@ End Sub";
             Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
+        [Test]
+        [Category("Inspections")]
+        public void EmptyMethod_DeclareStatement_NoResult()
+        {
+            string inputCode =
+                $@"
+Private Declare PtrSafe Function GetKeyState Lib ""user32.dll"" (ByVal nVirtKey As Long) As Integer
+";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
         private void CheckActualEmptyBlockCountEqualsExpected(string interfaceCode, string concreteCode, int expectedCount)
         {
             var builder = new MockVbeBuilder();

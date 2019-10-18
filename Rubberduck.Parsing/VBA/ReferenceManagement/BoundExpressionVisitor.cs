@@ -124,7 +124,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
         {
             var callSiteContext = expression.Context;
             var callee = expression.ReferencedDeclaration;
-            var identifier = callee.IdentifierName;
+            var identifier = WithEnclosingBracketsRemoved(callSiteContext.GetText());
             var selection = callSiteContext.GetSelection();
             expression.ReferencedDeclaration.AddReference(
                 module,
@@ -164,7 +164,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
 
             var callSiteContext = expression.UnrestrictedNameContext;
             var callee = expression.ReferencedDeclaration;
-            var identifier = callee.IdentifierName;
+            var identifier = WithEnclosingBracketsRemoved(callSiteContext.GetText());
             var selection = callSiteContext.GetSelection();
             expression.ReferencedDeclaration.AddReference(
                 module,
@@ -178,6 +178,16 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 isAssignmentTarget,
                 hasExplicitLetStatement,
                 isSetAssignment);
+        }
+
+        private static string WithEnclosingBracketsRemoved(string identifierName)
+        {
+            if (identifierName.StartsWith("[") && identifierName.EndsWith("]"))
+            {
+                return identifierName.Substring(1, identifierName.Length - 2);
+            }
+
+            return identifierName;
         }
 
         private void Visit(
