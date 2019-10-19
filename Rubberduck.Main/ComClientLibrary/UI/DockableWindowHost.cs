@@ -146,7 +146,7 @@ namespace Rubberduck.UI
         public int /* IOleObject:: */ Close([In] uint dwSaveOption)
         {
             _logger.Log(LogLevel.Trace, "IOleObject::Close() called");
-            int hr = _userControl.IOleObject.Close(dwSaveOption);
+            var hr = _userControl.IOleObject.Close(dwSaveOption);
 
             // IOleObject::SetClientSite is typically called with pClientSite = null just before calling IOleObject::Close()
             // If it didn't, we release all host COM objects here instead,
@@ -438,6 +438,8 @@ namespace Rubberduck.UI
         [ComVisible(false)]
         public class ParentWindow : SubclassingWindow
         {
+            private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
             private const int MF_BYPOSITION = 0x400;
 
             public event SubClassingWindowEventHandler CallBackEvent;
@@ -484,20 +486,20 @@ namespace Rubberduck.UI
 
                     if (_menuHandle == IntPtr.Zero)
                     {
-                        Debug.Print("Cannot create menu handle");
+                        _logger.Warn("Cannot create menu handle");
                         return;
                     }
 
                     if (!NativeMethods.InsertMenu(_menuHandle, 0, MF_BYPOSITION, (UIntPtr)WM.RUBBERDUCK_UNDOCKABLE_CONTEXT_MENU, "Dockable" + char.MinValue))
                     {
-                        Debug.Print("Failed to insert a menu item for dockable command");
+                        _logger.Warn("Failed to insert a menu item for dockable command");
                     }
                 }
 
                 var param = new LParam {Value = (uint)lParam};
                 if (!NativeMethods.TrackPopupMenuEx(_menuHandle, 0x0, param.LowWord, param.HighWord, handle, IntPtr.Zero ))
                 {
-                    Debug.Print("Failed to set the context menu for undockable tool windows");
+                    _logger.Warn("Failed to set the context menu for undockable tool windows");
                 };
             }
 
@@ -553,7 +555,7 @@ namespace Rubberduck.UI
                         {
                             if (!NativeMethods.DestroyMenu(_menuHandle))
                             {
-                                Debug.Print($"Failed to destroy the menu handle {_menuHandle}");
+                                _logger.Fatal($"Failed to destroy the menu handle {_menuHandle}");
                             }
                         }
                         break;
