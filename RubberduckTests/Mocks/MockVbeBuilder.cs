@@ -205,12 +205,6 @@ namespace RubberduckTests.Mocks
             => BuildFromModules(new (string, string, ComponentType)[] { module }, libraries);
 
         /// <summary>
-        /// Builds a mock VBE containing a single "TestProject1" with one module and multiple libraries.
-        /// </summary>
-        public static Mock<IVBE> BuildFromModules((string name, string content, ComponentType componentType) module, IEnumerable<string> libraries)
-            => BuildFromModules(new (string, string, ComponentType)[] { module }, libraries);
-
-        /// <summary>
         /// Builds a mock VBE containing a single "TestProject1" with multiple modules and libraries.
         /// </summary>
         public static Mock<IVBE> BuildFromModules(IEnumerable<(string name, string content, ComponentType componentType)> modules, IEnumerable<string> libraryNames)
