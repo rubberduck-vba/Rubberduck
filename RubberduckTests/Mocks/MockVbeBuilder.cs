@@ -54,7 +54,7 @@ namespace RubberduckTests.Mocks
             ["ADOR"] = LibraryPathAdoRecordset
         };
 
-        private static readonly Dictionary<string, Action<MockProjectBuilder>> addReferenceActions = new Dictionary<string, Action<MockProjectBuilder>>
+        private static readonly Dictionary<string, Func<MockProjectBuilder, MockProjectBuilder>> AddReference = new Dictionary<string, Func<MockProjectBuilder, MockProjectBuilder>>
         {
             ["Excel"] = (MockProjectBuilder builder) => builder.AddReference("Excel", LibraryPathMsExcel, 1, 8, true),
             ["VBA"] = (MockProjectBuilder builder) => builder.AddReference("VBA", LibraryPathVBA, 4, 2, true),
@@ -231,7 +231,7 @@ namespace RubberduckTests.Mocks
 
             foreach (var name in libraryNames)
             {
-                addReferenceActions[name](builder);
+                AddReference[name](builder);
             }
 
             var project = builder.Build();
