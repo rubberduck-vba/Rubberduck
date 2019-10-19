@@ -17,8 +17,8 @@ namespace RubberduckTests.Mocks
     [SuppressMessage("Microsoft.Design", "CA1001")] //CA1001 is complaining about RubberduckTests.Mocks.Windows, which doesn't need to be disposed in this context.
     public class MockVbeBuilder
     {
-        public static string TestProjectName { set; get; } = "TestProject1";
-        public static string TestModuleName { set; get; } = "TestModule1";
+        public const string TestProjectName = "TestProject1";
+        public const string TestModuleName = "TestModule1";
         private readonly Mock<IVBE> _vbe;
         private readonly Mock<IVbeEvents> _vbeEvents;
 
@@ -177,7 +177,7 @@ namespace RubberduckTests.Mocks
         }
 
         /// <summary>
-        /// Builds a mock VBE containing multiple standard modules.
+        /// Builds a mock VBE containing a single "TestProject1" and multiple standard modules.
         /// </summary>
         public static Mock<IVBE> BuildFromStdModules(params (string name, string content)[] modules)
         {
@@ -185,7 +185,7 @@ namespace RubberduckTests.Mocks
         }
 
         /// <summary>
-        /// Builds a mock VBE containing one project with multiple modules.
+        /// Builds a mock VBE containing a single "TestProject1" with multiple modules.
         /// </summary>
         public static Mock<IVBE> BuildFromModules(params (string name, string content, ComponentType componentType)[] modules)
         {
@@ -193,31 +193,37 @@ namespace RubberduckTests.Mocks
         }
 
         /// <summary>
-        /// Builds a mock VBE containing one project with multiple modules.
+        /// Builds a mock VBE containing a single "TestProject1" with multiple modules.
         /// </summary>
         public static Mock<IVBE> BuildFromModules(IEnumerable<(string name, string content, ComponentType componentType)> modules)
             => BuildFromModules(modules, Enumerable.Empty<string>());
 
         /// <summary>
-        /// Builds a mock VBE containing one project with one module and one library.
+        /// Builds a mock VBE containing a single "TestProject1" with one module and one or more libraries.
         /// </summary>
-        public static Mock<IVBE> BuildFromModules((string name, string content, ComponentType componentType) module, string library)
-            => BuildFromModules(new(string, string, ComponentType)[] { module }, new string[] { library });
+        public static Mock<IVBE> BuildFromModules((string name, string content, ComponentType componentType) module, params string[] libraries)
+            => BuildFromModules(new (string, string, ComponentType)[] { module }, libraries);
 
         /// <summary>
-        /// Builds a mock VBE containing one project with one module and multiple libraries.
+        /// Builds a mock VBE containing a single "TestProject1" with one module and multiple libraries.
         /// </summary>
         public static Mock<IVBE> BuildFromModules((string name, string content, ComponentType componentType) module, IEnumerable<string> libraries)
-            => BuildFromModules(new(string, string, ComponentType)[] { module }, libraries);
+            => BuildFromModules(new (string, string, ComponentType)[] { module }, libraries);
+
+        /// <summary>
+        /// Builds a mock VBE containing a single "TestProject1" with multiple modules and libraries.
+        /// </summary>
+        public static Mock<IVBE> BuildFromModules(IEnumerable<(string name, string content, ComponentType componentType)> modules, IEnumerable<string> libraryNames)
+            => BuildFromModules(TestProjectName, modules, libraryNames);
 
         /// <summary>
         /// Builds a mock VBE containing one project with multiple modules and libraries.
         /// </summary>
-        public static Mock<IVBE> BuildFromModules(IEnumerable<(string name, string content, ComponentType componentType)> modules, IEnumerable<string> libraryNames)
+        public static Mock<IVBE> BuildFromModules(string projectName, IEnumerable<(string name, string content, ComponentType componentType)> modules, IEnumerable<string> libraryNames)
         {
             var vbeBuilder = new MockVbeBuilder();
 
-            var builder = vbeBuilder.ProjectBuilder(TestProjectName, ProjectProtection.Unprotected);
+            var builder = vbeBuilder.ProjectBuilder(projectName, ProjectProtection.Unprotected);
             foreach (var (name, content, componentType) in modules)
             {
                 builder.AddComponent(name, componentType, content);
