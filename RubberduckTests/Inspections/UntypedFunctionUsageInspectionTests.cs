@@ -1,12 +1,8 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -30,8 +26,6 @@ End Sub";
             var parser = MockParser.Create(vbe.Object);
             using (var state = parser.State)
             {
-                GetBuiltInDeclarations().ForEach(d => state.AddDeclaration(d));
-
                 parser.Parse(new CancellationTokenSource());
                 if (state.Status >= ParserState.Error)
                 {
@@ -60,8 +54,6 @@ End Sub";
             var parser = MockParser.Create(vbe.Object);
             using (var state = parser.State)
             {
-                GetBuiltInDeclarations().ForEach(d => state.AddDeclaration(d));
-
                 parser.Parse(new CancellationTokenSource());
                 if (state.Status >= ParserState.Error)
                 {
@@ -92,8 +84,6 @@ End Sub";
             var parser = MockParser.Create(vbe.Object);
             using (var state = parser.State)
             {
-                GetBuiltInDeclarations().ForEach(d => state.AddDeclaration(d));
-
                 parser.Parse(new CancellationTokenSource());
                 if (state.Status >= ParserState.Error)
                 {
@@ -115,6 +105,7 @@ End Sub";
 
             Assert.AreEqual(nameof(UntypedFunctionUsageInspection), inspection.Name);
         }
+<<<<<<< HEAD
 
         private List<Declaration> GetBuiltInDeclarations()
         {
@@ -788,5 +779,7 @@ End Sub";
         {
             return new UntypedFunctionUsageInspection(state);
         }
+=======
+>>>>>>> rubberduck-vba/next
     }
 }

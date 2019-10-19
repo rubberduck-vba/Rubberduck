@@ -6,7 +6,8 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -36,7 +37,7 @@ namespace Rubberduck.Inspections.Concrete
         public UntypedFunctionUsageInspection(RubberduckParserState state)
             : base(state) { }
 
-        private readonly string[] _tokens = {
+        private readonly HashSet<string> _tokens = new HashSet<string>{
             Tokens.Error,
             Tokens.Hex,
             Tokens.Oct,
@@ -64,17 +65,46 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            var declarations = BuiltInDeclarations
-                .Where(item =>
-                        _tokens.Any(token => item.IdentifierName == token || item.IdentifierName == "_B_var_" + token) &&
-                        item.Scope.StartsWith("VBE7.DLL;"));
+            var finder = State.DeclarationFinder;
 
-            return declarations.SelectMany(declaration => declaration.References
-                .Where(item => _tokens.Contains(item.IdentifierName))
-                .Select(item => new IdentifierReferenceInspectionResult(this,
-                                                     string.Format(InspectionResults.UntypedFunctionUsageInspection, item.Declaration.IdentifierName),
-                                                     State,
-                                                     item)));
+            var declarationsToConsider = BuiltInVariantStringFunctionsWithStringTypedVersion(finder);
+
+            return declarationsToConsider
+                .SelectMany(NonStringHintedReferences)
+                .Select(Result);
+        }
+
+        private IEnumerable<Declaration> BuiltInVariantStringFunctionsWithStringTypedVersion(DeclarationFinder finder)
+        {
+            return finder
+                .BuiltInDeclarations(DeclarationType.Member)
+                .Where(item => (_tokens.Contains(item.IdentifierName)
+                                || item.IdentifierName.StartsWith("_B_var_")
+                                    && _tokens.Contains(item.IdentifierName.Substring("_B_var_".Length)))
+                               && item.Scope.StartsWith("VBE7.DLL;"));
+        }
+
+        private IEnumerable<IdentifierReference> NonStringHintedReferences(Declaration declaration)
+        {
+            return declaration.References
+                .Where(item => _tokens.Contains(item.IdentifierName));
+        }
+
+        private IInspectionResult Result(IdentifierReference reference)
+        {
+            return new IdentifierReferenceInspectionResult(
+                this,
+                ResultDescription(reference),
+                State,
+                reference);
+        }
+
+        private static string ResultDescription(IdentifierReference reference)
+        {
+            var declarationName = reference.Declaration.IdentifierName;
+            return string.Format(
+                InspectionResults.UntypedFunctionUsageInspection,
+                declarationName);
         }
     }
 }

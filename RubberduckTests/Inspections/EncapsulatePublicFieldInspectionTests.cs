@@ -7,20 +7,28 @@ using Rubberduck.Parsing.VBA;
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
+    [Category("EncapsulatePublicFieldInspection")]
     public class EncapsulatePublicFieldInspectionTests : InspectionTestsBase
     {
         [Test]
-        [Category("Inspections")]
         public void PublicField_ReturnsResult()
         {
             const string inputCode =
                 @"Public fizz As Boolean";
-
+            
             Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
-        [Category("Inspections")]
+        public void GlobalField_ReturnsResult()
+        {
+            const string inputCode =
+                @"Global fizz As Boolean";
+            
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
         public void MultiplePublicFields_ReturnMultipleResult()
         {
             const string inputCode =
@@ -32,39 +40,41 @@ Public buzz As Integer, _
         }
 
         [Test]
-        [Category("Inspections")]
         public void PrivateField_DoesNotReturnResult()
         {
             const string inputCode =
                 @"Private fizz As Boolean";
-
             Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
-        [Category("Inspections")]
         public void PublicNonField_DoesNotReturnResult()
         {
             const string inputCode =
                 @"Public Sub Foo(ByRef arg1 As String)
 End Sub";
-
             Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
-        [Category("Inspections")]
         public void PublicField_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
                 @"'@Ignore EncapsulatePublicField
 Public fizz As Boolean";
-
             Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
-        [Category("Inspections")]
+        public void GlobalField_Ignored_DoesNotReturnResult()
+        {
+            const string inputCode =
+                @"'@Ignore EncapsulatePublicField
+Global fizz As Boolean";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
         public void InspectionName()
         {
             var inspection = new EncapsulatePublicFieldInspection(null);
