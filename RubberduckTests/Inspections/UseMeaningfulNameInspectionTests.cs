@@ -8,36 +8,13 @@ using RubberduckTests.Mocks;
 using Rubberduck.CodeAnalysis.Settings;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Inspections.Abstract;
+using System.Collections.Generic;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
     public class UseMeaningfulNameInspectionTests : InspectionTestsBase
     {
-        private string _initialDefaultProjectName;
-        private string _initialDefaultModuleName;
-
-        //(10/15/2019)The default MockVbeBuilder default identifiers "TestProject1" and "TestModule1"
-        //are flagged by this inspection and interfere with the intended test results.
-        //Modify these static property values during setup to remove the unintended results. 
-        //Reset the values during teardown to prevent failure of subsequent test classes using the 
-        //default names during setup or expected vs actual asserts.
-        [OneTimeSetUp]
-        public void CacheDefaultNames()
-        {
-            _initialDefaultProjectName = MockVbeBuilder.TestProjectName;
-            _initialDefaultModuleName = MockVbeBuilder.TestModuleName;
-            MockVbeBuilder.TestProjectName = "VBAProject";
-            MockVbeBuilder.TestModuleName = "TestModule";
-        }
-
-        [OneTimeTearDown]
-        public void RestoreDefaultIdentifiers()
-        {
-            MockVbeBuilder.TestProjectName = _initialDefaultProjectName;
-            MockVbeBuilder.TestModuleName = _initialDefaultModuleName;
-        }
-
         [Test]
         [Category("Inspections")]
         public void UseMeaningfulName_NoResultForLineNumberLabels()
@@ -47,7 +24,7 @@ Sub DoSomething()
 10 Debug.Print 42
 End Sub
 ";
-            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+            Assert.AreEqual(0, InspectionResultsForModules(("TestModule", inputCode, ComponentType.StandardModule)).Count());
         }
 
         [Test]
@@ -180,6 +157,12 @@ End Sub";
                 }, true));
 
             return settings;
+        }
+
+        private IEnumerable<IInspectionResult> InspectionResultsForModules(params (string name, string content, ComponentType componentType)[] modules)
+        {
+            var vbe = MockVbeBuilder.BuildFromModules("TestProject", modules, Enumerable.Empty<string>());
+            return InspectionResults(vbe.Object);
         }
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
