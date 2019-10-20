@@ -353,7 +353,10 @@
                                        ItemsSource="{Binding Tests}"
                                        SelectionMode="Extended"
                                        ShowGroupingItemCount="True"
-                                       InitialExpandedState="True">
+                                       InitialExpandedState="True"
+                                       ScrollViewer.CanContentScroll="True" 
+                                       ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                       ScrollViewer.HorizontalScrollBarVisibility="Auto">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Outcome}">
                             <DataGridTemplateColumn.CellTemplate>
