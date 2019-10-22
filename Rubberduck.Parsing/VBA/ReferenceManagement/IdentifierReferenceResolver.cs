@@ -659,6 +659,11 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             {
                 Resolve(stepStatement);
             }
+
+            for (var exprIndex = 2; exprIndex < context.expression().Length; exprIndex++)
+            {
+                ResolveDefault(context.expression()[exprIndex], false);
+            }
         }
 
         private void Resolve(VBAParser.StepStmtContext context)

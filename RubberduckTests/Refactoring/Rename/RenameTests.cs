@@ -71,6 +71,33 @@ End Sub"
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
         }
 
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        //See issue #5236 at https://github.com/rubberduck-vba/Rubberduck/issues/5236
+        public void RenameRefactoring_RenameForIndex_UpdatesReferences()
+        {
+            var tdo = new RenameTestsDataObject(selectedIdentifier: "loopIndex", newName: "otherLoopIndex");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Private Sub Foo()
+    Dim loop|Index As Long
+    For loopIndex = 0 To 42
+        'DoSomething
+    Next loopIndex
+End Sub",
+                Expected =
+                    @"Private Sub Foo()
+    Dim otherLoopIndex As Long
+    For otherLoopIndex = 0 To 42
+        'DoSomething
+    Next otherLoopIndex
+End Sub",
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+        }
+
         #endregion
         #region Rename Parameter Tests
 

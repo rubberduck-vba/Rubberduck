@@ -6861,6 +6861,115 @@ End Function
         [Category("Grammar")]
         [Category("Resolver")]
         [Test]
+        public void ExpressionInNextHasReference_For()
+        {
+            var moduleCode = $@"
+Private Sub Foo()
+   Dim loopIndex As Long
+   For loopIndex = 0 To 42
+      'DoSomething
+   Next loopIndex
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(moduleCode, out _);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var loopIndex = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Single(declaration => declaration.IdentifierName.Equals("loopIndex"));
+                var loopIndexReferences = loopIndex.References;
+
+                Assert.AreEqual(2, loopIndexReferences.Count());
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void ExpressionInNextHasReference_DoubleFor()
+        {
+            var moduleCode = $@"
+Private Sub Foo()
+   Dim loopIndex As Long
+   Dim otherLoopIndex As Long
+   For loopIndex = 0 To 42
+      For otherLoopIndex = 0 To 23
+         'DoSomething
+   Next otherLoopIndex, loopIndex
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(moduleCode, out _);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var loopIndex = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Single(declaration => declaration.IdentifierName.Equals("loopIndex"));
+                var otherLoopIndex = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Single(declaration => declaration.IdentifierName.Equals("otherLoopIndex"));
+                var loopIndexReferences = loopIndex.References;
+                var otherLoopIndexReferences = otherLoopIndex.References;
+
+                Assert.AreEqual(2, loopIndexReferences.Count());
+                Assert.AreEqual(2, otherLoopIndexReferences.Count());
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void ExpressionInNextHasReference_ForEach()
+        {
+            var moduleCode = $@"
+Private Sub Foo()
+   Dim coll As Collection
+   Dim element As Long
+   For Each element In coll
+      'DoSomething
+   Next element
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(moduleCode, out _);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var element = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Single(declaration => declaration.IdentifierName.Equals("element"));
+                var elementReferences = element.References;
+
+                Assert.AreEqual(2, elementReferences.Count());
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void ExpressionInNextHasReference_DoubleForEach()
+        {
+            var moduleCode = $@"
+Private Sub Foo()
+   Dim coll As Collection
+   Dim element As Variant
+   Dim otherElement As Variant
+   For Each element In coll
+      For Each otherElement In coll
+      'DoSomething
+   Next otherElement, element
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(moduleCode, out _);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var element = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Single(declaration => declaration.IdentifierName.Equals("element"));
+                var elementReferences = element.References;
+
+                Assert.AreEqual(2, elementReferences.Count());
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void HiddenEnumVariableHasCorrectName()
         {
             var moduleCode = $@"
