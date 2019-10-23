@@ -30,7 +30,7 @@ branches:
 skip_tags: true
 
 # build-matrix: all Release CPUs on VS2017
-image: Visual Studio 2017
+image: Visual Studio 2019
 configuration: Release
 platform: Any CPU
 
