@@ -1,10 +1,9 @@
+using Rubberduck.Parsing.Common;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
-#if !DEBUG
-    [Parsing.Common.Disabled]
-#endif
+    [Disabled]
     public class RegexSearchReplaceCommandMenuItem : CommandMenuItemBase
     {
         public RegexSearchReplaceCommandMenuItem(RegexSearchReplaceCommand command)

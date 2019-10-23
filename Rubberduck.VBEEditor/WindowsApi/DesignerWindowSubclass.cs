@@ -1,8 +1,5 @@
 ﻿using System;
 using Rubberduck.VBEditor.Events;
-#if DEBUG
-    using System.Diagnostics;
-#endif
 
 namespace Rubberduck.VBEditor.WindowsApi
 {

@@ -2,50 +2,28 @@ using System.Linq;
 using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class DefaultProjectNameInspectionTests
+    public class DefaultProjectNameInspectionTests : InspectionTestsBase
     {
-        [Test]
+        [TestCase("VBAProject", 1)]
+        [TestCase("TestProject", 0)]
         [Category("Inspections")]
-        public void DefaultProjectName_ReturnsResult()
+        public void DefaultProjectName_Names(string projectName, int expectedCount)
         {
             var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
+            var project = builder.ProjectBuilder(projectName, ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, string.Empty)
                 .Build();
-            var vbe = builder.AddProject(project).Build();
+            var vbe = builder.AddProject(project).Build().Object;
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DefaultProjectNameInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void DefaultProjectName_DoesNotReturnResult()
-        {
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, string.Empty)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DefaultProjectNameInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
+            Assert.AreEqual(expectedCount, InspectionResults(vbe).Count());
         }
 
         [Test]
@@ -56,6 +34,11 @@ namespace RubberduckTests.Inspections
             var inspection = new DefaultProjectNameInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new DefaultProjectNameInspection(state);
         }
     }
 }

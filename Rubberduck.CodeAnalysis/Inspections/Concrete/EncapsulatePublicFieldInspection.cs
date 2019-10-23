@@ -40,8 +40,9 @@ namespace Rubberduck.Inspections.Concrete
         {
             // we're creating a public field for every control on a form, needs to be ignored.
             var fields = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                .Where(item => item.Accessibility == Accessibility.Public
-                               && (item.DeclarationType != DeclarationType.Control))
+                .Where(item => item.DeclarationType != DeclarationType.Control
+                               && (item.Accessibility == Accessibility.Public ||
+                                   item.Accessibility == Accessibility.Global))
                 .ToList();
 
             return fields

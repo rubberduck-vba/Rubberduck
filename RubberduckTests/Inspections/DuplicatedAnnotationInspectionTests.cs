@@ -1,13 +1,13 @@
 ﻿using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using RubberduckTests.Mocks;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class DuplicatedAnnotationInspectionTests
+    public class DuplicatedAnnotationInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
@@ -22,14 +22,7 @@ End Sub
 Public Sub Foo()
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DuplicatedAnnotationInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -46,14 +39,7 @@ End Sub
 Public Sub Foo()
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DuplicatedAnnotationInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -71,14 +57,7 @@ End Sub
 Public Sub Foo()
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DuplicatedAnnotationInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(2, inspectionResults.Count());
-            }
+            Assert.AreEqual(2, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -93,14 +72,7 @@ End Sub
 Public Sub Foo()
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DuplicatedAnnotationInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -116,14 +88,21 @@ End Sub
 Public Sub Foo()
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DuplicatedAnnotationInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+        }
 
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
+        [Test]
+        [Category("Inspections")]
+        public void InspectionName()
+        {
+            var inspection = new DuplicatedAnnotationInspection(null);
+
+            Assert.AreEqual(nameof(DuplicatedAnnotationInspection), inspection.Name);
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new DuplicatedAnnotationInspection(state);
         }
     }
 }

@@ -6,8 +6,11 @@ using Rubberduck.Parsing.VBA;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Common;
+using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Parsing.VBA.Extensions;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -39,19 +42,48 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            var allInterfaces = new HashSet<ClassModuleDeclaration>(State.DeclarationFinder.FindAllUserInterfaces());
+            var finder = State.DeclarationFinder;
 
-            return State.DeclarationFinder.UserDeclarations(DeclarationType.Member)
-                .Where(member => !allInterfaces.Any(userInterface => userInterface.QualifiedModuleName == member.QualifiedModuleName)
-                                 && !((ModuleBodyElementDeclaration)member).Block.ContainsExecutableStatements())
+            var userInterfaces = UserInterfaces(finder);
+            var emptyMethods = EmptyNonInterfaceMethods(finder, userInterfaces);
 
-                .Select(result => new DeclarationInspectionResult(this,
-                                        string.Format(InspectionResults.EmptyMethodInspection,
-                                                    Resources.RubberduckUI.ResourceManager
-                                                        .GetString("DeclarationType_" + result.DeclarationType)
-                                                        .Capitalize(),
-                                                    result.IdentifierName),
-                                        result));
+            return emptyMethods.Select(Result);
+        }
+
+        private static ICollection<QualifiedModuleName> UserInterfaces(DeclarationFinder finder)
+        {
+            return finder
+                .FindAllUserInterfaces()
+                .Select(decl => decl.QualifiedModuleName)
+                .ToHashSet();
+        }
+
+        private static IEnumerable<Declaration> EmptyNonInterfaceMethods(DeclarationFinder finder, ICollection<QualifiedModuleName> userInterfaces)
+        {
+            return finder
+                .UserDeclarations(DeclarationType.Member)
+                .Where(member => !userInterfaces.Contains(member.QualifiedModuleName)
+                                 && member is ModuleBodyElementDeclaration moduleBodyElement
+                                 && !moduleBodyElement.Block.ContainsExecutableStatements());
+        }
+
+        private IInspectionResult Result(Declaration member)
+        {
+            return new DeclarationInspectionResult(
+                this,
+                ResultDescription(member),
+                member);
+        }
+
+        private static string ResultDescription(Declaration member)
+        {
+            var identifierName = member.IdentifierName;
+            var declarationType = member.DeclarationType.ToLocalizedString();
+
+            return string.Format(
+                InspectionResults.EmptyMethodInspection,
+                declarationType,
+                identifierName);
         }
     }
 }

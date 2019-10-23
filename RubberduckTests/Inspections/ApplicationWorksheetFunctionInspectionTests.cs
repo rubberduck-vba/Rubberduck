@@ -1,7 +1,9 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
@@ -9,9 +11,9 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class ApplicationWorksheetFunctionInspectionTests
+    public class ApplicationWorksheetFunctionInspectionTests : InspectionTestsBase
     {
-        private static RubberduckParserState ArrangeParserAndParse(string inputCode)
+        private IEnumerable<IInspectionResult> GetInspectionResultsUsingExcelLibrary(string inputCode)
         {
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
@@ -19,9 +21,8 @@ namespace RubberduckTests.Inspections
                 .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
                 .Build();
 
-            var vbe = builder.AddProject(project).Build();
-
-            return MockParser.CreateAndParse(vbe.Object); ;
+            var vbe = builder.AddProject(project).Build().Object;
+            return InspectionResults(vbe);
         }
 
         [Test]
@@ -34,15 +35,7 @@ namespace RubberduckTests.Inspections
     foo = Application.Pi
 End Sub
 ";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-
-                var inspection = new ApplicationWorksheetFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, GetInspectionResultsUsingExcelLibrary(inputCode).Count());
         }
 
         [Test]
@@ -57,15 +50,7 @@ End Sub
     End With
 End Sub
 ";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-
-                var inspection = new ApplicationWorksheetFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, GetInspectionResultsUsingExcelLibrary(inputCode).Count());
         }
 
         [Test]
@@ -80,15 +65,7 @@ End Sub
     foo = xlApp.Pi
 End Sub
 ";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-
-                var inspection = new ApplicationWorksheetFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, GetInspectionResultsUsingExcelLibrary(inputCode).Count());
         }
 
         [Test]
@@ -105,15 +82,7 @@ End Sub
     End With
 End Sub
 ";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-
-                var inspection = new ApplicationWorksheetFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, GetInspectionResultsUsingExcelLibrary(inputCode).Count());
         }
 
         [Test]
@@ -126,15 +95,7 @@ End Sub
     foo = Application.WorksheetFunction.Pi
 End Sub
 ";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-
-                var inspection = new ApplicationWorksheetFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, GetInspectionResultsUsingExcelLibrary(inputCode).Count());
         }
 
         [Test]
@@ -149,15 +110,7 @@ End Sub
     foo = xlApp.WorksheetFunction.Pi
 End Sub
 ";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-
-                var inspection = new ApplicationWorksheetFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, GetInspectionResultsUsingExcelLibrary(inputCode).Count());
         }
 
         [Test]
@@ -170,25 +123,7 @@ End Sub
     foo = Application.Pi
 End Sub
 ";
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("Module1", ComponentType.StandardModule, inputCode)
-                .Build();
-
-            var vbe = builder.AddProject(project).Build();
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                if (state.Status >= ParserState.Error)
-                {
-                    Assert.Inconclusive("Parser Error");
-                }
-
-                var inspection = new ApplicationWorksheetFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -202,15 +137,7 @@ End Sub
     foo = Application.Pi
 End Sub
 ";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-
-                var inspection = new ApplicationWorksheetFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, GetInspectionResultsUsingExcelLibrary(inputCode).Count());
         }
 
         [Test]
@@ -221,6 +148,11 @@ End Sub
             var inspection = new ApplicationWorksheetFunctionInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new ApplicationWorksheetFunctionInspection(state);
         }
     }
 }

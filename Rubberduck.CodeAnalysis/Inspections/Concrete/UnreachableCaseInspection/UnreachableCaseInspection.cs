@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     /// <remarks>
     /// Not all unreachable 'Case' blocks may be flagged, depending on expression complexity.
     /// </remarks>
-    /// <example hasResult="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Private Sub Example(ByVal value As Long)
     ///     Select Case value
@@ -41,7 +41,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResult="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// 
     /// 'If the cumulative result of multiple 'Case' statements
@@ -65,7 +65,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResult="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Public Enum ProductID
     ///     Widget = 1
@@ -93,7 +93,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResult="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// 
     /// 'The inspecion flags Range Clauses that are not of the required form:
