@@ -19,6 +19,19 @@
     <Version Condition=" '$(Version)' == ''">2.4.1</Version>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(AssemblyVersion)' == '' ">
+    <!--
+     This assembly version specification is considered nonstandard.
+     As such builds that do not override the assembly version generate a warning, which we ignore.
+    -->
+    <AssemblyVersion>2.4.1.*</AssemblyVersion>
+    <!-- Ignore CSharp compiler warning for nonstandard assembly version (CS7035) -->
+    <!-- Ignore Linker warning for nonstandard assembly version (AL1053) -->
+    <DisabledWarnings>$(DisabledWarnings);7035;1053</DisabledWarnings>
+    <!-- Wildcards are not deterministic, ensure build passes when setting wildcard versions -->
+    <Deterministic>False</Deterministic>
+  </PropertyGroup>
+
   <PropertyGroup Condition=" $(UnifyOutputPath) ">
     <OutputPath>bin\</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="MSBuild.Sdk.Extras">
+<Project>
   <PropertyGroup>
     <Product>Rubberduck.Deployment</Product>
     <Copyright>Copyright © 2018-2019</Copyright>
