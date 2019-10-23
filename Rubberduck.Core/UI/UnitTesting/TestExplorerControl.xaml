@@ -354,7 +354,8 @@
                                        ItemsSource="{Binding Tests}"
                                        SelectionMode="Extended"
                                        ShowGroupingItemCount="True"
-                                       InitialExpandedState="True">
+                                       InitialExpandedState="True"
+                                       RequestBringIntoView="TestGrid_RequestBringIntoView">
                         <DataGrid.Columns>
                             <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Outcome}">
                                 <DataGridTemplateColumn.CellTemplate>
