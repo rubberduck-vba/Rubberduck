@@ -1,4 +1,4 @@
-<Project Sdk="Sunburst.NET.Sdk.WPF/1.0.47">
+<Project Sdk="Microsoft.NET.Sdk">
   <!-- We're specifying the Sdk here to make appveyor happy, but this generates warning MSB4011 -->
   <PropertyGroup>
     <OutputType>Library</OutputType>
@@ -10,7 +10,6 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputPath>bin\$(Configuration)\</OutputPath>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
     <RestorePackages>true</RestorePackages>
     <!-- meta projects should have its path unified for easier discovery by the core solution -->
     <UnifyOutputPath>true</UnifyOutputPath>
