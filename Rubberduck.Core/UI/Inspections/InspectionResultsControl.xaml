@@ -201,7 +201,8 @@
                                SelectedItem="{Binding SelectedItem}"
                                SelectionUnit="FullRow"
                                ItemsSource="{Binding Results, NotifyOnSourceUpdated=True}"
-                               VirtualizingPanel.IsVirtualizingWhenGrouping="True">
+                               VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                               RequestBringIntoView="InspectionResultsGrid_RequestBringIntoView">
                 <DataGrid.RowDetailsTemplate>
                     <DataTemplate>
                         <Grid>
