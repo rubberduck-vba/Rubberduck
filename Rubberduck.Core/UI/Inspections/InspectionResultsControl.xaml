@@ -200,7 +200,10 @@
                                SelectedItem="{Binding SelectedItem}"
                                SelectionUnit="FullRow"
                                ItemsSource="{Binding Results, NotifyOnSourceUpdated=True}"
-                               VirtualizingPanel.IsVirtualizingWhenGrouping="True">
+                               VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                               ScrollViewer.CanContentScroll="True" 
+                               ScrollViewer.VerticalScrollBarVisibility="Auto"
+                               ScrollViewer.HorizontalScrollBarVisibility="Auto">
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
                     <Grid>
@@ -232,7 +235,7 @@
                             <Setter Property="Command" Value="{Binding Command}" />
                             <Setter Property="CommandParameter" Value="{Binding Fix}" />
                             <Setter Property="Header" Value="{Binding Description}" />
-                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Background" Value="Transparent"></Setter>
                         </Style>
                     </ContextMenu.Resources>
                 </ContextMenu>

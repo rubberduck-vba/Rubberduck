@@ -218,7 +218,7 @@ namespace RubberduckCodeAnalysis
             var examples = xml.Elements("example");
             foreach (var example in examples)
             {
-                if (!example.Attributes().Any(a => a.Name.LocalName.Equals("hasresult")))
+                if (!example.Attributes().Any(a => a.Name.LocalName.Equals("hasresult", System.StringComparison.InvariantCultureIgnoreCase)))
                 {
                     var diagnostic = Diagnostic.Create(MissingHasResultAttributeRule, symbol.Locations[0]);
                     context.ReportDiagnostic(diagnostic);

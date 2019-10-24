@@ -107,9 +107,13 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
 
             Interface = (TComInterface)RdMarshal.GetTypedObjectForIUnknown(pUnk, typeof(TComInterface));
 
-#if DEBUG && TRACE_COM_POINTERS
+            ConstructorPointerPrint(refCount);
+        }
+
+        [Conditional("TRACE_COM_POINTERS")]
+        private void ConstructorPointerPrint(int refCount)
+        {
             Debug.Print($"ComPointer:: Created from pointer: pUnk: {RdMarshal.FormatPtr(_pUnk)} interface: {typeof(TComInterface).Name} - {Interface.GetHashCode()} addRef: {_addRef} refCount: {refCount}");
-#endif
         }
 
         private ComPointer(IntPtr pUnk, TComInterface comInterface)
@@ -117,9 +121,13 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
             _pUnk = pUnk;
             Interface = comInterface;
 
-#if DEBUG && TRACE_COM_POINTERS
+            ConstructorAggregatedPrint();
+        }
+
+        [Conditional("TRACE_COM_POINTERS")]
+        private void ConstructorAggregatedPrint()
+        {
             Debug.Print($"ComPointer:: Created from aggregation: pUnk: {RdMarshal.FormatPtr(_pUnk)} interface: {typeof(TComInterface).Name} - {Interface.GetHashCode()} addRef: {_addRef}");
-#endif
         }
 
         private ComPointer(TComInterface comInterface)
@@ -127,9 +135,13 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
             Interface = comInterface;
             _pUnk = RdMarshal.GetIUnknownForObject(Interface);
 
-#if DEBUG && TRACE_COM_POINTERS
+            ConstructorObjectPrint();
+        }
+
+        [Conditional("TRACE_COM_POINTERS")]
+        private void ConstructorObjectPrint()
+        {
             Debug.Print($"ComPointer:: Created from object: pUnk: {RdMarshal.FormatPtr(_pUnk)} interface: {typeof(TComInterface).Name} - {Interface.GetHashCode()} addRef: {_addRef}");
-#endif
         }
 
         internal IntPtr ExtractPointer()
@@ -145,9 +157,21 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
             if(_disposed) return;
 
             var rcwCount = RdMarshal.ReleaseComObject(Interface);
+            var addRef = _addRef;
 
-#if DEBUG && TRACE_COM_POINTERS
-            if (!_addRef)
+            TraceRelease(rcwCount, ref addRef);
+            if (addRef)
+            {
+                RdMarshal.Release(_pUnk);
+            }
+
+            _disposed = true;
+        }
+
+        [Conditional("TRACE_COM_POINTERS")]
+        private void TraceRelease(int rcwCount, ref bool addRef)
+        {
+            if (!addRef)
             {
                 // Temporarily add a ref so that we can safely call IUnknown::Release
                 // to report the ref count in the log.
@@ -156,13 +180,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged
             var refCount = RdMarshal.Release(_pUnk);
 
             Debug.Print($"ComPointer:: Disposed: _pUnk: {RdMarshal.FormatPtr(_pUnk)} _interface: {typeof(TComInterface).Name} - {Interface.GetHashCode()} addRef: {_addRef} rcwCount: {rcwCount} refCount: {refCount}");
-#else
-            if (_addRef)
-            {
-                RdMarshal.Release(_pUnk);
-            }
-#endif
-            _disposed = true;
+
+            addRef = false;
         }
 
         public void Dispose()

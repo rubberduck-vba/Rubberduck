@@ -12,7 +12,6 @@ using ComTypes = System.Runtime.InteropServices.ComTypes;
 // ReSharper disable once CheckNamespace
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 {
-#if DEBUG
     /// <summary>
     /// FOR DEBUGGING/DEVELOPMENT PURPOSES, ALLOW ACCESS TO SOME VBETypeLibsAPI FEATURES FROM VBA
     /// </summary>
@@ -100,7 +99,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public string TestGetCLRTypeFromVBAComponent(string projectName, string componentName, int inheritenceLevel = 0)
             => _api.TestGetCLRTypeFromVBAComponent(_ide, projectName, componentName, inheritenceLevel);
     }
-#endif
 
     /// <summary>
     /// Top level API for accessing live type information from the VBE

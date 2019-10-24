@@ -889,6 +889,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There is an assignment from the default member of the result of expression &apos;{1}&apos; to that of the expression &apos;{0}&apos;..
+        /// </summary>
+        public static string SuspiciousLetAssignmentInspection {
+            get {
+                return ResourceManager.GetString("SuspiciousLetAssignmentInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0}
         ///Andrew &quot;ThunderFrame&quot; Jackson would be proud! 
         ///You&apos;re seeing this inspection result because there&apos;s no way that&apos;s real code and you&apos;re just pushing the limits of Rubberduck&apos;s parsing and resolving capabilities, right? ...RIGHT? 

@@ -1,23 +1,21 @@
 ﻿using System.Linq;
-using System.Threading;
 using NUnit.Framework;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using RubberduckTests.Mocks;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class EmptyDoWhileBlockInspectionTests
+    public class EmptyDoWhileBlockInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
         public void EmptyDoWhileBlock_InspectionName()
         {
-            const string expectedName = nameof(EmptyDoWhileBlockInspection);
             var inspection = new EmptyDoWhileBlockInspection(null);
 
-            Assert.AreEqual(expectedName, inspection.Name);
+            Assert.AreEqual(nameof(EmptyDoWhileBlockInspection), inspection.Name);
         }
 
         [Test]
@@ -34,7 +32,7 @@ namespace RubberduckTests.Inspections
         i = i + 1
     Loop
 End Sub";
-            CheckActualEmptyBlockCountEqualsExpected(inputCode, 0);
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -51,22 +49,12 @@ End Sub";
         'i = i + 1
     Loop
 End Sub";
-            CheckActualEmptyBlockCountEqualsExpected(inputCode, 1);
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
-        private void CheckActualEmptyBlockCountEqualsExpected(string inputCode, int expectedCount)
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new EmptyDoWhileBlockInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(expectedCount, actualResults.Count());
-            }
+            return new EmptyDoWhileBlockInspection(state);
         }
     }
 }
