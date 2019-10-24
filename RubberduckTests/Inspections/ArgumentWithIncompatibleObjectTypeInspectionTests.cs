@@ -16,7 +16,7 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class ArgumentWithIncompatibleObjectTypeInspectionTests
+    public class ArgumentWithIncompatibleObjectTypeInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
@@ -61,23 +61,16 @@ Private Sub Bar(baz As {paramTypeName})
 End Sub
 ";
 
-            var vbe = new MockVbeBuilder()
-                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, class1)
-                .AddComponent("Interface1", ComponentType.ClassModule, interface1)
-                .AddComponent("Module1", ComponentType.StandardModule, module1)
-                .AddProjectToVbeBuilder()
-                .Build()
-                .Object;
+            var vbe = BuildTestVBE(class1, interface1, module1);
 
             var setTypeResolverMock = new Mock<ISetTypeResolver>();
             setTypeResolverMock.Setup(m =>
                     m.SetTypeName(It.IsAny<VBAParser.ExpressionContext>(), It.IsAny<QualifiedModuleName>()))
                 .Returns((VBAParser.ExpressionContext context, QualifiedModuleName qmn) => expressionFullTypeName);
 
-            var inspectionResults = InspectionResults(vbe, setTypeResolverMock.Object).ToList();
+            var inspectionResults = InspectionResults(vbe, setTypeResolverMock.Object);
 
-            Assert.AreEqual(expectedResultsCount, inspectionResults.Count);
+            Assert.AreEqual(expectedResultsCount, inspectionResults.Count());
         }
 
         [Test]
@@ -105,19 +98,8 @@ End Sub
 Private Sub Bar(ParamArray baz)
 End Sub
 ";
-
-            var vbe = new MockVbeBuilder()
-                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, class1)
-                .AddComponent("Interface1", ComponentType.ClassModule, interface1)
-                .AddComponent("Module1", ComponentType.StandardModule, module1)
-                .AddProjectToVbeBuilder()
-                .Build()
-                .Object;
-
-            var inspectionResults = InspectionResults(vbe).ToList();
-
-            Assert.IsFalse(inspectionResults.Any());
+            var vbe = BuildTestVBE(class1, interface1, module1);
+            Assert.AreEqual(0, InspectionResults(vbe).Count());
         }
 
         [Test]
@@ -145,8 +127,13 @@ End Sub
 Private Sub Bar(Optional baz As Class1 = Nothing, Optional bazBaz As Class1 = Nothing)
 End Sub
 ";
+            var vbe = BuildTestVBE(class1, interface1, module1);
+            Assert.AreEqual(0, InspectionResults(vbe).Count());
+        }
 
-            var vbe = new MockVbeBuilder()
+        private static IVBE BuildTestVBE(string class1, string interface1, string module1)
+        {
+            return new MockVbeBuilder()
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, class1)
                 .AddComponent("Interface1", ComponentType.ClassModule, interface1)
@@ -154,37 +141,20 @@ End Sub
                 .AddProjectToVbeBuilder()
                 .Build()
                 .Object;
-
-            var inspectionResults = InspectionResults(vbe).ToList();
-
-            Assert.IsFalse(inspectionResults.Any());
         }
 
-        private static IEnumerable<IInspectionResult> InspectionResults(params (string moduleName, string content, ComponentType componentType)[] testModules)
-        {
-            var vbe = MockVbeBuilder.BuildFromModules(testModules).Object;
-            return InspectionResults(vbe);
-        }
-
-        private static IEnumerable<IInspectionResult> InspectionResults(ISetTypeResolver setTypeResolver, params (string moduleName, string content, ComponentType componentType)[] testModules)
-        {
-            var vbe = MockVbeBuilder.BuildFromModules(testModules).Object;
-            return InspectionResults(vbe, setTypeResolver);
-        }
-
-        private static IEnumerable<IInspectionResult> InspectionResults(IVBE vbe, ISetTypeResolver setTypeResolver = null)
+        private static IEnumerable<IInspectionResult> InspectionResults(IVBE vbe, ISetTypeResolver setTypeResolver)
         {
             using (var state = MockParser.CreateAndParse(vbe))
             {
-                var inspection = InspectionUnderTest(state, setTypeResolver);
+                var inspection = new ArgumentWithIncompatibleObjectTypeInspection(state, setTypeResolver);
                 return inspection.GetInspectionResults(CancellationToken.None);
             }
         }
 
-        private static IInspection InspectionUnderTest(RubberduckParserState state, ISetTypeResolver setTypeResolver = null)
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
-            var setTypeResolverToUse = setTypeResolver ?? new SetTypeResolver(state);
-            return new ArgumentWithIncompatibleObjectTypeInspection(state, setTypeResolverToUse);
+            return new ArgumentWithIncompatibleObjectTypeInspection(state, new SetTypeResolver(state));
         }
     }
 }

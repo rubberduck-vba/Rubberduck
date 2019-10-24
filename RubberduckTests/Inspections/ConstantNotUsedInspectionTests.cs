@@ -2,12 +2,14 @@ using System.Linq;
 using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class ConstantNotUsedInspectionTests
+    public class ConstantNotUsedInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
@@ -17,16 +19,7 @@ namespace RubberduckTests.Inspections
                 @"Public Sub Foo()
     Const const1 As Integer = 9
 End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ConstantNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -38,16 +31,7 @@ End Sub";
     Const const1 As Integer = 9
     Const const2 As String = ""test""
 End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ConstantNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(2, inspectionResults.Count());
-            }
+            Assert.AreEqual(2, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -64,16 +48,7 @@ End Sub
 
 Public Sub Goo(ByVal arg1 As Integer)
 End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ConstantNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -88,16 +63,7 @@ End Sub
 
 Public Sub Goo(ByVal arg1 As Integer)
 End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ConstantNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -116,16 +82,7 @@ End Sub";
     Next
      UnAccent = inputString
 End Function";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ConstantNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -138,16 +95,7 @@ End Function";
 Public Sub Foo()
     Const const1 As Integer = 9
 End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ConstantNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -160,16 +108,7 @@ End Sub";
 Public Sub Foo()
     Const const1 As Integer = 9
 End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ConstantNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -182,16 +121,7 @@ End Sub";
 Public Sub Foo()
     Const const1 As Integer = 9
 End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ConstantNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsTrue(inspectionResults.Any());
-            }
+            Assert.IsTrue(InspectionResultsForStandardModule(inputCode).Any());
         }
 
         [Test]
@@ -203,16 +133,7 @@ End Sub";
     '@Ignore ConstantNotUsed
     Const const1 As Integer = 9
 End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ConstantNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -223,6 +144,11 @@ End Sub";
             var inspection = new ConstantNotUsedInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new ConstantNotUsedInspection(state);
         }
     }
 }

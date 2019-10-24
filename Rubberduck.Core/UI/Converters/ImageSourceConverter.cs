@@ -12,17 +12,19 @@ namespace Rubberduck.UI.Converters
     {
         protected static ImageSource ToImageSource(Image source)
         {
-            var ms = new MemoryStream();
+            using (var ms = new MemoryStream())
+            {
+                ((Bitmap) source).Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                var image = new BitmapImage();
+                image.BeginInit();
+                image.CacheOption = BitmapCacheOption.OnLoad;
+                ms.Seek(0, SeekOrigin.Begin);
+                image.StreamSource = ms;
+                image.EndInit();
+                image.Freeze();
 
-            ((Bitmap)source).Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-            var image = new BitmapImage();
-            image.BeginInit();
-            ms.Seek(0, SeekOrigin.Begin);
-            image.StreamSource = ms;
-            image.EndInit();
-            image.Freeze();
-
-            return image;
+                return image;
+            }
         }
 
         public abstract object Convert(object value, Type targetType, object parameter, CultureInfo culture);

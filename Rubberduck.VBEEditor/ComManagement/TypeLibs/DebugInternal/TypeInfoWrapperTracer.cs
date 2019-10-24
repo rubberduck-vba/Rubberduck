@@ -1,5 +1,4 @@
-﻿#if DEBUG && TRACE_TYPEAPI
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
@@ -749,4 +748,3 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs.DebugInternal
         }
     }
 }
-#endif
