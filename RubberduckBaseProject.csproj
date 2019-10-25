@@ -1,5 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <!-- We're specifying the Sdk here to make appveyor happy, but this generates warning MSB4011 -->
+<Project>
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <Company>Rubberduck-VBA</Company>
@@ -17,9 +16,10 @@
     <!-- Ignore VisualStudio whining about the CodeAnalysis assembly changing (IDE1001) -->
     <DisabledWarnings>$(DisabledWarnings);4011;1001</DisabledWarnings>
     <Version Condition=" '$(Version)' == ''">2.4.1</Version>
+    <FileVersion>2.4.1</FileVersion>
   </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(AssemblyVersion)' == '' ">
+  
+  <PropertyGroup Condition=" '$(AssemblyVersion)' == '' ">    
     <!--
      This assembly version specification is considered nonstandard.
      As such builds that do not override the assembly version generate a warning, which we ignore.
