@@ -47,12 +47,29 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
                 // VBA constants are "static".... go figure. We can still infer it is a 
                 // constant rather than a field by checking the lpvarValue
-                if (varDesc.varkind == VARKIND.VAR_STATIC && varDesc.desc.lpvarValue != IntPtr.Zero)
+                if (varDesc.varkind == VARKIND.VAR_STATIC && IsValidPointer(varDesc.desc.lpvarValue))
                 {
                     _mapper.Add(_mapper.Count, i);
                 }
                 parent.ReleaseVarDesc(ppVarDesc);
             }
+        }
+
+        /// <remarks>
+        /// On 64-bit platform, VBA seems to like putting random values in the high 32-bit part of the lpvarValue. Sometimes it does give out
+        /// null pointer but when ti does has no apparent reason or rhyme. Thus, to help avoid erroneous resolution of lpvarValue for vars that 
+        /// shouldn't be resolved, we will need to mask the high word and assume that any valid constants will have a address that is also in the low
+        /// 32-bit part of the lpvarValue. That does not seem to exist on 32-bit VBA. Whee! 
+        /// Ref: https://github.com/rubberduck-vba/Rubberduck/issues/5241
+        /// </remarks>
+        private bool IsValidPointer(IntPtr ptr)
+        {
+            if(IntPtr.Size == 8)
+            {
+                return ((ulong)ptr & 0x00000000ffffffff) != 0;
+            }
+
+            return ptr != IntPtr.Zero;
         }
 
         public override int Count => _mapper.Count;
