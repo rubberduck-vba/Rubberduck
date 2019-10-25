@@ -13,8 +13,6 @@ namespace Rubberduck.VBEditor
 
         public QualifiedModuleName QualifiedName { get; }
 
-        public string QualifiedNameAndComponentType => $"{QualifiedName} - {QualifiedName.ComponentType}";
-
         public Selection Selection { get; }
 
         public bool Contains(QualifiedSelection other)

@@ -6,6 +6,7 @@
              xmlns:codeInspections="clr-namespace:Rubberduck.UI.Inspections"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:abstract1="clr-namespace:Rubberduck.Parsing.Inspections.Abstract;assembly=Rubberduck.Parsing"
+             xmlns:converters ="clr-namespace:Rubberduck.UI.Inspections"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              ResxExtension.DefaultResxName="Rubberduck.Resources.RubberduckUI" 
              Language="{UICulture}"
@@ -21,6 +22,8 @@
             <codeInspections:InspectionSeverityImageSourceConverter x:Key="SeverityIconConverter" />
             <codeInspections:InspectionImageSourceConverter x:Key="InspectionIconConverter" />
             <codeInspections:QuickFixImageSourceConverter x:Key="QuickFixIconConverter" />
+
+            <converters:GroupingGridHeaderConverter x:Key="GroupingGridHeaderConverter" />
 
             <Style x:Key="IconMargin" TargetType="Image">
                 <Setter Property="Margin" Value="4" />
@@ -221,7 +224,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Issue}" Binding="{Binding Description, Mode=OneTime}" />
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Location}" Binding="{Binding QualifiedSelection.QualifiedName, Mode=OneTime}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Location}" Binding="{Binding QualifiedSelection.QualifiedName, Mode=OneTime, Converter={StaticResource GroupingGridHeaderConverter}}" />
             </DataGrid.Columns>
             <DataGrid.ContextMenu>
                 <ContextMenu ItemsSource="{Binding PlacementTarget.DataContext.QuickFixes, RelativeSource={RelativeSource Self}}">
@@ -235,7 +238,7 @@
                             <Setter Property="Command" Value="{Binding Command}" />
                             <Setter Property="CommandParameter" Value="{Binding Fix}" />
                             <Setter Property="Header" Value="{Binding Description}" />
-                            <Setter Property="Background" Value="Transparent"></Setter>
+                            <Setter Property="Background" Value="Transparent" />
                         </Style>
                     </ContextMenu.Resources>
                 </ContextMenu>
