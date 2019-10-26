@@ -22,6 +22,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Rubberduck.JunkDrawer\Rubberduck.JunkDrawer.csproj" />
     <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj" />
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
+using Rubberduck.JunkDrawer.Hacks;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
@@ -45,31 +45,13 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 parent.GetVarDesc(i, out var ppVarDesc);
                 var varDesc = StructHelper.ReadStructureUnsafe<VARDESC>(ppVarDesc);
 
-                // VBA constants are "static".... go figure. We can still infer it is a 
-                // constant rather than a field by checking the lpvarValue
-                if (varDesc.varkind == VARKIND.VAR_STATIC && IsValidPointer(varDesc.desc.lpvarValue))
+                // VBA constants are "static".... go figure.
+                if (varDesc.IsValidVBAConstant())
                 {
                     _mapper.Add(_mapper.Count, i);
                 }
                 parent.ReleaseVarDesc(ppVarDesc);
             }
-        }
-
-        /// <remarks>
-        /// On 64-bit platform, VBA seems to like putting random values in the high 32-bit part of the lpvarValue. Sometimes it does give out
-        /// null pointer but when ti does has no apparent reason or rhyme. Thus, to help avoid erroneous resolution of lpvarValue for vars that 
-        /// shouldn't be resolved, we will need to mask the high word and assume that any valid constants will have a address that is also in the low
-        /// 32-bit part of the lpvarValue. That does not seem to exist on 32-bit VBA. Whee! 
-        /// Ref: https://github.com/rubberduck-vba/Rubberduck/issues/5241
-        /// </remarks>
-        private bool IsValidPointer(IntPtr ptr)
-        {
-            if(IntPtr.Size == 8)
-            {
-                return ((ulong)ptr & 0x00000000ffffffff) != 0;
-            }
-
-            return ptr != IntPtr.Zero;
         }
 
         public override int Count => _mapper.Count;
