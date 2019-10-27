@@ -70,10 +70,7 @@ namespace Rubberduck
                 VbeProvider.Initialize(_vbe, _vbeNativeApi, _beepInterceptor);
                 VbeNativeServices.HookEvents(_vbe);
 
-#if DEBUG
-                // FOR DEBUGGING/DEVELOPMENT PURPOSES, ALLOW ACCESS TO SOME VBETypeLibsAPI FEATURES FROM VBA
-                _addin.Object = new VBETypeLibsAPI_Object(_vbe);
-#endif
+                SetAddInObject();
 
                 switch (ConnectMode)
                 {
@@ -90,6 +87,13 @@ namespace Rubberduck
             {
                 Console.WriteLine(e);
             }
+        }
+
+        [Conditional("DEBUG")]
+        private void SetAddInObject()
+        {
+            // FOR DEBUGGING/DEVELOPMENT PURPOSES, ALLOW ACCESS TO SOME VBETypeLibsAPI FEATURES FROM VBA
+            _addin.Object = new VBETypeLibsAPI_Object(_vbe);
         }
 
         private Assembly LoadFromSameFolder(object sender, ResolveEventArgs args)
@@ -207,7 +211,9 @@ namespace Rubberduck
             catch (Exception exception)
             {
                 _logger.Fatal(exception);
-                System.Windows.Forms.MessageBox.Show(
+                // TODO Use Rubberduck Interaction instead and provide exception stack trace as
+                // an optional "more info" collapsible section to eliminate the conditional.
+                MessageBox.Show(
 #if DEBUG
                     exception.ToString(),
 #else
@@ -239,11 +245,7 @@ namespace Rubberduck
             catch (Exception e)
             {
                 _logger.Log(LogLevel.Fatal, e, "Startup sequence threw an unexpected exception.");
-#if DEBUG
-                throw;
-#else
-                throw new Exception("Rubberduck's startup sequence threw an unexpected exception. Please check the Rubberduck logs for more information and report an issue if necessary");
-#endif
+                throw new Exception("Rubberduck's startup sequence threw an unexpected exception. Please check the Rubberduck logs for more information and report an issue if necessary", e);
             }
         }
 

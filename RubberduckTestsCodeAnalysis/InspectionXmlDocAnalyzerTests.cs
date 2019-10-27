@@ -283,6 +283,32 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         }
 
         [Test][Category("InspectionXmlDoc")]
+        public void MissingHasResultAttribute_InconsistentCasingIsNotMissing()
+        {
+            var test = @"
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
+{
+    /// <summary>
+    /// blablabla
+    /// </summary>
+    /// <why>
+    /// blablabla
+    /// </why>
+    /// <example HasResult=""true"">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
+    public sealed class SomeInspection : IInspection { }
+}
+";
+
+            var diagnostics = GetDiagnostics(test);
+            Assert.IsFalse(diagnostics.Any(d => d.Descriptor.Id == InspectionXmlDocAnalyzer.MissingHasResultAttribute));
+        }
+        [Test][Category("InspectionXmlDoc")]
         public void MissingHasResultAttribute_Missing()
         {
             var test = @"

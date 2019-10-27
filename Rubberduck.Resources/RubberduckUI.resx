@@ -1046,7 +1046,13 @@ Would you like to import them to Rubberduck?</value>
     <value>Indented Code Sample</value>
   </data>
   <data name="VersionCheck_NewVersionAvailable" xml:space="preserve">
-    <value>Rubberduck version {0} is now available! Would you like to review the release notes now?</value>
+    <value>You are currently running Rubberduck version {0}.
+Good news! Version {1} ({2}) is now available.
+
+To review the change log and manually upgrade Rubberduck, click 'Yes'.
+
+This dialog is showing because version checks are enabled. You can turn off this feature in Rubberduck &gt; Settings.</value>
+    <comment>{0}=local; {1}=latest; {2}=buildtype (release/pre-release)</comment>
   </data>
   <data name="GeneralSettings_CheckVersion" xml:space="preserve">
     <value>Check if a newer version is available at startup</value>
@@ -1643,5 +1649,14 @@ NOTE: Restart is required for the setting to take effect.</value>
   </data>
   <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
     <value>Unable to suspend the Parser to perform the refactoring operation</value>
+  </data>
+  <data name="GeneralSettings_IncludePreRelease" xml:space="preserve">
+    <value>Tell me if a newer pre-release build is available</value>
+  </data>
+  <data name="VersionCheck_BuildType_PreRelease" xml:space="preserve">
+    <value>pre-release</value>
+  </data>
+  <data name="VersionCheck_BuildType_Release" xml:space="preserve">
+    <value>release</value>
   </data>
 </root>

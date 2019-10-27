@@ -200,7 +200,10 @@
                                SelectedItem="{Binding SelectedItem}"
                                SelectionUnit="FullRow"
                                ItemsSource="{Binding Results, NotifyOnSourceUpdated=True}"
-                               VirtualizingPanel.IsVirtualizingWhenGrouping="True">
+                               VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                               ScrollViewer.CanContentScroll="True" 
+                               ScrollViewer.VerticalScrollBarVisibility="Auto"
+                               ScrollViewer.HorizontalScrollBarVisibility="Auto">
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
                     <Grid>

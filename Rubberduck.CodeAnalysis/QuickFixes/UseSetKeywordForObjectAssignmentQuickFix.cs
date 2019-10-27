@@ -10,7 +10,7 @@ namespace Rubberduck.Inspections.QuickFixes
     public sealed class UseSetKeywordForObjectAssignmentQuickFix : QuickFixBase
     {
         public UseSetKeywordForObjectAssignmentQuickFix()
-            : base(typeof(ObjectVariableNotSetInspection))
+            : base(typeof(ObjectVariableNotSetInspection), typeof(SuspiciousLetAssignmentInspection))
         {}
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)

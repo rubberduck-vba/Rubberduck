@@ -940,14 +940,14 @@ namespace Rubberduck.VBEditor.WindowsApi
         /// Private message to signal focus RD shutdown. No parameters.
         /// </summary>        
         RUBBERDUCK_SINKING = USER + 0x0D1E,
+        /// <summary>
+        /// Private message to indicate that the toolwindow is undockable and needs its special menu.
+        /// </summary>
+        RUBBERDUCK_UNDOCKABLE_CONTEXT_MENU = USER + 0x0F01
     }
-
-#if (DEBUG && (THIRSTY_DUCK || THIRSTY_DUCK_WM))
 
     public static class WM_MAP
     {
         public static readonly Dictionary<uint, string> Lookup = EnumHelper.ToDictionary<WM, uint>();
     }
-
-#endif
 }

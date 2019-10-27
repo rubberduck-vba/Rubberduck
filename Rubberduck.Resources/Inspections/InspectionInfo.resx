@@ -430,4 +430,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
     <value>Default member accesses hide away the actually called member. This is especially misleading if there is no indication in the expression that such a call is made and if the default member cannot be determined from the declared type of the object. As a consequence, errors in which a member was forgotten to be called can go unnoticed and should there not be a suitable default member at runtime, an error 438 'Object doesn't support this property or method' will be raised.</value>
   </data>
+  <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
+    <value>Whenever both sides of an assignment without Set are objects, there is an assignment from the default member of the RHS to the one on the LHS. Although this might be intentional, in many situations it will just mask an erroneously forgotten Set.</value>
+  </data>
 </root>
