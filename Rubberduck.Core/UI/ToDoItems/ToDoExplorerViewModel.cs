@@ -18,7 +18,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources.ToDoExplorer;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.UIContext;
-using Rubberduck.VBEditor.Utility;
 using Rubberduck.SettingsProvider;
 using System.Windows.Controls;
 
@@ -257,7 +256,7 @@ namespace Rubberduck.UI.ToDoItems
 
             var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _items.Count);
 
-            var textResults = title + Environment.NewLine + string.Join("", _items.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
+            var textResults = title + Environment.NewLine + string.Join(string.Empty, _items.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
             var csvResults = ExportFormatter.Csv(resultArray, title, columnInfos);
             var htmlResults = ExportFormatter.HtmlClipboardFragment(resultArray, title, columnInfos);
             var rtfResults = ExportFormatter.RTF(resultArray, title);

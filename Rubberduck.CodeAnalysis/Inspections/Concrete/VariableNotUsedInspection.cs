@@ -39,15 +39,22 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class VariableNotUsedInspection : InspectionBase
     {
+        /// <summary>
+        /// Inspection results for variables that are never referenced.
+        /// </summary>
+        /// <returns></returns>
         public VariableNotUsedInspection(RubberduckParserState state) : base(state) { }
 
+        /// <summary>
+        /// VariableNotUsedInspection override of InspectionBase.DoGetInspectionResults()
+        /// </summary>
+        /// <returns>Enumerable IInspectionResults</returns>
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var declarations = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
                 .Where(declaration =>
                     !declaration.IsWithEvents
-                    && !declaration.IsIgnoringInspectionResultFor(AnnotationName)
-                    && !declaration.References.Any());
+                    && declaration.References.All(rf => rf.IsAssignment));
 
             return declarations.Select(issue => 
                 new DeclarationInspectionResult(this,

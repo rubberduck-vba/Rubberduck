@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using NLog;
@@ -9,9 +10,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers
     public abstract class SafeComWrapper<T> : ISafeComWrapper<T>
         where T : class
     {
-#if DEBUG
-        private const bool LogSuccessfulComRelease = false;
-#endif
         protected static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         private IComSafe _comSafe;
@@ -72,12 +70,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers
                     {
                         _logger.Warn($"Released COM wrapper of type {this.GetType()} whose underlying RCW has already been released from outside the SafeComWrapper. New reference count is {_rcwReferenceCount}.");
                     }
-#if DEBUG
-                    else if(LogSuccessfulComRelease)
+                    else
                     {
-                        _logger.Trace($"Released COM wrapper of type {this.GetType()} with remaining reference count {_rcwReferenceCount}.");
+                        LogComRelease();
                     }
-#endif
                 }
             }
             catch(COMException exception)
@@ -159,6 +155,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers
 
                 _comSafe = null;
             }
+        }
+
+        [Conditional("LOG_COM_RELEASE")]
+        private void LogComRelease()
+        {
+            _logger.Trace($"Released COM wrapper of type {this.GetType()} with remaining reference count {_rcwReferenceCount}.");
         }
     }
 }

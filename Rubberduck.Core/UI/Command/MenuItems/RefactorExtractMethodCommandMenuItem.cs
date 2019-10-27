@@ -1,13 +1,12 @@
 using System.Drawing;
+using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 using Rubberduck.UI.Command.Refactorings;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
-#if !DEBUG
-    [Parsing.Common.Disabled]
-#endif 
+    [Disabled]
     public class RefactorExtractMethodCommandMenuItem : CommandMenuItemBase
     {
         public RefactorExtractMethodCommandMenuItem(RefactorExtractMethodCommand command) 

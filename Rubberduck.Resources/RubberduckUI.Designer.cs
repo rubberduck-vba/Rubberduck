@@ -213,29 +213,11 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variable names must begin with a letter..
+        ///   Looks up a localized string similar to {0} Consider choosing a different name..
         /// </summary>
-        public static string AssignedByValDialog_DoesNotStartWithLetter {
+        public static string AssignedByValDialog_MeaninglessNameFormat {
             get {
-                return ResourceManager.GetString("AssignedByValDialog_DoesNotStartWithLetter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Variable names cannot contain special characters other than underscores..
-        /// </summary>
-        public static string AssignedByValDialog_InvalidCharacters {
-            get {
-                return ResourceManager.GetString("AssignedByValDialog_InvalidCharacters", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The local variable cannot be the same as the &apos;{0}&apos; parameter it replaces.
-        /// </summary>
-        public static string AssignedByValDialog_IsByValIdentifierFormat {
-            get {
-                return ResourceManager.GetString("AssignedByValDialog_IsByValIdentifierFormat", resourceCulture);
+                return ResourceManager.GetString("AssignedByValDialog_MeaninglessNameFormat", resourceCulture);
             }
         }
         
@@ -245,24 +227,6 @@ namespace Rubberduck.Resources {
         public static string AssignedByValDialog_NewNameAlreadyUsedFormat {
             get {
                 return ResourceManager.GetString("AssignedByValDialog_NewNameAlreadyUsedFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The identifier &apos;{0}&apos; will trigger a &quot;Use meaningful name&quot; inspection result. Consider choosing a different name..
-        /// </summary>
-        public static string AssignedByValDialog_QuestionableEntryFormat {
-            get {
-                return ResourceManager.GetString("AssignedByValDialog_QuestionableEntryFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is a reserved keyword..
-        /// </summary>
-        public static string AssignedByValDialog_ReservedKeywordFormat {
-            get {
-                return ResourceManager.GetString("AssignedByValDialog_ReservedKeywordFormat", resourceCulture);
             }
         }
         
@@ -1576,6 +1540,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tell me if a newer pre-release build is available.
+        /// </summary>
+        public static string GeneralSettings_IncludePreRelease {
+            get {
+                return ResourceManager.GetString("GeneralSettings_IncludePreRelease", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Info.
         /// </summary>
         public static string GeneralSettings_InfoLogLevel {
@@ -1693,7 +1666,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Issue Description.
+        ///   Looks up a localized string similar to filter by description.
         /// </summary>
         public static string GroupingGrid_Filter {
             get {
@@ -2238,6 +2211,51 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; does not begin with a letter.
+        /// </summary>
+        public static string InvalidNameCriteria_DoesNotStartWithLetterFormat {
+            get {
+                return ResourceManager.GetString("InvalidNameCriteria_DoesNotStartWithLetterFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; exceeds the maximum allowed string length.
+        /// </summary>
+        public static string InvalidNameCriteria_ExceedsMaximumLengthFormat {
+            get {
+                return ResourceManager.GetString("InvalidNameCriteria_ExceedsMaximumLengthFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; contains special character(s) other than underscores..
+        /// </summary>
+        public static string InvalidNameCriteria_InvalidCharactersFormat {
+            get {
+                return ResourceManager.GetString("InvalidNameCriteria_InvalidCharactersFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VBA Identifiers cannot be null or zero-length.
+        /// </summary>
+        public static string InvalidNameCriteria_IsNullOrEmpty {
+            get {
+                return ResourceManager.GetString("InvalidNameCriteria_IsNullOrEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is a reserved keyword..
+        /// </summary>
+        public static string InvalidNameCriteria_IsReservedKeywordFormat {
+            get {
+                return ResourceManager.GetString("InvalidNameCriteria_IsReservedKeywordFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Issue.
         /// </summary>
         public static string Issue {
@@ -2364,6 +2382,15 @@ namespace Rubberduck.Resources {
         public static string MakeActiveWorkbookReferenceExplicit {
             get {
                 return ResourceManager.GetString("MakeActiveWorkbookReferenceExplicit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The identifier &apos;{0}&apos; will trigger a &apos;Use Meaningful Name&apos; inspection result..
+        /// </summary>
+        public static string MeaninglessNameCriteriaMatchFormat {
+            get {
+                return ResourceManager.GetString("MeaninglessNameCriteriaMatchFormat", resourceCulture);
             }
         }
         
@@ -2567,7 +2594,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ok.
+        ///   Looks up a localized string similar to OK.
         /// </summary>
         public static string OK {
             get {
@@ -3948,6 +3975,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Save &amp; Close.
+        /// </summary>
+        public static string SaveAndClose {
+            get {
+                return ResourceManager.GetString("SaveAndClose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All implementations: &apos;{0}&apos;.
         /// </summary>
         public static string SearchResults_AllImplementationsTabFormat {
@@ -4298,7 +4334,30 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck version {0} is now available! Would you like to review the release notes now?.
+        ///   Looks up a localized string similar to pre-release.
+        /// </summary>
+        public static string VersionCheck_BuildType_PreRelease {
+            get {
+                return ResourceManager.GetString("VersionCheck_BuildType_PreRelease", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to release.
+        /// </summary>
+        public static string VersionCheck_BuildType_Release {
+            get {
+                return ResourceManager.GetString("VersionCheck_BuildType_Release", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are currently running Rubberduck version {0}.
+        ///Good news! Version {1} ({2}) is now available.
+        ///
+        ///To review the change log and manually upgrade Rubberduck, click &apos;Yes&apos;.
+        ///
+        ///This dialog is showing because version checks are enabled. You can turn off this feature in Rubberduck &gt; Settings..
         /// </summary>
         public static string VersionCheck_NewVersionAvailable {
             get {

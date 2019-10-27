@@ -17,14 +17,14 @@ namespace Rubberduck.Inspections.Concrete
     /// A dictionary access expression looks like a strongly typed call, but it actually is a stringly typed access to the parameterized default member of the object.
     /// This is especially misleading the default member cannot be determined at compile time.  
     /// </why>
-    /// <example hasResult="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Public Function MyName(ByVal rst As Object) As Variant
     ///     MyName = rst!Name.Value
     /// End Function
     /// ]]>
     /// </example>
-    /// <example hasResult="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Public Function MyName(ByVal rst As Variant) As Variant
     ///     With rst
@@ -33,21 +33,21 @@ namespace Rubberduck.Inspections.Concrete
     /// End Function
     /// ]]>
     /// </example>
-    /// <example hasResult="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Public Function MyName(ByVal rst As ADODB.Recordset) As Variant
     ///     MyName = rst!Name.Value
     /// End Function
     /// ]]>
     /// </example>
-    /// <example hasResult="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Public Function MyName(ByVal rst As Object) As Variant
     ///     MyName = rst("Name").Value
     /// End Function
     /// ]]>
     /// </example>
-    /// <example hasResult="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Public Function MyName(ByVal rst As Variant) As Variant
     ///     With rst
@@ -72,8 +72,7 @@ namespace Rubberduck.Inspections.Concrete
         protected override bool IsResultReference(IdentifierReference reference)
         {
             return reference.IsIndexedDefaultMemberAccess
-                   && reference.Context is VBAParser.DictionaryAccessContext
-                   && !reference.IsIgnoringInspectionResultFor(AnnotationName);
+                   && reference.Context is VBAParser.DictionaryAccessContext;
         }
 
         protected override string ResultDescription(IdentifierReference reference)

@@ -6,6 +6,9 @@
     <Copyright>Copyright © 2016-2019</Copyright>
     <ProjectGuid>{E85E1253-86D6-45EE-968B-F37348D44132}</ProjectGuid>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;1591;4011;1001;7035;1053</NoWarn>
+  </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
 
   <ItemGroup>

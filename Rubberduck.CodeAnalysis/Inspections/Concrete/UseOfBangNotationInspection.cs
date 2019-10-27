@@ -14,14 +14,14 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// A dictionary access expression looks like a strongly typed call, but it actually is a stringly typed access to the parameterized default member of the object. 
     /// </why>
-    /// <example hasResult="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal wkb As Excel.Workbook)
     ///     wkb.Worksheets!MySheet.Range("A1").Value = 42
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResult="true">
+    /// <example hasresult="true">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal wkb As Excel.Workbook)
     ///     With wkb.Worksheets
@@ -30,21 +30,21 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResult="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal wkb As Excel.Workbook)
     ///     wkb.Worksheets("MySheet").Range("A1").Value = 42
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResult="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal wkb As Excel.Workbook)
     ///     wkb.Worksheets.Item("MySheet").Range("A1").Value = 42
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResult="false">
+    /// <example hasresult="false">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal wkb As Excel.Workbook)
     ///     With wkb.Worksheets
@@ -65,8 +65,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             return reference.IsIndexedDefaultMemberAccess
                    && reference.DefaultMemberRecursionDepth == 1
-                   && reference.Context is VBAParser.DictionaryAccessContext
-                   && !reference.IsIgnoringInspectionResultFor(AnnotationName);
+                   && reference.Context is VBAParser.DictionaryAccessContext;
         }
 
         protected override string ResultDescription(IdentifierReference reference)

@@ -20,7 +20,7 @@ namespace RubberduckTests.Symbols
             private static ExternalProcedureDeclaration GetTestExternalProcedure(string name)
             {
                 var qualifiedProcedureName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new ExternalProcedureDeclaration(qualifiedProcedureName, null, null, DeclarationType.Procedure, "test", null, Accessibility.Public, null, Selection.Home, true, null);
+                return new ExternalProcedureDeclaration(qualifiedProcedureName, null, null, DeclarationType.Procedure, "test", null, Accessibility.Public, null, null, Selection.Home, true, null, null);
             }
 
                 private static QualifiedModuleName StubQualifiedModuleName()

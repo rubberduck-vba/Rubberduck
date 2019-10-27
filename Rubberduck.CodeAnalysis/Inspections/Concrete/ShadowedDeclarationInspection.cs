@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
@@ -196,6 +197,12 @@ namespace Rubberduck.Inspections.Concrete
 
             // Events don't have a body, so their parameters can't be accessed
             if (userDeclaration.DeclarationType == DeclarationType.Parameter && userDeclaration.ParentDeclaration.DeclarationType == DeclarationType.Event)
+            {
+                return false;
+            }
+
+            // We insert Debug.Assert as a member access on an artificial Debug standard module. Thus, Assert will also be seen as shadowing Debug.Assert, which is not true. 
+            if (originalDeclaration.IdentifierName.Equals("Assert", StringComparison.InvariantCultureIgnoreCase) && originalDeclaration.QualifiedModuleName.ComponentName.Equals("Debug", StringComparison.InvariantCultureIgnoreCase))
             {
                 return false;
             }

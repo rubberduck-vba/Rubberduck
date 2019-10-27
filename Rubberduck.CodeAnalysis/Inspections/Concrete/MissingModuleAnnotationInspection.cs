@@ -49,6 +49,7 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(decl => decl.Attributes.Any());
 
             var declarationsToInspect = moduleDeclarationsWithAttributes
+                // prefilter declarations to reduce searchspace
                 .Where(decl => decl.QualifiedModuleName.ComponentType != ComponentType.Document
                                && !decl.IsIgnoringInspectionResultFor(AnnotationName));
 
