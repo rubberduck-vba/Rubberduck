@@ -202,7 +202,9 @@
                                SelectionUnit="FullRow"
                                ItemsSource="{Binding Results, NotifyOnSourceUpdated=True}"
                                VirtualizingPanel.IsVirtualizingWhenGrouping="True"
-                               RequestBringIntoView="InspectionResultsGrid_RequestBringIntoView">
+                               ScrollViewer.CanContentScroll="True" 
+                               ScrollViewer.VerticalScrollBarVisibility="Auto"
+                               ScrollViewer.HorizontalScrollBarVisibility="Auto">
                 <DataGrid.RowDetailsTemplate>
                     <DataTemplate>
                         <Grid>
@@ -243,46 +245,6 @@
                     <controls:GroupItemExpandedBehavior ExpandedState="{Binding ExpandedState, Mode=TwoWay}" />
                 </i:Interaction.Behaviors>
             </controls:GroupingGrid>
-            <DataGrid.RowDetailsTemplate>
-                <DataTemplate>
-                    <Grid>
-                        <Rectangle Fill="Transparent" />
-                        <GridViewRowPresenter/>
-                    </Grid>
-                </DataTemplate>
-            </DataGrid.RowDetailsTemplate>
-            <DataGrid.Columns>
-                <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Type}">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate DataType="abstract1:IInspectionResult">
-                            <Image Source="{Binding Inspection, Converter={StaticResource InspectionIconConverter}, Mode=OneTime}" Width="16" Height="16" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Issue}" Binding="{Binding Description, Mode=OneTime}" />
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Location}" Binding="{Binding QualifiedSelection.QualifiedName, Mode=OneTime}" />
-            </DataGrid.Columns>
-            <DataGrid.ContextMenu>
-                <ContextMenu ItemsSource="{Binding PlacementTarget.DataContext.QuickFixes, RelativeSource={RelativeSource Self}}">
-                    <ContextMenu.Resources>
-                        <Style TargetType="{x:Type MenuItem}">
-                            <Setter Property="Icon">
-                                <Setter.Value>
-                                    <Image Source="{Binding Fix, Converter={StaticResource QuickFixIconConverter}}" />
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="Command" Value="{Binding Command}" />
-                            <Setter Property="CommandParameter" Value="{Binding Fix}" />
-                            <Setter Property="Header" Value="{Binding Description}" />
-                            <Setter Property="Background" Value="Transparent"></Setter>
-                        </Style>
-                    </ContextMenu.Resources>
-                </ContextMenu>
-            </DataGrid.ContextMenu>
-            <i:Interaction.Behaviors>
-                <controls:GroupItemExpandedBehavior ExpandedState="{Binding ExpandedState, Mode=TwoWay}" />
-            </i:Interaction.Behaviors>
-        </controls:GroupingGrid>
 
             <controls:EmptyUIRefresh Grid.Row="1" Visibility="{Binding Unparsed, Converter={StaticResource BoolToVisibility}}" />
             <controls:BusyIndicator Grid.Row="1" Width="120" Height="120" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
