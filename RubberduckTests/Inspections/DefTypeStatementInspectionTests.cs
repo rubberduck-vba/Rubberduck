@@ -1,13 +1,13 @@
 ﻿using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using RubberduckTests.Mocks;
-using System.Threading;
 using System.Linq;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class DefTypeStatementInspectionTests
+    public class DefTypeStatementInspectionTests : InspectionTestsBase
     {
         [Test]
         [TestCase("Bool")]
@@ -29,15 +29,7 @@ namespace RubberduckTests.Inspections
 Public Function aFoo()
 End Function";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Format(inputCode, type), out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DefTypeStatementInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForStandardModule(string.Format(inputCode, type)).Count());
         }
 
         [Test]
@@ -61,15 +53,7 @@ Def{0} F
 Public Function FunctionWontBeFoundInResult()
 End Function";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Format(inputCode, type), out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DefTypeStatementInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(string.Format(inputCode, type)).Count());
         }
 
         [Test]
@@ -91,15 +75,7 @@ DefVar K
 Public Function Zoo()
 End Function";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DefTypeStatementInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(11, inspectionResults.Count());
-            }
+            Assert.AreEqual(11, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -122,15 +98,7 @@ DefVar K
 Public Function Zoo()
 End Function";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DefTypeStatementInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -141,6 +109,11 @@ End Function";
             var inspection = new DefTypeStatementInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new DefTypeStatementInspection(state);
         }
     }
 }

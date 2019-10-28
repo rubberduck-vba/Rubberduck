@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Rubberduck.Parsing.ComReflection;
@@ -77,7 +78,12 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 _serializationProvider.SerializeProject(library);
             }
 
-#if TRACE_COM_SAFE
+            SerializeComSafe();
+        }
+
+        [Conditional("TRACE_COM_SAFE")]
+        private void SerializeComSafe()
+        {
             //This block must be inside a conditional compilation block because the Serialize method 
             //called is conditionally compiled and available only if the compilation constant TRACE_COM_SAFE is set.
             var path = !string.IsNullOrWhiteSpace(_serializationProvider.Target)
@@ -88,8 +94,8 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             {
                 Directory.CreateDirectory(traceDirectory);
             }
+
             Rubberduck.VBEditor.ComManagement.ComSafeManager.GetCurrentComSafe().Serialize(traceDirectory);
-#endif
         }
     }
 }

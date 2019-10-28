@@ -305,19 +305,12 @@ namespace Rubberduck.UnitTesting
 
             var flattenedExpected = expected.Cast<object>().ToList();
             var flattenedActual = actual.Cast<object>().ToList();
-            if (!flattenedActual.SequenceEqual(flattenedExpected, comparer))
-            {
-                if (equals)
-                {
-                    AssertHandler.OnAssertFailed(message, methodName);
-                }
-                AssertHandler.OnAssertSucceeded();
-            }
-
-            if (!equals)
+            if (equals ^ flattenedActual.SequenceEqual(flattenedExpected, comparer))
             {
                 AssertHandler.OnAssertFailed(message, methodName);
+                return;
             }
+
             AssertHandler.OnAssertSucceeded();
         }
 

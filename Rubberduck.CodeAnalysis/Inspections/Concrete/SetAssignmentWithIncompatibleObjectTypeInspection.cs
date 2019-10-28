@@ -22,7 +22,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 	/// <why>
 	/// The VBA compiler does not check whether different object types are compatible. Instead there is a runtime error whenever the types are incompatible.
 	/// </why>
-	/// <example hasResult="true">
+	/// <example hasresult="true">
 	/// <![CDATA[
 	/// IInterface:
 	///
@@ -49,7 +49,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 	/// End Sub
 	/// ]]>
 	/// </example>
-	/// <example hasResult="false">
+	/// <example hasresult="false">
 	/// <![CDATA[
 	/// IInterface:
 	///
