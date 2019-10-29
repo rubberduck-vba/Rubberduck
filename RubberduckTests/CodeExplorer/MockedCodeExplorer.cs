@@ -339,7 +339,7 @@ namespace RubberduckTests.CodeExplorer
 
         public void ExecuteImportCommand()
         {
-            ViewModel.ImportCommand = new ImportCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object);
+            ViewModel.ImportCommand = new ImportCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object, State);
             ViewModel.ImportCommand.Execute(ViewModel.SelectedItem);
         }
 
