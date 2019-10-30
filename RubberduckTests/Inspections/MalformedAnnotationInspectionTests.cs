@@ -1,118 +1,37 @@
 using System.Linq;
 using NUnit.Framework;
-using RubberduckTests.Mocks;
-using System.Threading;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class MalformedAnnotationInspectionTests
+    public class MalformedAnnotationInspectionTests : InspectionTestsBase
     {
-        [Test]
+        [TestCase(@"'@Folder", 1)]
+        [TestCase(@"'@Folder ""Foo""", 0)]
+        [TestCase(@"'@Ignore", 1)]
+        [TestCase(@"'@Ignore ProcedureNotUsedInspection", 0)]
+        [TestCase("'@Folder\r\n'@Ignore", 2)]
         [Category("Inspections")]
-        public void MalformedAnnotation_ReturnsResult_Folder()
+        public void MalformedAnnotation_Various(string inputCode, int expectedCount)
         {
-            const string inputCode =
-                @"'@Folder";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new MissingAnnotationArgumentInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void MalformedAnnotation_DoesNotReturnResult_Folder()
-        {
-            const string inputCode =
-                @"'@Folder ""Foo""";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new MissingAnnotationArgumentInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void MalformedAnnotation_ReturnsResult_Ignore()
-        {
-            const string inputCode =
-                @"'@Ignore";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new MissingAnnotationArgumentInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void MalformedAnnotation_DoesNotReturnResult_Ignore()
-        {
-            const string inputCode =
-                @"'@Ignore ProcedureNotUsedInspection";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new MissingAnnotationArgumentInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void MalformedAnnotation_ReturnsMultipleResults()
-        {
-            const string inputCode =
-                @"'@Folder
-'@Ignore";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new MissingAnnotationArgumentInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(2, inspectionResults.Count());
-            }
+            Assert.AreEqual(expectedCount, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
         [Category("Inspections")]
         public void InspectionName()
         {
-            const string inspectionName = "MissingAnnotationArgumentInspection";
             var inspection = new MissingAnnotationArgumentInspection(null);
 
-            Assert.AreEqual(inspectionName, inspection.Name);
+            Assert.AreEqual(nameof(MissingAnnotationArgumentInspection), inspection.Name);
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new MissingAnnotationArgumentInspection(state);
         }
     }
 }

@@ -1,28 +1,14 @@
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Mocks;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class UnassignedVariableUsageInspectionTests
+    public class UnassignedVariableUsageInspectionTests : InspectionTestsBase
     {
-        private IEnumerable<IInspectionResult> GetInspectionResults(string code, ComponentType componentType = ComponentType.ClassModule)
-        {
-            var vbe = MockVbeBuilder.BuildFromSingleModule(code, componentType, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new UnassignedVariableUsageInspection(state);
-                return inspection.GetInspectionResults(CancellationToken.None);
-            }
-        }
-
         [Test]
         [Category("Inspections")]
         public void IgnoresExplicitArrays()
@@ -33,8 +19,7 @@ Sub Foo()
     bar(1) = ""value""
 End Sub
 ";
-            var results = GetInspectionResults(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
@@ -47,8 +32,7 @@ Sub Foo()
     ReDim bar(1 To 10)
 End Sub
 ";
-            var results = GetInspectionResults(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
@@ -62,8 +46,7 @@ Sub Foo()
     bar(1) = 42
 End Sub
 ";
-            var results = GetInspectionResults(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
@@ -77,8 +60,7 @@ Sub Foo()
     bb = b
 End Sub
 ";
-            var results = GetInspectionResults(code);
-            Assert.AreEqual(1, results.Count());
+            Assert.AreEqual(1, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
@@ -94,8 +76,7 @@ Sub Foo()
 End Sub
 ";
 
-            var results = GetInspectionResults(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
@@ -111,8 +92,7 @@ Sub Foo()
     bb = b
 End Sub
 ";
-            var results = GetInspectionResults(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
@@ -128,8 +108,7 @@ Sub Foo()
     bb = b
 End Sub
 ";
-            var results = GetInspectionResults(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
@@ -148,8 +127,7 @@ Sub AssignThing(ByRef thing As Variant)
     thing = 42
 End Sub
 ";
-            var results = GetInspectionResults(code, ComponentType.StandardModule);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
@@ -161,8 +139,7 @@ Sub DoSomething()
     Dim foo
 End Sub
 ";
-            var results = GetInspectionResults(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
@@ -176,8 +153,7 @@ Sub DoSomething()
     Debug.Print Len(foo)
 End Sub
 ";
-            var results = GetInspectionResults(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
@@ -191,18 +167,21 @@ Sub DoSomething()
     Debug.Print LenB(foo)
 End Sub
 ";
-            var results = GetInspectionResults(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
         [Category("Inspections")]
         public void InspectionName()
         {
-            const string inspectionName = "UnassignedVariableUsageInspection";
             var inspection = new UnassignedVariableUsageInspection(null);
 
-            Assert.AreEqual(inspectionName, inspection.Name);
+            Assert.AreEqual(nameof(UnassignedVariableUsageInspection), inspection.Name);
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new UnassignedVariableUsageInspection(state);
         }
     }
 }
