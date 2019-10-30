@@ -1,13 +1,13 @@
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using RubberduckTests.Mocks;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class ObsoleteGlobalInspectionTests
+    public class ObsoleteGlobalInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
@@ -15,15 +15,7 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode =
                 @"Global var1 As Integer";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ObsoleteGlobalInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -33,15 +25,7 @@ namespace RubberduckTests.Inspections
             const string inputCode =
                 @"Global var1 As Integer
 Global var2 As String";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ObsoleteGlobalInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(2, inspectionResults.Count());
-            }
+            Assert.AreEqual(2, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -50,15 +34,7 @@ Global var2 As String";
         {
             const string inputCode =
                 @"Public var1 As Integer";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ObsoleteGlobalInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -68,15 +44,7 @@ Global var2 As String";
             const string inputCode =
                 @"Public var1 As Integer
 Global var2 As Date";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ObsoleteGlobalInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+        Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -86,25 +54,21 @@ Global var2 As Date";
             const string inputCode =
                 @"'@Ignore ObsoleteGlobal
 Global var1 As Integer";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ObsoleteGlobalInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
         [Category("Inspections")]
         public void InspectionName()
         {
-            const string inspectionName = "ObsoleteGlobalInspection";
             var inspection = new ObsoleteGlobalInspection(null);
 
-            Assert.AreEqual(inspectionName, inspection.Name);
+            Assert.AreEqual(nameof(ObsoleteGlobalInspection), inspection.Name);
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new ObsoleteGlobalInspection(state);
         }
     }
 }

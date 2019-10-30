@@ -1,14 +1,15 @@
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class NonReturningFunctionInspectionTests
+    public class NonReturningFunctionInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
@@ -17,15 +18,7 @@ namespace RubberduckTests.Inspections
             const string inputCode =
                 @"Function Foo() As Boolean
 End Function";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -35,15 +28,7 @@ End Function";
             const string inputCode =
                 @"Property Get Foo() As Boolean
 End Property";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -56,15 +41,7 @@ End Function
 
 Function Goo() As String
 End Function";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(2, inspectionResults.Count());
-            }
+            Assert.AreEqual(2, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -75,15 +52,7 @@ End Function";
                 @"Function Foo() As Boolean
     Foo = True
 End Function";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -94,15 +63,7 @@ End Function";
                 @"Function Foo() As Collection
     Set Foo = new Collection
 End Function";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -113,15 +74,7 @@ End Function";
                 @"'@Ignore NonReturningFunction
 Function Foo() As Boolean
 End Function";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -135,15 +88,7 @@ End Function
 
 Function Goo() As String
 End Function";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -158,15 +103,7 @@ End Function
 Public Sub ByRefAssign(ByRef a As Boolean)
 End Sub
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -182,15 +119,7 @@ Public Sub ByRefAssign(ByVal v As Boolean, ByRef a As Boolean)
     a = v
 End Sub
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -206,15 +135,7 @@ Public Sub ByRefAssign(ByVal v As Boolean, ByRef a As Boolean)
     'nope, not assigned
 End Sub
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -237,13 +158,7 @@ End Sub
                 .AddComponent("TestModule1", ComponentType.StandardModule, code)
                 .AddComponent("Class1", ComponentType.ClassModule, classCode);
             var vbe = builder.Build();
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
+            Assert.AreEqual(0, InspectionResults(vbe.Object).Count());
         }
 
         [Test]
@@ -259,15 +174,7 @@ Public Sub ByRefAssign(Optional ByVal a As Long, Optional ByRef b As Boolean)
     b = False
 End Sub
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -284,31 +191,27 @@ End Function";
 Function IClass1_Foo() As Boolean
 End Function";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var modules = new(string, string, ComponentType)[]
             {
+                ("IClass1", inputCode1, ComponentType.ClassModule),
+                ("Class1", inputCode2, ComponentType.ClassModule),
+            };
 
-                var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForModules(modules).Count());
         }
 
         [Test]
         [Category("Inspections")]
         public void InspectionName()
         {
-            const string inspectionName = "NonReturningFunctionInspection";
             var inspection = new NonReturningFunctionInspection(null);
 
-            Assert.AreEqual(inspectionName, inspection.Name);
+            Assert.AreEqual(nameof(NonReturningFunctionInspection), inspection.Name);
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new NonReturningFunctionInspection(state);
         }
     }
 }

@@ -1,14 +1,14 @@
 ﻿using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class IsMissingOnInappropriateArgumentInspectionTests
+    public class IsMissingOnInappropriateArgumentInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
@@ -203,21 +203,17 @@ End Function
 
         private int ArrangeAndGetInspectionCount(string code)
         {
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Module1", ComponentType.StandardModule, code)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var modules = new(string, string, ComponentType)[] 
             {
-                var inspection = new IsMissingOnInappropriateArgumentInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+                ("Module1", code, ComponentType.StandardModule)
+            };
 
-                return inspectionResults.Count();
-            }
+            return InspectionResultsForModules(modules, "VBA").Count();
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new IsMissingOnInappropriateArgumentInspection(state);
         }
     }
 }
