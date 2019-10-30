@@ -24,6 +24,7 @@ namespace Rubberduck.Inspections.Concrete
     ///     bar = arg
     /// End Sub
     /// ]]>
+    /// </example>
     /// <example hasresult="true">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal arg As Object)
@@ -39,6 +40,7 @@ namespace Rubberduck.Inspections.Concrete
     ///     bar = arg.SomeValueReturningMember
     /// End Sub
     /// ]]>
+    /// </example>
     /// <example hasresult="false">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal arg As Object)

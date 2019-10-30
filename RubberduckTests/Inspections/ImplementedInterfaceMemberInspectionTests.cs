@@ -1,7 +1,5 @@
 ﻿using System.Linq;
-using System.Threading;
 using NUnit.Framework;
-using RubberduckTests.Mocks;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.Parsing.Inspections.Abstract;
