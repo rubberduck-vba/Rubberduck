@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Moq;
 using Rubberduck.Parsing.Grammar;
@@ -211,18 +212,18 @@ namespace RubberduckTests.Mocks
 
             result.Setup(m => m.Import(It.IsAny<string>())).Callback((string s) =>
             {
-                var parts = s.Split('.').ToList();
+                var extension = Path.GetExtension(s);
                 var types = new Dictionary<string, ComponentType>
                 {
-                    {"bas", ComponentType.StandardModule},
-                    {"cls", ComponentType.ClassModule},
-                    {"frm", ComponentType.UserForm}
+                    {".bas", ComponentType.StandardModule},
+                    {".cls", ComponentType.ClassModule},
+                    {".frm", ComponentType.UserForm}
                 };
 
                 ComponentType type;
-                types.TryGetValue(parts.Last(), out type);
+                types.TryGetValue(extension, out type);
 
-                _componentsMock.Add(CreateComponentMock(s.Split('\\').Last(), type, string.Empty, new Selection(), null, out var codeModule));
+                _componentsMock.Add(CreateComponentMock(Path.GetFileNameWithoutExtension(s), type, string.Empty, new Selection(), null, out var codeModule));
                 _codeModuleMocks.Add(codeModule);
             });
 

@@ -43,10 +43,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             _importableExtensions =
                 vbe.Kind == VBEKind.Hosted
-                    ? new List<string> {"bas", "cls", "frm", "doccls"} // VBA 
-                    : new List<string> {"bas", "cls", "frm", "ctl", "pag", "dob"}; // VB6
+                    ? new List<string> {".bas", ".cls", ".frm", ".doccls"} // VBA 
+                    : new List<string> {".bas", ".cls", ".frm", ".ctl", ".pag", ".dob"}; // VB6
 
-            _filterExtensions = string.Join("; ", _importableExtensions.Select(ext => $"*.{ext}"));
+            _filterExtensions = string.Join("; ", _importableExtensions.Select(ext => $"*{ext}"));
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
             AddToOnExecuteEvaluation(SpecialEvaluateCanExecute);
@@ -125,6 +125,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 var fileExtensions = fileNames.Select(Path.GetExtension);
                 if (fileExtensions.Any(fileExt => !_importableExtensions.Contains(fileExt)))
                 {
+                    //TODO: report this to the user.
                     return new List<string>();
                 }
 
@@ -134,7 +135,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected virtual string FileDialogTitle => RubberduckUI.ImportCommand_OpenDialog_Title;
 
-        private void ImportFilesWithSuspension(IEnumerable<string> filesToImport, IVBProject targetProject)
+        private void ImportFilesWithSuspension(ICollection<string> filesToImport, IVBProject targetProject)
         {
             var suspensionResult = _parseManager.OnSuspendParser(this, new[] {ParserState.Ready}, () => ImportFiles(filesToImport, targetProject));
             if (suspensionResult != SuspensionResult.Completed)

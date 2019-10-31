@@ -13,6 +13,8 @@ using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.ComCommands;
 using RubberduckTests.Mocks;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Parsing.Symbols;
 
 namespace RubberduckTests.CodeExplorer
 {
@@ -338,10 +340,106 @@ namespace RubberduckTests.CodeExplorer
             const string path = @"C:\Users\Rubberduck\Desktop\StdModule1.bas";
 
             using (var explorer = new MockedCodeExplorer(ProjectType.HostProject)
+                .ConfigureSaveDialog(path, DialogResult.Cancel)
+                .SelectFirstModule())
+            {
+                explorer.ExecuteImportCommand();
+                explorer.VbComponents.Verify(c => c.Import(path), Times.Never);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        public void UpdateFromFile_ModuleNotThere_Imports()
+        {
+            const string path = @"C:\Users\Rubberduck\Desktop\StdModule1.bas";
+
+            using (var explorer = new MockedCodeExplorer(
+                ProjectType.HostProject,
+                ("TestModule", ComponentType.StandardModule, string.Empty))
+                .ConfigureOpenDialog(new[] { path }, DialogResult.OK)
+                .SelectFirstProject())
+            {
+                explorer.ExecuteUpdateFromFileCommand(filename => "SomeOtherModule");
+                explorer.VbComponents.Verify(c => c.Import(path), Times.Once);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        public void UpdateFromFile_ModuleThere_Imports()
+        {
+            const string path = @"C:\Users\Rubberduck\Desktop\StdModule1.bas";
+
+            using (var explorer = new MockedCodeExplorer(
+                ProjectType.HostProject,
+                ("TestModule", ComponentType.StandardModule, string.Empty))
+                .ConfigureOpenDialog(new[] { path }, DialogResult.OK)
+                .SelectFirstProject())
+            {
+                explorer.ExecuteUpdateFromFileCommand(filename => "TestModule");
+                explorer.VbComponents.Verify(c => c.Import(path), Times.Once);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        public void UpdateFromFile_ModuleNotThere_DoesNotRemove()
+        {
+            const string path = @"C:\Users\Rubberduck\Desktop\StdModule1.bas";
+
+            using (var explorer = new MockedCodeExplorer(
+                ProjectType.HostProject,
+                ("TestModule", ComponentType.StandardModule, string.Empty))
+                .ConfigureOpenDialog(new[] { path }, DialogResult.OK)
+                .SelectFirstProject())
+            {
+                explorer.ExecuteUpdateFromFileCommand(filename => "SomeOtherModule");
+                explorer.VbComponents.Verify(c => c.Remove(It.IsAny<IVBComponent>()), Times.Never);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        public void UpdateFromFile_ModuleThere_RemovesMatchingComponent()
+        {
+            const string path = @"C:\Users\Rubberduck\Desktop\StdModule1.bas";
+
+            using (var explorer = new MockedCodeExplorer(
+                ProjectType.HostProject,
+                ("TestModule", ComponentType.StandardModule, string.Empty),
+                ("OtherTestModule", ComponentType.StandardModule, string.Empty))
+                .ConfigureOpenDialog(new[] { path }, DialogResult.OK)
+                .SelectFirstProject())
+            {
+                explorer.ExecuteUpdateFromFileCommand(filename => filename == path ? "TestModule" : "YetAnotherModule");
+
+                var modulesNames = explorer
+                    .VbComponents
+                    .Object
+                    .Select(component => component.Name)
+                    .ToList();
+
+                explorer.VbComponents.Verify(c => c.Remove(It.IsAny<IVBComponent>()), Times.Once);
+
+                Assert.IsTrue(modulesNames.Contains("OtherTestModule"));
+                //This depends on the setup of Import on the VBComponents mock, which determines the component name from the filename.
+                Assert.IsTrue(modulesNames.Contains("StdModule1"));
+                Assert.IsFalse(modulesNames.Contains("TestModule"));
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        public void UpdateFromFile_Cancel()
+        {
+            const string path = @"C:\Users\Rubberduck\Desktop\StdModule1.bas";
+
+            using (var explorer = new MockedCodeExplorer(ProjectType.HostProject)
                 .ConfigureOpenDialog(new[] { path }, DialogResult.Cancel)
                 .SelectFirstProject())
             {
-                explorer.ExecuteImportCommand();
+                explorer.ExecuteUpdateFromFileCommand(filename => filename);
                 explorer.VbComponents.Verify(c => c.Import(path), Times.Never);
             }
         }
