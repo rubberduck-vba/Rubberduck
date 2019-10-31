@@ -1046,7 +1046,12 @@ Would you like to import them to Rubberduck?</value>
     <value>Indented Code Sample</value>
   </data>
   <data name="VersionCheck_NewVersionAvailable" xml:space="preserve">
-    <value>Rubberduck version {0} is now available! Would you like to review the release notes now?</value>
+    <value>You are currently running Rubberduck version {0}.
+Good news! Version {1} ({2}) is now available.
+
+To review the change log and manually upgrade Rubberduck, click 'Yes'.
+
+This dialog is showing because version checks are enabled. You can turn off this feature in Rubberduck &amp;gt; Settings.</value>
   </data>
   <data name="GeneralSettings_CheckVersion" xml:space="preserve">
     <value>Check if a newer version is available at startup</value>
@@ -1665,5 +1670,14 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="CodeExplorer_IExportable_DeclarationFormat" xml:space="preserve">
     <value>{0} {1} {2} {3} {4} {5}</value>
     <comment>{0}=Project; {1}=Folder; {2}=Component; {3}=DeclarationType; {4}=Scope; {5}=Name</comment>
+  </data>
+  <data name="GeneralSettings_IncludePreRelease" xml:space="preserve">
+    <value>Tell me if a newer pre-release build is available</value>
+  </data>
+  <data name="VersionCheck_BuildType_PreRelease" xml:space="preserve">
+    <value>pre-release</value>
+  </data>
+  <data name="VersionCheck_BuildType_Release" xml:space="preserve">
+    <value>release</value>
   </data>
 </root>

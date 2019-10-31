@@ -4420,7 +4420,7 @@ namespace Rubberduck.Resources {
         ///
         ///To review the change log and manually upgrade Rubberduck, click &apos;Yes&apos;.
         ///
-        ///This dialog is showing because version checks are enabled. You can turn off this feature in Rubberduck &gt; Settings..
+        ///This dialog is showing because version checks are enabled. You can turn off this feature in Rubberduck &amp;gt; Settings..
         /// </summary>
         public static string VersionCheck_NewVersionAvailable {
             get {
