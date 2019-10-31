@@ -59,9 +59,23 @@ namespace Rubberduck.CodeAnalysis.QuickFixes
         private string DefaultMemberAccessCode(QualifiedSelection selection, DeclarationFinder finder)
         {
             var defaultMemberAccesses = finder.IdentifierReferences(selection);
-            var defaultMemberNames = defaultMemberAccesses.Select(reference => reference.Declaration.IdentifierName);
+            var defaultMemberNames = defaultMemberAccesses
+                .Select(reference => reference.Declaration.IdentifierName)
+                .Select(declarationName => IsNotLegalIdentifierName(declarationName) 
+                                            ? $"[{declarationName}]" 
+                                            : declarationName);
             return $".{string.Join("().", defaultMemberNames)}";
         }
+
+        private bool IsNotLegalIdentifierName(string declarationName)
+        {
+            return string.IsNullOrEmpty(declarationName)
+                || NonIdentifierCharacters.Any(character => declarationName.Contains(character))
+                || AdditionalNonFirstIdentifierCharacters.Contains(declarationName[0]); ;
+        }
+
+        private string NonIdentifierCharacters = "[](){}\r\n\t.,'\"\\ |!@#$%^&*-+:=; ";
+        private string AdditionalNonFirstIdentifierCharacters = "0123456789_";
 
         public override string Description(IInspectionResult result)
         {
