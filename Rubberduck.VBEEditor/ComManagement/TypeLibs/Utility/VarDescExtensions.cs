@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices.ComTypes;
 
-namespace Rubberduck.JunkDrawer.Hacks
+namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Utility
 {
     public static class VarDescExtensions
     {
