@@ -1,13 +1,13 @@
 ﻿using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Inspections.Concrete;
-using RubberduckTests.Mocks;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class ObsoleteMemberUsageInspectionTests
+    public class ObsoleteMemberUsageInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
@@ -22,14 +22,7 @@ Public Sub Bar()
     Foo
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new ObsoleteMemberUsageInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -45,15 +38,7 @@ Public Sub Bar()
     Foo
     Foo
 End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new ObsoleteMemberUsageInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(2, inspectionResults.Count());
-            }
+            Assert.AreEqual(2, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -64,14 +49,12 @@ End Sub";
 '@Obsolete
 Public s As String";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new ObsoleteMemberUsageInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+        }
 
-                Assert.IsFalse(inspectionResults.Any());
-            }
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new ObsoleteMemberUsageInspection(state);
         }
     }
 }

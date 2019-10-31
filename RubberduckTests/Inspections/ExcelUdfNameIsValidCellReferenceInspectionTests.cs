@@ -4,7 +4,6 @@ using Rubberduck.Inspections.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
@@ -107,17 +106,7 @@ End {1}
         }
 
         private int InspectionResultCount(string inputCode, ComponentType moduleType)
-        {
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("UnderTest", moduleType, inputCode)
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
-                .Build();
-
-            var vbe = builder.AddProject(project).Build();
-
-            return InspectionResults(vbe.Object).Count();
-        }
+            => InspectionResultsForModules(("UnderTest", inputCode, moduleType), "Excel").Count();
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {

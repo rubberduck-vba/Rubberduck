@@ -1,8 +1,9 @@
-﻿using System.Linq;
-using System.Threading;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Moq;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -11,7 +12,7 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class SheetAccessedUsingStringInspectionTests
+    public class SheetAccessedUsingStringInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
@@ -23,13 +24,7 @@ namespace RubberduckTests.Inspections
     ThisWorkbook.Sheets(""Sheet1"").Range(""A1"") = ""Foo""
 End Sub";
 
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new SheetAccessedUsingStringInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(2, inspectionResults.Count());
-            }
+            Assert.AreEqual(2, ArrangeParserAndGetResults(inputCode).Count());
         }
 
         [Test]
@@ -42,13 +37,7 @@ End Sub";
     Application.Sheets(""Sheet1"").Range(""A1"") = ""Foo""
 End Sub";
 
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new SheetAccessedUsingStringInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(2, inspectionResults.Count());
-            }
+            Assert.AreEqual(2, ArrangeParserAndGetResults(inputCode).Count());
         }
 
         [Test]
@@ -61,13 +50,7 @@ End Sub";
     Sheets(""Sheet1"").Range(""A1"") = ""Foo""
 End Sub";
 
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new SheetAccessedUsingStringInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(2, inspectionResults.Count());
-            }
+            Assert.AreEqual(2, ArrangeParserAndGetResults(inputCode).Count());
         }
 
         [Test]
@@ -80,14 +63,7 @@ End Sub";
     Workbooks(""Foo"").Worksheets(""Sheet1"").Range(""A1"") = ""Foo""
     Workbooks(""Foo"").Sheets(""Sheet1"").Range(""A1"") = ""Foo""
 End Sub";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new SheetAccessedUsingStringInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
+            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode).Count());
         }
 
         [Test]
@@ -100,13 +76,7 @@ End Sub";
     ThisWorkbook.Sheets(""BadName"").Range(""A1"") = ""Foo""
 End Sub";
 
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new SheetAccessedUsingStringInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
+            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode).Count());
         }
 
         [Test]
@@ -120,13 +90,7 @@ End Sub";
 End Sub";
 
             // Referenced project is created inside helper method
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new SheetAccessedUsingStringInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
+            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode).Count());
         }
 
         [Test]
@@ -142,16 +106,10 @@ End Sub";
     ThisWorkbook.Sheets(s).Range(""A1"") = ""Foo""
 End Sub";
 
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-                var inspection = new SheetAccessedUsingStringInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
+            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode).Count());
         }
 
-        private static RubberduckParserState ArrangeParserAndParse(string inputCode)
+        private IEnumerable<IInspectionResult> ArrangeParserAndGetResults(string inputCode)
         {
             var builder = new MockVbeBuilder();
 
@@ -178,7 +136,7 @@ End Sub";
 
             var vbe = builder.AddProject(referencedProject).AddProject(project).Build();
 
-            return MockParser.CreateAndParse(vbe.Object);
+            return InspectionResults(vbe.Object);
         }
 
         // ReSharper disable once InconsistentNaming
@@ -189,6 +147,11 @@ End Sub";
             propertyMock.SetupGet(m => m.Value).Returns(propertyValue);
 
             return propertyMock;
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new SheetAccessedUsingStringInspection(state);
         }
     }
 }

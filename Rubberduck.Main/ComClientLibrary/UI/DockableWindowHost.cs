@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Forms;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.WindowsApi;
@@ -145,7 +146,7 @@ namespace Rubberduck.UI
         public int /* IOleObject:: */ Close([In] uint dwSaveOption)
         {
             _logger.Log(LogLevel.Trace, "IOleObject::Close() called");
-            int hr = _userControl.IOleObject.Close(dwSaveOption);
+            var hr = _userControl.IOleObject.Close(dwSaveOption);
 
             // IOleObject::SetClientSite is typically called with pClientSite = null just before calling IOleObject::Close()
             // If it didn't, we release all host COM objects here instead,
@@ -386,7 +387,7 @@ namespace Rubberduck.UI
 
             control.Dock = DockStyle.Fill;
             _userControl.Controls.Add(control);
-
+            
             AdjustSize();
         }
 
@@ -429,13 +430,78 @@ namespace Rubberduck.UI
             }
         }
 
+        private static void ToggleDockable(IntPtr hWndVBE)
+        {
+            NativeMethods.SendMessage(hWndVBE, 0x1044, (IntPtr)0xB5, IntPtr.Zero);
+        }
+
         [ComVisible(false)]
         public class ParentWindow : SubclassingWindow
         {
+            private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
+            private const int MF_BYPOSITION = 0x400;
+
             public event SubClassingWindowEventHandler CallBackEvent;
             public delegate void SubClassingWindowEventHandler(object sender, SubClassingWindowEventArgs e);
 
             private readonly IntPtr _vbeHwnd;
+
+            private IntPtr _containerHwnd;
+            private ToolWindowState _windowState;
+            private IntPtr _menuHandle;
+
+            private enum ToolWindowState
+            {
+                Unknown,
+                Docked,
+                Floating,
+                Undockable
+            }
+
+            private ToolWindowState GetWindowState(IntPtr containerHwnd)
+            {
+                var className = new StringBuilder(255);
+                if (NativeMethods.GetClassName(containerHwnd, className, className.Capacity) > 0)
+                {
+                    switch (className.ToString())
+                    {
+                        case "wndclass_desked_gsk":
+                            return ToolWindowState.Docked;
+                        case "VBFloatingPalette":
+                            return ToolWindowState.Floating;
+                        case "DockingView":
+                            return ToolWindowState.Undockable;
+                    }
+                }
+
+                return ToolWindowState.Unknown;
+            }
+
+            private void DisplayUndockableContextMenu(IntPtr handle, IntPtr lParam)
+            {
+                if (_menuHandle == IntPtr.Zero)
+                {
+                    _menuHandle = NativeMethods.CreatePopupMenu();
+
+                    if (_menuHandle == IntPtr.Zero)
+                    {
+                        _logger.Warn("Cannot create menu handle");
+                        return;
+                    }
+
+                    if (!NativeMethods.InsertMenu(_menuHandle, 0, MF_BYPOSITION, (UIntPtr)WM.RUBBERDUCK_UNDOCKABLE_CONTEXT_MENU, "Dockable" + char.MinValue))
+                    {
+                        _logger.Warn("Failed to insert a menu item for dockable command");
+                    }
+                }
+
+                var param = new LParam {Value = (uint)lParam};
+                if (!NativeMethods.TrackPopupMenuEx(_menuHandle, 0x0, param.LowWord, param.HighWord, handle, IntPtr.Zero ))
+                {
+                    _logger.Warn("Failed to set the context menu for undockable tool windows");
+                };
+            }
 
             private void OnCallBackEvent(SubClassingWindowEventArgs e)
             {
@@ -452,6 +518,28 @@ namespace Rubberduck.UI
             {
                 switch ((uint)msg)
                 {
+                    case (uint)WM.WINDOWPOSCHANGED:
+                        var containerHwnd = GetParent(hWnd);
+                        if (containerHwnd != _containerHwnd)
+                        {
+                            _containerHwnd = containerHwnd;
+                            _windowState = GetWindowState(_containerHwnd);
+                        }
+                        break;
+                    case (uint)WM.CONTEXTMENU:
+                        if (_windowState == ToolWindowState.Undockable)
+                        {
+                            DisplayUndockableContextMenu(hWnd, lParam);
+                        }
+                        break;
+                    case (uint)WM.COMMAND:
+                        switch (wParam.ToInt32())
+                        {
+                            case (int)WM.RUBBERDUCK_UNDOCKABLE_CONTEXT_MENU:
+                                ToggleDockable(_vbeHwnd);
+                                break;
+                        }
+                        break;
                     case (uint)WM.SIZE:
                         var args = new SubClassingWindowEventArgs(lParam);
                         if (!_closing) OnCallBackEvent(args);
@@ -461,6 +549,15 @@ namespace Rubberduck.UI
                         break;
                     case (uint)WM.KILLFOCUS:
                         if (!_closing) User32.SendMessage(_vbeHwnd, WM.RUBBERDUCK_CHILD_FOCUS, Hwnd, IntPtr.Zero);
+                        break;
+                    case (uint)WM.DESTROY:
+                        if (_menuHandle != IntPtr.Zero)
+                        {
+                            if (!NativeMethods.DestroyMenu(_menuHandle))
+                            {
+                                _logger.Fatal($"Failed to destroy the menu handle {_menuHandle}");
+                            }
+                        }
                         break;
                 }
                 return base.SubClassProc(hWnd, msg, wParam, lParam, uIdSubclass, dwRefData);

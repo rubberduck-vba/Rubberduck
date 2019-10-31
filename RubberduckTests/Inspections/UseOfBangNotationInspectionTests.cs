@@ -4,7 +4,6 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
@@ -34,12 +33,10 @@ Private Function Foo() As Class2
 End Function
 ";
 
-            var vbe = MockVbeBuilder.BuildFromModules(
+            var inspectionResults = InspectionResultsForModules(
                 ("Class1", class1Code, ComponentType.ClassModule),
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
-
-            var inspectionResults = InspectionResults(vbe.Object);
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
@@ -67,12 +64,10 @@ Private Function Foo() As Class2
 End Function
 ";
 
-            var vbe = MockVbeBuilder.BuildFromModules(
+            var inspectionResults = InspectionResultsForModules(
                 ("Class1", class1Code, ComponentType.ClassModule),
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
-
-            var inspectionResults = InspectionResults(vbe.Object);
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
@@ -100,14 +95,11 @@ Private Function Foo() As Class2
 End Function
 ";
 
-            var vbe = MockVbeBuilder.BuildFromModules(
+            var inspectionResults = InspectionResultsForModules(
                 ("Class1", class1Code, ComponentType.ClassModule),
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
-            var inspectionResults = InspectionResults(vbe.Object);
-
-            Assert.AreEqual(2, inspectionResults.Count());
         }
 
         [Test]
@@ -133,12 +125,10 @@ Private Function Foo() As Class2
 End Function
 ";
 
-            var vbe = MockVbeBuilder.BuildFromModules(
+            var inspectionResults = InspectionResultsForModules(
                 ("Class1", class1Code, ComponentType.ClassModule),
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
-
-            var inspectionResults = InspectionResults(vbe.Object);
 
             Assert.AreEqual(0, inspectionResults.Count());
         }
@@ -166,12 +156,10 @@ Private Function Foo() As Class2
 End Function
 ";
 
-            var vbe = MockVbeBuilder.BuildFromModules(
+            var inspectionResults = InspectionResultsForModules(
                 ("Class1", class1Code, ComponentType.ClassModule),
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
-
-            var inspectionResults = InspectionResults(vbe.Object);
 
             Assert.AreEqual(0, inspectionResults.Count());
         }
@@ -202,12 +190,10 @@ Private Function Foo() As Class2
 End Function
 ";
 
-            var vbe = MockVbeBuilder.BuildFromModules(
+            var inspectionResults = InspectionResultsForModules(
                 ("Class1", class1Code, ComponentType.ClassModule),
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
-
-            var inspectionResults = InspectionResults(vbe.Object);
 
             Assert.AreEqual(0, inspectionResults.Count());
         }
@@ -235,12 +221,10 @@ Private Function Foo() As Class2
 End Function
 ";
 
-            var vbe = MockVbeBuilder.BuildFromModules(
+            var inspectionResults = InspectionResultsForModules(
                 ("Class1", class1Code, ComponentType.ClassModule),
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
-
-            var inspectionResults = InspectionResults(vbe.Object);
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
@@ -275,13 +259,11 @@ Private Function Foo() As Class2
 End Function
 ";
 
-            var vbe = MockVbeBuilder.BuildFromModules(
+            var inspectionResults = InspectionResultsForModules(
                 ("Class1", class1Code, ComponentType.ClassModule),
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Class3", class3Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
-
-            var inspectionResults = InspectionResults(vbe.Object);
 
             Assert.AreEqual(0, inspectionResults.Count());
         }
@@ -310,12 +292,10 @@ Private Function Foo() As Class2
 End Function
 ";
 
-            var vbe = MockVbeBuilder.BuildFromModules(
+            var inspectionResults = InspectionResultsForModules(
                 ("Class1", class1Code, ComponentType.ClassModule),
                 ("Class2", class2Code, ComponentType.ClassModule),
                 ("Module1", moduleCode, ComponentType.StandardModule));
-
-            var inspectionResults = InspectionResults(vbe.Object);
 
             Assert.AreEqual(0, inspectionResults.Count());
         }
