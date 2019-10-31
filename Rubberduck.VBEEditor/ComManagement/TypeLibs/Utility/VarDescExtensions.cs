@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices.ComTypes;
+﻿using System;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace Rubberduck.JunkDrawer.Hacks
 {
@@ -28,11 +29,10 @@ namespace Rubberduck.JunkDrawer.Hacks
             // TODO: Move the function to a better home and avoid duplication of constants (see TypeInfoWrapper)
             const int _ourConstantsDispatchMemberIDRangeStart = unchecked((int)0xFEDC0000);
             const int _ourConstantsDispatchMemberIDRangeBitmaskCheck = unchecked((int)0xFFFF0000);
-            const int _ourConstantsDispatchMemberIDIndexBitmask = unchecked((int)0x0000FFFF);
-            if ((varDesc.memid & _ourConstantsDispatchMemberIDRangeBitmaskCheck) >= _ourConstantsDispatchMemberIDRangeStart)
-            {
-                return varDesc.varkind == VARKIND.VAR_STATIC && varDesc.desc.lpvarValue != 0;
-            }
+
+            return (varDesc.memid & _ourConstantsDispatchMemberIDRangeBitmaskCheck) >= _ourConstantsDispatchMemberIDRangeStart
+                && varDesc.varkind == VARKIND.VAR_STATIC 
+                && varDesc.desc.lpvarValue != IntPtr.Zero;
         }
     }
 }
