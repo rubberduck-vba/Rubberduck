@@ -12,7 +12,7 @@ using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
 using CALLCONV = System.Runtime.InteropServices.ComTypes.CALLCONV;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
-using Rubberduck.JunkDrawer.Hacks;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Utility;
 
 namespace Rubberduck.Parsing.ComReflection
 {
