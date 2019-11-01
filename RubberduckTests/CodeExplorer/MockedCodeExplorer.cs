@@ -370,23 +370,33 @@ namespace RubberduckTests.CodeExplorer
             ViewModel.AddTestModuleWithStubsCommand.Execute(ViewModel.SelectedItem);
         }
 
-        public void ExecuteImportCommand()
+        public void ExecuteImportCommand(Mock<IMessageBox> mockMessageBock = null)
         {
-            ViewModel.ImportCommand = new ImportCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object, State);
+            var messageBox = mockMessageBock?.Object ?? new Mock<IMessageBox>().Object;
+            ViewModel.ImportCommand = new ImportCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object, State, messageBox);
             ViewModel.ImportCommand.Execute(ViewModel.SelectedItem);
         }
 
-        public void ExecuteUpdateFromFileCommand(Func<string, string> fileNameToModuleNameConverter)
+        public void ExecuteUpdateFromFileCommand(Func<string, string> fileNameToModuleNameConverter, Mock<IMessageBox> mockMessageBock = null)
         {
+            var messageBox = mockMessageBock?.Object ?? new Mock<IMessageBox>().Object;
             var mockModuleNameExtractor = new Mock<IModuleNameFromFileExtractor>();
             mockModuleNameExtractor.Setup(m => m.ModuleName(It.IsAny<string>())).Returns((string filename) => fileNameToModuleNameConverter(filename));
-            ViewModel.UpdateFromFilesCommand = new UpdateFromFilesCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object, State, State, State.ProjectsProvider, mockModuleNameExtractor.Object);
+            ViewModel.UpdateFromFilesCommand = new UpdateFromFilesCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object, State, State, State.ProjectsProvider, mockModuleNameExtractor.Object, messageBox);
             ViewModel.UpdateFromFilesCommand.Execute(ViewModel.SelectedItem);
         }
 
-        public void ExecuteReplaceProjectContentsFromFilesCommand()
+        public void ExecuteReplaceProjectContentsFromFilesCommand(Mock<IMessageBox> mockMessageBock = null)
         {
-            ViewModel.ReplaceProjectContentsFromFilesCommand = new ReplaceProjectContentsFromFilesCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object, State);
+            var messageBoxMock = mockMessageBock;
+            if (messageBoxMock == null)
+            {
+                messageBoxMock = new Mock<IMessageBox>();
+                messageBoxMock
+                    .Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()))
+                    .Returns(true);
+            }
+            ViewModel.ReplaceProjectContentsFromFilesCommand = new ReplaceProjectContentsFromFilesCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object, State, messageBoxMock.Object);
             ViewModel.ReplaceProjectContentsFromFilesCommand.Execute(ViewModel.SelectedItem);
         }
 

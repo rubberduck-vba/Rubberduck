@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Rubberduck.Interaction;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Parsing.VBA.Extensions;
+using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.ComManagement;
@@ -27,13 +29,16 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             IParseManager parseManager,
             IDeclarationFinderProvider declarationFinderProvider,
             IProjectsProvider projectsProvider,
-            IModuleNameFromFileExtractor moduleNameFromFileExtractor)
-            : base(vbe, dialogFactory, vbeEvents, parseManager)
+            IModuleNameFromFileExtractor moduleNameFromFileExtractor,
+            IMessageBox messageBox)
+            : base(vbe, dialogFactory, vbeEvents, parseManager, messageBox)
         {
             _projectsProvider = projectsProvider;
             _declarationFinderProvider = declarationFinderProvider;
             _moduleNameFromFileExtractor = moduleNameFromFileExtractor;
         }
+
+        protected override string DialogsTitle => RubberduckUI.UpdateFromFilesCommand_DialogCaption;
 
         protected override void ImportFiles(ICollection<string> filesToImport, IVBProject targetProject)
         {
@@ -56,15 +61,15 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             if (!ValuesAreUnique(moduleNames))
             {
-                //TODO: report this to the user.
+                NotifyUserAboutAbortDueToDuplicateComponent(moduleNames);
                 return;
             }
 
-            var modules = Modules(moduleNames, targetProject.ProjectId, finder);
+            var modulesToRemoveBeforeImport = Modules(moduleNames, targetProject.ProjectId, finder);
 
-            if(!modules.All(kvp => HasMatchingFileExtension(kvp.Key, kvp.Value)))
+            if(!modulesToRemoveBeforeImport.All(kvp => HasMatchingFileExtension(kvp.Key, kvp.Value)))
             {
-                //TODO: report this to the user.
+                NotifyUserAboutAbortDueToNonMatchingFileExtension(modulesToRemoveBeforeImport);
                 return;
             }
 
@@ -75,37 +80,37 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                               && componentType == ComponentType.Document)
                 .ToHashSet();
 
-            //We can only insert inte existing documents.
-            if (!documentFiles.All(filename => modules.ContainsKey(filename)))
+            //We can only insert into existing documents.
+            if (!documentFiles.All(filename => modulesToRemoveBeforeImport.ContainsKey(filename)))
             {
-                //TODO: report this to the user.
+                NotifyUserAboutAbortDueToNonExistingDocument(documentFiles, moduleNames, modulesToRemoveBeforeImport);
                 return;
             }
 
             //We must not remove document modules.
             foreach (var filename in documentFiles)
             {
-                modules.Remove(filename);
+                modulesToRemoveBeforeImport.Remove(filename);
             }
 
             //We import the standalone code behind by replacing the code in an existing form.
             //So, the form has to exist already.
-            if (!formFilesWithoutBinaries.All(filename => modules.ContainsKey(filename)))
+            if (!formFilesWithoutBinaries.All(filename => modulesToRemoveBeforeImport.ContainsKey(filename)))
             {
-                //TODO: report this to the user.
+                NotifyUserAboutAbortDueToNonExistingUserForm(documentFiles, moduleNames, modulesToRemoveBeforeImport);
                 return;
             }
 
             foreach (var filename in formFilesWithoutBinaries)
             {
-                modules.Remove(filename);
+                modulesToRemoveBeforeImport.Remove(filename);
             }
 
             using (var components = targetProject.VBComponents)
             {
                 foreach (var filename in filesToImport)
                 {
-                    if (modules.TryGetValue(filename, out var module))
+                    if (modulesToRemoveBeforeImport.TryGetValue(filename, out var module))
                     {
                         var component = _projectsProvider.Component(module);
                         components.Remove(component);
@@ -172,6 +177,16 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 .All(moduleNameGroup => moduleNameGroup.Count() == 1);
         }
 
+        private void NotifyUserAboutAbortDueToDuplicateComponent(IDictionary<string, string> moduleNames)
+        {
+            var firstDuplicateModuleName = moduleNames
+                .GroupBy(kvp => kvp.Value)
+                .First(moduleNameGroup => moduleNameGroup.Count() > 1)
+                .Key;
+            var message = string.Format(RubberduckUI.UpdateFromFilesCommand_DuplicateModule, firstDuplicateModuleName);
+            MessageBox.NotifyWarn(message, DialogsTitle);
+        }
+
         private ICollection<string> FormFilesWithoutBinaries(IDictionary<string, string> moduleNames, ICollection<string> formBinaryModuleNames)
         {
             return moduleNames
@@ -203,6 +218,38 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             return fileExtension != null 
                    && ComponentTypeForExtension.TryGetValue(fileExtension, out var componentType) 
                    && module.ComponentType.Equals(componentType);
+        }
+
+        private void NotifyUserAboutAbortDueToNonMatchingFileExtension(IDictionary<string, QualifiedModuleName> modules)
+        {
+            var (firstNonMatchingFileName, firstNonMatchingModule) = modules.First(kvp => !HasMatchingFileExtension(kvp.Key, kvp.Value));
+            var message = string.Format(
+                RubberduckUI.UpdateFromFilesCommand_DifferentComponentType,
+                firstNonMatchingModule.ComponentName, 
+                firstNonMatchingFileName);
+            MessageBox.NotifyWarn(message, DialogsTitle);
+        }
+
+        private void NotifyUserAboutAbortDueToNonExistingDocument(ICollection<string> documentFiles, IDictionary<string, string> moduleNames, IDictionary<string, QualifiedModuleName> existingModules)
+        {
+            var firstNonExistingDocumentFilename = documentFiles.First(filename => !existingModules.ContainsKey(filename));
+            var firstNonExistingDocumentModuleName = moduleNames[firstNonExistingDocumentFilename];
+            var message = string.Format(
+                RubberduckUI.UpdateFromFilesCommand_DocumentDoesNotExist,
+                firstNonExistingDocumentModuleName,
+                firstNonExistingDocumentFilename);
+            MessageBox.NotifyWarn(message, DialogsTitle);
+        }
+
+        private void NotifyUserAboutAbortDueToNonExistingUserForm(ICollection<string> userFormFiles, IDictionary<string, string> moduleNames, IDictionary<string, QualifiedModuleName> existingModules)
+        {
+            var firstNonExistingUserFormFilename = userFormFiles.First(filename => !existingModules.ContainsKey(filename));
+            var firstNonExistingUserFormModuleName = moduleNames[firstNonExistingUserFormFilename];
+            var message = string.Format(
+                RubberduckUI.UpdateFromFilesCommand_UserFormDoesNotExist,
+                firstNonExistingUserFormModuleName,
+                firstNonExistingUserFormFilename);
+            MessageBox.NotifyWarn(message, DialogsTitle);
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Rubberduck.Interaction;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources;
@@ -29,16 +30,21 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly string _filterExtensions;
         private readonly IParseManager _parseManager;
 
+        protected readonly IMessageBox MessageBox;
+
         public ImportCommand(
             IVBE vbe,
             IFileSystemBrowserFactory dialogFactory,
             IVbeEvents vbeEvents,
-            IParseManager parseManager)
+            IParseManager parseManager,
+            IMessageBox messageBox)
             : base(vbeEvents)
         {
             _vbe = vbe;
             _dialogFactory = dialogFactory;
             _parseManager = parseManager;
+
+            MessageBox = messageBox;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
 
@@ -110,7 +116,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 dialog.CheckPathExists = true;
                 dialog.Multiselect = true;
                 dialog.ShowHelp = false;
-                dialog.Title = FileDialogTitle;
+                dialog.Title = DialogsTitle;
                 dialog.Filter =
                     $"{RubberduckUI.ImportCommand_OpenDialog_Filter_VBFiles} ({_filterExtensions})|{_filterExtensions}|" +
                     $"{RubberduckUI.ImportCommand_OpenDialog_Filter_AllFiles}, (*.*)|*.*";
@@ -124,7 +130,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 var fileExtensions = fileNames.Select(Path.GetExtension);
                 if (fileExtensions.Any(fileExt => !_importableExtensions.Contains(fileExt)))
                 {
-                    //TODO: report this to the user.
+                    NotifyUserAboutAbortDueToUnsupportedFileExtensions(fileNames);
                     return new List<string>();
                 }
 
@@ -132,7 +138,15 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
         }
 
-        protected virtual string FileDialogTitle => RubberduckUI.ImportCommand_OpenDialog_Title;
+        protected virtual string DialogsTitle => RubberduckUI.ImportCommand_OpenDialog_Title;
+
+        private void NotifyUserAboutAbortDueToUnsupportedFileExtensions(IEnumerable<string> fileNames)
+        {
+            var firstUnsupportedFile = fileNames.First(filename => !_importableExtensions.Contains(Path.GetExtension(filename)));
+            var unsupportedFileName = Path.GetFileName(firstUnsupportedFile);
+            var message = string.Format(RubberduckUI.ImportCommand_UnsupportedFileExtensions, unsupportedFileName);
+            MessageBox.NotifyWarn(message, DialogsTitle);
+        }
 
         private void ImportFilesWithSuspension(ICollection<string> filesToImport, IVBProject targetProject)
         {

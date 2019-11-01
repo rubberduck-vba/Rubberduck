@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Interaction;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Resources;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -13,16 +15,29 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             IVBE vbe, 
             IFileSystemBrowserFactory dialogFactory, 
             IVbeEvents vbeEvents, 
-            IParseManager parseManager) 
-            :base(vbe, dialogFactory, vbeEvents, parseManager)
-        {}
+            IParseManager parseManager,
+            IMessageBox messageBox) 
+            :base(vbe, dialogFactory, vbeEvents, parseManager, messageBox)
+        { }
+
+        protected override string DialogsTitle => RubberduckUI.ReplaceProjectContentsFromFilesCommand_DialogCaption;
 
         protected override void ImportFiles(ICollection<string> filesToImport, IVBProject targetProject)
         {
-            //TODO: Ask for confirmation to delete the project contents and replace them with the selected modules.
+            if (!UserConfirmsToReplaceProjectContents(targetProject))
+            {
+                return;
+            }
 
             RemoveReimportableComponents(targetProject);
             base.ImportFiles(filesToImport, targetProject);
+        }
+
+        private bool UserConfirmsToReplaceProjectContents(IVBProject project)
+        {
+            var projectName = project.Name;
+            var message = string.Format(RubberduckUI.ReplaceProjectContentsFromFilesCommand_DialogCaption, projectName);
+            return MessageBox.ConfirmYesNo(message, DialogsTitle, false);
         }
 
         private void RemoveReimportableComponents(IVBProject project)
