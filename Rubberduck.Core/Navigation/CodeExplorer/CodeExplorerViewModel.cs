@@ -386,6 +386,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public CommandBase ExpandAllSubnodesCommand { get; }
         public ImportCommand ImportCommand { get; set; }
         public UpdateFromFilesCommand UpdateFromFilesCommand { get; set; }
+        public ReplaceProjectContentsFromFilesCommand ReplaceProjectContentsFromFilesCommand { get; set; }
         public ExportCommand ExportCommand { get; set; }
         public ExportAllCommand ExportAllCommand { get; set; }
         public DeleteCommand DeleteCommand { get; set; }

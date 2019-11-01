@@ -384,6 +384,12 @@ namespace RubberduckTests.CodeExplorer
             ViewModel.UpdateFromFilesCommand.Execute(ViewModel.SelectedItem);
         }
 
+        public void ExecuteReplaceProjectContentsFromFilesCommand()
+        {
+            ViewModel.ReplaceProjectContentsFromFilesCommand = new ReplaceProjectContentsFromFilesCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object, State);
+            ViewModel.ReplaceProjectContentsFromFilesCommand.Execute(ViewModel.SelectedItem);
+        }
+
         public void ExecuteExportAllCommand()
         {
             if (ViewModel.ExportAllCommand is null)

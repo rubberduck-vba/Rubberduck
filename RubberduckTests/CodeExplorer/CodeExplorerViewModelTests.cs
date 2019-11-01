@@ -14,7 +14,6 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.ComCommands;
 using RubberduckTests.Mocks;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.Parsing.Symbols;
 
 namespace RubberduckTests.CodeExplorer
 {
@@ -592,12 +591,133 @@ namespace RubberduckTests.CodeExplorer
         {
             const string path = @"C:\Users\Rubberduck\Desktop\StdModule1.bas";
 
-            using (var explorer = new MockedCodeExplorer(ProjectType.HostProject)
+            using (var explorer = new MockedCodeExplorer(
+                ProjectType.HostProject,
+                ("TestModule", ComponentType.StandardModule, string.Empty))
                 .ConfigureOpenDialog(new[] { path }, DialogResult.Cancel)
                 .SelectFirstProject())
             {
-                explorer.ExecuteUpdateFromFileCommand(filename => filename);
-                explorer.VbComponents.Verify(c => c.Import(path), Times.Never);
+                explorer.ExecuteUpdateFromFileCommand(filename => "TestModule");
+                explorer.VbComponents.Verify(c => c.Import(It.IsAny<string>()), Times.Never);
+                explorer.VbComponents.Verify(c => c.Remove(It.IsAny<IVBComponent>()), Times.Never);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        public void ReplaceProjectContentsFromFiles_Imports()
+        {
+            const string path = @"C:\Users\Rubberduck\Desktop\StdModule1.bas";
+
+            using (var explorer = new MockedCodeExplorer(
+                ProjectType.HostProject,
+                ("TestModule", ComponentType.StandardModule, string.Empty))
+                .ConfigureOpenDialog(new[] { path }, DialogResult.OK)
+                .SelectFirstProject())
+            {
+                explorer.ExecuteReplaceProjectContentsFromFilesCommand();
+                explorer.VbComponents.Verify(c => c.Import(path), Times.Once);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        public void ReplaceProjectContentsFromFiles_ImportsMultiple()
+        {
+            const string path1 = @"C:\Users\Rubberduck\Desktop\StdModule1.bas";
+            const string path2 = @"C:\Users\Rubberduck\Desktop\Class1.cls";
+
+            using (var explorer = new MockedCodeExplorer(
+                ProjectType.HostProject,
+                ("TestModule", ComponentType.StandardModule, string.Empty))
+                .ConfigureOpenDialog(new[] { path1, path2 }, DialogResult.OK)
+                .SelectFirstProject())
+            {
+                explorer.ExecuteReplaceProjectContentsFromFilesCommand();
+                explorer.VbComponents.Verify(c => c.Import(path1), Times.Once);
+                explorer.VbComponents.Verify(c => c.Import(path2), Times.Once);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        public void ReplaceProjectContentsFromFiles_RemovesReimportableComponents()
+        {
+            const string path = @"C:\Users\Rubberduck\Desktop\StdModule1.bas";
+
+            using (var explorer = new MockedCodeExplorer(
+                ProjectType.HostProject,
+                ("TestModule", ComponentType.StandardModule, string.Empty),
+                ("TestClass", ComponentType.ClassModule, string.Empty),
+                ("TestUserForm", ComponentType.UserForm, string.Empty))
+                .ConfigureOpenDialog(new[] { path }, DialogResult.OK)
+                .SelectFirstProject())
+            {
+                explorer.ExecuteReplaceProjectContentsFromFilesCommand();
+
+                var modulesNames = explorer
+                    .VbComponents
+                    .Object
+                    .Select(component => component.Name)
+                    .ToList();
+
+                explorer.VbComponents.Verify(c => c.Remove(It.IsAny<IVBComponent>()), Times.Exactly(3));
+
+                Assert.IsFalse(modulesNames.Contains("TestModule"));
+                Assert.IsFalse(modulesNames.Contains("TestClass"));
+                Assert.IsFalse(modulesNames.Contains("TestUserForm"));
+
+                //This depends on the setup of Import on the VBComponents mock, which determines the component name from the filename.
+                Assert.IsTrue(modulesNames.Contains("StdModule1"));
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        public void ReplaceProjectContentsFromFiles_DoesNotRemoveNonReimportableComponents()
+        {
+            const string path = @"C:\Users\Rubberduck\Desktop\StdModule1.bas";
+
+            using (var explorer = new MockedCodeExplorer(
+                ProjectType.HostProject,
+                ("TestModule", ComponentType.StandardModule, string.Empty),
+                ("TestDocument", ComponentType.Document, string.Empty))
+                .ConfigureOpenDialog(new[] { path }, DialogResult.OK)
+                .SelectFirstProject())
+            {
+                explorer.ExecuteReplaceProjectContentsFromFilesCommand();
+
+                var modulesNames = explorer
+                    .VbComponents
+                    .Object
+                    .Select(component => component.Name)
+                    .ToList();
+
+                explorer.VbComponents.Verify(c => c.Remove(It.IsAny<IVBComponent>()), Times.Once);
+
+                Assert.IsTrue(modulesNames.Contains("TestDocument"));
+                Assert.IsFalse(modulesNames.Contains("TestModule"));
+
+                //This depends on the setup of Import on the VBComponents mock, which determines the component name from the filename.
+                Assert.IsTrue(modulesNames.Contains("StdModule1"));
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        public void ReplaceProjectContentsFromFiles_Cancel()
+        {
+            const string path = @"C:\Users\Rubberduck\Desktop\StdModule1.bas";
+
+            using (var explorer = new MockedCodeExplorer(
+                ProjectType.HostProject,
+                ("TestModule", ComponentType.StandardModule, string.Empty))
+                .ConfigureOpenDialog(new[] { path }, DialogResult.Cancel)
+                .SelectFirstProject())
+            {
+                explorer.ExecuteReplaceProjectContentsFromFilesCommand();
+                explorer.VbComponents.Verify(c => c.Import(It.IsAny<string>()), Times.Never);
+                explorer.VbComponents.Verify(c => c.Remove(It.IsAny<IVBComponent>()), Times.Never);
             }
         }
 
