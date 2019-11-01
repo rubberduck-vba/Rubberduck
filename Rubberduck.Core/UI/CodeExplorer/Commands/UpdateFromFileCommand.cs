@@ -47,7 +47,11 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             var modules = Modules(moduleNames, targetProject.ProjectId, finder);
 
-            //TODO: abort if the component type of the to be removed component does not match the file extension.
+            if(!modules.All(kvp => HasMatchingFileExtension(kvp.Key, kvp.Value)))
+            {
+                //TODO: report this to the user.
+                return;
+            }
 
             using (var components = targetProject.VBComponents)
             {
@@ -124,6 +128,14 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
 
             return null;
+        }
+
+        private bool HasMatchingFileExtension(string filename, QualifiedModuleName module)
+        {
+            var fileExtension = Path.GetExtension(filename);
+            return ComponentTypeForExtension.TryGetValue(fileExtension, out var componentType)
+                ? module.ComponentType.Equals(componentType)
+                : false;
         }
     }
 

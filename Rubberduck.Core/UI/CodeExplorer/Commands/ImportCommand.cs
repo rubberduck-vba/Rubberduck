@@ -41,11 +41,11 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
 
-            _importableExtensions =
-                vbe.Kind == VBEKind.Hosted
-                    ? new List<string> {".bas", ".cls", ".frm", ".doccls"} // VBA 
-                    : new List<string> {".bas", ".cls", ".frm", ".ctl", ".pag", ".dob"}; // VB6
+            ComponentTypeForExtension =  vbe.Kind == VBEKind.Hosted
+                                            ? VBAComponentTypeForExtension
+                                            : VB6ComponentTypeForExtension;
 
+            _importableExtensions = ComponentTypeForExtension.Keys.ToList();
             _filterExtensions = string.Join("; ", _importableExtensions.Select(ext => $"*{ext}"));
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
@@ -179,5 +179,27 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 targetProject.Dispose();
             }
         }
+
+        protected IDictionary<string, ComponentType> ComponentTypeForExtension { get; }
+
+        private static IDictionary<string, ComponentType> VBAComponentTypeForExtension = new Dictionary<string, ComponentType>
+        {
+            [".bas"] = ComponentType.StandardModule,
+            [".cls"] = ComponentType.ClassModule,
+            [".frm"] = ComponentType.UserForm
+            //TODO: find out what ".doccls" corresponds to.
+            //[".doccls"] = ???
+        };
+
+        private static IDictionary<string, ComponentType> VB6ComponentTypeForExtension = new Dictionary<string, ComponentType>
+        {
+            [".bas"] = ComponentType.StandardModule,
+            [".cls"] = ComponentType.ClassModule,
+            [".frm"] = ComponentType.VBForm,
+            //TODO: double check whether the guesses below are correct.
+            [".ctl"] = ComponentType.UserControl,
+            [".pag"] = ComponentType.PropPage,
+            [".dob"] = ComponentType.DocObject,
+        };
     }
 }
