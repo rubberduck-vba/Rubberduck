@@ -7,6 +7,7 @@ using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor.Events;
+using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -41,9 +42,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
 
-            ComponentTypeForExtension =  vbe.Kind == VBEKind.Hosted
-                                            ? VBAComponentTypeForExtension
-                                            : VB6ComponentTypeForExtension;
+            ComponentTypeForExtension = ComponentTypeExtensions.ComponentTypeForExtension(_vbe.Kind);
 
             _importableExtensions = ComponentTypeForExtension.Keys.ToList();
             _filterExtensions = string.Join("; ", _importableExtensions.Select(ext => $"*{ext}"));
@@ -150,8 +149,19 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             {
                 foreach (var filename in filesToImport)
                 {
-                    //We have to dispose the return value.
-                    using (components.Import(filename)) {}
+                    var fileExtension = Path.GetExtension(filename);
+                    if (fileExtension != null
+                        && ComponentTypeForExtension.TryGetValue(fileExtension, out var componentType)
+                        && componentType == ComponentType.Document)
+                    {
+                        //We have to dispose the return value.
+                        using (components.ImportSourceFile(filename)) { }
+                    }
+                    else
+                    {
+                        //We have to dispose the return value.
+                        using (components.Import(filename)) { }
+                    }
                 }
             }
         }
@@ -181,25 +191,5 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         }
 
         protected IDictionary<string, ComponentType> ComponentTypeForExtension { get; }
-
-        private static IDictionary<string, ComponentType> VBAComponentTypeForExtension = new Dictionary<string, ComponentType>
-        {
-            [".bas"] = ComponentType.StandardModule,
-            [".cls"] = ComponentType.ClassModule,
-            [".frm"] = ComponentType.UserForm
-            //TODO: find out what ".doccls" corresponds to.
-            //[".doccls"] = ???
-        };
-
-        private static IDictionary<string, ComponentType> VB6ComponentTypeForExtension = new Dictionary<string, ComponentType>
-        {
-            [".bas"] = ComponentType.StandardModule,
-            [".cls"] = ComponentType.ClassModule,
-            [".frm"] = ComponentType.VBForm,
-            //TODO: double check whether the guesses below are correct.
-            [".ctl"] = ComponentType.UserControl,
-            [".pag"] = ComponentType.PropPage,
-            [".dob"] = ComponentType.DocObject,
-        };
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Events;
+using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
@@ -25,14 +27,15 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private void RemoveReimportableComponents(IVBProject project)
         {
-            var importableComponentTypes = ComponentTypeForExtension.Values;
+            var reimportableComponentTypes = ComponentTypeForExtension.Values
+                .Where(componentType => componentType != ComponentType.Document);
             using(var components = project.VBComponents)
             {
                 foreach(var component in components)
                 {
                     using (component)
                     {
-                        if (importableComponentTypes.Contains(component.Type))
+                        if (reimportableComponentTypes.Contains(component.Type))
                         {
                             components.Remove(component);
                         }

@@ -1,14 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -39,6 +41,19 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             var moduleNames = ModuleNames(filesToImport);
 
+            var formBinaryModuleNames = moduleNames
+                .Where(kvp => ComponentTypeExtensions.FormBinaryExtension.Equals(Path.GetExtension(kvp.Key)))
+                .Select(kvp => kvp.Value)
+                .ToHashSet();
+
+            var formFilesWithoutBinaries = FormFilesWithoutBinaries(moduleNames, formBinaryModuleNames);
+
+            //We cannot import the the binary separately.
+            foreach (var formBinaryModuleName in formBinaryModuleNames)
+            {
+                moduleNames.Remove(formBinaryModuleName);
+            }
+
             if (!ValuesAreUnique(moduleNames))
             {
                 //TODO: report this to the user.
@@ -53,6 +68,39 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return;
             }
 
+            var documentFiles = moduleNames
+                .Select(kvp => kvp.Key)
+                .Where(filename => Path.GetExtension(filename) != null
+                              && ComponentTypeForExtension.TryGetValue(Path.GetExtension(filename), out var componentType)
+                              && componentType == ComponentType.Document)
+                .ToHashSet();
+
+            //We can only insert inte existing documents.
+            if (!documentFiles.All(filename => modules.ContainsKey(filename)))
+            {
+                //TODO: report this to the user.
+                return;
+            }
+
+            //We must not remove document modules.
+            foreach (var filename in documentFiles)
+            {
+                modules.Remove(filename);
+            }
+
+            //We import the standalone code behind by replacing the code in an existing form.
+            //So, the form has to exist already.
+            if (!formFilesWithoutBinaries.All(filename => modules.ContainsKey(filename)))
+            {
+                //TODO: report this to the user.
+                return;
+            }
+
+            foreach (var filename in formFilesWithoutBinaries)
+            {
+                modules.Remove(filename);
+            }
+
             using (var components = targetProject.VBComponents)
             {
                 foreach (var filename in filesToImport)
@@ -63,8 +111,16 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                         components.Remove(component);
                     }
 
-                    //We have to dispose the return value.
-                    using (components.Import(filename)) { }
+                    if(documentFiles.Contains(filename) || formBinaryModuleNames.Contains(filename))
+                    {
+                        //We have to dispose the return value.
+                        using (components.ImportSourceFile(filename)) { }
+                    }
+                    else
+                    {
+                        //We have to dispose the return value.
+                        using (components.Import(filename)) { }
+                    }
                 }
             }
         }
@@ -116,6 +172,17 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 .All(moduleNameGroup => moduleNameGroup.Count() == 1);
         }
 
+        private ICollection<string> FormFilesWithoutBinaries(IDictionary<string, string> moduleNames, ICollection<string> formBinaryModuleNames)
+        {
+            return moduleNames
+                .Where(kvp => Path.GetExtension(kvp.Key) != null
+                              && ComponentTypeForExtension.TryGetValue(Path.GetExtension(kvp.Key), out var componentType)
+                              && componentType == ComponentType.UserForm
+                              && !formBinaryModuleNames.Contains(kvp.Value))
+                .Select(kvp => kvp.Key)
+                .ToHashSet();
+        }
+
         private QualifiedModuleName? Module(string moduleName, string projectId, DeclarationFinder finder)
         {
             foreach(var module in finder.AllModules)
@@ -133,35 +200,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private bool HasMatchingFileExtension(string filename, QualifiedModuleName module)
         {
             var fileExtension = Path.GetExtension(filename);
-            return ComponentTypeForExtension.TryGetValue(fileExtension, out var componentType)
-                ? module.ComponentType.Equals(componentType)
-                : false;
-        }
-    }
-
-    public interface IModuleNameFromFileExtractor
-    {
-        string ModuleName(string filename);
-    }
-
-    public class ModuleNameFromFileExtractor : IModuleNameFromFileExtractor
-    {
-        public string ModuleName(string filename)
-        {
-            if (!File.Exists(filename))
-            {
-                return null;
-            }
-
-            var contents = File.ReadLines(filename, Encoding.Default);
-            var nameLine = contents.FirstOrDefault(line => line.StartsWith("Attribute VB_Name = "));
-            if (nameLine == null)
-            {
-                return Path.GetFileNameWithoutExtension(filename);
-            }
-
-            //The format is Attribute VB_Name = "ModuleName"
-            return nameLine.Substring("Attribute VB_Name = ".Length + 1, nameLine.Length - "Attribute VB_Name = ".Length - 2);
+            return fileExtension != null 
+                   && ComponentTypeForExtension.TryGetValue(fileExtension, out var componentType) 
+                   && module.ComponentType.Equals(componentType);
         }
     }
 }
