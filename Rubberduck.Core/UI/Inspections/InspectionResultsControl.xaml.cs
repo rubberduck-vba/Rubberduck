@@ -11,5 +11,10 @@
         {
             InitializeComponent();
         }
+
+        private void InspectionResultsGrid_RequestBringIntoView(object sender, System.Windows.RequestBringIntoViewEventArgs e)
+        {
+            e.Handled = true;
+        }
     }
 }

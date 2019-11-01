@@ -1,13 +1,13 @@
 ﻿using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Inspections.Concrete;
-using RubberduckTests.Mocks;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class ObsoleteCallingConventionInspectionTests
+    public class ObsoleteCallingConventionInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
@@ -16,16 +16,7 @@ namespace RubberduckTests.Inspections
             const string inputCode =
 @"Private Declare Sub Beep CDecl Lib ""kernel32"" (dwFreq As Any, dwDuration As Any)";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ObsoleteCallingConventionInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -35,16 +26,7 @@ namespace RubberduckTests.Inspections
             const string inputCode =
 @"Private Declare Sub Beep Lib ""kernel32"" (dwFreq As Any, dwDuration As Any)";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ObsoleteCallingConventionInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -55,16 +37,7 @@ namespace RubberduckTests.Inspections
 @"Private Declare Sub Beep CDecl Lib ""kernel32"" (dwFreq As Any, dwDuration As Any)
 Private Declare Sub Sleep CDecl Lib ""kernel32"" (ByVal dwMilliseconds As Long)";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ObsoleteCallingConventionInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(2, inspectionResults.Count());
-            }
+            Assert.AreEqual(2, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -75,16 +48,7 @@ Private Declare Sub Sleep CDecl Lib ""kernel32"" (ByVal dwMilliseconds As Long)"
 @"Private Declare Sub Beep CDecl Lib ""kernel32"" (dwFreq As Any, dwDuration As Any)
 Private Declare Sub Sleep Lib ""kernel32"" (ByVal dwMilliseconds As Long)";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ObsoleteCallingConventionInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -95,26 +59,21 @@ Private Declare Sub Sleep Lib ""kernel32"" (ByVal dwMilliseconds As Long)";
 @"'@Ignore ObsoleteCallingConvention
 Private Declare Sub Beep CDecl Lib ""kernel32"" (dwFreq As Any, dwDuration As Any)";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ObsoleteCallingConventionInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
         [Category("Inspections")]
         public void InspectionName()
         {
-            const string inspectionName = "ObsoleteCallingConventionInspection";
             var inspection = new ObsoleteCallingConventionInspection(null);
 
-            Assert.AreEqual(inspectionName, inspection.Name);
+            Assert.AreEqual(nameof(ObsoleteCallingConventionInspection), inspection.Name);
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new ObsoleteCallingConventionInspection(state);
         }
     }
 }

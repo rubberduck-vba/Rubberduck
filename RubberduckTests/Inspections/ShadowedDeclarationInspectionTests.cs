@@ -6,13 +6,14 @@ using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class ShadowedDeclarationInspectionTests
+    public class ShadowedDeclarationInspectionTests : InspectionTestsBase
     {
         private const string ProjectName = "SameNameProject";
         private const string ProceduralModuleName = "SameNameProceduralModule";
@@ -5480,6 +5481,11 @@ End Sub";
             }
 
             return codeBuilder.ToString();
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new ShadowedDeclarationInspection(state);
         }
     }
 }
