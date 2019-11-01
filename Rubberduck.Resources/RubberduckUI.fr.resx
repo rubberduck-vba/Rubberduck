@@ -995,17 +995,11 @@ Vous pouvez désactiver cette fonctionnalité dans le menu Rubberduck &gt; Param
   <data name="IndenterSettings_CodeSampleHeader" xml:space="preserve">
     <value>Échantillon de code indenté</value>
   </data>
-  <data name="AssignedByValDialog_ReservedKeywordFormat" xml:space="preserve">
-    <value>'{0}' est un mot-clé réservé.</value>
-  </data>
   <data name="RenameDialog_AmbiguousSelection" xml:space="preserve">
     <value>Veuillez sélectionner 1 seul contrôle à renommer.</value>
   </data>
   <data name="ContextMultipleControlsSelection" xml:space="preserve">
     <value>contrôles multiples</value>
-  </data>
-  <data name="AssignedByValDialog_InvalidCharacters" xml:space="preserve">
-    <value>Un nom de variable ne peut pas contenir de caractères spéciaux autre que la barre de soulignement ("underscore").</value>
   </data>
   <data name="AssignedByValParamQFixDialog_InstructionsLabelText" xml:space="preserve">
     <value>Veuillez spécifier le nom à utiliser pour la copie locale du paramètre {0} '{1}'.</value>
@@ -1015,12 +1009,6 @@ Vous pouvez désactiver cette fonctionnalité dans le menu Rubberduck &gt; Param
   </data>
   <data name="IndenterSettings_VerticalSpacingLabel" xml:space="preserve">
     <value>Espacement vertical</value>
-  </data>
-  <data name="AssignedByValDialog_IsByValIdentifierFormat" xml:space="preserve">
-    <value>Le nom de la variable doit être différent de celui du paramètre '{0}'.</value>
-  </data>
-  <data name="AssignedByValDialog_QuestionableEntryFormat" xml:space="preserve">
-    <value>L'identifiant '{0}' produira un résultat lors de l'inspection des noms. Considérez utiliser un nom plus descriptif.</value>
   </data>
   <data name="ConfirmRemoveAssignmentWithUnusedDeclaration" xml:space="preserve">
     <value>La varaible '{0}' est assignée. Supprimer l'/les assignation(s)?</value>
@@ -1033,9 +1021,6 @@ Vous pouvez désactiver cette fonctionnalité dans le menu Rubberduck &gt; Param
   </data>
   <data name="WindowSettings_StartupVisibilityHeader" xml:space="preserve">
     <value>Visibilité au démarrage</value>
-  </data>
-  <data name="AssignedByValDialog_DoesNotStartWithLetter" xml:space="preserve">
-    <value>Le nom d'une variable doit débuter par une lettre.</value>
   </data>
   <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
     <value>Impossible de renommer le membre '{0}' de l'interface.</value>

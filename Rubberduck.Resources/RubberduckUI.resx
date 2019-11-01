@@ -1615,7 +1615,7 @@ NOTE: Restart is required for the setting to take effect.</value>
     <value>Inconclusive</value>
   </data>
   <data name="TestOutcome_Succeeded" xml:space="preserve">
-    <value>Suceeded</value>
+    <value>Succeeded</value>
   </data>
   <data name="TestOutcome_Unknown" xml:space="preserve">
     <value>Unknown</value>

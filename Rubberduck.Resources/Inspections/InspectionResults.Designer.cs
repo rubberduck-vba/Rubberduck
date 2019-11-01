@@ -964,7 +964,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;Case&apos; statement Range Clauses must be expressed &apos;[x] To [y]&apos; where [x] is less than or equal to [y]&apos;.
+        ///   Looks up a localized string similar to &apos;Case&apos; statement Range Clauses must be expressed &apos;[x] To [y]&apos; where [x] is less than or equal to [y].
         /// </summary>
         public static string UnreachableCaseInspection_InherentlyUnreachable {
             get {

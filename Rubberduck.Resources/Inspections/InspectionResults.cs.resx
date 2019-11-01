@@ -310,10 +310,10 @@
     <value>1 je výchozí krok pro 'for-next' smyčku a je tedy zbytečné ho definovat</value>
   </data>
   <data name="StepIsNotSpecifiedInspection" xml:space="preserve">
-    <value>'Step' není specifikován</value>
+    <value>'Step' není specifikován.</value>
   </data>
   <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
-    <value>Staticky přístupný list lze referovat jeho kódovým jménem</value>
+    <value>Staticky přístupný list lze referovat jeho kódovým jménem.</value>
   </data>
   <data name="ObsoleteMemberUsageInspection" xml:space="preserve">
     <value>Zvažte nahrazení volání '{0}'. {1}</value>
@@ -380,5 +380,44 @@ In memoriam, 1972-2018</value>
   </data>
   <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
     <value>Bloková odmínka 'While...Wend' může být napsána jako 'Do While...Loop'.</value>
+  </data>
+  <data name="UnreachableCaseInspection" xml:space="preserve">
+    <value>Nelze dosáhnout klauzule '{0}'.</value>
+  </data>
+  <data name="UnreachableCaseInspection_CaseElse" xml:space="preserve">
+    <value>Výraz 'Case Else' je nedosažitelný</value>
+  </data>
+  <data name="UnreachableCaseInspection_TypeMismatch" xml:space="preserve">
+    <value>Výraz 'Case' způsobí za běhu programu chybu 13 (neshoda typu).</value>
+  </data>
+  <data name="UnreachableCaseInspection_Unreachable" xml:space="preserve">
+    <value>Výraz 'Case' je nedosažitelný</value>
+  </data>
+  <data name="UnreachableCaseInspection_InherentlyUnreachable" xml:space="preserve">
+    <value>Výraz 'Case' klauzule Range musí být vyjádřen '[x] To [y]' kde [x] je méně nebo rovno [y]</value>
+  </data>
+  <data name="UnreachableCaseInspection_Overflow" xml:space="preserve">
+    <value>Výraz 'Case' způsobí za běhu programu chybu 6 (Přetečení)</value>
+  </data>
+  <data name="EmptyMethodInspection" xml:space="preserve">
+    <value>{0} '{1}' neobsahuje žádné spustitelné příkazy.</value>
+  </data>
+  <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
+    <value>Modul třídy rozhraní '{2}' obsahuje konkrétní implementaci pro {0} '{1}'.</value>
+  </data>
+  <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>Argument '{2}' typu '{3}' je předán parametru '{0}' jako nekompatibilní typ '{1}'.</value>
+  </data>
+  <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Výraz '{0}' obsahuje přístup indexovaného výchozího člena k '{1}'.</value>
+  </data>
+  <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Výraz '{0}' obsahuje přístup indexovaného rekurzivního výchozího člena k '{1}'.</value>
+  </data>
+  <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Výraz '{0}' obsahuje přístup indexovaného nevázaného výchozího člena.</value>
+  </data>
+  <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Ve výrazu '{0}' existuje implicitní přístup k výchozímu členu '{1}'.</value>
   </data>
 </root>

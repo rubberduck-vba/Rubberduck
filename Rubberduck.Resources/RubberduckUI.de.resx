@@ -995,29 +995,14 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
   <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
     <value>'{0}' ist in diesem Kontext bereits verfügbar.</value>
   </data>
-  <data name="AssignedByValDialog_ReservedKeywordFormat" xml:space="preserve">
-    <value>'{0}' ist ein reserviertes Schlüsselwort.</value>
-  </data>
   <data name="RenameDialog_AmbiguousSelection" xml:space="preserve">
     <value>Bitte stellen Sie zur Umbenennung sicher, dass genau ein Control-Objekt ausgewählt ist.</value>
   </data>
   <data name="ContextMultipleControlsSelection" xml:space="preserve">
     <value>Mehrere Schaltflächen</value>
   </data>
-  <data name="AssignedByValDialog_InvalidCharacters" xml:space="preserve">
-    <value>Variablennamen können keine Sonderzeichen außer Unterstrich enthalten.</value>
-  </data>
-  <data name="AssignedByValDialog_IsByValIdentifierFormat" xml:space="preserve">
-    <value>Die lokale Variable kann nicht das gleiche wie der '{0}' Parameter, den sie ersetzt sein.</value>
-  </data>
-  <data name="AssignedByValDialog_QuestionableEntryFormat" xml:space="preserve">
-    <value>Der Name '{0}' wird die "Sinnige Namen verwenden"-Inspektion auslösen. Überlegen Sie, einen anderen Namen zu wählen.</value>
-  </data>
   <data name="ConfirmRemoveAssignmentWithUnusedDeclaration" xml:space="preserve">
     <value>Variable '{0}' ist zugewiesen. Zuweisung(en) entfernen?</value>
-  </data>
-  <data name="AssignedByValDialog_DoesNotStartWithLetter" xml:space="preserve">
-    <value>Variablennamen müssen mit einem Buchstaben beginnen.</value>
   </data>
   <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
     <value>Konnte Interfacemitglied {0} nicht umbenennen.</value>

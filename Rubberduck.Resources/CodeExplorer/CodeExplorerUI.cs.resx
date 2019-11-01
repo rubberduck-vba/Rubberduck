@@ -288,4 +288,29 @@
   <data name="CodeExplorer_LibraryReferences" xml:space="preserve">
     <value>Reference Knihovny</value>
   </data>
+  <data name="CodeExplorer_AddExistingFileText" xml:space="preserve">
+    <value>Existující soubor...</value>
+  </data>
+  <data name="CodeExplorer_Delete" xml:space="preserve">
+    <value>Odstranit</value>
+  </data>
+  <data name="CodeExplorer_Exclude" xml:space="preserve">
+    <value>Vyloučit z projektu</value>
+  </data>
+  <data name="ConfirmBeforeDelete_Caption" xml:space="preserve">
+    <value>Potvrdit Odstranění</value>
+  </data>
+  <data name="ConfirmBeforeDelete_Prompt" xml:space="preserve">
+    <value>{0} bude permanentně odstraněn.
+
+Pokračovat?</value>
+  </data>
+  <data name="DeleteFailed_Caption" xml:space="preserve">
+    <value>Odstranění Selhalo</value>
+  </data>
+  <data name="DeleteFailed_Message" xml:space="preserve">
+    <value>Následující soubory nebylo možné odstranit:
+
+{0}</value>
+  </data>
 </root>

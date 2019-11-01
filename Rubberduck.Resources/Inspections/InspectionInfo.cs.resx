@@ -376,4 +376,13 @@ Jestliže může být parametr prázdný, ignorujte výsledek této inspekce; p�
   <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
     <value>Smyčky 'While...Wend' existují pro zpětnou kompatibilitu a byly nahrazeny zavedením bloků 'Do While...Loop', které podporují příkaz 'Exit Do'. Smyčky 'While...Wend' nelze ukončit jinak než splněním podmínky 'While'.</value>
   </data>
+  <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
+    <value>Vykřičníková notace, formálně známá jako výraz přístupu ke slovníku, vypadá, že je silně zadaná. Ve skutečnosti je to však striktně zadaný přístup k parametrizovanému výchozímu členu objektu, na kterém je použit. Obzvláště zavádějící, pokud výchozí parametrizovaný člen není na samotném objektu a lze jej vyvolat pouze zavoláním výchozího člena bez parametrů.</value>
+  </data>
+  <data name="UseOfBangNotationInspection" xml:space="preserve">
+    <value>Vykřičníková notace, formálně známá jako výraz přístupu ke slovníku, vypadá, že je silně zadaná. Ve skutečnosti je to však striktně zadaný přístup k parametrizovanému výchozímu členu objektu, na kterém je použit.</value>
+  </data>
+  <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
+    <value>Vykřičníková notace, formálně známá jako výraz přístupu ke slovníku, vypadá, že je silně zadaná. Ve skutečnosti je to však striktně zadaný přístup k parametrizovanému výchozímu členu objektu, na kterém je použit. Obzvláště zavádějící, že není možné určit výchozího člena při kompilaci.</value>
+  </data>
 </root>

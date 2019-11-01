@@ -4150,7 +4150,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Suceeded.
+        ///   Looks up a localized string similar to Succeeded.
         /// </summary>
         public static string TestOutcome_Succeeded {
             get {
