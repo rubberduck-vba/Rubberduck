@@ -45,6 +45,7 @@ namespace Rubberduck.Inspections.Concrete
     ///     arg.ConnectionString = bar
     /// End Sub
     /// ]]>
+    /// </example>
     public sealed class ImplicitDefaultMemberAccessInspection : IdentifierReferenceInspectionBase
     {
         public ImplicitDefaultMemberAccessInspection(RubberduckParserState state)

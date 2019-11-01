@@ -1,12 +1,9 @@
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
@@ -300,14 +297,14 @@ Public Sub Baz()
     result = testObj.Test
 End Sub
 ";
-            var builder = new MockVbeBuilder();
-            var vbe = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("IFoo", ComponentType.ClassModule, interfaceCode)
-                .AddComponent("Bar", ComponentType.ClassModule, implementationCode)
-                .AddComponent("TestModule", ComponentType.StandardModule, callSiteCode)
-                .AddProjectToVbeBuilder().Build().Object;
+            var modules = new (string, string, ComponentType)[] 
+            {
+                ("IFoo", interfaceCode, ComponentType.ClassModule),
+                ("Bar", implementationCode, ComponentType.ClassModule),
+                ("TestModule", callSiteCode, ComponentType.StandardModule),
+            };
 
-            Assert.AreEqual(0, InspectionResults(vbe).Count());
+            Assert.AreEqual(0, InspectionResultsForModules(modules).Count());
         }
 
 
@@ -348,14 +345,14 @@ Public Sub Baz()
     testObj.Test
 End Sub
 ";
-            var builder = new MockVbeBuilder();
-            var vbe = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("IFoo", ComponentType.ClassModule, interfaceCode)
-                .AddComponent("Bar", ComponentType.ClassModule, implementationCode)
-                .AddComponent("TestModule", ComponentType.StandardModule, callSiteCode)
-                .AddProjectToVbeBuilder().Build().Object;
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("IFoo", interfaceCode, ComponentType.ClassModule),
+                ("Bar", implementationCode, ComponentType.ClassModule),
+                ("TestModule", callSiteCode, ComponentType.StandardModule),
+            };
 
-            Assert.AreEqual(1, InspectionResults(vbe).Count());
+            Assert.AreEqual(1, InspectionResultsForModules(modules).Count());
         }
 
         [Test]

@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
@@ -229,10 +227,7 @@ End Sub";
         }
 
         private IEnumerable<IInspectionResult> InspectionResults(string inputCode, ComponentType componentType = ComponentType.StandardModule)
-        {
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, componentType, out _).Object;
-            return InspectionResults(vbe);
-        }
+            => InspectionResultsForModules(("TestComponent", inputCode, componentType));
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {

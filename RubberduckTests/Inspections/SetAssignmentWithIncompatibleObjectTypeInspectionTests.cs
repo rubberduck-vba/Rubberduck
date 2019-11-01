@@ -16,7 +16,7 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class SetAssignmentWithIncompatibleObjectTypeInspectionTests
+    public class SetAssignmentWithIncompatibleObjectTypeInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
@@ -43,7 +43,7 @@ Private Sub TestIt()
 End Sub
 ";
 
-            var inspectionResults = InspectionResults(
+            var inspectionResults = InspectionResultsForModules(
                 ("Interface1", interface1, ComponentType.ClassModule),
                 ("Class1", class1, ComponentType.ClassModule),
                 ("Module1", consumerModule, ComponentType.StandardModule));
@@ -85,7 +85,7 @@ Private Sub TestIt()
 End Sub
 ";
 
-            var inspectionResults = InspectionResults(
+            var inspectionResults = InspectionResultsForModules(
                 ("Interface1", interface1, ComponentType.ClassModule),
                 ("Interface2", interface2, ComponentType.ClassModule),
                 ("Class1", class1, ComponentType.ClassModule),
@@ -120,7 +120,7 @@ Private Sub TestIt()
 End Sub
 ";
 
-            var inspectionResults = InspectionResults(
+            var inspectionResults = InspectionResultsForModules(
                     ("Interface1", interface1, ComponentType.ClassModule),
                     ("Class1", class1, ComponentType.ClassModule),
                     ("Module1", consumerModule, ComponentType.StandardModule));
@@ -149,7 +149,7 @@ Private Sub TestIt()
 End Sub
 ";
 
-            var inspectionResults = InspectionResults(
+            var inspectionResults = InspectionResultsForModules(
                 ("Class1", class1, ComponentType.ClassModule),
                 ("Module1", consumerModule, ComponentType.StandardModule));
 
@@ -169,7 +169,7 @@ End Sub
             const string consumerModule =
                 @"
 Private Sub TestIt()
-    Dim cls As Project1.Class1
+    Dim cls As TestProject1.Class1
     Dim otherCls As Class1
 
     Set otherCls = new Class1
@@ -177,18 +177,13 @@ Private Sub TestIt()
     Set otherCls = cls 
 End Sub
 ";
+            var modules = new(string, string, ComponentType)[] 
+            {
+                ("Class1", class1, ComponentType.ClassModule),
+                ("Module1", consumerModule, ComponentType.StandardModule),
+            };
 
-            var vbe = new MockVbeBuilder()
-                .ProjectBuilder("Project1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, class1)
-                .AddComponent("Module1", ComponentType.StandardModule, consumerModule)
-                .AddProjectToVbeBuilder()
-                .Build()
-                .Object;
-
-            var inspectionResults = InspectionResults(vbe);
-
-            Assert.IsFalse(inspectionResults.Any());
+            Assert.AreEqual(0, InspectionResultsForModules(modules).Count());
         }
 
         [Test]
@@ -256,7 +251,7 @@ Private Sub TestIt()
 End Sub
 ";
 
-            var inspectionResults = InspectionResults(
+            var inspectionResults = InspectionResultsForModules(
                 ("Interface1", interface1, ComponentType.ClassModule),
                 ("Class1", class1, ComponentType.ClassModule),
                 ("Module1", consumerModule, ComponentType.StandardModule));
@@ -291,7 +286,7 @@ Private Sub TestIt()
 End Sub
 ";
 
-            var inspectionResults = InspectionResults(
+            var inspectionResults = InspectionResultsForModules(
                 ("Interface1", interface1, ComponentType.ClassModule),
                 ("Class1", class1, ComponentType.ClassModule),
                 ("Class2", class1, ComponentType.ClassModule),
@@ -321,7 +316,7 @@ Private Sub TestIt()
 End Sub
 ";
 
-            var inspectionResults = InspectionResults(
+            var inspectionResults = InspectionResultsForModules(
                 ("Class1", class1, ComponentType.ClassModule),
                 ("Module1", consumerModule, ComponentType.StandardModule));
 
@@ -349,7 +344,7 @@ Private Sub TestIt()
 End Sub
 ";
 
-            var inspectionResults = InspectionResults(
+            var inspectionResults = InspectionResultsForModules(
                 ("Class1", class1, ComponentType.ClassModule),
                 ("Module1", consumerModule, ComponentType.StandardModule));
 
@@ -377,7 +372,7 @@ Private Sub TestIt()
 End Sub
 ";
 
-            var inspectionResults = InspectionResults(
+            var inspectionResults = InspectionResultsForModules(
                 ("Class1", class1, ComponentType.ClassModule),
                 ("Class2", class1, ComponentType.ClassModule),
                 ("Module1", consumerModule, ComponentType.StandardModule));
@@ -406,7 +401,7 @@ Private Sub TestIt()
 End Sub
 ";
 
-            var inspectionResults = InspectionResults(
+            var inspectionResults = InspectionResultsForModules(
                 ("Class1", class1, ComponentType.ClassModule),
                 ("Class2", class1, ComponentType.ClassModule),
                 ("Module1", consumerModule, ComponentType.StandardModule));
@@ -434,7 +429,7 @@ Public Sub AssignIt()
 End Sub
 ";
 
-            var inspectionResults = InspectionResults(
+            var inspectionResults = InspectionResultsForModules(
                 ("Class1", class1, ComponentType.ClassModule),
                 ("Interface1", interface1, ComponentType.ClassModule));
 
@@ -461,7 +456,7 @@ Public Sub AssignIt()
 End Sub
 ";
 
-            var inspectionResults = InspectionResults(
+            var inspectionResults = InspectionResultsForModules(
                 ("Class1", class1, ComponentType.ClassModule),
                 ("Interface1", interface1, ComponentType.ClassModule));
 
@@ -470,18 +465,18 @@ End Sub
 
         [Test]
         [Category("Inspections")]
-        [TestCase("Class1", "TestProject.Class1", 0)]
-        [TestCase("Interface1", "TestProject.Class1", 0)]
-        [TestCase("Class1", "TestProject.Interface1", 0)]
+        [TestCase("Class1", "TestProject1.Class1", 0)]
+        [TestCase("Interface1", "TestProject1.Class1", 0)]
+        [TestCase("Class1", "TestProject1.Interface1", 0)]
         [TestCase("Variant", "Whatever", 0)] //Tokens.Variant cannot be used here because it is not a constant expression.
         [TestCase("Object", "Whatever", 0)]
         [TestCase("Whatever", "Variant", 0)]
         [TestCase("Whatever", "Object", 0)]
-        [TestCase("Class1", "TestProject.SomethingIncompatible", 1)]
+        [TestCase("Class1", "TestProject1.SomethingIncompatible", 1)]
         [TestCase("Class1", "SomethingDifferent", 1)]
-        [TestCase("TestProject.Class1", "OtherProject.Class1", 1)]
-        [TestCase("TestProject.Interface1", "OtherProject.Class1", 1)]
-        [TestCase("TestProject.Class1", "OtherProject.Interface1", 1)]
+        [TestCase("TestProject1.Class1", "OtherProject.Class1", 1)]
+        [TestCase("TestProject1.Interface1", "OtherProject.Class1", 1)]
+        [TestCase("TestProject1.Class1", "OtherProject.Interface1", 1)]
         [TestCase("Class1", "OtherProject.Class1", 1)]
         [TestCase("Interface1", "OtherProject.Class1", 1)]
         [TestCase("Class1", "OtherProject.Interface1", 1)]
@@ -507,15 +502,14 @@ Private Function Cls() As {lhsTypeName}
     Set Cls = expression
 End Function
 ";
+            var modules = new(string, string, ComponentType)[]
+            {
+                ("Class1", class1, ComponentType.ClassModule),
+                ("Interface1", interface1, ComponentType.ClassModule),
+                ("Module1", module1, ComponentType.StandardModule),
+            };
 
-            var vbe = new MockVbeBuilder()
-                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, class1)
-                .AddComponent("Interface1", ComponentType.ClassModule, interface1)
-                .AddComponent("Module1", ComponentType.StandardModule, module1)
-                .AddProjectToVbeBuilder()
-                .Build()
-                .Object;
+            var vbe = MockVbeBuilder.BuildFromModules(modules).Object;
 
             var setTypeResolverMock = new Mock<ISetTypeResolver>();
             setTypeResolverMock.Setup(m =>
@@ -529,18 +523,18 @@ End Function
 
         [Test]
         [Category("Inspections")]
-        [TestCase("Class1", "TestProject.Class1", 0)]
-        [TestCase("Interface1", "TestProject.Class1", 0)]
-        [TestCase("Class1", "TestProject.Interface1", 0)]
+        [TestCase("Class1", "TestProject1.Class1", 0)]
+        [TestCase("Interface1", "TestProject1.Class1", 0)]
+        [TestCase("Class1", "TestProject1.Interface1", 0)]
         [TestCase("Variant", "Whatever", 0)] //Tokens.Variant cannot be used here because it is not a constant expression.
         [TestCase("Object", "Whatever", 0)]
         [TestCase("Whatever", "Variant", 0)]
         [TestCase("Whatever", "Object", 0)]
-        [TestCase("Class1", "TestProject.SomethingIncompatible", 1)]
+        [TestCase("Class1", "TestProject1.SomethingIncompatible", 1)]
         [TestCase("Class1", "SomethingDifferent", 1)]
-        [TestCase("TestProject.Class1", "OtherProject.Class1", 1)]
-        [TestCase("TestProject.Interface1", "OtherProject.Class1", 1)]
-        [TestCase("TestProject.Class1", "OtherProject.Interface1", 1)]
+        [TestCase("TestProject1.Class1", "OtherProject.Class1", 1)]
+        [TestCase("TestProject1.Interface1", "OtherProject.Class1", 1)]
+        [TestCase("TestProject1.Class1", "OtherProject.Interface1", 1)]
         [TestCase("Class1", "OtherProject.Class1", 1)]
         [TestCase("Interface1", "OtherProject.Class1", 1)]
         [TestCase("Class1", "OtherProject.Interface1", 1)]
@@ -567,14 +561,14 @@ Private Property Get Cls() As {lhsTypeName}
 End Property
 ";
 
-            var vbe = new MockVbeBuilder()
-                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, class1)
-                .AddComponent("Interface1", ComponentType.ClassModule, interface1)
-                .AddComponent("Module1", ComponentType.StandardModule, module1)
-                .AddProjectToVbeBuilder()
-                .Build()
-                .Object;
+            var modules = new(string, string, ComponentType)[]
+            {
+                ("Class1", class1, ComponentType.ClassModule),
+                ("Interface1", interface1, ComponentType.ClassModule),
+                ("Module1", module1, ComponentType.StandardModule),
+            };
+
+            var vbe = MockVbeBuilder.BuildFromModules(modules).Object;
 
             var setTypeResolverMock = new Mock<ISetTypeResolver>();
             setTypeResolverMock.Setup(m =>
@@ -588,18 +582,18 @@ End Property
 
         [Test]
         [Category("Inspections")]
-        [TestCase("Class1", "TestProject.Class1", 0)]
-        [TestCase("Interface1", "TestProject.Class1", 0)]
-        [TestCase("Class1", "TestProject.Interface1", 0)]
+        [TestCase("Class1", "TestProject1.Class1", 0)]
+        [TestCase("Interface1", "TestProject1.Class1", 0)]
+        [TestCase("Class1", "TestProject1.Interface1", 0)]
         [TestCase("Variant", "Whatever", 0)] //Tokens.Variant cannot be used here because it is not a constant expression.
         [TestCase("Object", "Whatever", 0)]
         [TestCase("Whatever", "Variant", 0)]
         [TestCase("Whatever", "Object", 0)]
-        [TestCase("Class1", "TestProject.SomethingIncompatible", 1)]
+        [TestCase("Class1", "TestProject1.SomethingIncompatible", 1)]
         [TestCase("Class1", "SomethingDifferent", 1)]
-        [TestCase("TestProject.Class1", "OtherProject.Class1", 1)]
-        [TestCase("TestProject.Interface1", "OtherProject.Class1", 1)]
-        [TestCase("TestProject.Class1", "OtherProject.Interface1", 1)]
+        [TestCase("TestProject1.Class1", "OtherProject.Class1", 1)]
+        [TestCase("TestProject1.Interface1", "OtherProject.Class1", 1)]
+        [TestCase("TestProject1.Class1", "OtherProject.Interface1", 1)]
         [TestCase("Class1", "OtherProject.Class1", 1)]
         [TestCase("Interface1", "OtherProject.Class1", 1)]
         [TestCase("Class1", "OtherProject.Interface1", 1)]
@@ -628,14 +622,14 @@ Private Sub TestIt()
 End Sub
 ";
 
-            var vbe = new MockVbeBuilder()
-                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, class1)
-                .AddComponent("Interface1", ComponentType.ClassModule, interface1)
-                .AddComponent("Module1", ComponentType.StandardModule, module1)
-                .AddProjectToVbeBuilder()
-                .Build()
-                .Object;
+            var modules = new(string, string, ComponentType)[]
+            {
+                ("Class1", class1, ComponentType.ClassModule),
+                ("Interface1", interface1, ComponentType.ClassModule),
+                ("Module1", module1, ComponentType.StandardModule),
+            };
+
+            var vbe = MockVbeBuilder.BuildFromModules(modules).Object;
 
             var setTypeResolverMock = new Mock<ISetTypeResolver>();
             setTypeResolverMock.Setup(m =>
@@ -647,19 +641,7 @@ End Sub
             Assert.AreEqual(expectedResultsCount, inspectionResults.Count);
         }
 
-        private static IEnumerable<IInspectionResult> InspectionResults(params (string moduleName, string content, ComponentType componentType)[] testModules)
-        {
-            var vbe = MockVbeBuilder.BuildFromModules(testModules).Object;
-            return InspectionResults(vbe);
-        }
-
-        private static IEnumerable<IInspectionResult> InspectionResults(ISetTypeResolver setTypeResolver, params (string moduleName, string content, ComponentType componentType)[] testModules)
-        {
-            var vbe = MockVbeBuilder.BuildFromModules(testModules).Object;
-            return InspectionResults(vbe, setTypeResolver);
-        }
-
-        private static IEnumerable<IInspectionResult> InspectionResults(IVBE vbe, ISetTypeResolver setTypeResolver = null)
+        private static IEnumerable<IInspectionResult> InspectionResults(IVBE vbe, ISetTypeResolver setTypeResolver)
         {
             using (var state = MockParser.CreateAndParse(vbe))
             {
@@ -668,10 +650,14 @@ End Sub
             }
         }
 
-        private static IInspection InspectionUnderTest(RubberduckParserState state, ISetTypeResolver setTypeResolver = null)
+        private static IInspection InspectionUnderTest(RubberduckParserState state, ISetTypeResolver setTypeResolver)
         {
-            var setTypeResolverToUse = setTypeResolver ?? new SetTypeResolver(state);
-            return new SetAssignmentWithIncompatibleObjectTypeInspection(state, setTypeResolverToUse);
+            return new SetAssignmentWithIncompatibleObjectTypeInspection(state, setTypeResolver);
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new SetAssignmentWithIncompatibleObjectTypeInspection(state, new SetTypeResolver(state));
         }
     }
 }

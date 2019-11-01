@@ -1,27 +1,14 @@
 ﻿using NUnit.Framework;
 using Rubberduck.Parsing.Inspections.Abstract;
-using RubberduckTests.Mocks;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Rubberduck.CodeAnalysis.Inspections.Concrete;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class ObsoleteWhileWendInspectionTests
+    public class ObsoleteWhileWendInspectionTests : InspectionTestsBase
     {
-        private IEnumerable<IInspectionResult> Inspect(string inputCode)
-        {
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new ObsoleteWhileWendStatementInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                return inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            }
-        }
-
         [Test]
         [Category("Inspections")]
         public void ObsoleteWhileWendLoop_NoWhileWendLoop_NoResult()
@@ -32,8 +19,7 @@ Sub Foo()
     Loop
 End Sub
 ";
-            var results = Inspect(inputCode);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -47,8 +33,7 @@ Sub Foo()
     Wend
 End Sub
 ";
-            var results = Inspect(inputCode);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -61,8 +46,7 @@ Sub Foo()
     Wend
 End Sub
 ";
-            var results = Inspect(inputCode);
-            Assert.AreEqual(1, results.Count());
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -77,8 +61,12 @@ Sub Foo()
     Wend
 End Sub
 ";
-            var results = Inspect(inputCode);
-            Assert.AreEqual(1, results.Count());
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new ObsoleteWhileWendStatementInspection(state);
         }
     }
 }
