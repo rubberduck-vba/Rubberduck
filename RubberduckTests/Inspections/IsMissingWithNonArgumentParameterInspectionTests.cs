@@ -1,14 +1,14 @@
 ﻿using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class IsMissingWithNonArgumentParameterInspectionTests
+    public class IsMissingWithNonArgumentParameterInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
@@ -21,10 +21,7 @@ Public Sub Foo(Optional bar As Variant)
 End Sub
 ";
 
-            const int expected = 1;
-            var actual = ArrangeAndGetInspectionCount(inputCode);
-
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(1, ArrangeAndGetInspectionCount(inputCode));
         }
 
         [Test]
@@ -38,11 +35,7 @@ Public Sub Foo(Optional bar As Variant)
     Debug.Print IsMissing(baz)
 End Sub
 ";
-
-            const int expected = 1;
-            var actual = ArrangeAndGetInspectionCount(inputCode);
-
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(1, ArrangeAndGetInspectionCount(inputCode));
         }
 
         [Test]
@@ -58,11 +51,7 @@ End Sub
 Public Function Bar() As Variant
 End Function
 ";
-
-            const int expected = 1;
-            var actual = ArrangeAndGetInspectionCount(inputCode);
-
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(1, ArrangeAndGetInspectionCount(inputCode));
         }
 
         [Test]
@@ -75,11 +64,7 @@ Public Sub Foo(Optional bar As Variant)
     Debug.Print IsMissing(""bar"")
 End Sub
 ";
-
-            const int expected = 1;
-            var actual = ArrangeAndGetInspectionCount(inputCode);
-
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(1, ArrangeAndGetInspectionCount(inputCode));
         }
 
         [Test]
@@ -93,11 +78,7 @@ Public Sub Foo(bar As Variant)
     Debug.Print IsMissing(42)
 End Sub
 ";
-
-            const int expected = 0;
-            var actual = ArrangeAndGetInspectionCount(inputCode);
-
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(0, ArrangeAndGetInspectionCount(inputCode));
         }
 
         [Test]
@@ -110,11 +91,7 @@ Public Sub Foo(Optional bar As Variant)
     Debug.Print IsMissing(bar)
 End Sub
 ";
-
-            const int expected = 0;
-            var actual = ArrangeAndGetInspectionCount(inputCode);
-
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(0, ArrangeAndGetInspectionCount(inputCode));
         }
 
         [Test]
@@ -127,11 +104,7 @@ Public Sub Foo(ParamArray bar() As Variant)
     Debug.Print IsMissing(bar)
 End Sub
 ";
-
-            const int expected = 0;
-            var actual = ArrangeAndGetInspectionCount(inputCode);
-
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(0, ArrangeAndGetInspectionCount(inputCode));
         }
 
         [Test]
@@ -147,30 +120,22 @@ End Sub
 Public Function Baz(arg As Variant) As Variant
 End Function
 ";
-
-            const int expected = 1;
-            var actual = ArrangeAndGetInspectionCount(inputCode);
-
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(1, ArrangeAndGetInspectionCount(inputCode));
         }
 
         private int ArrangeAndGetInspectionCount(string code)
         {
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Module1", ComponentType.StandardModule, code)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var modules = new(string, string, ComponentType)[]
             {
-                var inspection = new IsMissingWithNonArgumentParameterInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+                ("Module1", code, ComponentType.StandardModule)
+            };
 
-                return inspectionResults.Count();
-            }
+            return InspectionResultsForModules(modules, "VBA").Count();
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new IsMissingWithNonArgumentParameterInspection(state);
         }
     }
 }

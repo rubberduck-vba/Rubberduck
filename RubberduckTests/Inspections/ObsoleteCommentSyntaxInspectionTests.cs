@@ -1,46 +1,24 @@
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using RubberduckTests.Mocks;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class ObsoleteCommentSyntaxInspectionTests
+    public class ObsoleteCommentSyntaxInspectionTests : InspectionTestsBase
     {
-        [Test]
+        [TestCase("Rem test", 1)]
+        [TestCase("' test", 0)] //QuoteComment
+        [TestCase("Rem test1\r\nRem test2", 2)]
+        [TestCase("Rem test1\r\n' test2", 1)] //SomeObsoleteCommentSyntax
+        [TestCase("'@Ignore ObsoleteCommentSyntax\r\nRem test", 0)]
+        [TestCase("Rem test", 1)]
         [Category("Inspections")]
-        public void ObsoleteCommentSyntax_ReturnsResult()
+        public void ObsoleteCommentSyntax_VariousScenarios(string inputCode, int expectedCount)
         {
-            const string inputCode = @"Rem test";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ObsoleteCommentSyntaxInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ObsoleteCommentSyntax_DoesNotReturnResult_QuoteComment()
-        {
-            const string inputCode = @"' test";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ObsoleteCommentSyntaxInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
+            Assert.AreEqual(expectedCount, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -52,17 +30,7 @@ Sub foo()
     Dim i As String
     i = """"
 End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ObsoleteCommentSyntaxInspection(state);
-                var emptyStringLiteralInspection = new EmptyStringLiteralInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection, emptyStringLiteralInspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(0, inspectionResults.Count(r => r.Inspection is ObsoleteCommentSyntaxInspection));
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -74,73 +42,7 @@ End Sub";
     Dim bar As String
     bar = ""iejo rem oernp"" ' test
 End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ObsoleteCommentSyntaxInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ObsoleteCommentSyntax_ReturnsMultipleResults()
-        {
-            const string inputCode =
-                @"Rem test1
-Rem test2";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ObsoleteCommentSyntaxInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(2, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ObsoleteCommentSyntax_ReturnsResults_SomeObsoleteCommentSyntax()
-        {
-            const string inputCode =
-                @"Rem test1
-' test2";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ObsoleteCommentSyntaxInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ObsoleteCommentSyntax_Ignored_DoesNotReturnResult()
-        {
-            const string inputCode = @"
-'@Ignore ObsoleteCommentSyntax
-Rem test";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ObsoleteCommentSyntaxInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -151,6 +53,11 @@ Rem test";
             var inspection = new ObsoleteCommentSyntaxInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new ObsoleteCommentSyntaxInspection(state);
         }
     }
 }

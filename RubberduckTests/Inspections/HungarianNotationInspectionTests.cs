@@ -1,11 +1,9 @@
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
@@ -43,12 +41,7 @@ End Sub";
                 @"Sub Test()
     Debug.Print ""Ez egy objektum""
 End Sub";
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("clsMagyar", ComponentType.ClassModule, inputCode)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-            Assert.AreEqual(1, InspectionResults(vbe.Object).Count());
+            Assert.AreEqual(1, InspectionResultsForModules(("clsMagyar", inputCode, ComponentType.ClassModule)).Count());
         }
 
         [Test]

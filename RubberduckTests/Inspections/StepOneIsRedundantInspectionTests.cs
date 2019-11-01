@@ -1,14 +1,14 @@
 ﻿using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections;
-using RubberduckTests.Mocks;
 using System.Linq;
-using System.Threading;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class StepOneIsRedundantInspectionTests
+    public class StepOneIsRedundantInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
@@ -20,7 +20,7 @@ namespace RubberduckTests.Inspections
     Next
 End Sub";
 
-            this.TestStepOneIsRedundantInspection(inputCode, 1);
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -35,19 +35,12 @@ End Sub";
     Next
 End Sub";
 
-            this.TestStepOneIsRedundantInspection(inputCode, 2);
+            Assert.AreEqual(2, InspectionResultsForStandardModule(inputCode).Count());
         }
 
-        private void TestStepOneIsRedundantInspection(string inputCode, int expectedResultCount)
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new StepOneIsRedundantInspection(state) { Severity = CodeInspectionSeverity.Warning };
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-            Assert.AreEqual(expectedResultCount, inspectionResults.Count());
+            return new StepOneIsRedundantInspection(state) { Severity = CodeInspectionSeverity.Warning };
         }
     }
 }
