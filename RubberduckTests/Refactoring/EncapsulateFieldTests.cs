@@ -46,6 +46,30 @@ End Property
             Assert.AreEqual(expectedCode, actualCode);
         }
 
+        [TestCase("Public")]
+        [TestCase("Private")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void EncapsulateUserDefinedType(string accessibility)
+        {
+            string inputCode =
+$@"
+Private Type TBar
+    First As String
+    Second As Long
+End Type
+
+{accessibility} this As TBar";
+
+            var selection = new Selection(7, 10); //Selects 'this' declaration
+
+            var presenterAction = SetParameters("MyType", implementLet: true);
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            StringAssert.Contains("Private this As TBar", actualCode);
+            StringAssert.Contains("this = value", actualCode);
+            StringAssert.Contains($"MyType = this", actualCode);
+        }
+
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
@@ -245,21 +269,18 @@ End Property";
             Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [Test]
+        [TestCase("Public fizz As Integer\r\nPublic buzz As Boolean", "Private fizz As Integer\r\nPublic buzz As Boolean", 1, 1)]
+        [TestCase("Public buzz As Boolean\r\nPublic fizz As Integer", "Public buzz As Boolean\r\nPrivate fizz As Integer", 2, 1)]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        public void EncapsulatePublicField_OtherFieldsInClass()
+        public void EncapsulatePublicField_OtherFieldsInClass(string inputFields, string expectedFields, int rowSelection, int columnSelection)
         {
-            //Input
-            const string inputCode =
-                @"Public fizz As Integer
-Public buzz As Boolean";
-            var selection = new Selection(1, 1);
+            string inputCode = inputFields;
 
-            //Expectation
-            const string expectedCode =
-                @"Public buzz As Boolean
-Private fizz As Integer
+            var selection = new Selection(rowSelection, columnSelection);
+
+            string expectedCode =
+$@"{expectedFields}
 
 Public Property Get Name() As Integer
     Name = fizz
@@ -274,105 +295,28 @@ End Property
             Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [Test]
+        [TestCase(1, 10, "Public buzz", "Private fizz As Variant", "Public fizz")]
+        [TestCase(2, 2, "Public fizz, _\r\nbazz", "Private buzz As Boolean", "")]
+        [TestCase(3, 2, "Public fizz, _\r\nbuzz", "Private bazz As Date", "Boolean, bazz As Date")]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        public void EncapsulatePublicField_FieldDeclarationHasMultipleFields_MoveFirst()
+        public void EncapsulatePublicField_SelectedWithinDeclarationList(int rowSelection, int columnSelection, string contains1, string contains2, string doesNotContain)
         {
             //Input
-            const string inputCode =
-                @"Public fizz, _
-         buzz As Boolean, _
-         bazz As Date";
-            var selection = new Selection(1, 12);
+            string inputCode =
+$@"Public fizz, _
+buzz As Boolean, _
+bazz As Date";
 
-            //Expectation
-            const string expectedCode =
-                @"Public buzz As Boolean, _
-         bazz As Date
-Private fizz As Variant
-
-Public Property Get Name() As Variant
-    If IsObject(fizz) Then
-        Set Name = fizz
-    Else
-        Name = fizz
-    End If
-End Property
-
-Public Property Let Name(ByVal value As Variant)
-    fizz = value
-End Property
-
-Public Property Set Name(ByVal value As Variant)
-    Set fizz = value
-End Property
-";
+            var selection = new Selection(rowSelection, columnSelection);
             var presenterAction = SetParameters("Name", implementSet: true, implementLet: true);
             var actualCode = RefactoredCode(inputCode, selection, presenterAction);
-            Assert.AreEqual(expectedCode, actualCode);
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void EncapsulatePublicField_FieldDeclarationHasMultipleFields_MoveSecond()
-        {
-            //Input
-            const string inputCode =
-                @"Public fizz, _
-buzz As Boolean, _
-bazz As Date";
-            var selection = new Selection(2, 12);
-
-            //Expectation
-            const string expectedCode =
-                @"Public fizz, _
-bazz As Date
-Private buzz As Boolean
-
-Public Property Get Name() As Boolean
-    Name = buzz
-End Property
-
-Public Property Let Name(ByVal value As Boolean)
-    buzz = value
-End Property
-";
-            var presenterAction = SetParameters("Name", implementLet: true);
-            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
-            Assert.AreEqual(expectedCode, actualCode);
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void EncapsulatePublicField_FieldDeclarationHasMultipleFields_MoveLast()
-        {
-            //Input
-            const string inputCode =
-                @"Public fizz, _
-buzz As Boolean, _
-bazz As Date";
-            var selection = new Selection(3, 12);
-
-            //Expectation
-            const string expectedCode =
-                @"Public fizz, _
-buzz As Boolean
-Private bazz As Date
-
-Public Property Get Name() As Date
-    Name = bazz
-End Property
-
-Public Property Let Name(ByVal value As Date)
-    bazz = value
-End Property
-";
-            var presenterAction = SetParameters("Name", implementLet: true);
-            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
-            Assert.AreEqual(expectedCode, actualCode);
+            StringAssert.Contains(contains1, actualCode);
+            StringAssert.Contains(contains1, actualCode);
+            if (doesNotContain.Length > 0)
+            {
+                StringAssert.DoesNotContain(doesNotContain, actualCode);
+            }
         }
 
         [Test]
@@ -644,8 +588,8 @@ End Property
 
         private Func<EncapsulateFieldModel, EncapsulateFieldModel> SetParameters(
             string propertyName,
-            bool implementSet = false, 
-            bool implementLet = false, 
+            bool implementSet = false,
+            bool implementLet = false,
             string parameterName = "value")
         {
             return model =>
