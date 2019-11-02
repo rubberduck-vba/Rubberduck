@@ -990,7 +990,12 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
     <value>Fenstersichtbarkeit beim Start</value>
   </data>
   <data name="VersionCheck_NewVersionAvailable" xml:space="preserve">
-    <value>Rubberduck Version {0} ist jetzt verfügbar! Wollen sie jetzt die Release Notes prüfen?</value>
+    <value>Sie verwenden momentan Rubberduck Version {0}.
+Version {1}({2}) ist nun verfügbar.
+
+Um den Change Log anzuschauen und Rubberduck manuell abzudaten, klicke 'Ja'.
+
+Dieses Fenster wird angezeigt, da Versionschecks aktiviert sind. Diese können unter Rubberduck &gt; Einstellungen deaktiviert werden.</value>
   </data>
   <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
     <value>'{0}' ist in diesem Kontext bereits verfügbar.</value>
@@ -1467,5 +1472,8 @@ Import abgebrochen.</value>
     <value>Es existiert keine Userform mit namens '{0}', s.d. kein Codebehind einer Userform aus der Datei '{1}' überschrieben werden kann.
 
 Import abgebrochen.</value>
+  </data>
+  <data name="SaveAndClose" xml:space="preserve">
+    <value>Speichern &amp; Schließen</value>
   </data>
 </root>

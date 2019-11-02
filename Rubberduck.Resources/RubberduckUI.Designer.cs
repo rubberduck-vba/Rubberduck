@@ -3887,7 +3887,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Really delete the contents of project &apos;{0}&apos; and replace it with the contents of the selected files?.
+        ///   Looks up a localized string similar to Do you really want to delete the contents of project &apos;{0}&apos; and replace them with the contents of the selected files?.
         /// </summary>
         public static string ReplaceProjectContentsFromFilesCommand_ConfirmationMessage {
             get {

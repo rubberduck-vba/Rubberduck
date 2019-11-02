@@ -1666,7 +1666,7 @@ Import aborted.</value>
     <value>Replace Project Content from Files</value>
   </data>
   <data name="ReplaceProjectContentsFromFilesCommand_ConfirmationMessage" xml:space="preserve">
-    <value>Really delete the contents of project '{0}' and replace it with the contents of the selected files?</value>
+    <value>Do you really want to delete the contents of project '{0}' and replace them with the contents of the selected files?</value>
     <comment>{0} project name</comment>
   </data>
   <data name="UpdateFromFilesCommand_DialogCaption" xml:space="preserve">
