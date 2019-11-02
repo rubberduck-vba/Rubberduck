@@ -9,5 +9,10 @@
         {
             InitializeComponent();
         }
+
+        private void TestGrid_RequestBringIntoView(object sender, System.Windows.RequestBringIntoViewEventArgs e)
+        {
+            e.Handled = true;
+        }
     }
 }
