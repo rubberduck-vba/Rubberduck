@@ -430,4 +430,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
     <value>Wenn beide Seiten einer Zuweisung ohne Set Objekte sind, kommt es zu einer Zuweisung vom Standardmember der rechten Seite zu dem der linken. Auch wenn dies manchmal beabsichtigt sein kann, kann es in vielen Fällen dazu führen, dass nicht bemerkt wird, dass Set fehlerhafter Weise vergessen wurde.</value>
   </data>
+  <data name="UnreachableCaseInspection" xml:space="preserve">
+    <value>Eine Bedingung in einem Case-Ausdruck ist entweder nie erfüllt, verursacht einen Laufzeitfehler oder kann nicht erfüllt werden, da die vorherigen Case-Ausdrücke bereits als zulässigen Werte abdecken. In Folge dessen wird der Code in dem Case-Zweig nie ausgeführt und stellt "toten Code" dar oder der Case-Ausdruck stellt sogar einen Laufzeitfehler dar, der nur darauf wartet irgendwann aufzutreten. Der Case-Zweig sollte entweder gelöscht, verändert oder an eine andere Stelle verschoben werden.</value>
+  </data>
 </root>

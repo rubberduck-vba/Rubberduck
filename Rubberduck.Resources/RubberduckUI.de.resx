@@ -990,7 +990,12 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
     <value>Fenstersichtbarkeit beim Start</value>
   </data>
   <data name="VersionCheck_NewVersionAvailable" xml:space="preserve">
-    <value>Rubberduck Version {0} ist jetzt verfügbar! Wollen sie jetzt die Release Notes prüfen?</value>
+    <value>Sie verwenden momentan Rubberduck Version {0}.
+Version {1}({2}) ist nun verfügbar.
+
+Um den Change Log anzuschauen und Rubberduck manuell abzudaten, klicke 'Ja'.
+
+Dieses Fenster wird angezeigt, da Versionschecks aktiviert sind. Diese können unter Rubberduck &gt; Einstellungen deaktiviert werden.</value>
   </data>
   <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
     <value>'{0}' ist in diesem Kontext bereits verfügbar.</value>
@@ -1433,5 +1438,74 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   </data>
   <data name="References_BrowseButtonText" xml:space="preserve">
     <value>Durchsuchen...</value>
+  </data>
+  <data name="SaveAndClose" xml:space="preserve">
+    <value>Speichern &amp; Schließen</value>
+  </data>
+  <data name="RegexAssistant_EncloseWhitespace_EnclosingFormat" xml:space="preserve">
+    <value>&lt;{0}&gt;</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_Space" xml:space="preserve">
+    <value>Leerzeichen</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_Tab" xml:space="preserve">
+    <value>Tab</value>
+  </data>
+  <data name="TestOutcome_Fail" xml:space="preserve">
+    <value>Fehlgeschlagen</value>
+  </data>
+  <data name="TestOutcome_Succeeded" xml:space="preserve">
+    <value>Erfolgreich</value>
+  </data>
+  <data name="TestOutcome_Unknown" xml:space="preserve">
+    <value>Unbekannt</value>
+  </data>
+  <data name="TestOutcome_Inconclusive" xml:space="preserve">
+    <value>Uneindeutig</value>
+  </data>
+  <data name="InvalidNameCriteria_DoesNotStartWithLetterFormat" xml:space="preserve">
+    <value>'{0}' beginnt nicht mit einem Buchstaben.</value>
+  </data>
+  <data name="InvalidNameCriteria_ExceedsMaximumLengthFormat" xml:space="preserve">
+    <value>'{0}' überschreitet die maximal erlaubte Länge.</value>
+  </data>
+  <data name="InvalidNameCriteria_InvalidCharactersFormat" xml:space="preserve">
+    <value>'{0}' enthält mindestens ein anderes Sonderzeichen als der Unterstrich.</value>
+  </data>
+  <data name="InvalidNameCriteria_IsNullOrEmpty" xml:space="preserve">
+    <value>Bezeichner in VBA können nicht Null sein oder Länge Null haben.</value>
+  </data>
+  <data name="InvalidNameCriteria_IsReservedKeywordFormat" xml:space="preserve">
+    <value>'{0}' ist ein reserviertes Schlüsselwort.</value>
+  </data>
+  <data name="MeaninglessNameCriteriaMatchFormat" xml:space="preserve">
+    <value>Der Name '{0}' wird die "Sinnige Namen verwenden"-Inspektion auslösen.</value>
+  </data>
+  <data name="AssignedByValDialog_MeaninglessNameFormat" xml:space="preserve">
+    <value>{0} Überlegen Sie, einen anderen Namen zu wählen.</value>
+  </data>
+  <data name="GeneralSettings_IncludePreRelease" xml:space="preserve">
+    <value>Informiere mich, wenn ein neuer Prerelease verfügbar ist.</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_UnidentifiedWhitespace" xml:space="preserve">
+    <value>unerkanntes-Leerzeichen</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_CarriageReturn" xml:space="preserve">
+    <value>Wagenrücklaufzeichen</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_CarriageReturnNewLine" xml:space="preserve">
+    <value>Wagenrücklaufzeichen-Zeilenumbruch</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_NewLine" xml:space="preserve">
+    <value>Zeilenumbruch</value>
+  </data>
+  <data name="RegexAssistant_EncloseWhitespaceFlag" xml:space="preserve">
+    <value>Textformatierungszeichen ausschreiben</value>
+  </data>
+  <data name="VersionCheck_BuildType_PreRelease" xml:space="preserve">
+    <value>Prerelease</value>
+  </data>
+  <data name="VersionCheck_BuildType_Release" xml:space="preserve">
+    <value>Release</value>
   </data>
 </root>
