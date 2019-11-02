@@ -13,6 +13,7 @@ using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Parsing.VBA.ReferenceManagement;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.VBA.DeclarationCaching
@@ -49,9 +50,10 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         private Lazy<IDictionary<ClassModuleDeclaration, List<ClassModuleDeclaration>>> _interfaceImplementations;
         private Lazy<IDictionary<IInterfaceExposable, List<ModuleBodyElementDeclaration>>> _implementationsByMember;
 
-        private Lazy<List<Declaration>> _nonBaseAsType;
+        private Lazy<List<Declaration>> _nonBaseAsType; 
         private Lazy<List<Declaration>> _eventHandlers;
         private Lazy<List<Declaration>> _controlEventHandlers;
+        private Lazy<List<Declaration>> _formEventHandlers;
         private Lazy<List<Declaration>> _projects;
         private Lazy<List<Declaration>> _classes;
         
@@ -167,12 +169,13 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
             _eventHandlers = new Lazy<List<Declaration>>(FindAllEventHandlers, true);
             _controlEventHandlers = new Lazy<List<Declaration>>(FindAllFormControlHandlers, true);
+            _formEventHandlers = new Lazy<List<Declaration>>(FindAllFormEventHandlers, true);
             _projects = new Lazy<List<Declaration>>(() => DeclarationsWithType(DeclarationType.Project).ToList(), true);
             _classes = new Lazy<List<Declaration>>(() => DeclarationsWithType(DeclarationType.ClassModule).ToList(), true);
             _handlersByWithEventsField = new Lazy<IDictionary<Declaration, List<Declaration>>>(FindAllHandlersByWithEventField, true);
 
             _implementingMembers = new Lazy<IDictionary<(VBAParser.ImplementsStmtContext Context, Declaration Implementor), List<ModuleBodyElementDeclaration>>>(FindAllImplementingMembers, true);
-            _interfaceMembers = new Lazy<IDictionary<ClassModuleDeclaration, List<Declaration>>>(FindAllIinterfaceMembersByModule, true);
+            _interfaceMembers = new Lazy<IDictionary<ClassModuleDeclaration, List<Declaration>>>(FindAllInterfaceMembersByModule, true);
             _membersByImplementsContext = new Lazy<IDictionary<VBAParser.ImplementsStmtContext, List<ModuleBodyElementDeclaration>>>(FindAllImplementingMembersByImplementsContext, true);
             _interfaceImplementations = new Lazy<IDictionary<ClassModuleDeclaration, List<ClassModuleDeclaration>>>(FindAllImplementionsByInterface, true);
             _implementationsByMember = new Lazy<IDictionary<IInterfaceExposable, List<ModuleBodyElementDeclaration>>>(FindAllImplementingMembersByMember, true);
@@ -233,7 +236,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             return _implementingMembers.Value.ToDictionary(pair => pair.Key.Context, pair => pair.Value);
         }
 
-        private IDictionary<ClassModuleDeclaration, List<Declaration>> FindAllIinterfaceMembersByModule()
+        private IDictionary<ClassModuleDeclaration, List<Declaration>> FindAllInterfaceMembersByModule()
         {
             return UserDeclarations(DeclarationType.ClassModule)
                 .Concat(UserDeclarations(DeclarationType.Document))
@@ -303,7 +306,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         {
             return _eventHandlers.Value;
         }
-
+        
         public IEnumerable<Declaration> FindFormControlEventHandlers()
         {
             return _controlEventHandlers.Value;
@@ -314,6 +317,11 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             return _eventHandlers.Value
                 .Where(handlers=> handlers.ParentScope == control.ParentScope
                                   && handlers.IdentifierName.StartsWith(control.IdentifierName + "_"));
+        }
+
+        public IEnumerable<Declaration> FindFormEventHandlers()
+        {
+            return _formEventHandlers.Value;
         }
 
         public IEnumerable<Declaration> Classes => _classes.Value;
@@ -1211,7 +1219,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                         .Where(item => handlerNames.Contains(item.IdentifierName))
                 )
                 .Concat(_handlersByWithEventsField.Value.AllValues())
-                .Concat(FindFormControlEventHandlers());
+                .Concat(FindFormControlEventHandlers())
+                .Concat(FindFormEventHandlers());
             return handlers.ToList();
 
             // Local functions to help break up the complex logic in finding built-in handlers
@@ -1232,6 +1241,24 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                            (i.ProcedureName == null || i.ProcedureName == item.IdentifierName)
                        ) ?? false;
             }
+        }
+
+        private List<Declaration> FindAllFormEventHandlers()
+        {
+            var forms = DeclarationsWithType(DeclarationType.ClassModule).
+                Where(declaration => declaration.QualifiedModuleName.ComponentType == ComponentType.UserForm);
+            var formScopes = forms
+                .Select(form => form.Scope)
+                .ToHashSet();
+            var events = BuiltInDeclarations(DeclarationType.Event)
+                .Where(item => item.ParentScope == "FM20.DLL;MSForms.FormEvents");
+            var handlerNames = events
+                .Select(item => "UserForm_" + item.IdentifierName)
+                .ToHashSet();
+            var handlers = UserDeclarations(DeclarationType.Procedure)
+                .Where(procedure => handlerNames.Contains(procedure.IdentifierName)
+                                    && formScopes.Contains(procedure.ParentScope));
+            return handlers.ToList();
         }
 
         /// <summary>

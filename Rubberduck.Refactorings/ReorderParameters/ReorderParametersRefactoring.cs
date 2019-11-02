@@ -233,8 +233,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 .Where(item => item.IsWithEvents && item.AsTypeName == model.TargetDeclaration.ComponentName))
             {
                 foreach (var reference in _declarationFinderProvider.DeclarationFinder
-                    .AllUserDeclarations
-                    .FindEventProcedures(withEvents))
+                    .FindHandlersForWithEventsField(withEvents))
                 {
                     AdjustReferences(model, reference.References, rewriteSession);
                     AdjustSignatures(model, reference, rewriteSession);

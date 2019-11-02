@@ -292,7 +292,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 .AllUserDeclarations
                 .Where(item => item.IsWithEvents && item.AsTypeName == model.TargetDeclaration.ComponentName)
                 .SelectMany(withEvents => _declarationFinderProvider.DeclarationFinder
-                    .AllUserDeclarations.FindEventProcedures(withEvents));
+                    .FindHandlersForWithEventsField(withEvents));
 
             foreach (var eventImplementation in eventImplementations)
             {

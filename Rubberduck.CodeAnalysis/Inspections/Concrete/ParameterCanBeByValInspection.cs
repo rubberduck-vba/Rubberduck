@@ -61,8 +61,8 @@ namespace Rubberduck.Inspections.Concrete
             parametersThatCanBeChangedToBePassedByVal.AddRange(InterFaceMembersThatCanBeChangedToBePassedByVal(interfaceDeclarationMembers));
 
             var eventMembers = State.DeclarationFinder.UserDeclarations(DeclarationType.Event).ToList();
-            var formEventHandlerScopeDeclarations = State.FindFormEventHandlers();
-            var eventHandlerScopeDeclarations = State.DeclarationFinder.FindEventHandlers().Concat(parameters.FindUserEventHandlers());
+            var formEventHandlerScopeDeclarations = State.DeclarationFinder.FindFormEventHandlers();
+            var eventHandlerScopeDeclarations = State.DeclarationFinder.FindEventHandlers();
             var eventScopeDeclarations = eventMembers
                 .Concat(formEventHandlerScopeDeclarations)
                 .Concat(eventHandlerScopeDeclarations)
