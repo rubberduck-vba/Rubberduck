@@ -201,6 +201,37 @@ End Sub
             Assert.AreEqual(expectedModuleCode, actualModuleCode);
         }
 
+        [Test]
+        [Category("QuickFixes")]
+        public void SpecialDefaultMembersAreReplacedBasedOnName()
+        {
+            var moduleCode = @"
+Private Sub Foo() 
+    Dim baz As Excel.Range
+    Dim bar As Variant
+    Set bar = baz.Columns!A
+End Sub
+";
+
+            var expectedModuleCode = @"
+Private Sub Foo() 
+    Dim baz As Excel.Range
+    Dim bar As Variant
+    Set bar = baz.Columns.Item(""A"")
+End Sub
+";
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
+                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            var actualModuleCode = ApplyQuickFixToFirstInspectionResult(vbe.Object, "Module1", state => new UseOfBangNotationInspection(state));
+            Assert.AreEqual(expectedModuleCode, actualModuleCode);
+        }
+
         protected override IQuickFix QuickFix(RubberduckParserState state)
         {
             return new ExpandBangNotationQuickFix(state);
