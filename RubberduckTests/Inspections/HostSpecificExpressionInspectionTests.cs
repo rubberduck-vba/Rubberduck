@@ -1,5 +1,4 @@
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Moq;
 using Rubberduck.Inspections.Concrete;
@@ -23,13 +22,7 @@ Public Sub DoSomething()
     [A1] = 42
 End Sub
 ";
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("Module1", ComponentType.StandardModule, code)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
+            var vbe = MockVbeBuilder.BuildFromModules(("Module1", code, ComponentType.StandardModule), new string[] { "VBA", "Excel" });
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupGet(m => m.ApplicationName).Returns("Excel");
             vbe.Setup(m => m.HostApplication()).Returns(() => mockHost.Object);

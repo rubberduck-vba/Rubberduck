@@ -4,7 +4,6 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
@@ -71,8 +70,7 @@ DefBool B: DefByte Y: DefInt I: DefLng L: DefLngLng N: DefLngPtr P: DefCur C: De
         [Category("Inspections")]
         public void EmptyDocumentModules_NoResults(string inputCode)
         {
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.Document, out _).Object;
-            Assert.AreEqual(0, InspectionResults(vbe).Count());
+            Assert.AreEqual(0, InspectionResultsForModules(("TestDoc", inputCode, ComponentType.Document)).Count());
         }
 
         [Test]

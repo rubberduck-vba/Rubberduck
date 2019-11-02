@@ -3,8 +3,9 @@ using NUnit.Framework;
 using Rubberduck.Inspections.Concrete.UnreachableCaseInspection;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -15,7 +16,7 @@ using System.Threading;
 namespace RubberduckTests.Inspections.UnreachableCase
 {
     [TestFixture]
-    public class UnreachableCaseInspectionTests
+    public class UnreachableCaseInspectionTests : InspectionTestsBase
     {
         private IUnreachableCaseInspectionFactoryProvider _factoryProvider;
 
@@ -1896,10 +1897,10 @@ Public Property Get AValue() As {propertyType}
     AValue = myVal
 End Property
 ";
-            var components = new List<(string moduleName, string inputCode)>()
+            var components = new List<(string moduleName, string inputCode, ComponentType componentType)>()
             {
-                ("TestModule1", inputCode),
-                ("Class1", inputClassCode)
+                ("TestModule1", inputCode, ComponentType.StandardModule),
+                ("Class1", inputClassCode, ComponentType.ClassModule)
             };
 
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(components, unreachable: 1);
@@ -1942,10 +1943,10 @@ Public Property Get AValue() As {propertyType}
     AValue = myVal
 End Property
 ";
-            var components = new List<(string moduleName, string inputCode)>()
+            var components = new List<(string moduleName, string inputCode, ComponentType componentType)>()
             {
-                ("TestModule1",inputCode),
-                ("Class1", inputClassCode)
+                ("TestModule1",inputCode, ComponentType.StandardModule),
+                ("Class1", inputClassCode, ComponentType.ClassModule)
             };
 
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(components, unreachable: 2);
@@ -1977,10 +1978,10 @@ Option Explicit
 
 Public Const MY_CONSTANT As {propertyType} 
 ";
-            var components = new List<(string moduleName, string inputCode)>()
+            var components = new List<(string moduleName, string inputCode, ComponentType componentType)>()
             {
-                ("TestModule1",inputCode),
-                ("TestModule2", inputModule2Code)
+                ("TestModule1",inputCode, ComponentType.StandardModule),
+                ("TestModule2", inputModule2Code, ComponentType.StandardModule)
             };
 
             (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(components, unreachable: 1);
@@ -2469,7 +2470,7 @@ End Sub
 
             var vbe = CreateStandardModuleProject(inputCode);
 
-            IEnumerable<Rubberduck.Parsing.Inspections.Abstract.IInspectionResult> actualResults;
+            var actualResults = Enumerable.Empty<IInspectionResult>();
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new UnreachableCaseInspection(state);
@@ -2481,7 +2482,7 @@ End Sub
                 actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             }
 
-            var actualUnreachable = actualResults.Where(ar => ar.Description.Equals(InspectionResults.UnreachableCaseInspection_Unreachable));
+            var actualUnreachable = actualResults.Where(ar => ar.Description.Equals(Rubberduck.Resources.Inspections.InspectionResults.UnreachableCaseInspection_Unreachable));
 
             Assert.AreEqual(expectedUnreachableCount, actualUnreachable.Count());
         }
@@ -2523,7 +2524,7 @@ End Sub
 ";
             var vbe = CreateStandardModuleProject(inputCode);
 
-            IEnumerable<Rubberduck.Parsing.Inspections.Abstract.IInspectionResult> actualResults;
+            var actualResults = Enumerable.Empty<IInspectionResult>();
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new UnreachableCaseInspection(state);
@@ -2535,7 +2536,7 @@ End Sub
                 actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
             }
 
-            var actualUnreachable = actualResults.Where(ar => ar.Description.Equals(InspectionResults.UnreachableCaseInspection_Unreachable));
+            var actualUnreachable = actualResults.Where(ar => ar.Description.Equals(Rubberduck.Resources.Inspections.InspectionResults.UnreachableCaseInspection_Unreachable));
 
             Assert.AreEqual(expectedUnreachableCount, actualUnreachable.Count());
         }
@@ -2564,61 +2565,44 @@ End Sub
             return (true, expressionValue , typename);
         }
 
-        private static (string expectedMsg, string actualMsg) CheckActualResultsEqualsExpected(string inputCode, int unreachable = 0, int mismatch = 0, int caseElse = 0, int inherentlyUnreachable = 0, int overflow = 0)
+        private (string expectedMsg, string actualMsg) CheckActualResultsEqualsExpected(string inputCode, int unreachable = 0, int mismatch = 0, int caseElse = 0, int inherentlyUnreachable = 0, int overflow = 0)
         {
-            var components = new List<(string moduleName, string inputCode)>() { ("TestModule1", inputCode) };
+            var components = new List<(string moduleName, string inputCode, ComponentType componentType)>() { ("TestModule1", inputCode, ComponentType.StandardModule) };
             return CheckActualResultsEqualsExpected(components, unreachable, mismatch, caseElse, inherentlyUnreachable, overflow);
         }
 
-        private static (string expectedMsg, string actualMsg) CheckActualResultsEqualsExpected(List<(string moduleName, string inputCode)> components, int unreachable = 0, int mismatch = 0, int caseElse = 0, int inherentlyUnreachable = 0, int overflow = 0)
+        private (string expectedMsg, string actualMsg) CheckActualResultsEqualsExpected(List<(string moduleName, string inputCode, ComponentType componentType)> components, int unreachable = 0, int mismatch = 0, int caseElse = 0, int inherentlyUnreachable = 0, int overflow = 0)
         {
             var expected = new Dictionary<string, int>
             {
-                { InspectionResults.UnreachableCaseInspection_Unreachable, unreachable },
-                { InspectionResults.UnreachableCaseInspection_InherentlyUnreachable, inherentlyUnreachable },
-                { InspectionResults.UnreachableCaseInspection_TypeMismatch, mismatch },
-                { InspectionResults.UnreachableCaseInspection_Overflow, overflow },
-                { InspectionResults.UnreachableCaseInspection_CaseElse, caseElse },
+                { Rubberduck.Resources.Inspections.InspectionResults.UnreachableCaseInspection_Unreachable, unreachable },
+                { Rubberduck.Resources.Inspections.InspectionResults.UnreachableCaseInspection_InherentlyUnreachable, inherentlyUnreachable },
+                { Rubberduck.Resources.Inspections.InspectionResults.UnreachableCaseInspection_TypeMismatch, mismatch },
+                { Rubberduck.Resources.Inspections.InspectionResults.UnreachableCaseInspection_Overflow, overflow },
+                { Rubberduck.Resources.Inspections.InspectionResults.UnreachableCaseInspection_CaseElse, caseElse },
             };
 
-            var vbe = CreateStandardModuleProject(components);
+            var actualResults = InspectionResultsForModules(components);
 
-            IEnumerable<Rubberduck.Parsing.Inspections.Abstract.IInspectionResult> actualResults;
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspector = InspectionsHelper.GetInspector(new UnreachableCaseInspection(state));
-                actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            }
-            var actualUnreachable = actualResults.Where(ar => ar.Description.Equals(InspectionResults.UnreachableCaseInspection_Unreachable));
-            var actualMismatches = actualResults.Where(ar => ar.Description.Equals(InspectionResults.UnreachableCaseInspection_TypeMismatch));
-            var actualUnreachableCaseElses = actualResults.Where(ar => ar.Description.Equals(InspectionResults.UnreachableCaseInspection_CaseElse));
-            var actualInherentUnreachable = actualResults.Where(ar => ar.Description.Equals(InspectionResults.UnreachableCaseInspection_InherentlyUnreachable));
-            var actualOverflow = actualResults.Where(ar => ar.Description.Equals(InspectionResults.UnreachableCaseInspection_Overflow));
+            var actualUnreachable = actualResults.Where(ar => ar.Description.Equals(Rubberduck.Resources.Inspections.InspectionResults.UnreachableCaseInspection_Unreachable));
+            var actualMismatches = actualResults.Where(ar => ar.Description.Equals(Rubberduck.Resources.Inspections.InspectionResults.UnreachableCaseInspection_TypeMismatch));
+            var actualUnreachableCaseElses = actualResults.Where(ar => ar.Description.Equals(Rubberduck.Resources.Inspections.InspectionResults.UnreachableCaseInspection_CaseElse));
+            var actualInherentUnreachable = actualResults.Where(ar => ar.Description.Equals(Rubberduck.Resources.Inspections.InspectionResults.UnreachableCaseInspection_InherentlyUnreachable));
+            var actualOverflow = actualResults.Where(ar => ar.Description.Equals(Rubberduck.Resources.Inspections.InspectionResults.UnreachableCaseInspection_Overflow));
 
             var actualMsg = BuildResultString(actualUnreachable.Count(), actualMismatches.Count(), actualUnreachableCaseElses.Count(), actualInherentUnreachable.Count(), actualOverflow.Count());
-            var expectedMsg = BuildResultString(expected[InspectionResults.UnreachableCaseInspection_Unreachable], 
-                expected[InspectionResults.UnreachableCaseInspection_TypeMismatch], 
-                expected[InspectionResults.UnreachableCaseInspection_CaseElse],
-                expected[InspectionResults.UnreachableCaseInspection_InherentlyUnreachable],
-                expected[InspectionResults.UnreachableCaseInspection_Overflow]
+            var expectedMsg = BuildResultString(expected[Rubberduck.Resources.Inspections.InspectionResults.UnreachableCaseInspection_Unreachable], 
+                expected[Rubberduck.Resources.Inspections.InspectionResults.UnreachableCaseInspection_TypeMismatch], 
+                expected[Rubberduck.Resources.Inspections.InspectionResults.UnreachableCaseInspection_CaseElse],
+                expected[Rubberduck.Resources.Inspections.InspectionResults.UnreachableCaseInspection_InherentlyUnreachable],
+                expected[Rubberduck.Resources.Inspections.InspectionResults.UnreachableCaseInspection_Overflow]
                 );
 
             return (expectedMsg, actualMsg);
         }
 
         private Moq.Mock<IVBE> CreateStandardModuleProject(string inputCode)
-            => CreateStandardModuleProject(new List<(string moduleName, string inputCode)>() { ("TestModule1", inputCode) });
-
-        private static Moq.Mock<IVBE> CreateStandardModuleProject(List<(string moduleName, string inputCode)> components)
-        {
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected);
-            components.ForEach(input => project.AddComponent(input.moduleName, NameToComponentType(input.moduleName), input.inputCode));
-            return builder.AddProject(project.Build()).Build();
-        }
-
-        private static ComponentType NameToComponentType(string name)
-            => name.StartsWith("Class") ? ComponentType.ClassModule : ComponentType.StandardModule;
+            => MockVbeBuilder.BuildFromModules(new List<(string moduleName, string inputCode, ComponentType componentType)>() { ("TestModule1", inputCode, ComponentType.StandardModule) });
 
         private static string BuildResultString(int unreachableCount, int mismatchCount, int caseElseCount, int inherentCount, int overflowCount)
             => $"Unreachable={unreachableCount}, Mismatch={mismatchCount}, CaseElse={caseElseCount}, Inherent={inherentCount}, Overflow={overflowCount}";
@@ -2648,6 +2632,11 @@ End Sub
                 valueResults = selectStmt.Accept(visitor);
             }
             return valueResults;
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new UnreachableCaseInspection(state);
         }
     }
 }

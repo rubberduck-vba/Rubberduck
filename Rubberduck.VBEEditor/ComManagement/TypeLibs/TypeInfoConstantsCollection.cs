@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
+using Rubberduck.JunkDrawer.Hacks;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
@@ -45,9 +45,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 parent.GetVarDesc(i, out var ppVarDesc);
                 var varDesc = StructHelper.ReadStructureUnsafe<VARDESC>(ppVarDesc);
 
-                // VBA constants are "static".... go figure. We can still infer it is a 
-                // constant rather than a field by checking the lpvarValue
-                if (varDesc.varkind == VARKIND.VAR_STATIC && varDesc.desc.lpvarValue != IntPtr.Zero)
+                // VBA constants are "static".... go figure.
+                if (varDesc.IsValidVBAConstant())
                 {
                     _mapper.Add(_mapper.Count, i);
                 }

@@ -1,108 +1,31 @@
 ﻿using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using RubberduckTests.Mocks;
 using System.Linq;
-using System.Threading;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class OnLocalErrorInspectionTests
+    public class OnLocalErrorInspectionTests : InspectionTestsBase
     {
-        [Test]
+        [TestCase("On Local Error GoTo 0", 1)]
+        [TestCase("On Local Error Resume Next", 1)]
+        [TestCase("On Local Error GoTo Label\r\nLabel: ", 1)]
+        [TestCase("On Error GoTo 0", 0)]
         [Category("Inspections")]
-        public void OnLocalError_Goto0_ReturnsResult()
+        public void OnLocalError_VariousScenarios(string body, int expectedCount)
         {
-            const string inputCode =
-                @"Sub foo()
-    on local error goto 0
+            string inputCode =
+$@"Sub foo()
+    {body}
 End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new OnLocalErrorInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(expectedCount, InspectionResultsForStandardModule(inputCode).Count());
         }
 
-        [Test]
-        [Category("Inspections")]
-        public void OnLocalError_ResumeNext_ReturnsResult()
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
-            const string inputCode =
-                @"Sub foo()
-    on local error resume next
-End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new OnLocalErrorInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void OnLocalError_GotoLabel_ReturnsResult()
-        {
-            const string inputCode =
-                @"Sub foo()
-    On Local Error GoTo Label
-Label:
-End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new OnLocalErrorInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void OnLocalError_Goto1_ReturnsResult()
-        {
-            const string inputCode =
-                @"Sub foo()
-    on local error goto 1
-End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new OnLocalErrorInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void OnError_Goto0_DoesNotReturnResult()
-        {
-            const string inputCode =
-                @"Sub foo()
-    on error goto 0
-End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new OnLocalErrorInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
+            return new OnLocalErrorInspection(state);
         }
     }
 }
