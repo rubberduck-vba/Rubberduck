@@ -993,9 +993,9 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
     <value>Sie verwenden momentan Rubberduck Version {0}.
 Version {1}({2}) ist nun verfügbar.
 
-Um den Change Log anzuschauen und Rubberduck manuell abzudaten, klicke 'Ja'.
+Um den Change Log anzuschauen und Rubberduck manuell zu aktualisieren, klicken Sie 'Ja'.
 
-Dieses Fenster wird angezeigt, da Versionschecks aktiviert sind. Diese können unter Rubberduck &gt; Einstellungen deaktiviert werden.</value>
+Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Diese können unter Rubberduck &gt; Einstellungen deaktiviert werden.</value>
   </data>
   <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
     <value>'{0}' ist in diesem Kontext bereits verfügbar.</value>
