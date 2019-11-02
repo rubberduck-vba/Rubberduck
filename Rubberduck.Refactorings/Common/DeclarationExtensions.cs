@@ -1,29 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 
-// ReSharper disable LocalizableElement
-
 namespace Rubberduck.Common
 {
     public static class DeclarationExtensions
     {
-        /// <summary>
-        /// Finds all event handler procedures for specified control declaration.
-        /// </summary>
-        public static IEnumerable<Declaration> FindEventHandlers(this IEnumerable<Declaration> declarations, Declaration control)
-        {
-            Debug.Assert(control.DeclarationType == DeclarationType.Control);
-
-            return declarations.Where(declaration => declaration.ParentScope == control.ParentScope
-                && declaration.DeclarationType == DeclarationType.Procedure
-                && declaration.IdentifierName.StartsWith(control.IdentifierName + "_"));
-        }
-
         public static IEnumerable<Declaration> FindUserEventHandlers(this IEnumerable<Declaration> declarations)
         {
             var declarationList = declarations.ToList();

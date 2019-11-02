@@ -51,6 +51,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
         private Lazy<List<Declaration>> _nonBaseAsType;
         private Lazy<List<Declaration>> _eventHandlers;
+        private Lazy<List<Declaration>> _controlEventHandlers;
         private Lazy<List<Declaration>> _projects;
         private Lazy<List<Declaration>> _classes;
         
@@ -165,6 +166,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 , true);
 
             _eventHandlers = new Lazy<List<Declaration>>(FindAllEventHandlers, true);
+            _controlEventHandlers = new Lazy<List<Declaration>>(FindAllFormControlHandlers, true);
             _projects = new Lazy<List<Declaration>>(() => DeclarationsWithType(DeclarationType.Project).ToList(), true);
             _classes = new Lazy<List<Declaration>>(() => DeclarationsWithType(DeclarationType.ClassModule).ToList(), true);
             _handlersByWithEventsField = new Lazy<IDictionary<Declaration, List<Declaration>>>(FindAllHandlersByWithEventField, true);
@@ -300,6 +302,18 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         public IEnumerable<Declaration> FindEventHandlers()
         {
             return _eventHandlers.Value;
+        }
+
+        public IEnumerable<Declaration> FindFormControlEventHandlers()
+        {
+            return _controlEventHandlers.Value;
+        }
+
+        public IEnumerable<Declaration> FindFormControlEventHandlers(Declaration control)
+        {
+            return _eventHandlers.Value
+                .Where(handlers=> handlers.ParentScope == control.ParentScope
+                                  && handlers.IdentifierName.StartsWith(control.IdentifierName + "_"));
         }
 
         public IEnumerable<Declaration> Classes => _classes.Value;
@@ -1165,7 +1179,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             }
         }
 
-        private IEnumerable<Declaration> FindAllFormControlHandlers()
+        private List<Declaration> FindAllFormControlHandlers()
         {
             var controls = DeclarationsWithType(DeclarationType.Control);
             var handlerNames = BuiltInDeclarations(DeclarationType.Event)
@@ -1173,7 +1187,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 .ToHashSet();
             var handlers = UserDeclarations(DeclarationType.Procedure)
                 .Where(procedure => handlerNames.Contains(procedure.IdentifierName));
-            return handlers;
+            return handlers.ToList();
         }
 
         private List<Declaration> FindAllEventHandlers()
@@ -1197,7 +1211,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                         .Where(item => handlerNames.Contains(item.IdentifierName))
                 )
                 .Concat(_handlersByWithEventsField.Value.AllValues())
-                .Concat(FindAllFormControlHandlers());
+                .Concat(FindFormControlEventHandlers());
             return handlers.ToList();
 
             // Local functions to help break up the complex logic in finding built-in handlers
