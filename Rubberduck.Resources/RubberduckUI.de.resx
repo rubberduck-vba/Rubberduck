@@ -993,9 +993,9 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
     <value>Sie verwenden momentan Rubberduck Version {0}.
 Version {1}({2}) ist nun verfügbar.
 
-Um den Change Log anzuschauen und Rubberduck manuell abzudaten, klicke 'Ja'.
+Um den Change Log anzuschauen und Rubberduck manuell zu aktualisieren, klicken Sie 'Ja'.
 
-Dieses Fenster wird angezeigt, da Versionschecks aktiviert sind. Diese können unter Rubberduck &gt; Einstellungen deaktiviert werden.</value>
+Dieses Fenster wird angezeigt, da Aktualisierungsüberprüfungen aktiviert sind. Diese können unter Rubberduck &gt; Einstellungen deaktiviert werden.</value>
   </data>
   <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
     <value>'{0}' ist in diesem Kontext bereits verfügbar.</value>
@@ -1451,7 +1451,7 @@ Import abgebrochen.</value>
     <value>Soll der Inhalt von Project '{0}' wirklich gelöscht und durch den Inhalt der ausgewählten Dateien ersetzt werden?</value>
   </data>
   <data name="UpdateFromFilesCommand_DialogCaption" xml:space="preserve">
-    <value>Komponenten mit Inhalt der Dateien überschreiben</value>
+    <value>Komponenten aus Dateien aktualisieren</value>
   </data>
   <data name="UpdateFromFilesCommand_DuplicateModule" xml:space="preserve">
     <value>Mehrere Dateien enthalten Code für die Komponente '{0}'.
@@ -1469,7 +1469,7 @@ Import abgebrochen.</value>
 Import abgebrochen.</value>
   </data>
   <data name="UpdateFromFilesCommand_UserFormDoesNotExist" xml:space="preserve">
-    <value>Es existiert keine Userform mit namens '{0}', s.d. kein Codebehind einer Userform aus der Datei '{1}' überschrieben werden kann.
+    <value>Es existiert keine Userform namens '{0}', s.d. kein Codebehind einer Userform aus der Datei '{1}' überschrieben werden kann.
 
 Import abgebrochen.</value>
   </data>

@@ -289,7 +289,7 @@
     <value>Projekt synchronisieren</value>
   </data>
   <data name="UpdateFromFiles" xml:space="preserve">
-    <value>Komponenten aus Dateien updaten...</value>
+    <value>Komponenten aus Dateien aktualisieren...</value>
   </data>
   <data name="ReplaceFromFiles" xml:space="preserve">
     <value>Projektinhalt durch Dateiinhalt ersetzen... </value>
