@@ -14,7 +14,6 @@ using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.Utility;
 using NLog;
-using Rubberduck.Resources;
 
 namespace Rubberduck.Refactorings.Rename
 {
@@ -83,7 +82,14 @@ namespace Rubberduck.Refactorings.Rename
         }
 
         private void RenameRefactorWithSuspendedParser(RenameModel model)
-            => SuspendParserForRefactoring(nameof(RenameRefactor), () => RenameRefactor(model));
+        {
+            var suspendResult = _parseManager.OnSuspendParser(this, new[] { ParserState.Ready }, () => RenameRefactor(model));
+            if (suspendResult != SuspensionResult.Completed)
+            {
+                _logger.Warn($"{nameof(RenameRefactor)} failed because a parser suspension request could not be fulfilled.  The request's result was '{suspendResult.ToString()}'.");
+                throw new SuspendParserFailureException();
+            }
+        }
 
         private void RenameRefactor(RenameModel model)
         {
@@ -492,16 +498,6 @@ namespace Rubberduck.Refactorings.Rename
                             || ev.IdentifierName.StartsWith("UserForm_")
                             || ev.IdentifierName.StartsWith("auto_"))
                     .Select(dec => dec.IdentifierName).ToList();
-        }
-
-        private void SuspendParserForRefactoring(string procedureName, Action busyAction)
-        {
-            var suspendResult = _parseManager.OnSuspendParser(this, new[] { ParserState.Ready }, busyAction);
-            if (suspendResult != SuspensionResult.Completed)
-            {
-                _logger.Warn($"{procedureName} failed because a parser suspension request could not be fulfilled.  The request's result was '{suspendResult.ToString()}'.");
-                throw new SuspendParserFailureException();
-            }
         }
     }
 }
