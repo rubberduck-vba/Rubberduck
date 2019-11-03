@@ -11,7 +11,7 @@ namespace Rubberduck.VBEditor.Utility
         private readonly IProjectsProvider _projectsProvider;
         private readonly IVBE _vbe;
 
-        private Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public SelectionService(IVBE vbe, IProjectsProvider projectsProvider)
         {

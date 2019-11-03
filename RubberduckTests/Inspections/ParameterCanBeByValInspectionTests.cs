@@ -88,20 +88,24 @@ End Property";
             const string inputCode =
                 @"Sub Foo(ByVal arg1 As Collection)
 End Sub";
-            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+            var inspectionResults = InspectionResultsForStandardModule(inputCode);
+
+            Assert.AreEqual(0, inspectionResults.Count());
         }
 
         [TestCase("Sub Foo(ByVal arg1 As Collection)\r\nEnd Sub", 0)]
-        [TestCase("Sub Foo(arg1 As String\r\nEnd Sub", 1)]
+        [TestCase("Sub Foo(arg1 As String)\r\nEnd Sub", 1)]
         [TestCase("Sub Foo(ByRef arg1 As String)\r\nEnd Sub", 1)]
         [TestCase("Sub Foo(arg1 As String, arg2 As Date)\r\nEnd Sub", 2)]
-        [TestCase("Sub Sub Foo(ByVal arg1 As String)\r\nEnd Sub", 0)]
+        [TestCase("Sub Foo(ByVal arg1 As String)\r\nEnd Sub", 0)]
         [TestCase("Sub Foo(arg1 As String, ByVal arg2 As Integer)\r\nEnd Sub", 1)]
-        [TestCase("Foo(ByRef arg1() As Variant)\r\nEnd Sub", 0)]
+        [TestCase("Sub Foo(ByRef arg1() As Variant)\r\nEnd Sub", 0)]
         [Category("Inspections")]
         public void ParameterCanBeByVal_NoResultForByValObject(string inputCode, int expectedCount)
         {
-            Assert.AreEqual(expectedCount, InspectionResultsForStandardModule(inputCode).Count());
+            var inspectionResults = InspectionResultsForStandardModule(inputCode);
+
+            Assert.AreEqual(expectedCount, inspectionResults.Count());
         }
 
         [Test]

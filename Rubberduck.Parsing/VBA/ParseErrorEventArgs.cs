@@ -20,6 +20,7 @@ namespace Rubberduck.Parsing.VBA
         public string ComponentName => _moduleName.ComponentName;
         public string ProjectName => _moduleName.ProjectName;
 
+        //TODO: Move this to the user of the arguments. Event arguments should be pure data.
         public void Navigate(ISelectionService selectionService)
         {
             var selection = new Selection(Exception.LineNumber, Exception.Position, Exception.LineNumber, Exception.Position + Exception.OffendingSymbol.Text.Length - 1);

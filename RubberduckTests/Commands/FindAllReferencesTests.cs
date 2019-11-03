@@ -13,6 +13,7 @@ using Rubberduck.Interaction;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace RubberduckTests.Commands
 {
@@ -505,7 +506,9 @@ End Sub
             Mock<IVBE> vbe, ISearchResultsWindowViewModel viewModel, FindAllReferencesService finder,
             Mock<IVbeEvents> vbeEvents)
         {
-            return new FindAllReferencesCommand(state, vbe.Object, viewModel, finder, vbeEvents.Object);
+            var selectionService = new SelectionService(vbe.Object, state.ProjectsProvider);
+            var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
+            return new FindAllReferencesCommand(state, state, selectedDeclarationService, vbe.Object, viewModel, finder, vbeEvents.Object);
         }
     }
 }

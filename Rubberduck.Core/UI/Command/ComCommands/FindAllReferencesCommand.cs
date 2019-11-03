@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Controls;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -15,19 +14,25 @@ namespace Rubberduck.UI.Command.ComCommands
     [ComVisible(false)]
     public class FindAllReferencesCommand : ComCommandBase
     {
-        private readonly RubberduckParserState _state;
+        private readonly IParserStatusProvider _parserStatusProvider;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
         private readonly IVBE _vbe;
         private readonly FindAllReferencesService _finder;
 
         public FindAllReferencesCommand(
-            RubberduckParserState state, 
+            IParserStatusProvider parserStatusProvider,
+            IDeclarationFinderProvider declarationFinderProvider,
+            ISelectedDeclarationProvider selectedDeclarationProvider,
             IVBE vbe, 
             ISearchResultsWindowViewModel viewModel, 
             FindAllReferencesService finder, 
             IVbeEvents vbeEvents)
             : base(vbeEvents)
         {
-            _state = state;
+            _parserStatusProvider = parserStatusProvider;
+            _declarationFinderProvider = declarationFinderProvider;
+            _selectedDeclarationProvider = selectedDeclarationProvider;
             _vbe = vbe;
             _finder = finder;
 
@@ -36,7 +41,7 @@ namespace Rubberduck.UI.Command.ComCommands
 
         private bool SpecialEvaluateCanExecute(object parameter)
         {
-            if (_state.Status != ParserState.Ready)
+            if (_parserStatusProvider.Status != ParserState.Ready)
             {
                 return false;
             }
@@ -61,7 +66,7 @@ namespace Rubberduck.UI.Command.ComCommands
 
         protected override void OnExecute(object parameter)
         {
-            if (_state.Status != ParserState.Ready)
+            if (_parserStatusProvider.Status != ParserState.Ready)
             {
                 return;
             }
@@ -84,63 +89,52 @@ namespace Rubberduck.UI.Command.ComCommands
 
             using (var activePane = _vbe.ActiveCodePane)
             {
-                bool findDesigner;
                 using (var selectedComponent = _vbe.SelectedVBComponent)
                 {
-                    findDesigner = activePane != null && !activePane.IsWrappingNullReference
-                                                      && (selectedComponent?.HasDesigner ?? false);
+                    if (activePane != null
+                        && !activePane.IsWrappingNullReference
+                        && (selectedComponent?.HasDesigner ?? false))
+                    {
+                        return FindFormDesignerTarget(selectedComponent);
+                    }
                 }
-
-                return findDesigner
-                    ? FindFormDesignerTarget()
-                    : FindCodePaneTarget(activePane);
-            }
-        }
-
-        private Declaration FindCodePaneTarget(ICodePane codePane)
-        {
-            return _state.FindSelectedDeclaration(codePane);
-        }
-
-        private Declaration FindFormDesignerTarget(QualifiedModuleName? qualifiedModuleName = null)
-        {
-            if (qualifiedModuleName.HasValue)
-            {
-                return FindFormDesignerTarget(qualifiedModuleName.Value);
             }
 
+            return FindCodePaneTarget();
+        }
+
+        private Declaration FindCodePaneTarget()
+        {
+            return _selectedDeclarationProvider.SelectedDeclaration();
+        }
+
+        //Assumes the component has a designer.
+        private Declaration FindFormDesignerTarget(IVBComponent component)
+        {
             string projectId;
             using (var activeProject = _vbe.ActiveVBProject)
             {
                 projectId = activeProject.ProjectId;
             }
 
-            using (var component = _vbe.SelectedVBComponent)
+            DeclarationType selectedType;
+            string selectedName;
+            using (var selectedControls = component.SelectedControls)
             {
-                if (component?.HasDesigner ?? false)
+                var selectedCount = selectedControls.Count;
+                if (selectedCount > 1)
                 {
-                    DeclarationType selectedType;
-                    string selectedName;
-                    using (var selectedControls = component.SelectedControls)
-                    {
-                        var selectedCount = selectedControls.Count;
-                        if (selectedCount > 1)
-                        {
-                            return null;
-                        }
-
-                        (selectedType, selectedName) = GetSelectedName(component, selectedControls, selectedCount);
-                    }
-
-                    return _state.DeclarationFinder
-                        .MatchName(selectedName)
-                        .SingleOrDefault(m => m.ProjectId == projectId
-                                              && m.DeclarationType.HasFlag(selectedType)
-                                              && m.ComponentName == component.Name);
+                    return null;
                 }
 
-                return null;
+                (selectedType, selectedName) = GetSelectedName(component, selectedControls, selectedCount);
             }
+
+            return _declarationFinderProvider.DeclarationFinder
+                .MatchName(selectedName)
+                .SingleOrDefault(m => m.ProjectId == projectId
+                                      && m.DeclarationType.HasFlag(selectedType)
+                                      && m.ComponentName == component.Name);
         }
 
         private static (DeclarationType, string Name) GetSelectedName(IVBComponent component, IControls selectedControls, int selectedCount)
@@ -155,23 +149,6 @@ namespace Rubberduck.UI.Command.ComCommands
             {
                 return (DeclarationType.Control, firstSelectedControl.Name);
             }
-        }
-
-        private Declaration FindFormDesignerTarget(QualifiedModuleName qualifiedModuleName)
-        {
-            var projectId = qualifiedModuleName.ProjectId;
-            var component = _state.ProjectsProvider.Component(qualifiedModuleName);
-
-            if (component?.HasDesigner ?? false)
-            {
-                return _state.DeclarationFinder
-                    .MatchName(qualifiedModuleName.Name)
-                    .SingleOrDefault(m => m.ProjectId == projectId
-                                          && m.DeclarationType.HasFlag(qualifiedModuleName.ComponentType)
-                                          && m.ComponentName == component.Name);
-            }
-
-            return null;
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Common;
 using Rubberduck.Interaction;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
@@ -17,29 +17,32 @@ namespace Rubberduck.Refactorings.IntroduceParameter
     public class IntroduceParameterRefactoring : RefactoringBase
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
         private readonly IMessageBox _messageBox;
 
-        private static readonly DeclarationType[] ValidDeclarationTypes =
-        {
-            DeclarationType.Function,
-            DeclarationType.Procedure,
-            DeclarationType.PropertyGet,
-            DeclarationType.PropertyLet,
-            DeclarationType.PropertySet
-        };
-
-        public IntroduceParameterRefactoring(IDeclarationFinderProvider declarationFinderProvider, IMessageBox messageBox, IRewritingManager rewritingManager, ISelectionService selectionService)
-        :base(rewritingManager, selectionService)
+        public IntroduceParameterRefactoring(
+            IDeclarationFinderProvider declarationFinderProvider, 
+            IMessageBox messageBox, 
+            IRewritingManager rewritingManager,
+            ISelectionProvider selectionProvider,
+            ISelectedDeclarationProvider selectedDeclarationProvider)
+        :base(rewritingManager, selectionProvider)
         {
             _declarationFinderProvider = declarationFinderProvider;
+            _selectedDeclarationProvider = selectedDeclarationProvider;
             _messageBox = messageBox;
         }
 
         protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
         {
-            return _declarationFinderProvider.DeclarationFinder
-                .UserDeclarations(DeclarationType.Variable)
-                .FindVariable(targetSelection);
+            var selectedDeclaration = _selectedDeclarationProvider.SelectedDeclaration(targetSelection);
+            if (selectedDeclaration == null
+                || selectedDeclaration.DeclarationType != DeclarationType.Variable)
+            {
+                return null;
+            }
+
+            return selectedDeclaration;
         }
 
         public override void Refactor(Declaration target)
@@ -83,9 +86,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
         private bool PromptIfMethodImplementsInterface(Declaration targetVariable)
         {
-            var functionDeclaration = (ModuleBodyElementDeclaration)_declarationFinderProvider.DeclarationFinder
-                .AllUserDeclarations
-                .FindTarget(targetVariable.QualifiedSelection, ValidDeclarationTypes);
+            var functionDeclaration = _selectedDeclarationProvider.SelectedMember(targetVariable.QualifiedSelection);
 
             if (functionDeclaration == null || !functionDeclaration.IsInterfaceImplementation)
             {
@@ -108,12 +109,8 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
         private void UpdateSignature(Declaration targetVariable, IRewriteSession rewriteSession)
         {
-            var functionDeclaration = (ModuleBodyElementDeclaration)_declarationFinderProvider.DeclarationFinder
-                .AllUserDeclarations
-                .FindTarget(targetVariable.QualifiedSelection, ValidDeclarationTypes);
-
-            var proc = (dynamic) functionDeclaration.Context;
-            var paramList = (VBAParser.ArgListContext) proc.argList();
+            var functionDeclaration = _selectedDeclarationProvider.SelectedMember(targetVariable.QualifiedSelection);
+            var paramList = functionDeclaration.Context.GetChild<VBAParser.ArgListContext>();
 
             if (functionDeclaration.DeclarationType.HasFlag(DeclarationType.Property))
             {

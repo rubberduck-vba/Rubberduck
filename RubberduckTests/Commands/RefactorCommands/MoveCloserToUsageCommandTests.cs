@@ -10,7 +10,6 @@ using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
-using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Commands.RefactorCommands
 {
@@ -98,9 +97,11 @@ End Sub";
         protected override CommandBase TestCommand(IVBE vbe, RubberduckParserState state, IRewritingManager rewritingManager, ISelectionService selectionService)
         {
             var msgBox = new Mock<IMessageBox>().Object;
-            var refactoring = new MoveCloserToUsageRefactoring(state, rewritingManager, selectionService);
+            var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
+            var refactoring = new MoveCloserToUsageRefactoring(state, rewritingManager, selectionService, selectedDeclarationProvider);
             var notifier = new MoveCloserToUsageFailedNotifier(msgBox);
-            return new RefactorMoveCloserToUsageCommand(refactoring, notifier, state, selectionService);
+            var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
+            return new RefactorMoveCloserToUsageCommand(refactoring, notifier, state, selectionService, selectedDeclarationService);
         }
 
         protected override IVBE SetupAllowingExecution()

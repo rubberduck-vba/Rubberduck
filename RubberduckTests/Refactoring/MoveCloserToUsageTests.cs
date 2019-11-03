@@ -345,7 +345,7 @@ End Sub";
     bat = True
     bar = 3
 End Sub";
-            var selection = new Selection(2, 16);
+            var selection = new Selection(2, 9);
 
             //Expectation
             const string expectedCode =
@@ -377,7 +377,7 @@ End Sub";
     bar = 1
     bat = True
 End Sub";
-            var selection = new Selection(3, 16);
+            var selection = new Selection(3, 10);
 
             //Expectation
             const string expectedCode =
@@ -409,7 +409,7 @@ End Sub";
     bar = 4
     bay = #1/13/2004#
 End Sub";
-            var selection = new Selection(4, 16);
+            var selection = new Selection(4, 11);
 
             //Expectation
             const string expectedCode =
@@ -1074,7 +1074,8 @@ End Sub";
 
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, ISelectionService selectionService)
         {
-            return new MoveCloserToUsageRefactoring(state, rewritingManager, selectionService);
+            var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
+            return new MoveCloserToUsageRefactoring(state, rewritingManager, selectionService, selectedDeclarationProvider);
         }
     }
 }

@@ -10,11 +10,18 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorMoveCloserToUsageCommand : RefactorCodePaneCommandBase
     {
         private readonly RubberduckParserState _state;
+        private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
 
-        public RefactorMoveCloserToUsageCommand(MoveCloserToUsageRefactoring refactoring, MoveCloserToUsageFailedNotifier moveCloserToUsageFailedNotifier, RubberduckParserState state, ISelectionService selectionService)
-            :base(refactoring, moveCloserToUsageFailedNotifier, selectionService, state)
+        public RefactorMoveCloserToUsageCommand(
+            MoveCloserToUsageRefactoring refactoring, 
+            MoveCloserToUsageFailedNotifier moveCloserToUsageFailedNotifier, 
+            RubberduckParserState state,
+            ISelectionProvider selectionProvider,
+            ISelectedDeclarationProvider selectedDeclarationProvider)
+            :base(refactoring, moveCloserToUsageFailedNotifier, selectionProvider, state)
         {
             _state = state;
+            _selectedDeclarationProvider = selectedDeclarationProvider;
 
             AddToCanExecuteEvaluation(SpecializedEvaluateCanExecute);
         }
@@ -25,21 +32,21 @@ namespace Rubberduck.UI.Command.Refactorings
 
             return target != null
                    && !_state.IsNewOrModified(target.QualifiedModuleName)
-                   && (target.DeclarationType == DeclarationType.Variable
-                       || target.DeclarationType == DeclarationType.Constant)
                    && target.References.Any();
         }
 
         private Declaration GetTarget()
         {
-            var activeSelection = SelectionService.ActiveSelection();
-            if (!activeSelection.HasValue)
+            var selectedDeclaration = _selectedDeclarationProvider.SelectedDeclaration();
+            if (selectedDeclaration == null
+                || (selectedDeclaration.DeclarationType != DeclarationType.Variable
+                    && selectedDeclaration.DeclarationType != DeclarationType.Constant)
+                || !selectedDeclaration.References.Any())
             {
                 return null;
             }
 
-            var target = _state.DeclarationFinder.FindSelectedDeclaration(activeSelection.Value);
-            return target;
+            return selectedDeclaration;
         }
     }
 }
