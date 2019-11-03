@@ -12,8 +12,11 @@ namespace Rubberduck.Refactorings
     {
         private readonly Func<TModel, IDisposalActionContainer<TPresenter>> _presenterFactory;
 
-        protected InteractiveRefactoringBase(IRewritingManager rewritingManager, ISelectionService selectionService, IRefactoringPresenterFactory factory) 
-        :base(rewritingManager, selectionService)
+        protected InteractiveRefactoringBase(
+            IRewritingManager rewritingManager, 
+            ISelectionProvider selectionProvider, 
+            IRefactoringPresenterFactory factory) 
+        :base(rewritingManager, selectionProvider)
         {
             _presenterFactory = ((model) => DisposalActionContainer.Create(factory.Create<TPresenter, TModel>(model), factory.Release));
         }

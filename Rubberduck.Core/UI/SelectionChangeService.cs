@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -24,11 +24,13 @@ namespace Rubberduck.UI
 
         private Declaration _lastSelectedDeclaration;
         private readonly IVBE _vbe;
-        private readonly IParseCoordinator _parser;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
 
-        public SelectionChangeService(IVBE vbe, IParseCoordinator parser)
+        public SelectionChangeService(IVBE vbe, IDeclarationFinderProvider declarationFinderProvider, ISelectedDeclarationProvider selectedDeclarationProvider)
         {
-            _parser = parser;
+            _declarationFinderProvider = declarationFinderProvider;
+            _selectedDeclarationProvider = selectedDeclarationProvider;
             _vbe = vbe;
             VbeNativeServices.SelectionChanged += OnVbeSelectionChanged;
             VbeNativeServices.WindowFocusChange += OnVbeFocusChanged;
@@ -38,15 +40,9 @@ namespace Rubberduck.UI
         {
             Task.Run(() =>
             {
-                using (var active = _vbe.ActiveCodePane)
-                {
-                    if (active == null)
-                    {
-                        return;
-                    }
-                    var eventArgs = new DeclarationChangedEventArgs(_vbe, _parser.State.FindSelectedDeclaration(active));
-                    DispatchSelectedDeclaration(eventArgs);
-                }
+                var selectedDeclaration = _selectedDeclarationProvider.SelectedDeclaration();
+                var eventArgs = new DeclarationChangedEventArgs(_vbe, selectedDeclaration);
+                DispatchSelectedDeclaration(eventArgs);
             });
         }
 
@@ -71,8 +67,15 @@ namespace Rubberduck.UI
                         {
                             using (var pane = VbeNativeServices.GetCodePaneFromHwnd(e.Hwnd))
                             {
-                                DispatchSelectedDeclaration(
-                                    new DeclarationChangedEventArgs(_vbe, _parser.State.FindSelectedDeclaration(pane)));
+                                var selection = pane.GetQualifiedSelection();
+                                if (!selection.HasValue)
+                                {
+                                    return;
+                                }
+
+                                var selectedDeclaration = _selectedDeclarationProvider.SelectedDeclaration(selection.Value);
+                                var eventArgs = new DeclarationChangedEventArgs(_vbe, selectedDeclaration);
+                                DispatchSelectedDeclaration(eventArgs);
                             }
                         });
                         break;
@@ -125,7 +128,7 @@ namespace Rubberduck.UI
                 {
                     var name = selected.Single().Name;
                     var control =
-                        _parser.State.DeclarationFinder.MatchName(name)
+                        _declarationFinderProvider.DeclarationFinder?.MatchName(name)
                             .SingleOrDefault(d => d.DeclarationType == DeclarationType.Control
                                                   && d.ProjectId == parent.ProjectId
                                                   && d.ParentDeclaration.IdentifierName == component.Name);
@@ -134,7 +137,7 @@ namespace Rubberduck.UI
                     return;
                 }
                 var form =
-                    _parser.State.DeclarationFinder.MatchName(component.Name)
+                    _declarationFinderProvider.DeclarationFinder?.MatchName(component.Name)
                         .SingleOrDefault(d => d.DeclarationType.HasFlag(DeclarationType.ClassModule)
                                               && d.ProjectId == parent.ProjectId);
 
@@ -144,7 +147,7 @@ namespace Rubberduck.UI
 
         private void DispatchSelectedProjectNodeDeclaration(IVBComponent component)
         {
-            if (_parser.State.DeclarationFinder == null)
+            if (_declarationFinderProvider.DeclarationFinder == null)
             {
                 return;
             }
@@ -155,7 +158,7 @@ namespace Rubberduck.UI
                 {
                     //The user might have selected the project node in Project Explorer. If they've chosen a folder, we'll return the project anyway.
                     var project =
-                        _parser.State.DeclarationFinder.UserDeclarations(DeclarationType.Project)
+                        _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Project)
                             .SingleOrDefault(decl => decl.ProjectId.Equals(active.ProjectId));
 
                     DispatchSelectedDeclaration(new DeclarationChangedEventArgs(_vbe, project));
@@ -168,10 +171,10 @@ namespace Rubberduck.UI
                 {
 
                     var module =
-                        _parser.State.AllUserDeclarations.SingleOrDefault(
-                            decl => decl.DeclarationType.HasFlag(DeclarationType.Module) &&
-                                    decl.IdentifierName.Equals(component.Name) &&
-                                    decl.ProjectId.Equals(active.ProjectId));
+                        _declarationFinderProvider.DeclarationFinder
+                            ?.UserDeclarations(DeclarationType.Module)
+                            .SingleOrDefault(decl => decl.IdentifierName.Equals(component.Name) 
+                                                     && decl.ProjectId.Equals(active.ProjectId));
 
                     DispatchSelectedDeclaration(new DeclarationChangedEventArgs(_vbe, module));
                 }

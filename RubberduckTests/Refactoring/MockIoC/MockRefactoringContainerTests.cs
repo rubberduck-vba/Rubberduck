@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
 using Moq;
 using NUnit.Framework;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring.MockIoC
@@ -41,9 +44,8 @@ namespace RubberduckTests.Refactoring.MockIoC
                 var container = RefactoringContainerInstaller.GetContainer();
                 var factory = container.Resolve<IRefactoringPresenterFactory>();
 
-                var declaration =
-                    state.DeclarationFinder.FindSelectedDeclaration(
-                        new QualifiedSelection(new QualifiedModuleName(component), new Selection(1, 1)));
+                var declaration = SelectedDeclarationProvider(vbe.Object, state)
+                    .SelectedDeclaration(new QualifiedSelection(new QualifiedModuleName(component), new Selection(1, 1)));
 
                 var model = new RenameModel(declaration);
                 var presenter = factory.Create<IRenamePresenter, RenameModel>(model);
@@ -59,12 +61,12 @@ namespace RubberduckTests.Refactoring.MockIoC
             var parser = MockParser.Create(vbe.Object);
             using (var state = parser.State)
             {
-                var actualTarget = state.DeclarationFinder
-                    .FindSelectedDeclaration(new QualifiedSelection(new QualifiedModuleName(component), new Selection(2, 2)));
+                var actualTarget = SelectedDeclarationProvider(vbe.Object, state)
+                    .SelectedDeclaration(new QualifiedSelection(new QualifiedModuleName(component), new Selection(2, 2)));
                 var actual = new RenameModel(actualTarget);
 
-                var initialTarget = state.DeclarationFinder.FindSelectedDeclaration(
-                    new QualifiedSelection(new QualifiedModuleName(component), new Selection(3, 3)));
+                var initialTarget = SelectedDeclarationProvider(vbe.Object, state)
+                    .SelectedDeclaration(new QualifiedSelection(new QualifiedModuleName(component), new Selection(3, 3)));
                 var initial = new RenameModel(initialTarget);
 
                 var container = RefactoringContainerInstaller.GetContainer();
@@ -79,8 +81,8 @@ namespace RubberduckTests.Refactoring.MockIoC
                 mockView.SetupGet(m => m.DataContext).Returns(actual);
 
                 var factory = container.Resolve<IRefactoringPresenterFactory>();
-                var target = state.DeclarationFinder.FindSelectedDeclaration(
-                    new QualifiedSelection(new QualifiedModuleName(component), new Selection(1, 1)));
+                var target = SelectedDeclarationProvider(vbe.Object, state)
+                    .SelectedDeclaration(new QualifiedSelection(new QualifiedModuleName(component), new Selection(1, 1)));
                 var model = new RenameModel(target);
                 var presenter = (RenamePresenter)factory.Create<IRenamePresenter, RenameModel>(model);
                 var expected = presenter.Dialog.View.DataContext;
@@ -95,14 +97,14 @@ namespace RubberduckTests.Refactoring.MockIoC
             var parser = MockParser.Create(vbe.Object);
             using (var state = parser.State)
             {
-                var actualTarget = state.DeclarationFinder
-                    .FindSelectedDeclaration(new QualifiedSelection(new QualifiedModuleName(component), new Selection(2, 2)));
+                var actualTarget = SelectedDeclarationProvider(vbe.Object, state)
+                    .SelectedDeclaration(new QualifiedSelection(new QualifiedModuleName(component), new Selection(2, 2)));
                 var actual = new RenameModel(actualTarget);
                 var container = RefactoringContainerInstaller.GetContainer();
                 var factory = container.Resolve<IRefactoringPresenterFactory>();
 
-                var target = state.DeclarationFinder
-                    .FindSelectedDeclaration(new QualifiedSelection(new QualifiedModuleName(component), new Selection(1, 1)));
+                var target = SelectedDeclarationProvider(vbe.Object, state)
+                    .SelectedDeclaration(new QualifiedSelection(new QualifiedModuleName(component), new Selection(1, 1)));
                 var model = new RenameModel(target);
                 var presenter = (RenamePresenter)factory.Create<IRenamePresenter, RenameModel>(model);
 
@@ -121,14 +123,14 @@ namespace RubberduckTests.Refactoring.MockIoC
             var parser = MockParser.Create(vbe.Object);
             using (var state = parser.State)
             {
-                var actualTarget = state.DeclarationFinder
-                    .FindSelectedDeclaration(new QualifiedSelection(new QualifiedModuleName(component), new Selection(2, 2)));
+                var actualTarget = SelectedDeclarationProvider(vbe.Object, state)
+                    .SelectedDeclaration(new QualifiedSelection(new QualifiedModuleName(component), new Selection(2, 2)));
                 var actual = new RenameModel(actualTarget);
                 var container = RefactoringContainerInstaller.GetContainer();
                 var factory = container.Resolve<IRefactoringPresenterFactory>();
 
-                var target = state.DeclarationFinder
-                    .FindSelectedDeclaration(new QualifiedSelection(new QualifiedModuleName(component), new Selection(1, 1)));
+                var target = SelectedDeclarationProvider(vbe.Object, state)
+                    .SelectedDeclaration(new QualifiedSelection(new QualifiedModuleName(component), new Selection(1, 1)));
                 var model = new RenameModel(target);
                 var presenter = (RenamePresenter)factory.Create<IRenamePresenter, RenameModel>(model);
                 
@@ -142,6 +144,12 @@ namespace RubberduckTests.Refactoring.MockIoC
                 var expected = presenter.Dialog.Model;
                 Assert.AreEqual(actual, expected);
             }
+        }
+
+        private ISelectedDeclarationProvider SelectedDeclarationProvider(IVBE vbe, RubberduckParserState state)
+        {
+            var selectionProvider = new SelectionService(vbe, state.ProjectsProvider);
+            return new SelectedDeclarationProvider(selectionProvider, state);
         }
     }
 }

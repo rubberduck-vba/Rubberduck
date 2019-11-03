@@ -15,18 +15,29 @@ namespace Rubberduck.Refactorings.IntroduceField
     public class IntroduceFieldRefactoring : RefactoringBase
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
 
-        public IntroduceFieldRefactoring(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager, ISelectionService selectionService)
-        :base(rewritingManager, selectionService)
+        public IntroduceFieldRefactoring(
+            IDeclarationFinderProvider declarationFinderProvider, 
+            IRewritingManager rewritingManager,
+            ISelectionProvider selectionProvider,
+            ISelectedDeclarationProvider selectedDeclarationProvider)
+        :base(rewritingManager, selectionProvider)
         {
             _declarationFinderProvider = declarationFinderProvider;
+            _selectedDeclarationProvider = selectedDeclarationProvider;
         }
 
         protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
         {
-            return _declarationFinderProvider.DeclarationFinder
-                .UserDeclarations(DeclarationType.Variable)
-                .FindVariable(targetSelection);
+            var selectedDeclaration = _selectedDeclarationProvider.SelectedDeclaration(targetSelection);
+            if (selectedDeclaration == null
+                || selectedDeclaration.DeclarationType != DeclarationType.Variable)
+            {
+                return null;
+            }
+
+            return selectedDeclaration;
         }
 
         public override void Refactor(Declaration target)

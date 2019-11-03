@@ -23,7 +23,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
         {
 
             var selection = qualifiedSelection.Selection;
-            IEnumerable<Declaration> procedures = _declarations.Where(d => d.IsUserDefined && (DeclarationExtensions.ProcedureTypes.Contains(d.DeclarationType)));
+            IEnumerable<Declaration> procedures = _declarations.Where(d => d.IsUserDefined && (ExtractedMethod.ProcedureTypes.Contains(d.DeclarationType)));
             Func<int, dynamic> ProcOfLine = (sl) => procedures.FirstOrDefault(d => d.Context.Start.Line < sl && d.Context.Stop.Line > sl);
 
             var startLine = selection.StartLine;

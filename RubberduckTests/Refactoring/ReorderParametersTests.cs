@@ -1127,10 +1127,14 @@ End Sub";   // note: IDE removes excess spaces
             Assert.AreEqual(expectedCode3, actualCode["Class3"]);
         }
 
-        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state,
-            IRefactoringPresenterFactory factory, ISelectionService selectionService)
+        protected override IRefactoring TestRefactoring(
+            IRewritingManager rewritingManager, 
+            RubberduckParserState state,
+            IRefactoringPresenterFactory factory, 
+            ISelectionService selectionService)
         {
-            return new ReorderParametersRefactoring(state, factory, rewritingManager, selectionService);
+            var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
+            return new ReorderParametersRefactoring(state, factory, rewritingManager, selectionService, selectedDeclarationProvider);
         }
 
         private static Func<ReorderParametersModel, ReorderParametersModel> ReverseParameters()

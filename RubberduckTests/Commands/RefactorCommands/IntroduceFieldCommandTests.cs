@@ -42,9 +42,10 @@ End Property";
         protected override CommandBase TestCommand(IVBE vbe, RubberduckParserState state, IRewritingManager rewritingManager, ISelectionService selectionService)
         {
             var msgBox = new Mock<IMessageBox>().Object;
-            var refactoring = new IntroduceFieldRefactoring(state, rewritingManager, selectionService);
+            var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
+            var refactoring = new IntroduceFieldRefactoring(state, rewritingManager, selectionService, selectedDeclarationProvider);
             var notifier = new IntroduceFieldFailedNotifier(msgBox);
-            return new RefactorIntroduceFieldCommand(refactoring, notifier, state, selectionService);
+            return new RefactorIntroduceFieldCommand(refactoring, notifier, state, selectionService, selectedDeclarationProvider);
         }
 
         protected override IVBE SetupAllowingExecution()
