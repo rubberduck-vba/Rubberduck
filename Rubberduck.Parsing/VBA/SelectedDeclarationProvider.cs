@@ -60,34 +60,34 @@ namespace Rubberduck.Parsing.VBA
         {
             var finder = _declarationFinderProvider.DeclarationFinder;
 
-            var canditateViaReference = SelectedDeclarationViaReference(qualifiedSelection, finder);
-            if (canditateViaReference != null)
+            var candidateViaReference = SelectedDeclarationViaReference(qualifiedSelection, finder);
+            if (candidateViaReference != null)
             {
-                return canditateViaReference;
+                return candidateViaReference;
             }
 
-            var canditateViaDeclaration = SelectedDeclarationViaDeclaration(qualifiedSelection, finder);
-            if (canditateViaDeclaration != null)
+            var candidateViaDeclaration = SelectedDeclarationViaDeclaration(qualifiedSelection, finder);
+            if (candidateViaDeclaration != null)
             {
-                return canditateViaDeclaration;
+                return candidateViaDeclaration;
             }
 
-            var canditateViaVariableDeclaration = SelectedDeclarationViaVariableDeclarationStatement(qualifiedSelection, finder);
-            if (canditateViaVariableDeclaration != null)
+            var candidateViaVariableDeclaration = SelectedDeclarationViaVariableDeclarationStatement(qualifiedSelection, finder);
+            if (candidateViaVariableDeclaration != null)
             {
-                return canditateViaVariableDeclaration;
+                return candidateViaVariableDeclaration;
             }
 
-            var canditateViaConstantDeclaration = SelectedDeclarationViaConstantDeclarationStatement(qualifiedSelection, finder);
-            if (canditateViaConstantDeclaration != null)
+            var candidateViaConstantDeclaration = SelectedDeclarationViaConstantDeclarationStatement(qualifiedSelection, finder);
+            if (candidateViaConstantDeclaration != null)
             {
-                return canditateViaConstantDeclaration;
+                return candidateViaConstantDeclaration;
             }
 
-            var canditateViaContainingMember = SelectedMember(qualifiedSelection);
-            if (canditateViaContainingMember != null)
+            var candidateViaContainingMember = SelectedMember(qualifiedSelection);
+            if (candidateViaContainingMember != null)
             {
-                return canditateViaContainingMember;
+                return candidateViaContainingMember;
             }
 
             return SelectedModule(qualifiedSelection);
