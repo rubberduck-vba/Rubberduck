@@ -37,7 +37,7 @@ namespace Rubberduck.UI.Settings
 
             ViewModel = new SettingsControlViewModel(messageBox, configService,
                 config,
-                new SettingsView
+                new GeneralSettingsView
                 {
                     Control = new GeneralSettings(viewModelFactory.Create<Rubberduck.Settings.GeneralSettings>(config)),
                     View = SettingsViews.GeneralSettings
