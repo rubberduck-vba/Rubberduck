@@ -1,30 +1,25 @@
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using RubberduckTests.Mocks;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class ImplicitVariantReturnTypeInspectionTests
+    public class ImplicitVariantReturnTypeInspectionTests : InspectionTestsBase
     {
-        [Test]
+        [TestCase("Function Foo()\r\nEnd Function", 1)]
+        [TestCase("Function Foo() As Boolean\r\nEnd Function", 0)]
+        [TestCase("Property Get Foo()\r\nEnd Property", 1)]
+        [TestCase("Function Foo()\r\nEnd Function\r\n\r\nFunction Goo()\r\nEnd Function", 2)]
+        [TestCase("Function Foo()\r\nEnd Function\r\n\r\nFunction Goo() As String\r\nEnd Function", 1)]
+        [TestCase("Property Get Foo()\r\nEnd Property", 1)]
+        [TestCase("'@Ignore ImplicitVariantReturnType\r\n\r\nFunction Foo()\r\nEnd Function", 0)]
         [Category("Inspections")]
-        public void ImplicitVariantReturnType_ReturnsResult_Function()
+        public void ImplicitVariantReturnType_VariousScenarios(string inputCode, int expectedCount)
         {
-            const string inputCode =
-                @"Function Foo()
-End Function";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(expectedCount, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -43,15 +38,7 @@ End Function";
                                                            ByVal lpCurrentDirectory As String, _
                                                            lpStartupInfo As STARTUPINFO, _
                                                            lpProcessInformation As PROCESS_INFORMATION)";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -70,122 +57,21 @@ End Function";
                                                            ByVal lpCurrentDirectory As String, _
                                                            lpStartupInfo As STARTUPINFO, _
                                                            lpProcessInformation As PROCESS_INFORMATION) As Long";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ImplicitVariantReturnType_ReturnsResult_PropertyGet()
-        {
-            const string inputCode =
-                @"Property Get Foo()
-End Property";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ImplicitVariantReturnType_ReturnsResult_MultipleFunctions()
-        {
-            const string inputCode =
-                @"Function Foo()
-End Function
-
-Function Goo()
-End Function";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(2, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ImplicitVariantReturnType_DoesNotReturnResult()
-        {
-            const string inputCode =
-                @"Function Foo() As Boolean
-End Function";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ImplicitVariantReturnType_ReturnsResult_MultipleSubs_SomeReturning()
-        {
-            const string inputCode =
-                @"Function Foo()
-End Function
-
-Function Goo() As String
-End Function";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ImplicitVariantReturnType_Ignored_DoesNotReturnResult_Function()
-        {
-            const string inputCode =
-                @"'@Ignore ImplicitVariantReturnType
-Function Foo()
-End Function";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
         [Category("Inspections")]
         public void InspectionName()
         {
-            const string inspectionName = "ImplicitVariantReturnTypeInspection";
             var inspection = new ImplicitVariantReturnTypeInspection(null);
 
-            Assert.AreEqual(inspectionName, inspection.Name);
+            Assert.AreEqual(nameof(ImplicitVariantReturnTypeInspection), inspection.Name);
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new ImplicitVariantReturnTypeInspection(state);
         }
     }
 }

@@ -11,6 +11,8 @@ using FUNCDESC = System.Runtime.InteropServices.ComTypes.FUNCDESC;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
 using CALLCONV = System.Runtime.InteropServices.ComTypes.CALLCONV;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Utility;
 
 namespace Rubberduck.Parsing.ComReflection
 {
@@ -58,7 +60,15 @@ namespace Rubberduck.Parsing.ComReflection
                     info.GetNames(desc.memid, names, names.Length, out int length);
                     Debug.Assert(length == 1);
 
-                    var type = desc.desc.lpvarValue == IntPtr.Zero ? DeclarationType.Variable : DeclarationType.Constant;
+                    DeclarationType type;
+                    if(info is ITypeInfoWrapper wrapped && wrapped.HasVBEExtensions)
+                    {
+                        type = desc.IsValidVBAConstant() ? DeclarationType.Constant : DeclarationType.Variable;
+                    }
+                    else
+                    {
+                        type = desc.varkind == VARKIND.VAR_CONST ? DeclarationType.Constant : DeclarationType.Variable;
+                    }
 
                     _fields.Add(new ComField(this, info, names[0], desc, index, type));
                 }

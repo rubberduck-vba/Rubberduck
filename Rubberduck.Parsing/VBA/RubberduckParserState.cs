@@ -565,12 +565,19 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-#if DEBUG
+            DebugParserState(state, stateCounts);
+            
+            return result;
+        }
+
+        [Conditional("DEBUG")]
+        private static void DebugParserState(ParserState state, int[] stateCounts)
+        {
             if (state == ParserState.Ready)
             {
                 for (var i = 0; i < stateCounts.Length; i++)
                 {
-                    if (i == (int)ParserState.Ready || i == (int)ParserState.None)
+                    if (i == (int) ParserState.Ready || i == (int) ParserState.None)
                     {
                         continue;
                     }
@@ -581,9 +588,6 @@ namespace Rubberduck.Parsing.VBA
                     }
                 }
             }
-#endif
-            
-            return result;
         }
 
         public ParserState GetOrCreateModuleState(QualifiedModuleName module)
@@ -1046,19 +1050,6 @@ namespace Rubberduck.Parsing.VBA
             if (_moduleStates.TryGetValue(module, out var moduleState))
             {
                 moduleState.MarkAsModified();
-            }
-        }
-
-        public Declaration FindSelectedDeclaration(ICodePane activeCodePane)
-        {
-            if (activeCodePane != null)
-            {
-                return DeclarationFinder?.FindSelectedDeclaration(activeCodePane);
-            }
-
-            using (var active = _vbe.ActiveCodePane)
-            {
-                return DeclarationFinder?.FindSelectedDeclaration(active);
             }
         }
 

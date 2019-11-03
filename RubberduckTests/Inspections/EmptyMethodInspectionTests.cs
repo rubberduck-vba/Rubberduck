@@ -1,23 +1,22 @@
 ﻿using System.Linq;
-using System.Threading;
 using NUnit.Framework;
-using RubberduckTests.Mocks;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class EmptyMethodInspectionTests
+    public class EmptyMethodInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
         public void EmptyMethodBlock_InspectionName()
         {
-            const string expectedName = nameof(EmptyMethodInspection);
             var inspection = new EmptyMethodInspection(null);
 
-            Assert.AreEqual(expectedName, inspection.Name);
+            Assert.AreEqual(nameof(EmptyMethodInspection), inspection.Name);
         }
 
         [Test]
@@ -28,7 +27,7 @@ namespace RubberduckTests.Inspections
                 @"Sub Foo()
     MsgBox ""?""
 End Sub";
-            CheckActualEmptyBlockCountEqualsExpected(inputCode, 0);
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -38,7 +37,7 @@ End Sub";
             const string inputCode =
                 @"Sub Foo()
 End Sub";
-            CheckActualEmptyBlockCountEqualsExpected(inputCode, 1);
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -65,7 +64,7 @@ End Sub";
                 @"'@Ignore EmptyMethod
 Sub Foo()
 End Sub";
-            CheckActualEmptyBlockCountEqualsExpected(inputCode, 0);
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -87,7 +86,7 @@ End Sub";
                 $@"Sub Foo()
 {statement}
 End Sub";
-            CheckActualEmptyBlockCountEqualsExpected(inputCode, 1);
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -114,41 +113,32 @@ End Sub
 Sub Foo()
     MsgBox ""?""
 End Sub";
-            CheckActualEmptyBlockCountEqualsExpected(inputCode, 0);
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
-        private void CheckActualEmptyBlockCountEqualsExpected(string inputCode, int expectedCount)
+        [Test]
+        [Category("Inspections")]
+        public void EmptyMethod_DeclareStatement_NoResult()
         {
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new EmptyMethodInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(expectedCount, actualResults.Count());
-            }
+            string inputCode =
+                $@"
+Private Declare PtrSafe Function GetKeyState Lib ""user32.dll"" (ByVal nVirtKey As Long) As Integer
+";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         private void CheckActualEmptyBlockCountEqualsExpected(string interfaceCode, string concreteCode, int expectedCount)
         {
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("IClass1", ComponentType.ClassModule, interfaceCode)
-                .AddComponent("Class1", ComponentType.ClassModule, concreteCode)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
+            var results = InspectionResultsForModules(
+                ("IClass1", interfaceCode, ComponentType.ClassModule),
+                ("Class1", concreteCode, ComponentType.ClassModule));
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
+            Assert.AreEqual(expectedCount, results.Count());
+        }
 
-                var inspection = new EmptyMethodInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(expectedCount, actualResults.Count());
-            }
-
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new EmptyMethodInspection(state);
         }
     }
 }

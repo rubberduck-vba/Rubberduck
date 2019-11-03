@@ -990,7 +990,12 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
     <value>Fenstersichtbarkeit beim Start</value>
   </data>
   <data name="VersionCheck_NewVersionAvailable" xml:space="preserve">
-    <value>Rubberduck Version {0} ist jetzt verfügbar! Wollen sie jetzt die Release Notes prüfen?</value>
+    <value>Sie verwenden momentan Rubberduck Version {0}.
+Version {1}({2}) ist nun verfügbar.
+
+Um den Change Log anzuschauen und Rubberduck manuell zu aktualisieren, klicken Sie 'Ja'.
+
+Dieses Fenster wird angezeigt, da Aktualisierungsüberprüfungen aktiviert sind. Diese können unter Rubberduck &gt; Einstellungen deaktiviert werden.</value>
   </data>
   <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
     <value>'{0}' ist in diesem Kontext bereits verfügbar.</value>
@@ -1433,5 +1438,42 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   </data>
   <data name="References_BrowseButtonText" xml:space="preserve">
     <value>Durchsuchen...</value>
+  </data>
+  <data name="ImportCommand_UnsupportedFileExtensions" xml:space="preserve">
+    <value>Die Dateierweiterung der Datei '{0}' wird nicht unterstützt.
+
+Import abgebrochen.</value>
+  </data>
+  <data name="ReplaceProjectContentsFromFilesCommand_DialogCaption" xml:space="preserve">
+    <value>Projektinhalt durch Inhalt von Dateien ersetzen </value>
+  </data>
+  <data name="ReplaceProjectContentsFromFilesCommand_ConfirmationMessage" xml:space="preserve">
+    <value>Soll der Inhalt von Project '{0}' wirklich gelöscht und durch den Inhalt der ausgewählten Dateien ersetzt werden?</value>
+  </data>
+  <data name="UpdateFromFilesCommand_DialogCaption" xml:space="preserve">
+    <value>Komponenten aus Dateien aktualisieren</value>
+  </data>
+  <data name="UpdateFromFilesCommand_DuplicateModule" xml:space="preserve">
+    <value>Mehrere Dateien enthalten Code für die Komponente '{0}'.
+
+Import abgebrochen.</value>
+  </data>
+  <data name="UpdateFromFilesCommand_DifferentComponentType" xml:space="preserve">
+    <value>Der Komponententyp der existierenden Komponente '{0}' stimmt nicht mit dem dem zur Dateierweiterung der Datei '{1}' gehörenden überein.
+
+Import abgebrochen.</value>
+  </data>
+  <data name="UpdateFromFilesCommand_DocumentDoesNotExist" xml:space="preserve">
+    <value>Es existiert kein Dokumentenmodul namens '{0}', s.d. die Datei '{1}' nicht importiert werden kann.
+
+Import abgebrochen.</value>
+  </data>
+  <data name="UpdateFromFilesCommand_UserFormDoesNotExist" xml:space="preserve">
+    <value>Es existiert keine Userform namens '{0}', s.d. kein Codebehind einer Userform aus der Datei '{1}' überschrieben werden kann.
+
+Import abgebrochen.</value>
+  </data>
+  <data name="SaveAndClose" xml:space="preserve">
+    <value>Speichern &amp; Schließen</value>
   </data>
 </root>

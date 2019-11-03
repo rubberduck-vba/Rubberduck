@@ -236,10 +236,6 @@
     <value>Local variable '{0}' is not declared.</value>
     <comment>{0} variable name</comment>
   </data>
-  <data name="ImplicitDefaultMemberAssignmentInspection" xml:space="preserve">
-    <value>Assignment to '{0}' implicitly assigns to default member '{1}' of class '{2}'.</value>
-    <comment>{0} expression; {1} default member name; {2} class of default member</comment>
-  </data>
   <data name="AggregateInspection" xml:space="preserve">
     <value>{0} ({1} results).</value>
     <comment>{0} inspection description, {1} result count</comment>
@@ -438,10 +434,6 @@ In memoriam, 1972-2018</value>
     <value>Interface class module '{2}' contains a concrete implementation for {0} '{1}'.</value>
     <comment>{0} Method kind, {1} Method name, {2} interface class module name</comment>
   </data>
-  <data name="ImplicitDefaultMemberAssignmentInspection_Unbound" xml:space="preserve">
-    <value>Assignment to '{0}' implicitly assigns to an unbound default member.</value>
-    <comment>{0} expression</comment>
-  </data>
   <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
     <value>The argument '{2}' of type '{3}' is passed to the parameter '{0}' of the incompatible type '{1}'.</value>
     <comment>{0} parameter name, {1} parameter declared type, {2} argument expression text, {3} argument set type name</comment>
@@ -477,5 +469,33 @@ In memoriam, 1972-2018</value>
   <data name="ObjectWhereProcedureIsRequiredInspection_Unbound" xml:space="preserve">
     <value>The expression '{0}' is used in a context that requires a procedure, which leads to a call to a default member that cannot be determined at compile time.</value>
     <comment>{0} expression</comment>
+  </data>
+  <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
+    <value>The expression '{0}' contains an indexed default member access to '{1}'.</value>
+    <comment>{0} expression; {1} default member</comment>
+  </data>
+  <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>The expression '{0}' contains an indexed recursive default member access to '{1}'.</value>
+    <comment>{0} expression; {1} default member</comment>
+  </data>
+  <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>The expression '{0}' contains an indexed unbound default member access.</value>
+    <comment>{0} expression</comment>
+  </data>
+  <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
+    <value>On the expression '{0}', there is an implicit default member access to '{1}'.</value>
+    <comment>{0} expression; {1} default member</comment>
+  </data>
+  <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>On the expression '{0}', there is an implicit recursive default member access to '{1}'.</value>
+    <comment>{0} expression; {1} default member</comment>
+  </data>
+  <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>On the expression '{0}', there is an implicit unbound default member access.</value>
+    <comment>{0} expression</comment>
+  </data>
+  <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
+    <value>There is an assignment from the default member of the result of expression '{1}' to that of the expression '{0}'.</value>
+    <comment>{0} lhsExpression; {1} rhsExpression</comment>
   </data>
 </root>

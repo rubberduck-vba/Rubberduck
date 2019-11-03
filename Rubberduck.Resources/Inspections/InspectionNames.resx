@@ -231,9 +231,6 @@
   <data name="UndeclaredVariableInspection" xml:space="preserve">
     <value>Undeclared variable</value>
   </data>
-  <data name="ImplicitDefaultMemberAssignmentInspection" xml:space="preserve">
-    <value>Implicit default member assignment</value>
-  </data>
   <data name="HungarianNotationInspection" xml:space="preserve">
     <value>Variable uses Hungarian notation.</value>
   </data>
@@ -418,5 +415,26 @@
   </data>
   <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
     <value>Object used where a procedure is required</value>
+  </data>
+  <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Indexed default member access</value>
+  </data>
+  <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Indexed recursive default member access</value>
+  </data>
+  <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Indexed unbound default member access</value>
+  </data>
+  <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Implicit default member access</value>
+  </data>
+  <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Implicit recursive default member access</value>
+  </data>
+  <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Implicit unbound default member access</value>
+  </data>
+  <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
+    <value>Suspicious Let assignment</value>
   </data>
 </root>

@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Refactorings.ExtractMethod
@@ -17,7 +17,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
 
         public virtual string NewMethodCall()
         {
-            if (string.IsNullOrWhiteSpace(MethodName))
+            if (String.IsNullOrWhiteSpace(MethodName))
             {
                 MethodName = NEW_METHOD;
             }
@@ -25,7 +25,7 @@ namespace Rubberduck.Refactorings.ExtractMethod
             string argList;
             if (Parameters.Any())
             {
-                argList = string.Join(", ", Parameters.Select(p => p.Name));
+                argList = String.Join(", ", Parameters.Select(p => p.Name));
                 result += " " + argList;
             }
             return result;
@@ -47,10 +47,18 @@ namespace Rubberduck.Refactorings.ExtractMethod
         public bool isConflictingName(IEnumerable<Declaration> declarations, string methodName)
         {
             var existingName = declarations.FirstOrDefault(d =>
-                        DeclarationExtensions.ProcedureTypes.Contains(d.DeclarationType)
+                        Enumerable.Contains(ProcedureTypes, d.DeclarationType)
                     && d.IdentifierName.Equals(methodName));
             return (existingName != null);
         }
 
+        public static readonly DeclarationType[] ProcedureTypes =
+        {
+            DeclarationType.Procedure,
+            DeclarationType.Function,
+            DeclarationType.PropertyGet,
+            DeclarationType.PropertyLet,
+            DeclarationType.PropertySet
+        };
     }
 }

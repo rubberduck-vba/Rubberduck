@@ -502,39 +502,31 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
         public void Resolve(VBAParser.PrintStmtContext context)
         {
             ResolveDefault(context.markedFileNumber().expression(), true);
-            ResolveOutputList(context.outputList());
+            var outputList = context.outputList();
+            if (outputList != null)
+            {
+                ResolveOutputList(outputList);
+            }
+        }
+
+        public void Resolve(VBAParser.UnqualifiedObjectPrintStmtContext context)
+        {
+            ResolveDefault(context);
         }
 
         public void Resolve(VBAParser.WriteStmtContext context)
         {
             ResolveDefault(context.markedFileNumber().expression(), true);
-            ResolveOutputList(context.outputList());
+            var outputList = context.outputList();
+            if (outputList != null)
+            {
+                ResolveOutputList(outputList);
+            }
         }
 
         private void ResolveOutputList(VBAParser.OutputListContext outputList)
         {
-            if (outputList == null)
-            {
-                return;
-            }
-            foreach (var outputItem in outputList.outputItem())
-            {
-                if (outputItem.outputClause() != null)
-                {
-                    if (outputItem.outputClause().spcClause() != null)
-                    {
-                        ResolveDefault(outputItem.outputClause().spcClause().spcNumber().expression(), true);
-                    }
-                    if (outputItem.outputClause().tabClause() != null && outputItem.outputClause().tabClause().tabNumberClause() != null)
-                    {
-                        ResolveDefault(outputItem.outputClause().tabClause().tabNumberClause().tabNumber().expression(), true);
-                    }
-                    if (outputItem.outputClause().outputExpression() != null)
-                    {
-                        ResolveDefault(outputItem.outputClause().outputExpression().expression(), true);
-                    }
-                }
-            }
+            ResolveDefault(outputList);
         }
 
         public void Resolve(VBAParser.InputStmtContext context)
@@ -622,51 +614,40 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
 
         public void Resolve(VBAParser.ForNextStmtContext context)
         {
-            // In "For expr1 = expr2" the "expr1 = expr2" part is treated as a single expression.
-            var assignmentExpr = ((VBAParser.RelationalOpContext)context.expression()[0]);
-            var lExpr = assignmentExpr.expression()[0];
-            var withExpression = GetInnerMostWithExpression();
-            var firstExpression = _bindingService.ResolveDefault(
-                _moduleDeclaration,
-                _currentParent,
-                lExpr,
-                withExpression,
-                StatementResolutionContext.Undefined,
-                true);
-            if (firstExpression.Classification != ExpressionClassification.ResolutionFailed)
-            {
-                // each iteration counts as an assignment
+            var expressions = context.expression();
 
-                _failedResolutionVisitor.CollectUnresolved(firstExpression, _currentParent, withExpression);
-                _boundExpressionVisitor.AddIdentifierReferences(
-                    firstExpression,
-                    _qualifiedModuleName,
-                    _currentScope,
-                    _currentParent,
-                    true);
-            }
-            var rExpr = assignmentExpr.expression()[1];
-            var secondExpression = _bindingService.ResolveDefault(
-                _moduleDeclaration,
-                _currentParent,
-                rExpr,
-                withExpression,
-                StatementResolutionContext.Undefined,
-                true);
-            _failedResolutionVisitor.CollectUnresolved(secondExpression, _currentParent, withExpression);
-            _boundExpressionVisitor.AddIdentifierReferences(
-                secondExpression,
-                _qualifiedModuleName,
-                _currentScope,
-                _currentParent);
-  
-            ResolveDefault(context.expression()[1], true);
+            // In "For expr1 = expr2" the "expr1 = expr2" part is treated as a single expression.
+            var assignmentExpr = ((VBAParser.RelationalOpContext)expressions[0]);
+            ResolveStartValueAssignmentOfForNext(assignmentExpr);
+
+            ResolveToValueOfForNext(expressions[1]);
 
             var stepStatement = context.stepStmt();
             if (stepStatement != null)
             {
                 Resolve(stepStatement);
             }
+
+            const int firstNextExpressionIndex = 2;
+            for (var exprIndex = firstNextExpressionIndex; exprIndex < expressions.Length; exprIndex++)
+            {
+                ResolveDefault(expressions[exprIndex]);
+            }
+        }
+
+        private void ResolveStartValueAssignmentOfForNext(VBAParser.RelationalOpContext expression)
+        {
+            var expressions = expression.expression();
+            var elementVariableExpression = expressions[0];
+            ResolveDefault(elementVariableExpression, requiresLetCoercion: true, isAssignmentTarget: true);
+
+            var startValueExpression = expressions[1];
+            ResolveDefault(startValueExpression, requiresLetCoercion: true);
+        }
+
+        private void ResolveToValueOfForNext(ParserRuleContext expression)
+        {
+            ResolveDefault(expression, requiresLetCoercion: true);
         }
 
         private void Resolve(VBAParser.StepStmtContext context)
@@ -676,38 +657,18 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
 
         public void Resolve(VBAParser.ForEachStmtContext context)
         {
-            var withExpression = GetInnerMostWithExpression();
-            var firstExpression = _bindingService.ResolveDefault(
-                _moduleDeclaration,
-                _currentParent,
-                context.expression()[0],
-                withExpression,
-                StatementResolutionContext.Undefined,
-                false);
-            if (firstExpression.Classification == ExpressionClassification.ResolutionFailed)
-            {
+            var expressions = context.expression();
 
-                _failedResolutionVisitor.CollectUnresolved(firstExpression, _currentParent, withExpression);
-                _boundExpressionVisitor.AddIdentifierReferences(
-                    firstExpression,
-                    _qualifiedModuleName,
-                    _currentScope,
-                    _currentParent);
-            }
-            else
+            var elementVariableExpression = expressions[0];
+            ResolveDefault(elementVariableExpression, isAssignmentTarget: true);
+
+            var collectionExpression = expressions[1];
+            ResolveDefault(collectionExpression);
+
+            const int firstNextExpressionIndex = 2;
+            for (var exprIndex = firstNextExpressionIndex; exprIndex < context.expression().Length; exprIndex++)
             {
-                // each iteration counts as an assignment
-                _failedResolutionVisitor.CollectUnresolved(firstExpression, _currentParent, withExpression);
-                _boundExpressionVisitor.AddIdentifierReferences(
-                    firstExpression,
-                    _qualifiedModuleName,
-                    _currentScope,
-                    _currentParent,
-                    true);
-            }
-            for (var exprIndex = 1; exprIndex < context.expression().Length; exprIndex++)
-            {
-                ResolveDefault(context.expression()[exprIndex], false);
+                ResolveDefault(expressions[exprIndex]);
             }
         }
 
@@ -816,48 +777,6 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 {
                     ResolveDefault(enumMember.expression(), false);
                 }
-            }
-        }
-
-        public void Resolve(VBAParser.DebugPrintStmtContext context)
-        {
-            if (DebugDeclarations.DebugPrint != null)
-            {
-                // Because Debug.Print has a special argument (an output list) instead
-                // of normal arguments we can't treat it as a function call.
-                var debugPrint = DebugDeclarations.DebugPrint;
-                var debugModule = debugPrint.ParentDeclaration;
-                debugModule.AddReference(
-                    _qualifiedModuleName,
-                    _currentScope,
-                    _currentParent,
-                    context.debugPrint().debugModule(),
-                    context.debugPrint().debugModule().GetText(),
-                    debugModule,
-                    context.debugPrint().debugModule().GetSelection(),
-                    FindIdentifierAnnotations(_qualifiedModuleName,
-                        context.debugPrint().debugModule().GetSelection().StartLine));
-                debugPrint.AddReference(
-                    _qualifiedModuleName,
-                    _currentScope,
-                    _currentParent,
-                    context.debugPrint().debugPrintSub(),
-                    context.debugPrint().debugPrintSub().GetText(),
-                    debugPrint,
-                    context.debugPrint().debugPrintSub().GetSelection(),
-                    FindIdentifierAnnotations(_qualifiedModuleName,
-                        context.debugPrint().debugPrintSub().GetSelection().StartLine));
-            }
-            else
-            {
-                Logger.Warn("Debug.Print (custom declaration) has not been loaded, skipping resolving Debug.Print call.");
-            }
-
-            //The output list should be resolved no matter whether we have a declaration for Debug.Print or not.
-            var outputList = context.outputList();
-            if (outputList != null)
-            {
-                ResolveOutputList(outputList);
             }
         }
     }

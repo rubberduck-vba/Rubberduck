@@ -182,7 +182,7 @@ Dim bar As Boolean, _
 bat As Date, _
 bap As Integer
 End Sub";
-            var selection = new Selection(3, 10, 3, 13);
+            var selection = new Selection(3, 5, 3, 8);
 
             //Expectation
             const string expectedCode =
@@ -236,7 +236,7 @@ Dim bar As Boolean, _
 bat As Date, _
 bap As Integer
 End Sub";
-            var selection = new Selection(5, 10, 5, 13);
+            var selection = new Selection(5, 1, 5, 4);
 
             //Expectation
             const string expectedCode =
@@ -262,7 +262,7 @@ End Sub";
 ByRef baz As Date)
 Dim bar As Boolean, bat As Date, bap As Integer
 End Sub";
-            var selection = new Selection(3, 10, 3, 13);
+            var selection = new Selection(3, 5, 3, 7);
 
             //Expectation
             const string expectedCode =
@@ -349,7 +349,8 @@ End Sub";
 
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, ISelectionService selectionService)
         {
-            return new IntroduceFieldRefactoring(state, rewritingManager, selectionService);
+            var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
+            return new IntroduceFieldRefactoring(state, rewritingManager, selectionService, selectedDeclarationProvider);
         }
     }
 }

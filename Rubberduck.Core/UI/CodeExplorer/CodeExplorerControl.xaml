@@ -462,6 +462,17 @@
                       Command="{Binding OpenProjectPropertiesCommand}"
                       CommandParameter="{Binding SelectedItem, Mode=OneWay}" />
                     <Separator />
+                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=SyncProject}">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource SyncImage}" />
+                        </MenuItem.Icon>
+                        <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=UpdateFromFiles}"
+                                  Command="{Binding UpdateFromFilesCommand}"
+                                  CommandParameter="{Binding SelectedItem, Mode=OneWay}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=ReplaceFromFiles}"
+                                  Command="{Binding ReplaceProjectContentsFromFilesCommand}"
+                                  CommandParameter="{Binding SelectedItem, Mode=OneWay}" />
+                    </MenuItem>
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddModule}"
                           ItemsSource="{StaticResource AddModuleCommands}">
                         <MenuItem.Icon>

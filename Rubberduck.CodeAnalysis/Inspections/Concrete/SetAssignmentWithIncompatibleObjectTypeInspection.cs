@@ -22,7 +22,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 	/// <why>
 	/// The VBA compiler does not check whether different object types are compatible. Instead there is a runtime error whenever the types are incompatible.
 	/// </why>
-	/// <example hasResult="true">
+	/// <example hasresult="true">
 	/// <![CDATA[
 	/// IInterface:
 	///
@@ -49,7 +49,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 	/// End Sub
 	/// ]]>
 	/// </example>
-	/// <example hasResult="false">
+	/// <example hasresult="false">
 	/// <![CDATA[
 	/// IInterface:
 	///
@@ -104,7 +104,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                                                             && !SetAssignmentPossiblyLegal(setAssignmentWithAssignedTypeName));
 
             return offendingAssignments
-                .Where(setAssignmentWithAssignedTypeName => !IsIgnored(setAssignmentWithAssignedTypeName.setAssignment))
+                // Ignoring the Declaration disqualifies all assignments
+                .Where(setAssignmentWithAssignedTypeName => !setAssignmentWithAssignedTypeName.setAssignment.Declaration.IsIgnoringInspectionResultFor(AnnotationName))
                 .Select(setAssignmentWithAssignedTypeName => InspectionResult(setAssignmentWithAssignedTypeName, _declarationFinderProvider));
         }
 
@@ -167,13 +168,6 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             }
 
             return classType.Supertypes.Select(supertype => supertype.QualifiedModuleName.ToString()).Contains(typeName);
-        }
-
-        private bool IsIgnored(IdentifierReference assignment)
-        {
-            return assignment.IsIgnoringInspectionResultFor(AnnotationName)
-                   // Ignoring the Declaration disqualifies all assignments
-                   || assignment.Declaration.IsIgnoringInspectionResultFor(AnnotationName);
         }
 
         private IInspectionResult InspectionResult((IdentifierReference setAssignment, string assignedTypeName) setAssignmentWithAssignedType, IDeclarationFinderProvider declarationFinderProvider)

@@ -443,4 +443,13 @@ Continue?</value>
   <data name="CodeExplorer_ExtractInterfaceText" xml:space="preserve">
     <value>Extract Interface</value>
   </data>
+  <data name="SyncProject" xml:space="preserve">
+    <value>Sync Project</value>
+  </data>
+  <data name="UpdateFromFiles" xml:space="preserve">
+    <value>Update Components from Files...</value>
+  </data>
+  <data name="ReplaceFromFiles" xml:space="preserve">
+    <value>Replace Contents from Files...</value>
+  </data>
 </root>

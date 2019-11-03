@@ -11,11 +11,18 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorEncapsulateFieldCommand : RefactorCodePaneCommandBase
     {
         private readonly RubberduckParserState _state;
+        private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
 
-        public RefactorEncapsulateFieldCommand(EncapsulateFieldRefactoring refactoring, EncapsulateFieldFailedNotifier encapsulateFieldFailedNotifier, RubberduckParserState state, ISelectionService selectionService)
-            : base(refactoring, encapsulateFieldFailedNotifier, selectionService, state)
+        public RefactorEncapsulateFieldCommand(
+            EncapsulateFieldRefactoring refactoring, 
+            EncapsulateFieldFailedNotifier encapsulateFieldFailedNotifier, 
+            RubberduckParserState state, 
+            ISelectionProvider selectionProvider,
+            ISelectedDeclarationProvider selectedDeclarationProvider)
+            : base(refactoring, encapsulateFieldFailedNotifier, selectionProvider, state)
         {
             _state = state;
+            _selectedDeclarationProvider = selectedDeclarationProvider;
 
             AddToCanExecuteEvaluation(SpecializedEvaluateCanExecute);
         }
@@ -25,20 +32,20 @@ namespace Rubberduck.UI.Command.Refactorings
             var target = GetTarget();
 
             return target != null
-                && target.DeclarationType == DeclarationType.Variable
-                && !target.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member)
                 && !_state.IsNewOrModified(target.QualifiedModuleName);
         }
 
         private Declaration GetTarget()
         {
-            var activeSelection = SelectionService.ActiveSelection();
-            if (!activeSelection.HasValue)
+            var selectedDeclaration = _selectedDeclarationProvider.SelectedDeclaration();
+            if (selectedDeclaration == null
+                || selectedDeclaration.DeclarationType != DeclarationType.Variable
+                || selectedDeclaration.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member))
             {
                 return null;
             }
 
-            return _state.DeclarationFinder.FindSelectedDeclaration(activeSelection.Value);
+            return selectedDeclaration;
         }
     }
 }

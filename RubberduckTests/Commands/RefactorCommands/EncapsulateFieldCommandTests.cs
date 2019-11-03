@@ -56,9 +56,11 @@ End Sub";
         {
             var msgBox = new Mock<IMessageBox>().Object;
             var factory = new Mock<IRefactoringPresenterFactory>().Object;
-            var refactoring = new EncapsulateFieldRefactoring(state, null, factory, rewritingManager, selectionService);
+            var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
+            var refactoring = new EncapsulateFieldRefactoring(state, null, factory, rewritingManager, selectionService, selectedDeclarationProvider);
             var notifier = new EncapsulateFieldFailedNotifier(msgBox);
-            return new RefactorEncapsulateFieldCommand(refactoring, notifier, state, selectionService);
+            var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
+            return new RefactorEncapsulateFieldCommand(refactoring, notifier, state, selectionService, selectedDeclarationService);
         }
 
         protected override IVBE SetupAllowingExecution()

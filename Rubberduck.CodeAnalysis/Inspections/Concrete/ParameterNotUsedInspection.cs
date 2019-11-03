@@ -53,7 +53,7 @@ namespace Rubberduck.Inspections.Concrete
             var parameters = State.DeclarationFinder
                 .UserDeclarations(DeclarationType.Parameter)
                 .OfType<ParameterDeclaration>()
-                .Where(parameter => !parameter.References.Any() && !parameter.IsIgnoringInspectionResultFor(AnnotationName)
+                .Where(parameter => !parameter.References.Any()
                                     && parameter.ParentDeclaration.DeclarationType != DeclarationType.Event
                                     && parameter.ParentDeclaration.DeclarationType != DeclarationType.LibraryFunction
                                     && parameter.ParentDeclaration.DeclarationType != DeclarationType.LibraryProcedure

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -107,7 +108,7 @@ namespace Rubberduck.Root
             container.Register(Component.For<ISelectionChangeService>()
                 .ImplementedBy<SelectionChangeService>()
                 .LifestyleSingleton());
-            container.Register(Component.For<ISelectionService>()
+            container.Register(Component.For<ISelectionService, ISelectionProvider>()
                 .ImplementedBy<SelectionService>()
                 .LifestyleSingleton());
             container.Register(Component.For<AutoCompleteService>()
@@ -124,6 +125,10 @@ namespace Rubberduck.Root
             RegisterSourceCodeHandlers(container);
             RegisterParsingEngine(container);
             RegisterTypeLibApi(container);
+
+            container.Register(Component.For<ISelectedDeclarationProvider>()
+                .ImplementedBy<SelectedDeclarationProvider>()
+                .LifestyleSingleton());
 
             container.Register(Component.For<IRewritingManager>()
                 .ImplementedBy<RewritingManager>()
@@ -575,17 +580,24 @@ namespace Rubberduck.Root
 
         private Type[] RubberduckCommandBarItems()
         {
-            return new[]
+            var types = new List<Type>
             {
                 typeof(ReparseCommandMenuItem),
                 typeof(ShowParserErrorsCommandMenuItem),
                 typeof(ContextSelectionLabelMenuItem),
                 typeof(ContextDescriptionLabelMenuItem),
-                typeof(ReferenceCounterLabelMenuItem),
-#if DEBUG
-                typeof(SerializeProjectsCommandMenuItem)
-#endif
+                typeof(ReferenceCounterLabelMenuItem)
             };
+
+            AttachRubberduckDebugCommandBarItems(ref types);
+
+            return types.ToArray();
+        }
+
+        [Conditional("DEBUG")]
+        private static void AttachRubberduckDebugCommandBarItems(ref List<Type> types)
+        {
+            types.Add(typeof(SerializeProjectsCommandMenuItem));
         }
 
         private void RegisterParentMenus(IWindsorContainer container)

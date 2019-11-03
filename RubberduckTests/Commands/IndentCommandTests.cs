@@ -1,11 +1,5 @@
-using Moq;
 using NUnit.Framework;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.SmartIndenter;
-using Rubberduck.UI.Command;
-using Rubberduck.UI.Command.ComCommands;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -21,9 +15,10 @@ namespace RubberduckTests.Commands
         {
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule("", out component, Selection.Home);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
-                var noIndentAnnotationCommand = MockIndenter.ArrangeNoIndentAnnotationCommand(vbe, state);
+                var noIndentAnnotationCommand = MockIndenter.ArrangeNoIndentAnnotationCommand(vbe, state, rewritingManager);
                 noIndentAnnotationCommand.Execute(null);
 
                 Assert.AreEqual("'@NoIndent\r\n", component.CodeModule.Content());
@@ -51,10 +46,10 @@ End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, Selection.Home);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
-
-                var noIndentAnnotationCommand = MockIndenter.ArrangeNoIndentAnnotationCommand(vbe, state);
+                var noIndentAnnotationCommand = MockIndenter.ArrangeNoIndentAnnotationCommand(vbe, state, rewritingManager);
                 noIndentAnnotationCommand.Execute(null);
 
                 Assert.AreEqual(expected, component.CodeModule.Content());
@@ -69,10 +64,10 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule("", out component);
             vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
-
-                var noIndentAnnotationCommand = MockIndenter.ArrangeNoIndentAnnotationCommand(vbe, state);
+                var noIndentAnnotationCommand = MockIndenter.ArrangeNoIndentAnnotationCommand(vbe, state, rewritingManager);
                 Assert.IsFalse(noIndentAnnotationCommand.CanExecute(null));
             }
         }
@@ -85,10 +80,10 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule("'@NoIndent\r\n", out component);
             vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
-
-                var noIndentAnnotationCommand = MockIndenter.ArrangeNoIndentAnnotationCommand(vbe, state);
+                var noIndentAnnotationCommand = MockIndenter.ArrangeNoIndentAnnotationCommand(vbe, state, rewritingManager);
                 Assert.IsFalse(noIndentAnnotationCommand.CanExecute(null));
             }
         }

@@ -47,7 +47,6 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(w => !interfaceMembers.Contains(w) && !eventHandlers.Contains(w))
                 .Where(w => w.Accessibility == Parsing.Symbols.Accessibility.Public || w.Accessibility == Parsing.Symbols.Accessibility.Implicit)
                 .Where(w => w.IdentifierName.Contains('_'))
-                .Where(d => !d.IsIgnoringInspectionResultFor(AnnotationName))
                 .ToList();
 
             return names.Select(issue =>

@@ -231,9 +231,6 @@
   <data name="UndeclaredVariableInspection" xml:space="preserve">
     <value>Nedeklarovaná proměnná</value>
   </data>
-  <data name="ImplicitDefaultMemberAssignmentInspection" xml:space="preserve">
-    <value>Implicitní přiřazení výchozího člena</value>
-  </data>
   <data name="HungarianNotationInspection" xml:space="preserve">
     <value>Proměnná používá Maďarskou notaci.</value>
   </data>

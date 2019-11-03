@@ -2211,6 +2211,81 @@ End Sub
         [Category("Grammar")]
         [Category("Resolver")]
         [Test]
+        public void ObjectPrintExpr_IsReferenceToLocalVariable()
+        {
+            var code = @"
+Sub Test()
+    Dim obj As Object
+    Dim referenced As String
+    obj.Print referenced;referenced, referenced , referenced ;
+End Sub";
+            using (var state = Resolve(code))
+            {
+
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+
+                Assert.AreEqual(4, declaration.References.Count());
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void ObjectPrintExprsSeparatedByStatementSeparator_IsReferenceToLocalVariable()
+        {
+            var code = @"
+Sub Test()
+    Dim referenced As String
+    obj.Print referenced;referenced, referenced , referenced ; : obj.Print referenced; referenced , referenced ;
+End Sub";
+            using (var state = Resolve(code))
+            {
+                var declaration = state.AllUserDeclarations.Single(item =>
+                    item.DeclarationType == DeclarationType.Variable && item.IdentifierName == "referenced");
+
+                Assert.AreEqual(7, declaration.References.Count());
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        //This form is legal inside VB6 forms and other classes implementing the IVBPrint COM interface.
+        //To simplify the test we use a dummy Sub in the class instead, which cannot be defined in regular VBA.
+        public void UnqualifiedObjectPrintExpr_IsReferencePrintOnContainingModule()
+        {
+            var code = @"
+Sub Test()
+    Dim referenced As String
+    Print referenced;referenced, referenced , referenced ;
+End Sub
+
+Public Sub Print()
+End Sub
+";
+            using (var state = Resolve(code, false, ComponentType.ClassModule))
+            {
+                var referencedDeclaration = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.Variable)
+                    .Single(item => item.IdentifierName == "referenced");
+                var printDeclaration = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.Procedure)
+                    .Single(item => item.IdentifierName == "Print");
+                var printReference = printDeclaration.References.Single();
+
+                var module = state.DeclarationFinder.AllModules.Single(qmn => qmn.ComponentType == ComponentType.ClassModule);
+                var expectedPrintSelection = new QualifiedSelection(module, new Selection(4, 5,4, 10));
+                var actualPrintSelection = new QualifiedSelection(printReference.QualifiedModuleName, printReference.Selection);
+
+                Assert.AreEqual(4, referencedDeclaration.References.Count());
+                Assert.AreEqual(expectedPrintSelection, actualPrintSelection);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
         public void WriteStmt_IsReferenceToLocalVariable()
         {
             var code = @"
@@ -6632,6 +6707,475 @@ End Function
                 var failedAccesses = state.DeclarationFinder.FailedLetCoercions();
 
                 Assert.IsFalse(failedAccesses.Any());
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void AssertWithoutDebug_NoReferenceToDebugAssert()
+        {
+            var classCode = @"
+Public Function Foo(index As Variant) As Class1
+    Assert
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Test() As Variant
+    Assert
+End Function
+";
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, classCode)
+                .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var debugAssertDeclaration = state.DeclarationFinder
+                    .BuiltInDeclarations(DeclarationType.Procedure)
+                    .Single(declaration => declaration.IdentifierName.Equals("Assert")
+                                           && declaration.QualifiedModuleName.ComponentName.Equals("Debug"));
+                var debugAssertReferences = debugAssertDeclaration.References;
+
+                Assert.IsFalse(debugAssertReferences.Any());
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void AssertWithDebug_ReferenceToDebugAssert()
+        {
+            var classCode = @"
+Public Function Foo(index As Variant) As Class1
+    Debug.Assert False
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Test() As Variant
+    Debug.Assert False
+End Function
+";
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, classCode)
+                .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var debugAssertDeclaration = state.DeclarationFinder
+                    .BuiltInDeclarations(DeclarationType.Procedure)
+                    .Single(declaration => declaration.IdentifierName.Equals("Assert")
+                                           && declaration.QualifiedModuleName.ComponentName.Equals("Debug"));
+                var debugAssertReferences = debugAssertDeclaration.References;
+
+                Assert.AreEqual(2, debugAssertReferences.Count());
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void PrintWithoutDebug_NoReferenceToDebugPrint()
+        {
+            var classCode = @"
+Public Function Foo(index As Variant) As Class1
+    Print
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Test() As Variant
+    Print
+End Function
+";
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, classCode)
+                .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var debugPrintDeclaration = state.DeclarationFinder
+                    .BuiltInDeclarations(DeclarationType.Procedure)
+                    .Single(declaration => declaration.IdentifierName.Equals("Print")
+                                           && declaration.QualifiedModuleName.ComponentName.Equals("Debug"));
+                var debugPrintReferences = debugPrintDeclaration.References;
+
+                Assert.IsFalse(debugPrintReferences.Any());
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void PrintWithDebug_ReferenceToDebugPrint()
+        {
+            var classCode = @"
+Public Function Foo(index As Variant) As Class1
+    Debug.Print 42
+End Function
+";
+
+            var moduleCode = $@"
+Private Function Test() As Variant
+    Debug.Print 42
+End Function
+";
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, classCode)
+                .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var debugPrintDeclaration = state.DeclarationFinder
+                    .BuiltInDeclarations(DeclarationType.Procedure)
+                    .Single(declaration => declaration.IdentifierName.Equals("Print")
+                                           && declaration.QualifiedModuleName.ComponentName.Equals("Debug"));
+                var debugPrintReferences = debugPrintDeclaration.References;
+
+                Assert.AreEqual(2, debugPrintReferences.Count());
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void ExpressionInNextHasReference_For()
+        {
+            var moduleCode = $@"
+Private Sub Foo()
+   Dim loopIndex As Long
+   For loopIndex = 0 To 42
+      'DoSomething
+   Next loopIndex
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(moduleCode, out _);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var loopIndex = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Single(declaration => declaration.IdentifierName.Equals("loopIndex"));
+                var loopIndexReferences = loopIndex.References;
+
+                Assert.AreEqual(2, loopIndexReferences.Count());
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void ExpressionInNextHasReference_DoubleFor()
+        {
+            var moduleCode = $@"
+Private Sub Foo()
+   Dim loopIndex As Long
+   Dim otherLoopIndex As Long
+   For loopIndex = 0 To 42
+      For otherLoopIndex = 0 To 23
+         'DoSomething
+   Next otherLoopIndex, loopIndex
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(moduleCode, out _);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var loopIndex = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Single(declaration => declaration.IdentifierName.Equals("loopIndex"));
+                var otherLoopIndex = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Single(declaration => declaration.IdentifierName.Equals("otherLoopIndex"));
+                var loopIndexReferences = loopIndex.References;
+                var otherLoopIndexReferences = otherLoopIndex.References;
+
+                Assert.AreEqual(2, loopIndexReferences.Count());
+                Assert.AreEqual(2, otherLoopIndexReferences.Count());
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void ExpressionInNextHasReference_ForEach()
+        {
+            var moduleCode = $@"
+Private Sub Foo()
+   Dim coll As Collection
+   Dim element As Long
+   For Each element In coll
+      'DoSomething
+   Next element
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(moduleCode, out _);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var element = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Single(declaration => declaration.IdentifierName.Equals("element"));
+                var elementReferences = element.References;
+
+                Assert.AreEqual(2, elementReferences.Count());
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void ExpressionInNextHasReference_DoubleForEach()
+        {
+            var moduleCode = $@"
+Private Sub Foo()
+   Dim coll As Collection
+   Dim element As Variant
+   Dim otherElement As Variant
+   For Each element In coll
+      For Each otherElement In coll
+      'DoSomething
+   Next otherElement, element
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(moduleCode, out _);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var element = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Single(declaration => declaration.IdentifierName.Equals("element"));
+                var elementReferences = element.References;
+
+                Assert.AreEqual(2, elementReferences.Count());
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void HiddenEnumVariableHasCorrectName()
+        {
+            var moduleCode = $@"
+Private Enum SomeEnum
+    [_hiddenElement]
+End Enum
+
+Private Function Test() As Variant
+    Debug.Print SomeEnum.[_hiddenElement]
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(moduleCode, out _);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var enumMember = state.DeclarationFinder.UserDeclarations(DeclarationType.EnumerationMember).Single();
+                var enumMemberName = enumMember.IdentifierName;
+
+                Assert.AreEqual("_hiddenElement", enumMemberName);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void HiddenEnumVariableHasReference()
+        {
+            var moduleCode = $@"
+Private Enum SomeEnum
+    [_hiddenElement]
+End Enum
+
+Private Function Test() As Variant
+    Debug.Print SomeEnum.[_hiddenElement]
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(moduleCode, out _);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var enumMember = state.DeclarationFinder.UserDeclarations(DeclarationType.EnumerationMember).Single();
+                var enumMemberReferences = enumMember.References;
+
+                Assert.AreEqual(1, enumMemberReferences.Count());
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        [TestCase("nonHiddenElement")]
+        [TestCase("[nonHiddenElement]")]
+        [TestCase("")]
+        public void NonHiddenBracketedEnumVariableHasCorrectName(string enumElementName)
+        {
+            var moduleCode = $@"
+Private Enum SomeEnum
+    [{enumElementName}]
+End Enum
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(moduleCode, out _);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var enumMember = state.DeclarationFinder.UserDeclarations(DeclarationType.EnumerationMember).Single();
+                var enumMemberName = enumMember.IdentifierName;
+
+                Assert.AreEqual(enumElementName, enumMemberName);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        [TestCase("nonHiddenElement", "SomeEnum.nonHiddenElement", 1)]
+        [TestCase("[nonHiddenElement]", "SomeEnum.[nonHiddenElement]", 0)]
+        [TestCase("[nonHiddenElement]", "SomeEnum.[[nonHiddenElement]]", 1)]
+        [TestCase("nonHiddenElement", "nonHiddenElement", 1)]
+        [TestCase("[nonHiddenElement]", "[[nonHiddenElement]]", 1)]
+        [TestCase("", "SomeEnum.[]", 1)]
+        [TestCase("", "[]", 1)]
+        public void NonHiddenBracketedEnumVariableHasReference(string enumElementName, string referenceText, int expectedNumberOfReferences)
+        {
+            var moduleCode = $@"
+Private Enum SomeEnum
+    [{enumElementName}]
+End Enum
+
+Private Function Test() As Variant
+    Debug.Print {referenceText}
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(moduleCode, out _);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var enumMember = state.DeclarationFinder.UserDeclarations(DeclarationType.EnumerationMember).Single();
+                var enumMemberReferences = enumMember.References;
+
+                Assert.AreEqual(expectedNumberOfReferences, enumMemberReferences.Count());
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void BracketedEnumElementsCorrectElementReferenced()
+        {
+            var moduleCode = $@"
+Private Enum SomeEnum
+    enumElement
+    [[enumElement]]
+End Enum
+
+Private Function Test() As Variant
+    Debug.Print SomeEnum.[enumElement]
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(moduleCode, out _);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder
+                    .AllModules.Single(qmn => qmn.ComponentType == ComponentType.StandardModule);
+                var enumMemberReference = state.DeclarationFinder
+                    .IdentifierReferences(module)
+                    .Single(reference => reference.Declaration.DeclarationType == DeclarationType.EnumerationMember);
+
+                var referencedDeclarationName = enumMemberReference.Declaration.IdentifierName;
+
+                Assert.AreEqual("enumElement", referencedDeclarationName);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void BracketedEnumElementsCorrectElementReferencedIdentifierName()
+        {
+            var moduleCode = $@"
+Private Enum SomeEnum
+    enumElement
+    [[enumElement]]
+End Enum
+
+Private Function Test() As Variant
+    Debug.Print SomeEnum.[enumElement]
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(moduleCode, out _);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder
+                    .AllModules.Single(qmn => qmn.ComponentType == ComponentType.StandardModule);
+                var enumMemberReference = state.DeclarationFinder
+                    .IdentifierReferences(module)
+                    .Single(reference => reference.Declaration.DeclarationType == DeclarationType.EnumerationMember);
+
+                Assert.AreEqual("enumElement", enumMemberReference.IdentifierName);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        [TestCase("TestModule.[Foo]", "Foo")]
+        [TestCase("TestModule.[Bar] 23", "Bar")]
+        [TestCase("Debug.Print TestModule.[Baz](42)", "Baz")]
+        [TestCase("[Foo]", "Foo")]
+        [TestCase("[Bar] 23", "Bar")]
+        [TestCase("Debug.Print [Baz](42)", "Baz")]
+        public void BracketedMemberExpressionCorrectReferencedIdentifierName(string statement, string expectedReferenceText)
+        {
+            var moduleCode = $@"
+Private Sub Foo()
+End Sub
+
+Private Sub Bar(arg As Long)
+End Sub
+
+Private Function Baz(arg As Long) As Long
+End Function
+
+Private Function Test() As Variant
+    {statement}
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(moduleCode, "TestModule", out _);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var module = state.DeclarationFinder
+                    .AllModules.Single(qmn => qmn.ComponentType == ComponentType.StandardModule);
+                var enumMemberReference = state.DeclarationFinder
+                    .IdentifierReferences(module)
+                    .Single(reference => reference.Declaration.DeclarationType.HasFlag(DeclarationType.Member));
+
+                Assert.AreEqual(expectedReferenceText, enumMemberReference.IdentifierName);
             }
         }
     }

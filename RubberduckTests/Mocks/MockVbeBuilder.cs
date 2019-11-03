@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -19,7 +20,7 @@ namespace RubberduckTests.Mocks
         public const string TestProjectName = "TestProject1";
         public const string TestModuleName = "TestModule1";
         private readonly Mock<IVBE> _vbe;
-        private readonly Mock<IVbeEvents> _vbeEvents;     
+        private readonly Mock<IVbeEvents> _vbeEvents;
 
         #region standard library paths (referenced in all VBA projects hosted in Microsoft Excel)
         public static readonly string LibraryPathVBA = @"C:\PROGRA~1\COMMON~1\MICROS~1\VBA\VBA7.1\VBE7.DLL";      // standard library, priority locked
@@ -53,12 +54,21 @@ namespace RubberduckTests.Mocks
             ["ADOR"] = LibraryPathAdoRecordset
         };
 
+        private static readonly Dictionary<string, Func<MockProjectBuilder, MockProjectBuilder>> AddReference = new Dictionary<string, Func<MockProjectBuilder, MockProjectBuilder>>
+        {
+            ["Excel"] = (MockProjectBuilder builder) => builder.AddReference("Excel", LibraryPathMsExcel, 1, 8, true),
+            ["VBA"] = (MockProjectBuilder builder) => builder.AddReference("VBA", LibraryPathVBA, 4, 2, true),
+            ["Scripting"] = (MockProjectBuilder builder) => builder.AddReference("Scripting", LibraryPathScripting, 1, 0, true),
+            ["ADODB"] = (MockProjectBuilder builder) => builder.AddReference("ADODB", LibraryPathAdoDb, 6, 1, false),
+            ["MSForms"] = (MockProjectBuilder builder) => builder.AddReference("MSForms", LibraryPathMsForms, 2, 0, true),
+        };
+
         //private Mock<IWindows> _vbWindows;
         private readonly Windows _windows = new Windows();
 
         private Mock<IVBProjects> _vbProjects;
         private readonly ICollection<IVBProject> _projects = new List<IVBProject>();
-        
+
         private Mock<ICodePanes> _vbCodePanes;
         private readonly ICollection<ICodePane> _codePanes = new List<ICodePane>();
 
@@ -167,7 +177,7 @@ namespace RubberduckTests.Mocks
         }
 
         /// <summary>
-        /// Builds a mock VBE containing multiple standard modules.
+        /// Builds a mock VBE containing a single "TestProject1" and multiple standard modules.
         /// </summary>
         public static Mock<IVBE> BuildFromStdModules(params (string name, string content)[] modules)
         {
@@ -175,7 +185,7 @@ namespace RubberduckTests.Mocks
         }
 
         /// <summary>
-        /// Builds a mock VBE containing one project with multiple modules.
+        /// Builds a mock VBE containing a single "TestProject1" with multiple modules.
         /// </summary>
         public static Mock<IVBE> BuildFromModules(params (string name, string content, ComponentType componentType)[] modules)
         {
@@ -183,16 +193,39 @@ namespace RubberduckTests.Mocks
         }
 
         /// <summary>
-        /// Builds a mock VBE containing one project with multiple modules.
+        /// Builds a mock VBE containing a single "TestProject1" with multiple modules.
         /// </summary>
         public static Mock<IVBE> BuildFromModules(IEnumerable<(string name, string content, ComponentType componentType)> modules)
+            => BuildFromModules(modules, Enumerable.Empty<string>());
+
+        /// <summary>
+        /// Builds a mock VBE containing a single "TestProject1" with one module and one or more libraries.
+        /// </summary>
+        public static Mock<IVBE> BuildFromModules((string name, string content, ComponentType componentType) module, params string[] libraries)
+            => BuildFromModules(new (string, string, ComponentType)[] { module }, libraries);
+
+        /// <summary>
+        /// Builds a mock VBE containing a single "TestProject1" with multiple modules and libraries.
+        /// </summary>
+        public static Mock<IVBE> BuildFromModules(IEnumerable<(string name, string content, ComponentType componentType)> modules, IEnumerable<string> libraryNames)
+            => BuildFromModules(TestProjectName, modules, libraryNames);
+
+        /// <summary>
+        /// Builds a mock VBE containing one project with multiple modules and libraries.
+        /// </summary>
+        public static Mock<IVBE> BuildFromModules(string projectName, IEnumerable<(string name, string content, ComponentType componentType)> modules, IEnumerable<string> libraryNames)
         {
             var vbeBuilder = new MockVbeBuilder();
 
-            var builder = vbeBuilder.ProjectBuilder(TestProjectName, ProjectProtection.Unprotected);
+            var builder = vbeBuilder.ProjectBuilder(projectName, ProjectProtection.Unprotected);
             foreach (var (name, content, componentType) in modules)
             {
                 builder.AddComponent(name, componentType, content);
+            }
+
+            foreach (var name in libraryNames)
+            {
+                AddReference[name](builder);
             }
 
             var project = builder.Build();

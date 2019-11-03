@@ -1,14 +1,14 @@
 ﻿using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class ExcelUdfNameIsValidCellReferenceInspectionTests
+    public class ExcelUdfNameIsValidCellReferenceInspectionTests : InspectionTestsBase
     {
         [TestCase("a1")]
         [TestCase("A1")]
@@ -105,24 +105,12 @@ End {1}
             Assert.AreEqual(0, InspectionResultCount(string.Format(codeTemplate, signature, ending), ComponentType.StandardModule));
         }
 
-        private static int InspectionResultCount(string inputCode, ComponentType moduleType)
+        private int InspectionResultCount(string inputCode, ComponentType moduleType)
+            => InspectionResultsForModules(("UnderTest", inputCode, moduleType), "Excel").Count();
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("UnderTest", moduleType, inputCode)
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
-                .Build();
-
-            var vbe = builder.AddProject(project).Build();
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ExcelUdfNameIsValidCellReferenceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                return inspectionResults.Count();
-            }
+            return new ExcelUdfNameIsValidCellReferenceInspection(state);
         }
     }
 }
