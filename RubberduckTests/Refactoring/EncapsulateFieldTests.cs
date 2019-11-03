@@ -68,6 +68,87 @@ End Type
             StringAssert.Contains("Private this As TBar", actualCode);
             StringAssert.Contains("this = value", actualCode);
             StringAssert.Contains($"MyType = this", actualCode);
+            StringAssert.DoesNotContain($"this.First = value", actualCode);
+        }
+
+        [TestCase("Public")]
+        [TestCase("Private")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void EncapsulateUserDefinedTypeMembers(string accessibility)
+        {
+            string inputCode =
+$@"
+Private Type TBar
+    First As String
+    Second As Long
+End Type
+
+{accessibility} this As TBar";
+
+            var selection = new Selection(7, 10); //Selects 'this' declaration
+
+            var ruleTBar = new EncapsulateUDTVariableRule();
+            ruleTBar.VariableName = "this";
+            ruleTBar.EncapsulateAllUDTMembers = true;
+            ruleTBar.EncapsulateVariable = true;
+
+            var presenterAction = SetParameters("MyType", implementLet: true, rule: ruleTBar); //, encapsulateTypeMembers: true);
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            StringAssert.Contains("Private this As TBar", actualCode);
+            StringAssert.Contains("this = value", actualCode);
+            StringAssert.Contains("MyType = this", actualCode);
+            Assert.AreEqual(actualCode.IndexOf("MyType = this"), actualCode.LastIndexOf("MyType = this"));
+            StringAssert.Contains($"this.First = value", actualCode);
+            StringAssert.Contains($"First = this.First", actualCode);
+            StringAssert.Contains($"this.Second = value", actualCode);
+            StringAssert.Contains($"Second = this.Second", actualCode);
+        }
+
+        [TestCase("Public")]
+        [TestCase("Private")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void EncapsulateUserDefinedTypeMembers_ExternallyDefinedType(string accessibility)
+        {
+            string inputCode =
+$@"
+Option Explicit
+
+{accessibility} this As TBar";
+
+            string typeDefinition =
+$@"
+Public Type TBar
+    First As String
+    Second As Long
+End Type
+";
+
+            var selection = new Selection(4, 10); //Selects 'this' declaration
+
+            var presenterAction = SetParameters("MyType", implementLet: true); //, encapsulateTypeMembers: true);
+            var actualModuleCode = RefactoredCode(
+                "Class1",
+                selection,
+                presenterAction,
+                null,
+                false,
+                ("Class1", inputCode, ComponentType.ClassModule),
+                ("Module1", typeDefinition, ComponentType.StandardModule));
+
+            Assert.AreEqual(typeDefinition, actualModuleCode["Module1"]);
+
+
+            var actualCode = actualModuleCode["Class1"];
+            StringAssert.Contains("Private this As TBar", actualCode);
+            StringAssert.Contains("this = value", actualCode);
+            StringAssert.Contains("MyType = this", actualCode);
+            Assert.AreEqual(actualCode.IndexOf("MyType = this"), actualCode.LastIndexOf("MyType = this"));
+            StringAssert.Contains($"this.First = value", actualCode);
+            StringAssert.Contains($"First = this.First", actualCode);
+            StringAssert.Contains($"this.Second = value", actualCode);
+            StringAssert.Contains($"Second = this.Second", actualCode);
         }
 
         [Test]
@@ -590,7 +671,8 @@ End Property
             string propertyName,
             bool implementSet = false,
             bool implementLet = false,
-            string parameterName = "value")
+            string parameterName = "value",
+            EncapsulateUDTVariableRule rule = new EncapsulateUDTVariableRule())
         {
             return model =>
             {
@@ -598,6 +680,7 @@ End Property
                 model.ParameterName = parameterName;
                 model.ImplementLetSetterType = implementLet;
                 model.ImplementSetSetterType = implementSet;
+                model.ModifyUDTRule(rule);
                 return model;
             };
         }
