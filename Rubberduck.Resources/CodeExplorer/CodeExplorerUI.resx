@@ -440,6 +440,9 @@ Continue?</value>
     
 {0}</value>
   </data>
+  <data name="CodeExplorer_ExtractInterfaceText" xml:space="preserve">
+    <value>Extract Interface</value>
+  </data>
   <data name="SyncProject" xml:space="preserve">
     <value>Sync Project</value>
   </data>
