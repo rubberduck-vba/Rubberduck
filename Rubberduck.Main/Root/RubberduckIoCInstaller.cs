@@ -108,7 +108,7 @@ namespace Rubberduck.Root
             container.Register(Component.For<ISelectionChangeService>()
                 .ImplementedBy<SelectionChangeService>()
                 .LifestyleSingleton());
-            container.Register(Component.For<ISelectionService>()
+            container.Register(Component.For<ISelectionService, ISelectionProvider>()
                 .ImplementedBy<SelectionService>()
                 .LifestyleSingleton());
             container.Register(Component.For<AutoCompleteService>()
@@ -125,6 +125,10 @@ namespace Rubberduck.Root
             RegisterSourceCodeHandlers(container);
             RegisterParsingEngine(container);
             RegisterTypeLibApi(container);
+
+            container.Register(Component.For<ISelectedDeclarationProvider>()
+                .ImplementedBy<SelectedDeclarationProvider>()
+                .LifestyleSingleton());
 
             container.Register(Component.For<IRewritingManager>()
                 .ImplementedBy<RewritingManager>()

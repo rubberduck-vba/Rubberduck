@@ -5,7 +5,6 @@ using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Rewriter;
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Common;
 using Rubberduck.Parsing.VBA;
  using Rubberduck.Refactorings.Exceptions;
  using Rubberduck.VBEditor.Utility;
@@ -15,18 +14,31 @@ namespace Rubberduck.Refactorings.ReorderParameters
     public class ReorderParametersRefactoring : InteractiveRefactoringBase<IReorderParametersPresenter, ReorderParametersModel>
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
 
-        public ReorderParametersRefactoring(IDeclarationFinderProvider declarationFinderProvider, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
-        :base(rewritingManager, selectionService, factory)
+        public ReorderParametersRefactoring(
+            IDeclarationFinderProvider declarationFinderProvider, 
+            IRefactoringPresenterFactory factory, 
+            IRewritingManager rewritingManager,
+            ISelectionProvider selectionProvider,
+            ISelectedDeclarationProvider selectedDeclarationProvider)
+        :base(rewritingManager, selectionProvider, factory)
         {
             _declarationFinderProvider = declarationFinderProvider;
+            _selectedDeclarationProvider = selectedDeclarationProvider;
         }
 
         protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
         {
-            return _declarationFinderProvider.DeclarationFinder
-                .AllUserDeclarations
-                .FindTarget(targetSelection, ValidDeclarationTypes);
+            var selectedDeclaration = _selectedDeclarationProvider.SelectedDeclaration(targetSelection);
+            if (!ValidDeclarationTypes.Contains(selectedDeclaration.DeclarationType))
+            {
+                return selectedDeclaration.DeclarationType == DeclarationType.Parameter
+                    ? _selectedDeclarationProvider.SelectedMember(targetSelection)
+                    : null;
+            }
+
+            return selectedDeclaration;
         }
 
         protected override ReorderParametersModel InitializeModel(Declaration target)
@@ -70,17 +82,16 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         private ReorderParametersModel ResolvedEventTarget(ReorderParametersModel model)
         {
-            foreach (var events in _declarationFinderProvider
+            foreach (var eventDeclaration in _declarationFinderProvider
                 .DeclarationFinder
                 .UserDeclarations(DeclarationType.Event))
             {
                 if (_declarationFinderProvider.DeclarationFinder
-                    .AllUserDeclarations
-                    .FindHandlersForEvent(events)
-                    .Any(reference => Equals(reference.Item2, model.TargetDeclaration)))
+                    .FindEventHandlers(eventDeclaration)
+                    .Any(handler => Equals(handler, model.TargetDeclaration)))
                 {
                     model.IsEventRefactoring = true;
-                    model.TargetDeclaration = events;
+                    model.TargetDeclaration = eventDeclaration;
                     return model;
                 }
             }
@@ -220,8 +231,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 .Where(item => item.IsWithEvents && item.AsTypeName == model.TargetDeclaration.ComponentName))
             {
                 foreach (var reference in _declarationFinderProvider.DeclarationFinder
-                    .AllUserDeclarations
-                    .FindEventProcedures(withEvents))
+                    .FindHandlersForWithEventsField(withEvents))
                 {
                     AdjustReferences(model, reference.References, rewriteSession);
                     AdjustSignatures(model, reference, rewriteSession);

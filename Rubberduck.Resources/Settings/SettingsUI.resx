@@ -199,7 +199,7 @@
     <value>Configure which autocompletions are enabled.</value>
   </data>
   <data name="PageInstructions_GeneralSettings" xml:space="preserve">
-    <value>Click [Ok] to close the window and apply changes, or [Cancel] to discard them.</value>
+    <value>Click [{0}] to close the window and apply changes, or [{1}] to discard them.</value>
   </data>
   <data name="PageInstructions_IndenterSettings" xml:space="preserve">
     <value>Configure indenter settings.</value>

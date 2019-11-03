@@ -1053,19 +1053,6 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public Declaration FindSelectedDeclaration(ICodePane activeCodePane)
-        {
-            if (activeCodePane != null)
-            {
-                return DeclarationFinder?.FindSelectedDeclaration(activeCodePane);
-            }
-
-            using (var active = _vbe.ActiveCodePane)
-            {
-                return DeclarationFinder?.FindSelectedDeclaration(active);
-            }
-        }
-
         public void RemoveBuiltInDeclarations(string projectId)
         {
             foreach (var module in _moduleStates.Keys.Where(key => key.ProjectId == projectId))

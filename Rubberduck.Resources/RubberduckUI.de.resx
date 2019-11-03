@@ -1508,4 +1508,41 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   <data name="VersionCheck_BuildType_Release" xml:space="preserve">
     <value>Release</value>
   </data>
+  <data name="ImportCommand_UnsupportedFileExtensions" xml:space="preserve">
+    <value>Die Dateierweiterung der Datei '{0}' wird nicht unterstützt.
+
+Import abgebrochen.</value>
+  </data>
+  <data name="ReplaceProjectContentsFromFilesCommand_DialogCaption" xml:space="preserve">
+    <value>Projektinhalt durch Inhalt von Dateien ersetzen </value>
+  </data>
+  <data name="ReplaceProjectContentsFromFilesCommand_ConfirmationMessage" xml:space="preserve">
+    <value>Soll der Inhalt von Project '{0}' wirklich gelöscht und durch den Inhalt der ausgewählten Dateien ersetzt werden?</value>
+  </data>
+  <data name="UpdateFromFilesCommand_DialogCaption" xml:space="preserve">
+    <value>Komponenten aus Dateien aktualisieren</value>
+  </data>
+  <data name="UpdateFromFilesCommand_DuplicateModule" xml:space="preserve">
+    <value>Mehrere Dateien enthalten Code für die Komponente '{0}'.
+
+Import abgebrochen.</value>
+  </data>
+  <data name="UpdateFromFilesCommand_DifferentComponentType" xml:space="preserve">
+    <value>Der Komponententyp der existierenden Komponente '{0}' stimmt nicht mit dem dem zur Dateierweiterung der Datei '{1}' gehörenden überein.
+
+Import abgebrochen.</value>
+  </data>
+  <data name="UpdateFromFilesCommand_DocumentDoesNotExist" xml:space="preserve">
+    <value>Es existiert kein Dokumentenmodul namens '{0}', s.d. die Datei '{1}' nicht importiert werden kann.
+
+Import abgebrochen.</value>
+  </data>
+  <data name="UpdateFromFilesCommand_UserFormDoesNotExist" xml:space="preserve">
+    <value>Es existiert keine Userform namens '{0}', s.d. kein Codebehind einer Userform aus der Datei '{1}' überschrieben werden kann.
+
+Import abgebrochen.</value>
+  </data>
+  <data name="SaveAndClose" xml:space="preserve">
+    <value>Speichern &amp; Schließen</value>
+  </data>
 </root>

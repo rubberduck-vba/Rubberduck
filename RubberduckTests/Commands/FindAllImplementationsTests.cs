@@ -14,6 +14,7 @@ using Rubberduck.Interaction.Navigation;
 using Rubberduck.UI.Command.ComCommands;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace RubberduckTests.Commands
 {
@@ -383,7 +384,9 @@ End Sub";
             Mock<IVBE> vbe, ISearchResultsWindowViewModel viewModel, FindAllImplementationsService finder,
             Mock<IVbeEvents> vbeEvents)
         {
-            return new FindAllImplementationsCommand(state, vbe.Object, viewModel, finder, vbeEvents.Object);
+            var selectionService = new SelectionService(vbe.Object, state.ProjectsProvider);
+            var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
+            return new FindAllImplementationsCommand(state, selectedDeclarationService, viewModel, finder, vbeEvents.Object);
         }
     }
 }

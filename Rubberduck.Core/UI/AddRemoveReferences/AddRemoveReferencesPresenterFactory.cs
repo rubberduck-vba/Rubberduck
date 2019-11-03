@@ -188,10 +188,41 @@ namespace Rubberduck.UI.AddRemoveReferences
 
         public AddRemoveReferencesPresenter Create()
         {
-            using (var pane = _vbe.ActiveCodePane)
+            var selectedProject = SelectedProjectDeclaration();
+            return selectedProject is null
+                ? null
+                : Create(selectedProject);
+        }
+
+        private ProjectDeclaration SelectedProjectDeclaration()
+        {
+            var projectId = SelectedProjectId();
+
+            if (projectId == null)
             {
-                var selected = (ProjectDeclaration)Declaration.GetProjectParent(_state.DeclarationFinder.FindSelectedDeclaration(pane));
-                return selected is null ? null : Create(selected);
+                return null;
+            }
+
+            return _state.DeclarationFinder
+                .UserDeclarations(DeclarationType.Project)
+                .OfType<ProjectDeclaration>()
+                .FirstOrDefault(item => item.ProjectId.Equals(projectId));
+        }
+
+        private string SelectedProjectId()
+        {
+            using (var selectedComponent = _vbe.SelectedVBComponent)
+            {
+                using (var project = selectedComponent.ParentProject)
+                {
+
+                    if (project == null || project.IsWrappingNullReference)
+                    {
+                        return null;
+                    }
+
+                    return project.ProjectId;
+                }
             }
         }
     }

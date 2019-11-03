@@ -323,7 +323,7 @@ End Property
                 @"Public fizz, _
 buzz As Boolean, _
 bazz As Date";
-            var selection = new Selection(2, 12);
+            var selection = new Selection(2, 2);
 
             //Expectation
             const string expectedCode =
@@ -354,7 +354,7 @@ End Property
                 @"Public fizz, _
 buzz As Boolean, _
 bazz As Date";
-            var selection = new Selection(3, 12);
+            var selection = new Selection(3, 2);
 
             //Expectation
             const string expectedCode =
@@ -666,7 +666,8 @@ End Property
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
         {
             var indenter = CreateIndenter(); //The refactoring only uses method independent of the VBE instance.
-            return new EncapsulateFieldRefactoring(state, indenter, factory, rewritingManager, selectionService);
+            var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
+            return new EncapsulateFieldRefactoring(state, indenter, factory, rewritingManager, selectionService, selectedDeclarationProvider);
         }
 
         #endregion

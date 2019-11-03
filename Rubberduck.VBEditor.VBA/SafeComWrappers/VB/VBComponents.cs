@@ -7,6 +7,7 @@ using System.Text;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 using VB = Microsoft.Vbe.Interop;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
@@ -14,6 +15,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public sealed class VBComponents : SafeEventedComWrapper<VB.VBComponents, VB._dispVBComponentsEvents>, IVBComponents, VB._dispVBComponentsEvents
     {
+        private readonly IModuleNameFromFileExtractor _moduleNameFromFileExtractor = new ModuleNameFromFileExtractor();
+
         public VBComponents(VB.VBComponents target, bool rewrapping = false) 
             : base(target, rewrapping)
         {
@@ -82,7 +85,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
 
             var ext = Path.GetExtension(path);
-            var name = Path.GetFileNameWithoutExtension(path);
             if (!File.Exists(path))
             {
                 return null;
@@ -94,6 +96,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                     return null;
                 case ComponentTypeExtensions.DocClassExtension:
                 {
+                    var name = _moduleNameFromFileExtractor.ModuleName(path);
                     IVBComponent component = null;
                     try
                     {
@@ -116,6 +119,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 }
                 case ComponentTypeExtensions.FormExtension:
                 {
+                    var name = _moduleNameFromFileExtractor.ModuleName(path);
                     IVBComponent component = null;
                     try
                     {

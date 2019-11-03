@@ -18,8 +18,11 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
         private const string MemberBody = "    Err.Raise 5 'TODO implement interface member";
 
-        public ImplementInterfaceRefactoring(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager, ISelectionService selectionService)
-        :base(rewritingManager, selectionService)
+        public ImplementInterfaceRefactoring(
+            IDeclarationFinderProvider declarationFinderProvider, 
+            IRewritingManager rewritingManager,
+            ISelectionProvider selectionProvider)
+        :base(rewritingManager, selectionProvider)
         {
             _declarationFinderProvider = declarationFinderProvider;
         }

@@ -310,4 +310,13 @@ Fortfahren?</value>
     
 {0}</value>
   </data>
+  <data name="SyncProject" xml:space="preserve">
+    <value>Projekt synchronisieren</value>
+  </data>
+  <data name="UpdateFromFiles" xml:space="preserve">
+    <value>Komponenten aus Dateien aktualisieren...</value>
+  </data>
+  <data name="ReplaceFromFiles" xml:space="preserve">
+    <value>Projektinhalt durch Dateiinhalt ersetzen... </value>
+  </data>
 </root>
