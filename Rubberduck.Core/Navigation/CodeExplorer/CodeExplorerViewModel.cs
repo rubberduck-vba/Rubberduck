@@ -13,6 +13,7 @@ using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Templates;
@@ -229,10 +230,11 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             Unparsed = false;
 
-            if (e.State == ParserState.Ready)
+            if (e.State == ParserState.Ready && e.OldState != ParserState.Busy)
             {
                 // Finished up resolving references, so we can now update the reference nodes.
                 //We have to wait for the task to guarantee that no new parse starts invalidating all cached components.
+                //CAUTION: This must not be executed from the UI thread!!!
                 _uiDispatcher.StartTask(() =>
                 {
                     var referenceFolders = Projects.SelectMany(node =>
@@ -385,6 +387,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         public CopyResultsCommand CopyResultsCommand { get; set; }
         public CommandBase ExpandAllSubnodesCommand { get; }
         public ImportCommand ImportCommand { get; set; }
+        public UpdateFromFilesCommand UpdateFromFilesCommand { get; set; }
+        public ReplaceProjectContentsFromFilesCommand ReplaceProjectContentsFromFilesCommand { get; set; }
         public ExportCommand ExportCommand { get; set; }
         public ExportAllCommand ExportAllCommand { get; set; }
         public DeleteCommand DeleteCommand { get; set; }
