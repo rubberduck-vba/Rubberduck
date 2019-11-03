@@ -1,10 +1,4 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using Antlr4.Runtime;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.UI.Command.Refactorings.Notifiers;
@@ -16,8 +10,8 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorExtractInterfaceCommand : RefactorCodePaneCommandBase
     {
         private readonly RubberduckParserState _state;
+        private readonly ExtractInterfaceRefactoring _extractInterfaceRefactoring;
 
-        
         public RefactorExtractInterfaceCommand(
             ExtractInterfaceRefactoring refactoring, 
             ExtractInterfaceFailedNotifier extractInterfaceFailedNotifier, 
@@ -26,6 +20,7 @@ namespace Rubberduck.UI.Command.Refactorings
             :base(refactoring, extractInterfaceFailedNotifier, selectionProvider, state)
         {
             _state = state;
+            _extractInterfaceRefactoring = refactoring;
 
             AddToCanExecuteEvaluation(SpecializedEvaluateCanExecute);
         }
@@ -37,7 +32,7 @@ namespace Rubberduck.UI.Command.Refactorings
             {
                 return false;
             }
-            return ((ExtractInterfaceRefactoring)Refactoring).CanExecute(_state, activeSelection.Value.QualifiedName);
+            return _extractInterfaceRefactoring.CanExecute(_state, activeSelection.Value.QualifiedName);
         }
     }
 }

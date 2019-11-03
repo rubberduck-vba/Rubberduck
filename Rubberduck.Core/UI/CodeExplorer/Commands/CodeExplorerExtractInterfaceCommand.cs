@@ -16,13 +16,13 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             typeof(CodeExplorerComponentViewModel)
         };
 
-        private readonly IParserStatusProvider _state;
+        private readonly RubberduckParserState _state;
         private readonly ExtractInterfaceRefactoring _refactoring;
         private readonly ExtractInterfaceFailedNotifier _failureNotifier;
 
         public CodeExplorerExtractInterfaceCommand(
             ExtractInterfaceRefactoring refactoring,
-            IParserStatusProvider state,
+            RubberduckParserState state,
             ExtractInterfaceFailedNotifier failureNotifier,
             IVbeEvents vbeEvents) 
             : base(vbeEvents)
@@ -38,16 +38,16 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private bool SpecialEvaluateCanExecute(object parameter)
         {
-            return _state.Status == ParserState.Ready &&
-                   parameter is CodeExplorerComponentViewModel node &&
-                   _refactoring.CanExecute((RubberduckParserState)_state, node.QualifiedSelection.Value.QualifiedName);
+            return _state.Status == ParserState.Ready 
+                   && parameter is CodeExplorerComponentViewModel node 
+                   && _refactoring.CanExecute(_state, node.QualifiedSelection.Value.QualifiedName);
         }
 
         private bool FurtherCanExecuteEvaluation(object parameter)
         {
-            return _state.Status == ParserState.Ready &&
-                parameter is CodeExplorerItemViewModel node &&
-                node.Declaration != null;
+            return _state.Status == ParserState.Ready 
+                   && parameter is CodeExplorerItemViewModel node 
+                   && node.Declaration != null;
         }
 
         protected override void OnExecute(object parameter)

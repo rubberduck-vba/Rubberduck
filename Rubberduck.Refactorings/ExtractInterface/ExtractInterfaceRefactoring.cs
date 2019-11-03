@@ -142,6 +142,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             DeclarationType.UserForm
         };
 
+        //TODO: Redesign how refactoring commands are wired up to make this a responsibility of the command again. 
         public bool CanExecute(RubberduckParserState state, QualifiedModuleName qualifiedName)
         {
             var interfaceClass = state.AllUserDeclarations.SingleOrDefault(item =>
