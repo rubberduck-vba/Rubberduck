@@ -327,6 +327,15 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Extract Interface.
+        /// </summary>
+        public static string CodeExplorer_ExtractInterfaceText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_ExtractInterfaceText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Find All Implementations....
         /// </summary>
         public static string CodeExplorer_FindAllImplementationsText {

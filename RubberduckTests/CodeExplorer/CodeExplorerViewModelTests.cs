@@ -248,6 +248,31 @@ namespace RubberduckTests.CodeExplorer
 
         [Category("Code Explorer")]
         [Test]
+        [TestCase(ComponentType.ActiveXDesigner, ExpectedResult = true)]
+        [TestCase(ComponentType.ClassModule, ExpectedResult = true)]
+        [TestCase(ComponentType.ComComponent, ExpectedResult = true)]
+        [TestCase(ComponentType.DocObject, ExpectedResult = true)]
+        [TestCase(ComponentType.Document, ExpectedResult = true)]
+        [TestCase(ComponentType.MDIForm, ExpectedResult = true)]
+        [TestCase(ComponentType.PropPage, ExpectedResult = true)]
+        [TestCase(ComponentType.RelatedDocument, ExpectedResult = false, Ignore = "Project doesn't contain selectable modules")]
+        [TestCase(ComponentType.ResFile, ExpectedResult = false, Ignore = "Project doesn't contain selectable modules")]
+        [TestCase(ComponentType.StandardModule, ExpectedResult = false)]
+        [TestCase(ComponentType.Undefined, ExpectedResult = true)]
+        [TestCase(ComponentType.UserControl, ExpectedResult = true)]
+        [TestCase(ComponentType.UserForm, ExpectedResult = true)]
+        [TestCase(ComponentType.VBForm, ExpectedResult = true)]
+        public bool RefactorExtractInterface_CanExecuteBasedOnComponentType(ComponentType componentType)
+        {
+            using (var explorer = new MockedCodeExplorer(ProjectType.HostProject, componentType, @"Public Sub Foo():  MsgBox """":End Sub ")
+                .ImplementExtractIntercaceCommand().SelectFirstModule())
+            {
+                return explorer.ViewModel.CodeExplorerExtractInterfaceCommand.CanExecute(explorer.ViewModel.SelectedItem);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
         public void AddTestModule()
         {
             using (var explorer = new MockedCodeExplorer(ProjectType.HostProject).SelectFirstModule())

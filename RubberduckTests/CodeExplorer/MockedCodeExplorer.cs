@@ -460,6 +460,15 @@ namespace RubberduckTests.CodeExplorer
             return this;
         }
 
+        public MockedCodeExplorer ImplementExtractIntercaceCommand()
+        {
+            ViewModel.CodeExplorerExtractInterfaceCommand = new CodeExplorerExtractInterfaceCommand(
+                new Rubberduck.Refactorings.ExtractInterface.ExtractInterfaceRefactoring(
+                    State, State, null, null, null),
+                State, null, VbeEvents.Object);
+            return this;
+        }
+
         public MockedCodeExplorer ConfigureSaveDialog(string path, DialogResult result)
         {
             SaveDialog.Setup(o => o.FileName).Returns(path);

@@ -10,7 +10,11 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         protected readonly ISelectionProvider SelectionProvider;
 
-        protected RefactorCodePaneCommandBase(IRefactoring refactoring, IRefactoringFailureNotifier failureNotifier, ISelectionProvider selectionProvider, IParserStatusProvider parserStatusProvider)
+        protected RefactorCodePaneCommandBase(
+            IRefactoring refactoring, 
+            IRefactoringFailureNotifier failureNotifier, 
+            ISelectionProvider selectionProvider, 
+            IParserStatusProvider parserStatusProvider)
             : base (refactoring, failureNotifier, parserStatusProvider)
         {
             SelectionProvider = selectionProvider;
