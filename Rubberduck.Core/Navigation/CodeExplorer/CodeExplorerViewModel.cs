@@ -397,6 +397,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public AddRemoveReferencesCommand AddRemoveReferencesCommand { get; set; }
         public ICommand ClearSearchCommand { get; }
         public CommandBase SyncCodePaneCommand { get; }
+        public CodeExplorerExtractInterfaceCommand CodeExplorerExtractInterfaceCommand { get; set; }
 
         public ICodeExplorerNode FindVisibleNodeForDeclaration(Declaration declaration)
         {

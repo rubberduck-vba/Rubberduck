@@ -1,10 +1,4 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using Antlr4.Runtime;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.UI.Command.Refactorings.Notifiers;
@@ -16,7 +10,8 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorExtractInterfaceCommand : RefactorCodePaneCommandBase
     {
         private readonly RubberduckParserState _state;
-        
+        private readonly ExtractInterfaceRefactoring _extractInterfaceRefactoring;
+
         public RefactorExtractInterfaceCommand(
             ExtractInterfaceRefactoring refactoring, 
             ExtractInterfaceFailedNotifier extractInterfaceFailedNotifier, 
@@ -25,6 +20,7 @@ namespace Rubberduck.UI.Command.Refactorings
             :base(refactoring, extractInterfaceFailedNotifier, selectionProvider, state)
         {
             _state = state;
+            _extractInterfaceRefactoring = refactoring;
 
             AddToCanExecuteEvaluation(SpecializedEvaluateCanExecute);
         }
@@ -36,41 +32,7 @@ namespace Rubberduck.UI.Command.Refactorings
             {
                 return false;
             }
-
-            var interfaceClass = _state.AllUserDeclarations.SingleOrDefault(item =>
-                item.QualifiedName.QualifiedModuleName.Equals(activeSelection.Value.QualifiedName)
-                && ModuleTypes.Contains(item.DeclarationType));
-
-            if (interfaceClass == null)
-            {
-                return false;
-            }
-
-            // interface class must have members to be implementable
-            var hasMembers = _state.AllUserDeclarations.Any(item =>
-                item.DeclarationType.HasFlag(DeclarationType.Member)
-                && item.ParentDeclaration != null
-                && item.ParentDeclaration.Equals(interfaceClass));
-
-            if (!hasMembers)
-            {
-                return false;
-            }
-
-            var parseTree = _state.GetParseTree(interfaceClass.QualifiedName.QualifiedModuleName);
-            var context = ((ParserRuleContext)parseTree).GetDescendents<VBAParser.ImplementsStmtContext>();
-
-            // true if active code pane is for a class/document/form module
-            return !context.Any()
-                   && !_state.IsNewOrModified(interfaceClass.QualifiedModuleName)
-                   && !_state.IsNewOrModified(activeSelection.Value.QualifiedName);
+            return _extractInterfaceRefactoring.CanExecute(_state, activeSelection.Value.QualifiedName);
         }
-
-        private static readonly IReadOnlyList<DeclarationType> ModuleTypes = new[] 
-        {
-            DeclarationType.ClassModule,
-            DeclarationType.UserForm, 
-            DeclarationType.Document, 
-        };
     }
 }
