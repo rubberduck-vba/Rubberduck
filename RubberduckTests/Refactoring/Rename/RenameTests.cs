@@ -3193,12 +3193,8 @@ End Property";
 
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
         {
-//<<<<<<< HEAD
-//            return new RenameRefactoring(factory, state, state, state?.ProjectsProvider, rewritingManager, selectionService);
-//=======
             var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
             return new RenameRefactoring(factory, state, state?.ProjectsProvider, rewritingManager, selectionService, selectedDeclarationService, state);
-//>>>>>>> rubberduck-vba/next
         }
 
         #endregion

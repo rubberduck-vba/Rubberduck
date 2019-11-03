@@ -30,11 +30,6 @@ namespace Rubberduck.Refactorings.Rename
         private readonly IParseManager _parseManager;
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-//<<<<<<< HEAD
-
-//        public RenameRefactoring(IRefactoringPresenterFactory factory, IDeclarationFinderProvider declarationFinderProvider, IParseManager parseManager, IProjectsProvider projectsProvider, IRewritingManager rewritingManager, ISelectionService selectionService)
-//        :base(rewritingManager, selectionService, factory)
-//=======
         public RenameRefactoring(
             IRefactoringPresenterFactory factory, 
             IDeclarationFinderProvider declarationFinderProvider,
@@ -44,7 +39,6 @@ namespace Rubberduck.Refactorings.Rename
             ISelectedDeclarationProvider selectedDeclarationProvider,
             IParseManager parseManager)
         :base(rewritingManager, selectionProvider, factory)
-//>>>>>>> rubberduck-vba/next
         {
             _declarationFinderProvider = declarationFinderProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;
