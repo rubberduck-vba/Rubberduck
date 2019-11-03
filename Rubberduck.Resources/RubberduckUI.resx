@@ -1553,7 +1553,7 @@ NOTE: Restart is required for the setting to take effect.</value>
     <value>No code module found for the target module '{0}'.</value>
     <comment>{0}: name of module</comment>
   </data>
-  <data name="RenameFailure_TargetContriolNotFound" xml:space="preserve">
+  <data name="RenameFailure_TargetControlNotFound" xml:space="preserve">
     <value>Target control '{0}' not found.</value>
     <comment>{0}: name of control</comment>
   </data>
@@ -1646,6 +1646,9 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="AssignedByValDialog_MeaninglessNameFormat" xml:space="preserve">
     <value>{0} Consider choosing a different name.</value>
     <comment>{0} = Meaningless name message</comment>
+  </data>
+  <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
+    <value>Unable to suspend the Parser to perform the refactoring operation</value>
   </data>
   <data name="GeneralSettings_IncludePreRelease" xml:space="preserve">
     <value>Tell me if a newer pre-release build is available</value>

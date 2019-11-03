@@ -1397,7 +1397,7 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   <data name="RenameFailure_TargetModuleWithoutCodeModule" xml:space="preserve">
     <value>Es wurde kein Codemodul für das Zielmodul '{0}' gefunden.</value>
   </data>
-  <data name="RenameFailure_TargetContriolNotFound" xml:space="preserve">
+  <data name="RenameFailure_TargetControlNotFound" xml:space="preserve">
     <value>Es wurde das Zielkontrollelement '{0}' nicht gefunden.</value>
   </data>
   <data name="RenameFailure_StandardEventHandler" xml:space="preserve">

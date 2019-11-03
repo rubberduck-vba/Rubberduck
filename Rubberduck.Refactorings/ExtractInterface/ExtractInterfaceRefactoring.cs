@@ -64,20 +64,21 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         protected override void RefactorImpl(ExtractInterfaceModel model)
         {
-            AddInterface(model);
+            AddInterfaceWithSuspendedParser(model);
         }
 
-        private void AddInterface(ExtractInterfaceModel model)
+        private void AddInterfaceWithSuspendedParser(ExtractInterfaceModel model)
         {
             //We need to suspend here since adding the interface and rewriting will both trigger a reparse.
-            var suspendResult = _parseManager.OnSuspendParser(this, new[] {ParserState.Ready}, () => AddInterfaceInternal(model));
+            var suspendResult = _parseManager.OnSuspendParser(this, new[] {ParserState.Ready}, () => AddInterface(model));
             if (suspendResult != SuspensionResult.Completed)
             {
-                _logger.Warn("Extract interface failed.");
+                _logger.Warn($"{nameof(AddInterface)} failed because a parser suspension request could not be fulfilled.  The request's result was '{suspendResult.ToString()}'.");
+                throw new SuspendParserFailureException();
             }
         }
 
-        private void AddInterfaceInternal(ExtractInterfaceModel model)
+        private void AddInterface(ExtractInterfaceModel model)
         {
             var targetProject = model.TargetDeclaration.Project;
             if (targetProject == null)

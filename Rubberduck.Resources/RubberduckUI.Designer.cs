@@ -3004,6 +3004,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to suspend the Parser to perform the refactoring operation.
+        /// </summary>
+        public static string RefactoringFailure_SuspendParserFailure {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_SuspendParserFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The target is not user-defined..
         /// </summary>
         public static string RefactoringFailure_TargetNotUserDefined {
@@ -3763,9 +3772,9 @@ namespace Rubberduck.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Target control &apos;{0}&apos; not found..
         /// </summary>
-        public static string RenameFailure_TargetContriolNotFound {
+        public static string RenameFailure_TargetControlNotFound {
             get {
-                return ResourceManager.GetString("RenameFailure_TargetContriolNotFound", resourceCulture);
+                return ResourceManager.GetString("RenameFailure_TargetControlNotFound", resourceCulture);
             }
         }
         
