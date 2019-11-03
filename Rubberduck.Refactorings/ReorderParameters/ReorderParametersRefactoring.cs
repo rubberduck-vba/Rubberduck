@@ -5,7 +5,6 @@ using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Rewriter;
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Common;
 using Rubberduck.Parsing.VBA;
  using Rubberduck.Refactorings.Exceptions;
  using Rubberduck.VBEditor.Utility;
@@ -83,17 +82,16 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         private ReorderParametersModel ResolvedEventTarget(ReorderParametersModel model)
         {
-            foreach (var events in _declarationFinderProvider
+            foreach (var eventDeclaration in _declarationFinderProvider
                 .DeclarationFinder
                 .UserDeclarations(DeclarationType.Event))
             {
                 if (_declarationFinderProvider.DeclarationFinder
-                    .AllUserDeclarations
-                    .FindHandlersForEvent(events)
-                    .Any(reference => Equals(reference.Item2, model.TargetDeclaration)))
+                    .FindEventHandlers(eventDeclaration)
+                    .Any(handler => Equals(handler, model.TargetDeclaration)))
                 {
                     model.IsEventRefactoring = true;
-                    model.TargetDeclaration = events;
+                    model.TargetDeclaration = eventDeclaration;
                     return model;
                 }
             }

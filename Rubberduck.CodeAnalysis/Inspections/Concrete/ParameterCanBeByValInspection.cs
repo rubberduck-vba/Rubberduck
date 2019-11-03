@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
@@ -12,7 +11,6 @@ using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Extensions;
-using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -157,11 +155,8 @@ namespace Rubberduck.Inspections.Concrete
 
                 var parameterCanBeChangedToBeByVal = eventParameters.Select(parameter => parameter.IsByRef).ToList();
 
-                //todo: Find a better way to find the handlers.
                 var eventHandlers = State.DeclarationFinder
-                    .AllUserDeclarations
-                    .FindHandlersForEvent(memberDeclaration)
-                    .Select(s => s.Item2)
+                    .FindEventHandlers(memberDeclaration)
                     .ToList();
 
                 foreach (var eventHandler in eventHandlers.OfType<IParameterizedDeclaration>())

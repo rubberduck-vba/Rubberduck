@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
@@ -84,17 +83,16 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         private RemoveParametersModel ResolvedEventTarget(RemoveParametersModel model)
         {
-            foreach (var events in _declarationFinderProvider
+            foreach (var eventDeclaration in _declarationFinderProvider
                 .DeclarationFinder
                 .UserDeclarations(DeclarationType.Event))
             {
                 if (_declarationFinderProvider.DeclarationFinder
-                    .AllUserDeclarations
-                    .FindHandlersForEvent(events)
-                    .Any(reference => Equals(reference.Item2, model.TargetDeclaration)))
+                    .FindEventHandlers(eventDeclaration)
+                    .Any(handler => Equals(handler, model.TargetDeclaration)))
                 {
                     model.IsEventRefactoring = true;
-                    model.TargetDeclaration = events;
+                    model.TargetDeclaration = eventDeclaration;
                     return model;
                 }
             }
@@ -289,10 +287,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             RemoveSignatureParameters(model, model.TargetDeclaration, rewriteSession);
 
             var eventImplementations = _declarationFinderProvider.DeclarationFinder
-                .AllUserDeclarations
-                .Where(item => item.IsWithEvents && item.AsTypeName == model.TargetDeclaration.ComponentName)
-                .SelectMany(withEvents => _declarationFinderProvider.DeclarationFinder
-                    .FindHandlersForWithEventsField(withEvents));
+                .FindEventHandlers(model.TargetDeclaration);
 
             foreach (var eventImplementation in eventImplementations)
             {

@@ -306,7 +306,15 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         {
             return _eventHandlers.Value;
         }
-        
+
+        public IEnumerable<Declaration> FindEventHandlers(Declaration eventDeclaration)
+        {
+            var withEventsDeclarations = FindWithEventFields(eventDeclaration);
+            return withEventsDeclarations
+                .Select(withEventsField => FindHandlersForWithEventsField(withEventsField)
+                                            .Single(handler => handler.IdentifierName == $"{withEventsField.IdentifierName}_{eventDeclaration.IdentifierName}"));
+        }
+
         public IEnumerable<Declaration> FindFormControlEventHandlers()
         {
             return _controlEventHandlers.Value;
@@ -359,6 +367,16 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             return _handlersByWithEventsField.Value.TryGetValue(field, out var result) 
                 ? result 
                 : Enumerable.Empty<Declaration>();
+        }
+
+        public IEnumerable<Declaration> FindWithEventFields()
+        {
+            return _handlersByWithEventsField.Value.Keys;
+        }
+
+        public IEnumerable<Declaration> FindWithEventFields(Declaration eventDeclaration)
+        {
+            return FindWithEventFields().Where(withEventField => withEventField.AsTypeName == eventDeclaration.ComponentName);
         }
 
         /// <summary>

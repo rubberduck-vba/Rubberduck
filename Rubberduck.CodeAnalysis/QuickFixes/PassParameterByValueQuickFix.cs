@@ -1,5 +1,4 @@
 using System.Linq;
-using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
@@ -52,12 +51,14 @@ namespace Rubberduck.Inspections.QuickFixes
                 return; // should only happen if the parse results are stale; prevents a crash in that case
             }
 
-            //FIXME: Make this use the DeclarationFinder.
             var members = target.ParentDeclaration.DeclarationType == DeclarationType.Event
-                ? _state.AllUserDeclarations.FindHandlersForEvent(target.ParentDeclaration)
-                    .Select(s => s.Item2)
+                ? _state.DeclarationFinder
+                    .FindEventHandlers(target.ParentDeclaration)
                     .ToList()
-                : _state.DeclarationFinder.FindInterfaceImplementationMembers(target.ParentDeclaration).Cast<Declaration>().ToList();
+                : _state.DeclarationFinder
+                    .FindInterfaceImplementationMembers(target.ParentDeclaration)
+                    .Cast<Declaration>()
+                    .ToList();
 
             foreach (var member in members)
             {
