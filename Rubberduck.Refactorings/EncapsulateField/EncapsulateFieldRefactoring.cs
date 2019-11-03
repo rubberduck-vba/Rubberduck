@@ -18,14 +18,28 @@ namespace Rubberduck.Refactorings.EncapsulateField
     public class EncapsulateFieldRefactoring : InteractiveRefactoringBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
         private readonly IIndenter _indenter;
+//<<<<<<< HEAD
 
         private List<string> _properties;
         private List<string> _newFields;
-        public EncapsulateFieldRefactoring(IDeclarationFinderProvider declarationFinderProvider, IIndenter indenter, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
-        :base(rewritingManager, selectionService, factory)
+//        public EncapsulateFieldRefactoring(IDeclarationFinderProvider declarationFinderProvider, IIndenter indenter, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
+//        :base(rewritingManager, selectionService, factory)
+//=======
+        
+        public EncapsulateFieldRefactoring(
+            IDeclarationFinderProvider declarationFinderProvider, 
+            IIndenter indenter, 
+            IRefactoringPresenterFactory factory, 
+            IRewritingManager rewritingManager,
+            ISelectionProvider selectionProvider,
+            ISelectedDeclarationProvider selectedDeclarationProvider)
+        :base(rewritingManager, selectionProvider, factory)
+//>>>>>>> rubberduck-vba/next
         {
             _declarationFinderProvider = declarationFinderProvider;
+            _selectedDeclarationProvider = selectedDeclarationProvider;
             _indenter = indenter;
             _properties = new List<string>();
             _newFields = new List<string>();
@@ -33,27 +47,39 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
         {
-            var selectedDeclaration = _declarationFinderProvider.DeclarationFinder.FindSelectedDeclaration(targetSelection);
-            if (selectedDeclaration.DeclarationType.Equals(DeclarationType.Variable))
+            //<<<<<<< HEAD
+            //var selectedDeclaration = _declarationFinderProvider.DeclarationFinder.FindSelectedDeclaration(targetSelection);
+            //if (selectedDeclaration.DeclarationType.Equals(DeclarationType.Variable))
+            //{
+            //    return selectedDeclaration;
+            //}
+
+            ////TODO: the code below should no longer be needed after SelectionService PR
+            //var variableTarget = _declarationFinderProvider.DeclarationFinder
+            //    .UserDeclarations(DeclarationType.Variable)
+            //    .FindVariable(targetSelection);
+
+            //if (variableTarget is null)
+            //{
+            //    //TODO: This is blunt...handles only the simplest cases
+            //    //Need the ISelectionService PR
+            //    var udtMemberTargets = _declarationFinderProvider.DeclarationFinder
+            //    .UserDeclarations(DeclarationType.UserDefinedTypeMember);
+            //    return udtMemberTargets.FirstOrDefault();
+            //}
+
+            //return variableTarget;
+            //=======
+            var selectedDeclaration = _selectedDeclarationProvider.SelectedDeclaration(targetSelection);
+            if (selectedDeclaration == null
+                || selectedDeclaration.DeclarationType != DeclarationType.Variable
+                || selectedDeclaration.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member))
             {
-                return selectedDeclaration;
+                return null;
             }
 
-            //TODO: the code below should no longer be needed after SelectionService PR
-            var variableTarget = _declarationFinderProvider.DeclarationFinder
-                .UserDeclarations(DeclarationType.Variable)
-                .FindVariable(targetSelection);
-
-            if (variableTarget is null)
-            {
-                //TODO: This is blunt...handles only the simplest cases
-                //Need the ISelectionService PR
-                var udtMemberTargets = _declarationFinderProvider.DeclarationFinder
-                .UserDeclarations(DeclarationType.UserDefinedTypeMember);
-                return udtMemberTargets.FirstOrDefault();
-            }
-
-            return variableTarget;
+            return selectedDeclaration;
+            //>>>>>>> rubberduck-vba/next
         }
 
         protected override EncapsulateFieldModel InitializeModel(Declaration target)

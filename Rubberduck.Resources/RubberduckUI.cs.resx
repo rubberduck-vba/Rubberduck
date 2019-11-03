@@ -1372,7 +1372,7 @@ End Enum</value>
   <data name="ImplementInterfaceFailed_NoImplementsStatementSelected" xml:space="preserve">
     <value>Nebyl vybrán žádný příkaz implementace.</value>
   </data>
-  <data name="RenameFailure_TargetContriolNotFound" xml:space="preserve">
+  <data name="RenameFailure_TargetControlNotFound" xml:space="preserve">
     <value>Cílový control '{0}' nebyl nalezen.</value>
   </data>
   <data name="RenameFailure_TargetModuleWithoutCodeModule" xml:space="preserve">

@@ -376,9 +376,83 @@ End Property
             Assert.AreEqual(expectedCode, actualCode);
         }
 
+//<<<<<<< HEAD
         [TestCase(1, 10, "Public buzz", "Private fizz As Variant", "Public fizz")]
         [TestCase(2, 2, "Public fizz, _\r\nbazz", "Private buzz As Boolean", "")]
         [TestCase(3, 2, "Public fizz, _\r\nbuzz", "Private bazz As Date", "Boolean, bazz As Date")]
+//=======
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void EncapsulatePublicField_FieldDeclarationHasMultipleFields_MoveFirst()
+        {
+            //Input
+            const string inputCode =
+                @"Public fizz, _
+         buzz As Boolean, _
+         bazz As Date";
+            var selection = new Selection(1, 12);
+
+            //Expectation
+            const string expectedCode =
+                @"Public buzz As Boolean, _
+         bazz As Date
+Private fizz As Variant
+
+Public Property Get Name() As Variant
+    If IsObject(fizz) Then
+        Set Name = fizz
+    Else
+        Name = fizz
+    End If
+End Property
+
+Public Property Let Name(ByVal value As Variant)
+    fizz = value
+End Property
+
+Public Property Set Name(ByVal value As Variant)
+    Set fizz = value
+End Property
+";
+            var presenterAction = SetParameters("Name", implementSet: true, implementLet: true);
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void EncapsulatePublicField_FieldDeclarationHasMultipleFields_MoveSecond()
+        {
+            //Input
+            const string inputCode =
+                @"Public fizz, _
+buzz As Boolean, _
+bazz As Date";
+            var selection = new Selection(2, 2);
+
+            //Expectation
+            const string expectedCode =
+                @"Public fizz, _
+bazz As Date
+Private buzz As Boolean
+
+Public Property Get Name() As Boolean
+    Name = buzz
+End Property
+
+Public Property Let Name(ByVal value As Boolean)
+    buzz = value
+End Property
+";
+            var presenterAction = SetParameters("Name", implementLet: true);
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+//>>>>>>> rubberduck-vba/next
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         public void EncapsulatePublicField_SelectedWithinDeclarationList(int rowSelection, int columnSelection, string contains1, string contains2, string doesNotContain)
@@ -388,6 +462,10 @@ End Property
 $@"Public fizz, _
 buzz As Boolean, _
 bazz As Date";
+//<<<<<<< HEAD
+//=======
+//            var selection = new Selection(3, 2);
+//>>>>>>> rubberduck-vba/next
 
             var selection = new Selection(rowSelection, columnSelection);
             var presenterAction = SetParameters("Name", implementSet: true, implementLet: true);
@@ -693,7 +771,8 @@ End Property
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
         {
             var indenter = CreateIndenter(); //The refactoring only uses method independent of the VBE instance.
-            return new EncapsulateFieldRefactoring(state, indenter, factory, rewritingManager, selectionService);
+            var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
+            return new EncapsulateFieldRefactoring(state, indenter, factory, rewritingManager, selectionService, selectedDeclarationProvider);
         }
 
         #endregion

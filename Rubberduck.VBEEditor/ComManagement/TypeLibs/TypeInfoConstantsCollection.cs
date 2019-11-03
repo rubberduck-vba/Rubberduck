@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
-using Rubberduck.JunkDrawer.Hacks;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Unmanaged;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Utility;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
 

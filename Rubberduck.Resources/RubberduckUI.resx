@@ -1553,7 +1553,7 @@ NOTE: Restart is required for the setting to take effect.</value>
     <value>No code module found for the target module '{0}'.</value>
     <comment>{0}: name of module</comment>
   </data>
-  <data name="RenameFailure_TargetContriolNotFound" xml:space="preserve">
+  <data name="RenameFailure_TargetControlNotFound" xml:space="preserve">
     <value>Target control '{0}' not found.</value>
     <comment>{0}: name of control</comment>
   </data>
@@ -1647,6 +1647,9 @@ NOTE: Restart is required for the setting to take effect.</value>
     <value>{0} Consider choosing a different name.</value>
     <comment>{0} = Meaningless name message</comment>
   </data>
+  <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
+    <value>Unable to suspend the Parser to perform the refactoring operation</value>
+  </data>
   <data name="GeneralSettings_IncludePreRelease" xml:space="preserve">
     <value>Tell me if a newer pre-release build is available</value>
   </data>
@@ -1655,5 +1658,45 @@ NOTE: Restart is required for the setting to take effect.</value>
   </data>
   <data name="VersionCheck_BuildType_Release" xml:space="preserve">
     <value>release</value>
+  </data>
+  <data name="ImportCommand_UnsupportedFileExtensions" xml:space="preserve">
+    <value>The extension of the file '{0}' is not supported.
+
+Import aborted.</value>
+    <comment>{0} filename of unsupported file</comment>
+  </data>
+  <data name="ReplaceProjectContentsFromFilesCommand_DialogCaption" xml:space="preserve">
+    <value>Replace Project Content from Files</value>
+  </data>
+  <data name="ReplaceProjectContentsFromFilesCommand_ConfirmationMessage" xml:space="preserve">
+    <value>Do you really want to delete the contents of project '{0}' and replace them with the contents of the selected files?</value>
+    <comment>{0} project name</comment>
+  </data>
+  <data name="UpdateFromFilesCommand_DialogCaption" xml:space="preserve">
+    <value>Update Components from Files</value>
+  </data>
+  <data name="UpdateFromFilesCommand_DuplicateModule" xml:space="preserve">
+    <value>Multiple files contain code for the component '{0}'.
+
+Update aborted.</value>
+    <comment>{0} module name</comment>
+  </data>
+  <data name="UpdateFromFilesCommand_DifferentComponentType" xml:space="preserve">
+    <value>The component type of the existing component '{0}' does not agree with that indicated by the extension of file '{1}'.
+
+Update aborted.</value>
+    <comment>{0} module name, {1} filename</comment>
+  </data>
+  <data name="UpdateFromFilesCommand_DocumentDoesNotExist" xml:space="preserve">
+    <value>There is no existing document module with name '{0}'; file '{1}' cannot be imported.
+
+Update aborted.</value>
+    <comment>{0} module name, {1} filename</comment>
+  </data>
+  <data name="UpdateFromFilesCommand_UserFormDoesNotExist" xml:space="preserve">
+    <value>There is no user form with name '{0}'; no code behind can be updated from file '{1}'.
+
+Update aborted.</value>
+    <comment>{0} module name, {1} filename</comment>
   </data>
 </root>

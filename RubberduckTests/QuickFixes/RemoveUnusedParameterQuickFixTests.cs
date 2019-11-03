@@ -4,6 +4,7 @@ using NUnit.Framework;
 using Moq;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.RemoveParameters;
@@ -39,7 +40,8 @@ End Sub";
                 var selectionService = MockedSelectionService();
 
                 var factory = new Mock<IRefactoringPresenterFactory>().Object;
-                var refactoring = new RemoveParametersRefactoring(state, factory, rewritingManager, selectionService);
+                var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
+                var refactoring = new RemoveParametersRefactoring(state, factory, rewritingManager, selectionService, selectedDeclarationProvider);
                 new RemoveUnusedParameterQuickFix(refactoring)
                     .Fix(inspectionResults.First(), rewriteSession);
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());

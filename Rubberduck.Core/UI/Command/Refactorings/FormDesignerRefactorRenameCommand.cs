@@ -6,7 +6,6 @@ using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -16,7 +15,7 @@ namespace Rubberduck.UI.Command.Refactorings
         private readonly RubberduckParserState _state;
         private readonly IVBE _vbe;
 
-        public FormDesignerRefactorRenameCommand(RenameRefactoring refactoring, RenameFailedNotifier renameFailedNotifier, IVBE vbe, RubberduckParserState state, ISelectionService selectionService) 
+        public FormDesignerRefactorRenameCommand(RenameRefactoring refactoring, RenameFailedNotifier renameFailedNotifier, IVBE vbe, RubberduckParserState state) 
             : base (refactoring, renameFailedNotifier, state)
         {
             _state = state;

@@ -644,6 +644,101 @@ End Sub
             Assert.AreEqual(expectedModuleCode, actualModuleCode);
         }
 
+        [Test]
+        [Category("QuickFixes")]
+        public void OtherwiseIllegalDeclarationNamesAreEnclosedInBrackets()
+        {
+            var moduleCode = @"
+Private Sub Foo() 
+    Dim wkb As Excel.Workbook
+    Dim bar As Variant
+    bar = wkb.Sheets(""MySheet"").Range(""A1"").Value
+End Sub
+";
+
+            var expectedModuleCode = @"
+Private Sub Foo() 
+    Dim wkb As Excel.Workbook
+    Dim bar As Variant
+    bar = wkb.Sheets.[_Default](""MySheet"").Range(""A1"").Value
+End Sub
+";
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
+                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            var actualModuleCode = ApplyQuickFixToFirstInspectionResult(vbe.Object, "Module1", state => new IndexedDefaultMemberAccessInspection(state));
+            Assert.AreEqual(expectedModuleCode, actualModuleCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void SpecialDefaultMembersAreReplacedBasedOnName()
+        {
+            var moduleCode = @"
+Private Sub Foo() 
+    Dim baz As Excel.Range
+    Dim bar As Variant
+    Set bar = baz.Columns(""A"")
+    Set bar = baz.Cells(1,1)
+End Sub
+";
+
+            var expectedModuleCode = @"
+Private Sub Foo() 
+    Dim baz As Excel.Range
+    Dim bar As Variant
+    Set bar = baz.Columns.Item(""A"")
+    Set bar = baz.Cells.Item(1,1)
+End Sub
+";
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
+                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            var actualModuleCode = ApplyQuickFixToAllInspectionResults(vbe.Object, "Module1", state => new IndexedDefaultMemberAccessInspection(state));
+            Assert.AreEqual(expectedModuleCode, actualModuleCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void SpecialDefaultMembersAreReplacedBasedOnNameAndArgumentNumber()
+        {
+            var moduleCode = @"
+Private Sub Foo() 
+    Dim baz As Excel.Range
+    Dim bar As Variant
+    bar = baz
+End Sub
+";
+
+            var expectedModuleCode = @"
+Private Sub Foo() 
+    Dim baz As Excel.Range
+    Dim bar As Variant
+    bar = baz.Value
+End Sub
+";
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
+                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            var actualModuleCode = ApplyQuickFixToFirstInspectionResult(vbe.Object, "Module1", state => new ImplicitDefaultMemberAccessInspection(state));
+            Assert.AreEqual(expectedModuleCode, actualModuleCode);
+        }
+
         protected override IQuickFix QuickFix(RubberduckParserState state)
         {
             return new ExpandDefaultMemberQuickFix(state);

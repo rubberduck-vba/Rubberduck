@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using NLog;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
@@ -22,13 +23,18 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public ExtractInterfaceRefactoring(IDeclarationFinderProvider declarationFinderProvider, IParseManager parseManager, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
-        :base(rewritingManager, selectionService, factory)
+        public ExtractInterfaceRefactoring(
+            IDeclarationFinderProvider declarationFinderProvider, 
+            IParseManager parseManager, 
+            IRefactoringPresenterFactory factory, 
+            IRewritingManager rewritingManager,
+            ISelectionProvider selectionProvider)
+        :base(rewritingManager, selectionProvider, factory)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _parseManager = parseManager;
 
-            _implementInterfaceRefactoring = new ImplementInterfaceRefactoring(_declarationFinderProvider, RewritingManager, SelectionService);
+            _implementInterfaceRefactoring = new ImplementInterfaceRefactoring(_declarationFinderProvider, RewritingManager, SelectionProvider);
         }
 
         protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
@@ -58,20 +64,21 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         protected override void RefactorImpl(ExtractInterfaceModel model)
         {
-            AddInterface(model);
+            AddInterfaceWithSuspendedParser(model);
         }
 
-        private void AddInterface(ExtractInterfaceModel model)
+        private void AddInterfaceWithSuspendedParser(ExtractInterfaceModel model)
         {
             //We need to suspend here since adding the interface and rewriting will both trigger a reparse.
-            var suspendResult = _parseManager.OnSuspendParser(this, new[] {ParserState.Ready}, () => AddInterfaceInternal(model));
+            var suspendResult = _parseManager.OnSuspendParser(this, new[] {ParserState.Ready}, () => AddInterface(model));
             if (suspendResult != SuspensionResult.Completed)
             {
-                _logger.Warn("Extract interface failed.");
+                _logger.Warn($"{nameof(AddInterface)} failed because a parser suspension request could not be fulfilled.  The request's result was '{suspendResult.ToString()}'.");
+                throw new SuspendParserFailureException();
             }
         }
 
-        private void AddInterfaceInternal(ExtractInterfaceModel model)
+        private void AddInterface(ExtractInterfaceModel model)
         {
             var targetProject = model.TargetDeclaration.Project;
             if (targetProject == null)
@@ -135,5 +142,37 @@ namespace Rubberduck.Refactorings.ExtractInterface
             DeclarationType.Document,
             DeclarationType.UserForm
         };
+
+        //TODO: Redesign how refactoring commands are wired up to make this a responsibility of the command again. 
+        public bool CanExecute(RubberduckParserState state, QualifiedModuleName qualifiedName)
+        {
+            var interfaceClass = state.AllUserDeclarations.SingleOrDefault(item =>
+                item.QualifiedName.QualifiedModuleName.Equals(qualifiedName)
+                && ModuleTypes.Contains(item.DeclarationType));
+
+            if (interfaceClass == null)
+            {
+                return false;
+            }
+
+            // interface class must have members to be implementable
+            var hasMembers = state.AllUserDeclarations.Any(item =>
+                item.DeclarationType.HasFlag(DeclarationType.Member)
+                && item.ParentDeclaration != null
+                && item.ParentDeclaration.Equals(interfaceClass));
+
+            if (!hasMembers)
+            {
+                return false;
+            }
+
+            var parseTree = state.GetParseTree(interfaceClass.QualifiedName.QualifiedModuleName);
+            var context = ((Antlr4.Runtime.ParserRuleContext)parseTree).GetDescendents<VBAParser.ImplementsStmtContext>();
+
+            // true if active code pane is for a class/document/form module
+            return !context.Any()
+                   && !state.IsNewOrModified(interfaceClass.QualifiedModuleName)
+                   && !state.IsNewOrModified(qualifiedName);
+        }
     }
 }
