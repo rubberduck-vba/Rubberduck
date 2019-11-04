@@ -14,7 +14,6 @@ using System.Windows.Input;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
