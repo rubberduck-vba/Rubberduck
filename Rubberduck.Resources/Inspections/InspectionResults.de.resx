@@ -440,4 +440,22 @@ In Memoriam, 1972-2018</value>
   <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
     <value>Es wird vom Standardmember des Resultats des Ausdrucks '{1}' dem des Resultats des Ausdrucks '{0}' zugewiesen.</value>
   </data>
+  <data name="UnreachableCaseInspection" xml:space="preserve">
+    <value>Der Case-Zweig '{0}' kann niemals erreicht werden.</value>
+  </data>
+  <data name="UnreachableCaseInspection_CaseElse" xml:space="preserve">
+    <value>Der 'Case Else'-Zweig kann niemals erreicht werden.</value>
+  </data>
+  <data name="UnreachableCaseInspection_TypeMismatch" xml:space="preserve">
+    <value>Der Case-Ausdruck wird einen Laufzeitfehler 13 (Typkonflikt) verursachen.</value>
+  </data>
+  <data name="UnreachableCaseInspection_Overflow" xml:space="preserve">
+    <value>Der Case-Ausdruck wird den Laufzeitfehler 6 (Überlauf) verursachen.</value>
+  </data>
+  <data name="UnreachableCaseInspection_Unreachable" xml:space="preserve">
+    <value>Der Case-Ausdruck kann niemals erreicht werden.</value>
+  </data>
+  <data name="UnreachableCaseInspection_InherentlyUnreachable" xml:space="preserve">
+    <value>Bereichsbedingungen in Case-Ausdrücken müssen von der Form '[x] T [y]' sein, wobei [x] kleiner oder gleich [y] ist.</value>
+  </data>
 </root>

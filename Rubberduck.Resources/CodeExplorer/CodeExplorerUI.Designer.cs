@@ -129,7 +129,7 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Existing file....
+        ///   Looks up a localized string similar to Existing files....
         /// </summary>
         public static string CodeExplorer_AddExistingFileText {
             get {

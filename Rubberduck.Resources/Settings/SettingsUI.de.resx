@@ -228,4 +228,7 @@
   <data name="PageHeader_ReferenceSettings" xml:space="preserve">
     <value>Referenzeinstellingen</value>
   </data>
+  <data name="HotKeys_Exclamation" xml:space="preserve">
+    <value>Warnung! Kein Modifikator ausgewählt!</value>
+  </data>
 </root>

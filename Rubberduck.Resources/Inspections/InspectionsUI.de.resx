@@ -198,4 +198,7 @@
   <data name="ExportColumnHeader_Type" xml:space="preserve">
     <value>Typ</value>
   </data>
+  <data name="CodeInspection_SeverityFilter" xml:space="preserve">
+    <value>Schweregrad</value>
+  </data>
 </root>
