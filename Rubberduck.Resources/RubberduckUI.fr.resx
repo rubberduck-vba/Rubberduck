@@ -1385,7 +1385,7 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
     <value>La procédure qui utilise '{0}' contient déjà une déclaration utilisant cet identifiant.</value>
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
-    <value>Filtre</value>
+    <value />
   </data>
   <data name="GroupingStyle_ByName" xml:space="preserve">
     <value>Par inspection</value>
@@ -1404,7 +1404,6 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   </data>
   <data name="MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
     <value>'{0}' est accessible globalement, et est utilisé</value>
-    
   </data>
   <data name="SaveAndClose" xml:space="preserve">
     <value>Enregistrer &amp; Fermer</value>
