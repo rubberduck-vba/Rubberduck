@@ -6,7 +6,7 @@
              xmlns:codeInspections="clr-namespace:Rubberduck.UI.Inspections"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:abstract1="clr-namespace:Rubberduck.Parsing.Inspections.Abstract;assembly=Rubberduck.Parsing"
-			 xmlns: converters="clr-namespace:Rubberduck.UI.Inspections"
+			 xmlns:converters="clr-namespace:Rubberduck.UI.Inspections"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              ResxExtension.DefaultResxName="Rubberduck.Resources.RubberduckUI" 
              Language="{UICulture}"
