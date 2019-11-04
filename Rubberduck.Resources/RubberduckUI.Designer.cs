@@ -1666,7 +1666,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to filter by description.
+        ///   Looks up a localized string similar to Filter.
         /// </summary>
         public static string GroupingGrid_Filter {
             get {
