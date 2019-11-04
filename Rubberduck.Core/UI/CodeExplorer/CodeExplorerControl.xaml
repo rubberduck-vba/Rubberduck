@@ -43,6 +43,7 @@
             <BitmapImage x:Key="AddRemoveReferencesImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/node-select-all.png" />
             <BitmapImage x:Key="SyncImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/SyncArrows.png" />
             <BitmapImage x:Key="FontSizeImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/edit-size.png" />
+            <BitmapImage x:Key="ExtractInterfaceImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/ExtractInterface.png" />
 
             <converters:BooleanToNullableDoubleConverter x:Key="BoolToDouble" />
             <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
@@ -438,6 +439,13 @@
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Rename}"
                       Command="{Binding RenameCommand}"
                       CommandParameter="{Binding SelectedItem, Mode=OneWay}" />
+                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_ExtractInterfaceText}"
+                          Command="{Binding CodeExplorerExtractInterfaceCommand}"
+                          CommandParameter="{Binding SelectedItem, Mode=OneWay}">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource ExtractInterfaceImage}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
                     <Separator />
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_Caption}"
                           Command="{Binding AddRemoveReferencesCommand}"
@@ -454,6 +462,17 @@
                       Command="{Binding OpenProjectPropertiesCommand}"
                       CommandParameter="{Binding SelectedItem, Mode=OneWay}" />
                     <Separator />
+                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=SyncProject}">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource SyncImage}" />
+                        </MenuItem.Icon>
+                        <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=UpdateFromFiles}"
+                                  Command="{Binding UpdateFromFilesCommand}"
+                                  CommandParameter="{Binding SelectedItem, Mode=OneWay}" />
+                        <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=ReplaceFromFiles}"
+                                  Command="{Binding ReplaceProjectContentsFromFilesCommand}"
+                                  CommandParameter="{Binding SelectedItem, Mode=OneWay}" />
+                    </MenuItem>
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddModule}"
                           ItemsSource="{StaticResource AddModuleCommands}">
                         <MenuItem.Icon>

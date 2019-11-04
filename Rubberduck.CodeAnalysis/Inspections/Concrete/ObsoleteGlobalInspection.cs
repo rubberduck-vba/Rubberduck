@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;

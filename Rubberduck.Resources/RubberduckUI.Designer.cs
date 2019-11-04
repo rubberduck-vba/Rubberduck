@@ -1829,6 +1829,17 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The extension of the file &apos;{0}&apos; is not supported.
+        ///
+        ///Import aborted..
+        /// </summary>
+        public static string ImportCommand_UnsupportedFileExtensions {
+            get {
+                return ResourceManager.GetString("ImportCommand_UnsupportedFileExtensions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Current Project.
         /// </summary>
         public static string IndentCurrentProject {
@@ -2993,6 +3004,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to suspend the Parser to perform the refactoring operation.
+        /// </summary>
+        public static string RefactoringFailure_SuspendParserFailure {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_SuspendParserFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The target is not user-defined..
         /// </summary>
         public static string RefactoringFailure_TargetNotUserDefined {
@@ -3752,9 +3772,9 @@ namespace Rubberduck.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Target control &apos;{0}&apos; not found..
         /// </summary>
-        public static string RenameFailure_TargetContriolNotFound {
+        public static string RenameFailure_TargetControlNotFound {
             get {
-                return ResourceManager.GetString("RenameFailure_TargetContriolNotFound", resourceCulture);
+                return ResourceManager.GetString("RenameFailure_TargetControlNotFound", resourceCulture);
             }
         }
         
@@ -3872,6 +3892,24 @@ namespace Rubberduck.Resources {
         public static string ReparseToolTipText {
             get {
                 return ResourceManager.GetString("ReparseToolTipText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you really want to delete the contents of project &apos;{0}&apos; and replace them with the contents of the selected files?.
+        /// </summary>
+        public static string ReplaceProjectContentsFromFilesCommand_ConfirmationMessage {
+            get {
+                return ResourceManager.GetString("ReplaceProjectContentsFromFilesCommand_ConfirmationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace Project Content from Files.
+        /// </summary>
+        public static string ReplaceProjectContentsFromFilesCommand_DialogCaption {
+            get {
+                return ResourceManager.GetString("ReplaceProjectContentsFromFilesCommand_DialogCaption", resourceCulture);
             }
         }
         
@@ -4330,6 +4368,59 @@ namespace Rubberduck.Resources {
         public static string Type {
             get {
                 return ResourceManager.GetString("Type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Components from Files.
+        /// </summary>
+        public static string UpdateFromFilesCommand_DialogCaption {
+            get {
+                return ResourceManager.GetString("UpdateFromFilesCommand_DialogCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The component type of the existing component &apos;{0}&apos; does not agree with that indicated by the extension of file &apos;{1}&apos;.
+        ///
+        ///Update aborted..
+        /// </summary>
+        public static string UpdateFromFilesCommand_DifferentComponentType {
+            get {
+                return ResourceManager.GetString("UpdateFromFilesCommand_DifferentComponentType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is no existing document module with name &apos;{0}&apos;; file &apos;{1}&apos; cannot be imported.
+        ///
+        ///Update aborted..
+        /// </summary>
+        public static string UpdateFromFilesCommand_DocumentDoesNotExist {
+            get {
+                return ResourceManager.GetString("UpdateFromFilesCommand_DocumentDoesNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multiple files contain code for the component &apos;{0}&apos;.
+        ///
+        ///Update aborted..
+        /// </summary>
+        public static string UpdateFromFilesCommand_DuplicateModule {
+            get {
+                return ResourceManager.GetString("UpdateFromFilesCommand_DuplicateModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is no user form with name &apos;{0}&apos;; no code behind can be updated from file &apos;{1}&apos;.
+        ///
+        ///Update aborted..
+        /// </summary>
+        public static string UpdateFromFilesCommand_UserFormDoesNotExist {
+            get {
+                return ResourceManager.GetString("UpdateFromFilesCommand_UserFormDoesNotExist", resourceCulture);
             }
         }
         

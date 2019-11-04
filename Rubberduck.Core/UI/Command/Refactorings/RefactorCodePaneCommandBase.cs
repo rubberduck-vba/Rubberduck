@@ -1,6 +1,4 @@
-﻿using System;
-using NLog;
-using Rubberduck.Parsing.VBA;
+﻿using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.UI.Command.Refactorings.Notifiers;
@@ -10,24 +8,28 @@ namespace Rubberduck.UI.Command.Refactorings
 {
     public abstract class RefactorCodePaneCommandBase : RefactorCommandBase
     {
-        protected readonly ISelectionService SelectionService;
+        protected readonly ISelectionProvider SelectionProvider;
 
-        protected RefactorCodePaneCommandBase(IRefactoring refactoring, IRefactoringFailureNotifier failureNotifier, ISelectionService selectionService, IParserStatusProvider parserStatusProvider)
+        protected RefactorCodePaneCommandBase(
+            IRefactoring refactoring, 
+            IRefactoringFailureNotifier failureNotifier, 
+            ISelectionProvider selectionProvider, 
+            IParserStatusProvider parserStatusProvider)
             : base (refactoring, failureNotifier, parserStatusProvider)
         {
-            SelectionService = selectionService;
+            SelectionProvider = selectionProvider;
 
             AddToCanExecuteEvaluation(SpecializedEvaluateCanExecute);
         }
 
         private bool SpecializedEvaluateCanExecute(object parameter)
         {
-            return SelectionService.ActiveSelection().HasValue;
+            return SelectionProvider.ActiveSelection().HasValue;
         }
 
         protected override void OnExecute(object parameter)
         {
-            var activeSelection = SelectionService.ActiveSelection();
+            var activeSelection = SelectionProvider.ActiveSelection();
             if (!activeSelection.HasValue)
             {
                 return;

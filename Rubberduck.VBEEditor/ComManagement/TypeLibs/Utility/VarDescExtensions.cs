@@ -1,6 +1,7 @@
-﻿using System.Runtime.InteropServices.ComTypes;
+﻿using System;
+using System.Runtime.InteropServices.ComTypes;
 
-namespace Rubberduck.JunkDrawer.Hacks
+namespace Rubberduck.VBEditor.ComManagement.TypeLibs.Utility
 {
     public static class VarDescExtensions
     {
@@ -16,13 +17,22 @@ namespace Rubberduck.JunkDrawer.Hacks
         /// 
         /// There is a small but non-zero chance that there might be a valid pointer that happens to be only in high half of the address...
         /// in that case, it'll be wrong but since VBA is always writing <see cref="VARKIND.VAR_STATIC"/> to the <see cref="VARDESC.varkind"/>
-        /// field, we're kind of stuck...
+        /// field. To accommodate this unlikely possibility, we take advantage of VBA's other failure to comply with MS-OAUT specifications:
+        /// None of its constants has a valid member ID. Normally they are assigned <c>MEMBER_NIL</c> which makes them useless for enumeration. To
+        /// accommodate this, the TypeInfoWrapper in Rubberduck.VBEditor project will generate unique member IDs for those constants. Thus, we can use
+        /// the same range to infer that it's a constant assigned by the TypeInfoWrapper.
         /// </remarks>
         /// <param name="varDesc">The <see cref="VARDESC"/> from a VBA <see cref="ITypeInfo"/></param>
         /// <returns>True if this is most likely a constant. False when it's definitely not.</returns>
         public static bool IsValidVBAConstant(this VARDESC varDesc)
         {
-            return varDesc.varkind == VARKIND.VAR_STATIC && varDesc.desc.oInst != 0;
+            // TODO: Move the function to a better home and avoid duplication of constants (see TypeInfoWrapper)
+            const int _ourConstantsDispatchMemberIDRangeStart = unchecked((int)0xFEDC0000);
+            const int _ourConstantsDispatchMemberIDRangeBitmaskCheck = unchecked((int)0xFFFF0000);
+
+            return (varDesc.memid & _ourConstantsDispatchMemberIDRangeBitmaskCheck) >= _ourConstantsDispatchMemberIDRangeStart
+                && varDesc.varkind == VARKIND.VAR_STATIC 
+                && varDesc.desc.lpvarValue != IntPtr.Zero;
         }
     }
 }

@@ -163,9 +163,10 @@ End Property";
         {
             var factory = new Mock<IRefactoringPresenterFactory>().Object;
             var msgBox = new Mock<IMessageBox>().Object;
-            var refactoring = new ReorderParametersRefactoring(state, factory, rewritingManager, selectionService);
+            var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
+            var refactoring = new ReorderParametersRefactoring(state, factory, rewritingManager, selectionService, selectedDeclarationProvider);
             var notifier = new ReorderParametersFailedNotifier(msgBox);
-            return new RefactorReorderParametersCommand(refactoring, notifier, state, selectionService);
+            return new RefactorReorderParametersCommand(refactoring, notifier, state, selectionService, selectedDeclarationProvider);
         }
 
         protected override IVBE SetupAllowingExecution()
