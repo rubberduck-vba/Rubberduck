@@ -406,7 +406,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Document.
+        ///   Looks up a localized string similar to Document Module.
         /// </summary>
         public static string CodeInspections_ComponentType_Document {
             get {

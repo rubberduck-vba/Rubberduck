@@ -1712,7 +1712,7 @@ Update aborted.</value>
     <value>Document Object</value>
   </data>
   <data name="CodeInspections_ComponentType_Document" xml:space="preserve">
-    <value>Document</value>
+    <value>Document Module</value>
   </data>
   <data name="CodeInspections_ComponentType_MDIForm" xml:space="preserve">
     <value>MDI Form</value>
