@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.UI.Inspections
 {
@@ -11,7 +12,9 @@ namespace Rubberduck.UI.Inspections
         {
             if (value is QualifiedModuleName qualifiedModuleName)
             {
-                return $"{qualifiedModuleName} - {qualifiedModuleName.ComponentType}";
+                var componentTypeConverter = new ComponentTypeConverter();
+                var localizedComponentType = (string)componentTypeConverter.Convert(qualifiedModuleName.ComponentType, typeof(ComponentType), parameter, culture);
+                return $"{qualifiedModuleName} - {localizedComponentType}";
             }
 
             return Binding.DoNothing;
