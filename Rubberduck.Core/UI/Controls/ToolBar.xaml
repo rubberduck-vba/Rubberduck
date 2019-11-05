@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
-                    xmlns:converters="clr-namespace:Rubberduck.UI.Inspections">
+                    xmlns:converters="clr-namespace:Rubberduck.UI.Converters">
 
     <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
 
