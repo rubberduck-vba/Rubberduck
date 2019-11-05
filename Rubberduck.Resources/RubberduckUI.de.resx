@@ -1422,7 +1422,7 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
     <value>Der Typ des Ziels '{0}'ist '{1}' anstatt eines der erwarteten Typen '{2}'.</value>
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
-    <value />
+    <value>Filter</value>
   </data>
   <data name="GroupingStyle_ByName" xml:space="preserve">
     <value>Nach Codeuntersuchung</value>
@@ -1541,5 +1541,8 @@ Import abgebrochen.</value>
     <value>Es existiert keine Userform namens '{0}', s.d. kein Codebehind einer Userform aus der Datei '{1}' überschrieben werden kann.
 
 Import abgebrochen.</value>
+  </data>
+  <data name="SaveAndClose" xml:space="preserve">
+    <value>Speichern &amp; Schließen</value>
   </data>
 </root>
