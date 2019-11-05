@@ -91,8 +91,8 @@ namespace Rubberduck.Deployment.Build
         public string IncludeDir { get; set; }
 
         /// <summary>
-        /// Pipe-delimited list of DLL to generate TLBs from. Should contain only name & extension and exist in <see cref="SourceDir"/>.
-        /// </summary>
+        /// Pipe-delimited list of DLL to generate TLBs from. Should contain only name &amp; extension and exist in <see cref="SourceDir"/>.
+        /// </summary> 
         [Required]
         public string FilesToExtract { get; set; }
 
