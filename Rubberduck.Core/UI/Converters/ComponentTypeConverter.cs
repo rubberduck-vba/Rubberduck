@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows.Data;
 using Rubberduck.VBEditor.SafeComWrappers;
 
-namespace Rubberduck.UI.Inspections
+namespace Rubberduck.UI.Converters
 {
     class ComponentTypeConverter : IValueConverter
     {

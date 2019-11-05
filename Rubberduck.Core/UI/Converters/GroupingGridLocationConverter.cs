@@ -4,7 +4,7 @@ using System.Windows.Data;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 
-namespace Rubberduck.UI.Inspections
+namespace Rubberduck.UI.Converters
 {
     class GroupingGridLocationConverter : IValueConverter
     {
