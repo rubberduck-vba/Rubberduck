@@ -1439,8 +1439,8 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   <data name="References_BrowseButtonText" xml:space="preserve">
     <value>Durchsuchen...</value>
   </data>
-    <data name="SaveAndClose2" xml:space="preserve">
-    <value>Speichern &amp; Schließen2</value>
+    <data name="SaveAndClose" xml:space="preserve">
+    <value>Speichern &amp; Schließen</value>
   </data>
   <data name="RegexAssistant_EncloseWhitespace_EnclosingFormat" xml:space="preserve">
     <value>&lt;{0}&gt;</value>
