@@ -63,7 +63,19 @@ End Type
 
             var selection = new Selection(7, 10); //Selects 'this' declaration
 
-            var presenterAction = SetParameters("MyType", implementLet: true);
+            var ruleTBar = new EncapsulateUDTVariableRule("this")
+            {
+                EncapsulateAllUDTMembers = false,
+                EncapsulateVariable = true,
+            };
+
+            var attributes = new EncapsulationAttributes("this", "MyType", "TBar")
+            {
+                ImplementLetSetterType = true,
+                ImplementSetSetterType = false,
+            };
+
+            var presenterAction = SetParameters(attributes, ruleTBar); // "MyType", implementLet: true);
             var actualCode = RefactoredCode(inputCode, selection, presenterAction);
             StringAssert.Contains("Private this As TBar", actualCode);
             StringAssert.Contains("this = value", actualCode);
@@ -88,12 +100,17 @@ End Type
 
             var selection = new Selection(7, 10); //Selects 'this' declaration
 
-            var ruleTBar = new EncapsulateUDTVariableRule();
-            ruleTBar.VariableName = "this";
+            var ruleTBar = new EncapsulateUDTVariableRule("this");
             ruleTBar.EncapsulateAllUDTMembers = true;
             ruleTBar.EncapsulateVariable = true;
 
-            var presenterAction = SetParameters("MyType", implementLet: true, rule: ruleTBar); //, encapsulateTypeMembers: true);
+            var attributes = new EncapsulationAttributes("this", "MyType", "TBar")
+            {
+                ImplementLetSetterType = true,
+                ImplementSetSetterType = false,
+            };
+
+            var presenterAction = SetParameters(attributes, ruleTBar); // "MyType", implementLet: true, rule: ruleTBar); //, encapsulateTypeMembers: true);
             var actualCode = RefactoredCode(inputCode, selection, presenterAction);
             StringAssert.Contains("Private this As TBar", actualCode);
             StringAssert.Contains("this = value", actualCode);
@@ -103,6 +120,7 @@ End Type
             StringAssert.Contains($"First = this.First", actualCode);
             StringAssert.Contains($"this.Second = value", actualCode);
             StringAssert.Contains($"Second = this.Second", actualCode);
+            StringAssert.DoesNotContain($"Second = Second", actualCode);
         }
 
         [TestCase("Public")]
@@ -127,7 +145,19 @@ End Type
 
             var selection = new Selection(4, 10); //Selects 'this' declaration
 
-            var presenterAction = SetParameters("MyType", implementLet: true); //, encapsulateTypeMembers: true);
+            var ruleTBar = new EncapsulateUDTVariableRule("this")
+            {
+                EncapsulateAllUDTMembers = true,
+                EncapsulateVariable = true,
+            };
+
+            var attributes = new EncapsulationAttributes("this", "MyType", "TBar")
+            {
+                ImplementLetSetterType = true,
+                ImplementSetSetterType = false,
+            };
+
+            var presenterAction = SetParameters(attributes, ruleTBar); // "MyType", implementLet: true, rule: ruleTBar);
             var actualModuleCode = RefactoredCode(
                 "Class1",
                 selection,
@@ -149,6 +179,7 @@ End Type
             StringAssert.Contains($"First = this.First", actualCode);
             StringAssert.Contains($"this.Second = value", actualCode);
             StringAssert.Contains($"Second = this.Second", actualCode);
+            StringAssert.DoesNotContain($"Second = Second", actualCode);
         }
 
         [Test]
@@ -520,8 +551,15 @@ End Sub
 
 Sub Bar(ByVal v As Integer)
 End Sub";
+            var attributes = new EncapsulationAttributes()
+            {
+                PropertyName = "Name",
+                ParameterName = "value",
+                ImplementLetSetterType = true,
+                ImplementSetSetterType = false,
+            };
 
-            var presenterAction = SetParameters("Name", implementLet: true);
+            var presenterAction = SetParameters(attributes); // "Name", implementLet: true);
             var actualCode = RefactoredCode(
                 "Class1", 
                 selection, 
@@ -680,7 +718,35 @@ End Property
                 model.ParameterName = parameterName;
                 model.ImplementLetSetterType = implementLet;
                 model.ImplementSetSetterType = implementSet;
-                model.ModifyUDTRule(rule);
+                if (rule.VariableName != null)
+                {
+                    model.AddUDTVariableRule(rule);
+                }
+                return model;
+            };
+        }
+
+        private Func<EncapsulateFieldModel, EncapsulateFieldModel> SetParameters(EncapsulationAttributes attributes)
+        {
+            return model =>
+            {
+                model.PropertyName = attributes.PropertyName;
+                model.ParameterName = attributes.ParameterName;
+                model.ImplementLetSetterType = attributes.ImplementLetSetterType;
+                model.ImplementSetSetterType = attributes.ImplementSetSetterType;
+                return model;
+            };
+        }
+
+        private Func<EncapsulateFieldModel, EncapsulateFieldModel> SetParameters(EncapsulationAttributes attributes, EncapsulateUDTVariableRule rule)
+        {
+            return model =>
+            {
+                model.PropertyName = attributes.PropertyName;
+                model.ParameterName = attributes.ParameterName;
+                model.ImplementLetSetterType = attributes.ImplementLetSetterType;
+                model.ImplementSetSetterType = attributes.ImplementSetSetterType;
+                model.AddUDTVariableRule(rule);
                 return model;
             };
         }
