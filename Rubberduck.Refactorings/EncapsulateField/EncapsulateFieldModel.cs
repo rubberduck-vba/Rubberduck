@@ -1,288 +1,336 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.SmartIndenter;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public struct EncapsulateUDTVariableRule
+    public interface IEncapsulateFieldAttributes
     {
-        public Declaration Variable { set; get; }
-        private string _variableName;
-        public string VariableName
-        {
-            set { _variableName = value; }
-            get { return _variableName.Length == 0 ? Variable?.IdentifierName ?? string.Empty : _variableName;}
-        }
-        public Declaration UserDefinedType { set; get; }
-        public IEnumerable<Declaration> UserDefinedTypeMembers { set; get; }
-        public bool EncapsulateVariable { set; get; }
-        private bool _encapsulateAllUDTMembers;
-        public bool EncapsulateAllUDTMembers
-        {
-            set
-            {
-                _encapsulateAllUDTMembers = value;
-                if (value)
-                {
-                    UDTMembersToEncapsulate = UserDefinedTypeMembers;
-                }
-            }
-            get => _encapsulateAllUDTMembers;
-        }
-        public IEnumerable<Declaration> UDTMembersToEncapsulate { set; get; }
-    }
-
-    public interface IEncapsulateField
-    {
-        Declaration TargetDeclaration { get; set; }
-        string PropertyName { get; }
-        string ParameterName { get; }
-        bool ImplementLetSetterType { get;}
-        bool ImplementSetSetterType { get;}
-
+        string FieldName { set; get; }
+        string PropertyName { set; get; }
+        string ParameterName { set; get; }
+        bool ImplementLetSetterType { set; get; }
+        bool ImplementSetSetterType { set; get; }
         bool CanImplementLet { get; }
         bool CanImplementSet { get; }
     }
 
-    public interface IEncapsulateUDTMember : IEncapsulateField
+    public struct EncapsulateUDTVariableRule
     {
-        bool Encapsulate { set; get; }
-    }
-
-    public interface IEncapsulateFieldModel
-    {
-        IEnumerable<IEncapsulateField> EncapsulationTargets { get; }
-    }
-
-    public struct EncapsulateFieldConfig : IEncapsulateField
-    {
-        public EncapsulateFieldConfig(Declaration target)
+        public EncapsulateUDTVariableRule(string variableName, string propertyName = null, string asTypeName = "Variant")
         {
-            TargetDeclaration = target;
-            PropertyName = target.IdentifierName;
-            ParameterName = "value";
-            ImplementLetSetterType = true;
-            ImplementSetSetterType = true;
+            Attributes = new EncapsulationAttributes(variableName, propertyName ?? $"{variableName}_{Tokens.Type}", asTypeName);
+            EncapsulateVariable = true;
+            EncapsulateAllUDTMembers = false;
+        }
+        public EncapsulationAttributes Attributes { set; get; }
+        public string VariableName => Attributes?.FieldName ?? string.Empty;
+        public bool EncapsulateVariable { set; get; }
+        public bool EncapsulateAllUDTMembers { set; get; }
+    }
+
+    public class EncapsulationAttributes : IEncapsulateFieldAttributes
+    {
+        private static string DEFAULT_LET_PARAMETER = "value";
+        public EncapsulationAttributes()
+        {
+            FieldName = string.Empty;
+            PropertyName = string.Empty;
+            AsTypeName = string.Empty;
+            ParameterName = DEFAULT_LET_PARAMETER;
+            ImplementLetSetterType = false;
+            ImplementSetSetterType = false;
+            CanImplementLet = false;
+            CanImplementSet = false;
+            Encapsulate = false;
+        }
+
+        public EncapsulationAttributes(string fieldName, string propertyName, string asTypeName)
+        {
+            FieldName = fieldName;
+            PropertyName = propertyName;
+            AsTypeName = asTypeName;
+            ParameterName = DEFAULT_LET_PARAMETER;
+            ImplementLetSetterType = false;
+            ImplementSetSetterType = false;
             CanImplementLet = true;
             CanImplementSet = true;
-            Encapsulate = true;
-            AssignSetterAndLetterAvailability(target, out var canImplSet, out var canImplLet);
-            CanImplementLet = canImplLet;
-            CanImplementSet = canImplSet;
+            Encapsulate = false;
         }
 
-        public EncapsulateFieldConfig(IEncapsulateField config)
+        public EncapsulationAttributes(Declaration target)
         {
-            TargetDeclaration = config.TargetDeclaration;
-            PropertyName = config.PropertyName;
-            ParameterName = config.ParameterName;
-            ImplementLetSetterType = config.ImplementLetSetterType;
-            ImplementSetSetterType = config.ImplementSetSetterType;
-            CanImplementLet = config.CanImplementLet;
-            CanImplementSet = config.CanImplementSet;
-            Encapsulate = config is IEncapsulateUDTMember udt ? udt.Encapsulate : true;
+            FieldName = target.IdentifierName;
+            PropertyName = target.IdentifierName;
+            AsTypeName = target.AsTypeName;
+            ParameterName = DEFAULT_LET_PARAMETER;
+            ImplementLetSetterType = false;
+            ImplementSetSetterType = false;
+            Encapsulate = false;
+            IsVariant = target.AsTypeName?.Equals(Tokens.Variant) ?? true;
+            IsValueType = !IsVariant && (SymbolList.ValueTypes.Contains(target.AsTypeName) ||
+                                             target.DeclarationType == DeclarationType.Enumeration);
+            CanImplementLet = IsValueType || IsVariant;
+            CanImplementSet = !(IsValueType || IsVariant);
         }
 
-        public Declaration TargetDeclaration { get; set; }
+        public EncapsulationAttributes(EncapsulationAttributes attributes)
+        {
+            FieldName = attributes.FieldName;
+            PropertyName = attributes.PropertyName;
+            AsTypeName = attributes.AsTypeName;
+            ParameterName = attributes.ParameterName;
+            ImplementLetSetterType = attributes.ImplementLetSetterType;
+            ImplementSetSetterType = attributes.ImplementSetSetterType;
+            CanImplementLet = attributes.CanImplementLet;
+            CanImplementSet = attributes.CanImplementSet;
+            IsVariant = attributes.IsVariant;
+            IsValueType = attributes.IsValueType;
+            Encapsulate = false;
+        }
+
+        public string FieldName { get; set; }
         public string PropertyName { get; set; }
+        public string AsTypeName { get; set; }
         public string ParameterName { get; set; }
         public bool ImplementLetSetterType { get; set; }
         public bool ImplementSetSetterType { get; set; }
 
-        public bool CanImplementLet { get; private set; }
-        public bool CanImplementSet { get; private set; }
+        public bool CanImplementLet { get; set; }
+        public bool CanImplementSet { get; set; }
         public bool Encapsulate { get; set; }
-
-        private static void AssignSetterAndLetterAvailability(Declaration targetDeclaration, out bool canImplSet, out bool canImplLet)
-        {
-            var isVariant = targetDeclaration.AsTypeName.Equals(Tokens.Variant);
-            var isValueType = !isVariant && (SymbolList.ValueTypes.Contains(targetDeclaration.AsTypeName) ||
-                                             targetDeclaration.DeclarationType == DeclarationType.Enumeration);
-
-            canImplSet = !isValueType;
-            canImplLet = isValueType || isVariant;
-        }
+        public bool IsValueType { private set;  get; }
+        public bool IsVariant { private set;  get; }
     }
 
-    public struct EncapsulateUDTMemberConfig : IEncapsulateUDTMember
+    public class EncapsulateFieldModel : IRefactoringModel
     {
-        public EncapsulateUDTMemberConfig(Declaration target)
+        private Dictionary<Declaration,(Declaration, IEnumerable<Declaration>)> _udts = new Dictionary<Declaration, (Declaration, IEnumerable<Declaration>)>();
+        private readonly IIndenter _indenter;
+        private IList<EncapsulateFieldDeclaration> _fields = new List<EncapsulateFieldDeclaration>();
+        private IList<Declaration> _nonUdtVariables = new List<Declaration>();
+        private Dictionary<string,Declaration> _nonUdtVariablesByName = new Dictionary<string, Declaration>();
+        private EncapsulateFieldDeclaration _selectedTarget;
+
+        public EncapsulateFieldModel(Declaration target, IEnumerable<Declaration> nonUdtVariables, IEnumerable<(Declaration udtVariable, Declaration udt, IEnumerable<Declaration> udtMembers)> udtTuples, IIndenter indenter)
         {
-            TargetDeclaration = target;
-            PropertyName = target.IdentifierName;
-            ParameterName = "value";
-            ImplementLetSetterType = true;
-            ImplementSetSetterType = true;
-            CanImplementLet = true;
-            CanImplementSet = true;
-            Encapsulate = true;
-            AssignSetterAndLetterAvailability(target, out var canImplSet, out var canImplLet);
-            CanImplementLet = canImplLet;
-            CanImplementSet = canImplSet;
-        }
+            _indenter = indenter;
 
-        public EncapsulateUDTMemberConfig(IEncapsulateField config)
-        {
-            TargetDeclaration = config.TargetDeclaration;
-            PropertyName = config.PropertyName;
-            ParameterName = config.ParameterName;
-            ImplementLetSetterType = config.ImplementLetSetterType;
-            ImplementSetSetterType = config.ImplementSetSetterType;
-            CanImplementLet = config.CanImplementLet;
-            CanImplementSet = config.CanImplementSet;
-            Encapsulate = config is IEncapsulateUDTMember udt ? udt.Encapsulate : true;
-        }
-
-        public Declaration TargetDeclaration { get; set; }
-        public string PropertyName { get; set; }
-        public string ParameterName { get; set; }
-        public bool ImplementLetSetterType { get; set; }
-        public bool ImplementSetSetterType { get; set; }
-
-        public bool CanImplementLet { get; private set; }
-        public bool CanImplementSet { get; private set; }
-        public bool Encapsulate { get; set; }
-
-        private static void AssignSetterAndLetterAvailability(Declaration targetDeclaration, out bool canImplSet, out bool canImplLet)
-        {
-            var isVariant = targetDeclaration.AsTypeName.Equals(Tokens.Variant);
-            var isValueType = !isVariant && (SymbolList.ValueTypes.Contains(targetDeclaration.AsTypeName) ||
-                                             targetDeclaration.DeclarationType == DeclarationType.Enumeration);
-
-            canImplSet = !isValueType;
-            canImplLet = isValueType || isVariant;
-        }
-    }
-
-    public class EncapsulateFieldModel : IRefactoringModel, IEncapsulateFieldModel, IEncapsulateField
-    {
-        public EncapsulateFieldModel(Declaration target)
-        {
-            AddTarget(target);
-        }
-
-        private Dictionary<Declaration, IEncapsulateField> _targets = new Dictionary<Declaration, IEncapsulateField>();
-
-        public void ModifyUDTRule(EncapsulateUDTVariableRule udtRule)
-        {
-            var rules = UDTVariableRules.Where(r => r.Variable.IdentifierName == udtRule.VariableName);
-            if (rules.Count() == 1)
+            foreach (var variable in _nonUdtVariables)
             {
-                var rule = rules.First();
-                if (rule.EncapsulateVariable)
-                {
-                    AddTarget(rule.Variable);
-                }
-
-                rule.EncapsulateAllUDTMembers = udtRule.EncapsulateAllUDTMembers;
-
-                foreach (var udtM in rule.UDTMembersToEncapsulate)
-                {
-                    AddTarget(udtM);
-                }
+                LoadNonUDTVariable(variable);
             }
+
+            foreach (var udtTuple in udtTuples)
+            {
+                LoadUDTVariable(udtTuple.udtVariable, udtTuple.udt, udtTuple.udtMembers);
+            }
+
+            var selectedField = new EncapsulateFieldDeclaration(target);
+
+            if (UDTVariables.Contains(target))
+            {
+                _selectedTarget = new UserDefinedTypeField(selectedField);
+            }
+            else if (selectedField.EncapsulationAttributes.IsValueType)
+            {
+                _selectedTarget = new EncapsulatedValueType(selectedField);
+            }
+            else if (selectedField.EncapsulationAttributes.IsVariant)
+            {
+                _selectedTarget = new EncapsulatedVariantType(selectedField);
+            }
+
+            _selectedTarget.EncapsulationAttributes.Encapsulate = true;
+
+            AddEncapsulationTarget(_selectedTarget);
         }
 
-        public void AddTarget(Declaration target)
-        {
-            if (target.DeclarationType.Equals(DeclarationType.UserDefinedTypeMember))
-            {
-                //_targets.Add(target, new EncapsulateUDTMemberConfig(target));
-                AddTarget (new EncapsulateUDTMemberConfig(target));
-            }
-            else
-            {
-                //_targets.Add(target, new EncapsulateFieldConfig(target));
-                AddTarget (new EncapsulateFieldConfig(target));
-            }
-        }
+        private Dictionary<Declaration, EncapsulationAttributes> _encapsulationAttributesByFieldDeclaration = new Dictionary<Declaration, EncapsulationAttributes>();
+        private Dictionary<string, EncapsulationAttributes> _encapsulationAttributesByFieldIdentifier = new Dictionary<string, EncapsulationAttributes>();
 
-        public void AddTarget(IEncapsulateField encapsulateFieldConfig)
+        private Dictionary<string, EncapsulateUDTVariableRule> _udtVariableRules = new Dictionary<string, EncapsulateUDTVariableRule>();
+
+        public void AddUDTVariableRule(EncapsulateUDTVariableRule udtRule)
         {
-            if (_targets.ContainsKey(encapsulateFieldConfig.TargetDeclaration))
+            if (_udtVariableRules.TryGetValue(udtRule.VariableName, out _))
             {
-                _targets[encapsulateFieldConfig.TargetDeclaration] = encapsulateFieldConfig;
+                _udtVariableRules[udtRule.VariableName] = udtRule;
                 return;
             }
-            _targets.Add(encapsulateFieldConfig.TargetDeclaration, encapsulateFieldConfig);
+            _udtVariableRules.Add(udtRule.VariableName, udtRule);
         }
 
-        private IEncapsulateField DefaultTarget => _targets.Values.ElementAt(0);
+        public bool TryGetUDTVariableRule(string udtVariableName, out EncapsulateUDTVariableRule rule)
+        {
+            rule = new EncapsulateUDTVariableRule();
+            if (_udtVariableRules.ContainsKey(udtVariableName))
+            {
+                rule = _udtVariableRules[udtVariableName];
+                return true;
+            }
+            return false;
+        }
 
+        public IEnumerable<EncapsulateUDTVariableRule> UDTVariableRules => _udtVariableRules.Values;
 
-        public IEnumerable<IEncapsulateField> EncapsulationTargets 
-            => _targets.Values.Select(v => v as IEncapsulateField).ToList();
+        public IEnumerable<Declaration> UDTVariables => _udts.Keys;
 
+        private void LoadUDTVariable(Declaration udtVariable, Declaration udt, IEnumerable<Declaration> udtMembers)
+        {
+            _udts.Add(udtVariable, (udt, udtMembers));
+            var udtVariableRule = new EncapsulateUDTVariableRule(udtVariable.IdentifierName);
+            AddUDTVariableRule(udtVariableRule);
+        }
+
+        private void LoadNonUDTVariable(Declaration variable)
+        {
+            _nonUdtVariables.Add(variable);
+            _nonUdtVariablesByName.Add(variable.IdentifierName, variable);
+        }
+
+        public IEnumerable<Declaration> GetUdtMembers(Declaration udtVariable)
+        {
+            if (_udts.TryGetValue(udtVariable, out var value))
+            {
+                return value.Item2;
+            }
+            return Enumerable.Empty<Declaration>();
+        }
+
+        public IEncapsulateFieldAttributes this[string fieldIdentifier] => _encapsulationAttributesByFieldIdentifier[fieldIdentifier];
+
+        public IEncapsulateFieldAttributes this[Declaration field] => _encapsulationAttributesByFieldDeclaration[field];
+
+        public IEnumerable<Declaration> EncapsulationTargets => _fields.Select(f => f.Declaration); // _encapsulationAttributesByFieldDeclaration.Keys;
+
+        public void AddEncapsulationTarget(EncapsulateFieldDeclaration target) => _fields.Add(target);
+
+        public IList<string> PropertiesContent
+        {
+            get
+            {
+                var textBlocks = new List<string>();
+                foreach (var field in _fields)
+                {
+                    switch (field)
+                    {
+                        case EncapsulatedUserDefinedMemberValueType udtMemberType:
+                            if (udtMemberType.EncapsulationAttributes.Encapsulate)
+                            {
+                                textBlocks.Add(BuildPropertiesTextBlock(udtMemberType.Declaration));
+                            }
+                            break;
+                        case UserDefinedTypeField udtType:
+                            if (udtType.EncapsulationAttributes.Encapsulate)
+                            {
+                                textBlocks.Add(BuildPropertiesTextBlock(udtType.Declaration));
+                            }
+                            break;
+                        default:
+                            textBlocks.Add(BuildPropertiesTextBlock(field.Declaration));
+                            break;
+                    }
+                }
+                return textBlocks;
+            }
+        }
+
+        private string BuildPropertiesTextBlock(Declaration target)
+        {
+            var attributes = EncapsulationAttributes(target);
+            var generator = new PropertyGenerator
+            {
+                PropertyName = attributes.PropertyName,
+                AsTypeName = attributes.AsTypeName,
+                BackingField = attributes.FieldName,
+                ParameterName = attributes.ParameterName,
+                GenerateSetter = attributes.ImplementSetSetterType,
+                GenerateLetter = attributes.ImplementLetSetterType
+            };
+
+            return GetPropertyText(generator);
+        }
+
+        private string BuildUDTMemberPropertiesTextBlock(Declaration udtMember)
+        {
+            var attributes = EncapsulationAttributes(udtMember);
+
+            var udtVariable = _udts.Keys.Where(k => _udts[k].Item2.Contains(udtMember)).SingleOrDefault();
+
+            var generator = new PropertyGenerator
+            {
+                PropertyName = attributes.PropertyName,
+                AsTypeName = attributes.AsTypeName,
+                BackingField = $"{udtVariable.IdentifierName}.{udtMember.IdentifierName}",
+                ParameterName = attributes.ParameterName,
+                GenerateSetter = udtMember.IsObject, //model.ImplementSetSetterType,
+                GenerateLetter = !udtMember.IsObject //model.ImplementLetSetterType
+            };
+
+            return GetPropertyText(generator);
+        }
+
+        private string GetPropertyText(PropertyGenerator generator)
+        {
+            var propertyTextLines = generator.AllPropertyCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            return string.Join(Environment.NewLine, _indenter.Indent(propertyTextLines, true));
+        }
+
+        public EncapsulationAttributes EncapsulationAttributes(Declaration target)
+        {
+            foreach ( var field in _fields)
+            {
+                if (field.Declaration == target)
+                {
+                    return field.EncapsulationAttributes;
+                }
+            }
+            return null;
+        }
+
+        private EncapsulateFieldDeclaration DefaultTarget => _selectedTarget;
+        
         public Declaration TargetDeclaration
         {
-            get => DefaultTarget.TargetDeclaration;
-            set => AddTarget(value);
+            get => DefaultTarget.Declaration;
+            set => _selectedTarget = new EncapsulateFieldDeclaration(value);
         }
 
         public string PropertyName
         {
-            get => DefaultTarget.PropertyName;
-            set
-            {
-                var config = new EncapsulateFieldConfig(DefaultTarget)
-                {
-                    PropertyName = value
-                };
-                AddTarget(config);
-            }
+            get => DefaultTarget.EncapsulationAttributes.PropertyName;
+            set => DefaultTarget.EncapsulationAttributes.PropertyName = value;
         }
 
         public string ParameterName
         {
-            get => DefaultTarget.ParameterName;
-            set
-            {
-                var config = new EncapsulateFieldConfig(DefaultTarget)
-                {
-                    ParameterName = value
-                };
-                AddTarget(config);
-            }
+            get => DefaultTarget.EncapsulationAttributes.ParameterName;
+            set => DefaultTarget.EncapsulationAttributes.ParameterName = value;
         }
 
         public bool ImplementLetSetterType
         {
-            get => DefaultTarget.ImplementLetSetterType;
-            set
-            {
-                var config = new EncapsulateFieldConfig(DefaultTarget)
-                {
-                    ImplementLetSetterType = value
-                };
-                AddTarget(config);
-            }
+            get => DefaultTarget.EncapsulationAttributes.ImplementLetSetterType;
+            set => DefaultTarget.EncapsulationAttributes.ImplementLetSetterType = value;
         }
 
         public bool ImplementSetSetterType
         {
-            get => DefaultTarget.ImplementSetSetterType;
-            set
-            {
-                var config = new EncapsulateFieldConfig(DefaultTarget)
-                {
-                    ImplementSetSetterType = value
-                };
-                AddTarget(config);
-            }
+            get => DefaultTarget.EncapsulationAttributes.ImplementSetSetterType;
+            set => DefaultTarget.EncapsulationAttributes.ImplementSetSetterType = value;
         }
 
-        //public bool EncapsulateTypeMembers { set; get; }
-        public IEnumerable<EncapsulateUDTVariableRule> UDTVariableRules { set; get; }
-
-        public bool CanStoreStateUsingUDTMembers { set; get; }
-
         public bool CanImplementLet
-            => DefaultTarget.CanImplementLet;
+            => DefaultTarget.EncapsulationAttributes.CanImplementLet;
 
         public bool CanImplementSet
-            => DefaultTarget.CanImplementSet;
+            => DefaultTarget.EncapsulationAttributes.CanImplementSet;
     }
 }
