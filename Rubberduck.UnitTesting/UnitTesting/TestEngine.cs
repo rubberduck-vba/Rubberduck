@@ -20,8 +20,6 @@ namespace Rubberduck.UnitTesting
     {
         private static readonly ParserState[] AllowedRunStates = 
         {
-            ParserState.ResolvedDeclarations,
-            ParserState.ResolvingReferences,
             ParserState.Ready
         };
 
