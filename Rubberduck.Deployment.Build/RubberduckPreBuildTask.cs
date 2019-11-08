@@ -7,12 +7,24 @@ namespace Rubberduck.Deployment.Build
 {
     public class RubberduckPreBuildTask : AppDomainIsolatedTask
     {
+        /// <summary>
+        /// Full path to the directory containing the templates we need to modify.
+        /// </summary>
         [Required]
         public string WorkingDir { get; set; }
 
+        /// <summary>
+        /// Full path to the directory where we want to place our modified files.
+        /// </summary>
         [Required]
         public string OutputDir { get; set; }
 
+        /// <remarks>
+        /// Entry point for the build task. To use the build task in a csproj, the <c>UsingTask</c> element must be specified before defining the task. The task will
+        /// have the same name as the class, followed by the parameters. In this case, it would be <see cref="RubberduckPreBuildTask"/> element. See <c>Rubberduck.Deployment.csproj</c>
+        /// for usage example. The public properties are used as a parameter in the MSBuild task and are both settable and gettable. Thus, we must read from the properties when 
+        /// we run the <c>Execute</c> which influences the behvaior of the task.
+        /// </remarks>
         public override bool Execute()
         {
             var result = true;

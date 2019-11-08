@@ -21,7 +21,7 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
                     return string.Format(Resources.RubberduckUI.RenameFailure_TargetModuleWithoutCodeModule, codeModuleNotFound.TargetDeclaration.QualifiedModuleName);
                 case TargetControlNotFoundException controlNotFound:
                     Logger.Warn(controlNotFound);
-                    return string.Format(Resources.RubberduckUI.RenameFailure_TargetContriolNotFound, controlNotFound.TargetDeclaration.QualifiedName);
+                    return string.Format(Resources.RubberduckUI.RenameFailure_TargetControlNotFound, controlNotFound.TargetDeclaration.QualifiedName);
                 case TargetDeclarationIsStandardEventHandlerException standardHandler:
                     return string.Format(Resources.RubberduckUI.RenameFailure_StandardEventHandler, standardHandler.TargetDeclaration.QualifiedName);
                 default:

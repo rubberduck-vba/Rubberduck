@@ -144,7 +144,7 @@ Dim bar As Boolean, _
 bat As Date, _
 bap As Integer
 End Sub";
-            var selection = new Selection(3, 10, 3, 13);
+            var selection = new Selection(3, 6, 3, 8);
 
             //Expectation
             const string expectedCode =
@@ -558,7 +558,8 @@ End Sub";
             {
                 msgBox = new Mock<IMessageBox>().Object;
             }
-            return new IntroduceParameterRefactoring(state, msgBox, rewritingManager, selectionService);
+            var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
+            return new IntroduceParameterRefactoring(state, msgBox, rewritingManager, selectionService, selectedDeclarationProvider);
         }
 
         private IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IMessageBox msgBox = null, QualifiedSelection? initialSelection = null)

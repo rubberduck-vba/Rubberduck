@@ -13,6 +13,7 @@ using Rubberduck.Refactorings.Exceptions.Rename;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.Utility;
+using NLog;
 
 namespace Rubberduck.Refactorings.Rename
 {
@@ -22,15 +23,27 @@ namespace Rubberduck.Refactorings.Rename
         private const string PrependUnderscoreFormat = "_{0}";
 
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
         private readonly IProjectsProvider _projectsProvider;
         private readonly IDictionary<DeclarationType, Action<RenameModel, IRewriteSession>> _renameActions;
 
+        private readonly IParseManager _parseManager;
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public RenameRefactoring(IRefactoringPresenterFactory factory, IDeclarationFinderProvider declarationFinderProvider, IProjectsProvider projectsProvider, IRewritingManager rewritingManager, ISelectionService selectionService)
-        :base(rewritingManager, selectionService, factory)
+        public RenameRefactoring(
+            IRefactoringPresenterFactory factory, 
+            IDeclarationFinderProvider declarationFinderProvider,
+            IProjectsProvider projectsProvider, 
+            IRewritingManager rewritingManager,
+            ISelectionProvider selectionProvider,
+            ISelectedDeclarationProvider selectedDeclarationProvider,
+            IParseManager parseManager)
+        :base(rewritingManager, selectionProvider, factory)
         {
             _declarationFinderProvider = declarationFinderProvider;
+            _selectedDeclarationProvider = selectedDeclarationProvider;
             _projectsProvider = projectsProvider;
+            _parseManager = parseManager;
 
             _renameActions = new Dictionary<DeclarationType, Action<RenameModel, IRewriteSession>>
             {
@@ -45,8 +58,7 @@ namespace Rubberduck.Refactorings.Rename
 
         protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
         {
-            return _declarationFinderProvider.DeclarationFinder
-                .FindSelectedDeclaration(targetSelection);
+            return _selectedDeclarationProvider.SelectedDeclaration(targetSelection);
         }
 
         protected override RenameModel InitializeModel(Declaration target)
@@ -63,8 +75,30 @@ namespace Rubberduck.Refactorings.Rename
             return model;
         }
 
-        //FIXME: The parser needs to be suspended during the refactoring in case a component (or project) gets renamed because the VBE API object rename causes a separate reparse. 
         protected override void RefactorImpl(RenameModel model)
+        {
+            if (model.Target.DeclarationType.HasFlag(DeclarationType.Module)
+                || model.Target.DeclarationType.HasFlag(DeclarationType.Project))
+            {
+                //The parser needs to be suspended during the refactoring of a component because the VBE API object rename causes a separate reparse. 
+                RenameRefactorWithSuspendedParser(model);
+                return;
+            }
+
+            RenameRefactor(model);
+        }
+
+        private void RenameRefactorWithSuspendedParser(RenameModel model)
+        {
+            var suspendResult = _parseManager.OnSuspendParser(this, new[] { ParserState.Ready }, () => RenameRefactor(model));
+            if (suspendResult != SuspensionResult.Completed)
+            {
+                _logger.Warn($"{nameof(RenameRefactor)} failed because a parser suspension request could not be fulfilled.  The request's result was '{suspendResult.ToString()}'.");
+                throw new SuspendParserFailureException();
+            }
+        }
+
+        private void RenameRefactor(RenameModel model)
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
             Rename(model, rewriteSession);

@@ -72,7 +72,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public IVBComponent ImportSourceFile(string path)
         {
-            throw new NotSupportedException("ImportSourceFile not supported in VB6");
+            //Since we have no special handling as in VBA, we just forward to Import.
+            return Import(path);
         }
 
         public void RemoveSafely(IVBComponent component)

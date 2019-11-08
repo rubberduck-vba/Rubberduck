@@ -4,6 +4,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.ComCommands
 {
@@ -30,25 +31,33 @@ namespace Rubberduck.UI.Command.ComCommands
 
         public SyncCodeExplorerCommand GetSyncCommand(CodeExplorerViewModel explorer)
         {
-            return new SyncCodeExplorerCommand(_vbe, _state, explorer, _vbeEvents);
+            var selectionService = new SelectionService(_vbe, _state.ProjectsProvider);
+            var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, _state);
+            return new SyncCodeExplorerCommand(_vbe, _state, _state, selectedDeclarationService, explorer, _vbeEvents);
         }
     }
 
     public class SyncCodeExplorerCommand : ComCommandBase
     {
         private readonly IVBE _vbe;
-        private readonly RubberduckParserState _state;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
+        private readonly IParserStatusProvider _parserStatusProvider;
         private readonly CodeExplorerViewModel _explorer;
 
         public SyncCodeExplorerCommand(
-            IVBE vbe, 
-            RubberduckParserState state, 
+            IVBE vbe,
+            IDeclarationFinderProvider declarationFinderProvider, 
+            IParserStatusProvider parserStatusProvider,
+            ISelectedDeclarationProvider selectedDeclarationProvider,
             CodeExplorerViewModel explorer, 
             IVbeEvents vbeEvents) 
             : base(vbeEvents)
         {
             _vbe = vbe;
-            _state = state;
+            _declarationFinderProvider = declarationFinderProvider;
+            _selectedDeclarationProvider = selectedDeclarationProvider;
+            _parserStatusProvider = parserStatusProvider;
             _explorer = explorer;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
@@ -56,7 +65,7 @@ namespace Rubberduck.UI.Command.ComCommands
 
         private bool SpecialEvaluateCanExecute(object parameter)
         {
-            return _state.Status == ParserState.Ready 
+            return _parserStatusProvider.Status == ParserState.Ready 
                    && !_explorer.IsBusy 
                    && FindTargetNode() != null;
         }
@@ -75,28 +84,43 @@ namespace Rubberduck.UI.Command.ComCommands
 
         private ICodeExplorerNode FindTargetNode()
         {
-            using (var active = _vbe.ActiveCodePane)
+            var targetDeclaration = FindTargetDeclaration();
+            return targetDeclaration != null
+                ? _explorer.FindVisibleNodeForDeclaration(targetDeclaration)
+                : null;
+        }
+
+        private Declaration FindTargetDeclaration()
+        {
+            return _selectedDeclarationProvider.SelectedDeclaration()
+                ?? ActiveProjectDeclaration();
+        }
+
+        private Declaration ActiveProjectDeclaration()
+        {
+            var projectId = ActiveProjectId();
+
+            if (projectId == null)
             {
-                if (active == null || active.IsWrappingNullReference)
+                return null;
+            }
+
+            return _declarationFinderProvider.DeclarationFinder
+                .UserDeclarations(DeclarationType.Project)
+                .FirstOrDefault(item => item.ProjectId.Equals(projectId));
+        }
+
+        private string ActiveProjectId()
+        {
+            using (var project = _vbe.ActiveVBProject)
+            {
+                if (project == null || project.IsWrappingNullReference)
                 {
-                    using (var project = _vbe.ActiveVBProject)
-                    {
-                        if (project == null || project.IsWrappingNullReference)
-                        {
-                            return null;
-                        }
-
-                        var declaration = _state.DeclarationFinder.UserDeclarations(DeclarationType.Project)
-                            .FirstOrDefault(item => item.ProjectId.Equals(project.ProjectId));
-
-                        return _explorer.FindVisibleNodeForDeclaration(declaration);
-                    }
+                    return null;
                 }
 
-                var selected = _state.DeclarationFinder?.FindSelectedDeclaration(active);
-
-                return selected == null ? null : _explorer.FindVisibleNodeForDeclaration(selected);
+                return project.ProjectId;
             }
-        } 
+        }
     }
 }
