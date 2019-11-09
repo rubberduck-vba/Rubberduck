@@ -19,7 +19,7 @@ namespace Rubberduck.UnitTesting
     // FIXME litter logging around here
     internal class TestEngine : ITestEngine
     {
-        private static readonly ParserState[] AllowedRunStates = 
+        protected static readonly ParserState[] AllowedRunStates = 
         {
             ParserState.Ready
         };
@@ -171,7 +171,7 @@ namespace Rubberduck.UnitTesting
             CancellationRequested = true;
         }
 
-        private void RunInternal(IEnumerable<TestMethod> tests)
+        protected virtual void RunInternal(IEnumerable<TestMethod> tests)
         {
             if (!CanRun)
             {
@@ -199,15 +199,15 @@ namespace Rubberduck.UnitTesting
             }
         }
 
-        private void RunWhileSuspended(IEnumerable<TestMethod> tests)
+        protected void RunWhileSuspended(IEnumerable<TestMethod> tests)
         {
             //Running the tests has to be done on the UI thread, so we push the task to it from within suspension of the parser.
             //We have to wait for the completion to make sure that the suspension only ends after tests have been completed.
-            var testTask = _uiDispatcher.StartTask(() => RunWhileSuspendedOnUIThread(tests));
+            var testTask = _uiDispatcher.StartTask(() => RunWhileSuspendedOnUiThread(tests));
             testTask.Wait();
         }
 
-        private void RunWhileSuspendedOnUIThread(IEnumerable<TestMethod> tests)
+        private void RunWhileSuspendedOnUiThread(IEnumerable<TestMethod> tests)
         {
             var testMethods = tests as IList<TestMethod> ?? tests.ToList();
             if (!testMethods.Any())
