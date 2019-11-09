@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.SettingsProvider;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Settings;

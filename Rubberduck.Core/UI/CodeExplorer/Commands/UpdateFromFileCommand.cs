@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using Rubberduck.Interaction;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Parsing.VBA.Extensions;

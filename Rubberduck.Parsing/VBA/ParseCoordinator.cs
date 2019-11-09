@@ -8,6 +8,7 @@ using Rubberduck.VBEditor;
 using System.Diagnostics;
 using System.Linq;
 using NLog;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
