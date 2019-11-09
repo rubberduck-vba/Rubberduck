@@ -140,21 +140,43 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 return;
             }
 
-            if (target.Accessibility == Accessibility.Private && attributes.NewFieldName.Equals(target.IdentifierName)) { return; }
-
             var rewriter = rewriteSession.CheckOutModuleRewriter(target.QualifiedModuleName);
 
-            var newField = $"{Accessibility.Private} {attributes.NewFieldName} As {target.AsTypeName}";
+            if (target.Accessibility == Accessibility.Private && attributes.NewFieldName.Equals(target.IdentifierName))
+            {
+                if (!target.Context.TryGetChildContext<VBAParser.AsTypeClauseContext>(out _))
+                {
+                    rewriter.InsertAfter(target.Context.Stop.TokenIndex, $" {Tokens.As} {target.AsTypeName}");
+                }
+                return;
+            }
 
             if (target.Context.TryGetAncestor<VBAParser.VariableListStmtContext>(out var varList)
                 && varList.ChildCount > 1)
             {
                 rewriter.Remove(target);
+
+                var arrayDeclaration = target.Context.GetText().Split(new string[] { $" {Tokens.As} " }, StringSplitOptions.None);
+                var arrayIdentiferAndDimension = arrayDeclaration[0].Replace(attributes.FieldName, attributes.NewFieldName);
+
+                var newField = target.IsArray ? $"{Accessibility.Private} {arrayIdentiferAndDimension} {Tokens.As} {target.AsTypeName}"
+                        : $"{Accessibility.Private} {attributes.NewFieldName} As {target.AsTypeName}";
+
                 rewriter.InsertAfter(varList.Stop.TokenIndex, $"{Environment.NewLine}{newField}");
             }
             else
             {
-                rewriter.Replace(target.Context.GetAncestor<VBAParser.VariableStmtContext>(), newField);
+                var identifierContext = target.Context.GetChild<VBAParser.IdentifierContext>();
+                var variableStmtContext = target.Context.GetAncestor<VBAParser.VariableStmtContext>();
+                var visibilityContext = variableStmtContext.GetChild<VBAParser.VisibilityContext>();
+
+                rewriter.Replace(visibilityContext, Tokens.Private);
+                rewriter.Replace(identifierContext, attributes.NewFieldName);
+
+                if (!target.Context.TryGetChildContext<VBAParser.AsTypeClauseContext>(out _))
+                {
+                    rewriter.InsertAfter(target.Context.Stop.TokenIndex, $" {Tokens.As} {target.AsTypeName}");
+                }
             }
         }
 

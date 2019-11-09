@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing.Symbols;
+﻿using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -109,6 +110,20 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             EncapsulationAttributes.CanImplementLet = false;
             EncapsulationAttributes.CanImplementSet = true;
+        }
+    }
+
+    public class EncapsulateArrayType : EncapsulateFieldDeclaration
+    {
+        public EncapsulateArrayType(EncapsulateFieldDeclaration declaration)
+            : base(declaration.Declaration)
+        {
+            EncapsulationAttributes.CanImplementLet = false;
+            EncapsulationAttributes.CanImplementSet = false;
+            EncapsulationAttributes.IsArray = true;
+            EncapsulationAttributes.AsTypeName = Tokens.Variant;
+            EncapsulationAttributes.ImplementLetSetterType = false;
+            EncapsulationAttributes.ImplementSetSetterType = false;
         }
     }
 }

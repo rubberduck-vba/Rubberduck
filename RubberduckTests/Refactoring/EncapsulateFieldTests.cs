@@ -543,7 +543,10 @@ Integer";
 
             //Expectation
             const string expectedCode =
-                @"Private fizz As Integer
+                @"Private _
+fizz _
+As _
+Integer
 
 Public Property Get Name() As Integer
     Name = fizz
@@ -1020,6 +1023,126 @@ End Property
             var actualCode = RefactoredCode(inputCode, selection, presenterAction);
             Assert.AreEqual(expectedCode, actualCode);
         }
+
+        [TestCase("Private", "mArray(5) As String", "mArray(5) As String")]
+        [TestCase("Public", "mArray(5) As String", "mArray(5) As String")]
+        [TestCase("Private", "mArray(5,2,3) As String", "mArray(5,2,3) As String")]
+        [TestCase("Public", "mArray(5,2,3) As String", "mArray(5,2,3) As String")]
+        [TestCase("Private", "mArray(1 to 10) As String", "mArray(1 to 10) As String")]
+        [TestCase("Public", "mArray(1 to 10) As String", "mArray(1 to 10) As String")]
+        [TestCase("Private", "mArray() As String", "mArray() As String")]
+        [TestCase("Public", "mArray() As String", "mArray() As String")]
+        [TestCase("Private", "mArray(5)", "mArray(5) As Variant")]
+        [TestCase("Public", "mArray(5)", "mArray(5) As Variant")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void EncapsulateArray(string visibility, string arrayDeclaration, string expectedArrayDeclaration)
+        {
+            string inputCode =
+                $@"Option Explicit
+
+{visibility} {arrayDeclaration}";
+
+            var selection = new Selection(3, 8, 3, 11);
+
+            string expectedCode =
+                $@"Option Explicit
+
+Private {expectedArrayDeclaration}
+
+Public Property Get MyArray() As Variant
+    MyArray = mArray
+End Property
+";
+            var presenterAction = SetParameters("MyArray");
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [TestCase("5")]
+        [TestCase("5,2,3")]
+        [TestCase("1 to 100")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void EncapsulateArray_DeclaredInList(string dimensions)
+        {
+            string inputCode =
+                $@"Option Explicit
+
+Public mArray({dimensions}) As String, anotherVar As Long, andOneMore As Variant";
+
+            var selection = new Selection(3, 8, 3, 11);
+
+            string expectedCode =
+                $@"Option Explicit
+
+Public anotherVar As Long, andOneMore As Variant
+Private mArray({dimensions}) As String
+
+Public Property Get MyArray() As Variant
+    MyArray = mArray
+End Property
+";
+            var presenterAction = SetParameters("MyArray");
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [TestCase("Private")]
+        [TestCase("Public")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void EncapsulateArray_newFieldName(string visibility)
+        {
+            string inputCode =
+                $@"Option Explicit
+
+{visibility} mArray(5) As String";
+
+            var selection = new Selection(3, 8, 3, 11);
+
+            string expectedCode =
+                $@"Option Explicit
+
+Private xArray(5) As String
+
+Public Property Get MyArray() As Variant
+    MyArray = xArray
+End Property
+";
+            var presenterAction = SetParameters(("mArray", "MyArray", true, "xArray"));
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [TestCase("mArray(5) As String", "xArray(5) As String")]
+        [TestCase("mArray(5)", "xArray(5) As Variant")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void EncapsulateArray_newFieldNameForFieldInList(string arrayDeclaration, string newArrayDeclaration)
+        {
+            string inputCode =
+                $@"Option Explicit
+
+Public {arrayDeclaration}, mNextVar As Long";
+
+            var selection = new Selection(3, 8, 3, 11);
+
+            string expectedCode =
+                $@"Option Explicit
+
+Public mNextVar As Long
+Private {newArrayDeclaration}
+
+Public Property Get MyArray() As Variant
+    MyArray = xArray
+End Property
+";
+            var presenterAction = SetParameters(("mArray", "MyArray", true, "xArray"));
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
 
         #region setup
 

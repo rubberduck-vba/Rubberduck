@@ -22,6 +22,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         bool IsValueType { get; set; }
         bool IsVariantType { get; set; }
         bool IsUserDefinedType { set; get; }
+        bool IsArray { set; get; }
         bool IsObjectType  { set;  get; }
         bool CanImplementLet { get; set; }
         bool CanImplementSet { get; set; }
@@ -54,8 +55,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
                                              target.DeclarationType == DeclarationType.Enumeration);
             IsObjectType = target.IsObject;
             IsUserDefinedType = false;
-            ImplementLetSetterType = !IsObjectType && (IsUserDefinedType || IsValueType || IsVariantType);
-            ImplementSetSetterType = IsObjectType || !IsUserDefinedType && !IsValueType && IsVariantType;
+            IsArray = target.IsArray;
+            ImplementLetSetterType = UpdateFieldUsingLet();
+            ImplementSetSetterType = UpdateFieldUsingSet();
             CanImplementLet = false;
             CanImplementSet = false;
         }
@@ -70,7 +72,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
             IsFlaggedToEncapsulate = attributes.IsFlaggedToEncapsulate;
             IsVariantType = attributes.IsVariantType;
             IsValueType = attributes.IsValueType;
-            IsUserDefinedType = true;
+            IsUserDefinedType = attributes.IsUserDefinedType;
+            IsArray = attributes.IsArray;
             IsObjectType = attributes.IsObjectType;
             ImplementLetSetterType = attributes.ImplementLetSetterType;
             ImplementSetSetterType = attributes.ImplementSetSetterType;
@@ -91,14 +94,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private bool? _implLet;
         public bool ImplementLetSetterType
         {
-            get => _implLet.HasValue ? _implLet.Value : IsValueType || IsVariantType || IsUserDefinedType;
+            get => _implLet.HasValue ? _implLet.Value : UpdateFieldUsingLet();
             set => _implLet = value;
         }
 
         private bool? _implSet;
         public bool ImplementSetSetterType
         {
-            get => _implSet.HasValue? _implSet.Value : !(IsValueType || IsUserDefinedType) && IsVariantType;
+            get => _implSet.HasValue ? _implSet.Value : UpdateFieldUsingSet();
             set => _implSet = value;
         }
 
@@ -106,6 +109,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public bool IsValueType { set; get; }
         public bool IsVariantType { set; get; }
         public bool IsUserDefinedType { set; get; }
+        public bool IsArray { set; get; }
 
         private bool? _isObjectType;
         public bool IsObjectType
@@ -115,6 +119,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
         }
         public bool CanImplementLet { get; set; }
         public bool CanImplementSet { get; set; }
+
+        private bool UpdateFieldUsingSet()
+            => IsObjectType || !IsArray && !IsUserDefinedType && !IsValueType && IsVariantType;
+
+        private bool UpdateFieldUsingLet()
+            => !IsObjectType && !IsArray && (IsUserDefinedType || IsValueType || IsVariantType);
     }
 
     public class UDTFieldEncapsulationAttributes : IUDTFieldEncapsulationAttributes
@@ -123,7 +133,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             _attributes = attributes;
             EncapsulateAllUDTMembers = false;
+            IsVariantType = false;
+            IsValueType = false;
             IsUserDefinedType = true;
+            IsArray = false;
 
             foreach (var udtMemberName in udtMemberNames)
             {
@@ -143,9 +156,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
             AsTypeName = attributes.AsTypeName;
             ParameterName = attributes.ParameterName;
             IsFlaggedToEncapsulate = attributes.IsFlaggedToEncapsulate;
-            IsVariantType = attributes.IsVariantType;
-            IsValueType = attributes.IsValueType;
+            IsVariantType = false;
+            IsValueType = false;
             IsUserDefinedType = true;
+            IsArray = false;
             ImplementLetSetterType = attributes.ImplementLetSetterType;
             ImplementSetSetterType = attributes.ImplementSetSetterType;
 
@@ -240,6 +254,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             get => _attributes.IsUserDefinedType;
             set => _attributes.IsUserDefinedType = value;
+        }
+
+        public bool IsArray
+        {
+            get => _attributes.IsArray;
+            set => _attributes.IsArray = value;
         }
 
         public bool IsObjectType

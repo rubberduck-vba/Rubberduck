@@ -55,6 +55,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 return new EncapsulateObjectType(selectedField);
             }
+            else if (selectedField.EncapsulationAttributes.IsArray)
+            {
+                return new EncapsulateArrayType(selectedField);
+            }
             return new EncapsulateValueType(selectedField);
         }
 
