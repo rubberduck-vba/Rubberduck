@@ -26,8 +26,6 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private readonly IVBE _vbe;
         private readonly IFileSystemBrowserFactory _dialogFactory;
-        private readonly IList<string> _importableExtensions;
-        private readonly string _filterExtensions;
         private readonly IParseManager _parseManager;
 
         protected readonly IMessageBox MessageBox;
@@ -48,10 +46,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
 
-            ComponentTypeForExtension = ComponentTypeExtensions.ComponentTypeForExtension(_vbe.Kind);
-
-            _importableExtensions = ComponentTypeForExtension.Keys.ToList();
-            _filterExtensions = string.Join("; ", _importableExtensions.Select(ext => $"*{ext}"));
+            ComponentTypesForExtension = ComponentTypeExtensions.ComponentTypesForExtension(_vbe.Kind);
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
             AddToOnExecuteEvaluation(SpecialEvaluateCanExecute);
@@ -118,7 +113,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 dialog.ShowHelp = false;
                 dialog.Title = DialogsTitle;
                 dialog.Filter =
-                    $"{RubberduckUI.ImportCommand_OpenDialog_Filter_VBFiles} ({_filterExtensions})|{_filterExtensions}|" +
+                    $"{RubberduckUI.ImportCommand_OpenDialog_Filter_VBFiles} ({FilterExtension})|{FilterExtension}|" +
                     $"{RubberduckUI.ImportCommand_OpenDialog_Filter_AllFiles}, (*.*)|*.*";
 
                 if (dialog.ShowDialog() != DialogResult.OK)
@@ -128,7 +123,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
                 var fileNames = dialog.FileNames;
                 var fileExtensions = fileNames.Select(Path.GetExtension);
-                if (fileExtensions.Any(fileExt => !_importableExtensions.Contains(fileExt)))
+                var importableExtensions = ImportableExtensions;
+                if (fileExtensions.Any(fileExt => !importableExtensions.Contains(fileExt)))
                 {
                     NotifyUserAboutAbortDueToUnsupportedFileExtensions(fileNames);
                     return new List<string>();
@@ -142,7 +138,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private void NotifyUserAboutAbortDueToUnsupportedFileExtensions(IEnumerable<string> fileNames)
         {
-            var firstUnsupportedFile = fileNames.First(filename => !_importableExtensions.Contains(Path.GetExtension(filename)));
+            var firstUnsupportedFile = fileNames.First(filename => !ImportableExtensions.Contains(Path.GetExtension(filename)));
             var unsupportedFileName = Path.GetFileName(firstUnsupportedFile);
             var message = string.Format(RubberduckUI.ImportCommand_UnsupportedFileExtensions, unsupportedFileName);
             MessageBox.NotifyWarn(message, DialogsTitle);
@@ -165,8 +161,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 {
                     var fileExtension = Path.GetExtension(filename);
                     if (fileExtension != null
-                        && ComponentTypeForExtension.TryGetValue(fileExtension, out var componentType)
-                        && componentType == ComponentType.Document)
+                        && ComponentTypesForExtension.TryGetValue(fileExtension, out var componentTypes)
+                        && componentTypes.Contains(ComponentType.Document))
                     {
                         //We have to dispose the return value.
                         using (components.ImportSourceFile(filename)) { }
@@ -204,6 +200,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
         }
 
-        protected IDictionary<string, ComponentType> ComponentTypeForExtension { get; }
+        protected virtual ICollection<string> ImportableExtensions => ComponentTypesForExtension.Keys.ToList();
+
+        private string FilterExtension => string.Join("; ", ImportableExtensions.Select(ext => $"*{ext}"));
+
+        protected IDictionary<string, ICollection<ComponentType>> ComponentTypesForExtension { get; }
     }
 }

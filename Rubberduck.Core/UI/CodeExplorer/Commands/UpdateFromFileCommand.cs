@@ -21,6 +21,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IProjectsProvider _projectsProvider;
         private readonly IModuleNameFromFileExtractor _moduleNameFromFileExtractor;
+        private readonly IDictionary<ComponentType, IRequiredBinaryFilesFromFileNameExtractor> _binaryFileExtractors;
+        private readonly IFileExistenceChecker _fileExistenceChecker;
 
         public UpdateFromFilesCommand(
             IVBE vbe,
@@ -30,34 +32,62 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             IDeclarationFinderProvider declarationFinderProvider,
             IProjectsProvider projectsProvider,
             IModuleNameFromFileExtractor moduleNameFromFileExtractor,
+            IEnumerable<IRequiredBinaryFilesFromFileNameExtractor> binaryFileExtractors,
+            IFileExistenceChecker fileExistenceChecker,
             IMessageBox messageBox)
             : base(vbe, dialogFactory, vbeEvents, parseManager, messageBox)
         {
             _projectsProvider = projectsProvider;
             _declarationFinderProvider = declarationFinderProvider;
             _moduleNameFromFileExtractor = moduleNameFromFileExtractor;
+            _fileExistenceChecker = fileExistenceChecker;
+
+            _binaryFileExtractors = BinaryFileExtractors(binaryFileExtractors);
+        }
+
+        private IDictionary<ComponentType, IRequiredBinaryFilesFromFileNameExtractor> BinaryFileExtractors(IEnumerable<IRequiredBinaryFilesFromFileNameExtractor> extractors)
+        {
+            var dict = new Dictionary<ComponentType, IRequiredBinaryFilesFromFileNameExtractor>();
+            foreach (var extractor in extractors)
+            {
+                foreach (var componentType in extractor.SupportedComponentTypes)
+                {
+                    if (dict.ContainsKey(componentType))
+                    {
+                        continue;
+                    }
+
+                    dict.Add(componentType, extractor);
+                }
+            }
+
+            return dict;
         }
 
         protected override string DialogsTitle => RubberduckUI.UpdateFromFilesCommand_DialogCaption;
+
+        //We only allow extensions to be imported for which we might be able to determine that the conditions are met to actually import the file.
+        protected override ICollection<string> ImportableExtensions =>
+            base.ImportableExtensions
+                .Where(fileExtension => ComponentTypesForExtension.TryGetValue(fileExtension, out var componentTypes) 
+                                        && componentTypes.All(componentType => componentType.BinaryFileExtension() == string.Empty 
+                                                                               || _binaryFileExtractors.ContainsKey(componentType)
+                                                                               || ComponentTypesWithImportMechanismToExistingComponent.Contains(componentType)))
+                .ToList();
+
+        //For some component types like user forms and documents we have implemented a way to import them into existing components.
+        private ICollection<ComponentType> ComponentTypesWithImportMechanismToExistingComponent => 
+            new List<ComponentType>
+            {
+                ComponentType.Document,
+                ComponentType.UserForm
+            };
 
         protected override void ImportFiles(ICollection<string> filesToImport, IVBProject targetProject)
         {
             var finder = _declarationFinderProvider.DeclarationFinder;
 
             var moduleNames = ModuleNames(filesToImport);
-
-            var formBinaryModuleNames = moduleNames
-                .Where(kvp => ComponentTypeExtensions.FormBinaryExtension.Equals(Path.GetExtension(kvp.Key)))
-                .Select(kvp => kvp.Value)
-                .ToHashSet();
-
-            var formFilesWithoutBinaries = FormFilesWithoutBinaries(moduleNames, formBinaryModuleNames);
-
-            //We cannot import the the binary separately.
-            foreach (var formBinaryModuleName in formBinaryModuleNames)
-            {
-                moduleNames.Remove(formBinaryModuleName);
-            }
 
             if (!ValuesAreUnique(moduleNames))
             {
@@ -73,12 +103,37 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return;
             }
 
-            var documentFiles = moduleNames
-                .Select(kvp => kvp.Key)
-                .Where(filename => Path.GetExtension(filename) != null
-                              && ComponentTypeForExtension.TryGetValue(Path.GetExtension(filename), out var componentType)
-                              && componentType == ComponentType.Document)
-                .ToHashSet();
+            var requiredBinaryFiles = RequiredBinaryFiles(filesToImport);
+            var missingBinaries = FilesWithoutRequiredBinaries(requiredBinaryFiles);
+
+            var filesWithoutRequiredBinaryButWithPossibilityToImportToExistingComponent = FilesWithMechanismToImportToExistingComponent(missingBinaries.Keys);
+            var filesWithoutRequiredBinariesWithoutBackupSolution = missingBinaries.Keys
+                .Where(fileName => !filesWithoutRequiredBinaryButWithPossibilityToImportToExistingComponent.Contains(fileName))
+                .ToList();
+
+            if (filesWithoutRequiredBinariesWithoutBackupSolution.Any())
+            {
+                NotifyUserAboutAbortDueToNonExistingBinaryFile(filesWithoutRequiredBinariesWithoutBackupSolution, missingBinaries);
+                return;
+            }
+
+            if (!filesWithoutRequiredBinaryButWithPossibilityToImportToExistingComponent.All(filename => modulesToRemoveBeforeImport.ContainsKey(filename)))
+            {
+                NotifyUserAboutAbortDueToNonExistingBinaryFileAndComponent(
+                    filesWithoutRequiredBinaryButWithPossibilityToImportToExistingComponent,
+                    missingBinaries,
+                    moduleNames, 
+                    modulesToRemoveBeforeImport);
+                return;
+            }
+
+            //Since we want to import into the existing components, we must not remove them.
+            foreach (var filename in filesWithoutRequiredBinaryButWithPossibilityToImportToExistingComponent)
+            {
+                modulesToRemoveBeforeImport.Remove(filename);
+            }
+
+            var documentFiles = DocumentFiles(moduleNames);
 
             //We can only insert into existing documents.
             if (!documentFiles.All(filename => modulesToRemoveBeforeImport.ContainsKey(filename)))
@@ -93,19 +148,6 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 modulesToRemoveBeforeImport.Remove(filename);
             }
 
-            //We import the standalone code behind by replacing the code in an existing form.
-            //So, the form has to exist already.
-            if (!formFilesWithoutBinaries.All(filename => modulesToRemoveBeforeImport.ContainsKey(filename)))
-            {
-                NotifyUserAboutAbortDueToNonExistingUserForm(documentFiles, moduleNames, modulesToRemoveBeforeImport);
-                return;
-            }
-
-            foreach (var filename in formFilesWithoutBinaries)
-            {
-                modulesToRemoveBeforeImport.Remove(filename);
-            }
-
             using (var components = targetProject.VBComponents)
             {
                 foreach (var filename in filesToImport)
@@ -116,7 +158,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                         components.Remove(component);
                     }
 
-                    if(documentFiles.Contains(filename) || formBinaryModuleNames.Contains(filename))
+                    if(documentFiles.Contains(filename) || filesWithoutRequiredBinariesWithoutBackupSolution.Contains(filename))
                     {
                         //We have to dispose the return value.
                         using (components.ImportSourceFile(filename)) { }
@@ -128,6 +170,26 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                     }
                 }
             }
+        }
+
+        private ICollection<string> DocumentFiles(Dictionary<string, string> moduleNames)
+        {
+            return moduleNames
+                .Select(kvp => kvp.Key)
+                .Where(filename => Path.GetExtension(filename) != null
+                                   && ComponentTypesForExtension.TryGetValue(Path.GetExtension(filename),
+                                       out var componentTypes)
+                                   && componentTypes.Contains(ComponentType.Document))
+                .ToHashSet();
+        }
+
+        private ICollection<string> FilesWithMechanismToImportToExistingComponent(ICollection<string> fileNames)
+        {
+            return fileNames
+                .Where(filename => Path.GetExtension(filename) != null
+                                   && ComponentTypesForExtension.TryGetValue(Path.GetExtension(filename), out var componentTypes)
+                                   && componentTypes.All(componentType => ComponentTypesWithImportMechanismToExistingComponent.Contains(componentType)))
+                .ToHashSet();
         }
 
         private Dictionary<string, string> ModuleNames(ICollection<string> filenames)
@@ -153,6 +215,64 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private string ModuleName(string filename)
         {
             return _moduleNameFromFileExtractor.ModuleName(filename);
+        }
+
+        private Dictionary<string, ICollection<string>> RequiredBinaryFiles(ICollection<string> fileNames)
+        {
+            var requiredBinaryNames = new Dictionary<string, ICollection<string>>();
+            foreach (var filename in fileNames)
+            {
+                if (requiredBinaryNames.ContainsKey(filename))
+                {
+                    continue;
+                }
+
+                var requiredBinaryFiles = RequiredBinaryFiles(filename);
+                if (requiredBinaryFiles.Any())
+                {
+                    requiredBinaryNames.Add(filename, requiredBinaryFiles);
+                }
+            }
+
+            return requiredBinaryNames;
+        }
+
+        private ICollection<string> RequiredBinaryFiles(string filename)
+        {
+            var extension = Path.GetExtension(filename);
+            if (!ComponentTypesForExtension.TryGetValue(extension, out var componentTypes))
+            {
+                return new List<string>();
+            }
+
+            foreach (var componentType in componentTypes)
+            {
+                if (_binaryFileExtractors.TryGetValue(componentType, out var binaryExtractor))
+                {
+                    return binaryExtractor.RequiredBinaryFiles(filename, componentType);
+                }
+            }
+
+            return new List<string>();
+        }
+
+        private IDictionary<string, ICollection<string>> FilesWithoutRequiredBinaries(Dictionary<string, ICollection<string>> requiredBinaries)
+        {
+            var filesWithoutBinaries = new Dictionary<string, ICollection<string>>();
+            foreach (var (fileName, requiredBinariesForFile) in requiredBinaries)
+            {
+                var path = Path.GetDirectoryName(fileName);
+                var missingBinaries = requiredBinariesForFile
+                    .Where(binaryFileName => !_fileExistenceChecker.FileExists(Path.Combine(path, binaryFileName)))
+                    .ToList();
+
+                if (missingBinaries.Any())
+                {
+                    filesWithoutBinaries.Add(fileName, missingBinaries);
+                }
+            }
+
+            return filesWithoutBinaries;
         }
 
         private Dictionary<string, QualifiedModuleName> Modules(IDictionary<string, string> moduleNames, string projectId, DeclarationFinder finder)
@@ -187,17 +307,6 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             MessageBox.NotifyWarn(message, DialogsTitle);
         }
 
-        private ICollection<string> FormFilesWithoutBinaries(IDictionary<string, string> moduleNames, ICollection<string> formBinaryModuleNames)
-        {
-            return moduleNames
-                .Where(kvp => Path.GetExtension(kvp.Key) != null
-                              && ComponentTypeForExtension.TryGetValue(Path.GetExtension(kvp.Key), out var componentType)
-                              && componentType == ComponentType.UserForm
-                              && !formBinaryModuleNames.Contains(kvp.Value))
-                .Select(kvp => kvp.Key)
-                .ToHashSet();
-        }
-
         private QualifiedModuleName? Module(string moduleName, string projectId, DeclarationFinder finder)
         {
             foreach(var module in finder.AllModules)
@@ -216,8 +325,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             var fileExtension = Path.GetExtension(filename);
             return fileExtension != null 
-                   && ComponentTypeForExtension.TryGetValue(fileExtension, out var componentType) 
-                   && module.ComponentType.Equals(componentType);
+                   && ComponentTypesForExtension.TryGetValue(fileExtension, out var componentTypes) 
+                   && componentTypes.Contains(module.ComponentType);
         }
 
         private void NotifyUserAboutAbortDueToNonMatchingFileExtension(IDictionary<string, QualifiedModuleName> modules)
@@ -241,14 +350,27 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             MessageBox.NotifyWarn(message, DialogsTitle);
         }
 
-        private void NotifyUserAboutAbortDueToNonExistingUserForm(ICollection<string> userFormFiles, IDictionary<string, string> moduleNames, IDictionary<string, QualifiedModuleName> existingModules)
+        private void NotifyUserAboutAbortDueToNonExistingBinaryFile(ICollection<string> filesWithoutBinary, IDictionary<string, ICollection<string>> missingBinaries)
         {
-            var firstNonExistingUserFormFilename = userFormFiles.First(filename => !existingModules.ContainsKey(filename));
-            var firstNonExistingUserFormModuleName = moduleNames[firstNonExistingUserFormFilename];
+            var firstFilenameForFileWithoutBinaryAndComponent = filesWithoutBinary.First();
+            var missingBinariesOfFirstFilenameWithoutBinaryAndComponent = string.Join(", ", missingBinaries[firstFilenameForFileWithoutBinaryAndComponent]);
             var message = string.Format(
-                RubberduckUI.UpdateFromFilesCommand_UserFormDoesNotExist,
-                firstNonExistingUserFormModuleName,
-                firstNonExistingUserFormFilename);
+                RubberduckUI.UpdateFromFilesCommand_BinaryDoesNotExist,
+                firstFilenameForFileWithoutBinaryAndComponent,
+                missingBinariesOfFirstFilenameWithoutBinaryAndComponent);
+            MessageBox.NotifyWarn(message, DialogsTitle);
+        }
+
+        private void NotifyUserAboutAbortDueToNonExistingBinaryFileAndComponent(ICollection<string> filesWithoutBinary, IDictionary<string, ICollection<string>> missingBinaries, IDictionary<string, string> moduleNames, IDictionary<string, QualifiedModuleName> existingModules)
+        {
+            var firstFilenameForFileWithoutBinaryAndComponent = filesWithoutBinary.First(filename => !existingModules.ContainsKey(filename));
+            var moduleNameOfFirstFilenameWithoutBinaryAndComponent = moduleNames[firstFilenameForFileWithoutBinaryAndComponent];
+            var missingBinariesOfFirstFilenameWithoutBinaryAndComponent = string.Join("', '", missingBinaries[firstFilenameForFileWithoutBinaryAndComponent]);
+            var message = string.Format(
+                RubberduckUI.UpdateFromFilesCommand_BinaryAndComponentDoNotExist,
+                firstFilenameForFileWithoutBinaryAndComponent,
+                moduleNameOfFirstFilenameWithoutBinaryAndComponent,
+                missingBinariesOfFirstFilenameWithoutBinaryAndComponent);
             MessageBox.NotifyWarn(message, DialogsTitle);
         }
     }

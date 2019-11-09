@@ -1537,12 +1537,17 @@ Import abgebrochen.</value>
 
 Import abgebrochen.</value>
   </data>
-  <data name="UpdateFromFilesCommand_UserFormDoesNotExist" xml:space="preserve">
-    <value>Es existiert keine Userform namens '{0}', s.d. kein Codebehind einer Userform aus der Datei '{1}' überschrieben werden kann.
+  <data name="UpdateFromFilesCommand_BinaryAndComponentDoNotExist" xml:space="preserve">
+    <value>Für die Datei '{0}' fehlen die benötigte(n) Binary-Datei(en) '{1}' und die Zielkomponente '{2}'existiert noch nicht.
 
 Import abgebrochen.</value>
   </data>
-  <data name="SaveAndClose" xml:space="preserve">
+  <data name="SaveAndClose_Duplicate[1]" xml:space="preserve">
     <value>Speichern &amp; Schließen</value>
+  </data>
+  <data name="UpdateFromFilesCommand_BinaryDoesNotExist" xml:space="preserve">
+    <value>Für die Datei '{0}' fehlen die benötigte(n) Binary-Datei(en) '{1}'.
+
+Import abgebrochen.</value>
   </data>
 </root>

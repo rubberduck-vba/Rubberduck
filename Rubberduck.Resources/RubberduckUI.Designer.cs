@@ -4372,6 +4372,28 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to For file &apos;{0}&apos;, the required binary file(s) &apos;{1}&apos; are missing and the target component &apos;{2}&apos; does not already exists.
+        ///
+        ///Update aborted..
+        /// </summary>
+        public static string UpdateFromFilesCommand_BinaryAndComponentDoNotExist {
+            get {
+                return ResourceManager.GetString("UpdateFromFilesCommand_BinaryAndComponentDoNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For file &apos;{0}&apos;, the requires binary file(s) &apos;{1}&apos; are missing.
+        ///
+        ///Update aborted..
+        /// </summary>
+        public static string UpdateFromFilesCommand_BinaryDoesNotExist {
+            get {
+                return ResourceManager.GetString("UpdateFromFilesCommand_BinaryDoesNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Update Components from Files.
         /// </summary>
         public static string UpdateFromFilesCommand_DialogCaption {
@@ -4410,17 +4432,6 @@ namespace Rubberduck.Resources {
         public static string UpdateFromFilesCommand_DuplicateModule {
             get {
                 return ResourceManager.GetString("UpdateFromFilesCommand_DuplicateModule", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to There is no user form with name &apos;{0}&apos;; no code behind can be updated from file &apos;{1}&apos;.
-        ///
-        ///Update aborted..
-        /// </summary>
-        public static string UpdateFromFilesCommand_UserFormDoesNotExist {
-            get {
-                return ResourceManager.GetString("UpdateFromFilesCommand_UserFormDoesNotExist", resourceCulture);
             }
         }
         

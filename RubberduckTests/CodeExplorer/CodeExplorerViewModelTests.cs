@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.ComCommands;
 using RubberduckTests.Mocks;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace RubberduckTests.CodeExplorer
 {
@@ -476,6 +478,43 @@ namespace RubberduckTests.CodeExplorer
         public void UpdateFromFile_ModuleThere_DoesNotRemoveMatchingUserFormWithoutBinary()
         {
             const string path = @"C:\Users\Rubberduck\Desktop\StdModule1.frm";
+            const string binaryName = "myBinary.frx";
+            var binaryPath = Path.Combine(Path.GetDirectoryName(path), binaryName);
+                
+            using (var explorer = new MockedCodeExplorer(
+                    ProjectType.HostProject,
+                    ("TestModule", ComponentType.UserForm, string.Empty),
+                    ("OtherTestModule", ComponentType.StandardModule, string.Empty))
+                .ConfigureOpenDialog(new[] { path }, DialogResult.OK)
+                .SelectFirstProject())
+            {
+                var mockExtractor = new Mock<IRequiredBinaryFilesFromFileNameExtractor>();
+                mockExtractor
+                    .SetupGet(m => m.SupportedComponentTypes)
+                    .Returns(new List<ComponentType> {ComponentType.UserForm});
+                mockExtractor
+                    .Setup(m => m.RequiredBinaryFiles(path, ComponentType.UserForm))
+                    .Returns(new List<string>{ binaryName });
+
+                var mockFileExistenceChecker = new Mock<IFileExistenceChecker>();
+                mockFileExistenceChecker.Setup(m => m.FileExists(binaryPath)).Returns(false);
+
+                explorer.ExecuteUpdateFromFileCommand(
+                    filename => filename == path ? "TestModule" : "YetAnotherModule",
+                    null,
+                    new List<IRequiredBinaryFilesFromFileNameExtractor>{mockExtractor.Object},
+                    mockFileExistenceChecker);
+                explorer.VbComponents.Verify(c => c.Remove(It.IsAny<IVBComponent>()), Times.Never);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        public void UpdateFromFile_ModuleThere_RemovesMatchingUserFormWithBinary()
+        {
+            const string path = @"C:\Users\Rubberduck\Desktop\StdModule1.frm";
+            const string binaryName = "myBinary.frx";
+            var binaryPath = Path.Combine(Path.GetDirectoryName(path), binaryName);
 
             using (var explorer = new MockedCodeExplorer(
                     ProjectType.HostProject,
@@ -484,8 +523,32 @@ namespace RubberduckTests.CodeExplorer
                 .ConfigureOpenDialog(new[] { path }, DialogResult.OK)
                 .SelectFirstProject())
             {
-                explorer.ExecuteUpdateFromFileCommand(filename => filename == path ? "TestModule" : "YetAnotherModule");
-                explorer.VbComponents.Verify(c => c.Remove(It.IsAny<IVBComponent>()), Times.Never);
+                var mockExtractor = new Mock<IRequiredBinaryFilesFromFileNameExtractor>();
+                mockExtractor
+                    .SetupGet(m => m.SupportedComponentTypes)
+                    .Returns(new List<ComponentType> { ComponentType.UserForm });
+                mockExtractor
+                    .Setup(m => m.RequiredBinaryFiles(path, ComponentType.UserForm))
+                    .Returns(new List<string> { binaryName });
+
+                var mockFileExistenceChecker = new Mock<IFileExistenceChecker>();
+                mockFileExistenceChecker.Setup(m => m.FileExists(binaryPath)).Returns(true);
+
+                explorer.ExecuteUpdateFromFileCommand(
+                    filename => filename == path ? "TestModule" : "YetAnotherModule",
+                    null,
+                    new List<IRequiredBinaryFilesFromFileNameExtractor> { mockExtractor.Object },
+                    mockFileExistenceChecker);
+
+                var modulesNames = explorer
+                    .VbComponents
+                    .Object
+                    .Select(component => component.Name)
+                    .ToList();
+
+                explorer.VbComponents.Verify(c => c.Remove(It.IsAny<IVBComponent>()), Times.Once);
+                //This depends on the setup of Import on the VBComponents mock, which determines the component name from the filename.
+                Assert.IsTrue(modulesNames.Contains("StdModule1"));
             }
         }
 

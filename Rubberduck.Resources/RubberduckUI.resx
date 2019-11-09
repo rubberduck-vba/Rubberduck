@@ -1693,10 +1693,16 @@ Update aborted.</value>
 Update aborted.</value>
     <comment>{0} module name, {1} filename</comment>
   </data>
-  <data name="UpdateFromFilesCommand_UserFormDoesNotExist" xml:space="preserve">
-    <value>There is no user form with name '{0}'; no code behind can be updated from file '{1}'.
+  <data name="UpdateFromFilesCommand_BinaryAndComponentDoNotExist" xml:space="preserve">
+    <value>For file '{0}', the required binary file(s) '{1}' are missing and the target component '{2}' does not already exists.
 
 Update aborted.</value>
-    <comment>{0} module name, {1} filename</comment>
+    <comment>{0} filename, {1} binaries, {2} module name</comment>
+  </data>
+  <data name="UpdateFromFilesCommand_BinaryDoesNotExist" xml:space="preserve">
+    <value>For file '{0}', the requires binary file(s) '{1}' are missing.
+
+Update aborted.</value>
+    <comment>{0} filename, {1} binaries</comment>
   </data>
 </root>

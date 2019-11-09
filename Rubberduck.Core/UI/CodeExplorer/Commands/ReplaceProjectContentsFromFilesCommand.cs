@@ -4,6 +4,7 @@ using Rubberduck.Interaction;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor.Events;
+using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -29,7 +30,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return;
             }
 
-            RemoveReimportableComponents(targetProject);
+            RemoveReImportableComponents(targetProject);
             base.ImportFiles(filesToImport, targetProject);
         }
 
@@ -40,17 +41,16 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             return MessageBox.ConfirmYesNo(message, DialogsTitle, false);
         }
 
-        private void RemoveReimportableComponents(IVBProject project)
+        private void RemoveReImportableComponents(IVBProject project)
         {
-            var reimportableComponentTypes = ComponentTypeForExtension.Values
-                .Where(componentType => componentType != ComponentType.Document);
+            var reImportableComponentTypes = ReImportableComponentTypes;
             using(var components = project.VBComponents)
             {
                 foreach(var component in components)
                 {
                     using (component)
                     {
-                        if (reimportableComponentTypes.Contains(component.Type))
+                        if (reImportableComponentTypes.Contains(component.Type))
                         {
                             components.Remove(component);
                         }
@@ -58,5 +58,11 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 }
             }
         }
+
+        //We currently do not take precautions for component types requiring a binary file to be present.
+        private ICollection<ComponentType> ReImportableComponentTypes => ComponentTypesForExtension.Values
+            .SelectMany(componentTypes => componentTypes)
+            .Where(componentType => componentType != ComponentType.Document)
+            .ToList();
     }
 }
