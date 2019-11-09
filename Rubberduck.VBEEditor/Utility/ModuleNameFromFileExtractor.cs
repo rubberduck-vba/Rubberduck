@@ -1,7 +1,10 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.VBEditor.Utility
 {
@@ -19,10 +22,9 @@ namespace Rubberduck.VBEditor.Utility
                 return null;
             }
 
-            //We cannot read binary files.
-            if(ComponentTypeExtensions.FormBinaryExtension.Equals(Path.GetExtension(filename)))
+            if (!SupportedExtensions.Contains(Path.GetExtension(filename)))
             {
-                return Path.GetFileNameWithoutExtension(filename);
+                return null;
             }
 
             var contents = File.ReadLines(filename, Encoding.Default);
@@ -35,5 +37,10 @@ namespace Rubberduck.VBEditor.Utility
             //The format is Attribute VB_Name = "ModuleName"
             return nameLine.Substring("Attribute VB_Name = ".Length + 1, nameLine.Length - "Attribute VB_Name = ".Length - 2);
         }
+
+        private static ICollection<string> SupportedExtensions => 
+            ComponentTypeExtensions.ComponentTypesForExtension(VBEKind.Hosted).Keys
+            .Concat(ComponentTypeExtensions.ComponentTypesForExtension(VBEKind.Standalone).Keys)
+            .ToHashSet();
     }
 }
