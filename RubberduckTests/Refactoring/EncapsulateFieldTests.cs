@@ -13,16 +13,18 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor.Utility;
+using System.Collections.Generic;
 
 namespace RubberduckTests.Refactoring
 {
     [TestFixture]
     public class EncapsulateFieldTests : InteractiveRefactoringTestBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>
     {
-        [Test]
+        [TestCase("fizz")]
+        [TestCase("mFizz")]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        public void EncapsulatePublicField_WithLetter()
+        public void EncapsulatePublicField_WithLet(string newFieldName)
         {
             //Input
             const string inputCode =
@@ -30,20 +32,52 @@ namespace RubberduckTests.Refactoring
             var selection = new Selection(1, 1);
 
             //Expectation
-            const string expectedCode =
-                @"Private fizz As Integer
+            string expectedCode =
+                $@"Private {newFieldName} As Integer
 
 Public Property Get Name() As Integer
-    Name = fizz
+    Name = {newFieldName}
 End Property
 
 Public Property Let Name(ByVal value As Integer)
-    fizz = value
+    {newFieldName} = value
 End Property
 ";
-            var presenterAction = SetParameters("Name", implementLet: true);
+            var presenterAction = SetParameters(("fizz", "Name", true, newFieldName));
             var actualCode = RefactoredCode(inputCode, selection, presenterAction);
             Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void EncapsulateMultipleFields()
+        {
+            //Input
+            const string inputCode =
+@"Public fizz As Integer
+Public baz As String
+Public buzz As Boolean";
+
+            var selection = new Selection(1, 1);
+
+            var presenterAction = SetParameters(("fizz", "FizzProp", true), ("baz", "BazProp", true), ("buzz", "BuzzProp", true));
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            StringAssert.Contains("Private fizz As Integer", actualCode);
+            StringAssert.Contains("Private baz As String", actualCode);
+            StringAssert.Contains("Private buzz As Boolean", actualCode);
+            StringAssert.Contains("Property Get FizzProp() As Integer", actualCode);
+            StringAssert.Contains("FizzProp = fizz", actualCode);
+            StringAssert.Contains("Let FizzProp(ByVal value As Integer)", actualCode);
+            StringAssert.Contains("fizz = value", actualCode);
+            StringAssert.Contains("Property Get BazProp() As String", actualCode);
+            StringAssert.Contains("BazProp = baz", actualCode);
+            StringAssert.Contains("Let BazProp(ByVal value As String)", actualCode);
+            StringAssert.Contains("baz = value", actualCode);
+            StringAssert.Contains("Property Get BuzzProp() As Boolean", actualCode);
+            StringAssert.Contains("BuzzProp = buzz", actualCode);
+            StringAssert.Contains("Let BuzzProp(ByVal value As Boolean)", actualCode);
+            StringAssert.Contains("buzz = value", actualCode);
         }
 
         [TestCase("Public")]
@@ -63,19 +97,20 @@ End Type
 
             var selection = new Selection(7, 10); //Selects 'this' declaration
 
-            var ruleTBar = new EncapsulateUDTVariableRule("this")
+
+            var attributes = new FieldEncapsulationAttributes()
             {
-                EncapsulateAllUDTMembers = false,
-                EncapsulateVariable = true,
+                FieldName = "this",
+                PropertyName = "MyType",
+                AsTypeName = "TBar",
+                IsValueType = true,
+                IsFlaggedToEncapsulate = true
             };
 
-            var attributes = new EncapsulationAttributes("this", "MyType", "TBar")
-            {
-                ImplementLetSetterType = true,
-                ImplementSetSetterType = false,
-            };
+            var thisEncapsulationAttributes = new UDTFieldEncapsulationAttributes(attributes, new string[] { "First", "Second" });
+            thisEncapsulationAttributes.EncapsulateAllUDTMembers = false;
 
-            var presenterAction = SetParameters(attributes, ruleTBar); // "MyType", implementLet: true);
+            var presenterAction = SetParameters(thisEncapsulationAttributes);
             var actualCode = RefactoredCode(inputCode, selection, presenterAction);
             StringAssert.Contains("Private this As TBar", actualCode);
             StringAssert.Contains("this = value", actualCode);
@@ -83,11 +118,88 @@ End Type
             StringAssert.DoesNotContain($"this.First = value", actualCode);
         }
 
+        [TestCase("First")]
+        [TestCase("Second")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void EncapsulateAllMembersFlag(string memberToEncapsulate)
+        {
+            string inputCode =
+$@"
+Private Type TBar
+    First As String
+    Second As Long
+End Type
+
+Private this As TBar";
+
+            var selection = new Selection(7, 10); //Selects 'this' declaration
+
+
+            var attributes = new FieldEncapsulationAttributes()
+            {
+                FieldName = "this",
+                PropertyName = "MyType",
+                AsTypeName = "TBar",
+                IsFlaggedToEncapsulate = true,
+                IsValueType = true,
+            };
+
+            var udtEncapsulationAttributes = new UDTFieldEncapsulationAttributes(attributes, new string[] { "First", "Second" });
+            udtEncapsulationAttributes.EncapsulateAllUDTMembers = true;
+            Assert.IsTrue(udtEncapsulationAttributes.EncapsulateAllUDTMembers);
+
+            udtEncapsulationAttributes.FlagUdtMemberEncapsulation(false, memberToEncapsulate);
+            Assert.IsFalse(udtEncapsulationAttributes.EncapsulateAllUDTMembers);
+
+            udtEncapsulationAttributes.FlagUdtMemberEncapsulation(true, memberToEncapsulate);
+            Assert.IsTrue(udtEncapsulationAttributes.EncapsulateAllUDTMembers);
+        }
+
+        [TestCase("First")]
+        [TestCase("Second")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void EncapsulateUserDefinedTypeMembers_Subset(string memberToEncapsulate)
+        {
+            string inputCode =
+$@"
+Private Type TBar
+    First As String
+    Second As Long
+End Type
+
+Private this As TBar";
+
+            var selection = new Selection(7, 10); //Selects 'this' declaration
+
+
+            var attributes = new FieldEncapsulationAttributes()
+            {
+                FieldName = "this",
+                PropertyName = "MyType",
+                AsTypeName = "TBar",
+                IsFlaggedToEncapsulate = true,
+                IsValueType = true,
+            };
+
+            var udtAttributes = new UDTFieldEncapsulationAttributes(attributes, new string[] { "First", "Second" });
+            udtAttributes.FlagUdtMemberEncapsulation(true, memberToEncapsulate);
+
+            Assert.IsFalse(udtAttributes.EncapsulateAllUDTMembers);
+
+            var presenterAction = SetParameters(udtAttributes);
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            StringAssert.Contains($"this.{memberToEncapsulate} = value", actualCode);
+            StringAssert.Contains($"{memberToEncapsulate} = this.{memberToEncapsulate}", actualCode);
+        }
+
+
         [TestCase("Public")]
         [TestCase("Private")]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        public void EncapsulateUserDefinedTypeMembers(string accessibility)
+        public void EncapsulateUserDefinedTypeMember(string accessibility)
         {
             string inputCode =
 $@"
@@ -100,22 +212,177 @@ End Type
 
             var selection = new Selection(7, 10); //Selects 'this' declaration
 
-            var ruleTBar = new EncapsulateUDTVariableRule("this");
-            ruleTBar.EncapsulateAllUDTMembers = true;
-            ruleTBar.EncapsulateVariable = true;
 
-            var attributes = new EncapsulationAttributes("this", "MyType", "TBar")
+            var attributes = new FieldEncapsulationAttributes()
             {
-                ImplementLetSetterType = true,
-                ImplementSetSetterType = false,
+                FieldName = "this",
+                PropertyName = "MyType",
+                AsTypeName = "TBar",
+                IsFlaggedToEncapsulate = true,
             };
 
-            var presenterAction = SetParameters(attributes, ruleTBar); // "MyType", implementLet: true, rule: ruleTBar); //, encapsulateTypeMembers: true);
+            var udtFieldAttributes = new UDTFieldEncapsulationAttributes(attributes, new string[] { "First", "Second" });
+            udtFieldAttributes.EncapsulateAllUDTMembers = true;
+
+            Assert.IsTrue(udtFieldAttributes.EncapsulateAllUDTMembers);
+
+            var presenterAction = SetParameters(udtFieldAttributes);
             var actualCode = RefactoredCode(inputCode, selection, presenterAction);
             StringAssert.Contains("Private this As TBar", actualCode);
             StringAssert.Contains("this = value", actualCode);
             StringAssert.Contains("MyType = this", actualCode);
             Assert.AreEqual(actualCode.IndexOf("MyType = this"), actualCode.LastIndexOf("MyType = this"));
+            StringAssert.Contains($"this.First = value", actualCode);
+            StringAssert.Contains($"First = this.First", actualCode);
+            StringAssert.Contains($"this.Second = value", actualCode);
+            StringAssert.Contains($"Second = this.Second", actualCode);
+            StringAssert.DoesNotContain($"Second = Second", actualCode);
+        }
+
+        [TestCase("Public")]
+        [TestCase("Private")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void EncapsulateUserDefinedTypeMember_ContainsObjects(string accessibility)
+        {
+            string inputCode =
+$@"
+Private Type TBar
+    First As Class1
+    Second As Long
+End Type
+
+{accessibility} this As TBar";
+
+            string class1Code =
+@"Option Explicit
+
+Public Sub Foo()
+End Sub
+";
+
+            var selection = new Selection(7, 10); //Selects 'this' declaration
+
+
+            var attributes = new FieldEncapsulationAttributes()
+            {
+                FieldName = "this",
+                PropertyName = "MyType",
+                AsTypeName = "TBar",
+                IsFlaggedToEncapsulate = true,
+            };
+
+            var udtFieldAttributes = new UDTFieldEncapsulationAttributes(attributes, new string[] { "First", "Second" });
+            udtFieldAttributes.EncapsulateAllUDTMembers = true;
+
+            Assert.IsTrue(udtFieldAttributes.EncapsulateAllUDTMembers);
+
+            var presenterAction = SetParameters(udtFieldAttributes);
+            var actualModuleCode = RefactoredCode(
+                "Module1",
+                selection,
+                presenterAction,
+                null,
+                false,
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Module1", inputCode, ComponentType.StandardModule));
+
+            var actualCode = actualModuleCode["Module1"];
+
+            StringAssert.Contains("Private this As TBar", actualCode);
+            StringAssert.Contains("this = value", actualCode);
+            StringAssert.Contains("MyType = this", actualCode);
+            StringAssert.Contains("Property Set First(ByVal value As Class1)", actualCode);
+            StringAssert.Contains("Property Get First() As Class1", actualCode);
+            StringAssert.Contains($"Set this.First = value", actualCode);
+            StringAssert.Contains($"Set First = this.First", actualCode);
+            StringAssert.Contains($"this.Second = value", actualCode);
+            StringAssert.Contains($"Second = this.Second", actualCode);
+            StringAssert.DoesNotContain($"Second = Second", actualCode);
+        }
+
+        [TestCase("Public")]
+        [TestCase("Private")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void EncapsulateUserDefinedTypeMember_ContainsVariant(string accessibility)
+        {
+            string inputCode =
+$@"
+Private Type TBar
+    First As String
+    Second As Variant
+End Type
+
+{accessibility} this As TBar";
+
+            var selection = new Selection(7, 10); //Selects 'this' declaration
+
+
+            var attributes = new FieldEncapsulationAttributes()
+            {
+                FieldName = "this",
+                PropertyName = "MyType",
+                AsTypeName = "TBar",
+                IsFlaggedToEncapsulate = true,
+            };
+
+            var udtFieldAttributes = new UDTFieldEncapsulationAttributes(attributes, new string[] { "First", "Second" });
+            udtFieldAttributes.EncapsulateAllUDTMembers = true;
+
+            Assert.IsTrue(udtFieldAttributes.EncapsulateAllUDTMembers);
+
+            var presenterAction = SetParameters(udtFieldAttributes);
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            StringAssert.Contains("Private this As TBar", actualCode);
+            StringAssert.Contains("this = value", actualCode);
+            StringAssert.Contains("MyType = this", actualCode);
+            Assert.AreEqual(actualCode.IndexOf("MyType = this"), actualCode.LastIndexOf("MyType = this"));
+            StringAssert.Contains($"this.First = value", actualCode);
+            StringAssert.Contains($"First = this.First", actualCode);
+            StringAssert.Contains($"IsObject", actualCode);
+            StringAssert.Contains($"this.Second = value", actualCode);
+            StringAssert.Contains($"Second = this.Second", actualCode);
+            StringAssert.DoesNotContain($"Second = Second", actualCode);
+        }
+
+        [TestCase("Public", "Public")]
+        [TestCase("Private", "Private")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void EncapsulateUserDefinedTypeMembersOnly(string accessibility, string expectedAccessibility)
+        {
+            string inputCode =
+$@"
+Private Type TBar
+    First As String
+    Second As Long
+End Type
+
+{accessibility} this As TBar";
+
+            var selection = new Selection(7, 10); //Selects 'this' declaration
+
+
+            var attributes = new FieldEncapsulationAttributes()
+            {
+                FieldName = "this",
+                PropertyName = "MyType",
+                AsTypeName = "TBar",
+                IsFlaggedToEncapsulate = false,
+                IsValueType = true,
+            };
+
+            var udtFieldAttributes = new UDTFieldEncapsulationAttributes(attributes, new string[] { "First", "Second" });
+            udtFieldAttributes.EncapsulateAllUDTMembers = true;
+
+            Assert.IsTrue(udtFieldAttributes.EncapsulateAllUDTMembers);
+
+            var presenterAction = SetParameters(udtFieldAttributes);
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            StringAssert.Contains($"{expectedAccessibility} this As TBar", actualCode);
+            StringAssert.DoesNotContain("this = value", actualCode);
+            StringAssert.DoesNotContain("MyType = this", actualCode);
             StringAssert.Contains($"this.First = value", actualCode);
             StringAssert.Contains($"First = this.First", actualCode);
             StringAssert.Contains($"this.Second = value", actualCode);
@@ -145,19 +412,21 @@ End Type
 
             var selection = new Selection(4, 10); //Selects 'this' declaration
 
-            var ruleTBar = new EncapsulateUDTVariableRule("this")
+            var attributes = new FieldEncapsulationAttributes()
+            {
+                FieldName = "this",
+                PropertyName = "MyType",
+                AsTypeName = "TBar",
+                IsFlaggedToEncapsulate = true,
+                IsValueType = true,
+            };
+
+            var udtFieldAttributes = new UDTFieldEncapsulationAttributes(attributes, new string[] { "First", "Second" })
             {
                 EncapsulateAllUDTMembers = true,
-                EncapsulateVariable = true,
             };
 
-            var attributes = new EncapsulationAttributes("this", "MyType", "TBar")
-            {
-                ImplementLetSetterType = true,
-                ImplementSetSetterType = false,
-            };
-
-            var presenterAction = SetParameters(attributes, ruleTBar); // "MyType", implementLet: true, rule: ruleTBar);
+            var presenterAction = SetParameters(udtFieldAttributes);
             var actualModuleCode = RefactoredCode(
                 "Class1",
                 selection,
@@ -180,6 +449,53 @@ End Type
             StringAssert.Contains($"this.Second = value", actualCode);
             StringAssert.Contains($"Second = this.Second", actualCode);
             StringAssert.DoesNotContain($"Second = Second", actualCode);
+        }
+
+        [TestCase("Public")]
+        [TestCase("Private")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void EncapsulateUserDefinedTypeMembers_ObjectField(string accessibility)
+        {
+            string inputCode =
+$@"
+Option Explicit
+
+{accessibility} mTheClass As Class1";
+
+            string classContent =
+$@"
+Option Explicit
+
+Private Sub Class_Initialize()
+End Sub
+";
+
+            var selection = new Selection(4, 10); //Selects 'mTheClass' declaration
+
+            var attributes = new FieldEncapsulationAttributes()
+            {
+                FieldName = "mTheClass",
+                PropertyName = "TheClass",
+                AsTypeName = "Class1",
+                IsFlaggedToEncapsulate = true,
+            };
+
+            var presenterAction = SetParameters(attributes);
+            var actualModuleCode = RefactoredCode(
+                "Module1",
+                selection,
+                presenterAction,
+                null,
+                false,
+                ("Class1", classContent, ComponentType.ClassModule),
+                ("Module1", inputCode, ComponentType.StandardModule));
+
+            var actualCode = actualModuleCode["Module1"];
+
+            StringAssert.Contains("Private mTheClass As Class1", actualCode);
+            StringAssert.Contains("Set mTheClass = value", actualCode);
+            StringAssert.Contains("TheClass = mTheClass", actualCode);
         }
 
         [Test]
@@ -458,10 +774,11 @@ End Property
             Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [Test]
+        [TestCase("fizz")]
+        [TestCase("mFizz")]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        public void EncapsulatePublicField_FieldHasReferences()
+        public void EncapsulatePublicField_FieldHasReferences(string newName)
         {
             //Input
             const string inputCode =
@@ -477,15 +794,15 @@ End Sub";
             var selection = new Selection(1, 1);
 
             //Expectation
-            const string expectedCode =
-                @"Private fizz As Integer
+            string expectedCode =
+                $@"Private {newName} As Integer
 
 Public Property Get Name() As Integer
-    Name = fizz
+    Name = {newName}
 End Property
 
 Public Property Let Name(ByVal value As Integer)
-    fizz = value
+    {newName} = value
 End Property
 
 
@@ -496,7 +813,7 @@ End Sub
 
 Sub Bar(ByVal name As Integer)
 End Sub";
-            var presenterAction = SetParameters("Name", implementLet: true);
+            var presenterAction = SetParameters(("fizz", "Name", true, newName));
             var actualCode = RefactoredCode(inputCode, selection, presenterAction);
             Assert.AreEqual(expectedCode, actualCode);
         }
@@ -551,15 +868,16 @@ End Sub
 
 Sub Bar(ByVal v As Integer)
 End Sub";
-            var attributes = new EncapsulationAttributes()
+            var attributes = new FieldEncapsulationAttributes()
             {
+                FieldName = "fizz",
                 PropertyName = "Name",
                 ParameterName = "value",
-                ImplementLetSetterType = true,
-                ImplementSetSetterType = false,
+                IsFlaggedToEncapsulate = true,
+                IsValueType = true,
             };
 
-            var presenterAction = SetParameters(attributes); // "Name", implementLet: true);
+            var presenterAction = SetParameters(attributes);
             var actualCode = RefactoredCode(
                 "Class1", 
                 selection, 
@@ -709,8 +1027,7 @@ End Property
             string propertyName,
             bool implementSet = false,
             bool implementLet = false,
-            string parameterName = "value",
-            EncapsulateUDTVariableRule rule = new EncapsulateUDTVariableRule())
+            string parameterName = "value")
         {
             return model =>
             {
@@ -718,35 +1035,48 @@ End Property
                 model.ParameterName = parameterName;
                 model.ImplementLetSetterType = implementLet;
                 model.ImplementSetSetterType = implementSet;
-                if (rule.VariableName != null)
+                return model;
+            };
+        }
+
+        private Func<EncapsulateFieldModel, EncapsulateFieldModel> SetParameters(FieldEncapsulationAttributes attributes)
+        {
+            return model =>
+            {
+                model.UpdateEncapsulationField(attributes);
+                return model;
+            };
+        }
+
+        private Func<EncapsulateFieldModel, EncapsulateFieldModel> SetParameters(IUDTFieldEncapsulationAttributes udtAttributes)
+        {
+            return model =>
+            {
+                model.UpdateEncapsulationField(udtAttributes);
+                return model;
+            };
+        }
+
+        private Func<EncapsulateFieldModel, EncapsulateFieldModel> SetParameters(params (string variableName, string propertyName, bool encapsulateFlag)[] namePairs)
+        {
+            return model =>
+            {
+                foreach (var pair in namePairs)
                 {
-                    model.AddUDTVariableRule(rule);
+                    model.UpdateEncapsulationField(pair.variableName, pair.propertyName, pair.encapsulateFlag);
                 }
                 return model;
             };
         }
 
-        private Func<EncapsulateFieldModel, EncapsulateFieldModel> SetParameters(EncapsulationAttributes attributes)
+        private Func<EncapsulateFieldModel, EncapsulateFieldModel> SetParameters(params (string variableName, string propertyName, bool encapsulateFlag, string newFieldName)[] tuples)
         {
             return model =>
             {
-                model.PropertyName = attributes.PropertyName;
-                model.ParameterName = attributes.ParameterName;
-                model.ImplementLetSetterType = attributes.ImplementLetSetterType;
-                model.ImplementSetSetterType = attributes.ImplementSetSetterType;
-                return model;
-            };
-        }
-
-        private Func<EncapsulateFieldModel, EncapsulateFieldModel> SetParameters(EncapsulationAttributes attributes, EncapsulateUDTVariableRule rule)
-        {
-            return model =>
-            {
-                model.PropertyName = attributes.PropertyName;
-                model.ParameterName = attributes.ParameterName;
-                model.ImplementLetSetterType = attributes.ImplementLetSetterType;
-                model.ImplementSetSetterType = attributes.ImplementSetSetterType;
-                model.AddUDTVariableRule(rule);
+                foreach (var tuple in tuples)
+                {
+                    model.UpdateEncapsulationField(tuple.variableName, tuple.propertyName, tuple.encapsulateFlag, tuple.newFieldName);
+                }
                 return model;
             };
         }

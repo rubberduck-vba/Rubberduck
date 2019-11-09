@@ -59,24 +59,22 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 throw new InvalidDeclarationTypeException(target);
             }
 
-            var udtVariables = _declarationFinderProvider.DeclarationFinder
-                .Members(target.QualifiedName.QualifiedModuleName)
+            var allMemberFields = _declarationFinderProvider.DeclarationFinder
+                .Members(target.QualifiedModuleName)
                 .Where(v => v.DeclarationType.Equals(DeclarationType.Variable)
-                    && (v.AsTypeDeclaration?.DeclarationType.Equals(DeclarationType.UserDefinedType) ?? false));
+                    && !v.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Member));
 
-            var udtTuples = udtVariables.Select(uv => GetUDTDefinition(uv));
+            var udtFieldToTypeMap = allMemberFields
+                .Where(v => v.AsTypeDeclaration?.DeclarationType.Equals(DeclarationType.UserDefinedType) ?? false)
+                .Select(uv => CreateUDTTuple(uv))
+                .ToDictionary(key => key.UDTVariable, element => (element.UserDefinedType, element.UDTMembers));
 
-            var nonUdtVariables = _declarationFinderProvider.DeclarationFinder
-                .Members(target.QualifiedName.QualifiedModuleName)
-                .Where(v => v.DeclarationType.Equals(DeclarationType.Variable)
-                    && !udtVariables.Contains(v) && !v.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Member));
-
-            var model =  new EncapsulateFieldModel(target, nonUdtVariables, udtTuples, _indenter);
+            var model =  new EncapsulateFieldModel(target, allMemberFields, udtFieldToTypeMap, _indenter);
 
             return model;
         }
 
-        private (Declaration UDTVariable, Declaration UserDefinedType, IEnumerable<Declaration> UDTMembers) GetUDTDefinition(Declaration udtVariable)
+        private (Declaration UDTVariable, Declaration UserDefinedType, IEnumerable<Declaration> UDTMembers) CreateUDTTuple(Declaration udtVariable)
         {
             var userDefinedTypeDeclaration = _declarationFinderProvider.DeclarationFinder
                 .UserDeclarations(DeclarationType.UserDefinedType)
@@ -89,6 +87,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var udtMembers = _declarationFinderProvider.DeclarationFinder
                .UserDeclarations(DeclarationType.UserDefinedTypeMember)
                .Where(utm => userDefinedTypeDeclaration.IdentifierName == utm.ParentDeclaration.IdentifierName);
+
             return (udtVariable, userDefinedTypeDeclaration, udtMembers);
         }
 
@@ -96,39 +95,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
 
-            var rules = new Dictionary<Declaration, EncapsulateUDTVariableRule>();
+            var nonUdtMemberFields = model.FlaggedEncapsulationFields
+                    .Where(efd => efd.DeclarationType.Equals(DeclarationType.Variable));
 
-            foreach (var target in model.EncapsulationTargets)
+            foreach (var nonUdtMemberField in nonUdtMemberFields)
             {
-                if (model.TryGetUDTVariableRule(target.IdentifierName, out EncapsulateUDTVariableRule rule))
-                {
-                    rules.Add(target, rule);
-                }
-            }
-
-            var udtVariableTargets = model.EncapsulationTargets.Where(et => rules.ContainsKey(et)).ToList();
-            foreach( var udtVariable in udtVariableTargets)
-            {
-                var rule = rules[udtVariable];
-                if (rule.EncapsulateAllUDTMembers)
-                {
-                    foreach (var udtMember in model.GetUdtMembers(udtVariable))
-                    {
-                        var udtMemberField = new EncapsulatedValueType(new EncapsulateFieldDeclaration(udtMember));
-                        udtMemberField = new EncapsulatedUserDefinedMemberValueType(udtMemberField, new UserDefinedTypeField(udtVariable));
-                        udtMemberField.EncapsulationAttributes.Encapsulate = true;
-                        model.AddEncapsulationTarget(udtMemberField);
-                    }
-                }
-            }
-
-            foreach (var target in model.EncapsulationTargets)
-            {
-                if (target.DeclarationType.Equals(DeclarationType.Variable))
-                {
-                    EnforceEncapsulatedVariablePrivateAccessibility(target, rewriteSession);
-                }
-                UpdateReferences(target, rewriteSession, model.EncapsulationAttributes(target).PropertyName); // model.PropertyName);
+                var attributes = nonUdtMemberField.EncapsulationAttributes;
+                EnforceEncapsulatedVariablePrivateAccessibility(nonUdtMemberField.Declaration, attributes, rewriteSession);
+                UpdateReferences(nonUdtMemberField.Declaration, rewriteSession, attributes.PropertyName);
             }
 
             InsertProperties(model, rewriteSession);
@@ -141,11 +115,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private void InsertProperties(EncapsulateFieldModel model, IRewriteSession rewriteSession)
         {
-            if (!model.EncapsulationTargets.Any()) { return; }
+            if (!model.FlaggedEncapsulationFields.Any()) { return; }
 
-            var qualifiedModuleName = model.EncapsulationTargets.First().QualifiedModuleName;
+            var qualifiedModuleName = model.FlaggedEncapsulationFields.First().Declaration.QualifiedModuleName;
 
             var carriageReturns = $"{Environment.NewLine}{Environment.NewLine}";
+
             var insertionTokenIndex = _declarationFinderProvider.DeclarationFinder
                     .Members(qualifiedModuleName)
                     .Where(d => d.DeclarationType == DeclarationType.Variable
@@ -158,20 +133,20 @@ namespace Rubberduck.Refactorings.EncapsulateField
             rewriter.InsertAfter(insertionTokenIndex, $"{carriageReturns}{string.Join(carriageReturns, model.PropertiesContent)}");
         }
 
-        private void EnforceEncapsulatedVariablePrivateAccessibility(Declaration target, IRewriteSession rewriteSession)
+        private void EnforceEncapsulatedVariablePrivateAccessibility(Declaration target, IFieldEncapsulationAttributes attributes, IRewriteSession rewriteSession)
         {
             if (!target.DeclarationType.Equals(DeclarationType.Variable))
             {
                 return;
             }
 
-            if (target.Accessibility == Accessibility.Private) { return; }
+            if (target.Accessibility == Accessibility.Private && attributes.NewFieldName.Equals(target.IdentifierName)) { return; }
 
             var rewriter = rewriteSession.CheckOutModuleRewriter(target.QualifiedModuleName);
 
-            var newField = $"{Accessibility.Private} {target.IdentifierName} As {target.AsTypeName}";
+            var newField = $"{Accessibility.Private} {attributes.NewFieldName} As {target.AsTypeName}";
 
-            if(target.Context.TryGetAncestor<VBAParser.VariableListStmtContext>(out var varList)
+            if (target.Context.TryGetAncestor<VBAParser.VariableListStmtContext>(out var varList)
                 && varList.ChildCount > 1)
             {
                 rewriter.Remove(target);

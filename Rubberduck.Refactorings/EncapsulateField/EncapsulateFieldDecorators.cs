@@ -13,12 +13,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public EncapsulateFieldDeclaration(Declaration declaration)
         {
             _decorated = declaration;
-            EncapsulationAttributes = new EncapsulationAttributes(_decorated);
-        }
-
-        public static EncapsulateFieldDeclaration Decorate(Declaration declaration)
-        {
-            return new EncapsulateFieldDeclaration(declaration);
+            EncapsulationAttributes = new FieldEncapsulationAttributes(_decorated);
         }
 
         public Declaration Declaration => _decorated;
@@ -27,53 +22,89 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public DeclarationType DeclarationType => _decorated.DeclarationType;
 
-        public EncapsulationAttributes EncapsulationAttributes { set; get; }
+        public IFieldEncapsulationAttributes EncapsulationAttributes { set; get; }
     }
 
-    public class EncapsulatedValueType : EncapsulateFieldDeclaration
+    public class EncapsulateValueType : EncapsulateFieldDeclaration
     {
-        public EncapsulatedValueType(EncapsulateFieldDeclaration declaration)
+        public EncapsulateValueType(EncapsulateFieldDeclaration declaration)
             : base(declaration.Declaration)
         {
+            EncapsulationAttributes.CanImplementLet = true;
+            EncapsulationAttributes.CanImplementSet = false;
         }
     }
 
-    public class EncapsulatedUserDefinedMemberValueType : EncapsulatedValueType
+    public class EncapsulatedUserDefinedMemberValueType : EncapsulateValueType
     {
-        public EncapsulatedUserDefinedMemberValueType(EncapsulatedValueType declaration, UserDefinedTypeField udtVariable)
+        public EncapsulatedUserDefinedMemberValueType(EncapsulateValueType declaration, EncapsulateUserDefinedType udtVariable)
             : base(declaration)
         {
-            EncapsulationAttributes.FieldName = $"{udtVariable.Declaration.IdentifierName}.{declaration.Declaration.IdentifierName}";
-            EncapsulationAttributes.ImplementLetSetterType = true;
+            EncapsulationAttributes.NewFieldName = $"{udtVariable.Declaration.IdentifierName}.{declaration.Declaration.IdentifierName}";
+            EncapsulationAttributes.IsValueType = true;
+            EncapsulationAttributes.CanImplementLet = true;
+            EncapsulationAttributes.CanImplementSet = false;
         }
-    }
 
-    public class UserDefinedTypeField : EncapsulateFieldDeclaration
-    {
-        public UserDefinedTypeField(Declaration declaration)
+        public EncapsulatedUserDefinedMemberValueType(EncapsulateVariantType declaration, EncapsulateUserDefinedType udtVariable)
             : base(declaration)
         {
-        }
-
-        public UserDefinedTypeField(EncapsulateFieldDeclaration declaration)
-            : base(declaration.Declaration)
-        {
+            EncapsulationAttributes.NewFieldName = $"{udtVariable.Declaration.IdentifierName}.{declaration.Declaration.IdentifierName}";
+            EncapsulationAttributes.IsVariantType = true;
+            EncapsulationAttributes.CanImplementLet = true;
+            EncapsulationAttributes.CanImplementSet = false;
         }
     }
 
-    public class EncapsulatedVariantType : EncapsulateFieldDeclaration
+    public class EncapsulatedUserDefinedMemberObjectType : EncapsulateFieldDeclaration
     {
-        public EncapsulatedVariantType(EncapsulateFieldDeclaration declaration)
+        public EncapsulatedUserDefinedMemberObjectType(EncapsulateObjectType declaration, EncapsulateUserDefinedType udtVariable)
             : base(declaration.Declaration)
+        {
+            EncapsulationAttributes.NewFieldName = $"{udtVariable.Declaration.IdentifierName}.{declaration.Declaration.IdentifierName}";
+            EncapsulationAttributes.IsObjectType = true;
+            EncapsulationAttributes.CanImplementLet = false;
+            EncapsulationAttributes.CanImplementSet = true;
+        }
+    }
+
+
+    public class EncapsulateUserDefinedType : EncapsulateFieldDeclaration
+    {
+        public EncapsulateUserDefinedType(Declaration declaration)
+            : base(declaration)
+        {
+            EncapsulationAttributes.CanImplementLet = true;
+            EncapsulationAttributes.CanImplementSet = false;
+        }
+
+        public EncapsulateUserDefinedType(EncapsulateFieldDeclaration declaration)
+            : base(declaration.Declaration)
+        {
+            EncapsulationAttributes.CanImplementLet = true;
+            EncapsulationAttributes.CanImplementSet = false;
+        }
+    }
+
+    public class EncapsulateVariantType : EncapsulateFieldDeclaration
+    {
+        public EncapsulateVariantType(EncapsulateFieldDeclaration declaration)
+            : base(declaration.Declaration)
+        {
+            EncapsulationAttributes.CanImplementLet = true;
+            EncapsulationAttributes.CanImplementSet = true;
+        }
+        public EncapsulateVariantType(Declaration declaration)
+            : base(declaration)
         {
             EncapsulationAttributes.CanImplementLet = true;
             EncapsulationAttributes.CanImplementSet = true;
         }
     }
 
-    public class EncapsulatedObjectType : EncapsulateFieldDeclaration
+    public class EncapsulateObjectType : EncapsulateFieldDeclaration
     {
-        public EncapsulatedObjectType(EncapsulateFieldDeclaration declaration)
+        public EncapsulateObjectType(EncapsulateFieldDeclaration declaration)
             : base(declaration.Declaration)
         {
             EncapsulationAttributes.CanImplementLet = false;
