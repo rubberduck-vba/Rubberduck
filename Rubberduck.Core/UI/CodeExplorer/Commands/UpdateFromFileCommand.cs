@@ -159,7 +159,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                         components.Remove(component);
                     }
 
-                    if(documentFiles.Contains(filename) || filesWithoutRequiredBinariesWithoutBackupSolution.Contains(filename))
+                    if(documentFiles.Contains(filename) || filesWithoutRequiredBinaryButWithPossibilityToImportToExistingComponent.Contains(filename))
                     {
                         //We have to dispose the return value.
                         using (components.ImportSourceFile(filename)) { }
