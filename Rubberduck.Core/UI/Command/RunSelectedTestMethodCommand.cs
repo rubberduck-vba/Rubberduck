@@ -50,7 +50,8 @@ namespace Rubberduck.UI.Command
 
         private bool IsTestMethod(Declaration member)
         {
-            return member.DeclarationType == DeclarationType.Procedure
+            return member != null 
+                   && member.DeclarationType == DeclarationType.Procedure
                    && member.Annotations.Any(parseTreeAnnotation =>
                        parseTreeAnnotation.Annotation is TestMethodAnnotation);
         }
