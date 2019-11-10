@@ -14,8 +14,6 @@ using System.Windows.Input;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Inspections.Abstract;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -28,7 +26,6 @@ using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.ComCommands;
 using Rubberduck.UI.Settings;
 using Rubberduck.VBEditor;
-using Rubberduck.Formatters;
 
 namespace Rubberduck.UI.Inspections
 {
@@ -527,8 +524,7 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
-            var selectedResult = SelectedItem as IInspectionResult;
-            if (selectedResult == null)
+            if (!(SelectedItem is IInspectionResult selectedResult))
             {
                 return;
             }
@@ -555,8 +551,7 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
-            var selectedResult = SelectedItem as IInspectionResult;
-            if (selectedResult == null)
+            if (!(SelectedItem is IInspectionResult selectedResult))
             {
                 return;
             }

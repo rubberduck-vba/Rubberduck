@@ -1418,7 +1418,7 @@ NOTA: Es necesario reiniciar para que la configuración tenga efecto.</value>
     <value>En el método que usa '{0}', el nombre de esta variable ya hace referencia a otra declaración.</value>
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
-    <value>Filtrar</value>
+    <value />
   </data>
   <data name="GroupingStyle_ByName" xml:space="preserve">
     <value>Mediante inspección</value>

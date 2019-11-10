@@ -822,6 +822,132 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ActiveX Designer.
+        /// </summary>
+        public static string ComponentType_ActiveXDesigner {
+            get {
+                return ResourceManager.GetString("ComponentType_ActiveXDesigner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Class Module.
+        /// </summary>
+        public static string ComponentType_ClassModule {
+            get {
+                return ResourceManager.GetString("ComponentType_ClassModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to COM component.
+        /// </summary>
+        public static string ComponentType_ComComponent {
+            get {
+                return ResourceManager.GetString("ComponentType_ComComponent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document Object.
+        /// </summary>
+        public static string ComponentType_DocObject {
+            get {
+                return ResourceManager.GetString("ComponentType_DocObject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document Module.
+        /// </summary>
+        public static string ComponentType_Document {
+            get {
+                return ResourceManager.GetString("ComponentType_Document", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MDI Form.
+        /// </summary>
+        public static string ComponentType_MDIForm {
+            get {
+                return ResourceManager.GetString("ComponentType_MDIForm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Property Page.
+        /// </summary>
+        public static string ComponentType_PropPage {
+            get {
+                return ResourceManager.GetString("ComponentType_PropPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Related Document.
+        /// </summary>
+        public static string ComponentType_RelatedDocument {
+            get {
+                return ResourceManager.GetString("ComponentType_RelatedDocument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resource File.
+        /// </summary>
+        public static string ComponentType_ResFile {
+            get {
+                return ResourceManager.GetString("ComponentType_ResFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Standard Module.
+        /// </summary>
+        public static string ComponentType_StandardModule {
+            get {
+                return ResourceManager.GetString("ComponentType_StandardModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Undefined.
+        /// </summary>
+        public static string ComponentType_Undefined {
+            get {
+                return ResourceManager.GetString("ComponentType_Undefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Control.
+        /// </summary>
+        public static string ComponentType_UserControl {
+            get {
+                return ResourceManager.GetString("ComponentType_UserControl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UserForm.
+        /// </summary>
+        public static string ComponentType_UserForm {
+            get {
+                return ResourceManager.GetString("ComponentType_UserForm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VB Form.
+        /// </summary>
+        public static string ComponentType_VBForm {
+            get {
+                return ResourceManager.GetString("ComponentType_VBForm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Variable &apos;{0}&apos; is assigned. Remove assignment instruction(s)?.
         /// </summary>
         public static string ConfirmRemoveAssignmentWithUnusedDeclaration {
