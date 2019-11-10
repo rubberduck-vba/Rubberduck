@@ -64,7 +64,7 @@
             <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
             <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
 
-            <CompositeCollection x:Key="AddModuleCommands">
+            <CompositeCollection x:Key="AddModuleCommands" x:Shared="False">
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddExistingFileText}"
                           Command="{Binding ImportCommand}"
                           CommandParameter="{Binding SelectedItem, Mode=OneWay}">
