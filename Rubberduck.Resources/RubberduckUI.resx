@@ -1699,46 +1699,46 @@ Update aborted.</value>
 Update aborted.</value>
     <comment>{0} module name, {1} filename</comment>
   </data>
-  <data name="CodeInspections_ComponentType_ActiveXDesigner" xml:space="preserve">
+  <data name="ComponentType_ActiveXDesigner" xml:space="preserve">
     <value>ActiveX Designer</value>
   </data>
-  <data name="CodeInspections_ComponentType_ClassModule" xml:space="preserve">
+  <data name="ComponentType_ClassModule" xml:space="preserve">
     <value>Class Module</value>
   </data>
-  <data name="CodeInspections_ComponentType_ComComponent" xml:space="preserve">
+  <data name="ComponentType_ComComponent" xml:space="preserve">
     <value>COM component</value>
   </data>
-  <data name="CodeInspections_ComponentType_DocObject" xml:space="preserve">
+  <data name="ComponentType_DocObject" xml:space="preserve">
     <value>Document Object</value>
   </data>
-  <data name="CodeInspections_ComponentType_Document" xml:space="preserve">
+  <data name="ComponentType_Document" xml:space="preserve">
     <value>Document Module</value>
   </data>
-  <data name="CodeInspections_ComponentType_MDIForm" xml:space="preserve">
+  <data name="ComponentType_MDIForm" xml:space="preserve">
     <value>MDI Form</value>
   </data>
-  <data name="CodeInspections_ComponentType_PropPage" xml:space="preserve">
+  <data name="ComponentType_PropPage" xml:space="preserve">
     <value>Property Page</value>
   </data>
-  <data name="CodeInspections_ComponentType_RelatedDocument" xml:space="preserve">
+  <data name="ComponentType_RelatedDocument" xml:space="preserve">
     <value>Related Document</value>
   </data>
-  <data name="CodeInspections_ComponentType_ResFile" xml:space="preserve">
+  <data name="ComponentType_ResFile" xml:space="preserve">
     <value>Resource File</value>
   </data>
-  <data name="CodeInspections_ComponentType_StandardModule" xml:space="preserve">
+  <data name="ComponentType_StandardModule" xml:space="preserve">
     <value>Standard Module</value>
   </data>
-  <data name="CodeInspections_ComponentType_Undefined" xml:space="preserve">
+  <data name="ComponentType_Undefined" xml:space="preserve">
     <value>Undefined</value>
   </data>
-  <data name="CodeInspections_ComponentType_UserControl" xml:space="preserve">
+  <data name="ComponentType_UserControl" xml:space="preserve">
     <value>User Control</value>
   </data>
-  <data name="CodeInspections_ComponentType_UserForm" xml:space="preserve">
+  <data name="ComponentType_UserForm" xml:space="preserve">
     <value>UserForm</value>
   </data>
-  <data name="CodeInspections_ComponentType_VBForm" xml:space="preserve">
+  <data name="ComponentType_VBForm" xml:space="preserve">
     <value>VB Form</value>
   </data>
 </root>
