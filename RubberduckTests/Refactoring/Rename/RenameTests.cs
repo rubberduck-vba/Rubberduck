@@ -74,6 +74,98 @@ End Sub"
         [Test]
         [Category("Refactorings")]
         [Category("Rename")]
+        //See issue #5277 at https://github.com/rubberduck-vba/Rubberduck/issues/5277
+        public void RenameRefactoring_RenameArray_FromDeclaration()
+        {
+            var tdo = new RenameTestsDataObject(selectedIdentifier: "arr", newName: "bar");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Private Sub Foo()
+    Dim a|rr(0 To 1) As Integer
+    arr(1) = arr(0)
+End Sub",
+                Expected =
+                    @"Private Sub Foo()
+    Dim bar(0 To 1) As Integer
+    bar(1) = bar(0)
+End Sub"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        //See issue #5277 at https://github.com/rubberduck-vba/Rubberduck/issues/5277
+        public void RenameRefactoring_RenameReDimDeclaredArray_FromDeclaration()
+        {
+            var tdo = new RenameTestsDataObject(selectedIdentifier: "arr", newName: "bar");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Private Sub Foo()
+    ReDim a|rr(0 To 1)
+    arr(1) = arr(0)
+End Sub",
+                Expected =
+                    @"Private Sub Foo()
+    ReDim bar(0 To 1)
+    bar(1) = bar(0)
+End Sub"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        //See issue #5277 at https://github.com/rubberduck-vba/Rubberduck/issues/5277
+        public void RenameRefactoring_RenameArray_FromReference()
+        {
+            var tdo = new RenameTestsDataObject(selectedIdentifier: "arr", newName: "bar");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Private Sub Foo()
+    Dim arr(0 To 1) As Integer
+    arr(1) = ar|r(0)
+End Sub",
+                Expected =
+                    @"Private Sub Foo()
+    Dim bar(0 To 1) As Integer
+    bar(1) = bar(0)
+End Sub"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        //See issue #5277 at https://github.com/rubberduck-vba/Rubberduck/issues/5277
+        public void RenameRefactoring_RenameReDimDeclaredArray_FromReference()
+        {
+            var tdo = new RenameTestsDataObject(selectedIdentifier: "arr", newName: "bar");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Private Sub Foo()
+    ReDim arr(0 To 1)
+    arr(1) = a|rr(0)
+End Sub",
+                Expected =
+                    @"Private Sub Foo()
+    ReDim bar(0 To 1)
+    bar(1) = bar(0)
+End Sub"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         //See issue #5236 at https://github.com/rubberduck-vba/Rubberduck/issues/5236
         public void RenameRefactoring_RenameForIndex_UpdatesReferences()
         {
