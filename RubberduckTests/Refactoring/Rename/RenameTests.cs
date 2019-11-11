@@ -686,6 +686,84 @@ End Sub"
         [Test]
         [Category("Refactorings")]
         [Category("Rename")]
+        public void RenameRefactoring_RenameFunction_DoesNotChangeIndexedDefaultMemberCalls()
+        {
+            var tdo = new RenameTestsDataObject(selectedIdentifier: "Foo", newName: "Goo");
+            var defaultMemberInputOutput = new RenameTestModuleDefinition("ClassFoo")
+            {
+                Input =
+                    @"Public Function Fo|o(arg As String) As Boolean
+Attribute Foo.VB_UserMemId = 0
+    Foo = True
+End Function",
+                //TODO: Make it possible that the attribute survives this appropriately adjusted.
+                //The VBE will remove the now invalid attribute, which does not happen in tests.
+                Expected =
+                    @"Public Function Goo(arg As String) As Boolean
+Attribute Foo.VB_UserMemId = 0
+    Goo = True
+End Function"
+            };
+            var callingModuleInputOutput = new RenameTestModuleDefinition("TestModule", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Private Function Baz(arg As String) As Boolean
+    Dim bar As ClassFoo
+    Set bar = New ClassFoo
+    Baz = bar(arg)
+End Function",
+                Expected =
+                    @"Private Function Baz(arg As String) As Boolean
+    Dim bar As ClassFoo
+    Set bar = New ClassFoo
+    Baz = bar(arg)
+End Function"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, defaultMemberInputOutput, callingModuleInputOutput);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenameFunction_DoesNotChangeNonIndexedDefaultMemberCalls()
+        {
+            var tdo = new RenameTestsDataObject(selectedIdentifier: "Foo", newName: "Goo");
+            var defaultMemberInputOutput = new RenameTestModuleDefinition("ClassFoo")
+            {
+                Input =
+                    @"Public Function Fo|o() As Boolean
+Attribute Foo.VB_UserMemId = 0
+    Foo = True
+End Function",
+                //TODO: Make it possible that the attribute survives this appropriately adjusted.
+                //The VBE will remove the now invalid attribute, which does not happen in tests.
+                Expected =
+                    @"Public Function Goo() As Boolean
+Attribute Foo.VB_UserMemId = 0
+    Goo = True
+End Function"
+            };
+            var callingModuleInputOutput = new RenameTestModuleDefinition("TestModule", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Private Function Baz(arg As String) As Boolean
+    Dim bar As ClassFoo
+    Set bar = New ClassFoo
+    Baz = bar
+End Function",
+                Expected =
+                    @"Private Function Baz(arg As String) As Boolean
+    Dim bar As ClassFoo
+    Set bar = New ClassFoo
+    Baz = bar
+End Function"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, defaultMemberInputOutput, callingModuleInputOutput);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameVariableWithBracketedExpressionInModule()
         {
             var tdo = new RenameTestsDataObject(selectedIdentifier: "Foo", newName: "Hoo");

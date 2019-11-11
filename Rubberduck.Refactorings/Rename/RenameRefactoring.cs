@@ -466,7 +466,8 @@ namespace Rubberduck.Refactorings.Rename
             var modules = target.References
                 .Where(reference =>
                     reference.Context.GetText() != "Me" 
-                    && !reference.IsArrayAccess)
+                    && !reference.IsArrayAccess
+                    && !reference.IsDefaultMemberAccess)
                 .GroupBy(r => r.QualifiedModuleName);
 
             foreach (var grouping in modules)
