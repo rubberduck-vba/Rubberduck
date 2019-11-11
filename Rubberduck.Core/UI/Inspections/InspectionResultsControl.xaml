@@ -20,9 +20,9 @@
 
             <codeInspections:InspectionSeverityImageSourceConverter x:Key="SeverityIconConverter" />
             <codeInspections:InspectionImageSourceConverter x:Key="InspectionIconConverter" />
-			<codeInspections:QuickFixImageSourceConverter x:Key="QuickFixIconConverter" />
+            <codeInspections:QuickFixImageSourceConverter x:Key="QuickFixIconConverter" />
 
-			<Style x:Key="IconMargin" TargetType="Image">
+            <Style x:Key="IconMargin" TargetType="Image">
                 <Setter Property="Margin" Value="4" />
             </Style>
 
@@ -236,8 +236,8 @@
                                 <Setter Property="Command" Value="{Binding Command}" />
                                 <Setter Property="CommandParameter" Value="{Binding Fix}" />
                                 <Setter Property="Header" Value="{Binding Description}" />
-								<Setter Property="Background" Value="Transparent" />
-							</Style>
+                                <Setter Property="Background" Value="Transparent" />
+                            </Style>
                         </ContextMenu.Resources>
                     </ContextMenu>
                 </DataGrid.ContextMenu>
