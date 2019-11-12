@@ -313,7 +313,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A class module that is meant to be used as interface for concrete classes should generally be abstracted of any implementations. If it is your intention to use this class module as a concrete, you can safely ignore this inspection result..
+        ///   Looks up a localized string similar to A class module that is meant to be used as interface for concrete classes should generally be abstracted of any implementations. If it is your intention to use this class module as a concrete type, you can safely ignore this inspection result..
         /// </summary>
         public static string ImplementedInterfaceMemberInspection {
             get {

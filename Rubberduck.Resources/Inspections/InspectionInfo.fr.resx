@@ -376,4 +376,37 @@ Si le paramètre peut être nul, ignorer ce résultat; passer une valeur nulle �
   <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
     <value>Les boucles 'While...Wend' existent pour compatibilité avec les anciennes versions de VB, et ont été remplaçées par l'introduction des structures itératives 'Do While...Loop', qui supportent l'instruction 'Exit Do'. Les boucles 'While...Wend' ne peuvent être terminées qu'en remplissant la condition de l'expression 'While'.</value>
   </data>
+  <data name="UnreachableCaseInspection" xml:space="preserve">
+    <value>Une condition est toujours fausse, cause une erreur d'exécution, ou les effets cumulatifs de conditions précédentes représentent toutes les valeurs possibles, bref la condition a déjà été évaluée et ce bloc 'Case' est effectivement inatteignable.</value>
+  </data>
+  <data name="SetAssignmentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>VBA n'indiquera pas d'erreur au moment de la compilation si un objet est assigné à une variable avec un type incompatible au type déclaré. Dans la presque totalité des cas ceci causera une erreur à l'exécution. Pour tous les autres cas, un type compatible doit être utilisé.</value>
+  </data>
+  <data name="EmptyMethodInspection" xml:space="preserve">
+    <value>Une procédure sans instructions exécutables peut avoir l'air d'accomplir quelque chose qu'elle ne fait pas, ce qui peut occasionner un comportement inattendu.</value>
+  </data>
+  <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
+    <value>Un module de classe dont le but est de définir une interface abstraite, ne devrait pas comporter d'implémentations. Si l'intention est effectivement d'utiliser cette class comme un type concret, veuillez ignorer ce message.</value>
+  </data>
+  <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>VBA n'indiquera pas d'erreur au moment de la compilation si un objet est passé en argument à un paramètre de type incompatible. Dans la presque totalité des cas ceci causera une erreur à l'exécution. Pour tous les autres cas, un type compatible doit être utilisé.</value>
+  </data>
+  <data name="ValueRequiredInspection" xml:space="preserve">
+    <value>VBA n'indiquera pas d'erreur au moment de la compilation si un objet est utilisé à un endroit qui requerrait une valeur et que le type de l'objet utilisé ne définit pas de membre par défaut avec un type compatible. Dans la presque totalité des cas ceci causera une erreur à l'exécution. Pour tous les autres cas, un type compatible doit être utilisé.</value>
+  </data>
+  <data name="ProcedureRequiredInspection" xml:space="preserve">
+    <value>VBA n'indiquera pas d'erreur au moment de la compilation si un objet est utilisé à un endroit qui requerrait un appel de procédure, et que le type de l'objet utilisé ne définit pas de membre par défaut avec un type compatible. Dans la presque totalité des cas ceci causera une erreur à l'exécution. Pour tous les autres cas, un type compatible doit être utilisé.</value>
+  </data>
+  <data name="DefaultMemberRequiredInspection" xml:space="preserve">
+    <value>VBA n'indiquera pas d'erreur au moment de la compilation si l'appel indexé d'un membre par défaut est requis mais que le type de l'objet utilisé ne définit pas de membre par défaut avec un type compatible. Dans la presque totalité des cas ceci causera une erreur à l'exécution. Pour tous les autres cas, un type compatible doit être utilisé.</value>
+  </data>
+  <data name="UseOfBangNotationInspection" xml:space="preserve">
+    <value>La notation "Bang", ce point d'exclamation que l'on retrouve partout sur Internet, ressemble à du code ordinaire. Toutefois, il s'agit en fait d'une chaîne de caractères servant d'argument à un appel implicite du membre par défaut de l'objet utilisé.</value>
+  </data>
+  <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
+    <value>La notation "Bang", ce point d'exclamation que l'on retrouve partout sur Internet, ressemble à du code ordinaire. Toutefois, il s'agit en fait d'une chaîne de caractères servant d'argument à un appel implicite du membre par défaut de l'objet utilisé.</value>
+  </data>
+  <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
+    <value>La notation "Bang", ce point d'exclamation que l'on retrouve partout sur Internet, ressemble à du code ordinaire. Toutefois, il s'agit en fait d'une chaîne de caractères servant d'argument à un appel implicite du membre par défaut de l'objet utilisé.</value>
+  </data>
 </root>

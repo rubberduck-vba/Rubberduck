@@ -384,4 +384,22 @@ In memoriam, 1972-2018</value>
   <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
     <value>La boucle conditionelle 'While...Wend' pourrait être 'Do While...Loop'</value>
   </data>
+  <data name="UnreachableCaseInspection" xml:space="preserve">
+    <value>Le bloc sous la condition '{0}' est inatteignable</value>
+  </data>
+  <data name="UnreachableCaseInspection_CaseElse" xml:space="preserve">
+    <value>Le bloc 'Case Else' est inatteignable</value>
+  </data>
+  <data name="UnreachableCaseInspection_TypeMismatch" xml:space="preserve">
+    <value>L'expression du bloc 'Case' causera une erreur d'exécution 13 (type mismatch).</value>
+  </data>
+  <data name="UnreachableCaseInspection_Unreachable" xml:space="preserve">
+    <value>Le bloc 'Case' est inatteignable</value>
+  </data>
+  <data name="UnreachableCaseInspection_Overflow" xml:space="preserve">
+    <value>L'expression du bloc 'Case' causera une erreur d'exécution 6 (overflow).</value>
+  </data>
+  <data name="UnreachableCaseInspection_InherentlyUnreachable" xml:space="preserve">
+    <value>Les plages de valeurs d'un bloc 'Case' doivent être exprimés sous la forme '[x] To [y]', où [x] est plus petit ou égal à [y].</value>
+  </data>
 </root>
