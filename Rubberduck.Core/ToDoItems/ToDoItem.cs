@@ -1,7 +1,5 @@
-﻿using Rubberduck.Common;
-using Rubberduck.Interaction.Navigation;
+﻿using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.ToDoItems
@@ -10,7 +8,7 @@ namespace Rubberduck.ToDoItems
     /// Represents a Todo comment and the necessary information to display and navigate to that comment.
     /// This is a binding item. Changing it's properties changes how it is displayed.
     /// </summary>
-    public class ToDoItem : INavigateSource, IExportable
+    public class ToDoItem : INavigateSource
     {
         public string Description { get; }
 
@@ -28,24 +26,6 @@ namespace Rubberduck.ToDoItems
         public NavigateCodeEventArgs GetNavigationArgs()
         {
             return new NavigateCodeEventArgs(Selection);
-        }
-
-        public object[] ToArray()
-        {
-            var module = Selection.QualifiedName;
-            return new object[] { Type, Description, module.ProjectName, module.ComponentName, Selection.Selection.StartLine, Selection.Selection.StartColumn };
-        }
-
-        public string ToClipboardString()
-        {
-            var module = Selection.QualifiedName;
-            return string.Format(
-                RubberduckUI.ToDoExplorerToDoItemFormat,
-                Type,
-                Description,
-                module.ProjectName,
-                module.ComponentName,
-                Selection.Selection.StartLine);
         }
     }
 }

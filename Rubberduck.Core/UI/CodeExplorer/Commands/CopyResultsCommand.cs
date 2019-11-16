@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using System.Windows;
 using Rubberduck.Common;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command;
+using Rubberduck.Resources.CodeExplorer;
+using Rubberduck.Formatters;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -28,31 +29,15 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override void OnExecute(object parameter)
         {
-            const string XML_SPREADSHEET_DATA_FORMAT = "XML Spreadsheet";
-
             ColumnInfo[] ColumnInfos = { new ColumnInfo("Project"), new ColumnInfo("Folder"), new ColumnInfo("Component"), new ColumnInfo("Declaration Type"), new ColumnInfo("Scope"),
                                        new ColumnInfo("Name"), new ColumnInfo("Return Type") };
 
-            // this.ProjectName, this.CustomFolder, this.ComponentName, this.DeclarationType.ToString(), this.Scope 
-            var aDeclarations = _state.AllUserDeclarations.Select(declaration => declaration.ToArray()).ToArray();
+            var declarationFormatters = _state.AllUserDeclarations.Select(declaration => new DeclarationFormatter(declaration));
+            var title = string.Format(CodeExplorerUI.CodeExplorer_AppendHeader, DateTime.Now.ToString(CultureInfo.InvariantCulture));
 
-            const string resource = "Rubberduck User Declarations - {0}";
-            var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture));
-        
-            var csvResults = ExportFormatter.Csv(aDeclarations, title, ColumnInfos);
-            var htmlResults = ExportFormatter.HtmlClipboardFragment(aDeclarations, title, ColumnInfos);
-            var rtfResults = ExportFormatter.RTF(aDeclarations, title);
+            _clipboard.AppendInfo(ColumnInfos, declarationFormatters, title, ClipboardWriterAppendingInformationFormat.All);
 
-            using (var strm1 = ExportFormatter.XmlSpreadsheetNew(aDeclarations, title, ColumnInfos))
-            {
-                //Add the formats from richest formatting to least formatting
-                _clipboard.AppendStream(DataFormats.GetDataFormat(XML_SPREADSHEET_DATA_FORMAT).Name, strm1);
-                _clipboard.AppendString(DataFormats.Rtf, rtfResults);
-                _clipboard.AppendString(DataFormats.Html, htmlResults);
-                _clipboard.AppendString(DataFormats.CommaSeparatedValue, csvResults);
-
-                _clipboard.Flush();
-            }
+            _clipboard.Flush();
         }
     }
 }
