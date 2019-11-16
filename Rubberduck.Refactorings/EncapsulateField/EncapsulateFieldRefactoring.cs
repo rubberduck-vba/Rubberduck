@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Rubberduck.Parsing;
+﻿using System.Linq;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
@@ -89,7 +87,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 var attributes = nonUdtMemberField.EncapsulationAttributes;
                 newContent = ModifyEncapsulatedVariable(nonUdtMemberField, attributes, rewriteSession, newContent);
 
-                UpdateReferences(nonUdtMemberField.Declaration, rewriteSession, attributes.PropertyName);
+                RenameReferences(nonUdtMemberField.Declaration, attributes.PropertyName ?? nonUdtMemberField.Declaration.IdentifierName, rewriteSession);
             }
 
             newContent = LoadNewPropertyContent(model, newContent);
@@ -120,7 +118,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         }
 
         private EncapsulateFieldNewContent ModifyEncapsulatedVariable(IEncapsulatedFieldDeclaration target, IFieldEncapsulationAttributes attributes, IRewriteSession rewriteSession, EncapsulateFieldNewContent newContent)
-        //private EncapsulateFieldNewContent ModifyEncapsulatedVariable(IEncapsulatedFieldDeclaration encapsulatedField, IRewriteSession rewriteSession, EncapsulateFieldNewContent newContent)
         {
             var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, _targetQMN);
 
@@ -148,7 +145,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return newContent;
         }
 
-        private void UpdateReferences(Declaration target, IRewriteSession rewriteSession, string propertyName)
+        private void RenameReferences(Declaration target, string propertyName, IRewriteSession rewriteSession)
         {
             foreach (var reference in target.References)
             {

@@ -1,5 +1,7 @@
 ﻿using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using System;
+using System.Collections.Generic;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -7,15 +9,16 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         Declaration Declaration { get; }
         string IdentifierName { get; }
+        KeyValuePair<Declaration, string> TargetIDPair { set;  get; }
         DeclarationType DeclarationType { get; }
         Accessibility Accessibility { get;}
         IFieldEncapsulationAttributes EncapsulationAttributes { set; get; }
     }
 
-    public class EncapsulatedFieldDeclaration : IEncapsulatedFieldDeclaration, IFieldEncapsulationAttributes
+    public class EncapsulatedFieldDeclaration : IEncapsulatedFieldDeclaration
     {
         protected Declaration _decorated;
-        protected IFieldEncapsulationAttributes _attributes;
+        private IFieldEncapsulationAttributes _attributes;
 
         public EncapsulatedFieldDeclaration(Declaration declaration)
         {
@@ -37,27 +40,18 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => _attributes;
         }
 
-        public string AsTypeName { get => _attributes.AsTypeName; set => _attributes.AsTypeName = value; }
-        public string ParameterName { get => _attributes.ParameterName; set => _attributes.ParameterName = value; }
-        public bool CanImplementLet { get => _attributes.CanImplementLet; set => _attributes.CanImplementLet = value; }
-        public bool CanImplementSet { get => _attributes.CanImplementSet; set => _attributes.CanImplementSet = value; }
-        public string FieldName { get => _attributes.FieldName; set => _attributes.FieldName = value; }
-        public string NewFieldName { get => _attributes.NewFieldName; set => _attributes.NewFieldName = value; }
-        public string PropertyName { get => _attributes.PropertyName; set => _attributes.PropertyName = value; }
-        public bool ImplementLetSetterType { get => _attributes.ImplementLetSetterType; set => _attributes.ImplementLetSetterType = value; }
-        public bool ImplementSetSetterType { get => _attributes.ImplementSetSetterType; set => _attributes.ImplementSetSetterType = value; }
-        public bool EncapsulateFlag { get => _attributes.EncapsulateFlag; set => _attributes.EncapsulateFlag = value; }
+        public KeyValuePair<Declaration, string> TargetIDPair { get; set; }
     }
 
-    public class EncapsulateFieldDecoratorBase : IEncapsulatedFieldDeclaration, IFieldEncapsulationAttributes
+    public class EncapsulateFieldDecoratorBase : IEncapsulatedFieldDeclaration
     {
 
         private IEncapsulatedFieldDeclaration _decorated;
-        private IFieldEncapsulationAttributes _attributes;
+
         public EncapsulateFieldDecoratorBase(IEncapsulatedFieldDeclaration efd)
         {
             _decorated = efd;
-            _attributes = efd as IFieldEncapsulationAttributes;
+            TargetIDPair = new KeyValuePair<Declaration, string>(efd.Declaration, efd.IdentifierName);
         }
 
         public Declaration Declaration => _decorated.Declaration;
@@ -68,28 +62,24 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public Accessibility Accessibility => _decorated.Accessibility;
 
-        public IFieldEncapsulationAttributes EncapsulationAttributes { get => _decorated.EncapsulationAttributes; set => _decorated.EncapsulationAttributes = value; }
-        public string AsTypeName { get => _attributes.AsTypeName; set => _attributes.AsTypeName = value; }
-        public string ParameterName { get => _attributes.ParameterName; set => _attributes.ParameterName = value; }
-        public bool CanImplementLet { get => _attributes.CanImplementLet; set => _attributes.CanImplementLet = value; }
-        public bool CanImplementSet { get => _attributes.CanImplementSet; set => _attributes.CanImplementSet = value; }
-        public string FieldName { get => _attributes.FieldName; set => _attributes.FieldName = value; }
-        public string NewFieldName { get => _attributes.NewFieldName; set => _attributes.NewFieldName = value; }
-        public string PropertyName { get => _attributes.PropertyName; set => _attributes.PropertyName = value; }
-        public bool ImplementLetSetterType { get => _attributes.ImplementLetSetterType; set => _attributes.ImplementLetSetterType = value; }
-        public bool ImplementSetSetterType { get => _attributes.ImplementSetSetterType; set => _attributes.ImplementSetSetterType = value; }
-        public bool EncapsulateFlag { get => _attributes.EncapsulateFlag; set => _attributes.EncapsulateFlag = value; }
+        public IFieldEncapsulationAttributes EncapsulationAttributes
+        {
+            get => _decorated.EncapsulationAttributes;
+            set => _decorated.EncapsulationAttributes = value;
+        }
+
+        public KeyValuePair<Declaration, string> TargetIDPair { get => _decorated.TargetIDPair; set => _decorated.TargetIDPair = value; }
     }
 
-    public class EncapsulatedValueType : EncapsulateFieldDecoratorBase // IEncapsulatedFieldDeclaration, IFieldEncapsulationAttributes
+    public class EncapsulatedValueType : EncapsulateFieldDecoratorBase
     {
         private EncapsulatedValueType(IEncapsulatedFieldDeclaration efd)
             : base(efd)
         {
-            CanImplementLet = true;
-            CanImplementSet = false;
-            ImplementLetSetterType = true;
-            ImplementSetSetterType = false;
+            EncapsulationAttributes.CanImplementLet = true;
+            EncapsulationAttributes.CanImplementSet = false;
+            EncapsulationAttributes.ImplementLetSetterType = true;
+            EncapsulationAttributes.ImplementSetSetterType = false;
         }
 
         public static IEncapsulatedFieldDeclaration Decorate(IEncapsulatedFieldDeclaration efd) 
@@ -100,58 +90,58 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
 
         private EncapsulatedUserDefinedType(IEncapsulatedFieldDeclaration efd)
-        : base(efd)
+            : base(efd)
         {
-            CanImplementLet = true;
-            CanImplementSet = false;
-            ImplementLetSetterType = true;
-            ImplementSetSetterType = false;
+            EncapsulationAttributes.CanImplementLet = true;
+            EncapsulationAttributes.CanImplementSet = false;
+            EncapsulationAttributes.ImplementLetSetterType = true;
+            EncapsulationAttributes.ImplementSetSetterType = false;
         }
 
         public static IEncapsulatedFieldDeclaration Decorate(IEncapsulatedFieldDeclaration efd) 
             => new EncapsulatedUserDefinedType(efd);
     }
 
-    public class EncapsulatedVariantType : EncapsulateFieldDecoratorBase // IEncapsulatedFieldDeclaration, IFieldEncapsulationAttributes
+    public class EncapsulatedVariantType : EncapsulateFieldDecoratorBase
     {
         private EncapsulatedVariantType(IEncapsulatedFieldDeclaration efd)
-        : base(efd)
+            : base(efd)
         {
-            CanImplementLet = true;
-            CanImplementSet = true;
-            ImplementLetSetterType = true;
-            ImplementSetSetterType = true;
+            EncapsulationAttributes.CanImplementLet = true;
+            EncapsulationAttributes.CanImplementSet = true;
+            EncapsulationAttributes.ImplementLetSetterType = true;
+            EncapsulationAttributes.ImplementSetSetterType = true;
         }
 
         public static IEncapsulatedFieldDeclaration Decorate(IEncapsulatedFieldDeclaration efd) 
             => new EncapsulatedVariantType(efd);
     }
 
-    public class EncapsulatedObjectType : EncapsulateFieldDecoratorBase //IEncapsulatedFieldDeclaration, IFieldEncapsulationAttributes
+    public class EncapsulatedObjectType : EncapsulateFieldDecoratorBase
     {
         private EncapsulatedObjectType(IEncapsulatedFieldDeclaration efd)
             : base(efd)
         {
-            CanImplementLet = false;
-            CanImplementSet = true;
-            ImplementLetSetterType = false;
-            ImplementSetSetterType = true;
+            EncapsulationAttributes.CanImplementLet = false;
+            EncapsulationAttributes.CanImplementSet = true;
+            EncapsulationAttributes.ImplementLetSetterType = false;
+            EncapsulationAttributes.ImplementSetSetterType = true;
         }
 
         public static IEncapsulatedFieldDeclaration Decorate(IEncapsulatedFieldDeclaration efd) 
             => new EncapsulatedObjectType(efd);
     }
 
-    public class EncapsulatedArrayType : EncapsulateFieldDecoratorBase //IEncapsulatedFieldDeclaration, IFieldEncapsulationAttributes
+    public class EncapsulatedArrayType : EncapsulateFieldDecoratorBase
     {
         private EncapsulatedArrayType(IEncapsulatedFieldDeclaration efd)
-        : base(efd)
+            : base(efd)
         {
-            CanImplementLet = false;
-            CanImplementSet = false;
-            ImplementLetSetterType = false;
-            ImplementSetSetterType = false;
-            AsTypeName = Tokens.Variant;
+            EncapsulationAttributes.CanImplementLet = false;
+            EncapsulationAttributes.CanImplementSet = false;
+            EncapsulationAttributes.ImplementLetSetterType = false;
+            EncapsulationAttributes.ImplementSetSetterType = false;
+            EncapsulationAttributes.AsTypeName = Tokens.Variant;
         }
 
         public static IEncapsulatedFieldDeclaration Decorate(IEncapsulatedFieldDeclaration efd) 
@@ -160,21 +150,34 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
     public class EncapsulatedUserDefinedTypeMember : EncapsulateFieldDecoratorBase
     {
-        private EncapsulatedUserDefinedType _udt;
-
-        private EncapsulatedUserDefinedTypeMember(IEncapsulatedFieldDeclaration efd, EncapsulatedUserDefinedType udtVariable)
-        : base(efd)
+        private IFieldEncapsulationAttributes _udtVariableAttributes;
+        private bool _nameResolveProperty;
+        private string _originalVariableName;
+        private EncapsulatedUserDefinedTypeMember(IEncapsulatedFieldDeclaration efd, EncapsulatedUserDefinedType udtVariable, bool propertyIdentifierRequiresNameResolution)
+            : base(efd)
         {
-            _udt = udtVariable;
-            var decoratedAttributes = efd as IFieldEncapsulationAttributes;
-            CanImplementLet = decoratedAttributes.CanImplementLet;
-            CanImplementSet = decoratedAttributes.CanImplementSet;
-            ImplementLetSetterType = decoratedAttributes.ImplementLetSetterType;
-            ImplementSetSetterType = decoratedAttributes.ImplementSetSetterType;
-            NewFieldName = $"{udtVariable.Declaration.IdentifierName}.{efd.Declaration.IdentifierName}";
+            _originalVariableName = udtVariable.IdentifierName;
+            _nameResolveProperty = propertyIdentifierRequiresNameResolution;
+            _udtVariableAttributes = udtVariable.EncapsulationAttributes;
+
+            EncapsulationAttributes.NewFieldName = efd.Declaration.IdentifierName;
+            EncapsulationAttributes.PropertyName = BuildPropertyName();
+            EncapsulationAttributes.FieldReadWriteIdentifierFunc = ()=> $"{_udtVariableAttributes.NewFieldName}.{EncapsulationAttributes.NewFieldName}";
+
+            efd.TargetIDPair = new KeyValuePair<Declaration, string>(efd.Declaration, $"{udtVariable.IdentifierName}.{IdentifierName}");
         }
 
-        public static IEncapsulatedFieldDeclaration Decorate(IEncapsulatedFieldDeclaration efd, EncapsulatedUserDefinedType udtVariable) 
-            => new EncapsulatedUserDefinedTypeMember(efd, udtVariable);
+        private string BuildPropertyName()
+        {
+            if (_nameResolveProperty)
+            {
+                var propertyPrefix = char.ToUpper(_originalVariableName[0]) + _originalVariableName.Substring(1, _originalVariableName.Length - 1);
+                return $"{propertyPrefix}_{EncapsulationAttributes.FieldName}";
+            }
+            return EncapsulationAttributes.FieldName;
+        }
+
+        public static IEncapsulatedFieldDeclaration Decorate(IEncapsulatedFieldDeclaration efd, EncapsulatedUserDefinedType udtVariable, bool nameResolveProperty) 
+            => new EncapsulatedUserDefinedTypeMember(efd, udtVariable, nameResolveProperty);
     }
 }
