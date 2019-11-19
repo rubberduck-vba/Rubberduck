@@ -12,15 +12,26 @@ namespace Rubberduck.Parsing.Binding
         private readonly Func<Declaration, IBoundExpression> _namedArgumentExpressionCreator;
         private readonly bool _isAddressOfArgument;
 
-        public ArgumentListArgument(IExpressionBinding binding, ParserRuleContext context, ArgumentListArgumentType argumentType, bool isAddressOfArgument = false)
-            : this (binding, context, argumentType, calledProcedure => null, isAddressOfArgument)
-        {
-        }
+        public ArgumentListArgument(
+            IExpressionBinding binding,
+            ParserRuleContext context,
+            VBAParser.ArgumentListContext argumentListContext,
+            ArgumentListArgumentType argumentType, 
+            bool isAddressOfArgument = false)
+            : this (binding, context, argumentListContext, argumentType, calledProcedure => null, isAddressOfArgument)
+        {}
 
-        public ArgumentListArgument(IExpressionBinding binding, ParserRuleContext context, ArgumentListArgumentType argumentType, Func<Declaration, IBoundExpression> namedArgumentExpressionCreator, bool isAddressOfArgument = false)
+        public ArgumentListArgument(
+            IExpressionBinding binding,
+            ParserRuleContext context,
+            VBAParser.ArgumentListContext argumentListContext,
+            ArgumentListArgumentType argumentType, 
+            Func<Declaration, IBoundExpression> namedArgumentExpressionCreator, 
+            bool isAddressOfArgument = false)
         {
             _binding = binding;
             Context = context;
+            ArgumentListContext = argumentListContext;
             ArgumentType = argumentType;
             _namedArgumentExpressionCreator = namedArgumentExpressionCreator;
             _isAddressOfArgument = isAddressOfArgument;
@@ -31,10 +42,14 @@ namespace Rubberduck.Parsing.Binding
         public IBoundExpression NamedArgumentExpression { get; private set; }
         public IBoundExpression Expression { get; private set; }
         public ParameterDeclaration ReferencedParameter { get; private set; }
+        public int ArgumentPosition { get; private set; }
         public ParserRuleContext Context { get; }
+        public VBAParser.ArgumentListContext ArgumentListContext { get; }
 
         public void Resolve(Declaration calledProcedure, int parameterIndex, bool isArrayAccess = false)
         {
+            ArgumentPosition = parameterIndex;
+
             var binding = _binding;
             if (calledProcedure != null)
             {
