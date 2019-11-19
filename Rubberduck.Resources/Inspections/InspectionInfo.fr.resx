@@ -409,4 +409,28 @@ Si le paramètre peut être nul, ignorer ce résultat; passer une valeur nulle �
   <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
     <value>La notation "Bang", ce point d'exclamation que l'on retrouve partout sur Internet, ressemble à du code ordinaire. Toutefois, il s'agit en fait d'une chaîne de caractères servant d'argument à un appel implicite du membre par défaut de l'objet utilisé.</value>
   </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
+    <value>Un appel de procédure serait attendu, mais le code ne fait que référencer un objet, ce qui résulte en un appel implicite du membre par défaut de cet objet, appel pouvant pour un lecteur éventuel, raisonnablement paraître comme non-intentionnel; l'invocation implicitce de la procédure affecte négativement la lisibilité.</value>
+  </data>
+  <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Un appel implicite d'un membre par défaut exécute du code de façon implicite (et parfois, sournoise). Même pour accéder à une collection à l'aide d'un index - rendre tous les appels explicites améliore généralement la lisibilité.</value>
+  </data>
+  <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Un appel implicite d'un membre par défaut exécute du code de façon implicite (et parfois, sournoise). Même pour accéder à une collection à l'aide d'un index - rendre tous les appels explicites améliore généralement la lisibilité.</value>
+  </data>
+  <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Un appel implicite d'un membre par défaut exécute du code de façon implicite (et parfois, sournoise). Même pour accéder à une collection à l'aide d'un index - rendre tous les appels explicites améliore généralement la lisibilité.</value>
+  </data>
+  <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Un appel implicite d'un membre par défaut exécute du code de façon implicite (et parfois, sournoise). Même pour accéder à une collection à l'aide d'un index - rendre tous les appels explicites améliore généralement la lisibilité.</value>
+  </data>
+  <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Un appel implicite d'un membre par défaut exécute du code de façon implicite (et parfois, sournoise). Même pour accéder à une collection à l'aide d'un index - rendre tous les appels explicites améliore généralement la lisibilité.</value>
+  </data>
+  <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Un appel implicite d'un membre par défaut exécute du code de façon implicite (et parfois, sournoise). Même pour accéder à une collection à l'aide d'un index - rendre tous les appels explicites améliore généralement la lisibilité.</value>
+  </data>
+  <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
+    <value>Un appel implicite d'un membre par défaut exécute du code de façon implicite (et parfois, sournoise). Même pour accéder à une collection à l'aide d'un index - rendre tous les appels explicites améliore généralement la lisibilité.</value>
+  </data>
 </root>
