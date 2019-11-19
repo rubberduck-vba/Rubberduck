@@ -1002,7 +1002,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         {
             
             //The only forms we care about right now are MemberAccessExprContext or WithMemberAccessExprContext.
-            if (!(context is VBAParser.MemberAccessExprContext) && !(context is VBAParser.WithMemberAccessExprContext))
+            //For WithMemberAccessExpressions we can only save an unbout member if the withExpression is not null.
+            if (!(context is VBAParser.MemberAccessExprContext) && !(context is VBAParser.WithMemberAccessExprContext && withExpression != null))
             {
                 return;
             }

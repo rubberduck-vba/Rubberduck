@@ -82,7 +82,6 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 false);
             _failedResolutionVisitor.CollectUnresolved(boundExpression, _currentParent, withExpression);
             _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent);
-            // note: pushes null if unresolved
             _withBlockExpressions.Push(boundExpression);
         }
 
