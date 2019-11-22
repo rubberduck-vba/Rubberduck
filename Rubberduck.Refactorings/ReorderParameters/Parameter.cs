@@ -9,7 +9,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
     public class Parameter
     {
         public string Name { get; }
-        public Declaration Declaration { get; }
+        public ParameterDeclaration Declaration { get; }
         public int Index { get;  }
         public bool IsOptional { get; }
         public bool IsParamArray { get; }
