@@ -1345,6 +1345,72 @@ End Sub";   // note: IDE removes excess spaces
         [Test]
         [Category("Refactorings")]
         [Category("Remove Parameters")]
+        public void RemoveParametersRefactoring_InterfaceGetterParam_ImplementationLetAndSetParamRemoved()
+        {
+            //Input
+            const string inputCode1 =
+                @"Public Property Get Foo(ByVal a As Integer, ByVal b As String) As Variant
+End Property
+
+Public Property Let Foo(ByVal a As Integer, ByVal b As String, RHS As Variant)
+End Property
+
+Public Property Set Foo(ByVal a As Integer, ByVal b As String, RHS As Variant)
+End Property";
+            const string inputCode2 =
+                @"Implements IClass1
+
+Private Property Get IClass1_Foo(ByVal a As Integer, ByVal b As String) As Variant
+End Property
+
+Private Property Let IClass1_Foo(ByVal a As Integer, ByVal b As String, RHS As Variant)
+End Property
+
+Private Property Set IClass1_Foo(ByVal a As Integer, ByVal b As String, RHS As Variant)
+End Property";
+
+            var selection = new Selection(1, 23, 1, 27);
+
+            //Expectation
+            const string expectedCode1 =
+                @"Public Property Get Foo(ByVal a As Integer) As Variant
+End Property
+
+Public Property Let Foo(ByVal a As Integer, RHS As Variant)
+End Property
+
+Public Property Set Foo(ByVal a As Integer, RHS As Variant)
+End Property";
+            const string expectedCode2 =
+                @"Implements IClass1
+
+Private Property Get IClass1_Foo(ByVal a As Integer) As Variant
+End Property
+
+Private Property Let IClass1_Foo(ByVal a As Integer, RHS As Variant)
+End Property
+
+Private Property Set IClass1_Foo(ByVal a As Integer, RHS As Variant)
+End Property";   
+
+            var paramIndices = new[] { 1 }.ToList();
+            var presenterAction = StandardPresenterAction(paramIndices);
+            var actualCode = RefactoredCode(
+                "IClass1",
+                selection,
+                presenterAction,
+                null,
+                false,
+                ("IClass1", inputCode1, ComponentType.ClassModule),
+                ("Class1", inputCode2, ComponentType.ClassModule));
+
+            Assert.AreEqual(expectedCode1, actualCode["IClass1"]);
+            Assert.AreEqual(expectedCode2, actualCode["Class1"]);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_LastEventParamRemoved()
         {
             //Input

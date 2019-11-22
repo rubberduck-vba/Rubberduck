@@ -190,20 +190,16 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 if (setter != null)
                 {
                     var setterModel = ModelForNewTarget(model, setter);
-                    AdjustReferences(setterModel, rewriteSession);
-                    AdjustSignatures(setterModel, rewriteSession);
+                    RemoveParameters(setterModel, rewriteSession);
                 }
 
                 var letter = GetLetterOrSetter(model.TargetDeclaration, DeclarationType.PropertyLet);
                 if (letter != null)
                 {
                     var letterModel = ModelForNewTarget(model, letter);
-                    AdjustReferences(letterModel, rewriteSession);
-                    AdjustSignatures(letterModel, rewriteSession);
+                    RemoveParameters(letterModel, rewriteSession);
                 }
             }
-
-            AdjustSignatures(model, rewriteSession);
 
             var eventImplementations = _declarationFinderProvider.DeclarationFinder
                 .FindEventHandlers(model.TargetDeclaration);
@@ -216,19 +212,17 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
 
             var interfaceImplementations = _declarationFinderProvider.DeclarationFinder
-                .FindAllInterfaceImplementingMembers()
-                .Where(item => item.ProjectId == model.TargetDeclaration.ProjectId
-                               && item.IdentifierName == $"{model.TargetDeclaration.ComponentName}_{model.TargetDeclaration.IdentifierName}");
+                .FindInterfaceImplementationMembers(model.TargetDeclaration);
 
-            foreach (var interfaceImplentation in interfaceImplementations)
+            foreach (var interfaceImplementation in interfaceImplementations)
             {
-                var interfaceImplementationModel = ModelForNewTarget(model, interfaceImplentation);
+                var interfaceImplementationModel = ModelForNewTarget(model, interfaceImplementation);
                 AdjustReferences(interfaceImplementationModel, rewriteSession);
                 AdjustSignatures(interfaceImplementationModel, rewriteSession);
             }
         }
 
-        private void AdjustReferences(RemoveParametersModel model, IRewriteSession rewriteSession)
+        private static void AdjustReferences(RemoveParametersModel model, IRewriteSession rewriteSession)
         {
             var parametersToRemove = model.RemoveParameters
                 .Select(parameter => parameter.Declaration)
@@ -241,7 +235,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
         }
 
-        private Dictionary<QualifiedModuleName, Dictionary<Selection, List<ArgumentReference>>> ArgumentReferencesByLocation(ICollection<ParameterDeclaration> parameters)
+        private static Dictionary<QualifiedModuleName, Dictionary<Selection, List<ArgumentReference>>> ArgumentReferencesByLocation(ICollection<ParameterDeclaration> parameters)
         {
             return parameters
                 .SelectMany(parameterDeclaration => parameterDeclaration.ArgumentReferences)
@@ -253,7 +247,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                         .ToDictionary(group => group.Key, group => group.ToList()));
         }
 
-        private void AdjustReferences(
+        private static void AdjustReferences(
             QualifiedModuleName module, 
             Dictionary<Selection, List<ArgumentReference>> argumentReferences,
             IRewriteSession rewriteSession)
@@ -294,7 +288,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             rewriter.Replace(new Interval(startTokenIndex, stopTokenIndex), replacementString);
         }
 
-        private void AdjustReferences(IReadOnlyCollection<ArgumentReference> argumentReferences, IModuleRewriter rewriter)
+        private static void AdjustReferences(IReadOnlyCollection<ArgumentReference> argumentReferences, IModuleRewriter rewriter)
         {
             if (!argumentReferences.Any())
             {
@@ -314,7 +308,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
         }
 
-        private IEnumerable<(int startIndex, int stopIndex)> IndexRanges(IEnumerable<int> indices)
+        private static IEnumerable<(int startIndex, int stopIndex)> IndexRanges(IEnumerable<int> indices)
         {
             var sortedIndices = indices.OrderBy(num => num).ToList();
             var ranges = new List<(int startIndex, int stopIndex)>();
@@ -346,7 +340,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             return ranges;
         }
 
-        private IEnumerable<(int startIndex, int stopIndex)> WithTrailingMissingArguments(
+        private static IEnumerable<(int startIndex, int stopIndex)> WithTrailingMissingArguments(
             IEnumerable<(int startIndex, int stopIndex)> argumentRanges, 
             VBAParser.ArgumentListContext argumentList)
         {
@@ -384,7 +378,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             return newRanges;
         }
 
-        private void RemoveArgumentRange(
+        private static void RemoveArgumentRange(
             int startArgumentIndex, 
             int stopArgumentIndex,
             VBAParser.ArgumentListContext argumentList, 
@@ -394,7 +388,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             rewriter.RemoveRange(startTokenIndex, stopTokenIndex);
         }
 
-        private (int startTokenIndex, int stopTokenIndex) TokenIndexRange(
+        private static (int startTokenIndex, int stopTokenIndex) TokenIndexRange(
             int startIndex, 
             int stopIndex,
             IReadOnlyList<ParserRuleContext> contexts)
@@ -416,26 +410,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             return (startTokenIndex, stopTokenIndex);
         }
 
-        private RemoveParametersModel ModelForNewTarget(RemoveParametersModel oldModel, Declaration newTarget)
-        {
-            var newModel = new RemoveParametersModel(newTarget);
-            var toRemoveIndices = oldModel.RemoveParameters.Select(param => oldModel.Parameters.IndexOf(param));
-            var newToRemoveParams = toRemoveIndices
-                .Select(index => newModel.Parameters[index])
-                .ToList();
-            newModel.RemoveParameters = newToRemoveParams;
-            return newModel;
-        }
-
-        private Declaration GetLetterOrSetter(Declaration declaration, DeclarationType declarationType)
-        {
-            return _declarationFinderProvider.DeclarationFinder
-                .UserDeclarations(declarationType)
-                .FirstOrDefault(item => item.QualifiedModuleName.Equals(declaration.QualifiedModuleName)
-                && item.IdentifierName == declaration.IdentifierName);
-        }
-
-        private void AdjustSignatures(RemoveParametersModel model, IRewriteSession rewriteSession)
+        private static void AdjustSignatures(RemoveParametersModel model, IRewriteSession rewriteSession)
         {
             var rewriter = rewriteSession.CheckOutModuleRewriter(model.TargetDeclaration.QualifiedModuleName);
 
@@ -451,7 +426,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
         }
 
-        private void RemoveParameterRange(
+        private static void RemoveParameterRange(
             int startArgumentIndex,
             int stopArgumentIndex,
             VBAParser.ArgListContext argList,
@@ -459,6 +434,25 @@ namespace Rubberduck.Refactorings.RemoveParameters
         {
             var (startTokenIndex, stopTokenIndex) = TokenIndexRange(startArgumentIndex, stopArgumentIndex, argList.arg());
             rewriter.RemoveRange(startTokenIndex, stopTokenIndex);
+        }
+
+        private Declaration GetLetterOrSetter(Declaration declaration, DeclarationType declarationType)
+        {
+            return _declarationFinderProvider.DeclarationFinder
+                .UserDeclarations(declarationType)
+                .FirstOrDefault(item => item.QualifiedModuleName.Equals(declaration.QualifiedModuleName)
+                                        && item.IdentifierName == declaration.IdentifierName);
+        }
+
+        private static RemoveParametersModel ModelForNewTarget(RemoveParametersModel oldModel, Declaration newTarget)
+        {
+            var newModel = new RemoveParametersModel(newTarget);
+            var toRemoveIndices = oldModel.RemoveParameters.Select(param => oldModel.Parameters.IndexOf(param));
+            var newToRemoveParams = toRemoveIndices
+                .Select(index => newModel.Parameters[index])
+                .ToList();
+            newModel.RemoveParameters = newToRemoveParams;
+            return newModel;
         }
 
         public static readonly DeclarationType[] ValidDeclarationTypes =
