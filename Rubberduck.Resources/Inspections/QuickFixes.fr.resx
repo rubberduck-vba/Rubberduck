@@ -291,4 +291,10 @@
   <data name="ReplaceWhileWendWithDoWhileLoopQuickFix" xml:space="preserve">
     <value>Remplacer 'While...Wend' par 'Do While...Loop'</value>
   </data>
+  <data name="ExpandBangNotationQuickFix" xml:space="preserve">
+    <value>Rendre explicite le code caché par l'opérateur !</value>
+  </data>
+  <data name="ExpandDefaultMemberQuickFix" xml:space="preserve">
+    <value>Rendre explicite l'accès au membre par défaut</value>
+  </data>
 </root>
