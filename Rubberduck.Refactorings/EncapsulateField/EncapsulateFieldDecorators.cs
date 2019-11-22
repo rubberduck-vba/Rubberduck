@@ -10,11 +10,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         Declaration Declaration { get; }
         string IdentifierName { get; }
-        KeyValuePair<Declaration, string> TargetIDPair { set;  get; }
+        string TargetID { get; set; }
         DeclarationType DeclarationType { get; }
         Accessibility Accessibility { get;}
         IFieldEncapsulationAttributes EncapsulationAttributes { set; get; }
-        string FieldID { get; }
         bool IsReadOnly { set; get; }
         bool IsEditableReadOnly { get; }
         string PropertyName { set; get; }
@@ -54,7 +53,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public KeyValuePair<Declaration, string> TargetIDPair { get; set; }
 
-        public string FieldID => TargetIDPair.Value;
+        public string TargetID { get; set; }
 
         public bool EncapsulateFlag
         {
@@ -106,7 +105,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public EncapsulateFieldDecoratorBase(IEncapsulatedFieldDeclaration efd)
         {
             _decorated = efd;
-            TargetIDPair = new KeyValuePair<Declaration, string>(efd.Declaration, efd.IdentifierName);
+            TargetID = efd.IdentifierName;
         }
 
         public Declaration Declaration => _decorated.Declaration;
@@ -123,11 +122,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
             set => _decorated.EncapsulationAttributes = value;
         }
 
-        public KeyValuePair<Declaration, string> TargetIDPair { get => _decorated.TargetIDPair; set => _decorated.TargetIDPair = value; }
+        public string TargetID
+        {
+            get => _decorated.TargetID;
+            set => _decorated.TargetID = value;
+        }
 
-        public string FieldID => TargetIDPair.Value;
-
-        public bool IsReadOnly
+    public bool IsReadOnly
         {
             get => _decorated.EncapsulationAttributes.ReadOnly;
             set => _decorated.EncapsulationAttributes.ReadOnly = value;
@@ -273,7 +274,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     return $"{_udtVariableAttributes.FieldName}.{EncapsulationAttributes.NewFieldName}";
                 };
 
-            efd.TargetIDPair = new KeyValuePair<Declaration, string>(efd.Declaration, $"{udtVariable.IdentifierName}.{IdentifierName}");
+            efd.TargetID = $"{udtVariable.IdentifierName}.{IdentifierName}";
             _decorated.IsVisibleReadWriteAccessor = false;
         }
 

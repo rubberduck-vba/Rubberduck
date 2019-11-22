@@ -7,12 +7,7 @@ using Rubberduck.SmartIndenter;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public interface ISupportEncapsulateFieldTests
-    {
-        void SetMemberEncapsulationFlag(string name, bool flag);
-        void SetEncapsulationFieldAttributes(string fieldName, IClientEditableFieldEncapsulationAttributes attributes);
-    }
-    public class EncapsulateFieldModel : IRefactoringModel, ISupportEncapsulateFieldTests
+    public class EncapsulateFieldModel : IRefactoringModel
     {
         private readonly IIndenter _indenter;
 
@@ -20,7 +15,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private IEnumerable<Declaration> UdtFields => _udtFieldToUdtDeclarationMap.Keys;
         private IEnumerable<Declaration> UdtFieldMembers(Declaration udtField) => _udtFieldToUdtDeclarationMap[udtField].Item2;
 
-        private Dictionary<KeyValuePair<Declaration, string>, IEncapsulatedFieldDeclaration> _encapsulateFieldDeclarations = new Dictionary<KeyValuePair<Declaration, string>, IEncapsulatedFieldDeclaration>();
+        private Dictionary<string, IEncapsulatedFieldDeclaration> _encapsulateFieldDeclarations = new Dictionary<string, IEncapsulatedFieldDeclaration>();
 
         private IEncapsulatedFieldDeclaration _userSelectedEncapsulationField;
         private Dictionary<string, IFieldEncapsulationAttributes> _udtVariableEncapsulationAttributes = new Dictionary<string, IFieldEncapsulationAttributes>();
@@ -33,48 +28,28 @@ namespace Rubberduck.Refactorings.EncapsulateField
             foreach (var field in allMemberFields.Except(UdtFields))
             {
                 var efd = EncapsulateDeclaration(field);
-                _encapsulateFieldDeclarations.Add(efd.TargetIDPair, efd);
+                _encapsulateFieldDeclarations.Add(efd.TargetID, efd);
             }
 
             AddUDTEncapsulationFields(udtFieldToUdtDeclarationMap);
 
-            var kvPair = _encapsulateFieldDeclarations.Where(efd => efd.Key.Key == target).Single();
-            var selectedTarget = kvPair.Value;
-            selectedTarget.EncapsulationAttributes.EncapsulateFlag = true;
-            _userSelectedEncapsulationField = selectedTarget;
+            this[target].EncapsulationAttributes.EncapsulateFlag = true;
+            _userSelectedEncapsulationField = this[target];
         }
 
         public IEnumerable<IEncapsulatedFieldDeclaration> FlaggedEncapsulationFields => _encapsulateFieldDeclarations.Values.Where(v => v.EncapsulationAttributes.EncapsulateFlag);
 
         public IEnumerable<string> EncapsulationFieldIDs
-            => _encapsulateFieldDeclarations.Keys.Select(k => k.Value);
+            => _encapsulateFieldDeclarations.Keys;
 
         public IEnumerable<IEncapsulatedFieldDeclaration> EncapsulationFields
             => _encapsulateFieldDeclarations.Values;
 
-        public IEncapsulatedFieldDeclaration this[string encapsulatedFieldIdentifier]
-        {
-            get => _encapsulateFieldDeclarations.Values.Where(efd => efd.TargetIDPair.Value.Equals(encapsulatedFieldIdentifier))
-                    .FirstOrDefault();
-            set
-            {
-                var key = _encapsulateFieldDeclarations.Keys.Where(k => k.Value.Equals(encapsulatedFieldIdentifier))
-                    .FirstOrDefault();
-                _encapsulateFieldDeclarations[key] = value;
-            }
-        }
+        public IEncapsulatedFieldDeclaration this[string encapsulatedFieldIdentifier] 
+            => _encapsulateFieldDeclarations[encapsulatedFieldIdentifier];
 
-        public IEncapsulatedFieldDeclaration this[Declaration field]
-        {
-            get => _encapsulateFieldDeclarations.Keys.Where(key => key.Key.Equals(field)).Select(kv => _encapsulateFieldDeclarations[kv])
-                    .Single();
-            set
-            {
-                var key = _encapsulateFieldDeclarations.Keys.Where(k => k.Key.Equals(field))
-                    .Single();
-                _encapsulateFieldDeclarations[key] = value;
-            }
-        }
+        public IEncapsulatedFieldDeclaration this[Declaration fieldDeclaration] 
+            => _encapsulateFieldDeclarations.Values.Where(efd => efd.Declaration.Equals(fieldDeclaration)).Select(encapsulatedField => encapsulatedField).Single();
 
         public IList<string> PropertiesContent
         {
@@ -138,14 +113,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
             foreach (var udtField in udtFieldToTypeMap.Keys)
             {
                 var udtEncapsulation = DecorateUDTVariableDeclaration(udtField);
-                _encapsulateFieldDeclarations.Add(udtEncapsulation.TargetIDPair, udtEncapsulation);
+                _encapsulateFieldDeclarations.Add(udtEncapsulation.TargetID, udtEncapsulation);
 
 
                 foreach (var udtMember in UdtFieldMembers(udtField))
                 {
                     var encapsulatedUdtMember = EncapsulateDeclaration(udtMember);
                     encapsulatedUdtMember = DecorateUDTMember(encapsulatedUdtMember, udtEncapsulation as EncapsulatedUserDefinedType);
-                    _encapsulateFieldDeclarations.Add(encapsulatedUdtMember.TargetIDPair, encapsulatedUdtMember);
+                    _encapsulateFieldDeclarations.Add(encapsulatedUdtMember.TargetID, encapsulatedUdtMember);
                 }
             }
         }
@@ -207,37 +182,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return string.Join(Environment.NewLine, _indenter.Indent(propertyTextLines, true));
         }
 
-        public void SetMemberEncapsulationFlag(string name, bool flag)
-        {
-            this[name].EncapsulationAttributes.EncapsulateFlag = flag;
-        }
-
-        //Only used by tests....so far
-        public void SetEncapsulationFieldAttributes(string fieldName, IClientEditableFieldEncapsulationAttributes attributes)
-        {
-            var currentAttributes = this[fieldName].EncapsulationAttributes; // as IClientEditableFieldEncapsulationAttributes;
-            currentAttributes.NewFieldName = attributes.NewFieldName;
-            currentAttributes.PropertyName = attributes.PropertyName;
-            currentAttributes.EncapsulateFlag = attributes.EncapsulateFlag;
-        }
-
-        //This version only good for testing, fieldName could result in multiple results
-        public void ApplyAttributes(string fieldName, IClientEditableFieldEncapsulationAttributes clientAttributes)
-        {
-            var encapsulatedField = this[fieldName];
-            encapsulatedField.EncapsulationAttributes.NewFieldName = clientAttributes.NewFieldName;
-            encapsulatedField.EncapsulationAttributes.PropertyName = clientAttributes.PropertyName;
-            encapsulatedField.EncapsulationAttributes.ReadOnly = clientAttributes.ReadOnly;
-            encapsulatedField.EncapsulationAttributes.EncapsulateFlag = clientAttributes.EncapsulateFlag;
-        }
-
         public Declaration TargetDeclaration
         {
             get => _userSelectedEncapsulationField.Declaration;
             set
             {
                 var encField = new EncapsulatedFieldDeclaration(value);
-                _userSelectedEncapsulationField = _encapsulateFieldDeclarations[encField.TargetIDPair];
+                _userSelectedEncapsulationField = _encapsulateFieldDeclarations[encField.TargetID];
             }
         }
 

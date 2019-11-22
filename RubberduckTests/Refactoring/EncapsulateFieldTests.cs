@@ -774,7 +774,6 @@ Function Bar() As Integer
 End Function";
             var selection = new Selection(1, 1);
 
-            //var presenterAction = SetParameters("Name", implementLet: true);
             var presenterAction = SetParametersForSingleTarget("fizz", "Name", newFieldName: "fizz");
             var actualCode = RefactoredCode(inputCode, selection, presenterAction);
             Assert.Greater(actualCode.IndexOf("Sub Foo"), actualCode.LastIndexOf("End Property"));
@@ -800,7 +799,6 @@ Property Set Foo(ByVal vall As Variant)
 End Property";
             var selection = new Selection(1, 1);
 
-            //var presenterAction = SetParameters("Name", implementLet: true);
             var presenterAction = SetParametersForSingleTarget("fizz", "Name", newFieldName: "fizz");
             var actualCode = RefactoredCode(inputCode, selection, presenterAction);
             Assert.Greater(actualCode.IndexOf("fizz = value"), actualCode.IndexOf("fizz As Integer"));
@@ -1077,7 +1075,6 @@ Public Property Let Name(ByVal value As String)
     foo = value
 End Property
 ";
-            //var presenterAction = SetParameters("Name", implementLet: true);
             var presenterAction = SetParametersForSingleTarget("foo", "Name", newFieldName: "foo");
             var actualCode = RefactoredCode(inputCode, "foo", DeclarationType.Variable, presenterAction);
             Assert.AreEqual(expectedCode, actualCode);
@@ -1146,9 +1143,7 @@ Public Property Get MyArray() As Variant
 End Property
 ";
             var userInput = new TestInputDataObject("mArray", "MyArray", true, "mArray");
-            //userInput.AddUDTMemberNameFlagPairs(("First", true), ("Second", true));
 
-            //var presenterAction = SetParameters("MyArray");
             var presenterAction = SetParameters(userInput);
             var actualCode = RefactoredCode(inputCode, selection, presenterAction);
             Assert.AreEqual(expectedCode, actualCode);
@@ -1273,17 +1268,20 @@ End Property
                 foreach (var testModifiedAttribute in testInput.EncapsulateFieldAttributes)
                 {
                     var attrsInitializedByTheRefactoring = model[testModifiedAttribute.FieldName].EncapsulationAttributes as IClientEditableFieldEncapsulationAttributes;
-                    var testSupport = model as ISupportEncapsulateFieldTests;
 
                     attrsInitializedByTheRefactoring.NewFieldName = testModifiedAttribute.NewFieldName;
                     attrsInitializedByTheRefactoring.PropertyName = testModifiedAttribute.PropertyName;
                     attrsInitializedByTheRefactoring.EncapsulateFlag = testModifiedAttribute.EncapsulateFlag;
 
-                    testSupport.SetEncapsulationFieldAttributes(testModifiedAttribute.FieldName, attrsInitializedByTheRefactoring);
+                    var currentAttributes = model[testModifiedAttribute.FieldName].EncapsulationAttributes;
+                    currentAttributes.NewFieldName = attrsInitializedByTheRefactoring.NewFieldName;
+                    currentAttributes.PropertyName = attrsInitializedByTheRefactoring.PropertyName;
+                    currentAttributes.EncapsulateFlag = attrsInitializedByTheRefactoring.EncapsulateFlag;
+
 
                     foreach ((string instanceVariable, string memberName, bool flag) in testInput.UDTMemberNameFlagPairs)
                     {
-                        testSupport.SetMemberEncapsulationFlag($"{instanceVariable}.{memberName}", flag);
+                        model[$"{instanceVariable}.{memberName}"].EncapsulateFlag = flag;
                     }
                 }
                 return model;
@@ -1294,7 +1292,12 @@ End Property
         {
             return model =>
             {
-                model.ApplyAttributes(originalField, clientEdits);
+                var encapsulatedField = model[originalField];
+                encapsulatedField.EncapsulationAttributes.NewFieldName = clientEdits.NewFieldName;
+                encapsulatedField.EncapsulationAttributes.PropertyName = clientEdits.PropertyName;
+                encapsulatedField.EncapsulationAttributes.ReadOnly = clientEdits.ReadOnly;
+                encapsulatedField.EncapsulationAttributes.EncapsulateFlag = clientEdits.EncapsulateFlag;
+
                 return model;
             };
         }
