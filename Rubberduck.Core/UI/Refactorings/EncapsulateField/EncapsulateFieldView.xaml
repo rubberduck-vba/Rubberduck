@@ -5,8 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="800" d:DesignWidth="300">
     <UserControl.Resources>
         <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
 
@@ -14,9 +15,11 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="40" />
+            <RowDefinition Height="50" /><!--(0)Title and instruction/-->
+            <RowDefinition Height="100" /><!--(1)Legacy PropertyName & Param/-->
+            <RowDefinition Height="*" /><!--(2)New User selection(s)/-->
+            <RowDefinition Height="*" /><!--(3)Preview Expander/-->
+            <RowDefinition Height="40" /><!--(4)OK Cancel/-->
         </Grid.RowDefinitions>
         <StackPanel Background="White">
             <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EncapsulateField_TitleText}" FontWeight="Bold" />
@@ -26,7 +29,7 @@
         <Grid Grid.Row="1" Margin="5,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
-                <RowDefinition />
+                <RowDefinition/>
             </Grid.RowDefinitions>
             <Grid Margin="0,0,0,5">
                 <Grid.ColumnDefinitions>
@@ -103,7 +106,7 @@
                     </Grid>
                 </GroupBox>
             </Grid>
-            <Expander Grid.Row="1"
+            <!--<Expander Grid.Row="1"
                       Grid.ColumnSpan="2"
                       IsExpanded="{Binding ExpansionState}"
                       Background="#FFFFFFFF"
@@ -122,30 +125,164 @@
                                              MinHeight="200"
                                              IsReadOnly="True"
                                              Text="{Binding PropertyPreview,Mode=OneWay}"/>
-            </Expander>
         </Grid>
-        <Grid Grid.Row="2" Background="{x:Static SystemColors.ControlDarkBrush}" Grid.IsSharedSizeScope="True">
-            <Grid HorizontalAlignment="Right"
-                          Margin="5,0">
+            </Expander>-->
+        </Grid>
+        <Grid Grid.Row="2" Margin="5,0">
+            <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition SharedSizeGroup="SettingsButtons" />
-                    <ColumnDefinition SharedSizeGroup="SettingsButtons" />
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="100"/>
                 </Grid.ColumnDefinitions>
-                <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=OK}"
-                            Grid.Column="0"
-                            Height="20"
-                            Margin="5,0"
-                            Padding="10,0"
-                            IsEnabled="{Binding HasValidNames}"
-                            Command="{Binding OkButtonCommand}" />
-                <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CancelButtonText}"
-                            Grid.Column="1"
-                            Height="20"
-                            Margin="5,0"
-                            Padding="10,0"
-                            Command="{Binding CancelButtonCommand}">
-                </Button>
+                <ListBox Grid.Column="0" 
+                         Name="FieldList"
+                         ItemsSource="{Binding EncapsulationFields}" 
+                         Height="150"
+                         VerticalAlignment="Top"
+                         Margin="5,0,0,30">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Height="60">
+                                <StackPanel Orientation="Vertical">
+                                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                        <CheckBox 
+                                            Content="{Binding FieldID}" 
+                                            IsChecked="{Binding EncapsulateFlag}" 
+                                            FontWeight="Bold"
+                                            Command="{Binding Path=DataContext.EncapsulateFlagCommand, 
+                                                RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                        />
+                                        <TextBlock Margin="5,0,0,0" VerticalAlignment="Top" Text ="{Binding AsTypeName, StringFormat=({0})}"/>
+                                        <CheckBox 
+                                            Margin="10,0,0,0" 
+                                            IsChecked="{Binding 
+                                            IsReadOnly, Mode=TwoWay}" 
+                                            IsEnabled="{Binding IsEditableReadOnly}" 
+                                            Command="{Binding Path=DataContext.IsReadOnlyCommand, 
+                                                RelativeSource={RelativeSource AncestorType=ListBox}}"/>
+                                        <TextBlock Margin="5,0,0,0" Text="Read Only"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="125"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0"  Margin="30,0,0,0">
+                                            <Italic>Property Name:</Italic>
+                                            </TextBlock>
+                                            <TextBox
+                                                Grid.Column="1" 
+                                                Text ="{Binding PropertyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="LostFocus">
+                                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.PropertyOrFieldNameChangeCommand,
+                                                            RelativeSource={RelativeSource AncestorType=ListBox}}"/>
+                                                </i:EventTrigger>
+                                                </i:Interaction.Triggers>
+                                            </TextBox>
+                                        </Grid>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0" Visibility="{Binding ReadWriteAccessorVisibility}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="125"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0"  Margin="30,0,0,0" >
+                                            <Italic>Backing Variable:</Italic>
+                                            </TextBlock>
+                                            <TextBox Grid.Column="1"  Text ="{Binding NewFieldName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="LostFocus">
+                                                        <i:InvokeCommandAction Command="{Binding Path=DataContext.PropertyOrFieldNameChangeCommand,
+                                                            RelativeSource={RelativeSource AncestorType=ListBox}}"/>
+                                                    </i:EventTrigger>
+                                                </i:Interaction.Triggers>
+                                            </TextBox>
+                                        </Grid>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <StackPanel Grid.Column="1"
+                                HorizontalAlignment="Right"
+                                Margin="5,0,0,0"
+                                MinWidth="100">
+                    <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SelectAll_Button}"
+                                Height="20"
+                                Margin="0,0,0,5"
+                                Padding="10,0"
+                                Command="{Binding SelectAllCommand}" />
+                    <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=DeselectAll_Button}"
+                                Height="20"
+                                Margin="0"
+                                Padding="10,0"
+                                Command="{Binding DeselectAllCommand}">
+                    </Button>
+                </StackPanel>
             </Grid>
         </Grid>
+        <!--Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="123*"/>
+                    <ColumnDefinition Width="22*"/>
+                </Grid.ColumnDefinitions>
+                <Expander Grid.Row="0"
+                      Grid.ColumnSpan="2"
+                      IsExpanded="{Binding ExpansionState}"
+                      Background="#FFFFFFFF"
+                      BorderBrush="#FFA9A9A9"
+                      Margin="5,50">
+                    <Expander.Header>
+                        <Label FontWeight="SemiBold">
+                            <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="Preview"/>
+                        </Label>
+                    </Expander.Header>
+                    <controls:BindableTextEditor Margin="10,10,10,10"
+                                             FontFamily="Courier New "
+                                             ShowLineNumbers="False"
+                                             HorizontalScrollBarVisibility="Auto"
+                                             VerticalScrollBarVisibility="Auto"
+                                             MinHeight="200"
+                                             IsReadOnly="True"
+                                             Text="{Binding PropertyPreview,Mode=OneWay}"/>
+                </Expander>
+            </Grid>-->
+        <Grid Grid.Row="3" Margin="5,0">
+            <controls:BindableTextEditor Margin="10,10,10,10"
+                                             FontFamily="Courier New "
+                                             ShowLineNumbers="False"
+                                             HorizontalScrollBarVisibility="Auto"
+                                             VerticalScrollBarVisibility="Auto"
+                                             MinHeight="200"
+                                             IsReadOnly="True"
+                                             Text="{Binding PropertyPreview,Mode=OneWay}"/>
+        </Grid>
+        <Grid Grid.Row="4" Background="{x:Static SystemColors.ControlDarkBrush}" Grid.IsSharedSizeScope="True">
+        <Grid HorizontalAlignment="Right"
+                        Margin="5,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition SharedSizeGroup="SettingsButtons" />
+                <ColumnDefinition SharedSizeGroup="SettingsButtons" />
+            </Grid.ColumnDefinitions>
+            <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=OK}"
+                        Grid.Column="0"
+                        Height="20"
+                        Margin="5,0"
+                        Padding="10,0"
+                        IsEnabled="{Binding HasValidNames}"
+                        Command="{Binding OkButtonCommand}" />
+            <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CancelButtonText}"
+                        Grid.Column="1"
+                        Height="20"
+                        Margin="5,0"
+                        Padding="10,0"
+                        Command="{Binding CancelButtonCommand}">
+            </Button>
+        </Grid>
+    </Grid>
     </Grid>
 </UserControl>

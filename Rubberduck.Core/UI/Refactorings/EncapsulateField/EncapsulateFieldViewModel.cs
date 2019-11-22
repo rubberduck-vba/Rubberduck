@@ -1,10 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Input;
+using NLog;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.SmartIndenter;
+using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Refactorings.EncapsulateField
 {
@@ -19,7 +28,15 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             Indenter = indenter;
 
             IsLetSelected = true;
-            PropertyName = model.TargetDeclaration.IdentifierName;
+            PropertyName = model[model.TargetDeclaration].PropertyName;
+
+            SelectAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ToggleSelection(true));
+            DeselectAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ToggleSelection(false));
+
+            IsReadOnlyCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => RefreshPreview());
+            EncapsulateFlagCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => RefreshPreview());
+            PropertyOrFieldNameChangeCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => RefreshPreview());
+            BackingFieldNameChangeCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => RefreshPreview());
         }
 
         public Declaration TargetDeclaration
@@ -28,21 +45,24 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             set
             {
                 Model.TargetDeclaration = value;
-                PropertyName = value.IdentifierName;
+                PropertyName = Model[Model.TargetDeclaration].PropertyName;
             }
         }
 
-        private bool _expansionState = true;
-        public bool ExpansionState
-        {
-            get => _expansionState;
-            set
-            {
-                _expansionState = value;
-                OnPropertyChanged();
-                OnExpansionStateChanged(value);
-            }
-        }
+        public ObservableCollection<IEncapsulatedFieldDeclaration> EncapsulationFields 
+            => new ObservableCollection<IEncapsulatedFieldDeclaration>(Model.EncapsulationFields);
+
+        //private bool _expansionState = true;
+        //public bool ExpansionState
+        //{
+        //    get => _expansionState;
+        //    set
+        //    {
+        //        _expansionState = value;
+        //        OnPropertyChanged();
+        //        OnExpansionStateChanged(value);
+        //    }
+        //}
 
         public bool CanHaveLet => Model.CanImplementLet;
         public bool CanHaveSet => Model.CanImplementSet;
@@ -99,14 +119,12 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         {
             get
             {
-                var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
+                var encapsulatedField = Model[TargetDeclaration];
 
-                return TargetDeclaration != null
-                       && !PropertyName.Equals(TargetDeclaration.IdentifierName, StringComparison.InvariantCultureIgnoreCase)
-                       && !PropertyName.Equals(ParameterName, StringComparison.InvariantCultureIgnoreCase)
-                       && char.IsLetter(PropertyName.FirstOrDefault())
-                       && !tokenValues.Contains(PropertyName, StringComparer.InvariantCultureIgnoreCase)
-                       && PropertyName.All(c => char.IsLetterOrDigit(c) || c == '_');
+                return encapsulatedField.Declaration != null
+                        && VBAIdentifierValidator.IsValidIdentifier(encapsulatedField.PropertyName, DeclarationType.Variable)
+                        && !encapsulatedField.PropertyName.Equals(encapsulatedField.EncapsulationAttributes.NewFieldName, StringComparison.InvariantCultureIgnoreCase)
+                        && !encapsulatedField.PropertyName.Equals(ParameterName, StringComparison.InvariantCultureIgnoreCase);
             }
         }
 
@@ -114,16 +132,15 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         {
             get
             {
-                var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
+                var encapsulatedField = Model[TargetDeclaration];
 
-                return TargetDeclaration != null
-                       && !ParameterName.Equals(TargetDeclaration.IdentifierName, StringComparison.InvariantCultureIgnoreCase)
-                       && !ParameterName.Equals(PropertyName, StringComparison.InvariantCultureIgnoreCase)
-                       && char.IsLetter(ParameterName.FirstOrDefault())
-                       && !tokenValues.Contains(ParameterName, StringComparer.InvariantCultureIgnoreCase)
-                       && ParameterName.All(c => char.IsLetterOrDigit(c) || c == '_');
+                return encapsulatedField.Declaration != null
+                        && VBAIdentifierValidator.IsValidIdentifier(encapsulatedField.PropertyName, DeclarationType.Variable)
+                        && !encapsulatedField.EncapsulationAttributes.ParameterName.Equals(encapsulatedField.IdentifierName, StringComparison.InvariantCultureIgnoreCase)
+                        && !encapsulatedField.EncapsulationAttributes.ParameterName.Equals(encapsulatedField.EncapsulationAttributes.PropertyName, StringComparison.InvariantCultureIgnoreCase);
             }
         }
+
 
         public bool HasValidNames => IsValidPropertyName && IsValidParameterName;
 
@@ -131,26 +148,29 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         {
             get
             {
-                if (TargetDeclaration == null)
-                {
-                    return string.Empty;
-                }
-
-                var previewGenerator = new PropertyGenerator
-                {
-                    PropertyName = PropertyName,
-                    AsTypeName = TargetDeclaration.AsTypeName,
-                    BackingField = TargetDeclaration.IdentifierName,
-                    ParameterName = ParameterName,
-                    GenerateSetter = IsSetSelected,
-                    GenerateLetter = IsLetSelected
-                };
-
-                var field = $"{Tokens.Private} {TargetDeclaration.IdentifierName} {Tokens.As} {TargetDeclaration.AsTypeName}{Environment.NewLine}{Environment.NewLine}";
-
-                var propertyText = previewGenerator.AllPropertyCode.Insert(0, field).Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-                return string.Join(Environment.NewLine, Indenter.Indent(propertyText, true));
+                return Model.NewContent.AsSingleTextBlock;
             }
+        }
+
+        public CommandBase SelectAllCommand { get; }
+        public CommandBase DeselectAllCommand { get; }
+        private void ToggleSelection(bool value)
+        {
+            foreach (var item in EncapsulationFields)
+            {
+                item.EncapsulateFlag = value;
+            }
+            OnPropertyChanged(nameof(EncapsulationFields));
+            OnPropertyChanged(nameof(PropertyPreview));
+        }
+
+        public CommandBase IsReadOnlyCommand { get; }
+        public CommandBase EncapsulateFlagCommand { get; }
+        public CommandBase PropertyOrFieldNameChangeCommand { get; }
+        public CommandBase BackingFieldNameChangeCommand { get; }
+        private void RefreshPreview()
+        {
+            OnPropertyChanged(nameof(PropertyPreview));
         }
 
         public event EventHandler<bool> ExpansionStateChanged;

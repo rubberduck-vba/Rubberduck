@@ -39,12 +39,18 @@ namespace Rubberduck.Refactorings.EncapsulateField
             AddUDTEncapsulationFields(udtFieldToUdtDeclarationMap);
 
             var kvPair = _encapsulateFieldDeclarations.Where(efd => efd.Key.Key == target).Single();
-            var selectedTarget = kvPair.Value; // _encapsulateFieldDeclarations[kvPair.Key];
+            var selectedTarget = kvPair.Value;
             selectedTarget.EncapsulationAttributes.EncapsulateFlag = true;
             _userSelectedEncapsulationField = selectedTarget;
         }
 
         public IEnumerable<IEncapsulatedFieldDeclaration> FlaggedEncapsulationFields => _encapsulateFieldDeclarations.Values.Where(v => v.EncapsulationAttributes.EncapsulateFlag);
+
+        public IEnumerable<string> EncapsulationFieldIDs
+            => _encapsulateFieldDeclarations.Keys.Select(k => k.Value);
+
+        public IEnumerable<IEncapsulatedFieldDeclaration> EncapsulationFields
+            => _encapsulateFieldDeclarations.Values;
 
         public IEncapsulatedFieldDeclaration this[string encapsulatedFieldIdentifier]
         {
@@ -58,6 +64,18 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
+        public IEncapsulatedFieldDeclaration this[Declaration field]
+        {
+            get => _encapsulateFieldDeclarations.Keys.Where(key => key.Key.Equals(field)).Select(kv => _encapsulateFieldDeclarations[kv])
+                    .Single();
+            set
+            {
+                var key = _encapsulateFieldDeclarations.Keys.Where(k => k.Key.Equals(field))
+                    .Single();
+                _encapsulateFieldDeclarations[key] = value;
+            }
+        }
+
         public IList<string> PropertiesContent
         {
             get
@@ -65,10 +83,54 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 var textBlocks = new List<string>();
                 foreach (var field in FlaggedEncapsulationFields)
                 {
-                    textBlocks.Add(BuildPropertiesTextBlock(field.EncapsulationAttributes)); // as IFieldEncapsulationAttributes));
+                    textBlocks.Add(BuildPropertiesTextBlock(field.EncapsulationAttributes));
                 }
                 return textBlocks;
             }
+        }
+
+        public IEncapsulateFieldNewContentProvider NewContent
+        {
+            get
+            {
+                var newContent = new EncapsulateFieldNewContent();
+                newContent = LoadNewDeclarationsContent(newContent);
+                newContent = LoadNewPropertiesContent(newContent);
+                return newContent;
+            }
+        }
+
+        public EncapsulateFieldNewContent LoadNewPropertiesContent(EncapsulateFieldNewContent newContent)
+        {
+            if (!FlaggedEncapsulationFields.Any()) { return newContent; }
+
+            newContent.AddCodeBlock($"{string.Join($"{Environment.NewLine}{Environment.NewLine}", PropertiesContent)}");
+            return newContent;
+        }
+
+        public EncapsulateFieldNewContent LoadNewDeclarationsContent(EncapsulateFieldNewContent newContent)
+        {
+            var nonUdtMemberFields = FlaggedEncapsulationFields
+                    .Where(encFld => encFld.Declaration.IsVariable());
+
+            foreach (var nonUdtMemberField in nonUdtMemberFields)
+            {
+                var attributes = nonUdtMemberField.EncapsulationAttributes;
+
+                if (nonUdtMemberField.Accessibility == Accessibility.Private && attributes.NewFieldName.Equals(nonUdtMemberField.IdentifierName))
+                {
+                    continue;
+                }
+
+                if (nonUdtMemberField.Declaration.IsDeclaredInList())
+                {
+                    var targetIdentifier = nonUdtMemberField.Declaration.Context.GetText().Replace(attributes.FieldName, attributes.NewFieldName);
+                    var newField = nonUdtMemberField.Declaration.IsTypeSpecified ? $"{Tokens.Private} {targetIdentifier}" : $"{Tokens.Private} {targetIdentifier} {Tokens.As} {nonUdtMemberField.Declaration.AsTypeName}";
+
+                    newContent.AddDeclarationBlock(newField);
+                }
+            }
+            return newContent;
         }
 
         private void AddUDTEncapsulationFields(IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> udtFieldToTypeMap)
@@ -222,9 +284,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
         }
 
         public bool CanImplementLet
-            => _userSelectedEncapsulationField.EncapsulationAttributes.CanImplementLet; //.EncapsulationAttributes.IsValueType || _userSelectedEncapsulationField.EncapsulationAttributes.IsVariantType;
+            => _userSelectedEncapsulationField.EncapsulationAttributes.CanImplementLet;
 
         public bool CanImplementSet
-            => !_userSelectedEncapsulationField.EncapsulationAttributes.CanImplementSet; //IsValueType && _userSelectedEncapsulationField.EncapsulationAttributes.IsVariantType;
+            => !_userSelectedEncapsulationField.EncapsulationAttributes.CanImplementSet;
     }
 }

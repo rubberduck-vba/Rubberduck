@@ -64,11 +64,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private string _newFieldName;
         public string NewFieldName
         {
-            get => EncapsulateFlag ? _newFieldName : FieldName;
+            get => _newFieldName;
             set => _newFieldName = value;
         }
 
         public string FieldReadWriteIdentifier => FieldReadWriteIdentifierFunc();
+
         public Func<string> FieldReadWriteIdentifierFunc { set; get; }
         public string PropertyName { get; set; }
         public string AsTypeName { get; set; }
