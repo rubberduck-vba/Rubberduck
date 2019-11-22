@@ -237,6 +237,15 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rubberduck User Declarations - {0}.
+        /// </summary>
+        public static string CodeExplorer_AppendHeader {
+            get {
+                return ResourceManager.GetString("CodeExplorer_AppendHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Collapse all.
         /// </summary>
         public static string CodeExplorer_CollapseSubnodesToolTip {

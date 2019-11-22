@@ -1422,7 +1422,7 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
     <value>Der Typ des Ziels '{0}'ist '{1}' anstatt eines der erwarteten Typen '{2}'.</value>
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
-    <value>Filter</value>
+    <value />
   </data>
   <data name="GroupingStyle_ByName" xml:space="preserve">
     <value>Nach Codeuntersuchung</value>
@@ -1439,7 +1439,7 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   <data name="References_BrowseButtonText" xml:space="preserve">
     <value>Durchsuchen...</value>
   </data>
-  <data name="SaveAndClose" xml:space="preserve">
+    <data name="SaveAndClose" xml:space="preserve">
     <value>Speichern &amp; Schließen</value>
   </data>
   <data name="RegexAssistant_EncloseWhitespace_EnclosingFormat" xml:space="preserve">
@@ -1541,9 +1541,6 @@ Import abgebrochen.</value>
     <value>Für die Datei '{0}' fehlen die benötigte(n) Binary-Datei(en) '{1}' und die Zielkomponente '{2}'existiert noch nicht.
 
 Import abgebrochen.</value>
-  </data>
-  <data name="SaveAndClose_Duplicate[1]" xml:space="preserve">
-    <value>Speichern &amp; Schließen</value>
   </data>
   <data name="UpdateFromFilesCommand_BinaryDoesNotExist" xml:space="preserve">
     <value>Für die Datei '{0}' fehlen die benötigte(n) Binary-Datei(en) '{1}'.

@@ -440,6 +440,9 @@ Continue?</value>
     
 {0}</value>
   </data>
+  <data name="CodeExplorer_AppendHeader" xml:space="preserve">
+    <value>Rubberduck User Declarations - {0}</value>
+  </data>
   <data name="CodeExplorer_ExtractInterfaceText" xml:space="preserve">
     <value>Extract Interface</value>
   </data>

@@ -213,6 +213,33 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Variable names must begin with a letter..
+        /// </summary>
+        public static string AssignedByValDialog_DoesNotStartWithLetter {
+            get {
+                return ResourceManager.GetString("AssignedByValDialog_DoesNotStartWithLetter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Variable names cannot contain special characters other than underscores..
+        /// </summary>
+        public static string AssignedByValDialog_InvalidCharacters {
+            get {
+                return ResourceManager.GetString("AssignedByValDialog_InvalidCharacters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The local variable cannot be the same as the &apos;{0}&apos; parameter it replaces.
+        /// </summary>
+        public static string AssignedByValDialog_IsByValIdentifierFormat {
+            get {
+                return ResourceManager.GetString("AssignedByValDialog_IsByValIdentifierFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} Consider choosing a different name..
         /// </summary>
         public static string AssignedByValDialog_MeaninglessNameFormat {
@@ -227,6 +254,24 @@ namespace Rubberduck.Resources {
         public static string AssignedByValDialog_NewNameAlreadyUsedFormat {
             get {
                 return ResourceManager.GetString("AssignedByValDialog_NewNameAlreadyUsedFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The identifier &apos;{0}&apos; will trigger a &quot;Use meaningful name&quot; inspection result. Consider choosing a different name..
+        /// </summary>
+        public static string AssignedByValDialog_QuestionableEntryFormat {
+            get {
+                return ResourceManager.GetString("AssignedByValDialog_QuestionableEntryFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is a reserved keyword..
+        /// </summary>
+        public static string AssignedByValDialog_ReservedKeywordFormat {
+            get {
+                return ResourceManager.GetString("AssignedByValDialog_ReservedKeywordFormat", resourceCulture);
             }
         }
         
@@ -312,6 +357,15 @@ namespace Rubberduck.Resources {
             get {
                 object obj = ResourceManager.GetObject("clock_select_pinned", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} {1} {2} {3} {4} {5}.
+        /// </summary>
+        public static string CodeExplorer_IExportable_DeclarationFormat {
+            get {
+                return ResourceManager.GetString("CodeExplorer_IExportable_DeclarationFormat", resourceCulture);
             }
         }
         
@@ -597,7 +651,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The VBEsetting &quot;Compile On Demand&quot; is currently enabled. This is not recommended as this may hide compilation errors and cause problems with parsing. Do you want to parse anyway?.
+        ///   Looks up a localized string similar to The VBE setting &quot;Compile On Demand&quot; is currently enabled. This is not recommended as this may hide compilation errors and cause problems with parsing. Do you want to parse anyway?.
         /// </summary>
         public static string Command_Reparse_CompileOnDemandEnabled {
             get {
@@ -764,6 +818,132 @@ namespace Rubberduck.Resources {
         public static string Component {
             get {
                 return ResourceManager.GetString("Component", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ActiveX Designer.
+        /// </summary>
+        public static string ComponentType_ActiveXDesigner {
+            get {
+                return ResourceManager.GetString("ComponentType_ActiveXDesigner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Class Module.
+        /// </summary>
+        public static string ComponentType_ClassModule {
+            get {
+                return ResourceManager.GetString("ComponentType_ClassModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to COM component.
+        /// </summary>
+        public static string ComponentType_ComComponent {
+            get {
+                return ResourceManager.GetString("ComponentType_ComComponent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document Object.
+        /// </summary>
+        public static string ComponentType_DocObject {
+            get {
+                return ResourceManager.GetString("ComponentType_DocObject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document Module.
+        /// </summary>
+        public static string ComponentType_Document {
+            get {
+                return ResourceManager.GetString("ComponentType_Document", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MDI Form.
+        /// </summary>
+        public static string ComponentType_MDIForm {
+            get {
+                return ResourceManager.GetString("ComponentType_MDIForm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Property Page.
+        /// </summary>
+        public static string ComponentType_PropPage {
+            get {
+                return ResourceManager.GetString("ComponentType_PropPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Related Document.
+        /// </summary>
+        public static string ComponentType_RelatedDocument {
+            get {
+                return ResourceManager.GetString("ComponentType_RelatedDocument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resource File.
+        /// </summary>
+        public static string ComponentType_ResFile {
+            get {
+                return ResourceManager.GetString("ComponentType_ResFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Standard Module.
+        /// </summary>
+        public static string ComponentType_StandardModule {
+            get {
+                return ResourceManager.GetString("ComponentType_StandardModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Undefined.
+        /// </summary>
+        public static string ComponentType_Undefined {
+            get {
+                return ResourceManager.GetString("ComponentType_Undefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Control.
+        /// </summary>
+        public static string ComponentType_UserControl {
+            get {
+                return ResourceManager.GetString("ComponentType_UserControl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UserForm.
+        /// </summary>
+        public static string ComponentType_UserForm {
+            get {
+                return ResourceManager.GetString("ComponentType_UserForm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VB Form.
+        /// </summary>
+        public static string ComponentType_VBForm {
+            get {
+                return ResourceManager.GetString("ComponentType_VBForm", resourceCulture);
             }
         }
         
@@ -1666,7 +1846,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to filter by description.
+        ///   Looks up a localized string similar to Filter.
         /// </summary>
         public static string GroupingGrid_Filter {
             get {
@@ -4170,6 +4350,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rubberduck Test Results - {0}.
+        /// </summary>
+        public static string TestExplorer_AppendHeader {
+            get {
+                return ResourceManager.GetString("TestExplorer_AppendHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fail.
         /// </summary>
         public static string TestOutcome_Fail {
@@ -4188,7 +4377,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Suceeded.
+        ///   Looks up a localized string similar to Succeeded.
         /// </summary>
         public static string TestOutcome_Succeeded {
             get {
@@ -4459,7 +4648,7 @@ namespace Rubberduck.Resources {
         ///
         ///To review the change log and manually upgrade Rubberduck, click &apos;Yes&apos;.
         ///
-        ///This dialog is showing because version checks are enabled. You can turn off this feature in Rubberduck &gt; Settings..
+        ///This dialog is showing because version checks are enabled. You can turn off this feature in Rubberduck &amp;gt; Settings..
         /// </summary>
         public static string VersionCheck_NewVersionAvailable {
             get {
