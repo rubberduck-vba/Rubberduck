@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings.Common;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -15,14 +16,15 @@ namespace Rubberduck.Refactorings.EncapsulateField
         Accessibility Accessibility { get;}
         IFieldEncapsulationAttributes EncapsulationAttributes { set; get; }
         bool IsReadOnly { set; get; }
-        bool IsEditableReadOnly { get; }
+        bool CanBeReadWrite { set;  get; }
         string PropertyName { set; get; }
-        bool IsVisibleReadWriteAccessor { set; get; }
+        string FieldReadWriteIdentifier { get; }
         bool EncapsulateFlag { set; get; }
-        Visibility ReadWriteAccessorVisibility { set; get; }
         string NewFieldName { set; get; }
-        string ReadWriteAccessor { get; }
         string AsTypeName { get; }
+        bool IsUDTMember { set; get; }
+        bool HasValidEncapsulationAttributes { get; }
+        Func<IEncapsulatedFieldDeclaration, bool> HasConflictsValidationFunc { set; get; }
     }
 
     public class EncapsulatedFieldDeclaration : IEncapsulatedFieldDeclaration
@@ -34,7 +36,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             _decorated = declaration;
             _attributes = new FieldEncapsulationAttributes(_decorated);
-            TargetIDPair = new KeyValuePair<Declaration, string>(declaration, declaration.IdentifierName);
+            TargetID = declaration.IdentifierName;
         }
 
         public Declaration Declaration => _decorated;
@@ -45,13 +47,22 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public Accessibility Accessibility => _decorated.Accessibility;
 
+        public bool HasValidEncapsulationAttributes
+        {
+            get
+            {
+                return Declaration != null
+                        && VBAIdentifierValidator.IsValidIdentifier(PropertyName, DeclarationType.Variable)
+                        && !EncapsulationAttributes.PropertyName.Equals(FieldReadWriteIdentifier, StringComparison.InvariantCultureIgnoreCase)
+                        && !EncapsulationAttributes.ParameterName.Equals(EncapsulationAttributes.PropertyName, StringComparison.InvariantCultureIgnoreCase);
+            }
+        }
+
         public IFieldEncapsulationAttributes EncapsulationAttributes
         {
             set => _attributes = value;
             get => _attributes;
         }
-
-        public KeyValuePair<Declaration, string> TargetIDPair { get; set; }
 
         public string TargetID { get; set; }
 
@@ -67,7 +78,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             set => _attributes.ReadOnly = value;
         }
 
-        public bool IsEditableReadOnly => true;
+        public bool CanBeReadWrite { set; get; } = true;
 
         public string PropertyName
         {
@@ -75,13 +86,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             set => _attributes.PropertyName = value;
         }
 
-        public bool IsVisibleReadWriteAccessor
-        {
-            get => ReadWriteAccessorVisibility == Visibility.Visible;
-            set => ReadWriteAccessorVisibility =  value ?  Visibility.Visible : Visibility.Collapsed;
-        }
-
-        public Visibility ReadWriteAccessorVisibility { set; get; } = Visibility.Visible;
+        public bool IsEditableReadWriteFieldIdentifier { set; get; } = true;
 
         public string NewFieldName
         {
@@ -89,12 +94,16 @@ namespace Rubberduck.Refactorings.EncapsulateField
             set => _attributes.NewFieldName = value;
         }
 
-        public string ReadWriteAccessor
+        public string FieldReadWriteIdentifier
         {
             get => _attributes.FieldReadWriteIdentifier;
         }
 
-    public string AsTypeName => _decorated.AsTypeName;
+        public string AsTypeName => _decorated.AsTypeName;
+
+        public bool IsUDTMember { set; get; } = false;
+
+        public Func<IEncapsulatedFieldDeclaration, bool> HasConflictsValidationFunc { set; get; }
     }
 
     public class EncapsulateFieldDecoratorBase : IEncapsulatedFieldDeclaration
@@ -128,7 +137,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             set => _decorated.TargetID = value;
         }
 
-    public bool IsReadOnly
+        public bool IsReadOnly
         {
             get => _decorated.EncapsulationAttributes.ReadOnly;
             set => _decorated.EncapsulationAttributes.ReadOnly = value;
@@ -140,24 +149,16 @@ namespace Rubberduck.Refactorings.EncapsulateField
             set => _decorated.EncapsulateFlag = value;
         }
 
-        public bool IsEditableReadOnly => _decorated.IsEditableReadOnly;
+        public bool CanBeReadWrite
+        {
+            get => _decorated.CanBeReadWrite;
+            set => _decorated.CanBeReadWrite = value;
+        }
 
         public string PropertyName
         {
             get => _decorated.EncapsulationAttributes.PropertyName;
             set => _decorated.EncapsulationAttributes.PropertyName = value;
-        }
-
-        public bool IsVisibleReadWriteAccessor
-        {
-            get => _decorated.IsVisibleReadWriteAccessor;
-            set => _decorated.IsVisibleReadWriteAccessor = value;
-        }
-
-        public Visibility ReadWriteAccessorVisibility// { set; get; }
-        {
-            get => _decorated.ReadWriteAccessorVisibility;
-            set => _decorated.ReadWriteAccessorVisibility = value;
         }
 
         public string NewFieldName
@@ -166,12 +167,31 @@ namespace Rubberduck.Refactorings.EncapsulateField
             set => _decorated.EncapsulationAttributes.NewFieldName = value;
         }
 
-        public string ReadWriteAccessor
+        public string FieldReadWriteIdentifier 
+            => _decorated.EncapsulationAttributes.FieldReadWriteIdentifier;
+
+        public string AsTypeName => _decorated.EncapsulationAttributes.AsTypeName;
+
+        public bool IsUDTMember
         {
-            get => _decorated.EncapsulationAttributes.FieldReadWriteIdentifier;
+            get => _decorated.IsUDTMember;
+            set => _decorated.IsUDTMember = value;
         }
 
-    public string AsTypeName => _decorated.EncapsulationAttributes.AsTypeName;
+        public Func<IEncapsulatedFieldDeclaration, bool> HasConflictsValidationFunc
+        {
+            get => _decorated.HasConflictsValidationFunc;
+            set => _decorated.HasConflictsValidationFunc = value;
+        }
+
+        public bool HasValidEncapsulationAttributes
+        {
+            get
+            {
+                return _decorated.HasValidEncapsulationAttributes
+                    && !(HasConflictsValidationFunc != null ? HasConflictsValidationFunc(_decorated) : false);
+            }
+        }
     }
 
     public class EncapsulatedValueType : EncapsulateFieldDecoratorBase
@@ -245,6 +265,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             EncapsulationAttributes.ImplementLetSetterType = false;
             EncapsulationAttributes.ImplementSetSetterType = false;
             EncapsulationAttributes.AsTypeName = Tokens.Variant;
+            CanBeReadWrite = false;
         }
 
         public static IEncapsulatedFieldDeclaration Decorate(IEncapsulatedFieldDeclaration efd) 
@@ -275,7 +296,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 };
 
             efd.TargetID = $"{udtVariable.IdentifierName}.{IdentifierName}";
-            _decorated.IsVisibleReadWriteAccessor = false;
+            efd.IsUDTMember = true;
         }
 
         private string BuildPropertyName()
