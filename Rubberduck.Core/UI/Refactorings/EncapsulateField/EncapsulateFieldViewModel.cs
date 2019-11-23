@@ -20,12 +20,13 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
     public class EncapsulateFieldViewModel : RefactoringViewModelBase<EncapsulateFieldModel>
     {
         public RubberduckParserState State { get; }
-        public IIndenter Indenter { get; }
+        //public IIndenter Indenter { get; }
 
-        public EncapsulateFieldViewModel(EncapsulateFieldModel model, RubberduckParserState state, IIndenter indenter) : base(model)
+
+        public EncapsulateFieldViewModel(EncapsulateFieldModel model, RubberduckParserState state/*, IIndenter indenter*/) : base(model)
         {
             State = state;
-            Indenter = indenter;
+            //Indenter = indenter;
 
             IsLetSelected = true;
             PropertyName = model[model.TargetDeclaration].PropertyName;
@@ -39,6 +40,8 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             BackingFieldNameChangeCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => RefreshPreview());
         }
 
+        public IEncapsulatedFieldViewData SelectedValue { set; get; }
+
         public Declaration TargetDeclaration
         {
             get => Model.TargetDeclaration;
@@ -49,22 +52,49 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             }
         }
 
-        public ObservableCollection<IEncapsulatedFieldDeclaration> EncapsulationFields 
-            => new ObservableCollection<IEncapsulatedFieldDeclaration>(Model.EncapsulationFields);
+        public ObservableCollection<IEncapsulatedFieldViewData> EncapsulationFields
+        {
+            get
+            {
+                var flaggedFields = Model.EncapsulationFields.Where(efd => efd.EncapsulateFlag)
+                    .OrderBy(efd => efd.Declaration.IdentifierName);
 
-        //private bool _expansionState = true;
-        //public bool ExpansionState
-        //{
-        //    get => _expansionState;
-        //    set
-        //    {
-        //        _expansionState = value;
-        //        OnPropertyChanged();
-        //        OnExpansionStateChanged(value);
-        //    }
-        //}
+                var orderedFields = Model.EncapsulationFields.Except(flaggedFields)
+                    .OrderBy(efd => efd.Declaration.IdentifierName);
 
-        public bool CanHaveLet => Model.CanImplementLet;
+                var viewableFields = new ObservableCollection<IEncapsulatedFieldViewData>();
+                foreach (var efd in flaggedFields.Concat(orderedFields))
+                {
+                    viewableFields.Add(new ViewableEncapsulatedField(efd));
+                }
+                //TODO: Trying to reset the scroll to the top using SelectedValue is not working...Remove or fix 
+                SelectedValue = viewableFields.FirstOrDefault();
+                return viewableFields;
+            }
+        }
+
+        public bool TargetsHaveValidEncapsulationSettings
+        {
+            get
+            {
+                return Model.EncapsulationFields.Where(efd => efd.EncapsulateFlag)
+                    .Any(ff => ff.HasValidEncapsulationAttributes == false);
+            }
+        }
+
+    //private bool _expansionState = true;
+    //public bool ExpansionState
+    //{
+    //    get => _expansionState;
+    //    set
+    //    {
+    //        _expansionState = value;
+    //        OnPropertyChanged();
+    //        OnExpansionStateChanged(value);
+    //    }
+    //}
+
+    public bool CanHaveLet => Model.CanImplementLet;
         public bool CanHaveSet => Model.CanImplementSet;
 
         public bool IsLetSelected
@@ -160,8 +190,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             {
                 item.EncapsulateFlag = value;
             }
-            OnPropertyChanged(nameof(EncapsulationFields));
-            OnPropertyChanged(nameof(PropertyPreview));
+            RefreshPreview();
         }
 
         public CommandBase IsReadOnlyCommand { get; }
@@ -170,7 +199,9 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         public CommandBase BackingFieldNameChangeCommand { get; }
         private void RefreshPreview()
         {
+            OnPropertyChanged(nameof(EncapsulationFields));
             OnPropertyChanged(nameof(PropertyPreview));
+            OnPropertyChanged(nameof(SelectedValue));
         }
 
         public event EventHandler<bool> ExpansionStateChanged;
