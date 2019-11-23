@@ -30,7 +30,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             _fieldName = targetName;
             PropertyName = $"{char.ToUpperInvariant(targetName[0]) + targetName.Substring(1, targetName.Length - 1)}";
-            NewFieldName = $"{targetName}1";
+            NewFieldName = $"{char.ToLowerInvariant(targetName[0]) + targetName.Substring(1, targetName.Length - 1)}1";
             ReadOnly = false;
             EncapsulateFlag = false;
         }
