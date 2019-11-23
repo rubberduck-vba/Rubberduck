@@ -150,9 +150,10 @@ namespace Rubberduck.Parsing.VBA
                     CancellationToken.None);
                 e.BusyAction.Invoke();
             }
-            catch
+            catch(Exception ex)
             {
                 e.Result = SuspensionResult.UnexpectedError;
+                e.EncounteredException = ex;
                 throw;
             }
             finally

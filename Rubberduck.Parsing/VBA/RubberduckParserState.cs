@@ -109,6 +109,7 @@ namespace Rubberduck.Parsing.VBA
         public Action BusyAction { get; }
         public int MillisecondsTimeout { get; }
         public SuspensionResult Result { get; set; }
+        public Exception EncounteredException { get; set; }
     }
 
     public class RubberduckStatusMessageEventArgs : EventArgs

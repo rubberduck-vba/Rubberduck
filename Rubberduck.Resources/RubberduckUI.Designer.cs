@@ -213,33 +213,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variable names must begin with a letter..
-        /// </summary>
-        public static string AssignedByValDialog_DoesNotStartWithLetter {
-            get {
-                return ResourceManager.GetString("AssignedByValDialog_DoesNotStartWithLetter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Variable names cannot contain special characters other than underscores..
-        /// </summary>
-        public static string AssignedByValDialog_InvalidCharacters {
-            get {
-                return ResourceManager.GetString("AssignedByValDialog_InvalidCharacters", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The local variable cannot be the same as the &apos;{0}&apos; parameter it replaces.
-        /// </summary>
-        public static string AssignedByValDialog_IsByValIdentifierFormat {
-            get {
-                return ResourceManager.GetString("AssignedByValDialog_IsByValIdentifierFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {0} Consider choosing a different name..
         /// </summary>
         public static string AssignedByValDialog_MeaninglessNameFormat {
@@ -254,24 +227,6 @@ namespace Rubberduck.Resources {
         public static string AssignedByValDialog_NewNameAlreadyUsedFormat {
             get {
                 return ResourceManager.GetString("AssignedByValDialog_NewNameAlreadyUsedFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The identifier &apos;{0}&apos; will trigger a &quot;Use meaningful name&quot; inspection result. Consider choosing a different name..
-        /// </summary>
-        public static string AssignedByValDialog_QuestionableEntryFormat {
-            get {
-                return ResourceManager.GetString("AssignedByValDialog_QuestionableEntryFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is a reserved keyword..
-        /// </summary>
-        public static string AssignedByValDialog_ReservedKeywordFormat {
-            get {
-                return ResourceManager.GetString("AssignedByValDialog_ReservedKeywordFormat", resourceCulture);
             }
         }
         
@@ -1978,6 +1933,50 @@ namespace Rubberduck.Resources {
         public static string ImplementInterfaceFailed_NoImplementsStatementSelected {
             get {
                 return ResourceManager.GetString("ImplementInterfaceFailed_NoImplementsStatementSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For file &apos;{0}&apos;, the required binary file(s) &apos;{1}&apos; are missing and the target component &apos;{2}&apos; does not already exists.
+        ///
+        ///Import aborted..
+        /// </summary>
+        public static string ImportCommand_BinaryAndComponentDoNotExist {
+            get {
+                return ResourceManager.GetString("ImportCommand_BinaryAndComponentDoNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For file &apos;{0}&apos;, the requires binary file(s) &apos;{1}&apos; are missing.
+        ///
+        ///Import aborted..
+        /// </summary>
+        public static string ImportCommand_BinaryDoesNotExist {
+            get {
+                return ResourceManager.GetString("ImportCommand_BinaryDoesNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is no existing document module with name &apos;{0}&apos;; file &apos;{1}&apos; cannot be imported.
+        ///
+        ///Import aborted..
+        /// </summary>
+        public static string ImportCommand_DocumentDoesNotExist {
+            get {
+                return ResourceManager.GetString("ImportCommand_DocumentDoesNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multiple files contain code for the component &apos;{0}&apos;.
+        ///
+        ///Import aborted..
+        /// </summary>
+        public static string ImportCommand_DuplicateModule {
+            get {
+                return ResourceManager.GetString("ImportCommand_DuplicateModule", resourceCulture);
             }
         }
         
@@ -4561,28 +4560,6 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to For file &apos;{0}&apos;, the required binary file(s) &apos;{1}&apos; are missing and the target component &apos;{2}&apos; does not already exists.
-        ///
-        ///Update aborted..
-        /// </summary>
-        public static string UpdateFromFilesCommand_BinaryAndComponentDoNotExist {
-            get {
-                return ResourceManager.GetString("UpdateFromFilesCommand_BinaryAndComponentDoNotExist", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to For file &apos;{0}&apos;, the requires binary file(s) &apos;{1}&apos; are missing.
-        ///
-        ///Update aborted..
-        /// </summary>
-        public static string UpdateFromFilesCommand_BinaryDoesNotExist {
-            get {
-                return ResourceManager.GetString("UpdateFromFilesCommand_BinaryDoesNotExist", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Update Components from Files.
         /// </summary>
         public static string UpdateFromFilesCommand_DialogCaption {
@@ -4594,33 +4571,11 @@ namespace Rubberduck.Resources {
         /// <summary>
         ///   Looks up a localized string similar to The component type of the existing component &apos;{0}&apos; does not agree with that indicated by the extension of file &apos;{1}&apos;.
         ///
-        ///Update aborted..
+        ///Import aborted..
         /// </summary>
         public static string UpdateFromFilesCommand_DifferentComponentType {
             get {
                 return ResourceManager.GetString("UpdateFromFilesCommand_DifferentComponentType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to There is no existing document module with name &apos;{0}&apos;; file &apos;{1}&apos; cannot be imported.
-        ///
-        ///Update aborted..
-        /// </summary>
-        public static string UpdateFromFilesCommand_DocumentDoesNotExist {
-            get {
-                return ResourceManager.GetString("UpdateFromFilesCommand_DocumentDoesNotExist", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Multiple files contain code for the component &apos;{0}&apos;.
-        ///
-        ///Update aborted..
-        /// </summary>
-        public static string UpdateFromFilesCommand_DuplicateModule {
-            get {
-                return ResourceManager.GetString("UpdateFromFilesCommand_DuplicateModule", resourceCulture);
             }
         }
         
@@ -4648,7 +4603,7 @@ namespace Rubberduck.Resources {
         ///
         ///To review the change log and manually upgrade Rubberduck, click &apos;Yes&apos;.
         ///
-        ///This dialog is showing because version checks are enabled. You can turn off this feature in Rubberduck &amp;gt; Settings..
+        ///This dialog is showing because version checks are enabled. You can turn off this feature in Rubberduck &gt; Settings..
         /// </summary>
         public static string VersionCheck_NewVersionAvailable {
             get {

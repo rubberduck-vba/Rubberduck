@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Interaction;
+using Rubberduck.JunkDrawer.Extensions;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.Extensions;
-using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -17,21 +20,28 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             IFileSystemBrowserFactory dialogFactory, 
             IVbeEvents vbeEvents, 
             IParseManager parseManager,
+            IDeclarationFinderProvider declarationFinderProvider,
+            IProjectsProvider projectsProvider,
+            IModuleNameFromFileExtractor moduleNameFromFileExtractor,
+            IEnumerable<IRequiredBinaryFilesFromFileNameExtractor> binaryFileExtractors,
+            IFileExistenceChecker fileExistenceChecker,
             IMessageBox messageBox) 
-            :base(vbe, dialogFactory, vbeEvents, parseManager, messageBox)
-        { }
+            :base(vbe, dialogFactory, vbeEvents, parseManager, declarationFinderProvider, projectsProvider, moduleNameFromFileExtractor, binaryFileExtractors, fileExistenceChecker, messageBox)
+        {}
 
         protected override string DialogsTitle => RubberduckUI.ReplaceProjectContentsFromFilesCommand_DialogCaption;
 
-        protected override void ImportFiles(ICollection<string> filesToImport, IVBProject targetProject)
+        protected override ICollection<QualifiedModuleName> ModulesToRemoveBeforeImport(IDictionary<string, QualifiedModuleName> existingModules)
         {
-            if (!UserConfirmsToReplaceProjectContents(targetProject))
-            {
-                return;
-            }
+            return DeclarationFinderProvider.DeclarationFinder
+                .UserDeclarations(DeclarationType.Module)
+                .Select(decl => decl.QualifiedModuleName)
+                .ToHashSet();
+        }
 
-            RemoveReImportableComponents(targetProject);
-            base.ImportFiles(filesToImport, targetProject);
+        protected override bool UserDeniesExecution(IVBProject targetProject)
+        {
+            return !UserConfirmsToReplaceProjectContents(targetProject);
         }
 
         private bool UserConfirmsToReplaceProjectContents(IVBProject project)
@@ -40,29 +50,5 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             var message = string.Format(RubberduckUI.ReplaceProjectContentsFromFilesCommand_DialogCaption, projectName);
             return MessageBox.ConfirmYesNo(message, DialogsTitle, false);
         }
-
-        private void RemoveReImportableComponents(IVBProject project)
-        {
-            var reImportableComponentTypes = ReImportableComponentTypes;
-            using(var components = project.VBComponents)
-            {
-                foreach(var component in components)
-                {
-                    using (component)
-                    {
-                        if (reImportableComponentTypes.Contains(component.Type))
-                        {
-                            components.Remove(component);
-                        }
-                    }
-                }
-            }
-        }
-
-        //We currently do not take precautions for component types requiring a binary file to be present.
-        private ICollection<ComponentType> ReImportableComponentTypes => ComponentTypesForExtension.Values
-            .SelectMany(componentTypes => componentTypes)
-            .Where(componentType => componentType != ComponentType.Document)
-            .ToList();
     }
 }
