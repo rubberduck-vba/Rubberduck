@@ -17,8 +17,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
         string FieldReadWriteIdentifier { get; }
         string AsTypeName { get; set; }
         string ParameterName { get; set; }
-        bool CanImplementLet { get; set; }
-        bool CanImplementSet { get; set; }
+        bool CanImplementLet { get; set; } //TODO: Can these go away?
+        bool CanImplementSet { get; set; } //TODO: Can these go away?
         bool ImplementLetSetterType { get; set; }
         bool ImplementSetSetterType { get; set; }
         Func<string> FieldReadWriteIdentifierFunc { set; get; }

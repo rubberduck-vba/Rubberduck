@@ -145,6 +145,8 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             }
         }
 
+        public IEncapsulateFieldNamesValidator RefactoringValidator { set; get; }
+
         public bool IsValidPropertyName
         {
             get
@@ -166,7 +168,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
 
                 return encapsulatedField.Declaration != null
                         && VBAIdentifierValidator.IsValidIdentifier(encapsulatedField.PropertyName, DeclarationType.Variable)
-                        && !encapsulatedField.EncapsulationAttributes.ParameterName.Equals(encapsulatedField.IdentifierName, StringComparison.InvariantCultureIgnoreCase)
+                        && !encapsulatedField.EncapsulationAttributes.ParameterName.Equals(encapsulatedField.Declaration.IdentifierName, StringComparison.InvariantCultureIgnoreCase)
                         && !encapsulatedField.EncapsulationAttributes.ParameterName.Equals(encapsulatedField.EncapsulationAttributes.PropertyName, StringComparison.InvariantCultureIgnoreCase);
             }
         }

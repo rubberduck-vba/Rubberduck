@@ -885,6 +885,22 @@ End Property
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
+        public void EncapsulatePrivateFieldAsUDT()
+        {
+            //Input
+            const string inputCode =
+                @"Private fizz As Integer";
+            var selection = new Selection(1, 1);
+
+            var presenterAction = SetParametersForSingleTarget("fizz", "Name", asUDT: true);
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            StringAssert.Contains("Name As Integer", actualCode);
+            StringAssert.Contains("this.Name = value", actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePrivateField_Defaults()
         {
             //Input
@@ -907,6 +923,23 @@ End Property
             var presenterAction = UserAcceptsDefaults();
             var actualCode = RefactoredCode(inputCode, selection, presenterAction);
             Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void EncapsulatePrivateField_DefaultsAsUDT()
+        {
+            const string inputCode =
+                @"Private fizz As Integer";
+
+            var selection = new Selection(1, 1);
+
+            var presenterAction = UserAcceptsDefaults(asUDT: true);
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            StringAssert.Contains("Fizz As Integer", actualCode);
+            StringAssert.Contains("this As This_Type", actualCode);
+            StringAssert.Contains("this.Fizz = value", actualCode);
         }
 
         [TestCase("fizz")]
@@ -1242,23 +1275,28 @@ End Property
             Assert.AreEqual(expectedCode, actualCode);
         }
 
-
         #region setup
 
-        private Func<EncapsulateFieldModel, EncapsulateFieldModel> UserAcceptsDefaults()
-        {
-            return model => { model.EncapsulateFlag = true; return model; };
-        }
-
-        private Func<EncapsulateFieldModel, EncapsulateFieldModel> SetParametersForSingleTarget(string field, string property = null, bool? isReadonly = null, bool encapsulateFlag = true, string newFieldName = null)
+        private ClientEncapsulationAttributes UserModifiedEncapsulationAttributes(string field, string property = null, bool? isReadonly = null, bool encapsulateFlag = true, string newFieldName = null)
         {
             var clientAttrs = new ClientEncapsulationAttributes(field);
             clientAttrs.NewFieldName = newFieldName ?? clientAttrs.NewFieldName;
             clientAttrs.PropertyName = property ?? clientAttrs.PropertyName;
             clientAttrs.ReadOnly = isReadonly ?? clientAttrs.ReadOnly;
             clientAttrs.EncapsulateFlag = encapsulateFlag;
+            return clientAttrs;
+        }
 
-            return SetParameters(field, clientAttrs);
+        private Func<EncapsulateFieldModel, EncapsulateFieldModel> UserAcceptsDefaults(bool asUDT = false)
+        {
+            return model => { model.EncapsulateFlag = true; model.EncapsulateWithUserDefinedType = asUDT; return model; };
+        }
+
+        private Func<EncapsulateFieldModel, EncapsulateFieldModel> SetParametersForSingleTarget(string field, string property = null, bool? isReadonly = null, bool encapsulateFlag = true, string newFieldName = null, bool asUDT = false)
+        {
+            var clientAttrs = UserModifiedEncapsulationAttributes(field, property, isReadonly, encapsulateFlag, newFieldName);
+
+            return SetParameters(field, clientAttrs, asUDT);
         }
 
         private Func<EncapsulateFieldModel, EncapsulateFieldModel> SetParameters(TestInputDataObject testInput)
@@ -1278,7 +1316,6 @@ End Property
                     currentAttributes.PropertyName = attrsInitializedByTheRefactoring.PropertyName;
                     currentAttributes.EncapsulateFlag = attrsInitializedByTheRefactoring.EncapsulateFlag;
 
-
                     foreach ((string instanceVariable, string memberName, bool flag) in testInput.UDTMemberNameFlagPairs)
                     {
                         model[$"{instanceVariable}.{memberName}"].EncapsulateFlag = flag;
@@ -1288,7 +1325,7 @@ End Property
             };
         }
 
-        private Func<EncapsulateFieldModel, EncapsulateFieldModel> SetParameters(string originalField, IClientEditableFieldEncapsulationAttributes clientEdits)
+        private Func<EncapsulateFieldModel, EncapsulateFieldModel> SetParameters(string originalField, IClientEditableFieldEncapsulationAttributes clientEdits, bool asUDT = false)
         {
             return model =>
             {
@@ -1298,6 +1335,7 @@ End Property
                 encapsulatedField.EncapsulationAttributes.ReadOnly = clientEdits.ReadOnly;
                 encapsulatedField.EncapsulationAttributes.EncapsulateFlag = clientEdits.EncapsulateFlag;
 
+                model.EncapsulateWithUserDefinedType = asUDT;
                 return model;
             };
         }

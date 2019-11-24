@@ -7,123 +7,17 @@ using System.Windows;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public interface IEncapsulatedFieldDeclaration
-    {
-        Declaration Declaration { get; }
-        string IdentifierName { get; }
-        string TargetID { get; set; }
-        DeclarationType DeclarationType { get; }
-        Accessibility Accessibility { get;}
-        IFieldEncapsulationAttributes EncapsulationAttributes { set; get; }
-        bool IsReadOnly { set; get; }
-        bool CanBeReadWrite { set;  get; }
-        string PropertyName { set; get; }
-        string FieldReadWriteIdentifier { get; }
-        bool EncapsulateFlag { set; get; }
-        string NewFieldName { set; get; }
-        string AsTypeName { get; }
-        bool IsUDTMember { set; get; }
-        bool HasValidEncapsulationAttributes { get; }
-        Func<IEncapsulatedFieldDeclaration, bool> HasConflictsValidationFunc { set; get; }
-    }
-
-    public class EncapsulatedFieldDeclaration : IEncapsulatedFieldDeclaration
-    {
-        protected Declaration _decorated;
-        private IFieldEncapsulationAttributes _attributes;
-
-        public EncapsulatedFieldDeclaration(Declaration declaration)
-        {
-            _decorated = declaration;
-            _attributes = new FieldEncapsulationAttributes(_decorated);
-            TargetID = declaration.IdentifierName;
-        }
-
-        public Declaration Declaration => _decorated;
-
-        public string IdentifierName => _decorated.IdentifierName;
-
-        public DeclarationType DeclarationType => _decorated.DeclarationType;
-
-        public Accessibility Accessibility => _decorated.Accessibility;
-
-        public bool HasValidEncapsulationAttributes
-        {
-            get
-            {
-                return Declaration != null
-                        && VBAIdentifierValidator.IsValidIdentifier(PropertyName, DeclarationType.Variable)
-                        && !EncapsulationAttributes.PropertyName.Equals(FieldReadWriteIdentifier, StringComparison.InvariantCultureIgnoreCase)
-                        && !EncapsulationAttributes.ParameterName.Equals(EncapsulationAttributes.PropertyName, StringComparison.InvariantCultureIgnoreCase);
-            }
-        }
-
-        public IFieldEncapsulationAttributes EncapsulationAttributes
-        {
-            set => _attributes = value;
-            get => _attributes;
-        }
-
-        public string TargetID { get; set; }
-
-        public bool EncapsulateFlag
-        {
-            get => _attributes.EncapsulateFlag;
-            set => _attributes.EncapsulateFlag = value;
-        }
-
-        public bool IsReadOnly
-        {
-            get => _attributes.ReadOnly;
-            set => _attributes.ReadOnly = value;
-        }
-
-        public bool CanBeReadWrite { set; get; } = true;
-
-        public string PropertyName
-        {
-            get => _attributes.PropertyName;
-            set => _attributes.PropertyName = value;
-        }
-
-        public bool IsEditableReadWriteFieldIdentifier { set; get; } = true;
-
-        public string NewFieldName
-        {
-            get => _attributes.NewFieldName;
-            set => _attributes.NewFieldName = value;
-        }
-
-        public string FieldReadWriteIdentifier
-        {
-            get => _attributes.FieldReadWriteIdentifier;
-        }
-
-        public string AsTypeName => _decorated.AsTypeName;
-
-        public bool IsUDTMember { set; get; } = false;
-
-        public Func<IEncapsulatedFieldDeclaration, bool> HasConflictsValidationFunc { set; get; }
-    }
-
     public class EncapsulateFieldDecoratorBase : IEncapsulatedFieldDeclaration
     {
-
         protected IEncapsulatedFieldDeclaration _decorated;
 
         public EncapsulateFieldDecoratorBase(IEncapsulatedFieldDeclaration efd)
         {
             _decorated = efd;
-            TargetID = efd.IdentifierName;
+            TargetID = efd.Declaration.IdentifierName;
         }
 
         public Declaration Declaration => _decorated.Declaration;
-
-        public string IdentifierName => _decorated.IdentifierName;
-
-        public DeclarationType DeclarationType => _decorated.DeclarationType;
-
-        public Accessibility Accessibility => _decorated.Accessibility;
 
         public IFieldEncapsulationAttributes EncapsulationAttributes
         {
@@ -178,20 +72,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
             set => _decorated.IsUDTMember = value;
         }
 
-        public Func<IEncapsulatedFieldDeclaration, bool> HasConflictsValidationFunc
-        {
-            get => _decorated.HasConflictsValidationFunc;
-            set => _decorated.HasConflictsValidationFunc = value;
-        }
-
-        public bool HasValidEncapsulationAttributes
-        {
-            get
-            {
-                return _decorated.HasValidEncapsulationAttributes
-                    && !(HasConflictsValidationFunc != null ? HasConflictsValidationFunc(_decorated) : false);
-            }
-        }
+        public bool HasValidEncapsulationAttributes 
+            => _decorated.HasValidEncapsulationAttributes;
     }
 
     public class EncapsulatedValueType : EncapsulateFieldDecoratorBase
@@ -280,7 +162,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private EncapsulatedUserDefinedTypeMember(IEncapsulatedFieldDeclaration efd, EncapsulatedUserDefinedType udtVariable, bool propertyIdentifierRequiresNameResolution)
             : base(efd)
         {
-            _originalVariableName = udtVariable.IdentifierName;
+            _originalVariableName = udtVariable.Declaration.IdentifierName;
             _nameResolveProperty = propertyIdentifierRequiresNameResolution;
             _udtVariableAttributes = udtVariable.EncapsulationAttributes;
 
@@ -295,7 +177,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     return $"{_udtVariableAttributes.FieldName}.{EncapsulationAttributes.NewFieldName}";
                 };
 
-            efd.TargetID = $"{udtVariable.IdentifierName}.{IdentifierName}";
+            efd.TargetID = $"{udtVariable.Declaration.IdentifierName}.{Declaration.IdentifierName}";
             efd.IsUDTMember = true;
         }
 

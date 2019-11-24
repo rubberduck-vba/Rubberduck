@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings.Common;
 using Rubberduck.SmartIndenter;
 
 namespace Rubberduck.Refactorings.EncapsulateField
@@ -10,6 +11,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
     public class EncapsulateFieldModel : IRefactoringModel
     {
         private readonly IIndenter _indenter;
+        private readonly IEncapsulateFieldNamesValidator _validator;
 
         private IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> _udtFieldToUdtDeclarationMap = new Dictionary<Declaration, (Declaration, IEnumerable<Declaration>)>();
         private IEnumerable<Declaration> UdtFields => _udtFieldToUdtDeclarationMap.Keys;
@@ -20,9 +22,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private IEncapsulatedFieldDeclaration _userSelectedEncapsulationField;
         private Dictionary<string, IFieldEncapsulationAttributes> _udtVariableEncapsulationAttributes = new Dictionary<string, IFieldEncapsulationAttributes>();
 
-        public EncapsulateFieldModel(Declaration target, IEnumerable<Declaration> allMemberFields, IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> udtFieldToUdtDeclarationMap, IIndenter indenter)
+        public EncapsulateFieldModel(Declaration target, IEnumerable<Declaration> allMemberFields, IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> udtFieldToUdtDeclarationMap, IIndenter indenter, IEncapsulateFieldNamesValidator validator)
         {
             _indenter = indenter;
+            _validator = validator;
             _udtFieldToUdtDeclarationMap = udtFieldToUdtDeclarationMap;
 
             foreach (var field in allMemberFields.Except(UdtFields))
@@ -50,6 +53,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public IEncapsulatedFieldDeclaration this[Declaration fieldDeclaration] 
             => _encapsulateFieldDeclarations.Values.Where(efd => efd.Declaration.Equals(fieldDeclaration)).Select(encapsulatedField => encapsulatedField).Single();
+
+        public bool EncapsulateWithUserDefinedType { set; get; }
 
         public IList<string> PropertiesContent
         {
@@ -88,11 +93,24 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var nonUdtMemberFields = FlaggedEncapsulationFields
                     .Where(encFld => encFld.Declaration.IsVariable());
 
+            if (EncapsulateWithUserDefinedType)
+            {
+                var udt = new EncapsulationUDT();
+                foreach (var nonUdtMemberField in nonUdtMemberFields)
+                {
+                    udt.AddMember(nonUdtMemberField);
+                }
+                newContent.AddDeclarationBlock(udt.DeclarationAndField);
+
+                //TODO: handle selected UDTs
+                return newContent;
+            }
+
             foreach (var nonUdtMemberField in nonUdtMemberFields)
             {
                 var attributes = nonUdtMemberField.EncapsulationAttributes;
 
-                if (nonUdtMemberField.Accessibility == Accessibility.Private && attributes.NewFieldName.Equals(nonUdtMemberField.IdentifierName))
+                if (nonUdtMemberField.Declaration.Accessibility == Accessibility.Private && attributes.NewFieldName.Equals(nonUdtMemberField.Declaration.IdentifierName))
                 {
                     continue;
                 }
@@ -127,7 +145,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private IEncapsulatedFieldDeclaration EncapsulateDeclaration(Declaration target)
         {
-            var encapsulated = new EncapsulatedFieldDeclaration(target);
+            var encapsulated = new EncapsulatedFieldDeclaration(target, _validator);
             if (target.IsArray)
             {
                 return EncapsulatedArrayType.Decorate(encapsulated);
@@ -145,12 +163,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private IEncapsulatedFieldDeclaration DecorateUDTVariableDeclaration(Declaration target)
         {
-            return EncapsulatedUserDefinedType.Decorate(new EncapsulatedFieldDeclaration(target));
+            return EncapsulatedUserDefinedType.Decorate(new EncapsulatedFieldDeclaration(target, _validator));
         }
 
         private IEncapsulatedFieldDeclaration DecorateUDTMember(IEncapsulatedFieldDeclaration udtMember, EncapsulatedUserDefinedType udtVariable)
         {
-            var targetIDPair = new KeyValuePair<Declaration, string>(udtMember.Declaration,$"{udtVariable.IdentifierName}.{udtMember.IdentifierName}");
+            var targetIDPair = new KeyValuePair<Declaration, string>(udtMember.Declaration,$"{udtVariable.Declaration.IdentifierName}.{udtMember.Declaration.IdentifierName}");
             return EncapsulatedUserDefinedTypeMember.Decorate(udtMember, udtVariable, HasMultipleInstantiationsOfSameType(udtVariable.Declaration, targetIDPair));
         }
 
@@ -167,7 +185,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 PropertyName = attributes.PropertyName,
                 AsTypeName = attributes.AsTypeName,
-                BackingField = attributes.FieldReadWriteIdentifier,
+                BackingField = EncapsulateWithUserDefinedType ? $"this.{attributes.PropertyName}" : attributes.FieldReadWriteIdentifier,
                 ParameterName = attributes.ParameterName,
                 GenerateSetter = attributes.ImplementSetSetterType,
                 GenerateLetter = attributes.ImplementLetSetterType
@@ -187,7 +205,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => _userSelectedEncapsulationField.Declaration;
             set
             {
-                var encField = new EncapsulatedFieldDeclaration(value);
+                var encField = new EncapsulatedFieldDeclaration(value, _validator);
                 _userSelectedEncapsulationField = _encapsulateFieldDeclarations[encField.TargetID];
             }
         }
