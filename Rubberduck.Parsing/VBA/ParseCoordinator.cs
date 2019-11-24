@@ -116,7 +116,7 @@ namespace Rubberduck.Parsing.VBA
         {
             if (ParsingSuspendLock.IsReadLockHeld)
             {
-                e.Result = SuspensionResult.UnexpectedError;
+                e.Result = SuspensionOutcome.UnexpectedError;
                 const string errorMessage =
                     "A suspension action was attempted while a read lock was held. This indicates a bug in the code logic as suspension should not be requested from same thread that has a read lock.";
                 Logger.Error(errorMessage);
@@ -131,7 +131,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 if (!ParsingSuspendLock.TryEnterWriteLock(e.MillisecondsTimeout))
                 {
-                    e.Result = SuspensionResult.TimedOut;
+                    e.Result = SuspensionOutcome.TimedOut;
                     return;
                 }
 
@@ -143,7 +143,7 @@ namespace Rubberduck.Parsing.VBA
                 var originalStatus = State.Status;
                 if (!e.AllowedRunStates.Contains(originalStatus))
                 {
-                    e.Result = SuspensionResult.IncompatibleState;
+                    e.Result = SuspensionOutcome.IncompatibleState;
                     return;
                 }
                 _parserStateManager.SetStatusAndFireStateChanged(e.Requestor, ParserState.Busy,
@@ -152,13 +152,13 @@ namespace Rubberduck.Parsing.VBA
             }
             catch (OperationCanceledException ex)
             {
-                e.Result = SuspensionResult.Canceled;
+                e.Result = SuspensionOutcome.Canceled;
                 e.EncounteredException = ex;
                 throw;
             }
             catch (Exception ex)
             {
-                e.Result = SuspensionResult.UnexpectedError;
+                e.Result = SuspensionOutcome.UnexpectedError;
                 e.EncounteredException = ex;
                 throw;
             }
@@ -190,9 +190,9 @@ namespace Rubberduck.Parsing.VBA
                     ParsingSuspendLock.ExitWriteLock();
                 }
 
-                if (e.Result == SuspensionResult.Pending)
+                if (e.Result == SuspensionOutcome.Pending)
                 {
-                    e.Result = SuspensionResult.Completed;
+                    e.Result = SuspensionOutcome.Completed;
                 }
             }
 

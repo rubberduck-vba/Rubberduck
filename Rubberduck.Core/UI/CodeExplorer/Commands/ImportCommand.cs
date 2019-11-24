@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Windows.Forms;
 using Rubberduck.Interaction;
 using Rubberduck.JunkDrawer.Extensions;
@@ -186,9 +187,16 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private void ImportFilesWithSuspension(ICollection<string> filesToImport, IVBProject targetProject)
         {
-            var suspensionResult = _parseManager.OnSuspendParser(this, new[] {ParserState.Ready}, () => ImportFiles(filesToImport, targetProject));
-            if (suspensionResult != SuspensionResult.Completed)
+            var suspendResult = _parseManager.OnSuspendParser(this, new[] {ParserState.Ready}, () => ImportFiles(filesToImport, targetProject));
+            var suspendOutcome = suspendResult.Outcome;
+            if (suspendOutcome != SuspensionOutcome.Completed)
             {
+                if (suspendOutcome == SuspensionOutcome.UnexpectedError || suspendOutcome == SuspensionOutcome.Canceled)
+                {
+                    ExceptionDispatchInfo.Capture(suspendResult.EncounteredException).Throw();
+                    return;
+                }
+
                 Logger.Warn("File import failed due to suspension failure.");
             }
         }
