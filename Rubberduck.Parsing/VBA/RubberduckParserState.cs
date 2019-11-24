@@ -88,6 +88,10 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         NotEnabled,
         /// <summary>
+        /// The suspend action has thrown an OperationCanceledException.
+        /// </summary>
+        Canceled,
+        /// <summary>
         /// An unexpected error; usually indicates a bug in code.
         /// </summary>
         UnexpectedError
