@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Rubberduck.Parsing.Common;
@@ -55,7 +56,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
             {
                 if (exception.Flatten().InnerExceptions.All(ex => ex is OperationCanceledException))
                 {
-                    throw exception.InnerException ?? exception; //This eliminates the stack trace, but for the cancellation, this is irrelevant.
+                    ExceptionDispatchInfo.Capture(exception.InnerException ?? exception).Throw();
                 }
                 _parserStateManager.SetStatusAndFireStateChanged(this, ParserState.ResolverError, token);
                 throw;
