@@ -5,6 +5,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.ImplementInterface;
@@ -28,8 +29,9 @@ namespace Rubberduck.Refactorings.ExtractInterface
             IParseManager parseManager, 
             IRefactoringPresenterFactory factory, 
             IRewritingManager rewritingManager,
-            ISelectionProvider selectionProvider)
-        :base(rewritingManager, selectionProvider, factory)
+            ISelectionProvider selectionProvider,
+            IUiDispatcher uiDispatcher)
+        :base(rewritingManager, selectionProvider, factory, uiDispatcher)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _parseManager = parseManager;

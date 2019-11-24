@@ -13,6 +13,7 @@ using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
@@ -3364,7 +3365,11 @@ End Property";
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
         {
             var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
-            return new RenameRefactoring(factory, state, state?.ProjectsProvider, rewritingManager, selectionService, selectedDeclarationService, state);
+            var uiDispatcherMock = new Mock<IUiDispatcher>();
+            uiDispatcherMock
+                .Setup(m => m.Invoke(It.IsAny<Action>()))
+                .Callback((Action action) => action.Invoke());
+            return new RenameRefactoring(factory, state, state?.ProjectsProvider, rewritingManager, selectionService, selectedDeclarationService, state, uiDispatcherMock.Object);
         }
 
         #endregion

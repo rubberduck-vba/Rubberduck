@@ -2,6 +2,7 @@
 using Rubberduck.VBEditor.Utility;
 using System;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.Refactorings.Exceptions;
 
 namespace Rubberduck.Refactorings
@@ -15,10 +16,12 @@ namespace Rubberduck.Refactorings
         protected InteractiveRefactoringBase(
             IRewritingManager rewritingManager, 
             ISelectionProvider selectionProvider, 
-            IRefactoringPresenterFactory factory) 
+            IRefactoringPresenterFactory factory,
+            IUiDispatcher uiDispatcher) 
         :base(rewritingManager, selectionProvider)
         {
-            _presenterFactory = ((model) => DisposalActionContainer.Create(factory.Create<TPresenter, TModel>(model), factory.Release));
+            Action<TPresenter> presenterDisposalAction = (TPresenter presenter) => uiDispatcher.Invoke(() => factory.Release(presenter)); 
+            _presenterFactory = ((model) => DisposalActionContainer.Create(factory.Create<TPresenter, TModel>(model), presenterDisposalAction));
         }
 
         public override void Refactor(Declaration target)
@@ -47,9 +50,9 @@ namespace Rubberduck.Refactorings
                 {
                     throw new InvalidRefactoringModelException();
                 }
-
-                RefactorImpl(model);
             }
+
+            RefactorImpl(model);
         }
 
         protected abstract TModel InitializeModel(Declaration target);

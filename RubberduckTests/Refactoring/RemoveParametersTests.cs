@@ -10,6 +10,7 @@ using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 using System.Collections.Generic;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor.Utility;
@@ -1969,7 +1970,11 @@ End Sub";
             IRefactoringPresenterFactory factory, ISelectionService selectionService)
         {
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            return new RemoveParametersRefactoring(state, factory, rewritingManager, selectionService, selectedDeclarationProvider);
+            var uiDispatcherMock = new Mock<IUiDispatcher>();
+            uiDispatcherMock
+                .Setup(m => m.Invoke(It.IsAny<Action>()))
+                .Callback((Action action) => action.Invoke());
+            return new RemoveParametersRefactoring(state, factory, rewritingManager, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
         }
     }
 }

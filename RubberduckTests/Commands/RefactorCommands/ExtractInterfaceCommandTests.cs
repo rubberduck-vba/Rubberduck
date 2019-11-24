@@ -1,7 +1,9 @@
-﻿using Moq;
+﻿using System;
+using Moq;
 using NUnit.Framework;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ExtractInterface;
@@ -164,7 +166,11 @@ End Property";
         {
             var factory = new Mock<IRefactoringPresenterFactory>().Object;
             var msgBox = new Mock<IMessageBox>().Object;
-            var refactoring = new ExtractInterfaceRefactoring(state, state, factory, rewritingManager, selectionService);
+            var uiDispatcherMock = new Mock<IUiDispatcher>();
+            uiDispatcherMock
+                .Setup(m => m.Invoke(It.IsAny<Action>()))
+                .Callback((Action action) => action.Invoke());
+            var refactoring = new ExtractInterfaceRefactoring(state, state, factory, rewritingManager, selectionService, uiDispatcherMock.Object);
             var notifier = new ExtractInterfaceFailedNotifier(msgBox);
             return new RefactorExtractInterfaceCommand(refactoring, notifier, state, selectionService);
         }

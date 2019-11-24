@@ -460,11 +460,11 @@ namespace RubberduckTests.CodeExplorer
             return this;
         }
 
-        public MockedCodeExplorer ImplementExtractIntercaceCommand()
+        public MockedCodeExplorer ImplementExtractInterfaceCommand()
         {
             ViewModel.CodeExplorerExtractInterfaceCommand = new CodeExplorerExtractInterfaceCommand(
                 new Rubberduck.Refactorings.ExtractInterface.ExtractInterfaceRefactoring(
-                    State, State, null, null, null),
+                    State, State, null, null, null, _uiDispatcher.Object),
                 State, null, VbeEvents.Object);
             return this;
         }

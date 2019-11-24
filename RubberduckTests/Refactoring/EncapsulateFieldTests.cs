@@ -3,6 +3,7 @@ using NUnit.Framework;
 using Moq;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.VBEditor;
@@ -667,7 +668,11 @@ End Property
         {
             var indenter = CreateIndenter(); //The refactoring only uses method independent of the VBE instance.
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            return new EncapsulateFieldRefactoring(state, indenter, factory, rewritingManager, selectionService, selectedDeclarationProvider);
+            var uiDispatcherMock = new Mock<IUiDispatcher>();
+            uiDispatcherMock
+                .Setup(m => m.Invoke(It.IsAny<Action>()))
+                .Callback((Action action) => action.Invoke());
+            return new EncapsulateFieldRefactoring(state, indenter, factory, rewritingManager, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
         }
 
         #endregion

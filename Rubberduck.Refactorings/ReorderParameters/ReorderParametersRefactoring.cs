@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Binding;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
  using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor.Extensions;
@@ -24,8 +25,9 @@ namespace Rubberduck.Refactorings.ReorderParameters
             IRefactoringPresenterFactory factory, 
             IRewritingManager rewritingManager,
             ISelectionProvider selectionProvider,
-            ISelectedDeclarationProvider selectedDeclarationProvider)
-        :base(rewritingManager, selectionProvider, factory)
+            ISelectedDeclarationProvider selectedDeclarationProvider,
+            IUiDispatcher uiDispatcher)
+        :base(rewritingManager, selectionProvider, factory, uiDispatcher)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;

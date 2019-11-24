@@ -14,6 +14,7 @@ using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.Utility;
 using NLog;
+using Rubberduck.Parsing.UIContext;
 
 namespace Rubberduck.Refactorings.Rename
 {
@@ -37,8 +38,9 @@ namespace Rubberduck.Refactorings.Rename
             IRewritingManager rewritingManager,
             ISelectionProvider selectionProvider,
             ISelectedDeclarationProvider selectedDeclarationProvider,
-            IParseManager parseManager)
-        :base(rewritingManager, selectionProvider, factory)
+            IParseManager parseManager,
+            IUiDispatcher uiDispatcher)
+        :base(rewritingManager, selectionProvider, factory, uiDispatcher)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;
