@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Parsing.Symbols;
+using Rubberduck.SmartIndenter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +12,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         private const string _typeIdentifier = "This_Type";
         private const string _fieldName = "this";
+        private readonly IIndenter _indenter;
 
         private List<IEncapsulatedFieldDeclaration> _members;
 
-        public EncapsulationUDT()
+        public EncapsulationUDT(IIndenter indenter)
         {
+            _indenter = indenter;
             _members = new List<IEncapsulatedFieldDeclaration>();
         }
 
@@ -27,22 +30,22 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public string FieldDeclaration
             => $"Private {_fieldName} As {_typeIdentifier}";
 
-        public string DeclarationAndField
+        public string TypeDeclarationBlock
         {
             get
             {
                 var members = new List<string>();
+                members.Add($"Private Type {_typeIdentifier}");
+
                 foreach (var member in _members)
                 {
                     var declaration = $"{Capitalize(member.PropertyName)} As {member.Declaration.AsTypeName}";
                     members.Add(declaration);
                 }
-                return
-$@"Private Type {_typeIdentifier}
-    {string.Join(Environment.NewLine, members)}
-End Type
 
-{FieldDeclaration}{Environment.NewLine}";
+                members.Add("End Type");
+
+                return  string.Join(Environment.NewLine, _indenter.Indent(members, true));
             }
         }
 

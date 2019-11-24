@@ -95,12 +95,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             if (EncapsulateWithUserDefinedType)
             {
-                var udt = new EncapsulationUDT();
+                var udt = new EncapsulationUDT(_indenter);
                 foreach (var nonUdtMemberField in nonUdtMemberFields)
                 {
                     udt.AddMember(nonUdtMemberField);
                 }
-                newContent.AddDeclarationBlock(udt.DeclarationAndField);
+                newContent.AddDeclarationBlock(udt.TypeDeclarationBlock);
+                newContent.AddDeclarationBlock(udt.FieldDeclaration);
 
                 //TODO: handle selected UDTs
                 return newContent;

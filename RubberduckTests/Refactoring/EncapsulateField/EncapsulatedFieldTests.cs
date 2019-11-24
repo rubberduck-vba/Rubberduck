@@ -141,9 +141,9 @@ $@"Public fizz As String";
 
             var encapsulatedField = RetrieveEncapsulatedField(inputCode, "fizz");
 
-            var udtTest = new EncapsulationUDT();
+            var udtTest = new EncapsulationUDT(CreateIndenter());
             udtTest.AddMember(encapsulatedField);
-            var result = udtTest.DeclarationAndField;
+            var result = udtTest.TypeDeclarationBlock;
             StringAssert.Contains("Fizz As String", result); 
         }
 
@@ -173,6 +173,11 @@ $@"Public fizz As String";
             clientAttrs.ReadOnly = isReadonly ?? clientAttrs.ReadOnly;
             clientAttrs.EncapsulateFlag = encapsulateFlag;
             return clientAttrs;
+        }
+
+        private static IIndenter CreateIndenter(IVBE vbe = null)
+        {
+            return new Indenter(vbe, () => Settings.IndenterSettingsTests.GetMockIndenterSettings());
         }
     }
 }

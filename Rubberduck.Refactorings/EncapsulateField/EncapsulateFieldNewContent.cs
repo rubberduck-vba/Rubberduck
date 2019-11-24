@@ -77,7 +77,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
                         : $"{PreCodeSectionContent}";
                 }
 
-                return $"{Environment.NewLine}{CodeSectionContent}";
+                return CodeSectionContent.Length > 0
+                    ? $"{Environment.NewLine}{CodeSectionContent}"
+                    : string.Empty;
             }
         }
 

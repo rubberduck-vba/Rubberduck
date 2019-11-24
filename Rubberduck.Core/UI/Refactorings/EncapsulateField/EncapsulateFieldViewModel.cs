@@ -73,6 +73,16 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             }
         }
 
+        public bool EncapsulateAsUDT
+        {
+            get => Model.EncapsulateWithUserDefinedType;
+            set
+            {
+                Model.EncapsulateWithUserDefinedType = value;
+                RefreshPreview();
+            }
+        }
+
         public bool TargetsHaveValidEncapsulationSettings
         {
             get
