@@ -26,16 +26,12 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         {
             State = state;
 
-            //IsLetSelected = true;
-            //PropertyName = model[model.TargetDeclaration].PropertyName;
-
             SelectAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ToggleSelection(true));
             DeselectAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ToggleSelection(false));
 
-            IsReadOnlyCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => RefreshPreview());
-            EncapsulateFlagCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => RefreshPreview());
-            PropertyOrFieldNameChangeCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => RefreshPreview());
-            BackingFieldNameChangeCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => RefreshPreview());
+            IsReadOnlyCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ReloadPreview());
+            EncapsulateFlagCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ReloadPreview());
+            PropertyChangeCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => UpdatePreview());
         }
 
         public IEncapsulatedFieldViewData SelectedValue { set; get; }
@@ -75,7 +71,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         {
             set
             {
-                RefreshPreview();
+                UpdatePreview();
             }
         }
 
@@ -86,9 +82,9 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             set
             {
                 Model.EncapsulateWithUDT = value;
-                RefreshPreview();
-                OnPropertyChanged(nameof(EncapsulateAsUDT_TypeIdentifier));
-                OnPropertyChanged(nameof(EncapsulateAsUDT_FieldName));
+                UpdatePreview();
+                //OnPropertyChanged(nameof(EncapsulateAsUDT_TypeIdentifier));
+                //OnPropertyChanged(nameof(EncapsulateAsUDT_FieldName));
             }
         }
 
@@ -98,7 +94,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             set
             {
                 Model.EncapsulateWithUDT_TypeIdentifier = value;
-                RefreshPreview();
+                UpdatePreview();
             }
         }
 
@@ -108,7 +104,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             set
             {
                 Model.EncapsulateWithUDT_FieldName = value;
-                RefreshPreview();
+                UpdatePreview();
             }
         }
 
@@ -220,22 +216,22 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             {
                 item.EncapsulateFlag = value;
             }
-            RefreshPreview();
+            ReloadPreview();
         }
 
         public CommandBase IsReadOnlyCommand { get; }
         public CommandBase EncapsulateFlagCommand { get; }
-        public CommandBase PropertyOrFieldNameChangeCommand { get; }
-        public CommandBase BackingFieldNameChangeCommand { get; }
+        public CommandBase PropertyChangeCommand { get; }
 
-        private void RefreshPreview()
+        private void UpdatePreview()
+        {
+            OnPropertyChanged(nameof(PropertyPreview));
+        }
+
+        private void ReloadPreview()
         {
             OnPropertyChanged(nameof(EncapsulationFields));
             OnPropertyChanged(nameof(PropertyPreview));
-            OnPropertyChanged(nameof(SelectedValue));
         }
-
-        //public event EventHandler<bool> ExpansionStateChanged;
-        //private void OnExpansionStateChanged(bool value) => ExpansionStateChanged?.Invoke(this, value);
     }
 }

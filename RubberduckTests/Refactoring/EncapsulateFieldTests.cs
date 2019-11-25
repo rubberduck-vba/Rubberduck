@@ -21,35 +21,6 @@ namespace RubberduckTests.Refactoring
     [TestFixture]
     public class EncapsulateFieldTests : InteractiveRefactoringTestBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>
     {
-//        [Test]
-//        [Category("Refactorings")]
-//        [Category("Encapsulate Field")]
-//        public void EncapsulatePublicField_WithLet()
-//        {
-//            //Input
-//            const string inputCode =
-//                @"Public fizz As Integer";
-//            var selection = new Selection(1, 1);
-
-//            var newFieldName = "fizz1";
-
-//            //Expectation
-//            string expectedCode =
-//                $@"Private {newFieldName} As Integer
-
-//Public Property Get Name() As Integer
-//    Name = {newFieldName}
-//End Property
-
-//Public Property Let Name(ByVal value As Integer)
-//    {newFieldName} = value
-//End Property
-//";
-//            var presenterAction = SetParametersForSingleTarget("fizz", "Name");
-//            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
-//            Assert.AreEqual(expectedCode, actualCode);
-//        }
-
         [TestCase("fizz", true, "baz", true, "buzz", true)]
         [TestCase("fizz", false, "baz", true, "buzz", true)]
         [TestCase("fizz", false, "baz", false, "buzz", true)]

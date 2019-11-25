@@ -62,6 +62,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private string _targetIdentifier;
         //private Declaration _target;
         private string _defaultPropertyName;
+        private string _defaultFieldName;
         private string _setLetParameter;
 
         public EncapsulationIdentifiers(Declaration target)
@@ -69,12 +70,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public EncapsulationIdentifiers(string field)
         {
-            string Capitalize(string input) => $"{char.ToUpperInvariant(input[0]) + input.Substring(1, input.Length - 1)}";
-            string UnCapitalize(string input) => $"{char.ToLowerInvariant(input[0]) + input.Substring(1, input.Length - 1)}";
+            //string Capitalize(string input) => $"{char.ToUpperInvariant(input[0]) + input.Substring(1, input.Length - 1)}";
+            //string UnCapitalize(string input) => $"{char.ToLowerInvariant(input[0]) + input.Substring(1, input.Length - 1)}";
 
             _targetIdentifier = field;
             _defaultPropertyName = Capitalize(field);
-            _fieldAndProperty = new KeyValuePair<string, string>($"{UnCapitalize(field)}1", _defaultPropertyName);
+            _defaultFieldName = $"{UnCapitalize(field)}1";
+            _fieldAndProperty = new KeyValuePair<string, string>(_defaultFieldName, _defaultPropertyName);
             _setLetParameter = DEFAULT_WRITE_PARAMETER;
         }
 
@@ -95,32 +97,47 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => _fieldAndProperty.Value;
             set
             {
-                //Reverts to original field name if user modifies generated Property name
-                if (!IsVBAEquivalentName(value, Field))
-                {
-                    _fieldAndProperty = new KeyValuePair<string, string>(_targetIdentifier, value);
-                }
+                var fieldIdentifier = AreVBAEquivalentNames(value, Field)
+                    ? _defaultFieldName
+                    : _targetIdentifier;
+
+                _fieldAndProperty = new KeyValuePair<string, string>(fieldIdentifier, value);
+
                 GenerateNonConflictParamIdentifier();
             }
         }
 
         public string SetLetParameter => _setLetParameter;
 
-        private bool IsVBAEquivalentName(string input, string existingName)
+        private bool AreVBAEquivalentNames(string input, string existingName)
             => input.Equals(existingName, StringComparison.InvariantCultureIgnoreCase);
 
         private void GenerateNonConflictParamIdentifier()
         {
-            if (IsVBAEquivalentName(Field, SetLetParameter))
+            _setLetParameter = DEFAULT_WRITE_PARAMETER;
+            if (!(AreVBAEquivalentNames(Field, DEFAULT_WRITE_PARAMETER)
+                    || AreVBAEquivalentNames(Property, DEFAULT_WRITE_PARAMETER)))
+            {
+                return;
+            }
+
+            if (AreVBAEquivalentNames(Field, SetLetParameter))
             {
                 _setLetParameter = $"{Field}_{DEFAULT_WRITE_PARAMETER}";
             }
 
-            if (IsVBAEquivalentName(Property, SetLetParameter))
+            if (AreVBAEquivalentNames(Property, SetLetParameter))
             {
                 _setLetParameter = $"{Property}_{Field}_{DEFAULT_WRITE_PARAMETER}";
             }
         }
+
+        private string Capitalize(string input) 
+            => $"{char.ToUpperInvariant(input[0]) + input.Substring(1, input.Length - 1)}";
+
+        private string UnCapitalize(string input) 
+            => $"{char.ToLowerInvariant(input[0]) + input.Substring(1, input.Length - 1)}";
+
     }
 
     public class FieldEncapsulationAttributes : IFieldEncapsulationAttributes
@@ -130,10 +147,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             var defaults = new ClientEncapsulationAttributes(target.IdentifierName);
             FieldName = target.IdentifierName;
-            //NewFieldName = defaults.NewFieldName;
-            //PropertyName = defaults.PropertyName;
             AsTypeName = target.AsTypeName;
-            //ParameterName = parameterName ?? SetLetParameter;
             FieldReadWriteIdentifierFunc = () => NewFieldName;
             _fieldAndProperty = new EncapsulationIdentifiers(target);
         }
@@ -142,14 +156,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public string FieldName { private set; get; }
 
-        //private string _newFieldName;
         public string NewFieldName
         {
             get => _fieldAndProperty.Field;
             set => _fieldAndProperty.Field = value;
         }
 
-        //public string PropertyName { get; set; }
         public string PropertyName
         {
             get => _fieldAndProperty.Property;

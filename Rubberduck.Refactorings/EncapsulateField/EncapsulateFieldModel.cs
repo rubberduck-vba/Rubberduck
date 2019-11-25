@@ -20,7 +20,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private Dictionary<string, IEncapsulatedFieldDeclaration> _encapsulateFieldDeclarations = new Dictionary<string, IEncapsulatedFieldDeclaration>();
 
         private IEncapsulatedFieldDeclaration _userSelectedEncapsulationField;
-        private Dictionary<string, IFieldEncapsulationAttributes> _udtVariableEncapsulationAttributes = new Dictionary<string, IFieldEncapsulationAttributes>();
+        //private Dictionary<string, IFieldEncapsulationAttributes> _udtVariableEncapsulationAttributes = new Dictionary<string, IFieldEncapsulationAttributes>();
 
         public EncapsulateFieldModel(Declaration target, IEnumerable<Declaration> allMemberFields, IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> udtFieldToUdtDeclarationMap, IIndenter indenter, IEncapsulateFieldNamesValidator validator)
         {
@@ -190,7 +190,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 PropertyName = attributes.PropertyName,
                 AsTypeName = attributes.AsTypeName,
-                BackingField = EncapsulateWithUDT ? $"this.{attributes.PropertyName}" : attributes.FieldReadWriteIdentifier,
+                BackingField = EncapsulateWithUDT ? $"{EncapsulateWithUDT_FieldName}.{attributes.PropertyName}" : attributes.FieldReadWriteIdentifier,
                 ParameterName = attributes.ParameterName,
                 GenerateSetter = attributes.ImplementSetSetterType,
                 GenerateLetter = attributes.ImplementLetSetterType

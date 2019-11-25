@@ -18,7 +18,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         string PropertyName { set; get; }
         string FieldReadWriteIdentifier { get; }
         bool EncapsulateFlag { set; get; }
-        string NewFieldName { get; } // set; get; }
+        string NewFieldName { get; }
         string AsTypeName { get; }
         bool IsUDTMember { set; get; }
         bool HasValidEncapsulationAttributes { get; }
@@ -53,7 +53,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
                         attributes = new ClientEncapsulationAttributes($"{Declaration.IdentifierName}{idx}");
                         hasConflict = IsConflictingAttributes(attributes);
                     }
-                    //NewFieldName = attributes.NewFieldName;
                     PropertyName = attributes.PropertyName;
                 }
             }
@@ -109,7 +108,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public string NewFieldName
         {
             get => _attributes.NewFieldName;
-            //set => _attributes.NewFieldName = value;
         }
 
         public string FieldReadWriteIdentifier

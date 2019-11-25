@@ -84,11 +84,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
 
-            if (model.EncapsulateWithUDT)
-            {
-                //create UDT and add to new Content of Declaration Section
-            }
-
             var nonUdtMemberFields = model.FlaggedEncapsulationFields
                     .Where(encFld => encFld.Declaration.IsVariable());
 

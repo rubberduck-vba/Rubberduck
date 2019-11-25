@@ -21,24 +21,6 @@ namespace RubberduckTests.Refactoring.EncapsulateField
     [TestFixture]
     public class EncapsulatedFieldTests //: InteractiveRefactoringTestBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>
     {
-//        [TestCase("fizz", "_fizz", false)]
-//        [TestCase("fizz", "Fizz", false)] //Property name default is 'Fizz'
-//        [TestCase("fizz", "mFizz", true)]
-//        [Category("Refactorings")]
-//        [Category("Encapsulate Field")]
-//        public void NewFieldNameAttributeValidations_Internal(string originalFieldName, string newFieldName, bool expectedResult)
-//        {
-//            string inputCode =
-//$@"Public {originalFieldName} As String";
-
-//            var selection = new Selection(1, 1);
-//            var encapsulatedField = RetrieveEncapsulatedField(inputCode, originalFieldName);
-
-//            encapsulatedField.NewFieldName = newFieldName;
-
-//            Assert.AreEqual(expectedResult, encapsulatedField.HasValidEncapsulationAttributes);
-//        }
-
         [TestCase("fizz", "_Fizz", false)]
         [TestCase("fizz", "FizzProp", true)]
         [Category("Refactorings")]
@@ -55,34 +37,6 @@ $@"Public {originalFieldName} As String";
 
             Assert.AreEqual(expectedResult, encapsulatedField.HasValidEncapsulationAttributes);
         }
-
-//        [TestCase("fizz", "Name", false)]
-//        [TestCase("fizz", "mName", false)]
-//        [TestCase("fizz", "fizz1", true)]
-//        [Category("Refactorings")]
-//        [Category("Encapsulate Field")]
-//        public void FieldNameAttributeValidation_External(string originalFieldName, string newFieldName, bool expectedResult)
-//        {
-//            string inputCode =
-//$@"Public {originalFieldName} As String
-
-//            Private mName As String
-
-//            Public Property Get Name() As String
-//                Name = mName
-//            End Property
-
-//            Public Property Let Name(ByVal value As String)
-//                mName = value
-//            End Property
-//            ";
-//            var selection = new Selection(1, 1);
-//            var encapsulatedField = RetrieveEncapsulatedField(inputCode, originalFieldName);
-
-//            //encapsulatedField.NewFieldName = newFieldName;
-
-//            Assert.AreEqual(expectedResult, encapsulatedField.HasValidEncapsulationAttributes);
-//        }
 
         [Test]
         [Category("Refactorings")]
@@ -117,7 +71,7 @@ $@"Public fizz As String
 
             Private fizzle As String
 
-            'fizz1 is the intial default name for encapsulating 'fizz'            
+            'fizz1 is the initial default name for encapsulating 'fizz'            
             Public Property Get Fizz1() As String
                 Fizz1 = fizzle
             End Property
@@ -133,6 +87,44 @@ $@"Public fizz As String
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
+        public void PropertyNameChange_Multiple()
+        {
+            string inputCode = "Public fizz As String";
+
+            var encapsulatedField = RetrieveEncapsulatedField(inputCode, "fizz");
+
+            encapsulatedField.PropertyName = "Test";
+            StringAssert.AreEqualIgnoringCase("fizz", encapsulatedField.NewFieldName);
+
+            encapsulatedField.PropertyName = "Fizz";
+            StringAssert.AreEqualIgnoringCase("fizz1", encapsulatedField.NewFieldName);
+
+            encapsulatedField.PropertyName = "Fiz";
+            StringAssert.AreEqualIgnoringCase("fizz", encapsulatedField.NewFieldName);
+
+            encapsulatedField.PropertyName = "Fizz";
+            StringAssert.AreEqualIgnoringCase("fizz1", encapsulatedField.NewFieldName);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void PropertyNameChange_UniqueParamName()
+        {
+            string inputCode = "Public value As String";
+
+            var encapsulatedField = RetrieveEncapsulatedField(inputCode, "value");
+
+            encapsulatedField.PropertyName = "Test";
+            StringAssert.AreEqualIgnoringCase("value_value", encapsulatedField.EncapsulationAttributes.ParameterName);
+
+            encapsulatedField.PropertyName = "Value";
+            StringAssert.AreEqualIgnoringCase("Value_value1_value", encapsulatedField.EncapsulationAttributes.ParameterName);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void CreateUDT()
         {
             string inputCode =
@@ -143,7 +135,7 @@ $@"Public fizz As String";
             var udtTest = new EncapsulationUDT(CreateIndenter());
             udtTest.AddMember(encapsulatedField);
             var result = udtTest.TypeDeclarationBlock;
-            StringAssert.Contains("Fizz As String", result); 
+            StringAssert.Contains("Fizz As String", result);
         }
 
         private IEncapsulatedFieldDeclaration RetrieveEncapsulatedField(string inputCode, string fieldName)//, Selection selection) //, Func<TModel, TModel> presenterAdjustment, Type expectedException = null, bool executeViaActiveSelection = false)
