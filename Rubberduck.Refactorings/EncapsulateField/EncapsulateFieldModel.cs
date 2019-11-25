@@ -54,7 +54,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public IEncapsulatedFieldDeclaration this[Declaration fieldDeclaration] 
             => _encapsulateFieldDeclarations.Values.Where(efd => efd.Declaration.Equals(fieldDeclaration)).Select(encapsulatedField => encapsulatedField).Single();
 
-        public bool EncapsulateWithUserDefinedType { set; get; }
+        public bool EncapsulateWithUDT { set; get; }
+
+        public string EncapsulateWithUDT_TypeIdentifier { set; get; } = "This_Type";
+
+        public string EncapsulateWithUDT_FieldName { set; get; } = "this";
 
         public IList<string> PropertiesContent
         {
@@ -93,9 +97,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var nonUdtMemberFields = FlaggedEncapsulationFields
                     .Where(encFld => encFld.Declaration.IsVariable());
 
-            if (EncapsulateWithUserDefinedType)
+            if (EncapsulateWithUDT)
             {
-                var udt = new EncapsulationUDT(_indenter);
+                var udt = new EncapsulationUDT(EncapsulateWithUDT_TypeIdentifier, EncapsulateWithUDT_FieldName, _indenter);
                 foreach (var nonUdtMemberField in nonUdtMemberFields)
                 {
                     udt.AddMember(nonUdtMemberField);
@@ -186,7 +190,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 PropertyName = attributes.PropertyName,
                 AsTypeName = attributes.AsTypeName,
-                BackingField = EncapsulateWithUserDefinedType ? $"this.{attributes.PropertyName}" : attributes.FieldReadWriteIdentifier,
+                BackingField = EncapsulateWithUDT ? $"this.{attributes.PropertyName}" : attributes.FieldReadWriteIdentifier,
                 ParameterName = attributes.ParameterName,
                 GenerateSetter = attributes.ImplementSetSetterType,
                 GenerateLetter = attributes.ImplementLetSetterType

@@ -84,7 +84,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
 
-            if (model.EncapsulateWithUserDefinedType)
+            if (model.EncapsulateWithUDT)
             {
                 //create UDT and add to new Content of Declaration Section
             }
@@ -95,7 +95,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             foreach (var nonUdtMemberField in nonUdtMemberFields)
             {
                 var attributes = nonUdtMemberField.EncapsulationAttributes;
-                ModifyEncapsulatedVariable(nonUdtMemberField, attributes, rewriteSession, model.EncapsulateWithUserDefinedType);
+                ModifyEncapsulatedVariable(nonUdtMemberField, attributes, rewriteSession, model.EncapsulateWithUDT);
                 RenameReferences(nonUdtMemberField, attributes.PropertyName ?? nonUdtMemberField.Declaration.IdentifierName, rewriteSession);
             }
 

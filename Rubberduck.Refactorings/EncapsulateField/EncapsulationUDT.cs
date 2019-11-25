@@ -10,11 +10,19 @@ namespace Rubberduck.Refactorings.EncapsulateField
 {
     public class EncapsulationUDT
     {
-        private const string _typeIdentifier = "This_Type";
-        private const string _fieldName = "this";
+        private readonly string _typeIdentifier = "This_Type";
+        private readonly string _fieldName = "this";
         private readonly IIndenter _indenter;
 
         private List<IEncapsulatedFieldDeclaration> _members;
+
+        public EncapsulationUDT(string typeIdentifier, string fieldName, IIndenter indenter)
+        {
+            _typeIdentifier = typeIdentifier;
+            _fieldName = fieldName;
+            _indenter = indenter;
+            _members = new List<IEncapsulatedFieldDeclaration>();
+        }
 
         public EncapsulationUDT(IIndenter indenter)
         {

@@ -20,13 +20,11 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
     public class EncapsulateFieldViewModel : RefactoringViewModelBase<EncapsulateFieldModel>
     {
         public RubberduckParserState State { get; }
-        //public IIndenter Indenter { get; }
 
 
         public EncapsulateFieldViewModel(EncapsulateFieldModel model, RubberduckParserState state/*, IIndenter indenter*/) : base(model)
         {
             State = state;
-            //Indenter = indenter;
 
             IsLetSelected = true;
             PropertyName = model[model.TargetDeclaration].PropertyName;
@@ -73,12 +71,43 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             }
         }
 
-        public bool EncapsulateAsUDT
+        public string LatestEdit
         {
-            get => Model.EncapsulateWithUserDefinedType;
             set
             {
-                Model.EncapsulateWithUserDefinedType = value;
+                RefreshPreview();
+            }
+        }
+
+
+        public bool EncapsulateAsUDT
+        {
+            get => Model.EncapsulateWithUDT;
+            set
+            {
+                Model.EncapsulateWithUDT = value;
+                RefreshPreview();
+                OnPropertyChanged(nameof(EncapsulateAsUDT_TypeIdentifier));
+                OnPropertyChanged(nameof(EncapsulateAsUDT_FieldName));
+            }
+        }
+
+        public string EncapsulateAsUDT_TypeIdentifier
+        {
+            get => Model.EncapsulateWithUDT_TypeIdentifier;
+            set
+            {
+                Model.EncapsulateWithUDT_TypeIdentifier = value;
+                RefreshPreview();
+            }
+        }
+
+        public string EncapsulateAsUDT_FieldName
+        {
+            get => Model.EncapsulateWithUDT_FieldName;
+            set
+            {
+                Model.EncapsulateWithUDT_FieldName = value;
                 RefreshPreview();
             }
         }
@@ -92,19 +121,8 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             }
         }
 
-    //private bool _expansionState = true;
-    //public bool ExpansionState
-    //{
-    //    get => _expansionState;
-    //    set
-    //    {
-    //        _expansionState = value;
-    //        OnPropertyChanged();
-    //        OnExpansionStateChanged(value);
-    //    }
-    //}
 
-    public bool CanHaveLet => Model.CanImplementLet;
+        public bool CanHaveLet => Model.CanImplementLet;
         public bool CanHaveSet => Model.CanImplementSet;
 
         public bool IsLetSelected
@@ -209,6 +227,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         public CommandBase EncapsulateFlagCommand { get; }
         public CommandBase PropertyOrFieldNameChangeCommand { get; }
         public CommandBase BackingFieldNameChangeCommand { get; }
+
         private void RefreshPreview()
         {
             OnPropertyChanged(nameof(EncapsulationFields));
@@ -216,7 +235,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             OnPropertyChanged(nameof(SelectedValue));
         }
 
-        public event EventHandler<bool> ExpansionStateChanged;
-        private void OnExpansionStateChanged(bool value) => ExpansionStateChanged?.Invoke(this, value);
+        //public event EventHandler<bool> ExpansionStateChanged;
+        //private void OnExpansionStateChanged(bool value) => ExpansionStateChanged?.Invoke(this, value);
     }
 }

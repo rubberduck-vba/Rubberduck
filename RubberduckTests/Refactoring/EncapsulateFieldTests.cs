@@ -1289,7 +1289,7 @@ End Property
 
         private Func<EncapsulateFieldModel, EncapsulateFieldModel> UserAcceptsDefaults(bool asUDT = false)
         {
-            return model => { model.EncapsulateFlag = true; model.EncapsulateWithUserDefinedType = asUDT; return model; };
+            return model => { model.EncapsulateFlag = true; model.EncapsulateWithUDT = asUDT; return model; };
         }
 
         private Func<EncapsulateFieldModel, EncapsulateFieldModel> SetParametersForSingleTarget(string field, string property = null, bool? isReadonly = null, bool encapsulateFlag = true, string newFieldName = null, bool asUDT = false)
@@ -1335,7 +1335,7 @@ End Property
                 encapsulatedField.EncapsulationAttributes.ReadOnly = clientEdits.ReadOnly;
                 encapsulatedField.EncapsulationAttributes.EncapsulateFlag = clientEdits.EncapsulateFlag;
 
-                model.EncapsulateWithUserDefinedType = asUDT;
+                model.EncapsulateWithUDT = asUDT;
                 return model;
             };
         }

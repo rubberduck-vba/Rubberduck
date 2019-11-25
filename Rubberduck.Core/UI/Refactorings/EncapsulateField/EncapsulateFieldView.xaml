@@ -57,9 +57,9 @@
                 <Grid Margin="0,0,5,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
+                        <!--<RowDefinition Height="auto" />-->
                     </Grid.RowDefinitions>
-                    <Grid Grid.Row="0"
+                    <!--<Grid Grid.Row="0"
                           VerticalAlignment="Top">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto" />
@@ -79,16 +79,51 @@
                                HorizontalAlignment="Right"
                                VerticalAlignment="Top"
                                Visibility="{Binding IsValidPropertyName, Converter={StaticResource BoolToHiddenVisibility}}" />
-                    </Grid>
-                    <Grid Grid.Row="1"
+                    </Grid>-->
+                    <Grid Grid.Row="0"
                           VerticalAlignment="Top">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto" />
-                            <!--<RowDefinition Height="auto" />-->
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
                         </Grid.RowDefinitions>
-                        <CheckBox Content="Encapsulate As User Defined Type"
+                        <Grid.ColumnDefinitions>
+                            <!--<ColumnDefinition Width="auto"/>-->
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <CheckBox Grid.ColumnSpan="2" Content="Encapsulate with a User Defined Type"
                                   IsChecked="{Binding EncapsulateAsUDT, Mode=TwoWay}"
-                                  FontWeight="Bold"/>
+                                  FontWeight="Bold"
+                                  Margin="0,10,0,0"/>
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="0"
+                                   Visibility="{Binding EncapsulateAsUDT, Converter={StaticResource BoolToHiddenVisibility}}"
+                                   Margin="30,10,0,0">
+                        User Defined Type Name:
+                        </TextBlock>
+                        <TextBox Grid.Row="1"
+                                 Grid.Column="2"
+                                 Margin="5,8,0,0"
+                                 Height="22"
+                                 VerticalAlignment="Top"
+                                 VerticalContentAlignment="Center"
+                                 Visibility="{Binding EncapsulateAsUDT, Converter={StaticResource BoolToHiddenVisibility}}"
+                                 Text="{Binding EncapsulateAsUDT_TypeIdentifier, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Grid.Row="2"
+                                   Grid.Column="0"
+                                   Visibility="{Binding EncapsulateAsUDT, Converter={StaticResource BoolToHiddenVisibility}}"
+                                   Margin="30,10,0,0">
+                                    User Defined Type Field Name:
+                        </TextBlock>
+                        <TextBox Grid.Row="2"
+                                 Grid.Column="2"
+                                 Margin="5,8,0,0"
+                                 Height="22"
+                                 VerticalAlignment="Top"
+                                 VerticalContentAlignment="Center"
+                                 Visibility="{Binding EncapsulateAsUDT, Converter={StaticResource BoolToHiddenVisibility}}"
+                                 Text="{Binding EncapsulateAsUDT_FieldName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         <!--<Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EncapsulateField_ParameterName}" />
                         <TextBox Grid.Row="1"
                                  Margin="5,-2,0,0"
@@ -105,7 +140,7 @@
                                Visibility="{Binding IsValidParameterName, Converter={StaticResource BoolToHiddenVisibility}}" />-->
                     </Grid>
                 </Grid>
-                <GroupBox Grid.Column="1"
+                <!--<GroupBox Grid.Column="1"
                           Height="55"
                           Margin="5"
                           VerticalAlignment="Top"
@@ -127,7 +162,7 @@
                                   IsEnabled="{Binding CanHaveSet}"
                                   IsChecked="{Binding IsSetSelected}" />
                     </Grid>
-                </GroupBox>
+                </GroupBox>-->
             </Grid>
             <!--<Expander Grid.Row="1"
                       Grid.ColumnSpan="2"
@@ -164,7 +199,8 @@
                          ItemsSource="{Binding EncapsulationFields}"
                          Height="150"
                          VerticalAlignment="Top"
-                         Margin="5,0,0,5">
+                         Margin="5,0,0,5"
+                         >
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid Margin="5,0">
@@ -194,20 +230,20 @@
                                       Visibility="{Binding PropertyNameVisibility}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="125" />
-                                        <!--TargetID-->
-                                        <ColumnDefinition Width="200" />
-                                        <!--PropertyName-->
-                                        <ColumnDefinition />
-                                        <!--Checkbox-->
+                                        <ColumnDefinition Width="175"/>
+                                        <ColumnDefinition Width="75"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0"
+                                    <TextBlock Name="PropertyNameTextBlock"  
+                                               Grid.Column="0"
+                                               Text="Property Name:"
                                                Margin="30,0,0,0">
-                                            <Italic>Property Name:</Italic>
                                     </TextBlock>
-                                    <TextBox Grid.Column="1"
+                                    <TextBox Name="PropertyTextBox" 
+                                            Grid.Column="1"
                                              Margin="5,-2,0,0"
                                              Height="22"
                                              VerticalAlignment="Top"
+                                             HorizontalAlignment="Left"
                                              VerticalContentAlignment="Center"
                                              Text="{Binding PropertyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                         <i:Interaction.Triggers>
@@ -219,17 +255,10 @@
                                     </TextBox>
                                     <Control Grid.Column="1"
                                              Template="{StaticResource InvalidEntryAnnotation}"/>
-                                    <!--<Image Grid.Column="1"
-                                           Source="{StaticResource InvalidEntryImage}"
-                                           Height="16"
-                                           Margin="0,-10,-8,0"
-                                           HorizontalAlignment="Right"
-                                           VerticalAlignment="Top"
-                                           Visibility="{Binding IsValidPropertyName, Converter={StaticResource BoolToHiddenVisibility}}" />-->
                                     <CheckBox Grid.Column="2"
                                               Margin="10,0,0,0"
                                               Content="Read Only"
-                                              HorizontalAlignment="Right"
+                                              HorizontalAlignment="Left"
                                               IsChecked="{Binding IsReadOnly, Mode=TwoWay}"
                                               IsEnabled="{Binding CanBeReadWrite}"
                                               Command="{Binding Path=DataContext.IsReadOnlyCommand, 
@@ -239,18 +268,21 @@
                                       Margin="0,5,0,0"
                                       Visibility="{Binding FieldNameVisibility}">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="125" />
-                                        <ColumnDefinition Width="200" />
+                                        <ColumnDefinition Width="125"/>
+                                        <ColumnDefinition Width="175" />
+                                        <ColumnDefinition Width="75" />
                                     </Grid.ColumnDefinitions>
-                                    <!--<ContentControl Content="Backing Variable:" Template="{StaticResource AttributeEntry}"/>-->
                                     <TextBlock Grid.Column="0"
+                                               Width="{Binding Path=ActualWidth, ElementName=PropertyNameTextBlock}"
+                                               Text="Backing Variable:"
                                                Margin="30,0,0,0">
-                                            <Italic>Backing Variable:</Italic>
                                     </TextBlock>
                                     <TextBox Grid.Column="1"
                                              Margin="5,-2,0,0"
                                              Height="22"
                                              VerticalAlignment="Top"
+                                             HorizontalAlignment="Left"
+                                             Width="{Binding Path=ActualWidth, ElementName=PropertyTextBox}"
                                              VerticalContentAlignment="Center"
                                              Text="{Binding NewFieldName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                         <i:Interaction.Triggers>
@@ -262,13 +294,6 @@
                                     </TextBox>
                                     <Control Grid.Column="1"
                                              Template="{StaticResource InvalidEntryAnnotation}" />
-                                    <!--<Image Grid.Column="1"
-                                           Source="{StaticResource InvalidEntryImage}"
-                                           Height="16"
-                                           Margin="0,-10,-8,0"
-                                           HorizontalAlignment="Right"
-                                           VerticalAlignment="Top"
-                                           Visibility="{Binding IsValidPropertyName, Converter={StaticResource BoolToHiddenVisibility}}" />-->
                                 </Grid>
                             </Grid>
                         </DataTemplate>
