@@ -56,6 +56,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
             {
                 if (exception.Flatten().InnerExceptions.All(ex => ex is OperationCanceledException))
                 {
+                    //This rethrows the exception with the original stack trace.
                     ExceptionDispatchInfo.Capture(exception.InnerException ?? exception).Throw();
                 }
                 _parserStateManager.SetStatusAndFireStateChanged(this, ParserState.ResolverError, token);

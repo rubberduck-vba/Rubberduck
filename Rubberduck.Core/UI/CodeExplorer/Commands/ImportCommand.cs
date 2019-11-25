@@ -35,7 +35,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IParseManager _parseManager;
         private readonly IProjectsProvider _projectsProvider;
         private readonly IModuleNameFromFileExtractor _moduleNameFromFileExtractor;
-        private readonly IDictionary<ComponentType, IRequiredBinaryFilesFromFileNameExtractor> _binaryFileExtractors;
+        private readonly IDictionary<ComponentType, List<IRequiredBinaryFilesFromFileNameExtractor>> _binaryFileExtractors;
         private readonly IFileExistenceChecker _fileExistenceChecker;
 
         protected readonly IDeclarationFinderProvider DeclarationFinderProvider;
@@ -58,13 +58,13 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _dialogFactory = dialogFactory;
             _parseManager = parseManager;
             _projectsProvider = projectsProvider;
-            DeclarationFinderProvider = declarationFinderProvider;
             _moduleNameFromFileExtractor = moduleNameFromFileExtractor;
             _fileExistenceChecker = fileExistenceChecker;
 
             _binaryFileExtractors = BinaryFileExtractors(binaryFileExtractors);
 
             MessageBox = messageBox;
+            DeclarationFinderProvider = declarationFinderProvider;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
 
@@ -123,19 +123,19 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 : null;
         }
 
-        private IDictionary<ComponentType, IRequiredBinaryFilesFromFileNameExtractor> BinaryFileExtractors(IEnumerable<IRequiredBinaryFilesFromFileNameExtractor> extractors)
+        private IDictionary<ComponentType, List<IRequiredBinaryFilesFromFileNameExtractor>> BinaryFileExtractors(IEnumerable<IRequiredBinaryFilesFromFileNameExtractor> extractors)
         {
-            var dict = new Dictionary<ComponentType, IRequiredBinaryFilesFromFileNameExtractor>();
+            var dict = new Dictionary<ComponentType, List<IRequiredBinaryFilesFromFileNameExtractor>>();
             foreach (var extractor in extractors)
             {
                 foreach (var componentType in extractor.SupportedComponentTypes)
-                {
-                    if (dict.ContainsKey(componentType))
+                { 
+                    if (!dict.ContainsKey(componentType))
                     {
-                        continue;
+                        dict.Add(componentType, new List<IRequiredBinaryFilesFromFileNameExtractor>());
                     }
 
-                    dict.Add(componentType, extractor);
+                    dict[componentType].Add(extractor);
                 }
             }
 
@@ -164,8 +164,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
                 var fileNames = dialog.FileNames;
                 var fileExtensions = fileNames.Select(Path.GetExtension);
-                var importableExtensions = ImportableExtensions;
-                if (fileExtensions.Any(fileExt => !importableExtensions.Contains(fileExt)))
+                if (fileExtensions.Any(fileExt => !ImportableExtensions.Contains(fileExt)))
                 {
                     NotifyUserAboutAbortDueToUnsupportedFileExtensions(fileNames);
                     return new List<string>();
@@ -177,6 +176,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected virtual string DialogsTitle => RubberduckUI.ImportCommand_OpenDialog_Title;
 
+        //TODO: Gather all conflicts and report them in one error dialog instead of reporting them one at a time.
         private void NotifyUserAboutAbortDueToUnsupportedFileExtensions(IEnumerable<string> fileNames)
         {
             var firstUnsupportedFile = fileNames.First(filename => !ImportableExtensions.Contains(Path.GetExtension(filename)));
@@ -193,6 +193,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             {
                 if (suspendOutcome == SuspensionOutcome.UnexpectedError || suspendOutcome == SuspensionOutcome.Canceled)
                 {
+                    //This rethrows the exception with the original stack trace.
                     ExceptionDispatchInfo.Capture(suspendResult.EncounteredException).Throw();
                     return;
                 }
@@ -382,16 +383,19 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private ICollection<string> RequiredBinaryFiles(string filename)
         {
             var extension = Path.GetExtension(filename);
-            if (!ComponentTypesForExtension.TryGetValue(extension, out var componentTypes))
+            if (extension == null || !ComponentTypesForExtension.TryGetValue(extension, out var componentTypes))
             {
                 return new List<string>();
             }
 
             foreach (var componentType in componentTypes)
             {
-                if (_binaryFileExtractors.TryGetValue(componentType, out var binaryExtractor))
+                if (_binaryFileExtractors.TryGetValue(componentType, out var binaryExtractors))
                 {
-                    return binaryExtractor.RequiredBinaryFiles(filename, componentType);
+                    return binaryExtractors
+                        .SelectMany(binaryExtractor => binaryExtractor
+                            .RequiredBinaryFiles(filename, componentType))
+                        .ToHashSet();
                 }
             }
 
@@ -523,8 +527,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         }
 
 
-        //We only allow extensions to be imported for which we might be able to determine that the conditions are met to actually import the file.
-        //The exception are specif exceptions to the rule.
+        //We usually only allow extensions to be imported for which we might be able to determine that the conditions are met to actually import the file.
+        //However, we ignore this cautionary rule for the extensions specified in AlwaysImportableExtensions;
         protected ICollection<string> ImportableExtensions =>
             ComponentTypesForExtension.Keys
                 .Where(fileExtension => ComponentTypesForExtension.TryGetValue(fileExtension, out var componentTypes)
@@ -534,6 +538,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 .Concat(AlwaysImportableExtensions)
                 .ToHashSet();
 
+        //TODO: Implement the binary extractors necessary to allow us to remove this member.
         protected virtual IEnumerable<string> AlwaysImportableExtensions => _vbe.Kind == VBEKind.Standalone
             ? ComponentTypesForExtension.Keys
             : Enumerable.Empty<string>();

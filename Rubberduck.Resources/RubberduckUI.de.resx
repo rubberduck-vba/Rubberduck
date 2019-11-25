@@ -1538,12 +1538,12 @@ Import abgebrochen.</value>
 Import abgebrochen.</value>
   </data>
   <data name="ImportCommand_BinaryAndComponentDoNotExist" xml:space="preserve">
-    <value>Für die Datei '{0}' fehlen die benötigte(n) Binary-Datei(en) '{1}' und die Zielkomponente '{2}'existiert noch nicht.
+    <value>Für die Datei '{0}' fehlen die benötigte(n) Binärdatei(en) '{1}' und die Zielkomponente '{2}' existiert noch nicht.
 
 Import abgebrochen.</value>
   </data>
   <data name="ImportCommand_BinaryDoesNotExist" xml:space="preserve">
-    <value>Für die Datei '{0}' fehlen die benötigte(n) Binary-Datei(en) '{1}'.
+    <value>Für die Datei '{0}' fehlen die benötigte(n) Binärdatei(en) '{1}'.
 
 Import abgebrochen.</value>
   </data>
