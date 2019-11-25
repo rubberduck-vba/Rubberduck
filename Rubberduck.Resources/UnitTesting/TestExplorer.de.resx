@@ -247,7 +247,7 @@
     <value>Einzelnen Test ausführen</value>
   </data>
   <data name="TestExplorer_ResetButtonTooltip" xml:space="preserve">
-    <value>Alle Testresultate zurücksetzen</value>
+    <value>Alle Testergebnisse zurücksetzen</value>
   </data>
   <data name="UnitTest_NewMethod_Act" xml:space="preserve">
     <value>Ausfuehren</value>
