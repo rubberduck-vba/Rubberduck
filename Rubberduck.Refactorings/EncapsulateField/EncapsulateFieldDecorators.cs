@@ -58,7 +58,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public string NewFieldName
         {
             get => _decorated.EncapsulationAttributes.NewFieldName;
-            set => _decorated.EncapsulationAttributes.NewFieldName = value;
+            //set => _decorated.EncapsulationAttributes.NewFieldName = value;
         }
 
         public string FieldReadWriteIdentifier 
@@ -166,7 +166,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _nameResolveProperty = propertyIdentifierRequiresNameResolution;
             _udtVariableAttributes = udtVariable.EncapsulationAttributes;
 
-            EncapsulationAttributes.NewFieldName = efd.Declaration.IdentifierName;
+            //EncapsulationAttributes.NewFieldName = efd.Declaration.IdentifierName;
             EncapsulationAttributes.PropertyName = BuildPropertyName();
             EncapsulationAttributes.FieldReadWriteIdentifierFunc = () =>
                 {

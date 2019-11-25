@@ -12,7 +12,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
     {
         string TargetID { get; set; }
         string PropertyName { set; get; }
-        string NewFieldName { set; get; }
+        string NewFieldName { get; } // { set; get; }
         bool EncapsulateFlag { set; get; }
         bool IsReadOnly { set; get; }
         bool CanBeReadWrite { get; }
@@ -40,7 +40,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         public string PropertyName { get => _efd.PropertyName; set => _efd.PropertyName = value; }
         public bool IsEditableReadWriteFieldIdentifier { get => !_efd.IsUDTMember; } // set => _efd.IsEditableReadWriteFieldIdentifier = value; }
         public bool EncapsulateFlag { get => _efd.EncapsulateFlag; set => _efd.EncapsulateFlag = value; }
-        public string NewFieldName { get => _efd.NewFieldName; set => _efd.NewFieldName = value; }
+        public string NewFieldName { get => _efd.NewFieldName; }// set => _efd.NewFieldName = value; }
         //TODO: Change name of AsTypeName property to FieldDescriptor(?)  -> and does it belong on IEncapsulatedField?
         public string AsTypeName
         {

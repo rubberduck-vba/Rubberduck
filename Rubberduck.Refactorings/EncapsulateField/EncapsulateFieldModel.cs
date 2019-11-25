@@ -215,52 +215,52 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        public string PropertyName
-        {
-            get => _userSelectedEncapsulationField.EncapsulationAttributes.PropertyName;
-            set => _userSelectedEncapsulationField.EncapsulationAttributes.PropertyName = value;
-        }
+        //public string PropertyName
+        //{
+        //    get => _userSelectedEncapsulationField.EncapsulationAttributes.PropertyName;
+        //    set => _userSelectedEncapsulationField.EncapsulationAttributes.PropertyName = value;
+        //}
 
-        public string NewFieldName
-        {
-            get => _userSelectedEncapsulationField.EncapsulationAttributes.NewFieldName;
-            set => _userSelectedEncapsulationField.EncapsulationAttributes.NewFieldName = value;
-        }
+        //public string NewFieldName
+        //{
+        //    get => _userSelectedEncapsulationField.EncapsulationAttributes.NewFieldName;
+        //    //set => _userSelectedEncapsulationField.EncapsulationAttributes.NewFieldName = value;
+        //}
 
-        public string ParameterName
-        {
-            get => _userSelectedEncapsulationField.EncapsulationAttributes.ParameterName ?? "value";
-            set => _userSelectedEncapsulationField.EncapsulationAttributes.ParameterName = value;
-        }
+        //public string ParameterName
+        //{
+        //    get => _userSelectedEncapsulationField.EncapsulationAttributes.ParameterName ?? "value";
+        //    //set => _userSelectedEncapsulationField.EncapsulationAttributes.ParameterName = value;
+        //}
 
-        public bool IsReadOnly
-        {
-            get => _userSelectedEncapsulationField.EncapsulationAttributes.ReadOnly;
-            set => _userSelectedEncapsulationField.EncapsulationAttributes.ReadOnly = value;
-        }
+        //public bool IsReadOnly
+        //{
+        //    get => _userSelectedEncapsulationField.EncapsulationAttributes.ReadOnly;
+        //    set => _userSelectedEncapsulationField.EncapsulationAttributes.ReadOnly = value;
+        //}
 
-        public bool EncapsulateFlag
-        {
-            get => _userSelectedEncapsulationField.EncapsulationAttributes.EncapsulateFlag;
-            set => _userSelectedEncapsulationField.EncapsulationAttributes.EncapsulateFlag = value;
-        }
+        //public bool EncapsulateFlag
+        //{
+        //    get => _userSelectedEncapsulationField.EncapsulationAttributes.EncapsulateFlag;
+        //    set => _userSelectedEncapsulationField.EncapsulationAttributes.EncapsulateFlag = value;
+        //}
 
-        public bool ImplementLetSetterType
-        {
-            get => _userSelectedEncapsulationField.EncapsulationAttributes.ImplementLetSetterType;
-            set => _userSelectedEncapsulationField.EncapsulationAttributes.ImplementLetSetterType = value;
-        }
+        //public bool ImplementLetSetterType
+        //{
+        //    get => _userSelectedEncapsulationField.EncapsulationAttributes.ImplementLetSetterType;
+        //    set => _userSelectedEncapsulationField.EncapsulationAttributes.ImplementLetSetterType = value;
+        //}
 
-        public bool ImplementSetSetterType
-        {
-            get => _userSelectedEncapsulationField.EncapsulationAttributes.ImplementSetSetterType;
-            set => _userSelectedEncapsulationField.EncapsulationAttributes.ImplementSetSetterType = value;
-        }
+        //public bool ImplementSetSetterType
+        //{
+        //    get => _userSelectedEncapsulationField.EncapsulationAttributes.ImplementSetSetterType;
+        //    set => _userSelectedEncapsulationField.EncapsulationAttributes.ImplementSetSetterType = value;
+        //}
 
-        public bool CanImplementLet
-            => _userSelectedEncapsulationField.EncapsulationAttributes.CanImplementLet;
+        //public bool CanImplementLet
+        //    => _userSelectedEncapsulationField.EncapsulationAttributes.CanImplementLet;
 
-        public bool CanImplementSet
-            => !_userSelectedEncapsulationField.EncapsulationAttributes.CanImplementSet;
+        //public bool CanImplementSet
+        //    => !_userSelectedEncapsulationField.EncapsulationAttributes.CanImplementSet;
     }
 }

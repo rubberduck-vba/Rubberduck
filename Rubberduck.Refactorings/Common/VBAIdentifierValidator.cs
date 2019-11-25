@@ -103,7 +103,8 @@ namespace Rubberduck.Refactorings.Common
             }
 
             //Is a reserved identifier
-            if (ReservedIdentifiers.Contains(name, StringComparer.InvariantCultureIgnoreCase))
+            if (!declarationType.HasFlag(DeclarationType.UserDefinedTypeMember) 
+                && ReservedIdentifiers.Contains(name, StringComparer.InvariantCultureIgnoreCase))
             {
                 criteriaMatchMessage = string.Format(RubberduckUI.InvalidNameCriteria_IsReservedKeywordFormat, name);
                 return true;

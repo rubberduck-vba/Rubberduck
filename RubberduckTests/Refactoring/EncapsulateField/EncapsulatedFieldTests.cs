@@ -21,26 +21,25 @@ namespace RubberduckTests.Refactoring.EncapsulateField
     [TestFixture]
     public class EncapsulatedFieldTests //: InteractiveRefactoringTestBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>
     {
-        [TestCase("fizz", "_fizz", false)]
-        [TestCase("fizz", "Fizz", false)] //Property name default is 'Fizz'
-        [TestCase("fizz", "mFizz", true)]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void NewFieldNameAttributeValidations_Internal(string originalFieldName, string newFieldName, bool expectedResult)
-        {
-            string inputCode =
-$@"Public {originalFieldName} As String";
+//        [TestCase("fizz", "_fizz", false)]
+//        [TestCase("fizz", "Fizz", false)] //Property name default is 'Fizz'
+//        [TestCase("fizz", "mFizz", true)]
+//        [Category("Refactorings")]
+//        [Category("Encapsulate Field")]
+//        public void NewFieldNameAttributeValidations_Internal(string originalFieldName, string newFieldName, bool expectedResult)
+//        {
+//            string inputCode =
+//$@"Public {originalFieldName} As String";
 
-            var selection = new Selection(1, 1);
-            var encapsulatedField = RetrieveEncapsulatedField(inputCode, originalFieldName);
+//            var selection = new Selection(1, 1);
+//            var encapsulatedField = RetrieveEncapsulatedField(inputCode, originalFieldName);
 
-            encapsulatedField.NewFieldName = newFieldName;
+//            encapsulatedField.NewFieldName = newFieldName;
 
-            Assert.AreEqual(expectedResult, encapsulatedField.HasValidEncapsulationAttributes);
-        }
+//            Assert.AreEqual(expectedResult, encapsulatedField.HasValidEncapsulationAttributes);
+//        }
 
         [TestCase("fizz", "_Fizz", false)]
-        [TestCase("fizz", "Fizz1", false)] //field is defaulted is 'fizz1'
         [TestCase("fizz", "FizzProp", true)]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
@@ -57,33 +56,33 @@ $@"Public {originalFieldName} As String";
             Assert.AreEqual(expectedResult, encapsulatedField.HasValidEncapsulationAttributes);
         }
 
-        [TestCase("fizz", "Name", false)]
-        [TestCase("fizz", "mName", false)]
-        [TestCase("fizz", "fizz1", true)]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void FieldNameAttributeValidation_External(string originalFieldName, string newFieldName, bool expectedResult)
-        {
-            string inputCode =
-$@"Public {originalFieldName} As String
+//        [TestCase("fizz", "Name", false)]
+//        [TestCase("fizz", "mName", false)]
+//        [TestCase("fizz", "fizz1", true)]
+//        [Category("Refactorings")]
+//        [Category("Encapsulate Field")]
+//        public void FieldNameAttributeValidation_External(string originalFieldName, string newFieldName, bool expectedResult)
+//        {
+//            string inputCode =
+//$@"Public {originalFieldName} As String
 
-            Private mName As String
+//            Private mName As String
 
-            Public Property Get Name() As String
-                Name = mName
-            End Property
+//            Public Property Get Name() As String
+//                Name = mName
+//            End Property
 
-            Public Property Let Name(ByVal value As String)
-                mName = value
-            End Property
-            ";
-            var selection = new Selection(1, 1);
-            var encapsulatedField = RetrieveEncapsulatedField(inputCode, originalFieldName);
+//            Public Property Let Name(ByVal value As String)
+//                mName = value
+//            End Property
+//            ";
+//            var selection = new Selection(1, 1);
+//            var encapsulatedField = RetrieveEncapsulatedField(inputCode, originalFieldName);
 
-            encapsulatedField.NewFieldName = newFieldName;
+//            //encapsulatedField.NewFieldName = newFieldName;
 
-            Assert.AreEqual(expectedResult, encapsulatedField.HasValidEncapsulationAttributes);
-        }
+//            Assert.AreEqual(expectedResult, encapsulatedField.HasValidEncapsulationAttributes);
+//        }
 
         [Test]
         [Category("Refactorings")]
