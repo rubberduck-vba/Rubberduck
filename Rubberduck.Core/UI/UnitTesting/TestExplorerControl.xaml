@@ -75,7 +75,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+    <ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="30"/>
@@ -355,7 +355,11 @@
                                        SelectionMode="Extended"
                                        ShowGroupingItemCount="True"
                                        InitialExpandedState="True"
-                                       RequestBringIntoView="TestGrid_RequestBringIntoView">
+                                       RequestBringIntoView="TestGrid_RequestBringIntoView"
+                                       VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                                       ScrollViewer.CanContentScroll="True" 
+                                       ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                         <DataGrid.Columns>
                             <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Outcome}">
                                 <DataGridTemplateColumn.CellTemplate>
