@@ -34,7 +34,7 @@ namespace Rubberduck.Parsing.Rewriter
             var result = _parseManager.OnSuspendParser(this, new[] {ParserState.Ready, ParserState.ResolvedDeclarations}, ExecuteAllRewriters);
             if(result.Outcome != SuspensionOutcome.Completed)
             {
-                Logger.Warn($"Rewriting attribute modules did not succeed. suspension result = {result}");
+                Logger.Warn($"Rewriting attribute modules did not succeed. Suspension result = {result}");
                 if (result.EncounteredException != null)
                 {
                     Logger.Warn(result.EncounteredException);

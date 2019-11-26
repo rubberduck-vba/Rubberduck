@@ -216,7 +216,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             var existingModules = Modules(moduleNames, targetProject.ProjectId, finder);
 
-            if (!ExistingModulesAreGenerallyOk(existingModules))
+            if (!ExistingModulesPassPreCheck(existingModules))
             {
                 return;
             }
@@ -274,7 +274,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 .Where(module => reImportableComponentTypes.Contains(module.ComponentType))
                 .ToList();
 
-            if (UserDeniesExecution(targetProject))
+            if (UserDeclinesExecution(targetProject))
             {
                 return;
             }
@@ -303,9 +303,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
         }
 
-        protected virtual bool ExistingModulesAreGenerallyOk(IDictionary<string, QualifiedModuleName> existingModules) => true;
+        protected virtual bool ExistingModulesPassPreCheck(IDictionary<string, QualifiedModuleName> existingModules) => true;
         protected virtual ICollection<QualifiedModuleName> ModulesToRemoveBeforeImport(IDictionary<string, QualifiedModuleName> existingModules) => new List<QualifiedModuleName>();
-        protected virtual bool UserDeniesExecution(IVBProject targetProject) => false;
+        protected virtual bool UserDeclinesExecution(IVBProject targetProject) => false;
 
         protected bool HasMatchingFileExtension(string filename, QualifiedModuleName module)
         {

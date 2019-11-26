@@ -179,7 +179,28 @@ namespace Rubberduck.UnitTesting
                 return;
             }
             //We push the suspension to a background thread to avoid potential deadlocks if a parse is still running.
-            Task.Run(() => _state.OnSuspendParser(this, AllowedRunStates, () => RunWhileSuspended(tests)));
+            Task.Run(() =>
+            {
+                var suspensionResult = _state.OnSuspendParser(this, AllowedRunStates, () => RunWhileSuspended(tests));
+
+                //We have to log and swallow since we run as the top level code in a background thread.
+                switch (suspensionResult.Outcome)
+                {
+                    case SuspensionOutcome.Completed:
+                        return;
+                    case SuspensionOutcome.Canceled:
+                        Logger.Debug("Test execution canceled.");
+                        return;
+                    default:
+                        Logger.Warn($"Test execution failed with suspension outcome {suspensionResult.Outcome}.");
+                        if (suspensionResult.EncounteredException != null)
+                        {
+                            Logger.Error(suspensionResult.EncounteredException);
+                        }
+
+                        return;
+                }
+            });
         }
 
         private void EnsureRubberduckIsReferencedForEarlyBoundTests()

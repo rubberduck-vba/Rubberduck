@@ -38,7 +38,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         //Since we remove the components, we keep on the safe side.
         protected override IEnumerable<string> AlwaysImportableExtensions => Enumerable.Empty<string>();
 
-        protected override bool ExistingModulesAreGenerallyOk(IDictionary<string, QualifiedModuleName> existingModules)
+        protected override bool ExistingModulesPassPreCheck(IDictionary<string, QualifiedModuleName> existingModules)
         {
             if (!existingModules.All(kvp => HasMatchingFileExtension(kvp.Key, kvp.Value)))
             {

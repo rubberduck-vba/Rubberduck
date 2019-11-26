@@ -32,8 +32,6 @@ namespace Rubberduck.Parsing.VBA
         void MarkAsModified(QualifiedModuleName module);
     }
 
-
-
     public enum SuspensionOutcome
     {
         /// <summary>

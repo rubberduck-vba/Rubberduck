@@ -39,7 +39,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 .ToHashSet();
         }
 
-        protected override bool UserDeniesExecution(IVBProject targetProject)
+        protected override bool UserDeclinesExecution(IVBProject targetProject)
         {
             return !UserConfirmsToReplaceProjectContents(targetProject);
         }
