@@ -19,7 +19,7 @@ using System.Linq;
 namespace RubberduckTests.Refactoring.EncapsulateField
 {
     [TestFixture]
-    public class EncapsulatedFieldTests //: InteractiveRefactoringTestBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>
+    public class EncapsulatedFieldTests
     {
         [TestCase("fizz", "_Fizz", false)]
         [TestCase("fizz", "FizzProp", true)]
@@ -30,7 +30,6 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             string inputCode =
 $@"Public {originalFieldName} As String";
 
-            var selection = new Selection(1, 1);
             var encapsulatedField = RetrieveEncapsulatedField(inputCode, originalFieldName);
 
             encapsulatedField.PropertyName = newPropertyName;
@@ -58,7 +57,7 @@ $@"Public fizz As String
             End Property
             ";
             var encapsulatedField = RetrieveEncapsulatedField(inputCode, "fizz");
-            Assert.AreEqual(true, encapsulatedField.HasValidEncapsulationAttributes);
+            Assert.IsTrue(encapsulatedField.HasValidEncapsulationAttributes);
         }
 
         [Test]
@@ -81,17 +80,18 @@ $@"Public fizz As String
             End Property
             ";
             var encapsulatedField = RetrieveEncapsulatedField(inputCode, "fizz");
-            Assert.AreEqual(true, encapsulatedField.HasValidEncapsulationAttributes);
+            Assert.IsTrue(encapsulatedField.HasValidEncapsulationAttributes);
         }
 
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        public void PropertyNameChange_Multiple()
+        public void FieldNameValuesPerSequenceOfPropertyNameChanges()
         {
             string inputCode = "Public fizz As String";
 
             var encapsulatedField = RetrieveEncapsulatedField(inputCode, "fizz");
+            StringAssert.AreEqualIgnoringCase("fizz1", encapsulatedField.NewFieldName);
 
             encapsulatedField.PropertyName = "Test";
             StringAssert.AreEqualIgnoringCase("fizz", encapsulatedField.NewFieldName);
@@ -127,18 +127,21 @@ $@"Public fizz As String
         [Category("Encapsulate Field")]
         public void CreateUDT()
         {
-            string inputCode =
-$@"Public fizz As String";
 
-            var encapsulatedField = RetrieveEncapsulatedField(inputCode, "fizz");
+            var mock = new Mock<IEncapsulatedFieldDeclaration>();
+            mock.SetupGet(m => m.AsTypeName).Returns("String");
+            mock.SetupGet(m => m.PropertyName).Returns("Fizz");
 
-            var udtTest = new EncapsulationUDT(CreateIndenter());
-            udtTest.AddMember(encapsulatedField);
-            var result = udtTest.TypeDeclarationBlock;
-            StringAssert.Contains("Fizz As String", result);
+            var newUserDefinedType = new UDTGenerator(CreateIndenter());
+            newUserDefinedType.AddMember(mock.Object);
+
+            var result = newUserDefinedType.TypeDeclarationBlock;
+            StringAssert.Contains("Private Type This_Type", result);
+            StringAssert.Contains(" Fizz As String", result);
+            StringAssert.Contains("End Type", result);
         }
 
-        private IEncapsulatedFieldDeclaration RetrieveEncapsulatedField(string inputCode, string fieldName)//, Selection selection) //, Func<TModel, TModel> presenterAdjustment, Type expectedException = null, bool executeViaActiveSelection = false)
+        private IEncapsulatedFieldDeclaration RetrieveEncapsulatedField(string inputCode, string fieldName)
         {
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
 
@@ -154,16 +157,6 @@ $@"Public fizz As String";
                 var match = state.DeclarationFinder.MatchName(fieldName).Single();
                 return new EncapsulatedFieldDeclaration(match, new EncapsulateFieldNamesValidator(state)) as IEncapsulatedFieldDeclaration;
             }
-        }
-
-        private ClientEncapsulationAttributes UserModifiedEncapsulationAttributes(string field, string property = null, bool? isReadonly = null, bool encapsulateFlag = true, string newFieldName = null)
-        {
-            var clientAttrs = new ClientEncapsulationAttributes(field);
-            clientAttrs.NewFieldName = newFieldName ?? clientAttrs.NewFieldName;
-            clientAttrs.PropertyName = property ?? clientAttrs.PropertyName;
-            clientAttrs.ReadOnly = isReadonly ?? clientAttrs.ReadOnly;
-            clientAttrs.EncapsulateFlag = encapsulateFlag;
-            return clientAttrs;
         }
 
         private static IIndenter CreateIndenter(IVBE vbe = null)
