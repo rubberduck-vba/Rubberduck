@@ -116,7 +116,58 @@ namespace RubberduckTests.ParserStateTests
                 state.OnParseRequested(this);
             }
             Assert.IsFalse(wasSuspended);
-            Assert.AreEqual(SuspensionOutcome.UnexpectedError, result);
+            Assert.AreEqual(SuspensionOutcome.ReadLockAlreadyHeld, result);
+        }
+
+        [Test]
+        [Category("ParserState")]
+        public void Test_RPS_SuspendParser_Exception()
+        {
+            SuspensionResult result;
+
+            var vbe = MockVbeBuilder.BuildFromSingleModule("", ComponentType.StandardModule, out var _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                result = state.OnSuspendParser(this, AllowedRunStates, () => throw new NullReferenceException());
+            }
+
+            Assert.IsNotNull(result.EncounteredException);
+            Assert.AreEqual(typeof(NullReferenceException), result.EncounteredException.GetType());
+            Assert.AreEqual(SuspensionOutcome.UnexpectedError, result.Outcome);
+        }
+
+        [Test]
+        [Category("ParserState")]
+        public void Test_RPS_SuspendParser_Canceled()
+        {
+            SuspensionResult result;
+
+            var vbe = MockVbeBuilder.BuildFromSingleModule("", ComponentType.StandardModule, out var _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                result = state.OnSuspendParser(this, AllowedRunStates, () => throw new OperationCanceledException());
+            }
+
+            Assert.IsNotNull(result.EncounteredException);
+            Assert.AreEqual(typeof(OperationCanceledException), result.EncounteredException.GetType());
+            Assert.AreEqual(SuspensionOutcome.Canceled, result.Outcome);
+        }
+
+        [Test]
+        [Category("ParserState")]
+        public void Test_RPS_SuspendParser_IncompatibleState()
+        {
+            var result = SuspensionOutcome.Pending;
+            var wasRun = false;
+            var wasSuspended = false;
+
+            var vbe = MockVbeBuilder.BuildFromSingleModule("", ComponentType.StandardModule, out var _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                result = state.OnSuspendParser(this, new []{ParserState.Pending}, () => throw new OperationCanceledException()).Outcome;
+            }
+            Assert.IsFalse(wasSuspended);
+            Assert.AreEqual(SuspensionOutcome.IncompatibleState, result);
         }
 
         [Test]

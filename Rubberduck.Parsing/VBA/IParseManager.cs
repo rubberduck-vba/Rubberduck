@@ -64,6 +64,10 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         Canceled,
         /// <summary>
+        /// We already hold a read lock to the suspension lock; this indicates a bug in code.
+        /// </summary>
+        ReadLockAlreadyHeld,
+        /// <summary>
         /// An unexpected error; usually indicates a bug in code.
         /// </summary>
         UnexpectedError

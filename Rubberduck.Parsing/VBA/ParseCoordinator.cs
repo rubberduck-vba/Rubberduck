@@ -116,7 +116,7 @@ namespace Rubberduck.Parsing.VBA
         {
             if (ParsingSuspendLock.IsReadLockHeld)
             {
-                e.Result = SuspensionOutcome.UnexpectedError;
+                e.Result = SuspensionOutcome.ReadLockAlreadyHeld;
                 const string errorMessage =
                     "A suspension action was attempted while a read lock was held. This indicates a bug in the code logic as suspension should not be requested from same thread that has a read lock.";
                 Logger.Error(errorMessage);
@@ -154,13 +154,11 @@ namespace Rubberduck.Parsing.VBA
             {
                 e.Result = SuspensionOutcome.Canceled;
                 e.EncounteredException = ex;
-                throw;
             }
             catch (Exception ex)
             {
                 e.Result = SuspensionOutcome.UnexpectedError;
                 e.EncounteredException = ex;
-                throw;
             }
             finally
             {
