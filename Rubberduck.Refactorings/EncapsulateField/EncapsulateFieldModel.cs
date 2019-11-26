@@ -10,6 +10,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
 {
     public class EncapsulateFieldModel : IRefactoringModel
     {
+        private const string DEFAULT_ENCAPSULATION_UDT_IDENTIFIER = "This_Type";
+        private const string DEFAULT_ENCAPSULATION_UDT_FIELD_IDENTIFIER = "this";
+
         private readonly IIndenter _indenter;
         private readonly IEncapsulateFieldNamesValidator _validator;
 
@@ -18,9 +21,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private IEnumerable<Declaration> UdtFieldMembers(Declaration udtField) => _udtFieldToUdtDeclarationMap[udtField].Item2;
 
         private Dictionary<string, IEncapsulatedFieldDeclaration> _encapsulateFieldDeclarations = new Dictionary<string, IEncapsulatedFieldDeclaration>();
-
-        private IEncapsulatedFieldDeclaration _userSelectedEncapsulationField;
-        //private Dictionary<string, IFieldEncapsulationAttributes> _udtVariableEncapsulationAttributes = new Dictionary<string, IFieldEncapsulationAttributes>();
 
         public EncapsulateFieldModel(Declaration target, IEnumerable<Declaration> allMemberFields, IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> udtFieldToUdtDeclarationMap, IIndenter indenter, IEncapsulateFieldNamesValidator validator)
         {
@@ -37,7 +37,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             AddUDTEncapsulationFields(udtFieldToUdtDeclarationMap);
 
             this[target].EncapsulationAttributes.EncapsulateFlag = true;
-            _userSelectedEncapsulationField = this[target];
         }
 
         public IEnumerable<IEncapsulatedFieldDeclaration> FlaggedEncapsulationFields => _encapsulateFieldDeclarations.Values.Where(v => v.EncapsulationAttributes.EncapsulateFlag);
@@ -56,9 +55,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public bool EncapsulateWithUDT { set; get; }
 
-        public string EncapsulateWithUDT_TypeIdentifier { set; get; } = "This_Type";
+        public string EncapsulateWithUDT_TypeIdentifier { set; get; } = DEFAULT_ENCAPSULATION_UDT_IDENTIFIER;
 
-        public string EncapsulateWithUDT_FieldName { set; get; } = "this";
+        public string EncapsulateWithUDT_FieldName { set; get; } = DEFAULT_ENCAPSULATION_UDT_FIELD_IDENTIFIER;
 
         public IList<string> PropertiesContent
         {
@@ -99,13 +98,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             if (EncapsulateWithUDT)
             {
-                var udt = new EncapsulationUDT(EncapsulateWithUDT_TypeIdentifier, EncapsulateWithUDT_FieldName, _indenter);
+                var udt = new UDTGenerator(EncapsulateWithUDT_TypeIdentifier, _indenter);
                 foreach (var nonUdtMemberField in nonUdtMemberFields)
                 {
                     udt.AddMember(nonUdtMemberField);
                 }
                 newContent.AddDeclarationBlock(udt.TypeDeclarationBlock);
-                newContent.AddDeclarationBlock(udt.FieldDeclaration);
+                newContent.AddDeclarationBlock(udt.FieldDeclaration(EncapsulateWithUDT_FieldName));
 
                 //TODO: handle selected UDTs
                 return newContent;
@@ -122,7 +121,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
                 if (nonUdtMemberField.Declaration.IsDeclaredInList())
                 {
-                    var targetIdentifier = nonUdtMemberField.Declaration.Context.GetText().Replace(attributes.FieldName, attributes.NewFieldName);
+                    var targetIdentifier = nonUdtMemberField.Declaration.Context.GetText().Replace(attributes.TargetName, attributes.NewFieldName);
                     var newField = nonUdtMemberField.Declaration.IsTypeSpecified ? $"{Tokens.Private} {targetIdentifier}" : $"{Tokens.Private} {targetIdentifier} {Tokens.As} {nonUdtMemberField.Declaration.AsTypeName}";
 
                     newContent.AddDeclarationBlock(newField);
@@ -190,77 +189,16 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 PropertyName = attributes.PropertyName,
                 AsTypeName = attributes.AsTypeName,
-                BackingField = EncapsulateWithUDT ? $"{EncapsulateWithUDT_FieldName}.{attributes.PropertyName}" : attributes.FieldReadWriteIdentifier,
+                BackingField = EncapsulateWithUDT 
+                                    ? $"{EncapsulateWithUDT_FieldName}.{attributes.PropertyName}" 
+                                    : attributes.FieldReferenceExpression,
                 ParameterName = attributes.ParameterName,
                 GenerateSetter = attributes.ImplementSetSetterType,
                 GenerateLetter = attributes.ImplementLetSetterType
             };
 
-            return GetPropertyText(generator);
-        }
-
-        private string GetPropertyText(PropertyGenerator generator)
-        {
             var propertyTextLines = generator.AllPropertyCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
             return string.Join(Environment.NewLine, _indenter.Indent(propertyTextLines, true));
         }
-
-        public Declaration TargetDeclaration
-        {
-            get => _userSelectedEncapsulationField.Declaration;
-            set
-            {
-                var encField = new EncapsulatedFieldDeclaration(value, _validator);
-                _userSelectedEncapsulationField = _encapsulateFieldDeclarations[encField.TargetID];
-            }
-        }
-
-        //public string PropertyName
-        //{
-        //    get => _userSelectedEncapsulationField.EncapsulationAttributes.PropertyName;
-        //    set => _userSelectedEncapsulationField.EncapsulationAttributes.PropertyName = value;
-        //}
-
-        //public string NewFieldName
-        //{
-        //    get => _userSelectedEncapsulationField.EncapsulationAttributes.NewFieldName;
-        //    //set => _userSelectedEncapsulationField.EncapsulationAttributes.NewFieldName = value;
-        //}
-
-        //public string ParameterName
-        //{
-        //    get => _userSelectedEncapsulationField.EncapsulationAttributes.ParameterName ?? "value";
-        //    //set => _userSelectedEncapsulationField.EncapsulationAttributes.ParameterName = value;
-        //}
-
-        //public bool IsReadOnly
-        //{
-        //    get => _userSelectedEncapsulationField.EncapsulationAttributes.ReadOnly;
-        //    set => _userSelectedEncapsulationField.EncapsulationAttributes.ReadOnly = value;
-        //}
-
-        //public bool EncapsulateFlag
-        //{
-        //    get => _userSelectedEncapsulationField.EncapsulationAttributes.EncapsulateFlag;
-        //    set => _userSelectedEncapsulationField.EncapsulationAttributes.EncapsulateFlag = value;
-        //}
-
-        //public bool ImplementLetSetterType
-        //{
-        //    get => _userSelectedEncapsulationField.EncapsulationAttributes.ImplementLetSetterType;
-        //    set => _userSelectedEncapsulationField.EncapsulationAttributes.ImplementLetSetterType = value;
-        //}
-
-        //public bool ImplementSetSetterType
-        //{
-        //    get => _userSelectedEncapsulationField.EncapsulationAttributes.ImplementSetSetterType;
-        //    set => _userSelectedEncapsulationField.EncapsulationAttributes.ImplementSetSetterType = value;
-        //}
-
-        //public bool CanImplementLet
-        //    => _userSelectedEncapsulationField.EncapsulationAttributes.CanImplementLet;
-
-        //public bool CanImplementSet
-        //    => !_userSelectedEncapsulationField.EncapsulationAttributes.CanImplementSet;
     }
 }

@@ -21,7 +21,6 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
     {
         public RubberduckParserState State { get; }
 
-
         public EncapsulateFieldViewModel(EncapsulateFieldModel model, RubberduckParserState state/*, IIndenter indenter*/) : base(model)
         {
             State = state;
@@ -35,16 +34,6 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         }
 
         public IEncapsulatedFieldViewData SelectedValue { set; get; }
-
-        //public Declaration TargetDeclaration
-        //{
-        //    get => Model.TargetDeclaration;
-        //    set
-        //    {
-        //        Model.TargetDeclaration = value;
-        //        //PropertyName = Model[Model.TargetDeclaration].PropertyName;
-        //    }
-        //}
 
         public ObservableCollection<IEncapsulatedFieldViewData> EncapsulationFields
         {
@@ -67,15 +56,6 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             }
         }
 
-        public string LatestEdit
-        {
-            set
-            {
-                UpdatePreview();
-            }
-        }
-
-
         public bool EncapsulateAsUDT
         {
             get => Model.EncapsulateWithUDT;
@@ -83,8 +63,6 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             {
                 Model.EncapsulateWithUDT = value;
                 UpdatePreview();
-                //OnPropertyChanged(nameof(EncapsulateAsUDT_TypeIdentifier));
-                //OnPropertyChanged(nameof(EncapsulateAsUDT_FieldName));
             }
         }
 
@@ -118,87 +96,10 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         }
 
 
-        //public bool CanHaveLet => Model.CanImplementLet;
-        //public bool CanHaveSet => Model.CanImplementSet;
-
-        //public bool IsLetSelected
-        //{
-        //    get => Model.ImplementLetSetterType;
-        //    set
-        //    {
-        //        Model.ImplementLetSetterType = value;
-        //        OnPropertyChanged();
-        //        OnPropertyChanged(nameof(PropertyPreview));
-        //    }
-        //}
-
-        //public bool IsSetSelected
-        //{
-        //    get => Model.ImplementSetSetterType;
-        //    set
-        //    {
-        //        Model.ImplementSetSetterType = value;
-        //        OnPropertyChanged();
-        //        OnPropertyChanged(nameof(PropertyPreview));
-        //    }
-        //}
-
-        //public string PropertyName
-        //{
-        //    get => Model.PropertyName;
-        //    set
-        //    {
-        //        Model.PropertyName = value;
-        //        OnPropertyChanged();
-        //        OnPropertyChanged(nameof(IsValidPropertyName));
-        //        OnPropertyChanged(nameof(HasValidNames));
-        //        OnPropertyChanged(nameof(PropertyPreview));
-        //    }
-        //}
-
-        //public string ParameterName
-        //{
-        //    get => Model.ParameterName;
-        //    set
-        //    {
-        //        Model.ParameterName = value;
-        //        OnPropertyChanged();
-        //        OnPropertyChanged(nameof(IsValidParameterName));
-        //        OnPropertyChanged(nameof(HasValidNames));
-        //        OnPropertyChanged(nameof(PropertyPreview));
-        //    }
-        //}
-
         public IEncapsulateFieldNamesValidator RefactoringValidator { set; get; }
 
-        //public bool IsValidPropertyName
-        //{
-        //    get
-        //    {
-        //        var encapsulatedField = Model[TargetDeclaration];
-
-        //        return encapsulatedField.Declaration != null
-        //                && VBAIdentifierValidator.IsValidIdentifier(encapsulatedField.PropertyName, DeclarationType.Variable);
-        //                //&& !encapsulatedField.PropertyName.Equals(encapsulatedField.EncapsulationAttributes.NewFieldName, StringComparison.InvariantCultureIgnoreCase)
-        //                //&& !encapsulatedField.PropertyName.Equals(ParameterName, StringComparison.InvariantCultureIgnoreCase);
-        //    }
-        //}
-
-        //public bool IsValidParameterName
-        //{
-        //    get
-        //    {
-        //        var encapsulatedField = Model[TargetDeclaration];
-
-        //        return encapsulatedField.Declaration != null
-        //                && VBAIdentifierValidator.IsValidIdentifier(encapsulatedField.PropertyName, DeclarationType.Variable);
-        //                //&& !encapsulatedField.EncapsulationAttributes.ParameterName.Equals(encapsulatedField.Declaration.IdentifierName, StringComparison.InvariantCultureIgnoreCase)
-        //                //&& !encapsulatedField.EncapsulationAttributes.ParameterName.Equals(encapsulatedField.EncapsulationAttributes.PropertyName, StringComparison.InvariantCultureIgnoreCase);
-        //    }
-        //}
-
         //TODO: hook the validation scheme backup
-        public bool HasValidNames => true; // IsValidPropertyName; // && IsValidParameterName;
+        public bool HasValidNames => true;
 
         public string PropertyPreview
         {

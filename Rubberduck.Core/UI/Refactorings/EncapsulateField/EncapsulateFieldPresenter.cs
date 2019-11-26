@@ -10,10 +10,5 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
 
         public EncapsulateFieldPresenter(EncapsulateFieldModel model,
             IRefactoringDialogFactory dialogFactory) : base(DialogData, model, dialogFactory) { }
-
-        public override EncapsulateFieldModel Show()
-        {
-            return Model.TargetDeclaration == null ? null : base.Show();
-        }
     }
 }

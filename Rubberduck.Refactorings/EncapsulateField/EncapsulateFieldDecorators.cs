@@ -58,11 +58,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public string NewFieldName
         {
             get => _decorated.EncapsulationAttributes.NewFieldName;
-            //set => _decorated.EncapsulationAttributes.NewFieldName = value;
         }
-
-        public string FieldReadWriteIdentifier 
-            => _decorated.EncapsulationAttributes.FieldReadWriteIdentifier;
 
         public string AsTypeName => _decorated.EncapsulationAttributes.AsTypeName;
 
@@ -81,8 +77,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private EncapsulatedValueType(IEncapsulatedFieldDeclaration efd)
             : base(efd)
         {
-            EncapsulationAttributes.CanImplementLet = true;
-            EncapsulationAttributes.CanImplementSet = false;
             EncapsulationAttributes.ImplementLetSetterType = true;
             EncapsulationAttributes.ImplementSetSetterType = false;
         }
@@ -97,8 +91,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private EncapsulatedUserDefinedType(IEncapsulatedFieldDeclaration efd)
             : base(efd)
         {
-            EncapsulationAttributes.CanImplementLet = true;
-            EncapsulationAttributes.CanImplementSet = false;
             EncapsulationAttributes.ImplementLetSetterType = true;
             EncapsulationAttributes.ImplementSetSetterType = false;
         }
@@ -112,8 +104,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private EncapsulatedVariantType(IEncapsulatedFieldDeclaration efd)
             : base(efd)
         {
-            EncapsulationAttributes.CanImplementLet = true;
-            EncapsulationAttributes.CanImplementSet = true;
             EncapsulationAttributes.ImplementLetSetterType = true;
             EncapsulationAttributes.ImplementSetSetterType = true;
         }
@@ -127,8 +117,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private EncapsulatedObjectType(IEncapsulatedFieldDeclaration efd)
             : base(efd)
         {
-            EncapsulationAttributes.CanImplementLet = false;
-            EncapsulationAttributes.CanImplementSet = true;
             EncapsulationAttributes.ImplementLetSetterType = false;
             EncapsulationAttributes.ImplementSetSetterType = true;
         }
@@ -142,8 +130,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private EncapsulatedArrayType(IEncapsulatedFieldDeclaration efd)
             : base(efd)
         {
-            EncapsulationAttributes.CanImplementLet = false;
-            EncapsulationAttributes.CanImplementSet = false;
             EncapsulationAttributes.ImplementLetSetterType = false;
             EncapsulationAttributes.ImplementSetSetterType = false;
             EncapsulationAttributes.AsTypeName = Tokens.Variant;
@@ -166,32 +152,33 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _nameResolveProperty = propertyIdentifierRequiresNameResolution;
             _udtVariableAttributes = udtVariable.EncapsulationAttributes;
 
-            //EncapsulationAttributes.NewFieldName = efd.Declaration.IdentifierName;
             EncapsulationAttributes.PropertyName = BuildPropertyName();
-            EncapsulationAttributes.FieldReadWriteIdentifierFunc = () =>
-                {
-                    if (_udtVariableAttributes.EncapsulateFlag)
-                    {
-                        return $"{_udtVariableAttributes.NewFieldName}.{EncapsulationAttributes.NewFieldName}";
-                    }
-                    return $"{_udtVariableAttributes.FieldName}.{EncapsulationAttributes.NewFieldName}";
-                };
+            if (EncapsulationAttributes is FieldEncapsulationAttributes fea)
+            {
+                fea.FieldReferenceExpressionFunc =
+                 () =>  { var prefix = _udtVariableAttributes.EncapsulateFlag
+                                         ? _udtVariableAttributes.NewFieldName
+                                         : _udtVariableAttributes.TargetName;
+
+                            return $"{prefix}.{EncapsulationAttributes.NewFieldName}";
+                        };
+            }
 
             efd.TargetID = $"{udtVariable.Declaration.IdentifierName}.{Declaration.IdentifierName}";
             efd.IsUDTMember = true;
         }
+
+        public static IEncapsulatedFieldDeclaration Decorate(IEncapsulatedFieldDeclaration efd, EncapsulatedUserDefinedType udtVariable, bool nameResolveProperty) 
+            => new EncapsulatedUserDefinedTypeMember(efd, udtVariable, nameResolveProperty);
 
         private string BuildPropertyName()
         {
             if (_nameResolveProperty)
             {
                 var propertyPrefix = char.ToUpper(_originalVariableName[0]) + _originalVariableName.Substring(1, _originalVariableName.Length - 1);
-                return $"{propertyPrefix}_{EncapsulationAttributes.FieldName}";
+                return $"{propertyPrefix}_{EncapsulationAttributes.TargetName}";
             }
-            return EncapsulationAttributes.FieldName;
+            return EncapsulationAttributes.TargetName;
         }
-
-        public static IEncapsulatedFieldDeclaration Decorate(IEncapsulatedFieldDeclaration efd, EncapsulatedUserDefinedType udtVariable, bool nameResolveProperty) 
-            => new EncapsulatedUserDefinedTypeMember(efd, udtVariable, nameResolveProperty);
     }
 }

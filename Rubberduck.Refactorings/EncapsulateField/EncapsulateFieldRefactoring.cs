@@ -105,6 +105,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             rewriter.InsertNewContent(codeSectionStartIndex, model.NewContent);
 
+            var modifiedAndNewConent = codeSectionStartIndex.HasValue
+                ? rewriter.GetText(1, codeSectionStartIndex.Value - 1)
+                : rewriter.GetText();
+
             if (!rewriteSession.TryRewrite())
             {
                 throw new RewriteFailedException(rewriteSession);

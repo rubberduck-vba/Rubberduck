@@ -16,7 +16,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         bool IsReadOnly { set; get; }
         bool CanBeReadWrite { set; get; }
         string PropertyName { set; get; }
-        string FieldReadWriteIdentifier { get; }
         bool EncapsulateFlag { set; get; }
         string NewFieldName { get; }
         string AsTypeName { get; }
@@ -36,29 +35,32 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _attributes = new FieldEncapsulationAttributes(_decorated);
             _validator = validator;
             TargetID = declaration.IdentifierName;
-            SetNonConflictingEncapsulationAttributes();
+            SetNonConflictingEncapsulationIdentifiers();
         }
 
-        private void SetNonConflictingEncapsulationAttributes()
+        private void SetNonConflictingEncapsulationIdentifiers()
         {
             var isValid = _validator.HasValidEncapsulationAttributes(this);
             if (!isValid)
             {
-                var attributes = new ClientEncapsulationAttributes(Declaration.IdentifierName);
-                if (IsConflictingAttributes(attributes))
+                var clientAttributes = ClientEditableAttributes(Declaration);
+                if (IsConflictingAttributes(clientAttributes))
                 {
                     var hasConflict = true;
                     for (var idx = 2; idx < 9 && hasConflict; idx++)
                     {
-                        attributes = new ClientEncapsulationAttributes($"{Declaration.IdentifierName}{idx}");
-                        hasConflict = IsConflictingAttributes(attributes);
+                        clientAttributes.ModifyEncapsulationIdentifiers($"{Declaration.IdentifierName}{idx}");
+                        hasConflict = IsConflictingAttributes(clientAttributes);
                     }
-                    PropertyName = attributes.PropertyName;
+                    PropertyName = clientAttributes.PropertyName;
                 }
             }
         }
 
-        private bool IsConflictingAttributes(ClientEncapsulationAttributes attributes)
+        private IFieldEncapsulationAttributes ClientEditableAttributes(Declaration declaration)
+            => new FieldEncapsulationAttributes(declaration);
+
+        private bool IsConflictingAttributes(IFieldEncapsulationAttributes attributes)
         {
             var isConflictingFieldName = _validator.IsConflictingMemberName(attributes.NewFieldName, Declaration.QualifiedModuleName, Declaration.DeclarationType);
             var isConflictingPropertyName = _validator.IsConflictingMemberName(attributes.PropertyName, Declaration.QualifiedModuleName, DeclarationType.Member);
@@ -108,11 +110,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public string NewFieldName
         {
             get => _attributes.NewFieldName;
-        }
-
-        public string FieldReadWriteIdentifier
-        {
-            get => _attributes.FieldReadWriteIdentifier;
         }
 
         public string AsTypeName => _decorated.AsTypeName;
