@@ -1,19 +1,9 @@
-﻿using System;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Moq;
-using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
-using Rubberduck.VBEditor;
 using RubberduckTests.Mocks;
 using Rubberduck.SmartIndenter;
-using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings.Exceptions;
-using Rubberduck.VBEditor.Utility;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace RubberduckTests.Refactoring.EncapsulateField
@@ -132,7 +122,7 @@ $@"Public fizz As String
             mock.SetupGet(m => m.AsTypeName).Returns("String");
             mock.SetupGet(m => m.PropertyName).Returns("Fizz");
 
-            var newUserDefinedType = new UDTGenerator(CreateIndenter());
+            var newUserDefinedType = new UDTDeclarationGenerator(CreateIndenter());
             newUserDefinedType.AddMember(mock.Object);
 
             var result = newUserDefinedType.TypeDeclarationBlock;
@@ -150,10 +140,6 @@ $@"Public fizz As String
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
             using (state)
             {
-                var module = state.DeclarationFinder.UserDeclarations(DeclarationType.Module)
-                    .Single(declaration => declaration.IdentifierName == selectedComponentName)
-                    .QualifiedModuleName;
-
                 var match = state.DeclarationFinder.MatchName(fieldName).Single();
                 return new EncapsulatedFieldDeclaration(match, new EncapsulateFieldNamesValidator(state)) as IEncapsulatedFieldDeclaration;
             }

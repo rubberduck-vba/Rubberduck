@@ -1,6 +1,7 @@
 ﻿using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Common;
+using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -18,6 +19,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
         }
 
         public Declaration Declaration => _decorated.Declaration;
+
+        public DeclarationType DeclarationType => _decorated.DeclarationType;
 
         public IFieldEncapsulationAttributes EncapsulationAttributes
         {
@@ -70,6 +73,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public bool HasValidEncapsulationAttributes 
             => _decorated.HasValidEncapsulationAttributes;
+
+        public QualifiedModuleName QualifiedModuleName => _decorated.QualifiedModuleName;
+
+        public IEnumerable<IdentifierReference> References => _decorated.References;
     }
 
     public class EncapsulatedValueType : EncapsulateFieldDecoratorBase

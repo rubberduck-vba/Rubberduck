@@ -15,12 +15,16 @@ using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor.Utility;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Parsing.Grammar;
 
-namespace RubberduckTests.Refactoring
+namespace RubberduckTests.Refactoring.EncapsulateField
 {
+
     [TestFixture]
     public class EncapsulateFieldTests : InteractiveRefactoringTestBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>
     {
+        private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
+
         [TestCase("fizz", true, "baz", true, "buzz", true)]
         [TestCase("fizz", false, "baz", true, "buzz", true)]
         [TestCase("fizz", false, "baz", false, "buzz", true)]
@@ -49,7 +53,7 @@ Public {var3} As Integer";
                 [var3] = var3Flag
             };
 
-            var presenterAction = SetParameters(userInput);
+            var presenterAction = Support.SetParameters(userInput);
 
             var actualCode = RefactoredCode(inputCode, selection, presenterAction);
 
@@ -108,7 +112,7 @@ $@"Public {var1} As Integer, {var2} As Integer, {var3} As Integer, {var4} As Int
                 [var4] = var4Flag
             };
 
-            var presenterAction = SetParameters(userInput);
+            var presenterAction = Support.SetParameters(userInput);
 
             var actualCode = RefactoredCode(inputCode, selection, presenterAction);
 
@@ -134,6 +138,32 @@ $@"Public {var1} As Integer, {var2} As Integer, {var3} As Integer, {var4} As Int
             }
         }
 
+//        [Test]
+//        [Category("Refactorings")]
+//        [Category("Encapsulate Field")]
+//        public void UserDefinedType_MultipleFieldsToNewUDT()
+//        {
+//            string inputCode =
+//$@"
+//Public fo|o As Long
+//Public bar As String
+//Public foobar As Byte
+//";
+
+//            var userInput = new UserInputDataObject("foo", encapsulationFlag: true);
+//            userInput.AddAttributeSet("bar", encapsulationFlag: true);
+//            userInput.AddAttributeSet("foobar", encapsulationFlag: true);
+//            userInput.EncapsulateAsUDT = true;
+
+//            var presenterAction = Support.SetParameters(userInput);
+//            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+//            StringAssert.Contains("Private this As This_Type", actualCode);
+//            StringAssert.Contains("Private Type This_Type", actualCode);
+//            StringAssert.Contains("Foo As Long", actualCode);
+//            StringAssert.Contains("Bar As String", actualCode);
+//            StringAssert.Contains("Foobar As Byte", actualCode);
+//        }
+
         [TestCase("Public")]
         [TestCase("Private")]
         [Category("Refactorings")]
@@ -150,12 +180,53 @@ End Type
 {accessibility} th|is As TBar";
 
 
-            var presenterAction = UserAcceptsDefaults();
-            var actualCode = RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            var presenterAction = Support.UserAcceptsDefaults();
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Private this1 As TBar", actualCode);
             StringAssert.Contains("this1 = value", actualCode);
             StringAssert.Contains($"This = this1", actualCode);
             StringAssert.DoesNotContain($"this1.First1 = value", actualCode);
+        }
+
+
+        [TestCase("Public")]
+        [TestCase("Private")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void UserDefinedType_UserAcceptsDefaults_ToUDTInstances(string accessibility)
+        {
+            string selectionModule = "ClassInput";
+            string inputCode =
+$@"
+Private Type TBar
+    First As String
+    Second As Long
+End Type
+
+{accessibility} th|is As TBar
+
+Private that As TBar";
+            
+            string otherModule = "OtherModule";
+            string moduleCode =
+$@"
+Private Type TBar
+    First As String
+    Second As Long
+End Type
+
+{accessibility} this As TBar
+
+Private that As TBar";
+
+
+            var presenterAdjustment = Support.UserAcceptsDefaults();
+            var codeString = inputCode.ToCodeString();
+            var actualCode = RefactoredCode(selectionModule, codeString.CaretPosition.ToOneBased(), presenterAdjustment, null, false, (selectionModule, codeString.Code, ComponentType.ClassModule), (otherModule, moduleCode, ComponentType.StandardModule) );
+            StringAssert.Contains("Private this1 As TBar", actualCode[selectionModule]);
+            StringAssert.Contains("this1 = value", actualCode[selectionModule]);
+            StringAssert.Contains($"This = this1", actualCode[selectionModule]);
+            StringAssert.DoesNotContain($"this1.First1 = value", actualCode[selectionModule]);
         }
 
         [TestCase("Public", true, true)]
@@ -190,8 +261,8 @@ End Type
             var expectedThis = new EncapsulationIdentifiers("this") { Property = "MyType"};
             var expectedThat = new EncapsulationIdentifiers("that") { Property = "MyOtherType"};
 
-            var presenterAction = SetParameters(userInput);
-            var actualCode = RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            var presenterAction = Support.SetParameters(userInput);
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             if (encapsulateThis)
             {
                 StringAssert.Contains($"Private {expectedThis.Field} As TBar", actualCode);
@@ -249,9 +320,9 @@ Private th|is As TBar";
             var userInput = new UserInputDataObject("this", "MyType", true);
             userInput.AddUDTMemberNameFlagPairs(("this", memberToEncapsulate, true));
 
-            var presenterAction = SetParameters(userInput);
+            var presenterAction = Support.SetParameters(userInput);
 
-            var actualCode = RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains($"this.{memberToEncapsulate} = value", actualCode);
             StringAssert.Contains($"{memberToEncapsulate} = this.{memberToEncapsulate}", actualCode);
         }
@@ -276,9 +347,9 @@ Private th|is As TBar";
             userInput.AddUDTMemberNameFlagPairs(("this", "First", true));
             userInput.AddUDTMemberNameFlagPairs(("this", "Second", true));
 
-            var presenterAction = SetParameters(userInput);
+            var presenterAction = Support.SetParameters(userInput);
 
-            var actualCode = RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("this.First = value", actualCode);
             StringAssert.Contains($"First = this.First", actualCode);
             StringAssert.Contains("this.Second = value", actualCode);
@@ -311,9 +382,9 @@ Private mFizz
             userInput.AddAttributeSet("mBar", "Bar", true);
             userInput.AddAttributeSet("mFizz", "Fizz", true);
 
-            var presenterAction = SetParameters(userInput);
+            var presenterAction = Support.SetParameters(userInput);
 
-            var actualCode = RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
 
             StringAssert.Contains("Private this As TBar", actualCode);
             StringAssert.Contains("this = value", actualCode);
@@ -361,7 +432,7 @@ End Sub
 
             userInput.AddUDTMemberNameFlagPairs(("this", "First", true), ("this", "Second", true));
 
-            var presenterAction = SetParameters(userInput);
+            var presenterAction = Support.SetParameters(userInput);
 
             var codeString = inputCode.ToCodeString();
             var actualModuleCode = RefactoredCode(
@@ -405,9 +476,9 @@ End Type
             var userInput = new UserInputDataObject("this", "MyType", true);
             userInput.AddUDTMemberNameFlagPairs(("this", "First", true), ("this", "Second", true));
 
-            var presenterAction = SetParameters(userInput);
+            var presenterAction = Support.SetParameters(userInput);
 
-            var actualCode = RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Private this As TBar", actualCode);
             StringAssert.Contains("this = value", actualCode);
             StringAssert.Contains("MyType = this", actualCode);
@@ -439,9 +510,9 @@ End Type
             var userInput = new UserInputDataObject("this", "MyType", false);
             userInput.AddUDTMemberNameFlagPairs(("this", "First", true), ("this", "Second", true), ("this", "Third", true));
 
-            var presenterAction = SetParameters(userInput);
+            var presenterAction = Support.SetParameters(userInput);
 
-            var actualCode = RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains($"{accessibility} this As TBar", actualCode);
             StringAssert.DoesNotContain("this = value", actualCode);
             StringAssert.DoesNotContain($"this.First = value", actualCode);
@@ -472,9 +543,9 @@ End Type
             var userInput = new UserInputDataObject("this", "MyType", false);
             userInput.AddUDTMemberNameFlagPairs(("this", "First", true), ("this", "Second", true));
 
-            var presenterAction = SetParameters(userInput);
+            var presenterAction = Support.SetParameters(userInput);
 
-            var actualCode = RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains($"{expectedAccessibility} this As TBar", actualCode);
             StringAssert.DoesNotContain("this = value", actualCode);
             StringAssert.DoesNotContain("MyType = this", actualCode);
@@ -508,7 +579,7 @@ End Type
             var userInput = new UserInputDataObject("this", "MyType", true);
             userInput.AddUDTMemberNameFlagPairs(("this", "First", true), ("this", "Second", true));
 
-            var presenterAction = SetParameters(userInput);
+            var presenterAction = Support.SetParameters(userInput);
 
             var codeString = inputCode.ToCodeString();
             var actualModuleCode = RefactoredCode(
@@ -555,7 +626,7 @@ Private Sub Class_Initialize()
 End Sub
 ";
 
-            var presenterAction = UserAcceptsDefaults();
+            var presenterAction = Support.UserAcceptsDefaults();
 
             var codeString = inputCode.ToCodeString();
             var actualModuleCode = RefactoredCode(
@@ -585,7 +656,7 @@ End Sub
             const string inputCode =
                 @"Public fizz As Integer";
 
-            var presenterAction = SetParametersForSingleTarget("fizz", "Name");
+            var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name");
             var actualCode = RefactoredCode(inputCode, "TestModule1", DeclarationType.ProceduralModule, presenterAction, typeof(InvalidDeclarationTypeException));
             Assert.AreEqual(inputCode, actualCode);
         }
@@ -599,7 +670,7 @@ End Sub
                 @"Public Function fiz|z() As Integer
 End Function";
 
-            var presenterAction = SetParametersForSingleTarget("fizz", "Name");
+            var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name");
 
             var codeString = inputCode.ToCodeString();
             var actualCode = RefactoredCode(codeString.Code, codeString.CaretPosition.ToOneBased(), presenterAction, typeof(NoDeclarationForSelectionException));
@@ -630,8 +701,8 @@ Public Property Let Name(ByVal value As Integer)
     fizz = value
 End Property
 ";
-            var presenterAction = SetParametersForSingleTarget("fizz", "Name");
-            var actualCode = RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name");
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             Assert.AreEqual(expectedCode, actualCode);
         }
 
@@ -651,8 +722,8 @@ Public Property Get Name() As Integer
     Name = fizz
 End Property
 ";
-            var presenterAction = SetParametersForSingleTarget("fizz", "Name", isReadonly: true);
-            var actualCode = RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name", isReadonly: true);
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             Assert.AreEqual(expectedCode, actualCode);
         }
 
@@ -671,9 +742,9 @@ Function Bar() As Integer
     Bar = 0
 End Function";
 
-            var presenterAction = SetParametersForSingleTarget("fizz", "Name");
+            var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name");
 
-            var actualCode = RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             Assert.Greater(actualCode.IndexOf("Sub Foo"), actualCode.LastIndexOf("End Property"));
         }
 
@@ -695,9 +766,9 @@ End Property
 Property Set Foo(ByVal vall As Variant)
 End Property";
 
-            var presenterAction = SetParametersForSingleTarget("fizz", "Name");
+            var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name");
 
-            var actualCode = RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             Assert.Greater(actualCode.IndexOf("fizz = value"), actualCode.IndexOf("fizz As Integer"));
             Assert.Less(actualCode.IndexOf("fizz = value"), actualCode.IndexOf("Get Foo"));
         }
@@ -721,8 +792,8 @@ Public Property Let Name(ByVal value As Integer)
     fizz = value
 End Property
 ";
-            var presenterAction = SetParametersForSingleTarget("fizz", "Name");
-            var actualCode = RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name");
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             Assert.AreEqual(expectedCode, actualCode);
         }
 
@@ -739,7 +810,7 @@ buzz As Boolean, _
 bazz As Date";
 
             var selection = new Selection(rowSelection, columnSelection);
-            var presenterAction = SetParametersForSingleTarget(fieldName, "Name");
+            var presenterAction = Support.SetParametersForSingleTarget(fieldName, "Name");
             var actualCode = RefactoredCode(inputCode, selection, presenterAction);
             StringAssert.Contains(contains1, actualCode);
             StringAssert.Contains(contains1, actualCode);
@@ -768,9 +839,46 @@ Public Property Let Name(ByVal value As Integer)
     fizz = value
 End Property
 ";
-            var presenterAction = SetParametersForSingleTarget("fizz", "Name");
-            var actualCode = RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name");
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void EncapsulatePrivateField_NameConflict()
+        {
+            const string inputCode =
+                @"Private fizz As String
+Private mName As String
+
+Public Property Get Name() As String
+    Name = mName
+End Property
+
+Public Property Let Name(ByVal value As String)
+    mName = value
+End Property
+";
+            var fieldName = "fizz";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
+
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
+            using (state)
+            {
+                IEncapsulatedFieldDeclaration efd = null;
+                var fields = new List<IEncapsulatedFieldDeclaration>();
+                var validator = new EncapsulateFieldNamesValidator(state, () => fields);
+
+                var match = state.DeclarationFinder.MatchName(fieldName).Single();
+                efd = new EncapsulatedFieldDeclaration(match, validator);
+                fields.Add(efd);
+                efd.PropertyName = "Name";
+
+                var hasConflict = !validator.HasValidEncapsulationAttributes(efd.EncapsulationAttributes, efd.QualifiedModuleName, (Declaration dec) => match.Equals(dec));
+                Assert.IsTrue(hasConflict);
+            }
         }
 
         [Test]
@@ -781,8 +889,8 @@ End Property
             const string inputCode =
                 @"|Private fizz As Integer";
 
-            var presenterAction = SetParametersForSingleTarget("fizz", "Name", asUDT: true);
-            var actualCode = RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name", asUDT: true);
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Name As Integer", actualCode);
             StringAssert.Contains("this.Name = value", actualCode);
         }
@@ -806,8 +914,8 @@ Public Property Let Fizz(ByVal value As Integer)
     fizz1 = value
 End Property
 ";
-            var presenterAction = UserAcceptsDefaults();
-            var actualCode = RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            var presenterAction = Support.UserAcceptsDefaults();
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             Assert.AreEqual(expectedCode, actualCode);
         }
 
@@ -819,8 +927,8 @@ End Property
             const string inputCode =
                 @"|Private fizz As Integer";
 
-            var presenterAction = UserAcceptsDefaults(asUDT: true);
-            var actualCode = RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            var presenterAction = Support.UserAcceptsDefaults(asUDT: true);
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Fizz As Integer", actualCode);
             StringAssert.Contains("this As This_Type", actualCode);
             StringAssert.Contains("this.Fizz = value", actualCode);
@@ -842,11 +950,11 @@ End Sub
 Sub Bar(ByVal name As Integer)
 End Sub";
 
-            var presenterAction = SetParametersForSingleTarget("fizz", "Name");
+            var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name");
 
             var enapsulationIdentifiers = new EncapsulationIdentifiers("fizz") { Property = "Name" };
 
-            var actualCode = RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.AreEqualIgnoringCase(enapsulationIdentifiers.Field, "fizz");
             StringAssert.Contains($"Private {enapsulationIdentifiers.Field} As Integer", actualCode);
             StringAssert.Contains("Property Get Name", actualCode);
@@ -876,7 +984,7 @@ End Sub
 Sub Bar(ByVal v As Integer)
 End Sub";
 
-            var presenterAction = SetParametersForSingleTarget("fizz", "Name", true);
+            var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name", true);
 
             var class1CodeString = codeClass1.ToCodeString();
             var actualCode = RefactoredCode(
@@ -932,7 +1040,7 @@ End Sub";
             Func<EncapsulateFieldModel, EncapsulateFieldModel> presenterAction = model => null;
 
             var codeString = inputCode.ToCodeString();
-            var actualCode = RefactoredCode(codeString, presenterAction, typeof(InvalidRefactoringModelException));
+            var actualCode = Support.RefactoredCode(codeString, presenterAction, typeof(InvalidRefactoringModelException));
             Assert.AreEqual(codeString.Code, actualCode);
         }
 
@@ -959,7 +1067,7 @@ Public Property Let Name(ByVal value As String)
     foo = value
 End Property
 ";
-            var presenterAction = SetParametersForSingleTarget("foo", "Name");
+            var presenterAction = Support.SetParametersForSingleTarget("foo", "Name");
             var actualCode = RefactoredCode(inputCode, "foo", DeclarationType.Variable, presenterAction);
             Assert.AreEqual(expectedCode, actualCode);
         }
@@ -987,8 +1095,8 @@ Public Property Let bar(ByVal value As String)
     Foo = value
 End Property
 ";
-            var presenterAction = SetParametersForSingleTarget("Foo", "bar");
-            var actualCode = RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            var presenterAction = Support.SetParametersForSingleTarget("Foo", "bar");
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             Assert.AreEqual(expectedCode, actualCode);
         }
 
@@ -1024,7 +1132,7 @@ End Property
 ";
             var userInput = new UserInputDataObject("mArray", "MyArray", true);
 
-            var presenterAction = SetParameters(userInput);
+            var presenterAction = Support.SetParameters(userInput);
             var actualCode = RefactoredCode(inputCode, selection, presenterAction);
             Assert.AreEqual(expectedCode, actualCode);
         }
@@ -1053,7 +1161,7 @@ Public Property Get MyArray() As Variant
     MyArray = mArray
 End Property
 ";
-            var presenterAction = SetParametersForSingleTarget("mArray", "MyArray");
+            var presenterAction = Support.SetParametersForSingleTarget("mArray", "MyArray");
             var actualCode = RefactoredCode(inputCode, selection, presenterAction);
             StringAssert.Contains("Public anotherVar As Long, andOneMore As Variant", actualCode);
             StringAssert.Contains($"Private mArray({dimensions}) As String", actualCode);
@@ -1086,135 +1194,141 @@ Public Property Get MyArray() As Variant
     MyArray = mArray
 End Property
 ";
-            var presenterAction = SetParametersForSingleTarget("mArray", "MyArray");
-            var actualCode = RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            var presenterAction = Support.SetParametersForSingleTarget("mArray", "MyArray");
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             Assert.AreEqual(expectedCode, actualCode);
         }
 
         #region setup
 
-        private TestEncapsulationAttributes UserModifiedEncapsulationAttributes(string field, string property = null, bool? isReadonly = null, bool encapsulateFlag = true)
-        {
-            var testAttrs = new TestEncapsulationAttributes(field, encapsulateFlag, isReadonly ?? false);
-            if (property != null)
-            {
-                testAttrs.PropertyName = property;
-            }
-            return testAttrs;
-        }
+        //private TestEncapsulationAttributes UserModifiedEncapsulationAttributes(string field, string property = null, bool? isReadonly = null, bool encapsulateFlag = true)
+        //{
+        //    var testAttrs = new TestEncapsulationAttributes(field, encapsulateFlag, isReadonly ?? false);
+        //    if (property != null)
+        //    {
+        //        testAttrs.PropertyName = property;
+        //    }
+        //    return testAttrs;
+        //}
 
-        private Func<EncapsulateFieldModel, EncapsulateFieldModel> UserAcceptsDefaults(bool asUDT = false)
-        {
-            return model => {model.EncapsulateWithUDT = asUDT; return model; };
-        }
+        //private Func<EncapsulateFieldModel, EncapsulateFieldModel> UserAcceptsDefaults(bool asUDT = false)
+        //{
+        //    return model => {model.EncapsulateWithUDT = asUDT; return model; };
+        //}
 
-        private Func<EncapsulateFieldModel, EncapsulateFieldModel> SetParametersForSingleTarget(string field, string property = null, bool? isReadonly = null, bool encapsulateFlag = true, bool asUDT = false)
-        {
-            var clientAttrs = UserModifiedEncapsulationAttributes(field, property, isReadonly, encapsulateFlag);
+        //private Func<EncapsulateFieldModel, EncapsulateFieldModel> Support.SetParametersForSingleTarget(string field, string property = null, bool? isReadonly = null, bool encapsulateFlag = true, bool asUDT = false)
+        //{
+        //    var clientAttrs = UserModifiedEncapsulationAttributes(field, property, isReadonly, encapsulateFlag);
 
-            return SetParameters(field, clientAttrs, asUDT);
-        }
+        //    return Support.SetParameters(field, clientAttrs, asUDT);
+        //}
 
-        private Func<EncapsulateFieldModel, EncapsulateFieldModel> SetParameters(UserInputDataObject userModifications)
-        {
-            return model =>
-            {
-                foreach (var testModifiedAttribute in userModifications.EncapsulateFieldAttributes)
-                {
-                    var attrsInitializedByTheRefactoring = model[testModifiedAttribute.TargetFieldName].EncapsulationAttributes;
+        //public Func<EncapsulateFieldModel, EncapsulateFieldModel> Support.SetParameters(UserInputDataObject userModifications)
+        //{
+        //    return model =>
+        //    {
+        //        foreach (var testModifiedAttribute in userModifications.EncapsulateFieldAttributes)
+        //        {
+        //            var attrsInitializedByTheRefactoring = model[testModifiedAttribute.TargetFieldName].EncapsulationAttributes;
 
-                    attrsInitializedByTheRefactoring.PropertyName = testModifiedAttribute.PropertyName;
-                    attrsInitializedByTheRefactoring.EncapsulateFlag = testModifiedAttribute.EncapsulateFlag;
+        //            attrsInitializedByTheRefactoring.PropertyName = testModifiedAttribute.PropertyName;
+        //            attrsInitializedByTheRefactoring.EncapsulateFlag = testModifiedAttribute.EncapsulateFlag;
 
-                    var currentAttributes = model[testModifiedAttribute.TargetFieldName].EncapsulationAttributes;
-                    currentAttributes.PropertyName = attrsInitializedByTheRefactoring.PropertyName;
-                    currentAttributes.EncapsulateFlag = attrsInitializedByTheRefactoring.EncapsulateFlag;
+        //            var currentAttributes = model[testModifiedAttribute.TargetFieldName].EncapsulationAttributes;
+        //            currentAttributes.PropertyName = attrsInitializedByTheRefactoring.PropertyName;
+        //            currentAttributes.EncapsulateFlag = attrsInitializedByTheRefactoring.EncapsulateFlag;
 
-                    foreach ((string instanceVariable, string memberName, bool flag) in userModifications.UDTMemberNameFlagPairs)
-                    {
-                        model[$"{instanceVariable}.{memberName}"].EncapsulateFlag = flag;
-                    }
-                }
-                return model;
-            };
-        }
+        //            foreach ((string instanceVariable, string memberName, bool flag) in userModifications.UDTMemberNameFlagPairs)
+        //            {
+        //                model[$"{instanceVariable}.{memberName}"].EncapsulateFlag = flag;
+        //            }
+        //        }
+        //        return model;
+        //    };
+        //}
 
-        private Func<EncapsulateFieldModel, EncapsulateFieldModel> SetParameters(string originalField, TestEncapsulationAttributes attrs, bool asUDT = false)
-        {
-            return model =>
-            {
-                var encapsulatedField = model[originalField];
-                encapsulatedField.EncapsulationAttributes.PropertyName = attrs.PropertyName;
-                encapsulatedField.EncapsulationAttributes.ReadOnly = attrs.IsReadOnly;
-                encapsulatedField.EncapsulationAttributes.EncapsulateFlag = attrs.EncapsulateFlag;
+        //private Func<EncapsulateFieldModel, EncapsulateFieldModel> Support.SetParameters(string originalField, TestEncapsulationAttributes attrs, bool asUDT = false)
+        //{
+        //    return model =>
+        //    {
+        //        var encapsulatedField = model[originalField];
+        //        encapsulatedField.EncapsulationAttributes.PropertyName = attrs.PropertyName;
+        //        encapsulatedField.EncapsulationAttributes.ReadOnly = attrs.IsReadOnly;
+        //        encapsulatedField.EncapsulationAttributes.EncapsulateFlag = attrs.EncapsulateFlag;
 
-                model.EncapsulateWithUDT = asUDT;
-                return model;
-            };
-        }
+        //        model.EncapsulateWithUDT = asUDT;
+        //        return model;
+        //    };
+        //}
 
-        private class TestEncapsulationAttributes
-        {
-            public TestEncapsulationAttributes(string fieldName, bool encapsulationFlag = true, bool isReadOnly = false)
-            {
-                _identifiers = new EncapsulationIdentifiers(fieldName);
-                EncapsulateFlag = encapsulationFlag;
-                IsReadOnly = isReadOnly;
-            }
+        //public class TestEncapsulationAttributes
+        //{
+        //    public TestEncapsulationAttributes(string fieldName, bool encapsulationFlag = true, bool isReadOnly = false)
+        //    {
+        //        _identifiers = new EncapsulationIdentifiers(fieldName);
+        //        EncapsulateFlag = encapsulationFlag;
+        //        IsReadOnly = isReadOnly;
+        //    }
 
-            private EncapsulationIdentifiers _identifiers;
-            public string TargetFieldName => _identifiers.TargetFieldName;
+        //    private EncapsulationIdentifiers _identifiers;
+        //    public string TargetFieldName => _identifiers.TargetFieldName;
 
-            public string NewFieldName
-            {
-                get => _identifiers.Field;
-                set => _identifiers.Field = value;
-            }
-            public string PropertyName
-            {
-                get => _identifiers.Property;
-                set => _identifiers.Property = value;
-            }
-            public bool EncapsulateFlag { get; set; }
-            public bool IsReadOnly { get; set; }
-        }
+        //    public string NewFieldName
+        //    {
+        //        get => _identifiers.Field;
+        //        set => _identifiers.Field = value;
+        //    }
+        //    public string PropertyName
+        //    {
+        //        get => _identifiers.Property;
+        //        set => _identifiers.Property = value;
+        //    }
+        //    public bool EncapsulateFlag { get; set; }
+        //    public bool IsReadOnly { get; set; }
+        //}
 
-        private class UserInputDataObject
-        {
-            private List<TestEncapsulationAttributes> _userInput = new List<TestEncapsulationAttributes>();
-            private List<(string, string, bool)> _udtNameFlagPairs = new List<(string, string, bool)>();
+        //public class UserInputDataObject
+        //{
+        //    private List<TestEncapsulationAttributes> _userInput = new List<TestEncapsulationAttributes>();
+        //    private List<(string, string, bool)> _udtNameFlagPairs = new List<(string, string, bool)>();
 
-            public UserInputDataObject(string fieldName, string propertyName = null, bool encapsulationFlag = true, bool isReadOnly = false)
-                => AddAttributeSet(fieldName, propertyName, encapsulationFlag, isReadOnly);
+        //    public UserInputDataObject(string fieldName, string propertyName = null, bool encapsulationFlag = true, bool isReadOnly = false)
+        //        => AddAttributeSet(fieldName, propertyName, encapsulationFlag, isReadOnly);
 
-            public void AddAttributeSet(string fieldName, string propertyName = null, bool encapsulationFlag = true, bool isReadOnly = false)
-            {
-                var attrs = new TestEncapsulationAttributes(fieldName, encapsulationFlag, isReadOnly);
-                attrs.PropertyName = propertyName ?? attrs.PropertyName;
+        //    public void AddAttributeSet(string fieldName, string propertyName = null, bool encapsulationFlag = true, bool isReadOnly = false)
+        //    {
+        //        var attrs = new TestEncapsulationAttributes(fieldName, encapsulationFlag, isReadOnly);
+        //        attrs.PropertyName = propertyName ?? attrs.PropertyName;
 
-                _userInput.Add(attrs);
-            }
+        //        _userInput.Add(attrs);
+        //    }
 
-            public TestEncapsulationAttributes this[string fieldName] 
-                => EncapsulateFieldAttributes.Where(efa => efa.TargetFieldName == fieldName).Single();
+        //    public TestEncapsulationAttributes this[string fieldName] 
+        //        => EncapsulateFieldAttributes.Where(efa => efa.TargetFieldName == fieldName).Single();
 
 
-            public IEnumerable<TestEncapsulationAttributes> EncapsulateFieldAttributes => _userInput;
+        //    public IEnumerable<TestEncapsulationAttributes> EncapsulateFieldAttributes => _userInput;
 
-            public void AddUDTMemberNameFlagPairs(params (string, string, bool)[] nameFlagPairs)
-                => _udtNameFlagPairs.AddRange(nameFlagPairs);
+        //    public void AddUDTMemberNameFlagPairs(params (string, string, bool)[] nameFlagPairs)
+        //        => _udtNameFlagPairs.AddRange(nameFlagPairs);
 
-            public IEnumerable<(string, string, bool)> UDTMemberNameFlagPairs => _udtNameFlagPairs;
-        }
+        //    public IEnumerable<(string, string, bool)> UDTMemberNameFlagPairs => _udtNameFlagPairs;
+        //}
 
-        private string RefactoredCode(CodeString codeString, Func<EncapsulateFieldModel, EncapsulateFieldModel> presenterAdjustment, Type expectedException = null, bool executeViaActiveSelection = false) 
-            => RefactoredCode(codeString.Code, codeString.CaretPosition.ToOneBased(), presenterAdjustment, expectedException, executeViaActiveSelection);
+        //private string Support.RefactoredCode(CodeString codeString, Func<EncapsulateFieldModel, EncapsulateFieldModel> presenterAdjustment, Type expectedException = null, bool executeViaActiveSelection = false) 
+        //    => Support.RefactoredCode(codeString.Code, codeString.CaretPosition.ToOneBased(), presenterAdjustment, expectedException, executeViaActiveSelection);
 
-        private static IIndenter CreateIndenter(IVBE vbe = null)
+        public static IIndenter CreateIndenter(IVBE vbe = null)
         {
             return new Indenter(vbe, () => Settings.IndenterSettingsTests.GetMockIndenterSettings());
         }
 
+        //protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
+        //{
+        //    var indenter = CreateIndenter(); //The refactoring only uses method independent of the VBE instance.
+        //    var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
+        //    return new EncapsulateFieldRefactoring(state, indenter, factory, rewritingManager, selectionService, selectedDeclarationProvider);
+        //}
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
         {
             var indenter = CreateIndenter(); //The refactoring only uses method independent of the VBE instance.

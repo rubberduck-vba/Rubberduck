@@ -18,7 +18,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
         private readonly IIndenter _indenter;
         private QualifiedModuleName _targetQMN;
-        private readonly IEncapsulateFieldNamesValidator _validator;
+        private IEncapsulateFieldNamesValidator _validator;
+        private EncapsulateFieldModel Model { set; get; }
 
         public EncapsulateFieldRefactoring(
             IDeclarationFinderProvider declarationFinderProvider,
@@ -32,7 +33,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _declarationFinderProvider = declarationFinderProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;
             _indenter = indenter;
-            _validator = new EncapsulateFieldNamesValidator(_declarationFinderProvider);
+            _validator = new EncapsulateFieldNamesValidator(_declarationFinderProvider, FlaggedFields);
         }
 
         protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
@@ -71,19 +72,22 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 .Select(uv => CreateUDTTuple(uv))
                 .ToDictionary(key => key.UDTVariable, element => (element.UserDefinedType, element.UDTMembers));
 
-            var model = new EncapsulateFieldModel
-                                (target,
+            Model = new EncapsulateFieldModel(
+                                target,
                                 encapsulationCandidateFields,
                                 userDefinedTypeFieldToTypeDeclarationMap,
                                 _indenter,
                                 _validator,
                                 PreviewRewrite);
 
-            return model;
+            return Model;
         }
+
+        private IEnumerable<IEncapsulatedFieldDeclaration> FlaggedFields() => Model?.FlaggedEncapsulationFields ?? Enumerable.Empty<IEncapsulatedFieldDeclaration>();
 
         protected override void RefactorImpl(EncapsulateFieldModel model)
         {
+            Model = model;
             var rewriteSession = RefactorRewrite(model, RewritingManager.CheckOutCodePaneSession());
 
             var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, _targetQMN);

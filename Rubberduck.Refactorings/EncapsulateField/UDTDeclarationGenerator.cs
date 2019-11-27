@@ -9,20 +9,20 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public class UDTGenerator
+    public class UDTDeclarationGenerator
     {
         private readonly string _typeIdentifier = "This_Type";
         private readonly IIndenter _indenter;
 
         private List<IEncapsulatedFieldDeclaration> _members;
 
-        public UDTGenerator(string typeIdentifier, IIndenter indenter)
+        public UDTDeclarationGenerator(string typeIdentifier, IIndenter indenter)
             :this(indenter)
         {
             _typeIdentifier = typeIdentifier;
         }
 
-        public UDTGenerator(IIndenter indenter)
+        public UDTDeclarationGenerator(IIndenter indenter)
         {
             _indenter = indenter;
             _members = new List<IEncapsulatedFieldDeclaration>();
@@ -47,7 +47,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
                 foreach (var member in _members)
                 {
-                    var declaration = $"{member.PropertyName.Capitalize()} As {member.AsTypeName}";
+                    var declaration = $"{member.PropertyName} As {member.AsTypeName}";
                     members.Add(declaration);
                 }
 

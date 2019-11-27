@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Common;
+using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
     public interface IEncapsulatedFieldDeclaration
     {
         Declaration Declaration { get; }
+        DeclarationType DeclarationType { get; }
         string TargetID { get; set; }
         IFieldEncapsulationAttributes EncapsulationAttributes { set; get; }
         bool IsReadOnly { set; get; }
@@ -21,6 +23,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
         string AsTypeName { get; }
         bool IsUDTMember { set; get; }
         bool HasValidEncapsulationAttributes { get; }
+        QualifiedModuleName QualifiedModuleName { get; }
+        IEnumerable<IdentifierReference> References { get; }
     }
 
     public class EncapsulatedFieldDeclaration : IEncapsulatedFieldDeclaration
@@ -35,45 +39,25 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _attributes = new FieldEncapsulationAttributes(_decorated);
             _validator = validator;
             TargetID = declaration.IdentifierName;
-            SetNonConflictingEncapsulationIdentifiers();
-        }
 
-        private void SetNonConflictingEncapsulationIdentifiers()
-        {
-            var isValid = _validator.HasValidEncapsulationAttributes(this);
-            if (!isValid)
+
+            var isValidAttributeSet = _validator.HasValidEncapsulationAttributes(_attributes, declaration.QualifiedModuleName, (Declaration dec) => dec.Equals(_decorated));
+            for (var idx = 2; idx < 9 && !isValidAttributeSet; idx++)
             {
-                var clientAttributes = ClientEditableAttributes(Declaration);
-                if (IsConflictingAttributes(clientAttributes))
-                {
-                    var hasConflict = true;
-                    for (var idx = 2; idx < 9 && hasConflict; idx++)
-                    {
-                        clientAttributes.ModifyEncapsulationIdentifiers($"{Declaration.IdentifierName}{idx}");
-                        hasConflict = IsConflictingAttributes(clientAttributes);
-                    }
-                    PropertyName = clientAttributes.PropertyName;
-                }
+                _attributes.NewFieldName = $"{declaration.IdentifierName}{idx}";
+                isValidAttributeSet = _validator.HasValidEncapsulationAttributes(_attributes, declaration.QualifiedModuleName, (Declaration dec) => dec.Equals(_decorated));
             }
         }
 
-        private IFieldEncapsulationAttributes ClientEditableAttributes(Declaration declaration)
-            => new FieldEncapsulationAttributes(declaration);
-
-        private bool IsConflictingAttributes(IFieldEncapsulationAttributes attributes)
-        {
-            var isConflictingFieldName = _validator.IsConflictingMemberName(attributes.NewFieldName, Declaration.QualifiedModuleName, Declaration.DeclarationType);
-            var isConflictingPropertyName = _validator.IsConflictingMemberName(attributes.PropertyName, Declaration.QualifiedModuleName, DeclarationType.Member);
-            return isConflictingFieldName || isConflictingPropertyName;
-        }
-
         public Declaration Declaration => _decorated;
+
+        public DeclarationType DeclarationType => _decorated.DeclarationType;
 
         public bool HasValidEncapsulationAttributes
         {
             get
             {
-                return _validator.HasValidEncapsulationAttributes(this);
+                return _validator.HasValidEncapsulationAttributes(EncapsulationAttributes, QualifiedModuleName, (Declaration dec) => dec.Equals(_decorated));
             }
         }
 
@@ -115,5 +99,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public string AsTypeName => _decorated.AsTypeName;
 
         public bool IsUDTMember { set; get; } = false;
+
+        public QualifiedModuleName QualifiedModuleName => Declaration.QualifiedModuleName;
+
+        public IEnumerable<IdentifierReference> References => Declaration.References;
     }
 }

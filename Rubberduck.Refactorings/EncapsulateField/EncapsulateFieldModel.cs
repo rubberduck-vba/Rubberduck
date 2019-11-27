@@ -41,7 +41,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
             this[target].EncapsulationAttributes.EncapsulateFlag = true;
         }
 
-        public IEnumerable<IEncapsulatedFieldDeclaration> FlaggedEncapsulationFields => _encapsulateFieldDeclarations.Values.Where(v => v.EncapsulationAttributes.EncapsulateFlag);
+        public IEnumerable<IEncapsulatedFieldDeclaration> FlaggedEncapsulationFields 
+            => _encapsulateFieldDeclarations.Values.Where(v => v.EncapsulationAttributes.EncapsulateFlag);
 
         public IEnumerable<string> EncapsulationFieldIDs
             => _encapsulateFieldDeclarations.Keys;
@@ -68,10 +69,32 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 var textBlocks = new List<string>();
                 foreach (var field in FlaggedEncapsulationFields)
                 {
+                    if (EncapsulateWithUDT && field is EncapsulatedUserDefinedTypeMember)
+                    {
+                        continue;
+                    }
                     textBlocks.Add(BuildPropertiesTextBlock(field.EncapsulationAttributes));
                 }
                 return textBlocks;
             }
+        }
+
+        public string EncapsulateInUDT_UDTMemberProperty(IEncapsulatedFieldDeclaration udtMember)
+        {
+            var parentField = _udtMemberTargetIDToParentMap[udtMember.TargetID];
+            var generator = new PropertyGenerator
+            {
+                PropertyName = udtMember.PropertyName,
+                AsTypeName = udtMember.AsTypeName,
+                BackingField = $"{EncapsulateWithUDT_FieldName}.{parentField.PropertyName}.{udtMember.PropertyName}",
+
+                ParameterName = udtMember.EncapsulationAttributes.ParameterName,
+                GenerateSetter = udtMember.EncapsulationAttributes.ImplementSetSetterType,
+                GenerateLetter = udtMember.EncapsulationAttributes.ImplementLetSetterType
+            };
+
+            var propertyTextLines = generator.AllPropertyCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            return string.Join(Environment.NewLine, _indenter.Indent(propertyTextLines, true));
         }
 
         public string PreviewRefactoring()
@@ -94,7 +117,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             newContent.AddCodeBlock($"{string.Join($"{Environment.NewLine}{Environment.NewLine}", PropertiesContent)}");
             if (postScript?.Length > 0)
             {
-                newContent.AddCodeBlock(postScript);
+                newContent.AddCodeBlock($"{postScript}{Environment.NewLine}{Environment.NewLine}");
             }
             return newContent;
         }
@@ -112,7 +135,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             if (EncapsulateWithUDT)
             {
-                var udt = new UDTGenerator(EncapsulateWithUDT_TypeIdentifier, _indenter);
+                var udt = new UDTDeclarationGenerator(EncapsulateWithUDT_TypeIdentifier, _indenter);
                 foreach (var nonUdtMemberField in nonUdtMemberFields)
                 {
                     udt.AddMember(nonUdtMemberField);
@@ -120,7 +143,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 newContent.AddDeclarationBlock(udt.TypeDeclarationBlock);
                 newContent.AddDeclarationBlock(udt.FieldDeclaration(EncapsulateWithUDT_FieldName));
 
-                //TODO: handle selected UDTs
+                var udtMemberFields = FlaggedEncapsulationFields.Where(efd => efd.DeclarationType.Equals(DeclarationType.UserDefinedTypeMember));
+                foreach ( var udtMember in udtMemberFields)
+                {
+                    newContent.AddCodeBlock(EncapsulateInUDT_UDTMemberProperty(udtMember));
+                }
+
                 return newContent;
             }
 
@@ -144,6 +172,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return newContent;
         }
 
+        private Dictionary<string, IEncapsulatedFieldDeclaration> _udtMemberTargetIDToParentMap { get; } = new Dictionary<string, IEncapsulatedFieldDeclaration>();
         private void AddUDTEncapsulationFields(IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> udtFieldToTypeMap)
         {
             foreach (var udtField in udtFieldToTypeMap.Keys)
@@ -157,6 +186,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     var encapsulatedUdtMember = EncapsulateDeclaration(udtMember);
                     encapsulatedUdtMember = DecorateUDTMember(encapsulatedUdtMember, udtEncapsulation as EncapsulatedUserDefinedType);
                     _encapsulateFieldDeclarations.Add(encapsulatedUdtMember.TargetID, encapsulatedUdtMember);
+                    _udtMemberTargetIDToParentMap.Add(encapsulatedUdtMember.TargetID, udtEncapsulation);
                 }
             }
         }

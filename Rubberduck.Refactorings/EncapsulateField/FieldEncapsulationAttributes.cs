@@ -10,13 +10,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
         string PropertyName { get; set; }
         bool ReadOnly { get; set; }
         bool EncapsulateFlag { get; set; }
-        void ModifyEncapsulationIdentifiers(string fieldName);
-        string NewFieldName { get; }
+        string NewFieldName { set;  get; }
         string FieldReferenceExpression { get; }
         string AsTypeName { get; set; }
         string ParameterName { get;}
         bool ImplementLetSetterType { get; set; }
         bool ImplementSetSetterType { get; set; }
+        bool FieldNameIsExemptFromValidation { get; }
     }
 
     public class FieldEncapsulationAttributes : IFieldEncapsulationAttributes
@@ -31,11 +31,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         }
 
         private EncapsulationIdentifiers _fieldAndProperty;
-
-        public void ModifyEncapsulationIdentifiers(string newFieldName)
-        {
-            _fieldAndProperty = new EncapsulationIdentifiers(newFieldName);
-        }
 
         public string TargetName { private set; get; }
 
@@ -66,5 +61,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private bool _implSet;
         public bool ImplementSetSetterType { get => !ReadOnly && _implSet; set => _implSet = value; }
 
+        public bool FieldNameIsExemptFromValidation => NewFieldName.EqualsVBAIdentifier(TargetName);
     }
 }
