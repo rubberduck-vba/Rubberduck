@@ -7,6 +7,7 @@ using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
+using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -16,22 +17,22 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     {
         private static readonly Dictionary<ComponentType, string> VBAExportableFileExtensions = new Dictionary<ComponentType, string>
         {
-            { ComponentType.StandardModule, ".bas" },
-            { ComponentType.ClassModule, ".cls" },
-            { ComponentType.Document, ".cls" },
-            { ComponentType.UserForm, ".frm" }            
+            { ComponentType.StandardModule, ComponentTypeExtensions.StandardExtension },
+            { ComponentType.ClassModule, ComponentTypeExtensions.ClassExtension },
+            { ComponentType.Document, ComponentTypeExtensions.DocClassExtension },
+            { ComponentType.UserForm, ComponentTypeExtensions.FormExtension }
         };
 
         private static readonly Dictionary<ComponentType, string> VB6ExportableFileExtensions = new Dictionary<ComponentType, string>
         {
-            { ComponentType.StandardModule, ".bas" },
-            { ComponentType.ClassModule, ".cls" },
-            { ComponentType.VBForm, ".frm" },
-            { ComponentType.MDIForm, ".frm" },
-            { ComponentType.UserControl, ".ctl" },
-            { ComponentType.DocObject, ".dob" },
+            { ComponentType.StandardModule, ComponentTypeExtensions.StandardExtension },
+            { ComponentType.ClassModule, ComponentTypeExtensions.ClassExtension },
+            { ComponentType.VBForm, ComponentTypeExtensions.FormExtension },
+            { ComponentType.MDIForm, ComponentTypeExtensions.FormExtension },
+            { ComponentType.UserControl, ComponentTypeExtensions.UserControlExtension },
+            { ComponentType.DocObject, ComponentTypeExtensions.DocObjectExtension },
             { ComponentType.ActiveXDesigner, ".dsr" },
-            { ComponentType.PropPage, ".pag" },
+            { ComponentType.PropPage, ComponentTypeExtensions.PropertyPageExtension },
             { ComponentType.ResFile, ".res" },            
         };
 
