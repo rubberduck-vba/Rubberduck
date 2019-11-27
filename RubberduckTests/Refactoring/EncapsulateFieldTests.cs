@@ -363,14 +363,15 @@ End Sub
 
             var presenterAction = SetParameters(userInput);
 
+            var codeString = inputCode.ToCodeString();
             var actualModuleCode = RefactoredCode(
                 "Module1",
-                inputCode.ToCodeString().CaretPosition.ToOneBased(),
+                codeString.CaretPosition.ToOneBased(),
                 presenterAction,
                 null,
                 false,
                 ("Class1", class1Code, ComponentType.ClassModule),
-                ("Module1", inputCode, ComponentType.StandardModule));
+                ("Module1", codeString.Code, ComponentType.StandardModule));
 
             var actualCode = actualModuleCode["Module1"];
 
@@ -509,13 +510,14 @@ End Type
 
             var presenterAction = SetParameters(userInput);
 
+            var codeString = inputCode.ToCodeString();
             var actualModuleCode = RefactoredCode(
                 "Class1",
-                inputCode.ToCodeString().CaretPosition.ToOneBased(),
+                codeString.CaretPosition.ToOneBased(),
                 presenterAction,
                 null,
                 false,
-                ("Class1", inputCode, ComponentType.ClassModule),
+                ("Class1", codeString.Code, ComponentType.ClassModule),
                 ("Module1", typeDefinition, ComponentType.StandardModule));
 
             Assert.AreEqual(typeDefinition, actualModuleCode["Module1"]);
@@ -555,14 +557,15 @@ End Sub
 
             var presenterAction = UserAcceptsDefaults();
 
+            var codeString = inputCode.ToCodeString();
             var actualModuleCode = RefactoredCode(
                 "Module1",
-                inputCode.ToCodeString().CaretPosition.ToOneBased(),
+                codeString.CaretPosition.ToOneBased(),
                 presenterAction,
                 null,
                 false,
                 ("Class1", classContent, ComponentType.ClassModule),
-                ("Module1", inputCode, ComponentType.StandardModule));
+                ("Module1", codeString.Code, ComponentType.StandardModule));
 
             var actualCode = actualModuleCode["Module1"];
 
