@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Antlr4.Runtime.Tree;
@@ -41,7 +42,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             {
                 if (exception.Flatten().InnerExceptions.All(ex => ex is OperationCanceledException))
                 {
-                    throw exception.InnerException ?? exception; //This eliminates the stack trace, but for the cancellation, this is irrelevant.
+                    //This rethrows the exception with the original stack trace.
+                    ExceptionDispatchInfo.Capture(exception.InnerException ?? exception).Throw();
                 }
 
                 _parserStateManager.SetStatusAndFireStateChanged(this, ParserState.ResolverError, token);
@@ -69,7 +71,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             {
                 if (exception.Flatten().InnerExceptions.All(ex => ex is OperationCanceledException))
                 {
-                    throw exception.InnerException ?? exception; //This eliminates the stack trace, but for the cancellation, this is irrelevant.
+                    //This rethrows the exception with the original stack trace.
+                    ExceptionDispatchInfo.Capture(exception.InnerException ?? exception).Throw();
                 }
 
                 _parserStateManager.SetStatusAndFireStateChanged(this, ParserState.ResolverError, token);

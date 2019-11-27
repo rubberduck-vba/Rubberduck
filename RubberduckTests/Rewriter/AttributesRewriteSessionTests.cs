@@ -20,7 +20,7 @@ namespace RubberduckTests.Rewriter
             var mockParseManager = new Mock<IParseManager>();
             mockParseManager.Setup(m => m.OnSuspendParser(It.IsAny<object>(), It.IsAny<IEnumerable<ParserState>>(), It.IsAny<Action>(), It.IsAny<int>()))
                 .Callback((object requestor, IEnumerable<ParserState> allowedStates, Action suspendAction, int timeout) => suspendAction())
-                .Returns((object requestor, IEnumerable<ParserState> allowedStates, Action suspendAction, int timeout) => SuspensionResult.Completed);
+                .Returns((object requestor, IEnumerable<ParserState> allowedStates, Action suspendAction, int timeout) => new SuspensionResult(SuspensionOutcome.Completed));
 
             var rewriteSession = RewriteSession(mockParseManager.Object, session => true, out _);
             var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
@@ -37,7 +37,7 @@ namespace RubberduckTests.Rewriter
         {
             var mockParseManager = new Mock<IParseManager>();
             mockParseManager.Setup(m => m.OnSuspendParser(It.IsAny<object>(), It.IsAny<IEnumerable<ParserState>>(), It.IsAny<Action>(), It.IsAny<int>()))
-                .Returns((object requestor, IEnumerable<ParserState> allowedStates, Action suspendAction, int timeout) => SuspensionResult.Completed);
+                .Returns((object requestor, IEnumerable<ParserState> allowedStates, Action suspendAction, int timeout) => new SuspensionResult(SuspensionOutcome.Completed));
 
             var rewriteSession = RewriteSession(mockParseManager.Object, session => true, out var mockRewriterProvider);
             var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
@@ -56,7 +56,7 @@ namespace RubberduckTests.Rewriter
             var parseManager = new Mock<IParseManager>();
             parseManager.Setup(m => m.OnSuspendParser(It.IsAny<object>(), It.IsAny<IEnumerable<ParserState>>(), It.IsAny<Action>(), It.IsAny<int>()))
                 .Callback((object requestor, IEnumerable<ParserState> allowedStates, Action suspendAction, int timeout) => suspendAction())
-                .Returns((object requestor, IEnumerable<ParserState> allowedStates, Action suspendAction, int timeout) => SuspensionResult.UnexpectedError);
+                .Returns((object requestor, IEnumerable<ParserState> allowedStates, Action suspendAction, int timeout) => new SuspensionResult(SuspensionOutcome.UnexpectedError));
 
             var rewriteSession = RewriteSession(parseManager.Object, session => true, out _);
             var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
@@ -72,7 +72,7 @@ namespace RubberduckTests.Rewriter
             var parseManager = new Mock<IParseManager>();
             parseManager.Setup(m => m.OnSuspendParser(It.IsAny<object>(), It.IsAny<IEnumerable<ParserState>>(), It.IsAny<Action>(), It.IsAny<int>()))
                 .Callback((object requestor, IEnumerable<ParserState> allowedStates, Action suspendAction, int timeout) => suspendAction())
-                .Returns((object requestor, IEnumerable<ParserState> allowedStates, Action suspendAction, int timeout) => SuspensionResult.Completed);
+                .Returns((object requestor, IEnumerable<ParserState> allowedStates, Action suspendAction, int timeout) => new SuspensionResult(SuspensionOutcome.Completed));
 
             var rewriteSession = RewriteSession(parseManager.Object, session => true, out _);
             var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
