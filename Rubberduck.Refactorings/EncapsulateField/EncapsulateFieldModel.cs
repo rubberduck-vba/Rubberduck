@@ -15,6 +15,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private readonly IIndenter _indenter;
         private readonly IEncapsulateFieldNamesValidator _validator;
+        private readonly Func<EncapsulateFieldModel, string> _previewFunc;
 
         private IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> _udtFieldToUdtDeclarationMap = new Dictionary<Declaration, (Declaration, IEnumerable<Declaration>)>();
         private IEnumerable<Declaration> UdtFields => _udtFieldToUdtDeclarationMap.Keys;
@@ -22,11 +23,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private Dictionary<string, IEncapsulatedFieldDeclaration> _encapsulateFieldDeclarations = new Dictionary<string, IEncapsulatedFieldDeclaration>();
 
-        public EncapsulateFieldModel(Declaration target, IEnumerable<Declaration> allMemberFields, IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> udtFieldToUdtDeclarationMap, IIndenter indenter, IEncapsulateFieldNamesValidator validator)
+        public EncapsulateFieldModel(Declaration target, IEnumerable<Declaration> allMemberFields, IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> udtFieldToUdtDeclarationMap, IIndenter indenter, IEncapsulateFieldNamesValidator validator, Func<EncapsulateFieldModel, string> previewFunc)
         {
             _indenter = indenter;
             _validator = validator;
             _udtFieldToUdtDeclarationMap = udtFieldToUdtDeclarationMap;
+            _previewFunc = previewFunc;
 
             foreach (var field in allMemberFields.Except(UdtFields))
             {
@@ -72,23 +74,35 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        public IEncapsulateFieldNewContentProvider NewContent
+        public string PreviewRefactoring()
         {
-            get
-            {
-                var newContent = new EncapsulateFieldNewContent();
-                newContent = LoadNewDeclarationsContent(newContent);
-                newContent = LoadNewPropertiesContent(newContent);
-                return newContent;
-            }
+            return _previewFunc(this);
         }
 
-        public EncapsulateFieldNewContent LoadNewPropertiesContent(EncapsulateFieldNewContent newContent)
+        public IEncapsulateFieldNewContentProvider NewContent(string postScript = null)
+        {
+            var newContent = new EncapsulateFieldNewContent();
+            newContent = LoadNewDeclarationsContent(newContent);
+            newContent = LoadNewPropertiesContent(newContent, postScript);
+            return newContent;
+        }
+
+        public EncapsulateFieldNewContent LoadNewPropertiesContent(EncapsulateFieldNewContent newContent, string postScript)
         {
             if (!FlaggedEncapsulationFields.Any()) { return newContent; }
 
             newContent.AddCodeBlock($"{string.Join($"{Environment.NewLine}{Environment.NewLine}", PropertiesContent)}");
+            if (postScript?.Length > 0)
+            {
+                newContent.AddCodeBlock(postScript);
+            }
             return newContent;
+        }
+
+        public IEncapsulateFieldNewContentProvider NewContentPostscript(IEncapsulateFieldNewContentProvider newContent, string postScript)
+        {
+            newContent.AddCodeBlock($"{Environment.NewLine}{postScript}");
+            return newContent as IEncapsulateFieldNewContentProvider;
         }
 
         public EncapsulateFieldNewContent LoadNewDeclarationsContent(EncapsulateFieldNewContent newContent)

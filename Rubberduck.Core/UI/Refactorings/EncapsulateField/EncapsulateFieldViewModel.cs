@@ -1,18 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Input;
 using NLog;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.EncapsulateField;
-using Rubberduck.SmartIndenter;
 using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Refactorings.EncapsulateField
@@ -32,8 +22,6 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             EncapsulateFlagCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ReloadPreview());
             PropertyChangeCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => UpdatePreview());
         }
-
-        public IEncapsulatedFieldViewData SelectedValue { set; get; }
 
         public ObservableCollection<IEncapsulatedFieldViewData> EncapsulationFields
         {
@@ -56,6 +44,10 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             }
         }
 
+        public IEncapsulatedFieldViewData SelectedValue { set; get; }
+
+        public bool HideEncapsulateAsUDTFields => !EncapsulateAsUDT;
+
         public bool EncapsulateAsUDT
         {
             get => Model.EncapsulateWithUDT;
@@ -63,6 +55,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             {
                 Model.EncapsulateWithUDT = value;
                 UpdatePreview();
+                OnPropertyChanged(nameof(HideEncapsulateAsUDTFields));
             }
         }
 
@@ -86,28 +79,16 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             }
         }
 
-        public bool TargetsHaveValidEncapsulationSettings
-        {
-            get
-            {
-                return Model.EncapsulationFields.Where(efd => efd.EncapsulateFlag)
-                    .Any(ff => ff.HasValidEncapsulationAttributes == false);
-            }
-        }
-
+        public bool TargetsHaveValidEncapsulationSettings 
+            => Model.EncapsulationFields.Where(efd => efd.EncapsulateFlag)
+                    .Any(ff => !ff.HasValidEncapsulationAttributes);
 
         public IEncapsulateFieldNamesValidator RefactoringValidator { set; get; }
 
         //TODO: hook the validation scheme backup
         public bool HasValidNames => true;
 
-        public string PropertyPreview
-        {
-            get
-            {
-                return Model.NewContent.AsSingleTextBlock;
-            }
-        }
+        public string PropertyPreview => Model.PreviewRefactoring();
 
         public CommandBase SelectAllCommand { get; }
         public CommandBase DeselectAllCommand { get; }

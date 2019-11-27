@@ -36,13 +36,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public void InsertNewContent(int? codeSectionStartIndex, IEncapsulateFieldNewContentProvider newContent)
         {
+            var allContent = newContent.AsSingleTextBlock;
             if (codeSectionStartIndex.HasValue && newContent.HasNewContent)
             {
-                _rewriter.InsertBefore(codeSectionStartIndex.Value, $"{Environment.NewLine}{newContent.AsSingleTextBlock}");
+                _rewriter.InsertBefore(codeSectionStartIndex.Value, $"{Environment.NewLine}{allContent}");
             }
             else
             {
-                InsertAtEndOfFile($"{Environment.NewLine}{newContent.AsSingleTextBlock}");
+                InsertAtEndOfFile($"{Environment.NewLine}{allContent}");
             }
         }
 

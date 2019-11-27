@@ -8,6 +8,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.Utility;
 using System.Collections.Generic;
+using System;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -20,13 +21,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly IEncapsulateFieldNamesValidator _validator;
 
         public EncapsulateFieldRefactoring(
-            IDeclarationFinderProvider declarationFinderProvider, 
-            IIndenter indenter, 
-            IRefactoringPresenterFactory factory, 
+            IDeclarationFinderProvider declarationFinderProvider,
+            IIndenter indenter,
+            IRefactoringPresenterFactory factory,
             IRewritingManager rewritingManager,
             ISelectionProvider selectionProvider,
             ISelectedDeclarationProvider selectedDeclarationProvider)
-        :base(rewritingManager, selectionProvider, factory)
+        : base(rewritingManager, selectionProvider, factory)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;
@@ -70,20 +71,48 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 .Select(uv => CreateUDTTuple(uv))
                 .ToDictionary(key => key.UDTVariable, element => (element.UserDefinedType, element.UDTMembers));
 
-            var model =  new EncapsulateFieldModel
-                                (target, 
-                                encapsulationCandidateFields, 
-                                userDefinedTypeFieldToTypeDeclarationMap, 
+            var model = new EncapsulateFieldModel
+                                (target,
+                                encapsulationCandidateFields,
+                                userDefinedTypeFieldToTypeDeclarationMap,
                                 _indenter,
-                                _validator);
+                                _validator,
+                                PreviewRewrite);
 
             return model;
         }
 
         protected override void RefactorImpl(EncapsulateFieldModel model)
         {
-            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
+            var rewriteSession = RefactorRewrite(model, RewritingManager.CheckOutCodePaneSession());
 
+            var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, _targetQMN);
+
+            rewriter.InsertNewContent(CodeSectionStartIndex, model.NewContent());
+
+            if (!rewriteSession.TryRewrite())
+            {
+                throw new RewriteFailedException(rewriteSession);
+            }
+        }
+
+        private string PreviewRewrite(EncapsulateFieldModel model)
+        {
+            var scratchPadRewriteSession = RefactorRewrite(model, RewritingManager.CheckOutCodePaneSession());
+
+            var previewRewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(scratchPadRewriteSession, _targetQMN);
+
+            var newContent = model.NewContent("'<===== No Changes below this line =====>");
+
+            previewRewriter.InsertNewContent(CodeSectionStartIndex, newContent);
+
+            var preview = previewRewriter.GetText();
+
+            return preview;
+        }
+
+        private IExecutableRewriteSession RefactorRewrite(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession)
+        {
             var nonUdtMemberFields = model.FlaggedEncapsulationFields
                     .Where(encFld => encFld.Declaration.IsVariable());
 
@@ -94,24 +123,21 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 RenameReferences(nonUdtMemberField, attributes.PropertyName ?? nonUdtMemberField.Declaration.IdentifierName, rewriteSession);
             }
 
-            var moduleMembers = _declarationFinderProvider.DeclarationFinder
-                    .Members(_targetQMN).Where(m => m.IsMember());
+            return rewriteSession;
+        }
 
-            int? codeSectionStartIndex
-                = moduleMembers.OrderBy(c => c.Selection)
-                            .FirstOrDefault()?.Context.Start.TokenIndex ?? null;
-
-            var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, _targetQMN);
-
-            rewriter.InsertNewContent(codeSectionStartIndex, model.NewContent);
-
-            var modifiedAndNewConent = codeSectionStartIndex.HasValue
-                ? rewriter.GetText(1, codeSectionStartIndex.Value - 1)
-                : rewriter.GetText();
-
-            if (!rewriteSession.TryRewrite())
+        private int? CodeSectionStartIndex
+        {
+            get
             {
-                throw new RewriteFailedException(rewriteSession);
+                var moduleMembers = _declarationFinderProvider.DeclarationFinder
+                        .Members(_targetQMN).Where(m => m.IsMember());
+
+                int? codeSectionStartIndex
+                    = moduleMembers.OrderBy(c => c.Selection)
+                                .FirstOrDefault()?.Context.Start.TokenIndex ?? null;
+
+                return codeSectionStartIndex;
             }
         }
 
