@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NLog;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA.Extensions;
