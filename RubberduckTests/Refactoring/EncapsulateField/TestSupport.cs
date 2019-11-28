@@ -80,16 +80,16 @@ namespace RubberduckTests.Refactoring.EncapsulateField
         public string RefactoredCode(CodeString codeString, Func<EncapsulateFieldModel, EncapsulateFieldModel> presenterAdjustment, Type expectedException = null, bool executeViaActiveSelection = false)
             => RefactoredCode(codeString.Code, codeString.CaretPosition.ToOneBased(), presenterAdjustment, expectedException, executeViaActiveSelection);
 
-        public static IIndenter CreateIndenter(IVBE vbe = null)
-        {
-            return new Indenter(vbe, () => Settings.IndenterSettingsTests.GetMockIndenterSettings());
-        }
-
         public IRefactoring SupportTestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
         {
             var indenter = CreateIndenter(); //The refactoring only uses method independent of the VBE instance.
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
             return new EncapsulateFieldRefactoring(state, indenter, factory, rewritingManager, selectionService, selectedDeclarationProvider);
+        }
+
+        private static IIndenter CreateIndenter(IVBE vbe = null)
+        {
+            return new Indenter(vbe, () => Settings.IndenterSettingsTests.GetMockIndenterSettings());
         }
 
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
