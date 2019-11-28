@@ -8,154 +8,16 @@ using System.Windows;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public class EncapsulateFieldDecoratorBase : IEncapsulatedFieldDeclaration
+    public class EncapsulatedUserDefinedTypeMember : IEncapsulateFieldCandidate //: EncapsulateFieldDecoratorBase
     {
-        protected IEncapsulatedFieldDeclaration _decorated;
-
-        public EncapsulateFieldDecoratorBase(IEncapsulatedFieldDeclaration efd)
-        {
-            _decorated = efd;
-            TargetID = efd.Declaration.IdentifierName;
-        }
-
-        public Declaration Declaration => _decorated.Declaration;
-
-        public DeclarationType DeclarationType => _decorated.DeclarationType;
-
-        public IFieldEncapsulationAttributes EncapsulationAttributes
-        {
-            get => _decorated.EncapsulationAttributes;
-            set => _decorated.EncapsulationAttributes = value;
-        }
-
-        public string TargetID
-        {
-            get => _decorated.TargetID;
-            set => _decorated.TargetID = value;
-        }
-
-        public bool IsReadOnly
-        {
-            get => _decorated.EncapsulationAttributes.ReadOnly;
-            set => _decorated.EncapsulationAttributes.ReadOnly = value;
-        }
-
-        public bool EncapsulateFlag
-        {
-            get => _decorated.EncapsulateFlag;
-            set => _decorated.EncapsulateFlag = value;
-        }
-
-        public bool CanBeReadWrite
-        {
-            get => _decorated.CanBeReadWrite;
-            set => _decorated.CanBeReadWrite = value;
-        }
-
-        public string PropertyName
-        {
-            get => _decorated.EncapsulationAttributes.PropertyName;
-            set => _decorated.EncapsulationAttributes.PropertyName = value;
-        }
-
-        public string NewFieldName
-        {
-            get => _decorated.EncapsulationAttributes.NewFieldName;
-        }
-
-        public string AsTypeName => _decorated.EncapsulationAttributes.AsTypeName;
-
-        public bool IsUDTMember
-        {
-            get => _decorated.IsUDTMember;
-            set => _decorated.IsUDTMember = value;
-        }
-
-        public bool HasValidEncapsulationAttributes 
-            => _decorated.HasValidEncapsulationAttributes;
-
-        public QualifiedModuleName QualifiedModuleName => _decorated.QualifiedModuleName;
-
-        public IEnumerable<IdentifierReference> References => _decorated.References;
-    }
-
-    public class EncapsulatedValueType : EncapsulateFieldDecoratorBase
-    {
-        private EncapsulatedValueType(IEncapsulatedFieldDeclaration efd)
-            : base(efd)
-        {
-            EncapsulationAttributes.ImplementLetSetterType = true;
-            EncapsulationAttributes.ImplementSetSetterType = false;
-        }
-
-        public static IEncapsulatedFieldDeclaration Decorate(IEncapsulatedFieldDeclaration efd) 
-            => new EncapsulatedValueType(efd);
-    }
-
-    public class EncapsulatedUserDefinedType : EncapsulateFieldDecoratorBase
-    {
-
-        private EncapsulatedUserDefinedType(IEncapsulatedFieldDeclaration efd)
-            : base(efd)
-        {
-            EncapsulationAttributes.ImplementLetSetterType = true;
-            EncapsulationAttributes.ImplementSetSetterType = false;
-        }
-
-        public static IEncapsulatedFieldDeclaration Decorate(IEncapsulatedFieldDeclaration efd) 
-            => new EncapsulatedUserDefinedType(efd);
-    }
-
-    public class EncapsulatedVariantType : EncapsulateFieldDecoratorBase
-    {
-        private EncapsulatedVariantType(IEncapsulatedFieldDeclaration efd)
-            : base(efd)
-        {
-            EncapsulationAttributes.ImplementLetSetterType = true;
-            EncapsulationAttributes.ImplementSetSetterType = true;
-        }
-
-        public static IEncapsulatedFieldDeclaration Decorate(IEncapsulatedFieldDeclaration efd) 
-            => new EncapsulatedVariantType(efd);
-    }
-
-    public class EncapsulatedObjectType : EncapsulateFieldDecoratorBase
-    {
-        private EncapsulatedObjectType(IEncapsulatedFieldDeclaration efd)
-            : base(efd)
-        {
-            EncapsulationAttributes.ImplementLetSetterType = false;
-            EncapsulationAttributes.ImplementSetSetterType = true;
-        }
-
-        public static IEncapsulatedFieldDeclaration Decorate(IEncapsulatedFieldDeclaration efd) 
-            => new EncapsulatedObjectType(efd);
-    }
-
-    public class EncapsulatedArrayType : EncapsulateFieldDecoratorBase
-    {
-        private EncapsulatedArrayType(IEncapsulatedFieldDeclaration efd)
-            : base(efd)
-        {
-            EncapsulationAttributes.ImplementLetSetterType = false;
-            EncapsulationAttributes.ImplementSetSetterType = false;
-            EncapsulationAttributes.AsTypeName = Tokens.Variant;
-            CanBeReadWrite = false;
-            IsReadOnly = true;
-        }
-
-        public static IEncapsulatedFieldDeclaration Decorate(IEncapsulatedFieldDeclaration efd) 
-            => new EncapsulatedArrayType(efd);
-    }
-
-    public class EncapsulatedUserDefinedTypeMember : EncapsulateFieldDecoratorBase
-    {
+        private IEncapsulateFieldCandidate _candidate;
         private IFieldEncapsulationAttributes _udtVariableAttributes;
         private bool _nameResolveProperty;
         private string _originalVariableName;
-        private EncapsulatedUserDefinedTypeMember(IEncapsulatedFieldDeclaration efd, EncapsulatedUserDefinedType udtVariable, bool propertyIdentifierRequiresNameResolution)
-            : base(efd)
+        private string _targetID;
+        public EncapsulatedUserDefinedTypeMember(IEncapsulateFieldCandidate candidate, IEncapsulateFieldCandidate udtVariable, bool propertyIdentifierRequiresNameResolution)
         {
+            _candidate = candidate;
             _originalVariableName = udtVariable.Declaration.IdentifierName;
             _nameResolveProperty = propertyIdentifierRequiresNameResolution;
             _udtVariableAttributes = udtVariable.EncapsulationAttributes;
@@ -172,12 +34,65 @@ namespace Rubberduck.Refactorings.EncapsulateField
                         };
             }
 
-            efd.TargetID = $"{udtVariable.Declaration.IdentifierName}.{Declaration.IdentifierName}";
-            efd.IsUDTMember = true;
+            _targetID = $"{udtVariable.Declaration.IdentifierName}.{Declaration.IdentifierName}";
+            candidate.IsUDTMember = true;
         }
 
-        public static IEncapsulatedFieldDeclaration Decorate(IEncapsulatedFieldDeclaration efd, EncapsulatedUserDefinedType udtVariable, bool nameResolveProperty) 
-            => new EncapsulatedUserDefinedTypeMember(efd, udtVariable, nameResolveProperty);
+        public Declaration Declaration => _candidate.Declaration;
+
+        public DeclarationType DeclarationType => _candidate.DeclarationType;
+
+        public IFieldEncapsulationAttributes EncapsulationAttributes
+        {
+            get => _candidate.EncapsulationAttributes;
+            set => _candidate.EncapsulationAttributes = value;
+        }
+
+        public bool IsReadOnly
+        {
+            get => _candidate.EncapsulationAttributes.ReadOnly;
+            set => _candidate.EncapsulationAttributes.ReadOnly = value;
+        }
+
+        public bool EncapsulateFlag
+        {
+            get => _candidate.EncapsulateFlag;
+            set => _candidate.EncapsulateFlag = value;
+        }
+
+        public bool CanBeReadWrite
+        {
+            get => _candidate.CanBeReadWrite;
+            set => _candidate.CanBeReadWrite = value;
+        }
+
+        public string PropertyName
+        {
+            get => _candidate.EncapsulationAttributes.PropertyName;
+            set => _candidate.EncapsulationAttributes.PropertyName = value;
+        }
+
+        public string NewFieldName
+        {
+            get => _candidate.EncapsulationAttributes.NewFieldName;
+        }
+
+        public string AsTypeName => _candidate.EncapsulationAttributes.AsTypeName;
+
+        public bool IsUDTMember
+        {
+            get => _candidate.IsUDTMember;
+            set => _candidate.IsUDTMember = value;
+        }
+
+        public bool HasValidEncapsulationAttributes
+            => _candidate.HasValidEncapsulationAttributes;
+
+        public QualifiedModuleName QualifiedModuleName => _candidate.QualifiedModuleName;
+
+        public IEnumerable<IdentifierReference> References => _candidate.References;
+
+        public string TargetID => _targetID;
 
         private string BuildPropertyName()
         {

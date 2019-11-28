@@ -118,20 +118,20 @@ $@"Public fizz As String
         public void CreateUDT()
         {
 
-            var mock = new Mock<IEncapsulatedFieldDeclaration>();
+            var mock = new Mock<IEncapsulateFieldCandidate>();
             mock.SetupGet(m => m.AsTypeName).Returns("String");
             mock.SetupGet(m => m.PropertyName).Returns("Fizz");
 
-            var newUserDefinedType = new UDTDeclarationGenerator(CreateIndenter());
+            var newUserDefinedType = new UDTDeclarationGenerator();
             newUserDefinedType.AddMember(mock.Object);
 
-            var result = newUserDefinedType.TypeDeclarationBlock;
+            var result = newUserDefinedType.TypeDeclarationBlock(CreateIndenter());
             StringAssert.Contains("Private Type This_Type", result);
             StringAssert.Contains(" Fizz As String", result);
             StringAssert.Contains("End Type", result);
         }
 
-        private IEncapsulatedFieldDeclaration RetrieveEncapsulatedField(string inputCode, string fieldName)
+        private IEncapsulateFieldCandidate RetrieveEncapsulatedField(string inputCode, string fieldName)
         {
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
 
@@ -141,7 +141,7 @@ $@"Public fizz As String
             using (state)
             {
                 var match = state.DeclarationFinder.MatchName(fieldName).Single();
-                return new EncapsulatedFieldDeclaration(match, new EncapsulateFieldNamesValidator(state)) as IEncapsulatedFieldDeclaration;
+                return new EncapsulateFieldCandidate(match, new EncapsulateFieldNamesValidator(state)) as IEncapsulateFieldCandidate;
             }
         }
 

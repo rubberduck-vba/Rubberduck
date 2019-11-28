@@ -14,23 +14,24 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly string _typeIdentifier = "This_Type";
         private readonly IIndenter _indenter;
 
-        private List<IEncapsulatedFieldDeclaration> _members;
+        private List<IEncapsulateFieldCandidate> _members;
 
-        public UDTDeclarationGenerator(string typeIdentifier, IIndenter indenter)
-            :this(indenter)
+        public UDTDeclarationGenerator(string typeIdentifier) //, IIndenter indenter)
+            : this()
+            //:this(indenter)
         {
             _typeIdentifier = typeIdentifier;
         }
 
-        public UDTDeclarationGenerator(IIndenter indenter)
+        public UDTDeclarationGenerator() //IIndenter indenter)
         {
-            _indenter = indenter;
-            _members = new List<IEncapsulatedFieldDeclaration>();
+            //_indenter = indenter;
+            _members = new List<IEncapsulateFieldCandidate>();
         }
 
         public string AsTypeName => _typeIdentifier;
 
-        public void AddMember(IEncapsulatedFieldDeclaration field)
+        public void AddMember(IEncapsulateFieldCandidate field)
         {
             _members.Add(field);
         }
@@ -38,10 +39,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public string FieldDeclaration(string identifier, Accessibility accessibility = Accessibility.Private)
             => $"{accessibility} {identifier} {Tokens.As} {_typeIdentifier}";
 
-        public string TypeDeclarationBlock
+        public string TypeDeclarationBlock(IIndenter indenter)
         {
-            get
-            {
+            //get
+            //{
                 var members = new List<string>();
                 members.Add($"{Tokens.Private} {Tokens.Type} {_typeIdentifier}");
 
@@ -53,8 +54,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
                 members.Add("End Type");
 
-                return  string.Join(Environment.NewLine, _indenter.Indent(members, true));
-            }
+                return  string.Join(Environment.NewLine, indenter.Indent(members, true));
+            //}
         }
     }
 }

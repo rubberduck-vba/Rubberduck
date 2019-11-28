@@ -49,7 +49,7 @@ End Property";
 
                 var validator = new EncapsulateFieldNamesValidator(
                         state,
-                        () => new List<IEncapsulatedFieldDeclaration>()
+                        () => new List<IEncapsulateFieldCandidate>()
                             {
                                 mockFizz,
                                 mockBazz,
@@ -84,16 +84,20 @@ Public that As TBar
 
             void ThisTest(IDeclarationFinderProvider declarationProviderProvider)
             {
-                var userInput = new UserInputDataObject("this", encapsulationFlag: true);
-                userInput.AddAttributeSet("that", encapsulationFlag: true);
-                userInput.AddUDTMemberNameFlagPairs(("this", "First", true));
-                userInput.AddUDTMemberNameFlagPairs(("that", "First", true));
+                var declarationThis = declarationProviderProvider.DeclarationFinder.MatchName("this").Single();
+                var declarationThat = declarationProviderProvider.DeclarationFinder.MatchName("that").Single();
+                var declarationTBar = declarationProviderProvider.DeclarationFinder.MatchName("TBar").Single();
+                var declarationFirst = declarationProviderProvider.DeclarationFinder.MatchName("First").Single();
 
-                var presenterAction = Support.SetParameters(userInput);
+                var fields = new List<IEncapsulateFieldCandidate>();
 
-                var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-                encapsulatedWholeNumber.EncapsulationAttributes.PropertyName = "LongValue";
-                Assert.Less(0, validator.HasNewPropertyNameConflicts(encapsulatedWholeNumber.EncapsulationAttributes, encapsulatedWholeNumber.QualifiedModuleName, (Declaration dec) => dec.Equals(encapsulatedWholeNumber.Declaration)));
+
+                var validator = new EncapsulateFieldNamesValidator(declarationProviderProvider, () => fields);
+
+                var encapsulatedThis = new EncapsulateFieldCandidate(declarationThis, validator);
+                var encapsulatedThat = new EncapsulateFieldCandidate(declarationThat, validator);
+                fields.Add(encapsulatedThis);
+                fields.Add(encapsulatedThat);
             }
 
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
@@ -104,7 +108,7 @@ Public that As TBar
 
                 var validator = new EncapsulateFieldNamesValidator(
                         state,
-                        () => new List<IEncapsulatedFieldDeclaration>()
+                        () => new List<IEncapsulateFieldCandidate>()
                             {
                                 thisField,
                                 thatField,
@@ -133,14 +137,14 @@ Public wholeNumber As String
                 var wholeNumber = declarationProviderProvider.DeclarationFinder.MatchName("wholeNumber").Single();
                 var longValue = declarationProviderProvider.DeclarationFinder.MatchName("longValue").Single();
 
-                var fields = new List<IEncapsulatedFieldDeclaration>();
+                var fields = new List<IEncapsulateFieldCandidate>();
 
                 var validator = new EncapsulateFieldNamesValidator(declarationProviderProvider, () => fields);
 
-                var encapsulatedWholeNumber = new EncapsulatedFieldDeclaration(wholeNumber, validator);
-                var encapsulatedLongValue = new EncapsulatedFieldDeclaration(longValue, validator);
-                fields.Add(new EncapsulatedFieldDeclaration(wholeNumber, validator));
-                fields.Add(new EncapsulatedFieldDeclaration(longValue, validator));
+                var encapsulatedWholeNumber = new EncapsulateFieldCandidate(wholeNumber, validator);
+                var encapsulatedLongValue = new EncapsulateFieldCandidate(longValue, validator);
+                fields.Add(new EncapsulateFieldCandidate(wholeNumber, validator));
+                fields.Add(new EncapsulateFieldCandidate(longValue, validator));
 
                 encapsulatedWholeNumber.EncapsulationAttributes.PropertyName = "LongValue";
                 Assert.Less(0, validator.HasNewPropertyNameConflicts(encapsulatedWholeNumber.EncapsulationAttributes, encapsulatedWholeNumber.QualifiedModuleName, (Declaration dec) => dec.Equals(encapsulatedWholeNumber.Declaration)));
@@ -157,12 +161,12 @@ Public wholeNumber As String
             }
         }
 
-        private IEncapsulatedFieldDeclaration CreateEncapsulatedFieldMock(string targetID, string asTypeName, IVBComponent component, string modifiedPropertyName = null, bool encapsulateFlag = true )
+        private IEncapsulateFieldCandidate CreateEncapsulatedFieldMock(string targetID, string asTypeName, IVBComponent component, string modifiedPropertyName = null, bool encapsulateFlag = true )
         {
             var identifiers = new EncapsulationIdentifiers(targetID);
             var attributesMock = CreateAttributesMock(targetID, asTypeName, modifiedPropertyName);
 
-            var mock = new Mock<IEncapsulatedFieldDeclaration>();
+            var mock = new Mock<IEncapsulateFieldCandidate>();
             mock.SetupGet(m => m.TargetID).Returns(identifiers.TargetFieldName);
             mock.SetupGet(m => m.NewFieldName).Returns(identifiers.Field);
             mock.SetupGet(m => m.PropertyName).Returns(modifiedPropertyName ?? identifiers.Property);

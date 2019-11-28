@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public interface IEncapsulatedFieldDeclaration
+    public interface IEncapsulateFieldCandidate
     {
         Declaration Declaration { get; }
         DeclarationType DeclarationType { get; }
-        string TargetID { get; set; }
+        string TargetID { get; }
         IFieldEncapsulationAttributes EncapsulationAttributes { set; get; }
         bool IsReadOnly { set; get; }
         bool CanBeReadWrite { set; get; }
@@ -27,39 +27,34 @@ namespace Rubberduck.Refactorings.EncapsulateField
         IEnumerable<IdentifierReference> References { get; }
     }
 
-    public class EncapsulatedFieldDeclaration : IEncapsulatedFieldDeclaration
+    public class EncapsulateFieldCandidate : IEncapsulateFieldCandidate
     {
-        protected Declaration _decorated;
+        protected Declaration _target;
         private IFieldEncapsulationAttributes _attributes;
         private IEncapsulateFieldNamesValidator _validator;
 
-        public EncapsulatedFieldDeclaration(Declaration declaration, IEncapsulateFieldNamesValidator validator)
+        public EncapsulateFieldCandidate(Declaration declaration, IEncapsulateFieldNamesValidator validator)
         {
-            _decorated = declaration;
-            _attributes = new FieldEncapsulationAttributes(_decorated);
+            _target = declaration;
+            _attributes = new FieldEncapsulationAttributes(_target);
             _validator = validator;
-            TargetID = declaration.IdentifierName;
+            //TargetID = declaration.IdentifierName;
 
 
-            var isValidAttributeSet = _validator.HasValidEncapsulationAttributes(_attributes, declaration.QualifiedModuleName, (Declaration dec) => dec.Equals(_decorated));
+            var isValidAttributeSet = _validator.HasValidEncapsulationAttributes(_attributes, declaration.QualifiedModuleName, (Declaration dec) => dec.Equals(_target));
             for (var idx = 2; idx < 9 && !isValidAttributeSet; idx++)
             {
                 _attributes.NewFieldName = $"{declaration.IdentifierName}{idx}";
-                isValidAttributeSet = _validator.HasValidEncapsulationAttributes(_attributes, declaration.QualifiedModuleName, (Declaration dec) => dec.Equals(_decorated));
+                isValidAttributeSet = _validator.HasValidEncapsulationAttributes(_attributes, declaration.QualifiedModuleName, (Declaration dec) => dec.Equals(_target));
             }
         }
 
-        public Declaration Declaration => _decorated;
+        public Declaration Declaration => _target;
 
-        public DeclarationType DeclarationType => _decorated.DeclarationType;
+        public DeclarationType DeclarationType => _target.DeclarationType;
 
-        public bool HasValidEncapsulationAttributes
-        {
-            get
-            {
-                return _validator.HasValidEncapsulationAttributes(EncapsulationAttributes, QualifiedModuleName, (Declaration dec) => dec.Equals(_decorated));
-            }
-        }
+        public bool HasValidEncapsulationAttributes 
+            => _validator.HasValidEncapsulationAttributes(EncapsulationAttributes, QualifiedModuleName, (Declaration dec) => dec.Equals(_target));
 
         public IFieldEncapsulationAttributes EncapsulationAttributes
         {
@@ -67,7 +62,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => _attributes;
         }
 
-        public string TargetID { get; set; }
+        public virtual string TargetID => _target.IdentifierName;
 
         public bool EncapsulateFlag
         {
@@ -96,7 +91,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => _attributes.NewFieldName;
         }
 
-        public string AsTypeName => _decorated.AsTypeName;
+        public string AsTypeName => _target.AsTypeName;
 
         public bool IsUDTMember { set; get; } = false;
 

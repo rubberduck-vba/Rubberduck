@@ -361,12 +361,12 @@ End Property
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
             using (state)
             {
-                IEncapsulatedFieldDeclaration efd = null;
-                var fields = new List<IEncapsulatedFieldDeclaration>();
+                IEncapsulateFieldCandidate efd = null;
+                var fields = new List<IEncapsulateFieldCandidate>();
                 var validator = new EncapsulateFieldNamesValidator(state, () => fields);
 
                 var match = state.DeclarationFinder.MatchName(fieldName).Single();
-                efd = new EncapsulatedFieldDeclaration(match, validator);
+                efd = new EncapsulateFieldCandidate(match, validator);
                 fields.Add(efd);
                 efd.PropertyName = "Name";
 

@@ -10,7 +10,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
 {
     public interface IEncapsulatedFieldViewData
     {
-        string TargetID { get; set; }
+        string TargetID { get; } // set; }
         string PropertyName { set; get; }
         string NewFieldName { get; } // { set; get; }
         bool EncapsulateFlag { set; get; }
@@ -25,8 +25,8 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
 
     public class ViewableEncapsulatedField : IEncapsulatedFieldViewData
     {
-        private IEncapsulatedFieldDeclaration _efd;
-        public ViewableEncapsulatedField(IEncapsulatedFieldDeclaration efd)
+        private IEncapsulateFieldCandidate _efd;
+        public ViewableEncapsulatedField(IEncapsulateFieldCandidate efd)
         {
             _efd = efd;
         }
@@ -34,7 +34,8 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         public Visibility FieldNameVisibility => _efd.IsUDTMember || !_efd.EncapsulateFlag ? Visibility.Collapsed : Visibility.Visible;
         public Visibility PropertyNameVisibility => !_efd.EncapsulateFlag ? Visibility.Collapsed : Visibility.Visible;
         public bool HasValidEncapsulationAttributes => _efd.HasValidEncapsulationAttributes;
-        public string TargetID { get => _efd.TargetID; set => _efd.TargetID = value; }
+        public string TargetID { get => _efd.TargetID; }
+        //set => _efd.TargetID = value; }
         public bool IsReadOnly { get => _efd.IsReadOnly; set => _efd.IsReadOnly = value; }
         public bool CanBeReadWrite => _efd.CanBeReadWrite;
         public string PropertyName { get => _efd.PropertyName; set => _efd.PropertyName = value; }

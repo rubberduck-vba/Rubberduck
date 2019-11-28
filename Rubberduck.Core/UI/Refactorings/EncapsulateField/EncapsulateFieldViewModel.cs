@@ -27,7 +27,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         {
             get
             {
-                var flaggedFields = Model.EncapsulationFields.Where(efd => efd.EncapsulateFlag)
+                var flaggedFields = Model.FlaggedEncapsulationFields //.Where(efd => efd.EncapsulateFlag)
                     .OrderBy(efd => efd.Declaration.IdentifierName);
 
                 var orderedFields = Model.EncapsulationFields.Except(flaggedFields)

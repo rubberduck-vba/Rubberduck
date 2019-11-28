@@ -78,8 +78,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
     public class EncapsulateFieldNamesValidator : IEncapsulateFieldNamesValidator
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
-        private Func<IEnumerable<IEncapsulatedFieldDeclaration>> _selectedFieldsRetriever;
-        public EncapsulateFieldNamesValidator(IDeclarationFinderProvider declarationFinderProvider, Func<IEnumerable<IEncapsulatedFieldDeclaration>> selectedFieldsRetriever = null)
+        private Func<IEnumerable<IEncapsulateFieldCandidate>> _selectedFieldsRetriever;
+        public EncapsulateFieldNamesValidator(IDeclarationFinderProvider declarationFinderProvider, Func<IEnumerable<IEncapsulateFieldCandidate>> selectedFieldsRetriever = null)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _selectedFieldsRetriever = selectedFieldsRetriever;
@@ -125,9 +125,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
                         && !IsEnumOrUDTMemberDeclaration(match)
                         && !match.IsLocalVariable()).ToList();
 
-            var candidates = new List<IEncapsulatedFieldDeclaration>();
-            var candidateMatches = new List<IEncapsulatedFieldDeclaration>();
-            var fields = _selectedFieldsRetriever is null ? Enumerable.Empty<IEncapsulatedFieldDeclaration>() : _selectedFieldsRetriever();
+            var candidates = new List<IEncapsulateFieldCandidate>();
+            var candidateMatches = new List<IEncapsulateFieldCandidate>();
+            var fields = _selectedFieldsRetriever is null ? Enumerable.Empty<IEncapsulateFieldCandidate>() : _selectedFieldsRetriever();
             foreach (var efd in fields)
             {
                 var matches = candidates.Where(c => c.PropertyName.EqualsVBAIdentifier(efd.PropertyName));
@@ -150,10 +150,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
                         && !IsEnumOrUDTMemberDeclaration(match)
                         && !match.IsLocalVariable()).ToList();
 
-            var candidates = new List<IEncapsulatedFieldDeclaration>();
-            var candidateMatches = new List<IEncapsulatedFieldDeclaration>();
+            var candidates = new List<IEncapsulateFieldCandidate>();
+            var candidateMatches = new List<IEncapsulateFieldCandidate>();
             var fields = _selectedFieldsRetriever is null 
-                ? Enumerable.Empty<IEncapsulatedFieldDeclaration>() 
+                ? Enumerable.Empty<IEncapsulateFieldCandidate>() 
                 : _selectedFieldsRetriever();
 
             foreach (var efd in fields)
