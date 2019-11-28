@@ -4,6 +4,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.VBA.Extensions;
 
 namespace Rubberduck.Parsing.VBA

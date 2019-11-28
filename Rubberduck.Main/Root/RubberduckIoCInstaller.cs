@@ -184,6 +184,8 @@ namespace Rubberduck.Root
 
             RegisterConfiguration(container, assembliesToRegister);
 
+            RegisterRequiredBinaryExtractors(container, assembliesToRegister);
+
             RegisterParseTreeInspections(container, assembliesToRegister);
             RegisterInspections(container, assembliesToRegister);
             RegisterQuickFixes(container, assembliesToRegister);
@@ -195,6 +197,18 @@ namespace Rubberduck.Root
             RegisterFactories(container, assembliesToRegister);
 
             ApplyDefaultInterfaceConvention(container, assembliesToRegister);
+        }
+
+        private static void RegisterRequiredBinaryExtractors(IWindsorContainer container, Assembly[] assembliesToRegister)
+        {
+            foreach (var assembly in assembliesToRegister)
+            {
+                container.Register(Classes.FromAssembly(assembly)
+                    .IncludeNonPublicTypes()
+                    .BasedOn<IRequiredBinaryFilesFromFileNameExtractor>()
+                    .WithServiceBase()
+                    .LifestyleSingleton());
+            }
         }
 
         private void RegisterRefactorings(IWindsorContainer container, Assembly[] assembliesToRegister)
