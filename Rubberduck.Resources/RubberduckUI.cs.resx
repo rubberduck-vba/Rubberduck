@@ -947,23 +947,8 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   <data name="GeneralSettings_CheckVersion" xml:space="preserve">
     <value>Při startu zkontrolovat, zda je dostupná nová verze</value>
   </data>
-  <data name="AssignedByValDialog_DoesNotStartWithLetter" xml:space="preserve">
-    <value>Názvy proměnných musejí začínat písmenem.</value>
-  </data>
-  <data name="AssignedByValDialog_InvalidCharacters" xml:space="preserve">
-    <value>Názvy proměnných nesmějí obsahovat žádný jiný speciální znak, než je podtržítko '_'</value>
-  </data>
-  <data name="AssignedByValDialog_IsByValIdentifierFormat" xml:space="preserve">
-    <value>Lokální proměnná nemůže být stejná jako '{0}' parametr, který nahrazuje</value>
-  </data>
   <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
     <value>'{0}' je již přístupný v tomto rozsahu.</value>
-  </data>
-  <data name="AssignedByValDialog_QuestionableEntryFormat" xml:space="preserve">
-    <value>Identifikátor '{0}' vyústí jako výsledek inspekce "Použij smysluplné jméno". Zvažte použití jiného názvu.</value>
-  </data>
-  <data name="AssignedByValDialog_ReservedKeywordFormat" xml:space="preserve">
-    <value>'{0}' je rezervované klíčové slovo.</value>
   </data>
   <data name="ConfirmRemoveAssignmentWithUnusedDeclaration" xml:space="preserve">
     <value>Proměnná '{0}' je přidělena. Odstranit přidělení instrukce?</value>

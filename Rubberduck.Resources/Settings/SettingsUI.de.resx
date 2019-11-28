@@ -190,7 +190,7 @@
     <value>Konfigurieren Sie, welche Autovervollständigungen aktiviert sind.</value>
   </data>
   <data name="PageInstructions_GeneralSettings" xml:space="preserve">
-    <value>[Ok] zum Schließen und Speichern oder [Abbrechen] zum Verwerfen der Änderungen.</value>
+    <value>[{0}] zum Schließen und Speichern oder [{1}] zum Verwerfen der Änderungen klicken.</value>
   </data>
   <data name="PageInstructions_IndenterSettings" xml:space="preserve">
     <value>Konfiguration der Einrückungseinstellungen</value>

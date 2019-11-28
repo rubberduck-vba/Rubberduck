@@ -1000,29 +1000,14 @@ Dieses Fenster wird angezeigt, da Aktualisierungsprüfungen aktiviert sind. Dies
   <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
     <value>'{0}' ist in diesem Kontext bereits verfügbar.</value>
   </data>
-  <data name="AssignedByValDialog_ReservedKeywordFormat" xml:space="preserve">
-    <value>'{0}' ist ein reserviertes Schlüsselwort.</value>
-  </data>
   <data name="RenameDialog_AmbiguousSelection" xml:space="preserve">
     <value>Bitte stellen Sie zur Umbenennung sicher, dass genau ein Control-Objekt ausgewählt ist.</value>
   </data>
   <data name="ContextMultipleControlsSelection" xml:space="preserve">
     <value>Mehrere Schaltflächen</value>
   </data>
-  <data name="AssignedByValDialog_InvalidCharacters" xml:space="preserve">
-    <value>Variablennamen können keine Sonderzeichen außer Unterstrich enthalten.</value>
-  </data>
-  <data name="AssignedByValDialog_IsByValIdentifierFormat" xml:space="preserve">
-    <value>Die lokale Variable kann nicht das gleiche wie der '{0}' Parameter, den sie ersetzt sein.</value>
-  </data>
-  <data name="AssignedByValDialog_QuestionableEntryFormat" xml:space="preserve">
-    <value>Der Name '{0}' wird die "Sinnige Namen verwenden"-Inspektion auslösen. Überlegen Sie, einen anderen Namen zu wählen.</value>
-  </data>
   <data name="ConfirmRemoveAssignmentWithUnusedDeclaration" xml:space="preserve">
     <value>Variable '{0}' ist zugewiesen. Zuweisung(en) entfernen?</value>
-  </data>
-  <data name="AssignedByValDialog_DoesNotStartWithLetter" xml:space="preserve">
-    <value>Variablennamen müssen mit einem Buchstaben beginnen.</value>
   </data>
   <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
     <value>Konnte Interfacemitglied {0} nicht umbenennen.</value>
@@ -1422,7 +1407,7 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
     <value>Der Typ des Ziels '{0}'ist '{1}' anstatt eines der erwarteten Typen '{2}'.</value>
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
-    <value />
+    <value>Filter</value>
   </data>
   <data name="GroupingStyle_ByName" xml:space="preserve">
     <value>Nach Codeuntersuchung</value>
@@ -1441,9 +1426,6 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   </data>
   <data name="SaveAndClose" xml:space="preserve">
     <value>Speichern &amp; Schließen</value>
-  </data>
-  <data name="RegexAssistant_EncloseWhitespace_EnclosingFormat" xml:space="preserve">
-    <value>&lt;{0}&gt;</value>
   </data>
   <data name="RegexAssistant_SpelledOut_Space" xml:space="preserve">
     <value>Leerzeichen</value>
@@ -1546,5 +1528,53 @@ Import abgebrochen.</value>
     <value>Für die Datei '{0}' fehlen die benötigte(n) Binärdatei(en) '{1}'.
 
 Import abgebrochen.</value>
+  </data>
+  <data name="TestExplorer_AppendHeader" xml:space="preserve">
+    <value>Rubberduck: Testergebnisse - {0}</value>
+  </data>
+  <data name="ComponentType_ActiveXDesigner" xml:space="preserve">
+    <value>ActiveX-Designer</value>
+  </data>
+  <data name="ComponentType_ClassModule" xml:space="preserve">
+    <value>Klassenmodul</value>
+  </data>
+  <data name="ComponentType_ComComponent" xml:space="preserve">
+    <value>COM-Komponente</value>
+  </data>
+  <data name="ComponentType_Document" xml:space="preserve">
+    <value>Dokumentmodul</value>
+  </data>
+  <data name="ComponentType_DocObject" xml:space="preserve">
+    <value>Dokumentobjekt</value>
+  </data>
+  <data name="ComponentType_MDIForm" xml:space="preserve">
+    <value>MDI-Formular</value>
+  </data>
+  <data name="ComponentType_PropPage" xml:space="preserve">
+    <value>Eigenschaftsseite</value>
+  </data>
+  <data name="ComponentType_RelatedDocument" xml:space="preserve">
+    <value>Zugehöriges Dokument</value>
+  </data>
+  <data name="ComponentType_ResFile" xml:space="preserve">
+    <value>Ressourcendatei</value>
+  </data>
+  <data name="ComponentType_StandardModule" xml:space="preserve">
+    <value>Standardmodul</value>
+  </data>
+  <data name="ComponentType_Undefined" xml:space="preserve">
+    <value>Undefiniert</value>
+  </data>
+  <data name="ComponentType_UserForm" xml:space="preserve">
+    <value>UserForm</value>
+  </data>
+  <data name="ComponentType_VBForm" xml:space="preserve">
+    <value>VB Formular</value>
+  </data>
+  <data name="ComponentType_UserControl" xml:space="preserve">
+    <value>Benutzerkontrollelement</value>
+  </data>
+  <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
+    <value>Es war nicht möglich den Parser zum Ausführen des Refactorings temporär zu deaktivieren.</value>
   </data>
 </root>
