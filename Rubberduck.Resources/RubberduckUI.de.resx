@@ -1504,7 +1504,7 @@ Import abgebrochen.</value>
   <data name="UpdateFromFilesCommand_DialogCaption" xml:space="preserve">
     <value>Komponenten aus Dateien aktualisieren</value>
   </data>
-  <data name="UpdateFromFilesCommand_DuplicateModule" xml:space="preserve">
+  <data name="ImportCommand_DuplicateModule" xml:space="preserve">
     <value>Mehrere Dateien enthalten Code für die Komponente '{0}'.
 
 Import abgebrochen.</value>
@@ -1514,13 +1514,18 @@ Import abgebrochen.</value>
 
 Import abgebrochen.</value>
   </data>
-  <data name="UpdateFromFilesCommand_DocumentDoesNotExist" xml:space="preserve">
+  <data name="ImportCommand_DocumentDoesNotExist" xml:space="preserve">
     <value>Es existiert kein Dokumentenmodul namens '{0}', s.d. die Datei '{1}' nicht importiert werden kann.
 
 Import abgebrochen.</value>
   </data>
-  <data name="UpdateFromFilesCommand_UserFormDoesNotExist" xml:space="preserve">
-    <value>Es existiert keine Userform namens '{0}', s.d. kein Codebehind einer Userform aus der Datei '{1}' überschrieben werden kann.
+  <data name="ImportCommand_BinaryAndComponentDoNotExist" xml:space="preserve">
+    <value>Für die Datei '{0}' fehlen die benötigte(n) Binärdatei(en) '{1}' und die Zielkomponente '{2}' existiert noch nicht.
+
+Import abgebrochen.</value>
+  </data>
+  <data name="ImportCommand_BinaryDoesNotExist" xml:space="preserve">
+    <value>Für die Datei '{0}' fehlen die benötigte(n) Binärdatei(en) '{1}'.
 
 Import abgebrochen.</value>
   </data>

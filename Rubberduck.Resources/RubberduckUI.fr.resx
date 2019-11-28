@@ -1516,7 +1516,7 @@ Confirmer?</value>
   <data name="UpdateFromFilesCommand_DialogCaption" xml:space="preserve">
     <value>Mettre à jour les modules...</value>
   </data>
-  <data name="UpdateFromFilesCommand_DuplicateModule" xml:space="preserve">
+  <data name="ImportCommand_DuplicateModule" xml:space="preserve">
     <value>Plus d'un fichier contient du code pour le componsant '{0}'.
 
 Mise à jour annulée.</value>
@@ -1526,13 +1526,8 @@ Mise à jour annulée.</value>
 
 Mise à jour annulée.</value>
   </data>
-  <data name="UpdateFromFilesCommand_DocumentDoesNotExist" xml:space="preserve">
+  <data name="ImportCommand_DocumentDoesNotExist" xml:space="preserve">
     <value>Aucun module document existant avec le nom '{0}'; le fichier '{1}' ne pourra pas être importé.
-
-Mise à jour annulée.</value>
-  </data>
-  <data name="UpdateFromFilesCommand_UserFormDoesNotExist" xml:space="preserve">
-    <value>Aucun formulaire existant avec le nom '{0}'; le fichier '{1}' ne pourra pas être importé.
 
 Mise à jour annulée.</value>
   </data>

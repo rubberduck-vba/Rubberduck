@@ -357,7 +357,7 @@ namespace RubberduckTests.Rewriter
             var parseManager = new Mock<IParseManager>();
             parseManager.Setup(m => m.OnSuspendParser(It.IsAny<object>(), It.IsAny<IEnumerable<ParserState>>(), It.IsAny<Action>(), It.IsAny<int>()))
                 .Callback((object requestor, IEnumerable<ParserState> allowedStates, Action suspendAction, int timeout) => suspendAction())
-                .Returns((object requestor, IEnumerable<ParserState> allowedStates, Action suspendAction, int timeout) => SuspensionResult.Completed);
+                .Returns((object requestor, IEnumerable<ParserState> allowedStates, Action suspendAction, int timeout) => new SuspensionResult(SuspensionOutcome.Completed));
             return RewriteSession(parseManager.Object, rewritingAllowed, out mockProvider, rewritersAreDirty, selectionRecoverer);
         }
 

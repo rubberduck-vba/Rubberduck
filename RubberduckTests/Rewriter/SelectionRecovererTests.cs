@@ -2,6 +2,7 @@
 using System.Threading;
 using Moq;
 using NUnit.Framework;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Extensions;
