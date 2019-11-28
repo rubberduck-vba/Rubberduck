@@ -9,6 +9,7 @@ using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.Utility;
 using System.Collections.Generic;
 using System;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -92,6 +93,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, _targetQMN);
 
+            RewriterRemoveWorkAround.RemoveDeclarationsFromVariableLists(rewriter);
+
             rewriter.InsertNewContent(CodeSectionStartIndex, model.NewContent());
 
             if (!rewriteSession.TryRewrite())
@@ -106,11 +109,19 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             var previewRewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(scratchPadRewriteSession, _targetQMN);
 
+            RewriterRemoveWorkAround.RemoveDeclarationsFromVariableLists(previewRewriter);
+
             var newContent = model.NewContent("'<===== No Changes below this line =====>");
 
             previewRewriter.InsertNewContent(CodeSectionStartIndex, newContent);
 
             var preview = previewRewriter.GetText();
+
+            var counter = 0;
+            while ( counter++ < 10 && preview.Contains($"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}"))
+            {
+                preview = preview.Replace($"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}", $"{Environment.NewLine}{Environment.NewLine}");
+            }
 
             return preview;
         }
@@ -151,7 +162,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             if (asUDT)
             {
-                rewriter.Remove(target.Declaration);
+                RewriterRemoveWorkAround.Remove(target.Declaration, rewriter);
+                //rewriter.Remove(target.Declaration);
                 return;
             }
 
@@ -163,7 +175,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             if (target.Declaration.IsDeclaredInList())
             {
-                rewriter.Remove(target.Declaration);
+                RewriterRemoveWorkAround.Remove(target.Declaration, rewriter);
+                //rewriter.Remove(target.Declaration);
             }
             else
             {
@@ -200,6 +213,5 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             return (udtVariable, userDefinedTypeDeclaration, udtMembers);
         }
-
     }
 }
