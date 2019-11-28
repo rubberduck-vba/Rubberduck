@@ -1682,29 +1682,35 @@ Import aborted.</value>
   <data name="UpdateFromFilesCommand_DialogCaption" xml:space="preserve">
     <value>Update Components from Files</value>
   </data>
-  <data name="UpdateFromFilesCommand_DuplicateModule" xml:space="preserve">
+  <data name="ImportCommand_DuplicateModule" xml:space="preserve">
     <value>Multiple files contain code for the component '{0}'.
 
-Update aborted.</value>
+Import aborted.</value>
     <comment>{0} module name</comment>
   </data>
   <data name="UpdateFromFilesCommand_DifferentComponentType" xml:space="preserve">
     <value>The component type of the existing component '{0}' does not agree with that indicated by the extension of file '{1}'.
 
-Update aborted.</value>
+Import aborted.</value>
     <comment>{0} module name, {1} filename</comment>
   </data>
-  <data name="UpdateFromFilesCommand_DocumentDoesNotExist" xml:space="preserve">
+  <data name="ImportCommand_DocumentDoesNotExist" xml:space="preserve">
     <value>There is no existing document module with name '{0}'; file '{1}' cannot be imported.
 
-Update aborted.</value>
+Import aborted.</value>
     <comment>{0} module name, {1} filename</comment>
   </data>
-  <data name="UpdateFromFilesCommand_UserFormDoesNotExist" xml:space="preserve">
-    <value>There is no user form with name '{0}'; no code behind can be updated from file '{1}'.
+  <data name="ImportCommand_BinaryAndComponentDoNotExist" xml:space="preserve">
+    <value>For file '{0}', the required binary file(s) '{1}' are missing and the target component '{2}' does not already exists.
 
-Update aborted.</value>
-    <comment>{0} module name, {1} filename</comment>
+Import aborted.</value>
+    <comment>{0} filename, {1} binaries, {2} module name</comment>
+  </data>
+  <data name="ImportCommand_BinaryDoesNotExist" xml:space="preserve">
+    <value>For file '{0}', the requires binary file(s) '{1}' are missing.
+
+Import aborted.</value>
+    <comment>{0} filename, {1} binaries</comment>
   </data>
   <data name="ComponentType_ActiveXDesigner" xml:space="preserve">
     <value>ActiveX Designer</value>

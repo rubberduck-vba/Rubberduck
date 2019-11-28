@@ -8,6 +8,7 @@ using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor;
