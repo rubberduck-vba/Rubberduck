@@ -97,18 +97,18 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             if (!attributes.FieldNameIsExemptFromValidation)
             {
-                if (HasNewFieldNameConflicts(attributes, qmn, ignore)) { return false; }
+                if (HasNewFieldNameConflicts(attributes, qmn, ignore) > 0) { return false; }
             }
 
-            if (HasNewPropertyNameConflicts(attributes, qmn, ignore)) { return false; }
+            if (HasNewPropertyNameConflicts(attributes, qmn, ignore) > 0) { return false; }
 
             return true;
         }
 
-        public bool HasNewPropertyNameConflicts(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, Predicate<Declaration> ignoreThisDeclaration)
+        public int HasNewPropertyNameConflicts(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, Predicate<Declaration> ignoreThisDeclaration)
         {
+            Predicate<Declaration> IsPrivateAccessiblityInOtherModule = (Declaration dec) => dec.QualifiedModuleName != qmn && dec.Accessibility.Equals(Accessibility.Private);
             Predicate<Declaration> IsInSearchScope = null;
-            Predicate<Declaration> IsPrivateInOtherModule = (Declaration dec) => dec.QualifiedModuleName != qmn && dec.Accessibility.Equals(Accessibility.Private);
             if (qmn.ComponentType == ComponentType.ClassModule)
             {
                 IsInSearchScope = (Declaration dec) => dec.QualifiedModuleName == qmn;
@@ -121,7 +121,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var identifierMatches = DeclarationFinder.MatchName(attributes.PropertyName)
                 .Where(match => IsInSearchScope(match)
                         && !ignoreThisDeclaration(match)
-                        && !IsPrivateInOtherModule(match)
+                        && !IsPrivateAccessiblityInOtherModule(match)
                         && !IsEnumOrUDTMemberDeclaration(match)
                         && !match.IsLocalVariable()).ToList();
 
@@ -138,11 +138,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 candidates.Add(efd);
             }
 
-            return identifierMatches.Any() || candidateMatches.Any();
+            return identifierMatches.Count() + candidateMatches.Count();
         }
 
         //FieldNames are always Private, so only look within the same module as the field to encapsulate
-        public bool HasNewFieldNameConflicts(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, Predicate<Declaration> ignoreThisDeclaration)
+        public int HasNewFieldNameConflicts(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, Predicate<Declaration> ignoreThisDeclaration)
         {
             var identifierMatches = DeclarationFinder.MatchName(attributes.NewFieldName)
                 .Where(match => match.QualifiedModuleName == qmn
@@ -166,7 +166,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 candidates.Add(efd);
             }
 
-            return identifierMatches.Any() || candidateMatches.Any();
+            return identifierMatches.Count() + candidateMatches.Count();
         }
 
         private bool IsEnumOrUDTMemberDeclaration(Declaration candidate)

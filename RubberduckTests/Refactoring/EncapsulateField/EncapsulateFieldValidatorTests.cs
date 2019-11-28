@@ -12,13 +12,14 @@ using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.Parsing.Symbols;
+using System;
 
 namespace RubberduckTests.Refactoring.EncapsulateField
 {
     [TestFixture]
-    public class EncapsulateFieldValidatorTests
+    public class EncapsulateFieldValidatorTests : InteractiveRefactoringTestBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>
     {
-        //private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
+        private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
 
         [TestCase("Number")]
         [TestCase("Test")]
@@ -55,7 +56,7 @@ End Property";
                                 mockBuzz
                             });
 
-                Assert.IsTrue(validator.HasNewPropertyNameConflicts(mockFizz.EncapsulationAttributes, mockFizz.QualifiedModuleName, (Declaration dec) => false));
+                Assert.Less(0, validator.HasNewPropertyNameConflicts(mockFizz.EncapsulationAttributes, mockFizz.QualifiedModuleName, (Declaration dec) => false));
             }
         }
 
@@ -77,7 +78,23 @@ Public that As TBar
 ";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
-            var selectedComponentName = vbe.SelectedVBComponent.Name;
+            CreateAndParse(vbe, ThisTest);
+            //var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
+            //var selectedComponentName = vbe.SelectedVBComponent.Name;
+
+            void ThisTest(IDeclarationFinderProvider declarationProviderProvider)
+            {
+                var userInput = new UserInputDataObject("this", encapsulationFlag: true);
+                userInput.AddAttributeSet("that", encapsulationFlag: true);
+                userInput.AddUDTMemberNameFlagPairs(("this", "First", true));
+                userInput.AddUDTMemberNameFlagPairs(("that", "First", true));
+
+                var presenterAction = Support.SetParameters(userInput);
+
+                var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+                encapsulatedWholeNumber.EncapsulationAttributes.PropertyName = "LongValue";
+                Assert.Less(0, validator.HasNewPropertyNameConflicts(encapsulatedWholeNumber.EncapsulationAttributes, encapsulatedWholeNumber.QualifiedModuleName, (Declaration dec) => dec.Equals(encapsulatedWholeNumber.Declaration)));
+            }
 
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
             using (state)
@@ -94,7 +111,49 @@ Public that As TBar
                             });
 
 
-                Assert.IsTrue(validator.HasNewPropertyNameConflicts(thisField.EncapsulationAttributes, thisField.QualifiedModuleName, (Declaration dec) => false));
+                Assert.Less(0 ,validator.HasNewPropertyNameConflicts(thisField.EncapsulationAttributes, thisField.QualifiedModuleName, (Declaration dec) => false));
+            }
+        }
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void PropertyNameConflictsWithModuleVariable()
+        {
+            string inputCode =
+$@"
+Public longValue As Long
+
+Public wholeNumber As String
+";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
+            CreateAndParse(vbe, ThisTest);
+
+            void ThisTest(IDeclarationFinderProvider declarationProviderProvider)
+            {
+                var wholeNumber = declarationProviderProvider.DeclarationFinder.MatchName("wholeNumber").Single();
+                var longValue = declarationProviderProvider.DeclarationFinder.MatchName("longValue").Single();
+
+                var fields = new List<IEncapsulatedFieldDeclaration>();
+
+                var validator = new EncapsulateFieldNamesValidator(declarationProviderProvider, () => fields);
+
+                var encapsulatedWholeNumber = new EncapsulatedFieldDeclaration(wholeNumber, validator);
+                var encapsulatedLongValue = new EncapsulatedFieldDeclaration(longValue, validator);
+                fields.Add(new EncapsulatedFieldDeclaration(wholeNumber, validator));
+                fields.Add(new EncapsulatedFieldDeclaration(longValue, validator));
+
+                encapsulatedWholeNumber.EncapsulationAttributes.PropertyName = "LongValue";
+                Assert.Less(0, validator.HasNewPropertyNameConflicts(encapsulatedWholeNumber.EncapsulationAttributes, encapsulatedWholeNumber.QualifiedModuleName, (Declaration dec) => dec.Equals(encapsulatedWholeNumber.Declaration)));
+            }
+        }
+
+        private void CreateAndParse(IVBE vbe, Action<IDeclarationFinderProvider> theTest)
+        {
+            //var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
+            var state = MockParser.CreateAndParse(vbe);
+            using (state)
+            {
+                theTest(state as IDeclarationFinderProvider);
             }
         }
 
@@ -124,6 +183,11 @@ Public that As TBar
             mock.SetupGet(m => m.AsTypeName).Returns(asTypeName);
             mock.SetupGet(m => m.EncapsulateFlag).Returns(encapsulateFlag);
             return mock.Object;
+        }
+
+        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
+        {
+            return Support.SupportTestRefactoring(rewritingManager, state, factory, selectionService);
         }
     }
 }
