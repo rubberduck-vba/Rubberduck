@@ -85,11 +85,16 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             return new Indenter(vbe, () => Settings.IndenterSettingsTests.GetMockIndenterSettings());
         }
 
-        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
+        public IRefactoring SupportTestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
         {
             var indenter = CreateIndenter(); //The refactoring only uses method independent of the VBE instance.
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
             return new EncapsulateFieldRefactoring(state, indenter, factory, rewritingManager, selectionService, selectedDeclarationProvider);
+        }
+
+        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
+        {
+            return SupportTestRefactoring(rewritingManager, state, factory, selectionService);
         }
     }
 
@@ -148,5 +153,4 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
         public IEnumerable<(string, string, bool)> UDTMemberNameFlagPairs => _udtNameFlagPairs;
     }
-
 }
