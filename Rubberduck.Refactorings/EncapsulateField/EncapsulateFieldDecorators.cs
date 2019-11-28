@@ -141,6 +141,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             EncapsulationAttributes.ImplementSetSetterType = false;
             EncapsulationAttributes.AsTypeName = Tokens.Variant;
             CanBeReadWrite = false;
+            IsReadOnly = true;
         }
 
         public static IEncapsulatedFieldDeclaration Decorate(IEncapsulatedFieldDeclaration efd) 
