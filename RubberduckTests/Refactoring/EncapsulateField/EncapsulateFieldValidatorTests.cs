@@ -56,7 +56,7 @@ End Property";
                                 mockBuzz
                             });
 
-                Assert.Less(0, validator.HasNewPropertyNameConflicts(mockFizz.EncapsulationAttributes, mockFizz.QualifiedModuleName, (Declaration dec) => false));
+                Assert.Less(0, validator.HasNewPropertyNameConflicts(mockFizz.EncapsulationAttributes, mockFizz.QualifiedModuleName, Enumerable.Empty<Declaration>()));
             }
         }
 
@@ -115,7 +115,7 @@ Public that As TBar
                             });
 
 
-                Assert.Less(0 ,validator.HasNewPropertyNameConflicts(thisField.EncapsulationAttributes, thisField.QualifiedModuleName, (Declaration dec) => false));
+                Assert.Less(0 ,validator.HasNewPropertyNameConflicts(thisField.EncapsulationAttributes, thisField.QualifiedModuleName, Enumerable.Empty<Declaration>()));
             }
         }
         [Test]
@@ -147,7 +147,7 @@ Public wholeNumber As String
                 fields.Add(new EncapsulateFieldCandidate(longValue, validator));
 
                 encapsulatedWholeNumber.EncapsulationAttributes.PropertyName = "LongValue";
-                Assert.Less(0, validator.HasNewPropertyNameConflicts(encapsulatedWholeNumber.EncapsulationAttributes, encapsulatedWholeNumber.QualifiedModuleName, (Declaration dec) => dec.Equals(encapsulatedWholeNumber.Declaration)));
+                Assert.Less(0, validator.HasNewPropertyNameConflicts(encapsulatedWholeNumber.EncapsulationAttributes, encapsulatedWholeNumber.QualifiedModuleName, new Declaration[] {encapsulatedWholeNumber.Declaration}));
             }
         }
 
@@ -181,7 +181,7 @@ Public wholeNumber As String
         {
             var identifiers = new EncapsulationIdentifiers(targetID);
             var mock = new Mock<IFieldEncapsulationAttributes>();
-            mock.SetupGet(m => m.TargetName).Returns(identifiers.TargetFieldName);
+            mock.SetupGet(m => m.Identifier).Returns(identifiers.TargetFieldName);
             mock.SetupGet(m => m.NewFieldName).Returns(identifiers.Field);
             mock.SetupGet(m => m.PropertyName).Returns(modifiedPropertyName ?? identifiers.Property);
             mock.SetupGet(m => m.AsTypeName).Returns(asTypeName);

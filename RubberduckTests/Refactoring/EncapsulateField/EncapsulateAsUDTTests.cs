@@ -47,7 +47,7 @@ End Type
         [TestCase("Private")]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        public void UserDefinedType_UserAcceptsDefaults_ToUDTInstances(string accessibility)
+        public void UserDefinedType_UserAcceptsDefaults_TwoUDTInstances(string accessibility)
         {
             string selectionModule = "ClassInput";
             string inputCode =
@@ -81,6 +81,31 @@ Private that As TBar";
             StringAssert.Contains("this1 = value", actualCode[selectionModule]);
             StringAssert.Contains($"This = this1", actualCode[selectionModule]);
             StringAssert.DoesNotContain($"this1.First1 = value", actualCode[selectionModule]);
+        }
+
+        [TestCase("Public")]
+        [TestCase("Private")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void UserDefinedType_UserAcceptsDefaults_ConflictWithEncapsulationUDT(string accessibility)
+        {
+            string inputCode =
+$@"
+Private Type TBar
+    First As String
+    Second As Long
+End Type
+
+{accessibility} my|Bar As TBar
+
+Private this As Long";
+
+
+            var presenterAction = Support.UserAcceptsDefaults(asUDT: true);
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            StringAssert.Contains("Private this As Long", actualCode);
+            StringAssert.Contains("Private this1 As This_Type", actualCode);
+            //StringAssert.DoesNotContain($"Private this1 As This_Type", actualCode);
         }
 
         [TestCase("Public", true, true)]

@@ -34,7 +34,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _declarationFinderProvider = declarationFinderProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;
             _indenter = indenter;
-            _validator = new EncapsulateFieldNamesValidator(_declarationFinderProvider, FlaggedFields);
+            _validator = new EncapsulateFieldNamesValidator(_declarationFinderProvider, CandidateFields);
         }
 
         protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
@@ -75,15 +75,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
         }
 
         //Get rid of Model property after improving the validator ctor
-        private IEnumerable<IEncapsulateFieldCandidate> FlaggedFields() => Model?.FlaggedEncapsulationFields ?? Enumerable.Empty<IEncapsulateFieldCandidate>();
+        private IEnumerable<IEncapsulateFieldCandidate> CandidateFields() => Model?.EncapsulationFields ?? Enumerable.Empty<IEncapsulateFieldCandidate>();
 
         protected override void RefactorImpl(EncapsulateFieldModel model)
         {
-            //Model = model;
             var strategy = model.EncapsulationStrategy;
 
             var rewriteSession = strategy.RefactorRewrite(model, RewritingManager.CheckOutCodePaneSession());
-            strategy.InsertNewContent(CodeSectionStartIndex, model, rewriteSession);
 
             if (!rewriteSession.TryRewrite())
             {
@@ -94,35 +92,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private string PreviewRewrite(EncapsulateFieldModel model)
         {
             var strategy = model.EncapsulationStrategy;
-            var scratchPadRewriteSession = strategy.RefactorRewrite(model, RewritingManager.CheckOutCodePaneSession());
 
-            strategy.InsertNewContent(CodeSectionStartIndex, model, scratchPadRewriteSession, true);
+            var scratchPadRewriteSession = strategy.GeneratePreview(model, RewritingManager.CheckOutCodePaneSession());
 
             var previewRewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(scratchPadRewriteSession, _targetQMN);
-            var preview = previewRewriter.GetText();
 
-            var counter = 0;
-            while ( counter++ < 10 && preview.Contains($"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}"))
-            {
-                preview = preview.Replace($"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}", $"{Environment.NewLine}{Environment.NewLine}");
-            }
-
-            return preview;
-        }
-
-        private int? CodeSectionStartIndex
-        {
-            get
-            {
-                var moduleMembers = _declarationFinderProvider.DeclarationFinder
-                        .Members(_targetQMN).Where(m => m.IsMember());
-
-                int? codeSectionStartIndex
-                    = moduleMembers.OrderBy(c => c.Selection)
-                                .FirstOrDefault()?.Context.Start.TokenIndex ?? null;
-
-                return codeSectionStartIndex;
-            }
+            return previewRewriter.GetTextWithoutAbandonedLines();
         }
     }
 }

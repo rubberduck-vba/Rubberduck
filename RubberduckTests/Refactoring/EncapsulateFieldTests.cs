@@ -370,7 +370,7 @@ End Property
                 fields.Add(efd);
                 efd.PropertyName = "Name";
 
-                var hasConflict = !validator.HasValidEncapsulationAttributes(efd.EncapsulationAttributes, efd.QualifiedModuleName, (Declaration dec) => match.Equals(dec));
+                var hasConflict = !validator.HasValidEncapsulationAttributes(efd.EncapsulationAttributes, efd.QualifiedModuleName, new Declaration[] { efd.Declaration }); //(Declaration dec) => match.Equals(dec));
                 Assert.IsTrue(hasConflict);
             }
         }

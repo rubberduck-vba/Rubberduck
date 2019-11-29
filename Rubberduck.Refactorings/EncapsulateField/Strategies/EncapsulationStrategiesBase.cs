@@ -1,4 +1,6 @@
 ﻿using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using System;
@@ -11,24 +13,92 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
 {
     public interface IEncapsulateFieldStrategy
     {
+        IExecutableRewriteSession GeneratePreview(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession);
         IExecutableRewriteSession RefactorRewrite(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession);
-        void InsertNewContent(int? codeSectionStartIndex, EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession, bool includePreviewMessage = false);
         Dictionary<string, IEncapsulateFieldCandidate> UdtMemberTargetIDToParentMap { get; set; }
+        Dictionary<string, IEncapsulateFieldCandidate> FlattenedTargetIDToCandidateMapping { get; }
     }
 
     public abstract class EncapsulateFieldStrategiesBase : IEncapsulateFieldStrategy
     {
-        public EncapsulateFieldStrategiesBase(QualifiedModuleName qmn, IIndenter indenter)
+        protected readonly IDeclarationFinderProvider _declarationFinderProvider;
+        protected EncapsulationCandidateFactory _candidateFactory;
+        private Dictionary<string, IEncapsulateFieldCandidate> _udtMemberTargetIDToParentMap { get; } = new Dictionary<string, IEncapsulateFieldCandidate>();
+        private IEncapsulateFieldNamesValidator _validator;
+
+
+        public EncapsulateFieldStrategiesBase(QualifiedModuleName qmn, IIndenter indenter, IDeclarationFinderProvider declarationFinderProvider, IEncapsulateFieldNamesValidator validator)
         {
             TargetQMN = qmn;
             Indenter = indenter;
+            _declarationFinderProvider = declarationFinderProvider;
+            _validator = validator;
+            _candidateFactory = new EncapsulationCandidateFactory(declarationFinderProvider, _validator);
+
+            EncapsulationCandidateFields = _declarationFinderProvider.DeclarationFinder
+                .Members(qmn)
+                .Where(v => v.IsMemberVariable() && !v.IsWithEvents);
+
+            //if (_useNewStructure)
+            //{
+            var candidates = _candidateFactory.CreateEncapsulationCandidates(EncapsulationCandidateFields);
+            foreach (var candidate in candidates)
+            {
+                HeirarchicalCandidates.Add(candidate.TargetID, candidate);
+            }
+            FlattenedTargetIDToCandidateMapping = Flatten(HeirarchicalCandidates);
+            foreach (var element in FlattenedTargetIDToCandidateMapping)
+            {
+                if (element.Value.IsUDTMember)
+                {
+                    var udtMember = element.Value as EncapsulatedUserDefinedTypeMember;
+                    UdtMemberTargetIDToParentMap.Add(element.Key, udtMember.Parent);
+                }
+            }
+
+            //}
         }
 
         protected QualifiedModuleName TargetQMN {private set; get;}
 
         protected IIndenter Indenter { private set; get; }
 
-        public  IExecutableRewriteSession RefactorRewrite(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession)
+        public IExecutableRewriteSession GeneratePreview(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession)
+        {
+            return RefactorRewrite(model, rewriteSession, true);
+        }
+
+        public IExecutableRewriteSession RefactorRewrite(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession)
+        {
+            return RefactorRewrite(model, rewriteSession, false);
+        }
+
+        public Dictionary<string, IEncapsulateFieldCandidate> FlattenedTargetIDToCandidateMapping { get; } = new Dictionary<string, IEncapsulateFieldCandidate>();
+
+        protected virtual IEnumerable<Declaration> EncapsulationCandidateFields { set; get; }
+
+        protected abstract void ModifyEncapsulatedVariable(IEncapsulateFieldCandidate target, IFieldEncapsulationAttributes attributes, IRewriteSession rewriteSession); //, EncapsulateFieldNewContent newContent)
+
+        protected abstract EncapsulateFieldNewContent LoadNewDeclarationsContent(EncapsulateFieldNewContent newContent, IEnumerable<IEncapsulateFieldCandidate> FlaggedEncapsulationFields);
+
+        protected abstract IList<string> PropertiesContent(IEnumerable<IEncapsulateFieldCandidate> flaggedEncapsulationFields);
+
+        protected Dictionary<string, IEncapsulateFieldCandidate> HeirarchicalCandidates { set; get; } = new Dictionary<string, IEncapsulateFieldCandidate>();
+
+        protected IEncapsulateFieldCandidate ForceNonConflictFieldName(IEncapsulateFieldCandidate candidate)
+        {
+            if (candidate.EncapsulationAttributes is UnselectableField concrete)
+            {
+                var attempt = 0;
+                while (attempt++ < 10 && !candidate.HasValidEncapsulationAttributes)
+                {
+                    concrete.ApplyNewFieldName($"{concrete.NewFieldName}{attempt}");
+                }
+            }
+            return candidate;
+        }
+
+        private IExecutableRewriteSession RefactorRewrite(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession, bool asPreview)
         {
             var nonUdtMemberFields = model.FlaggedEncapsulationFields
                     .Where(encFld => encFld.Declaration.IsVariable());
@@ -36,46 +106,61 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
             foreach (var nonUdtMemberField in nonUdtMemberFields)
             {
                 var attributes = nonUdtMemberField.EncapsulationAttributes;
-                ModifyEncapsulatedVariable(nonUdtMemberField, attributes, rewriteSession); //, model.EncapsulateWithUDT);
+                ModifyEncapsulatedVariable(nonUdtMemberField, attributes, rewriteSession);
                 RenameReferences(nonUdtMemberField, attributes.PropertyName ?? nonUdtMemberField.Declaration.IdentifierName, rewriteSession);
             }
 
             var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, TargetQMN);
             RewriterRemoveWorkAround.RemoveDeclarationsFromVariableLists(rewriter);
 
+            InsertNewContent(model.CodeSectionStartIndex, model, rewriteSession, asPreview);
+
             return rewriteSession;
         }
 
-        public Dictionary<string, IEncapsulateFieldCandidate> UdtMemberTargetIDToParentMap { get; set; }
+        public Dictionary<string, IEncapsulateFieldCandidate> UdtMemberTargetIDToParentMap { get; set; } = new Dictionary<string, IEncapsulateFieldCandidate>();
 
-        public void InsertNewContent(int? codeSectionStartIndex, EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession, bool includePreviewMessage = false)
+        private void InsertNewContent(int? codeSectionStartIndex, EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession, bool includePreviewMessage = false)
         {
             var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, TargetQMN);
 
-            //var newContent = model.NewContent();
-
-            var newContent1 = new EncapsulateFieldNewContent();
-            newContent1 = LoadNewDeclarationsContent(newContent1, model.FlaggedEncapsulationFields);
+            var newContent = new EncapsulateFieldNewContent();
+            newContent = LoadNewDeclarationsContent(newContent, model.FlaggedEncapsulationFields);
 
             if (includePreviewMessage)
             {
                 var postScript = "'<===== No Changes below this line =====>";
-                newContent1 = LoadNewPropertiesContent(newContent1, model.FlaggedEncapsulationFields, postScript);
+                newContent = LoadNewPropertiesContent(newContent, model.FlaggedEncapsulationFields, postScript);
             }
             else
             {
-                newContent1 = LoadNewPropertiesContent(newContent1, model.FlaggedEncapsulationFields);
+                newContent = LoadNewPropertiesContent(newContent, model.FlaggedEncapsulationFields);
             }
 
-            rewriter.InsertNewContent(codeSectionStartIndex, newContent1);
+            rewriter.InsertNewContent(codeSectionStartIndex, newContent);
 
         }
 
-        protected abstract void ModifyEncapsulatedVariable(IEncapsulateFieldCandidate target, IFieldEncapsulationAttributes attributes, IRewriteSession rewriteSession); //, EncapsulateFieldNewContent newContent)
-
-        protected abstract EncapsulateFieldNewContent LoadNewDeclarationsContent(EncapsulateFieldNewContent newContent, IEnumerable<IEncapsulateFieldCandidate> FlaggedEncapsulationFields);
-
-        protected abstract IList<string> PropertiesContent(IEnumerable<IEncapsulateFieldCandidate> flaggedEncapsulationFields);
+        protected Dictionary<string, IEncapsulateFieldCandidate> Flatten(Dictionary<string, IEncapsulateFieldCandidate> heirarchicalCandidates)
+        {
+            var candidates = new Dictionary<string, IEncapsulateFieldCandidate>();
+            foreach (var keyValue in heirarchicalCandidates)
+            {
+                candidates.Add(keyValue.Key, keyValue.Value);
+                if (keyValue.Value.Declaration.IsUserDefinedTypeField())
+                {
+                    if (keyValue.Value is EncapsulatedUserDefinedTypeField udt)
+                    {
+                        foreach (var member in udt.Members)
+                        {
+                            candidates.Add(member.TargetID, member);
+                            _udtMemberTargetIDToParentMap.Add(member.TargetID, keyValue.Value);
+                        }
+                    }
+                }
+            }
+            return candidates;
+        }
 
         private EncapsulateFieldNewContent LoadNewPropertiesContent(EncapsulateFieldNewContent newContent, IEnumerable<IEncapsulateFieldCandidate> FlaggedEncapsulationFields, string postScript = null)
         {

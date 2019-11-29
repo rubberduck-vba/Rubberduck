@@ -4,39 +4,55 @@ using Rubberduck.Refactorings.Common;
 using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
+    public class EncapsulatedUserDefinedTypeField : EncapsulateFieldCandidate
+    {
+        public List<IEncapsulateFieldCandidate> Members { set; get; }
+        public EncapsulatedUserDefinedTypeField(Declaration declaration, IEncapsulateFieldNamesValidator validator)
+            : base(declaration, validator)
+        {
+        }
+    }
+
     public class EncapsulatedUserDefinedTypeMember : IEncapsulateFieldCandidate //: EncapsulateFieldDecoratorBase
     {
         private IEncapsulateFieldCandidate _candidate;
-        private IFieldEncapsulationAttributes _udtVariableAttributes;
-        private bool _nameResolveProperty;
-        private string _originalVariableName;
-        private string _targetID;
-        public EncapsulatedUserDefinedTypeMember(IEncapsulateFieldCandidate candidate, IEncapsulateFieldCandidate udtVariable, bool propertyIdentifierRequiresNameResolution)
+        public EncapsulatedUserDefinedTypeMember(IEncapsulateFieldCandidate candidate, IEncapsulateFieldCandidate udtVariable, bool propertyNameRequiresParentIdentiier)
         {
             _candidate = candidate;
-            _originalVariableName = udtVariable.Declaration.IdentifierName;
-            _nameResolveProperty = propertyIdentifierRequiresNameResolution;
-            _udtVariableAttributes = udtVariable.EncapsulationAttributes;
+            Parent = udtVariable;
+            NameResolveProperty = propertyNameRequiresParentIdentiier;
 
-            EncapsulationAttributes.PropertyName = BuildPropertyName();
-            if (EncapsulationAttributes is FieldEncapsulationAttributes fea)
-            {
-                fea.FieldReferenceExpressionFunc =
-                 () =>  { var prefix = _udtVariableAttributes.EncapsulateFlag
-                                         ? _udtVariableAttributes.NewFieldName
-                                         : _udtVariableAttributes.TargetName;
+            EncapsulationAttributes.PropertyName = NameResolveProperty 
+                ? $"{Parent.IdentifierName.Capitalize()}_{IdentifierName}" 
+                : IdentifierName;
 
-                            return $"{prefix}.{EncapsulationAttributes.NewFieldName}";
-                        };
-            }
-
-            _targetID = $"{udtVariable.Declaration.IdentifierName}.{Declaration.IdentifierName}";
+            //var fea = EncapsulationAttributes as FieldEncapsulationAttributes;
+            (EncapsulationAttributes as FieldEncapsulationAttributes).FieldReferenceExpressionFunc = () => AsWithMemberExpression;
             candidate.IsUDTMember = true;
         }
+
+        public string AsWithMemberExpression
+        {
+            get
+            {
+                var prefix = Parent.EncapsulateFlag
+                               ? Parent.NewFieldName
+                               : Parent.IdentifierName;
+
+                return $"{prefix}.{NewFieldName}";
+            }
+        }
+
+        public IEncapsulateFieldCandidate Parent { private set; get; }
+
+        public bool NameResolveProperty { set; get; }
+
+        public bool IsExistingDeclaration => _candidate.IsExistingDeclaration;
 
         public Declaration Declaration => _candidate.Declaration;
 
@@ -92,16 +108,24 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public IEnumerable<IdentifierReference> References => _candidate.References;
 
-        public string TargetID => _targetID;
+        public string TargetID => $"{Parent.IdentifierName}.{IdentifierName}";
 
-        private string BuildPropertyName()
-        {
-            if (_nameResolveProperty)
-            {
-                var propertyPrefix = char.ToUpper(_originalVariableName[0]) + _originalVariableName.Substring(1, _originalVariableName.Length - 1);
-                return $"{propertyPrefix}_{EncapsulationAttributes.TargetName}";
-            }
-            return EncapsulationAttributes.TargetName;
-        }
+        public string IdentifierName => _candidate.IdentifierName;
+
+        public string ParameterName => _candidate.ParameterName;// throw new NotImplementedException();
+
+        public string FieldReferenceExpression => _candidate.FieldReferenceExpression; // throw new NotImplementedException();
+
+        public bool ImplementLetSetterType { get => _candidate.ImplementLetSetterType; /*throw new NotImplementedException();*/ set => _candidate.ImplementLetSetterType = value; } // throw new NotImplementedException(); }
+        public bool ImplementSetSetterType { get => _candidate.ImplementSetSetterType; /*throw new NotImplementedException();*/ set => _candidate.ImplementSetSetterType = value; } // throw new NotImplementedException(); }
+
+        //private string BuildPropertyName() => NameResolveProperty ? $"{Parent.IdentifierName.Capitalize()}_{IdentifierName}" : IdentifierName;
+        //{
+        //    if (NameResolveProperty)
+        //    {
+        //        return $"{Parent.IdentifierName.Capitalize()}_{IdentifierName}";
+        //    }
+        //    return IdentifierName;
+        //}
     }
 }

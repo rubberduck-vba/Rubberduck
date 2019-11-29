@@ -17,6 +17,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
         void Rename(Declaration element, string newName);
         void MakeImplicitDeclarationTypeExplicit(Declaration element);
         void InsertAtEndOfFile(string content);
+        string GetTextWithoutAbandonedLines();
+
     }
 
     public class EncapsulateFieldRewriter : IEncapsulateFieldRewriter
@@ -84,6 +86,19 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 _rewriter.InsertAfter(element.Context.Stop.TokenIndex, $" {Tokens.As} {element.AsTypeName}");
             }
         }
+
+        public string GetTextWithoutAbandonedLines()
+        {
+            var preview = GetText();
+
+            var counter = 0;
+            while (counter++ < 10 && preview.Contains($"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}"))
+            {
+                preview = preview.Replace($"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}", $"{Environment.NewLine}{Environment.NewLine}");
+            }
+            return preview;
+        }
+
 
         public bool IsDirty => _rewriter.IsDirty;
 

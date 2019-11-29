@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -22,9 +23,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly Func<EncapsulateFieldModel, string> _previewFunc;
         private QualifiedModuleName _targetQMN;
 
+        private bool _useNewStructure;
+
         private IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> _udtFieldToUdtDeclarationMap = new Dictionary<Declaration, (Declaration, IEnumerable<Declaration>)>();
-        private IEnumerable<Declaration> UdtFields => _udtFieldToUdtDeclarationMap.Keys;
-        private IEnumerable<Declaration> UdtFieldMembers(Declaration udtField) => _udtFieldToUdtDeclarationMap[udtField].Item2;
 
         private Dictionary<string, IEncapsulateFieldCandidate> _candidates = new Dictionary<string, IEncapsulateFieldCandidate>();
 
@@ -36,39 +37,25 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _previewFunc = previewFunc;
             _targetQMN = target.QualifiedModuleName;
 
-            var encapsulationCandidateFields = _declarationFinderProvider.DeclarationFinder
-                .Members(_targetQMN)
-                .Where(v => v.IsMemberVariable() && !v.IsWithEvents);
-
-            _udtFieldToUdtDeclarationMap = encapsulationCandidateFields
-                .Where(v => v.AsTypeDeclaration?.DeclarationType.Equals(DeclarationType.UserDefinedType) ?? false)
-                .Select(uv => CreateUDTTuple(uv))
-                .ToDictionary(key => key.UDTVariable, element => (element.UserDefinedType, element.UDTMembers));
-
-            foreach (var field in encapsulationCandidateFields.Except(UdtFields))
-            {
-                var efd = EncapsulateDeclaration(field);
-                _candidates.Add(efd.TargetID, efd);
-            }
-
-            AddUDTEncapsulationFields(_udtFieldToUdtDeclarationMap);
-
-            this[target].EncapsulationAttributes.EncapsulateFlag = true;
+            _useNewStructure = File.Exists("C:\\Users\\Brian\\Documents\\UseNewUDTStructure.txt");
 
             //Maybe this should be passed in
-            EncapsulationStrategy = new EncapsulateWithBackingFields(_targetQMN, _indenter);
+            EncapsulationStrategy = new EncapsulateWithBackingFields(_targetQMN, _indenter, _declarationFinderProvider, _validator);
+            _candidates = EncapsulationStrategy.FlattenedTargetIDToCandidateMapping;
+            this[target].EncapsulateFlag = true;
+
         }
 
-        public IEnumerable<IEncapsulateFieldCandidate> FlaggedEncapsulationFields 
+        public IEnumerable<IEncapsulateFieldCandidate> FlaggedEncapsulationFields
             => _candidates.Values.Where(v => v.EncapsulationAttributes.EncapsulateFlag);
 
         public IEnumerable<IEncapsulateFieldCandidate> EncapsulationFields
             => _candidates.Values;
 
-        public IEncapsulateFieldCandidate this[string encapsulatedFieldIdentifier] 
+        public IEncapsulateFieldCandidate this[string encapsulatedFieldIdentifier]
             => _candidates[encapsulatedFieldIdentifier];
 
-        public IEncapsulateFieldCandidate this[Declaration fieldDeclaration] 
+        public IEncapsulateFieldCandidate this[Declaration fieldDeclaration]
             => _candidates.Values.Where(efd => efd.Declaration.Equals(fieldDeclaration)).Select(encapsulatedField => encapsulatedField).Single();
 
         public IEncapsulateFieldStrategy EncapsulationStrategy { set; get; }
@@ -77,11 +64,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             set
             {
+                if (EncapsulationStrategy is EncapsulateWithBackingUserDefinedType ebd) { return; }
+
                 EncapsulationStrategy = value
-                    ? new EncapsulateWithBackingUserDefinedType(_targetQMN, _indenter) as IEncapsulateFieldStrategy
-                    : new EncapsulateWithBackingFields(_targetQMN, _indenter) as IEncapsulateFieldStrategy;
+                    ? new EncapsulateWithBackingUserDefinedType(_targetQMN, _indenter, _declarationFinderProvider, _validator) as IEncapsulateFieldStrategy
+                    : new EncapsulateWithBackingFields(_targetQMN, _indenter, _declarationFinderProvider, _validator) as IEncapsulateFieldStrategy;
                 //This probably should go - or be in the ctor
-                EncapsulationStrategy.UdtMemberTargetIDToParentMap = _udtMemberTargetIDToParentMap;
             }
 
             get => EncapsulationStrategy is EncapsulateWithBackingUserDefinedType;
@@ -97,57 +85,19 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return _previewFunc(this);
         }
 
-        private Dictionary<string, IEncapsulateFieldCandidate> _udtMemberTargetIDToParentMap { get; } = new Dictionary<string, IEncapsulateFieldCandidate>();
-        private void AddUDTEncapsulationFields(IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> udtFieldToTypeMap)
+        public int? CodeSectionStartIndex
         {
-            foreach (var udtField in udtFieldToTypeMap.Keys)
+            get
             {
-                var udtEncapsulation = EncapsulateDeclaration(udtField);
-                _candidates.Add(udtEncapsulation.TargetID, udtEncapsulation);
+                var moduleMembers = _declarationFinderProvider.DeclarationFinder
+                        .Members(_targetQMN).Where(m => m.IsMember());
 
+                int? codeSectionStartIndex
+                    = moduleMembers.OrderBy(c => c.Selection)
+                                .FirstOrDefault()?.Context.Start.TokenIndex ?? null;
 
-                foreach (var udtMember in UdtFieldMembers(udtField))
-                {
-                    var encapsulatedUdtMember = EncapsulateDeclaration(udtMember);
-                    encapsulatedUdtMember = DecorateUDTMember(encapsulatedUdtMember, udtEncapsulation as IEncapsulateFieldCandidate);
-                    _candidates.Add(encapsulatedUdtMember.TargetID, encapsulatedUdtMember);
-                    _udtMemberTargetIDToParentMap.Add(encapsulatedUdtMember.TargetID, udtEncapsulation);
-                }
+                return codeSectionStartIndex;
             }
-        }
-
-        private IEncapsulateFieldCandidate EncapsulateDeclaration(Declaration target) 
-            => EncapsulateFieldDeclarationFactory.EncapsulateDeclaration(target, _validator);
-
-        private IEncapsulateFieldCandidate DecorateUDTMember(IEncapsulateFieldCandidate udtMember, IEncapsulateFieldCandidate udtVariable)
-        {
-            var targetIDPair = new KeyValuePair<Declaration, string>(udtMember.Declaration,$"{udtVariable.Declaration.IdentifierName}.{udtMember.Declaration.IdentifierName}");
-            return new EncapsulatedUserDefinedTypeMember(udtMember, udtVariable, HasMultipleInstantiationsOfSameType(udtVariable.Declaration, targetIDPair));
-        }
-
-        private bool HasMultipleInstantiationsOfSameType(Declaration udtVariable, KeyValuePair<Declaration, string> targetIDPair)
-        {
-            var udt = _udtFieldToUdtDeclarationMap[udtVariable].Item1;
-            var otherVariableOfTheSameType = _udtFieldToUdtDeclarationMap.Keys.Where(k => k != udtVariable && _udtFieldToUdtDeclarationMap[k].Item1 == udt);
-            return otherVariableOfTheSameType.Any();
-        }
-
-        private (Declaration UDTVariable, Declaration UserDefinedType, IEnumerable<Declaration> UDTMembers) CreateUDTTuple(Declaration udtVariable)
-        {
-            var userDefinedTypeDeclaration = _declarationFinderProvider.DeclarationFinder
-                .UserDeclarations(DeclarationType.UserDefinedType)
-                .Where(ut => ut.IdentifierName.Equals(udtVariable.AsTypeName)
-                    && (ut.Accessibility.Equals(Accessibility.Private)
-                            && ut.QualifiedModuleName == udtVariable.QualifiedModuleName)
-                    || (ut.Accessibility != Accessibility.Private))
-                    .SingleOrDefault();
-
-            var udtMembers = _declarationFinderProvider.DeclarationFinder
-               .UserDeclarations(DeclarationType.UserDefinedTypeMember)
-               .Where(utm => userDefinedTypeDeclaration.IdentifierName == utm.ParentDeclaration.IdentifierName
-                    && utm.QualifiedModuleName == userDefinedTypeDeclaration.QualifiedModuleName);
-
-            return (udtVariable, userDefinedTypeDeclaration, udtMembers);
         }
     }
 }

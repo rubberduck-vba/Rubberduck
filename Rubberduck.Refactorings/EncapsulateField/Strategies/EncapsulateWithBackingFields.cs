@@ -1,6 +1,7 @@
 ﻿using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using System;
@@ -13,10 +14,9 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
 {
     public class EncapsulateWithBackingFields : EncapsulateFieldStrategiesBase
     {
-        public EncapsulateWithBackingFields(QualifiedModuleName qmn, IIndenter indenter)
-            : base(qmn, indenter)
+        public EncapsulateWithBackingFields(QualifiedModuleName qmn, IIndenter indenter, IDeclarationFinderProvider declarationFinderProvider, IEncapsulateFieldNamesValidator validator)
+            : base(qmn, indenter, declarationFinderProvider, validator)
         {
-
         }
 
         protected override void ModifyEncapsulatedVariable(IEncapsulateFieldCandidate target, IFieldEncapsulationAttributes attributes, IRewriteSession rewriteSession) //, bool asUDT = false) //, EncapsulateFieldNewContent newContent)
@@ -48,25 +48,6 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
             var nonUdtMemberFields = FlaggedEncapsulationFields
                     .Where(encFld => encFld.Declaration.IsVariable());
 
-            //if (EncapsulateWithUDT)
-            //{
-            //    var udt = new UDTDeclarationGenerator(EncapsulateWithUDT_TypeIdentifier, _indenter);
-            //    foreach (var nonUdtMemberField in nonUdtMemberFields)
-            //    {
-            //        udt.AddMember(nonUdtMemberField);
-            //    }
-            //    newContent.AddDeclarationBlock(udt.TypeDeclarationBlock);
-            //    newContent.AddDeclarationBlock(udt.FieldDeclaration(EncapsulateWithUDT_FieldName));
-
-            //    var udtMemberFields = FlaggedEncapsulationFields.Where(efd => efd.DeclarationType.Equals(DeclarationType.UserDefinedTypeMember));
-            //    foreach (var udtMember in udtMemberFields)
-            //    {
-            //        newContent.AddCodeBlock(EncapsulateInUDT_UDTMemberProperty(udtMember));
-            //    }
-
-            //    return newContent;
-            //}
-
             foreach (var nonUdtMemberField in nonUdtMemberFields)
             {
                 var attributes = nonUdtMemberField.EncapsulationAttributes;
@@ -78,7 +59,7 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
 
                 if (nonUdtMemberField.Declaration.IsDeclaredInList())
                 {
-                    var targetIdentifier = nonUdtMemberField.Declaration.Context.GetText().Replace(attributes.TargetName, attributes.NewFieldName);
+                    var targetIdentifier = nonUdtMemberField.Declaration.Context.GetText().Replace(attributes.Identifier, attributes.NewFieldName);
                     var newField = nonUdtMemberField.Declaration.IsTypeSpecified ? $"{Tokens.Private} {targetIdentifier}" : $"{Tokens.Private} {targetIdentifier} {Tokens.As} {nonUdtMemberField.Declaration.AsTypeName}";
 
                     newContent.AddDeclarationBlock(newField);
@@ -89,19 +70,12 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
 
         protected override IList<string> PropertiesContent(IEnumerable<IEncapsulateFieldCandidate> flaggedEncapsulationFields)
         {
-            //get
-            //{
-                var textBlocks = new List<string>();
-                foreach (var field in flaggedEncapsulationFields)
-                {
-                    //if (/*EncapsulateWithUDT &&*/ field is EncapsulatedUserDefinedTypeMember)
-                    //{
-                    //    continue;
-                    //}
-                    textBlocks.Add(BuildPropertiesTextBlock(field.EncapsulationAttributes));
-                }
-                return textBlocks;
-            //}
+            var textBlocks = new List<string>();
+            foreach (var field in flaggedEncapsulationFields)
+            {
+                textBlocks.Add(BuildPropertiesTextBlock(field.EncapsulationAttributes));
+            }
+            return textBlocks;
         }
 
         private string BuildPropertiesTextBlock(IFieldEncapsulationAttributes attributes)
@@ -110,9 +84,6 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
             {
                 PropertyName = attributes.PropertyName,
                 AsTypeName = attributes.AsTypeName,
-                //BackingField = EncapsulateWithUDT
-                //                    ? $"{EncapsulateWithUDT_FieldName}.{attributes.PropertyName}"
-                //                    : attributes.FieldReferenceExpression,
                 BackingField = attributes.FieldReferenceExpression,
                 ParameterName = attributes.ParameterName,
                 GenerateSetter = attributes.ImplementSetSetterType,

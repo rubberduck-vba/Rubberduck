@@ -72,22 +72,22 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
     public interface IEncapsulateFieldNamesValidator
     {
-        bool HasValidEncapsulationAttributes(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, Predicate<Declaration> ignore);
+        bool HasValidEncapsulationAttributes(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, IEnumerable<Declaration> ignore);
     }
 
     public class EncapsulateFieldNamesValidator : IEncapsulateFieldNamesValidator
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
-        private Func<IEnumerable<IEncapsulateFieldCandidate>> _selectedFieldsRetriever;
+        private Func<IEnumerable<IEncapsulateFieldCandidate>> _candidateFieldsRetriever;
         public EncapsulateFieldNamesValidator(IDeclarationFinderProvider declarationFinderProvider, Func<IEnumerable<IEncapsulateFieldCandidate>> selectedFieldsRetriever = null)
         {
             _declarationFinderProvider = declarationFinderProvider;
-            _selectedFieldsRetriever = selectedFieldsRetriever;
+            _candidateFieldsRetriever = selectedFieldsRetriever;
         }
 
         private DeclarationFinder DeclarationFinder => _declarationFinderProvider.DeclarationFinder; 
 
-        public bool HasValidEncapsulationAttributes(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, Predicate<Declaration> ignore)
+        public bool HasValidEncapsulationAttributes(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, IEnumerable<Declaration> ignore)
         {
             var isSelfConsistent = HasValidIdentifiers(attributes)
                 && !HasInternalNameConflicts(attributes);
@@ -105,7 +105,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return true;
         }
 
-        public int HasNewPropertyNameConflicts(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, Predicate<Declaration> ignoreThisDeclaration)
+        public int HasNewPropertyNameConflicts(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, IEnumerable<Declaration> declarationsToIgnore)
         {
             Predicate<Declaration> IsPrivateAccessiblityInOtherModule = (Declaration dec) => dec.QualifiedModuleName != qmn && dec.Accessibility.Equals(Accessibility.Private);
             Predicate<Declaration> IsInSearchScope = null;
@@ -120,14 +120,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             var identifierMatches = DeclarationFinder.MatchName(attributes.PropertyName)
                 .Where(match => IsInSearchScope(match)
-                        && !ignoreThisDeclaration(match)
+                        && !declarationsToIgnore.Contains(match)
                         && !IsPrivateAccessiblityInOtherModule(match)
                         && !IsEnumOrUDTMemberDeclaration(match)
                         && !match.IsLocalVariable()).ToList();
 
             var candidates = new List<IEncapsulateFieldCandidate>();
             var candidateMatches = new List<IEncapsulateFieldCandidate>();
-            var fields = _selectedFieldsRetriever is null ? Enumerable.Empty<IEncapsulateFieldCandidate>() : _selectedFieldsRetriever();
+            var fields = _candidateFieldsRetriever is null ? Enumerable.Empty<IEncapsulateFieldCandidate>() : _candidateFieldsRetriever();
             foreach (var efd in fields)
             {
                 var matches = candidates.Where(c => c.PropertyName.EqualsVBAIdentifier(efd.PropertyName));
@@ -142,23 +142,25 @@ namespace Rubberduck.Refactorings.EncapsulateField
         }
 
         //FieldNames are always Private, so only look within the same module as the field to encapsulate
-        public int HasNewFieldNameConflicts(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, Predicate<Declaration> ignoreThisDeclaration)
+        public int HasNewFieldNameConflicts(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, IEnumerable<Declaration> declarationsToIgnore)
         {
+            var rawmatches = DeclarationFinder.MatchName(attributes.NewFieldName);
             var identifierMatches = DeclarationFinder.MatchName(attributes.NewFieldName)
                 .Where(match => match.QualifiedModuleName == qmn
-                        && !ignoreThisDeclaration(match)
+                        && !declarationsToIgnore.Contains(match)
                         && !IsEnumOrUDTMemberDeclaration(match)
                         && !match.IsLocalVariable()).ToList();
 
             var candidates = new List<IEncapsulateFieldCandidate>();
             var candidateMatches = new List<IEncapsulateFieldCandidate>();
-            var fields = _selectedFieldsRetriever is null 
+            var fields = _candidateFieldsRetriever is null 
                 ? Enumerable.Empty<IEncapsulateFieldCandidate>() 
-                : _selectedFieldsRetriever();
+                : _candidateFieldsRetriever();
 
             foreach (var efd in fields)
             {
-                var matches = candidates.Where(c => c.NewFieldName.EqualsVBAIdentifier(efd.NewFieldName));
+                var matches = candidates.Where(c => c.EncapsulateFlag &&  c.NewFieldName.EqualsVBAIdentifier(efd.NewFieldName)
+                                                        || c.IdentifierName.EqualsVBAIdentifier(efd.NewFieldName));
                 if (matches.Where(m => m.TargetID != efd.TargetID).Any())
                 {
                     candidateMatches.Add(efd);
