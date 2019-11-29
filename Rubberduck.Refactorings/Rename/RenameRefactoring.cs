@@ -6,6 +6,7 @@ using Rubberduck.VBEditor;
 using System;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Refactorings.Exceptions;
@@ -91,8 +92,16 @@ namespace Rubberduck.Refactorings.Rename
         private void RenameRefactorWithSuspendedParser(RenameModel model)
         {
             var suspendResult = _parseManager.OnSuspendParser(this, new[] { ParserState.Ready }, () => RenameRefactor(model));
-            if (suspendResult != SuspensionResult.Completed)
+            var suspendOutcome = suspendResult.Outcome;
+            if (suspendOutcome != SuspensionOutcome.Completed)
             {
+                if ((suspendOutcome == SuspensionOutcome.UnexpectedError || suspendOutcome == SuspensionOutcome.Canceled)
+                    && suspendResult.EncounteredException != null)
+                {
+                    ExceptionDispatchInfo.Capture(suspendResult.EncounteredException).Throw();
+                    return;
+                }
+
                 _logger.Warn($"{nameof(RenameRefactor)} failed because a parser suspension request could not be fulfilled.  The request's result was '{suspendResult.ToString()}'.");
                 throw new SuspendParserFailureException();
             }

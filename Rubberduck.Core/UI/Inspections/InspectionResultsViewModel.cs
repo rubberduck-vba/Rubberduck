@@ -15,6 +15,7 @@ using NLog;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Interaction.Navigation;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.UIContext;
