@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using NUnit.Framework;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
@@ -5632,6 +5633,49 @@ End Function
         [Test]
         [Category("Grammar")]
         [Category("Resolver")]
+        [TestCase("42, a+b", "arg2", 1, 2)]
+        [TestCase("42, a+b", "arg1", 0, 2)]
+        [TestCase("arg2:=42, arg1:=a+b", "arg2", 0, 2)]
+        [TestCase("arg2:=42, arg1:=a+b", "arg1", 1, 2)]
+        [TestCase("42, a+b, (\"Hello\" & 42)", "arg3", 2, 3)]
+        [TestCase("42, a+b, (\"Hello\" & 42), 15+2", "furtherArgs", 3, 4)]
+        [TestCase("42, a+b, , (\"Hello\" & 42), 15+2", "arg3", 2, 5)]
+        public void CorrectArgumentReferencePositionOnMethodAccess(string arguments, string parameterName, int expectedArgumentPosition, int expectedNumberOfArguments)
+        {
+            var class1Code = @"
+Public Sub Foo(arg1 As Variant, arg2 As Object, Optional arg3 As String, ParamArray furtherArgs)
+End Sub
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As new Class1
+    cls.Foo({arguments})
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var parameter = state.DeclarationFinder.UserDeclarations(DeclarationType.Parameter)
+                    .OfType<ParameterDeclaration>()
+                    .Single(param => param.IdentifierName.Equals(parameterName));
+                var argumentReference = parameter.ArgumentReferences.Single();
+
+                var actualArgumentPosition = argumentReference.ArgumentPosition;
+                var actualNumberOfArguments = argumentReference.NumberOfArguments;
+
+                Assert.AreEqual(expectedArgumentPosition, actualArgumentPosition);
+                Assert.AreEqual(expectedNumberOfArguments, actualNumberOfArguments);
+            }
+        }
+
+        [Test]
+        [Category("Grammar")]
+        [Category("Resolver")]
         public void CorrectParamArrayArgumentReferencesOnMethodAccess()
         {
             var class1Code = @"
@@ -5666,6 +5710,84 @@ End Function
                 Assert.AreEqual(expectedCount, actualCount);
                 expectedExpressionTexts.UnionWith(actualExpressionTexts);
                 Assert.AreEqual(expectedCount, expectedExpressionTexts.Count);
+            }
+        }
+
+        [Test]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        public void CorrectParamArrayArgumentReferencePositionOnMethodAccess()
+        {
+            var class1Code = @"
+Public Sub Foo(arg1 As Variant, arg2 As Object, Optional arg3 As String = vbNullString, ParamArray furtherArgs)
+End Sub
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As new Class1
+    cls.Foo(1, 2, 3, 4, 5, 6)
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var parameter = state.DeclarationFinder.UserDeclarations(DeclarationType.Parameter)
+                    .OfType<ParameterDeclaration>()
+                    .Single(param => param.IdentifierName.Equals("furtherArgs"));
+                var argumentReferences = parameter.ArgumentReferences;
+
+                var expectedPositions = new HashSet<int> { 3, 4, 5 };
+                var actualPositions = argumentReferences.Select(reference => reference.ArgumentPosition).ToHashSet();
+
+                var expectedPositionCount = expectedPositions.Count;
+                var actualPositionCount = actualPositions.Count;
+
+                Assert.AreEqual(expectedPositionCount, actualPositionCount);
+                expectedPositions.UnionWith(actualPositions);
+                Assert.AreEqual(expectedPositionCount, expectedPositions.Count);
+            }
+        }
+
+        [Test]
+        [Category("Grammar")]
+        [Category("Resolver")]
+        public void CorrectParamArrayArgumentReferenceArgumentCountOnMethodAccess()
+        {
+            var class1Code = @"
+Public Sub Foo(arg1 As Variant, arg2 As Object, Optional arg3 As String = vbNullString, ParamArray furtherArgs)
+End Sub
+";
+
+            var moduleCode = $@"
+Private Function Foo() As Variant 
+    Dim cls As new Class1
+    cls.Foo(1, 2, 3, 4, 5, 6)
+End Function
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var parameter = state.DeclarationFinder.UserDeclarations(DeclarationType.Parameter)
+                    .OfType<ParameterDeclaration>()
+                    .Single(param => param.IdentifierName.Equals("furtherArgs"));
+                var argumentReferences = parameter.ArgumentReferences;
+
+                var expectedNumberOrArguments = 6;
+                var actualNumberOfArgumentsValues = argumentReferences.Select(reference => reference.NumberOfArguments).ToList();
+
+                foreach (var actualNumberOfArguments in actualNumberOfArgumentsValues)
+                {
+                    Assert.AreEqual(expectedNumberOrArguments, actualNumberOfArguments);
+                }
             }
         }
 
@@ -6268,7 +6390,7 @@ End Function
         [Category("Grammar")]
         [Category("Resolver")]
         [Test]
-        public void FailedDictionaryAccessExpressionWithIndexedDefaultMemberAccessHasFAiledIndexedDefaultMemberAccessOnWholeContext()
+        public void FailedDictionaryAccessExpressionWithIndexedDefaultMemberAccessHasFailedIndexedDefaultMemberAccessOnWholeContext()
         {
             var class1Code = @"
 Public Function Foo(bar As String) As Class2

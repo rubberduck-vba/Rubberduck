@@ -267,7 +267,7 @@ namespace RubberduckTests.CodeExplorer
         public bool RefactorExtractInterface_CanExecuteBasedOnComponentType(ComponentType componentType)
         {
             using (var explorer = new MockedCodeExplorer(ProjectType.HostProject, componentType, @"Public Sub Foo():  MsgBox """":End Sub ")
-                .ImplementExtractIntercaceCommand().SelectFirstModule())
+                .ImplementExtractInterfaceCommand().SelectFirstModule())
             {
                 return explorer.ViewModel.CodeExplorerExtractInterfaceCommand.CanExecute(explorer.ViewModel.SelectedItem);
             }

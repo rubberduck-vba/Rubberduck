@@ -10,6 +10,7 @@ using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 using System.Collections.Generic;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor.Utility;
@@ -796,18 +797,30 @@ End Property";
         public void RemoveParametersRefactoring_RemoveFirstParamFromGetterAndSetter()
         {
             const string inputCode =
-@"Private Property Get Foo(ByVal a|rg1 As Integer) As String
+@"Private Property Get Foo(ByVal a|rg1 As Integer) As Object
 End Property
 
-Private Property Set Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Property";
+Private Property Set Foo(ByVal arg1 As Integer, ByVal arg2 As Object)
+End Property
+
+Private Sub Bar()
+    Dim str As Object
+    Set str = Foo(42)
+    Set Foo(23) = str
+End Sub";
 
             const string expectedCode =
-@"Private Property Get Foo() As String
+@"Private Property Get Foo() As Object
 End Property
 
-Private Property Set Foo(ByVal arg2 As String)
-End Property";
+Private Property Set Foo(ByVal arg2 As Object)
+End Property
+
+Private Sub Bar()
+    Dim str As Object
+    Set str = Foo()
+    Set Foo() = str
+End Sub";
 
             var userParamRemovalChoices = new[] { 0 };
 
@@ -821,18 +834,30 @@ End Property";
         public void RemoveParametersRefactoring_RemoveFirstParamFromGetterAndLetter()
         {
             const string inputCode =
-@"Private Property Get Foo(ByVal a|rg1 As Integer)
+@"Private Property Get Foo(ByVal a|rg1 As Integer) As String
 End Property
 
 Private Property Let Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Property";
+End Property
+
+Private Sub Bar()
+    Dim str As String
+    str = Foo(42)
+    Foo(23) = str
+End Sub";
 
             const string expectedCode =
-@"Private Property Get Foo()
+@"Private Property Get Foo() As String
 End Property
 
 Private Property Let Foo(ByVal arg2 As String)
-End Property";
+End Property
+
+Private Sub Bar()
+    Dim str As String
+    str = Foo()
+    Foo() = str
+End Sub";
 
             var userParamRemovalChoices = new[] { 0 };
 
@@ -961,6 +986,95 @@ Private Sub Goo(ByVal arg1 As Integer)
 End Sub";
 
             var userParamRemovalChoices = new[] { 1 };
+
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
+        public void RemoveParametersRefactoring_RemoveOptionalParam_NamedArgument()
+        {
+            const string inputCode =
+                @"Private Sub F|oo(Optional ByVal arg1 As Integer, Optional ByVal arg2 As String)
+End Sub
+
+Private Sub Goo(ByVal arg1 As Integer)
+    Foo arg1:=arg1
+    Foo arg2:=""test""
+End Sub";
+
+            const string expectedCode =
+                @"Private Sub Foo(Optional ByVal arg1 As Integer)
+End Sub
+
+Private Sub Goo(ByVal arg1 As Integer)
+    Foo arg1:=arg1
+    Foo 
+End Sub";
+
+            var userParamRemovalChoices = new[] { 1 };
+
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
+        public void RemoveParametersRefactoring_RemoveOptionalParam_RemovesTrailingMissingArguments()
+        {
+            const string inputCode =
+                @"Private Sub F|oo(Optional ByVal arg1 As Integer = 0, Optional ByVal arg2 As Long = 23, Optional ByVal arg3 As String = vbNullString, Optional ByVal arg4 As Long = 42)
+End Sub
+
+Private Sub Goo(ByVal arg1 As Integer)
+    Foo ,,, 2
+    Foo ,, arg4:=1
+    Foo 4,,, 3
+    Foo 3,, arg4:=1
+End Sub";
+
+            const string expectedCode =
+                @"Private Sub Foo(Optional ByVal arg1 As Integer = 0, Optional ByVal arg2 As Long = 23, Optional ByVal arg3 As String = vbNullString)
+End Sub
+
+Private Sub Goo(ByVal arg1 As Integer)
+    Foo 
+    Foo 
+    Foo 4
+    Foo 3
+End Sub";
+
+            var userParamRemovalChoices = new[] { 3 };
+
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
+        public void RemoveParametersRefactoring_RemoveOptionalParam_RemovesTrailingMissingArgumentsForMultiplePatches()
+        {
+            const string inputCode =
+                @"Private Sub F|oo(Optional ByVal arg1 As Integer = 0, Optional ByVal arg2 As Long = 23, Optional ByVal arg3 As String = vbNullString, Optional ByVal arg4 As Long = 42)
+End Sub
+
+Private Sub Goo(ByVal arg1 As Integer)
+    Foo , 4,, 2
+End Sub";
+
+            const string expectedCode =
+                @"Private Sub Foo(Optional ByVal arg1 As Integer = 0, Optional ByVal arg3 As String = vbNullString)
+End Sub
+
+Private Sub Goo(ByVal arg1 As Integer)
+    Foo 
+End Sub";
+
+            var userParamRemovalChoices = new[] { 1, 3 };
 
             var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
             Assert.AreEqual(expectedCode, actual);
@@ -1227,6 +1341,72 @@ End Sub";   // note: IDE removes excess spaces
             Assert.AreEqual(expectedCode1, actualCode["IClass1"]);
             Assert.AreEqual(expectedCode2, actualCode["Class1"]);
             Assert.AreEqual(expectedCode3, actualCode["Class2"]);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
+        public void RemoveParametersRefactoring_InterfaceGetterParam_ImplementationLetAndSetParamRemoved()
+        {
+            //Input
+            const string inputCode1 =
+                @"Public Property Get Foo(ByVal a As Integer, ByVal b As String) As Variant
+End Property
+
+Public Property Let Foo(ByVal a As Integer, ByVal b As String, RHS As Variant)
+End Property
+
+Public Property Set Foo(ByVal a As Integer, ByVal b As String, RHS As Variant)
+End Property";
+            const string inputCode2 =
+                @"Implements IClass1
+
+Private Property Get IClass1_Foo(ByVal a As Integer, ByVal b As String) As Variant
+End Property
+
+Private Property Let IClass1_Foo(ByVal a As Integer, ByVal b As String, RHS As Variant)
+End Property
+
+Private Property Set IClass1_Foo(ByVal a As Integer, ByVal b As String, RHS As Variant)
+End Property";
+
+            var selection = new Selection(1, 23, 1, 27);
+
+            //Expectation
+            const string expectedCode1 =
+                @"Public Property Get Foo(ByVal a As Integer) As Variant
+End Property
+
+Public Property Let Foo(ByVal a As Integer, RHS As Variant)
+End Property
+
+Public Property Set Foo(ByVal a As Integer, RHS As Variant)
+End Property";
+            const string expectedCode2 =
+                @"Implements IClass1
+
+Private Property Get IClass1_Foo(ByVal a As Integer) As Variant
+End Property
+
+Private Property Let IClass1_Foo(ByVal a As Integer, RHS As Variant)
+End Property
+
+Private Property Set IClass1_Foo(ByVal a As Integer, RHS As Variant)
+End Property";   
+
+            var paramIndices = new[] { 1 }.ToList();
+            var presenterAction = StandardPresenterAction(paramIndices);
+            var actualCode = RefactoredCode(
+                "IClass1",
+                selection,
+                presenterAction,
+                null,
+                false,
+                ("IClass1", inputCode1, ComponentType.ClassModule),
+                ("Class1", inputCode2, ComponentType.ClassModule));
+
+            Assert.AreEqual(expectedCode1, actualCode["IClass1"]);
+            Assert.AreEqual(expectedCode2, actualCode["Class1"]);
         }
 
         [Test]
@@ -1530,6 +1710,216 @@ End Sub";
             Assert.AreEqual(inputCode, actualCode);
         }
 
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
+        public void RemoveParametersRefactoring_RemovesParameterOfCorrectMethod()
+        {
+            //Input
+            const string classCode =
+                @"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub";
+
+            const string moduleCode =
+                @"
+Private Function Bar(ByVal i As Integer, ByVal s As String) As Class1
+End Function
+
+Private Sub Baz()
+    Bar(42, ""Hello"").Foo 23, ""Hi""
+End Sub";
+
+            var selection = new Selection(2, 20, 2, 20);
+
+            //Expectation
+            const string expectedClassCode =
+                @"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub";
+
+            const string expectedModuleCode =
+                @"
+Private Function Bar(ByVal i As Integer) As Class1
+End Function
+
+Private Sub Baz()
+    Bar(42).Foo 23, ""Hi""
+End Sub";
+
+            var paramIndices = new[] { 1 }.ToList();
+            var presenterAction = StandardPresenterAction(paramIndices);
+            var actualCode = RefactoredCode(
+                "Module1",
+                selection,
+                presenterAction,
+                null,
+                false,
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            Assert.AreEqual(expectedClassCode, actualCode["Class1"]);
+            Assert.AreEqual(expectedModuleCode, actualCode["Module1"]);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
+        public void RemoveParametersRefactoring_RemovesParameterOfDefaultMemberAccess()
+        {
+            //Input
+            const string classCode =
+                @"
+Public Function Foo(ByVal arg1 As Integer, ByVal arg2 As String) As String
+Attribute Foo.VB_UserMemId = 0
+End Function";
+            var selection = new Selection(2, 51, 2, 51);
+
+            const string moduleCode =
+                @"
+Private Sub Baz()
+    Dim cls As Class1
+    Set cls = new Class1
+    Dim fooBar As Variant
+    fooBar = cls(42, ""Hello"")
+End Sub";
+            
+            //Expectation
+            const string expectedClassCode =
+                @"
+Public Function Foo(ByVal arg1 As Integer) As String
+Attribute Foo.VB_UserMemId = 0
+End Function";
+
+            const string expectedModuleCode =
+                @"
+Private Sub Baz()
+    Dim cls As Class1
+    Set cls = new Class1
+    Dim fooBar As Variant
+    fooBar = cls(42)
+End Sub";
+
+            var paramIndices = new[] { 1 }.ToList();
+            var presenterAction = StandardPresenterAction(paramIndices);
+            var actualCode = RefactoredCode(
+                "Class1",
+                selection,
+                presenterAction,
+                null,
+                false,
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            Assert.AreEqual(expectedClassCode, actualCode["Class1"]);
+            Assert.AreEqual(expectedModuleCode, actualCode["Module1"]);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
+        public void RemoveParametersRefactoring_ReplacesDictionaryAccessExpressions()
+        {
+            //Input
+            const string classCode =
+                @"
+Public Function Foo(ByVal arg1 As String) As String
+Attribute Foo.VB_UserMemId = 0
+End Function";
+            var selection = new Selection(2, 51, 2, 51);
+
+            const string moduleCode =
+                @"
+Private Sub Baz()
+    Dim cls As Class1
+    Set cls = new Class1
+    Dim fooBar As Variant
+    fooBar = cls!Hello
+End Sub";
+
+            //Expectation
+            const string expectedClassCode =
+                @"
+Public Function Foo() As String
+Attribute Foo.VB_UserMemId = 0
+End Function";
+
+            const string expectedModuleCode =
+                @"
+Private Sub Baz()
+    Dim cls As Class1
+    Set cls = new Class1
+    Dim fooBar As Variant
+    fooBar = cls()
+End Sub";
+
+            var paramIndices = new[] { 0 }.ToList();
+            var presenterAction = StandardPresenterAction(paramIndices);
+            var actualCode = RefactoredCode(
+                "Class1",
+                selection,
+                presenterAction,
+                null,
+                false,
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            Assert.AreEqual(expectedClassCode, actualCode["Class1"]);
+            Assert.AreEqual(expectedModuleCode, actualCode["Module1"]);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
+        [Ignore("This is postponed until after refactoring the refactoring setup and extracting a refactoring out of ExpandBangNotationQuickFix.")]
+        public void RemoveParametersRefactoring_ExpandsWithDictionaryAccessExpressions()
+        {
+            //Input
+            const string classCode =
+                @"
+Public Function Foo(ByVal arg1 As String) As String
+Attribute Foo.VB_UserMemId = 0
+End Function";
+            var selection = new Selection(2, 51, 2, 51);
+
+            const string moduleCode =
+                @"
+Private Sub Baz()
+    Dim fooBar As Variant
+    With New Class1
+        fooBar = !Hello
+    End With
+End Sub";
+
+            //Expectation
+            const string expectedClassCode =
+                @"
+Public Function Foo() As String
+Attribute Foo.VB_UserMemId = 0
+End Function";
+
+            const string expectedModuleCode =
+                @"
+Private Sub Baz()
+    Dim fooBar As Variant
+    With New Class1
+        fooBar = .Foo
+    End With
+End Sub";
+
+            var paramIndices = new[] { 0 }.ToList();
+            var presenterAction = StandardPresenterAction(paramIndices);
+            var actualCode = RefactoredCode(
+                "Class1",
+                selection,
+                presenterAction,
+                null,
+                false,
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            Assert.AreEqual(expectedClassCode, actualCode["Class1"]);
+            Assert.AreEqual(expectedModuleCode, actualCode["Module1"]);
+        }
+
         private string RemoveParams(string inputCode, Selection? selection = null, IEnumerable<int> paramIndices = null)
         {
             var (code, codeSelection) = CodeFromCodeStringLike(inputCode, selection);
@@ -1580,7 +1970,11 @@ End Sub";
             IRefactoringPresenterFactory factory, ISelectionService selectionService)
         {
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            return new RemoveParametersRefactoring(state, factory, rewritingManager, selectionService, selectedDeclarationProvider);
+            var uiDispatcherMock = new Mock<IUiDispatcher>();
+            uiDispatcherMock
+                .Setup(m => m.Invoke(It.IsAny<Action>()))
+                .Callback((Action action) => action.Invoke());
+            return new RemoveParametersRefactoring(state, factory, rewritingManager, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
         }
     }
 }

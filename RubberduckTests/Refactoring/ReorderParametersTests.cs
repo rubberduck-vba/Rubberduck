@@ -10,6 +10,7 @@ using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Exceptions.ReorderParameters;
@@ -170,6 +171,39 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Reorder Parameters")]
+        public void ReorderParametersRefactoring_WithOptionalParams_RemovedTrailingMissingArguments()
+        {
+            //Input
+            const string inputCode =
+                @"Public Sub Foo(Optional ByVal arg1 As Integer = 0, Optional ByVal arg2 As String = vbNullString, Optional ByVal arg3 As Long = 0)
+End Sub
+
+Public Sub Goo()
+    Foo ,, 6
+    Foo , 4, 6
+End Sub
+";
+            var selection = new Selection(1, 23, 1, 27);
+
+            //Expectation
+            const string expectedCode =
+                @"Public Sub Foo(Optional ByVal arg3 As Long = 0, Optional ByVal arg2 As String = vbNullString, Optional ByVal arg1 As Integer = 0)
+End Sub
+
+Public Sub Goo()
+    Foo 6
+    Foo 6, 4
+End Sub
+";
+
+            var presenterAction = ReverseParameters();
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParams_SwapPositions_UpdatesCallers()
         {
             //Input
@@ -240,7 +274,7 @@ End Function";
         [Test]
         [Category("Refactorings")]
         [Category("Reorder Parameters")]
-        public void ReorderParametersRefactoring_ReorderNamedParams()
+        public void ReorderParametersRefactoring_DoesNotReorderNamedArguments()
         {
             //Input
             const string inputCode =
@@ -259,7 +293,7 @@ End Sub
 End Sub
 
 Public Sub Goo()
-    Foo arg2:=""test44"", arg1:=3, arg3:=6.1
+    Foo arg2:=""test44"", arg3:=6.1, arg1:=3
 End Sub
 ";
 
@@ -271,7 +305,38 @@ End Sub
         [Test]
         [Category("Refactorings")]
         [Category("Reorder Parameters")]
-        public void ReorderParametersRefactoring_ReorderNamedParams_Function()
+        public void ReorderParametersRefactoring_MakesPartiallyNamedArgumentsAllNamed()
+        {
+            //Input
+            const string inputCode =
+                @"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String, ByVal arg3 As Double, ByVal arg4 As Double)
+End Sub
+
+Public Sub Goo()
+    Foo 23, ""test42"", arg4:=6.1, arg3:=3
+End Sub
+";
+            var selection = new Selection(1, 23, 1, 27);
+
+            //Expectation
+            const string expectedCode =
+                @"Public Sub Foo(ByVal arg4 As Double, ByVal arg1 As Integer, ByVal arg2 As String, ByVal arg3 As Double)
+End Sub
+
+Public Sub Goo()
+    Foo arg1:=23, arg2:=""test42"", arg4:=6.1, arg3:=3
+End Sub
+";
+
+            var presenterAction = ReorderParamIndices(new List<int> { 3, 0, 1, 2 });
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
+        public void ReorderParametersRefactoring_DoesNotReorderNamedArguments_Function()
         {
             //Input
             const string inputCode =
@@ -294,7 +359,7 @@ End Function";
         [Test]
         [Category("Refactorings")]
         [Category("Reorder Parameters")]
-        public void ReorderParametersRefactoring_ReorderNamedParams_WithOptionalParam()
+        public void ReorderParametersRefactoring_DoesNotReorderNamedArguments_WithOptionalParam()
         {
             //Input
             const string inputCode =
@@ -313,11 +378,42 @@ End Sub
 End Sub
 
 Public Sub Goo()
-    Foo arg1:=3, arg2:=""test44""
+    Foo arg2:=""test44"", arg1:=3
 End Sub
 ";
 
             var presenterAction = ReorderParamIndices(new List<int>{1, 0, 2});
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
+        public void ReorderParametersRefactoring_MakesPartiallyNamedArgumentsAllNamedAndDropsMissingOptionalArguments()
+        {
+            //Input
+            const string inputCode =
+                @"Public Sub Foo(Optional ByVal arg1 As Integer = 2, Optional ByVal arg2 As String = vbNullString, Optional ByVal arg3 As Double = 1, Optional ByVal arg4 As Double = 0)
+End Sub
+
+Public Sub Goo()
+    Foo 23, , arg4:=6.1, arg3:=3
+End Sub
+";
+            var selection = new Selection(1, 23, 1, 27);
+
+            //Expectation
+            const string expectedCode =
+                @"Public Sub Foo(Optional ByVal arg4 As Double = 0, Optional ByVal arg1 As Integer = 2, Optional ByVal arg2 As String = vbNullString, Optional ByVal arg3 As Double = 1)
+End Sub
+
+Public Sub Goo()
+    Foo arg1:=23, arg4:=6.1, arg3:=3
+End Sub
+";
+
+            var presenterAction = ReorderParamIndices(new List<int> { 3, 0, 1, 2 });
             var actualCode = RefactoredCode(inputCode, selection, presenterAction);
             Assert.AreEqual(expectedCode, actualCode);
         }
@@ -952,6 +1048,71 @@ End Sub";
 
         [Test]
         [Category("Refactorings")]
+        [Category("Remove Parameters")]
+        public void ReorderParametersRefactoring_InterfaceGetterParam_ImplementationLetAndSetParamReordered()
+        {
+            //Input
+            const string interfaceCode =
+                @"Public Property Get Foo(ByVal a As Integer, ByVal b As String) As Variant
+End Property
+
+Public Property Let Foo(ByVal a As Integer, ByVal b As String, RHS As Variant)
+End Property
+
+Public Property Set Foo(ByVal a As Integer, ByVal b As String, RHS As Variant)
+End Property";
+            const string implementerCode =
+                @"Implements IClass1
+
+Private Property Get IClass1_Foo(ByVal a As Integer, ByVal b As String) As Variant
+End Property
+
+Private Property Let IClass1_Foo(ByVal a As Integer, ByVal b As String, RHS As Variant)
+End Property
+
+Private Property Set IClass1_Foo(ByVal a As Integer, ByVal b As String, RHS As Variant)
+End Property";
+
+            var selection = new Selection(1, 23, 1, 27);
+
+            //Expectation
+            const string expectedInterfaceCode =
+                @"Public Property Get Foo(ByVal b As String, ByVal a As Integer) As Variant
+End Property
+
+Public Property Let Foo(ByVal b As String, ByVal a As Integer, RHS As Variant)
+End Property
+
+Public Property Set Foo(ByVal b As String, ByVal a As Integer, RHS As Variant)
+End Property";
+            const string expectedImplementerCode =
+                @"Implements IClass1
+
+Private Property Get IClass1_Foo(ByVal b As String, ByVal a As Integer) As Variant
+End Property
+
+Private Property Let IClass1_Foo(ByVal b As String, ByVal a As Integer, RHS As Variant)
+End Property
+
+Private Property Set IClass1_Foo(ByVal b As String, ByVal a As Integer, RHS As Variant)
+End Property";
+
+            var presenterAction = ReverseParameters();
+            var actualCode = RefactoredCode(
+                "IClass1",
+                selection,
+                presenterAction,
+                null,
+                false,
+                ("IClass1", interfaceCode, ComponentType.ClassModule),
+                ("Class1", implementerCode, ComponentType.ClassModule));
+
+            Assert.AreEqual(expectedInterfaceCode, actualCode["IClass1"]);
+            Assert.AreEqual(expectedImplementerCode, actualCode["Class1"]);
+        }
+
+        [Test]
+        [Category("Refactorings")]
         [Category("Reorder Parameters")]
         public void ReorderParametersRefactoring_EventParamsSwapped()
         {
@@ -1127,6 +1288,55 @@ End Sub";   // note: IDE removes excess spaces
             Assert.AreEqual(expectedCode3, actualCode["Class3"]);
         }
 
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
+        public void ReorderParametersRefactoring_ChangesCorrectReferenceArgumentList()
+        {
+            //Input
+            const string classCode =
+                @"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub";
+
+            const string moduleCode =
+                @"
+Private Function Bar(ByVal i As Integer, ByVal s As String) As Class1
+End Function
+
+Private Sub Baz()
+    Bar(42, ""Hello"").Foo 23, ""Hi""
+End Sub";
+
+            var selection = new Selection(2, 20, 2, 20);
+
+            //Expectation
+            const string expectedClassCode =
+                @"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub";
+
+            const string expectedModuleCode =
+                @"
+Private Function Bar(ByVal s As String, ByVal i As Integer) As Class1
+End Function
+
+Private Sub Baz()
+    Bar(""Hello"", 42).Foo 23, ""Hi""
+End Sub";
+
+            var presenterAction = ReverseParameters();
+            var actualCode = RefactoredCode(
+                "Module1",
+                selection,
+                presenterAction,
+                null,
+                false,
+                ("Class1", classCode, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            Assert.AreEqual(expectedClassCode, actualCode["Class1"]);
+            Assert.AreEqual(expectedModuleCode, actualCode["Module1"]);
+        }
+
         protected override IRefactoring TestRefactoring(
             IRewritingManager rewritingManager, 
             RubberduckParserState state,
@@ -1134,7 +1344,11 @@ End Sub";   // note: IDE removes excess spaces
             ISelectionService selectionService)
         {
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            return new ReorderParametersRefactoring(state, factory, rewritingManager, selectionService, selectedDeclarationProvider);
+            var uiDispatcherMock = new Mock<IUiDispatcher>();
+            uiDispatcherMock
+                .Setup(m => m.Invoke(It.IsAny<Action>()))
+                .Callback((Action action) => action.Invoke());
+            return new ReorderParametersRefactoring(state, factory, rewritingManager, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
         }
 
         private static Func<ReorderParametersModel, ReorderParametersModel> ReverseParameters()
