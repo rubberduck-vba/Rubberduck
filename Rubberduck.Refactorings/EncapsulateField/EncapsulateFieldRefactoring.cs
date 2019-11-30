@@ -97,7 +97,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             var previewRewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(scratchPadRewriteSession, _targetQMN);
 
-            return previewRewriter.GetTextWithoutAbandonedLines();
+            return previewRewriter.GetText(maxConsecutiveNewLines: 3);
         }
     }
 }

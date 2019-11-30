@@ -7,6 +7,7 @@ using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using System;
+using System.Linq;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -17,7 +18,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         void Rename(Declaration element, string newName);
         void MakeImplicitDeclarationTypeExplicit(Declaration element);
         void InsertAtEndOfFile(string content);
-        string GetTextWithoutAbandonedLines();
+        string GetText(int maxConsecutiveNewLines);
 
     }
 
@@ -87,14 +88,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        public string GetTextWithoutAbandonedLines()
+        public string GetText(int maxConsecutiveNewLines)
         {
             var preview = GetText();
-
-            var counter = 0;
-            while (counter++ < 10 && preview.Contains($"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}"))
+            var target = string.Join(string.Empty, Enumerable.Repeat(Environment.NewLine, maxConsecutiveNewLines).ToList());
+            var replacement = string.Join(string.Empty, Enumerable.Repeat(Environment.NewLine, maxConsecutiveNewLines - 1).ToList());
+            for (var counter = 1; counter < 10 && preview.Contains(target); counter++)
             {
-                preview = preview.Replace($"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}", $"{Environment.NewLine}{Environment.NewLine}");
+                preview = preview.Replace(target, replacement);
             }
             return preview;
         }

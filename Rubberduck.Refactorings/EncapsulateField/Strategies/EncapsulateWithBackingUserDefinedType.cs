@@ -89,7 +89,7 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
             {
                 PropertyName = attributes.PropertyName,
                 AsTypeName = attributes.AsTypeName,
-                BackingField = $"{FieldName}.{attributes.PropertyName}",
+                BackingField = $"{StateEncapsulationField.NewFieldName}.{attributes.PropertyName}",
                 ParameterName = attributes.ParameterName,
                 GenerateSetter = attributes.ImplementSetSetterType,
                 GenerateLetter = attributes.ImplementLetSetterType

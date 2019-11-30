@@ -64,12 +64,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             set
             {
-                if (EncapsulationStrategy is EncapsulateWithBackingUserDefinedType ebd) { return; }
+                if (value && EncapsulationStrategy is EncapsulateWithBackingUserDefinedType ebd) { return; }
+
+                if (!value && EncapsulationStrategy is EncapsulateWithBackingFields wbf) { return; }
 
                 EncapsulationStrategy = value
                     ? new EncapsulateWithBackingUserDefinedType(_targetQMN, _indenter, _declarationFinderProvider, _validator) as IEncapsulateFieldStrategy
                     : new EncapsulateWithBackingFields(_targetQMN, _indenter, _declarationFinderProvider, _validator) as IEncapsulateFieldStrategy;
-                //This probably should go - or be in the ctor
             }
 
             get => EncapsulationStrategy is EncapsulateWithBackingUserDefinedType;
