@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -42,7 +43,19 @@ namespace Rubberduck.VBEditor.Utility
                 {
                     using (openCodePane)
                     {
-                        openModules.Add(openCodePane.QualifiedModuleName);
+
+                        try
+                        {
+                            var qmn = openCodePane.QualifiedModuleName;
+                            openModules.Add(qmn);
+                        }
+                        catch (COMException ex)
+                        {
+                            //For some reason, we sometimes get a COM Exception for 'invalid callee' here. So, we swallow it to avoid rendering rewrites unusable in that case.
+                            //See issue #5242 at https://github.com/rubberduck-vba/Rubberduck/issues/5242
+                            //TODO: Find the root cause of the sporadic exception and deal with it.
+                            _logger.Warn(ex, "Encountered an exception while getting the qualified module name of all open code panes. The current code pane will be skipped.");
+                        }
                     }
                 }
             }
