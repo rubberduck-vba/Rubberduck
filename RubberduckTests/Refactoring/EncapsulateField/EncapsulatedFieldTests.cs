@@ -5,6 +5,7 @@ using RubberduckTests.Mocks;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System.Linq;
+using Rubberduck.Parsing.Symbols;
 
 namespace RubberduckTests.Refactoring.EncapsulateField
 {
@@ -31,7 +32,7 @@ $@"Public {originalFieldName} As String";
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         public void FieldNameAttributeValidation_DefaultsToAvailableFieldName()
-        { 
+        {
             string inputCode =
 $@"Public fizz As String
 
@@ -48,6 +49,28 @@ $@"Public fizz As String
             ";
             var encapsulatedField = RetrieveEncapsulatedField(inputCode, "fizz");
             Assert.IsTrue(encapsulatedField.HasValidEncapsulationAttributes);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void UDTMemberPropertyDefaultsToValidValue()
+        {
+            string inputCode =
+$@"
+Private Type TBar
+    First As String
+    Second As Long
+End Type
+
+Public myBar As TBar
+
+Private Function First() As String
+    First = myBar.First
+End Function";
+
+            var encapsulatedField = RetrieveEncapsulatedField(inputCode, "First", DeclarationType.UserDefinedTypeMember);
+            StringAssert.AreNotEqualIgnoringCase("First", encapsulatedField.PropertyName);
         }
 
         [Test]
@@ -141,6 +164,20 @@ $@"Public fizz As String
             using (state)
             {
                 var match = state.DeclarationFinder.MatchName(fieldName).Single();
+                return new EncapsulateFieldCandidate(match, new EncapsulateFieldNamesValidator(state)) as IEncapsulateFieldCandidate;
+            }
+        }
+
+        private IEncapsulateFieldCandidate RetrieveEncapsulatedField(string inputCode, string fieldName, DeclarationType declarationType)
+        {
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
+
+            var selectedComponentName = vbe.SelectedVBComponent.Name;
+
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
+            using (state)
+            {
+                var match = state.DeclarationFinder.MatchName(fieldName).Where(m => m.DeclarationType.Equals(declarationType)).Single();
                 return new EncapsulateFieldCandidate(match, new EncapsulateFieldNamesValidator(state)) as IEncapsulateFieldCandidate;
             }
         }

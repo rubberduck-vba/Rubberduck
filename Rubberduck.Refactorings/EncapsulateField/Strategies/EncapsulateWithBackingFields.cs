@@ -84,7 +84,7 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
             {
                 PropertyName = attributes.PropertyName,
                 AsTypeName = attributes.AsTypeName,
-                BackingField = attributes.FieldReferenceExpression,
+                BackingField = attributes.FieldAccessExpression,
                 ParameterName = attributes.ParameterName,
                 GenerateSetter = attributes.ImplementSetSetterType,
                 GenerateLetter = attributes.ImplementLetSetterType

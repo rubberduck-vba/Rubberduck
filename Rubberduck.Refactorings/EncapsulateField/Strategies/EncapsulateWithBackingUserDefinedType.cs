@@ -25,14 +25,10 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
         public EncapsulateWithBackingUserDefinedType(QualifiedModuleName qmn, IIndenter indenter, IDeclarationFinderProvider declarationFinderProvider, IEncapsulateFieldNamesValidator validator)
             : base(qmn, indenter, declarationFinderProvider, validator)
         {
-            StateEncapsulationField = _candidateFactory.CreateProposedField(DEFAULT_FIELD_IDENTIFIER, DEFAULT_TYPE_IDENTIFIER, qmn, validator);
+            StateEncapsulationField = _candidateFactory.CreateInsertableField(DEFAULT_FIELD_IDENTIFIER, DEFAULT_TYPE_IDENTIFIER, qmn, validator);
         }
 
         public IEncapsulateFieldCandidate StateEncapsulationField { set; get; }
-
-        public string TypeIdentifier { set; get; } = DEFAULT_TYPE_IDENTIFIER;
-
-        public string FieldName { set; get; } = DEFAULT_FIELD_IDENTIFIER;
 
         protected override void ModifyEncapsulatedVariable(IEncapsulateFieldCandidate target, IFieldEncapsulationAttributes attributes, IRewriteSession rewriteSession)
         {
@@ -48,16 +44,13 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
             var nonUdtMemberFields = FlaggedEncapsulationFields
                     .Where(encFld => encFld.Declaration.IsVariable());
 
-            var udt = new UDTDeclarationGenerator(TypeIdentifier);
+            var udt = new UDTDeclarationGenerator(StateEncapsulationField.AsTypeName);
             foreach (var nonUdtMemberField in nonUdtMemberFields)
             {
                 udt.AddMember(nonUdtMemberField);
             }
             newContent.AddDeclarationBlock(udt.TypeDeclarationBlock(Indenter));
-            if (!StateEncapsulationField.HasValidEncapsulationAttributes)
-            {
-                ForceNonConflictFieldName(StateEncapsulationField);
-            }
+
             newContent.AddDeclarationBlock(udt.FieldDeclaration(StateEncapsulationField.NewFieldName));
 
             var udtMemberFields = FlaggedEncapsulationFields.Where(efd => efd.DeclarationType.Equals(DeclarationType.UserDefinedTypeMember));

@@ -3,6 +3,7 @@ using System.Linq;
 using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.EncapsulateField;
+using Rubberduck.Refactorings.EncapsulateField.Strategies;
 using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Refactorings.EncapsulateField
@@ -27,7 +28,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         {
             get
             {
-                var flaggedFields = Model.FlaggedEncapsulationFields //.Where(efd => efd.EncapsulateFlag)
+                var flaggedFields = Model.FlaggedEncapsulationFields
                     .OrderBy(efd => efd.Declaration.IdentifierName);
 
                 var orderedFields = Model.EncapsulationFields.Except(flaggedFields)
@@ -56,25 +57,47 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
                 Model.EncapsulateWithUDT = value;
                 UpdatePreview();
                 OnPropertyChanged(nameof(HideEncapsulateAsUDTFields));
+                OnPropertyChanged(nameof(EncapsulateAsUDT_TypeIdentifier));
+                OnPropertyChanged(nameof(EncapsulateAsUDT_FieldName));
             }
         }
 
         public string EncapsulateAsUDT_TypeIdentifier
         {
-            get => Model.EncapsulateWithUDT_TypeIdentifier;
+            get
+            {
+                if (Model.EncapsulationStrategy is IEncapsulateWithBackingUserDefinedType udtStrategy)
+                {
+                    return udtStrategy.StateEncapsulationField.AsTypeName;
+                }
+                return string.Empty;
+            }
             set
             {
-                Model.EncapsulateWithUDT_TypeIdentifier = value;
+                if (Model.EncapsulationStrategy is IEncapsulateWithBackingUserDefinedType udtStrategy)
+                {
+                    udtStrategy.StateEncapsulationField.EncapsulationAttributes.AsTypeName = value;
+                }
                 UpdatePreview();
             }
         }
 
         public string EncapsulateAsUDT_FieldName
         {
-            get => Model.EncapsulateWithUDT_FieldName;
+            get
+            {
+                if (Model.EncapsulationStrategy is IEncapsulateWithBackingUserDefinedType udtStrategy)
+                {
+                    return udtStrategy.StateEncapsulationField.NewFieldName;
+                }
+                return string.Empty;
+            }
             set
             {
-                Model.EncapsulateWithUDT_FieldName = value;
+                if (Model.EncapsulationStrategy is IEncapsulateWithBackingUserDefinedType udtStrategy)
+                {
+                    udtStrategy.StateEncapsulationField.EncapsulationAttributes.NewFieldName = value;
+                }
                 UpdatePreview();
             }
         }

@@ -72,7 +72,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
     public interface IEncapsulateFieldNamesValidator
     {
-        bool HasValidEncapsulationAttributes(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, IEnumerable<Declaration> ignore);
+        bool HasValidEncapsulationAttributes(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, IEnumerable<Declaration> ignore, DeclarationType declarationType);
+        void ForceNonConflictEncapsulationAttributes(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, Declaration target);
+        void ForceNonConflictPropertyName(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, Declaration target);
     }
 
     public class EncapsulateFieldNamesValidator : IEncapsulateFieldNamesValidator
@@ -85,12 +87,49 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _candidateFieldsRetriever = selectedFieldsRetriever;
         }
 
-        private DeclarationFinder DeclarationFinder => _declarationFinderProvider.DeclarationFinder; 
+        private DeclarationFinder DeclarationFinder => _declarationFinderProvider.DeclarationFinder;
 
-        public bool HasValidEncapsulationAttributes(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, IEnumerable<Declaration> ignore)
+        public void ForceNonConflictEncapsulationAttributes(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, Declaration target)
         {
-            var isSelfConsistent = HasValidIdentifiers(attributes)
-                && !HasInternalNameConflicts(attributes);
+            if (target?.DeclarationType.HasFlag(DeclarationType.UserDefinedTypeMember) ?? false)
+            {
+                ForceNonConflictPropertyName(attributes, qmn, target);
+                return;
+            }
+            ForceNonConflictNewName(attributes, qmn, target);
+        }
+
+        public void ForceNonConflictNewName(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, Declaration target)
+        {
+            var identifier = attributes.NewFieldName;
+            var ignore = target is null ? Enumerable.Empty<Declaration>() : new Declaration[] { target };
+
+            var isValidAttributeSet = HasValidEncapsulationAttributes(attributes, qmn, ignore);
+            for (var idx = 1; idx < 9 && !isValidAttributeSet; idx++)
+            {
+                attributes.NewFieldName = $"{identifier}{idx}";
+                isValidAttributeSet = HasValidEncapsulationAttributes(attributes, qmn, ignore);
+            }
+        }
+
+        public void ForceNonConflictPropertyName(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, Declaration target)
+        {
+            var identifier = attributes.PropertyName;
+            var ignore = target is null ? Enumerable.Empty<Declaration>() : new Declaration[] { target };
+            var isValidAttributeSet = HasValidEncapsulationAttributes(attributes, qmn, ignore);
+            for (var idx = 1; idx < 9 && !isValidAttributeSet; idx++)
+            {
+                attributes.PropertyName = $"{identifier}{idx}";
+                isValidAttributeSet = HasValidEncapsulationAttributes(attributes, qmn, ignore);
+            }
+        }
+
+        public bool HasValidEncapsulationAttributes(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, IEnumerable<Declaration> ignore, DeclarationType declaration = DeclarationType.Variable)
+        {
+            var hasValidIdentifiers = HasValidIdentifiers(attributes, declaration);
+            var hasInternalNameConflicts = HasInternalNameConflicts(attributes);
+
+            var isSelfConsistent = hasValidIdentifiers || hasInternalNameConflicts;
 
             if (!isSelfConsistent) { return false; }
 
@@ -183,9 +222,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 || (ruleContext is VBAParser.MemberAccessExprContext);
         }
 
-        private bool HasValidIdentifiers(IFieldEncapsulationAttributes attributes)
+        private bool HasValidIdentifiers(IFieldEncapsulationAttributes attributes, DeclarationType declarationType)
         {
-            return VBAIdentifierValidator.IsValidIdentifier(attributes.NewFieldName, DeclarationType.Variable)
+            return VBAIdentifierValidator.IsValidIdentifier(attributes.NewFieldName, declarationType)
                 && VBAIdentifierValidator.IsValidIdentifier(attributes.PropertyName, DeclarationType.Property)
                 && VBAIdentifierValidator.IsValidIdentifier(attributes.ParameterName, DeclarationType.Parameter);
         }

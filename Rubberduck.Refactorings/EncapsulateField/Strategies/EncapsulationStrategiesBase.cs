@@ -39,13 +39,12 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
                 .Members(qmn)
                 .Where(v => v.IsMemberVariable() && !v.IsWithEvents);
 
-            //if (_useNewStructure)
-            //{
             var candidates = _candidateFactory.CreateEncapsulationCandidates(EncapsulationCandidateFields);
             foreach (var candidate in candidates)
             {
                 HeirarchicalCandidates.Add(candidate.TargetID, candidate);
             }
+
             FlattenedTargetIDToCandidateMapping = Flatten(HeirarchicalCandidates);
             foreach (var element in FlattenedTargetIDToCandidateMapping)
             {
@@ -55,8 +54,6 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
                     UdtMemberTargetIDToParentMap.Add(element.Key, udtMember.Parent);
                 }
             }
-
-            //}
         }
 
         protected QualifiedModuleName TargetQMN {private set; get;}
@@ -84,19 +81,6 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
         protected abstract IList<string> PropertiesContent(IEnumerable<IEncapsulateFieldCandidate> flaggedEncapsulationFields);
 
         protected Dictionary<string, IEncapsulateFieldCandidate> HeirarchicalCandidates { set; get; } = new Dictionary<string, IEncapsulateFieldCandidate>();
-
-        protected IEncapsulateFieldCandidate ForceNonConflictFieldName(IEncapsulateFieldCandidate candidate)
-        {
-            if (candidate.EncapsulationAttributes is UnselectableField concrete)
-            {
-                var attempt = 0;
-                while (attempt++ < 10 && !candidate.HasValidEncapsulationAttributes)
-                {
-                    concrete.ApplyNewFieldName($"{concrete.NewFieldName}{attempt}");
-                }
-            }
-            return candidate;
-        }
 
         private IExecutableRewriteSession RefactorRewrite(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession, bool asPreview)
         {

@@ -9,50 +9,37 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         string Identifier { get; }
         string PropertyName { get; set; }
-        bool ReadOnly { get; set; }
+        bool IsReadOnly { get; set; }
         bool EncapsulateFlag { get; set; }
         string NewFieldName { set;  get; }
-        string FieldReferenceExpression { get; }
+        bool CanBeReadWrite { set; get; }
+        string FieldAccessExpression { get; }
         string AsTypeName { get; set; }
         string ParameterName { get;}
         bool ImplementLetSetterType { get; set; }
         bool ImplementSetSetterType { get; set; }
         bool FieldNameIsExemptFromValidation { get; }
         QualifiedModuleName QualifiedModuleName { get; }
-
-        //IEncapsulatedField
-        //Declaration Declaration { get; }
         //DeclarationType DeclarationType { get; }
-        //dup        //string TargetID { get; }
-        //IFieldEncapsulationAttributes EncapsulationAttributes { set; get; }
-        //dup        //bool IsReadOnly { set; get; }
-        //bool CanBeReadWrite { set; get; }
-        //dup        //string PropertyName { set; get; }
-        //dup        //bool EncapsulateFlag { set; get; }
-        //dup        //string NewFieldName { get; }
-        //dup        //string AsTypeName { get; }
-        //bool IsUDTMember { set; get; }
-        //bool HasValidEncapsulationAttributes { get; }
-        //dup//QualifiedModuleName QualifiedModuleName { get; }
-        //IEnumerable<IdentifierReference> References { get; }
-
     }
 
-    public class UnselectableField : IFieldEncapsulationAttributes
+
+    //Used for declarations that will be added to the code, but will never be encapsulated
+    //Satifies the IFieldEncapsulationAttributes interface but some properties return n
+    public class NeverEncapsulateAttributes : IFieldEncapsulationAttributes
     {
-        private const string neverUsed = "x_x_x_x_x_x_x";
+        private const string neverUse = "x_x_x_x";
         private IEncapsulateFieldNamesValidator _validator;
         private QualifiedModuleName _qmn;
 
-        public UnselectableField(string identifier, string asTypeName, QualifiedModuleName qmn, IEncapsulateFieldNamesValidator validator)
+        public NeverEncapsulateAttributes(string identifier, string asTypeName, QualifiedModuleName qmn, IEncapsulateFieldNamesValidator validator)
         {
-            //_fieldAndProperty = new EncapsulationIdentifiers(identifier);
             _qmn = qmn;
             _validator = validator;
             Identifier = identifier;
             NewFieldName = identifier;
             AsTypeName = asTypeName;
-            FieldReferenceExpressionFunc = () => NewFieldName;
+            FieldAccessExpressionFunc = () => NewFieldName;
         }
 
         public IFieldEncapsulationAttributes ApplyNewFieldName(string newFieldName)
@@ -61,53 +48,79 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return this;
         }
 
+        //public DeclarationType DeclarationType { get; } = DeclarationType.UserDefinedType;
+
         public string Identifier { private set; get; }
 
         public string NewFieldName { set; get; }
 
         string _tossString;
-        public string PropertyName { set => _tossString = value; get => $"{neverUsed}{Identifier}_{neverUsed}"; }
+        public string PropertyName { set => _tossString = value; get => $"{neverUse}{Identifier}_{neverUse}"; }
 
-        public string FieldReferenceExpression => FieldReferenceExpressionFunc();
+        public string FieldAccessExpression => FieldAccessExpressionFunc();
 
-        public Func<string> FieldReferenceExpressionFunc { set; get; }
+        public Func<string> FieldAccessExpressionFunc { set; get; }
 
         public string AsTypeName { get; set; }
-        public string ParameterName => neverUsed;
+        public string ParameterName => neverUse;
 
         private bool _toss;
-        public bool ReadOnly { get; set; } = false;
+        public bool IsReadOnly { get; set; } = false;
+        public bool CanBeReadWrite { get => false; set => _toss = value; }
+
 
         public bool EncapsulateFlag { get => false; set => _toss = value; }
         public bool ImplementLetSetterType { get => false; set => _toss = value; }
         public bool ImplementSetSetterType { get => false; set => _toss = value; }
 
-        public bool FieldNameIsExemptFromValidation => false; // NewFieldName.EqualsVBAIdentifier(Identifier);
+        public bool FieldNameIsExemptFromValidation => false;
         public QualifiedModuleName QualifiedModuleName => _qmn;
     }
 
     public class FieldEncapsulationAttributes : IFieldEncapsulationAttributes
     {
         private QualifiedModuleName _qmn;
+        private bool _fieldNameIsAlwaysValid;
         public FieldEncapsulationAttributes(Declaration target)
         {
             _fieldAndProperty = new EncapsulationIdentifiers(target);
             Identifier = target.IdentifierName;
             AsTypeName = target.AsTypeName;
             _qmn = target.QualifiedModuleName;
-            FieldReferenceExpressionFunc = () => NewFieldName;
+            FieldAccessExpressionFunc = () => NewFieldName;
+            _fieldNameIsAlwaysValid = target.DeclarationType.Equals(DeclarationType.UserDefinedTypeMember);
+            //DeclarationType = target.DeclarationType;
         }
 
         public FieldEncapsulationAttributes(string identifier, string asTypeName)
         {
             _fieldAndProperty = new EncapsulationIdentifiers(identifier);
             AsTypeName = asTypeName;
-            FieldReferenceExpressionFunc = () => NewFieldName;
+            FieldAccessExpressionFunc = () => NewFieldName;
+        }
+
+        public FieldEncapsulationAttributes(IFieldEncapsulationAttributes attributes)
+        {
+            _fieldAndProperty = new EncapsulationIdentifiers(attributes.Identifier, attributes.NewFieldName, attributes.PropertyName);
+            PropertyName = attributes.PropertyName;
+            IsReadOnly = attributes.IsReadOnly;
+            EncapsulateFlag = attributes.EncapsulateFlag;
+            NewFieldName = attributes.NewFieldName;
+            CanBeReadWrite = attributes.CanBeReadWrite;
+            AsTypeName = attributes.AsTypeName;
+            ImplementLetSetterType = attributes.ImplementLetSetterType;
+            ImplementSetSetterType = attributes.ImplementSetSetterType;
+            QualifiedModuleName = attributes.QualifiedModuleName;
+            FieldAccessExpressionFunc = () => NewFieldName;
         }
 
         private EncapsulationIdentifiers _fieldAndProperty;
 
+        //public DeclarationType DeclarationType { private set; get; } = DeclarationType.Variable;
+
         public string Identifier { private set; get; }
+
+        public bool CanBeReadWrite { set; get; } = true;
 
         public string NewFieldName
         {
@@ -121,22 +134,26 @@ namespace Rubberduck.Refactorings.EncapsulateField
             set => _fieldAndProperty.Property = value;
         }
 
-        public string FieldReferenceExpression => FieldReferenceExpressionFunc();
+        public string FieldAccessExpression => FieldAccessExpressionFunc();
 
-        public Func<string> FieldReferenceExpressionFunc { set; get; }
+        public Func<string> FieldAccessExpressionFunc { set; get; }
 
         public string AsTypeName { get; set; }
         public string ParameterName => _fieldAndProperty.SetLetParameter;
-        public bool ReadOnly { get; set; }
+        public bool IsReadOnly { get; set; }
         public bool EncapsulateFlag { get; set; }
 
         private bool _implLet;
-        public bool ImplementLetSetterType { get => !ReadOnly && _implLet; set => _implLet = value; }
+        public bool ImplementLetSetterType { get => !IsReadOnly && _implLet; set => _implLet = value; }
 
         private bool _implSet;
-        public bool ImplementSetSetterType { get => !ReadOnly && _implSet; set => _implSet = value; }
+        public bool ImplementSetSetterType { get => !IsReadOnly && _implSet; set => _implSet = value; }
 
-        public bool FieldNameIsExemptFromValidation => NewFieldName.EqualsVBAIdentifier(Identifier);
-        public QualifiedModuleName QualifiedModuleName => _qmn;
+        public bool FieldNameIsExemptFromValidation => _fieldNameIsAlwaysValid || NewFieldName.EqualsVBAIdentifier(Identifier);
+        public QualifiedModuleName QualifiedModuleName
+        {
+            get => _qmn;
+            set => _qmn = value;
+        }
     }
 }

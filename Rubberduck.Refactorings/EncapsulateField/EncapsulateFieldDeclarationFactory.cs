@@ -16,10 +16,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> _udtFieldToUdtDeclarationMap = new Dictionary<Declaration, (Declaration, IEnumerable<Declaration>)>();
-        private QualifiedModuleName _targetQMN;
         private readonly IEncapsulateFieldNamesValidator _validator;
         private IEnumerable<Declaration> _candidateFields;
         private bool _useNewStructure;
+        private List<IEncapsulateFieldCandidate> _encapsulatedFields = new List<IEncapsulateFieldCandidate>();
 
         public EncapsulationCandidateFactory(IDeclarationFinderProvider declarationFinderProvider, IEncapsulateFieldNamesValidator validator)
         {
@@ -30,9 +30,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _useNewStructure = File.Exists("C:\\Users\\Brian\\Documents\\UseNewUDTStructure.txt");
         }
 
-        public IEncapsulateFieldCandidate CreateProposedField(string identifier, string asTypeName, QualifiedModuleName qmn, IEncapsulateFieldNamesValidator validator)
+        public IEncapsulateFieldCandidate CreateInsertableField(string identifier, string asTypeName, QualifiedModuleName qmn, IEncapsulateFieldNamesValidator validator)
         {
-            var unselectableAttributes =  new UnselectableField(identifier, asTypeName, qmn, validator);
+            var unselectableAttributes =  new NeverEncapsulateAttributes(identifier, asTypeName, qmn, validator);
             return new EncapsulateFieldCandidate(unselectableAttributes, validator);
         }
 
@@ -40,78 +40,43 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             _candidateFields = candidateFields;
 
+            var candidates = new List<IEncapsulateFieldCandidate>();
+            foreach (var field in candidateFields)
+            {
+                _encapsulatedFields.Add(EncapsulateDeclaration(field, _validator));
+            }
+
             _udtFieldToUdtDeclarationMap = candidateFields
                 .Where(v => v.IsUserDefinedTypeField())
                 .Select(uv => CreateUDTTuple(uv))
                 .ToDictionary(key => key.UDTVariable, element => (element.UserDefinedType, element.UDTMembers));
 
-            var candidates = new List<IEncapsulateFieldCandidate>();
-            foreach (var field in candidateFields)
+            foreach ( var udtField in _udtFieldToUdtDeclarationMap.Keys)
             {
-                candidates.Add(EncapsulateDeclaration(field, _validator));
+                var encapsulatedUDTField = _encapsulatedFields.Where(ef => ef.Declaration == udtField).Single();
+
+                var moduleHasMultipleInstancesOfUDT = candidateFields.Any(fld => fld != encapsulatedUDTField.Declaration && encapsulatedUDTField.AsTypeName.Equals(fld.AsTypeName));
+                var concreteParent = encapsulatedUDTField as EncapsulatedUserDefinedTypeField;
+
+                foreach (var udtMember in _udtFieldToUdtDeclarationMap[udtField].Item2)
+                {
+                    IEncapsulateFieldCandidate encapsulatedUDTMember = new EncapsulatedUserDefinedTypeMember(udtMember, encapsulatedUDTField, _validator, moduleHasMultipleInstancesOfUDT);
+                    encapsulatedUDTMember = ApplySpecializationAttributes(encapsulatedUDTMember);
+                    concreteParent.Members.Add(encapsulatedUDTMember);
+                }
             }
-            return candidates;
+            return _encapsulatedFields;
         }
 
-        public IEncapsulateFieldCandidate EncapsulateDeclaration(Declaration target, IEncapsulateFieldNamesValidator validator)
+        private IEncapsulateFieldCandidate EncapsulateDeclaration(Declaration target, IEncapsulateFieldNamesValidator validator)
         {
-            if (target.IsUserDefinedTypeField())
-            {
-                var udtCandidate = new EncapsulatedUserDefinedTypeField(target, validator);
-                udtCandidate.EncapsulationAttributes.ImplementLetSetterType = true;
-                udtCandidate.EncapsulationAttributes.ImplementSetSetterType = false;
+            Debug.Assert(!target.DeclarationType.Equals(DeclarationType.UserDefinedTypeMember));
 
-                if (_useNewStructure)
-                {
-                    var udtMembers = new List<EncapsulatedUserDefinedTypeMember>();
+            var candidate = target.IsUserDefinedTypeField()
+                ? new EncapsulatedUserDefinedTypeField(target, validator)
+                : new EncapsulateFieldCandidate(target, validator);
 
-                    foreach (var member in _udtFieldToUdtDeclarationMap[target].Item2)
-                    {
-                        var udtMemberCandidate = EncapsulateDeclaration(member, validator);
-                        var udtMember = new EncapsulatedUserDefinedTypeMember(udtMemberCandidate, udtCandidate, HasMultipleFieldsOfSameUserDefinedType(udtCandidate));
-                        udtMembers.Add(udtMember);
-                    }
-
-                    udtCandidate.Members = udtMembers.Cast<IEncapsulateFieldCandidate>().ToList();
-                }
-
-                return udtCandidate;
-            }
-
-            var candidate = new EncapsulateFieldCandidate(target, validator);
-
-            if (target.IsArray)
-            {
-                candidate.EncapsulationAttributes.ImplementLetSetterType = false;
-                candidate.EncapsulationAttributes.ImplementSetSetterType = false;
-                candidate.EncapsulationAttributes.AsTypeName = Tokens.Variant;
-                candidate.CanBeReadWrite = false;
-                candidate.IsReadOnly = true;
-                return candidate;
-            }
-            else if (target.AsTypeName.Equals(Tokens.Variant))
-            {
-                candidate.EncapsulationAttributes.ImplementLetSetterType = true;
-                candidate.EncapsulationAttributes.ImplementSetSetterType = true;
-                return candidate;
-            }
-            else if (target.IsObject)
-            {
-                candidate.EncapsulationAttributes.ImplementLetSetterType = false;
-                candidate.EncapsulationAttributes.ImplementSetSetterType = true;
-                return candidate;
-            }
-            else if (target.DeclarationType.Equals(DeclarationType.UserDefinedTypeMember))
-            {
-                //TODO: This may need to pass back thru using it's AsTypeName
-                candidate.EncapsulationAttributes.ImplementLetSetterType = true;
-                candidate.EncapsulationAttributes.ImplementSetSetterType = false;
-                return candidate;
-            }
-
-            candidate.EncapsulationAttributes.ImplementLetSetterType = true;
-            candidate.EncapsulationAttributes.ImplementSetSetterType = false;
-            return candidate;
+            return ApplySpecializationAttributes(candidate);
         }
 
         private (Declaration UDTVariable, Declaration UserDefinedType, IEnumerable<Declaration> UDTMembers) CreateUDTTuple(Declaration udtVariable)
@@ -131,7 +96,38 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return (udtVariable, userDefinedTypeDeclaration, udtMembers);
         }
 
-        private bool HasMultipleFieldsOfSameUserDefinedType(IEncapsulateFieldCandidate udtCandidate)
-            => _candidateFields.Any(fld => fld != udtCandidate.Declaration && udtCandidate.AsTypeName.Equals(fld.AsTypeName));
+        private IEncapsulateFieldCandidate ApplySpecializationAttributes(IEncapsulateFieldCandidate candidate)
+        {
+            var target = candidate.Declaration;
+            if (target.IsUserDefinedTypeField())
+            {
+                candidate.EncapsulationAttributes.ImplementLetSetterType = true;
+                candidate.EncapsulationAttributes.ImplementSetSetterType = false;
+            }
+            else if (target.IsArray)
+            {
+                candidate.EncapsulationAttributes.ImplementLetSetterType = false;
+                candidate.EncapsulationAttributes.ImplementSetSetterType = false;
+                candidate.EncapsulationAttributes.AsTypeName = Tokens.Variant;
+                candidate.EncapsulationAttributes.CanBeReadWrite = false;
+                candidate.EncapsulationAttributes.IsReadOnly = true;
+            }
+            else if (target.AsTypeName.Equals(Tokens.Variant))
+            {
+                candidate.EncapsulationAttributes.ImplementLetSetterType = true;
+                candidate.EncapsulationAttributes.ImplementSetSetterType = true;
+            }
+            else if (target.IsObject)
+            {
+                candidate.EncapsulationAttributes.ImplementLetSetterType = false;
+                candidate.EncapsulationAttributes.ImplementSetSetterType = true;
+            }
+            else
+            {
+                candidate.EncapsulationAttributes.ImplementLetSetterType = true;
+                candidate.EncapsulationAttributes.ImplementSetSetterType = false;
+            }
+            return candidate;
+        }
     }
 }

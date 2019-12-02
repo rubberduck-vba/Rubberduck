@@ -69,7 +69,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             {
                 var encapsulatedField = model[originalField];
                 encapsulatedField.EncapsulationAttributes.PropertyName = attrs.PropertyName;
-                encapsulatedField.EncapsulationAttributes.ReadOnly = attrs.IsReadOnly;
+                encapsulatedField.EncapsulationAttributes.IsReadOnly = attrs.IsReadOnly;
                 encapsulatedField.EncapsulationAttributes.EncapsulateFlag = attrs.EncapsulateFlag;
 
                 model.EncapsulateWithUDT = asUDT;

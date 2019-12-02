@@ -1,15 +1,27 @@
 ﻿using Rubberduck.Parsing.Symbols;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
+    public struct EncapsulationAttributeIdentifier
+    {
+        public EncapsulationAttributeIdentifier(string name, bool isImmutable = false)
+        {
+            Name = name;
+            IsImmutable = isImmutable;
+        }
+        public string Name;
+        public bool IsImmutable;
+    }
+
     public class EncapsulationIdentifiers
     {
         private static string DEFAULT_WRITE_PARAMETER = "value";
 
         private KeyValuePair<string, string> _fieldAndProperty;
-        private string _targetIdentifier;
+        private EncapsulationAttributeIdentifier _targetIdentifier;
         private string _defaultPropertyName;
         private string _defaultFieldName;
         private string _setLetParameter;
@@ -19,14 +31,23 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public EncapsulationIdentifiers(string field)
         {
-            _targetIdentifier = field;
+            _targetIdentifier = new EncapsulationAttributeIdentifier(field, true);
             _defaultPropertyName = field.Capitalize();
             _defaultFieldName = $"{field.UnCapitalize()}1";
             _fieldAndProperty = new KeyValuePair<string, string>(_defaultFieldName, _defaultPropertyName);
             _setLetParameter = DEFAULT_WRITE_PARAMETER;
         }
 
-        public string TargetFieldName => _targetIdentifier;
+        public EncapsulationIdentifiers(string field, string fieldName, string propertyName)
+        {
+            _targetIdentifier = new EncapsulationAttributeIdentifier(field);
+            _defaultPropertyName = field.Capitalize();
+            _defaultFieldName = $"{field.UnCapitalize()}1";
+            _fieldAndProperty = new KeyValuePair<string, string>(fieldName, propertyName);
+            _setLetParameter = DEFAULT_WRITE_PARAMETER;
+        }
+
+        public string TargetFieldName => _targetIdentifier.Name;
 
         public string Field
         {
@@ -44,8 +65,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
             set
             {
                 var fieldIdentifier = Field.EqualsVBAIdentifier(value)
-                    ? _defaultFieldName
-                    : _targetIdentifier;
+                        ? _defaultFieldName
+                        : _targetIdentifier.Name;
 
                 _fieldAndProperty = new KeyValuePair<string, string>(fieldIdentifier, value);
 
