@@ -19,7 +19,7 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
         {
         }
 
-        protected override void ModifyEncapsulatedVariable(IEncapsulateFieldCandidate target, IFieldEncapsulationAttributes attributes, IRewriteSession rewriteSession) //, bool asUDT = false) //, EncapsulateFieldNewContent newContent)
+        protected override void ModifyEncapsulatedVariable(IEncapsulateFieldCandidate target, IFieldEncapsulationAttributes attributes, IRewriteSession rewriteSession)
         {
             var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, TargetQMN);
 

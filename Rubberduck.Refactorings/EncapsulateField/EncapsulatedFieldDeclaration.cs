@@ -135,7 +135,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public string AsTypeName => _target?.AsTypeName ?? _attributes.AsTypeName;
 
-        public virtual bool IsUDTMember { get; } = false;
+        public bool IsUDTMember => _target?.DeclarationType.Equals(DeclarationType.UserDefinedTypeMember) ?? false;
 
         public QualifiedModuleName QualifiedModuleName => Declaration?.QualifiedModuleName ?? _attributes.QualifiedModuleName;
 
@@ -199,6 +199,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public override string TargetID => $"{Parent.IdentifierName}.{IdentifierName}";
 
-        public override bool IsUDTMember => true;
+        //public override bool IsUDTMember => true;
     }
 }

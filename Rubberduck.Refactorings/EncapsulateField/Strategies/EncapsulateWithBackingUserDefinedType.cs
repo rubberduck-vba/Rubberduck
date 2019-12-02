@@ -42,7 +42,7 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
         protected override EncapsulateFieldNewContent LoadNewDeclarationsContent(EncapsulateFieldNewContent newContent, IEnumerable<IEncapsulateFieldCandidate> FlaggedEncapsulationFields)
         {
             var nonUdtMemberFields = FlaggedEncapsulationFields
-                    .Where(encFld => encFld.Declaration.IsVariable());
+                    .Where(encFld => !encFld.IsUDTMember);
 
             var udt = new UDTDeclarationGenerator(StateEncapsulationField.AsTypeName);
             foreach (var nonUdtMemberField in nonUdtMemberFields)
@@ -53,14 +53,22 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
 
             newContent.AddDeclarationBlock(udt.FieldDeclaration(StateEncapsulationField.NewFieldName));
 
-            var udtMemberFields = FlaggedEncapsulationFields.Where(efd => efd.DeclarationType.Equals(DeclarationType.UserDefinedTypeMember));
-            foreach (var udtMember in udtMemberFields)
-            {
-                newContent.AddCodeBlock(EncapsulateInUDT_UDTMemberProperty(udtMember));
-            }
-
             return newContent;
         }
+
+        protected override EncapsulateFieldNewContent LoadNewPropertiesContent(EncapsulateFieldNewContent newContent, IEnumerable<IEncapsulateFieldCandidate> FlaggedEncapsulationFields, string postScript = null)
+        {
+            if (!FlaggedEncapsulationFields.Any()) { return newContent; }
+
+            var udtMemberFields = FlaggedEncapsulationFields.Where(efd => efd.IsUDTMember);
+            foreach (var udtMember in udtMemberFields)
+            {
+                newContent.AddCodeBlock(CreateUDTMemberProperty(udtMember));
+            }
+
+            return base.LoadNewPropertiesContent(newContent, FlaggedEncapsulationFields, postScript);
+        }
+
 
         protected override IList<string> PropertiesContent(IEnumerable<IEncapsulateFieldCandidate> flaggedEncapsulationFields)
         {
@@ -92,7 +100,7 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
             return string.Join(Environment.NewLine, Indenter.Indent(propertyTextLines, true));
         }
 
-        private string EncapsulateInUDT_UDTMemberProperty(IEncapsulateFieldCandidate udtMember)
+        private string CreateUDTMemberProperty(IEncapsulateFieldCandidate udtMember)
         {
             var parentField = UdtMemberTargetIDToParentMap[udtMember.TargetID];
             var generator = new PropertyGenerator

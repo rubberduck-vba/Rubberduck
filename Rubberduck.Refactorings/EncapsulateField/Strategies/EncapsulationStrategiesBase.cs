@@ -43,17 +43,17 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
             foreach (var candidate in candidates)
             {
                 HeirarchicalCandidates.Add(candidate.TargetID, candidate);
+                if (candidate is EncapsulatedUserDefinedTypeField udtField)
+                {
+                    foreach( var member in udtField.Members)
+                    {
+                        var concrete = member as EncapsulatedUserDefinedTypeMember;
+                        UdtMemberTargetIDToParentMap.Add(member.TargetID, concrete.Parent);
+                    }
+                }
             }
 
             FlattenedTargetIDToCandidateMapping = Flatten(HeirarchicalCandidates);
-            foreach (var element in FlattenedTargetIDToCandidateMapping)
-            {
-                if (element.Value.IsUDTMember)
-                {
-                    var udtMember = element.Value as EncapsulatedUserDefinedTypeMember;
-                    UdtMemberTargetIDToParentMap.Add(element.Key, udtMember.Parent);
-                }
-            }
         }
 
         protected QualifiedModuleName TargetQMN {private set; get;}
@@ -74,7 +74,7 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
 
         protected virtual IEnumerable<Declaration> EncapsulationCandidateFields { set; get; }
 
-        protected abstract void ModifyEncapsulatedVariable(IEncapsulateFieldCandidate target, IFieldEncapsulationAttributes attributes, IRewriteSession rewriteSession); //, EncapsulateFieldNewContent newContent)
+        protected abstract void ModifyEncapsulatedVariable(IEncapsulateFieldCandidate target, IFieldEncapsulationAttributes attributes, IRewriteSession rewriteSession);
 
         protected abstract EncapsulateFieldNewContent LoadNewDeclarationsContent(EncapsulateFieldNewContent newContent, IEnumerable<IEncapsulateFieldCandidate> FlaggedEncapsulationFields);
 
@@ -85,7 +85,7 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
         private IExecutableRewriteSession RefactorRewrite(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession, bool asPreview)
         {
             var nonUdtMemberFields = model.FlaggedEncapsulationFields
-                    .Where(encFld => encFld.Declaration.IsVariable());
+                    .Where(encFld => !encFld.IsUDTMember);
 
             foreach (var nonUdtMemberField in nonUdtMemberFields)
             {
@@ -104,14 +104,14 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
 
         public Dictionary<string, IEncapsulateFieldCandidate> UdtMemberTargetIDToParentMap { get; set; } = new Dictionary<string, IEncapsulateFieldCandidate>();
 
-        private void InsertNewContent(int? codeSectionStartIndex, EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession, bool includePreviewMessage = false)
+        private void InsertNewContent(int? codeSectionStartIndex, EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession, bool postPendPreviewMessage = false)
         {
             var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, TargetQMN);
 
             var newContent = new EncapsulateFieldNewContent();
             newContent = LoadNewDeclarationsContent(newContent, model.FlaggedEncapsulationFields);
 
-            if (includePreviewMessage)
+            if (postPendPreviewMessage)
             {
                 var postScript = "'<===== No Changes below this line =====>";
                 newContent = LoadNewPropertiesContent(newContent, model.FlaggedEncapsulationFields, postScript);
@@ -146,7 +146,7 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
             return candidates;
         }
 
-        private EncapsulateFieldNewContent LoadNewPropertiesContent(EncapsulateFieldNewContent newContent, IEnumerable<IEncapsulateFieldCandidate> FlaggedEncapsulationFields, string postScript = null)
+        protected virtual EncapsulateFieldNewContent LoadNewPropertiesContent(EncapsulateFieldNewContent newContent, IEnumerable<IEncapsulateFieldCandidate> FlaggedEncapsulationFields, string postScript = null)
         {
             if (!FlaggedEncapsulationFields.Any()) { return newContent; }
 
