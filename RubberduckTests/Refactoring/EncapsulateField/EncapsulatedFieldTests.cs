@@ -145,7 +145,7 @@ $@"Public fizz As String
             mock.SetupGet(m => m.AsTypeName).Returns("String");
             mock.SetupGet(m => m.PropertyName).Returns("Fizz");
 
-            var newUserDefinedType = new UDTDeclarationGenerator();
+            var newUserDefinedType = new UDTDeclarationGenerator("This_Type");
             newUserDefinedType.AddMember(mock.Object);
 
             var result = newUserDefinedType.TypeDeclarationBlock(CreateIndenter());

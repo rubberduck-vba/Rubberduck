@@ -15,45 +15,17 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
     {
         IExecutableRewriteSession GeneratePreview(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession);
         IExecutableRewriteSession RefactorRewrite(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession);
-        Dictionary<string, IEncapsulateFieldCandidate> UdtMemberTargetIDToParentMap { get; set; }
-        Dictionary<string, IEncapsulateFieldCandidate> FlattenedTargetIDToCandidateMapping { get; }
-    }
+     }
 
     public abstract class EncapsulateFieldStrategiesBase : IEncapsulateFieldStrategy
     {
-        protected readonly IDeclarationFinderProvider _declarationFinderProvider;
-        protected EncapsulationCandidateFactory _candidateFactory;
-        private Dictionary<string, IEncapsulateFieldCandidate> _udtMemberTargetIDToParentMap { get; } = new Dictionary<string, IEncapsulateFieldCandidate>();
         private IEncapsulateFieldNamesValidator _validator;
 
-
-        public EncapsulateFieldStrategiesBase(QualifiedModuleName qmn, IIndenter indenter, IDeclarationFinderProvider declarationFinderProvider, IEncapsulateFieldNamesValidator validator)
+        public EncapsulateFieldStrategiesBase(QualifiedModuleName qmn, IIndenter indenter, IEncapsulateFieldNamesValidator validator)
         {
             TargetQMN = qmn;
             Indenter = indenter;
-            _declarationFinderProvider = declarationFinderProvider;
             _validator = validator;
-            _candidateFactory = new EncapsulationCandidateFactory(declarationFinderProvider, _validator);
-
-            EncapsulationCandidateFields = _declarationFinderProvider.DeclarationFinder
-                .Members(qmn)
-                .Where(v => v.IsMemberVariable() && !v.IsWithEvents);
-
-            var candidates = _candidateFactory.CreateEncapsulationCandidates(EncapsulationCandidateFields);
-            foreach (var candidate in candidates)
-            {
-                HeirarchicalCandidates.Add(candidate.TargetID, candidate);
-                if (candidate is EncapsulatedUserDefinedTypeField udtField)
-                {
-                    foreach( var member in udtField.Members)
-                    {
-                        var concrete = member as EncapsulatedUserDefinedTypeMember;
-                        UdtMemberTargetIDToParentMap.Add(member.TargetID, concrete.Parent);
-                    }
-                }
-            }
-
-            FlattenedTargetIDToCandidateMapping = Flatten(HeirarchicalCandidates);
         }
 
         protected QualifiedModuleName TargetQMN {private set; get;}
@@ -70,19 +42,11 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
             return RefactorRewrite(model, rewriteSession, false);
         }
 
-        public Dictionary<string, IEncapsulateFieldCandidate> FlattenedTargetIDToCandidateMapping { get; } = new Dictionary<string, IEncapsulateFieldCandidate>();
-
-        protected virtual IEnumerable<Declaration> EncapsulationCandidateFields { set; get; }
-
         protected abstract void ModifyEncapsulatedVariable(IEncapsulateFieldCandidate target, IFieldEncapsulationAttributes attributes, IRewriteSession rewriteSession);
 
-        protected abstract EncapsulateFieldNewContent LoadNewDeclarationsContent(EncapsulateFieldNewContent newContent, IEnumerable<IEncapsulateFieldCandidate> FlaggedEncapsulationFields);
+        protected abstract EncapsulateFieldNewContent LoadNewDeclarationsContent(EncapsulateFieldNewContent newContent, IEnumerable<IEncapsulateFieldCandidate> encapsulationCandidates);
 
-        protected abstract IList<string> PropertiesContent(IEnumerable<IEncapsulateFieldCandidate> flaggedEncapsulationFields);
-
-        protected Dictionary<string, IEncapsulateFieldCandidate> HeirarchicalCandidates { set; get; } = new Dictionary<string, IEncapsulateFieldCandidate>();
-
-        private IExecutableRewriteSession RefactorRewrite(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession, bool asPreview)
+        protected virtual IExecutableRewriteSession RefactorRewrite(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession, bool asPreview)
         {
             var nonUdtMemberFields = model.FlaggedEncapsulationFields
                     .Where(encFld => !encFld.IsUDTMember);
@@ -102,14 +66,11 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
             return rewriteSession;
         }
 
-        public Dictionary<string, IEncapsulateFieldCandidate> UdtMemberTargetIDToParentMap { get; set; } = new Dictionary<string, IEncapsulateFieldCandidate>();
-
-        private void InsertNewContent(int? codeSectionStartIndex, EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession, bool postPendPreviewMessage = false)
+        protected void InsertNewContent(int? codeSectionStartIndex, EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession, bool postPendPreviewMessage = false)
         {
             var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, TargetQMN);
 
-            var newContent = new EncapsulateFieldNewContent();
-            newContent = LoadNewDeclarationsContent(newContent, model.FlaggedEncapsulationFields);
+            var newContent = LoadNewDeclarationsContent(new EncapsulateFieldNewContent(), model.EncapsulationFields);
 
             if (postPendPreviewMessage)
             {
@@ -125,28 +86,34 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
 
         }
 
-        protected Dictionary<string, IEncapsulateFieldCandidate> Flatten(Dictionary<string, IEncapsulateFieldCandidate> heirarchicalCandidates)
+        protected virtual IList<string> PropertiesContent(IEnumerable<IEncapsulateFieldCandidate> flaggedEncapsulationFields)
         {
-            var candidates = new Dictionary<string, IEncapsulateFieldCandidate>();
-            foreach (var keyValue in heirarchicalCandidates)
+            var textBlocks = new List<string>();
+            foreach (var field in flaggedEncapsulationFields)
             {
-                candidates.Add(keyValue.Key, keyValue.Value);
-                if (keyValue.Value.Declaration.IsUserDefinedTypeField())
-                {
-                    if (keyValue.Value is EncapsulatedUserDefinedTypeField udt)
-                    {
-                        foreach (var member in udt.Members)
-                        {
-                            candidates.Add(member.TargetID, member);
-                            _udtMemberTargetIDToParentMap.Add(member.TargetID, keyValue.Value);
-                        }
-                    }
-                }
+                textBlocks.Add(BuildPropertiesTextBlock(field));
             }
-            return candidates;
+            return textBlocks;
         }
 
-        protected virtual EncapsulateFieldNewContent LoadNewPropertiesContent(EncapsulateFieldNewContent newContent, IEnumerable<IEncapsulateFieldCandidate> FlaggedEncapsulationFields, string postScript = null)
+        private string BuildPropertiesTextBlock(IEncapsulateFieldCandidate field)
+        {
+            var attributes = field.EncapsulationAttributes;
+            var generator = new PropertyGenerator
+            {
+                PropertyName = attributes.PropertyName,
+                AsTypeName = attributes.AsTypeName,
+                BackingField = attributes.FieldAccessExpression(),
+                ParameterName = attributes.ParameterName,
+                GenerateSetter = attributes.ImplementSetSetterType,
+                GenerateLetter = attributes.ImplementLetSetterType
+            };
+
+            var propertyTextLines = generator.AllPropertyCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            return string.Join(Environment.NewLine, Indenter.Indent(propertyTextLines, true));
+        }
+
+        private EncapsulateFieldNewContent LoadNewPropertiesContent(EncapsulateFieldNewContent newContent, IEnumerable<IEncapsulateFieldCandidate> FlaggedEncapsulationFields, string postScript = null)
         {
             if (!FlaggedEncapsulationFields.Any()) { return newContent; }
 
@@ -159,7 +126,7 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
             return newContent;
         }
 
-        private void RenameReferences(IEncapsulateFieldCandidate efd, string propertyName, IRewriteSession rewriteSession)
+        protected void RenameReferences(IEncapsulateFieldCandidate efd, string propertyName, IRewriteSession rewriteSession)
         {
             foreach (var reference in efd.Declaration.References)
             {

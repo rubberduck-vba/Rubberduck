@@ -68,7 +68,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             {
                 if (Model.EncapsulationStrategy is IEncapsulateWithBackingUserDefinedType udtStrategy)
                 {
-                    return udtStrategy.StateEncapsulationField.AsTypeName;
+                    return udtStrategy.StateUDTField.AsTypeName;
                 }
                 return string.Empty;
             }
@@ -76,7 +76,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             {
                 if (Model.EncapsulationStrategy is IEncapsulateWithBackingUserDefinedType udtStrategy)
                 {
-                    udtStrategy.StateEncapsulationField.EncapsulationAttributes.AsTypeName = value;
+                    udtStrategy.StateUDTField.EncapsulationAttributes.AsTypeName = value;
                 }
                 UpdatePreview();
             }
@@ -88,7 +88,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             {
                 if (Model.EncapsulationStrategy is IEncapsulateWithBackingUserDefinedType udtStrategy)
                 {
-                    return udtStrategy.StateEncapsulationField.NewFieldName;
+                    return udtStrategy.StateUDTField.NewFieldName;
                 }
                 return string.Empty;
             }
@@ -96,7 +96,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             {
                 if (Model.EncapsulationStrategy is IEncapsulateWithBackingUserDefinedType udtStrategy)
                 {
-                    udtStrategy.StateEncapsulationField.EncapsulationAttributes.NewFieldName = value;
+                    udtStrategy.StateUDTField.EncapsulationAttributes.NewFieldName = value;
                 }
                 UpdatePreview();
             }

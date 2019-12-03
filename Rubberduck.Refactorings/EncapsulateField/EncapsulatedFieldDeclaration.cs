@@ -24,27 +24,31 @@ namespace Rubberduck.Refactorings.EncapsulateField
         string NewFieldName { get; }
         string AsTypeName { get; }
         string ParameterName { get; }
-        string FieldReferenceExpression { get; }
         bool IsUDTMember { get; }
         bool HasValidEncapsulationAttributes { get; }
         QualifiedModuleName QualifiedModuleName { get; }
         IEnumerable<IdentifierReference> References { get; }
         bool ImplementLetSetterType { get; }
         bool ImplementSetSetterType { get; }
+        Func<string> FieldAccessExpression { set; get; }
+    }
+
+    public interface IEncapsulatedUserDefinedTypeField : IEncapsulateFieldCandidate
+    {
+        IList<IEncapsulateFieldCandidate> Members { set; get; }
+        IEnumerable<IEncapsulateFieldCandidate> SelectedMembers { get; }
     }
 
     public class EncapsulateFieldCandidate : IEncapsulateFieldCandidate
     {
         protected Declaration _target;
         protected IFieldEncapsulationAttributes _attributes;
-        protected FieldEncapsulationAttributes _concreteAttributes;
         private IEncapsulateFieldNamesValidator _validator;
 
         public EncapsulateFieldCandidate(Declaration declaration, IEncapsulateFieldNamesValidator validator)
         {
             _target = declaration;
-            _concreteAttributes = new FieldEncapsulationAttributes(_target);
-            _attributes = _concreteAttributes;
+            _attributes = new FieldEncapsulationAttributes(_target);
             _validator = validator;
             _validator.ForceNonConflictEncapsulationAttributes(_attributes, _target.QualifiedModuleName, _target);
         }
@@ -52,32 +56,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public EncapsulateFieldCandidate(IFieldEncapsulationAttributes attributes, IEncapsulateFieldNamesValidator validator)
         {
             _target = null;
-            _concreteAttributes = new FieldEncapsulationAttributes(attributes);
-            _attributes = _concreteAttributes;
+            _attributes = new FieldEncapsulationAttributes(attributes);
             _validator = validator;
             _validator.ForceNonConflictEncapsulationAttributes(_attributes, _attributes.QualifiedModuleName, _target);
-        }
-
-        //TODO: Defaulting to DeclarationType.Variable needs to be better
-        private static void ForceNonConflictNewName(string identifier, QualifiedModuleName qmn, IFieldEncapsulationAttributes attributes, IEncapsulateFieldNamesValidator validator, IEnumerable<Declaration> ignore)
-        {
-            var isValidAttributeSet = validator.HasValidEncapsulationAttributes(attributes, qmn, ignore, DeclarationType.Variable);
-            for (var idx = 1; idx < 9 && !isValidAttributeSet; idx++)
-            {
-                attributes.NewFieldName = $"{identifier}{idx}";
-                isValidAttributeSet = validator.HasValidEncapsulationAttributes(attributes, qmn, ignore, DeclarationType.Variable);
-            }
-        }
-
-        //TODO: Defaulting to DeclarationType.Variable needs to be better
-        private static void ForceNonConflictPropertyName(string identifier, QualifiedModuleName qmn, IFieldEncapsulationAttributes attributes, IEncapsulateFieldNamesValidator validator, IEnumerable<Declaration> ignore)
-        {
-            var isValidAttributeSet = validator.HasValidEncapsulationAttributes(attributes, qmn, ignore, DeclarationType.Variable);
-            for (var idx = 1; idx < 9 && !isValidAttributeSet; idx++)
-            {
-                attributes.PropertyName = $"{identifier}{idx}";
-                isValidAttributeSet = validator.HasValidEncapsulationAttributes(attributes, qmn, ignore, DeclarationType.Variable);
-            }
         }
 
         public Declaration Declaration => _target;
@@ -145,26 +126,30 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public string ParameterName => _attributes.ParameterName;
 
-        public string FieldReferenceExpression => _attributes.FieldAccessExpression;
-
         public bool ImplementLetSetterType { get => _attributes.ImplementLetSetterType; set => _attributes.ImplementLetSetterType = value; }
         public bool ImplementSetSetterType { get => _attributes.ImplementSetSetterType; set => _attributes.ImplementSetSetterType = value; }
+
+        public Func<string> FieldAccessExpression
+        {
+            set => _attributes.FieldAccessExpression = value;
+            get => _attributes.FieldAccessExpression;
+        }
+
     }
 
-    public class EncapsulatedUserDefinedTypeField : EncapsulateFieldCandidate
+    public class EncapsulatedUserDefinedTypeField : EncapsulateFieldCandidate, IEncapsulatedUserDefinedTypeField
     {
-        public List<IEncapsulateFieldCandidate> Members { set; get; } = new List<IEncapsulateFieldCandidate>();
         public EncapsulatedUserDefinedTypeField(Declaration declaration, IEncapsulateFieldNamesValidator validator)
-            : base(declaration, validator) { }
+            : base(declaration, validator)
+        {
+            FieldAccessExpression = () => EncapsulateFlag ? NewFieldName : IdentifierName;
+        }
+
+        public IList<IEncapsulateFieldCandidate> Members { set; get; } = new List<IEncapsulateFieldCandidate>();
+        public IEnumerable<IEncapsulateFieldCandidate> SelectedMembers => Members.Where(m => m.EncapsulateFlag);
     }
 
-    public interface IEncapsulatedUserDefinedTypeMember
-    {
-        Func<string> FieldAccessExpressionFunc { set; get; }
-    }
-
-
-    public class EncapsulatedUserDefinedTypeMember : EncapsulateFieldCandidate, IEncapsulatedUserDefinedTypeMember
+    public class EncapsulatedUserDefinedTypeMember : EncapsulateFieldCandidate
     {
         public EncapsulatedUserDefinedTypeMember(Declaration target, IEncapsulateFieldCandidate udtVariable, IEncapsulateFieldNamesValidator validator, bool propertyNameRequiresParentIdentifier)
             : base(target, validator)
@@ -175,22 +160,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             EncapsulationAttributes.PropertyName = NameResolveProperty
                 ? $"{Parent.IdentifierName.Capitalize()}_{IdentifierName}"
                 : IdentifierName;
-
-            FieldAccessExpressionFunc =
-                   () =>
-                   {
-                       var prefix = Parent.EncapsulateFlag
-                                      ? Parent.NewFieldName
-                                      : Parent.IdentifierName;
-
-                       return $"{prefix}.{NewFieldName}";
-                   };
-        }
-
-        public Func<string> FieldAccessExpressionFunc
-        {
-            set => _concreteAttributes.FieldAccessExpressionFunc = value;
-            get => _concreteAttributes.FieldAccessExpressionFunc;
         }
 
         public IEncapsulateFieldCandidate Parent { private set; get; }
@@ -198,7 +167,5 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public bool NameResolveProperty { set; get; }
 
         public override string TargetID => $"{Parent.IdentifierName}.{IdentifierName}";
-
-        //public override bool IsUDTMember => true;
     }
 }

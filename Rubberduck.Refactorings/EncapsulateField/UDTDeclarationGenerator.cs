@@ -11,51 +11,34 @@ namespace Rubberduck.Refactorings.EncapsulateField
 {
     public class UDTDeclarationGenerator
     {
-        private readonly string _typeIdentifier = "This_Type";
-        private readonly IIndenter _indenter;
+        private readonly string _typeIdentifierName;
 
         private List<IEncapsulateFieldCandidate> _members;
 
-        public UDTDeclarationGenerator(string typeIdentifier) //, IIndenter indenter)
-            : this()
-            //:this(indenter)
+        public UDTDeclarationGenerator(string typeIdentifierName)
         {
-            _typeIdentifier = typeIdentifier;
-        }
-
-        public UDTDeclarationGenerator() //IIndenter indenter)
-        {
-            //_indenter = indenter;
+            _typeIdentifierName = typeIdentifierName;
             _members = new List<IEncapsulateFieldCandidate>();
         }
 
-        public string AsTypeName => _typeIdentifier;
+        public void AddMember(IEncapsulateFieldCandidate field) => _members.Add(field);
 
-        public void AddMember(IEncapsulateFieldCandidate field)
+        public void AddMembers(IEnumerable<IEncapsulateFieldCandidate> fields) => _members.AddRange(fields);
+
+        public string FieldDeclaration(string identifierName, Accessibility accessibility = Accessibility.Private)
+            => $"{accessibility} {identifierName} {Tokens.As} {_typeIdentifierName}";
+
+        public string TypeDeclarationBlock(IIndenter indenter, Accessibility accessibility = Accessibility.Private)
         {
-            _members.Add(field);
-        }
+            var blockLines = new List<string>();
 
-        public string FieldDeclaration(string identifier, Accessibility accessibility = Accessibility.Private)
-            => $"{accessibility} {identifier} {Tokens.As} {_typeIdentifier}";
+            blockLines.Add($"{accessibility.TokenString()} {Tokens.Type} {_typeIdentifierName}");
 
-        public string TypeDeclarationBlock(IIndenter indenter)
-        {
-            //get
-            //{
-                var members = new List<string>();
-                members.Add($"{Tokens.Private} {Tokens.Type} {_typeIdentifier}");
+            _members.ForEach(m => blockLines.Add($"{m.PropertyName} As {m.AsTypeName}"));
 
-                foreach (var member in _members)
-                {
-                    var declaration = $"{member.PropertyName} As {member.AsTypeName}";
-                    members.Add(declaration);
-                }
+            blockLines.Add("End Type");
 
-                members.Add("End Type");
-
-                return  string.Join(Environment.NewLine, indenter.Indent(members, true));
-            //}
+            return  string.Join(Environment.NewLine, indenter.Indent(blockLines, true));
         }
     }
 }

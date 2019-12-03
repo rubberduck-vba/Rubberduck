@@ -14,8 +14,8 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
 {
     public class EncapsulateWithBackingFields : EncapsulateFieldStrategiesBase
     {
-        public EncapsulateWithBackingFields(QualifiedModuleName qmn, IIndenter indenter, IDeclarationFinderProvider declarationFinderProvider, IEncapsulateFieldNamesValidator validator)
-            : base(qmn, indenter, declarationFinderProvider, validator)
+        public EncapsulateWithBackingFields(QualifiedModuleName qmn, IIndenter indenter, IEncapsulateFieldNamesValidator validator)
+            : base(qmn, indenter, validator)
         {
         }
 
@@ -43,10 +43,23 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
             return;
         }
 
-        protected override EncapsulateFieldNewContent LoadNewDeclarationsContent(EncapsulateFieldNewContent newContent, IEnumerable<IEncapsulateFieldCandidate> FlaggedEncapsulationFields)
+        protected override IExecutableRewriteSession RefactorRewrite(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession, bool asPreview)
         {
-            var nonUdtMemberFields = FlaggedEncapsulationFields
-                    .Where(encFld => encFld.Declaration.IsVariable());
+            foreach (var field in model.UDTFieldCandidates)
+            {
+                foreach (var member in field.Members)
+                {
+                    member.FieldAccessExpression = () => $"{field.FieldAccessExpression()}.{member.IdentifierName}";
+                }
+            }
+
+            return base.RefactorRewrite(model, rewriteSession, asPreview);
+        }
+
+        protected override EncapsulateFieldNewContent LoadNewDeclarationsContent(EncapsulateFieldNewContent newContent, IEnumerable<IEncapsulateFieldCandidate> encapsulationCandates)
+        {
+            var nonUdtMemberFields = encapsulationCandates
+                    .Where(encFld => !encFld.IsUDTMember && encFld.EncapsulateFlag);
 
             foreach (var nonUdtMemberField in nonUdtMemberFields)
             {
@@ -66,32 +79,6 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
                 }
             }
             return newContent;
-        }
-
-        protected override IList<string> PropertiesContent(IEnumerable<IEncapsulateFieldCandidate> flaggedEncapsulationFields)
-        {
-            var textBlocks = new List<string>();
-            foreach (var field in flaggedEncapsulationFields)
-            {
-                textBlocks.Add(BuildPropertiesTextBlock(field.EncapsulationAttributes));
-            }
-            return textBlocks;
-        }
-
-        private string BuildPropertiesTextBlock(IFieldEncapsulationAttributes attributes)
-        {
-            var generator = new PropertyGenerator
-            {
-                PropertyName = attributes.PropertyName,
-                AsTypeName = attributes.AsTypeName,
-                BackingField = attributes.FieldAccessExpression,
-                ParameterName = attributes.ParameterName,
-                GenerateSetter = attributes.ImplementSetSetterType,
-                GenerateLetter = attributes.ImplementLetSetterType
-            };
-
-            var propertyTextLines = generator.AllPropertyCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-            return string.Join(Environment.NewLine, Indenter.Indent(propertyTextLines, true));
         }
     }
 }

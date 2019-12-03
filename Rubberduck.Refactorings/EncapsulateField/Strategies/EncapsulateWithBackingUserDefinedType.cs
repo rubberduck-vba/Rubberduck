@@ -13,22 +13,60 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
 {
     public interface IEncapsulateWithBackingUserDefinedType : IEncapsulateFieldStrategy
     {
-        IEncapsulateFieldCandidate StateEncapsulationField { set; get; }
+        IEncapsulateFieldCandidate StateUDTField { set; get; }
     }
 
     public class EncapsulateWithBackingUserDefinedType : EncapsulateFieldStrategiesBase, IEncapsulateWithBackingUserDefinedType
     {
-        private const string DEFAULT_TYPE_IDENTIFIER = "This_Type";
-        private const string DEFAULT_FIELD_IDENTIFIER = "this";
+        public EncapsulateWithBackingUserDefinedType(QualifiedModuleName qmn, IIndenter indenter, IEncapsulateFieldNamesValidator validator)
+            : base(qmn, indenter, validator) { }
 
-
-        public EncapsulateWithBackingUserDefinedType(QualifiedModuleName qmn, IIndenter indenter, IDeclarationFinderProvider declarationFinderProvider, IEncapsulateFieldNamesValidator validator)
-            : base(qmn, indenter, declarationFinderProvider, validator)
+        protected override IExecutableRewriteSession RefactorRewrite(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession, bool asPreview)
         {
-            StateEncapsulationField = _candidateFactory.CreateInsertableField(DEFAULT_FIELD_IDENTIFIER, DEFAULT_TYPE_IDENTIFIER, qmn, validator);
+            var stateUDTField_UDTMembers = model.UDTFieldCandidates
+                    .Where(c => c.EncapsulateFlag || c.SelectedMembers.Any());
+
+            foreach (var field in model.FieldCandidates)
+            {
+                if (field is IEncapsulatedUserDefinedTypeField udt)
+                {
+                    udt.FieldAccessExpression =
+                        () =>   {
+                                    var accessor = udt.EncapsulateFlag || stateUDTField_UDTMembers.Contains(udt) ? udt.PropertyName : udt.NewFieldName;
+                                    return $"{StateUDTField.FieldAccessExpression()}.{accessor}";
+                                };
+
+                    foreach (var member in udt.Members)
+                    {
+                        member.FieldAccessExpression = () => $"{udt.FieldAccessExpression()}.{member.PropertyName}";
+                    }
+                }
+                else
+                {
+                    var efd = field;
+                    efd.FieldAccessExpression = () => $"{StateUDTField.FieldAccessExpression()}.{efd.PropertyName}";
+                }
+            }
+
+            var fieldsToModify = model.EncapsulationFields
+                    .Where(encFld => !encFld.IsUDTMember && encFld.EncapsulateFlag).Union(stateUDTField_UDTMembers);
+
+            foreach (var field in fieldsToModify)
+            {
+                var attributes = field.EncapsulationAttributes;
+                ModifyEncapsulatedVariable(field, attributes, rewriteSession);
+                RenameReferences(field, attributes.PropertyName ?? field.Declaration.IdentifierName, rewriteSession);
+            }
+
+            var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, TargetQMN);
+            RewriterRemoveWorkAround.RemoveDeclarationsFromVariableLists(rewriter);
+
+            InsertNewContent(model.CodeSectionStartIndex, model, rewriteSession, asPreview);
+
+            return rewriteSession;
         }
 
-        public IEncapsulateFieldCandidate StateEncapsulationField { set; get; }
+        public IEncapsulateFieldCandidate StateUDTField { set; get; }
 
         protected override void ModifyEncapsulatedVariable(IEncapsulateFieldCandidate target, IFieldEncapsulationAttributes attributes, IRewriteSession rewriteSession)
         {
@@ -39,82 +77,22 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
             return;
         }
 
-        protected override EncapsulateFieldNewContent LoadNewDeclarationsContent(EncapsulateFieldNewContent newContent, IEnumerable<IEncapsulateFieldCandidate> FlaggedEncapsulationFields)
+        protected override EncapsulateFieldNewContent LoadNewDeclarationsContent(EncapsulateFieldNewContent newContent, IEnumerable<IEncapsulateFieldCandidate> encapsulationCandidates)
         {
-            var nonUdtMemberFields = FlaggedEncapsulationFields
-                    .Where(encFld => !encFld.IsUDTMember);
+            var udt = new UDTDeclarationGenerator(StateUDTField.AsTypeName);
 
-            var udt = new UDTDeclarationGenerator(StateEncapsulationField.AsTypeName);
-            foreach (var nonUdtMemberField in nonUdtMemberFields)
-            {
-                udt.AddMember(nonUdtMemberField);
-            }
+            var stateUDTMembers = encapsulationCandidates
+                .Where(encFld => !encFld.IsUDTMember
+                    && (encFld.EncapsulateFlag
+                        || encFld is IEncapsulatedUserDefinedTypeField udtFld && udtFld.Members.Any(m => m.EncapsulateFlag)));
+
+            udt.AddMembers(stateUDTMembers);
+
             newContent.AddDeclarationBlock(udt.TypeDeclarationBlock(Indenter));
 
-            newContent.AddDeclarationBlock(udt.FieldDeclaration(StateEncapsulationField.NewFieldName));
+            newContent.AddDeclarationBlock(udt.FieldDeclaration(StateUDTField.NewFieldName));
 
             return newContent;
-        }
-
-        protected override EncapsulateFieldNewContent LoadNewPropertiesContent(EncapsulateFieldNewContent newContent, IEnumerable<IEncapsulateFieldCandidate> FlaggedEncapsulationFields, string postScript = null)
-        {
-            if (!FlaggedEncapsulationFields.Any()) { return newContent; }
-
-            var udtMemberFields = FlaggedEncapsulationFields.Where(efd => efd.IsUDTMember);
-            foreach (var udtMember in udtMemberFields)
-            {
-                newContent.AddCodeBlock(CreateUDTMemberProperty(udtMember));
-            }
-
-            return base.LoadNewPropertiesContent(newContent, FlaggedEncapsulationFields, postScript);
-        }
-
-
-        protected override IList<string> PropertiesContent(IEnumerable<IEncapsulateFieldCandidate> flaggedEncapsulationFields)
-        {
-            var textBlocks = new List<string>();
-            foreach (var field in flaggedEncapsulationFields)
-            {
-                if (field is EncapsulatedUserDefinedTypeMember)
-                {
-                    continue;
-                }
-                textBlocks.Add(BuildPropertiesTextBlock(field.EncapsulationAttributes));
-            }
-            return textBlocks;
-        }
-
-        protected string BuildPropertiesTextBlock(IFieldEncapsulationAttributes attributes)
-        {
-            var generator = new PropertyGenerator
-            {
-                PropertyName = attributes.PropertyName,
-                AsTypeName = attributes.AsTypeName,
-                BackingField = $"{StateEncapsulationField.NewFieldName}.{attributes.PropertyName}",
-                ParameterName = attributes.ParameterName,
-                GenerateSetter = attributes.ImplementSetSetterType,
-                GenerateLetter = attributes.ImplementLetSetterType
-            };
-
-            var propertyTextLines = generator.AllPropertyCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-            return string.Join(Environment.NewLine, Indenter.Indent(propertyTextLines, true));
-        }
-
-        private string CreateUDTMemberProperty(IEncapsulateFieldCandidate udtMember)
-        {
-            var parentField = UdtMemberTargetIDToParentMap[udtMember.TargetID];
-            var generator = new PropertyGenerator
-            {
-                PropertyName = udtMember.PropertyName,
-                AsTypeName = udtMember.AsTypeName,
-                BackingField = $"{StateEncapsulationField.NewFieldName}.{parentField.PropertyName}.{udtMember.PropertyName}",
-                ParameterName = udtMember.EncapsulationAttributes.ParameterName,
-                GenerateSetter = udtMember.EncapsulationAttributes.ImplementSetSetterType,
-                GenerateLetter = udtMember.EncapsulationAttributes.ImplementLetSetterType
-            };
-
-            var propertyTextLines = generator.AllPropertyCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-            return string.Join(Environment.NewLine, Indenter.Indent(propertyTextLines, true));
         }
     }
 }

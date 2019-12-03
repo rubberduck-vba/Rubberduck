@@ -28,7 +28,11 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
         public Func<EncapsulateFieldModel, EncapsulateFieldModel> UserAcceptsDefaults(bool asUDT = false)
         {
-            return model => { model.EncapsulateWithUDT = asUDT; return model; };
+            return model => 
+            {
+                model.EncapsulateWithUDT = asUDT;
+                return model;
+            };
         }
 
         public Func<EncapsulateFieldModel, EncapsulateFieldModel> SetParametersForSingleTarget(string field, string property = null, bool? isReadonly = null, bool encapsulateFlag = true, bool asUDT = false)
@@ -54,10 +58,10 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                     currentAttributes.PropertyName = attrsInitializedByTheRefactoring.PropertyName;
                     currentAttributes.EncapsulateFlag = attrsInitializedByTheRefactoring.EncapsulateFlag;
 
-                    foreach ((string instanceVariable, string memberName, bool flag) in userModifications.UDTMemberNameFlagPairs)
-                    {
-                        model[$"{instanceVariable}.{memberName}"].EncapsulateFlag = flag;
-                    }
+                }
+                foreach ((string instanceVariable, string memberName, bool flag) in userModifications.UDTMemberNameFlagPairs)
+                {
+                    model[$"{instanceVariable}.{memberName}"].EncapsulateFlag = flag;
                 }
                 return model;
             };

@@ -235,6 +235,38 @@ Private th|is As TBar";
             StringAssert.Contains($"Second = this.Second", actualCode);
         }
 
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void UserDefinedTypeMembers_OnlyEncapsulateUDTMembersUsingUDT()
+        {
+            string inputCode =
+$@"
+Private Type TBar
+    First As String
+    Second As Long
+End Type
+
+Private my|Bar As TBar";
+
+
+            var userInput = new UserInputDataObject("myBar");
+            userInput["myBar"].EncapsulateFlag = false;
+            userInput.AddUDTMemberNameFlagPairs(("myBar", "First", true));
+            userInput.AddUDTMemberNameFlagPairs(("myBar", "Second", true));
+            userInput.EncapsulateAsUDT = true;
+
+            var presenterAction = Support.SetParameters(userInput);
+
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            StringAssert.Contains("this.MyBar.First = value", actualCode);
+            StringAssert.Contains($"First = this.MyBar.First", actualCode);
+            StringAssert.Contains("this.MyBar.Second = value", actualCode);
+            StringAssert.Contains($"Second = this.MyBar.Second", actualCode);
+            StringAssert.Contains($"MyBar As TBar", actualCode);
+            StringAssert.DoesNotContain($"myBar As TBar", actualCode);
+        }
+
         [TestCase("Public")]
         [TestCase("Private")]
         [Category("Refactorings")]
@@ -581,6 +613,9 @@ Public myBar As TBar
             StringAssert.Contains("First = this.MyBar.First", actualCode);
             StringAssert.Contains("this.MyBar.Second = value", actualCode);
             StringAssert.Contains("Second = this.MyBar.Second", actualCode);
+            var index = actualCode.IndexOf("Get Second", StringComparison.InvariantCultureIgnoreCase);
+            var indexLast = actualCode.LastIndexOf("Get Second", StringComparison.InvariantCultureIgnoreCase);
+            Assert.AreEqual(index, indexLast);
         }
 
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)

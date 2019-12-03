@@ -14,9 +14,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
 {
     public class EncapsulateFieldModel : IRefactoringModel
     {
-        private const string DEFAULT_ENCAPSULATION_UDT_IDENTIFIER = "This_Type";
-        private const string DEFAULT_ENCAPSULATION_UDT_FIELD_IDENTIFIER = "this";
-
         private readonly IIndenter _indenter;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IEncapsulateFieldNamesValidator _validator;
@@ -26,8 +23,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private bool _useNewStructure;
 
         private IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> _udtFieldToUdtDeclarationMap = new Dictionary<Declaration, (Declaration, IEnumerable<Declaration>)>();
-
-        private Dictionary<string, IEncapsulateFieldCandidate> _candidates = new Dictionary<string, IEncapsulateFieldCandidate>();
 
         public EncapsulateFieldModel(Declaration target, IDeclarationFinderProvider declarationFinderProvider, /*IEnumerable<Declaration> allMemberFields, IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> udtFieldToUdtDeclarationMap,*/ IIndenter indenter, IEncapsulateFieldNamesValidator validator, Func<EncapsulateFieldModel, string> previewFunc)
         {
@@ -39,24 +34,43 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             _useNewStructure = File.Exists("C:\\Users\\Brian\\Documents\\UseNewUDTStructure.txt");
 
-            //Maybe this should be passed in
-            EncapsulationStrategy = new EncapsulateWithBackingFields(_targetQMN, _indenter, _declarationFinderProvider, _validator);
-            _candidates = EncapsulationStrategy.FlattenedTargetIDToCandidateMapping;
+            CandidateFactory = new EncapsulationCandidateFactory(declarationFinderProvider, _validator);
+            var encapsulationCandidateFields = _declarationFinderProvider.DeclarationFinder
+                .Members(_targetQMN)
+                .Where(v => v.IsMemberVariable() && !v.IsWithEvents);
+
+            var candidates = CandidateFactory.CreateEncapsulationCandidates(encapsulationCandidateFields);
+
+            FieldCandidates.AddRange(candidates);
+
+            AllEncapsulationCandidates = Enumerable.Empty<IEncapsulateFieldCandidate>()
+                .Concat(FieldCandidates)
+                .Concat(UDTFieldCandidates.SelectMany(c => c.Members)).ToList();
+
+            EncapsulationStrategy = new EncapsulateWithBackingFields(_targetQMN, _indenter, _validator);
             this[target].EncapsulateFlag = true;
 
         }
 
+        public EncapsulationCandidateFactory CandidateFactory { private set; get; }
+
+        public List<IEncapsulateFieldCandidate> FieldCandidates { set; get; } = new List<IEncapsulateFieldCandidate>();
+
+        public IEnumerable<IEncapsulatedUserDefinedTypeField> UDTFieldCandidates => FieldCandidates.Where(v => v is IEncapsulatedUserDefinedTypeField).Cast<IEncapsulatedUserDefinedTypeField>();
+
+        private List<IEncapsulateFieldCandidate> AllEncapsulationCandidates { get; } = new List<IEncapsulateFieldCandidate>();
+
         public IEnumerable<IEncapsulateFieldCandidate> FlaggedEncapsulationFields
-            => _candidates.Values.Where(v => v.EncapsulationAttributes.EncapsulateFlag);
+            => AllEncapsulationCandidates.Where(v => v.EncapsulationAttributes.EncapsulateFlag);
 
         public IEnumerable<IEncapsulateFieldCandidate> EncapsulationFields
-            => _candidates.Values;
+            => AllEncapsulationCandidates;
 
         public IEncapsulateFieldCandidate this[string encapsulatedFieldIdentifier]
-            => _candidates[encapsulatedFieldIdentifier];
+            => AllEncapsulationCandidates.Where(c => c.TargetID.Equals(encapsulatedFieldIdentifier)).Single();
 
         public IEncapsulateFieldCandidate this[Declaration fieldDeclaration]
-            => _candidates.Values.Where(efd => efd.Declaration.Equals(fieldDeclaration)).Select(encapsulatedField => encapsulatedField).Single();
+            => AllEncapsulationCandidates.Where(c => c.Declaration == fieldDeclaration).Single();
 
         public IEncapsulateFieldStrategy EncapsulationStrategy { set; get; }
 
@@ -64,22 +78,25 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             set
             {
-                if (value && EncapsulationStrategy is EncapsulateWithBackingUserDefinedType ebd) { return; }
+                if (value && EncapsulationStrategy is EncapsulateWithBackingUserDefinedType) { return; }
 
-                if (!value && EncapsulationStrategy is EncapsulateWithBackingFields wbf) { return; }
+                if (!value && EncapsulationStrategy is EncapsulateWithBackingFields) { return; }
 
-                EncapsulationStrategy = value
-                    ? new EncapsulateWithBackingUserDefinedType(_targetQMN, _indenter, _declarationFinderProvider, _validator) as IEncapsulateFieldStrategy
-                    : new EncapsulateWithBackingFields(_targetQMN, _indenter, _declarationFinderProvider, _validator) as IEncapsulateFieldStrategy;
+                if (value)
+                {
+                    EncapsulationStrategy = new EncapsulateWithBackingUserDefinedType(_targetQMN, _indenter, _validator)
+                    {
+                        StateUDTField = CandidateFactory.CreateStateUDTField(_targetQMN)
+                    };
+                }
+                else
+                {
+                    EncapsulationStrategy = new EncapsulateWithBackingFields(_targetQMN, _indenter, _validator);
+                }
             }
 
             get => EncapsulationStrategy is EncapsulateWithBackingUserDefinedType;
         }
-
-        //What to do with these as far as IStrategy goes - only here to support the view model
-        public string EncapsulateWithUDT_TypeIdentifier { set; get; } = DEFAULT_ENCAPSULATION_UDT_IDENTIFIER;
-
-        public string EncapsulateWithUDT_FieldName { set; get; } = DEFAULT_ENCAPSULATION_UDT_FIELD_IDENTIFIER;
 
         public string PreviewRefactoring()
         {
