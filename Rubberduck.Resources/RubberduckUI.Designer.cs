@@ -316,6 +316,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} {1} {2} {3} {4} {5}.
+        /// </summary>
+        public static string CodeExplorer_IExportable_DeclarationFormat {
+            get {
+                return ResourceManager.GetString("CodeExplorer_IExportable_DeclarationFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to By module.
         /// </summary>
         public static string CodeInspectionResults_GroupByModule {
@@ -597,7 +606,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The VBEsetting &quot;Compile On Demand&quot; is currently enabled. This is not recommended as this may hide compilation errors and cause problems with parsing. Do you want to parse anyway?.
+        ///   Looks up a localized string similar to The VBE setting &quot;Compile On Demand&quot; is currently enabled. This is not recommended as this may hide compilation errors and cause problems with parsing. Do you want to parse anyway?.
         /// </summary>
         public static string Command_Reparse_CompileOnDemandEnabled {
             get {
@@ -764,6 +773,132 @@ namespace Rubberduck.Resources {
         public static string Component {
             get {
                 return ResourceManager.GetString("Component", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ActiveX Designer.
+        /// </summary>
+        public static string ComponentType_ActiveXDesigner {
+            get {
+                return ResourceManager.GetString("ComponentType_ActiveXDesigner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Class Module.
+        /// </summary>
+        public static string ComponentType_ClassModule {
+            get {
+                return ResourceManager.GetString("ComponentType_ClassModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to COM component.
+        /// </summary>
+        public static string ComponentType_ComComponent {
+            get {
+                return ResourceManager.GetString("ComponentType_ComComponent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document Object.
+        /// </summary>
+        public static string ComponentType_DocObject {
+            get {
+                return ResourceManager.GetString("ComponentType_DocObject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document Module.
+        /// </summary>
+        public static string ComponentType_Document {
+            get {
+                return ResourceManager.GetString("ComponentType_Document", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MDI Form.
+        /// </summary>
+        public static string ComponentType_MDIForm {
+            get {
+                return ResourceManager.GetString("ComponentType_MDIForm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Property Page.
+        /// </summary>
+        public static string ComponentType_PropPage {
+            get {
+                return ResourceManager.GetString("ComponentType_PropPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Related Document.
+        /// </summary>
+        public static string ComponentType_RelatedDocument {
+            get {
+                return ResourceManager.GetString("ComponentType_RelatedDocument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resource File.
+        /// </summary>
+        public static string ComponentType_ResFile {
+            get {
+                return ResourceManager.GetString("ComponentType_ResFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Standard Module.
+        /// </summary>
+        public static string ComponentType_StandardModule {
+            get {
+                return ResourceManager.GetString("ComponentType_StandardModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Undefined.
+        /// </summary>
+        public static string ComponentType_Undefined {
+            get {
+                return ResourceManager.GetString("ComponentType_Undefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Control.
+        /// </summary>
+        public static string ComponentType_UserControl {
+            get {
+                return ResourceManager.GetString("ComponentType_UserControl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UserForm.
+        /// </summary>
+        public static string ComponentType_UserForm {
+            get {
+                return ResourceManager.GetString("ComponentType_UserForm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VB Form.
+        /// </summary>
+        public static string ComponentType_VBForm {
+            get {
+                return ResourceManager.GetString("ComponentType_VBForm", resourceCulture);
             }
         }
         
@@ -1666,7 +1801,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to filter by description.
+        ///   Looks up a localized string similar to Filter.
         /// </summary>
         public static string GroupingGrid_Filter {
             get {
@@ -1802,6 +1937,50 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to For file &apos;{0}&apos;, the required binary file(s) &apos;{1}&apos; are missing and the target component &apos;{2}&apos; does not already exists.
+        ///
+        ///Import aborted..
+        /// </summary>
+        public static string ImportCommand_BinaryAndComponentDoNotExist {
+            get {
+                return ResourceManager.GetString("ImportCommand_BinaryAndComponentDoNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For file &apos;{0}&apos;, the requires binary file(s) &apos;{1}&apos; are missing.
+        ///
+        ///Import aborted..
+        /// </summary>
+        public static string ImportCommand_BinaryDoesNotExist {
+            get {
+                return ResourceManager.GetString("ImportCommand_BinaryDoesNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is no existing document module with name &apos;{0}&apos;; file &apos;{1}&apos; cannot be imported.
+        ///
+        ///Import aborted..
+        /// </summary>
+        public static string ImportCommand_DocumentDoesNotExist {
+            get {
+                return ResourceManager.GetString("ImportCommand_DocumentDoesNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multiple files contain code for the component &apos;{0}&apos;.
+        ///
+        ///Import aborted..
+        /// </summary>
+        public static string ImportCommand_DuplicateModule {
+            get {
+                return ResourceManager.GetString("ImportCommand_DuplicateModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All Files.
         /// </summary>
         public static string ImportCommand_OpenDialog_Filter_AllFiles {
@@ -1825,6 +2004,17 @@ namespace Rubberduck.Resources {
         public static string ImportCommand_OpenDialog_Title {
             get {
                 return ResourceManager.GetString("ImportCommand_OpenDialog_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The extension of the file &apos;{0}&apos; is not supported.
+        ///
+        ///Import aborted..
+        /// </summary>
+        public static string ImportCommand_UnsupportedFileExtensions {
+            get {
+                return ResourceManager.GetString("ImportCommand_UnsupportedFileExtensions", resourceCulture);
             }
         }
         
@@ -2993,6 +3183,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to suspend the Parser to perform the refactoring operation.
+        /// </summary>
+        public static string RefactoringFailure_SuspendParserFailure {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_SuspendParserFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The target is not user-defined..
         /// </summary>
         public static string RefactoringFailure_TargetNotUserDefined {
@@ -3752,9 +3951,9 @@ namespace Rubberduck.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Target control &apos;{0}&apos; not found..
         /// </summary>
-        public static string RenameFailure_TargetContriolNotFound {
+        public static string RenameFailure_TargetControlNotFound {
             get {
-                return ResourceManager.GetString("RenameFailure_TargetContriolNotFound", resourceCulture);
+                return ResourceManager.GetString("RenameFailure_TargetControlNotFound", resourceCulture);
             }
         }
         
@@ -3872,6 +4071,24 @@ namespace Rubberduck.Resources {
         public static string ReparseToolTipText {
             get {
                 return ResourceManager.GetString("ReparseToolTipText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you really want to delete the contents of project &apos;{0}&apos; and replace them with the contents of the selected files?.
+        /// </summary>
+        public static string ReplaceProjectContentsFromFilesCommand_ConfirmationMessage {
+            get {
+                return ResourceManager.GetString("ReplaceProjectContentsFromFilesCommand_ConfirmationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace Project Content from Files.
+        /// </summary>
+        public static string ReplaceProjectContentsFromFilesCommand_DialogCaption {
+            get {
+                return ResourceManager.GetString("ReplaceProjectContentsFromFilesCommand_DialogCaption", resourceCulture);
             }
         }
         
@@ -4132,6 +4349,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rubberduck Test Results - {0}.
+        /// </summary>
+        public static string TestExplorer_AppendHeader {
+            get {
+                return ResourceManager.GetString("TestExplorer_AppendHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fail.
         /// </summary>
         public static string TestOutcome_Fail {
@@ -4330,6 +4556,26 @@ namespace Rubberduck.Resources {
         public static string Type {
             get {
                 return ResourceManager.GetString("Type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Components from Files.
+        /// </summary>
+        public static string UpdateFromFilesCommand_DialogCaption {
+            get {
+                return ResourceManager.GetString("UpdateFromFilesCommand_DialogCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The component type of the existing component &apos;{0}&apos; does not agree with that indicated by the extension of file &apos;{1}&apos;.
+        ///
+        ///Import aborted..
+        /// </summary>
+        public static string UpdateFromFilesCommand_DifferentComponentType {
+            get {
+                return ResourceManager.GetString("UpdateFromFilesCommand_DifferentComponentType", resourceCulture);
             }
         }
         

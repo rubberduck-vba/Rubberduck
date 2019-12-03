@@ -13,6 +13,7 @@ using Rubberduck.Interaction;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace RubberduckTests.Commands
 {
@@ -71,6 +72,56 @@ End Sub";
                 command.Execute(null);
 
                 Assert.AreEqual(4, vm.Tabs[0].SearchResults.Count);
+            }
+        }
+
+        [Category("Commands")]
+        [Test]
+        //See issue #5277 at https://github.com/rubberduck-vba/Rubberduck/issues/5277
+        public void FindAllReferences_ArraySelected_ReturnsCorrectNumberIgnoringArrayAccesses()
+        {
+            const string inputCode =
+                @"
+Private Sub Bar()
+    Dim arr(0 To 1) As Variant
+    arr(1) = arr(1)
+End Sub";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _, new Selection(4, 6, 4, 6));
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var vm = new SearchResultsWindowViewModel();
+                var service = ArrangeFindAllReferencesService(state, vm);
+                var command = ArrangeFindAllReferencesCommand(state, vbe, vm, service);
+
+                command.Execute(null);
+
+                Assert.AreEqual(2, vm.Tabs[0].SearchResults.Count);
+            }
+        }
+
+        [Category("Commands")]
+        [Test]
+        //See issue #5277 at https://github.com/rubberduck-vba/Rubberduck/issues/5277
+        public void FindAllReferences_ReDimDeclaredArraySelected_ReturnsCorrectNumberIgnoringArrayAccesses()
+        {
+            const string inputCode =
+                @"
+Private Sub Bar()
+    ReDim arr(0 To 1)
+    arr(1) = arr(1)
+End Sub";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _, new Selection(4, 6, 4, 6));
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var vm = new SearchResultsWindowViewModel();
+                var service = ArrangeFindAllReferencesService(state, vm);
+                var command = ArrangeFindAllReferencesCommand(state, vbe, vm, service);
+
+                command.Execute(null);
+
+                Assert.AreEqual(3, vm.Tabs[0].SearchResults.Count);
             }
         }
 
@@ -505,7 +556,9 @@ End Sub
             Mock<IVBE> vbe, ISearchResultsWindowViewModel viewModel, FindAllReferencesService finder,
             Mock<IVbeEvents> vbeEvents)
         {
-            return new FindAllReferencesCommand(state, vbe.Object, viewModel, finder, vbeEvents.Object);
+            var selectionService = new SelectionService(vbe.Object, state.ProjectsProvider);
+            var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
+            return new FindAllReferencesCommand(state, state, selectedDeclarationService, vbe.Object, viewModel, finder, vbeEvents.Object);
         }
     }
 }

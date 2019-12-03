@@ -114,7 +114,7 @@ namespace Rubberduck.Parsing.Binding
                 && defaultMember.DeclarationType == DeclarationType.PropertyLet
                 && IsCompatibleWithOneNonObjectParameter(parameters))
             {
-                //This is a Let assignment. So, finding a Property Let with one non object paramter means we are done.
+                //This is a Let assignment. So, finding a Property Let with one non object parameter means we are done.
                 return new LetCoercionDefaultMemberAccessExpression(defaultMember, defaultMemberClassification, expression, wrappedExpression, recursionDepth, containedExpression);
             }
 

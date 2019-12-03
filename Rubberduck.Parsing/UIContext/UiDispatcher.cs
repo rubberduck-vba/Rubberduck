@@ -126,6 +126,12 @@ namespace Rubberduck.Parsing.UIContext
         {
             CheckInitialization();
 
+            if (_contextProvider.UiContext == SynchronizationContext.Current)
+            {
+                action.Invoke();
+                return Task.CompletedTask;
+            }
+
             return Task.Factory.StartNew(action, token, options, _contextProvider.UiTaskScheduler);
         }
 
@@ -140,6 +146,12 @@ namespace Rubberduck.Parsing.UIContext
         public Task<T> StartTask<T>(Func<T> func, CancellationToken token, TaskCreationOptions options = TaskCreationOptions.None)
         {
             CheckInitialization();
+
+            if (_contextProvider.UiContext == SynchronizationContext.Current)
+            {
+                var returnValue = func();
+                return Task.FromResult(returnValue);
+            }
 
             return Task.Factory.StartNew(func, token, options, _contextProvider.UiTaskScheduler);
         }

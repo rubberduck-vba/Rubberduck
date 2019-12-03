@@ -60,39 +60,6 @@ namespace Rubberduck.Parsing.VBA
                                 State == ParserState.UnexpectedError);
     }
 
-    public enum SuspensionResult
-    {
-        /// <summary>
-        /// The busy action has been queued but has not run yet.
-        /// </summary>
-        Pending,
-        /// <summary>
-        /// The busy action was completed successfully.
-        /// </summary>
-        Completed,
-        /// <summary>
-        /// The busy action could not executed because it timed out when
-        /// attempting to obtain a suspension lock. The timeout is 
-        /// governed by the MillisecondsTimeout argument.
-        /// </summary>
-        TimedOut,
-        /// <summary>
-        /// The parser arrived to one of states that wasn't listed in the 
-        /// AllowedRunStates specified by the requestor (e.g. an error state)
-        /// and thus the busy action was not executed.
-        /// </summary>
-        IncompatibleState,
-        /// <summary>
-        /// Indicates that the suspension request cannot be made because there 
-        /// is no handler for it. This points to a bug in the code.
-        /// </summary>
-        NotEnabled,
-        /// <summary>
-        /// An unexpected error; usually indicates a bug in code.
-        /// </summary>
-        UnexpectedError
-    }
-
     public class RubberduckStatusSuspendParserEventArgs : EventArgs
     {
         public RubberduckStatusSuspendParserEventArgs(object requestor, IEnumerable<ParserState> allowedRunStates, Action busyAction, int millisecondsTimeout)
@@ -101,14 +68,15 @@ namespace Rubberduck.Parsing.VBA
             AllowedRunStates = allowedRunStates;
             BusyAction = busyAction;
             MillisecondsTimeout = millisecondsTimeout;
-            Result = SuspensionResult.Pending;
+            Result = SuspensionOutcome.Pending;
         }
 
         public object Requestor { get; }
         public IEnumerable<ParserState> AllowedRunStates { get; }
         public Action BusyAction { get; }
         public int MillisecondsTimeout { get; }
-        public SuspensionResult Result { get; set; }
+        public SuspensionOutcome Result { get; set; }
+        public Exception EncounteredException { get; set; }
     }
 
     public class RubberduckStatusMessageEventArgs : EventArgs
@@ -1010,10 +978,10 @@ namespace Rubberduck.Parsing.VBA
             {
                 var args = new RubberduckStatusSuspendParserEventArgs(requestor, allowedRunStates, busyAction, millisecondsTimeout);
                 handler.Invoke(requestor, args);
-                return args.Result;
+                return new SuspensionResult(args.Result, args.EncounteredException);
             }
 
-            return SuspensionResult.NotEnabled;
+            return new SuspensionResult(SuspensionOutcome.NotEnabled);
         }
 
         public bool IsNewOrModified(IVBComponent component)
@@ -1050,19 +1018,6 @@ namespace Rubberduck.Parsing.VBA
             if (_moduleStates.TryGetValue(module, out var moduleState))
             {
                 moduleState.MarkAsModified();
-            }
-        }
-
-        public Declaration FindSelectedDeclaration(ICodePane activeCodePane)
-        {
-            if (activeCodePane != null)
-            {
-                return DeclarationFinder?.FindSelectedDeclaration(activeCodePane);
-            }
-
-            using (var active = _vbe.ActiveCodePane)
-            {
-                return DeclarationFinder?.FindSelectedDeclaration(active);
             }
         }
 

@@ -108,7 +108,7 @@ namespace Rubberduck.Root
             container.Register(Component.For<ISelectionChangeService>()
                 .ImplementedBy<SelectionChangeService>()
                 .LifestyleSingleton());
-            container.Register(Component.For<ISelectionService>()
+            container.Register(Component.For<ISelectionService, ISelectionProvider>()
                 .ImplementedBy<SelectionService>()
                 .LifestyleSingleton());
             container.Register(Component.For<AutoCompleteService>()
@@ -125,6 +125,10 @@ namespace Rubberduck.Root
             RegisterSourceCodeHandlers(container);
             RegisterParsingEngine(container);
             RegisterTypeLibApi(container);
+
+            container.Register(Component.For<ISelectedDeclarationProvider>()
+                .ImplementedBy<SelectedDeclarationProvider>()
+                .LifestyleSingleton());
 
             container.Register(Component.For<IRewritingManager>()
                 .ImplementedBy<RewritingManager>()
@@ -180,6 +184,8 @@ namespace Rubberduck.Root
 
             RegisterConfiguration(container, assembliesToRegister);
 
+            RegisterRequiredBinaryExtractors(container, assembliesToRegister);
+
             RegisterParseTreeInspections(container, assembliesToRegister);
             RegisterInspections(container, assembliesToRegister);
             RegisterQuickFixes(container, assembliesToRegister);
@@ -191,6 +197,18 @@ namespace Rubberduck.Root
             RegisterFactories(container, assembliesToRegister);
 
             ApplyDefaultInterfaceConvention(container, assembliesToRegister);
+        }
+
+        private static void RegisterRequiredBinaryExtractors(IWindsorContainer container, Assembly[] assembliesToRegister)
+        {
+            foreach (var assembly in assembliesToRegister)
+            {
+                container.Register(Classes.FromAssembly(assembly)
+                    .IncludeNonPublicTypes()
+                    .BasedOn<IRequiredBinaryFilesFromFileNameExtractor>()
+                    .WithServiceBase()
+                    .LifestyleSingleton());
+            }
         }
 
         private void RegisterRefactorings(IWindsorContainer container, Assembly[] assembliesToRegister)

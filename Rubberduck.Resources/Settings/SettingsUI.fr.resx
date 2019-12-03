@@ -145,7 +145,7 @@
     <value>Paramètres des fenêtres</value>
   </data>
   <data name="PageInstructions_GeneralSettings" xml:space="preserve">
-    <value>Cliquez [Ok] pour appliquer les modifications, ou [Annuler] pour conserver la configuration actuelle.</value>
+    <value>Cliquez [{0}] pour appliquer les modifications, ou [{1}] pour conserver la configuration actuelle.</value>
   </data>
   <data name="PageInstructions_IndenterSettings" xml:space="preserve">
     <value>Configuration des options d'indentation</value>
@@ -227,5 +227,8 @@
   </data>
   <data name="PageInstructions_ReferenceSettings" xml:space="preserve">
     <value>Configuration des paramètres pour ajouter et supprimer des références.</value>
+  </data>
+  <data name="HotKeys_Exclamation" xml:space="preserve">
+    <value>Pas de modificateur?!</value>
   </data>
 </root>

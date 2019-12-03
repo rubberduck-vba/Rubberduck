@@ -416,7 +416,7 @@
     <value>..\Icons\Custom\PNG\TestMethod.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="CodeExplorer_AddExistingFileText" xml:space="preserve">
-    <value>Existing file...</value>
+    <value>Existing files...</value>
   </data>
   <data name="CodeExplorer_Delete" xml:space="preserve">
     <value>Delete</value>
@@ -439,5 +439,20 @@ Continue?</value>
     <value>The following files could not be deleted:
     
 {0}</value>
+  </data>
+  <data name="CodeExplorer_AppendHeader" xml:space="preserve">
+    <value>Rubberduck User Declarations - {0}</value>
+  </data>
+  <data name="CodeExplorer_ExtractInterfaceText" xml:space="preserve">
+    <value>Extract Interface</value>
+  </data>
+  <data name="SyncProject" xml:space="preserve">
+    <value>Sync Project</value>
+  </data>
+  <data name="UpdateFromFiles" xml:space="preserve">
+    <value>Update Components from Files...</value>
+  </data>
+  <data name="ReplaceFromFiles" xml:space="preserve">
+    <value>Replace Contents from Files...</value>
   </data>
 </root>

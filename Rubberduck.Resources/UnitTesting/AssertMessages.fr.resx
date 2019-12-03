@@ -201,4 +201,7 @@
   <data name="TestRunner_TestInitializeFailure" xml:space="preserve">
     <value>Une erreur s'est produite durant l'exécution de @TestInitialize. Le test sera ignoré.</value>
   </data>
+  <data name="Assert_NotImplemented" xml:space="preserve">
+    <value>Pas implémenté.</value>
+  </data>
 </root>

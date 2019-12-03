@@ -255,4 +255,19 @@
   <data name="TestOutcome_SummaryCaption" xml:space="preserve">
     <value>Sommaire:</value>
   </data>
+  <data name="TestOutcome_DurationSecond" xml:space="preserve">
+    <value>s</value>
+  </data>
+  <data name="TestExplorer_Filter" xml:space="preserve">
+    <value>Nom du test</value>
+  </data>
+  <data name="TestExplorer_AllResults" xml:space="preserve">
+    <value>Tous</value>
+  </data>
+  <data name="TestExplorer_TestToggle_Ignore" xml:space="preserve">
+    <value>Ignorer le test</value>
+  </data>
+  <data name="TestExplorer_TestToggle_Unignore" xml:space="preserve">
+    <value>Réactiver le test</value>
+  </data>
 </root>

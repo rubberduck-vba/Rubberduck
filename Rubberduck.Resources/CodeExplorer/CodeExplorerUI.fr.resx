@@ -285,4 +285,41 @@
   <data name="RemoveError_Caption" xml:space="preserve">
     <value>Erreur lors de la suppression de '{0}'</value>
   </data>
+  <data name="CodeExplorer_AddExistingFileText" xml:space="preserve">
+    <value>Fichier(s) existant(s)...</value>
+  </data>
+  <data name="CodeExplorer_Delete" xml:space="preserve">
+    <value>Supprimer</value>
+  </data>
+  <data name="CodeExplorer_Exclude" xml:space="preserve">
+    <value>Exclure du projet</value>
+  </data>
+  <data name="ConfirmBeforeDelete_Caption" xml:space="preserve">
+    <value>Confirmer la suppression</value>
+  </data>
+  <data name="ConfirmBeforeDelete_Prompt" xml:space="preserve">
+    <value>{0} sera perdu à tout jamais.
+
+Continuer?</value>
+  </data>
+  <data name="DeleteFailed_Caption" xml:space="preserve">
+    <value>Échec de la suppession</value>
+  </data>
+  <data name="DeleteFailed_Message" xml:space="preserve">
+    <value>Les fichiers suivants n'ont pas pu être supprimés:
+
+{0}</value>
+  </data>
+  <data name="SyncProject" xml:space="preserve">
+    <value>Synchroniser le projet</value>
+  </data>
+  <data name="ReplaceFromFiles" xml:space="preserve">
+    <value>Remplacer le contenu des fichiers...</value>
+  </data>
+  <data name="CodeExplorer_ExtractInterfaceText" xml:space="preserve">
+    <value>Extraire une interface</value>
+  </data>
+  <data name="UpdateFromFiles" xml:space="preserve">
+    <value>Remplacer le contenu du projet...</value>
+  </data>
 </root>

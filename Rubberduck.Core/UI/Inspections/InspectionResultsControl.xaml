@@ -33,7 +33,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+    <ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto">
         <Grid UseLayoutRounding="True">
             <Grid.RowDefinitions>
                 <RowDefinition Height="30"/>
@@ -201,10 +201,11 @@
                                SelectedItem="{Binding SelectedItem}"
                                SelectionUnit="FullRow"
                                ItemsSource="{Binding Results, NotifyOnSourceUpdated=True}"
+                               RequestBringIntoView="InspectionResultsGrid_RequestBringIntoView"
                                VirtualizingPanel.IsVirtualizingWhenGrouping="True"
                                ScrollViewer.CanContentScroll="True" 
                                ScrollViewer.VerticalScrollBarVisibility="Auto"
-                               ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                               ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                 <DataGrid.RowDetailsTemplate>
                     <DataTemplate>
                         <Grid>
@@ -222,7 +223,7 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Issue}" Binding="{Binding Description, Mode=OneTime}" />
-                    <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Location}" Binding="{Binding QualifiedSelection.QualifiedName, Mode=OneTime}" />
+                    <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Location}" Binding="{Binding QualifiedSelection.QualifiedName, Mode=OneTime, Converter={StaticResource GroupingGridLocationConverter}}" />
                 </DataGrid.Columns>
                 <DataGrid.ContextMenu>
                     <ContextMenu ItemsSource="{Binding PlacementTarget.DataContext.QuickFixes, RelativeSource={RelativeSource Self}}">
@@ -236,7 +237,7 @@
                                 <Setter Property="Command" Value="{Binding Command}" />
                                 <Setter Property="CommandParameter" Value="{Binding Fix}" />
                                 <Setter Property="Header" Value="{Binding Description}" />
-                                <Setter Property="Background" Value="Transparent"></Setter>
+                                <Setter Property="Background" Value="Transparent" />
                             </Style>
                         </ContextMenu.Resources>
                     </ContextMenu>

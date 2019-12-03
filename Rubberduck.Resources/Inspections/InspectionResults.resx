@@ -349,7 +349,7 @@
     <comment>{0} Procedure name</comment>
   </data>
   <data name="UnreachableCaseInspection_InherentlyUnreachable" xml:space="preserve">
-    <value>'Case' statement Range Clauses must be expressed '[x] To [y]' where [x] is less than or equal to [y]</value>
+    <value>'Case' statement Range Clauses must be expressed '[x] To [y]' where [x] is less than or equal to [y]'.</value>
   </data>
   <data name="UnreachableCaseInspection_Overflow" xml:space="preserve">
     <value>'Case' statement will cause run-time error 6 (Overflow)</value>

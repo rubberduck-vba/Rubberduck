@@ -13,8 +13,12 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly RubberduckParserState _state;
 
-        public RefactorImplementInterfaceCommand(ImplementInterfaceRefactoring refactoring, ImplementInterfaceFailedNotifier implementInterfaceFailedNotifier, RubberduckParserState state, ISelectionService selectionService)
-            : base(refactoring, implementInterfaceFailedNotifier, selectionService, state)
+        public RefactorImplementInterfaceCommand(
+            ImplementInterfaceRefactoring refactoring, 
+            ImplementInterfaceFailedNotifier implementInterfaceFailedNotifier, 
+            RubberduckParserState state,
+            ISelectionProvider selectionProvider)
+            : base(refactoring, implementInterfaceFailedNotifier, selectionProvider, state)
         {
             _state = state;
 
@@ -23,7 +27,7 @@ namespace Rubberduck.UI.Command.Refactorings
 
         private bool SpecializedEvaluateCanExecute(object parameter)
         {
-            var activeSelection = SelectionService.ActiveSelection();        
+            var activeSelection = SelectionProvider.ActiveSelection();        
             if (!activeSelection.HasValue)
             {
                 return false;

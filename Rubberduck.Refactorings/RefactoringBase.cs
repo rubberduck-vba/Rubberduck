@@ -9,17 +9,17 @@ namespace Rubberduck.Refactorings
     public abstract class RefactoringBase : IRefactoring
     {
         protected readonly IRewritingManager RewritingManager;
-        protected readonly ISelectionService SelectionService;
+        protected readonly ISelectionProvider SelectionProvider;
 
-        protected RefactoringBase(IRewritingManager rewritingManager, ISelectionService selectionService)
+        protected RefactoringBase(IRewritingManager rewritingManager, ISelectionProvider selectionProvider)
         {
             RewritingManager = rewritingManager;
-            SelectionService = selectionService;
+            SelectionProvider = selectionProvider;
         }
 
         public virtual void Refactor()
         {
-            var activeSelection = SelectionService.ActiveSelection();
+            var activeSelection = SelectionProvider.ActiveSelection();
             if (!activeSelection.HasValue)
             {
                 throw new NoActiveSelectionException();

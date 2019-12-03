@@ -82,7 +82,6 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 false);
             _failedResolutionVisitor.CollectUnresolved(boundExpression, _currentParent, withExpression);
             _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent);
-            // note: pushes null if unresolved
             _withBlockExpressions.Push(boundExpression);
         }
 
@@ -614,51 +613,40 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
 
         public void Resolve(VBAParser.ForNextStmtContext context)
         {
-            // In "For expr1 = expr2" the "expr1 = expr2" part is treated as a single expression.
-            var assignmentExpr = ((VBAParser.RelationalOpContext)context.expression()[0]);
-            var lExpr = assignmentExpr.expression()[0];
-            var withExpression = GetInnerMostWithExpression();
-            var firstExpression = _bindingService.ResolveDefault(
-                _moduleDeclaration,
-                _currentParent,
-                lExpr,
-                withExpression,
-                StatementResolutionContext.Undefined,
-                true);
-            if (firstExpression.Classification != ExpressionClassification.ResolutionFailed)
-            {
-                // each iteration counts as an assignment
+            var expressions = context.expression();
 
-                _failedResolutionVisitor.CollectUnresolved(firstExpression, _currentParent, withExpression);
-                _boundExpressionVisitor.AddIdentifierReferences(
-                    firstExpression,
-                    _qualifiedModuleName,
-                    _currentScope,
-                    _currentParent,
-                    true);
-            }
-            var rExpr = assignmentExpr.expression()[1];
-            var secondExpression = _bindingService.ResolveDefault(
-                _moduleDeclaration,
-                _currentParent,
-                rExpr,
-                withExpression,
-                StatementResolutionContext.Undefined,
-                true);
-            _failedResolutionVisitor.CollectUnresolved(secondExpression, _currentParent, withExpression);
-            _boundExpressionVisitor.AddIdentifierReferences(
-                secondExpression,
-                _qualifiedModuleName,
-                _currentScope,
-                _currentParent);
-  
-            ResolveDefault(context.expression()[1], true);
+            // In "For expr1 = expr2" the "expr1 = expr2" part is treated as a single expression.
+            var assignmentExpr = ((VBAParser.RelationalOpContext)expressions[0]);
+            ResolveStartValueAssignmentOfForNext(assignmentExpr);
+
+            ResolveToValueOfForNext(expressions[1]);
 
             var stepStatement = context.stepStmt();
             if (stepStatement != null)
             {
                 Resolve(stepStatement);
             }
+
+            const int firstNextExpressionIndex = 2;
+            for (var exprIndex = firstNextExpressionIndex; exprIndex < expressions.Length; exprIndex++)
+            {
+                ResolveDefault(expressions[exprIndex]);
+            }
+        }
+
+        private void ResolveStartValueAssignmentOfForNext(VBAParser.RelationalOpContext expression)
+        {
+            var expressions = expression.expression();
+            var elementVariableExpression = expressions[0];
+            ResolveDefault(elementVariableExpression, requiresLetCoercion: true, isAssignmentTarget: true);
+
+            var startValueExpression = expressions[1];
+            ResolveDefault(startValueExpression, requiresLetCoercion: true);
+        }
+
+        private void ResolveToValueOfForNext(ParserRuleContext expression)
+        {
+            ResolveDefault(expression, requiresLetCoercion: true);
         }
 
         private void Resolve(VBAParser.StepStmtContext context)
@@ -668,38 +656,18 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
 
         public void Resolve(VBAParser.ForEachStmtContext context)
         {
-            var withExpression = GetInnerMostWithExpression();
-            var firstExpression = _bindingService.ResolveDefault(
-                _moduleDeclaration,
-                _currentParent,
-                context.expression()[0],
-                withExpression,
-                StatementResolutionContext.Undefined,
-                false);
-            if (firstExpression.Classification == ExpressionClassification.ResolutionFailed)
-            {
+            var expressions = context.expression();
 
-                _failedResolutionVisitor.CollectUnresolved(firstExpression, _currentParent, withExpression);
-                _boundExpressionVisitor.AddIdentifierReferences(
-                    firstExpression,
-                    _qualifiedModuleName,
-                    _currentScope,
-                    _currentParent);
-            }
-            else
+            var elementVariableExpression = expressions[0];
+            ResolveDefault(elementVariableExpression, isAssignmentTarget: true);
+
+            var collectionExpression = expressions[1];
+            ResolveDefault(collectionExpression);
+
+            const int firstNextExpressionIndex = 2;
+            for (var exprIndex = firstNextExpressionIndex; exprIndex < context.expression().Length; exprIndex++)
             {
-                // each iteration counts as an assignment
-                _failedResolutionVisitor.CollectUnresolved(firstExpression, _currentParent, withExpression);
-                _boundExpressionVisitor.AddIdentifierReferences(
-                    firstExpression,
-                    _qualifiedModuleName,
-                    _currentScope,
-                    _currentParent,
-                    true);
-            }
-            for (var exprIndex = 1; exprIndex < context.expression().Length; exprIndex++)
-            {
-                ResolveDefault(context.expression()[exprIndex], false);
+                ResolveDefault(expressions[exprIndex]);
             }
         }
 

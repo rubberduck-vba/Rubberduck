@@ -94,7 +94,7 @@ namespace RubberduckTests.ParserStateTests
         [Category("ParserState")]
         public void Test_RPS_SuspendParser_Exception_Suspending_Inside_Parse()
         {
-            var result = SuspensionResult.Pending;
+            var result = SuspensionOutcome.Pending;
             var wasRun = false;
             var wasSuspended = false;
 
@@ -110,13 +110,64 @@ namespace RubberduckTests.ParserStateTests
                         {
                             // Cheap hack to run in same thread. Should not be done in production
                             wasSuspended = true;
-                        });
+                        }).Outcome;
                     }
                 };
                 state.OnParseRequested(this);
             }
             Assert.IsFalse(wasSuspended);
-            Assert.AreEqual(SuspensionResult.UnexpectedError, result);
+            Assert.AreEqual(SuspensionOutcome.ReadLockAlreadyHeld, result);
+        }
+
+        [Test]
+        [Category("ParserState")]
+        public void Test_RPS_SuspendParser_Exception()
+        {
+            SuspensionResult result;
+
+            var vbe = MockVbeBuilder.BuildFromSingleModule("", ComponentType.StandardModule, out var _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                result = state.OnSuspendParser(this, AllowedRunStates, () => throw new NullReferenceException());
+            }
+
+            Assert.IsNotNull(result.EncounteredException);
+            Assert.AreEqual(typeof(NullReferenceException), result.EncounteredException.GetType());
+            Assert.AreEqual(SuspensionOutcome.UnexpectedError, result.Outcome);
+        }
+
+        [Test]
+        [Category("ParserState")]
+        public void Test_RPS_SuspendParser_Canceled()
+        {
+            SuspensionResult result;
+
+            var vbe = MockVbeBuilder.BuildFromSingleModule("", ComponentType.StandardModule, out var _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                result = state.OnSuspendParser(this, AllowedRunStates, () => throw new OperationCanceledException());
+            }
+
+            Assert.IsNotNull(result.EncounteredException);
+            Assert.AreEqual(typeof(OperationCanceledException), result.EncounteredException.GetType());
+            Assert.AreEqual(SuspensionOutcome.Canceled, result.Outcome);
+        }
+
+        [Test]
+        [Category("ParserState")]
+        public void Test_RPS_SuspendParser_IncompatibleState()
+        {
+            var result = SuspensionOutcome.Pending;
+            var wasRun = false;
+            var wasSuspended = false;
+
+            var vbe = MockVbeBuilder.BuildFromSingleModule("", ComponentType.StandardModule, out var _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                result = state.OnSuspendParser(this, new []{ParserState.Pending}, () => throw new OperationCanceledException()).Outcome;
+            }
+            Assert.IsFalse(wasSuspended);
+            Assert.AreEqual(SuspensionOutcome.IncompatibleState, result);
         }
 
         [Test]
@@ -204,7 +255,7 @@ namespace RubberduckTests.ParserStateTests
         public void Test_RPS_SuspendParser_Interrupted_Deadlock()
         {
             var wasSuspended = false;
-            var result = SuspensionResult.Pending;
+            var result = SuspensionOutcome.Pending;
 
             var vbe = MockVbeBuilder.BuildFromSingleModule("", ComponentType.StandardModule, out var _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
@@ -225,7 +276,8 @@ namespace RubberduckTests.ParserStateTests
                             result =
                                 state.OnSuspendParser(this, AllowedRunStates,
                                     () => { wasSuspended = state.Status == ParserState.Busy; },
-                                    20);
+                                    20)
+                                    .Outcome;
                         }, token);
                         result2.Wait(token);
                     }
@@ -242,7 +294,7 @@ namespace RubberduckTests.ParserStateTests
                 result2.Wait(token);
             }
             Assert.IsFalse(wasSuspended, "wasSuspended was set to true");
-            Assert.AreEqual(SuspensionResult.TimedOut, result);
+            Assert.AreEqual(SuspensionOutcome.TimedOut, result);
         }
 
         [Test]

@@ -6,6 +6,7 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using RubberduckTests.Mocks;
 using Rubberduck.Interaction;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveCloserToUsage;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
@@ -126,7 +127,8 @@ End Sub";
                 var resultToFix = inspectionResults.First();
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
                 var selectionService = MockedSelectionService();
-                var refactoring = new MoveCloserToUsageRefactoring(state, rewritingManager, selectionService);
+                var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
+                var refactoring = new MoveCloserToUsageRefactoring(state, rewritingManager, selectionService, selectedDeclarationProvider);
                 var quickFix = new MoveFieldCloserToUsageQuickFix(refactoring);
 
                 quickFix.Fix(resultToFix, rewriteSession);

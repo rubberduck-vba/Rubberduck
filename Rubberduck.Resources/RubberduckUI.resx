@@ -1170,7 +1170,7 @@ This dialog is showing because version checks are enabled. You can turn off this
     <value>Unexpected Error</value>
   </data>
   <data name="Command_Reparse_CompileOnDemandEnabled" xml:space="preserve">
-    <value>The VBEsetting "Compile On Demand" is currently enabled. This is not recommended as this may hide compilation errors and cause problems with parsing. Do you want to parse anyway?</value>
+    <value>The VBE setting "Compile On Demand" is currently enabled. This is not recommended as this may hide compilation errors and cause problems with parsing. Do you want to parse anyway?</value>
   </data>
   <data name="Command_Reparse_CompileOnDemandEnabled_Caption" xml:space="preserve">
     <value>Compile On Demand Setting</value>
@@ -1508,7 +1508,7 @@ NOTE: Restart is required for the setting to take effect.</value>
     <comment>{0}: Variable Name; {1}: name of conflicting declaration</comment>
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
-    <value>filter by description</value>
+    <value>Filter</value>
   </data>
   <data name="GroupingStyle_ByName" xml:space="preserve">
     <value>By inspection</value>
@@ -1553,7 +1553,7 @@ NOTE: Restart is required for the setting to take effect.</value>
     <value>No code module found for the target module '{0}'.</value>
     <comment>{0}: name of module</comment>
   </data>
-  <data name="RenameFailure_TargetContriolNotFound" xml:space="preserve">
+  <data name="RenameFailure_TargetControlNotFound" xml:space="preserve">
     <value>Target control '{0}' not found.</value>
     <comment>{0}: name of control</comment>
   </data>
@@ -1647,6 +1647,16 @@ NOTE: Restart is required for the setting to take effect.</value>
     <value>{0} Consider choosing a different name.</value>
     <comment>{0} = Meaningless name message</comment>
   </data>
+  <data name="TestExplorer_AppendHeader" xml:space="preserve">
+    <value>Rubberduck Test Results - {0}</value>
+  </data>
+  <data name="CodeExplorer_IExportable_DeclarationFormat" xml:space="preserve">
+    <value>{0} {1} {2} {3} {4} {5}</value>
+    <comment>{0}=Project; {1}=Folder; {2}=Component; {3}=DeclarationType; {4}=Scope; {5}=Name</comment>
+  </data>
+  <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
+    <value>Unable to suspend the Parser to perform the refactoring operation</value>
+  </data>
   <data name="GeneralSettings_IncludePreRelease" xml:space="preserve">
     <value>Tell me if a newer pre-release build is available</value>
   </data>
@@ -1655,5 +1665,93 @@ NOTE: Restart is required for the setting to take effect.</value>
   </data>
   <data name="VersionCheck_BuildType_Release" xml:space="preserve">
     <value>release</value>
+  </data>
+  <data name="ImportCommand_UnsupportedFileExtensions" xml:space="preserve">
+    <value>The extension of the file '{0}' is not supported.
+
+Import aborted.</value>
+    <comment>{0} filename of unsupported file</comment>
+  </data>
+  <data name="ReplaceProjectContentsFromFilesCommand_DialogCaption" xml:space="preserve">
+    <value>Replace Project Content from Files</value>
+  </data>
+  <data name="ReplaceProjectContentsFromFilesCommand_ConfirmationMessage" xml:space="preserve">
+    <value>Do you really want to delete the contents of project '{0}' and replace them with the contents of the selected files?</value>
+    <comment>{0} project name</comment>
+  </data>
+  <data name="UpdateFromFilesCommand_DialogCaption" xml:space="preserve">
+    <value>Update Components from Files</value>
+  </data>
+  <data name="ImportCommand_DuplicateModule" xml:space="preserve">
+    <value>Multiple files contain code for the component '{0}'.
+
+Import aborted.</value>
+    <comment>{0} module name</comment>
+  </data>
+  <data name="UpdateFromFilesCommand_DifferentComponentType" xml:space="preserve">
+    <value>The component type of the existing component '{0}' does not agree with that indicated by the extension of file '{1}'.
+
+Import aborted.</value>
+    <comment>{0} module name, {1} filename</comment>
+  </data>
+  <data name="ImportCommand_DocumentDoesNotExist" xml:space="preserve">
+    <value>There is no existing document module with name '{0}'; file '{1}' cannot be imported.
+
+Import aborted.</value>
+    <comment>{0} module name, {1} filename</comment>
+  </data>
+  <data name="ImportCommand_BinaryAndComponentDoNotExist" xml:space="preserve">
+    <value>For file '{0}', the required binary file(s) '{1}' are missing and the target component '{2}' does not already exists.
+
+Import aborted.</value>
+    <comment>{0} filename, {1} binaries, {2} module name</comment>
+  </data>
+  <data name="ImportCommand_BinaryDoesNotExist" xml:space="preserve">
+    <value>For file '{0}', the requires binary file(s) '{1}' are missing.
+
+Import aborted.</value>
+    <comment>{0} filename, {1} binaries</comment>
+  </data>
+  <data name="ComponentType_ActiveXDesigner" xml:space="preserve">
+    <value>ActiveX Designer</value>
+  </data>
+  <data name="ComponentType_ClassModule" xml:space="preserve">
+    <value>Class Module</value>
+  </data>
+  <data name="ComponentType_ComComponent" xml:space="preserve">
+    <value>COM component</value>
+  </data>
+  <data name="ComponentType_DocObject" xml:space="preserve">
+    <value>Document Object</value>
+  </data>
+  <data name="ComponentType_Document" xml:space="preserve">
+    <value>Document Module</value>
+  </data>
+  <data name="ComponentType_MDIForm" xml:space="preserve">
+    <value>MDI Form</value>
+  </data>
+  <data name="ComponentType_PropPage" xml:space="preserve">
+    <value>Property Page</value>
+  </data>
+  <data name="ComponentType_RelatedDocument" xml:space="preserve">
+    <value>Related Document</value>
+  </data>
+  <data name="ComponentType_ResFile" xml:space="preserve">
+    <value>Resource File</value>
+  </data>
+  <data name="ComponentType_StandardModule" xml:space="preserve">
+    <value>Standard Module</value>
+  </data>
+  <data name="ComponentType_Undefined" xml:space="preserve">
+    <value>Undefined</value>
+  </data>
+  <data name="ComponentType_UserControl" xml:space="preserve">
+    <value>User Control</value>
+  </data>
+  <data name="ComponentType_UserForm" xml:space="preserve">
+    <value>UserForm</value>
+  </data>
+  <data name="ComponentType_VBForm" xml:space="preserve">
+    <value>VB Form</value>
   </data>
 </root>

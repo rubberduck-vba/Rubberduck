@@ -1342,7 +1342,7 @@ End Enum</value>
     <value>Dle inspekce</value>
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
-    <value>Filtr</value>
+    <value />
   </data>
   <data name="MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
     <value>Metoda používající '{0}' má již jinou deklaraci '{1}' stejného jména v rozsahu.</value>
@@ -1362,7 +1362,7 @@ End Enum</value>
   <data name="ImplementInterfaceFailed_NoImplementsStatementSelected" xml:space="preserve">
     <value>Nebyl vybrán žádný příkaz implementace.</value>
   </data>
-  <data name="RenameFailure_TargetContriolNotFound" xml:space="preserve">
+  <data name="RenameFailure_TargetControlNotFound" xml:space="preserve">
     <value>Cílový control '{0}' nebyl nalezen.</value>
   </data>
   <data name="RenameFailure_TargetModuleWithoutCodeModule" xml:space="preserve">
