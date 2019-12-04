@@ -54,6 +54,28 @@ End Sub";
 
         [Test]
         [Category("QuickFixes")]
+        //See issue #5268 at https://github.com/rubberduck-vba/Rubberduck/issues/5268
+        public void MissingMemberAttribute_ExcelHotkey_QuickFixWorks()
+        {
+            const string inputCode =
+                @"'@ExcelHotkey ""T""
+Public Sub Foo()
+    Const const1 As Integer = 9
+End Sub";
+
+            const string expectedCode =
+                @"'@ExcelHotkey ""T""
+Public Sub Foo()
+Attribute Foo.VB_ProcData.VB_Invoke_Func = ""T\n14""
+    Const const1 As Integer = 9
+End Sub";
+
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new MissingAttributeInspection(state), CodeKind.AttributesCode);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
         public void MissingMemberAttributeOnConditionalCompilation_QuickFixWorks()
         {
             const string inputCode =
