@@ -77,6 +77,56 @@ End Sub";
 
         [Category("Commands")]
         [Test]
+        //See issue #5277 at https://github.com/rubberduck-vba/Rubberduck/issues/5277
+        public void FindAllReferences_ArraySelected_ReturnsCorrectNumberIgnoringArrayAccesses()
+        {
+            const string inputCode =
+                @"
+Private Sub Bar()
+    Dim arr(0 To 1) As Variant
+    arr(1) = arr(1)
+End Sub";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _, new Selection(4, 6, 4, 6));
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var vm = new SearchResultsWindowViewModel();
+                var service = ArrangeFindAllReferencesService(state, vm);
+                var command = ArrangeFindAllReferencesCommand(state, vbe, vm, service);
+
+                command.Execute(null);
+
+                Assert.AreEqual(2, vm.Tabs[0].SearchResults.Count);
+            }
+        }
+
+        [Category("Commands")]
+        [Test]
+        //See issue #5277 at https://github.com/rubberduck-vba/Rubberduck/issues/5277
+        public void FindAllReferences_ReDimDeclaredArraySelected_ReturnsCorrectNumberIgnoringArrayAccesses()
+        {
+            const string inputCode =
+                @"
+Private Sub Bar()
+    ReDim arr(0 To 1)
+    arr(1) = arr(1)
+End Sub";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _, new Selection(4, 6, 4, 6));
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var vm = new SearchResultsWindowViewModel();
+                var service = ArrangeFindAllReferencesService(state, vm);
+                var command = ArrangeFindAllReferencesCommand(state, vbe, vm, service);
+
+                command.Execute(null);
+
+                Assert.AreEqual(3, vm.Tabs[0].SearchResults.Count);
+            }
+        }
+
+        [Category("Commands")]
+        [Test]
         public void FindAllReferences_NoResults_DisplayMessageBox()
         {
             const string inputCode =

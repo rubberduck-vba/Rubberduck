@@ -298,19 +298,20 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             Declaration parent
         )
         {
-            var callSiteContext = argument.Context;
-            var identifier = callSiteContext.GetText();
-            var selection = callSiteContext.GetSelection();
-            var callee = argument.ReferencedParameter;
+            var argumentContext = argument.Context;
+            var identifier = argumentContext.GetText();
+            var argumentSelection = argumentContext.GetSelection();
             argument.ReferencedParameter.AddArgumentReference(
                 module,
                 scope,
                 parent,
-                callSiteContext,
+                argumentSelection,
+                argumentContext,
+                argument.ArgumentListContext,
+                argument.ArgumentType,
+                argument.ArgumentPosition,
                 identifier,
-                callee,
-                selection,
-                FindIdentifierAnnotations(module, selection.StartLine));
+                FindIdentifierAnnotations(module, argumentSelection.StartLine));
         }
 
         private void AddArrayAccessReference(

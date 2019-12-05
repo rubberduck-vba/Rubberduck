@@ -1,9 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using NUnit.Framework;
 using Moq;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 using Rubberduck.Refactorings;
@@ -41,7 +43,11 @@ End Sub";
 
                 var factory = new Mock<IRefactoringPresenterFactory>().Object;
                 var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-                var refactoring = new RemoveParametersRefactoring(state, factory, rewritingManager, selectionService, selectedDeclarationProvider);
+                var uiDispatcherMock = new Mock<IUiDispatcher>();
+                uiDispatcherMock
+                    .Setup(m => m.Invoke(It.IsAny<Action>()))
+                    .Callback((Action action) => action.Invoke());
+                var refactoring = new RemoveParametersRefactoring(state, factory, rewritingManager, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
                 new RemoveUnusedParameterQuickFix(refactoring)
                     .Fix(inspectionResults.First(), rewriteSession);
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());

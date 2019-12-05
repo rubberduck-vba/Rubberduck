@@ -164,6 +164,35 @@ End Sub";
 
         [Test]
         [Category("QuickFixes")]
+        //See issue #5298 at https://github.com/rubberduck-vba/Rubberduck/issues/5298
+        public void NonReturningFunction_ConvertsExitFunction()
+        {
+            const string inputCode =
+                @"Function Foo() As Boolean
+    If False Then Exit Function
+    if True Then
+        Exit Function
+    Else
+        Exit Function
+    End If
+End Function";
+
+            const string expectedCode =
+                @"Sub Foo()
+    If False Then Exit Sub
+    if True Then
+        Exit Sub
+    Else
+        Exit Sub
+    End If
+End Sub";
+
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new NonReturningFunctionInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
         public void GivenFunctionNameWithTypeHint_SubNameHasNoTypeHint()
         {
             const string inputCode =
@@ -220,6 +249,35 @@ End Property";
 
             const string expectedCode =
                 @"Sub Foo()
+End Sub";
+
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new NonReturningFunctionInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        //See issue #5298 at https://github.com/rubberduck-vba/Rubberduck/issues/5298
+        public void GivenNonReturningPropertyGetter_ConvertsExitProperty()
+        {
+            const string inputCode =
+                @"Property Get Foo() As Boolean
+    If False Then Exit Property
+    if True Then
+        Exit Property
+    Else
+        Exit Property
+    End If
+End Property";
+
+            const string expectedCode =
+                @"Sub Foo()
+    If False Then Exit Sub
+    if True Then
+        Exit Sub
+    Else
+        Exit Sub
+    End If
 End Sub";
 
             var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new NonReturningFunctionInspection(state));
