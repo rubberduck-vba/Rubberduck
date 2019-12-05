@@ -15,7 +15,7 @@ namespace Rubberduck.Parsing.Annotations
 
         public override IReadOnlyList<string> AnnotationToAttributeValues(IReadOnlyList<string> annotationValues)
         {
-            return annotationValues.Take(1).Select(v => v.UnQuote()[0] + @"\n14".EnQuote()).ToList();
+            return annotationValues.Take(1).Select(v => (v.UnQuote()[0] + @"\n14").EnQuote()).ToList();
         }
 
         public override IReadOnlyList<string> AttributeToAnnotationValues(IReadOnlyList<string> attributeValues)
