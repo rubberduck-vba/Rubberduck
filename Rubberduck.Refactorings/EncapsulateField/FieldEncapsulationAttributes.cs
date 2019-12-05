@@ -19,7 +19,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
         bool ImplementSetSetterType { get; set; }
         bool FieldNameIsExemptFromValidation { get; }
         QualifiedModuleName QualifiedModuleName { get; }
-        Func<string> FieldAccessExpression { set; get; }
+        Func<string> PropertyAccessExpression { set; get; }
+        Func<string> ReferenceExpression { set; get; }
     }
 
 
@@ -38,7 +39,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
             Identifier = identifier;
             NewFieldName = identifier;
             AsTypeName = asTypeName;
-            FieldAccessExpression = () => NewFieldName;
+            PropertyAccessExpression = () => NewFieldName;
+            ReferenceExpression = () => NewFieldName;
         }
 
         public IFieldEncapsulationAttributes ApplyNewFieldName(string newFieldName)
@@ -54,7 +56,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
         string _tossString;
         public string PropertyName { set => _tossString = value; get => $"{neverUse}{Identifier}_{neverUse}"; }
 
-        public Func<string> FieldAccessExpression { set; get; }
+        public Func<string> PropertyAccessExpression { set; get; }
+
+        public Func<string> ReferenceExpression { set; get; }
 
         public string AsTypeName { get; set; }
         public string ParameterName => neverUse;
@@ -82,7 +86,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
             Identifier = target.IdentifierName;
             AsTypeName = target.AsTypeName;
             _qmn = target.QualifiedModuleName;
-            FieldAccessExpression = () => NewFieldName;
+            PropertyAccessExpression = () => NewFieldName;
+            ReferenceExpression = () => NewFieldName;
             _fieldNameIsAlwaysValid = target.DeclarationType.Equals(DeclarationType.UserDefinedTypeMember);
         }
 
@@ -90,7 +95,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             _fieldAndProperty = new EncapsulationIdentifiers(identifier);
             AsTypeName = asTypeName;
-            FieldAccessExpression = () => NewFieldName;
+            PropertyAccessExpression = () => NewFieldName;
         }
 
         public FieldEncapsulationAttributes(IFieldEncapsulationAttributes attributes)
@@ -105,7 +110,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             ImplementLetSetterType = attributes.ImplementLetSetterType;
             ImplementSetSetterType = attributes.ImplementSetSetterType;
             QualifiedModuleName = attributes.QualifiedModuleName;
-            FieldAccessExpression = () => NewFieldName;
+            PropertyAccessExpression = () => NewFieldName;
         }
 
         private EncapsulationIdentifiers _fieldAndProperty;
@@ -126,7 +131,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
             set => _fieldAndProperty.Property = value;
         }
 
-        public Func<string> FieldAccessExpression { set; get; }
+        public Func<string> PropertyAccessExpression { set; get; }
+
+        public Func<string> ReferenceExpression { set; get; }
 
         public string AsTypeName { get; set; }
         public string ParameterName => _fieldAndProperty.SetLetParameter;

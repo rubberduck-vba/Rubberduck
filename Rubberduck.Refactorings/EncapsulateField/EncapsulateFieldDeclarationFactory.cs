@@ -59,13 +59,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
                 var moduleHasMultipleInstancesOfUDT = candidateFields.Any(fld => fld != encapsulatedUDTField.Declaration && encapsulatedUDTField.AsTypeName.Equals(fld.AsTypeName));
                 var parent = encapsulatedUDTField as IEncapsulatedUserDefinedTypeField;
+                parent.TypeDeclarationIsPrivate = udtFieldToUdtDeclarationMap[udtField].UserDefinedType.Accessibility.Equals(Accessibility.Private);
 
                 foreach (var udtMember in udtFieldToUdtDeclarationMap[udtField].Item2)
                 {
                     IEncapsulateFieldCandidate encapsulatedUDTMember = new EncapsulatedUserDefinedTypeMember(udtMember, encapsulatedUDTField, _validator, moduleHasMultipleInstancesOfUDT);
                     encapsulatedUDTMember = ApplyTypeSpecificAttributes(encapsulatedUDTMember);
                     parent.Members.Add(encapsulatedUDTMember);
-                    encapsulatedUDTMember.FieldAccessExpression =
+                    encapsulatedUDTMember.PropertyAccessExpression =
                        () =>
                        {
                            var prefix = encapsulatedUDTField.EncapsulateFlag

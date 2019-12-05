@@ -693,17 +693,80 @@ End Property
             Assert.AreEqual(expectedCode, actualCode);
         }
 
+        [TestCase(false)]
+        [TestCase(true)]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void StandardModuleSource_ExternalReferences(bool moduleResolve)
+        {
+            var sourceModuleName = "SourceModule";
+            var referenceExpression = moduleResolve ? $"{sourceModuleName}." : string.Empty;
+            var sourceModuleCode =
+$@"
+
+Public th|is As Long";
+
+            var procedureModuleReferencingCode =
+$@"Option Explicit
+
+Private Const bar As Long = 7
+
+Public Sub Bar()
+    {referenceExpression}this = bar
+End Sub
+
+Public Sub Foo()
+    With {sourceModuleName}
+        .this = bar
+    End With
+End Sub
+";
+
+            string classModuleReferencingCode =
+$@"Option Explicit
+
+Private Const bar As Long = 7
+
+Public Sub Bar()
+    {referenceExpression}this = bar
+End Sub
+
+Public Sub Foo()
+    With {sourceModuleName}
+        .this = bar
+    End With
+End Sub
+";
+
+            var userInput = new UserInputDataObject("this", "MyProperty", true);
+
+            var presenterAction = Support.SetParameters(userInput);
+
+            var sourceCodeString = sourceModuleCode.ToCodeString();
+            var actualModuleCode = RefactoredCode(
+                sourceModuleName,
+                sourceCodeString.CaretPosition.ToOneBased(),
+                presenterAction,
+                null,
+                false,
+                ("StdModule", procedureModuleReferencingCode, ComponentType.StandardModule),
+                ("ClassModule", classModuleReferencingCode, ComponentType.ClassModule),
+                (sourceModuleName, sourceCodeString.Code, ComponentType.StandardModule));
+
+            var referencingModuleCode = actualModuleCode["StdModule"];
+            StringAssert.Contains($"{sourceModuleName}.MyProperty = ", referencingModuleCode);
+            StringAssert.DoesNotContain($"{sourceModuleName}.{sourceModuleName}.MyProperty = ", referencingModuleCode);
+            StringAssert.Contains($"  .MyProperty = bar", referencingModuleCode);
+
+            var referencingClassCode = actualModuleCode["ClassModule"];
+            StringAssert.Contains($"{sourceModuleName}.MyProperty = ", referencingClassCode);
+            StringAssert.DoesNotContain($"{sourceModuleName}.{sourceModuleName}.MyProperty = ", referencingClassCode);
+            StringAssert.Contains($"  .MyProperty = bar", referencingClassCode);
+        }
+
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
         {
             return Support.SupportTestRefactoring(rewritingManager, state, factory, selectionService);
-            //var indenter = CreateIndenter(); //The refactoring only uses method independent of the VBE instance.
-            //var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            //return new EncapsulateFieldRefactoring(state, indenter, factory, rewritingManager, selectionService, selectedDeclarationProvider);
         }
-
-        //private static IIndenter CreateIndenter(IVBE vbe = null)
-        //{
-        //    return new Indenter(vbe, () => Settings.IndenterSettingsTests.GetMockIndenterSettings());
-        //}
     }
 }

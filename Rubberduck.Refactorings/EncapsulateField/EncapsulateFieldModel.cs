@@ -56,6 +56,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public List<IEncapsulateFieldCandidate> FieldCandidates { set; get; } = new List<IEncapsulateFieldCandidate>();
 
+        public IEnumerable<IEncapsulateFieldCandidate> FlaggedFieldCandidates
+            => FieldCandidates.Where(v => v.EncapsulationAttributes.EncapsulateFlag);
+
         public IEnumerable<IEncapsulatedUserDefinedTypeField> UDTFieldCandidates => FieldCandidates.Where(v => v is IEncapsulatedUserDefinedTypeField).Cast<IEncapsulatedUserDefinedTypeField>();
 
         private List<IEncapsulateFieldCandidate> AllEncapsulationCandidates { get; } = new List<IEncapsulateFieldCandidate>();

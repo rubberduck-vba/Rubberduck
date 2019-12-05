@@ -1,8 +1,10 @@
-﻿using Rubberduck.Parsing.Rewriter;
+﻿using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,6 +50,8 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
 
         protected virtual IExecutableRewriteSession RefactorRewrite(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession, bool asPreview)
         {
+            SetupReferenceModifications(model);
+
             var nonUdtMemberFields = model.FlaggedEncapsulationFields
                     .Where(encFld => !encFld.IsUDTMember);
 
@@ -55,7 +59,7 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
             {
                 var attributes = nonUdtMemberField.EncapsulationAttributes;
                 ModifyEncapsulatedVariable(nonUdtMemberField, attributes, rewriteSession);
-                RenameReferences(nonUdtMemberField, attributes.PropertyName ?? nonUdtMemberField.Declaration.IdentifierName, rewriteSession);
+                RenameReferences(nonUdtMemberField, rewriteSession);
             }
 
             var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, TargetQMN);
@@ -64,6 +68,90 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
             InsertNewContent(model.CodeSectionStartIndex, model, rewriteSession, asPreview);
 
             return rewriteSession;
+        }
+
+        protected void SetupReferenceModifications(EncapsulateFieldModel model)
+        {
+            foreach (var field in model.FieldCandidates.Except(model.UDTFieldCandidates))
+            {
+                foreach (var rf in field.References)
+                {
+                    LoadFieldReferenceData(field, rf);
+                }
+            }
+
+            foreach( var udtField in model.UDTFieldCandidates)
+            {
+                if (!udtField.TypeDeclarationIsPrivate)
+                {
+                    foreach (var rf in udtField.References)
+                    {
+                        LoadUDTFieldReferenceData(udtField, rf);
+                    }
+                }
+                else
+                {
+                    foreach (var member in udtField.Members)
+                    {
+                        foreach (var rf in member.References)
+                        {
+                            if (rf.QualifiedModuleName == udtField.QualifiedModuleName || udtField.QualifiedModuleName.ComponentType == ComponentType.ClassModule)
+                            {
+                                member[rf] = udtField.EncapsulateFlag
+                               ? $"{member.PropertyName}"
+                               : $"{member.ReferenceExpression()}";
+                            }
+                            else
+                            {
+                                member[rf] = udtField.EncapsulateFlag
+                                ? $"{udtField.QualifiedModuleName.ComponentName}.{member.PropertyName}"
+                                : $"{member.ReferenceExpression()}";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void LoadFieldReferenceData(IEncapsulateFieldCandidate field, IdentifierReference idRef)
+        {
+            if (idRef.QualifiedModuleName == field.QualifiedModuleName || field.QualifiedModuleName.ComponentType == ComponentType.ClassModule)
+            {
+                field[idRef] = field.ReferenceExpression();
+            }
+            else
+            {
+                if (idRef.Context.Parent is VBAParser.MemberAccessExprContext maec
+                    || idRef.Context.Parent is VBAParser.WithMemberAccessExprContext wmaec)
+                {
+                    field[idRef] = field.ReferenceExpression();
+                }
+                else
+                {
+                    field[idRef] = $"{field.QualifiedModuleName.ComponentName}.{field.ReferenceExpression()}";
+                }
+            }
+        }
+
+        private void LoadUDTFieldReferenceData(IEncapsulateFieldCandidate field, IdentifierReference idRef)
+        {
+            if (idRef.QualifiedModuleName == field.QualifiedModuleName || field.QualifiedModuleName.ComponentType == ComponentType.ClassModule)
+            {
+                field[idRef] = field.ReferenceExpression();
+            }
+            else
+            {
+                if ((idRef.Context.Parent is VBAParser.MemberAccessExprContext maec
+                    || idRef.Context.Parent is VBAParser.WithMemberAccessExprContext wmaec)
+                    && !(idRef.Context is VBAParser.SimpleNameExprContext))
+                {
+                    field[idRef] = field.ReferenceExpression();
+                }
+                else
+                {
+                    field[idRef] = $"{field.QualifiedModuleName.ComponentName}.{field.ReferenceExpression()}";
+                }
+            }
         }
 
         protected void InsertNewContent(int? codeSectionStartIndex, EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession, bool postPendPreviewMessage = false)
@@ -91,6 +179,14 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
             var textBlocks = new List<string>();
             foreach (var field in flaggedEncapsulationFields)
             {
+                if (field is IEncapsulatedUserDefinedTypeField udtField && udtField.TypeDeclarationIsPrivate)
+                {
+                    foreach (var member in udtField.Members)
+                    {
+                        textBlocks.Add(BuildPropertiesTextBlock(member));
+                    }
+                    continue;
+                }
                 textBlocks.Add(BuildPropertiesTextBlock(field));
             }
             return textBlocks;
@@ -103,7 +199,7 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
             {
                 PropertyName = attributes.PropertyName,
                 AsTypeName = attributes.AsTypeName,
-                BackingField = attributes.FieldAccessExpression(),
+                BackingField = attributes.PropertyAccessExpression(),
                 ParameterName = attributes.ParameterName,
                 GenerateSetter = attributes.ImplementSetSetterType,
                 GenerateLetter = attributes.ImplementLetSetterType
@@ -126,12 +222,19 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
             return newContent;
         }
 
-        protected void RenameReferences(IEncapsulateFieldCandidate efd, string propertyName, IRewriteSession rewriteSession)
+        protected virtual void RenameReferences(IEncapsulateFieldCandidate efd, IRewriteSession rewriteSession)
         {
             foreach (var reference in efd.Declaration.References)
             {
-                var rewriter = rewriteSession.CheckOutModuleRewriter(reference.QualifiedModuleName);
-                rewriter.Replace(reference.Context, propertyName ?? efd.Declaration.IdentifierName);
+                if (efd.TryGetReferenceExpression(reference, out var expression))
+                {
+                    var replacementContext = efd.IsUDTMember
+                        ? reference.Context.Parent
+                        : reference.Context;
+
+                    var rewriter = rewriteSession.CheckOutModuleRewriter(reference.QualifiedModuleName);
+                    rewriter.Replace(replacementContext, expression);
+                }
             }
         }
     }

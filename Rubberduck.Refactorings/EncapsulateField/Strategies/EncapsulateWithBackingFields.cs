@@ -47,10 +47,22 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
         {
             foreach (var field in model.UDTFieldCandidates)
             {
-                foreach (var member in field.Members)
+                if (!field.TypeDeclarationIsPrivate)
                 {
-                    member.FieldAccessExpression = () => $"{field.FieldAccessExpression()}.{member.IdentifierName}";
+                    field.ReferenceExpression = () => field.PropertyName;
                 }
+                else
+                {
+                    foreach (var member in field.Members)
+                    {
+                        member.PropertyAccessExpression = () => $"{field.PropertyAccessExpression()}.{member.IdentifierName}";
+                    }
+                }
+            }
+
+            foreach (var field in model.FieldCandidates.Except(model.UDTFieldCandidates).Where(fld => fld.EncapsulateFlag))
+            {
+                field.ReferenceExpression = () => field.PropertyName;
             }
 
             return base.RefactorRewrite(model, rewriteSession, asPreview);

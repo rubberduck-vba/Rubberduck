@@ -30,23 +30,34 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
             {
                 if (field is IEncapsulatedUserDefinedTypeField udt)
                 {
-                    udt.FieldAccessExpression =
+                    udt.PropertyAccessExpression =
                         () =>   {
                                     var accessor = udt.EncapsulateFlag || stateUDTField_UDTMembers.Contains(udt) ? udt.PropertyName : udt.NewFieldName;
-                                    return $"{StateUDTField.FieldAccessExpression()}.{accessor}";
+                                    return $"{StateUDTField.PropertyAccessExpression()}.{accessor}";
                                 };
+
+                    udt.ReferenceExpression = udt.PropertyAccessExpression;
 
                     foreach (var member in udt.Members)
                     {
-                        member.FieldAccessExpression = () => $"{udt.FieldAccessExpression()}.{member.PropertyName}";
+                        member.PropertyAccessExpression = () => $"{udt.PropertyAccessExpression()}.{member.PropertyName}";
+                        member.ReferenceExpression = () => 
+                            {
+                                return member.EncapsulateFlag 
+                                    ? member.PropertyName
+                                    : $"{udt.PropertyAccessExpression()}.{member.PropertyName}";
+                            };
                     }
                 }
                 else
                 {
                     var efd = field;
-                    efd.FieldAccessExpression = () => $"{StateUDTField.FieldAccessExpression()}.{efd.PropertyName}";
+                    efd.PropertyAccessExpression = () => $"{StateUDTField.PropertyAccessExpression()}.{efd.PropertyName}";
+                    efd.ReferenceExpression = efd.PropertyAccessExpression;
                 }
             }
+
+            SetupReferenceModifications(model);
 
             var fieldsToModify = model.EncapsulationFields
                     .Where(encFld => !encFld.IsUDTMember && encFld.EncapsulateFlag).Union(stateUDTField_UDTMembers);
@@ -55,7 +66,14 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
             {
                 var attributes = field.EncapsulationAttributes;
                 ModifyEncapsulatedVariable(field, attributes, rewriteSession);
-                RenameReferences(field, attributes.PropertyName ?? field.Declaration.IdentifierName, rewriteSession);
+                RenameReferences(field, rewriteSession);
+                if (field is IEncapsulatedUserDefinedTypeField udtField)
+                {
+                    foreach (var member in udtField.Members)
+                    {
+                        RenameReferences(member, rewriteSession);
+                    }
+                }
             }
 
             var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, TargetQMN);
