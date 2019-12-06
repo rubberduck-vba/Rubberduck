@@ -25,23 +25,24 @@ namespace Rubberduck.Refactorings.EncapsulateField
         IEnumerable<IdentifierReference> References { get; }
         string this[IdentifierReference idRef] { set; get; }
         bool TryGetReferenceExpression(IdentifierReference idRef, out string expression);
-        bool FieldNameIsExemptFromValidation { get; }
-        Func<string> ReferenceExpression { set; get; }
         string PropertyName { get; set; }
-        string AsTypeName { get; set; } 
-        string ParameterName { get; } 
+        string AsTypeName { get; set; }
+        string ParameterName { get; }
         bool ImplementLetSetterType { get; set; }
         bool ImplementSetSetterType { get; set; }
         Func<string> PropertyAccessExpression { set; get; }
+        bool FieldNameIsExemptFromValidation { get; }
+        Func<string> ReferenceExpression { set; get; }
+        IPropertyGeneratorSpecification AsPropertyGeneratorSpec { get; }
     }
 
-    public interface IEncapsulatedUserDefinedTypeField : IEncapsulateFieldCandidate, ISupportPropertyGenerator
+    public interface IEncapsulatedUserDefinedTypeField : IEncapsulateFieldCandidate
     {
         IList<IEncapsulatedUserDefinedTypeMember> Members { set; get; }
         bool TypeDeclarationIsPrivate { set; get; }
     }
 
-    public class EncapsulateFieldCandidate : IEncapsulateFieldCandidate, ISupportPropertyGenerator
+    public class EncapsulateFieldCandidate : IEncapsulateFieldCandidate
     {
         protected Declaration _target;
         protected QualifiedModuleName _qmn;
@@ -161,8 +162,24 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private bool _implSet;
         public bool ImplementSetSetterType { get => !IsReadOnly && _implSet; set => _implSet = value; }
 
+
         public Func<string> PropertyAccessExpression { set; get; }
 
+        public IPropertyGeneratorSpecification AsPropertyGeneratorSpec
+        {
+            get
+            {
+                return new PropertyGeneratorDataObject()
+                {
+                    PropertyName = PropertyName,
+                    BackingField = PropertyAccessExpression(),
+                    AsTypeName = AsTypeName,
+                    ParameterName = ParameterName,
+                    GenerateLetter = ImplementLetSetterType,
+                    GenerateSetter = ImplementSetSetterType
+                };
+            }
+        }
         public Func<string> ReferenceExpression { set; get; }
 
         public bool FieldNameIsExemptFromValidation 

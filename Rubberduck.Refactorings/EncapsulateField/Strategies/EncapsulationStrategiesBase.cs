@@ -257,27 +257,18 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
                 {
                     foreach (var member in udtField.Members)
                     {
-                        textBlocks.Add(BuildPropertiesTextBlock(member as ISupportPropertyGenerator));
+                        textBlocks.Add(BuildPropertiesTextBlock(member.AsPropertyGeneratorSpec));
                     }
                     continue;
                 }
-                textBlocks.Add(BuildPropertiesTextBlock(field as ISupportPropertyGenerator));
+                textBlocks.Add(BuildPropertiesTextBlock(field.AsPropertyGeneratorSpec));
             }
             return textBlocks;
         }
 
-        private string BuildPropertiesTextBlock(ISupportPropertyGenerator field)
+        private string BuildPropertiesTextBlock(IPropertyGeneratorSpecification field)
         {
-            var generator = new PropertyGenerator
-            {
-                PropertyName = field.PropertyName,
-                AsTypeName = field.AsTypeName,
-                BackingField = field.PropertyAccessExpression(),
-                ParameterName = field.ParameterName,
-                GenerateSetter = field.ImplementSetSetterType,
-                GenerateLetter = field.ImplementLetSetterType
-            };
-
+            var generator = new PropertyGenerator(field);
             var propertyTextLines = generator.AllPropertyCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
             return string.Join(Environment.NewLine, Indenter.Indent(propertyTextLines, true));
         }

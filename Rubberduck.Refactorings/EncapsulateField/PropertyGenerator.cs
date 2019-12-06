@@ -2,18 +2,39 @@
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public interface ISupportPropertyGenerator
+    public interface IPropertyGeneratorSpecification
     {
-        string PropertyName { get; set; } //req'd
-        string AsTypeName { get; set; } //req'd
-        string ParameterName { get; } //req'd
-        bool ImplementLetSetterType { get; set; }//req'd
-        bool ImplementSetSetterType { get; set; }//req'd
-        Func<string> PropertyAccessExpression { set; get; } //req'd
+        string PropertyName { get; }
+        string BackingField { get; }
+        string AsTypeName { get; }
+        string ParameterName { get; }
+        bool GenerateLetter { get; }
+        bool GenerateSetter { get; }
+    }
+
+    public struct PropertyGeneratorDataObject : IPropertyGeneratorSpecification
+    {
+        public string PropertyName { get; set; }
+        public string BackingField { get; set; }
+        public string AsTypeName { get; set; }
+        public string ParameterName { get; set; }
+        public bool GenerateLetter { get; set; }
+        public bool GenerateSetter { get; set; }
     }
 
     public class PropertyGenerator
     {
+        public PropertyGenerator() { }
+
+        public PropertyGenerator(IPropertyGeneratorSpecification spec)
+        {
+            PropertyName = spec.PropertyName;
+            BackingField = spec.BackingField;
+            AsTypeName = spec.AsTypeName;
+            ParameterName = spec.ParameterName;
+            GenerateLetter = spec.GenerateLetter;
+            GenerateSetter = spec.GenerateSetter;
+        }
         public string PropertyName { get; set; }
         public string BackingField { get; set; }
         public string AsTypeName { get; set; }
