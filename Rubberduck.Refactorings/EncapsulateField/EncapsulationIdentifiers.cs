@@ -5,49 +5,54 @@ using System.IO;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public struct EncapsulationAttributeIdentifier
-    {
-        public EncapsulationAttributeIdentifier(string name, bool isImmutable = false)
-        {
-            Name = name;
-            IsImmutable = isImmutable;
-        }
-        public string Name;
-        public bool IsImmutable;
-    }
+    //public struct EncapsulationAttributeIdentifier
+    //{
+    //    public EncapsulationAttributeIdentifier(string name, bool isImmutable = false)
+    //    {
+    //        Name = name;
+    //        IsImmutable = isImmutable;
+    //    }
+    //    public string Name;
+    //    public bool IsImmutable;
+    //}
 
     public class EncapsulationIdentifiers
     {
         private static string DEFAULT_WRITE_PARAMETER = "value";
 
         private KeyValuePair<string, string> _fieldAndProperty;
-        private EncapsulationAttributeIdentifier _targetIdentifier;
+        //private EncapsulationAttributeIdentifier _targetIdentifier;
+        private string _targetIdentifier;
         private string _defaultPropertyName;
         private string _defaultFieldName;
         private string _setLetParameter;
+        private bool _cannotEncapsulate;
 
         public EncapsulationIdentifiers(Declaration target)
             : this(target.IdentifierName) { }
 
-        public EncapsulationIdentifiers(string field)
+        public EncapsulationIdentifiers(string field, bool cannotBeEncapsulated = false)
         {
-            _targetIdentifier = new EncapsulationAttributeIdentifier(field, true);
-            _defaultPropertyName = field.Capitalize();
-            _defaultFieldName = $"{field.UnCapitalize()}1";
+            //_targetIdentifier = new EncapsulationAttributeIdentifier(field, true);
+            _targetIdentifier = field;
+            _defaultPropertyName = cannotBeEncapsulated ? $"{field}99" : field.Capitalize();
+            _defaultFieldName = cannotBeEncapsulated ? field : $"{field.UnCapitalize()}1";
             _fieldAndProperty = new KeyValuePair<string, string>(_defaultFieldName, _defaultPropertyName);
             _setLetParameter = DEFAULT_WRITE_PARAMETER;
+            _cannotEncapsulate = cannotBeEncapsulated;
         }
 
         public EncapsulationIdentifiers(string field, string fieldName, string propertyName)
         {
-            _targetIdentifier = new EncapsulationAttributeIdentifier(field);
+            //_targetIdentifier = new EncapsulationAttributeIdentifier(field);
+            _targetIdentifier = field;
             _defaultPropertyName = field.Capitalize();
             _defaultFieldName = $"{field.UnCapitalize()}1";
             _fieldAndProperty = new KeyValuePair<string, string>(fieldName, propertyName);
             _setLetParameter = DEFAULT_WRITE_PARAMETER;
         }
 
-        public string TargetFieldName => _targetIdentifier.Name;
+        public string TargetFieldName => _targetIdentifier;
 
         public string Field
         {
@@ -55,7 +60,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             set
             {
                 _fieldAndProperty = new KeyValuePair<string, string>(value, _fieldAndProperty.Value);
-                GenerateNonConflictParamIdentifier();
+                 GenerateNonConflictParamIdentifier();
             }
         }
 
@@ -66,7 +71,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 var fieldIdentifier = Field.EqualsVBAIdentifier(value)
                         ? _defaultFieldName
-                        : _targetIdentifier.Name;
+                        : _targetIdentifier;
 
                 _fieldAndProperty = new KeyValuePair<string, string>(fieldIdentifier, value);
 

@@ -56,7 +56,8 @@ End Property";
                                 mockBuzz
                             });
 
-                Assert.Less(0, validator.HasNewPropertyNameConflicts(mockFizz.EncapsulationAttributes, mockFizz.QualifiedModuleName, Enumerable.Empty<Declaration>()));
+                //Assert.Less(0, validator.HasNewPropertyNameConflicts(mockFizz.EncapsulationAttributes, mockFizz.QualifiedModuleName, Enumerable.Empty<Declaration>()));
+                Assert.Less(0, validator.HasNewPropertyNameConflicts(mockFizz, mockFizz.QualifiedModuleName, Enumerable.Empty<Declaration>()));
             }
         }
 
@@ -115,7 +116,8 @@ Public that As TBar
                             });
 
 
-                Assert.Less(0 ,validator.HasNewPropertyNameConflicts(thisField.EncapsulationAttributes, thisField.QualifiedModuleName, Enumerable.Empty<Declaration>()));
+                //Assert.Less(0, validator.HasNewPropertyNameConflicts(thisField.EncapsulationAttributes, thisField.QualifiedModuleName, Enumerable.Empty<Declaration>()));
+                Assert.Less(0, validator.HasNewPropertyNameConflicts(thisField, thisField.QualifiedModuleName, Enumerable.Empty<Declaration>()));
             }
         }
         [Test]
@@ -146,8 +148,10 @@ Public wholeNumber As String
                 fields.Add(new EncapsulateFieldCandidate(wholeNumber, validator));
                 fields.Add(new EncapsulateFieldCandidate(longValue, validator));
 
-                encapsulatedWholeNumber.EncapsulationAttributes.PropertyName = "LongValue";
-                Assert.Less(0, validator.HasNewPropertyNameConflicts(encapsulatedWholeNumber.EncapsulationAttributes, encapsulatedWholeNumber.QualifiedModuleName, new Declaration[] {encapsulatedWholeNumber.Declaration}));
+                //encapsulatedWholeNumber.EncapsulationAttributes.PropertyName = "LongValue";
+                encapsulatedWholeNumber.PropertyName = "LongValue";
+                //Assert.Less(0, validator.HasNewPropertyNameConflicts(encapsulatedWholeNumber.EncapsulationAttributes, encapsulatedWholeNumber.QualifiedModuleName, new Declaration[] { encapsulatedWholeNumber.Declaration }));
+                Assert.Less(0, validator.HasNewPropertyNameConflicts(encapsulatedWholeNumber, encapsulatedWholeNumber.QualifiedModuleName, new Declaration[] { encapsulatedWholeNumber.Declaration }));
             }
         }
 
@@ -172,15 +176,15 @@ Public wholeNumber As String
             mock.SetupGet(m => m.PropertyName).Returns(modifiedPropertyName ?? identifiers.Property);
             mock.SetupGet(m => m.AsTypeName).Returns(asTypeName);
             mock.SetupGet(m => m.EncapsulateFlag).Returns(encapsulateFlag);
-            mock.SetupGet(m => m.EncapsulationAttributes).Returns(attributesMock);
+            //mock.SetupGet(m => m.EncapsulationAttributes).Returns(attributesMock);
             mock.SetupGet(m => m.QualifiedModuleName).Returns(new QualifiedModuleName(component));
             return mock.Object;
         }
 
-        private IFieldEncapsulationAttributes CreateAttributesMock(string targetID, string asTypeName, string modifiedPropertyName = null, bool encapsulateFlag = true)
+        private IEncapsulateFieldCandidate CreateAttributesMock(string targetID, string asTypeName, string modifiedPropertyName = null, bool encapsulateFlag = true)
         {
             var identifiers = new EncapsulationIdentifiers(targetID);
-            var mock = new Mock<IFieldEncapsulationAttributes>();
+            var mock = new Mock<IEncapsulateFieldCandidate>();
             mock.SetupGet(m => m.IdentifierName).Returns(identifiers.TargetFieldName);
             mock.SetupGet(m => m.NewFieldName).Returns(identifiers.Field);
             mock.SetupGet(m => m.PropertyName).Returns(modifiedPropertyName ?? identifiers.Property);

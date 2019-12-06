@@ -44,36 +44,36 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public void ForceNonConflictNewName(IEncapsulateFieldCandidate candidate, QualifiedModuleName qmn, Declaration target)
         {
-            var attributes = candidate.EncapsulationAttributes;
+            //var attributes = candidate.EncapsulationAttributes;
             var identifier = candidate.NewFieldName;
             var ignore = target is null ? Enumerable.Empty<Declaration>() : new Declaration[] { target };
 
             var isValidAttributeSet = HasValidEncapsulationAttributes(candidate, qmn, ignore);
             for (var idx = 1; idx < 9 && !isValidAttributeSet; idx++)
             {
-                attributes.NewFieldName = $"{identifier}{idx}";
+                candidate.NewFieldName = $"{identifier}{idx}";
                 isValidAttributeSet = HasValidEncapsulationAttributes(candidate, qmn, ignore);
             }
         }
 
         public void ForceNonConflictPropertyName(IEncapsulateFieldCandidate candidate, QualifiedModuleName qmn, Declaration target)
         {
-            var attributes = candidate.EncapsulationAttributes;
-            var identifier = attributes.PropertyName;
+            //var attributes = candidate.EncapsulationAttributes;
+            var identifier = candidate.PropertyName;
             var ignore = target is null ? Enumerable.Empty<Declaration>() : new Declaration[] { target };
             var isValidAttributeSet = HasValidEncapsulationAttributes(candidate, qmn, ignore);
             for (var idx = 1; idx < 9 && !isValidAttributeSet; idx++)
             {
-                attributes.PropertyName = $"{identifier}{idx}";
+                candidate.PropertyName = $"{identifier}{idx}";
                 isValidAttributeSet = HasValidEncapsulationAttributes(candidate, qmn, ignore);
             }
         }
 
         public bool HasValidEncapsulationAttributes(IEncapsulateFieldCandidate candidate, QualifiedModuleName qmn, IEnumerable<Declaration> ignore, DeclarationType declaration = DeclarationType.Variable)
         {
-            var attributes = candidate.EncapsulationAttributes;
-            var hasValidIdentifiers = HasValidIdentifiers(attributes, declaration);
-            var hasInternalNameConflicts = HasInternalNameConflicts(attributes);
+            //var attributes = candidate.EncapsulationAttributes;
+            var hasValidIdentifiers = HasValidIdentifiers(candidate, declaration);
+            var hasInternalNameConflicts = HasInternalNameConflicts(candidate);
 
             var isSelfConsistent = hasValidIdentifiers || hasInternalNameConflicts;
 
@@ -82,15 +82,15 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             if (!candidate.FieldNameIsExemptFromValidation)
             {
-                if (HasNewFieldNameConflicts(attributes, qmn, ignore) > 0) { return false; }
+                if (HasNewFieldNameConflicts(candidate, qmn, ignore) > 0) { return false; }
             }
 
-            if (HasNewPropertyNameConflicts(attributes, qmn, ignore) > 0) { return false; }
+            if (HasNewPropertyNameConflicts(candidate, qmn, ignore) > 0) { return false; }
 
             return true;
         }
 
-        public int HasNewPropertyNameConflicts(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, IEnumerable<Declaration> declarationsToIgnore)
+        public int HasNewPropertyNameConflicts(IEncapsulateFieldCandidate attributes, QualifiedModuleName qmn, IEnumerable<Declaration> declarationsToIgnore)
         {
             Predicate<Declaration> IsPrivateAccessiblityInOtherModule = (Declaration dec) => dec.QualifiedModuleName != qmn && dec.Accessibility.Equals(Accessibility.Private);
             Predicate<Declaration> IsInSearchScope = null;
@@ -127,7 +127,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         }
 
         //FieldNames are always Private, so only look within the same module as the field to encapsulate
-        public int HasNewFieldNameConflicts(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, IEnumerable<Declaration> declarationsToIgnore)
+        public int HasNewFieldNameConflicts(IEncapsulateFieldCandidate attributes, QualifiedModuleName qmn, IEnumerable<Declaration> declarationsToIgnore)
         {
             var rawmatches = DeclarationFinder.MatchName(attributes.NewFieldName);
             var identifierMatches = DeclarationFinder.MatchName(attributes.NewFieldName)
@@ -168,14 +168,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 || (ruleContext is VBAParser.MemberAccessExprContext);
         }
 
-        private bool HasValidIdentifiers(IFieldEncapsulationAttributes attributes, DeclarationType declarationType)
+        private bool HasValidIdentifiers(IEncapsulateFieldCandidate attributes, DeclarationType declarationType)
         {
             return VBAIdentifierValidator.IsValidIdentifier(attributes.NewFieldName, declarationType)
                 && VBAIdentifierValidator.IsValidIdentifier(attributes.PropertyName, DeclarationType.Property)
                 && VBAIdentifierValidator.IsValidIdentifier(attributes.ParameterName, DeclarationType.Parameter);
         }
 
-        private bool HasInternalNameConflicts(IFieldEncapsulationAttributes attributes)
+        private bool HasInternalNameConflicts(IEncapsulateFieldCandidate attributes)
         {
             return attributes.PropertyName.EqualsVBAIdentifier(attributes.NewFieldName)
                 || attributes.PropertyName.EqualsVBAIdentifier(attributes.ParameterName)

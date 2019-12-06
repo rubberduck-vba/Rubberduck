@@ -27,19 +27,20 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
             {
                 if (field is IEncapsulatedUserDefinedTypeField udt)
                 {
-                    udt.PropertyAccessExpression =
+                    var fd = udt as IEncapsulateFieldCandidate;
+                    fd.PropertyAccessExpression =
                         () =>
                         {
-                            var accessor = udt.EncapsulateFlag ? udt.PropertyName : udt.NewFieldName;
+                            var accessor = udt.EncapsulateFlag ? fd.PropertyName : udt.NewFieldName;
                             return $"{StateUDTField.PropertyAccessExpression()}.{accessor}";
                         };
 
-                    udt.ReferenceExpression = udt.PropertyAccessExpression;
+                    udt.ReferenceExpression = fd.PropertyAccessExpression;
 
                     foreach (var member in udt.Members)
                     {
-                        member.PropertyAccessExpression = () => $"{udt.PropertyAccessExpression()}.{member.PropertyName}";
-                        member.ReferenceExpression = () => $"{udt.PropertyAccessExpression()}.{member.PropertyName}";
+                        member.PropertyAccessExpression = () => $"{fd.PropertyAccessExpression()}.{member.PropertyName}";
+                        member.ReferenceExpression = () => $"{fd.PropertyAccessExpression()}.{member.PropertyName}";
                     }
                 }
                 else
@@ -52,8 +53,7 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
 
             foreach (var field in model.FlaggedFieldCandidates)
             {
-                var attributes = field.EncapsulationAttributes;
-                ModifyEncapsulatedField(field, /*attributes,*/ rewriteSession);
+                ModifyEncapsulatedField(field, rewriteSession);
             }
 
             SetupReferenceModifications(model);

@@ -21,10 +21,9 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
 
         protected override void ModifyEncapsulatedField(IEncapsulateFieldCandidate field, IRewriteSession rewriteSession)
         {
-            var attributes = field.EncapsulationAttributes;
             var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, TargetQMN);
 
-            if (field.Declaration.Accessibility == Accessibility.Private && attributes.NewFieldName.Equals(field.Declaration.IdentifierName))
+            if (field.Declaration.Accessibility == Accessibility.Private && field.NewFieldName.Equals(field.Declaration.IdentifierName))
             {
                 rewriter.MakeImplicitDeclarationTypeExplicit(field.Declaration);
                 return;
@@ -37,7 +36,7 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
             }
             else
             {
-                rewriter.Rename(field.Declaration, attributes.NewFieldName);
+                rewriter.Rename(field.Declaration, field.NewFieldName);
                 rewriter.SetVariableVisiblity(field.Declaration, Accessibility.Private.TokenString());
                 rewriter.MakeImplicitDeclarationTypeExplicit(field.Declaration);
             }
@@ -51,16 +50,15 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
 
             foreach (var nonUdtMemberField in nonUdtMemberFields)
             {
-                var attributes = nonUdtMemberField.EncapsulationAttributes;
 
-                if (nonUdtMemberField.Declaration.Accessibility == Accessibility.Private && attributes.NewFieldName.Equals(nonUdtMemberField.Declaration.IdentifierName))
+                if (nonUdtMemberField.Declaration.Accessibility == Accessibility.Private && nonUdtMemberField.NewFieldName.Equals(nonUdtMemberField.Declaration.IdentifierName))
                 {
                     continue;
                 }
 
                 if (nonUdtMemberField.Declaration.IsDeclaredInList())
                 {
-                    var targetIdentifier = nonUdtMemberField.Declaration.Context.GetText().Replace(attributes.IdentifierName, attributes.NewFieldName);
+                    var targetIdentifier = nonUdtMemberField.Declaration.Context.GetText().Replace(nonUdtMemberField.IdentifierName, nonUdtMemberField.NewFieldName);
                     var newField = nonUdtMemberField.Declaration.IsTypeSpecified ? $"{Tokens.Private} {targetIdentifier}" : $"{Tokens.Private} {targetIdentifier} {Tokens.As} {nonUdtMemberField.Declaration.AsTypeName}";
 
                     newContent.AddDeclarationBlock(newField);

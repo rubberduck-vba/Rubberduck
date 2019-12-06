@@ -76,7 +76,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             {
                 if (Model.EncapsulationStrategy is IEncapsulateWithBackingUserDefinedType udtStrategy)
                 {
-                    udtStrategy.StateUDTField.EncapsulationAttributes.AsTypeName = value;
+                    udtStrategy.StateUDTField.AsTypeName = value;
                 }
                 UpdatePreview();
             }
@@ -96,7 +96,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             {
                 if (Model.EncapsulationStrategy is IEncapsulateWithBackingUserDefinedType udtStrategy)
                 {
-                    udtStrategy.StateUDTField.EncapsulationAttributes.NewFieldName = value;
+                    udtStrategy.StateUDTField.NewFieldName = value;
                 }
                 UpdatePreview();
             }

@@ -2,6 +2,16 @@
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
+    public interface ISupportPropertyGenerator
+    {
+        string PropertyName { get; set; } //req'd
+        string AsTypeName { get; set; } //req'd
+        string ParameterName { get; } //req'd
+        bool ImplementLetSetterType { get; set; }//req'd
+        bool ImplementSetSetterType { get; set; }//req'd
+        Func<string> PropertyAccessExpression { set; get; } //req'd
+    }
+
     public class PropertyGenerator
     {
         public string PropertyName { get; set; }

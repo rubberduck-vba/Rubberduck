@@ -30,8 +30,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public IEncapsulateFieldCandidate CreateStateUDTField(QualifiedModuleName qmn, string identifier = DEFAULT_STATE_UDT_FIELD_IDENTIFIER, string asTypeName = DEFAULT_STATE_UDT_IDENTIFIER)
         {
-            var unselectableAttributes =  new NeverEncapsulateAttributes(identifier, asTypeName, qmn, _validator);
-            return new EncapsulateFieldCandidate(unselectableAttributes, _validator);
+            //var unselectableAttributes =  new NeverEncapsulateAttributes(identifier, asTypeName, qmn, _validator);
+            return new EncapsulateFieldCandidate(identifier, asTypeName, qmn, _validator, true);
         }
 
         public IEnumerable<IEncapsulateFieldCandidate> CreateEncapsulationCandidates(IEnumerable<Declaration> candidateFields)
@@ -105,31 +105,31 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var target = candidate.Declaration;
             if (target.IsUserDefinedTypeField())
             {
-                candidate.EncapsulationAttributes.ImplementLetSetterType = true;
-                candidate.EncapsulationAttributes.ImplementSetSetterType = false;
+                candidate.ImplementLetSetterType = true;
+                candidate.ImplementSetSetterType = false;
             }
             else if (target.IsArray)
             {
-                candidate.EncapsulationAttributes.ImplementLetSetterType = false;
-                candidate.EncapsulationAttributes.ImplementSetSetterType = false;
-                candidate.EncapsulationAttributes.AsTypeName = Tokens.Variant;
-                candidate.EncapsulationAttributes.CanBeReadWrite = false;
-                candidate.EncapsulationAttributes.IsReadOnly = true;
+                candidate.ImplementLetSetterType = false;
+                candidate.ImplementSetSetterType = false;
+                candidate.AsTypeName = Tokens.Variant;
+                candidate.CanBeReadWrite = false;
+                candidate.IsReadOnly = true;
             }
             else if (target.AsTypeName.Equals(Tokens.Variant))
             {
-                candidate.EncapsulationAttributes.ImplementLetSetterType = true;
-                candidate.EncapsulationAttributes.ImplementSetSetterType = true;
+                candidate.ImplementLetSetterType = true;
+                candidate.ImplementSetSetterType = true;
             }
             else if (target.IsObject)
             {
-                candidate.EncapsulationAttributes.ImplementLetSetterType = false;
-                candidate.EncapsulationAttributes.ImplementSetSetterType = true;
+                candidate.ImplementLetSetterType = false;
+                candidate.ImplementSetSetterType = true;
             }
             else
             {
-                candidate.EncapsulationAttributes.ImplementLetSetterType = true;
-                candidate.EncapsulationAttributes.ImplementSetSetterType = false;
+                candidate.ImplementLetSetterType = true;
+                candidate.ImplementSetSetterType = false;
             }
             return candidate;
         }

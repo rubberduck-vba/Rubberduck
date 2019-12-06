@@ -51,11 +51,12 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
 
         protected virtual IExecutableRewriteSession RefactorRewrite(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession, bool asPreview)
         {
-            var udtFieldsByTypeName = model.FlaggedUDTFieldCandidates.GroupBy((udtCandidate) => udtCandidate.AsTypeName);
+            var udtFieldsByTypeName = model.FlaggedUDTFieldCandidates.GroupBy((udtCandidate) => (udtCandidate as IEncapsulateFieldCandidate).AsTypeName);
             foreach (var udtField in model.FlaggedUDTFieldCandidates)
             {
+                var fd = udtField as IEncapsulateFieldCandidate;
                 var hasMultipleUDTFieldsOfSameType = udtFieldsByTypeName
-                    .Where(group => group.Key == udtField.AsTypeName).Single().Count() > 1;
+                    .Where(group => group.Key == fd.AsTypeName).Single().Count() > 1;
 
                 foreach (var member in udtField.Members)
                 {
@@ -175,21 +176,12 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
 
         private IEnumerable<IdentifierReference> GetUDTMemberReferencesForField(IEncapsulateFieldCandidate udtMember, IEncapsulatedUserDefinedTypeField field)
         {
-            //var fieldMAECs = field.References.Where(rf => rf.Context.Parent is VBAParser.MemberAccessExprContext).Select(r => r.Context.Parent);
-            //var refMAECs = field.Members.SelectMany(m => m.References).Where(rf => rf.Context.Parent is VBAParser.MemberAccessExprContext).Select(r => r.Context.Parent);
-            //var matches = refMAECs.Intersect(fieldMAECs);
             var refs = new List<IdentifierReference>();
             foreach (var idRef in udtMember.References)
             {
                 if (idRef.Context.TryGetAncestor<VBAParser.MemberAccessExprContext>(out var mac))
                 {
-                    //var match = field.References.Select(rf => rf.Context.Parent).Contains(mac);
                     var LHS = mac.children.First();
-                    //if (LHS.GetText().Equals(field.IdentifierName))
-                    //{
-                    //    refs.Add(idRef);
-                    //}
-
                     switch(LHS)
                     {
                         case VBAParser.SimpleNameExprContext snec:
@@ -265,26 +257,25 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
                 {
                     foreach (var member in udtField.Members)
                     {
-                        textBlocks.Add(BuildPropertiesTextBlock(member));
+                        textBlocks.Add(BuildPropertiesTextBlock(member as ISupportPropertyGenerator));
                     }
                     continue;
                 }
-                textBlocks.Add(BuildPropertiesTextBlock(field));
+                textBlocks.Add(BuildPropertiesTextBlock(field as ISupportPropertyGenerator));
             }
             return textBlocks;
         }
 
-        private string BuildPropertiesTextBlock(IEncapsulateFieldCandidate field)
+        private string BuildPropertiesTextBlock(ISupportPropertyGenerator field)
         {
-            var attributes = field.EncapsulationAttributes;
             var generator = new PropertyGenerator
             {
-                PropertyName = attributes.PropertyName,
-                AsTypeName = attributes.AsTypeName,
-                BackingField = attributes.PropertyAccessExpression(),
-                ParameterName = attributes.ParameterName,
-                GenerateSetter = attributes.ImplementSetSetterType,
-                GenerateLetter = attributes.ImplementLetSetterType
+                PropertyName = field.PropertyName,
+                AsTypeName = field.AsTypeName,
+                BackingField = field.PropertyAccessExpression(),
+                ParameterName = field.ParameterName,
+                GenerateSetter = field.ImplementSetSetterType,
+                GenerateLetter = field.ImplementLetSetterType
             };
 
             var propertyTextLines = generator.AllPropertyCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);

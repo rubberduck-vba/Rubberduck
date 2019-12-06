@@ -10,60 +10,74 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public interface IEncapsulateFieldCandidate : IFieldEncapsulationAttributes
+    public interface IEncapsulateFieldCandidate
     {
         Declaration Declaration { get; }
+        string IdentifierName { get; }
         string TargetID { get; }
-        //string IdentifierName { get; }
-        IFieldEncapsulationAttributes EncapsulationAttributes { get; }
-        //bool IsReadOnly { set; get; }
-        //bool CanBeReadWrite { get; }
-        //string PropertyName { set; get; }
-        //bool EncapsulateFlag { set; get; }
-        //string NewFieldName { get; }
-        //string AsTypeName { get; }
-        //string ParameterName { get; }
+        bool IsReadOnly { get; set; }
+        bool EncapsulateFlag { get; set; }
+        string NewFieldName { set; get; }
+        bool CanBeReadWrite { set; get; }
         bool IsUDTMember { get; }
         bool HasValidEncapsulationAttributes { get; }
-        //QualifiedModuleName QualifiedModuleName { get; }
+        QualifiedModuleName QualifiedModuleName { get; }
         IEnumerable<IdentifierReference> References { get; }
-        //bool ImplementLetSetterType { get; }
-        //bool ImplementSetSetterType { get; }
-        //Func<string> PropertyAccessExpression { set; get; }
-        //Func<string> ReferenceExpression { set; get; }
         string this[IdentifierReference idRef] { set; get; }
         bool TryGetReferenceExpression(IdentifierReference idRef, out string expression);
         bool FieldNameIsExemptFromValidation { get; }
+        Func<string> ReferenceExpression { set; get; }
+        string PropertyName { get; set; }
+        string AsTypeName { get; set; } 
+        string ParameterName { get; } 
+        bool ImplementLetSetterType { get; set; }
+        bool ImplementSetSetterType { get; set; }
+        Func<string> PropertyAccessExpression { set; get; }
     }
 
-    public interface IEncapsulatedUserDefinedTypeField : IEncapsulateFieldCandidate
+    public interface IEncapsulatedUserDefinedTypeField : IEncapsulateFieldCandidate, ISupportPropertyGenerator
     {
         IList<IEncapsulatedUserDefinedTypeMember> Members { set; get; }
         bool TypeDeclarationIsPrivate { set; get; }
     }
 
-    public class EncapsulateFieldCandidate : IEncapsulateFieldCandidate
+    public class EncapsulateFieldCandidate : IEncapsulateFieldCandidate, ISupportPropertyGenerator
     {
         protected Declaration _target;
-        protected IFieldEncapsulationAttributes _attributes;
+        protected QualifiedModuleName _qmn;
         private IEncapsulateFieldNamesValidator _validator;
         private Dictionary<IdentifierReference, string> _idRefRenames { set; get; } = new Dictionary<IdentifierReference, string>();
+        private EncapsulationIdentifiers _fieldAndProperty;
 
         public EncapsulateFieldCandidate(Declaration declaration, IEncapsulateFieldNamesValidator validator)
         {
             _target = declaration;
             AsTypeName = _target.AsTypeName;
-            _attributes = new FieldEncapsulationAttributes(_target);
+
+            _fieldAndProperty = new EncapsulationIdentifiers(_target);
+            IdentifierName = _target.IdentifierName;
+            AsTypeName = _target.AsTypeName;
+            _qmn = _target.QualifiedModuleName;
+            PropertyAccessExpression = () => NewFieldName;
+            ReferenceExpression = () => PropertyName;
+
             _validator = validator;
             _validator.ForceNonConflictEncapsulationAttributes(this, _target.QualifiedModuleName, _target);
         }
 
-        public EncapsulateFieldCandidate(IFieldEncapsulationAttributes attributes, IEncapsulateFieldNamesValidator validator)
+        public EncapsulateFieldCandidate(string identifier, string asTypeName, QualifiedModuleName qmn,/*IFieldEncapsulationAttributes attributes,*/ IEncapsulateFieldNamesValidator validator, bool neverEncapsulate = false)
         {
             _target = null;
-            _attributes = new FieldEncapsulationAttributes(attributes);
+
+            _fieldAndProperty = new EncapsulationIdentifiers(identifier, neverEncapsulate);
+            IdentifierName = identifier;
+            AsTypeName = asTypeName;
+            _qmn = qmn;
+            PropertyAccessExpression = () => NewFieldName;
+            ReferenceExpression = () => PropertyName;
+
             _validator = validator;
-            _validator.ForceNonConflictEncapsulationAttributes(this, _attributes.QualifiedModuleName, _target);
+            _validator.ForceNonConflictEncapsulationAttributes(this, qmn, _target);
         }
 
         public Declaration Declaration => _target;
@@ -74,7 +88,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 var ignore = _target != null ? new Declaration[] { _target } : Enumerable.Empty<Declaration>();
                 var declarationType = _target != null ? _target.DeclarationType : DeclarationType.Variable;
-                return _validator.HasValidEncapsulationAttributes(this, QualifiedModuleName, ignore, declarationType); //(Declaration dec) => dec.Equals(_target));
+                return _validator.HasValidEncapsulationAttributes(this, QualifiedModuleName, ignore, declarationType);
             }
         }
 
@@ -104,107 +118,55 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
+        public virtual string TargetID => _target?.IdentifierName ?? IdentifierName;
 
-        public IFieldEncapsulationAttributes EncapsulationAttributes
-        {
-            private set => _attributes = value;
-            get => this as IFieldEncapsulationAttributes; // _attributes;
-        }
-
-        public virtual string TargetID => _target?.IdentifierName ?? _attributes.IdentifierName;
-
-        public bool EncapsulateFlag
-        {
-            get => _attributes.EncapsulateFlag;
-            set => _attributes.EncapsulateFlag = value;
-        }
-
-        public bool IsReadOnly
-        {
-            get => _attributes.IsReadOnly;
-            set => _attributes.IsReadOnly = value;
-        }
-
-        public bool CanBeReadWrite
-        {
-            get => _attributes.CanBeReadWrite;
-            set => _attributes.CanBeReadWrite = value;
-        }
+        public bool EncapsulateFlag { set; get; }
+        public bool IsReadOnly { set; get; }
+        public bool CanBeReadWrite { set; get; }
 
         public string PropertyName
         {
-            get => _attributes.PropertyName;
-            set => _attributes.PropertyName = value;
+            get => _fieldAndProperty.Property;
+            set => _fieldAndProperty.Property = value;
         }
 
         public bool IsEditableReadWriteFieldIdentifier { set; get; } = true;
 
         public string NewFieldName
         {
-            get => _attributes.NewFieldName;
-            set => _attributes.NewFieldName = value;
+            get => _fieldAndProperty.Field;
+            set => _fieldAndProperty.Field = value;
         }
 
-        private string _asTypeName;
-        public string AsTypeName
-        {
-            set
-            {
-                _asTypeName = value;
-                if (_attributes != null) { _attributes.AsTypeName = value; }
-            }
-            get
-            {
-                return _attributes?.AsTypeName ?? _asTypeName;
-            }
-        } //=> _target?.AsTypeName ?? _attributes.AsTypeName;
-        //{
-        //    get => /*_target?.AsTypeName ??*/ _attributes.AsTypeName;
-        //    set => _attributes.AsTypeName = value;
-        //    //{
-        //    //    if (_target is null) { _attributes.AsTypeName = value; }
-        //    //}
-        //}
+        public string AsTypeName { set; get; }
 
         public bool IsUDTMember => _target?.DeclarationType.Equals(DeclarationType.UserDefinedTypeMember) ?? false;
 
-        public QualifiedModuleName QualifiedModuleName => Declaration?.QualifiedModuleName ?? _attributes.QualifiedModuleName;
+        public QualifiedModuleName QualifiedModuleName => _qmn;
 
         public IEnumerable<IdentifierReference> References => Declaration?.References ?? Enumerable.Empty<IdentifierReference>();
 
+        private string _identifierName;
         public string IdentifierName
         {
-            get => Declaration?.IdentifierName ?? _attributes.IdentifierName;
+            get => Declaration?.IdentifierName ?? _identifierName;
+            set => _identifierName = value;
         }
 
-        public string ParameterName => _attributes.ParameterName;
+        public string ParameterName => _fieldAndProperty.SetLetParameter;
 
-        public bool ImplementLetSetterType { get => _attributes.ImplementLetSetterType; set => _attributes.ImplementLetSetterType = value; }
-        public bool ImplementSetSetterType { get => _attributes.ImplementSetSetterType; set => _attributes.ImplementSetSetterType = value; }
+        private bool _implLet;
+        public bool ImplementLetSetterType { get => !IsReadOnly && _implLet; set => _implLet = value; }
 
-        public Func<string> PropertyAccessExpression
-        {
-            //set => _attributes.PropertyAccessExpression = value;
-            get => _attributes.PropertyAccessExpression;
-            set
-            {
-                _attributes.PropertyAccessExpression = value;
-                var test = value();
-            }
-        }
+        private bool _implSet;
+        public bool ImplementSetSetterType { get => !IsReadOnly && _implSet; set => _implSet = value; }
 
-        public Func<string> ReferenceExpression
-        {
-            get => _attributes.ReferenceExpression;
-            set
-            {
-                _attributes.ReferenceExpression = value;
-                var test = value();
-            }
-        }
+        public Func<string> PropertyAccessExpression { set; get; }
+
+        public Func<string> ReferenceExpression { set; get; }
 
         public bool FieldNameIsExemptFromValidation 
-            => Declaration?.DeclarationType.Equals(DeclarationType.UserDefinedTypeMember) ?? false || NewFieldName.EqualsVBAIdentifier(IdentifierName);
+            => Declaration?.DeclarationType.Equals(DeclarationType.UserDefinedTypeMember) ?? false;
     }
 
     public class EncapsulatedUserDefinedTypeField : EncapsulateFieldCandidate, IEncapsulatedUserDefinedTypeField
