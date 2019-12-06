@@ -31,7 +31,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             RemovedVariables[varList].Add(target);
         }
 
-        public static void RemoveDeclarationsFromVariableLists(IEncapsulateFieldRewriter rewriter)
+        public static void RemoveFieldsDeclaredInLists(IEncapsulateFieldRewriter rewriter)
         {
             foreach (var key in RemovedVariables.Keys)
             {

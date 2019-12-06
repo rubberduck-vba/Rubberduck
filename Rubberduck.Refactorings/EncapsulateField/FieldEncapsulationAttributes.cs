@@ -7,7 +7,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 {
     public interface IFieldEncapsulationAttributes
     {
-        string Identifier { get; }
+        string IdentifierName { get; }
         string PropertyName { get; set; }
         bool IsReadOnly { get; set; }
         bool EncapsulateFlag { get; set; }
@@ -17,7 +17,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         string ParameterName { get;}
         bool ImplementLetSetterType { get; set; }
         bool ImplementSetSetterType { get; set; }
-        bool FieldNameIsExemptFromValidation { get; }
+        //bool FieldNameIsExemptFromValidation { get; }
         QualifiedModuleName QualifiedModuleName { get; }
         Func<string> PropertyAccessExpression { set; get; }
         Func<string> ReferenceExpression { set; get; }
@@ -36,7 +36,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             _qmn = qmn;
             _validator = validator;
-            Identifier = identifier;
+            IdentifierName = identifier;
             NewFieldName = identifier;
             AsTypeName = asTypeName;
             PropertyAccessExpression = () => NewFieldName;
@@ -49,12 +49,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return this;
         }
 
-        public string Identifier { private set; get; }
+        public string IdentifierName { private set; get; }
 
         public string NewFieldName { set; get; }
 
         string _tossString;
-        public string PropertyName { set => _tossString = value; get => $"{neverUse}{Identifier}_{neverUse}"; }
+        public string PropertyName { set => _tossString = value; get => $"{neverUse}{IdentifierName}_{neverUse}"; }
 
         public Func<string> PropertyAccessExpression { set; get; }
 
@@ -72,7 +72,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public bool ImplementLetSetterType { get => false; set => _toss = value; }
         public bool ImplementSetSetterType { get => false; set => _toss = value; }
 
-        public bool FieldNameIsExemptFromValidation => false;
+        //public bool FieldNameIsExemptFromValidation => false;
         public QualifiedModuleName QualifiedModuleName => _qmn;
     }
 
@@ -83,24 +83,26 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public FieldEncapsulationAttributes(Declaration target)
         {
             _fieldAndProperty = new EncapsulationIdentifiers(target);
-            Identifier = target.IdentifierName;
+            IdentifierName = target.IdentifierName;
             AsTypeName = target.AsTypeName;
             _qmn = target.QualifiedModuleName;
             PropertyAccessExpression = () => NewFieldName;
-            ReferenceExpression = () => NewFieldName;
+            //ReferenceExpression = () => NewFieldName;
+            ReferenceExpression = () => PropertyName;
             _fieldNameIsAlwaysValid = target.DeclarationType.Equals(DeclarationType.UserDefinedTypeMember);
         }
 
-        public FieldEncapsulationAttributes(string identifier, string asTypeName)
-        {
-            _fieldAndProperty = new EncapsulationIdentifiers(identifier);
-            AsTypeName = asTypeName;
-            PropertyAccessExpression = () => NewFieldName;
-        }
+        //public FieldEncapsulationAttributes(string identifier, string asTypeName)
+        //{
+        //    _fieldAndProperty = new EncapsulationIdentifiers(identifier);
+        //    AsTypeName = asTypeName;
+        //    PropertyAccessExpression = () => NewFieldName;
+        //    ReferenceExpression = () => PropertyName;
+        //}
 
         public FieldEncapsulationAttributes(IFieldEncapsulationAttributes attributes)
         {
-            _fieldAndProperty = new EncapsulationIdentifiers(attributes.Identifier, attributes.NewFieldName, attributes.PropertyName);
+            _fieldAndProperty = new EncapsulationIdentifiers(attributes.IdentifierName, attributes.NewFieldName, attributes.PropertyName);
             PropertyName = attributes.PropertyName;
             IsReadOnly = attributes.IsReadOnly;
             EncapsulateFlag = attributes.EncapsulateFlag;
@@ -111,11 +113,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
             ImplementSetSetterType = attributes.ImplementSetSetterType;
             QualifiedModuleName = attributes.QualifiedModuleName;
             PropertyAccessExpression = () => NewFieldName;
+            ReferenceExpression = () => PropertyName;
         }
 
         private EncapsulationIdentifiers _fieldAndProperty;
 
-        public string Identifier { private set; get; }
+        public string IdentifierName { private set; get; }
 
         public bool CanBeReadWrite { set; get; } = true;
 
@@ -131,7 +134,20 @@ namespace Rubberduck.Refactorings.EncapsulateField
             set => _fieldAndProperty.Property = value;
         }
 
-        public Func<string> PropertyAccessExpression { set; get; }
+        private Func<string> _propertyAccessExpression;
+        public Func<string> PropertyAccessExpression
+        {
+            get
+            {
+                var test = _propertyAccessExpression();
+                return _propertyAccessExpression;
+            }
+            set
+            {
+                _propertyAccessExpression = value;
+                var test = value();
+            }
+        }
 
         public Func<string> ReferenceExpression { set; get; }
 
@@ -146,7 +162,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private bool _implSet;
         public bool ImplementSetSetterType { get => !IsReadOnly && _implSet; set => _implSet = value; }
 
-        public bool FieldNameIsExemptFromValidation => _fieldNameIsAlwaysValid || NewFieldName.EqualsVBAIdentifier(Identifier);
+        public bool FieldNameIsExemptFromValidation => _fieldNameIsAlwaysValid || NewFieldName.EqualsVBAIdentifier(IdentifierName);
         public QualifiedModuleName QualifiedModuleName
         {
             get => _qmn;

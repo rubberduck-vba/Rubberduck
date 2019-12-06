@@ -23,30 +23,23 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
 
         protected override IExecutableRewriteSession RefactorRewrite(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession, bool asPreview)
         {
-            var stateUDTField_UDTMembers = model.UDTFieldCandidates
-                    .Where(c => c.EncapsulateFlag || c.SelectedMembers.Any());
-
             foreach (var field in model.FieldCandidates)
             {
                 if (field is IEncapsulatedUserDefinedTypeField udt)
                 {
                     udt.PropertyAccessExpression =
-                        () =>   {
-                                    var accessor = udt.EncapsulateFlag || stateUDTField_UDTMembers.Contains(udt) ? udt.PropertyName : udt.NewFieldName;
-                                    return $"{StateUDTField.PropertyAccessExpression()}.{accessor}";
-                                };
+                        () =>
+                        {
+                            var accessor = udt.EncapsulateFlag ? udt.PropertyName : udt.NewFieldName;
+                            return $"{StateUDTField.PropertyAccessExpression()}.{accessor}";
+                        };
 
                     udt.ReferenceExpression = udt.PropertyAccessExpression;
 
                     foreach (var member in udt.Members)
                     {
                         member.PropertyAccessExpression = () => $"{udt.PropertyAccessExpression()}.{member.PropertyName}";
-                        member.ReferenceExpression = () => 
-                            {
-                                return member.EncapsulateFlag 
-                                    ? member.PropertyName
-                                    : $"{udt.PropertyAccessExpression()}.{member.PropertyName}";
-                            };
+                        member.ReferenceExpression = () => $"{udt.PropertyAccessExpression()}.{member.PropertyName}";
                     }
                 }
                 else
@@ -57,15 +50,15 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
                 }
             }
 
-            SetupReferenceModifications(model);
-
-            var fieldsToModify = model.EncapsulationFields
-                    .Where(encFld => !encFld.IsUDTMember && encFld.EncapsulateFlag).Union(stateUDTField_UDTMembers);
-
-            foreach (var field in fieldsToModify)
+            foreach (var field in model.FlaggedFieldCandidates)
             {
                 var attributes = field.EncapsulationAttributes;
-                ModifyEncapsulatedVariable(field, attributes, rewriteSession);
+                ModifyEncapsulatedField(field, /*attributes,*/ rewriteSession);
+            }
+
+            SetupReferenceModifications(model);
+            foreach (var field in model.FlaggedFieldCandidates)
+            {
                 RenameReferences(field, rewriteSession);
                 if (field is IEncapsulatedUserDefinedTypeField udtField)
                 {
@@ -77,7 +70,7 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
             }
 
             var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, TargetQMN);
-            RewriterRemoveWorkAround.RemoveDeclarationsFromVariableLists(rewriter);
+            RewriterRemoveWorkAround.RemoveFieldsDeclaredInLists(rewriter);
 
             InsertNewContent(model.CodeSectionStartIndex, model, rewriteSession, asPreview);
 
@@ -86,7 +79,7 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
 
         public IEncapsulateFieldCandidate StateUDTField { set; get; }
 
-        protected override void ModifyEncapsulatedVariable(IEncapsulateFieldCandidate target, IFieldEncapsulationAttributes attributes, IRewriteSession rewriteSession)
+        protected override void ModifyEncapsulatedField(IEncapsulateFieldCandidate target, /*IFieldEncapsulationAttributes attributes,*/ IRewriteSession rewriteSession)
         {
             var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, TargetQMN);
 

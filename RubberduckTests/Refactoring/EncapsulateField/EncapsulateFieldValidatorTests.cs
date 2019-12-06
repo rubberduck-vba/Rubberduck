@@ -181,7 +181,7 @@ Public wholeNumber As String
         {
             var identifiers = new EncapsulationIdentifiers(targetID);
             var mock = new Mock<IFieldEncapsulationAttributes>();
-            mock.SetupGet(m => m.Identifier).Returns(identifiers.TargetFieldName);
+            mock.SetupGet(m => m.IdentifierName).Returns(identifiers.TargetFieldName);
             mock.SetupGet(m => m.NewFieldName).Returns(identifiers.Field);
             mock.SetupGet(m => m.PropertyName).Returns(modifiedPropertyName ?? identifiers.Property);
             mock.SetupGet(m => m.AsTypeName).Returns(asTypeName);

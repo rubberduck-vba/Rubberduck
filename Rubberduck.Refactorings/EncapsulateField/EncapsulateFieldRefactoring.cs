@@ -77,7 +77,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         }
 
         //Get rid of Model property after improving the validator ctor
-        private IEnumerable<IEncapsulateFieldCandidate> CandidateFields() => Model?.EncapsulationFields ?? Enumerable.Empty<IEncapsulateFieldCandidate>();
+        private IEnumerable<IEncapsulateFieldCandidate> CandidateFields() => Model?.FieldCandidates ?? Enumerable.Empty<IEncapsulateFieldCandidate>();
 
         protected override void RefactorImpl(EncapsulateFieldModel model)
         {

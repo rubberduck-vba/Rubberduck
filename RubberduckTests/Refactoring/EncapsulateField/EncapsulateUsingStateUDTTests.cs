@@ -57,10 +57,9 @@ End Type
 Private my|Bar As TBar";
 
 
-            var userInput = new UserInputDataObject("myBar");
-            userInput["myBar"].EncapsulateFlag = false;
-            userInput.AddUDTMemberNameFlagPairs(("myBar", "First", true));
-            userInput.AddUDTMemberNameFlagPairs(("myBar", "Second", true));
+            var userInput = new UserInputDataObject()
+                .AddAttributeSet("myBar");
+
             userInput.EncapsulateAsUDT = true;
 
             var presenterAction = Support.SetParameters(userInput);
@@ -71,14 +70,13 @@ Private my|Bar As TBar";
             StringAssert.Contains("this.MyBar.Second = value", actualCode);
             StringAssert.Contains($"Second = this.MyBar.Second", actualCode);
             StringAssert.Contains($"MyBar As TBar", actualCode);
-            StringAssert.DoesNotContain($"myBar As TBar", actualCode);
+            StringAssert.Contains($"MyBar As TBar", actualCode);
         }
 
-        [TestCase(false, "this.MyBar.First = newValue")]
-        [TestCase(true, "  First = newValue")]
+        [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        public void UserDefinedTypeMembers_UDTFieldReferences(bool encapsulateFirst, string expected)
+        public void UserDefinedTypeMembers_UDTFieldReferences()
         {
             string inputCode =
 $@"
@@ -94,16 +92,15 @@ Public Sub Foo(newValue As String)
 End Sub";
 
 
-            var userInput = new UserInputDataObject("myBar");
-            userInput["myBar"].EncapsulateFlag = false;
-            userInput.AddUDTMemberNameFlagPairs(("myBar", "First", encapsulateFirst));
-            userInput.AddUDTMemberNameFlagPairs(("myBar", "Second", true));
+            var userInput = new UserInputDataObject()
+                .AddAttributeSet("myBar");
+
             userInput.EncapsulateAsUDT = true;
 
             var presenterAction = Support.SetParameters(userInput);
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            StringAssert.Contains(expected, actualCode);
+            StringAssert.Contains("  First = newValue", actualCode);
         }
 
         [Test]
@@ -118,9 +115,11 @@ Public bar As String
 Public foobar As Byte
 ";
 
-            var userInput = new UserInputDataObject("foo", encapsulationFlag: true);
-            userInput.AddAttributeSet("bar", encapsulationFlag: true);
-            userInput.AddAttributeSet("foobar", encapsulationFlag: true);
+            var userInput = new UserInputDataObject()
+                .AddAttributeSet("foo")
+                .AddAttributeSet("bar")
+                .AddAttributeSet("foobar");
+
             userInput.EncapsulateAsUDT = true;
 
             var presenterAction = Support.SetParameters(userInput);
@@ -149,9 +148,9 @@ Public fo|o As Long
 Public myBar As TBar
 ";
 
-            var userInput = new UserInputDataObject("foo", encapsulationFlag: true);
-            userInput.AddAttributeSet("myBar", encapsulationFlag: true);
-            //userInput.AddUDTMemberNameFlagPairs(("myBar", "First", true), ("myBar", "Second", true));
+            var userInput = new UserInputDataObject()
+                .AddAttributeSet("myBar");
+
             userInput.EncapsulateAsUDT = true;
 
             var presenterAction = Support.SetParameters(userInput);

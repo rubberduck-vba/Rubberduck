@@ -44,26 +44,22 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             return SetParameters(field, clientAttrs, asUDT);
         }
 
-        public Func<EncapsulateFieldModel, EncapsulateFieldModel> SetParameters(UserInputDataObject userModifications)
+        public Func<EncapsulateFieldModel, EncapsulateFieldModel> SetParameters(UserInputDataObject userInput)
         {
             return model =>
             {
-                model.EncapsulateWithUDT = userModifications.EncapsulateAsUDT;
-                foreach (var testModifiedAttribute in userModifications.EncapsulateFieldAttributes)
+                model.EncapsulateWithUDT = userInput.EncapsulateAsUDT;
+                foreach (var testModifiedAttribute in userInput.EncapsulateFieldAttributes)
                 {
-                    var attrsInitializedByTheRefactoring = model[testModifiedAttribute.TargetFieldName].EncapsulationAttributes;
+                    var attrsInitializedByTheRefactoring = model[testModifiedAttribute.TargetFieldName]; //.EncapsulationAttributes;
 
                     attrsInitializedByTheRefactoring.PropertyName = testModifiedAttribute.PropertyName;
                     attrsInitializedByTheRefactoring.EncapsulateFlag = testModifiedAttribute.EncapsulateFlag;
 
-                    var currentAttributes = model[testModifiedAttribute.TargetFieldName].EncapsulationAttributes;
-                    currentAttributes.PropertyName = attrsInitializedByTheRefactoring.PropertyName;
-                    currentAttributes.EncapsulateFlag = attrsInitializedByTheRefactoring.EncapsulateFlag;
+                    //var currentAttributes = model[testModifiedAttribute.TargetFieldName].EncapsulationAttributes;
+                    //currentAttributes.PropertyName = attrsInitializedByTheRefactoring.PropertyName;
+                    //currentAttributes.EncapsulateFlag = attrsInitializedByTheRefactoring.EncapsulateFlag;
 
-                }
-                foreach ((string instanceVariable, string memberName, bool flag) in userModifications.UDTMemberNameFlagPairs)
-                {
-                    model[$"{instanceVariable}.{memberName}"].EncapsulateFlag = flag;
                 }
                 return model;
             };
@@ -139,15 +135,21 @@ namespace RubberduckTests.Refactoring.EncapsulateField
         private List<TestEncapsulationAttributes> _userInput = new List<TestEncapsulationAttributes>();
         private List<(string, string, bool)> _udtNameFlagPairs = new List<(string, string, bool)>();
 
-        public UserInputDataObject(string fieldName, string propertyName = null, bool encapsulationFlag = true, bool isReadOnly = false)
-            => AddAttributeSet(fieldName, propertyName, encapsulationFlag, isReadOnly);
+        public UserInputDataObject() { }
 
-        public void AddAttributeSet(string fieldName, string propertyName = null, bool encapsulationFlag = true, bool isReadOnly = false)
+        public UserInputDataObject(string fieldName, string propertyName = null, bool encapsulationFlag = true, bool isReadOnly = false)
+            : this()
+        {
+            AddAttributeSet(fieldName, propertyName, encapsulationFlag, isReadOnly);
+        }
+
+        public UserInputDataObject AddAttributeSet(string fieldName, string propertyName = null, bool encapsulationFlag = true, bool isReadOnly = false)
         {
             var attrs = new TestEncapsulationAttributes(fieldName, encapsulationFlag, isReadOnly);
             attrs.PropertyName = propertyName ?? attrs.PropertyName;
 
             _userInput.Add(attrs);
+            return this;
         }
 
         public bool EncapsulateAsUDT { set; get; }
@@ -158,9 +160,9 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
         public IEnumerable<TestEncapsulationAttributes> EncapsulateFieldAttributes => _userInput;
 
-        public void AddUDTMemberNameFlagPairs(params (string, string, bool)[] nameFlagPairs)
-            => _udtNameFlagPairs.AddRange(nameFlagPairs);
+        //public void AddUDTMemberNameFlagPairs(params (string, string, bool)[] nameFlagPairs)
+        //    => _udtNameFlagPairs.AddRange(nameFlagPairs);
 
-        public IEnumerable<(string, string, bool)> UDTMemberNameFlagPairs => _udtNameFlagPairs;
+        //public IEnumerable<(string, string, bool)> UDTMemberNameFlagPairs => _udtNameFlagPairs;
     }
 }

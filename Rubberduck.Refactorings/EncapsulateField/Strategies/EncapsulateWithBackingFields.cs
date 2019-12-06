@@ -19,53 +19,29 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
         {
         }
 
-        protected override void ModifyEncapsulatedVariable(IEncapsulateFieldCandidate target, IFieldEncapsulationAttributes attributes, IRewriteSession rewriteSession)
+        protected override void ModifyEncapsulatedField(IEncapsulateFieldCandidate field, IRewriteSession rewriteSession)
         {
+            var attributes = field.EncapsulationAttributes;
             var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, TargetQMN);
 
-            if (target.Declaration.Accessibility == Accessibility.Private && attributes.NewFieldName.Equals(target.Declaration.IdentifierName))
+            if (field.Declaration.Accessibility == Accessibility.Private && attributes.NewFieldName.Equals(field.Declaration.IdentifierName))
             {
-                rewriter.MakeImplicitDeclarationTypeExplicit(target.Declaration);
+                rewriter.MakeImplicitDeclarationTypeExplicit(field.Declaration);
                 return;
             }
 
-            if (target.Declaration.IsDeclaredInList())
+            if (field.Declaration.IsDeclaredInList())
             {
-                RewriterRemoveWorkAround.Remove(target.Declaration, rewriter);
+                RewriterRemoveWorkAround.Remove(field.Declaration, rewriter);
                 //rewriter.Remove(target.Declaration);
             }
             else
             {
-                rewriter.Rename(target.Declaration, attributes.NewFieldName);
-                rewriter.SetVariableVisiblity(target.Declaration, Accessibility.Private.TokenString());
-                rewriter.MakeImplicitDeclarationTypeExplicit(target.Declaration);
+                rewriter.Rename(field.Declaration, attributes.NewFieldName);
+                rewriter.SetVariableVisiblity(field.Declaration, Accessibility.Private.TokenString());
+                rewriter.MakeImplicitDeclarationTypeExplicit(field.Declaration);
             }
             return;
-        }
-
-        protected override IExecutableRewriteSession RefactorRewrite(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession, bool asPreview)
-        {
-            foreach (var field in model.UDTFieldCandidates)
-            {
-                if (!field.TypeDeclarationIsPrivate)
-                {
-                    field.ReferenceExpression = () => field.PropertyName;
-                }
-                else
-                {
-                    foreach (var member in field.Members)
-                    {
-                        member.PropertyAccessExpression = () => $"{field.PropertyAccessExpression()}.{member.IdentifierName}";
-                    }
-                }
-            }
-
-            foreach (var field in model.FieldCandidates.Except(model.UDTFieldCandidates).Where(fld => fld.EncapsulateFlag))
-            {
-                field.ReferenceExpression = () => field.PropertyName;
-            }
-
-            return base.RefactorRewrite(model, rewriteSession, asPreview);
         }
 
         protected override EncapsulateFieldNewContent LoadNewDeclarationsContent(EncapsulateFieldNewContent newContent, IEnumerable<IEncapsulateFieldCandidate> encapsulationCandates)
@@ -84,7 +60,7 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
 
                 if (nonUdtMemberField.Declaration.IsDeclaredInList())
                 {
-                    var targetIdentifier = nonUdtMemberField.Declaration.Context.GetText().Replace(attributes.Identifier, attributes.NewFieldName);
+                    var targetIdentifier = nonUdtMemberField.Declaration.Context.GetText().Replace(attributes.IdentifierName, attributes.NewFieldName);
                     var newField = nonUdtMemberField.Declaration.IsTypeSpecified ? $"{Tokens.Private} {targetIdentifier}" : $"{Tokens.Private} {targetIdentifier} {Tokens.As} {nonUdtMemberField.Declaration.AsTypeName}";
 
                     newContent.AddDeclarationBlock(newField);

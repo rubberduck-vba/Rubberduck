@@ -21,17 +21,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly IEncapsulateFieldNamesValidator _validator;
         private List<IEncapsulateFieldCandidate> _encapsulatedFields = new List<IEncapsulateFieldCandidate>();
 
-        //TODO: This needs to go away
-        private bool _useNewStructure;
-
         public EncapsulationCandidateFactory(IDeclarationFinderProvider declarationFinderProvider, IEncapsulateFieldNamesValidator validator)
         {
 
             _declarationFinderProvider = declarationFinderProvider;
             _validator = validator;
-
-            //TODO: This needs to go away
-            _useNewStructure = File.Exists("C:\\Users\\Brian\\Documents\\UseNewUDTStructure.txt");
         }
 
         public IEncapsulateFieldCandidate CreateStateUDTField(QualifiedModuleName qmn, string identifier = DEFAULT_STATE_UDT_FIELD_IDENTIFIER, string asTypeName = DEFAULT_STATE_UDT_IDENTIFIER)
@@ -57,13 +51,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 var encapsulatedUDTField = _encapsulatedFields.Where(ef => ef.Declaration == udtField).Single();
 
-                var moduleHasMultipleInstancesOfUDT = candidateFields.Any(fld => fld != encapsulatedUDTField.Declaration && encapsulatedUDTField.AsTypeName.Equals(fld.AsTypeName));
                 var parent = encapsulatedUDTField as IEncapsulatedUserDefinedTypeField;
                 parent.TypeDeclarationIsPrivate = udtFieldToUdtDeclarationMap[udtField].UserDefinedType.Accessibility.Equals(Accessibility.Private);
 
                 foreach (var udtMember in udtFieldToUdtDeclarationMap[udtField].Item2)
                 {
-                    IEncapsulateFieldCandidate encapsulatedUDTMember = new EncapsulatedUserDefinedTypeMember(udtMember, encapsulatedUDTField, _validator, moduleHasMultipleInstancesOfUDT);
+                    var encapsulatedUDTMember = new EncapsulatedUserDefinedTypeMember(udtMember, encapsulatedUDTField, _validator) as IEncapsulatedUserDefinedTypeMember;
                     encapsulatedUDTMember = ApplyTypeSpecificAttributes(encapsulatedUDTMember);
                     parent.Members.Add(encapsulatedUDTMember);
                     encapsulatedUDTMember.PropertyAccessExpression =
@@ -72,8 +65,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                            var prefix = encapsulatedUDTField.EncapsulateFlag
                                       ? encapsulatedUDTField.NewFieldName
                                       : encapsulatedUDTField.IdentifierName;
-
-                           return $"{prefix}.{encapsulatedUDTMember.NewFieldName}";
+                            return $"{prefix}.{encapsulatedUDTMember.IdentifierName}";
                        };
                 }
             }
@@ -108,7 +100,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return (udtVariable, userDefinedTypeDeclaration, udtMembers);
         }
 
-        private IEncapsulateFieldCandidate ApplyTypeSpecificAttributes(IEncapsulateFieldCandidate candidate)
+        private T ApplyTypeSpecificAttributes<T>(T candidate) where T: IEncapsulateFieldCandidate
         {
             var target = candidate.Declaration;
             if (target.IsUserDefinedTypeField())

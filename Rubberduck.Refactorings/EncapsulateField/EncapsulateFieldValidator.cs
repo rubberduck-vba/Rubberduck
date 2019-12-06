@@ -13,68 +13,11 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    //public interface IDeclarationFacade
-    //{
-    //    DeclarationType DeclarationType { get; }
-    //    string IdentifierName { get;}
-    //    string AsTypeName { get; }
-    //    Accessibility Accessibility { get; }
-    //    QualifiedModuleName QualifiedModuleName { get; }
-    //    IEnumerable<IdentifierReference> References { get; }
-    //}
-
-    //public struct WrappedDeclaration : IDeclarationFacade
-    //{
-    //    public WrappedDeclaration(Declaration declaration)
-    //    {
-    //        DeclarationType = declaration.DeclarationType;
-    //        IdentifierName = declaration.IdentifierName;
-    //        Accessibility = declaration.Accessibility;
-    //        References = declaration.References;
-    //        AsTypeName = declaration.AsTypeName;
-    //        QualifiedModuleName = declaration.QualifiedModuleName;
-    //    }
-
-    //    public DeclarationType DeclarationType { set; get; }
-    //    public string IdentifierName { set; get; }
-    //    public string AsTypeName { set; get; }
-    //    public Accessibility Accessibility { set; get; }
-    //    public QualifiedModuleName QualifiedModuleName { set; get; }
-    //    public IEnumerable<IdentifierReference> References { set; get; }
-    //}
-
-    //public struct ProposedDeclaration : IDeclarationFacade
-    //{
-
-    //    public ProposedDeclaration(IEncapsulatedFieldDeclaration efd, DeclarationType declarationType)
-    //    {
-    //        DeclarationType = declarationType;
-    //        IdentifierName = efd.PropertyName;
-    //        Accessibility = Accessibility.Public;
-    //        References = efd.References;
-    //        if (declarationType.Equals(DeclarationType.Variable))
-    //        {
-    //            IdentifierName = efd.NewFieldName;
-    //            Accessibility = Accessibility.Private;
-    //            References = Enumerable.Empty<IdentifierReference>();
-    //        }
-    //        AsTypeName = efd.AsTypeName;
-    //        QualifiedModuleName = efd.QualifiedModuleName;
-    //    }
-
-    //    public DeclarationType DeclarationType { set;  get; }
-    //    public string IdentifierName { set;  get; }
-    //    public string AsTypeName { set;  get; }
-    //    public Accessibility Accessibility { set;  get; }
-    //    public QualifiedModuleName QualifiedModuleName { set;  get; }
-    //    public IEnumerable<IdentifierReference> References { set; get; }
-    //}
-
     public interface IEncapsulateFieldNamesValidator
     {
-        bool HasValidEncapsulationAttributes(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, IEnumerable<Declaration> ignore, DeclarationType declarationType);
-        void ForceNonConflictEncapsulationAttributes(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, Declaration target);
-        void ForceNonConflictPropertyName(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, Declaration target);
+        bool HasValidEncapsulationAttributes(IEncapsulateFieldCandidate attributes, QualifiedModuleName qmn, IEnumerable<Declaration> ignore, DeclarationType declarationType);
+        void ForceNonConflictEncapsulationAttributes(IEncapsulateFieldCandidate attributes, QualifiedModuleName qmn, Declaration target);
+        void ForceNonConflictPropertyName(IEncapsulateFieldCandidate attributes, QualifiedModuleName qmn, Declaration target);
     }
 
     public class EncapsulateFieldNamesValidator : IEncapsulateFieldNamesValidator
@@ -89,43 +32,46 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private DeclarationFinder DeclarationFinder => _declarationFinderProvider.DeclarationFinder;
 
-        public void ForceNonConflictEncapsulationAttributes(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, Declaration target)
+        public void ForceNonConflictEncapsulationAttributes(IEncapsulateFieldCandidate candidate, QualifiedModuleName qmn, Declaration target)
         {
             if (target?.DeclarationType.HasFlag(DeclarationType.UserDefinedTypeMember) ?? false)
             {
-                ForceNonConflictPropertyName(attributes, qmn, target);
+                ForceNonConflictPropertyName(candidate, qmn, target);
                 return;
             }
-            ForceNonConflictNewName(attributes, qmn, target);
+            ForceNonConflictNewName(candidate, qmn, target);
         }
 
-        public void ForceNonConflictNewName(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, Declaration target)
+        public void ForceNonConflictNewName(IEncapsulateFieldCandidate candidate, QualifiedModuleName qmn, Declaration target)
         {
-            var identifier = attributes.NewFieldName;
+            var attributes = candidate.EncapsulationAttributes;
+            var identifier = candidate.NewFieldName;
             var ignore = target is null ? Enumerable.Empty<Declaration>() : new Declaration[] { target };
 
-            var isValidAttributeSet = HasValidEncapsulationAttributes(attributes, qmn, ignore);
+            var isValidAttributeSet = HasValidEncapsulationAttributes(candidate, qmn, ignore);
             for (var idx = 1; idx < 9 && !isValidAttributeSet; idx++)
             {
                 attributes.NewFieldName = $"{identifier}{idx}";
-                isValidAttributeSet = HasValidEncapsulationAttributes(attributes, qmn, ignore);
+                isValidAttributeSet = HasValidEncapsulationAttributes(candidate, qmn, ignore);
             }
         }
 
-        public void ForceNonConflictPropertyName(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, Declaration target)
+        public void ForceNonConflictPropertyName(IEncapsulateFieldCandidate candidate, QualifiedModuleName qmn, Declaration target)
         {
+            var attributes = candidate.EncapsulationAttributes;
             var identifier = attributes.PropertyName;
             var ignore = target is null ? Enumerable.Empty<Declaration>() : new Declaration[] { target };
-            var isValidAttributeSet = HasValidEncapsulationAttributes(attributes, qmn, ignore);
+            var isValidAttributeSet = HasValidEncapsulationAttributes(candidate, qmn, ignore);
             for (var idx = 1; idx < 9 && !isValidAttributeSet; idx++)
             {
                 attributes.PropertyName = $"{identifier}{idx}";
-                isValidAttributeSet = HasValidEncapsulationAttributes(attributes, qmn, ignore);
+                isValidAttributeSet = HasValidEncapsulationAttributes(candidate, qmn, ignore);
             }
         }
 
-        public bool HasValidEncapsulationAttributes(IFieldEncapsulationAttributes attributes, QualifiedModuleName qmn, IEnumerable<Declaration> ignore, DeclarationType declaration = DeclarationType.Variable)
+        public bool HasValidEncapsulationAttributes(IEncapsulateFieldCandidate candidate, QualifiedModuleName qmn, IEnumerable<Declaration> ignore, DeclarationType declaration = DeclarationType.Variable)
         {
+            var attributes = candidate.EncapsulationAttributes;
             var hasValidIdentifiers = HasValidIdentifiers(attributes, declaration);
             var hasInternalNameConflicts = HasInternalNameConflicts(attributes);
 
@@ -134,7 +80,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             if (!isSelfConsistent) { return false; }
 
 
-            if (!attributes.FieldNameIsExemptFromValidation)
+            if (!candidate.FieldNameIsExemptFromValidation)
             {
                 if (HasNewFieldNameConflicts(attributes, qmn, ignore) > 0) { return false; }
             }

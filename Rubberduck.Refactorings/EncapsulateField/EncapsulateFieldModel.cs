@@ -24,7 +24,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> _udtFieldToUdtDeclarationMap = new Dictionary<Declaration, (Declaration, IEnumerable<Declaration>)>();
 
-        public EncapsulateFieldModel(Declaration target, IDeclarationFinderProvider declarationFinderProvider, /*IEnumerable<Declaration> allMemberFields, IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> udtFieldToUdtDeclarationMap,*/ IIndenter indenter, IEncapsulateFieldNamesValidator validator, Func<EncapsulateFieldModel, string> previewFunc)
+        public EncapsulateFieldModel(Declaration target, IDeclarationFinderProvider declarationFinderProvider, IIndenter indenter, IEncapsulateFieldNamesValidator validator, Func<EncapsulateFieldModel, string> previewFunc)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _indenter = indenter;
@@ -43,10 +43,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             FieldCandidates.AddRange(candidates);
 
-            AllEncapsulationCandidates = Enumerable.Empty<IEncapsulateFieldCandidate>()
-                .Concat(FieldCandidates)
-                .Concat(UDTFieldCandidates.SelectMany(c => c.Members)).ToList();
-
             EncapsulationStrategy = new EncapsulateWithBackingFields(_targetQMN, _indenter, _validator);
             this[target].EncapsulateFlag = true;
 
@@ -57,23 +53,26 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public List<IEncapsulateFieldCandidate> FieldCandidates { set; get; } = new List<IEncapsulateFieldCandidate>();
 
         public IEnumerable<IEncapsulateFieldCandidate> FlaggedFieldCandidates
-            => FieldCandidates.Where(v => v.EncapsulationAttributes.EncapsulateFlag);
+            => FieldCandidates.Where(v => v.EncapsulateFlag);
 
-        public IEnumerable<IEncapsulatedUserDefinedTypeField> UDTFieldCandidates => FieldCandidates.Where(v => v is IEncapsulatedUserDefinedTypeField).Cast<IEncapsulatedUserDefinedTypeField>();
+        public IEnumerable<IEncapsulatedUserDefinedTypeField> UDTFieldCandidates 
+            => FieldCandidates
+                    .Where(v => v is IEncapsulatedUserDefinedTypeField)
+                    .Cast<IEncapsulatedUserDefinedTypeField>();
 
-        private List<IEncapsulateFieldCandidate> AllEncapsulationCandidates { get; } = new List<IEncapsulateFieldCandidate>();
+        public IEnumerable<IEncapsulatedUserDefinedTypeField> FlaggedUDTFieldCandidates 
+            => FlaggedFieldCandidates
+                    .Where(v => v is IEncapsulatedUserDefinedTypeField)
+                    .Cast<IEncapsulatedUserDefinedTypeField>();
 
         public IEnumerable<IEncapsulateFieldCandidate> FlaggedEncapsulationFields
-            => AllEncapsulationCandidates.Where(v => v.EncapsulationAttributes.EncapsulateFlag);
-
-        public IEnumerable<IEncapsulateFieldCandidate> EncapsulationFields
-            => AllEncapsulationCandidates;
+            => FlaggedFieldCandidates;
 
         public IEncapsulateFieldCandidate this[string encapsulatedFieldIdentifier]
-            => AllEncapsulationCandidates.Where(c => c.TargetID.Equals(encapsulatedFieldIdentifier)).Single();
+            => FieldCandidates.Where(c => c.TargetID.Equals(encapsulatedFieldIdentifier)).Single();
 
         public IEncapsulateFieldCandidate this[Declaration fieldDeclaration]
-            => AllEncapsulationCandidates.Where(c => c.Declaration == fieldDeclaration).Single();
+            => FieldCandidates.Where(c => c.Declaration == fieldDeclaration).Single();
 
         public IEncapsulateFieldStrategy EncapsulationStrategy { set; get; }
 
