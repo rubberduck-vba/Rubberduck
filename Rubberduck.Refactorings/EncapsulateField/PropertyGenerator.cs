@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Rubberduck.SmartIndenter;
+using System;
+using System.Collections.Generic;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -10,9 +12,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
         string ParameterName { get; }
         bool GenerateLetter { get; }
         bool GenerateSetter { get; }
+        bool UsesSetAssignment { get; }
     }
 
-    public struct PropertyGeneratorDataObject : IPropertyGeneratorSpecification
+    public struct PropertyGeneratorSpecification : IPropertyGeneratorSpecification
     {
         public string PropertyName { get; set; }
         public string BackingField { get; set; }
@@ -20,6 +23,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public string ParameterName { get; set; }
         public bool GenerateLetter { get; set; }
         public bool GenerateSetter { get; set; }
+        public bool UsesSetAssignment { get; set; }
     }
 
     public class PropertyGenerator
@@ -34,18 +38,28 @@ namespace Rubberduck.Refactorings.EncapsulateField
             ParameterName = spec.ParameterName;
             GenerateLetter = spec.GenerateLetter;
             GenerateSetter = spec.GenerateSetter;
+            UsesSetAssignment = spec.UsesSetAssignment;
         }
+
         public string PropertyName { get; set; }
         public string BackingField { get; set; }
         public string AsTypeName { get; set; }
         public string ParameterName { get; set; }
         public bool GenerateLetter { get; set; }
         public bool GenerateSetter { get; set; }
+        public bool UsesSetAssignment { get; set; }
 
         public string AllPropertyCode =>
             $"{GetterCode}{(GenerateLetter ? LetterCode : string.Empty)}{(GenerateSetter ? SetterCode : string.Empty)}";
 
-        public string GetterCode
+        public IEnumerable<string> AsEnumerableLines => AllPropertyCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+
+        public string AsPropertyBlock(IIndenter indenter)
+        {
+            return string.Join(Environment.NewLine, indenter.Indent(AsEnumerableLines, true));
+        }
+
+        private string GetterCode
         {
             get
             {
@@ -64,13 +78,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
                 return string.Join(Environment.NewLine,
                                    $"Public Property Get {PropertyName}() As {AsTypeName}",
-                                   $"    {(GenerateSetter ? "Set " : string.Empty)}{PropertyName} = {BackingField}",
+                                   $"    {(UsesSetAssignment ? "Set " : string.Empty)}{PropertyName} = {BackingField}",
                                    "End Property",
                                    Environment.NewLine);
             }
         }
 
-        public string SetterCode
+        private string SetterCode
         {
             get
             {
@@ -86,7 +100,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        public string LetterCode
+        private string LetterCode
         {
             get
             {

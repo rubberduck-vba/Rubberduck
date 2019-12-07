@@ -17,19 +17,19 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly IIndenter _indenter;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IEncapsulateFieldNamesValidator _validator;
-        private readonly Func<EncapsulateFieldModel, string> _previewFunc;
+        private readonly Func<EncapsulateFieldModel, string> _previewDelegate;
         private QualifiedModuleName _targetQMN;
 
         private bool _useNewStructure;
 
         private IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> _udtFieldToUdtDeclarationMap = new Dictionary<Declaration, (Declaration, IEnumerable<Declaration>)>();
 
-        public EncapsulateFieldModel(Declaration target, IDeclarationFinderProvider declarationFinderProvider, IIndenter indenter, IEncapsulateFieldNamesValidator validator, Func<EncapsulateFieldModel, string> previewFunc)
+        public EncapsulateFieldModel(Declaration target, IDeclarationFinderProvider declarationFinderProvider, IIndenter indenter, IEncapsulateFieldNamesValidator validator, Func<EncapsulateFieldModel, string> previewDelegate)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _indenter = indenter;
             _validator = validator;
-            _previewFunc = previewFunc;
+            _previewDelegate = previewDelegate;
             _targetQMN = target.QualifiedModuleName;
 
             _useNewStructure = File.Exists("C:\\Users\\Brian\\Documents\\UseNewUDTStructure.txt");
@@ -68,8 +68,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public IEnumerable<IEncapsulateFieldCandidate> FlaggedEncapsulationFields
             => FlaggedFieldCandidates;
 
-        public IEncapsulateFieldCandidate this[string encapsulatedFieldIdentifier]
-            => FieldCandidates.Where(c => c.TargetID.Equals(encapsulatedFieldIdentifier)).Single();
+        public IEncapsulateFieldCandidate this[string encapsulatedFieldTargetID]
+            => FieldCandidates.Where(c => c.TargetID.Equals(encapsulatedFieldTargetID)).Single();
 
         public IEncapsulateFieldCandidate this[Declaration fieldDeclaration]
             => FieldCandidates.Where(c => c.Declaration == fieldDeclaration).Single();
@@ -80,9 +80,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             set
             {
-                if (value && EncapsulationStrategy is EncapsulateWithBackingUserDefinedType) { return; }
-
-                if (!value && EncapsulationStrategy is EncapsulateWithBackingFields) { return; }
+                if ((value && EncapsulationStrategy is EncapsulateWithBackingUserDefinedType)
+                    || (!value && EncapsulationStrategy is EncapsulateWithBackingFields)) { return; }
 
                 if (value)
                 {
@@ -100,10 +99,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => EncapsulationStrategy is EncapsulateWithBackingUserDefinedType;
         }
 
-        public string PreviewRefactoring()
-        {
-            return _previewFunc(this);
-        }
+        public string PreviewRefactoring() => _previewDelegate(this);
 
         public int? CodeSectionStartIndex
         {

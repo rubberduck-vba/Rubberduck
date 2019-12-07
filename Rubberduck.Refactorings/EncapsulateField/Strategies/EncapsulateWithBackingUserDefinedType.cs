@@ -23,83 +23,48 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
 
         protected override IExecutableRewriteSession RefactorRewrite(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession, bool asPreview)
         {
-            foreach (var field in model.FieldCandidates)
+            foreach (var field in model.FlaggedFieldCandidates)
             {
                 if (field is IEncapsulatedUserDefinedTypeField udt)
                 {
-                    var fd = udt as IEncapsulateFieldCandidate;
-                    fd.PropertyAccessExpression =
-                        () =>
-                        {
-                            var accessor = udt.EncapsulateFlag ? fd.PropertyName : udt.NewFieldName;
-                            return $"{StateUDTField.PropertyAccessExpression()}.{accessor}";
-                        };
+                    udt.PropertyAccessExpression = () => $"{StateUDTField.PropertyAccessExpression()}.{udt.PropertyName}";
 
-                    udt.ReferenceExpression = fd.PropertyAccessExpression;
+                    udt.ReferenceExpression = udt.PropertyAccessExpression;
 
                     foreach (var member in udt.Members)
                     {
-                        member.PropertyAccessExpression = () => $"{fd.PropertyAccessExpression()}.{member.PropertyName}";
-                        member.ReferenceExpression = () => $"{fd.PropertyAccessExpression()}.{member.PropertyName}";
+                        member.PropertyAccessExpression = () => $"{udt.PropertyAccessExpression()}.{member.PropertyName}";
+                        member.ReferenceExpression = () => $"{udt.PropertyAccessExpression()}.{member.PropertyName}";
                     }
                 }
                 else
                 {
-                    var efd = field;
-                    efd.PropertyAccessExpression = () => $"{StateUDTField.PropertyAccessExpression()}.{efd.PropertyName}";
-                    efd.ReferenceExpression = efd.PropertyAccessExpression;
+                    field.PropertyAccessExpression = () => $"{StateUDTField.PropertyAccessExpression()}.{field.PropertyName}";
+                    field.ReferenceExpression = field.PropertyAccessExpression;
                 }
             }
 
-            foreach (var field in model.FlaggedFieldCandidates)
-            {
-                ModifyEncapsulatedField(field, rewriteSession);
-            }
-
-            SetupReferenceModifications(model);
-            foreach (var field in model.FlaggedFieldCandidates)
-            {
-                RenameReferences(field, rewriteSession);
-                if (field is IEncapsulatedUserDefinedTypeField udtField)
-                {
-                    foreach (var member in udtField.Members)
-                    {
-                        RenameReferences(member, rewriteSession);
-                    }
-                }
-            }
-
-            var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, TargetQMN);
-            RewriterRemoveWorkAround.RemoveFieldsDeclaredInLists(rewriter);
-
-            InsertNewContent(model.CodeSectionStartIndex, model, rewriteSession, asPreview);
-
-            return rewriteSession;
+            return base.RefactorRewrite(model, rewriteSession, asPreview);
         }
 
         public IEncapsulateFieldCandidate StateUDTField { set; get; }
 
-        protected override void ModifyEncapsulatedField(IEncapsulateFieldCandidate target, /*IFieldEncapsulationAttributes attributes,*/ IRewriteSession rewriteSession)
+        protected override void ModifyField(IEncapsulateFieldCandidate field, IRewriteSession rewriteSession)
         {
             var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, TargetQMN);
 
-            RewriterRemoveWorkAround.Remove(target.Declaration, rewriter);
+            RewriterRemoveWorkAround.Remove(field.Declaration, rewriter);
             //rewriter.Remove(target.Declaration);
             return;
         }
 
-        protected override EncapsulateFieldNewContent LoadNewDeclarationsContent(EncapsulateFieldNewContent newContent, IEnumerable<IEncapsulateFieldCandidate> encapsulationCandidates)
+        protected override EncapsulateFieldNewContent LoadNewDeclarationBlocks(EncapsulateFieldNewContent newContent, EncapsulateFieldModel model)
         {
             var udt = new UDTDeclarationGenerator(StateUDTField.AsTypeName);
 
-            var stateUDTMembers = encapsulationCandidates
-                .Where(encFld => !encFld.IsUDTMember
-                    && (encFld.EncapsulateFlag
-                        || encFld is IEncapsulatedUserDefinedTypeField udtFld && udtFld.Members.Any(m => m.EncapsulateFlag)));
+            udt.AddMembers(model.FlaggedFieldCandidates);
 
-            udt.AddMembers(stateUDTMembers);
-
-            newContent.AddDeclarationBlock(udt.TypeDeclarationBlock(Indenter));
+            newContent.AddTypeDeclarationBlock(udt.TypeDeclarationBlock(Indenter));
 
             newContent.AddDeclarationBlock(udt.FieldDeclaration(StateUDTField.NewFieldName));
 

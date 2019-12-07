@@ -11,6 +11,17 @@ using System.Linq;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
+    public struct RewriteReplacePair
+    {
+        public RewriteReplacePair(string text, ParserRuleContext context)
+        {
+            Text = text;
+            Context = context;
+        }
+        public string Text { private set; get; }
+        public ParserRuleContext Context { private set; get; }
+    }
+
     public interface IEncapsulateFieldRewriter : IModuleRewriter
     {
         void InsertNewContent(int? codeSectionStartIndex, IEncapsulateFieldNewContentProvider newContent);
@@ -19,7 +30,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         void MakeImplicitDeclarationTypeExplicit(Declaration element);
         void InsertAtEndOfFile(string content);
         string GetText(int maxConsecutiveNewLines);
-
+        void Replace(RewriteReplacePair pair);
     }
 
     public class EncapsulateFieldRewriter : IEncapsulateFieldRewriter
@@ -42,7 +53,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var allContent = newContent.AsSingleTextBlock;
             if (codeSectionStartIndex.HasValue && newContent.HasNewContent)
             {
-                _rewriter.InsertBefore(codeSectionStartIndex.Value, $"{Environment.NewLine}{allContent}");
+                _rewriter.InsertBefore(codeSectionStartIndex.Value, $"{Environment.NewLine}{allContent}{Environment.NewLine}");
             }
             else
             {
@@ -130,6 +141,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public void RemoveRange(int start, int stop) => _rewriter.RemoveRange(start, stop);
 
         public void Replace(Declaration target, string content) => _rewriter.Replace(target, content);
+
+        public void Replace(RewriteReplacePair pair) => _rewriter.Replace(pair.Context, pair.Text);
 
         public void Replace(ParserRuleContext target, string content) => _rewriter.Replace(target, content);
 

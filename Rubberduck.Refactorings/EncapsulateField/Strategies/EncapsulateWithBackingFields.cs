@@ -19,7 +19,7 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
         {
         }
 
-        protected override void ModifyEncapsulatedField(IEncapsulateFieldCandidate field, IRewriteSession rewriteSession)
+        protected override void ModifyField(IEncapsulateFieldCandidate field, IRewriteSession rewriteSession)
         {
             var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, TargetQMN);
 
@@ -43,23 +43,25 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
             return;
         }
 
-        protected override EncapsulateFieldNewContent LoadNewDeclarationsContent(EncapsulateFieldNewContent newContent, IEnumerable<IEncapsulateFieldCandidate> encapsulationCandates)
+        protected override EncapsulateFieldNewContent LoadNewDeclarationBlocks(EncapsulateFieldNewContent newContent, EncapsulateFieldModel model)
         {
-            var nonUdtMemberFields = encapsulationCandates
-                    .Where(encFld => !encFld.IsUDTMember && encFld.EncapsulateFlag);
-
-            foreach (var nonUdtMemberField in nonUdtMemberFields)
+            foreach (var field in model.FlaggedFieldCandidates)
             {
 
-                if (nonUdtMemberField.Declaration.Accessibility == Accessibility.Private && nonUdtMemberField.NewFieldName.Equals(nonUdtMemberField.Declaration.IdentifierName))
+                if (field.Declaration.Accessibility == Accessibility.Private && field.NewFieldName.Equals(field.Declaration.IdentifierName))
                 {
                     continue;
                 }
 
-                if (nonUdtMemberField.Declaration.IsDeclaredInList())
+                //Fields within a list (where Accessibility is 'Public' 
+                //are removed from the list (within ModifyField(...)) and 
+                //inserted as a new Declaration
+                if (field.Declaration.IsDeclaredInList())
                 {
-                    var targetIdentifier = nonUdtMemberField.Declaration.Context.GetText().Replace(nonUdtMemberField.IdentifierName, nonUdtMemberField.NewFieldName);
-                    var newField = nonUdtMemberField.Declaration.IsTypeSpecified ? $"{Tokens.Private} {targetIdentifier}" : $"{Tokens.Private} {targetIdentifier} {Tokens.As} {nonUdtMemberField.Declaration.AsTypeName}";
+                    var targetIdentifier = field.Declaration.Context.GetText().Replace(field.IdentifierName, field.NewFieldName);
+                    var newField = field.Declaration.IsTypeSpecified 
+                        ? $"{Tokens.Private} {targetIdentifier}" 
+                        : $"{Tokens.Private} {targetIdentifier} {Tokens.As} {field.Declaration.AsTypeName}";
 
                     newContent.AddDeclarationBlock(newField);
                 }

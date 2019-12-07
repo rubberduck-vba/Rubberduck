@@ -18,9 +18,9 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 {
     public class EncapsulateFieldTestSupport : InteractiveRefactoringTestBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>
     {
-        private TestEncapsulationAttributes UserModifiedEncapsulationAttributes(string field, string property = null, bool? isReadonly = null, bool encapsulateFlag = true)
+        private TestEncapsulationAttributes UserModifiedEncapsulationAttributes(string field, string property = null, bool isReadonly = false, bool encapsulateFlag = true)
         {
-            var testAttrs = new TestEncapsulationAttributes(field, encapsulateFlag, isReadonly ?? false);
+            var testAttrs = new TestEncapsulationAttributes(field, encapsulateFlag, isReadonly);
             if (property != null)
             {
                 testAttrs.PropertyName = property;
@@ -37,7 +37,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             };
         }
 
-        public Func<EncapsulateFieldModel, EncapsulateFieldModel> SetParametersForSingleTarget(string field, string property = null, bool? isReadonly = null, bool encapsulateFlag = true, bool asUDT = false)
+        public Func<EncapsulateFieldModel, EncapsulateFieldModel> SetParametersForSingleTarget(string field, string property = null, bool isReadonly = false, bool encapsulateFlag = true, bool asUDT = false)
         {
             var clientAttrs = UserModifiedEncapsulationAttributes(field, property, isReadonly, encapsulateFlag);
 

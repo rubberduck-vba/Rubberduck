@@ -49,16 +49,16 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             foreach ( var udtField in udtFieldToUdtDeclarationMap.Keys)
             {
-                var encapsulatedUDTField = _encapsulatedFields.Where(ef => ef.Declaration == udtField).Single();
+                var encapsulatedUDTField = _encapsulatedFields.Where(ef => ef.Declaration == udtField).Single() as IEncapsulatedUserDefinedTypeField;
 
-                var parent = encapsulatedUDTField as IEncapsulatedUserDefinedTypeField;
-                parent.TypeDeclarationIsPrivate = udtFieldToUdtDeclarationMap[udtField].UserDefinedType.Accessibility.Equals(Accessibility.Private);
+                //var parent = encapsulatedUDTField as IEncapsulatedUserDefinedTypeField;
+                encapsulatedUDTField.TypeDeclarationIsPrivate = udtFieldToUdtDeclarationMap[udtField].UserDefinedType.Accessibility.Equals(Accessibility.Private);
 
                 foreach (var udtMember in udtFieldToUdtDeclarationMap[udtField].Item2)
                 {
                     var encapsulatedUDTMember = new EncapsulatedUserDefinedTypeMember(udtMember, encapsulatedUDTField, _validator) as IEncapsulatedUserDefinedTypeMember;
                     encapsulatedUDTMember = ApplyTypeSpecificAttributes(encapsulatedUDTMember);
-                    parent.Members.Add(encapsulatedUDTMember);
+                    encapsulatedUDTField.AddMember(encapsulatedUDTMember);
                     encapsulatedUDTMember.PropertyAccessExpression =
                        () =>
                        {

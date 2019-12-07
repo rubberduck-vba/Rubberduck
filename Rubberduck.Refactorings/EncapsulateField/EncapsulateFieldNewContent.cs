@@ -24,7 +24,18 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
     public class EncapsulateFieldNewContent : IEncapsulateFieldNewContentProvider
     {
+        protected static string DoubleSpace => $"{Environment.NewLine}{Environment.NewLine}";
+        protected static string SingleSpace => $"{Environment.NewLine}";
+
         private IEnumerable<Declaration> SourceModuleElements { get; }
+
+        public void AddTypeDeclarationBlock(string declarationBlock)
+        {
+            if (declarationBlock.Length > 0)
+            {
+                TypeDeclarations.Add(declarationBlock);
+            }
+        }
 
         public void AddDeclarationBlock(string declarationBlock)
         {
@@ -42,6 +53,21 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
+        private string _postPendComment;
+        public string PostPendComment
+        {
+            get => _postPendComment;
+            set
+            {
+                if (value.Length > 0)
+                {
+                    _postPendComment = value.StartsWith("'") ? value : $"'{value}";
+                }
+            }
+        }
+
+        public List<string> TypeDeclarations { get; } = new List<string>();
+
         public List<string> Declarations { get; } = new List<string>();
 
         public List<string> CodeBlocks { get; } = new List<string>();
@@ -50,10 +76,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             get
             {
-                var preCodeSectionContent = new List<string>(Declarations);
+                var allDeclarations = Enumerable.Empty<string>().Concat(TypeDeclarations).Concat(Declarations);
+                var preCodeSectionContent = new List<string>(allDeclarations);
                 if (preCodeSectionContent.Any())
                 {
-                    var preCodeSection = string.Join(Environment.NewLine, preCodeSectionContent);
+                    var preCodeSection = string.Join(SingleSpace, preCodeSectionContent);
                     return preCodeSection;
                 }
                 return string.Empty;
@@ -62,7 +89,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public bool HasNewContent => Declarations.Any() || CodeBlocks.Any();
 
-        public string CodeSectionContent => CodeBlocks.Any() ? string.Join($"{Environment.NewLine}{Environment.NewLine}", CodeBlocks) : string.Empty;
+        public string CodeSectionContent => CodeBlocks.Any() ? string.Join($"{DoubleSpace}", CodeBlocks) : string.Empty;
 
         public string AsSingleTextBlock
         {
@@ -70,19 +97,28 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 if (!HasNewContent) { return string.Empty; }
 
+                var content = string.Empty;
                 if (PreCodeSectionContent.Length > 0)
                 {
-                    return CodeSectionContent.Length > 0 
-                        ? $"{PreCodeSectionContent}{Environment.NewLine}{Environment.NewLine}{CodeSectionContent}"
+                    content = CodeSectionContent.Length > 0 
+                        ? $"{PreCodeSectionContent}{DoubleSpace}{CodeSectionContent}"
                         : $"{PreCodeSectionContent}";
                 }
+                else
+                {
+                    content = CodeSectionContent.Length > 0
+                        ? $"{SingleSpace}{CodeSectionContent}"
+                        : string.Empty;
+                }
 
-                return CodeSectionContent.Length > 0
-                    ? $"{Environment.NewLine}{CodeSectionContent}"
-                    : string.Empty;
+                if (PostPendComment != null && PostPendComment.Length > 0)
+                {
+                    content = $"{content}{SingleSpace}{PostPendComment}{SingleSpace}";
+                }
+                return content;
             }
         }
 
-        public int CountOfProcLines => CodeSectionContent.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).Count();
+        public int CountOfProcLines => CodeSectionContent.Split(new string[] {SingleSpace}, StringSplitOptions.None).Count();
     }
 }

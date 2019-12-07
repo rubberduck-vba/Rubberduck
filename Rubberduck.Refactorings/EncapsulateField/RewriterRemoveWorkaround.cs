@@ -1,6 +1,8 @@
 ﻿using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,8 +33,30 @@ namespace Rubberduck.Refactorings.EncapsulateField
             RemovedVariables[varList].Add(target);
         }
 
-        public static void RemoveFieldsDeclaredInLists(IEncapsulateFieldRewriter rewriter)
+        //public static void RemoveFieldsDeclaredInLists(IEncapsulateFieldRewriter rewriter)
+        //{
+        //    foreach (var key in RemovedVariables.Keys)
+        //    {
+        //        var variables = key.children.Where(ch => ch is VBAParser.VariableSubStmtContext);
+        //        if (variables.Count() == RemovedVariables[key].Count)
+        //        {
+        //            rewriter.Remove(key.Parent);
+        //        }
+        //        else
+        //        {
+        //            foreach (var dec in RemovedVariables[key])
+        //            {
+        //                rewriter.Remove(dec);
+        //            }
+        //        }
+        //    }
+        //    RemovedVariables = new Dictionary<VBAParser.VariableListStmtContext, HashSet<Declaration>>();
+        //}
+
+        public static void RemoveFieldsDeclaredInLists(IExecutableRewriteSession rewriteSession, QualifiedModuleName qmn)
         {
+            var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, qmn);
+
             foreach (var key in RemovedVariables.Keys)
             {
                 var variables = key.children.Where(ch => ch is VBAParser.VariableSubStmtContext);

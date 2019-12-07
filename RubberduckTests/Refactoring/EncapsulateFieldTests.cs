@@ -342,6 +342,26 @@ End Property
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
+        public void EncapsulatePrivateField_ReadOnlyRequiresSet()
+        {
+            const string inputCode =
+                @"|Private fizz As Collection";
+
+            const string expectedCode =
+                @"Private fizz As Collection
+
+Public Property Get Name() As Collection
+    Set Name = fizz
+End Property
+";
+            var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name", isReadonly: true);
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePrivateField_NameConflict()
         {
             const string inputCode =
