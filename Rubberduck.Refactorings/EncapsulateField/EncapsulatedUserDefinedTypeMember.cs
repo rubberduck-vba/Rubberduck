@@ -48,27 +48,19 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public override string TargetID => $"{Parent.IdentifierName}.{IdentifierName}";
 
-        public override IEnumerable<IdentifierReference> References
-        {
-            get
-            {
-                //var references = new List<IdentifierReference>();
-                //foreach (var member in Members)
-                //{
-                //references.AddRange(GetUDTMemberReferencesForField(this, Parent));
-                //}
-                return GetUDTMemberReferencesForField(this, Parent);
-            }
-        }
+        public override IEnumerable<IdentifierReference> References 
+            => GetUDTMemberReferencesForField(this, Parent);
 
-        public override void AddReferenceReplacement(IdentifierReference idRef, string replacementText)
+        public override void SetReferenceRewriteContent(IdentifierReference idRef, string replacementText)
         {
             Debug.Assert(idRef.Context.Parent is ParserRuleContext, "idRef.Context.Parent is not convertable to ParserRuleContext");
-            //if (idRef.Context.Parent is ParserRuleContext prContext)
-            //{
-                IdentifierReplacements.Add(idRef, new RewriteReplacePair(replacementText, idRef.Context.Parent as ParserRuleContext));
+
+            if (IdentifierReplacements.ContainsKey(idRef))
+            {
+                IdentifierReplacements[idRef] = new RewriteReplacePair(replacementText, idRef.Context.Parent as ParserRuleContext);
                 return;
-            //}
+            }
+            IdentifierReplacements.Add(idRef, new RewriteReplacePair(replacementText, idRef.Context.Parent as ParserRuleContext));
         }
 
         public new IPropertyGeneratorSpecification AsPropertyGeneratorSpec
@@ -119,16 +111,5 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
             return refs;
         }
-
-        //private bool RequiresAccessQualification(IdentifierReference idRef)
-        //{
-        //    var isLHSOfMemberAccess =
-        //                (idRef.Context.Parent is VBAParser.MemberAccessExprContext
-        //                    || idRef.Context.Parent is VBAParser.WithMemberAccessExprContext)
-        //                && !(idRef.Context == idRef.Context.Parent.GetChild(0));// is VBAParser.SimpleNameExprContext))
-
-        //    return idRef.QualifiedModuleName != idRef.Declaration.QualifiedModuleName
-        //                && !isLHSOfMemberAccess;
-        //}
     }
 }

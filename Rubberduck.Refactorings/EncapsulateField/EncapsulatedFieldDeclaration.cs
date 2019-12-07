@@ -37,9 +37,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
         IEnumerable<IPropertyGeneratorSpecification> PropertyGenerationSpecs { get; }
         IEnumerable<KeyValuePair<IdentifierReference, RewriteReplacePair>> ReferenceReplacements { get; }
         void LoadReferenceExpressionChanges();
-        void AddReferenceReplacement(IdentifierReference idRef, string replacementText);
+        void SetReferenceRewriteContent(IdentifierReference idRef, string replacementText);
         RewriteReplacePair ReferenceReplacement(IdentifierReference idRef);
-        RewriteReplacePair? FindRewriteReplacePair(IdentifierReference idRef);
+        //RewriteReplacePair? FindRewriteReplacePair(IdentifierReference idRef);
+        //void ClearIdentifierReferenceExpressionCache();
     }
 
     public class EncapsulateFieldCandidate : IEncapsulateFieldCandidate
@@ -48,7 +49,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         protected QualifiedModuleName _qmn;
         private string _identifierName;
         private IEncapsulateFieldNamesValidator _validator;
-        private Dictionary<IdentifierReference, string> _idRefRenames { set; get; } = new Dictionary<IdentifierReference, string>();
+        //private Dictionary<IdentifierReference, string> _idRefRenames { set; get; } = new Dictionary<IdentifierReference, string>();
         private EncapsulationIdentifiers _fieldAndProperty;
 
         public EncapsulateFieldCandidate(Declaration declaration, IEncapsulateFieldNamesValidator validator)
@@ -110,22 +111,17 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-
-        public RewriteReplacePair? FindRewriteReplacePair(IdentifierReference idRef)
+        public virtual void SetReferenceRewriteContent(IdentifierReference idRef, string replacementText)
         {
             if (IdentifierReplacements.ContainsKey(idRef))
             {
-                return IdentifierReplacements[idRef];
+                IdentifierReplacements[idRef] = new RewriteReplacePair(replacementText, idRef.Context);
+                return;
             }
-            return null;
-        }
-
-        public virtual void AddReferenceReplacement(IdentifierReference idRef, string replacementText)
-        {
             IdentifierReplacements.Add(idRef, new RewriteReplacePair(replacementText, idRef.Context));
         }
 
-        public RewriteReplacePair ReferenceReplacement(IdentifierReference idRef) //, ParserRuleContextExtensions context)]
+        public RewriteReplacePair ReferenceReplacement(IdentifierReference idRef)
         {
             return IdentifierReplacements.Single(r => r.Key == idRef).Value;
         }
@@ -209,7 +205,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     ? $"{field.QualifiedModuleName.ComponentName}.{field.ReferenceExpression()}"
                     : field.ReferenceExpression();
 
-                field.AddReferenceReplacement(idRef, replacementText);
+                field.SetReferenceRewriteContent(idRef, replacementText);
             }
         }
 

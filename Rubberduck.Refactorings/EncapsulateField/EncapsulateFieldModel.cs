@@ -43,7 +43,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             FieldCandidates.AddRange(candidates);
 
-            EncapsulationStrategy = new EncapsulateWithBackingFields(_targetQMN, _indenter, _validator);
+            //EncapsulationStrategy = new EncapsulateWithBackingFields(_targetQMN, _indenter, _validator);
             this[target].EncapsulateFlag = true;
 
         }
@@ -74,30 +74,22 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public IEncapsulateFieldCandidate this[Declaration fieldDeclaration]
             => FieldCandidates.Where(c => c.Declaration == fieldDeclaration).Single();
 
-        public IEncapsulateFieldStrategy EncapsulationStrategy { set; get; }
-
-        public bool EncapsulateWithUDT
+        public IEncapsulateFieldStrategy EncapsulationStrategy
         {
-            set
+            get
             {
-                if ((value && EncapsulationStrategy is EncapsulateWithBackingUserDefinedType)
-                    || (!value && EncapsulationStrategy is EncapsulateWithBackingFields)) { return; }
-
-                if (value)
+                if (EncapsulateWithUDT)
                 {
-                    EncapsulationStrategy = new EncapsulateWithBackingUserDefinedType(_targetQMN, _indenter, _validator)
+                    return new EncapsulateWithBackingUserDefinedType(_targetQMN, _indenter, _validator)
                     {
                         StateUDTField = CandidateFactory.CreateStateUDTField(_targetQMN)
                     };
                 }
-                else
-                {
-                    EncapsulationStrategy = new EncapsulateWithBackingFields(_targetQMN, _indenter, _validator);
-                }
+                return new EncapsulateWithBackingFields(_targetQMN, _indenter, _validator);
             }
-
-            get => EncapsulationStrategy is EncapsulateWithBackingUserDefinedType;
         }
+
+        public bool EncapsulateWithUDT { set; get; }
 
         public string PreviewRefactoring() => _previewDelegate(this);
 

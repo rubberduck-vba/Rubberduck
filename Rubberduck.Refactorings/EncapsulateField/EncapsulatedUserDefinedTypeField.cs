@@ -107,7 +107,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 if (idRef.QualifiedModuleName == QualifiedModuleName
                     && idRef.Context.Parent.Parent is VBAParser.WithStmtContext wsc)
                 {
-                    AddReferenceReplacement(idRef, NewFieldName);
+                    SetReferenceRewriteContent(idRef, NewFieldName);
                 }
             }
         }
@@ -121,7 +121,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     if (rf.QualifiedModuleName == QualifiedModuleName
                         && !rf.Context.TryGetAncestor<VBAParser.WithMemberAccessExprContext>(out _))
                     {
-                        member.AddReferenceReplacement(rf, member.PropertyName);
+                        member.SetReferenceRewriteContent(rf, member.PropertyName);
                     }
                     else
                     {
@@ -131,7 +131,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                             ? string.Empty
                             : $"{QualifiedModuleName.ComponentName}";
 
-                        member.AddReferenceReplacement(rf, $"{moduleQualifier}.{member.PropertyName}");
+                        member.SetReferenceRewriteContent(rf, $"{moduleQualifier}.{member.PropertyName}");
                     }
                 }
             }
