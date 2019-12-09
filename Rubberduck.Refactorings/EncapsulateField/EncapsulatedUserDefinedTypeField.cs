@@ -35,6 +35,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public bool TypeDeclarationIsPrivate { set; get; }
 
+        public override string NewFieldName
+        {
+            get => TypeDeclarationIsPrivate ? _fieldAndProperty.TargetFieldName : _fieldAndProperty.Field;
+            set => _fieldAndProperty.Field = value;
+        }
+
         public bool FieldQualifyMemberPropertyNames
         {
             set

@@ -106,7 +106,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             => Model.FieldCandidates.Where(efd => efd.EncapsulateFlag)
                     .Any(ff => !ff.HasValidEncapsulationAttributes);
 
-        public IEncapsulateFieldNamesValidator RefactoringValidator { set; get; }
+        public IEncapsulateFieldValidator RefactoringValidator { set; get; }
 
         //TODO: hook the validation scheme backup
         public bool HasValidNames => true;

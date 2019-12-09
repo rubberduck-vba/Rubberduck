@@ -1,5 +1,6 @@
 ﻿using Moq;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
@@ -8,6 +9,7 @@ using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
+using RubberduckTests.Mocks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -93,7 +95,35 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             return new EncapsulateFieldRefactoring(state, indenter, factory, rewritingManager, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
         }
 
-        private static IIndenter CreateIndenter(IVBE vbe = null)
+        public IEncapsulateFieldCandidate RetrieveEncapsulatedField(string inputCode, string fieldName)
+        {
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
+
+            var selectedComponentName = vbe.SelectedVBComponent.Name;
+
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
+            using (state)
+            {
+                var match = state.DeclarationFinder.MatchName(fieldName).Single();
+                return new EncapsulateFieldCandidate(match, new EncapsulateFieldNamesValidator(state)) as IEncapsulateFieldCandidate;
+            }
+        }
+
+        public IEncapsulateFieldCandidate RetrieveEncapsulatedField(string inputCode, string fieldName, DeclarationType declarationType)
+        {
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
+
+            var selectedComponentName = vbe.SelectedVBComponent.Name;
+
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
+            using (state)
+            {
+                var match = state.DeclarationFinder.MatchName(fieldName).Where(m => m.DeclarationType.Equals(declarationType)).Single();
+                return new EncapsulateFieldCandidate(match, new EncapsulateFieldNamesValidator(state)) as IEncapsulateFieldCandidate;
+            }
+        }
+
+        public static IIndenter CreateIndenter(IVBE vbe = null)
         {
             return new Indenter(vbe, () => Settings.IndenterSettingsTests.GetMockIndenterSettings());
         }
@@ -147,6 +177,8 @@ namespace RubberduckTests.Refactoring.EncapsulateField
         {
             var attrs = new TestEncapsulationAttributes(fieldName, encapsulationFlag, isReadOnly);
             attrs.PropertyName = propertyName ?? attrs.PropertyName;
+            attrs.EncapsulateFlag = encapsulationFlag;
+            attrs.IsReadOnly = isReadOnly;
 
             _userInput.Add(attrs);
             return this;

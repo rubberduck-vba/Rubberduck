@@ -33,45 +33,43 @@ namespace Rubberduck.Refactorings.EncapsulateField
         Func<string> PropertyAccessExpression { set; get; }
         bool FieldNameIsExemptFromValidation { get; }
         Func<string> ReferenceExpression { set; get; }
-        //IPropertyGeneratorSpecification AsPropertyGeneratorSpec { get; }
         IEnumerable<IPropertyGeneratorSpecification> PropertyGenerationSpecs { get; }
         IEnumerable<KeyValuePair<IdentifierReference, RewriteReplacePair>> ReferenceReplacements { get; }
         void LoadReferenceExpressionChanges();
         void SetReferenceRewriteContent(IdentifierReference idRef, string replacementText);
         RewriteReplacePair ReferenceReplacement(IdentifierReference idRef);
-        //RewriteReplacePair? FindRewriteReplacePair(IdentifierReference idRef);
-        //void ClearIdentifierReferenceExpressionCache();
     }
 
-    public class EncapsulateFieldCandidate : IEncapsulateFieldCandidate
+    public interface IEncapsulateFieldCandidateValidations
+    {
+        bool HasVBACompliantPropertyIdentifier { get; }
+        bool HasVBACompliantFieldIdentifier { get; }
+        bool HasVBACompliantParameterIdentifier { get; }
+        bool IsSelfConsistent { get; }
+        bool HasConflictingPropertyIdentifier { get; }
+        bool HasConflictingFieldIdentifier { get; }
+    }
+
+
+    public class EncapsulateFieldCandidate : IEncapsulateFieldCandidate, IEncapsulateFieldCandidateValidations
     {
         protected Declaration _target;
         protected QualifiedModuleName _qmn;
         private string _identifierName;
-        private IEncapsulateFieldNamesValidator _validator;
-        //private Dictionary<IdentifierReference, string> _idRefRenames { set; get; } = new Dictionary<IdentifierReference, string>();
-        private EncapsulationIdentifiers _fieldAndProperty;
+        protected IEncapsulateFieldNamesValidator _validator;
+        protected EncapsulationIdentifiers _fieldAndProperty;
 
         public EncapsulateFieldCandidate(Declaration declaration, IEncapsulateFieldNamesValidator validator)
+            : this(declaration.IdentifierName, declaration.AsTypeName, declaration.QualifiedModuleName, validator)
         {
             _target = declaration;
-            AsTypeName = _target.AsTypeName;
-
-            _fieldAndProperty = new EncapsulationIdentifiers(_target);
-            IdentifierName = _target.IdentifierName;
-            _qmn = _target.QualifiedModuleName;
-            PropertyAccessExpression = () => NewFieldName;
-            ReferenceExpression = () => PropertyName;
-
-            _validator = validator;
-            _validator.ForceNonConflictEncapsulationAttributes(this, _target.QualifiedModuleName, _target);
         }
 
-        public EncapsulateFieldCandidate(string identifier, string asTypeName, QualifiedModuleName qmn,/*IFieldEncapsulationAttributes attributes,*/ IEncapsulateFieldNamesValidator validator, bool neverEncapsulate = false)
+        public EncapsulateFieldCandidate(string identifier, string asTypeName, QualifiedModuleName qmn, IEncapsulateFieldNamesValidator validator)
         {
             _target = null;
 
-            _fieldAndProperty = new EncapsulationIdentifiers(identifier, neverEncapsulate);
+            _fieldAndProperty = new EncapsulationIdentifiers(identifier);
             IdentifierName = identifier;
             AsTypeName = asTypeName;
             _qmn = qmn;
@@ -79,20 +77,41 @@ namespace Rubberduck.Refactorings.EncapsulateField
             ReferenceExpression = () => PropertyName;
 
             _validator = validator;
-            _validator.ForceNonConflictEncapsulationAttributes(this, qmn, _target);
         }
 
         protected Dictionary<IdentifierReference, RewriteReplacePair> IdentifierReplacements { get; } = new Dictionary<IdentifierReference, RewriteReplacePair>();
 
         public Declaration Declaration => _target;
 
+
+        public bool HasVBACompliantPropertyIdentifier => _validator.IsValidVBAIdentifier(PropertyName, DeclarationType.Property);
+
+        public bool HasVBACompliantFieldIdentifier => _validator.IsValidVBAIdentifier(NewFieldName, Declaration?.DeclarationType ?? DeclarationType.Variable);
+
+        public bool HasVBACompliantParameterIdentifier => _validator.IsValidVBAIdentifier(NewFieldName, Declaration?.DeclarationType ?? DeclarationType.Variable);
+
+        public virtual bool IsSelfConsistent => _validator.IsValidVBAIdentifier(PropertyName, DeclarationType.Property)
+                            && !(PropertyName.EqualsVBAIdentifier(NewFieldName)
+                                    || PropertyName.EqualsVBAIdentifier(ParameterName)
+                                    || NewFieldName.EqualsVBAIdentifier(ParameterName));
+
+        public bool HasConflictingPropertyIdentifier 
+            => _validator.HasConflictingPropertyIdentifier(this);
+
+        public bool HasConflictingFieldIdentifier
+            => _validator.HasConflictingFieldIdentifier(this);
+
         public bool HasValidEncapsulationAttributes
         {
             get
             {
-                var declarationsToIgnore = _target != null ? new Declaration[] { _target } : Enumerable.Empty<Declaration>();
-                var declarationType = _target != null ? _target.DeclarationType : DeclarationType.Variable;
-                return _validator.HasValidEncapsulationAttributes(this, QualifiedModuleName, declarationsToIgnore, declarationType);
+                if (!EncapsulateFlag) { return true; }
+
+                return IsSelfConsistent; // _validator.IsValidVBAIdentifier(PropertyName, DeclarationType.Property)
+                
+                //var declarationsToIgnore = _target != null ? new Declaration[] { _target } : Enumerable.Empty<Declaration>();
+                //var declarationType = _target != null ? _target.DeclarationType : DeclarationType.Variable;
+                //return _validator.HasValidEncapsulationAttributes(this, QualifiedModuleName, declarationsToIgnore, declarationType);
             }
         }
 
@@ -132,18 +151,44 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public bool IsReadOnly { set; get; }
         public bool CanBeReadWrite { set; get; }
 
-        public string PropertyName
-        {
-            get => _fieldAndProperty.Property;
-            set => _fieldAndProperty.Property = value;
-        }
-
-        public bool IsEditableReadWriteFieldIdentifier { set; get; } = true;
-
-        public string NewFieldName
+        public virtual string NewFieldName
         {
             get => _fieldAndProperty.Field;
             set => _fieldAndProperty.Field = value;
+        }
+
+        public virtual string PropertyName
+        {
+            get => _fieldAndProperty.Property;
+            set
+            {
+                _fieldAndProperty.Property = value;
+
+                TryRestoreNewFieldNameAsOriginalFieldIdentifierName();
+            }
+        }
+
+        //The preferred NewFieldName is the original Identifier
+        private void TryRestoreNewFieldNameAsOriginalFieldIdentifierName()
+        {
+            var canNowUseOriginalFieldName = !_validator.IsConflictingFieldIdentifier(_fieldAndProperty.TargetFieldName, this);
+
+            if (canNowUseOriginalFieldName)
+            {
+                _fieldAndProperty.Field = _fieldAndProperty.TargetFieldName;
+                return;
+            }
+
+            if (_fieldAndProperty.Field.EqualsVBAIdentifier(_fieldAndProperty.TargetFieldName))
+            {
+                _fieldAndProperty.Field = _fieldAndProperty.DefaultNewFieldName;
+                var isConflictingFieldIdentifier = _validator.HasConflictingFieldIdentifier(this);
+                for (var count = 1; count < 10 && isConflictingFieldIdentifier; count++)
+                {
+                    NewFieldName = EncapsulationIdentifiers.IncrementIdentifier(NewFieldName);
+                    isConflictingFieldIdentifier = _validator.HasConflictingFieldIdentifier(this);
+                }
+            }
         }
 
         public string AsTypeName { set; get; }
@@ -214,7 +259,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var isLHSOfMemberAccess =
                         (idRef.Context.Parent is VBAParser.MemberAccessExprContext
                             || idRef.Context.Parent is VBAParser.WithMemberAccessExprContext)
-                        && !(idRef.Context == idRef.Context.Parent.GetChild(0));// is VBAParser.SimpleNameExprContext))
+                        && !(idRef.Context == idRef.Context.Parent.GetChild(0));
 
             return idRef.QualifiedModuleName != idRef.Declaration.QualifiedModuleName
                         && !isLHSOfMemberAccess;

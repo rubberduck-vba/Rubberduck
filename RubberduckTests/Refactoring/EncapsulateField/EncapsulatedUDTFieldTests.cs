@@ -34,15 +34,15 @@ End Type
 
             var presenterAction = Support.UserAcceptsDefaults();
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            StringAssert.Contains("Private this1 As TBar", actualCode);
-            StringAssert.DoesNotContain("this1 = value", actualCode);
-            StringAssert.DoesNotContain($"This = this1", actualCode);
+            StringAssert.Contains("Private this As TBar", actualCode);
+            StringAssert.DoesNotContain("this = value", actualCode);
+            StringAssert.DoesNotContain($"This = this", actualCode);
             StringAssert.Contains($"Public Property Get First", actualCode);
             StringAssert.Contains($"Public Property Get Second", actualCode);
-            StringAssert.Contains($"this1.First = value", actualCode);
-            StringAssert.Contains($"First = this1.First", actualCode);
-            StringAssert.Contains($"this1.Second = value", actualCode);
-            StringAssert.Contains($"Second = this1.Second", actualCode);
+            StringAssert.Contains($"this.First = value", actualCode);
+            StringAssert.Contains($"First = this.First", actualCode);
+            StringAssert.Contains($"this.Second = value", actualCode);
+            StringAssert.Contains($"Second = this.Second", actualCode);
         }
 
         [TestCase(true, true)]
@@ -63,60 +63,66 @@ End Type
 Public th|is As TBar
 Public that As TBar";
 
-            var userInput = new UserInputDataObject("this", "MyType", encapsulateThis)
-                    .AddAttributeSet("that", "MyOtherType", encapsulateThat);
+            var expectedThis = new EncapsulationIdentifiers("this");
+            var expectedThat = new EncapsulationIdentifiers("that");
 
-            var expectedThis = new EncapsulationIdentifiers("this") { Property = "MyType" };
-            var expectedThat = new EncapsulationIdentifiers("that") { Property = "MyOtherType" };
+            var userInput = new UserInputDataObject()
+                    .AddAttributeSet(expectedThis.TargetFieldName, encapsulationFlag: encapsulateThis)
+                    .AddAttributeSet(expectedThat.TargetFieldName, encapsulationFlag: encapsulateThat);
 
             var presenterAction = Support.SetParameters(userInput);
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             if (encapsulateThis && encapsulateThat)
             {
-                StringAssert.Contains($"Private {expectedThis.Field} As TBar", actualCode);
-                StringAssert.Contains($"This_First = {expectedThis.Field}.First", actualCode);
-                StringAssert.Contains($"This_Second = {expectedThis.Field}.Second", actualCode);
-                StringAssert.Contains($"{expectedThis.Field}.First = value", actualCode);
-                StringAssert.Contains($"{expectedThis.Field}.Second = value", actualCode);
+                //StringAssert.Contains($"Private {expectedThis.TargetFieldName} As TBar", actualCode);
+                StringAssert.Contains($"This_First = {expectedThis.TargetFieldName}.First", actualCode);
+                StringAssert.Contains($"This_Second = {expectedThis.TargetFieldName}.Second", actualCode);
+                StringAssert.Contains($"{expectedThis.TargetFieldName}.First = value", actualCode);
+                StringAssert.Contains($"{expectedThis.TargetFieldName}.Second = value", actualCode);
                 StringAssert.Contains($"Property Get This_First", actualCode);
                 StringAssert.Contains($"Property Get This_Second", actualCode);
 
-                StringAssert.Contains($"Private {expectedThat.Field} As TBar", actualCode);
-                StringAssert.Contains($"That_First = {expectedThat.Field}.First", actualCode);
-                StringAssert.Contains($"That_Second = {expectedThat.Field}.Second", actualCode);
-                StringAssert.Contains($"{expectedThat.Field}.First = value", actualCode);
-                StringAssert.Contains($"{expectedThat.Field}.Second = value", actualCode);
+                StringAssert.Contains($"Private {expectedThat.TargetFieldName} As TBar", actualCode);
+                StringAssert.Contains($"That_First = {expectedThat.TargetFieldName}.First", actualCode);
+                StringAssert.Contains($"That_Second = {expectedThat.TargetFieldName}.Second", actualCode);
+                StringAssert.Contains($"{expectedThat.TargetFieldName}.First = value", actualCode);
+                StringAssert.Contains($"{expectedThat.TargetFieldName}.Second = value", actualCode);
                 StringAssert.Contains($"Property Get That_First", actualCode);
                 StringAssert.Contains($"Property Get That_Second", actualCode);
+
+                StringAssert.Contains($"Private {expectedThis.TargetFieldName} As TBar", actualCode);
+                StringAssert.Contains($"Private {expectedThat.TargetFieldName} As TBar", actualCode);
             }
             else if (encapsulateThis && !encapsulateThat)
             {
-                StringAssert.Contains($"Private {expectedThis.Field} As TBar", actualCode);
-                StringAssert.Contains($"First = {expectedThis.Field}.First", actualCode);
-                StringAssert.Contains($"Second = {expectedThis.Field}.Second", actualCode);
-                StringAssert.Contains($"{expectedThis.Field}.First = value", actualCode);
-                StringAssert.Contains($"{expectedThis.Field}.Second = value", actualCode);
+                //StringAssert.Contains($"Private {expectedThis.TargetFieldName} As TBar", actualCode);
+                StringAssert.Contains($"First = {expectedThis.TargetFieldName}.First", actualCode);
+                StringAssert.Contains($"Second = {expectedThis.TargetFieldName}.Second", actualCode);
+                StringAssert.Contains($"{expectedThis.TargetFieldName}.First = value", actualCode);
+                StringAssert.Contains($"{expectedThis.TargetFieldName}.Second = value", actualCode);
                 StringAssert.Contains($"Property Get First", actualCode);
                 StringAssert.Contains($"Property Get Second", actualCode);
 
-                StringAssert.Contains($"Public that As TBar", actualCode);
+                StringAssert.Contains($"Private {expectedThis.TargetFieldName} As TBar", actualCode);
+                StringAssert.Contains($"Public {expectedThat.TargetFieldName} As TBar", actualCode);
             }
             else if (!encapsulateThis && encapsulateThat)
             {
-                StringAssert.Contains($"Private {expectedThat.Field} As TBar", actualCode);
-                StringAssert.Contains($"First = {expectedThat.Field}.First", actualCode);
-                StringAssert.Contains($"Second = {expectedThat.Field}.Second", actualCode);
-                StringAssert.Contains($"{expectedThat.Field}.First = value", actualCode);
-                StringAssert.Contains($"{expectedThat.Field}.Second = value", actualCode);
+                //StringAssert.Contains($"Private {expectedThat.TargetFieldName} As TBar", actualCode);
+                StringAssert.Contains($"First = {expectedThat.TargetFieldName}.First", actualCode);
+                StringAssert.Contains($"Second = {expectedThat.TargetFieldName}.Second", actualCode);
+                StringAssert.Contains($"{expectedThat.TargetFieldName}.First = value", actualCode);
+                StringAssert.Contains($"{expectedThat.TargetFieldName}.Second = value", actualCode);
                 StringAssert.Contains($"Property Get First", actualCode);
                 StringAssert.Contains($"Property Get Second", actualCode);
 
-                StringAssert.Contains($"Public this As TBar", actualCode);
+                StringAssert.Contains($"Public {expectedThis.TargetFieldName} As TBar", actualCode);
+                StringAssert.Contains($"Private {expectedThat.TargetFieldName} As TBar", actualCode);
             }
             else
             {
-                StringAssert.Contains($"Public this As TBar", actualCode);
-                StringAssert.Contains($"Public that As TBar", actualCode);
+                StringAssert.Contains($"Public {expectedThis.TargetFieldName} As TBar", actualCode);
+                StringAssert.Contains($"Public {expectedThat.TargetFieldName} As TBar", actualCode);
             }
         }
 
@@ -145,18 +151,15 @@ End Sub
 ";
 
 
-            //var userInput = new UserInputDataObject("this");
             var presenterAction = Support.UserAcceptsDefaults();
 
-            //var presenterAction = Support.SetParameters(userInput);
-
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            StringAssert.Contains("this1.First = value", actualCode);
-            StringAssert.Contains($"First = this1.First", actualCode);
-            StringAssert.Contains("this1.Second = value", actualCode);
-            StringAssert.Contains($"Second = this1.Second", actualCode);
-            StringAssert.Contains($"First = arg1", actualCode);
-            StringAssert.Contains($"Second = arg2", actualCode);
+            StringAssert.Contains("this.First = value", actualCode);
+            StringAssert.Contains($"First = this.First", actualCode);
+            StringAssert.Contains("this.Second = value", actualCode);
+            StringAssert.Contains($"Second = this.Second", actualCode);
+            StringAssert.Contains($" First = arg1", actualCode);
+            StringAssert.Contains($" Second = arg2", actualCode);
             StringAssert.Contains($"that.First = arg1", actualCode);
             StringAssert.Contains($"that.Second = arg2", actualCode);
         }
@@ -199,7 +202,7 @@ End Sub
             StringAssert.DoesNotContain($" Second = arg2", actualCode);
             StringAssert.Contains($" .First = arg1", actualCode);
             StringAssert.Contains($" .Second = arg2", actualCode);
-            StringAssert.Contains("With this1", actualCode);
+            StringAssert.Contains("With this", actualCode);
         }
 
         [Test]

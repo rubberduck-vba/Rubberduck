@@ -24,15 +24,16 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> _udtFieldToUdtDeclarationMap = new Dictionary<Declaration, (Declaration, IEnumerable<Declaration>)>();
 
-        public EncapsulateFieldModel(Declaration target, IDeclarationFinderProvider declarationFinderProvider, IIndenter indenter, IEncapsulateFieldNamesValidator validator, Func<EncapsulateFieldModel, string> previewDelegate)
+        public EncapsulateFieldModel(Declaration target, IDeclarationFinderProvider declarationFinderProvider, IIndenter indenter, Func<EncapsulateFieldModel, string> previewDelegate)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _indenter = indenter;
-            _validator = validator;
             _previewDelegate = previewDelegate;
             _targetQMN = target.QualifiedModuleName;
 
             _useNewStructure = File.Exists("C:\\Users\\Brian\\Documents\\UseNewUDTStructure.txt");
+
+            _validator = new EncapsulateFieldNamesValidator(_declarationFinderProvider, () => FieldCandidates);
 
             CandidateFactory = new EncapsulationCandidateFactory(declarationFinderProvider, _validator);
             var encapsulationCandidateFields = _declarationFinderProvider.DeclarationFinder
@@ -43,7 +44,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             FieldCandidates.AddRange(candidates);
 
-            //EncapsulationStrategy = new EncapsulateWithBackingFields(_targetQMN, _indenter, _validator);
             this[target].EncapsulateFlag = true;
 
         }

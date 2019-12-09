@@ -21,6 +21,129 @@ namespace RubberduckTests.Refactoring.EncapsulateField
     {
         private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
 
+        [TestCase("fizz", "_Fizz", false)]
+        [TestCase("fizz", "FizzProp", true)]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void VBAIdentifier_Property(string originalFieldName, string newPropertyName, bool expectedResult)
+        {
+            string inputCode =
+$@"Public {originalFieldName} As String";
+
+            var encapsulatedField = Support.RetrieveEncapsulatedField(inputCode, originalFieldName);
+
+            encapsulatedField.PropertyName = newPropertyName;
+            var field = encapsulatedField as IEncapsulateFieldCandidateValidations;
+            Assert.AreEqual(expectedResult, field.HasVBACompliantPropertyIdentifier);
+        }
+
+        [TestCase("fizz", "_Fizz", false)]
+        [TestCase("fizz", "FizzProp", true)]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void VBAIdentifier_FieldName(string originalFieldName, string newFieldName, bool expectedResult)
+        {
+            string inputCode =
+$@"Public {originalFieldName} As String";
+
+            var encapsulatedField = Support.RetrieveEncapsulatedField(inputCode, originalFieldName);
+
+            encapsulatedField.NewFieldName = newFieldName;
+            var field = encapsulatedField as IEncapsulateFieldCandidateValidations;
+            Assert.AreEqual(expectedResult, field.HasVBACompliantFieldIdentifier);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void EncapsulatePrivateField_ReadOnlyRequiresSet()
+        {
+            const string inputCode =
+                @"|Private fizz As Collection";
+
+            const string expectedCode =
+                @"Private fizz As Collection
+
+Public Property Get Name() As Collection
+    Set Name = fizz
+End Property
+";
+            var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name", isReadonly: true);
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void PropertyNameNotDuplicated()
+        {
+            const string inputCode =
+                @"Public var|iable As Integer, variable1 As Long, variable2 As Integer";
+
+            var userInput = new UserInputDataObject()
+                .AddAttributeSet("variable")
+                .AddAttributeSet("variable1")
+                .AddAttributeSet("variable2");
+
+            var presenterAction = Support.SetParameters(userInput);
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            StringAssert.Contains("Public Property Get Variable() As Integer", actualCode);
+            StringAssert.Contains("Variable = variable_1", actualCode);
+            StringAssert.Contains("Public Property Get Variable1() As Long", actualCode);
+            StringAssert.Contains("Variable1 = variable1_1", actualCode);
+            StringAssert.Contains("Public Property Get Variable2() As Integer", actualCode);
+            StringAssert.Contains("Variable2 = variable2_1", actualCode);
+            StringAssert.DoesNotContain("Public Property Get Variable3() As Integer", actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void UDTMemberPropertyDefaultsToValidValue()
+        {
+            string inputCode =
+$@"
+Private Type TBar
+    First As String
+    Second As Long
+End Type
+
+Public myBar As TBar
+
+Private Function First() As String
+    First = myBar.First
+End Function";
+
+            var encapsulatedField = Support.RetrieveEncapsulatedField(inputCode, "First", DeclarationType.UserDefinedTypeMember);
+            var validation = encapsulatedField as IEncapsulateFieldCandidateValidations;
+            var result = validation.HasConflictingPropertyIdentifier;
+            Assert.AreEqual(true, validation.HasConflictingPropertyIdentifier);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void FieldNameAttributeValidation_DefaultsToAvailablePropertyName()
+        {
+            string inputCode =
+$@"Public fizz As String
+
+            Private fizzle As String
+
+            'fizz1 is the initial default name for encapsulating 'fizz'            
+            Public Property Get Fizz1() As String
+                Fizz1 = fizzle
+            End Property
+
+            Public Property Let Fizz1(ByVal value As String)
+                fizzle = value
+            End Property
+            ";
+            var encapsulatedField = Support.RetrieveEncapsulatedField(inputCode, "fizz");
+            Assert.IsTrue(encapsulatedField.HasValidEncapsulationAttributes);
+        }
+
         [TestCase("Number")]
         [TestCase("Test")]
         [Category("Refactorings")]

@@ -14,7 +14,7 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
 {
     public class EncapsulateWithBackingFields : EncapsulateFieldStrategiesBase
     {
-        public EncapsulateWithBackingFields(QualifiedModuleName qmn, IIndenter indenter, IEncapsulateFieldNamesValidator validator)
+        public EncapsulateWithBackingFields(QualifiedModuleName qmn, IIndenter indenter, IEncapsulateFieldValidator validator)
             : base(qmn, indenter, validator)
         {
         }

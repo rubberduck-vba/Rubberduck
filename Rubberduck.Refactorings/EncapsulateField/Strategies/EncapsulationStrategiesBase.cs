@@ -19,10 +19,10 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
 
     public abstract class EncapsulateFieldStrategiesBase : IEncapsulateFieldStrategy
     {
-        private IEncapsulateFieldNamesValidator _validator;
+        private IEncapsulateFieldValidator _validator;
         protected static string DoubleSpace => $"{Environment.NewLine}{Environment.NewLine}";
 
-        public EncapsulateFieldStrategiesBase(QualifiedModuleName qmn, IIndenter indenter, IEncapsulateFieldNamesValidator validator)
+        public EncapsulateFieldStrategiesBase(QualifiedModuleName qmn, IIndenter indenter, IEncapsulateFieldValidator validator)
         {
             TargetQMN = qmn;
             Indenter = indenter;

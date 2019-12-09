@@ -342,26 +342,6 @@ End Property
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        public void EncapsulatePrivateField_ReadOnlyRequiresSet()
-        {
-            const string inputCode =
-                @"|Private fizz As Collection";
-
-            const string expectedCode =
-                @"Private fizz As Collection
-
-Public Property Get Name() As Collection
-    Set Name = fizz
-End Property
-";
-            var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name", isReadonly: true);
-            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            Assert.AreEqual(expectedCode, actualCode);
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
         public void EncapsulatePrivateField_NameConflict()
         {
             const string inputCode =
@@ -391,7 +371,8 @@ End Property
                 fields.Add(efd);
                 efd.PropertyName = "Name";
 
-                var hasConflict = !validator.HasValidEncapsulationAttributes(efd, efd.QualifiedModuleName, new Declaration[] { efd.Declaration });
+                //var hasConflict = !validator.HasValidEncapsulationAttributes(efd, efd.QualifiedModuleName, new Declaration[] { efd.Declaration });
+                var hasConflict = validator.HasConflictingPropertyIdentifier(efd);
                 Assert.IsTrue(hasConflict);
             }
         }
@@ -419,14 +400,14 @@ End Property
                 @"|Private fizz As Integer";
 
             const string expectedCode =
-                @"Private fizz1 As Integer
+                @"Private fizz_1 As Integer
 
 Public Property Get Fizz() As Integer
-    Fizz = fizz1
+    Fizz = fizz_1
 End Property
 
 Public Property Let Fizz(ByVal value As Integer)
-    fizz1 = value
+    fizz_1 = value
 End Property
 ";
             var presenterAction = Support.UserAcceptsDefaults();
@@ -470,12 +451,12 @@ End Sub";
             var enapsulationIdentifiers = new EncapsulationIdentifiers("fizz") { Property = "Name" };
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            StringAssert.AreEqualIgnoringCase(enapsulationIdentifiers.Field, "fizz");
-            StringAssert.Contains($"Private {enapsulationIdentifiers.Field} As Integer", actualCode);
+            StringAssert.AreEqualIgnoringCase(enapsulationIdentifiers.TargetFieldName, "fizz");
+            StringAssert.Contains($"Private {enapsulationIdentifiers.TargetFieldName} As Integer", actualCode);
             StringAssert.Contains("Property Get Name", actualCode);
             StringAssert.Contains("Property Let Name", actualCode);
-            StringAssert.Contains($"Name = {enapsulationIdentifiers.Field}", actualCode);
-            StringAssert.Contains($"{enapsulationIdentifiers.Field} = value", actualCode);
+            StringAssert.Contains($"Name = {enapsulationIdentifiers.TargetFieldName}", actualCode);
+            StringAssert.Contains($"{enapsulationIdentifiers.TargetFieldName} = value", actualCode);
         }
 
         [Test]

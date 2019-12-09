@@ -28,7 +28,16 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public string FieldDeclaration(string identifierName, Accessibility accessibility = Accessibility.Private)
             => $"{accessibility} {identifierName} {Tokens.As} {_typeIdentifierName}";
 
-        public string TypeDeclarationBlock(IIndenter indenter, Accessibility accessibility = Accessibility.Private)
+        public string TypeDeclarationBlock(IIndenter indenter = null, Accessibility accessibility = Accessibility.Private)
+        {
+            if (indenter != null)
+            {
+                return string.Join(Environment.NewLine, indenter.Indent(BlockLines(accessibility), true));
+            }
+            return string.Join(Environment.NewLine, BlockLines(accessibility));
+        }
+
+        public IEnumerable<string> BlockLines(Accessibility accessibility)
         {
             var blockLines = new List<string>();
 
@@ -38,7 +47,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             blockLines.Add("End Type");
 
-            return  string.Join(Environment.NewLine, indenter.Indent(blockLines, true));
-        }
+            return blockLines;
+        } 
     }
 }

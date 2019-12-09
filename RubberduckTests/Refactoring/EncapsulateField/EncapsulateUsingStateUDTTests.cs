@@ -39,7 +39,7 @@ Private this As Long";
             var presenterAction = Support.UserAcceptsDefaults(asUDT: true);
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Private this As Long", actualCode);
-            StringAssert.Contains("Private this1 As This_Type", actualCode);
+            StringAssert.Contains("Private this_1 As This_Type", actualCode);
         }
 
         [Test]
@@ -162,6 +162,37 @@ Public myBar As TBar
             var index = actualCode.IndexOf("Get Second", StringComparison.InvariantCultureIgnoreCase);
             var indexLast = actualCode.LastIndexOf("Get Second", StringComparison.InvariantCultureIgnoreCase);
             Assert.AreEqual(index, indexLast);
+        }
+
+        [TestCase("Public Sub This_Type()\r\nEnd Sub", "This_Type_1")]
+        [TestCase("Private this_Type As Long\r\nPrivate this_Type_1 As String", "This_Type_2")]
+        [TestCase("Public Property Get This_Type() As Long\r\nEnd Property", "This_Type_1")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void UserDefinedTypeDefaultNameConflicts(string declaration, string expectedIdentifier)
+        {
+            string inputCode =
+$@"
+
+Private Type TBar
+    First As Long
+    Second As String
+End Type
+
+Public fo|o As Long
+Public myBar As TBar
+
+{declaration}
+";
+
+            var userInput = new UserInputDataObject()
+                .AddAttributeSet("myBar");
+
+            userInput.EncapsulateAsUDT = true;
+
+            var presenterAction = Support.SetParameters(userInput);
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            StringAssert.Contains($"Private Type {expectedIdentifier}", actualCode);
         }
 
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)

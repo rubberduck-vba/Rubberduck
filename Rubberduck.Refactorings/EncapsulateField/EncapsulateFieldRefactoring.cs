@@ -11,6 +11,8 @@ using Rubberduck.VBEditor.Utility;
 using System.Collections.Generic;
 using System;
 using Rubberduck.Parsing;
+using Rubberduck.Refactorings.Common;
+using System.IO;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -20,7 +22,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
         private readonly IIndenter _indenter;
         private QualifiedModuleName _targetQMN;
-        private IEncapsulateFieldNamesValidator _validator;
         private EncapsulateFieldModel Model { set; get; }
 
         public EncapsulateFieldRefactoring(
@@ -36,7 +37,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _declarationFinderProvider = declarationFinderProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;
             _indenter = indenter;
-            _validator = new EncapsulateFieldNamesValidator(_declarationFinderProvider, CandidateFields);
+            //_useNewValidationScheme = File.Exists("C:\\Users\\Brian\\Documents\\UseNewUDTStructure.txt");
         }
 
         protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
@@ -70,14 +71,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
                                 target,
                                 _declarationFinderProvider,
                                 _indenter,
-                                _validator,
                                 PreviewRewrite);
 
             return Model;
         }
-
-        //Get rid of Model property after improving the validator ctor
-        private IEnumerable<IEncapsulateFieldCandidate> CandidateFields() => Model?.FieldCandidates ?? Enumerable.Empty<IEncapsulateFieldCandidate>();
 
         protected override void RefactorImpl(EncapsulateFieldModel model)
         {

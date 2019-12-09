@@ -13,80 +13,82 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public interface IEncapsulateFieldNamesValidator
+    public interface IEncapsulateFieldValidator
     {
-        bool HasValidEncapsulationAttributes(IEncapsulateFieldCandidate attributes, QualifiedModuleName qmn, IEnumerable<Declaration> ignore, DeclarationType declarationType);
-        void ForceNonConflictEncapsulationAttributes(IEncapsulateFieldCandidate attributes, QualifiedModuleName qmn, Declaration target);
-        void ForceNonConflictPropertyName(IEncapsulateFieldCandidate attributes, QualifiedModuleName qmn, Declaration target);
+        bool HasValidEncapsulationAttributes(IEncapsulateFieldCandidate candidate, IEnumerable<Declaration> ignore);
+        bool IsValidVBAIdentifier(string identifier, DeclarationType declarationType);
+        bool HasConflictingPropertyIdentifier(IEncapsulateFieldCandidate candidate);
+        bool HasConflictingFieldIdentifier(IEncapsulateFieldCandidate candidate);
+        bool IsConflictingFieldIdentifier(string fieldName, IEncapsulateFieldCandidate candidate);
+    }
+
+    public interface IEncapsulateFieldNamesValidator : IEncapsulateFieldValidator
+    {
+        bool HasIdentifierConflicts(string identifier, DeclarationType declarationType);
+        bool IsConflictingStateUDTIdentifier(IEncapsulatedUserDefinedTypeField candidate);
     }
 
     public class EncapsulateFieldNamesValidator : IEncapsulateFieldNamesValidator
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
-        private Func<IEnumerable<IEncapsulateFieldCandidate>> _candidateFieldsRetriever;
-        public EncapsulateFieldNamesValidator(IDeclarationFinderProvider declarationFinderProvider, Func<IEnumerable<IEncapsulateFieldCandidate>> selectedFieldsRetriever = null)
+
+        private Lazy<List<IEncapsulateFieldCandidate>> _fieldCandidates;
+
+        private List<IEncapsulateFieldCandidate> FieldCandidates => _fieldCandidates.Value;
+
+        public EncapsulateFieldNamesValidator(IDeclarationFinderProvider declarationFinderProvider, Func<List<IEncapsulateFieldCandidate>> retrieveCandidateFields = null)
         {
             _declarationFinderProvider = declarationFinderProvider;
-            _candidateFieldsRetriever = selectedFieldsRetriever;
+            _fieldCandidates = new Lazy<List<IEncapsulateFieldCandidate>>(retrieveCandidateFields ?? (() => new List<IEncapsulateFieldCandidate>()));
         }
 
         private DeclarationFinder DeclarationFinder => _declarationFinderProvider.DeclarationFinder;
 
-        public void ForceNonConflictEncapsulationAttributes(IEncapsulateFieldCandidate candidate, QualifiedModuleName qmn, Declaration target)
+        public bool IsValidVBAIdentifier(string identifier, DeclarationType declarationType) 
+            => VBAIdentifierValidator.IsValidIdentifier(identifier, declarationType);
+
+        public bool HasConflictingPropertyIdentifier(IEncapsulateFieldCandidate candidate)
         {
-            if (target?.DeclarationType.HasFlag(DeclarationType.UserDefinedTypeMember) ?? false)
-            {
-                ForceNonConflictPropertyName(candidate, qmn, target);
-                return;
-            }
-            ForceNonConflictNewName(candidate, qmn, target);
+            var members = _declarationFinderProvider.DeclarationFinder.Members(candidate.QualifiedModuleName)
+                .Where(d => d != candidate.Declaration);
+
+            return members.Any(m => m.IdentifierName.EqualsVBAIdentifier(candidate.PropertyName));
         }
 
-        public void ForceNonConflictNewName(IEncapsulateFieldCandidate candidate, QualifiedModuleName qmn, Declaration target)
+        public bool HasConflictingFieldIdentifier(IEncapsulateFieldCandidate candidate)
         {
-            //var attributes = candidate.EncapsulationAttributes;
-            var identifier = candidate.NewFieldName;
-            var ignore = target is null ? Enumerable.Empty<Declaration>() : new Declaration[] { target };
+            var members = _declarationFinderProvider.DeclarationFinder.Members(candidate.QualifiedModuleName)
+                .Where(d => d != candidate.Declaration);
 
-            var isValidAttributeSet = HasValidEncapsulationAttributes(candidate, qmn, ignore);
-            for (var idx = 1; idx < 9 && !isValidAttributeSet; idx++)
-            {
-                candidate.NewFieldName = $"{identifier}{idx}";
-                isValidAttributeSet = HasValidEncapsulationAttributes(candidate, qmn, ignore);
-            }
+            return members.Any(m => m.IdentifierName.EqualsVBAIdentifier(candidate.NewFieldName));
         }
 
-        public void ForceNonConflictPropertyName(IEncapsulateFieldCandidate candidate, QualifiedModuleName qmn, Declaration target)
+        public bool IsConflictingFieldIdentifier(string fieldName, IEncapsulateFieldCandidate candidate)
         {
-            //var attributes = candidate.EncapsulationAttributes;
-            var identifier = candidate.PropertyName;
-            var ignore = target is null ? Enumerable.Empty<Declaration>() : new Declaration[] { target };
-            var isValidAttributeSet = HasValidEncapsulationAttributes(candidate, qmn, ignore);
-            for (var idx = 1; idx < 9 && !isValidAttributeSet; idx++)
-            {
-                candidate.PropertyName = $"{identifier}{idx}";
-                isValidAttributeSet = HasValidEncapsulationAttributes(candidate, qmn, ignore);
-            }
+            var members = _declarationFinderProvider.DeclarationFinder.Members(candidate.QualifiedModuleName)
+                .Where(d => d != candidate.Declaration);
+
+            return members.Any(m => m.IdentifierName.EqualsVBAIdentifier(fieldName) || candidate.PropertyName.EqualsVBAIdentifier(fieldName));
         }
 
-        public bool HasValidEncapsulationAttributes(IEncapsulateFieldCandidate candidate, QualifiedModuleName qmn, IEnumerable<Declaration> ignore, DeclarationType declaration = DeclarationType.Variable)
+        public bool IsConflictingStateUDTIdentifier(IEncapsulatedUserDefinedTypeField candidate)
         {
-            //var attributes = candidate.EncapsulationAttributes;
-            var hasValidIdentifiers = HasValidIdentifiers(candidate, declaration);
-            var hasInternalNameConflicts = HasInternalNameConflicts(candidate);
+            var members = _declarationFinderProvider.DeclarationFinder.Members(candidate.QualifiedModuleName);
 
-            var isSelfConsistent = hasValidIdentifiers || hasInternalNameConflicts;
+            return members.Any(m => m.IdentifierName.EqualsVBAIdentifier(candidate.AsTypeName));
+        }
 
-            if (!isSelfConsistent) { return false; }
+        public bool HasValidEncapsulationAttributes(IEncapsulateFieldCandidate candidate, IEnumerable<Declaration> ignore)
+        {
+            if (!candidate.EncapsulateFlag) { return true; }
 
+            var internalValidations = candidate as IEncapsulateFieldCandidateValidations;
 
-            if (!candidate.FieldNameIsExemptFromValidation)
+            if (!internalValidations.IsSelfConsistent
+                || HasConflictingPropertyIdentifier(candidate))
             {
-                if (HasNewFieldNameConflicts(candidate, qmn, ignore) > 0) { return false; }
+                return false;
             }
-
-            if (HasNewPropertyNameConflicts(candidate, qmn, ignore) > 0) { return false; }
-
             return true;
         }
 
@@ -112,8 +114,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             var candidates = new List<IEncapsulateFieldCandidate>();
             var candidateMatches = new List<IEncapsulateFieldCandidate>();
-            var fields = _candidateFieldsRetriever is null ? Enumerable.Empty<IEncapsulateFieldCandidate>() : _candidateFieldsRetriever();
-            foreach (var efd in fields)
+            foreach (var efd in FieldCandidates)
             {
                 var matches = candidates.Where(c => c.PropertyName.EqualsVBAIdentifier(efd.PropertyName));
                 if (matches.Any())
@@ -126,35 +127,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return identifierMatches.Count() + candidateMatches.Count();
         }
 
-        //FieldNames are always Private, so only look within the same module as the field to encapsulate
-        public int HasNewFieldNameConflicts(IEncapsulateFieldCandidate attributes, QualifiedModuleName qmn, IEnumerable<Declaration> declarationsToIgnore)
+        public bool HasIdentifierConflicts(string identifier, DeclarationType declarationType)
         {
-            var rawmatches = DeclarationFinder.MatchName(attributes.NewFieldName);
-            var identifierMatches = DeclarationFinder.MatchName(attributes.NewFieldName)
-                .Where(match => match.QualifiedModuleName == qmn
-                        && !declarationsToIgnore.Contains(match)
-                        && !IsEnumOrUDTMemberDeclaration(match)
-                        && !match.IsLocalVariable()).ToList();
-
-            var candidates = new List<IEncapsulateFieldCandidate>();
-            var candidateMatches = new List<IEncapsulateFieldCandidate>();
-            var fields = _candidateFieldsRetriever is null 
-                ? Enumerable.Empty<IEncapsulateFieldCandidate>() 
-                : _candidateFieldsRetriever();
-
-            foreach (var efd in fields)
-            {
-                var matches = candidates.Where(c => c.EncapsulateFlag &&  c.NewFieldName.EqualsVBAIdentifier(efd.NewFieldName)
-                                                        || c.IdentifierName.EqualsVBAIdentifier(efd.NewFieldName));
-                if (matches.Where(m => m.TargetID != efd.TargetID).Any())
-                {
-                    candidateMatches.Add(efd);
-                }
-                candidates.Add(efd);
-            }
-
-            return identifierMatches.Count() + candidateMatches.Count();
+            return true;
         }
+
 
         private bool IsEnumOrUDTMemberDeclaration(Declaration candidate)
         {
