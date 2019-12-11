@@ -15,6 +15,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 {
     public interface IEncapsulateFieldValidator
     {
+        void RegisterFieldCandidate(IEncapsulateFieldCandidate candidate);
         bool HasValidEncapsulationAttributes(IEncapsulateFieldCandidate candidate, IEnumerable<Declaration> ignore);
         bool IsValidVBAIdentifier(string identifier, DeclarationType declarationType);
         bool HasConflictingPropertyIdentifier(IEncapsulateFieldCandidate candidate);
@@ -32,14 +33,19 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
-        private Lazy<List<IEncapsulateFieldCandidate>> _fieldCandidates;
+        private List<IEncapsulateFieldCandidate> _registeredCandidates;
 
-        private List<IEncapsulateFieldCandidate> FieldCandidates => _fieldCandidates.Value;
+        private List<IEncapsulateFieldCandidate> FieldCandidates => _registeredCandidates; // _fieldCandidates.Value;
 
         public EncapsulateFieldNamesValidator(IDeclarationFinderProvider declarationFinderProvider, Func<List<IEncapsulateFieldCandidate>> retrieveCandidateFields = null)
         {
             _declarationFinderProvider = declarationFinderProvider;
-            _fieldCandidates = new Lazy<List<IEncapsulateFieldCandidate>>(retrieveCandidateFields ?? (() => new List<IEncapsulateFieldCandidate>()));
+            _registeredCandidates = new List<IEncapsulateFieldCandidate>();
+        }
+
+        public void RegisterFieldCandidate(IEncapsulateFieldCandidate candidate)
+        {
+            _registeredCandidates.Add(candidate);
         }
 
         private DeclarationFinder DeclarationFinder => _declarationFinderProvider.DeclarationFinder;
@@ -52,7 +58,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var members = _declarationFinderProvider.DeclarationFinder.Members(candidate.QualifiedModuleName)
                 .Where(d => d != candidate.Declaration);
 
-            return members.Any(m => m.IdentifierName.EqualsVBAIdentifier(candidate.PropertyName));
+            var edits = FieldCandidates.Where(fc => fc.EncapsulateFlag && fc.Declaration != candidate.Declaration).Select(fc => fc.PropertyName);
+            edits = edits.Concat(FieldCandidates.Where(fc => fc.EncapsulateFlag && fc.Declaration != candidate.Declaration).Select(fc => fc.NewFieldName));
+
+
+            return members.Any(m => m.IdentifierName.EqualsVBAIdentifier(candidate.PropertyName))
+                || edits.Any(ed => ed.EqualsVBAIdentifier(candidate.PropertyName));
         }
 
         public bool HasConflictingFieldIdentifier(IEncapsulateFieldCandidate candidate)

@@ -21,54 +21,51 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
         public EncapsulateWithBackingUserDefinedType(QualifiedModuleName qmn, IIndenter indenter, IEncapsulateFieldValidator validator)
             : base(qmn, indenter, validator) { }
 
+        public IEncapsulateFieldCandidate StateUDTField { set; get; }
+
         protected override IExecutableRewriteSession RefactorRewrite(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession, bool asPreview)
         {
-            foreach (var field in model.FlaggedFieldCandidates)
+            foreach (var field in model.SelectedFieldCandidates)
             {
                 if (field is IEncapsulatedUserDefinedTypeField udt)
                 {
                     udt.PropertyAccessExpression = () => $"{StateUDTField.PropertyAccessExpression()}.{udt.PropertyName}";
-
                     udt.ReferenceExpression = udt.PropertyAccessExpression;
 
                     foreach (var member in udt.Members)
                     {
                         member.PropertyAccessExpression = () => $"{udt.PropertyAccessExpression()}.{member.PropertyName}";
-                        member.ReferenceExpression = () => $"{udt.PropertyAccessExpression()}.{member.PropertyName}";
+                        member.ReferenceExpression = member.PropertyAccessExpression;
                     }
+                    continue;
                 }
-                else
-                {
-                    field.PropertyAccessExpression = () => $"{StateUDTField.PropertyAccessExpression()}.{field.PropertyName}";
-                    field.ReferenceExpression = field.PropertyAccessExpression;
-                }
+
+                field.PropertyAccessExpression = () => $"{StateUDTField.PropertyAccessExpression()}.{field.PropertyName}";
+                field.ReferenceExpression = field.PropertyAccessExpression;
             }
 
             return base.RefactorRewrite(model, rewriteSession, asPreview);
         }
 
-        public IEncapsulateFieldCandidate StateUDTField { set; get; }
-
-        protected override void ModifyField(IEncapsulateFieldCandidate field, IRewriteSession rewriteSession)
+        protected override void ModifyFields(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession)
         {
-            var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, TargetQMN);
+            foreach (var field in model.SelectedFieldCandidates)
+            {
+                var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, TargetQMN);
 
-            RewriterRemoveWorkAround.Remove(field.Declaration, rewriter);
-            //rewriter.Remove(target.Declaration);
-            return;
+                RewriterRemoveWorkAround.Remove(field.Declaration, rewriter);
+                //rewriter.Remove(target.Declaration);
+            }
         }
 
-        protected override EncapsulateFieldNewContent LoadNewDeclarationBlocks(EncapsulateFieldNewContent newContent, EncapsulateFieldModel model)
+        protected override void LoadNewDeclarationBlocks(EncapsulateFieldModel model)
         {
             var udt = new UDTDeclarationGenerator(StateUDTField.AsTypeName);
 
-            udt.AddMembers(model.FlaggedFieldCandidates);
+            udt.AddMembers(model.SelectedFieldCandidates);
 
-            newContent.AddTypeDeclarationBlock(udt.TypeDeclarationBlock(Indenter));
-
-            newContent.AddDeclarationBlock(udt.FieldDeclaration(StateUDTField.NewFieldName));
-
-            return newContent;
+            AddCodeBlock(NewContentTypes.TypeDeclarationBlock, udt.TypeDeclarationBlock(Indenter));
+            AddCodeBlock(NewContentTypes.DeclarationBlock, udt.FieldDeclarationBlock(StateUDTField.NewFieldName));
         }
     }
 }

@@ -63,6 +63,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
             : this(declaration.IdentifierName, declaration.AsTypeName, declaration.QualifiedModuleName, validator)
         {
             _target = declaration;
+            ImplementLetSetterType = true;
+            ImplementSetSetterType = false;
+            CanBeReadWrite = true;
         }
 
         public EncapsulateFieldCandidate(string identifier, string asTypeName, QualifiedModuleName qmn, IEncapsulateFieldNamesValidator validator)
@@ -107,11 +110,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 if (!EncapsulateFlag) { return true; }
 
-                return IsSelfConsistent; // _validator.IsValidVBAIdentifier(PropertyName, DeclarationType.Property)
-                
-                //var declarationsToIgnore = _target != null ? new Declaration[] { _target } : Enumerable.Empty<Declaration>();
-                //var declarationType = _target != null ? _target.DeclarationType : DeclarationType.Variable;
-                //return _validator.HasValidEncapsulationAttributes(this, QualifiedModuleName, declarationsToIgnore, declarationType);
+                return IsSelfConsistent
+                    && !_validator.HasConflictingPropertyIdentifier(this);
             }
         }
 

@@ -59,6 +59,18 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return string.Join(Environment.NewLine, indenter.Indent(AsEnumerableLines, true));
         }
 
+        public string AsPropertyBlock(IPropertyGeneratorSpecification spec, IIndenter indenter)
+        {
+            PropertyName = spec.PropertyName;
+            BackingField = spec.BackingField;
+            AsTypeName = spec.AsTypeName;
+            ParameterName = spec.ParameterName;
+            GenerateLetter = spec.GenerateLetter;
+            GenerateSetter = spec.GenerateSetter;
+            UsesSetAssignment = spec.UsesSetAssignment;
+            return string.Join(Environment.NewLine, indenter.Indent(AsEnumerableLines, true));
+        }
+
         private string GetterCode
         {
             get

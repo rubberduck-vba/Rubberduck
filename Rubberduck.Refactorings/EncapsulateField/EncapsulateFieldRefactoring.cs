@@ -16,13 +16,19 @@ using System.IO;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public class EncapsulateFieldRefactoring : InteractiveRefactoringBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>
+    public interface IEncapsulateFieldRefactoringTestAccess
+    {
+        EncapsulateFieldModel TestUserInteractionOnly(Declaration target, Func<EncapsulateFieldModel, EncapsulateFieldModel> userInteraction);
+    }
+
+    public class EncapsulateFieldRefactoring : InteractiveRefactoringBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>, IEncapsulateFieldRefactoringTestAccess
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
         private readonly IIndenter _indenter;
         private QualifiedModuleName _targetQMN;
-        private EncapsulateFieldModel Model { set; get; }
+        private EncapsulationCandidateFactory _encapsulationCandidateFactory;
+        private IEncapsulateFieldNamesValidator _validator;
 
         public EncapsulateFieldRefactoring(
             IDeclarationFinderProvider declarationFinderProvider,
@@ -37,8 +43,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _declarationFinderProvider = declarationFinderProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;
             _indenter = indenter;
+            _validator = new EncapsulateFieldNamesValidator(_declarationFinderProvider);//, () => FieldCandidates);
             //_useNewValidationScheme = File.Exists("C:\\Users\\Brian\\Documents\\UseNewUDTStructure.txt");
         }
+
+        public EncapsulateFieldModel Model { set; get; }
 
         protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
         {
@@ -51,6 +60,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
 
             return selectedDeclaration;
+        }
+
+        public EncapsulateFieldModel TestUserInteractionOnly(Declaration target, Func<EncapsulateFieldModel, EncapsulateFieldModel> userInteraction)
+        {
+            var model = InitializeModel(target);
+            return userInteraction(model);
         }
 
         protected override EncapsulateFieldModel InitializeModel(Declaration target)
@@ -67,10 +82,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             _targetQMN = target.QualifiedModuleName;
 
+            _encapsulationCandidateFactory = new EncapsulationCandidateFactory(_declarationFinderProvider, _targetQMN, _validator);
+
             Model = new EncapsulateFieldModel(
                                 target,
                                 _declarationFinderProvider,
                                 _indenter,
+                                _encapsulationCandidateFactory.CreateEncapsulationCandidates(),
                                 PreviewRewrite);
 
             return Model;

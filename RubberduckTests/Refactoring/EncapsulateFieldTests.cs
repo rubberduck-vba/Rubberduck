@@ -198,7 +198,7 @@ End Property
 ";
             var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name");
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedCode.Trim(), actualCode);
         }
 
 
@@ -219,7 +219,7 @@ End Property
 ";
             var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name", isReadonly: true);
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedCode.Trim(), actualCode);
         }
 
         [Test]
@@ -289,7 +289,7 @@ End Property
 ";
             var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name");
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedCode.Trim(), actualCode);
         }
 
         [TestCase(1, 10, "fizz", "Public buzz", "Private fizz As Variant", "Public fizz")]
@@ -336,7 +336,7 @@ End Property
 ";
             var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name");
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedCode.Trim(), actualCode);
         }
 
         [Test]
@@ -412,7 +412,7 @@ End Property
 ";
             var presenterAction = Support.UserAcceptsDefaults();
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedCode.Trim(), actualCode);
         }
 
         [Test]
@@ -565,7 +565,7 @@ End Property
 ";
             var presenterAction = Support.SetParametersForSingleTarget("foo", "Name");
             var actualCode = RefactoredCode(inputCode, "foo", DeclarationType.Variable, presenterAction);
-            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedCode.Trim(), actualCode);
         }
 
         [Test]
@@ -593,7 +593,7 @@ End Property
 ";
             var presenterAction = Support.SetParametersForSingleTarget("Foo", "bar");
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedCode.Trim(), actualCode);
         }
 
         [TestCase("Private", "mArray(5) As String", "mArray(5) As String")]
@@ -630,7 +630,7 @@ End Property
 
             var presenterAction = Support.SetParameters(userInput);
             var actualCode = RefactoredCode(inputCode, selection, presenterAction);
-            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedCode.Trim(), actualCode);
         }
 
         [TestCase("5")]
@@ -684,6 +684,7 @@ Public {declarationList}";
                 $@"Option Explicit
 
 Public mNextVar As Long
+
 {expectedDeclaration}
 
 Public Property Get MyArray() As Variant
@@ -692,7 +693,7 @@ End Property
 ";
             var presenterAction = Support.SetParametersForSingleTarget("mArray", "MyArray");
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedCode.Trim(), actualCode);
         }
 
         [TestCase(false)]

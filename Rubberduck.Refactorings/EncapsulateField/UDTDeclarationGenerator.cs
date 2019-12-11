@@ -25,7 +25,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public void AddMembers(IEnumerable<IEncapsulateFieldCandidate> fields) => _members.AddRange(fields);
 
-        public string FieldDeclaration(string identifierName, Accessibility accessibility = Accessibility.Private)
+        public string FieldDeclarationBlock(string identifierName, Accessibility accessibility = Accessibility.Private)
             => $"{accessibility} {identifierName} {Tokens.As} {_typeIdentifierName}";
 
         public string TypeDeclarationBlock(IIndenter indenter = null, Accessibility accessibility = Accessibility.Private)

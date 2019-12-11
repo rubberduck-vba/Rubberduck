@@ -123,6 +123,23 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             }
         }
 
+        public EncapsulateFieldModel RetrieveUserModifiedModelPriorToRefactoring(IVBE vbe, string declarationName, DeclarationType declarationType, Func<EncapsulateFieldModel, EncapsulateFieldModel> presenterAdjustment, params string[] fieldIdentifiers)
+        {
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
+            using (state)
+            {
+                var target = state.DeclarationFinder.DeclarationsWithType(declarationType)
+                    .Single(declaration => declaration.IdentifierName == declarationName);
+
+                var refactoring = TestRefactoring(rewritingManager, state, presenterAdjustment);
+                if (refactoring is IEncapsulateFieldRefactoringTestAccess concrete)
+                {
+                    return concrete.TestUserInteractionOnly(target, presenterAdjustment);
+                }
+                throw new InvalidCastException();
+            }
+        }
+
         public static IIndenter CreateIndenter(IVBE vbe = null)
         {
             return new Indenter(vbe, () => Settings.IndenterSettingsTests.GetMockIndenterSettings());

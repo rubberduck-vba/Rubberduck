@@ -28,10 +28,10 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         {
             get
             {
-                var flaggedFields = Model.FlaggedEncapsulationFields
+                var flaggedFields = Model.SelectedFieldCandidates
                     .OrderBy(efd => efd.Declaration.IdentifierName);
 
-                var orderedFields = Model.FieldCandidates.Except(flaggedFields)
+                var orderedFields = Model.EncapsulationCandidates.Except(flaggedFields)
                     .OrderBy(efd => efd.Declaration.IdentifierName);
 
                 var viewableFields = new ObservableCollection<IEncapsulatedFieldViewData>();
@@ -103,7 +103,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         }
 
         public bool TargetsHaveValidEncapsulationSettings 
-            => Model.FieldCandidates.Where(efd => efd.EncapsulateFlag)
+            => Model.EncapsulationCandidates.Where(efd => efd.EncapsulateFlag)
                     .Any(ff => !ff.HasValidEncapsulationAttributes);
 
         public IEncapsulateFieldValidator RefactoringValidator { set; get; }

@@ -20,124 +20,109 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IEncapsulateFieldNamesValidator _validator;
         private List<IEncapsulateFieldCandidate> _encapsulatedFields = new List<IEncapsulateFieldCandidate>();
+        //private IEnumerable<Declaration> _fieldCandidates;
+        private QualifiedModuleName _targetQMN;
 
-        public EncapsulationCandidateFactory(IDeclarationFinderProvider declarationFinderProvider, IEncapsulateFieldNamesValidator validator)
+        public EncapsulationCandidateFactory(IDeclarationFinderProvider declarationFinderProvider, QualifiedModuleName targetQMN, IEncapsulateFieldNamesValidator validator)
         {
-
             _declarationFinderProvider = declarationFinderProvider;
             _validator = validator;
+            _targetQMN = targetQMN;
         }
 
-        public IEncapsulateFieldCandidate CreateStateUDTField(QualifiedModuleName qmn, string identifier = DEFAULT_STATE_UDT_FIELD_IDENTIFIER, string asTypeName = DEFAULT_STATE_UDT_IDENTIFIER)
+        public IEncapsulateFieldCandidate CreateStateUDTField(string identifier = DEFAULT_STATE_UDT_FIELD_IDENTIFIER, string asTypeName = DEFAULT_STATE_UDT_IDENTIFIER)
         {
-            var stateUDT = new StateUDTField(identifier, asTypeName, qmn, _validator);
-            var isConflictingFieldIdentifier = _validator.HasConflictingFieldIdentifier(stateUDT);
-            for (var count = 1; count < 10 && isConflictingFieldIdentifier; count++)
-            {
-                stateUDT.NewFieldName = EncapsulationIdentifiers.IncrementIdentifier(stateUDT.NewFieldName);
-                isConflictingFieldIdentifier = _validator.HasConflictingFieldIdentifier(stateUDT);
-            }
+            var stateUDT = new StateUDTField(identifier, asTypeName, _targetQMN, _validator);
+            _validator.RegisterFieldCandidate(stateUDT);
 
-            var isConflictingUserDefinedTypeIdentifier = _validator.IsConflictingStateUDTIdentifier(stateUDT);
-            for (var count = 1; count < 10 && isConflictingUserDefinedTypeIdentifier; count++)
-            {
-                stateUDT.AsTypeName = EncapsulationIdentifiers.IncrementIdentifier(stateUDT.AsTypeName);
-                isConflictingUserDefinedTypeIdentifier = _validator.IsConflictingStateUDTIdentifier(stateUDT);
-            }
+            stateUDT = SetNonConflictIdentifier(stateUDT, c => { return _validator.HasConflictingFieldIdentifier(stateUDT); }, (s) => { stateUDT.NewFieldName = s; }, () => stateUDT.IdentifierName, _validator);
+
+            stateUDT = SetNonConflictIdentifier(stateUDT, c => { return _validator.IsConflictingStateUDTIdentifier(stateUDT); }, (s) => { stateUDT.AsTypeName = s; }, () => stateUDT.AsTypeName, _validator);
             return stateUDT;
         }
 
-        public IEnumerable<IEncapsulateFieldCandidate> CreateEncapsulationCandidates(IEnumerable<Declaration> candidateFields)
-        {
-            var candidates = new List<IEncapsulateFieldCandidate>();
-            foreach (var field in candidateFields)
-            {
-                var encapuslatedField = EncapsulateDeclaration(field, _validator);
-
-                var isConflictingPropertyIdentifier = _validator.HasConflictingPropertyIdentifier(encapuslatedField);
-                for (var count = 1; count < 10 && isConflictingPropertyIdentifier; count++)
-                {
-                    encapuslatedField.PropertyName = $"{encapuslatedField.IdentifierName}{count}";
-                    isConflictingPropertyIdentifier = _validator.HasConflictingPropertyIdentifier(encapuslatedField);
-                }
-
-                _encapsulatedFields.Add(encapuslatedField);
-            }
-
-            var udtFieldToUdtDeclarationMap = candidateFields
-                .Where(v => v.IsUserDefinedTypeField())
-                .Select(uv => CreateUDTTuple(uv))
-                .ToDictionary(key => key.UDTVariable, element => (element.UserDefinedType, element.UDTMembers));
-
-            foreach ( var udtField in udtFieldToUdtDeclarationMap.Keys)
-            {
-                var encapsulatedUDTField = _encapsulatedFields.Where(ef => ef.Declaration == udtField).Single() as IEncapsulatedUserDefinedTypeField;
-
-                encapsulatedUDTField.TypeDeclarationIsPrivate = udtFieldToUdtDeclarationMap[udtField].UserDefinedType.Accessibility.Equals(Accessibility.Private);
-
-                foreach (var udtMember in udtFieldToUdtDeclarationMap[udtField].Item2)
-                {
-                    var encapsulatedUDTMember = new EncapsulatedUserDefinedTypeMember(udtMember, encapsulatedUDTField, _validator) as IEncapsulatedUserDefinedTypeMember;
-
-                    var isConflictingPropertyIdentifier = _validator.HasConflictingFieldIdentifier(encapsulatedUDTMember);
-                    for (var count = 1; count < 10 && isConflictingPropertyIdentifier; count++)
-                    {
-                        encapsulatedUDTMember.PropertyName = $"{encapsulatedUDTMember.IdentifierName}{count}";
-                        isConflictingPropertyIdentifier = _validator.HasConflictingPropertyIdentifier(encapsulatedUDTMember);
-                    }
-
-                    encapsulatedUDTMember = ApplyTypeSpecificAttributes(encapsulatedUDTMember);
-                    encapsulatedUDTField.AddMember(encapsulatedUDTMember);
-                    encapsulatedUDTMember.PropertyAccessExpression =
-                       () =>
-                       {
-                           var prefix = encapsulatedUDTField.EncapsulateFlag
-                                      ? encapsulatedUDTField.NewFieldName
-                                      : encapsulatedUDTField.IdentifierName;
-                            return $"{prefix}.{encapsulatedUDTMember.IdentifierName}";
-                       };
-                }
-            }
-            return _encapsulatedFields;
-        }
-
-        public static IEncapsulateFieldCandidate EncapsulateDeclaration(Declaration target, IEncapsulateFieldNamesValidator validator)
+        public IEncapsulateFieldCandidate CreateEncapsulationCandidate(Declaration target)
         {
             Debug.Assert(!target.DeclarationType.Equals(DeclarationType.UserDefinedTypeMember));
 
             var candidate = target.IsUserDefinedTypeField()
-                ? new EncapsulatedUserDefinedTypeField(target, validator)
-                : new EncapsulateFieldCandidate(target, validator);
+                ? new EncapsulatedUserDefinedTypeField(target, _validator)
+                : new EncapsulateFieldCandidate(target, _validator);
 
-            return ApplyTypeSpecificAttributes(candidate);
+            _validator.RegisterFieldCandidate(candidate);
+
+            candidate = ApplyTypeSpecificAttributes(candidate);
+            candidate = SetNonConflictIdentifier(candidate, c => { return _validator.HasConflictingPropertyIdentifier(candidate); }, (s) => { candidate.PropertyName = s; }, () => candidate.IdentifierName, _validator);
+
+
+            if (candidate is IEncapsulatedUserDefinedTypeField udtVariable)
+            {
+                (Declaration udt, IEnumerable<Declaration> udtMembers) = GetUDTAndMembersForField(udtVariable);
+
+                udtVariable.TypeDeclarationIsPrivate = udt.Accessibility == Accessibility.Private;
+
+                foreach (var udtMember in udtMembers)
+                {
+                    var candidateUDTMember = new EncapsulatedUserDefinedTypeMember(udtMember, udtVariable, _validator) as IEncapsulatedUserDefinedTypeMember;
+
+                    candidateUDTMember = ApplyTypeSpecificAttributes(candidateUDTMember);
+
+                    candidateUDTMember = SetNonConflictIdentifier(candidateUDTMember, c => { return _validator.HasConflictingPropertyIdentifier(candidate); }, (s) => { candidateUDTMember.PropertyName = s; }, () => candidate.IdentifierName, _validator);
+
+                    candidateUDTMember.PropertyAccessExpression =
+                       () =>
+                       {
+                           var prefix = udtVariable.EncapsulateFlag
+                                      ? udtVariable.NewFieldName
+                                      : udtVariable.IdentifierName;
+                           return $"{prefix}.{candidateUDTMember.IdentifierName}";
+                       };
+
+                    udtVariable.AddMember(candidateUDTMember);
+                }
+            }
+            return candidate;
         }
 
-        private (Declaration UDTVariable, Declaration UserDefinedType, IEnumerable<Declaration> UDTMembers) CreateUDTTuple(Declaration udtVariable)
+        public IEnumerable<IEncapsulateFieldCandidate> CreateEncapsulationCandidates() //IEnumerable<Declaration> candidateFields)
         {
-            var userDefinedTypeDeclaration = _declarationFinderProvider.DeclarationFinder
-                .UserDeclarations(DeclarationType.UserDefinedType)
-                .Where(ut => ut.IdentifierName.Equals(udtVariable.AsTypeName)
-                    && (ut.Accessibility.Equals(Accessibility.Private)
-                            && ut.QualifiedModuleName == udtVariable.QualifiedModuleName)
-                    || (ut.Accessibility != Accessibility.Private))
-                    .SingleOrDefault();
+            var fieldDeclarations = _declarationFinderProvider.DeclarationFinder
+                .Members(_targetQMN)
+                .Where(v => v.IsMemberVariable() && !v.IsWithEvents);
+            //_fieldCandidates = candidateFields;
 
-            var udtMembers = _declarationFinderProvider.DeclarationFinder
-               .UserDeclarations(DeclarationType.UserDefinedTypeMember)
-               .Where(utm => userDefinedTypeDeclaration == utm.ParentDeclaration);
+            var candidates = new List<IEncapsulateFieldCandidate>();
+            foreach (var field in fieldDeclarations)
+            {
+                var fieldEncapsulationCandidate = CreateEncapsulationCandidate(field);
 
-            return (udtVariable, userDefinedTypeDeclaration, udtMembers);
+                candidates.Add(fieldEncapsulationCandidate);
+                //_encapsulatedFields.Add(encapuslatedField);
+            }
+
+            return candidates;
         }
 
-        private static T ApplyTypeSpecificAttributes<T>(T candidate) where T: IEncapsulateFieldCandidate
+        private T SetNonConflictIdentifier<T>(T candidate, Predicate<T> conflictDetector, Action<string> setValue, Func<string> getIdentifier, IEncapsulateFieldNamesValidator validator) where T : IEncapsulateFieldCandidate
+        {
+            var isConflictingIdentifier = conflictDetector(candidate);
+            for (var count = 1; count < 10 && isConflictingIdentifier; count++)
+            {
+                setValue(EncapsulationIdentifiers.IncrementIdentifier(getIdentifier()));
+                isConflictingIdentifier = conflictDetector(candidate);
+            }
+            return candidate;
+        }
+
+        private T ApplyTypeSpecificAttributes<T>(T candidate) where T: IEncapsulateFieldCandidate
         {
             var target = candidate.Declaration;
-            if (target.IsUserDefinedTypeField())
-            {
-                candidate.ImplementLetSetterType = true;
-                candidate.ImplementSetSetterType = false;
-            }
-            else if (target.IsArray)
+            //if (target.IsUserDefinedTypeField())
+            //{
+            //    candidate.ImplementLetSetterType = true;
+            //    candidate.ImplementSetSetterType = false;
+            //}
+            if (target.IsArray)
             {
                 candidate.ImplementLetSetterType = false;
                 candidate.ImplementSetSetterType = false;
@@ -155,12 +140,29 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 candidate.ImplementLetSetterType = false;
                 candidate.ImplementSetSetterType = true;
             }
-            else
-            {
-                candidate.ImplementLetSetterType = true;
-                candidate.ImplementSetSetterType = false;
-            }
+            //else
+            //{
+            //    candidate.ImplementLetSetterType = true;
+            //    candidate.ImplementSetSetterType = false;
+            //}
             return candidate;
+        }
+
+        private (Declaration TypeDeclaration, IEnumerable<Declaration> Members) GetUDTAndMembersForField(IEncapsulatedUserDefinedTypeField udtField)
+        {
+            var userDefinedTypeDeclaration = _declarationFinderProvider.DeclarationFinder
+                .UserDeclarations(DeclarationType.UserDefinedType)
+                .Where(ut => ut.IdentifierName.Equals(udtField.AsTypeName)
+                    && (ut.Accessibility.Equals(Accessibility.Private)
+                            && ut.QualifiedModuleName == udtField.QualifiedModuleName)
+                    || (ut.Accessibility != Accessibility.Private))
+                    .SingleOrDefault();
+
+            var udtMembers = _declarationFinderProvider.DeclarationFinder
+               .UserDeclarations(DeclarationType.UserDefinedTypeMember)
+               .Where(utm => userDefinedTypeDeclaration == utm.ParentDeclaration);
+
+            return (userDefinedTypeDeclaration, udtMembers);
         }
     }
 }

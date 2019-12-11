@@ -7,6 +7,7 @@ using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 
 namespace Rubberduck.Refactorings.EncapsulateField.Strategies
@@ -19,15 +20,29 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
 
     public abstract class EncapsulateFieldStrategiesBase : IEncapsulateFieldStrategy
     {
+        protected enum NewContentTypes { TypeDeclarationBlock, DeclarationBlock, MethodBlock, PostContentMessage };
+
         private IEncapsulateFieldValidator _validator;
-        protected static string DoubleSpace => $"{Environment.NewLine}{Environment.NewLine}";
+        private static string DoubleSpace => $"{Environment.NewLine}{Environment.NewLine}";
+        private Dictionary<NewContentTypes, List<string>> _newContent { set; get; }
 
         public EncapsulateFieldStrategiesBase(QualifiedModuleName qmn, IIndenter indenter, IEncapsulateFieldValidator validator)
         {
             TargetQMN = qmn;
             Indenter = indenter;
             _validator = validator;
+
+            _newContent = new Dictionary<NewContentTypes, List<string>>
+            {
+                { NewContentTypes.PostContentMessage, new List<string>() },
+                { NewContentTypes.DeclarationBlock, new List<string>() },
+                { NewContentTypes.MethodBlock, new List<string>() },
+                { NewContentTypes.TypeDeclarationBlock, new List<string>() }
+            };
         }
+
+        protected void AddCodeBlock(NewContentTypes contentType, string block)
+            => _newContent[contentType].Add(block);
 
         protected QualifiedModuleName TargetQMN {private set; get;}
 
@@ -35,21 +50,21 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
 
         public IExecutableRewriteSession GeneratePreview(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession)
         {
-            if (!model.FlaggedEncapsulationFields.Any()) { return rewriteSession; }
+            if (!model.SelectedFieldCandidates.Any()) { return rewriteSession; }
 
             return RefactorRewrite(model, rewriteSession, asPreview: true);
         }
 
         public IExecutableRewriteSession RefactorRewrite(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession)
         {
-            if (!model.FlaggedEncapsulationFields.Any()) { return rewriteSession; }
+            if (!model.SelectedFieldCandidates.Any()) { return rewriteSession; }
 
             return RefactorRewrite(model, rewriteSession, asPreview: false);
         }
 
-        protected abstract void ModifyField(IEncapsulateFieldCandidate target, IRewriteSession rewriteSession);
+        protected abstract void ModifyFields(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession);
 
-        protected abstract EncapsulateFieldNewContent LoadNewDeclarationBlocks(EncapsulateFieldNewContent newContent, EncapsulateFieldModel model);
+        protected abstract void LoadNewDeclarationBlocks(EncapsulateFieldModel model);
 
         protected virtual IExecutableRewriteSession RefactorRewrite(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession, bool asPreview)
         {
@@ -68,25 +83,17 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
 
         protected void ConfigureSelectedEncapsulationObjects(EncapsulateFieldModel model)
         {
-            foreach (var udtField in model.FlaggedUDTFieldCandidates)
+            foreach (var udtField in model.SelectedUDTFieldCandidates)
             {
-                udtField.FieldQualifyMemberPropertyNames = model.FlaggedUDTFieldCandidates.Where(f => f.AsTypeName.Equals(udtField.AsTypeName)).Count() > 1;
+                udtField.FieldQualifyMemberPropertyNames = model.SelectedUDTFieldCandidates.Where(f => f.AsTypeName.Equals(udtField.AsTypeName)).Count() > 1;
             }
 
             StageReferenceReplacementExpressions(model);
         }
 
-        protected void ModifyFields(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession)
-        {
-            foreach (var field in model.FlaggedEncapsulationFields)
-            {
-                ModifyField(field, rewriteSession);
-            }
-        }
-
         protected void ModifyReferences(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession)
         {
-            foreach (var rewriteReplacement in model.FlaggedEncapsulationFields.SelectMany(fld => fld.ReferenceReplacements))
+            foreach (var rewriteReplacement in model.SelectedFieldCandidates.SelectMany(fld => fld.ReferenceReplacements))
             {
                     var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, rewriteReplacement.Key.QualifiedModuleName);
                     rewriter.Replace(rewriteReplacement.Value);
@@ -95,7 +102,7 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
 
         protected void StageReferenceReplacementExpressions(EncapsulateFieldModel model)
         {   
-            foreach (var field in model.FlaggedEncapsulationFields)
+            foreach (var field in model.SelectedFieldCandidates)
             {
                 field.LoadReferenceExpressionChanges();
             }
@@ -105,31 +112,43 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
         {
             var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, TargetQMN);
 
-            var newContent = new EncapsulateFieldNewContent()
+            LoadNewDeclarationBlocks(model);
+
+            LoadNewPropertyBlocks(model);
+
+            if (postPendPreviewMessage)
             {
-                PostPendComment = postPendPreviewMessage ? "'<===== All Changes above this line =====>" : string.Empty,
-            };
+                _newContent[NewContentTypes.PostContentMessage].Add("'<===== All Changes above this line =====>");
+            }
 
-            newContent = LoadNewDeclarationBlocks(newContent, model);
+            var newContentBlock = string.Join(DoubleSpace,
+                            (_newContent[NewContentTypes.TypeDeclarationBlock])
+                            .Concat(_newContent[NewContentTypes.DeclarationBlock])
+                            .Concat(_newContent[NewContentTypes.MethodBlock])
+                            .Concat(_newContent[NewContentTypes.PostContentMessage]))
+                        .Trim();
 
-            newContent = LoadNewPropertyBlocks(newContent, model);
 
-            rewriter.InsertNewContent(model.CodeSectionStartIndex, newContent);
+            if (model.CodeSectionStartIndex.HasValue)
+            {
+                rewriter.InsertBefore(model.CodeSectionStartIndex.Value, $"{newContentBlock}{DoubleSpace}");
+            }
+            else
+            {
+                rewriter.InsertAtEndOfFile($"{DoubleSpace}{newContentBlock}");
+            }
         }
 
-        private EncapsulateFieldNewContent LoadNewPropertyBlocks(EncapsulateFieldNewContent newContent, EncapsulateFieldModel model) //, string postScript = null)
+        private void LoadNewPropertyBlocks(EncapsulateFieldModel model)
         {
-            if (!model.FlaggedEncapsulationFields.Any()) { return newContent; }
-
-            var propertyBlocks = new List<string>();
-            var propertyGenerationSpecs = model.FlaggedEncapsulationFields
+            var propertyGenerationSpecs = model.SelectedFieldCandidates
                                                 .SelectMany(f => f.PropertyGenerationSpecs);
 
+            var generator = new PropertyGenerator();
             foreach (var spec in propertyGenerationSpecs)
             {
-                newContent.AddCodeBlock(new PropertyGenerator(spec).AsPropertyBlock(Indenter));
+                AddCodeBlock(NewContentTypes.MethodBlock, generator.AsPropertyBlock(spec, Indenter));
             }
-            return newContent;
         }
     }
 }

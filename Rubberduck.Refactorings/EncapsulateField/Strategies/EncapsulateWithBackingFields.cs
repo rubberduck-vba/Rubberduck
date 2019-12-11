@@ -15,58 +15,49 @@ namespace Rubberduck.Refactorings.EncapsulateField.Strategies
     public class EncapsulateWithBackingFields : EncapsulateFieldStrategiesBase
     {
         public EncapsulateWithBackingFields(QualifiedModuleName qmn, IIndenter indenter, IEncapsulateFieldValidator validator)
-            : base(qmn, indenter, validator)
+            : base(qmn, indenter, validator) { }
+
+        protected override void ModifyFields(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession)
         {
-        }
-
-        protected override void ModifyField(IEncapsulateFieldCandidate field, IRewriteSession rewriteSession)
-        {
-            var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, TargetQMN);
-
-            if (field.Declaration.Accessibility == Accessibility.Private && field.NewFieldName.Equals(field.Declaration.IdentifierName))
+            foreach (var field in model.SelectedFieldCandidates)
             {
-                rewriter.MakeImplicitDeclarationTypeExplicit(field.Declaration);
-                return;
-            }
+                var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, TargetQMN);
 
-            if (field.Declaration.IsDeclaredInList())
-            {
-                RewriterRemoveWorkAround.Remove(field.Declaration, rewriter);
-                //rewriter.Remove(target.Declaration);
-            }
-            else
-            {
+                if (field.Declaration.Accessibility == Accessibility.Private && field.NewFieldName.Equals(field.Declaration.IdentifierName))
+                {
+                    rewriter.MakeImplicitDeclarationTypeExplicit(field.Declaration);
+                    continue;
+                }
+
+                if (field.Declaration.IsDeclaredInList())
+                {
+                    RewriterRemoveWorkAround.Remove(field.Declaration, rewriter);
+                    //rewriter.Remove(target.Declaration);
+                    continue;
+                }
+
                 rewriter.Rename(field.Declaration, field.NewFieldName);
                 rewriter.SetVariableVisiblity(field.Declaration, Accessibility.Private.TokenString());
                 rewriter.MakeImplicitDeclarationTypeExplicit(field.Declaration);
             }
-            return;
         }
 
-        protected override EncapsulateFieldNewContent LoadNewDeclarationBlocks(EncapsulateFieldNewContent newContent, EncapsulateFieldModel model)
+        protected override void LoadNewDeclarationBlocks(EncapsulateFieldModel model)
         {
-            foreach (var field in model.FlaggedFieldCandidates)
+            //New field declarations created here were removed from their list within ModifyFields(...)
+            var fieldsRequiringNewDeclaration = model.SelectedFieldCandidates
+                .Where(field => field.Declaration.IsDeclaredInList()
+                                    && field.Declaration.Accessibility != Accessibility.Private);
+
+            foreach (var field in fieldsRequiringNewDeclaration)
             {
+                var targetIdentifier = field.Declaration.Context.GetText().Replace(field.IdentifierName, field.NewFieldName);
+                var newField = field.Declaration.IsTypeSpecified
+                    ? $"{Tokens.Private} {targetIdentifier}"
+                    : $"{Tokens.Private} {targetIdentifier} {Tokens.As} {field.Declaration.AsTypeName}";
 
-                if (field.Declaration.Accessibility == Accessibility.Private && field.NewFieldName.Equals(field.Declaration.IdentifierName))
-                {
-                    continue;
-                }
-
-                //Fields within a list (where Accessibility is 'Public' 
-                //are removed from the list (within ModifyField(...)) and 
-                //inserted as a new Declaration
-                if (field.Declaration.IsDeclaredInList())
-                {
-                    var targetIdentifier = field.Declaration.Context.GetText().Replace(field.IdentifierName, field.NewFieldName);
-                    var newField = field.Declaration.IsTypeSpecified 
-                        ? $"{Tokens.Private} {targetIdentifier}" 
-                        : $"{Tokens.Private} {targetIdentifier} {Tokens.As} {field.Declaration.AsTypeName}";
-
-                    newContent.AddDeclarationBlock(newField);
-                }
+                AddCodeBlock(NewContentTypes.DeclarationBlock, newField);
             }
-            return newContent;
         }
     }
 }

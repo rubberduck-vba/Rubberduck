@@ -70,7 +70,7 @@ End Property
 ";
             var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name", isReadonly: true);
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            Assert.AreEqual(expectedCode, actualCode);
+            Assert.AreEqual(expectedCode.Trim(), actualCode);
         }
 
         [Test]
@@ -124,7 +124,7 @@ End Function";
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        public void FieldNameAttributeValidation_DefaultsToAvailablePropertyName()
+        public void FieldNameDefaultsToNonConflictName()
         {
             string inputCode =
 $@"Public fizz As String
@@ -132,11 +132,11 @@ $@"Public fizz As String
             Private fizzle As String
 
             'fizz1 is the initial default name for encapsulating 'fizz'            
-            Public Property Get Fizz1() As String
-                Fizz1 = fizzle
+            Public Property Get Fizz_1() As String
+                Fizz_1 = fizzle
             End Property
 
-            Public Property Let Fizz1(ByVal value As String)
+            Public Property Let Fizz_1(ByVal value As String)
                 fizzle = value
             End Property
             ";
@@ -144,44 +144,64 @@ $@"Public fizz As String
             Assert.IsTrue(encapsulatedField.HasValidEncapsulationAttributes);
         }
 
-        [TestCase("Number")]
-        [TestCase("Test")]
+        [TestCase("Name")]
+        [TestCase("mName")]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        public void EncapsulateMultipleFields_PropertyNameConflicts(string modifiedPropertyName)
+        public void UserEntersConflictingName(string userModifiedPropertyName)
+        {
+            string inputCode =
+$@"Public fizz As String
+
+            Private mName As String
+
+            Public Property Get Name() As String
+                Name = mName
+            End Property
+
+            Public Property Let Name(ByVal value As String)
+                mName = value
+            End Property
+            ";
+
+            var userInput = new UserInputDataObject("fizz", userModifiedPropertyName, true);
+
+            var presenterAction = Support.SetParameters(userInput);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
+            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, "fizz", DeclarationType.Variable, presenterAction, "fizz");
+
+            Assert.IsFalse(model["fizz"].HasValidEncapsulationAttributes);
+        }
+
+        [TestCase("Number", "Bazzle", true, true)]
+        [TestCase("Number", "Number", false, false)]
+        [TestCase("Test", "Number", false, true)]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void UserModificationIsExistingPropertyNameConflicts(string fizz_modifiedPropertyName, string bazz_modifiedPropertyName, bool fizz_expectedResult, bool bazz_expectedResult)
         {
             string inputCode =
 $@"Public fizz As Integer
 Public bazz As Integer
 Public buzz As Integer
+
 Private mTest As Integer
 
 Public Property Get Test() As Integer
     Test = mTest
 End Property";
 
+            var userInput = new UserInputDataObject()
+                .AddAttributeSet("fizz", fizz_modifiedPropertyName, true)
+                .AddAttributeSet("bazz", bazz_modifiedPropertyName, true);
+
+            var presenterAction = Support.SetParameters(userInput);
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
-            var selectedComponentName = vbe.SelectedVBComponent.Name;
+            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, "fizz", DeclarationType.Variable, presenterAction, "fizz", "bazz", "buzz");
 
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
-            using (state)
-            {
-                var mockFizz = CreateEncapsulatedFieldMock("fizz", "Integer", vbe.SelectedVBComponent, modifiedPropertyName);
-                var mockBazz = CreateEncapsulatedFieldMock("bazz", "Integer", vbe.SelectedVBComponent, "Whole");
-                var mockBuzz = CreateEncapsulatedFieldMock("buzz", "Integer", vbe.SelectedVBComponent, modifiedPropertyName);
-
-                var validator = new EncapsulateFieldNamesValidator(
-                        state,
-                        () => new List<IEncapsulateFieldCandidate>()
-                            {
-                                mockFizz,
-                                mockBazz,
-                                mockBuzz
-                            });
-
-                //Assert.Less(0, validator.HasNewPropertyNameConflicts(mockFizz.EncapsulationAttributes, mockFizz.QualifiedModuleName, Enumerable.Empty<Declaration>()));
-                Assert.Less(0, validator.HasNewPropertyNameConflicts(mockFizz, mockFizz.QualifiedModuleName, Enumerable.Empty<Declaration>()));
-            }
+            Assert.AreEqual(fizz_expectedResult, model["fizz"].HasValidEncapsulationAttributes, "fizz failed");
+            Assert.AreEqual(bazz_expectedResult, model["bazz"].HasValidEncapsulationAttributes, "bazz failed");
         }
 
         [Test]
@@ -202,28 +222,6 @@ Public that As TBar
 ";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
-            CreateAndParse(vbe, ThisTest);
-            //var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
-            //var selectedComponentName = vbe.SelectedVBComponent.Name;
-
-            void ThisTest(IDeclarationFinderProvider declarationProviderProvider)
-            {
-                var declarationThis = declarationProviderProvider.DeclarationFinder.MatchName("this").Single();
-                var declarationThat = declarationProviderProvider.DeclarationFinder.MatchName("that").Single();
-                var declarationTBar = declarationProviderProvider.DeclarationFinder.MatchName("TBar").Single();
-                var declarationFirst = declarationProviderProvider.DeclarationFinder.MatchName("First").Single();
-
-                var fields = new List<IEncapsulateFieldCandidate>();
-
-
-                var validator = new EncapsulateFieldNamesValidator(declarationProviderProvider, () => fields);
-
-                var encapsulatedThis = new EncapsulateFieldCandidate(declarationThis, validator);
-                var encapsulatedThat = new EncapsulateFieldCandidate(declarationThat, validator);
-                fields.Add(encapsulatedThis);
-                fields.Add(encapsulatedThat);
-            }
-
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
             using (state)
             {
@@ -237,9 +235,10 @@ Public that As TBar
                                 thisField,
                                 thatField,
                             });
+                validator.RegisterFieldCandidate(thisField);
+                validator.RegisterFieldCandidate(thatField);
 
 
-                //Assert.Less(0, validator.HasNewPropertyNameConflicts(thisField.EncapsulationAttributes, thisField.QualifiedModuleName, Enumerable.Empty<Declaration>()));
                 Assert.Less(0, validator.HasNewPropertyNameConflicts(thisField, thisField.QualifiedModuleName, Enumerable.Empty<Declaration>()));
             }
         }
@@ -271,16 +270,13 @@ Public wholeNumber As String
                 fields.Add(new EncapsulateFieldCandidate(wholeNumber, validator));
                 fields.Add(new EncapsulateFieldCandidate(longValue, validator));
 
-                //encapsulatedWholeNumber.EncapsulationAttributes.PropertyName = "LongValue";
                 encapsulatedWholeNumber.PropertyName = "LongValue";
-                //Assert.Less(0, validator.HasNewPropertyNameConflicts(encapsulatedWholeNumber.EncapsulationAttributes, encapsulatedWholeNumber.QualifiedModuleName, new Declaration[] { encapsulatedWholeNumber.Declaration }));
                 Assert.Less(0, validator.HasNewPropertyNameConflicts(encapsulatedWholeNumber, encapsulatedWholeNumber.QualifiedModuleName, new Declaration[] { encapsulatedWholeNumber.Declaration }));
             }
         }
 
         private void CreateAndParse(IVBE vbe, Action<IDeclarationFinderProvider> theTest)
         {
-            //var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
             var state = MockParser.CreateAndParse(vbe);
             using (state)
             {
