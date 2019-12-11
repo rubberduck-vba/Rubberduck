@@ -1,4 +1,5 @@
-﻿using Rubberduck.Parsing;
+﻿using Antlr4.Runtime;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using System;
@@ -9,29 +10,30 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public interface IEncapsulatedUserDefinedTypeField : IEncapsulateFieldCandidate
+    public interface IUserDefinedTypeCandidate : IEncapsulateFieldCandidate
     {
-        IEnumerable<IEncapsulatedUserDefinedTypeMember> Members { get; }
-        void AddMember(IEncapsulatedUserDefinedTypeMember member);
-        bool FieldQualifyMemberPropertyNames { set; get; }
+        IEnumerable<IUserDefinedTypeMemberCandidate> Members { get; }
+        void AddMember(IUserDefinedTypeMemberCandidate member);
+        bool FieldQualifyUDTMemberPropertyName { set; get; }
         bool TypeDeclarationIsPrivate { set; get; }
     }
 
-    public class EncapsulatedUserDefinedTypeField : EncapsulateFieldCandidate, IEncapsulatedUserDefinedTypeField
+    public class UserDefinedTypeCandidate : EncapsulateFieldCandidate, IUserDefinedTypeCandidate
     {
-        public EncapsulatedUserDefinedTypeField(Declaration declaration, IEncapsulateFieldNamesValidator validator)
+        public UserDefinedTypeCandidate(Declaration declaration, IEncapsulateFieldNamesValidator validator)
             : base(declaration, validator)
         {
-            PropertyAccessExpression = () => EncapsulateFlag ? NewFieldName : IdentifierName;
+            PropertyAccessor = AccessorTokens.Field;
+            ReferenceAccessor = AccessorTokens.Field;
         }
 
-        public void AddMember(IEncapsulatedUserDefinedTypeMember member)
+        public void AddMember(IUserDefinedTypeMemberCandidate member)
         {
             _udtMembers.Add(member);
         }
 
-        private List<IEncapsulatedUserDefinedTypeMember> _udtMembers = new List<IEncapsulatedUserDefinedTypeMember>();
-        public IEnumerable<IEncapsulatedUserDefinedTypeMember> Members => _udtMembers;
+        private List<IUserDefinedTypeMemberCandidate> _udtMembers = new List<IUserDefinedTypeMemberCandidate>();
+        public IEnumerable<IUserDefinedTypeMemberCandidate> Members => _udtMembers;
 
         public bool TypeDeclarationIsPrivate { set; get; }
 
@@ -41,20 +43,32 @@ namespace Rubberduck.Refactorings.EncapsulateField
             set => _fieldAndProperty.Field = value;
         }
 
-        public bool FieldQualifyMemberPropertyNames
+        public override string ReferenceQualifier
+        {
+            set
+            {
+                _referenceQualifier = value;
+                PropertyAccessor = (value?.Length ?? 0) == 0
+                    ? AccessorTokens.Field
+                    : AccessorTokens.Property;
+            }
+            get => _referenceQualifier;
+        }
+
+        public bool FieldQualifyUDTMemberPropertyName
         {
             set
             {
                 foreach (var member in Members)
                 {
-                    member.FieldQualifyPropertyName = value;
+                    member.FieldQualifyUDTMemberPropertyName = value;
                 }
             }
 
-            get => Members.All(m => m.FieldQualifyPropertyName);
+            get => Members.All(m => m.FieldQualifyUDTMemberPropertyName);
         }
 
-        public override void LoadReferenceExpressionChanges()
+        protected override void LoadFieldReferenceContextReplacements()
         {
             if (TypeDeclarationIsPrivate)
             {
@@ -62,45 +76,56 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 LoadUDTMemberReferenceExpressions();
                 return;
             }
-            LoadFieldReferenceExpressions();
+            base.LoadFieldReferenceContextReplacements();
         }
 
-        public override IEnumerable<IPropertyGeneratorSpecification> PropertyGenerationSpecs
+        public override IEnumerable<IPropertyGeneratorAttributes> PropertyAttributeSets
         {
             get
             {
                 if (TypeDeclarationIsPrivate)
                 {
-                    var specs = new List<IPropertyGeneratorSpecification>();
+                    var specs = new List<IPropertyGeneratorAttributes>();
                     foreach (var member in Members)
                     {
                         specs.Add(member.AsPropertyGeneratorSpec);
                     }
                     return specs;
                 }
-                return new List<IPropertyGeneratorSpecification>() { AsPropertyGeneratorSpec };
+                return new List<IPropertyGeneratorAttributes>() { AsPropertyGeneratorSpec };
             }
         }
 
-        public override IEnumerable<KeyValuePair<IdentifierReference, RewriteReplacePair>> ReferenceReplacements
+        public override void SetupReferenceReplacements(IStateUDTField stateUDT = null)
+        {
+
+            PropertyAccessor = stateUDT is null ? AccessorTokens.Field : AccessorTokens.Property;
+            ReferenceAccessor = AccessorTokens.Property;
+            ReferenceQualifier = stateUDT?.NewFieldName ?? null;
+            LoadFieldReferenceContextReplacements();
+            foreach (var member in Members)
+            {
+                member.SetupReferenceReplacements(stateUDT);
+            }
+        }
+
+        public override IEnumerable<KeyValuePair<IdentifierReference, (ParserRuleContext, string)>> ReferenceReplacements
         {
             get
             {
-                var results = new List<KeyValuePair<IdentifierReference, RewriteReplacePair>>();
+                var results = new List<KeyValuePair<IdentifierReference, (ParserRuleContext, string)>>();
                 foreach (var replacement in IdentifierReplacements)
                 {
-                    var kv = new KeyValuePair<IdentifierReference, RewriteReplacePair>
+                    var kv = new KeyValuePair<IdentifierReference, (ParserRuleContext, string)>
                         (replacement.Key, replacement.Value);
                     results.Add(kv);
                 }
-                foreach (var member in Members)
+
+                foreach (var replacement in Members.SelectMany(m => m.IdentifierReplacements))
                 {
-                    foreach (var replacement in member.IdentifierReplacements)
-                    {
-                        var kv = new KeyValuePair<IdentifierReference, RewriteReplacePair>
-                            (replacement.Key, replacement.Value);
-                        results.Add(kv);
-                    }
+                    var kv = new KeyValuePair<IdentifierReference, (ParserRuleContext, string)>
+                        (replacement.Key, replacement.Value);
+                    results.Add(kv);
                 }
                 return results;
             }
@@ -108,7 +133,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private void LoadPrivateUDTFieldReferenceExpressions()
         {
-            foreach (var idRef in References)
+            foreach (var idRef in Declaration.References)
             {
                 if (idRef.QualifiedModuleName == QualifiedModuleName
                     && idRef.Context.Parent.Parent is VBAParser.WithStmtContext wsc)
@@ -122,7 +147,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             foreach (var member in Members)
             {
-                foreach (var rf in member.References)
+                foreach (var rf in member.FieldRelatedReferences(this))
                 {
                     if (rf.QualifiedModuleName == QualifiedModuleName
                         && !rf.Context.TryGetAncestor<VBAParser.WithMemberAccessExprContext>(out _))

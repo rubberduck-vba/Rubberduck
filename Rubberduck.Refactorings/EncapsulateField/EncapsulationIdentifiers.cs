@@ -21,25 +21,25 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             _targetIdentifier = field;
             _defaultPropertyName = field.Capitalize();
-            DefaultNewFieldName = IncrementIdentifier(field.UnCapitalize());
+            DefaultNewFieldName = (field.UnCapitalize()).IncrementIdentifier();
             _fieldAndProperty = new KeyValuePair<string, string>(DefaultNewFieldName, _defaultPropertyName);
             _setLetParameter = DEFAULT_WRITE_PARAMETER;
         }
 
-        public static string IncrementIdentifier(string identifier)
-        {
-            var fragments = identifier.Split('_');
-            if (fragments.Length == 1) { return $"{identifier}_1"; }
+        //public static string IncrementIdentifier(string identifier)
+        //{
+        //    var fragments = identifier.Split('_');
+        //    if (fragments.Length == 1) { return $"{identifier}_1"; }
 
-            var lastFragment = fragments[fragments.Length - 1];
-            if (long.TryParse(lastFragment, out var number))
-            {
-                fragments[fragments.Length - 1] = (number + 1).ToString();
+        //    var lastFragment = fragments[fragments.Length - 1];
+        //    if (long.TryParse(lastFragment, out var number))
+        //    {
+        //        fragments[fragments.Length - 1] = (number + 1).ToString();
 
-                return string.Join("_", fragments);
-            }
-            return $"{identifier}_1"; ;
-        }
+        //        return string.Join("_", fragments);
+        //    }
+        //    return $"{identifier}_1"; ;
+        //}
 
         public string TargetFieldName => _targetIdentifier;
 
@@ -51,7 +51,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             set
             {
                 _fieldAndProperty = new KeyValuePair<string, string>(value, _fieldAndProperty.Value);
-                 GenerateNonConflictParamIdentifier();
+                 GenerateNonConflictParameterName();
             }
         }
 
@@ -66,13 +66,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
                 _fieldAndProperty = new KeyValuePair<string, string>(_fieldAndProperty.Key, value);
 
-                GenerateNonConflictParamIdentifier();
+                GenerateNonConflictParameterName();
             }
         }
 
         public string SetLetParameter => _setLetParameter;
 
-        private void GenerateNonConflictParamIdentifier()
+        private void GenerateNonConflictParameterName()
         {
             _setLetParameter = DEFAULT_WRITE_PARAMETER;
 

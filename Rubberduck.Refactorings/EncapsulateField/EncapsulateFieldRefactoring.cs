@@ -13,7 +13,7 @@ using System;
 using Rubberduck.Parsing;
 using Rubberduck.Refactorings.Common;
 using System.IO;
-using Rubberduck.Refactorings.EncapsulateField.Strategies;
+using Antlr4.Runtime;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -38,6 +38,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private static string DoubleSpace => $"{Environment.NewLine}{Environment.NewLine}";
 
+        private bool _useNewScheme;
         public EncapsulateFieldRefactoring(
             IDeclarationFinderProvider declarationFinderProvider,
             IIndenter indenter,
@@ -51,16 +52,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _declarationFinderProvider = declarationFinderProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;
             _indenter = indenter;
-            _validator = new EncapsulateFieldNamesValidator(_declarationFinderProvider);//, () => FieldCandidates);
-            //_useNewValidationScheme = File.Exists("C:\\Users\\Brian\\Documents\\UseNewUDTStructure.txt");
+            _validator = new EncapsulateFieldNamesValidator(_declarationFinderProvider);
+
+            _useNewScheme = File.Exists("C:\\Users\\Brian\\Documents\\UseNewUDTStructure.txt");
 
             _codeSectionStartIndex = _declarationFinderProvider.DeclarationFinder
                 .Members(_targetQMN).Where(m => m.IsMember())
                 .OrderBy(c => c.Selection)
-                .FirstOrDefault()?.Context.Start.TokenIndex ?? null; ;
-
-            //_codeSectionStartIndex = moduleMembers.OrderBy(c => c.Selection)
-            //                            .FirstOrDefault()?.Context.Start.TokenIndex ?? null;
+                .FirstOrDefault()?.Context.Start.TokenIndex ?? null;
         }
 
         public EncapsulateFieldModel Model { set; get; }
@@ -102,29 +101,20 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             Model = new EncapsulateFieldModel(
                                 target,
-                                //_declarationFinderProvider,
-                                //_indenter,
                                 _encapsulationCandidateFactory.CreateEncapsulationCandidates(),
                                 _encapsulationCandidateFactory.CreateStateUDTField(),
                                 PreviewRewrite);
 
-            //Model.StateUDTField = _encapsulationCandidateFactory.CreateStateUDTField();
-
-            var moduleMembers = _declarationFinderProvider.DeclarationFinder
-                .Members(_targetQMN).Where(m => m.IsMember());
-
-            _codeSectionStartIndex
-                = moduleMembers.OrderBy(c => c.Selection)
+            _codeSectionStartIndex = _declarationFinderProvider.DeclarationFinder
+                .Members(_targetQMN).Where(m => m.IsMember())
+                .OrderBy(c => c.Selection)
                             .FirstOrDefault()?.Context.Start.TokenIndex ?? null;
-
-            //Model.CodeSectionStartIndex = codeSectionStartIndex;
 
             return Model;
         }
 
         protected override void RefactorImpl(EncapsulateFieldModel model)
         {
-            //var strategy = new EncapsulateFieldStrategiesBase(_targetQMN, _indenter, _validator, StateUDTField);
             var rewriteSession = RefactorRewrite(model, RewritingManager.CheckOutCodePaneSession());
 
             if (!rewriteSession.TryRewrite())
@@ -135,10 +125,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private string PreviewRewrite(EncapsulateFieldModel model)
         {
-            //var strategy = new EncapsulateFieldStrategiesBase(_targetQMN, _indenter, _validator, StateUDTField);
             var scratchPadRewriteSession = GeneratePreview(model, RewritingManager.CheckOutCodePaneSession());
 
-            var previewRewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(scratchPadRewriteSession, _targetQMN);
+            var previewRewriter = scratchPadRewriteSession.CheckOutModuleRewriter(_targetQMN);
 
             return previewRewriter.GetText(maxConsecutiveNewLines: 3);
         }
@@ -171,7 +160,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 { NewContentTypes.TypeDeclarationBlock, new List<string>() }
             };
 
-            ConfigureSelectedEncapsulationObjects(model);
+            foreach (var udtField in model.SelectedUDTFieldCandidates)
+            {
+                udtField.FieldQualifyUDTMemberPropertyName = model.HasSelectedMultipleUDTFieldsOfType(udtField.AsTypeName);
+            }
 
             ModifyFields(model, rewriteSession);
 
@@ -184,58 +176,24 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return rewriteSession;
         }
 
-        private void ConfigureSelectedEncapsulationObjects(EncapsulateFieldModel model)
-        {
-            if (model.EncapsulateWithUDT)
-            {
-                foreach (var field in model.SelectedFieldCandidates)
-                {
-                    if (field is IEncapsulatedUserDefinedTypeField udt)
-                    {
-                        udt.PropertyAccessExpression = () => $"{StateUDTField.PropertyAccessExpression()}.{udt.PropertyName}";
-                        udt.ReferenceExpression = udt.PropertyAccessExpression;
-
-                        foreach (var member in udt.Members)
-                        {
-                            member.PropertyAccessExpression = () => $"{udt.PropertyAccessExpression()}.{member.PropertyName}";
-                            member.ReferenceExpression = member.PropertyAccessExpression;
-                        }
-                        continue;
-                    }
-
-                    field.PropertyAccessExpression = () => $"{StateUDTField.PropertyAccessExpression()}.{field.PropertyName}";
-                    field.ReferenceExpression = field.PropertyAccessExpression;
-                }
-            }
-
-            foreach (var udtField in model.SelectedUDTFieldCandidates)
-            {
-                udtField.FieldQualifyMemberPropertyNames = model.SelectedUDTFieldCandidates.Where(f => f.AsTypeName.Equals(udtField.AsTypeName)).Count() > 1;
-            }
-
-            //StageReferenceReplacementExpressions(model);
-            foreach (var field in model.SelectedFieldCandidates)
-            {
-                field.LoadReferenceExpressionChanges();
-            }
-        }
-
         private void ModifyReferences(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession)
         {
+            var stateUDT = model.EncapsulateWithUDT
+                ? model.StateUDTField as IStateUDTField
+                : null;
+
+            foreach (var field in model.EncapsulationCandidates)
+            {
+                field.SetupReferenceReplacements(stateUDT);
+            }
+
             foreach (var rewriteReplacement in model.SelectedFieldCandidates.SelectMany(fld => fld.ReferenceReplacements))
             {
-                var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, rewriteReplacement.Key.QualifiedModuleName);
-                rewriter.Replace(rewriteReplacement.Value);
+                (ParserRuleContext Context, string Text) = rewriteReplacement.Value;
+                var rewriter = rewriteSession.CheckOutModuleRewriter(rewriteReplacement.Key.QualifiedModuleName);
+                rewriter.Replace(Context, Text);
             }
         }
-
-        //private void StageReferenceReplacementExpressions(EncapsulateFieldModel model)
-        //{
-        //    foreach (var field in model.SelectedFieldCandidates)
-        //    {
-        //        field.LoadReferenceExpressionChanges();
-        //    }
-        //}
 
         private void ModifyFields(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession)
         {
@@ -243,17 +201,16 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 foreach (var field in model.SelectedFieldCandidates)
                 {
-                    var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, _targetQMN);
+                    var rewriter = rewriteSession.CheckOutModuleRewriter(_targetQMN);
 
                     RewriterRemoveWorkAround.Remove(field.Declaration, rewriter);
-                    //rewriter.Remove(target.Declaration);
                 }
                 return;
             }
 
             foreach (var field in model.SelectedFieldCandidates)
             {
-                var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, _targetQMN);
+                var rewriter = rewriteSession.CheckOutModuleRewriter(_targetQMN);
 
                 if (field.Declaration.Accessibility == Accessibility.Private && field.NewFieldName.Equals(field.Declaration.IdentifierName))
                 {
@@ -261,7 +218,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     continue;
                 }
 
-                if (field.Declaration.IsDeclaredInList())
+                if (field.Declaration.IsDeclaredInList() && !field.Declaration.HasPrivateAccessibility())
                 {
                     RewriterRemoveWorkAround.Remove(field.Declaration, rewriter);
                     //rewriter.Remove(target.Declaration);
@@ -276,7 +233,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private void InsertNewContent(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession, bool postPendPreviewMessage = false)
         {
-            var rewriter = EncapsulateFieldRewriter.CheckoutModuleRewriter(rewriteSession, _targetQMN);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(_targetQMN);
 
             LoadNewDeclarationBlocks(model);
 
@@ -309,12 +266,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             if (model.EncapsulateWithUDT)
             {
-                var udt = new UDTDeclarationGenerator(StateUDTField.AsTypeName);
+                var stateUDT = StateUDTField as IStateUDTField;
+                stateUDT.AddMembers(model.SelectedFieldCandidates);
 
-                udt.AddMembers(model.SelectedFieldCandidates);
-
-                AddCodeBlock(NewContentTypes.TypeDeclarationBlock, udt.TypeDeclarationBlock(_indenter));
-                AddCodeBlock(NewContentTypes.DeclarationBlock, udt.FieldDeclarationBlock(StateUDTField.NewFieldName));
+                AddCodeBlock(NewContentTypes.TypeDeclarationBlock, stateUDT.TypeDeclarationBlock(_indenter)); // udt.TypeDeclarationBlock(_indenter));
+                AddCodeBlock(NewContentTypes.DeclarationBlock, stateUDT.FieldDeclarationBlock); // udt.FieldDeclarationBlock(StateUDTField.NewFieldName));
                 return;
             }
 
@@ -337,7 +293,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private void LoadNewPropertyBlocks(EncapsulateFieldModel model)
         {
             var propertyGenerationSpecs = model.SelectedFieldCandidates
-                                                .SelectMany(f => f.PropertyGenerationSpecs);
+                                                .SelectMany(f => f.PropertyAttributeSets);
 
             var generator = new PropertyGenerator();
             foreach (var spec in propertyGenerationSpecs)

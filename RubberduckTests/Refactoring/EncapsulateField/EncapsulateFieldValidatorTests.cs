@@ -238,8 +238,8 @@ Public that As TBar
                 validator.RegisterFieldCandidate(thisField);
                 validator.RegisterFieldCandidate(thatField);
 
-
-                Assert.Less(0, validator.HasNewPropertyNameConflicts(thisField, thisField.QualifiedModuleName, Enumerable.Empty<Declaration>()));
+                Assert.IsTrue(validator.HasConflictingPropertyIdentifier(thisField));
+                //Assert.Less(0, validator.HasNewPropertyNameConflicts(thisField, thisField.QualifiedModuleName, Enumerable.Empty<Declaration>()));
             }
         }
         [Test]
@@ -271,7 +271,8 @@ Public wholeNumber As String
                 fields.Add(new EncapsulateFieldCandidate(longValue, validator));
 
                 encapsulatedWholeNumber.PropertyName = "LongValue";
-                Assert.Less(0, validator.HasNewPropertyNameConflicts(encapsulatedWholeNumber, encapsulatedWholeNumber.QualifiedModuleName, new Declaration[] { encapsulatedWholeNumber.Declaration }));
+                Assert.IsTrue(validator.HasConflictingPropertyIdentifier(encapsulatedWholeNumber));
+                //Assert.Less(0, validator.HasNewPropertyNameConflicts(encapsulatedWholeNumber, encapsulatedWholeNumber.QualifiedModuleName, new Declaration[] { encapsulatedWholeNumber.Declaration }));
             }
         }
 

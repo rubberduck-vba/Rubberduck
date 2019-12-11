@@ -21,24 +21,23 @@ namespace Rubberduck.Refactorings.EncapsulateField
         bool EncapsulateFlag { get; set; }
         string NewFieldName { set; get; }
         bool CanBeReadWrite { set; get; }
-        bool IsUDTMember { get; }
+        //bool IsUDTMember { get; }
         bool HasValidEncapsulationAttributes { get; }
         QualifiedModuleName QualifiedModuleName { get; }
-        IEnumerable<IdentifierReference> References { get; }
         string PropertyName { get; set; }
         string AsTypeName { get; set; }
         string ParameterName { get; }
         bool ImplementLetSetterType { get; set; }
         bool ImplementSetSetterType { get; set; }
-        Func<string> PropertyAccessExpression { set; get; }
-        bool FieldNameIsExemptFromValidation { get; }
-        Func<string> ReferenceExpression { set; get; }
-        IEnumerable<IPropertyGeneratorSpecification> PropertyGenerationSpecs { get; }
-        IEnumerable<KeyValuePair<IdentifierReference, RewriteReplacePair>> ReferenceReplacements { get; }
-        void LoadReferenceExpressionChanges();
+        IEnumerable<IPropertyGeneratorAttributes> PropertyAttributeSets { get; }
+        IEnumerable<KeyValuePair<IdentifierReference, (ParserRuleContext, string)>> ReferenceReplacements { get; }
         void SetReferenceRewriteContent(IdentifierReference idRef, string replacementText);
-        RewriteReplacePair ReferenceReplacement(IdentifierReference idRef);
+        string ReferenceQualifier { set; get; }
+        string ReferenceWithinNewProperty { get; }
+        void SetupReferenceReplacements(IStateUDTField stateUDT = null);
     }
+
+    public enum AccessorTokens { Field, Property }
 
     public interface IEncapsulateFieldCandidateValidations
     {
@@ -63,9 +62,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             : this(declaration.IdentifierName, declaration.AsTypeName, declaration.QualifiedModuleName, validator)
         {
             _target = declaration;
-            ImplementLetSetterType = true;
-            ImplementSetSetterType = false;
-            CanBeReadWrite = true;
         }
 
         public EncapsulateFieldCandidate(string identifier, string asTypeName, QualifiedModuleName qmn, IEncapsulateFieldNamesValidator validator)
@@ -76,13 +72,25 @@ namespace Rubberduck.Refactorings.EncapsulateField
             IdentifierName = identifier;
             AsTypeName = asTypeName;
             _qmn = qmn;
-            PropertyAccessExpression = () => NewFieldName;
-            ReferenceExpression = () => PropertyName;
+            PropertyAccessor = AccessorTokens.Field;
+            ReferenceAccessor = AccessorTokens.Property;
 
             _validator = validator;
+
+            ImplementLetSetterType = true;
+            ImplementSetSetterType = false;
+            CanBeReadWrite = true;
         }
 
-        protected Dictionary<IdentifierReference, RewriteReplacePair> IdentifierReplacements { get; } = new Dictionary<IdentifierReference, RewriteReplacePair>();
+        public virtual void SetupReferenceReplacements(IStateUDTField stateUDT = null)
+        {
+            PropertyAccessor = stateUDT is null ? AccessorTokens.Field : AccessorTokens.Property;
+            ReferenceAccessor = AccessorTokens.Property;
+            ReferenceQualifier = stateUDT?.NewFieldName ?? null;
+            LoadFieldReferenceContextReplacements();
+        }
+
+        protected Dictionary<IdentifierReference, (ParserRuleContext, string)> IdentifierReplacements { get; } = new Dictionary<IdentifierReference, (ParserRuleContext, string)>();
 
         public Declaration Declaration => _target;
 
@@ -115,14 +123,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        public virtual IEnumerable<KeyValuePair<IdentifierReference, RewriteReplacePair>> ReferenceReplacements
+        public virtual IEnumerable<KeyValuePair<IdentifierReference, (ParserRuleContext, string)>> ReferenceReplacements
         {
             get
             {
-                var results = new List<KeyValuePair<IdentifierReference, RewriteReplacePair>>();
+                var results = new List<KeyValuePair<IdentifierReference, (ParserRuleContext, string)>>();
                 foreach (var replacement in IdentifierReplacements)
                 {
-                    var kv = new KeyValuePair<IdentifierReference, RewriteReplacePair>
+                    var kv = new KeyValuePair<IdentifierReference, (ParserRuleContext, string)>
                         (replacement.Key, replacement.Value);
                     results.Add(kv);
                 }
@@ -134,15 +142,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             if (IdentifierReplacements.ContainsKey(idRef))
             {
-                IdentifierReplacements[idRef] = new RewriteReplacePair(replacementText, idRef.Context);
+                IdentifierReplacements[idRef] = (idRef.Context, replacementText);
                 return;
             }
-            IdentifierReplacements.Add(idRef, new RewriteReplacePair(replacementText, idRef.Context));
-        }
-
-        public RewriteReplacePair ReferenceReplacement(IdentifierReference idRef)
-        {
-            return IdentifierReplacements.Single(r => r.Key == idRef).Value;
+            IdentifierReplacements.Add(idRef, (idRef.Context, replacementText));
         }
 
         public virtual string TargetID => _target?.IdentifierName ?? IdentifierName;
@@ -185,7 +188,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 var isConflictingFieldIdentifier = _validator.HasConflictingFieldIdentifier(this);
                 for (var count = 1; count < 10 && isConflictingFieldIdentifier; count++)
                 {
-                    NewFieldName = EncapsulationIdentifiers.IncrementIdentifier(NewFieldName);
+                    NewFieldName = NewFieldName.IncrementIdentifier();
                     isConflictingFieldIdentifier = _validator.HasConflictingFieldIdentifier(this);
                 }
             }
@@ -193,11 +196,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public string AsTypeName { set; get; }
 
-        public bool IsUDTMember => _target?.DeclarationType.Equals(DeclarationType.UserDefinedTypeMember) ?? false;
-
         public QualifiedModuleName QualifiedModuleName => _qmn;
-
-        public virtual IEnumerable<IdentifierReference> References => Declaration?.References ?? Enumerable.Empty<IdentifierReference>();
 
         public string IdentifierName
         {
@@ -214,19 +213,55 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public bool ImplementSetSetterType { get => !IsReadOnly && _implSet; set => _implSet = value; }
 
 
-        public Func<string> PropertyAccessExpression { set; get; }
+        protected AccessorTokens PropertyAccessor { set; get; }
 
-        public virtual IEnumerable<IPropertyGeneratorSpecification> PropertyGenerationSpecs 
-            => new List<IPropertyGeneratorSpecification>() { AsPropertyGeneratorSpec };
+        protected AccessorTokens ReferenceAccessor { set; get; }
 
-        protected virtual IPropertyGeneratorSpecification AsPropertyGeneratorSpec
+        protected string _referenceQualifier;
+        public virtual string ReferenceQualifier
+        {
+            set => _referenceQualifier = value;
+            get => _referenceQualifier;
+        }
+
+        public virtual string ReferenceWithinNewProperty => AccessorTokenToContent(PropertyAccessor);
+
+        protected virtual string ReferenceForPreExistingReferences => AccessorTokenToContent(ReferenceAccessor);
+
+        protected string AccessorTokenToContent(AccessorTokens token)
+        {
+            var accessor = string.Empty;
+            switch (token)
+            {
+                case AccessorTokens.Field:
+                    accessor = NewFieldName;
+                    break;
+                case AccessorTokens.Property:
+                    accessor = PropertyName;
+                    break;
+                default:
+                    accessor = NewFieldName;
+                    break;
+            }
+
+            if ((ReferenceQualifier?.Length ?? 0) > 0)
+            {
+                return $"{ReferenceQualifier}.{accessor}";
+            }
+            return accessor;
+        }
+
+        public virtual IEnumerable<IPropertyGeneratorAttributes> PropertyAttributeSets 
+            => new List<IPropertyGeneratorAttributes>() { AsPropertyGeneratorSpec };
+
+        protected virtual IPropertyGeneratorAttributes AsPropertyGeneratorSpec
         {
             get
             {
                 return new PropertyGeneratorSpecification()
                 {
                     PropertyName = PropertyName,
-                    BackingField = PropertyAccessExpression(),
+                    BackingField = ReferenceWithinNewProperty,
                     AsTypeName = AsTypeName,
                     ParameterName = ParameterName,
                     GenerateLetter = ImplementLetSetterType,
@@ -236,19 +271,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        public virtual void LoadReferenceExpressionChanges()
-        {
-            LoadFieldReferenceExpressions();
-        }
-
-        protected virtual void LoadFieldReferenceExpressions()
+        protected virtual void LoadFieldReferenceContextReplacements()
         {
             var field = this;
-            foreach (var idRef in field.References)
+            foreach (var idRef in field.Declaration.References)
             {
                 var replacementText = RequiresAccessQualification(idRef)
-                    ? $"{field.QualifiedModuleName.ComponentName}.{field.ReferenceExpression()}"
-                    : field.ReferenceExpression();
+                    ? $"{field.QualifiedModuleName.ComponentName}.{field.ReferenceForPreExistingReferences}"
+                    : field.ReferenceForPreExistingReferences;
 
                 field.SetReferenceRewriteContent(idRef, replacementText);
             }
@@ -264,10 +294,5 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return idRef.QualifiedModuleName != idRef.Declaration.QualifiedModuleName
                         && !isLHSOfMemberAccess;
         }
-
-        public Func<string> ReferenceExpression { set; get; }
-
-        public bool FieldNameIsExemptFromValidation 
-            => Declaration?.DeclarationType.Equals(DeclarationType.UserDefinedTypeMember) ?? false;
     }
 }

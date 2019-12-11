@@ -31,7 +31,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             _efd = efd;
         }
 
-        public Visibility FieldNameVisibility => _efd.IsUDTMember || !_efd.EncapsulateFlag ? Visibility.Collapsed : Visibility.Visible;
+        public Visibility FieldNameVisibility => (_efd is IUserDefinedTypeMemberCandidate) /*.IsUDTMember*/ || !_efd.EncapsulateFlag ? Visibility.Collapsed : Visibility.Visible;
         public Visibility PropertyNameVisibility => !_efd.EncapsulateFlag ? Visibility.Collapsed : Visibility.Visible;
         public bool HasValidEncapsulationAttributes => _efd.HasValidEncapsulationAttributes;
         public string TargetID { get => _efd.TargetID; }
@@ -39,7 +39,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         public bool IsReadOnly { get => _efd.IsReadOnly; set => _efd.IsReadOnly = value; }
         public bool CanBeReadWrite => _efd.CanBeReadWrite;
         public string PropertyName { get => _efd.PropertyName; set => _efd.PropertyName = value; }
-        public bool IsEditableReadWriteFieldIdentifier { get => !_efd.IsUDTMember; } // set => _efd.IsEditableReadWriteFieldIdentifier = value; }
+        public bool IsEditableReadWriteFieldIdentifier { get => !(_efd is IUserDefinedTypeMemberCandidate); }// .IsUDTMember; } // set => _efd.IsEditableReadWriteFieldIdentifier = value; }
         public bool EncapsulateFlag { get => _efd.EncapsulateFlag; set => _efd.EncapsulateFlag = value; }
         public string NewFieldName { get => _efd.NewFieldName; }// set => _efd.NewFieldName = value; }
         //TODO: Change name of AsTypeName property to FieldDescriptor(?)  -> and does it belong on IEncapsulatedField?
@@ -53,7 +53,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
                 var prefix = string.Empty;
 
                 var descriptor = string.Empty;
-                if (_efd.IsUDTMember)
+                if (_efd is IUserDefinedTypeMemberCandidate) //.IsUDTMember)
                 {
                     prefix = "UserDefinedType";
                 }

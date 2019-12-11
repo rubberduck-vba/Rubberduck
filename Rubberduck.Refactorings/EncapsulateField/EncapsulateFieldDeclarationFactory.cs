@@ -19,8 +19,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IEncapsulateFieldNamesValidator _validator;
-        private List<IEncapsulateFieldCandidate> _encapsulatedFields = new List<IEncapsulateFieldCandidate>();
-        //private IEnumerable<Declaration> _fieldCandidates;
         private QualifiedModuleName _targetQMN;
 
         public EncapsulationCandidateFactory(IDeclarationFinderProvider declarationFinderProvider, QualifiedModuleName targetQMN, IEncapsulateFieldNamesValidator validator)
@@ -46,7 +44,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             Debug.Assert(!target.DeclarationType.Equals(DeclarationType.UserDefinedTypeMember));
 
             var candidate = target.IsUserDefinedTypeField()
-                ? new EncapsulatedUserDefinedTypeField(target, _validator)
+                ? new UserDefinedTypeCandidate(target, _validator)
                 : new EncapsulateFieldCandidate(target, _validator);
 
             _validator.RegisterFieldCandidate(candidate);
@@ -55,7 +53,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             candidate = SetNonConflictIdentifier(candidate, c => { return _validator.HasConflictingPropertyIdentifier(candidate); }, (s) => { candidate.PropertyName = s; }, () => candidate.IdentifierName, _validator);
 
 
-            if (candidate is IEncapsulatedUserDefinedTypeField udtVariable)
+            if (candidate is IUserDefinedTypeCandidate udtVariable)
             {
                 (Declaration udt, IEnumerable<Declaration> udtMembers) = GetUDTAndMembersForField(udtVariable);
 
@@ -63,20 +61,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
                 foreach (var udtMember in udtMembers)
                 {
-                    var candidateUDTMember = new EncapsulatedUserDefinedTypeMember(udtMember, udtVariable, _validator) as IEncapsulatedUserDefinedTypeMember;
+                    var candidateUDTMember = new UserDefinedTypeMemberCandidate(udtMember, udtVariable, _validator) as IUserDefinedTypeMemberCandidate;
 
                     candidateUDTMember = ApplyTypeSpecificAttributes(candidateUDTMember);
 
                     candidateUDTMember = SetNonConflictIdentifier(candidateUDTMember, c => { return _validator.HasConflictingPropertyIdentifier(candidate); }, (s) => { candidateUDTMember.PropertyName = s; }, () => candidate.IdentifierName, _validator);
-
-                    candidateUDTMember.PropertyAccessExpression =
-                       () =>
-                       {
-                           var prefix = udtVariable.EncapsulateFlag
-                                      ? udtVariable.NewFieldName
-                                      : udtVariable.IdentifierName;
-                           return $"{prefix}.{candidateUDTMember.IdentifierName}";
-                       };
 
                     udtVariable.AddMember(candidateUDTMember);
                 }
@@ -84,12 +73,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return candidate;
         }
 
-        public IEnumerable<IEncapsulateFieldCandidate> CreateEncapsulationCandidates() //IEnumerable<Declaration> candidateFields)
+        public IEnumerable<IEncapsulateFieldCandidate> CreateEncapsulationCandidates()
         {
             var fieldDeclarations = _declarationFinderProvider.DeclarationFinder
                 .Members(_targetQMN)
                 .Where(v => v.IsMemberVariable() && !v.IsWithEvents);
-            //_fieldCandidates = candidateFields;
 
             var candidates = new List<IEncapsulateFieldCandidate>();
             foreach (var field in fieldDeclarations)
@@ -97,7 +85,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 var fieldEncapsulationCandidate = CreateEncapsulationCandidate(field);
 
                 candidates.Add(fieldEncapsulationCandidate);
-                //_encapsulatedFields.Add(encapuslatedField);
             }
 
             return candidates;
@@ -108,7 +95,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var isConflictingIdentifier = conflictDetector(candidate);
             for (var count = 1; count < 10 && isConflictingIdentifier; count++)
             {
-                setValue(EncapsulationIdentifiers.IncrementIdentifier(getIdentifier()));
+                setValue(getIdentifier().IncrementIdentifier());
                 isConflictingIdentifier = conflictDetector(candidate);
             }
             return candidate;
@@ -117,11 +104,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private T ApplyTypeSpecificAttributes<T>(T candidate) where T: IEncapsulateFieldCandidate
         {
             var target = candidate.Declaration;
-            //if (target.IsUserDefinedTypeField())
-            //{
-            //    candidate.ImplementLetSetterType = true;
-            //    candidate.ImplementSetSetterType = false;
-            //}
+
             if (target.IsArray)
             {
                 candidate.ImplementLetSetterType = false;
@@ -140,15 +123,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 candidate.ImplementLetSetterType = false;
                 candidate.ImplementSetSetterType = true;
             }
-            //else
-            //{
-            //    candidate.ImplementLetSetterType = true;
-            //    candidate.ImplementSetSetterType = false;
-            //}
             return candidate;
         }
 
-        private (Declaration TypeDeclaration, IEnumerable<Declaration> Members) GetUDTAndMembersForField(IEncapsulatedUserDefinedTypeField udtField)
+        private (Declaration TypeDeclaration, IEnumerable<Declaration> Members) GetUDTAndMembersForField(IUserDefinedTypeCandidate udtField)
         {
             var userDefinedTypeDeclaration = _declarationFinderProvider.DeclarationFinder
                 .UserDeclarations(DeclarationType.UserDefinedType)

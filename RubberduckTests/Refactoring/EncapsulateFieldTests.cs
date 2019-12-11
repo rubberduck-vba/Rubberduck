@@ -342,6 +342,31 @@ End Property
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
+        public void EncapsulatePrivateFieldInList()
+        {
+            const string inputCode =
+                @"Private fi|zz As Integer, fuzz As Integer, fazz As Integer";
+
+            const string expectedCode =
+                @"
+Private fizz_1 As Integer, fuzz As Integer, fazz As Integer
+
+Public Property Get Fizz() As Integer
+    Fizz = fizz_1
+End Property
+
+Public Property Let Fizz(ByVal value As Integer)
+    fizz_1 = value
+End Property
+";
+            var presenterAction = Support.SetParametersForSingleTarget("fizz");
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            Assert.AreEqual(expectedCode.Trim(), actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePrivateField_NameConflict()
         {
             const string inputCode =

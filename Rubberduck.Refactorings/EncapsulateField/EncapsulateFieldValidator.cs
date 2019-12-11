@@ -25,8 +25,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
     public interface IEncapsulateFieldNamesValidator : IEncapsulateFieldValidator
     {
-        bool HasIdentifierConflicts(string identifier, DeclarationType declarationType);
-        bool IsConflictingStateUDTIdentifier(IEncapsulatedUserDefinedTypeField candidate);
+        //bool HasIdentifierConflicts(string identifier, DeclarationType declarationType);
+        bool IsConflictingStateUDTIdentifier(IUserDefinedTypeCandidate candidate);
     }
 
     public class EncapsulateFieldNamesValidator : IEncapsulateFieldNamesValidator
@@ -82,7 +82,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return members.Any(m => m.IdentifierName.EqualsVBAIdentifier(fieldName) || candidate.PropertyName.EqualsVBAIdentifier(fieldName));
         }
 
-        public bool IsConflictingStateUDTIdentifier(IEncapsulatedUserDefinedTypeField candidate)
+        public bool IsConflictingStateUDTIdentifier(IUserDefinedTypeCandidate candidate)
         {
             var members = _declarationFinderProvider.DeclarationFinder.Members(candidate.QualifiedModuleName);
 
@@ -103,45 +103,45 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return true;
         }
 
-        public int HasNewPropertyNameConflicts(IEncapsulateFieldCandidate attributes, QualifiedModuleName qmn, IEnumerable<Declaration> declarationsToIgnore)
-        {
-            Predicate<Declaration> IsPrivateAccessiblityInOtherModule = (Declaration dec) => dec.QualifiedModuleName != qmn && dec.Accessibility.Equals(Accessibility.Private);
-            Predicate<Declaration> IsInSearchScope = null;
-            if (qmn.ComponentType == ComponentType.ClassModule)
-            {
-                IsInSearchScope = (Declaration dec) => dec.QualifiedModuleName == qmn;
-            }
-            else
-            {
-                IsInSearchScope = (Declaration dec) => dec.QualifiedModuleName.ProjectId == qmn.ProjectId;
-            }
+        //public int HasNewPropertyNameConflicts(IEncapsulateFieldCandidate attributes, QualifiedModuleName qmn, IEnumerable<Declaration> declarationsToIgnore)
+        //{
+        //    Predicate<Declaration> IsPrivateAccessiblityInOtherModule = (Declaration dec) => dec.QualifiedModuleName != qmn && dec.Accessibility.Equals(Accessibility.Private);
+        //    Predicate<Declaration> IsInSearchScope = null;
+        //    if (qmn.ComponentType == ComponentType.ClassModule)
+        //    {
+        //        IsInSearchScope = (Declaration dec) => dec.QualifiedModuleName == qmn;
+        //    }
+        //    else
+        //    {
+        //        IsInSearchScope = (Declaration dec) => dec.QualifiedModuleName.ProjectId == qmn.ProjectId;
+        //    }
 
-            var identifierMatches = DeclarationFinder.MatchName(attributes.PropertyName)
-                .Where(match => IsInSearchScope(match)
-                        && !declarationsToIgnore.Contains(match)
-                        && !IsPrivateAccessiblityInOtherModule(match)
-                        && !IsEnumOrUDTMemberDeclaration(match)
-                        && !match.IsLocalVariable()).ToList();
+        //    var identifierMatches = DeclarationFinder.MatchName(attributes.PropertyName)
+        //        .Where(match => IsInSearchScope(match)
+        //                && !declarationsToIgnore.Contains(match)
+        //                && !IsPrivateAccessiblityInOtherModule(match)
+        //                && !IsEnumOrUDTMemberDeclaration(match)
+        //                && !match.IsLocalVariable()).ToList();
 
-            var candidates = new List<IEncapsulateFieldCandidate>();
-            var candidateMatches = new List<IEncapsulateFieldCandidate>();
-            foreach (var efd in FieldCandidates)
-            {
-                var matches = candidates.Where(c => c.PropertyName.EqualsVBAIdentifier(efd.PropertyName));
-                if (matches.Any())
-                {
-                    candidateMatches.Add(efd);
-                }
-                candidates.Add(efd);
-            }
+        //    var candidates = new List<IEncapsulateFieldCandidate>();
+        //    var candidateMatches = new List<IEncapsulateFieldCandidate>();
+        //    foreach (var efd in FieldCandidates)
+        //    {
+        //        var matches = candidates.Where(c => c.PropertyName.EqualsVBAIdentifier(efd.PropertyName));
+        //        if (matches.Any())
+        //        {
+        //            candidateMatches.Add(efd);
+        //        }
+        //        candidates.Add(efd);
+        //    }
 
-            return identifierMatches.Count() + candidateMatches.Count();
-        }
+        //    return identifierMatches.Count() + candidateMatches.Count();
+        //}
 
-        public bool HasIdentifierConflicts(string identifier, DeclarationType declarationType)
-        {
-            return true;
-        }
+        //public bool HasIdentifierConflicts(string identifier, DeclarationType declarationType)
+        //{
+        //    return true;
+        //}
 
 
         private bool IsEnumOrUDTMemberDeclaration(Declaration candidate)

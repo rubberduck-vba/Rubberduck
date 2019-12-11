@@ -11,30 +11,31 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public interface IEncapsulatedUserDefinedTypeMember : IEncapsulateFieldCandidate
+    public interface IUserDefinedTypeMemberCandidate : IEncapsulateFieldCandidate
     {
-        IEncapsulatedUserDefinedTypeField Parent { get; }
-        bool FieldQualifyPropertyName { set; get; }
-        IPropertyGeneratorSpecification AsPropertyGeneratorSpec { get; }
-        Dictionary<IdentifierReference, RewriteReplacePair> IdentifierReplacements { get; }
+        IUserDefinedTypeCandidate Parent { get; }
+        bool FieldQualifyUDTMemberPropertyName { set; get; }
+        IPropertyGeneratorAttributes AsPropertyGeneratorSpec { get; }
+        Dictionary<IdentifierReference, (ParserRuleContext, string)> IdentifierReplacements { get; }
+        IEnumerable<IdentifierReference> FieldRelatedReferences(IUserDefinedTypeCandidate field);
     }
 
-    public class EncapsulatedUserDefinedTypeMember : EncapsulateFieldCandidate, IEncapsulatedUserDefinedTypeMember
+    public class UserDefinedTypeMemberCandidate : EncapsulateFieldCandidate, IUserDefinedTypeMemberCandidate
     {
-        public EncapsulatedUserDefinedTypeMember(Declaration target, IEncapsulatedUserDefinedTypeField udtVariable, IEncapsulateFieldNamesValidator validator)
+        public UserDefinedTypeMemberCandidate(Declaration target, IUserDefinedTypeCandidate udtVariable, IEncapsulateFieldNamesValidator validator)
             : base(target, validator)
         {
             Parent = udtVariable;
 
             PropertyName = IdentifierName;
-            PropertyAccessExpression = () => $"{Parent.PropertyAccessExpression()}.{PropertyName}";
-            ReferenceExpression = () => $"{Parent.PropertyAccessExpression()}.{PropertyName}";
+            PropertyAccessor = AccessorTokens.Property;
+            ReferenceAccessor = AccessorTokens.Property;
         }
 
-        public IEncapsulatedUserDefinedTypeField Parent { private set; get; }
+        public IUserDefinedTypeCandidate Parent { private set; get; }
 
         private bool _fieldNameQualifyProperty;
-        public bool FieldQualifyPropertyName
+        public bool FieldQualifyUDTMemberPropertyName
         {
             get => _fieldNameQualifyProperty;
             set
@@ -46,10 +47,18 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
+        public override void SetupReferenceReplacements(IStateUDTField stateUDT = null) { }
+
+        public override string ReferenceQualifier
+        {
+            set => _referenceQualifier = value;
+            get => Parent.ReferenceWithinNewProperty;
+        }
+
         public override string TargetID => $"{Parent.IdentifierName}.{IdentifierName}";
 
-        public override IEnumerable<IdentifierReference> References 
-            => GetUDTMemberReferencesForField(this, Parent);
+        public IEnumerable<IdentifierReference> FieldRelatedReferences(IUserDefinedTypeCandidate field)
+            => GetUDTMemberReferencesForField(this, field);
 
         public override void SetReferenceRewriteContent(IdentifierReference idRef, string replacementText)
         {
@@ -57,19 +66,39 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             if (IdentifierReplacements.ContainsKey(idRef))
             {
-                IdentifierReplacements[idRef] = new RewriteReplacePair(replacementText, idRef.Context.Parent as ParserRuleContext);
+                //IdentifierReplacements[idRef] = new RewriteReplacePair(replacementText, idRef.Context.Parent as ParserRuleContext);
+                IdentifierReplacements[idRef] = (idRef.Context.Parent as ParserRuleContext, replacementText);
                 return;
             }
-            IdentifierReplacements.Add(idRef, new RewriteReplacePair(replacementText, idRef.Context.Parent as ParserRuleContext));
+            //IdentifierReplacements.Add(idRef, new RewriteReplacePair(replacementText, idRef.Context.Parent as ParserRuleContext));
+            IdentifierReplacements.Add(idRef, (idRef.Context.Parent as ParserRuleContext, replacementText));
         }
 
-        public new IPropertyGeneratorSpecification AsPropertyGeneratorSpec
-            => base.AsPropertyGeneratorSpec;
+        public new IPropertyGeneratorAttributes AsPropertyGeneratorSpec
+        {
+            get
+            {
+                if (_fieldNameQualifyProperty)
+                {
+                    PropertyAccessor = AccessorTokens.Field;
+                }
 
-        public new Dictionary<IdentifierReference, RewriteReplacePair> IdentifierReplacements { get; } = new Dictionary<IdentifierReference, RewriteReplacePair>();
+                return new PropertyGeneratorSpecification()
+                {
+                    PropertyName = PropertyName,
+                    BackingField = ReferenceWithinNewProperty,
+                    AsTypeName = AsTypeName,
+                    ParameterName = ParameterName,
+                    GenerateLetter = ImplementLetSetterType,
+                    GenerateSetter = ImplementSetSetterType,
+                    UsesSetAssignment = Declaration.IsObject
+                };
+            }
+        }
 
+        public new Dictionary<IdentifierReference, (ParserRuleContext, string)> IdentifierReplacements { get; } = new Dictionary<IdentifierReference, (ParserRuleContext, string)>();
 
-        private IEnumerable<IdentifierReference> GetUDTMemberReferencesForField(IEncapsulateFieldCandidate udtMember, IEncapsulatedUserDefinedTypeField field)
+        private IEnumerable<IdentifierReference> GetUDTMemberReferencesForField(IEncapsulateFieldCandidate udtMember, IUserDefinedTypeCandidate field)
         {
             var refs = new List<IdentifierReference>();
             foreach (var idRef in udtMember.Declaration.References)

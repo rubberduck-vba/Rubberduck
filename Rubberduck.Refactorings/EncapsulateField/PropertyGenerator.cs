@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public interface IPropertyGeneratorSpecification
+    public interface IPropertyGeneratorAttributes
     {
         string PropertyName { get; }
         string BackingField { get; }
@@ -15,7 +15,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         bool UsesSetAssignment { get; }
     }
 
-    public struct PropertyGeneratorSpecification : IPropertyGeneratorSpecification
+    public struct PropertyGeneratorSpecification : IPropertyGeneratorAttributes
     {
         public string PropertyName { get; set; }
         public string BackingField { get; set; }
@@ -30,7 +30,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         public PropertyGenerator() { }
 
-        public PropertyGenerator(IPropertyGeneratorSpecification spec)
+        public PropertyGenerator(IPropertyGeneratorAttributes spec)
         {
             PropertyName = spec.PropertyName;
             BackingField = spec.BackingField;
@@ -59,7 +59,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return string.Join(Environment.NewLine, indenter.Indent(AsEnumerableLines, true));
         }
 
-        public string AsPropertyBlock(IPropertyGeneratorSpecification spec, IIndenter indenter)
+        public string AsPropertyBlock(IPropertyGeneratorAttributes spec, IIndenter indenter)
         {
             PropertyName = spec.PropertyName;
             BackingField = spec.BackingField;

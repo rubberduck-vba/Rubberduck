@@ -7,6 +7,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using System.Collections.Generic;
+using Rubberduck.VBEditor;
 
 namespace RubberduckTests.Refactoring.EncapsulateField
 {
@@ -87,10 +88,13 @@ $@"Public fizz As String
             mock.SetupGet(m => m.AsTypeName).Returns("String");
             mock.SetupGet(m => m.PropertyName).Returns("Fizz");
 
-            var newUserDefinedType = new UDTDeclarationGenerator("This_Type");
-            newUserDefinedType.AddMember(mock.Object);
+            var stateUDT = new StateUDTField("this", "This_Type", new QualifiedModuleName(), null) as IStateUDTField;
+            //var newUserDefinedType = new UDTDeclarationGenerator("This_Type");
+            stateUDT.AddMembers(new IEncapsulateFieldCandidate[] { mock.Object });
 
-            var result = newUserDefinedType.TypeDeclarationBlock();
+
+            //var result = newUserDefinedType.TypeDeclarationBlock();
+            var result = stateUDT.TypeDeclarationBlock();
             StringAssert.Contains("Private Type This_Type", result);
             StringAssert.Contains("Fizz As String", result);
             StringAssert.Contains("End Type", result);
