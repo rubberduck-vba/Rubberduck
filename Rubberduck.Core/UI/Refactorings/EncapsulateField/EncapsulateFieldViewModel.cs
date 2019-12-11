@@ -3,7 +3,7 @@ using System.Linq;
 using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.EncapsulateField;
-using Rubberduck.Refactorings.EncapsulateField.Strategies;
+//using Rubberduck.Refactorings.EncapsulateField.Strategies;
 using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Refactorings.EncapsulateField
@@ -66,17 +66,17 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         {
             get
             {
-                if (Model.EncapsulationStrategy is IEncapsulateWithBackingUserDefinedType udtStrategy)
+                if (Model.EncapsulateWithUDT)
                 {
-                    return udtStrategy.StateUDTField.AsTypeName;
+                    return Model.StateUDTField.AsTypeName;
                 }
                 return string.Empty;
             }
             set
             {
-                if (Model.EncapsulationStrategy is IEncapsulateWithBackingUserDefinedType udtStrategy)
+                if (Model.EncapsulateWithUDT)
                 {
-                    udtStrategy.StateUDTField.AsTypeName = value;
+                    Model.StateUDTField.AsTypeName = value;
                 }
                 UpdatePreview();
             }
@@ -86,17 +86,17 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         {
             get
             {
-                if (Model.EncapsulationStrategy is IEncapsulateWithBackingUserDefinedType udtStrategy)
+                if (Model.EncapsulateWithUDT)
                 {
-                    return udtStrategy.StateUDTField.NewFieldName;
+                    return Model.StateUDTField.NewFieldName;
                 }
                 return string.Empty;
             }
             set
             {
-                if (Model.EncapsulationStrategy is IEncapsulateWithBackingUserDefinedType udtStrategy)
+                if (Model.EncapsulateWithUDT)
                 {
-                    udtStrategy.StateUDTField.NewFieldName = value;
+                    Model.StateUDTField.NewFieldName = value;
                 }
                 UpdatePreview();
             }

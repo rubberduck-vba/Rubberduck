@@ -14,9 +14,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
 {
     public class EncapsulateFieldModel : IRefactoringModel
     {
-        private readonly IIndenter _indenter;
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
-        private readonly IEncapsulateFieldNamesValidator _validator;
+        //private readonly IIndenter _indenter;
+        //private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        //private readonly IEncapsulateFieldNamesValidator _validator;
         private readonly Func<EncapsulateFieldModel, string> _previewDelegate;
         private QualifiedModuleName _targetQMN;
 
@@ -24,21 +24,22 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> _udtFieldToUdtDeclarationMap = new Dictionary<Declaration, (Declaration, IEnumerable<Declaration>)>();
 
-        private EncapsulationCandidateFactory _fieldCandidateFactory;
+        //private EncapsulationCandidateFactory _fieldCandidateFactory;
 
-        public EncapsulateFieldModel(Declaration target, IDeclarationFinderProvider declarationFinderProvider, IIndenter indenter, IEnumerable<IEncapsulateFieldCandidate> candidates, Func<EncapsulateFieldModel, string> previewDelegate)
+        public EncapsulateFieldModel(Declaration target, /*IDeclarationFinderProvider declarationFinderProvider, IIndenter indenter,*/ IEnumerable<IEncapsulateFieldCandidate> candidates, IEncapsulateFieldCandidate stateUDT, Func<EncapsulateFieldModel, string> previewDelegate)
         {
-            _declarationFinderProvider = declarationFinderProvider;
-            _indenter = indenter;
+            //_declarationFinderProvider = declarationFinderProvider;
+            //_indenter = indenter;
             _previewDelegate = previewDelegate;
             _targetQMN = target.QualifiedModuleName;
 
             _useNewStructure = File.Exists("C:\\Users\\Brian\\Documents\\UseNewUDTStructure.txt");
 
-            _validator = new EncapsulateFieldNamesValidator(_declarationFinderProvider); //, () => EncapsulationCandidates);
+            //_validator = new EncapsulateFieldNamesValidator(_declarationFinderProvider); //, () => EncapsulationCandidates);
 
             EncapsulationCandidates = candidates.ToList();
-            _fieldCandidateFactory = new EncapsulationCandidateFactory(declarationFinderProvider, _targetQMN, _validator);
+            StateUDTField = stateUDT;
+            //_fieldCandidateFactory = new EncapsulationCandidateFactory(declarationFinderProvider, _targetQMN, _validator);
             this[target].EncapsulateFlag = true;
         }
 
@@ -63,38 +64,40 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public IEncapsulateFieldCandidate this[Declaration fieldDeclaration]
             => EncapsulationCandidates.Where(c => c.Declaration == fieldDeclaration).Single();
 
-        public IEncapsulateFieldStrategy EncapsulationStrategy
-        {
-            get
-            {
-                if (EncapsulateWithUDT)
-                {
-                    return new EncapsulateWithBackingUserDefinedType(_targetQMN, _indenter, _validator)
-                    {
-                        StateUDTField = _fieldCandidateFactory.CreateStateUDTField()
-                    };
-                }
-                return new EncapsulateWithBackingFields(_targetQMN, _indenter, _validator);
-            }
-        }
+        //public IEncapsulateFieldStrategy EncapsulationStrategy { set; get; }
+        //{
+        //    get
+        //    {
+        //        if (EncapsulateWithUDT)
+        //        {
+        //            return new EncapsulateWithBackingUserDefinedType(_targetQMN, _indenter, _validator)
+        //            {
+        //                StateUDTField = _fieldCandidateFactory.CreateStateUDTField()
+        //            };
+        //        }
+        //        return new EncapsulateWithBackingFields(_targetQMN, _indenter, _validator);
+        //    }
+        //}
 
         public bool EncapsulateWithUDT { set; get; }
 
+        public IEncapsulateFieldCandidate StateUDTField { set; get; }
+
         public string PreviewRefactoring() => _previewDelegate(this);
 
-        public int? CodeSectionStartIndex
-        {
-            get
-            {
-                var moduleMembers = _declarationFinderProvider.DeclarationFinder
-                        .Members(_targetQMN).Where(m => m.IsMember());
+        //public int? CodeSectionStartIndex { set; get; }
+        //{
+        //    get
+        //    {
+        //        var moduleMembers = _declarationFinderProvider.DeclarationFinder
+        //                .Members(_targetQMN).Where(m => m.IsMember());
 
-                int? codeSectionStartIndex
-                    = moduleMembers.OrderBy(c => c.Selection)
-                                .FirstOrDefault()?.Context.Start.TokenIndex ?? null;
+        //        int? codeSectionStartIndex
+        //            = moduleMembers.OrderBy(c => c.Selection)
+        //                        .FirstOrDefault()?.Context.Start.TokenIndex ?? null;
 
-                return codeSectionStartIndex;
-            }
-        }
+        //        return codeSectionStartIndex;
+        //    }
+        //}
     }
 }
