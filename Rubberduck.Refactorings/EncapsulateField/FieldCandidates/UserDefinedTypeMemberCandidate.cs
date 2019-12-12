@@ -47,7 +47,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        public override void SetupReferenceReplacements(IStateUDTField stateUDT = null) { }
+        public override void StageFieldReferenceReplacements(IStateUDT stateUDT = null) { }
 
         public override string ReferenceQualifier
         {
@@ -66,11 +66,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             if (IdentifierReplacements.ContainsKey(idRef))
             {
-                //IdentifierReplacements[idRef] = new RewriteReplacePair(replacementText, idRef.Context.Parent as ParserRuleContext);
                 IdentifierReplacements[idRef] = (idRef.Context.Parent as ParserRuleContext, replacementText);
                 return;
             }
-            //IdentifierReplacements.Add(idRef, new RewriteReplacePair(replacementText, idRef.Context.Parent as ParserRuleContext));
             IdentifierReplacements.Add(idRef, (idRef.Context.Parent as ParserRuleContext, replacementText));
         }
 
@@ -83,7 +81,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     PropertyAccessor = AccessorTokens.Field;
                 }
 
-                return new PropertyGeneratorSpecification()
+                return new PropertyAttributeSet()
                 {
                     PropertyName = PropertyName,
                     BackingField = ReferenceWithinNewProperty,

@@ -26,21 +26,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _setLetParameter = DEFAULT_WRITE_PARAMETER;
         }
 
-        //public static string IncrementIdentifier(string identifier)
-        //{
-        //    var fragments = identifier.Split('_');
-        //    if (fragments.Length == 1) { return $"{identifier}_1"; }
-
-        //    var lastFragment = fragments[fragments.Length - 1];
-        //    if (long.TryParse(lastFragment, out var number))
-        //    {
-        //        fragments[fragments.Length - 1] = (number + 1).ToString();
-
-        //        return string.Join("_", fragments);
-        //    }
-        //    return $"{identifier}_1"; ;
-        //}
-
         public string TargetFieldName => _targetIdentifier;
 
         public string DefaultNewFieldName { private set; get; }
@@ -51,7 +36,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             set
             {
                 _fieldAndProperty = new KeyValuePair<string, string>(value, _fieldAndProperty.Value);
-                 GenerateNonConflictParameterName();
+                 SetNonConflictParameterName();
             }
         }
 
@@ -66,13 +51,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
                 _fieldAndProperty = new KeyValuePair<string, string>(_fieldAndProperty.Key, value);
 
-                GenerateNonConflictParameterName();
+                SetNonConflictParameterName();
             }
         }
 
         public string SetLetParameter => _setLetParameter;
 
-        private void GenerateNonConflictParameterName()
+        private void SetNonConflictParameterName()
         {
             _setLetParameter = DEFAULT_WRITE_PARAMETER;
 

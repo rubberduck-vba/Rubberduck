@@ -27,6 +27,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         //bool HasIdentifierConflicts(string identifier, DeclarationType declarationType);
         bool IsConflictingStateUDTIdentifier(IUserDefinedTypeCandidate candidate);
+        bool IsConflictingStateUDTTypeIdentifier(IStateUDT stateUDT);
+        bool IsConflictingStateUDTFieldIdentifier(IStateUDT stateUDT);
     }
 
     public class EncapsulateFieldNamesValidator : IEncapsulateFieldNamesValidator
@@ -59,7 +61,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 .Where(d => d != candidate.Declaration);
 
             var edits = FieldCandidates.Where(fc => fc.EncapsulateFlag && fc.Declaration != candidate.Declaration).Select(fc => fc.PropertyName);
-            edits = edits.Concat(FieldCandidates.Where(fc => fc.EncapsulateFlag && fc.Declaration != candidate.Declaration).Select(fc => fc.NewFieldName));
+            edits = edits.Concat(FieldCandidates.Where(fc => fc.EncapsulateFlag && fc.Declaration != candidate.Declaration).Select(fc => fc.FieldIdentifier));
 
 
             return members.Any(m => m.IdentifierName.EqualsVBAIdentifier(candidate.PropertyName))
@@ -71,7 +73,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var members = _declarationFinderProvider.DeclarationFinder.Members(candidate.QualifiedModuleName)
                 .Where(d => d != candidate.Declaration);
 
-            return members.Any(m => m.IdentifierName.EqualsVBAIdentifier(candidate.NewFieldName));
+            return members.Any(m => m.IdentifierName.EqualsVBAIdentifier(candidate.FieldIdentifier));
         }
 
         public bool IsConflictingFieldIdentifier(string fieldName, IEncapsulateFieldCandidate candidate)
@@ -81,6 +83,21 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             return members.Any(m => m.IdentifierName.EqualsVBAIdentifier(fieldName) || candidate.PropertyName.EqualsVBAIdentifier(fieldName));
         }
+
+        public bool IsConflictingStateUDTTypeIdentifier(IStateUDT stateUDT)
+        {
+            var members = _declarationFinderProvider.DeclarationFinder.Members(stateUDT.QualifiedModuleName);
+
+            return members.Any(m => m.IdentifierName.EqualsVBAIdentifier(stateUDT.TypeIdentifier));
+        }
+
+        public bool IsConflictingStateUDTFieldIdentifier(IStateUDT stateUDT)
+        {
+            var members = _declarationFinderProvider.DeclarationFinder.Members(stateUDT.QualifiedModuleName);
+
+            return members.Any(m => m.IdentifierName.EqualsVBAIdentifier(stateUDT.FieldIdentifier));
+        }
+
 
         public bool IsConflictingStateUDTIdentifier(IUserDefinedTypeCandidate candidate)
         {
@@ -158,16 +175,16 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private bool HasValidIdentifiers(IEncapsulateFieldCandidate attributes, DeclarationType declarationType)
         {
-            return VBAIdentifierValidator.IsValidIdentifier(attributes.NewFieldName, declarationType)
+            return VBAIdentifierValidator.IsValidIdentifier(attributes.FieldIdentifier, declarationType)
                 && VBAIdentifierValidator.IsValidIdentifier(attributes.PropertyName, DeclarationType.Property)
                 && VBAIdentifierValidator.IsValidIdentifier(attributes.ParameterName, DeclarationType.Parameter);
         }
 
         private bool HasInternalNameConflicts(IEncapsulateFieldCandidate attributes)
         {
-            return attributes.PropertyName.EqualsVBAIdentifier(attributes.NewFieldName)
+            return attributes.PropertyName.EqualsVBAIdentifier(attributes.FieldIdentifier)
                 || attributes.PropertyName.EqualsVBAIdentifier(attributes.ParameterName)
-                || attributes.NewFieldName.EqualsVBAIdentifier(attributes.ParameterName);
+                || attributes.FieldIdentifier.EqualsVBAIdentifier(attributes.ParameterName);
         }
     }
 }

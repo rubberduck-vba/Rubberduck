@@ -20,7 +20,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> _udtFieldToUdtDeclarationMap = new Dictionary<Declaration, (Declaration, IEnumerable<Declaration>)>();
 
-        public EncapsulateFieldModel(Declaration target, IEnumerable<IEncapsulateFieldCandidate> candidates, IEncapsulateFieldCandidate stateUDTField, Func<EncapsulateFieldModel, string> previewDelegate)
+        public EncapsulateFieldModel(Declaration target, IEnumerable<IEncapsulateFieldCandidate> candidates, IStateUDT stateUDTField, Func<EncapsulateFieldModel, string> previewDelegate)
         {
             _previewDelegate = previewDelegate;
             _targetQMN = target.QualifiedModuleName;
@@ -58,7 +58,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public bool EncapsulateWithUDT { set; get; }
 
-        public IEncapsulateFieldCandidate StateUDTField { set; get; }
+        public IStateUDT StateUDTField { set; get; }
 
         public string PreviewRefactoring() => _previewDelegate(this);
     }

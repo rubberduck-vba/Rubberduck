@@ -12,30 +12,27 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public class EncapsulationCandidateFactory
+    public class EncapsulateFieldElementFactory
     {
-        private const string DEFAULT_STATE_UDT_IDENTIFIER = "This_Type";
-        private const string DEFAULT_STATE_UDT_FIELD_IDENTIFIER = "this";
-
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IEncapsulateFieldNamesValidator _validator;
         private QualifiedModuleName _targetQMN;
 
-        public EncapsulationCandidateFactory(IDeclarationFinderProvider declarationFinderProvider, QualifiedModuleName targetQMN, IEncapsulateFieldNamesValidator validator)
+        public EncapsulateFieldElementFactory(IDeclarationFinderProvider declarationFinderProvider, QualifiedModuleName targetQMN, IEncapsulateFieldNamesValidator validator)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _validator = validator;
             _targetQMN = targetQMN;
         }
 
-        public IEncapsulateFieldCandidate CreateStateUDTField(string identifier = DEFAULT_STATE_UDT_FIELD_IDENTIFIER, string asTypeName = DEFAULT_STATE_UDT_IDENTIFIER)
+        public IStateUDT CreateStateUDTField()
         {
-            var stateUDT = new StateUDTField(identifier, asTypeName, _targetQMN, _validator);
-            _validator.RegisterFieldCandidate(stateUDT);
+            var stateUDT = new StateUDT(_targetQMN, _validator) as IStateUDT;
 
-            stateUDT = SetNonConflictIdentifier(stateUDT, c => { return _validator.HasConflictingFieldIdentifier(stateUDT); }, (s) => { stateUDT.NewFieldName = s; }, () => stateUDT.IdentifierName, _validator);
+            stateUDT = SetNonConflictIdentifier(stateUDT, c => { return _validator.IsConflictingStateUDTFieldIdentifier(stateUDT); }, (s) => { stateUDT.FieldIdentifier = s; }, () => stateUDT.FieldIdentifier, _validator);
 
-            stateUDT = SetNonConflictIdentifier(stateUDT, c => { return _validator.IsConflictingStateUDTIdentifier(stateUDT); }, (s) => { stateUDT.AsTypeName = s; }, () => stateUDT.AsTypeName, _validator);
+            stateUDT = SetNonConflictIdentifier(stateUDT, c => { return _validator.IsConflictingStateUDTTypeIdentifier(stateUDT); }, (s) => { stateUDT.TypeIdentifier = s; }, () => stateUDT.TypeIdentifier, _validator);
+
             return stateUDT;
         }
 
@@ -50,14 +47,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _validator.RegisterFieldCandidate(candidate);
 
             candidate = ApplyTypeSpecificAttributes(candidate);
-            candidate = SetNonConflictIdentifier(candidate, c => { return _validator.HasConflictingPropertyIdentifier(candidate); }, (s) => { candidate.PropertyName = s; }, () => candidate.IdentifierName, _validator);
 
+            candidate = SetNonConflictIdentifier(candidate, c => { return _validator.HasConflictingPropertyIdentifier(candidate); }, (s) => { candidate.PropertyName = s; }, () => candidate.IdentifierName, _validator);
 
             if (candidate is IUserDefinedTypeCandidate udtVariable)
             {
-                (Declaration udt, IEnumerable<Declaration> udtMembers) = GetUDTAndMembersForField(udtVariable);
+                (Declaration udtDeclaration, IEnumerable<Declaration> udtMembers) = GetUDTAndMembersForField(udtVariable);
 
-                udtVariable.TypeDeclarationIsPrivate = udt.Accessibility == Accessibility.Private;
+                udtVariable.TypeDeclarationIsPrivate = udtDeclaration.HasPrivateAccessibility();
 
                 foreach (var udtMember in udtMembers)
                 {
@@ -101,11 +98,26 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return candidate;
         }
 
+        private IStateUDT SetNonConflictIdentifier(IStateUDT candidate, Predicate<IStateUDT> conflictDetector, Action<string> setValue, Func<string> getIdentifier, IEncapsulateFieldNamesValidator validator)
+        {
+            var isConflictingIdentifier = conflictDetector(candidate);
+            for (var count = 1; count < 10 && isConflictingIdentifier; count++)
+            {
+                setValue(getIdentifier().IncrementIdentifier());
+                isConflictingIdentifier = conflictDetector(candidate);
+            }
+            return candidate;
+        }
+
         private T ApplyTypeSpecificAttributes<T>(T candidate) where T: IEncapsulateFieldCandidate
         {
-            var target = candidate.Declaration;
+            //Default values are
+            //candidate.ImplementLetSetterType = true;
+            //candidate.ImplementSetSetterType = false;
+            //candidate.CanBeReadWrite = true;
+            //candidate.IsReadOnly = false;
 
-            if (target.IsArray)
+            if (candidate.Declaration.IsArray)
             {
                 candidate.ImplementLetSetterType = false;
                 candidate.ImplementSetSetterType = false;
@@ -113,12 +125,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 candidate.CanBeReadWrite = false;
                 candidate.IsReadOnly = true;
             }
-            else if (target.AsTypeName.Equals(Tokens.Variant))
+            else if (candidate.Declaration.AsTypeName.Equals(Tokens.Variant))
             {
                 candidate.ImplementLetSetterType = true;
                 candidate.ImplementSetSetterType = true;
             }
-            else if (target.IsObject)
+            else if (candidate.Declaration.IsObject)
             {
                 candidate.ImplementLetSetterType = false;
                 candidate.ImplementSetSetterType = true;

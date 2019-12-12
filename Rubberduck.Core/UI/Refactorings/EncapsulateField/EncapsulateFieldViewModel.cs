@@ -68,7 +68,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             {
                 if (Model.EncapsulateWithUDT)
                 {
-                    return Model.StateUDTField.AsTypeName;
+                    return Model.StateUDTField.TypeIdentifier;
                 }
                 return string.Empty;
             }
@@ -76,7 +76,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             {
                 if (Model.EncapsulateWithUDT)
                 {
-                    Model.StateUDTField.AsTypeName = value;
+                    Model.StateUDTField.TypeIdentifier = value;
                 }
                 UpdatePreview();
             }
@@ -88,7 +88,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             {
                 if (Model.EncapsulateWithUDT)
                 {
-                    return Model.StateUDTField.NewFieldName;
+                    return Model.StateUDTField.FieldIdentifier;
                 }
                 return string.Empty;
             }
@@ -96,7 +96,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             {
                 if (Model.EncapsulateWithUDT)
                 {
-                    Model.StateUDTField.NewFieldName = value;
+                    Model.StateUDTField.FieldIdentifier = value;
                 }
                 UpdatePreview();
             }

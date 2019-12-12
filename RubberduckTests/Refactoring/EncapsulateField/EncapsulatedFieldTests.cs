@@ -47,19 +47,19 @@ $@"Public fizz As String
             string inputCode = "Public fizz As String";
 
             var encapsulatedField = Support.RetrieveEncapsulatedField(inputCode, "fizz");
-            StringAssert.AreEqualIgnoringCase("fizz_1", encapsulatedField.NewFieldName);
+            StringAssert.AreEqualIgnoringCase("fizz_1", encapsulatedField.FieldIdentifier);
 
             encapsulatedField.PropertyName = "Test";
-            StringAssert.AreEqualIgnoringCase("fizz", encapsulatedField.NewFieldName);
+            StringAssert.AreEqualIgnoringCase("fizz", encapsulatedField.FieldIdentifier);
 
             encapsulatedField.PropertyName = "Fizz";
-            StringAssert.AreEqualIgnoringCase("fizz_1", encapsulatedField.NewFieldName);
+            StringAssert.AreEqualIgnoringCase("fizz_1", encapsulatedField.FieldIdentifier);
 
             encapsulatedField.PropertyName = "Fiz";
-            StringAssert.AreEqualIgnoringCase("fizz", encapsulatedField.NewFieldName);
+            StringAssert.AreEqualIgnoringCase("fizz", encapsulatedField.FieldIdentifier);
 
             encapsulatedField.PropertyName = "Fizz";
-            StringAssert.AreEqualIgnoringCase("fizz_1", encapsulatedField.NewFieldName);
+            StringAssert.AreEqualIgnoringCase("fizz_1", encapsulatedField.FieldIdentifier);
         }
 
         [Test]
@@ -88,14 +88,14 @@ $@"Public fizz As String
             mock.SetupGet(m => m.AsTypeName).Returns("String");
             mock.SetupGet(m => m.PropertyName).Returns("Fizz");
 
-            var stateUDT = new StateUDTField("this", "This_Type", new QualifiedModuleName(), null) as IStateUDTField;
+            var stateUDT = new StateUDT(Support.StateUDTDefaultType, null) as IStateUDT;
             //var newUserDefinedType = new UDTDeclarationGenerator("This_Type");
             stateUDT.AddMembers(new IEncapsulateFieldCandidate[] { mock.Object });
 
 
             //var result = newUserDefinedType.TypeDeclarationBlock();
             var result = stateUDT.TypeDeclarationBlock();
-            StringAssert.Contains("Private Type This_Type", result);
+            StringAssert.Contains($"Private Type {Support.StateUDTDefaultType}", result);
             StringAssert.Contains("Fizz As String", result);
             StringAssert.Contains("End Type", result);
         }

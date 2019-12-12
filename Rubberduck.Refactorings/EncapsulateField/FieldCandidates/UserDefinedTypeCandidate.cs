@@ -14,7 +14,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         IEnumerable<IUserDefinedTypeMemberCandidate> Members { get; }
         void AddMember(IUserDefinedTypeMemberCandidate member);
-        bool FieldQualifyUDTMemberPropertyName { set; get; }
+        bool FieldQualifyUDTMemberPropertyNames { set; get; }
         bool TypeDeclarationIsPrivate { set; get; }
     }
 
@@ -37,7 +37,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public bool TypeDeclarationIsPrivate { set; get; }
 
-        public override string NewFieldName
+        public override string FieldIdentifier
         {
             get => TypeDeclarationIsPrivate ? _fieldAndProperty.TargetFieldName : _fieldAndProperty.Field;
             set => _fieldAndProperty.Field = value;
@@ -55,7 +55,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => _referenceQualifier;
         }
 
-        public bool FieldQualifyUDTMemberPropertyName
+        public bool FieldQualifyUDTMemberPropertyNames
         {
             set
             {
@@ -96,16 +96,16 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        public override void SetupReferenceReplacements(IStateUDTField stateUDT = null)
+        public override void StageFieldReferenceReplacements(IStateUDT stateUDT = null)
         {
 
             PropertyAccessor = stateUDT is null ? AccessorTokens.Field : AccessorTokens.Property;
             ReferenceAccessor = AccessorTokens.Property;
-            ReferenceQualifier = stateUDT?.NewFieldName ?? null;
+            ReferenceQualifier = stateUDT?.FieldIdentifier ?? null;
             LoadFieldReferenceContextReplacements();
             foreach (var member in Members)
             {
-                member.SetupReferenceReplacements(stateUDT);
+                member.StageFieldReferenceReplacements(stateUDT);
             }
         }
 
@@ -138,7 +138,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 if (idRef.QualifiedModuleName == QualifiedModuleName
                     && idRef.Context.Parent.Parent is VBAParser.WithStmtContext wsc)
                 {
-                    SetReferenceRewriteContent(idRef, NewFieldName);
+                    SetReferenceRewriteContent(idRef, FieldIdentifier);
                 }
             }
         }

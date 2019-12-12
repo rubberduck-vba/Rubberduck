@@ -451,7 +451,7 @@ End Property
             var presenterAction = Support.UserAcceptsDefaults(asUDT: true);
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Fizz As Integer", actualCode);
-            StringAssert.Contains("this As This_Type", actualCode);
+            StringAssert.Contains($"this As {Support.StateUDTDefaultType}", actualCode);
             StringAssert.Contains("this.Fizz = value", actualCode);
         }
 

@@ -20,6 +20,8 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 {
     public class EncapsulateFieldTestSupport : InteractiveRefactoringTestBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>
     {
+        public string StateUDTDefaultType => $"T{MockVbeBuilder.TestModuleName}";
+
         private TestEncapsulationAttributes UserModifiedEncapsulationAttributes(string field, string property = null, bool isReadonly = false, bool encapsulateFlag = true)
         {
             var testAttrs = new TestEncapsulationAttributes(field, encapsulateFlag, isReadonly);
@@ -51,6 +53,8 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             return model =>
             {
                 model.EncapsulateWithUDT = userInput.EncapsulateAsUDT;
+                model.StateUDTField.TypeIdentifier = userInput.StateUDT_TypeName ?? model.StateUDTField.TypeIdentifier;
+                model.StateUDTField.FieldIdentifier = userInput.StateUDT_FieldName ?? model.StateUDTField.FieldIdentifier;
                 foreach (var testModifiedAttribute in userInput.EncapsulateFieldAttributes)
                 {
                     var attrsInitializedByTheRefactoring = model[testModifiedAttribute.TargetFieldName]; //.EncapsulationAttributes;
@@ -203,9 +207,12 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
         public bool EncapsulateAsUDT { set; get; }
 
+        public string StateUDT_TypeName { set; get; }
+
+        public string StateUDT_FieldName { set; get; }
+
         public TestEncapsulationAttributes this[string fieldName]
             => EncapsulateFieldAttributes.Where(efa => efa.TargetFieldName == fieldName).Single();
-
 
         public IEnumerable<TestEncapsulationAttributes> EncapsulateFieldAttributes => _userInput;
 

@@ -48,7 +48,7 @@ $@"Public {originalFieldName} As String";
 
             var encapsulatedField = Support.RetrieveEncapsulatedField(inputCode, originalFieldName);
 
-            encapsulatedField.NewFieldName = newFieldName;
+            encapsulatedField.FieldIdentifier = newFieldName;
             var field = encapsulatedField as IEncapsulateFieldCandidateValidations;
             Assert.AreEqual(expectedResult, field.HasVBACompliantFieldIdentifier);
         }
@@ -292,7 +292,7 @@ Public wholeNumber As String
 
             var mock = new Mock<IEncapsulateFieldCandidate>();
             mock.SetupGet(m => m.TargetID).Returns(identifiers.TargetFieldName);
-            mock.SetupGet(m => m.NewFieldName).Returns(identifiers.Field);
+            mock.SetupGet(m => m.FieldIdentifier).Returns(identifiers.Field);
             mock.SetupGet(m => m.PropertyName).Returns(modifiedPropertyName ?? identifiers.Property);
             mock.SetupGet(m => m.AsTypeName).Returns(asTypeName);
             mock.SetupGet(m => m.EncapsulateFlag).Returns(encapsulateFlag);
@@ -306,7 +306,7 @@ Public wholeNumber As String
             var identifiers = new EncapsulationIdentifiers(targetID);
             var mock = new Mock<IEncapsulateFieldCandidate>();
             mock.SetupGet(m => m.IdentifierName).Returns(identifiers.TargetFieldName);
-            mock.SetupGet(m => m.NewFieldName).Returns(identifiers.Field);
+            mock.SetupGet(m => m.FieldIdentifier).Returns(identifiers.Field);
             mock.SetupGet(m => m.PropertyName).Returns(modifiedPropertyName ?? identifiers.Property);
             mock.SetupGet(m => m.AsTypeName).Returns(asTypeName);
             mock.SetupGet(m => m.EncapsulateFlag).Returns(encapsulateFlag);

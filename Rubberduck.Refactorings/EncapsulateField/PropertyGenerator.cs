@@ -15,7 +15,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         bool UsesSetAssignment { get; }
     }
 
-    public struct PropertyGeneratorSpecification : IPropertyGeneratorAttributes
+    public class PropertyAttributeSet : IPropertyGeneratorAttributes
     {
         public string PropertyName { get; set; }
         public string BackingField { get; set; }
@@ -30,17 +30,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         public PropertyGenerator() { }
 
-        public PropertyGenerator(IPropertyGeneratorAttributes spec)
-        {
-            PropertyName = spec.PropertyName;
-            BackingField = spec.BackingField;
-            AsTypeName = spec.AsTypeName;
-            ParameterName = spec.ParameterName;
-            GenerateLetter = spec.GenerateLetter;
-            GenerateSetter = spec.GenerateSetter;
-            UsesSetAssignment = spec.UsesSetAssignment;
-        }
-
         public string PropertyName { get; set; }
         public string BackingField { get; set; }
         public string AsTypeName { get; set; }
@@ -52,11 +41,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public string AllPropertyCode =>
             $"{GetterCode}{(GenerateLetter ? LetterCode : string.Empty)}{(GenerateSetter ? SetterCode : string.Empty)}";
 
-        public IEnumerable<string> AsEnumerableLines => AllPropertyCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+        public IEnumerable<string> AsLines => AllPropertyCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
         public string AsPropertyBlock(IIndenter indenter)
         {
-            return string.Join(Environment.NewLine, indenter.Indent(AsEnumerableLines, true));
+            return string.Join(Environment.NewLine, indenter.Indent(AsLines, true));
         }
 
         public string AsPropertyBlock(IPropertyGeneratorAttributes spec, IIndenter indenter)
@@ -68,7 +57,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             GenerateLetter = spec.GenerateLetter;
             GenerateSetter = spec.GenerateSetter;
             UsesSetAssignment = spec.UsesSetAssignment;
-            return string.Join(Environment.NewLine, indenter.Indent(AsEnumerableLines, true));
+            return string.Join(Environment.NewLine, indenter.Indent(AsLines, true));
         }
 
         private string GetterCode

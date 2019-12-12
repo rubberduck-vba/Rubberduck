@@ -5,6 +5,7 @@ using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.Utility;
+using RubberduckTests.Mocks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +40,7 @@ Private this As Long";
             var presenterAction = Support.UserAcceptsDefaults(asUDT: true);
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Private this As Long", actualCode);
-            StringAssert.Contains("Private this_1 As This_Type", actualCode);
+            StringAssert.Contains($"Private this_1 As {Support.StateUDTDefaultType}", actualCode);
         }
 
         [Test]
@@ -124,8 +125,8 @@ Public foobar As Byte
 
             var presenterAction = Support.SetParameters(userInput);
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            StringAssert.Contains("Private this As This_Type", actualCode);
-            StringAssert.Contains("Private Type This_Type", actualCode);
+            StringAssert.Contains($"Private this As {Support.StateUDTDefaultType}", actualCode);
+            StringAssert.Contains($"Private Type {Support.StateUDTDefaultType}", actualCode);
             StringAssert.Contains("Foo As Long", actualCode);
             StringAssert.Contains("Bar As String", actualCode);
             StringAssert.Contains("Foobar As Byte", actualCode);
@@ -165,12 +166,14 @@ Public myBar As TBar
         }
 
         [TestCase("Public Sub This_Type()\r\nEnd Sub", "This_Type_1")]
-        [TestCase("Private this_Type As Long\r\nPrivate this_Type_1 As String", "This_Type_2")]
+        [TestCase("Private This_Type As Long\r\nPrivate This_Type_1 As String", "This_Type_2")]
         [TestCase("Public Property Get This_Type() As Long\r\nEnd Property", "This_Type_1")]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        public void UserDefinedTypeDefaultNameConflicts(string declaration, string expectedIdentifier)
+        public void UserDefinedTypeDefaultNameHasConflicts(string declaration, string expectedIdentifier)
         {
+            declaration = declaration.Replace("This_Type", $"{Support.StateUDTDefaultType}");
+            expectedIdentifier = expectedIdentifier.Replace("This_Type", $"{Support.StateUDTDefaultType}");
             string inputCode =
 $@"
 
@@ -188,7 +191,10 @@ Public myBar As TBar
             var userInput = new UserInputDataObject()
                 .AddAttributeSet("myBar");
 
+
             userInput.EncapsulateAsUDT = true;
+            //userInput.StateUDT_TypeName = "This_Type";
+            //userInput.StateUDT_FieldName = "this";
 
             var presenterAction = Support.SetParameters(userInput);
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
