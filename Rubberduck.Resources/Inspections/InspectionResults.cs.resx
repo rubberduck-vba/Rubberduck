@@ -420,4 +420,40 @@ In memoriam, 1972-2018</value>
   <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
     <value>Ve výrazu '{0}' existuje implicitní přístup k výchozímu členu '{1}'.</value>
   </data>
+  <data name="SetAssignmentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>Proměnné '{0}' deklarovaného typu '{1}' je přiřazena hodnota nekompatibilního deklarovaného typu '{2}'.</value>
+  </data>
+  <data name="UseOfBangNotationInspection" xml:space="preserve">
+    <value>Výraz '{0}' používá 'bang' notaci.</value>
+  </data>
+  <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
+    <value>Výraz '{0}' používá rekurzivní 'bang' operátor.</value>
+  </data>
+  <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
+    <value>Výraz '{0}' používá 'unbound bang' operátor.</value>
+  </data>
+  <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Ve výrazu '{0}' existuje implicitní rekurzivní výchozí členský přístup k '{1}'.</value>
+  </data>
+  <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Ve výrazu '{0}' existuje implicitní rekurzivní výchozí členský přístup.</value>
+  </data>
+  <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
+    <value>Od výchozího člena je přirazen výsledek výrazu '{1}' k výrazu '{0}'.</value>
+  </data>
+  <data name="ValueRequiredInspection" xml:space="preserve">
+    <value>V kontextu, který vyžaduje typ 'hodnota', je použit výraz '{0}' typu objekt '{1}', který nemá vhodný výchozí člen.</value>
+  </data>
+  <data name="ProcedureRequiredInspection" xml:space="preserve">
+    <value>V kontextu, který vyžaduje 'proceduru', je použit výraz '{0}' typu objekt '{1}', který nemá vhodný výchozí člen.</value>
+  </data>
+  <data name="DefaultMemberRequiredInspection" xml:space="preserve">
+    <value>Výraz '{0}' vyžaduje výchozí členský přístup, avšak typ '{1}' nemá vhodný výchozí člen.</value>
+  </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
+    <value>Výraz '{0}' je použit v kontextu, který požaduje 'proceduru', což vede k volání výchozího člena '{1}'.</value>
+  </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection_Unbound" xml:space="preserve">
+    <value>Výraz '{0}' je použit v kontextu, který požaduje 'proceduru', což vede k volání výchozího člena, kterého nelze určit při kompilaci.</value>
+  </data>
 </root>

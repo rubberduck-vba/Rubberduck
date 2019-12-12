@@ -411,4 +411,25 @@
   <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
     <value>Objekt použit tam, kde je vyžadována procedura</value>
   </data>
+  <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Indexovaný výchozí členský přístup</value>
+  </data>
+  <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Indexovaný rekurzivní výchozí členský přístup</value>
+  </data>
+  <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Indexovaný nevázaný výchozí členský přístup</value>
+  </data>
+  <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Implicitní výchozí členský přístup</value>
+  </data>
+  <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Implicitní rekurzivní výchozí členský přístup</value>
+  </data>
+  <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Implicitní nevázaný výchozí členský přístup</value>
+  </data>
+  <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
+    <value>Podezřelé přiřazení 'Let'</value>
+  </data>
 </root>
