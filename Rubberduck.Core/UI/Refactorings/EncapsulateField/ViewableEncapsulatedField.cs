@@ -21,6 +21,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         Visibility PropertyNameVisibility { get; }
         bool HasValidEncapsulationAttributes { get; }
         string AsTypeName { get; }
+        string FieldDescriptor { get; }
     }
 
     public class ViewableEncapsulatedField : IEncapsulatedFieldViewData
@@ -43,7 +44,8 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         public bool EncapsulateFlag { get => _efd.EncapsulateFlag; set => _efd.EncapsulateFlag = value; }
         public string NewFieldName { get => _efd.FieldIdentifier; }// set => _efd.NewFieldName = value; }
         //TODO: Change name of AsTypeName property to FieldDescriptor(?)  -> and does it belong on IEncapsulatedField?
-        public string AsTypeName
+        public string AsTypeName => _efd.AsTypeName;
+        public string FieldDescriptor
         {
             //(Variable: Integer Array)
             //(Variable: Long)
@@ -53,7 +55,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
                 var prefix = string.Empty;
 
                 var descriptor = string.Empty;
-                if (_efd is IUserDefinedTypeMemberCandidate) //.IsUDTMember)
+                if (_efd is IUserDefinedTypeCandidate) //.IsUDTMember)
                 {
                     prefix = "UserDefinedType";
                 }
