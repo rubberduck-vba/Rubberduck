@@ -22,6 +22,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         bool HasValidEncapsulationAttributes { get; }
         string AsTypeName { get; }
         string FieldDescriptor { get; }
+        string TargetDeclarationExpression { set; get; }
     }
 
     public class ViewableEncapsulatedField : IEncapsulatedFieldViewData
@@ -71,6 +72,13 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
                 }
                 return descriptor;
             }
+        }
+
+        private string _targetDeclarationExpressions;
+        public string TargetDeclarationExpression
+        {
+            set => _targetDeclarationExpressions = value;
+            get => $"Private {TargetID} As {AsTypeName}";
         }
     }
 }
