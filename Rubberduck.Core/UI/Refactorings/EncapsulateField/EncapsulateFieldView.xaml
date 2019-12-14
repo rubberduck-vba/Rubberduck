@@ -16,21 +16,27 @@
                      UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
 
         <ControlTemplate x:Key="InvalidEntryAnnotation">
-                <Image  Source="{StaticResource InvalidEntryImage}"
-                        Height="16"
-                        Margin="0,-10,-8,0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
-                        Visibility="{Binding HasValidEncapsulationAttributes, Converter={StaticResource BoolToHiddenVisibility}}"/>
+            <Image  Source="{StaticResource InvalidEntryImage}"
+                    Height="16"
+                    Margin="0,-10,-8,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Visibility="{Binding HasValidEncapsulationAttributes, Converter={StaticResource BoolToHiddenVisibility}}" />
         </ControlTemplate>
+        <Style TargetType="Button"
+               x:Key="CommandButtonStyle">
+            <Setter Property="Height"
+                    Value="20" />
+            <Setter Property="Margin"
+                    Value="0,0,0,5" />
+            <Setter Property="Padding"
+                    Value="10,0" />
+        </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
-            <!--<RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />-->
             <RowDefinition Height="auto" />
-            <!--<RowDefinition Height="*" />-->
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Background="White">
@@ -39,58 +45,6 @@
             <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EncapsulateField_InstructionText}"
                        Margin="5,0" />
         </StackPanel>
-        <Grid Grid.Row="1" Visibility="Collapsed"
-              Margin="10,10,0,10"
-              VerticalAlignment="Top">
-            <Grid.RowDefinitions>
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="200" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <CheckBox Grid.ColumnSpan="2"
-                      Content="Encapsulate with a User Defined Type"
-                      IsChecked="{Binding EncapsulateAsUDT, Mode=TwoWay}"
-                      FontWeight="Bold"
-                      Margin="0,10,0,0" />
-        </Grid>
-        <Grid Grid.Row="2" Visibility="Collapsed"
-              VerticalAlignment="Top">
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="200"/>
-                <ColumnDefinition Width="200" />
-                <ColumnDefinition Width="auto" />
-            </Grid.ColumnDefinitions>
-            <TextBlock Grid.Row="0"
-                       Grid.Column="0"
-                       Margin="30,10,0,0">
-                            User Defined Type Name:
-            </TextBlock>
-            <TextBox Grid.Row="0"
-                     Grid.Column="1"
-                     Margin="5,8,0,0"
-                     Height="22"
-                     VerticalAlignment="Top"
-                     VerticalContentAlignment="Center"
-                     Text="{Binding EncapsulateAsUDT_TypeIdentifier, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBlock Grid.Row="1"
-                       Grid.Column="0"
-                       Margin="30,10,0,20">
-                            User Defined Type Field Name:
-            </TextBlock>
-            <TextBox Grid.Row="1"
-                     Grid.Column="1"
-                     Margin="5,8,0,0"
-                     Height="22"
-                     VerticalAlignment="Top"
-                     VerticalContentAlignment="Center"
-                     Text="{Binding EncapsulateAsUDT_FieldName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-        </Grid>
         <Grid Grid.Row="1"
               Margin="5,0,0,10">
             <Grid>
@@ -102,134 +56,12 @@
                     <ColumnDefinition />
                     <ColumnDefinition Width="100" />
                 </Grid.ColumnDefinitions>
-                <!--<Grid Grid.Row="0" Visibility="Collapsed">
-                    <ListBox Grid.Column="0"
-                             Name="FieldList"
-                             SelectedItem="{Binding SelectedValue, Mode=TwoWay}"
-                             ItemsSource="{Binding EncapsulationFields}"
-                             Height="200"
-                             VerticalAlignment="Top"
-                             Margin="5,0,0,5">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Margin="5,0">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="auto" />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition />
-                                        <ColumnDefinition />
-                                        <ColumnDefinition Width="200" />
-                                        <ColumnDefinition Width="125" />
-                                    </Grid.ColumnDefinitions>
-                                    <CheckBox Content="{Binding TargetID}"
-                                              IsChecked="{Binding EncapsulateFlag}"
-                                              FontWeight="Bold"
-                                              Command="{Binding Path=DataContext.EncapsulateFlagCommand, 
-                                                RelativeSource={RelativeSource AncestorType=ListBox}}" />
-                                    <TextBlock Name="PropertyNameTextBlock"
-                                               Grid.Column="1"
-                                               Text="=>"
-                                               Margin="2,0,0,0">
-                                    </TextBlock>
-                                    <TextBox Name="PropertyTextBox"
-                                             Grid.Column="2"
-                                             Margin="0,-2,0,0"
-                                             Height="22"
-                                             Text="{Binding PropertyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                        <i:Interaction.Triggers>
-                                            <i:EventTrigger EventName="TextChanged">
-                                                <i:InvokeCommandAction Command="{Binding Path=DataContext.PropertyChangeCommand,
-                                                                RelativeSource={RelativeSource AncestorType=ListBox}}" />
-                                            </i:EventTrigger>
-                                        </i:Interaction.Triggers>
-                                    </TextBox>
-                                    <Control Grid.Column="2"
-                                             Template="{StaticResource InvalidEntryAnnotation}" />
-                                    <CheckBox Grid.Column="3"
-                                              Margin="10,0,0,0"
-                                              Content="Read Only"
-                                              HorizontalAlignment="Left"
-                                              IsChecked="{Binding IsReadOnly, Mode=TwoWay}"
-                                              IsEnabled="{Binding CanBeReadWrite}"
-                                              Command="{Binding Path=DataContext.IsReadOnlyCommand, 
-                                                        RelativeSource={RelativeSource AncestorType=ListBox}}" />
-                                    --><!--<Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition Width="200" />
-                                            <ColumnDefinition Width="125" />
-                                        </Grid.ColumnDefinitions>
-                                        <CheckBox Content="{Binding TargetID}"
-                                                  IsChecked="{Binding EncapsulateFlag}"
-                                                  FontWeight="Bold"
-                                                  Command="{Binding Path=DataContext.EncapsulateFlagCommand, 
-                                                RelativeSource={RelativeSource AncestorType=ListBox}}" />
-                                        <TextBlock Name="PropertyNameTextBlock"
-                                                   Grid.Column="1"
-                                                   Text="=>"
-                                                   Margin="2,0,0,0">
-                                        </TextBlock>
-                                        <TextBox Name="PropertyTextBox"
-                                                 Grid.Column="2"
-                                                 Margin="0,-2,0,0"
-                                                 Height="22"
-                                                 Text="{Binding PropertyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                            <i:Interaction.Triggers>
-                                                <i:EventTrigger EventName="TextChanged">
-                                                    <i:InvokeCommandAction Command="{Binding Path=DataContext.PropertyChangeCommand,
-                                                                RelativeSource={RelativeSource AncestorType=ListBox}}" />
-                                                </i:EventTrigger>
-                                            </i:Interaction.Triggers>
-                                        </TextBox>
-                                        <Control Grid.Column="2"
-                                                 Template="{StaticResource InvalidEntryAnnotation}" />
-                                        <CheckBox Grid.Column="3"
-                                                  Margin="10,0,0,0"
-                                                  Content="Read Only"
-                                                  HorizontalAlignment="Left"
-                                                  IsChecked="{Binding IsReadOnly, Mode=TwoWay}"
-                                                  IsEnabled="{Binding CanBeReadWrite}"
-                                                  Command="{Binding Path=DataContext.IsReadOnlyCommand, 
-                                                        RelativeSource={RelativeSource AncestorType=ListBox}}" />
-                                    </Grid>--><!--
-                                </Grid>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                    <StackPanel Grid.Column="1"
-                                HorizontalAlignment="Right"
-                                Margin="5,0,0,0"
-                                MinWidth="100">
-                        <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SelectAll_Button}"
-                                Height="20"
-                                Margin="0,0,0,5"
-                                Padding="10,0"
-                                Command="{Binding SelectAllCommand}" />
-                        <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=DeselectAll_Button}"
-                                Height="20"
-                                Margin="0"
-                                Padding="10,0"
-                                Command="{Binding DeselectAllCommand}">
-                        </Button>
-                    </StackPanel>
-                </Grid>-->
                 <Grid Grid.Row="0">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
-                            <!--<RowDefinition Height="40" />-->
                         </Grid.RowDefinitions>
-                        <StackPanel Grid.Row="0"
-                                    Visibility="Collapsed"
-                                    Background="White">
-                            <Label Content="The Title"
-                                   FontWeight="Bold" />
-                            <TextBlock Text="Instructions"
-                                       Margin="5,0" />
-                        </StackPanel>
                         <StackPanel Grid.Row="1">
                             <Grid Margin="10,10,0,2"
                                   VerticalAlignment="Center">
@@ -242,7 +74,6 @@
                                     <ColumnDefinition Width="auto"
                                                       MinWidth="150"
                                                       MaxWidth="300" />
-                                    <!--<ColumnDefinition Width = "auto" />-->
                                 </Grid.ColumnDefinitions>
                                 <CheckBox Grid.Row="1"
                                           Grid.Column="0"
@@ -251,19 +82,6 @@
                                           FontWeight="Bold"
                                           VerticalAlignment="Top"
                                           Margin="20,0,0,5" />
-                                <TextBlock Grid.Row="0"
-                                           Grid.Column="1"
-                                           Visibility="Collapsed"
-                                           Margin="2,0,0,5">
-                            Type Name:
-                                </TextBlock>
-                                <TextBox Grid.Row="1"
-                                         Grid.Column="1"
-                                         Margin="5,2,0,0"
-                                         Height="22"
-                                         VerticalAlignment="Top"
-                                         VerticalContentAlignment="Center"
-                                         Text="{Binding EncapsulateAsUDT_TypeIdentifier, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                             </Grid>
                             <Grid VerticalAlignment="Top">
                                 <Grid.RowDefinitions>
@@ -314,7 +132,7 @@
                                                           MaxWidth="600" />
                                         <ColumnDefinition Width="100" />
                                     </Grid.ColumnDefinitions>
-                                    <ListBox Grid.Column="0"
+                                    <!--<ListBox Grid.Column="0"
                                              Name="FieldListX"
                                              SelectedItem="{Binding SelectedValue, Mode=TwoWay}"
                                              ItemsSource="{Binding EncapsulationFields}"
@@ -345,8 +163,43 @@
                                                 </Grid>
                                             </DataTemplate>
                                         </ListBox.ItemTemplate>
+                                    </ListBox>-->
+                                    <ListBox Grid.Column="0"
+                                             Name="FieldList"
+                                             ItemsSource="{Binding Path=EncapsulationFields, Mode=OneWay}"
+                                             SelectedItem="{Binding Path= SelectedField}"
+                                             SelectionMode="Single"
+                                             Height="auto"
+                                             VerticalAlignment="Top"
+                                             Margin="5,0,0,5">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Margin="5,0">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition />
+                                                    </Grid.RowDefinitions>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition MinWidth="150" />
+                                                        <ColumnDefinition MinWidth="300" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <CheckBox Content="{Binding TargetID}"
+                                                              IsChecked="{Binding EncapsulateFlag, UpdateSourceTrigger=PropertyChanged}"
+                                                              FontWeight="Bold"
+                                                              Command="{Binding Path=DataContext.EncapsulateFlagChangeCommand, 
+                                                RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                                              CommandParameter="{Binding ElementName=EncapsulationFields, Path=SelectedField}">
+
+                                                    </CheckBox>
+                                                    <TextBlock Name="TargetExpression"
+                                                               Grid.Column="1"
+                                                               Margin="2,0,0,0"
+                                                               Text="{Binding TargetDeclarationExpression, Mode=OneWay}">
+                                                    </TextBlock>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
                                     </ListBox>
-                                    <StackPanel Grid.Column="1"
+                                    <!--<StackPanel Grid.Column="1"
                                                 HorizontalAlignment="Right"
                                                 Margin="5,0,0,0"
                                                 MinWidth="100">
@@ -361,10 +214,22 @@
                                                 Padding="10,0"
                                                 Command="{Binding DeselectAllCommand}">
                                         </Button>
+                                    </StackPanel>-->
+                                    <StackPanel Grid.Column="1"
+                                                HorizontalAlignment="Right"
+                                                Margin="5,0,0,0"
+                                                MinWidth="100">
+                                        <Button Style="{StaticResource CommandButtonStyle}"
+                                                Content="Select All"
+                                                Command="{Binding SelectAllCommand}" />
+                                        <Button Style="{StaticResource CommandButtonStyle}"
+                                                Content="Deselect All"
+                                                Command="{Binding DeselectAllCommand}">
+                                        </Button>
                                     </StackPanel>
                                 </Grid>
                             </Grid>
-                            <Grid>
+                            <!--<Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition MinWidth="100"
                                                       MaxWidth="600" />
@@ -401,9 +266,46 @@
                                                  Text="{Binding PropertyName}" />
                                     </StackPanel>
                                 </GroupBox>
+                            </Grid>-->
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition MinWidth="100"
+                                                      MaxWidth="400" />
+                                    <ColumnDefinition Width="100" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <GroupBox Grid.Column="0"
+                                              Margin="5,0,0,5"
+                                              MaxHeight="125"
+                                              MinHeight="75"
+                                              BorderThickness="2">
+                                        <GroupBox.Header>
+                                            <TextBlock Text="{Binding Path=GroupBoxHeaderContent}"
+                                                       FontWeight="Bold" />
+                                        </GroupBox.Header>
+                                        <StackPanel>
+                                            <TextBox Name="PropertyName"
+                                                     Margin="10,5,50,0"
+                                                     Height="22"
+                                                     MinWidth="150"
+                                                     Text="{Binding Path=PropertyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                            <CheckBox IsChecked="{Binding Path=IsReadOnly, Mode=TwoWay}"
+                                                      Content="Read Only"
+                                                      Margin="10,5,5,2"
+                                                      FontWeight="Bold"
+                                                      Command="{Binding Path=ReadOnlyChangeCommand}"
+                                                      CommandParameter="{Binding ElementName=EncapsulationFields, Path=SelectedField}" />
+                                        </StackPanel>
+                                    </GroupBox>
+                                    <CheckBox Content="Wrap Fields in Private Type"
+                                              IsChecked="{Binding EncapsulateAsUDT, Mode=TwoWay}"
+                                              FontWeight="Bold"
+                                              VerticalAlignment="Top"
+                                              Margin="20,0,0,5" />
+
+                                </StackPanel>
                             </Grid>
                             <Grid Margin="5,0">
-                                <!--<TextBlock Text="Preview Goes Here!!!" />-->
                                 <controls:BindableTextEditor Margin="10,10,10,10"
                                          FontFamily="Courier New "
                                          ShowLineNumbers="False"
@@ -413,31 +315,11 @@
                                          IsReadOnly="True"
                                          Text="{Binding PropertyPreview,Mode=OneWay}" />
                             </Grid>
-                            <!--<Grid><controls:BindableTextEditor Margin="10,10,10,10"
-                                         FontFamily="Courier New "
-                                         ShowLineNumbers="False"
-                                         HorizontalScrollBarVisibility="Auto"
-                                         VerticalScrollBarVisibility="Auto"
-                                         MinHeight="200"
-                                         IsReadOnly="True"
-                                         Text="{Binding PropertyPreview,Mode=OneWay}" />
-        </Grid>-->
                         </StackPanel>
                     </Grid>
                 </Grid>
             </Grid>
         </Grid>
-        <!--<Grid Grid.Row="4"
-              Margin="5,0">
-            <controls:BindableTextEditor Margin="10,10,10,10"
-                                         FontFamily="Courier New "
-                                         ShowLineNumbers="False"
-                                         HorizontalScrollBarVisibility="Auto"
-                                         VerticalScrollBarVisibility="Auto"
-                                         MinHeight="200"
-                                         IsReadOnly="True"
-                                         Text="{Binding PropertyPreview,Mode=OneWay}" />
-        </Grid>-->
         <Grid Grid.Row="2"
               Background="{x:Static SystemColors.ControlDarkBrush}"
               Grid.IsSharedSizeScope="True">
@@ -447,7 +329,17 @@
                     <ColumnDefinition SharedSizeGroup="SettingsButtons" />
                     <ColumnDefinition SharedSizeGroup="SettingsButtons" />
                 </Grid.ColumnDefinitions>
-                <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=OK}"
+                <Button Style="{StaticResource CommandButtonStyle}"
+                        Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=OK}"
+                        Grid.Column="0"
+                        IsEnabled="{Binding HasValidNames}"
+                        Command="{Binding OkButtonCommand}" />
+                <Button Style="{StaticResource CommandButtonStyle}"
+                        Grid.Column="1"
+                        Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CancelButtonText}"
+                        Command="{Binding CancelButtonCommand}">
+                </Button>
+                <!--<Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=OK}"
                         Grid.Column="0"
                         Height="20"
                         Margin="5,0"
@@ -460,7 +352,7 @@
                         Margin="5,0"
                         Padding="10,0"
                         Command="{Binding CancelButtonCommand}">
-                </Button>
+                </Button>-->
             </Grid>
         </Grid>
     </Grid>
