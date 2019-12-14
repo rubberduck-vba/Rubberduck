@@ -179,22 +179,24 @@
                                                         <RowDefinition />
                                                     </Grid.RowDefinitions>
                                                     <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition MinWidth="150" />
                                                         <ColumnDefinition MinWidth="300" />
+                                                        <!--<ColumnDefinition MinWidth="300" />-->
                                                     </Grid.ColumnDefinitions>
-                                                    <CheckBox Content="{Binding TargetID}"
-                                                              IsChecked="{Binding EncapsulateFlag, UpdateSourceTrigger=PropertyChanged}"
+                                                    <StackPanel Orientation="Horizontal">
+                                                    <CheckBox IsChecked="{Binding EncapsulateFlag, UpdateSourceTrigger=PropertyChanged}"
                                                               FontWeight="Bold"
                                                               Command="{Binding Path=DataContext.EncapsulateFlagChangeCommand, 
-                                                RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                                                    RelativeSource={RelativeSource AncestorType=ListBox}}"
                                                               CommandParameter="{Binding ElementName=EncapsulationFields, Path=SelectedField}">
 
                                                     </CheckBox>
                                                     <TextBlock Name="TargetExpression"
                                                                Grid.Column="1"
-                                                               Margin="2,0,0,0"
-                                                               Text="{Binding TargetDeclarationExpression, Mode=OneWay}">
+                                                               Margin="10,0,0,0"
+                                                               Text="{Binding TargetDeclarationExpression, Mode=OneWay}"
+                                                               FontWeight="Bold">
                                                     </TextBlock>
+                                                    </StackPanel>
                                                 </Grid>
                                             </DataTemplate>
                                         </ListBox.ItemTemplate>
