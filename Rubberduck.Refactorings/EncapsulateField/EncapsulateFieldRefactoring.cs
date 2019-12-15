@@ -99,9 +99,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             _encapsulationCandidateFactory = new EncapsulateFieldElementFactory(_declarationFinderProvider, _targetQMN, _validator);
 
+            var candidates = _encapsulationCandidateFactory.CreateEncapsulationCandidates();
+            var selected = candidates.Single(c => c.Declaration == target);
+            selected.EncapsulateFlag = true;
+
             Model = new EncapsulateFieldModel(
                                 target,
-                                _encapsulationCandidateFactory.CreateEncapsulationCandidates(),
+                                candidates,
                                 _encapsulationCandidateFactory.CreateStateUDTField(),
                                 PreviewRewrite);
 

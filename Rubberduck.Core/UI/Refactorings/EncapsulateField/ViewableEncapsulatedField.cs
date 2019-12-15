@@ -78,7 +78,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         public string TargetDeclarationExpression
         {
             set => _targetDeclarationExpressions = value;
-            get => $"Private {TargetID} As {AsTypeName}";
+            get => $"{TargetID}:  Private {TargetID} As {AsTypeName}";
         }
     }
 }

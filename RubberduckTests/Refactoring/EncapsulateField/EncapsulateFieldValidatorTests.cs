@@ -164,12 +164,13 @@ $@"Public fizz As String
             End Property
             ";
 
+            var fieldUT = "fizz";
             var userInput = new UserInputDataObject("fizz", userModifiedPropertyName, true);
 
             var presenterAction = Support.SetParameters(userInput);
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
-            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, "fizz", DeclarationType.Variable, presenterAction, "fizz");
+            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, fieldUT, DeclarationType.Variable, presenterAction);
 
             Assert.IsFalse(model["fizz"].HasValidEncapsulationAttributes);
         }
@@ -192,13 +193,16 @@ Public Property Get Test() As Integer
     Test = mTest
 End Property";
 
+            var fieldUT = "fizz";
             var userInput = new UserInputDataObject()
-                .AddAttributeSet("fizz", fizz_modifiedPropertyName, true)
+                .AddAttributeSet(fieldUT, fizz_modifiedPropertyName, true)
                 .AddAttributeSet("bazz", bazz_modifiedPropertyName, true);
 
+
             var presenterAction = Support.SetParameters(userInput);
+
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
-            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, "fizz", DeclarationType.Variable, presenterAction, "fizz", "bazz", "buzz");
+            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, fieldUT, DeclarationType.Variable, presenterAction);
 
             Assert.AreEqual(fizz_expectedResult, model["fizz"].HasValidEncapsulationAttributes, "fizz failed");
             Assert.AreEqual(bazz_expectedResult, model["bazz"].HasValidEncapsulationAttributes, "bazz failed");
@@ -220,28 +224,18 @@ Public this As TBar
 
 Public that As TBar
 ";
+            var fieldUT = "this";
+            var userInput = new UserInputDataObject()
+                .AddAttributeSet(fieldUT, "That", true);
+
+            var presenterAction = Support.SetParameters(userInput);
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
-            using (state)
-            {
-                var thisField = CreateEncapsulatedFieldMock("this.First", "Long", vbe.SelectedVBComponent, "First");
-                var thatField = CreateEncapsulatedFieldMock("that.First", "String", vbe.SelectedVBComponent, "First");
+            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, fieldUT, DeclarationType.Variable, presenterAction);
 
-                var validator = new EncapsulateFieldNamesValidator(
-                        state,
-                        () => new List<IEncapsulateFieldCandidate>()
-                            {
-                                thisField,
-                                thatField,
-                            });
-                validator.RegisterFieldCandidate(thisField);
-                validator.RegisterFieldCandidate(thatField);
-
-                Assert.IsTrue(validator.HasConflictingPropertyIdentifier(thisField));
-                //Assert.Less(0, validator.HasNewPropertyNameConflicts(thisField, thisField.QualifiedModuleName, Enumerable.Empty<Declaration>()));
-            }
+            Assert.AreEqual(false, model[fieldUT].HasValidEncapsulationAttributes, $"{fieldUT} failed");
         }
+
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
@@ -253,65 +247,67 @@ Public longValue As Long
 
 Public wholeNumber As String
 ";
+            var fieldUT = "longValue";
+            var userInput = new UserInputDataObject()
+                .AddAttributeSet(fieldUT, "WholeNumber", true);
+
+            var presenterAction = Support.SetParameters(userInput);
+
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
-            CreateAndParse(vbe, ThisTest);
+            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, fieldUT, DeclarationType.Variable, presenterAction);
 
-            void ThisTest(IDeclarationFinderProvider declarationProviderProvider)
-            {
-                var wholeNumber = declarationProviderProvider.DeclarationFinder.MatchName("wholeNumber").Single();
-                var longValue = declarationProviderProvider.DeclarationFinder.MatchName("longValue").Single();
-
-                var fields = new List<IEncapsulateFieldCandidate>();
-
-                var validator = new EncapsulateFieldNamesValidator(declarationProviderProvider, () => fields);
-
-                var encapsulatedWholeNumber = new EncapsulateFieldCandidate(wholeNumber, validator);
-                var encapsulatedLongValue = new EncapsulateFieldCandidate(longValue, validator);
-                fields.Add(new EncapsulateFieldCandidate(wholeNumber, validator));
-                fields.Add(new EncapsulateFieldCandidate(longValue, validator));
-
-                encapsulatedWholeNumber.PropertyName = "LongValue";
-                Assert.IsTrue(validator.HasConflictingPropertyIdentifier(encapsulatedWholeNumber));
-                //Assert.Less(0, validator.HasNewPropertyNameConflicts(encapsulatedWholeNumber, encapsulatedWholeNumber.QualifiedModuleName, new Declaration[] { encapsulatedWholeNumber.Declaration }));
-            }
+            Assert.AreEqual(false, model[fieldUT].HasValidEncapsulationAttributes, $"{fieldUT} failed");
         }
 
-        private void CreateAndParse(IVBE vbe, Action<IDeclarationFinderProvider> theTest)
+        [TestCase("Dim test As String", "arg")] //Local variable
+        [TestCase(@"Const test As String = ""Foo""", "arg")] //Local constant
+        [TestCase(@"Const localTest As String = ""Foo""", "test")] //parameter
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void TargetNameUsedForLimitedScopeDeclarations(string localDeclaration, string parameter)
         {
-            var state = MockParser.CreateAndParse(vbe);
-            using (state)
-            {
-                theTest(state as IDeclarationFinderProvider);
-            }
+            string inputCode =
+                $@"
+
+Private te|st As Long
+
+Private Function Foo({parameter} As String) As String
+    {localDeclaration}
+    test = test & ""Foo""
+    Foo = test
+End Function
+";
+            var presenterAction = Support.UserAcceptsDefaults();
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            StringAssert.Contains("Test", actualCode);
+            StringAssert.Contains("test_1", actualCode);
+            StringAssert.DoesNotContain("Test_1", actualCode);
         }
 
-        private IEncapsulateFieldCandidate CreateEncapsulatedFieldMock(string targetID, string asTypeName, IVBComponent component, string modifiedPropertyName = null, bool encapsulateFlag = true )
-        {
-            var identifiers = new EncapsulationIdentifiers(targetID);
-            var attributesMock = CreateAttributesMock(targetID, asTypeName, modifiedPropertyName);
+//        [Test]
+//        [Category("Refactorings")]
+//        [Category("Encapsulate Field")]
+//        public void TargetNameDuplicatedAsLocalVariable_Array()
+//        {
+//            const string inputCode =
+//                @"
 
-            var mock = new Mock<IEncapsulateFieldCandidate>();
-            mock.SetupGet(m => m.TargetID).Returns(identifiers.TargetFieldName);
-            mock.SetupGet(m => m.FieldIdentifier).Returns(identifiers.Field);
-            mock.SetupGet(m => m.PropertyName).Returns(modifiedPropertyName ?? identifiers.Property);
-            mock.SetupGet(m => m.AsTypeName).Returns(asTypeName);
-            mock.SetupGet(m => m.EncapsulateFlag).Returns(encapsulateFlag);
-            //mock.SetupGet(m => m.EncapsulationAttributes).Returns(attributesMock);
-            mock.SetupGet(m => m.QualifiedModuleName).Returns(new QualifiedModuleName(component));
-            return mock.Object;
-        }
+//Private Bou|ndedArray(1 To 100) As Byte
 
-        private IEncapsulateFieldCandidate CreateAttributesMock(string targetID, string asTypeName, string modifiedPropertyName = null, bool encapsulateFlag = true)
-        {
-            var identifiers = new EncapsulationIdentifiers(targetID);
-            var mock = new Mock<IEncapsulateFieldCandidate>();
-            mock.SetupGet(m => m.IdentifierName).Returns(identifiers.TargetFieldName);
-            mock.SetupGet(m => m.FieldIdentifier).Returns(identifiers.Field);
-            mock.SetupGet(m => m.PropertyName).Returns(modifiedPropertyName ?? identifiers.Property);
-            mock.SetupGet(m => m.AsTypeName).Returns(asTypeName);
-            mock.SetupGet(m => m.EncapsulateFlag).Returns(encapsulateFlag);
-            return mock.Object;
-        }
+//Private Function Foo() As Variant
+//    Dim BoundedArray(1 To 3) As Integer
+//    BoundedArray(1) = 7
+//    BoundedArray(2) = 8
+//    BoundedArray(3) = 9
+//    Foo = BoundedArray
+//End Function
+//";
+//            var presenterAction = Support.UserAcceptsDefaults();
+//            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+//            StringAssert.Contains("BoundedArray", actualCode);
+//            StringAssert.Contains("boundedArray_1", actualCode);
+//            StringAssert.DoesNotContain("BoundedArray_1", actualCode);
+//        }
 
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
         {

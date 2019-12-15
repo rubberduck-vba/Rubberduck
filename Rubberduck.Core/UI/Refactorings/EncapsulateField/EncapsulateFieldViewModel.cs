@@ -31,26 +31,29 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             SelectedField = EncapsulationFields.FirstOrDefault();
         }
 
+        private ObservableCollection<IEncapsulatedFieldViewData> _viewableFields;
         public ObservableCollection<IEncapsulatedFieldViewData> EncapsulationFields
         {
             get
             {
                 //var flaggedFields = Model.SelectedFieldCandidates
                 //    .OrderBy(efd => efd.Declaration.IdentifierName);
-
-                //var orderedFields = Model.EncapsulationCandidates //.Except(flaggedFields)
-                //    .OrderBy(efd => efd.Declaration.IdentifierName);
-
-                var viewableFields = new ObservableCollection<IEncapsulatedFieldViewData>();
-                foreach (var efd in Model.EncapsulationCandidates) // flaggedFields.Concat(orderedFields))
+                if (_viewableFields is null)
                 {
-                    viewableFields.Add(new ViewableEncapsulatedField(efd));
+                    _viewableFields = new ObservableCollection<IEncapsulatedFieldViewData>();
+
+                    var orderedFields = Model.EncapsulationCandidates //.Except(flaggedFields)
+                        .OrderBy(efd => efd.Declaration.IdentifierName);
+
+                    foreach (var efd in orderedFields) // flaggedFields.Concat(orderedFields))
+                    {
+                        _viewableFields.Add(new ViewableEncapsulatedField(efd));
+                    }
                 }
-                //TODO: Trying to reset the scroll to the top using SelectedValue is not working...Remove or fix 
-                //SelectedField = viewableFields.FirstOrDefault();
-                return viewableFields;
+                return _viewableFields;
             }
         }
+
         private IEncapsulatedFieldViewData _selectedField;
         public IEncapsulatedFieldViewData SelectedField
         {

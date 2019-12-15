@@ -29,7 +29,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             EncapsulationCandidates = candidates.ToList();
             StateUDTField = stateUDTField;
-            this[target].EncapsulateFlag = true;
+            //this[target].EncapsulateFlag = true;
         }
 
         public List<IEncapsulateFieldCandidate> EncapsulationCandidates { set; get; } = new List<IEncapsulateFieldCandidate>();
