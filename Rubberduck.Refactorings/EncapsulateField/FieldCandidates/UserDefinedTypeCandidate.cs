@@ -43,6 +43,22 @@ namespace Rubberduck.Refactorings.EncapsulateField
             set => _fieldAndProperty.Field = value;
         }
 
+        private bool _isReadOnly;
+        public override bool IsReadOnly
+        {
+            get => _isReadOnly;
+            set
+            {
+                _isReadOnly = value;
+                foreach ( var member in Members)
+                {
+                    member.IsReadOnly = value;
+                }
+            }
+        }
+
+
+
         public override string ReferenceQualifier
         {
             set
@@ -92,7 +108,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     }
                     return specs;
                 }
-                return new List<IPropertyGeneratorAttributes>() { AsPropertyGeneratorSpec };
+                return new List<IPropertyGeneratorAttributes>() { AsPropertyAttributeSet };
             }
         }
 

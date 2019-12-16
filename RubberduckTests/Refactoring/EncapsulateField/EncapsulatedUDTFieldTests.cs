@@ -237,9 +237,6 @@ Public Sub Foo(arg1 As String, arg2 As Long)
 End Sub
 ";
 
-            //var userInput = new UserInputDataObject("this");
-
-            //var presenterAction = Support.SetParameters(userInput);
             var presenterAction = Support.UserAcceptsDefaults();
 
             var codeString = inputCode.ToCodeString();
@@ -526,10 +523,6 @@ End Sub
         [Category("Encapsulate Field")]
         public void StdModuleSource_UDTField_StdModuleReferences(string sourceModuleName, string referenceQualifier, string typeDeclarationAccessibility)
         {
-            //var sourceModuleName = "SourceModule";
-
-            //var actualModuleCode = Scenario_StdModuleSource_StandardAndClassReferencingModules(referenceQualifier, typeDeclarationAccessibility, sourceModuleName, userInput);
-
             var sourceModuleCode =
 $@"
 {typeDeclarationAccessibility} Type TBar
@@ -563,32 +556,6 @@ Public Sub FooBar()
     End With
 End Sub
 ";
-
-            //            string classModuleReferencingCode =
-            //$@"Option Explicit
-
-            //'ClassModule referencing the UDT
-
-            //Private Const foo As String = ""Foo""
-
-            //Private Const bar As Long = 7
-
-            //Public Sub Foo()
-            //    {referenceQualifier}.First = foo
-            //End Sub
-
-            //Public Sub Bar()
-            //    {referenceQualifier}.Second = bar
-            //End Sub
-
-            //Public Sub FooBar()
-            //    With {sourceModuleName}
-            //        .this.First = foo
-            //        .this.Second = bar
-            //    End With
-            //End Sub
-            //";
-
             var userInput = new UserInputDataObject("this", "MyType");
             var presenterAction = Support.SetParameters(userInput);
 
@@ -603,35 +570,12 @@ End Sub
                 ("StdModule", moduleReferencingCode, ComponentType.StandardModule),
                 (sourceModuleName, sourceCodeString.Code, ComponentType.StandardModule));
 
-            //Only Public Types are accessible to ClassModules
-            //if (typeDeclarationAccessibility.Equals("Public"))
-            //{
-            //    actualModuleCode = RefactoredCode(
-            //        sourceModuleName,
-            //        sourceCodeString.CaretPosition.ToOneBased(),
-            //        presenterAction,
-            //        null,
-            //        false,
-            //        ("StdModule", procedureModuleReferencingCode, ComponentType.StandardModule),
-            //        ("ClassModule", classModuleReferencingCode, ComponentType.ClassModule),
-            //        (sourceModuleName, sourceCodeString.Code, ComponentType.StandardModule));
-            //}
-
-            //return actualModuleCode;
-
-
-
             if (typeDeclarationAccessibility.Equals("Public"))
             {
                 var referencingModuleCode = actualModuleCode["StdModule"];
                 StringAssert.Contains($"{sourceModuleName}.MyType.First = ", referencingModuleCode);
                 StringAssert.Contains($"{sourceModuleName}.MyType.Second = ", referencingModuleCode);
                 StringAssert.Contains($"  .MyType.Second = ", referencingModuleCode);
-
-                //var referencingClassCode = actualModuleCode["ClassModule"];
-                //StringAssert.Contains($"{sourceModuleName}.MyType.First = ", referencingClassCode);
-                //StringAssert.Contains($"{sourceModuleName}.MyType.Second = ", referencingClassCode);
-                //StringAssert.Contains($"  .MyType.Second = ", referencingClassCode);
             }
 
             if (typeDeclarationAccessibility.Equals("Private"))
@@ -646,7 +590,6 @@ End Sub
 
         private IDictionary<string,string> Scenario_StdModuleSource_StandardAndClassReferencingModules(string referenceQualifier, string typeDeclarationAccessibility, string sourceModuleName, UserInputDataObject userInput)
         {
-            //var referenceQualifier = moduleQualifyReferences ? $"{sourceModuleName}.this" : "this";
             var sourceModuleCode =
 $@"
 {typeDeclarationAccessibility} Type TBar
@@ -730,7 +673,6 @@ End Sub
                 null,
                 false,
                 ("StdModule", procedureModuleReferencingCode, ComponentType.StandardModule),
-                //("ClassModule", classModuleReferencingCode, ComponentType.ClassModule),
                 (sourceModuleName, sourceCodeString.Code, ComponentType.StandardModule));
 
             return actualModuleCode;
@@ -832,6 +774,31 @@ End Sub
             StringAssert.Contains($"{sourceClassName}.MyType.First = ", referencingClassCode);
             StringAssert.Contains($"{sourceClassName}.MyType.Second = ", referencingClassCode);
             StringAssert.Contains($"  .MyType.Second = ", referencingClassCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void UserDefinedTypeUserUpdatesToBeReadOnly()
+        {
+            string inputCode =
+$@"
+Private Type TBar
+    First As String
+    Second As Long
+End Type
+
+Private t|his As TBar";
+
+            var userInput = new UserInputDataObject()
+                .AddAttributeSet("this", isReadOnly: true);
+
+            var presenterAction = Support.SetParameters(userInput);
+
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+
+            StringAssert.DoesNotContain("Public Property Let First", actualCode);
+            StringAssert.DoesNotContain("Public Property Let Second", actualCode);
         }
 
 

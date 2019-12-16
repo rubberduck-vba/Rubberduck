@@ -48,7 +48,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             candidate = ApplyTypeSpecificAttributes(candidate);
 
-            candidate = SetNonConflictIdentifier(candidate, c => { return _validator.HasConflictingPropertyIdentifier(candidate); }, (s) => { candidate.PropertyName = s.Capitalize(); }, () => candidate.IdentifierName, _validator);
+            candidate = SetNonConflictIdentifier(candidate, c => { return _validator.HasConflictingIdentifier(candidate, DeclarationType.Property); }, (s) => { candidate.PropertyName = s.Capitalize(); }, () => candidate.PropertyName, _validator);
+            candidate = SetNonConflictIdentifier(candidate, c => { return _validator.HasConflictingIdentifier(candidate, DeclarationType.Variable); }, (s) => { candidate.FieldIdentifier = s.UnCapitalize(); }, () => candidate.FieldIdentifier, _validator);
 
             if (candidate is IUserDefinedTypeCandidate udtVariable)
             {
@@ -62,7 +63,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
                     candidateUDTMember = ApplyTypeSpecificAttributes(candidateUDTMember);
 
-                    candidateUDTMember = SetNonConflictIdentifier(candidateUDTMember, c => { return _validator.HasConflictingPropertyIdentifier(candidate); }, (s) => { candidateUDTMember.PropertyName = s.Capitalize(); }, () => candidate.IdentifierName, _validator);
+                    candidateUDTMember = SetNonConflictIdentifier(candidateUDTMember, c => { return _validator.HasConflictingIdentifier(candidate, DeclarationType.Property); }, (s) => { candidateUDTMember.PropertyName = s.Capitalize(); }, () => candidate.IdentifierName, _validator);
 
                     udtVariable.AddMember(candidateUDTMember);
                 }

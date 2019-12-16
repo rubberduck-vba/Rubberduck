@@ -13,6 +13,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.Parsing.Symbols;
 using System;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace RubberduckTests.Refactoring.EncapsulateField
 {
@@ -233,7 +234,7 @@ Public that As TBar
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
             var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, fieldUT, DeclarationType.Variable, presenterAction);
 
-            Assert.AreEqual(false, model[fieldUT].HasValidEncapsulationAttributes, $"{fieldUT} failed");
+            Assert.AreEqual(false, model[fieldUT].HasValidEncapsulationAttributes);
         }
 
         [Test]
@@ -256,7 +257,53 @@ Public wholeNumber As String
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
             var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, fieldUT, DeclarationType.Variable, presenterAction);
 
-            Assert.AreEqual(false, model[fieldUT].HasValidEncapsulationAttributes, $"{fieldUT} failed");
+            Assert.AreEqual(false, model[fieldUT].HasValidEncapsulationAttributes);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void EncapsulatePrivateField_EnumMemberConflict()
+        {
+            //5.2.3.4: An enum member name may not be the same as any variable name, or constant name that is defined within the same module
+            const string inputCode =
+                @"
+
+Public Enum NumberTypes 
+     Whole = -1 
+     Integral = 0 
+     Rational_1 = 1 
+End Enum
+
+Private rati|onal As NumberTypes
+";
+
+            var presenterAction = Support.UserAcceptsDefaults();
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            StringAssert.Contains("Public Property Get Rational() As NumberTypes", actualCode);
+            StringAssert.Contains("Rational = rational_2", actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void EncapsulatePrivateField_UDTMemberConflict()
+        {
+            const string inputCode =
+                @"
+
+Private Type TVehicle
+    Wheels As Integer
+    MPG As Double
+End Type
+
+Private whe|els As Integer
+";
+
+            var presenterAction = Support.UserAcceptsDefaults();
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            StringAssert.Contains("Public Property Get Wheels()", actualCode);
+            StringAssert.Contains("Wheels = wheels_1", actualCode);
         }
 
         [TestCase("Dim test As String", "arg")] //Local variable
@@ -267,8 +314,7 @@ Public wholeNumber As String
         public void TargetNameUsedForLimitedScopeDeclarations(string localDeclaration, string parameter)
         {
             string inputCode =
-                $@"
-
+$@"
 Private te|st As Long
 
 Private Function Foo({parameter} As String) As String
@@ -284,30 +330,79 @@ End Function
             StringAssert.DoesNotContain("Test_1", actualCode);
         }
 
-//        [Test]
-//        [Category("Refactorings")]
-//        [Category("Encapsulate Field")]
-//        public void TargetNameDuplicatedAsLocalVariable_Array()
-//        {
-//            const string inputCode =
-//                @"
+        [TestCase("Dim test As String", "arg")] //Local variable
+        [TestCase(@"Const test As String = ""Foo""", "arg")] //Local constant
+        [TestCase(@"Const localTest As String = ""Foo""", "test")] //parameter
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void TargetReferenceScopeUsesPropertyName(string localDeclaration, string parameter)
+        {
+            string inputCode =
+$@"
+Private aName As String
 
-//Private Bou|ndedArray(1 To 100) As Byte
+Private Function Foo({parameter} As String) As String
+    {localDeclaration}
+    test = aName & test
+    Foo = test
+End Function
+";
+            var fieldUT = "aName";
+            var userInput = new UserInputDataObject()
+                .AddAttributeSet(fieldUT, "Test", true);
 
-//Private Function Foo() As Variant
-//    Dim BoundedArray(1 To 3) As Integer
-//    BoundedArray(1) = 7
-//    BoundedArray(2) = 8
-//    BoundedArray(3) = 9
-//    Foo = BoundedArray
-//End Function
-//";
-//            var presenterAction = Support.UserAcceptsDefaults();
-//            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-//            StringAssert.Contains("BoundedArray", actualCode);
-//            StringAssert.Contains("boundedArray_1", actualCode);
-//            StringAssert.DoesNotContain("BoundedArray_1", actualCode);
-//        }
+            var presenterAction = Support.SetParameters(userInput);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
+            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, fieldUT, DeclarationType.Variable, presenterAction);
+
+            Assert.AreEqual(false, model[fieldUT].HasValidEncapsulationAttributes);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void TargetDefaultFieldIDConflict()
+        {
+            string inputCode =
+$@"
+Private tes|t As String
+Private test_1 As String
+
+Public Sub Foo(arg As String)
+    test = arg & test_1
+End Sub
+";
+            var presenterAction = Support.UserAcceptsDefaults();
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            StringAssert.Contains("Test", actualCode);
+            StringAssert.Contains("Private test_2 As String", actualCode);
+            StringAssert.DoesNotContain("test_1 = arg & test_1", actualCode);
+        }
+
+        [TestCase(MockVbeBuilder.TestModuleName)]
+        [TestCase("TestModule")]
+        [TestCase("TestClass")]
+        [TestCase(MockVbeBuilder.TestProjectName)]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void ModuleAndProjectNamesAreValid(string userEnteredName)
+        {
+            var fieldUT = "foo";
+            var userInput = new UserInputDataObject()
+                .AddAttributeSet(fieldUT, userEnteredName, true);
+
+            var presenterAction = Support.SetParameters(userInput);
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                (MockVbeBuilder.TestModuleName, "Private foo As String", ComponentType.StandardModule),
+                ("TestModule", "Private foo1 As String", ComponentType.StandardModule),
+                ("TestClass", "Private foo2 As String", ComponentType.ClassModule)).Object;
+
+            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, fieldUT, DeclarationType.Variable, presenterAction);
+
+            Assert.AreEqual(true, model[fieldUT].HasValidEncapsulationAttributes);
+        }
 
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
         {

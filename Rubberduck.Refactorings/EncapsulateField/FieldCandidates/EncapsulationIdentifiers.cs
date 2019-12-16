@@ -11,7 +11,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private KeyValuePair<string, string> _fieldAndProperty;
         private string _targetIdentifier;
-        private string _defaultPropertyName;
         private string _setLetParameter;
 
         public EncapsulationIdentifiers(Declaration target)
@@ -20,13 +19,15 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public EncapsulationIdentifiers(string field)
         {
             _targetIdentifier = field;
-            _defaultPropertyName = field.Capitalize();
+            DefaultPropertyName = field.Capitalize();
             DefaultNewFieldName = (field.UnCapitalize()).IncrementIdentifier();
-            _fieldAndProperty = new KeyValuePair<string, string>(DefaultNewFieldName, _defaultPropertyName);
+            _fieldAndProperty = new KeyValuePair<string, string>(DefaultNewFieldName, DefaultPropertyName);
             _setLetParameter = DEFAULT_WRITE_PARAMETER;
         }
 
         public string TargetFieldName => _targetIdentifier;
+
+        public string DefaultPropertyName { private set; get; }
 
         public string DefaultNewFieldName { private set; get; }
 

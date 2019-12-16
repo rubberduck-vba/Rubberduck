@@ -16,11 +16,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
     public interface IEncapsulateFieldValidator
     {
         void RegisterFieldCandidate(IEncapsulateFieldCandidate candidate);
-        bool HasValidEncapsulationAttributes(IEncapsulateFieldCandidate candidate, IEnumerable<Declaration> ignore);
         bool IsValidVBAIdentifier(string identifier, DeclarationType declarationType);
-        bool HasConflictingPropertyIdentifier(IEncapsulateFieldCandidate candidate);
-        bool HasConflictingFieldIdentifier(IEncapsulateFieldCandidate candidate);
-        bool IsConflictingFieldIdentifier(string fieldName, IEncapsulateFieldCandidate candidate);
+        bool HasConflictingIdentifier(IEncapsulateFieldCandidate candidate, DeclarationType declarationType);
+        bool IsConflictingFieldIdentifier(string fieldName, IEncapsulateFieldCandidate candidate, DeclarationType declarationType);
     }
 
     public interface IEncapsulateFieldNamesValidator : IEncapsulateFieldValidator
@@ -37,7 +35,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private List<IEncapsulateFieldCandidate> FlaggedCandidates => FieldCandidates.Where(rc => rc.EncapsulateFlag).ToList();
 
-        public EncapsulateFieldNamesValidator(IDeclarationFinderProvider declarationFinderProvider, Func<List<IEncapsulateFieldCandidate>> retrieveCandidateFields = null)
+        public EncapsulateFieldNamesValidator(IDeclarationFinderProvider declarationFinderProvider)
         {
             _declarationFinderProvider = declarationFinderProvider;
             FieldCandidates = new List<IEncapsulateFieldCandidate>();
@@ -53,98 +51,133 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public bool IsValidVBAIdentifier(string identifier, DeclarationType declarationType) 
             => VBAIdentifierValidator.IsValidIdentifier(identifier, declarationType);
 
-        private List<Declaration> GetPotentialConflictMembers(IEncapsulateFieldCandidate candidate)
+        private List<string> PotentialConflictIdentifiers(IEncapsulateFieldCandidate candidate, DeclarationType declarationType)
         {
-            return _declarationFinderProvider.DeclarationFinder.Members(candidate.QualifiedModuleName)
-                .Where(d => d != candidate.Declaration
-                    && !IsAlwaysIgnoreNameConflictType(d)).ToList();
+            var members = _declarationFinderProvider.DeclarationFinder.Members(candidate.QualifiedModuleName)
+                .Where(d => d != candidate.Declaration);
+
+            var nameConflictCandidates = members
+                .Where(d => !IsAlwaysIgnoreNameConflictType(d, declarationType)).ToList();
+
+            var localReferences = candidate.Declaration.References.Where(rf => rf.QualifiedModuleName == candidate.QualifiedModuleName);
+
+            if (localReferences.Any())
+            {
+                foreach (var idRef in localReferences)
+                {
+                    var locals = members.Except(nameConflictCandidates)
+                        .Where(localDec => localDec.ParentScopeDeclaration.Equals(idRef.ParentScoping));
+
+                    nameConflictCandidates.AddRange(locals);
+                }
+            }
+            return nameConflictCandidates.Select(c => c.IdentifierName).ToList();
         }
 
-        private List<Declaration> GetPotentialConflictMembers(IStateUDT stateUDT)
+        private List<string> GetPotentialConflictMembers(IStateUDT stateUDT, DeclarationType declarationType)
         {
-            return _declarationFinderProvider.DeclarationFinder.Members(stateUDT.QualifiedModuleName)
-                .Where(d => !IsAlwaysIgnoreNameConflictType(d)).ToList();
+            var potentialDeclarationIdentifierConflicts = new List<string>();
+
+            var members = _declarationFinderProvider.DeclarationFinder.Members(stateUDT.QualifiedModuleName);
+
+            var nameConflictCandidates = members
+                .Where(d => !IsAlwaysIgnoreNameConflictType(d, declarationType)).ToList();
+
+            potentialDeclarationIdentifierConflicts.AddRange(nameConflictCandidates.Select(d => d.IdentifierName));
+
+            return potentialDeclarationIdentifierConflicts.ToList();
         }
 
-        public bool HasConflictingPropertyIdentifier(IEncapsulateFieldCandidate candidate)
+        public bool HasConflictingIdentifier(IEncapsulateFieldCandidate field, DeclarationType declarationType)
         {
-            var members = GetPotentialConflictMembers(candidate);
-            var newContentNames = FlaggedCandidates.Where(fc => fc.Declaration != candidate.Declaration).Select(fc => fc.PropertyName);
-            newContentNames = newContentNames.Concat(FlaggedCandidates.Where(fc => fc.Declaration != candidate.Declaration).Select(fc => fc.FieldIdentifier));
+            //The declared type of a function declaration may not be a private enum name.
+            //=>Means encapsulating a private enum field must be 'As Long'
 
-            return members.Any(m => m.IdentifierName.EqualsVBAIdentifier(candidate.PropertyName))
-                || newContentNames.Any(ed => ed.EqualsVBAIdentifier(candidate.PropertyName));
+            //If a procedure declaration whose visibility is public has a procedure name 
+            //that is the same as the name of a project or name of a module then 
+            //all references to the procedure name must be explicitly qualified with 
+            //its project or module name unless the reference occurs within the module that defines the procedure. 
+
+
+         var potentialDeclarationIdentifierConflicts = new List<string>();
+            potentialDeclarationIdentifierConflicts.AddRange(PotentialConflictIdentifiers(field, declarationType));
+
+            potentialDeclarationIdentifierConflicts.AddRange(FlaggedCandidates.Where(fc => fc.Declaration != field.Declaration).Select(fc => fc.PropertyName));
+            //potentialDeclarationIdentifierConflicts.AddRange(FlaggedCandidates.Where(fc => fc.Declaration != field.Declaration).Select(fc => fc.FieldIdentifier));
+
+            var identifierToCompare = declarationType.HasFlag(DeclarationType.Property)
+                ? field.PropertyName
+                : field.FieldIdentifier;
+
+            return potentialDeclarationIdentifierConflicts.Any(m => m.EqualsVBAIdentifier(identifierToCompare));
         }
 
-        public bool HasConflictingFieldIdentifier(IEncapsulateFieldCandidate candidate)
+        public bool IsConflictingFieldIdentifier(string fieldName, IEncapsulateFieldCandidate candidate, DeclarationType declarationType)
         {
-            var members = GetPotentialConflictMembers(candidate);
+            var members = PotentialConflictIdentifiers(candidate, declarationType);
 
-            return members.Any(m => m.IdentifierName.EqualsVBAIdentifier(candidate.FieldIdentifier));
-        }
-
-        public bool IsConflictingFieldIdentifier(string fieldName, IEncapsulateFieldCandidate candidate)
-        {
-            var members = GetPotentialConflictMembers(candidate);
-
-            return members.Any(m => m.IdentifierName.EqualsVBAIdentifier(fieldName) || candidate.PropertyName.EqualsVBAIdentifier(fieldName));
+            return members.Any(m => m.EqualsVBAIdentifier(fieldName));
         }
 
         public bool IsConflictingStateUDTTypeIdentifier(IStateUDT stateUDT)
         {
-            var members = GetPotentialConflictMembers(stateUDT);
+            var potentialConflictNames = GetPotentialConflictMembers(stateUDT, DeclarationType.UserDefinedType);
 
-            return members.Any(m => m.IdentifierName.EqualsVBAIdentifier(stateUDT.TypeIdentifier));
+            return potentialConflictNames.Any(m => m.EqualsVBAIdentifier(stateUDT.TypeIdentifier));
         }
 
         public bool IsConflictingStateUDTFieldIdentifier(IStateUDT stateUDT)
         {
-            var members = GetPotentialConflictMembers(stateUDT);
+            var potentialConflictNames = GetPotentialConflictMembers(stateUDT, DeclarationType.Variable);
 
-            return members.Any(m => m.IdentifierName.EqualsVBAIdentifier(stateUDT.FieldIdentifier));
+            return potentialConflictNames.Any(m => m.EqualsVBAIdentifier(stateUDT.FieldIdentifier));
         }
 
-        public bool HasValidEncapsulationAttributes(IEncapsulateFieldCandidate candidate, IEnumerable<Declaration> ignore)
+       //The refactoring only inserts elements with the following Accessibilities:
+       //Variables => Private
+       //Properties => Public
+       //UDT => Private
+        private bool IsAlwaysIgnoreNameConflictType(Declaration d, DeclarationType toEnapsulateDeclarationType)
         {
-            if (!candidate.EncapsulateFlag) { return true; }
-
-            var internalValidations = candidate as IEncapsulateFieldCandidateValidations;
-
-            if (!internalValidations.IsSelfConsistent
-                || HasConflictingPropertyIdentifier(candidate))
+            var NeverCauseNameConflictTypes = new List<DeclarationType>()
             {
-                return false;
-            }
-            return true;
-        }
+                DeclarationType.Project,
+                DeclarationType.ProceduralModule,
+                DeclarationType.ClassModule,
+                DeclarationType.Parameter,
+                DeclarationType.EnumerationMember,
+                DeclarationType.Enumeration,
+                DeclarationType.UserDefinedTypeMember
+            };
 
-        private bool IsAlwaysIgnoreNameConflictType(Declaration d)
-        {
-            //TODO: // candidate.DeclarationType == DeclarationType.EnumerationMember || candidate.DeclarationType == DeclarationType.UserDefinedTypeMember;
-            //FIXME: once a failing test is written
+            if (toEnapsulateDeclarationType.HasFlag(DeclarationType.Variable))
+            {
+                //5.2.3.4: An enum member name may not be the same as any variable name
+                //or constant name that is defined within the same module
+                NeverCauseNameConflictTypes.Remove(DeclarationType.EnumerationMember);
+            }
+            else if (toEnapsulateDeclarationType.HasFlag(DeclarationType.UserDefinedType))
+            {
+                //5.2.3.3 If an<udt-declaration > is an element of a<private-type-declaration> its 
+                //UDT name cannot be the same as the enum name of any<enum-declaration> 
+                //or the UDT name of any other<UDTdeclaration> within the same<module>
+
+                //5.2.3.4 The enum name of a <private-enum-declaration> cannot be the same as the enum name of any other 
+                //<enum-declaration> or as the UDT name of a <UDT-declaration> within the same <module>.
+                NeverCauseNameConflictTypes.Remove(DeclarationType.Enumeration);
+            }
+            else if (toEnapsulateDeclarationType.HasFlag(DeclarationType.Property))
+            {
+                //Each < subroutine - declaration > and < function - declaration > must have a 
+                //procedure name that is different from any other module variable name, 
+                //module constant name, enum member name, or procedure name that is defined 
+                //within the same module.
+
+                NeverCauseNameConflictTypes.Remove(DeclarationType.EnumerationMember);
+            }
             return d.IsLocalVariable()
                     || d.IsLocalConstant()
-                    || d.DeclarationType.HasFlag(DeclarationType.Parameter);
-        }
-
-        //private bool UsesScopeResolution(Antlr4.Runtime.RuleContext ruleContext)
-        //{
-        //    return (ruleContext is VBAParser.WithMemberAccessExprContext)
-        //        || (ruleContext is VBAParser.MemberAccessExprContext);
-        //}
-
-        private bool HasValidIdentifiers(IEncapsulateFieldCandidate attributes, DeclarationType declarationType)
-        {
-            return VBAIdentifierValidator.IsValidIdentifier(attributes.FieldIdentifier, declarationType)
-                && VBAIdentifierValidator.IsValidIdentifier(attributes.PropertyName, DeclarationType.Property)
-                && VBAIdentifierValidator.IsValidIdentifier(attributes.ParameterName, DeclarationType.Parameter);
-        }
-
-        private bool HasInternalNameConflicts(IEncapsulateFieldCandidate attributes)
-        {
-            return attributes.PropertyName.EqualsVBAIdentifier(attributes.FieldIdentifier)
-                || attributes.PropertyName.EqualsVBAIdentifier(attributes.ParameterName)
-                || attributes.FieldIdentifier.EqualsVBAIdentifier(attributes.ParameterName);
+                    || NeverCauseNameConflictTypes.Contains(d.DeclarationType);
         }
     }
 }

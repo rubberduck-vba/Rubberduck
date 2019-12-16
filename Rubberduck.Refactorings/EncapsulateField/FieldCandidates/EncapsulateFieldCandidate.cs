@@ -105,10 +105,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
                                     || FieldIdentifier.EqualsVBAIdentifier(ParameterName));
 
         public bool HasConflictingPropertyIdentifier 
-            => _validator.HasConflictingPropertyIdentifier(this);
+            => _validator.HasConflictingIdentifier(this, DeclarationType.Property);
 
         public bool HasConflictingFieldIdentifier
-            => _validator.HasConflictingFieldIdentifier(this);
+            => _validator.HasConflictingIdentifier(this, DeclarationType.Variable);
 
         public bool HasValidEncapsulationAttributes
         {
@@ -117,7 +117,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 if (!EncapsulateFlag) { return true; }
 
                 return IsSelfConsistent
-                    && !_validator.HasConflictingPropertyIdentifier(this);
+                    && !_validator.HasConflictingIdentifier(this, DeclarationType.Property);
             }
         }
 
@@ -149,7 +149,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public virtual string TargetID => _target?.IdentifierName ?? IdentifierName;
 
         public bool EncapsulateFlag { set; get; }
-        public bool IsReadOnly { set; get; }
+        public virtual bool IsReadOnly { set; get; }
         public bool CanBeReadWrite { set; get; }
 
         public virtual string FieldIdentifier
@@ -172,7 +172,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
         //The preferred NewFieldName is the original Identifier
         private void TryRestoreNewFieldNameAsOriginalFieldIdentifierName()
         {
-            var canNowUseOriginalFieldName = !_validator.IsConflictingFieldIdentifier(_fieldAndProperty.TargetFieldName, this);
+            var canNowUseOriginalFieldName = !_fieldAndProperty.TargetFieldName.EqualsVBAIdentifier(_fieldAndProperty.Property)
+                && !_validator.IsConflictingFieldIdentifier(_fieldAndProperty.TargetFieldName, this, DeclarationType.Variable);
 
             if (canNowUseOriginalFieldName)
             {
@@ -183,11 +184,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
             if (_fieldAndProperty.Field.EqualsVBAIdentifier(_fieldAndProperty.TargetFieldName))
             {
                 _fieldAndProperty.Field = _fieldAndProperty.DefaultNewFieldName;
-                var isConflictingFieldIdentifier = _validator.HasConflictingFieldIdentifier(this);
+                var isConflictingFieldIdentifier = _validator.HasConflictingIdentifier(this, DeclarationType.Variable);
                 for (var count = 1; count < 10 && isConflictingFieldIdentifier; count++)
                 {
                     FieldIdentifier = FieldIdentifier.IncrementIdentifier();
-                    isConflictingFieldIdentifier = _validator.HasConflictingFieldIdentifier(this);
+                    isConflictingFieldIdentifier = _validator.HasConflictingIdentifier(this, DeclarationType.Variable);
                 }
             }
         }
@@ -249,9 +250,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
         }
 
         public virtual IEnumerable<IPropertyGeneratorAttributes> PropertyAttributeSets 
-            => new List<IPropertyGeneratorAttributes>() { AsPropertyGeneratorSpec };
+            => new List<IPropertyGeneratorAttributes>() { AsPropertyAttributeSet };
 
-        protected virtual IPropertyGeneratorAttributes AsPropertyGeneratorSpec
+        protected virtual IPropertyGeneratorAttributes AsPropertyAttributeSet
         {
             get
             {

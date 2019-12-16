@@ -193,13 +193,12 @@ Public myBar As TBar
 
 
             userInput.EncapsulateAsUDT = true;
-            //userInput.StateUDT_TypeName = "This_Type";
-            //userInput.StateUDT_FieldName = "this";
 
             var presenterAction = Support.SetParameters(userInput);
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains($"Private Type {expectedIdentifier}", actualCode);
         }
+
 
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
         {
