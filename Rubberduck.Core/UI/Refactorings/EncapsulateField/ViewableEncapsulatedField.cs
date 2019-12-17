@@ -1,4 +1,5 @@
-﻿using Rubberduck.Refactorings.EncapsulateField;
+﻿using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings.EncapsulateField;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,8 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         string AsTypeName { get; }
         string FieldDescriptor { get; }
         string TargetDeclarationExpression { set; get; }
+        bool IsPrivateUserDefinedType { get; }
+        bool IsRequiredToBeReadOnly { get; }
     }
 
     public class ViewableEncapsulatedField : IEncapsulatedFieldViewData
@@ -34,9 +37,18 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             _efd = efd;
         }
 
+        public override bool Equals(object obj)
+        {
+            if (obj is IEncapsulatedFieldViewData vd)
+            {
+                return vd.TargetID.Equals(TargetID);
+            }
+            return false;
+        }
+
         public Visibility FieldNameVisibility => (_efd is IUserDefinedTypeMemberCandidate) /*.IsUDTMember*/ || !_efd.EncapsulateFlag ? Visibility.Collapsed : Visibility.Visible;
         public Visibility PropertyNameVisibility => !_efd.EncapsulateFlag ? Visibility.Collapsed : Visibility.Visible;
-        public bool HasValidEncapsulationAttributes => _efd.HasValidEncapsulationAttributes;
+        public bool HasValidEncapsulationAttributes => IsPrivateUserDefinedType || _efd.HasValidEncapsulationAttributes;
         public bool HasInvalidEncapsulationAttributes => !HasValidEncapsulationAttributes;
         public string TargetID { get => _efd.TargetID; }
         //set => _efd.TargetID = value; }
@@ -48,6 +60,10 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         public string NewFieldName { get => _efd.FieldIdentifier; }// set => _efd.NewFieldName = value; }
         //TODO: Change name of AsTypeName property to FieldDescriptor(?)  -> and does it belong on IEncapsulatedField?
         public string AsTypeName => _efd.AsTypeName;
+        public bool IsPrivateUserDefinedType => _efd is IUserDefinedTypeCandidate udt && udt.TypeDeclarationIsPrivate;
+        public bool IsRequiredToBeReadOnly => !_efd.CanBeReadWrite; // is ArrayCandidate;
+
+
         public string FieldDescriptor
         {
             //(Variable: Integer Array)

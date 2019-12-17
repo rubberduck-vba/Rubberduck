@@ -11,6 +11,7 @@
              d:DesignWidth="800">
     <UserControl.Resources>
         <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
+        <converters:InvertBoolValueConverter x:Key="InvertBoolValueConverter" />
 
         <BitmapImage x:Key="InvalidNameImage"
                      UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
@@ -63,27 +64,27 @@
                             <RowDefinition Height="auto" />
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="1">
-                            <Grid Margin="10,10,0,2"
+                            <Grid Margin="5,10,0,2"
                                   VerticalAlignment="Center">
-                                <Grid.RowDefinitions>
+                                <!--<Grid.RowDefinitions>
                                     <RowDefinition />
                                     <RowDefinition Height="30" />
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
+                                </Grid.RowDefinitions>-->
+                                <!--<Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="250" />
                                     <ColumnDefinition Width="auto"
                                                       MinWidth="150"
                                                       MaxWidth="300" />
-                                </Grid.ColumnDefinitions>
+                                </Grid.ColumnDefinitions>-->
                                 <CheckBox Grid.Row="1"
                                           Grid.Column="0"
                                           Content="Wrap Fields in Private Type"
                                           IsChecked="{Binding EncapsulateAsUDT, Mode=TwoWay}"
                                           FontWeight="Bold"
                                           VerticalAlignment="Top"
-                                          Margin="20,0,0,5" />
+                                          Margin="10,0,0,5" />
                             </Grid>
-                            <Grid VerticalAlignment="Top">
+                            <!--<Grid VerticalAlignment="Top">
                                 <Grid.RowDefinitions>
                                     <RowDefinition />
                                     <RowDefinition />
@@ -93,35 +94,7 @@
                                     <ColumnDefinition Width="200" />
                                     <ColumnDefinition Width="auto" />
                                 </Grid.ColumnDefinitions>
-                                <Grid Visibility="Collapsed">
-                                    <TextBlock Grid.Row="0"
-                                               Grid.Column="0"
-                                               Margin="30,10,0,0">
-                            User Defined Type Name:
-                                    </TextBlock>
-                                    <TextBox Grid.Row="0"
-                                             Grid.Column="1"
-                                             Margin="5,8,0,0"
-                                             Height="22"
-                                             VerticalAlignment="Top"
-                                             VerticalContentAlignment="Center"
-                                             Text="{Binding EncapsulateAsUDT_TypeIdentifier, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                </Grid>
-                                <Grid Visibility="Collapsed">
-                                    <TextBlock Grid.Row="1"
-                                               Grid.Column="0"
-                                               Margin="30,10,0,20">
-                            User Defined Type Field Name:
-                                    </TextBlock>
-                                    <TextBox Grid.Row="1"
-                                             Grid.Column="1"
-                                             Margin="5,8,0,0"
-                                             Height="22"
-                                             VerticalAlignment="Top"
-                                             VerticalContentAlignment="Center"
-                                             Text="{Binding EncapsulateAsUDT_FieldName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                </Grid>
-                            </Grid>
+                            </Grid>-->
                             <Grid Margin="5,0,0,10">
                                 <Grid MaxHeight="150">
                                     <Grid.RowDefinitions>
@@ -166,10 +139,11 @@
                                     </ListBox>-->
                                     <ListBox Grid.Column="0"
                                              Name="FieldList"
-                                             ItemsSource="{Binding Path=EncapsulationFields, Mode=OneWay}"
-                                             SelectedItem="{Binding Path= SelectedField}"
+                                             ItemsSource="{Binding Path=EncapsulationFields}"
+                                             SelectedItem="{Binding Path= SelectedField, Mode=TwoWay}"
                                              SelectionMode="Single"
                                              Height="auto"
+                                             MinHeight="150"
                                              VerticalAlignment="Top"
                                              Margin="5,0,0,5">
                                         <ListBox.ItemTemplate>
@@ -196,6 +170,13 @@
                                                                Text="{Binding TargetDeclarationExpression, Mode=OneWay}"
                                                                FontWeight="Bold">
                                                     </TextBlock>
+                                                    <Image Source="{StaticResource InvalidNameImage}"
+                                                            Grid.Column="1" 
+                                                            Height="12"
+                                                            Margin="0,-8,-8,0"
+                                                            HorizontalAlignment="Right"
+                                                            VerticalAlignment="Center"
+                                                            Visibility="{Binding Path=HasValidEncapsulationAttributes, Converter={StaticResource BoolToHiddenVisibility}}" />
                                                     </StackPanel>
                                                 </Grid>
                                             </DataTemplate>
@@ -269,7 +250,7 @@
                                     </StackPanel>
                                 </GroupBox>
                             </Grid>-->
-                            <Grid>
+                            <Grid Visibility="{Binding Path=HideGroupBox, Converter={StaticResource BoolToHiddenVisibility}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition MinWidth="100"
                                                       MaxWidth="400" />
@@ -288,8 +269,10 @@
                                         <StackPanel>
                                             <Grid>
                                             <TextBox Name="PropertyName"
+                                                    IsEnabled="{Binding Path=EnablePropertyNameEditor}"
                                                      Margin="10,5,50,0"
                                                      Height="22"
+                                                     VerticalAlignment="Center"
                                                      MinWidth="150"
                                                      Text="{Binding Path=PropertyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                                 <Image Source="{StaticResource InvalidNameImage}"
@@ -299,12 +282,25 @@
                                                        VerticalAlignment="Top"
                                                        Visibility="{Binding Path=HasValidEncapsulationAttributes, Converter={StaticResource BoolToHiddenVisibility}}" />
                                             </Grid>
-                                            <CheckBox IsChecked="{Binding Path=IsReadOnly, Mode=TwoWay}"
-                                                      Content="Read Only"
-                                                      Margin="10,5,5,2"
-                                                      FontWeight="Bold"
-                                                      Command="{Binding Path=ReadOnlyChangeCommand}"
-                                                      CommandParameter="{Binding ElementName=EncapsulationFields, Path=SelectedField}" />
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="auto" />
+                                                    <ColumnDefinition Width="auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <CheckBox IsChecked="{Binding Path=IsReadOnly, Mode=TwoWay}"
+                                                          IsEnabled="{Binding Path=EnableReadOnlyOption}"
+                                                          Content="Read Only"
+                                                          Margin="10,5,5,2"
+                                                          FontWeight="Bold"
+                                                          Command="{Binding Path=ReadOnlyChangeCommand}"
+                                                          CommandParameter="{Binding ElementName=EncapsulationFields, Path=SelectedField}" />
+                                                <TextBlock Name="BackingField"
+                                                         Margin="10,5,50,0"
+                                                         Height="22"
+                                                         MinWidth="150"
+                                                            Grid.Column="1"
+                                                           Text="{Binding Path=BackingField, Mode=OneWay}" />
+                                            </Grid>
                                         </StackPanel>
                                     </GroupBox>
                                     <!--<CheckBox Content="Wrap Fields in Private Type"
