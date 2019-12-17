@@ -36,21 +36,23 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         {
             get
             {
-                //var flaggedFields = Model.SelectedFieldCandidates
-                //    .OrderBy(efd => efd.Declaration.IdentifierName);
                 if (_viewableFields is null)
                 {
                     _viewableFields = new ObservableCollection<IEncapsulatedFieldViewData>();
 
-                    var orderedFields = Model.EncapsulationCandidates //.Except(flaggedFields)
-                        .OrderBy(efd => efd.Declaration.IdentifierName);
+                    var orderedFields = Model.EncapsulationCandidates
+                        .OrderBy(efd => efd.Declaration.Selection);
 
-                    foreach (var efd in orderedFields) // flaggedFields.Concat(orderedFields))
+                    foreach (var efd in orderedFields)
                     {
                         _viewableFields.Add(new ViewableEncapsulatedField(efd));
                     }
                 }
                 return _viewableFields;
+            }
+            set
+            {
+                var tossOut = value;
             }
         }
 
@@ -89,8 +91,18 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
                 SelectedField.PropertyName = value;
                 OnPropertyChanged(nameof(PropertyName));
                 OnPropertyChanged(nameof(HasValidNames));
+                OnPropertyChanged(nameof(HasValidEncapsulationAttributes));
+                OnPropertyChanged(nameof(PropertyPreview));
             }
             get => _propertyName;
+        }
+
+        public bool HasValidEncapsulationAttributes
+        {
+            get
+            {
+                return SelectedField.HasValidEncapsulationAttributes;
+            }
         }
 
         private string _fieldDescriptor;
@@ -110,7 +122,6 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             set
             {
                 _targetID = value;
-                //OnPropertyChanged(nameof(FieldDescriptor));
             }
             get => _targetID;
         }
@@ -126,21 +137,13 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             get => _isReadOnly;
         }
 
-        public void ValidatePropertyName(string value)
-        {
-            SelectedField.PropertyName = value;
-            OnPropertyChanged(nameof(HasValidNames));
-        }
-
-
-        //private IEncapsulatedFieldViewData _selectedvalue;
-        //public IEncapsulatedFieldViewData SelectedValue
+        //public void ValidatePropertyName(string value)
         //{
-        //    set;
-        //    get;
+        //    SelectedField.PropertyName = value;
+        //    OnPropertyChanged(nameof(HasValidNames));
         //}
 
-        public bool HideEncapsulateAsUDTFields => !EncapsulateAsUDT;
+        //public bool HideEncapsulateAsUDTFields => !EncapsulateAsUDT;
 
         public bool EncapsulateAsUDT
         {
@@ -148,67 +151,64 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             set
             {
                 Model.EncapsulateWithUDT = value;
-                UpdatePreview();
-                OnPropertyChanged(nameof(HideEncapsulateAsUDTFields));
-                OnPropertyChanged(nameof(EncapsulateAsUDT_TypeIdentifier));
-                OnPropertyChanged(nameof(EncapsulateAsUDT_FieldName));
+                OnPropertyChanged(nameof(PropertyPreview));
+                //OnPropertyChanged(nameof(HideEncapsulateAsUDTFields));
+                //OnPropertyChanged(nameof(EncapsulateAsUDT_TypeIdentifier));
+                //OnPropertyChanged(nameof(EncapsulateAsUDT_FieldName));
             }
         }
 
-        public string EncapsulateAsUDT_TypeIdentifier
-        {
-            get
-            {
-                if (Model.EncapsulateWithUDT)
-                {
-                    return Model.StateUDTField.TypeIdentifier;
-                }
-                return string.Empty;
-            }
-            set
-            {
-                if (Model.EncapsulateWithUDT)
-                {
-                    Model.StateUDTField.TypeIdentifier = value;
-                }
-                UpdatePreview();
-            }
-        }
+        //public string EncapsulateAsUDT_TypeIdentifier
+        //{
+        //    get
+        //    {
+        //        if (Model.EncapsulateWithUDT)
+        //        {
+        //            return Model.StateUDTField.TypeIdentifier;
+        //        }
+        //        return string.Empty;
+        //    }
+        //    set
+        //    {
+        //        if (Model.EncapsulateWithUDT)
+        //        {
+        //            Model.StateUDTField.TypeIdentifier = value;
+        //        }
+        //        OnPropertyChanged(nameof(PropertyPreview));
+        //    }
+        //}
 
-        public string EncapsulateAsUDT_FieldName
-        {
-            get
-            {
-                if (Model.EncapsulateWithUDT)
-                {
-                    return Model.StateUDTField.FieldIdentifier;
-                }
-                return string.Empty;
-            }
-            set
-            {
-                if (Model.EncapsulateWithUDT)
-                {
-                    Model.StateUDTField.FieldIdentifier = value;
-                }
-                UpdatePreview();
-            }
-        }
+        //public string EncapsulateAsUDT_FieldName
+        //{
+        //    get
+        //    {
+        //        if (Model.EncapsulateWithUDT)
+        //        {
+        //            return Model.StateUDTField.FieldIdentifier;
+        //        }
+        //        return string.Empty;
+        //    }
+        //    set
+        //    {
+        //        if (Model.EncapsulateWithUDT)
+        //        {
+        //            Model.StateUDTField.FieldIdentifier = value;
+        //        }
+        //        OnPropertyChanged(nameof(PropertyPreview));
+        //    }
+        //}
 
-        public bool TargetsHaveValidEncapsulationSettings 
-            => Model.EncapsulationCandidates.Where(efd => efd.EncapsulateFlag)
-                    .Any(ff => !ff.HasValidEncapsulationAttributes);
+        //public bool TargetsHaveValidEncapsulationSettings 
+        //    => Model.EncapsulationCandidates.Where(efd => efd.EncapsulateFlag)
+        //            .Any(ff => !ff.HasValidEncapsulationAttributes);
 
-        public IEncapsulateFieldValidator RefactoringValidator { set; get; }
+        //public IEncapsulateFieldValidator RefactoringValidator { set; get; }
 
-        //TODO: hook the validation scheme backup
-        //public bool HasValidNames => true;
         public bool HasValidNames
         {
             get
             {
                 return EncapsulationFields.All(ef => ef.HasValidEncapsulationAttributes);
-                //return !_neverUseTheseNames.Any(nm => nm.Equals(SelectedField.PropertyName, StringComparison.InvariantCultureIgnoreCase));
             }
         }
 
@@ -218,7 +218,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         public CommandBase DeselectAllCommand { get; }
         private void ToggleSelection(bool value)
         {
-            foreach (var item in EncapsulationFields)
+            foreach (var item in _viewableFields)
             {
                 item.EncapsulateFlag = value;
             }
@@ -253,24 +253,16 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             if (nowChecked.Any())
             {
                 SelectedField = nowChecked.Single();
-                //_lastCheckedBoxes = EncapsulationFields.Where(ef => ef.EncapsulateFlag).ToList();
-                //return;
             }
-
-            //beforeChecked.RemoveAll(c => EncapsulationFields.Select(nc => nc.TargetID).Contains(c.TargetID));
             else if (beforeChecked.Any())
             {
                 SelectedField = beforeChecked.Single();
-                //_lastCheckedBoxes = EncapsulationFields.Where(ef => ef.EncapsulateFlag).ToList();
-                //return;
             }
             _lastCheckedBoxes = EncapsulationFields.Where(ef => ef.EncapsulateFlag).ToList();
         }
 
-        private void UpdatePreview()
-        {
-            OnPropertyChanged(nameof(PropertyPreview));
-        }
+        private void UpdatePreview() 
+            => OnPropertyChanged(nameof(PropertyPreview));
 
         private void ReloadPreview()
         {

@@ -20,6 +20,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         Visibility FieldNameVisibility { get; }
         Visibility PropertyNameVisibility { get; }
         bool HasValidEncapsulationAttributes { get; }
+        bool HasInvalidEncapsulationAttributes { get; }
         string AsTypeName { get; }
         string FieldDescriptor { get; }
         string TargetDeclarationExpression { set; get; }
@@ -36,6 +37,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         public Visibility FieldNameVisibility => (_efd is IUserDefinedTypeMemberCandidate) /*.IsUDTMember*/ || !_efd.EncapsulateFlag ? Visibility.Collapsed : Visibility.Visible;
         public Visibility PropertyNameVisibility => !_efd.EncapsulateFlag ? Visibility.Collapsed : Visibility.Visible;
         public bool HasValidEncapsulationAttributes => _efd.HasValidEncapsulationAttributes;
+        public bool HasInvalidEncapsulationAttributes => !HasValidEncapsulationAttributes;
         public string TargetID { get => _efd.TargetID; }
         //set => _efd.TargetID = value; }
         public bool IsReadOnly { get => _efd.IsReadOnly; set => _efd.IsReadOnly = value; }
@@ -78,7 +80,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         public string TargetDeclarationExpression
         {
             set => _targetDeclarationExpressions = value;
-            get => $"{TargetID}:  Private {TargetID} As {AsTypeName}";
+            get => $"{_efd.Declaration.Accessibility} {_efd.Declaration.Context.GetText()}"; //$"{TargetID}:  Private {TargetID} As {AsTypeName}";
         }
     }
 }
