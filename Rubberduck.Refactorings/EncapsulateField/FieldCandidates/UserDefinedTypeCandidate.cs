@@ -77,11 +77,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 foreach (var member in Members)
                 {
-                    member.FieldQualifyUDTMemberPropertyName = value;
+                    member.IncludeParentNameWithPropertyIdentifier = value;
                 }
             }
 
-            get => Members.All(m => m.FieldQualifyUDTMemberPropertyName);
+            get => Members.All(m => m.IncludeParentNameWithPropertyIdentifier);
         }
 
         protected override void LoadFieldReferenceContextReplacements()

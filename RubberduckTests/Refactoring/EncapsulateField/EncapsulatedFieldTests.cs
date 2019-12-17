@@ -77,27 +77,5 @@ $@"Public fizz As String
             encapsulatedField.PropertyName = "Value";
             StringAssert.AreEqualIgnoringCase("Value_value_1_value", encapsulatedField.ParameterName);
         }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void CreateUDT()
-        {
-
-            var mock = new Mock<IEncapsulateFieldCandidate>();
-            mock.SetupGet(m => m.AsTypeName).Returns("String");
-            mock.SetupGet(m => m.PropertyName).Returns("Fizz");
-
-            var stateUDT = new StateUDT(Support.StateUDTDefaultType, null) as IStateUDT;
-            //var newUserDefinedType = new UDTDeclarationGenerator("This_Type");
-            stateUDT.AddMembers(new IEncapsulateFieldCandidate[] { mock.Object });
-
-
-            //var result = newUserDefinedType.TypeDeclarationBlock();
-            var result = stateUDT.TypeDeclarationBlock();
-            StringAssert.Contains($"Private Type {Support.StateUDTDefaultType}", result);
-            StringAssert.Contains("Fizz As String", result);
-            StringAssert.Contains("End Type", result);
-        }
     }
 }

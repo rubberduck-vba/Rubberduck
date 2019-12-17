@@ -165,6 +165,60 @@ Public myBar As TBar
             Assert.AreEqual(index, indexLast);
         }
 
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void UserDefinedType_PrivateEnumField()
+        {
+            const string inputCode =
+@"
+Private Enum NumberTypes 
+    Whole = -1 
+    Integral = 0 
+    Rational = 1 
+End Enum
+
+Public numberT|ype As NumberTypes
+";
+
+
+            var userInput = new UserInputDataObject()
+                .AddAttributeSet("numberType");
+
+            userInput.EncapsulateAsUDT = true;
+
+            var presenterAction = Support.SetParameters(userInput);
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            StringAssert.Contains("Property Get NumberType() As Long", actualCode);
+            StringAssert.Contains("NumberType = this.NumberType", actualCode);
+            StringAssert.Contains(" NumberType As NumberTypes", actualCode);
+        }
+
+        [TestCase("anArray", "5")]
+        [TestCase("anArray", "1 To 100")]
+        [TestCase("anArray", "")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void UserDefinedType_BoundedArrayField(string arrayIdentifier, string dimensions)
+        {
+            var selectedInput = arrayIdentifier.Replace("n", "n|");
+            string inputCode =
+$@"
+Public {selectedInput}({dimensions}) As String
+";
+
+            var userInput = new UserInputDataObject()
+                .AddAttributeSet(arrayIdentifier);
+
+            userInput.EncapsulateAsUDT = true;
+
+            var presenterAction = Support.SetParameters(userInput);
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            StringAssert.Contains("Property Get AnArray() As Variant", actualCode);
+            StringAssert.Contains("AnArray = this.AnArray", actualCode);
+            StringAssert.Contains($" AnArray({dimensions}) As String", actualCode);
+        }
+
         [TestCase("Public Sub This_Type()\r\nEnd Sub", "This_Type_1")]
         [TestCase("Private This_Type As Long\r\nPrivate This_Type_1 As String", "This_Type_2")]
         [TestCase("Public Property Get This_Type() As Long\r\nEnd Property", "This_Type_1")]

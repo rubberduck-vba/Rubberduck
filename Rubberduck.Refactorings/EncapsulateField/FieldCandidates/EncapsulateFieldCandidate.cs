@@ -25,15 +25,20 @@ namespace Rubberduck.Refactorings.EncapsulateField
         QualifiedModuleName QualifiedModuleName { get; }
         string PropertyName { get; set; }
         string AsTypeName { get; set; }
+        string AsTypeName_Property { get; set; }
         string ParameterName { get; }
         bool ImplementLetSetterType { get; set; }
         bool ImplementSetSetterType { get; set; }
         IEnumerable<IPropertyGeneratorAttributes> PropertyAttributeSets { get; }
+        string AsUDTMemberDeclaration { get; }
         IEnumerable<KeyValuePair<IdentifierReference, (ParserRuleContext, string)>> ReferenceReplacements { get; }
         void SetReferenceRewriteContent(IdentifierReference idRef, string replacementText);
         string ReferenceQualifier { set; get; }
         string ReferenceWithinNewProperty { get; }
         void StageFieldReferenceReplacements(IStateUDT stateUDT = null);
+        string AccessorTokenToContent(AccessorTokens token);
+        AccessorTokens PropertyAccessor { set; get; }
+        AccessorTokens ReferenceAccessor { set; get; }
     }
 
     public enum AccessorTokens { Field, Property }
@@ -70,6 +75,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _fieldAndProperty = new EncapsulationIdentifiers(identifier);
             IdentifierName = identifier;
             AsTypeName = asTypeName;
+            AsTypeName_Property = asTypeName;
             _qmn = qmn;
             PropertyAccessor = AccessorTokens.Field;
             ReferenceAccessor = AccessorTokens.Property;
@@ -195,6 +201,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public string AsTypeName { set; get; }
 
+        public string AsTypeName_Property { get; set; }
+
         public QualifiedModuleName QualifiedModuleName => _qmn;
 
         public string IdentifierName
@@ -212,9 +220,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public bool ImplementSetSetterType { get => !IsReadOnly && _implSet; set => _implSet = value; }
 
 
-        protected AccessorTokens PropertyAccessor { set; get; }
+        public AccessorTokens PropertyAccessor { set; get; }
 
-        protected AccessorTokens ReferenceAccessor { set; get; }
+        public AccessorTokens ReferenceAccessor { set; get; }
 
         protected string _referenceQualifier;
         public virtual string ReferenceQualifier
@@ -227,7 +235,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         protected virtual string ReferenceForPreExistingReferences => AccessorTokenToContent(ReferenceAccessor);
 
-        protected string AccessorTokenToContent(AccessorTokens token)
+        public string AccessorTokenToContent(AccessorTokens token)
         {
             var accessor = string.Empty;
             switch (token)
@@ -249,6 +257,15 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return accessor;
         }
 
+        public virtual string AsUDTMemberDeclaration
+        {
+            get
+            {
+                return $"{PropertyName} {Tokens.As} {AsTypeName}";
+            }
+        }
+            //=> $"{PropertyName} {Tokens.As} {AsTypeName}";
+
         public virtual IEnumerable<IPropertyGeneratorAttributes> PropertyAttributeSets 
             => new List<IPropertyGeneratorAttributes>() { AsPropertyAttributeSet };
 
@@ -260,7 +277,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 {
                     PropertyName = PropertyName,
                     BackingField = ReferenceWithinNewProperty,
-                    AsTypeName = AsTypeName,
+                    AsTypeName = AsTypeName_Property,
                     ParameterName = ParameterName,
                     GenerateLetter = ImplementLetSetterType,
                     GenerateSetter = ImplementSetSetterType,

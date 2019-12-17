@@ -66,7 +66,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             blockLines.Add($"{accessibility.TokenString()} {Tokens.Type} {TypeIdentifier}");
 
-            _members.ForEach(m => blockLines.Add($"{m.PropertyName} {Tokens.As} {m.AsTypeName}"));
+            _members.ForEach(m => blockLines.Add($"{m.AsUDTMemberDeclaration}"));
 
             blockLines.Add($"{Tokens.End} {Tokens.Type}");
 

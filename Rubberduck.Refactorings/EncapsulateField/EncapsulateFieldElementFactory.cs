@@ -40,9 +40,23 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             Debug.Assert(!target.DeclarationType.Equals(DeclarationType.UserDefinedTypeMember));
 
-            var candidate = target.IsUserDefinedTypeField()
-                ? new UserDefinedTypeCandidate(target, _validator)
-                : new EncapsulateFieldCandidate(target, _validator);
+            IEncapsulateFieldCandidate candidate = CreateCandidate(target);
+            //= target.IsUserDefinedTypeField()
+            //    ? new UserDefinedTypeCandidate(target, _validator)
+            //    : new EncapsulateFieldCandidate(target, _validator);
+
+            //if (target.IsUserDefinedTypeField())
+            //{
+            //    candidate = new UserDefinedTypeCandidate(target, _validator);
+            //}
+            //else if (target.IsArray)
+            //{
+            //    candidate = new ArrayCandidate(target, _validator);
+            //}
+            //else
+            //{
+            //    candidate = new EncapsulateFieldCandidate(target, _validator);
+            //}
 
             _validator.RegisterFieldCandidate(candidate);
 
@@ -59,7 +73,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
                 foreach (var udtMember in udtMembers)
                 {
-                    var candidateUDTMember = new UserDefinedTypeMemberCandidate(udtMember, udtVariable, _validator) as IUserDefinedTypeMemberCandidate;
+                    //var udtCandidate = CreateCandidate(udtMember);
+                    var candidateUDTMember = new UserDefinedTypeMemberCandidate(CreateCandidate(udtMember), udtVariable, _validator) as IUserDefinedTypeMemberCandidate;
 
                     candidateUDTMember = ApplyTypeSpecificAttributes(candidateUDTMember);
 
@@ -69,6 +84,23 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 }
             }
             return candidate;
+        }
+
+        private IEncapsulateFieldCandidate CreateCandidate(Declaration target)
+        {
+            if (target.IsUserDefinedTypeField())
+            {
+                return new UserDefinedTypeCandidate(target, _validator);
+            }
+            else if (target.IsArray)
+            {
+                return new ArrayCandidate(target, _validator);
+            }
+            //else
+            //{
+                return new EncapsulateFieldCandidate(target, _validator);
+            //}
+
         }
 
         public IEnumerable<IEncapsulateFieldCandidate> CreateEncapsulationCandidates()
@@ -118,15 +150,25 @@ namespace Rubberduck.Refactorings.EncapsulateField
             //candidate.CanBeReadWrite = true;
             //candidate.IsReadOnly = false;
 
-            if (candidate.Declaration.IsArray)
+            //if (candidate.Declaration.IsArray)
+            //{
+            //    candidate.ImplementLetSetterType = false;
+            //    candidate.ImplementSetSetterType = false;
+            //    //candidate.AsTypeName = Tokens.Variant;
+            //    candidate.AsTypeName_Property = Tokens.Variant;
+            //    candidate.CanBeReadWrite = false;
+            //    candidate.IsReadOnly = true;
+            //}
+            if (candidate.Declaration.IsEnumField())
             {
-                candidate.ImplementLetSetterType = false;
-                candidate.ImplementSetSetterType = false;
-                candidate.AsTypeName = Tokens.Variant;
-                candidate.CanBeReadWrite = false;
-                candidate.IsReadOnly = true;
+                //5.3.1 The declared type of a function declaration may not be a private enum name.
+                if (candidate.Declaration.AsTypeDeclaration.HasPrivateAccessibility())
+                {
+                    candidate.AsTypeName_Property = Tokens.Long;
+                }
             }
-            else if (candidate.Declaration.AsTypeName.Equals(Tokens.Variant))
+            else if (candidate.Declaration.AsTypeName.Equals(Tokens.Variant)
+                && !candidate.Declaration.IsArray)
             {
                 candidate.ImplementLetSetterType = true;
                 candidate.ImplementSetSetterType = true;

@@ -37,6 +37,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public static bool IsUserDefinedTypeField(this Declaration declaration)
             => declaration.IsMemberVariable() && (declaration.AsTypeDeclaration?.DeclarationType.Equals(DeclarationType.UserDefinedType) ?? false);
 
+        public static bool IsEnumField(this Declaration declaration)
+            => declaration.IsMemberVariable() && (declaration.AsTypeDeclaration?.DeclarationType.Equals(DeclarationType.Enumeration) ?? false);
+
         public static bool IsDeclaredInList(this Declaration declaration)
         {
             return declaration.Context.TryGetAncestor<VBAParser.VariableListStmtContext>(out var varList)

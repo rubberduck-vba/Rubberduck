@@ -339,13 +339,14 @@ End Property
             Assert.AreEqual(expectedCode.Trim(), actualCode);
         }
 
-        [Test]
+        [TestCase("Public")]
+        [TestCase("Private")]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        public void EncapsulatePrivateField_Enum()
+        public void EncapsulateEnumField_PublicEnum(string fieldAccessibility)
         {
-            const string inputCode =
-                @"
+            string inputCode =
+                $@"
 
 Public Enum NumberTypes 
  Whole = -1 
@@ -353,12 +354,65 @@ Public Enum NumberTypes
  Rational = 1 
 End Enum
 
-Private numberT|ype As NumberTypes
+{fieldAccessibility} numberT|ype As NumberTypes
 ";
 
             var presenterAction = Support.UserAcceptsDefaults();
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            StringAssert.Contains("Private numberType_1 As NumberTypes", actualCode);
             StringAssert.Contains("Public Property Get NumberType() As NumberTypes", actualCode);
+            StringAssert.Contains("NumberType = numberType_1", actualCode);
+        }
+
+        //5.3.1 The declared type of a function declaration may not be a private enum name.
+        [TestCase("Public")]
+        [TestCase("Private")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void EncapsulateEnumField_PrivateEnum(string fieldAccessibility)
+        {
+            string inputCode =
+                $@"
+
+Private Enum NumberTypes 
+ Whole = -1 
+ Integral = 0 
+ Rational = 1 
+End Enum
+
+{fieldAccessibility} numberT|ype As NumberTypes
+";
+
+            var presenterAction = Support.UserAcceptsDefaults();
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            StringAssert.Contains("Private numberType_1 As NumberTypes", actualCode);
+            StringAssert.Contains("Public Property Get NumberType() As Long", actualCode);
+            StringAssert.Contains("NumberType = numberType_1", actualCode);
+        }
+
+        //5.3.1 The declared type of a function declaration may not be a private enum name.
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void EncapsulatePrivateEnumFieldInList_PrivateEnum()
+        {
+            const string inputCode =
+                @"
+
+Private Enum NumberTypes 
+ Whole = -1 
+ Integral = 0 
+ Rational = 1 
+End Enum
+
+Public foo As Long, bar As String, numberT|ype As NumberTypes, fooBar As Variant
+";
+
+            var presenterAction = Support.UserAcceptsDefaults();
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            StringAssert.Contains("Public foo As Long", actualCode);
+            StringAssert.Contains("Private numberType_1 As NumberTypes", actualCode);
+            StringAssert.Contains("Public Property Get NumberType() As Long", actualCode);
             StringAssert.Contains("NumberType = numberType_1", actualCode);
         }
 
