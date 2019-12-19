@@ -307,7 +307,7 @@
     <value>Neošetřený 'On Error Resume Next'</value>
   </data>
   <data name="DefTypeStatementInspection" xml:space="preserve">
-    <value>Použití 'Def[Type]' prohlášení</value>
+    <value>Použití výrazu 'Def[Type]'</value>
   </data>
   <data name="StepIsNotSpecifiedInspection" xml:space="preserve">
     <value>U smyčky 'For...Next' není specifikován 'Step'</value>
@@ -325,13 +325,13 @@
     <value>Použití zastaralé 'CDecl' volací konvence</value>
   </data>
   <data name="DuplicatedAnnotationInspection" xml:space="preserve">
-    <value>Anotace je duplikována.</value>
+    <value>Anotace je duplikována</value>
   </data>
   <data name="ModuleWithoutFolderInspection" xml:space="preserve">
     <value>Modul bez '@Folder' anotace</value>
   </data>
   <data name="OnLocalErrorInspection" xml:space="preserve">
-    <value>On Local Error statement</value>
+    <value>výraz On Local Error</value>
   </data>
   <data name="IsMissingOnInappropriateArgumentInspection" xml:space="preserve">
     <value>Nevhodné použití funkce 'IsMissing'</value>
@@ -377,5 +377,59 @@
   </data>
   <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
     <value>Použití zastaralého příkazu 'While...Wend'</value>
+  </data>
+  <data name="SetAssignmentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>Nastaveno přiřazení s nekompatibilním typem objektu</value>
+  </data>
+  <data name="EmptyMethodInspection" xml:space="preserve">
+    <value>Prázdná metoda</value>
+  </data>
+  <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
+    <value>Implementovaný člen třídy rozhraní</value>
+  </data>
+  <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>Argument s nekompatibilním typem objektu</value>
+  </data>
+  <data name="ValueRequiredInspection" xml:space="preserve">
+    <value>Objekt použit tam, kde je vyžadována hodnota</value>
+  </data>
+  <data name="ProcedureRequiredInspection" xml:space="preserve">
+    <value>Objekt bez výchozího člena použit tam, kde je vyžadována procedura</value>
+  </data>
+  <data name="DefaultMemberRequiredInspection" xml:space="preserve">
+    <value>Indexovaný výchozí přístup člena bez výchozího člena</value>
+  </data>
+  <data name="UseOfBangNotationInspection" xml:space="preserve">
+    <value>Použití vykřičníkové notace</value>
+  </data>
+  <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
+    <value>Použití rekurzivní vykřičníkové notace</value>
+  </data>
+  <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
+    <value>Použití nezávazné vykřičníkové notace</value>
+  </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
+    <value>Objekt použit tam, kde je vyžadována procedura</value>
+  </data>
+  <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Indexovaný výchozí členský přístup</value>
+  </data>
+  <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Indexovaný rekurzivní výchozí členský přístup</value>
+  </data>
+  <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Indexovaný nevázaný výchozí členský přístup</value>
+  </data>
+  <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Implicitní výchozí členský přístup</value>
+  </data>
+  <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Implicitní rekurzivní výchozí členský přístup</value>
+  </data>
+  <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Implicitní nevázaný výchozí členský přístup</value>
+  </data>
+  <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
+    <value>Podezřelé přiřazení 'Let'</value>
   </data>
 </root>
