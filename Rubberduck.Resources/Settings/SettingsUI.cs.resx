@@ -148,7 +148,7 @@
     <value>Konfigurovat nastavení pro povolení individuálních automatických doplňování</value>
   </data>
   <data name="PageInstructions_GeneralSettings" xml:space="preserve">
-    <value>Klikněte [Ok] pro uzavření okna a aplikování změn, nebo [Zrušit] pro jejich zrušení.</value>
+    <value>Klikněte [{0}] pro uzavření okna a aplikování změn, nebo [{1}] pro jejich zrušení.</value>
   </data>
   <data name="PageInstructions_IndenterSettings" xml:space="preserve">
     <value>Konfigurovat nastavení odsazování kódu.</value>
