@@ -5,33 +5,25 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
-             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              mc:Ignorable="d"
              d:DesignHeight="800"
              d:DesignWidth="800">
     <UserControl.Resources>
         <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
-        <converters:InvertBoolValueConverter x:Key="InvertBoolValueConverter" />
-
+        <converters:BoolToVisibleVisibilityConverter x:Key="BoolToVisibleVisibility" />
         <BitmapImage x:Key="InvalidNameImage"
                      UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
-
-        <!--<ControlTemplate x:Key="InvalidNameImage">
-            <Image  Source="{StaticResource InvalidEntryImage}"
-                    Height="16"
-                    Margin="0,-10,-8,0"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    Visibility="{Binding HasValidEncapsulationAttributes, Converter={StaticResource BoolToHiddenVisibility}}" />
-        </ControlTemplate>-->
-        <Style TargetType="Button"
-               x:Key="CommandButtonStyle">
-            <Setter Property="Height"
-                    Value="20" />
-            <Setter Property="Margin"
-                    Value="0,0,0,5" />
-            <Setter Property="Padding"
-                    Value="10,0" />
+        <Style TargetType="Image" x:Key="InvalidNameIconStyle">
+            <Setter Property="Source" Value="{StaticResource InvalidNameImage}" />
+            <Setter Property="Height" Value="16" />
+            <Setter Property="Margin" Value="0,-8,-8,0" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+        <Style TargetType="Button" x:Key="CommandButtonStyle">
+            <Setter Property="Height" Value="20" />
+            <Setter Property="Margin" Value="0,0,0,5" />
+            <Setter Property="Padding" Value="10,0" />
         </Style>
     </UserControl.Resources>
     <Grid>
@@ -41,16 +33,15 @@
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Background="White">
-            <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EncapsulateField_TitleText}"
+            <Label Content="{Binding TitleText}"
                    FontWeight="Bold" />
-            <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EncapsulateField_InstructionText}"
+            <TextBlock Text="{Binding InstructionText}"
                        Margin="5,0" />
         </StackPanel>
         <Grid Grid.Row="1"
               Margin="5,0,0,10">
             <Grid>
                 <Grid.RowDefinitions>
-                    <!--<RowDefinition Height="150" />-->
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
@@ -66,35 +57,15 @@
                         <StackPanel Grid.Row="1">
                             <Grid Margin="5,10,0,2"
                                   VerticalAlignment="Center">
-                                <!--<Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition Height="30" />
-                                </Grid.RowDefinitions>-->
-                                <!--<Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="250" />
-                                    <ColumnDefinition Width="auto"
-                                                      MinWidth="150"
-                                                      MaxWidth="300" />
-                                </Grid.ColumnDefinitions>-->
-                                <CheckBox Grid.Row="1"
+                               <CheckBox Grid.Row="1"
                                           Grid.Column="0"
                                           Content="Wrap Fields in Private Type"
                                           IsChecked="{Binding EncapsulateAsUDT, Mode=TwoWay}"
                                           FontWeight="Bold"
                                           VerticalAlignment="Top"
+                                          IsTabStop="False"
                                           Margin="10,0,0,5" />
                             </Grid>
-                            <!--<Grid VerticalAlignment="Top">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="200" />
-                                    <ColumnDefinition Width="200" />
-                                    <ColumnDefinition Width="auto" />
-                                </Grid.ColumnDefinitions>
-                            </Grid>-->
                             <Grid Margin="5,0,0,10">
                                 <Grid MaxHeight="150">
                                     <Grid.RowDefinitions>
@@ -103,42 +74,11 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition MinWidth="100"
                                                           MaxWidth="600" />
-                                        <ColumnDefinition Width="100" />
+                                        <ColumnDefinition Width="120" />
                                     </Grid.ColumnDefinitions>
-                                    <!--<ListBox Grid.Column="0"
-                                             Name="FieldListX"
-                                             SelectedItem="{Binding SelectedValue, Mode=TwoWay}"
-                                             ItemsSource="{Binding EncapsulationFields}"
-                                             SelectionMode="Single"
-                                             Height="auto"
-                                             VerticalAlignment="Top"
-                                             Margin="5,0,0,5">
-                                        <ListBox.ItemTemplate>
-                                            <DataTemplate>
-                                                <Grid Margin="5,0">
-                                                    <Grid.RowDefinitions>
-                                                        <RowDefinition />
-                                                    </Grid.RowDefinitions>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition />
-                                                        <ColumnDefinition />
-                                                    </Grid.ColumnDefinitions>
-                                                    <CheckBox Content="{Binding TargetID}"
-                                                              IsChecked="{Binding EncapsulateFlag}"
-                                                              FontWeight="Bold"
-                                                              Command="{Binding Path=DataContext.EncapsulateFlagCommand, 
-                                                                RelativeSource={RelativeSource AncestorType=ListBox}}" />
-                                                    <TextBlock Name="PropertyNameTextBlock"
-                                                               Grid.Column="1"
-                                                               Text="{Binding FieldDescriptor}"
-                                                               Margin="5,0,0,0">
-                                                    </TextBlock>
-                                                </Grid>
-                                            </DataTemplate>
-                                        </ListBox.ItemTemplate>
-                                    </ListBox>-->
                                     <ListBox Grid.Column="0"
                                              Name="FieldList"
+                                             TabIndex="0"
                                              ItemsSource="{Binding Path=EncapsulationFields}"
                                              SelectedItem="{Binding Path= SelectedField, Mode=TwoWay}"
                                              SelectionMode="Single"
@@ -154,7 +94,6 @@
                                                     </Grid.RowDefinitions>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition MinWidth="300" />
-                                                        <!--<ColumnDefinition MinWidth="300" />-->
                                                     </Grid.ColumnDefinitions>
                                                     <StackPanel Orientation="Horizontal">
                                                         <CheckBox IsChecked="{Binding EncapsulateFlag, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -162,7 +101,6 @@
                                                               Command="{Binding Path=DataContext.EncapsulateFlagChangeCommand, 
                                                                     RelativeSource={RelativeSource AncestorType=ListBox}}"
                                                               CommandParameter="{Binding ElementName=EncapsulationFields, Path=SelectedField}">
-
                                                     </CheckBox>
                                                     <TextBlock Name="TargetExpression"
                                                                Grid.Column="1"
@@ -170,91 +108,36 @@
                                                                Text="{Binding TargetDeclarationExpression, Mode=OneWay}"
                                                                FontWeight="Bold">
                                                     </TextBlock>
-                                                    <Image Source="{StaticResource InvalidNameImage}"
-                                                            Grid.Column="1" 
-                                                            Height="12"
-                                                            Margin="0,-8,-8,0"
-                                                            HorizontalAlignment="Right"
-                                                            VerticalAlignment="Center"
-                                                            Visibility="{Binding Path=HasValidEncapsulationAttributes, Converter={StaticResource BoolToHiddenVisibility}}" />
+                                                        <Image Style="{StaticResource InvalidNameIconStyle}"
+                                                               Grid.Column="1"
+                                                               Height="12"
+                                                               Visibility="{Binding Path=HasValidEncapsulationAttributes, Converter={StaticResource BoolToHiddenVisibility}}" />
                                                     </StackPanel>
                                                 </Grid>
                                             </DataTemplate>
                                         </ListBox.ItemTemplate>
                                     </ListBox>
-                                    <!--<StackPanel Grid.Column="1"
-                                                HorizontalAlignment="Right"
-                                                Margin="5,0,0,0"
-                                                MinWidth="100">
-                                        <Button Content="Select All"
-                                                Height="20"
-                                                Margin="0,0,0,5"
-                                                Padding="10,0"
-                                                Command="{Binding SelectAllCommand}" />
-                                        <Button Content="Deselect All"
-                                                Height="20"
-                                                Margin="0"
-                                                Padding="10,0"
-                                                Command="{Binding DeselectAllCommand}">
-                                        </Button>
-                                    </StackPanel>-->
                                     <StackPanel Grid.Column="1"
-                                                HorizontalAlignment="Right"
+                                                HorizontalAlignment="Center"
                                                 Margin="5,0,0,0"
                                                 MinWidth="100">
                                         <Button Style="{StaticResource CommandButtonStyle}"
                                                 Content="Select All"
+                                                TabIndex="2"
                                                 Command="{Binding SelectAllCommand}" />
                                         <Button Style="{StaticResource CommandButtonStyle}"
                                                 Content="Deselect All"
+                                                TabIndex="3"
                                                 Command="{Binding DeselectAllCommand}">
                                         </Button>
                                     </StackPanel>
                                 </Grid>
                             </Grid>
-                            <!--<Grid>
+                            <Grid Visibility="{Binding Path=SelectedFieldIsNotFlagged, Converter={StaticResource BoolToHiddenVisibility}}">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition MinWidth="100"
-                                                      MaxWidth="600" />
-                                    <ColumnDefinition Width="100" />
-                                </Grid.ColumnDefinitions>
-                                <GroupBox Grid.Column="0"
-                                          Margin="5,0,0,5"
-                                          MaxHeight="200"
-                                          MinHeight="100"
-                                          BorderThickness="2">
-                                    <GroupBox.Header>
-                                        <StackPanel Orientation="Horizontal">
-                                            <CheckBox IsChecked="{Binding EncapsulateFlag}"
-                                                      Margin="2,0,2,0"
-                                                      FontWeight="Bold" />
-                                            <TextBlock Name="tbSelectedName"
-                                                       FontWeight="Bold" />
-                                        </StackPanel>
-                                    </GroupBox.Header>
-                                    <StackPanel>
-                                        <StackPanel Orientation="Horizontal"
-                                                    Margin="10,5,0,0">
-                                            <TextBlock Margin="0,0,0,2"
-                                                       FontWeight="Bold">Property Name:</TextBlock>
-                                            <CheckBox IsChecked="{Binding IsReadOnly}"
-                                                      Content="Read Only"
-                                                      Margin="200,0,5,2"
-                                                      FontWeight="Bold"
-                                                      HorizontalAlignment="Right" />
-                                        </StackPanel>
-                                        <TextBox Name="tbPropertyName"
-                                                 Margin="10,0,50,0"
-                                                 Height="22"
-                                                 Text="{Binding PropertyName}" />
-                                    </StackPanel>
-                                </GroupBox>
-                            </Grid>-->
-                            <Grid Visibility="{Binding Path=HideGroupBox, Converter={StaticResource BoolToHiddenVisibility}}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition MinWidth="100"
-                                                      MaxWidth="400" />
-                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition MinWidth="300"
+                                                      MaxWidth="300" />
+                                    <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <StackPanel>
                                     <GroupBox Grid.Column="0"
@@ -268,19 +151,23 @@
                                         </GroupBox.Header>
                                         <StackPanel>
                                             <Grid>
-                                            <TextBox Name="PropertyName"
-                                                    IsEnabled="{Binding Path=EnablePropertyNameEditor}"
-                                                     Margin="10,5,50,0"
-                                                     Height="22"
-                                                     VerticalAlignment="Center"
-                                                     MinWidth="150"
-                                                     Text="{Binding Path=PropertyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                                <Image Source="{StaticResource InvalidNameImage}"
-                                                       Height="16"
-                                                       Margin="0,-8,-8,0"
-                                                       HorizontalAlignment="Right"
-                                                       VerticalAlignment="Top"
-                                                       Visibility="{Binding Path=HasValidEncapsulationAttributes, Converter={StaticResource BoolToHiddenVisibility}}" />
+                                                <TextBlock Visibility="{Binding Path=SelectedFieldIsPrivateUDT, Converter={StaticResource BoolToVisibleVisibility}}"
+                                                    Margin="10,5,0,5"
+                                                    Height="22"
+                                                    VerticalAlignment="Center"
+                                                    Text="{Binding Path=PrivateUDTPropertyText}"
+                                                    MinWidth="80" />
+                                                <TextBox Name="PropertyName"
+                                                    Visibility="{Binding Path=SelectedFieldHasEditablePropertyName, Converter={StaticResource BoolToVisibleVisibility}}"
+                                                    TabIndex="1"
+                                                    Margin="10,5,0,5"
+                                                    Height="22"
+                                                    VerticalAlignment="Center"
+                                                    MinWidth="80"
+                                                    Text="{Binding Path=PropertyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                <Image Style="{StaticResource InvalidNameIconStyle}"
+                                                    Name="PropertyInvalidIcon"
+                                                    Visibility="{Binding Path=SelectionHasValidEncapsulationAttributes, Converter={StaticResource BoolToHiddenVisibility}}" />
                                             </Grid>
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
@@ -288,38 +175,49 @@
                                                     <ColumnDefinition Width="auto" />
                                                 </Grid.ColumnDefinitions>
                                                 <CheckBox IsChecked="{Binding Path=IsReadOnly, Mode=TwoWay}"
-                                                          IsEnabled="{Binding Path=EnableReadOnlyOption}"
-                                                          Content="Read Only"
-                                                          Margin="10,5,5,2"
-                                                          FontWeight="Bold"
-                                                          Command="{Binding Path=ReadOnlyChangeCommand}"
-                                                          CommandParameter="{Binding ElementName=EncapsulationFields, Path=SelectedField}" />
-                                                <TextBlock Name="BackingField"
-                                                         Margin="10,5,50,0"
-                                                         Height="22"
-                                                         MinWidth="150"
-                                                            Grid.Column="1"
-                                                           Text="{Binding Path=BackingField, Mode=OneWay}" />
+                                                    IsEnabled="{Binding Path=EnableReadOnlyOption}"
+                                                    Content="Read Only"
+                                                    Margin="10,5,5,2"
+                                                    FontWeight="Bold"
+                                                    IsTabStop="False"
+                                                    Command="{Binding Path=ReadOnlyChangeCommand}"
+                                                    CommandParameter="{Binding ElementName=EncapsulationFields, Path=SelectedField}" />
                                             </Grid>
                                         </StackPanel>
                                     </GroupBox>
-                                    <!--<CheckBox Content="Wrap Fields in Private Type"
-                                              IsChecked="{Binding EncapsulateAsUDT, Mode=TwoWay}"
-                                              FontWeight="Bold"
-                                              VerticalAlignment="Top"
-                                              Margin="20,0,0,5" />-->
-
                                 </StackPanel>
+                                <Grid Grid.Column="1">
+                                    <TextBlock Margin="5,15,0,10"
+                                        Visibility="{Binding ElementName=PropertyInvalidIcon, Path=Visibility}"
+                                        TextWrapping="Wrap"
+                                        Text="{Binding Path=ValidationErrorMessage, Mode=OneWay}">
+                                    </TextBlock>
+                                </Grid>
                             </Grid>
                             <Grid Margin="5,0">
-                                <controls:BindableTextEditor Margin="10,10,10,10"
-                                         FontFamily="Courier New "
-                                         ShowLineNumbers="False"
-                                         HorizontalScrollBarVisibility="Auto"
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Style="{StaticResource InvalidNameIconStyle}"
+                                               Name="PreviewInvalidIcon"
+                                               Visibility="{Binding Path=HasValidNames, Converter={StaticResource BoolToHiddenVisibility}}"
+                                               Margin="0,0,0,5"/>
+                                        <TextBlock Text="{Binding Path=Preview}"
+                                        HorizontalAlignment="Left"
+                                        FontSize="14"
+                                        FontWeight="Bold"
+                                        MinWidth="100"/>
+                                    </StackPanel>
+                                    <controls:BindableTextEditor Margin="10,10,10,10"
+                                        FontFamily="Courier New "
+                                        ShowLineNumbers="False"
+                                        HorizontalScrollBarVisibility="Auto"
                                         VerticalScrollBarVisibility="Auto"
-                                         Height="200"
-                                         IsReadOnly="True"
-                                         Text="{Binding PropertyPreview,Mode=OneWay}" />
+                                        Height="200"
+                                        IsReadOnly="True"
+                                        IsTabStop="False"
+                                        TabIndex="6"
+                                        Text="{Binding PropertyPreview,Mode=OneWay}" />
+                                </StackPanel>
                             </Grid>
                         </StackPanel>
                     </Grid>
@@ -336,13 +234,15 @@
                     <ColumnDefinition SharedSizeGroup="SettingsButtons" />
                 </Grid.ColumnDefinitions>
                 <Button Style="{StaticResource CommandButtonStyle}"
-                        Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=OK}"
                         Grid.Column="0"
-                        IsEnabled="{Binding HasValidNames}"
-                        Command="{Binding OkButtonCommand}" />
+                        Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=OK}"
+                        TabIndex="4"
+                        Command="{Binding OkButtonCommand}"
+                        IsEnabled="{Binding HasValidNames}" />
                 <Button Style="{StaticResource CommandButtonStyle}"
                         Grid.Column="1"
                         Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CancelButtonText}"
+                        TabIndex="5"
                         Command="{Binding CancelButtonCommand}">
                 </Button>
             </Grid>

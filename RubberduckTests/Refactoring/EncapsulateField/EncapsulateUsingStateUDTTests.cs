@@ -19,6 +19,20 @@ namespace RubberduckTests.Refactoring.EncapsulateField
     {
         private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
 
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void EncapsulatePrivateFieldAsUDT()
+        {
+            const string inputCode =
+                @"|Private fizz As Integer";
+
+            var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name", asUDT: true);
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            StringAssert.Contains("Name As Integer", actualCode);
+            StringAssert.Contains("this.Name = value", actualCode);
+        }
+
         [TestCase("Public")]
         [TestCase("Private")]
         [Category("Refactorings")]

@@ -29,7 +29,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly IIndenter _indenter;
         private QualifiedModuleName _targetQMN;
         private EncapsulateFieldElementFactory _encapsulationCandidateFactory;
-        private IEncapsulateFieldNamesValidator _validator;
 
         private enum NewContentTypes { TypeDeclarationBlock, DeclarationBlock, MethodBlock, PostContentMessage };
         private Dictionary<NewContentTypes, List<string>> _newContent { set; get; }
@@ -38,7 +37,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private static string DoubleSpace => $"{Environment.NewLine}{Environment.NewLine}";
 
-        private bool _useNewScheme;
         public EncapsulateFieldRefactoring(
             IDeclarationFinderProvider declarationFinderProvider,
             IIndenter indenter,
@@ -52,9 +50,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _declarationFinderProvider = declarationFinderProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;
             _indenter = indenter;
-            _validator = new EncapsulateFieldNamesValidator(_declarationFinderProvider);
-
-            _useNewScheme = File.Exists("C:\\Users\\Brian\\Documents\\UseNewUDTStructure.txt");
 
             _codeSectionStartIndex = _declarationFinderProvider.DeclarationFinder
                 .Members(_targetQMN).Where(m => m.IsMember())
@@ -97,7 +92,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             _targetQMN = target.QualifiedModuleName;
 
-            _encapsulationCandidateFactory = new EncapsulateFieldElementFactory(_declarationFinderProvider, _targetQMN, _validator);
+            var validator = new EncapsulateFieldNamesValidator(_declarationFinderProvider);
+            _encapsulationCandidateFactory = new EncapsulateFieldElementFactory(_declarationFinderProvider, _targetQMN, validator);
 
             var candidates = _encapsulationCandidateFactory.CreateEncapsulationCandidates();
             var selected = candidates.Single(c => c.Declaration == target);
@@ -164,11 +160,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 { NewContentTypes.TypeDeclarationBlock, new List<string>() }
             };
 
-            foreach (var udtField in model.SelectedUDTFieldCandidates)
-            {
-                udtField.FieldQualifyUDTMemberPropertyNames = model.HasSelectedMultipleUDTFieldsOfType(udtField.AsTypeName);
-            }
-
             ModifyFields(model, rewriteSession);
 
             ModifyReferences(model, rewriteSession);
@@ -224,8 +215,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
                 if (field.Declaration.IsDeclaredInList() && !field.Declaration.HasPrivateAccessibility())
                 {
+                    //FIXME: the call here should be: rewriter.Remove(field.Declaration);
                     RewriterRemoveWorkAround.Remove(field.Declaration, rewriter);
-                    //rewriter.Remove(target.Declaration);
                     continue;
                 }
 
@@ -245,7 +236,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             if (postPendPreviewMessage)
             {
-                _newContent[NewContentTypes.PostContentMessage].Add("'<===== All Changes above this line =====>");
+                _newContent[NewContentTypes.PostContentMessage].Add(EncapsulateFieldResources.PreviewEndOfChangesMarker);
             }
 
             var newContentBlock = string.Join(DoubleSpace,

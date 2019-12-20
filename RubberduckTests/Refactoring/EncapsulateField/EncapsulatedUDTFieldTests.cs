@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
@@ -74,21 +75,21 @@ Public that As TBar";
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             if (encapsulateThis && encapsulateThat)
             {
-                //StringAssert.Contains($"Private {expectedThis.TargetFieldName} As TBar", actualCode);
-                StringAssert.Contains($"This_First = {expectedThis.TargetFieldName}.First", actualCode);
-                StringAssert.Contains($"This_Second = {expectedThis.TargetFieldName}.Second", actualCode);
+                StringAssert.Contains($"Private {expectedThis.TargetFieldName} As TBar", actualCode);
+                StringAssert.Contains($"First = {expectedThis.TargetFieldName}.First", actualCode);
+                StringAssert.Contains($"Second = {expectedThis.TargetFieldName}.Second", actualCode);
                 StringAssert.Contains($"{expectedThis.TargetFieldName}.First = value", actualCode);
                 StringAssert.Contains($"{expectedThis.TargetFieldName}.Second = value", actualCode);
-                StringAssert.Contains($"Property Get This_First", actualCode);
-                StringAssert.Contains($"Property Get This_Second", actualCode);
+                StringAssert.Contains($"Property Get First", actualCode);
+                StringAssert.Contains($"Property Get Second", actualCode);
 
                 StringAssert.Contains($"Private {expectedThat.TargetFieldName} As TBar", actualCode);
-                StringAssert.Contains($"That_First = {expectedThat.TargetFieldName}.First", actualCode);
-                StringAssert.Contains($"That_Second = {expectedThat.TargetFieldName}.Second", actualCode);
+                StringAssert.Contains($"ThatFirst = {expectedThat.TargetFieldName}.First", actualCode);
+                StringAssert.Contains($"ThatSecond = {expectedThat.TargetFieldName}.Second", actualCode);
                 StringAssert.Contains($"{expectedThat.TargetFieldName}.First = value", actualCode);
                 StringAssert.Contains($"{expectedThat.TargetFieldName}.Second = value", actualCode);
-                StringAssert.Contains($"Property Get That_First", actualCode);
-                StringAssert.Contains($"Property Get That_Second", actualCode);
+                StringAssert.Contains($"Property Get ThatFirst", actualCode);
+                StringAssert.Contains($"Property Get ThatSecond", actualCode);
 
                 StringAssert.Contains($"Private {expectedThis.TargetFieldName} As TBar", actualCode);
                 StringAssert.Contains($"Private {expectedThat.TargetFieldName} As TBar", actualCode);
@@ -801,8 +802,73 @@ Private t|his As TBar";
             StringAssert.DoesNotContain("Public Property Let Second", actualCode);
         }
 
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void MultipleUserDefinedTypesOfSameName()
+        {
+            string inputCode =
+$@"
+Option Explicit
 
+Private Type TBar
+    FirstValue As Long
+    SecondValue As String
+End Type
 
+Public mF|oo As TBar
+";
+
+            string module2Content =
+$@"
+Public Type TBar
+    FirstVal As Long
+    SecondVal As String
+End Type
+";
+
+            var presenterAction = Support.UserAcceptsDefaults();
+
+            var codeString = inputCode.ToCodeString();
+            var actualModuleCode = RefactoredCode(
+                "Module1",
+                codeString.CaretPosition.ToOneBased(),
+                presenterAction,
+                null,
+                false,
+                ("Module2", module2Content, ComponentType.StandardModule),
+                ("Module1", codeString.Code, ComponentType.StandardModule));
+
+            var actualCode = actualModuleCode["Module1"];
+
+            StringAssert.Contains($"Public Property Let FirstValue(", actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void UDTMemberPropertyConflictsWithExistingFunction()
+        {
+            string inputCode =
+$@"
+Private Type TBar
+    First As String
+    Second As Long
+End Type
+
+Public myB|ar As TBar
+
+Private Function First() As String
+    First = myBar.First
+End Function";
+
+            var presenterAction = Support.UserAcceptsDefaults();
+
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+
+            StringAssert.Contains("Public Property Let MyBarFirst", actualCode);
+            StringAssert.Contains("Public Property Let Second", actualCode);
+        }
 
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
         {

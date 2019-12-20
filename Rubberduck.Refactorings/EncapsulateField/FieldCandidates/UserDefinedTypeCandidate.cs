@@ -14,7 +14,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         IEnumerable<IUserDefinedTypeMemberCandidate> Members { get; }
         void AddMember(IUserDefinedTypeMemberCandidate member);
-        bool FieldQualifyUDTMemberPropertyNames { set; get; }
         bool TypeDeclarationIsPrivate { set; get; }
     }
 
@@ -57,6 +56,31 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
+        public override bool EncapsulateFlag
+        {
+            set
+            {
+                if (TypeDeclarationIsPrivate)
+                {
+                    foreach (var member in Members)
+                    {
+                        member.EncapsulateFlag = value;
+                        if (!_validator.HasConflictingIdentifier(member, DeclarationType.Property, out _))
+                        {
+                            continue;
+                        }
+
+                        //Reaching this line typically implies that there are multiple fields of the same Type within the module.
+                        //Try to use a name involving the parent's identifier to make it unique/meaningful 
+                        //before appending incremented value(s).
+                        member.PropertyName = $"{FieldIdentifier.Capitalize()}{member.PropertyName.Capitalize()}";
+                        _validator.AssignNoConflictIdentifier(member, DeclarationType.Property);
+                    }
+                }
+                base.EncapsulateFlag = value;
+            }
+            get => _encapsulateFlag;
+        }
 
 
         public override string ReferenceQualifier
@@ -71,18 +95,18 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => _referenceQualifier;
         }
 
-        public bool FieldQualifyUDTMemberPropertyNames
-        {
-            set
-            {
-                foreach (var member in Members)
-                {
-                    member.IncludeParentNameWithPropertyIdentifier = value;
-                }
-            }
+        //public bool FieldQualifyUDTMemberPropertyNames
+        //{
+        //    set
+        //    {
+        //        foreach (var member in Members)
+        //        {
+        //            member.IncludeParentNameWithPropertyIdentifier = value;
+        //        }
+        //    }
 
-            get => Members.All(m => m.IncludeParentNameWithPropertyIdentifier);
-        }
+        //    get => Members.All(m => m.IncludeParentNameWithPropertyIdentifier);
+        //}
 
         protected override void LoadFieldReferenceContextReplacements()
         {
@@ -147,6 +171,50 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
+        public override bool Equals(object obj)
+        {
+            if (obj is IUserDefinedTypeCandidate udt)
+            {
+                return udt.TargetID.Equals(TargetID);
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override bool TryValidateEncapsulationAttributes(out string errorMessage)
+        {
+            errorMessage = string.Empty;
+            if (!EncapsulateFlag) { return true; }
+
+            if (!_validator.IsValidVBAIdentifier(PropertyName, DeclarationType.Property, out errorMessage))
+            {
+                return false;
+            }
+
+            if (!TypeDeclarationIsPrivate && !_validator.IsSelfConsistent(this, out errorMessage))
+            {
+                //if (!_validator.IsSelfConsistent(this, out errorMessage))
+                //{
+                    return false;
+                //}
+            }
+
+            if (_validator.HasConflictingIdentifier(this, DeclarationType.Property, out errorMessage))
+            {
+                return false;
+            }
+
+            if (_validator.HasConflictingIdentifier(this, DeclarationType.Variable, out errorMessage))
+            {
+                return false;
+            }
+            return true;
+        }
+
         private void LoadPrivateUDTFieldReferenceExpressions()
         {
             foreach (var idRef in Declaration.References)
@@ -172,7 +240,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     }
                     else
                     {
-                        //If rf is a WithMemberAccess expression, modify the LExpr.  e.g. "With this" => "With <qmn.ModuleName>"
                         var moduleQualifier = rf.Context.TryGetAncestor<VBAParser.WithStmtContext>(out _)
                             || rf.QualifiedModuleName == QualifiedModuleName
                             ? string.Empty

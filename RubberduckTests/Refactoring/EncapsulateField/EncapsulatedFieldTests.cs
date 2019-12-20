@@ -36,7 +36,7 @@ $@"Public fizz As String
             End Property
             ";
             var encapsulatedField = Support.RetrieveEncapsulatedField(inputCode, "fizz");
-            Assert.IsTrue(encapsulatedField.HasValidEncapsulationAttributes);
+            Assert.IsTrue(encapsulatedField.TryValidateEncapsulationAttributes(out _));
         }
 
         [Test]

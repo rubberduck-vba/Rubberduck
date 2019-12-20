@@ -21,14 +21,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
         bool EncapsulateFlag { get; set; }
         string FieldIdentifier { set; get; }
         bool CanBeReadWrite { set; get; }
-        bool HasValidEncapsulationAttributes { get; }
         QualifiedModuleName QualifiedModuleName { get; }
         string PropertyName { get; set; }
-        string AsTypeName { get; set; }
+        string AsTypeName_Field { get; set; }
         string AsTypeName_Property { get; set; }
         string ParameterName { get; }
-        bool ImplementLetSetterType { get; set; }
-        bool ImplementSetSetterType { get; set; }
+        bool ImplementLet { get; set; }
+        bool ImplementSet { get; set; }
         IEnumerable<IPropertyGeneratorAttributes> PropertyAttributeSets { get; }
         string AsUDTMemberDeclaration { get; }
         IEnumerable<KeyValuePair<IdentifierReference, (ParserRuleContext, string)>> ReferenceReplacements { get; }
@@ -36,19 +35,16 @@ namespace Rubberduck.Refactorings.EncapsulateField
         string ReferenceQualifier { set; get; }
         string ReferenceWithinNewProperty { get; }
         void StageFieldReferenceReplacements(IStateUDT stateUDT = null);
-        string AccessorTokenToContent(AccessorTokens token);
         AccessorTokens PropertyAccessor { set; get; }
         AccessorTokens ReferenceAccessor { set; get; }
+        bool TryValidateEncapsulationAttributes(out string errorMessage);
+
     }
 
     public enum AccessorTokens { Field, Property }
 
     public interface IEncapsulateFieldCandidateValidations
     {
-        bool HasVBACompliantPropertyIdentifier { get; }
-        bool HasVBACompliantFieldIdentifier { get; }
-        bool HasVBACompliantParameterIdentifier { get; }
-        bool IsSelfConsistent { get; }
         bool HasConflictingPropertyIdentifier { get; }
         bool HasConflictingFieldIdentifier { get; }
     }
@@ -58,6 +54,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         protected Declaration _target;
         protected QualifiedModuleName _qmn;
+        protected int _hashCode;
         private string _identifierName;
         protected IEncapsulateFieldNamesValidator _validator;
         protected EncapsulationIdentifiers _fieldAndProperty;
@@ -74,7 +71,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             _fieldAndProperty = new EncapsulationIdentifiers(identifier);
             IdentifierName = identifier;
-            AsTypeName = asTypeName;
+            AsTypeName_Field = asTypeName;
             AsTypeName_Property = asTypeName;
             _qmn = qmn;
             PropertyAccessor = AccessorTokens.Field;
@@ -82,9 +79,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             _validator = validator;
 
-            ImplementLetSetterType = true;
-            ImplementSetSetterType = false;
+            ImplementLet = true;
+            ImplementSet = false;
             CanBeReadWrite = true;
+
+            _hashCode = ($"{_qmn.Name}.{identifier}").GetHashCode();
         }
 
         public virtual void StageFieldReferenceReplacements(IStateUDT stateUDT = null)
@@ -99,32 +98,37 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public Declaration Declaration => _target;
 
-        public bool HasVBACompliantPropertyIdentifier => _validator.IsValidVBAIdentifier(PropertyName, DeclarationType.Property);
-
-        public bool HasVBACompliantFieldIdentifier => _validator.IsValidVBAIdentifier(FieldIdentifier, Declaration?.DeclarationType ?? DeclarationType.Variable);
-
-        public bool HasVBACompliantParameterIdentifier => _validator.IsValidVBAIdentifier(FieldIdentifier, Declaration?.DeclarationType ?? DeclarationType.Variable);
-
-        public virtual bool IsSelfConsistent => _validator.IsValidVBAIdentifier(PropertyName, DeclarationType.Property)
-                            && !(PropertyName.EqualsVBAIdentifier(FieldIdentifier)
-                                    || PropertyName.EqualsVBAIdentifier(ParameterName)
-                                    || FieldIdentifier.EqualsVBAIdentifier(ParameterName));
-
         public bool HasConflictingPropertyIdentifier 
-            => _validator.HasConflictingIdentifier(this, DeclarationType.Property);
+            => _validator.HasConflictingIdentifier(this, DeclarationType.Property, out var errorMessage);
 
         public bool HasConflictingFieldIdentifier
-            => _validator.HasConflictingIdentifier(this, DeclarationType.Variable);
+            => _validator.HasConflictingIdentifier(this, DeclarationType.Variable, out var errorMessage);
 
-        public bool HasValidEncapsulationAttributes
+        public virtual bool TryValidateEncapsulationAttributes(out string errorMessage)
         {
-            get
-            {
-                if (!EncapsulateFlag) { return true; }
+            errorMessage = string.Empty;
+            if (!EncapsulateFlag) { return true; }
 
-                return IsSelfConsistent
-                    && !_validator.HasConflictingIdentifier(this, DeclarationType.Property);
+            if (!_validator.IsValidVBAIdentifier(PropertyName, DeclarationType.Property, out errorMessage))
+            {
+                return false;
             }
+
+            if (!_validator.IsSelfConsistent(this, out errorMessage))
+            {
+                return false;
+            }
+
+            if (_validator.HasConflictingIdentifier(this, DeclarationType.Property, out errorMessage))
+            {
+                return false;
+            }
+
+            if (_validator.HasConflictingIdentifier(this, DeclarationType.Variable, out errorMessage))
+            {
+                return false;
+            }
+            return true;
         }
 
         public virtual IEnumerable<KeyValuePair<IdentifierReference, (ParserRuleContext, string)>> ReferenceReplacements
@@ -154,7 +158,20 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public virtual string TargetID => _target?.IdentifierName ?? IdentifierName;
 
-        public bool EncapsulateFlag { set; get; }
+        protected bool _encapsulateFlag;
+        public virtual bool EncapsulateFlag
+        {
+            set
+            {
+                _encapsulateFlag = value;
+                if (!_encapsulateFlag)
+                {
+                    PropertyName = _fieldAndProperty.DefaultPropertyName;
+                }
+            }
+            get => _encapsulateFlag;
+        }
+
         public virtual bool IsReadOnly { set; get; }
         public bool CanBeReadWrite { set; get; }
 
@@ -175,10 +192,19 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
+        public override bool Equals(object obj)
+        {
+            return obj != null 
+                && obj is IEncapsulateFieldCandidate 
+                && obj.GetHashCode() == GetHashCode();
+        }
+
+        public override int GetHashCode() => _hashCode;
+
         //The preferred NewFieldName is the original Identifier
         private void TryRestoreNewFieldNameAsOriginalFieldIdentifierName()
         {
-            var canNowUseOriginalFieldName = !_fieldAndProperty.TargetFieldName.EqualsVBAIdentifier(_fieldAndProperty.Property)
+            var canNowUseOriginalFieldName = !_fieldAndProperty.TargetFieldName.IsEquivalentVBAIdentifierTo(_fieldAndProperty.Property)
                 && !_validator.IsConflictingFieldIdentifier(_fieldAndProperty.TargetFieldName, this, DeclarationType.Variable);
 
             if (canNowUseOriginalFieldName)
@@ -187,19 +213,19 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 return;
             }
 
-            if (_fieldAndProperty.Field.EqualsVBAIdentifier(_fieldAndProperty.TargetFieldName))
+            if (_fieldAndProperty.Field.IsEquivalentVBAIdentifierTo(_fieldAndProperty.TargetFieldName))
             {
                 _fieldAndProperty.Field = _fieldAndProperty.DefaultNewFieldName;
-                var isConflictingFieldIdentifier = _validator.HasConflictingIdentifier(this, DeclarationType.Variable);
+                var isConflictingFieldIdentifier = _validator.HasConflictingIdentifier(this, DeclarationType.Variable, out _);
                 for (var count = 1; count < 10 && isConflictingFieldIdentifier; count++)
                 {
-                    FieldIdentifier = FieldIdentifier.IncrementIdentifier();
-                    isConflictingFieldIdentifier = _validator.HasConflictingIdentifier(this, DeclarationType.Variable);
+                    FieldIdentifier = FieldIdentifier.IncrementEncapsulationIdentifier();
+                    isConflictingFieldIdentifier = _validator.HasConflictingIdentifier(this, DeclarationType.Variable, out _);
                 }
             }
         }
 
-        public string AsTypeName { set; get; }
+        public string AsTypeName_Field { set; get; }
 
         public string AsTypeName_Property { get; set; }
 
@@ -214,11 +240,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public string ParameterName => _fieldAndProperty.SetLetParameter;
 
         private bool _implLet;
-        public bool ImplementLetSetterType { get => !IsReadOnly && _implLet; set => _implLet = value; }
+        public bool ImplementLet { get => !IsReadOnly && _implLet; set => _implLet = value; }
 
         private bool _implSet;
-        public bool ImplementSetSetterType { get => !IsReadOnly && _implSet; set => _implSet = value; }
-
+        public bool ImplementSet { get => !IsReadOnly && _implSet; set => _implSet = value; }
 
         public AccessorTokens PropertyAccessor { set; get; }
 
@@ -235,20 +260,22 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         protected virtual string ReferenceForPreExistingReferences => AccessorTokenToContent(ReferenceAccessor);
 
-        public string AccessorTokenToContent(AccessorTokens token)
+        private string AccessorTokenToContent(AccessorTokens token)
         {
-            var accessor = string.Empty;
-            switch (token)
-            {
-                case AccessorTokens.Field:
-                    accessor = FieldIdentifier;
-                    break;
-                case AccessorTokens.Property:
-                    accessor = PropertyName;
-                    break;
-                default:
-                    throw new ArgumentException();
-            }
+            var accessor = token == AccessorTokens.Field
+                ? FieldIdentifier
+                : PropertyName;
+            //switch (token)
+            //{
+            //    case AccessorTokens.Field:
+            //        accessor = FieldIdentifier;
+            //        break;
+            //    case AccessorTokens.Property:
+            //        accessor = PropertyName;
+            //        break;
+            //    default:
+            //        throw new ArgumentException();
+            //}
 
             if ((ReferenceQualifier?.Length ?? 0) > 0)
             {
@@ -257,14 +284,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return accessor;
         }
 
-        public virtual string AsUDTMemberDeclaration
-        {
-            get
-            {
-                return $"{PropertyName} {Tokens.As} {AsTypeName}";
-            }
-        }
-            //=> $"{PropertyName} {Tokens.As} {AsTypeName}";
+        public virtual string AsUDTMemberDeclaration 
+            => $"{PropertyName} {Tokens.As} {AsTypeName_Field}";
 
         public virtual IEnumerable<IPropertyGeneratorAttributes> PropertyAttributeSets 
             => new List<IPropertyGeneratorAttributes>() { AsPropertyAttributeSet };
@@ -279,8 +300,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     BackingField = ReferenceWithinNewProperty,
                     AsTypeName = AsTypeName_Property,
                     ParameterName = ParameterName,
-                    GenerateLetter = ImplementLetSetterType,
-                    GenerateSetter = ImplementSetSetterType,
+                    GenerateLetter = ImplementLet,
+                    GenerateSetter = ImplementSet,
                     UsesSetAssignment = Declaration.IsObject
                 };
             }

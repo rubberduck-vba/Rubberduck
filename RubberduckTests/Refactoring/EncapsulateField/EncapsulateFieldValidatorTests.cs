@@ -34,25 +34,26 @@ $@"Public {originalFieldName} As String";
             var encapsulatedField = Support.RetrieveEncapsulatedField(inputCode, originalFieldName);
 
             encapsulatedField.PropertyName = newPropertyName;
-            var field = encapsulatedField as IEncapsulateFieldCandidateValidations;
-            Assert.AreEqual(expectedResult, field.HasVBACompliantPropertyIdentifier);
+            encapsulatedField.EncapsulateFlag = true;
+            //var field = encapsulatedField as IEncapsulateFieldCandidateValidations;
+            Assert.AreEqual(expectedResult, encapsulatedField.TryValidateEncapsulationAttributes(out _));
         }
 
-        [TestCase("fizz", "_Fizz", false)]
-        [TestCase("fizz", "FizzProp", true)]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void VBAIdentifier_FieldName(string originalFieldName, string newFieldName, bool expectedResult)
-        {
-            string inputCode =
-$@"Public {originalFieldName} As String";
+//        [TestCase("fizz", "_Fizz", false)]
+//        [TestCase("fizz", "FizzProp", true)]
+//        [Category("Refactorings")]
+//        [Category("Encapsulate Field")]
+//        public void VBAIdentifier_FieldName(string originalFieldName, string newFieldName, bool expectedResult)
+//        {
+//            string inputCode =
+//$@"Public {originalFieldName} As String";
 
-            var encapsulatedField = Support.RetrieveEncapsulatedField(inputCode, originalFieldName);
+//            var encapsulatedField = Support.RetrieveEncapsulatedField(inputCode, originalFieldName);
 
-            encapsulatedField.FieldIdentifier = newFieldName;
-            var field = encapsulatedField as IEncapsulateFieldCandidateValidations;
-            Assert.AreEqual(expectedResult, field.HasVBACompliantFieldIdentifier);
-        }
+//            encapsulatedField.FieldIdentifier = newFieldName;
+//            var field = encapsulatedField as IEncapsulateFieldCandidateValidations;
+//            Assert.AreEqual(expectedResult, field.HasVBACompliantFieldIdentifier);
+//        }
 
         [Test]
         [Category("Refactorings")]
@@ -101,7 +102,7 @@ End Property
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        public void UDTMemberPropertyDefaultsToValidValue()
+        public void UDTMemberPropertyConflictsWithExistingFunction()
         {
             string inputCode =
 $@"
@@ -142,7 +143,7 @@ $@"Public fizz As String
             End Property
             ";
             var encapsulatedField = Support.RetrieveEncapsulatedField(inputCode, "fizz");
-            Assert.IsTrue(encapsulatedField.HasValidEncapsulationAttributes);
+            Assert.IsTrue(encapsulatedField.TryValidateEncapsulationAttributes(out _));
         }
 
         [TestCase("Name")]
@@ -173,7 +174,7 @@ $@"Public fizz As String
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
             var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, fieldUT, DeclarationType.Variable, presenterAction);
 
-            Assert.IsFalse(model["fizz"].HasValidEncapsulationAttributes);
+            Assert.IsFalse(model["fizz"].TryValidateEncapsulationAttributes(out _));
         }
 
         [TestCase("Number", "Bazzle", true, true)]
@@ -205,36 +206,40 @@ End Property";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
             var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, fieldUT, DeclarationType.Variable, presenterAction);
 
-            Assert.AreEqual(fizz_expectedResult, model["fizz"].HasValidEncapsulationAttributes, "fizz failed");
-            Assert.AreEqual(bazz_expectedResult, model["bazz"].HasValidEncapsulationAttributes, "bazz failed");
+            Assert.AreEqual(fizz_expectedResult, model["fizz"].TryValidateEncapsulationAttributes(out _), "fizz failed");
+            Assert.AreEqual(bazz_expectedResult, model["bazz"].TryValidateEncapsulationAttributes(out _), "bazz failed");
         }
 
-        [Test]
+        [TestCase("Private", "Private")]
+        [TestCase("Public", "Private")]
+        [TestCase("Private", "Public")]
+        [TestCase("Public", "Public")]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        public void EncapsulateMultipleFields_UDTConflicts()
+        public void EncapsulateMultipleUDTFields_DefaultsAreNotInConflict(string udtAccessibility, string fieldAccessibility)
         {
             string inputCode =
 $@"
-Private Type TBar
+{udtAccessibility} Type TBar
     First As Long
     Second As String
 End Type
 
-Public this As TBar
+{fieldAccessibility} this As TBar
 
-Public that As TBar
+{fieldAccessibility} that As TBar
 ";
             var fieldUT = "this";
             var userInput = new UserInputDataObject()
-                .AddAttributeSet(fieldUT, "That", true);
+                .AddAttributeSet(fieldUT)
+                .AddAttributeSet("that");
 
             var presenterAction = Support.SetParameters(userInput);
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
             var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, fieldUT, DeclarationType.Variable, presenterAction);
 
-            Assert.AreEqual(false, model[fieldUT].HasValidEncapsulationAttributes);
+            Assert.AreEqual(true, model[fieldUT].TryValidateEncapsulationAttributes(out var message), message);
         }
 
         [Test]
@@ -257,7 +262,7 @@ Public wholeNumber As String
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
             var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, fieldUT, DeclarationType.Variable, presenterAction);
 
-            Assert.AreEqual(false, model[fieldUT].HasValidEncapsulationAttributes);
+            Assert.AreEqual(false, model[fieldUT].TryValidateEncapsulationAttributes(out _));
         }
 
         [Test]
@@ -356,7 +361,7 @@ End Function
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
             var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, fieldUT, DeclarationType.Variable, presenterAction);
 
-            Assert.AreEqual(false, model[fieldUT].HasValidEncapsulationAttributes);
+            Assert.AreEqual(false, model[fieldUT].TryValidateEncapsulationAttributes(out _));
         }
 
         [Test]
@@ -401,8 +406,95 @@ End Sub
 
             var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, fieldUT, DeclarationType.Variable, presenterAction);
 
-            Assert.AreEqual(true, model[fieldUT].HasValidEncapsulationAttributes);
+            Assert.AreEqual(true, model[fieldUT].TryValidateEncapsulationAttributes(out _));
         }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void MultipleUserDefinedTypesOfSameNameOtherModule()
+        {
+            var moduleOneName = "ModuleOne";
+            string inputCode =
+$@"
+Option Explicit
+
+Public mF|oo As Long
+";
+
+            string module2Content =
+$@"
+Public Type TModuleOne
+    FirstVal As Long
+    SecondVal As String
+End Type
+";
+
+            var fieldUT = "mFoo";
+            var userInput = new UserInputDataObject()
+                .AddAttributeSet(fieldUT);
+
+            userInput.EncapsulateAsUDT = true;
+
+            var presenterAction = Support.SetParameters(userInput);
+
+            var codeString = inputCode.ToCodeString();
+            var actualModuleCode = RefactoredCode(
+                moduleOneName,
+                codeString.CaretPosition.ToOneBased(),
+                presenterAction,
+                null,
+                false,
+                ("Module2", module2Content, ComponentType.StandardModule),
+                (moduleOneName, codeString.Code, ComponentType.StandardModule));
+
+            var actualCode = actualModuleCode[moduleOneName];
+
+            StringAssert.Contains($"Private Type TModuleOne", actualCode);
+        }
+
+        [TestCase("Public")]
+        [TestCase("Private")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void MultipleUserDefinedTypesOfSameNameSameModule(string accessibility)
+        {
+            var moduleOneName = "ModuleOne";
+            string inputCode =
+$@"
+Option Explicit
+
+{accessibility} Type TModuleOne
+    FirstVal As Long
+    SecondVal As String
+End Type
+
+Public mF|oo As Long
+";
+
+
+            var fieldUT = "mFoo";
+            var userInput = new UserInputDataObject()
+                .AddAttributeSet(fieldUT);
+
+            userInput.EncapsulateAsUDT = true;
+
+            var presenterAction = Support.SetParameters(userInput);
+
+            var codeString = inputCode.ToCodeString();
+            var actualModuleCode = RefactoredCode(
+                moduleOneName,
+                codeString.CaretPosition.ToOneBased(),
+                presenterAction,
+                null,
+                false,
+                (moduleOneName, codeString.Code, ComponentType.StandardModule));
+
+            var actualCode = actualModuleCode[moduleOneName];
+
+            StringAssert.Contains($"Private Type TModuleOne_1", actualCode);
+        }
+
 
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
         {

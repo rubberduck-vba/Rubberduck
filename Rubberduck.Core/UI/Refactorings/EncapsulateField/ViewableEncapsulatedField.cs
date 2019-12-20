@@ -11,9 +11,9 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
 {
     public interface IEncapsulatedFieldViewData
     {
-        string TargetID { get; } // set; }
+        string TargetID { get; }
         string PropertyName { set; get; }
-        string NewFieldName { get; } // { set; get; }
+        string NewFieldName { get; }
         bool EncapsulateFlag { set; get; }
         bool IsReadOnly { set; get; }
         bool CanBeReadWrite { get; }
@@ -21,20 +21,22 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         Visibility FieldNameVisibility { get; }
         Visibility PropertyNameVisibility { get; }
         bool HasValidEncapsulationAttributes { get; }
-        bool HasInvalidEncapsulationAttributes { get; }
         string AsTypeName { get; }
-        string FieldDescriptor { get; }
         string TargetDeclarationExpression { set; get; }
         bool IsPrivateUserDefinedType { get; }
         bool IsRequiredToBeReadOnly { get; }
+        string ValidationErrorMessage { get; }
+        bool TryValidateEncapsulationAttributes(out string errorMessage);
     }
 
     public class ViewableEncapsulatedField : IEncapsulatedFieldViewData
     {
         private IEncapsulateFieldCandidate _efd;
+        private readonly int _hashCode;
         public ViewableEncapsulatedField(IEncapsulateFieldCandidate efd)
         {
             _efd = efd;
+            _hashCode = efd.TargetID.GetHashCode();
         }
 
         public override bool Equals(object obj)
@@ -46,57 +48,66 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             return false;
         }
 
-        public Visibility FieldNameVisibility => (_efd is IUserDefinedTypeMemberCandidate) /*.IsUDTMember*/ || !_efd.EncapsulateFlag ? Visibility.Collapsed : Visibility.Visible;
-        public Visibility PropertyNameVisibility => !_efd.EncapsulateFlag ? Visibility.Collapsed : Visibility.Visible;
-        public bool HasValidEncapsulationAttributes => IsPrivateUserDefinedType || _efd.HasValidEncapsulationAttributes;
-        public bool HasInvalidEncapsulationAttributes => !HasValidEncapsulationAttributes;
-        public string TargetID { get => _efd.TargetID; }
-        //set => _efd.TargetID = value; }
-        public bool IsReadOnly { get => _efd.IsReadOnly; set => _efd.IsReadOnly = value; }
-        public bool CanBeReadWrite => _efd.CanBeReadWrite;
-        public string PropertyName { get => _efd.PropertyName; set => _efd.PropertyName = value; }
-        public bool IsEditableReadWriteFieldIdentifier { get => !(_efd is IUserDefinedTypeMemberCandidate); }// .IsUDTMember; } // set => _efd.IsEditableReadWriteFieldIdentifier = value; }
-        public bool EncapsulateFlag { get => _efd.EncapsulateFlag; set => _efd.EncapsulateFlag = value; }
-        public string NewFieldName { get => _efd.FieldIdentifier; }// set => _efd.NewFieldName = value; }
-        //TODO: Change name of AsTypeName property to FieldDescriptor(?)  -> and does it belong on IEncapsulatedField?
-        public string AsTypeName => _efd.AsTypeName;
-        public bool IsPrivateUserDefinedType => _efd is IUserDefinedTypeCandidate udt && udt.TypeDeclarationIsPrivate;
-        public bool IsRequiredToBeReadOnly => !_efd.CanBeReadWrite; // is ArrayCandidate;
-
-
-        public string FieldDescriptor
+        public override int GetHashCode()
         {
-            //(Variable: Integer Array)
-            //(Variable: Long)
-            //(UserDefinedType Member: Long)
+            return _hashCode;
+        }
+
+        public Visibility FieldNameVisibility => (_efd is IUserDefinedTypeMemberCandidate) || !_efd.EncapsulateFlag ? Visibility.Collapsed : Visibility.Visible;
+
+        public Visibility PropertyNameVisibility => !_efd.EncapsulateFlag ? Visibility.Collapsed : Visibility.Visible;
+
+        public bool HasValidEncapsulationAttributes
+        {
             get
             {
-                var prefix = string.Empty;
-
-                var descriptor = string.Empty;
-                if (_efd is IUserDefinedTypeCandidate) //.IsUDTMember)
+                if (!TryValidateEncapsulationAttributes(out var errorMessage))
                 {
-                    prefix = "UserDefinedType";
+                    _errorMessage = errorMessage;
+                    return false;
                 }
-                else
-                {
-                    prefix = "Variable";
-                }
-
-                descriptor = $"{prefix}: {_efd.Declaration.AsTypeName}";
-                if (_efd.Declaration.IsArray)
-                {
-                    descriptor = $"{descriptor} Array";
-                }
-                return descriptor;
+                return true;
             }
         }
+
+        public bool TryValidateEncapsulationAttributes(out string errorMessage)
+        {
+            errorMessage = string.Empty;
+            if (IsPrivateUserDefinedType)
+            {
+                return true;
+            }
+            return _efd.TryValidateEncapsulationAttributes(out errorMessage);
+        }
+
+        private string _errorMessage;
+        public string ValidationErrorMessage => _errorMessage;
+
+        public string TargetID { get => _efd.TargetID; }
+
+        public bool IsReadOnly { get => _efd.IsReadOnly; set => _efd.IsReadOnly = value; }
+
+        public bool CanBeReadWrite => _efd.CanBeReadWrite;
+
+        public string PropertyName { get => _efd.PropertyName; set => _efd.PropertyName = value; }
+
+        public bool IsEditableReadWriteFieldIdentifier { get => !(_efd is IUserDefinedTypeMemberCandidate); }
+
+        public bool EncapsulateFlag { get => _efd.EncapsulateFlag; set => _efd.EncapsulateFlag = value; }
+
+        public string NewFieldName { get => _efd.FieldIdentifier; }
+
+        public string AsTypeName => _efd.AsTypeName_Field;
+
+        public bool IsPrivateUserDefinedType => _efd is IUserDefinedTypeCandidate udt && udt.TypeDeclarationIsPrivate;
+
+        public bool IsRequiredToBeReadOnly => !_efd.CanBeReadWrite;
 
         private string _targetDeclarationExpressions;
         public string TargetDeclarationExpression
         {
             set => _targetDeclarationExpressions = value;
-            get => $"{_efd.Declaration.Accessibility} {_efd.Declaration.Context.GetText()}"; //$"{TargetID}:  Private {TargetID} As {AsTypeName}";
+            get => $"{_efd.Declaration.Accessibility} {_efd.Declaration.Context.GetText()}";
         }
     }
 }

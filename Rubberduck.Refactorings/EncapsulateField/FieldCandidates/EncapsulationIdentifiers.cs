@@ -7,7 +7,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 {
     public class EncapsulationIdentifiers
     {
-        private static string DEFAULT_WRITE_PARAMETER = "value";
+        private static string DEFAULT_WRITE_PARAMETER = EncapsulateFieldResources.DefaultPropertyParameter;
 
         private KeyValuePair<string, string> _fieldAndProperty;
         private string _targetIdentifier;
@@ -20,7 +20,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             _targetIdentifier = field;
             DefaultPropertyName = field.Capitalize();
-            DefaultNewFieldName = (field.UnCapitalize()).IncrementIdentifier();
+            DefaultNewFieldName = (field.UnCapitalize()).IncrementEncapsulationIdentifier();
             _fieldAndProperty = new KeyValuePair<string, string>(DefaultNewFieldName, DefaultPropertyName);
             _setLetParameter = DEFAULT_WRITE_PARAMETER;
         }
@@ -46,10 +46,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => _fieldAndProperty.Value;
             set
             {
-                var fieldIdentifier = Field.EqualsVBAIdentifier(value)
-                        ? DefaultNewFieldName
-                        : _targetIdentifier;
-
                 _fieldAndProperty = new KeyValuePair<string, string>(_fieldAndProperty.Key, value);
 
                 SetNonConflictParameterName();
@@ -62,18 +58,18 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             _setLetParameter = DEFAULT_WRITE_PARAMETER;
 
-            if (!(Field.EqualsVBAIdentifier(DEFAULT_WRITE_PARAMETER)
-                    || Property.EqualsVBAIdentifier(DEFAULT_WRITE_PARAMETER)))
+            if (!(Field.IsEquivalentVBAIdentifierTo(DEFAULT_WRITE_PARAMETER)
+                    || Property.IsEquivalentVBAIdentifierTo(DEFAULT_WRITE_PARAMETER)))
             {
                 return;
             }
 
-            if (Field.EqualsVBAIdentifier(SetLetParameter))
+            if (Field.IsEquivalentVBAIdentifierTo(SetLetParameter))
             {
                 _setLetParameter = $"{Field}_{DEFAULT_WRITE_PARAMETER}";
             }
 
-            if (Property.EqualsVBAIdentifier(SetLetParameter))
+            if (Property.IsEquivalentVBAIdentifierTo(SetLetParameter))
             {
                 _setLetParameter = $"{Property}_{Field}_{DEFAULT_WRITE_PARAMETER}";
             }

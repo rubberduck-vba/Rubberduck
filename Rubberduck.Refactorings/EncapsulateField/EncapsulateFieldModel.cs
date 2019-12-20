@@ -16,8 +16,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly Func<EncapsulateFieldModel, string> _previewDelegate;
         private QualifiedModuleName _targetQMN;
 
-        private bool _useNewStructure;
-
         private IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> _udtFieldToUdtDeclarationMap = new Dictionary<Declaration, (Declaration, IEnumerable<Declaration>)>();
 
         public EncapsulateFieldModel(Declaration target, IEnumerable<IEncapsulateFieldCandidate> candidates, IStateUDT stateUDTField, Func<EncapsulateFieldModel, string> previewDelegate)
@@ -25,11 +23,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _previewDelegate = previewDelegate;
             _targetQMN = target.QualifiedModuleName;
 
-            _useNewStructure = File.Exists("C:\\Users\\Brian\\Documents\\UseNewUDTStructure.txt");
-
             EncapsulationCandidates = candidates.ToList();
             StateUDTField = stateUDTField;
-            //this[target].EncapsulateFlag = true;
         }
 
         public List<IEncapsulateFieldCandidate> EncapsulationCandidates { set; get; } = new List<IEncapsulateFieldCandidate>();
@@ -48,7 +43,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     .Cast<IUserDefinedTypeCandidate>();
 
         public bool HasSelectedMultipleUDTFieldsOfType(string asTypeName)
-                => SelectedUDTFieldCandidates.Where(f => f.AsTypeName.Equals(asTypeName)).Count() > 1;
+                => SelectedUDTFieldCandidates.Where(f => f.AsTypeName_Field.Equals(asTypeName)).Count() > 1;
 
         public IEncapsulateFieldCandidate this[string encapsulatedFieldTargetID]
             => EncapsulationCandidates.Where(c => c.TargetID.Equals(encapsulatedFieldTargetID)).Single();

@@ -41,48 +41,29 @@ namespace Rubberduck.Refactorings.EncapsulateField
             Debug.Assert(!target.DeclarationType.Equals(DeclarationType.UserDefinedTypeMember));
 
             IEncapsulateFieldCandidate candidate = CreateCandidate(target);
-            //= target.IsUserDefinedTypeField()
-            //    ? new UserDefinedTypeCandidate(target, _validator)
-            //    : new EncapsulateFieldCandidate(target, _validator);
-
-            //if (target.IsUserDefinedTypeField())
-            //{
-            //    candidate = new UserDefinedTypeCandidate(target, _validator);
-            //}
-            //else if (target.IsArray)
-            //{
-            //    candidate = new ArrayCandidate(target, _validator);
-            //}
-            //else
-            //{
-            //    candidate = new EncapsulateFieldCandidate(target, _validator);
-            //}
-
-            _validator.RegisterFieldCandidate(candidate);
 
             candidate = ApplyTypeSpecificAttributes(candidate);
-
-            candidate = SetNonConflictIdentifier(candidate, c => { return _validator.HasConflictingIdentifier(candidate, DeclarationType.Property); }, (s) => { candidate.PropertyName = s.Capitalize(); }, () => candidate.PropertyName, _validator);
-            candidate = SetNonConflictIdentifier(candidate, c => { return _validator.HasConflictingIdentifier(candidate, DeclarationType.Variable); }, (s) => { candidate.FieldIdentifier = s.UnCapitalize(); }, () => candidate.FieldIdentifier, _validator);
-
             if (candidate is IUserDefinedTypeCandidate udtVariable)
             {
                 (Declaration udtDeclaration, IEnumerable<Declaration> udtMembers) = GetUDTAndMembersForField(udtVariable);
 
                 udtVariable.TypeDeclarationIsPrivate = udtDeclaration.HasPrivateAccessibility();
 
-                foreach (var udtMember in udtMembers)
+                foreach (var udtMemberDeclaration in udtMembers)
                 {
-                    //var udtCandidate = CreateCandidate(udtMember);
-                    var candidateUDTMember = new UserDefinedTypeMemberCandidate(CreateCandidate(udtMember), udtVariable, _validator) as IUserDefinedTypeMemberCandidate;
+                    var candidateUDTMember = new UserDefinedTypeMemberCandidate(CreateCandidate(udtMemberDeclaration), udtVariable, _validator) as IUserDefinedTypeMemberCandidate;
 
                     candidateUDTMember = ApplyTypeSpecificAttributes(candidateUDTMember);
-
-                    candidateUDTMember = SetNonConflictIdentifier(candidateUDTMember, c => { return _validator.HasConflictingIdentifier(candidate, DeclarationType.Property); }, (s) => { candidateUDTMember.PropertyName = s.Capitalize(); }, () => candidate.IdentifierName, _validator);
 
                     udtVariable.AddMember(candidateUDTMember);
                 }
             }
+
+            _validator.RegisterFieldCandidate(candidate);
+
+            candidate = _validator.AssignNoConflictIdentifier(candidate, DeclarationType.Property);
+            candidate = _validator.AssignNoConflictIdentifier(candidate, DeclarationType.Variable);
+
             return candidate;
         }
 
@@ -96,11 +77,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 return new ArrayCandidate(target, _validator);
             }
-            //else
-            //{
-                return new EncapsulateFieldCandidate(target, _validator);
-            //}
-
+            return new EncapsulateFieldCandidate(target, _validator);
         }
 
         public IEnumerable<IEncapsulateFieldCandidate> CreateEncapsulationCandidates()
@@ -120,23 +97,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return candidates;
         }
 
-        private T SetNonConflictIdentifier<T>(T candidate, Predicate<T> conflictDetector, Action<string> setValue, Func<string> getIdentifier, IEncapsulateFieldNamesValidator validator) where T : IEncapsulateFieldCandidate
-        {
-            var isConflictingIdentifier = conflictDetector(candidate);
-            for (var count = 1; count < 10 && isConflictingIdentifier; count++)
-            {
-                setValue(getIdentifier().IncrementIdentifier());
-                isConflictingIdentifier = conflictDetector(candidate);
-            }
-            return candidate;
-        }
-
         private IStateUDT SetNonConflictIdentifier(IStateUDT candidate, Predicate<IStateUDT> conflictDetector, Action<string> setValue, Func<string> getIdentifier, IEncapsulateFieldNamesValidator validator)
         {
             var isConflictingIdentifier = conflictDetector(candidate);
             for (var count = 1; count < 10 && isConflictingIdentifier; count++)
             {
-                setValue(getIdentifier().IncrementIdentifier());
+                setValue(getIdentifier().IncrementEncapsulationIdentifier());
                 isConflictingIdentifier = conflictDetector(candidate);
             }
             return candidate;
@@ -144,21 +110,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private T ApplyTypeSpecificAttributes<T>(T candidate) where T: IEncapsulateFieldCandidate
         {
-            //Default values are
-            //candidate.ImplementLetSetterType = true;
-            //candidate.ImplementSetSetterType = false;
-            //candidate.CanBeReadWrite = true;
-            //candidate.IsReadOnly = false;
+            /*
+             * Default values are:
+             * candidate.ImplementLetSetterType = true;
+             * candidate.ImplementSetSetterType = false;
+             * candidate.CanBeReadWrite = true;
+             * candidate.IsReadOnly = false;
+             */
 
-            //if (candidate.Declaration.IsArray)
-            //{
-            //    candidate.ImplementLetSetterType = false;
-            //    candidate.ImplementSetSetterType = false;
-            //    //candidate.AsTypeName = Tokens.Variant;
-            //    candidate.AsTypeName_Property = Tokens.Variant;
-            //    candidate.CanBeReadWrite = false;
-            //    candidate.IsReadOnly = true;
-            //}
             if (candidate.Declaration.IsEnumField())
             {
                 //5.3.1 The declared type of a function declaration may not be a private enum name.
@@ -170,13 +129,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
             else if (candidate.Declaration.AsTypeName.Equals(Tokens.Variant)
                 && !candidate.Declaration.IsArray)
             {
-                candidate.ImplementLetSetterType = true;
-                candidate.ImplementSetSetterType = true;
+                candidate.ImplementLet = true;
+                candidate.ImplementSet = true;
             }
             else if (candidate.Declaration.IsObject)
             {
-                candidate.ImplementLetSetterType = false;
-                candidate.ImplementSetSetterType = true;
+                candidate.ImplementLet = false;
+                candidate.ImplementSet = true;
             }
             return candidate;
         }
@@ -185,11 +144,19 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             var userDefinedTypeDeclaration = _declarationFinderProvider.DeclarationFinder
                 .UserDeclarations(DeclarationType.UserDefinedType)
-                .Where(ut => ut.IdentifierName.Equals(udtField.AsTypeName)
-                    && (ut.Accessibility.Equals(Accessibility.Private)
-                            && ut.QualifiedModuleName == udtField.QualifiedModuleName)
-                    || (ut.Accessibility != Accessibility.Private))
-                    .SingleOrDefault();
+                .Where(ut => ut.IdentifierName.Equals(udtField.AsTypeName_Field)
+                    && ut.QualifiedModuleName == udtField.QualifiedModuleName)
+                .SingleOrDefault();
+
+            if (userDefinedTypeDeclaration is null)
+            {
+                userDefinedTypeDeclaration = _declarationFinderProvider.DeclarationFinder
+                    .UserDeclarations(DeclarationType.UserDefinedType)
+                    .Where(ut => ut.IdentifierName.Equals(udtField.AsTypeName_Field)
+                        && ut.ProjectId == udtField.Declaration.ProjectId
+                        && ut.Accessibility != Accessibility.Private)
+                .SingleOrDefault();
+            }
 
             var udtMembers = _declarationFinderProvider.DeclarationFinder
                .UserDeclarations(DeclarationType.UserDefinedTypeMember)

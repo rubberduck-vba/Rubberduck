@@ -15,16 +15,15 @@ namespace Rubberduck.Refactorings.EncapsulateField
     public interface IUserDefinedTypeMemberCandidate : IEncapsulateFieldCandidate
     {
         IUserDefinedTypeCandidate Parent { get; }
-        bool IncludeParentNameWithPropertyIdentifier { set; get; }
         IPropertyGeneratorAttributes AsPropertyGeneratorSpec { get; }
         Dictionary<IdentifierReference, (ParserRuleContext, string)> IdentifierReplacements { get; }
         IEnumerable<IdentifierReference> FieldRelatedReferences(IUserDefinedTypeCandidate field);
     }
 
-    //public class UserDefinedTypeMemberCandidate : EncapsulateFieldCandidate, IUserDefinedTypeMemberCandidate
-    public class UserDefinedTypeMemberCandidate : /*IEncapsulateFieldCandidate,*/ IUserDefinedTypeMemberCandidate
+    public class UserDefinedTypeMemberCandidate : IUserDefinedTypeMemberCandidate
     {
         private readonly IEncapsulateFieldNamesValidator _validator;
+        private int _hashCode;
         public UserDefinedTypeMemberCandidate(IEncapsulateFieldCandidate efd, IUserDefinedTypeCandidate udtVariable, IEncapsulateFieldNamesValidator validator)
         {
             _decoratedField = efd;
@@ -33,33 +32,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
             PropertyName = IdentifierName;
             PropertyAccessor = AccessorTokens.Property;
             ReferenceAccessor = AccessorTokens.Property;
+            _hashCode = ($"{efd.QualifiedModuleName.Name}.{efd.IdentifierName}").GetHashCode();
         }
-        //public UserDefinedTypeMemberCandidate(Declaration target, IUserDefinedTypeCandidate udtVariable, IEncapsulateFieldNamesValidator validator)
-        //    : base(target, validator)
-        //{
-        //    Parent = udtVariable;
-
-        //    PropertyName = IdentifierName;
-        //    PropertyAccessor = AccessorTokens.Property;
-        //    ReferenceAccessor = AccessorTokens.Property;
-        //}
 
         private IEncapsulateFieldCandidate _decoratedField;
 
         public IUserDefinedTypeCandidate Parent { private set; get; }
-
-        private bool _includeParentNameWithPropertyIdentifier;
-        public bool IncludeParentNameWithPropertyIdentifier
-        {
-            get => _includeParentNameWithPropertyIdentifier;
-            set
-            {
-                _includeParentNameWithPropertyIdentifier = value;
-                PropertyName = _includeParentNameWithPropertyIdentifier
-                    ? $"{Parent.IdentifierName.Capitalize()}_{IdentifierName}"
-                    : IdentifierName;
-            }
-        }
 
         public void StageFieldReferenceReplacements(IStateUDT stateUDT = null) { }
 
@@ -91,26 +69,30 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             get
             {
-                if (_includeParentNameWithPropertyIdentifier)
-                {
-                    PropertyAccessor = AccessorTokens.Field;
-                }
-
                 return new PropertyAttributeSet()
                 {
                     PropertyName = PropertyName,
                     BackingField = ReferenceWithinNewProperty,
                     AsTypeName = AsTypeName_Property,
                     ParameterName = ParameterName,
-                    GenerateLetter = ImplementLetSetterType,
-                    GenerateSetter = ImplementSetSetterType,
+                    GenerateLetter = ImplementLet,
+                    GenerateSetter = ImplementSet,
                     UsesSetAssignment = Declaration.IsObject
                 };
             }
         }
 
-        //public new Dictionary<IdentifierReference, (ParserRuleContext, string)> IdentifierReplacements { get; } = new Dictionary<IdentifierReference, (ParserRuleContext, string)>();
         public Dictionary<IdentifierReference, (ParserRuleContext, string)> IdentifierReplacements { get; } = new Dictionary<IdentifierReference, (ParserRuleContext, string)>();
+
+
+        public override bool Equals(object obj)
+        {
+            return obj != null
+                && obj is IUserDefinedTypeMemberCandidate
+                && obj.GetHashCode() == GetHashCode();
+        }
+
+        public override int GetHashCode() => _hashCode;
 
         private IEnumerable<IdentifierReference> GetUDTMemberReferencesForField(IEncapsulateFieldCandidate udtMember, IUserDefinedTypeCandidate field)
         {
@@ -157,79 +139,80 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public Declaration Declaration => _decoratedField.Declaration;
         public string IdentifierName => _decoratedField.IdentifierName;
-        //public string TargetID { get; }
+
+        public bool TryValidateEncapsulationAttributes(out string errorMessage)
+        {
+            errorMessage = string.Empty;
+            return true;
+        }
+
         public bool IsReadOnly
         {
             set => _decoratedField.IsReadOnly = value;
             get => _decoratedField.IsReadOnly;
         }
-        public bool EncapsulateFlag //{ get; set; }
+        public bool EncapsulateFlag
         {
             set => _decoratedField.EncapsulateFlag = value;
             get => _decoratedField.EncapsulateFlag;
         }
-        public string FieldIdentifier //{ set; get; }
+        public string FieldIdentifier
         {
             set => _decoratedField.FieldIdentifier = value;
             get => _decoratedField.FieldIdentifier;
         }
-        public bool CanBeReadWrite //{ set; get; }
+        public bool CanBeReadWrite
         {
             set => _decoratedField.CanBeReadWrite = value;
             get => _decoratedField.CanBeReadWrite;
         }
-        public bool HasValidEncapsulationAttributes 
-            => _decoratedField.HasValidEncapsulationAttributes; // { get; }
+        public bool HasValidEncapsulationAttributes => true;
 
         public QualifiedModuleName QualifiedModuleName 
-            => _decoratedField.QualifiedModuleName; // { get; }
+            => _decoratedField.QualifiedModuleName;
 
-        public string PropertyName //{ get; set; }
+        public string PropertyName
         {
             set => _decoratedField.PropertyName = value;
             get => _decoratedField.PropertyName;
         }
-        public string AsTypeName //{ get; set; }
+        public string AsTypeName_Field
         {
-            set => _decoratedField.AsTypeName = value;
-            get => _decoratedField.AsTypeName;
+            set => _decoratedField.AsTypeName_Field = value;
+            get => _decoratedField.AsTypeName_Field;
         }
-        public string AsTypeName_Property //{ get; set; }
+        public string AsTypeName_Property
         {
             set => _decoratedField.AsTypeName_Property = value;
             get => _decoratedField.AsTypeName_Property;
         }
-        public string ParameterName => _decoratedField.ParameterName; // { get; }
-        public bool ImplementLetSetterType //{ get; set; }
+        public string ParameterName => _decoratedField.ParameterName;
+        public bool ImplementLet
         {
-            set => _decoratedField.ImplementLetSetterType = value;
-            get => _decoratedField.ImplementLetSetterType;
+            set => _decoratedField.ImplementLet = value;
+            get => _decoratedField.ImplementLet;
         }
-        public bool ImplementSetSetterType //{ get; set; }
+        public bool ImplementSet
         {
-            set => _decoratedField.ImplementSetSetterType = value;
-            get => _decoratedField.ImplementSetSetterType;
+            set => _decoratedField.ImplementSet = value;
+            get => _decoratedField.ImplementSet;
         }
-        public IEnumerable<IPropertyGeneratorAttributes> PropertyAttributeSets => _decoratedField.PropertyAttributeSets; // { get; }
+        public IEnumerable<IPropertyGeneratorAttributes> PropertyAttributeSets => _decoratedField.PropertyAttributeSets;
         public string AsUDTMemberDeclaration { get; }
-        public IEnumerable<KeyValuePair<IdentifierReference, (ParserRuleContext, string)>> ReferenceReplacements => _decoratedField.ReferenceReplacements; // { get; }
-        //public void SetReferenceRewriteContent(IdentifierReference idRef, string replacementText);
-        //public string ReferenceQualifier { set; get; }
-        public string ReferenceWithinNewProperty => $"{Parent.ReferenceWithinNewProperty}.{_decoratedField.ReferenceWithinNewProperty}"; // { get; }
-        //public string ReferenceWithinNewProperty => _field.ReferenceWithinNewProperty; // { get; }
-        //public void StageFieldReferenceReplacements(IStateUDT stateUDT = null);
-        public AccessorTokens PropertyAccessor //{ set; get; }
+
+        public IEnumerable<KeyValuePair<IdentifierReference, (ParserRuleContext, string)>> ReferenceReplacements => _decoratedField.ReferenceReplacements;
+        public string ReferenceWithinNewProperty => $"{Parent.ReferenceWithinNewProperty}.{_decoratedField.IdentifierName}";
+
+        public AccessorTokens PropertyAccessor
         {
             set => _decoratedField.PropertyAccessor = value;
             get => _decoratedField.PropertyAccessor;
         }
 
-        public AccessorTokens ReferenceAccessor //{ set; get; }
+        public AccessorTokens ReferenceAccessor
         {
             set => _decoratedField.ReferenceAccessor = value;
             get => _decoratedField.ReferenceAccessor;
         }
-
-        public string AccessorTokenToContent(AccessorTokens token) => _decoratedField.AccessorTokenToContent(token);
     }
 }

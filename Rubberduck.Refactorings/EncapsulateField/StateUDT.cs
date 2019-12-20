@@ -20,14 +20,18 @@ namespace Rubberduck.Refactorings.EncapsulateField
         QualifiedModuleName QualifiedModuleName { set; get; }
     }
 
+    /*
+     * StateUDT is the UserDefinedType introduced by this refactoring 
+     * whose members represent object state in lieu of individually declared member variables/fields.
+     */
     public class StateUDT : IStateUDT
     {
-        private const string _defaultNewFieldName = "this";
+        private static string _defaultNewFieldName = EncapsulateFieldResources.DefaultStateUDTFieldName;
         private List<IEncapsulateFieldCandidate> _members;
         private readonly IEncapsulateFieldNamesValidator _validator;
 
         public StateUDT(QualifiedModuleName qmn, IEncapsulateFieldNamesValidator validator)
-            :this($"T{qmn.ComponentName.Capitalize()}", validator)
+            :this($"{EncapsulateFieldResources.StateUserDefinedTypeIdentifierPrefix}{qmn.ComponentName.Capitalize()}", validator)
         {
             QualifiedModuleName = qmn;
         }

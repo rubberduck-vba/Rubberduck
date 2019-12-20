@@ -59,7 +59,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public static string UnCapitalize(this string input)
             => $"{char.ToLowerInvariant(input[0]) + input.Substring(1, input.Length - 1)}";
 
-        public static bool EqualsVBAIdentifier(this string lhs, string identifier)
+        public static bool IsEquivalentVBAIdentifierTo(this string lhs, string identifier)
             => lhs.Equals(identifier, StringComparison.InvariantCultureIgnoreCase);
 
         public static string GetText(this IModuleRewriter rewriter, int maxConsecutiveNewLines)
@@ -74,7 +74,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return result;
         }
 
-        public static string IncrementIdentifier(this string identifier)
+        public static string IncrementEncapsulationIdentifier(this string identifier)
         {
             var fragments = identifier.Split('_');
             if (fragments.Length == 1) { return $"{identifier}_1"; }

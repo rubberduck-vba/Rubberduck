@@ -15,9 +15,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public ArrayCandidate(Declaration declaration, IEncapsulateFieldNamesValidator validator)
             :base(declaration, validator)
         {
-            ImplementLetSetterType = false;
-            ImplementSetSetterType = false;
-            AsTypeName = declaration.AsTypeName;
+            ImplementLet = false;
+            ImplementSet = false;
+            AsTypeName_Field = declaration.AsTypeName;
             AsTypeName_Property = Tokens.Variant;
             CanBeReadWrite = false;
             IsReadOnly = true;
@@ -30,6 +30,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         }
 
         public override string AsUDTMemberDeclaration
-            => $"{PropertyName}({_subscripts}) {Tokens.As} {AsTypeName}";
+            => $"{PropertyName}({_subscripts}) {Tokens.As} {AsTypeName_Field}";
     }
 }

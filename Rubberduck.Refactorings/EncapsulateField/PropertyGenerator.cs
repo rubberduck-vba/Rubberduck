@@ -38,16 +38,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public bool GenerateSetter { get; set; }
         public bool UsesSetAssignment { get; set; }
 
-        public string AllPropertyCode =>
-            $"{GetterCode}{(GenerateLetter ? LetterCode : string.Empty)}{(GenerateSetter ? SetterCode : string.Empty)}";
-
-        public IEnumerable<string> AsLines => AllPropertyCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-
-        public string AsPropertyBlock(IIndenter indenter)
-        {
-            return string.Join(Environment.NewLine, indenter.Indent(AsLines, true));
-        }
-
         public string AsPropertyBlock(IPropertyGeneratorAttributes spec, IIndenter indenter)
         {
             PropertyName = spec.PropertyName;
@@ -59,6 +49,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
             UsesSetAssignment = spec.UsesSetAssignment;
             return string.Join(Environment.NewLine, indenter.Indent(AsLines, true));
         }
+
+        private string AllPropertyCode =>
+            $"{GetterCode}{(GenerateLetter ? LetterCode : string.Empty)}{(GenerateSetter ? SetterCode : string.Empty)}";
+
+        private IEnumerable<string> AsLines => AllPropertyCode.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
         private string GetterCode
         {
