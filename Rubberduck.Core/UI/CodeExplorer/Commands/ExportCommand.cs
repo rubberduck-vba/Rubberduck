@@ -30,9 +30,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             { ComponentType.MDIForm, ComponentTypeExtensions.FormExtension },
             { ComponentType.UserControl, ComponentTypeExtensions.UserControlExtension },
             { ComponentType.DocObject, ComponentTypeExtensions.DocObjectExtension },
-            { ComponentType.ActiveXDesigner, ".dsr" },
+            { ComponentType.ActiveXDesigner, ComponentTypeExtensions.ActiveXDesignerExtension },
             { ComponentType.PropPage, ComponentTypeExtensions.PropertyPageExtension },
-            { ComponentType.ResFile, ".res" },            
+            { ComponentType.ResFile, ComponentTypeExtensions.ResourceExtension },            
         };
 
         private readonly IFileSystemBrowserFactory _dialogFactory;
