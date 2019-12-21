@@ -10,9 +10,6 @@ using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.Utility;
 using System.Collections.Generic;
 using System;
-using Rubberduck.Parsing;
-using Rubberduck.Refactorings.Common;
-using System.IO;
 using Antlr4.Runtime;
 
 namespace Rubberduck.Refactorings.EncapsulateField
@@ -115,19 +112,21 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         protected override void RefactorImpl(EncapsulateFieldModel model)
         {
-            var rewriteSession = RefactorRewrite(model, RewritingManager.CheckOutCodePaneSession());
+            var refactorRewriteSession = new EncapsulateFieldRewriteSession(RewritingManager.CheckOutCodePaneSession()) as IEncapsulateFieldRewriteSession;
+            refactorRewriteSession = RefactorRewrite(model, refactorRewriteSession);
 
-            if (!rewriteSession.TryRewrite())
+            if (!refactorRewriteSession.TryRewrite(_targetQMN))
             {
-                throw new RewriteFailedException(rewriteSession);
+                throw new RewriteFailedException(refactorRewriteSession.RewriteSession);
             }
         }
 
         private string PreviewRewrite(EncapsulateFieldModel model)
         {
-            var rewriteSession = GeneratePreview(model, RewritingManager.CheckOutCodePaneSession());
+            IEncapsulateFieldRewriteSession refactorRewriteSession = new EncapsulateFieldRewriteSession(RewritingManager.CheckOutCodePaneSession());
+            refactorRewriteSession = GeneratePreview(model, refactorRewriteSession);
 
-            var previewRewriter = rewriteSession.CheckOutModuleRewriter(_targetQMN);
+            var previewRewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
 
             return previewRewriter.GetText(maxConsecutiveNewLines: 3);
         }
@@ -136,42 +135,32 @@ namespace Rubberduck.Refactorings.EncapsulateField
             => Model.EncapsulateWithUDT ? Model.StateUDTField : null;
 
 
-        public IExecutableRewriteSession GeneratePreview(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession)
+        public IEncapsulateFieldRewriteSession GeneratePreview(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession)
         {
-            if (!model.SelectedFieldCandidates.Any()) { return rewriteSession; }
+            if (!model.SelectedFieldCandidates.Any()) { return refactorRewriteSession; }
 
-            return RefactorRewrite(model, rewriteSession, asPreview: true);
+            return RefactorRewrite(model, refactorRewriteSession, asPreview: true);
         }
 
-        public IExecutableRewriteSession RefactorRewrite(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession)
+        public IEncapsulateFieldRewriteSession RefactorRewrite(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession)
         {
-            if (!model.SelectedFieldCandidates.Any()) { return rewriteSession; }
+            if (!model.SelectedFieldCandidates.Any()) { return refactorRewriteSession; }
 
-            return RefactorRewrite(model, rewriteSession, asPreview: false);
+            return RefactorRewrite(model, refactorRewriteSession, asPreview: false);
         }
 
-        private IExecutableRewriteSession RefactorRewrite(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession, bool asPreview)
+        private IEncapsulateFieldRewriteSession RefactorRewrite(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession, bool asPreview)
         {
-            _newContent = new Dictionary<NewContentTypes, List<string>>
-            {
-                { NewContentTypes.PostContentMessage, new List<string>() },
-                { NewContentTypes.DeclarationBlock, new List<string>() },
-                { NewContentTypes.MethodBlock, new List<string>() },
-                { NewContentTypes.TypeDeclarationBlock, new List<string>() }
-            };
+            ModifyFields(model, refactorRewriteSession);
 
-            ModifyFields(model, rewriteSession);
+            ModifyReferences(model, refactorRewriteSession);
 
-            ModifyReferences(model, rewriteSession);
+            InsertNewContent(model, refactorRewriteSession, asPreview);
 
-            RewriterRemoveWorkAround.RemoveFieldsDeclaredInLists(rewriteSession, _targetQMN);
-
-            InsertNewContent(model, rewriteSession, asPreview);
-
-            return rewriteSession;
+            return refactorRewriteSession;
         }
 
-        private void ModifyReferences(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession)
+        private void ModifyReferences(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession)
         {
             var stateUDT = model.EncapsulateWithUDT
                 ? model.StateUDTField
@@ -185,27 +174,27 @@ namespace Rubberduck.Refactorings.EncapsulateField
             foreach (var rewriteReplacement in model.SelectedFieldCandidates.SelectMany(field => field.ReferenceReplacements))
             {
                 (ParserRuleContext Context, string Text) = rewriteReplacement.Value;
-                var rewriter = rewriteSession.CheckOutModuleRewriter(rewriteReplacement.Key.QualifiedModuleName);
+                var rewriter = refactorRewriteSession.CheckOutModuleRewriter(rewriteReplacement.Key.QualifiedModuleName);
                 rewriter.Replace(Context, Text);
             }
         }
 
-        private void ModifyFields(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession)
+        private void ModifyFields(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession)
         {
             if (model.EncapsulateWithUDT)
             {
                 foreach (var field in model.SelectedFieldCandidates)
                 {
-                    var rewriter = rewriteSession.CheckOutModuleRewriter(_targetQMN);
+                    var rewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
 
-                    RewriterRemoveWorkAround.Remove(field.Declaration, rewriter);
+                    refactorRewriteSession.Remove(field.Declaration, rewriter);
                 }
                 return;
             }
 
             foreach (var field in model.SelectedFieldCandidates)
             {
-                var rewriter = rewriteSession.CheckOutModuleRewriter(_targetQMN);
+                var rewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
 
                 if (field.Declaration.HasPrivateAccessibility() && field.FieldIdentifier.Equals(field.Declaration.IdentifierName))
                 {
@@ -215,8 +204,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
                 if (field.Declaration.IsDeclaredInList() && !field.Declaration.HasPrivateAccessibility())
                 {
-                    //FIXME: the call here should be: rewriter.Remove(field.Declaration);
-                    RewriterRemoveWorkAround.Remove(field.Declaration, rewriter);
+                    refactorRewriteSession.Remove(field.Declaration, rewriter);
                     continue;
                 }
 
@@ -226,9 +214,17 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        private void InsertNewContent(EncapsulateFieldModel model, IExecutableRewriteSession rewriteSession, bool postPendPreviewMessage = false)
+        private void InsertNewContent(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession, bool postPendPreviewMessage = false)
         {
-            var rewriter = rewriteSession.CheckOutModuleRewriter(_targetQMN);
+            _newContent = new Dictionary<NewContentTypes, List<string>>
+            {
+                { NewContentTypes.PostContentMessage, new List<string>() },
+                { NewContentTypes.DeclarationBlock, new List<string>() },
+                { NewContentTypes.MethodBlock, new List<string>() },
+                { NewContentTypes.TypeDeclarationBlock, new List<string>() }
+            };
+
+            var rewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
 
             LoadNewDeclarationBlocks(model);
 
