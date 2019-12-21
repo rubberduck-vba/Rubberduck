@@ -784,6 +784,32 @@ End Property
             Assert.AreEqual(expectedCode.Trim(), actualCode);
         }
 
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void EncapsulateArray_Redim()
+        {
+            string inputCode =
+                $@"Option Explicit
+
+Private myA|rray() As Integer
+
+Private Sub InitializeArray(size As Long)
+    Redim myArray(size)
+    For idx = 1 To size  
+        myArray(idx) = idx 
+    Next idx
+End Sub
+";
+
+            var presenterAction = Support.UserAcceptsDefaults();
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            StringAssert.Contains("Public Property Get MyArray() As Variant", actualCode);
+            StringAssert.DoesNotContain("Public Property Let MyArray(", actualCode);
+            StringAssert.Contains("Redim myArray_1(size)", actualCode);
+            StringAssert.Contains("myArray_1(idx) = idx", actualCode);
+        }
+
         [TestCase(false)]
         [TestCase(true)]
         [Category("Refactorings")]
