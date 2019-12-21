@@ -43,9 +43,10 @@ Public {var3} As Integer";
 
             var selection = new Selection(1, 1);
 
-            var userInput = new UserInputDataObject(var1, $"{var1}Prop", var1Flag);
-            userInput.AddAttributeSet(var2, $"{var2}Prop", var2Flag);
-            userInput.AddAttributeSet(var3, $"{var3}Prop", var3Flag);
+            var userInput = new UserInputDataObject()
+                .AddUserInputSet(var1, $"{var1}Prop", var1Flag)
+                .AddUserInputSet(var2, $"{var2}Prop", var2Flag)
+                .AddUserInputSet(var3, $"{var3}Prop", var3Flag);
 
             var flags = new Dictionary<string, bool>()
             {
@@ -100,10 +101,11 @@ $@"Public {var1} As Integer, {var2} As Integer, {var3} As Integer, {var4} As Int
 
             var selection = new Selection(1, 9);
 
-            var userInput = new UserInputDataObject(var1, $"{var1}Prop", var1Flag);
-            userInput.AddAttributeSet(var2, $"{var2}Prop", var2Flag);
-            userInput.AddAttributeSet(var3, $"{var3}Prop", var3Flag);
-            userInput.AddAttributeSet(var4, $"{var4}Prop", var4Flag);
+            var userInput = new UserInputDataObject()
+                .AddUserInputSet(var1, $"{var1}Prop", var1Flag)
+                .AddUserInputSet(var2, $"{var2}Prop", var2Flag)
+                .AddUserInputSet(var3, $"{var3}Prop", var3Flag)
+                .AddUserInputSet(var4, $"{var4}Prop", var4Flag);
 
             var flags = new Dictionary<string, bool>()
             {
@@ -200,7 +202,6 @@ End Property
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             Assert.AreEqual(expectedCode.Trim(), actualCode);
         }
-
 
         [Test]
         [Category("Refactorings")]
@@ -440,44 +441,6 @@ End Property
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             Assert.AreEqual(expectedCode.Trim(), actualCode);
         }
-// TODO: this test used the old method of injecting conflict names lists - rework
-//        [Test]
-//        [Category("Refactorings")]
-//        [Category("Encapsulate Field")]
-//        public void EncapsulatePrivateField_NameConflict()
-//        {
-//            const string inputCode =
-//                @"Private fizz As String
-//Private mName As String
-
-//Public Property Get Name() As String
-//    Name = mName
-//End Property
-
-//Public Property Let Name(ByVal value As String)
-//    mName = value
-//End Property
-//";
-//            var fieldName = "fizz";
-//            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
-
-//            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
-//            using (state)
-//            {
-//                IEncapsulateFieldCandidate efd = null;
-//                var fields = new List<IEncapsulateFieldCandidate>();
-//                var validator = new EncapsulateFieldNamesValidator(state, () => fields);
-
-//                var match = state.DeclarationFinder.MatchName(fieldName).Single();
-//                efd = new EncapsulateFieldCandidate(match, validator);
-//                fields.Add(efd);
-//                efd.PropertyName = "Name";
-
-//                //var hasConflict = !validator.HasValidEncapsulationAttributes(efd, efd.QualifiedModuleName, new Declaration[] { efd.Declaration });
-//                var hasConflict = validator.HasConflictingPropertyIdentifier(efd);
-//                Assert.IsTrue(hasConflict);
-//            }
-//        }
 
         [Test]
         [Category("Refactorings")]
@@ -714,7 +677,8 @@ Public Property Get MyArray() As Variant
     MyArray = mArray
 End Property
 ";
-            var userInput = new UserInputDataObject("mArray", "MyArray", true);
+            var userInput = new UserInputDataObject()
+                .UserSelectsField("mArray", "MyArray");
 
             var presenterAction = Support.SetParameters(userInput);
             var actualCode = RefactoredCode(inputCode, selection, presenterAction);
@@ -855,7 +819,8 @@ Public Sub Foo()
 End Sub
 ";
 
-            var userInput = new UserInputDataObject("this", "MyProperty", true);
+            var userInput = new UserInputDataObject()
+                .UserSelectsField("this", "MyProperty");
 
             var presenterAction = Support.SetParameters(userInput);
 

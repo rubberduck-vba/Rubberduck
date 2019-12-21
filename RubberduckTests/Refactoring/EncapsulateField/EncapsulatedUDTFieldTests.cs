@@ -68,8 +68,8 @@ Public that As TBar";
             var expectedThat = new EncapsulationIdentifiers("that");
 
             var userInput = new UserInputDataObject()
-                    .AddAttributeSet(expectedThis.TargetFieldName, encapsulationFlag: encapsulateThis)
-                    .AddAttributeSet(expectedThat.TargetFieldName, encapsulationFlag: encapsulateThat);
+                    .AddUserInputSet(expectedThis.TargetFieldName, encapsulationFlag: encapsulateThis)
+                    .AddUserInputSet(expectedThat.TargetFieldName, encapsulationFlag: encapsulateThat);
 
             var presenterAction = Support.SetParameters(userInput);
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
@@ -96,7 +96,6 @@ Public that As TBar";
             }
             else if (encapsulateThis && !encapsulateThat)
             {
-                //StringAssert.Contains($"Private {expectedThis.TargetFieldName} As TBar", actualCode);
                 StringAssert.Contains($"First = {expectedThis.TargetFieldName}.First", actualCode);
                 StringAssert.Contains($"Second = {expectedThis.TargetFieldName}.Second", actualCode);
                 StringAssert.Contains($"{expectedThis.TargetFieldName}.First = value", actualCode);
@@ -109,7 +108,6 @@ Public that As TBar";
             }
             else if (!encapsulateThis && encapsulateThat)
             {
-                //StringAssert.Contains($"Private {expectedThat.TargetFieldName} As TBar", actualCode);
                 StringAssert.Contains($"First = {expectedThat.TargetFieldName}.First", actualCode);
                 StringAssert.Contains($"Second = {expectedThat.TargetFieldName}.Second", actualCode);
                 StringAssert.Contains($"{expectedThat.TargetFieldName}.First = value", actualCode);
@@ -193,10 +191,7 @@ Public Sub Foo(arg1 As String, arg2 As Long)
     End With
 End Sub
 ";
-            //var userInput = new UserInputDataObject("this");
             var presenterAction = Support.UserAcceptsDefaults();
-
-            //var presenterAction = Support.SetParameters(userInput);
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.DoesNotContain($" First = arg1", actualCode);
@@ -254,7 +249,6 @@ End Sub
             var actualCode = actualModuleCode["Module2"];
             var sourceCode = actualModuleCode[sourceModuleName];
 
-            //var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.DoesNotContain($" First = arg1", actualCode);
             StringAssert.DoesNotContain($" Second = arg2", actualCode);
             StringAssert.Contains($" .First = arg1", actualCode);
@@ -282,10 +276,11 @@ Private mFizz
 {accessibility} t|his As TBar";
 
 
-            var userInput = new UserInputDataObject("this", "MyType", true);
-            userInput.AddAttributeSet("mFoo", "Foo", true);
-            userInput.AddAttributeSet("mBar", "Bar", true);
-            userInput.AddAttributeSet("mFizz", "Fizz", true);
+            var userInput = new UserInputDataObject()
+            .UserSelectsField("this", "MyType")
+            .UserSelectsField("mFoo", "Foo")
+            .UserSelectsField("mBar", "Bar")
+            .UserSelectsField("mFizz", "Fizz");
 
             var presenterAction = Support.SetParameters(userInput);
 
@@ -332,7 +327,8 @@ Public Sub Foo()
 End Sub
 ";
 
-            var userInput = new UserInputDataObject("this", "MyType", true);
+            var userInput = new UserInputDataObject()
+                .UserSelectsField("this", "MyType");
 
             var presenterAction = Support.SetParameters(userInput);
 
@@ -376,7 +372,8 @@ End Type
 
 {accessibility} th|is As TBar";
 
-            var userInput = new UserInputDataObject("this", "MyType");
+            var userInput = new UserInputDataObject()
+                .UserSelectsField("this", "MyType");
 
             var presenterAction = Support.SetParameters(userInput);
 
@@ -408,7 +405,8 @@ End Type
 
 {accessibility} t|his As TBar";
 
-            var userInput = new UserInputDataObject("this", "MyType");
+            var userInput = new UserInputDataObject()
+                .UserSelectsField("this", "MyType");
 
             var presenterAction = Support.SetParameters(userInput);
 
@@ -445,7 +443,8 @@ Public Type TBar
 End Type
 ";
 
-            var userInput = new UserInputDataObject("this", "MyType", true);
+            var userInput = new UserInputDataObject()
+                .UserSelectsField("this", "MyType");
 
             var presenterAction = Support.SetParameters(userInput);
 
@@ -510,12 +509,10 @@ End Sub
 
             var actualCode = actualModuleCode["Module1"];
 
-            var defaults = new EncapsulationIdentifiers("mTheClass");
-
-            StringAssert.Contains($"Private {defaults.Field} As Class1", actualCode);
-            StringAssert.Contains($"Set {defaults.Field} = value", actualCode);
-            StringAssert.Contains($"MTheClass = {defaults.Field}", actualCode);
-            StringAssert.Contains($"Public Property Set {defaults.Property}", actualCode);
+            StringAssert.Contains($"Private mTheClass As Class1", actualCode);
+            StringAssert.Contains($"Set mTheClass = value", actualCode);
+            StringAssert.Contains($"Set TheClass = mTheClass", actualCode);
+            StringAssert.Contains($"Public Property Set TheClass", actualCode);
         }
 
         [TestCase("SourceModule", "this", "Public")]
@@ -557,7 +554,9 @@ Public Sub FooBar()
     End With
 End Sub
 ";
-            var userInput = new UserInputDataObject("this", "MyType");
+            var userInput = new UserInputDataObject()
+                .UserSelectsField("this", "MyType");
+
             var presenterAction = Support.SetParameters(userInput);
 
             var sourceCodeString = sourceModuleCode.ToCodeString();
@@ -750,7 +749,8 @@ Public Sub FooBar()
 End Sub
 ";
 
-            var userInput = new UserInputDataObject("this", "MyType");
+            var userInput = new UserInputDataObject()
+                .UserSelectsField("this", "MyType");
 
             var presenterAction = Support.SetParameters(userInput);
 
@@ -792,7 +792,7 @@ End Type
 Private t|his As TBar";
 
             var userInput = new UserInputDataObject()
-                .AddAttributeSet("this", isReadOnly: true);
+                .UserSelectsField("this", isReadOnly: true);
 
             var presenterAction = Support.SetParameters(userInput);
 

@@ -73,7 +73,7 @@ Private my|Bar As TBar";
 
 
             var userInput = new UserInputDataObject()
-                .AddAttributeSet("myBar");
+                .UserSelectsField("myBar");
 
             userInput.EncapsulateAsUDT = true;
 
@@ -108,7 +108,7 @@ End Sub";
 
 
             var userInput = new UserInputDataObject()
-                .AddAttributeSet("myBar");
+                .UserSelectsField("myBar");
 
             userInput.EncapsulateAsUDT = true;
 
@@ -131,9 +131,9 @@ Public foobar As Byte
 ";
 
             var userInput = new UserInputDataObject()
-                .AddAttributeSet("foo")
-                .AddAttributeSet("bar")
-                .AddAttributeSet("foobar");
+                .UserSelectsField("foo")
+                .UserSelectsField("bar")
+                .UserSelectsField("foobar");
 
             userInput.EncapsulateAsUDT = true;
 
@@ -164,7 +164,7 @@ Public myBar As TBar
 ";
 
             var userInput = new UserInputDataObject()
-                .AddAttributeSet("myBar");
+                .UserSelectsField("myBar");
 
             userInput.EncapsulateAsUDT = true;
 
@@ -197,7 +197,7 @@ Public numberT|ype As NumberTypes
 
 
             var userInput = new UserInputDataObject()
-                .AddAttributeSet("numberType");
+                .UserSelectsField("numberType");
 
             userInput.EncapsulateAsUDT = true;
 
@@ -222,7 +222,7 @@ Public {selectedInput}({dimensions}) As String
 ";
 
             var userInput = new UserInputDataObject()
-                .AddAttributeSet(arrayIdentifier);
+                .UserSelectsField(arrayIdentifier);
 
             userInput.EncapsulateAsUDT = true;
 
@@ -257,7 +257,7 @@ Public myBar As TBar
 ";
 
             var userInput = new UserInputDataObject()
-                .AddAttributeSet("myBar");
+                .UserSelectsField("myBar");
 
 
             userInput.EncapsulateAsUDT = true;

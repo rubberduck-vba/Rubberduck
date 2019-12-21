@@ -40,6 +40,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public void RegisterFieldCandidate(IEncapsulateFieldCandidate candidate)
         {
             FieldCandidates.Add(candidate);
+            AssignNoConflictIdentifier(candidate, DeclarationType.Property);
+            AssignNoConflictIdentifier(candidate, DeclarationType.Variable);
+
             if (candidate is IUserDefinedTypeCandidate udt)
             {
                 foreach (var member in udt.Members)
@@ -47,6 +50,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     UDTMemberCandidates.Add(member);
                 }
             }
+
         }
 
         private DeclarationFinder DeclarationFinder => _declarationFinderProvider.DeclarationFinder;
@@ -128,15 +132,24 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return potentialDeclarationIdentifierConflicts.ToList();
         }
 
-        public bool HasConflictingIdentifier(IEncapsulateFieldCandidate field, DeclarationType declarationType, out string errorMessage)
+        public bool HasConflictingIdentifier(IEncapsulateFieldCandidate field, DeclarationType declarationType, out string errorMessage) 
+            => InternalHasConflictingIdentifier(field, declarationType, false, out errorMessage);
+
+        private bool InternalHasConflictingIdentifier(IEncapsulateFieldCandidate field, DeclarationType declarationType, bool ignoreEncapsulationFlags, out string errorMessage)
         {
             errorMessage = string.Empty;
 
             var potentialDeclarationIdentifierConflicts = new List<string>();
             potentialDeclarationIdentifierConflicts.AddRange(PotentialConflictIdentifiers(field, declarationType));
 
-            potentialDeclarationIdentifierConflicts.AddRange(FlaggedCandidates.Where(fc => fc != field).Select(fc => fc.PropertyName));
-
+            if (ignoreEncapsulationFlags)
+            {
+                potentialDeclarationIdentifierConflicts.AddRange(FieldCandidates.Where(fc => fc != field).Select(fc => fc.PropertyName));
+            }
+            else
+            {
+                potentialDeclarationIdentifierConflicts.AddRange(FlaggedCandidates.Where(fc => fc != field).Select(fc => fc.PropertyName));
+            }
             potentialDeclarationIdentifierConflicts.AddRange(UDTMemberCandidates.Where(udtm => udtm != field && udtm.EncapsulateFlag).Select(udtm => udtm.PropertyName));
 
             var identifierToCompare = declarationType.HasFlag(DeclarationType.Property)
@@ -153,7 +166,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public IEncapsulateFieldCandidate AssignNoConflictIdentifier(IEncapsulateFieldCandidate candidate, DeclarationType declarationType)
         {
-            var isConflictingIdentifier = HasConflictingIdentifier(candidate, declarationType, out _);
+            var isConflictingIdentifier = InternalHasConflictingIdentifier(candidate, declarationType, true, out _);
             for (var count = 1; count < 10 && isConflictingIdentifier; count++)
             {
                 var identifier = declarationType.HasFlag(DeclarationType.Property)
@@ -168,7 +181,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 {
                     candidate.FieldIdentifier = identifier.IncrementEncapsulationIdentifier();
                 }
-                isConflictingIdentifier = HasConflictingIdentifier(candidate, declarationType, out _);
+                isConflictingIdentifier = InternalHasConflictingIdentifier(candidate, declarationType, true, out _);
             }
             return candidate;
         }

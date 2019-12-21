@@ -161,6 +161,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 if (!_encapsulateFlag)
                 {
                     PropertyName = _fieldAndProperty.DefaultPropertyName;
+                    _validator.AssignNoConflictIdentifier(this, DeclarationType.Property);
+                    _validator.AssignNoConflictIdentifier(this, DeclarationType.Variable);
                 }
             }
             get => _encapsulateFlag;

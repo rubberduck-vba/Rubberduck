@@ -1,4 +1,5 @@
 ﻿using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA.Extensions;
 using System.Collections.Generic;
 
 namespace Rubberduck.Refactorings.EncapsulateField
@@ -17,8 +18,21 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public EncapsulationIdentifiers(string field)
         {
             _targetIdentifier = field;
-            DefaultPropertyName = field.Capitalize();
-            DefaultNewFieldName = (field.UnCapitalize()).IncrementEncapsulationIdentifier();
+            if (field.IsHungarianIdentifier(out var nonHungarianName))
+            {
+                DefaultPropertyName = nonHungarianName;
+                DefaultNewFieldName = field;
+            }
+            else if (field.StartsWith("m_"))
+            {
+                DefaultPropertyName = field.Substring(2).Capitalize();
+                DefaultNewFieldName = field;
+            }
+            else
+            {
+                DefaultPropertyName = field.Capitalize();
+                DefaultNewFieldName = (field.UnCapitalize()).IncrementEncapsulationIdentifier();
+            }
             _fieldAndProperty = new KeyValuePair<string, string>(DefaultNewFieldName, DefaultPropertyName);
             _setLetParameter = DEFAULT_WRITE_PARAMETER;
         }

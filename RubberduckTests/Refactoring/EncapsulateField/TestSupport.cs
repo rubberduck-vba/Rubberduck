@@ -34,9 +34,21 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
         public Func<EncapsulateFieldModel, EncapsulateFieldModel> UserAcceptsDefaults(bool asUDT = false)
         {
-            return model => 
+            return model =>
             {
                 model.EncapsulateWithUDT = asUDT;
+                return model;
+            };
+        }
+
+        public Func<EncapsulateFieldModel, EncapsulateFieldModel> UserAcceptsDefaults(params string[] fieldNames)
+        {
+            return model =>
+            {
+                foreach (var name in fieldNames)
+                {
+                    model[name].EncapsulateFlag = true;
+                }
                 return model;
             };
         }
@@ -190,13 +202,25 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
         public UserInputDataObject() { }
 
-        public UserInputDataObject(string fieldName, string propertyName = null, bool encapsulationFlag = true, bool isReadOnly = false)
-            : this()
+        //public UserInputDataObject(string fieldName, string propertyName = null, /*bool encapsulationFlag = true,*/ bool isReadOnly = false)
+        //    : this()
+        //{
+        //    UserSelectsField(fieldName, propertyName/*, encapsulationFlag*/, isReadOnly);
+        //}
+
+        public UserInputDataObject UserSelectsField(string fieldName, string propertyName = null/*, bool encapsulationFlag = true*/, bool isReadOnly = false)
         {
-            AddAttributeSet(fieldName, propertyName, encapsulationFlag, isReadOnly);
+            //var attrs = new TestEncapsulationAttributes(fieldName, true, isReadOnly);
+            //attrs.PropertyName = propertyName ?? attrs.PropertyName;
+            //attrs.EncapsulateFlag = true;
+            //attrs.IsReadOnly = isReadOnly;
+
+            //_userInput.Add(attrs);
+            //return this;
+            return AddUserInputSet(fieldName, propertyName, true, isReadOnly);
         }
 
-        public UserInputDataObject AddAttributeSet(string fieldName, string propertyName = null, bool encapsulationFlag = true, bool isReadOnly = false)
+        public UserInputDataObject AddUserInputSet(string fieldName, string propertyName = null, bool encapsulationFlag = true, bool isReadOnly = false)
         {
             var attrs = new TestEncapsulationAttributes(fieldName, encapsulationFlag, isReadOnly);
             attrs.PropertyName = propertyName ?? attrs.PropertyName;

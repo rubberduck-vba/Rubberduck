@@ -6,6 +6,7 @@ using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -59,6 +60,86 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public static bool IsEquivalentVBAIdentifierTo(this string lhs, string identifier)
             => lhs.Equals(identifier, StringComparison.InvariantCultureIgnoreCase);
+
+        #region HungarianNotation
+        //From the HungarianNotation Inspection: Where should this code reside to be 
+        //shared by both the Inspection and this refactoring? Rubberduck.Parsing.VBA.Extensions.StringExtensions.cs?
+        private static readonly List<string> HungarianPrefixes = new List<string>
+        {
+            "chk",
+            "cbo",
+            "cmd",
+            "btn",
+            "fra",
+            "img",
+            "lbl",
+            "lst",
+            "mnu",
+            "opt",
+            "pic",
+            "shp",
+            "txt",
+            "tmr",
+            "chk",
+            "dlg",
+            "drv",
+            "frm",
+            "grd",
+            "obj",
+            "rpt",
+            "fld",
+            "idx",
+            "tbl",
+            "tbd",
+            "bas",
+            "cls",
+            "g",
+            "m",
+            "bln",
+            "byt",
+            "col",
+            "dtm",
+            "dbl",
+            "cur",
+            "int",
+            "lng",
+            "sng",
+            "str",
+            "udt",
+            "vnt",
+            "var",
+            "pgr",
+            "dao",
+            "b",
+            "by",
+            "c",
+            "chr",
+            "i",
+            "l",
+            "s",
+            "o",
+            "n",
+            "dt",
+            "dat",
+            "a",
+            "arr"
+        };
+
+        private static readonly Regex HungarianIdentifierRegex = new Regex($"^({string.Join("|", HungarianPrefixes)})[A-Z0-9].*$");
+
+        public static bool IsHungarianIdentifier(this string identifier, out string nonHungarianName)
+        {
+            nonHungarianName = identifier;
+            if (HungarianIdentifierRegex.IsMatch(identifier))
+            {
+                var prefixChars = identifier.TakeWhile(c => char.IsLower(c));
+                nonHungarianName = identifier.Substring(prefixChars.Count());
+                return true;
+            }
+            return false;
+        }
+
+        #endregion //HungarianNotation
 
         public static string GetText(this IModuleRewriter rewriter, int maxConsecutiveNewLines)
         {

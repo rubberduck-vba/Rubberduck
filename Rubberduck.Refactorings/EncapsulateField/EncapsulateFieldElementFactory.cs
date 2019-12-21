@@ -58,8 +58,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             _validator.RegisterFieldCandidate(candidate);
 
-            candidate = _validator.AssignNoConflictIdentifier(candidate, DeclarationType.Property);
-            candidate = _validator.AssignNoConflictIdentifier(candidate, DeclarationType.Variable);
+            //candidate = _validator.AssignNoConflictIdentifier(candidate, DeclarationType.Property);
+            //candidate = _validator.AssignNoConflictIdentifier(candidate, DeclarationType.Variable);
 
             return candidate;
         }

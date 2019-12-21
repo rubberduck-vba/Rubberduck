@@ -12,7 +12,7 @@ using Rubberduck.VBEditor;
 namespace RubberduckTests.Refactoring.EncapsulateField
 {
     [TestFixture]
-    public class EncapsulatedFieldTests
+    public class EncapsulationIdentifiersTests
     {
         private EncapsulateFieldTestSupport Support { get; } = new EncapsulateFieldTestSupport();
 
@@ -76,6 +76,9 @@ $@"Public fizz As String
 
             encapsulatedField.PropertyName = "Value";
             StringAssert.AreEqualIgnoringCase("Value_value_1_value", encapsulatedField.ParameterName);
+        }
+
+
         }
     }
 }

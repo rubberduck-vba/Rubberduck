@@ -84,9 +84,9 @@ End Property
                 @"Public var|iable As Integer, variable1 As Long, variable2 As Integer";
 
             var userInput = new UserInputDataObject()
-                .AddAttributeSet("variable")
-                .AddAttributeSet("variable1")
-                .AddAttributeSet("variable2");
+                .UserSelectsField("variable")
+                .UserSelectsField("variable1")
+                .UserSelectsField("variable2");
 
             var presenterAction = Support.SetParameters(userInput);
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
@@ -167,7 +167,8 @@ $@"Public fizz As String
             ";
 
             var fieldUT = "fizz";
-            var userInput = new UserInputDataObject("fizz", userModifiedPropertyName, true);
+            var userInput = new UserInputDataObject() //"fizz", userModifiedPropertyName, true);
+                .UserSelectsField("fizz", userModifiedPropertyName);
 
             var presenterAction = Support.SetParameters(userInput);
 
@@ -197,8 +198,8 @@ End Property";
 
             var fieldUT = "fizz";
             var userInput = new UserInputDataObject()
-                .AddAttributeSet(fieldUT, fizz_modifiedPropertyName, true)
-                .AddAttributeSet("bazz", bazz_modifiedPropertyName, true);
+                .UserSelectsField(fieldUT, fizz_modifiedPropertyName, true)
+                .UserSelectsField("bazz", bazz_modifiedPropertyName, true);
 
 
             var presenterAction = Support.SetParameters(userInput);
@@ -231,8 +232,8 @@ End Type
 ";
             var fieldUT = "this";
             var userInput = new UserInputDataObject()
-                .AddAttributeSet(fieldUT)
-                .AddAttributeSet("that");
+                .UserSelectsField(fieldUT)
+                .UserSelectsField("that");
 
             var presenterAction = Support.SetParameters(userInput);
 
@@ -255,7 +256,7 @@ Public wholeNumber As String
 ";
             var fieldUT = "longValue";
             var userInput = new UserInputDataObject()
-                .AddAttributeSet(fieldUT, "WholeNumber", true);
+                .UserSelectsField(fieldUT, "WholeNumber", true);
 
             var presenterAction = Support.SetParameters(userInput);
 
@@ -311,6 +312,26 @@ Private whe|els As Integer
             StringAssert.Contains("Wheels = wheels_1", actualCode);
         }
 
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void DefaultPropertyNameConflictsResolved()
+        {
+            //Both fields default to "Test" as the property name
+            const string inputCode =
+                @"Private mTest As Integer
+Private strTest As String";
+
+            var fieldUT = "mTest";
+
+            var presenterAction = Support.UserAcceptsDefaults(fieldUT, "strTest");
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
+            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, fieldUT, DeclarationType.Variable, presenterAction);
+
+            Assert.AreEqual(true, model[fieldUT].TryValidateEncapsulationAttributes(out var errorMsg), errorMsg);
+        }
+
         [TestCase("Dim test As String", "arg")] //Local variable
         [TestCase(@"Const test As String = ""Foo""", "arg")] //Local constant
         [TestCase(@"Const localTest As String = ""Foo""", "test")] //parameter
@@ -354,7 +375,7 @@ End Function
 ";
             var fieldUT = "aName";
             var userInput = new UserInputDataObject()
-                .AddAttributeSet(fieldUT, "Test", true);
+                .UserSelectsField(fieldUT, "Test", true);
 
             var presenterAction = Support.SetParameters(userInput);
 
@@ -395,7 +416,7 @@ End Sub
         {
             var fieldUT = "foo";
             var userInput = new UserInputDataObject()
-                .AddAttributeSet(fieldUT, userEnteredName, true);
+                .UserSelectsField(fieldUT, userEnteredName, true);
 
             var presenterAction = Support.SetParameters(userInput);
 
@@ -432,7 +453,7 @@ End Type
 
             var fieldUT = "mFoo";
             var userInput = new UserInputDataObject()
-                .AddAttributeSet(fieldUT);
+                .UserSelectsField(fieldUT);
 
             userInput.EncapsulateAsUDT = true;
 
@@ -475,7 +496,7 @@ Public mF|oo As Long
 
             var fieldUT = "mFoo";
             var userInput = new UserInputDataObject()
-                .AddAttributeSet(fieldUT);
+                .UserSelectsField(fieldUT);
 
             userInput.EncapsulateAsUDT = true;
 
