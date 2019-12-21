@@ -74,11 +74,6 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                     attrsInitializedByTheRefactoring.PropertyName = testModifiedAttribute.PropertyName;
                     attrsInitializedByTheRefactoring.EncapsulateFlag = testModifiedAttribute.EncapsulateFlag;
                     attrsInitializedByTheRefactoring.IsReadOnly = testModifiedAttribute.IsReadOnly;
-
-                    //var currentAttributes = model[testModifiedAttribute.TargetFieldName].EncapsulationAttributes;
-                    //currentAttributes.PropertyName = attrsInitializedByTheRefactoring.PropertyName;
-                    //currentAttributes.EncapsulateFlag = attrsInitializedByTheRefactoring.EncapsulateFlag;
-
                 }
                 return model;
             };

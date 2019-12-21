@@ -111,7 +111,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var refactorRewriteSession = new EncapsulateFieldRewriteSession(RewritingManager.CheckOutCodePaneSession()) as IEncapsulateFieldRewriteSession;
             refactorRewriteSession = RefactorRewrite(model, refactorRewriteSession);
 
-            if (!refactorRewriteSession.TryRewrite(_targetQMN))
+            if (!refactorRewriteSession.TryRewrite())
             {
                 throw new RewriteFailedException(refactorRewriteSession.RewriteSession);
             }

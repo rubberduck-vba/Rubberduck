@@ -13,15 +13,10 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
     {
         string TargetID { get; }
         string PropertyName { set; get; }
-        string NewFieldName { get; }
         bool EncapsulateFlag { set; get; }
         bool IsReadOnly { set; get; }
         bool CanBeReadWrite { get; }
-        bool IsEditableReadWriteFieldIdentifier { get; }
-        Visibility FieldNameVisibility { get; }
-        Visibility PropertyNameVisibility { get; }
         bool HasValidEncapsulationAttributes { get; }
-        string AsTypeName { get; }
         string TargetDeclarationExpression { set; get; }
         bool IsPrivateUserDefinedType { get; }
         bool IsRequiredToBeReadOnly { get; }
@@ -52,10 +47,6 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         {
             return _hashCode;
         }
-
-        public Visibility FieldNameVisibility => (_efd is IUserDefinedTypeMemberCandidate) || !_efd.EncapsulateFlag ? Visibility.Collapsed : Visibility.Visible;
-
-        public Visibility PropertyNameVisibility => !_efd.EncapsulateFlag ? Visibility.Collapsed : Visibility.Visible;
 
         public bool HasValidEncapsulationAttributes
         {
@@ -91,13 +82,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
 
         public string PropertyName { get => _efd.PropertyName; set => _efd.PropertyName = value; }
 
-        public bool IsEditableReadWriteFieldIdentifier { get => !(_efd is IUserDefinedTypeMemberCandidate); }
-
         public bool EncapsulateFlag { get => _efd.EncapsulateFlag; set => _efd.EncapsulateFlag = value; }
-
-        public string NewFieldName { get => _efd.FieldIdentifier; }
-
-        public string AsTypeName => _efd.AsTypeName_Field;
 
         public bool IsPrivateUserDefinedType => _efd is IUserDefinedTypeCandidate udt && udt.TypeDeclarationIsPrivate;
 

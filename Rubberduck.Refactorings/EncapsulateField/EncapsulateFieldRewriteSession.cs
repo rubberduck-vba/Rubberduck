@@ -15,7 +15,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         IExecutableRewriteSession RewriteSession { get; }
         IModuleRewriter CheckOutModuleRewriter(QualifiedModuleName qmn);
-        bool TryRewrite(QualifiedModuleName encapsulationModule);
+        bool TryRewrite();
         void Remove(Declaration target, IModuleRewriter rewriter);
     }
 
@@ -34,9 +34,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public IModuleRewriter CheckOutModuleRewriter(QualifiedModuleName qmn) 
             => _rewriteSession.CheckOutModuleRewriter(qmn);
 
-        public bool TryRewrite(QualifiedModuleName targetQMN)
+        public bool TryRewrite()
         {
-            HandleRemovedFieldDeclarationsInLists(targetQMN);
+            ExecuteCachedRemoveRequests();
 
             return _rewriteSession.TryRewrite();
         }
@@ -57,12 +57,17 @@ namespace Rubberduck.Refactorings.EncapsulateField
             RemovedVariables[varList].Add(target);
         }
 
-        private void HandleRemovedFieldDeclarationsInLists(QualifiedModuleName qmn)
+        private void ExecuteCachedRemoveRequests()
         {
-            var rewriter = RewriteSession.CheckOutModuleRewriter(qmn);
-
             foreach (var key in RemovedVariables.Keys)
             {
+                if (RemovedVariables[key].Count == 0)
+                {
+                    continue;
+                }
+
+                var rewriter = RewriteSession.CheckOutModuleRewriter(RemovedVariables[key].First().QualifiedModuleName);
+
                 var variables = key.children.Where(ch => ch is VBAParser.VariableSubStmtContext);
                 if (variables.Count() == RemovedVariables[key].Count)
                 {

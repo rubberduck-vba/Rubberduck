@@ -3,20 +3,16 @@ using NUnit.Framework;
 using Moq;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.UIContext;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.VBEditor;
 using RubberduckTests.Mocks;
-using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor.Utility;
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing.Grammar;
 
 namespace RubberduckTests.Refactoring.EncapsulateField
 {

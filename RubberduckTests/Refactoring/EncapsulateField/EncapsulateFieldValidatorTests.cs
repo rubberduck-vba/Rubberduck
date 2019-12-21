@@ -35,25 +35,8 @@ $@"Public {originalFieldName} As String";
 
             encapsulatedField.PropertyName = newPropertyName;
             encapsulatedField.EncapsulateFlag = true;
-            //var field = encapsulatedField as IEncapsulateFieldCandidateValidations;
             Assert.AreEqual(expectedResult, encapsulatedField.TryValidateEncapsulationAttributes(out _));
         }
-
-//        [TestCase("fizz", "_Fizz", false)]
-//        [TestCase("fizz", "FizzProp", true)]
-//        [Category("Refactorings")]
-//        [Category("Encapsulate Field")]
-//        public void VBAIdentifier_FieldName(string originalFieldName, string newFieldName, bool expectedResult)
-//        {
-//            string inputCode =
-//$@"Public {originalFieldName} As String";
-
-//            var encapsulatedField = Support.RetrieveEncapsulatedField(inputCode, originalFieldName);
-
-//            encapsulatedField.FieldIdentifier = newFieldName;
-//            var field = encapsulatedField as IEncapsulateFieldCandidateValidations;
-//            Assert.AreEqual(expectedResult, field.HasVBACompliantFieldIdentifier);
-//        }
 
         [Test]
         [Category("Refactorings")]
@@ -167,7 +150,7 @@ $@"Public fizz As String
             ";
 
             var fieldUT = "fizz";
-            var userInput = new UserInputDataObject() //"fizz", userModifiedPropertyName, true);
+            var userInput = new UserInputDataObject()
                 .UserSelectsField("fizz", userModifiedPropertyName);
 
             var presenterAction = Support.SetParameters(userInput);
