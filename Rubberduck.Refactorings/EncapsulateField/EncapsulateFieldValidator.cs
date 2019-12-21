@@ -131,16 +131,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public bool HasConflictingIdentifier(IEncapsulateFieldCandidate field, DeclarationType declarationType, out string errorMessage)
         {
             errorMessage = string.Empty;
-            //The declared type of a function declaration may not be a private enum name.
-            //=>Means encapsulating a private enum field must be 'As Long'
 
-            //If a procedure declaration whose visibility is public has a procedure name 
-            //that is the same as the name of a project or name of a module then 
-            //all references to the procedure name must be explicitly qualified with 
-            //its project or module name unless the reference occurs within the module that defines the procedure. 
-
-
-         var potentialDeclarationIdentifierConflicts = new List<string>();
+            var potentialDeclarationIdentifierConflicts = new List<string>();
             potentialDeclarationIdentifierConflicts.AddRange(PotentialConflictIdentifiers(field, declarationType));
 
             potentialDeclarationIdentifierConflicts.AddRange(FlaggedCandidates.Where(fc => fc != field).Select(fc => fc.PropertyName));
@@ -203,7 +195,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return potentialConflictNames.Any(m => m.IsEquivalentVBAIdentifierTo(stateUDT.FieldIdentifier));
         }
 
-       //The refactoring only inserts elements with the following Accessibilities:
+       //The refactoring only inserts new code elements with the following Accessibilities:
        //Variables => Private
        //Properties => Public
        //UDT => Private
@@ -217,6 +209,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 DeclarationType.Parameter,
                 DeclarationType.EnumerationMember,
                 DeclarationType.Enumeration,
+                DeclarationType.UserDefinedType,
                 DeclarationType.UserDefinedTypeMember
             };
 
@@ -231,6 +224,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 //5.2.3.3 If an<udt-declaration > is an element of a<private-type-declaration> its 
                 //UDT name cannot be the same as the enum name of any<enum-declaration> 
                 //or the UDT name of any other<UDTdeclaration> within the same<module>
+                NeverCauseNameConflictTypes.Remove(DeclarationType.UserDefinedType);
 
                 //5.2.3.4 The enum name of a <private-enum-declaration> cannot be the same as the enum name of any other 
                 //<enum-declaration> or as the UDT name of a <UDT-declaration> within the same <module>.

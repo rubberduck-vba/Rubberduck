@@ -47,11 +47,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _declarationFinderProvider = declarationFinderProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;
             _indenter = indenter;
-
-            _codeSectionStartIndex = _declarationFinderProvider.DeclarationFinder
-                .Members(_targetQMN).Where(m => m.IsMember())
-                .OrderBy(c => c.Selection)
-                .FirstOrDefault()?.Context.Start.TokenIndex ?? null;
         }
 
         public EncapsulateFieldModel Model { set; get; }

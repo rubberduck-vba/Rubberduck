@@ -37,9 +37,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     .Where(v => v is IUserDefinedTypeCandidate)
                     .Cast<IUserDefinedTypeCandidate>();
 
-        public bool HasSelectedMultipleUDTFieldsOfType(string asTypeName)
-                => SelectedUDTFieldCandidates.Where(f => f.AsTypeName_Field.Equals(asTypeName)).Count() > 1;
-
         public IEncapsulateFieldCandidate this[string encapsulatedFieldTargetID]
             => EncapsulationCandidates.Where(c => c.TargetID.Equals(encapsulatedFieldTargetID)).Single();
 
