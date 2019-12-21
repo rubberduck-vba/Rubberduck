@@ -151,7 +151,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return false;
         }
 
-        public IEncapsulateFieldCandidate AssignNoConflictIdentifier(IEncapsulateFieldCandidate candidate, DeclarationType declarationType) //, Predicate<IEncapsulateFieldCandidate> conflictDetector, Action<string> setValue, Func<string> getIdentifier)
+        public IEncapsulateFieldCandidate AssignNoConflictIdentifier(IEncapsulateFieldCandidate candidate, DeclarationType declarationType)
         {
             var isConflictingIdentifier = HasConflictingIdentifier(candidate, declarationType, out _);
             for (var count = 1; count < 10 && isConflictingIdentifier; count++)

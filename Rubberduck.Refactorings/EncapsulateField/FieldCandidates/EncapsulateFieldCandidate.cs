@@ -259,17 +259,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var accessor = token == AccessorTokens.Field
                 ? FieldIdentifier
                 : PropertyName;
-            //switch (token)
-            //{
-            //    case AccessorTokens.Field:
-            //        accessor = FieldIdentifier;
-            //        break;
-            //    case AccessorTokens.Property:
-            //        accessor = PropertyName;
-            //        break;
-            //    default:
-            //        throw new ArgumentException();
-            //}
 
             if ((ReferenceQualifier?.Length ?? 0) > 0)
             {

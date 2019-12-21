@@ -67,9 +67,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
                             continue;
                         }
 
-                        //Reaching this line typically implies that there are multiple fields of the same Type within the module.
+                        //Reaching this line probably implies that there are multiple fields of the same User Defined 
+                        //Type within the module.
                         //Try to use a name involving the parent's identifier to make it unique/meaningful 
-                        //before appending incremented value(s).
+                        //before giving up and creating incremented value(s).
                         member.PropertyName = $"{FieldIdentifier.Capitalize()}{member.PropertyName.Capitalize()}";
                         _validator.AssignNoConflictIdentifier(member, DeclarationType.Property);
                     }
