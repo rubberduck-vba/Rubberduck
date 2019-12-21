@@ -1,6 +1,8 @@
 ﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.Extensions;
+using Rubberduck.Common;
 using System.Collections.Generic;
+using Rubberduck.Refactorings.EncapsulateField.Extensions;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -18,20 +20,20 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public EncapsulationIdentifiers(string field)
         {
             _targetIdentifier = field;
-            if (field.IsHungarianIdentifier(out var nonHungarianName))
+            if (field.TryMatchHungarianNotationCriteria(out var nonHungarianName))
             {
                 DefaultPropertyName = nonHungarianName;
                 DefaultNewFieldName = field;
             }
             else if (field.StartsWith("m_"))
             {
-                DefaultPropertyName = field.Substring(2).Capitalize();
+                DefaultPropertyName = field.Substring(2).CapitalizeFirstLetter();
                 DefaultNewFieldName = field;
             }
             else
             {
-                DefaultPropertyName = field.Capitalize();
-                DefaultNewFieldName = (field.UnCapitalize()).IncrementEncapsulationIdentifier();
+                DefaultPropertyName = field.CapitalizeFirstLetter();
+                DefaultNewFieldName = (field.ToLowerCaseFirstLetter()).IncrementEncapsulationIdentifier();
             }
             _fieldAndProperty = new KeyValuePair<string, string>(DefaultNewFieldName, DefaultPropertyName);
             _setLetParameter = DEFAULT_WRITE_PARAMETER;

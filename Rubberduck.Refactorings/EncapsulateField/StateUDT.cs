@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Common;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using System;
@@ -31,7 +32,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly IEncapsulateFieldNamesValidator _validator;
 
         public StateUDT(QualifiedModuleName qmn, IEncapsulateFieldNamesValidator validator)
-            :this($"{EncapsulateFieldResources.StateUserDefinedTypeIdentifierPrefix}{qmn.ComponentName.Capitalize()}", validator)
+            :this($"{EncapsulateFieldResources.StateUserDefinedTypeIdentifierPrefix}{qmn.ComponentName.CapitalizeFirstLetter()}", validator)
         {
             QualifiedModuleName = qmn;
         }

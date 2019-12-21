@@ -1,7 +1,9 @@
 ﻿using Antlr4.Runtime;
+using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -71,7 +73,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                         //Type within the module.
                         //Try to use a name involving the parent's identifier to make it unique/meaningful 
                         //before giving up and creating incremented value(s).
-                        member.PropertyName = $"{FieldIdentifier.Capitalize()}{member.PropertyName.Capitalize()}";
+                        member.PropertyName = $"{FieldIdentifier.CapitalizeFirstLetter()}{member.PropertyName.CapitalizeFirstLetter()}";
                         _validator.AssignNoConflictIdentifier(member, DeclarationType.Property);
                     }
                 }

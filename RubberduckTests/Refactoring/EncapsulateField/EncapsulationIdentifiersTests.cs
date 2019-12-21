@@ -78,7 +78,17 @@ $@"Public fizz As String
             StringAssert.AreEqualIgnoringCase("Value_value_1_value", encapsulatedField.ParameterName);
         }
 
+        [TestCase("strValue", "Value", "strValue")]
+        [TestCase("m_Text", "Text", "m_Text")]
+        [TestCase("notAHungarianName", "NotAHungarianName", "notAHungarianName_1")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void AccountsForHungarianNamesAndMemberPrefix(string inputName, string expectedPropertyName, string expectedFieldName)
+        {
+            var sut = new EncapsulationIdentifiers(inputName);
 
+            Assert.AreEqual(expectedPropertyName, sut.DefaultPropertyName);
+            Assert.AreEqual(expectedFieldName, sut.DefaultNewFieldName);
         }
     }
 }

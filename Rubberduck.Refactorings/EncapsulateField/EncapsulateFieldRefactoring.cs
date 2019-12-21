@@ -11,6 +11,7 @@ using Rubberduck.VBEditor.Utility;
 using System.Collections.Generic;
 using System;
 using Antlr4.Runtime;
+using Rubberduck.Refactorings.EncapsulateField.Extensions;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {

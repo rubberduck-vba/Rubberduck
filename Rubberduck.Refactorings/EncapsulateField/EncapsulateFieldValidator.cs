@@ -2,6 +2,7 @@
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Refactorings.Common;
+using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 
