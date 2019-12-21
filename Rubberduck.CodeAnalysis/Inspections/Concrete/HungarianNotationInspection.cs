@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Rubberduck.CodeAnalysis.Settings;
+using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Inspections.Results;
@@ -49,69 +50,6 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class HungarianNotationInspection : InspectionBase
     {
         #region statics
-        private static readonly List<string> HungarianPrefixes = new List<string>
-        {
-            "chk",
-            "cbo",
-            "cmd",
-            "btn",
-            "fra",
-            "img",
-            "lbl",
-            "lst",
-            "mnu",
-            "opt",
-            "pic",
-            "shp",
-            "txt",
-            "tmr",
-            "chk",
-            "dlg",
-            "drv",
-            "frm",
-            "grd",
-            "obj",
-            "rpt",
-            "fld",
-            "idx",
-            "tbl",
-            "tbd",
-            "bas",
-            "cls",
-            "g",
-            "m",
-            "bln",
-            "byt",
-            "col",
-            "dtm",
-            "dbl",
-            "cur",
-            "int",
-            "lng",
-            "sng",
-            "str",
-            "udt",
-            "vnt",
-            "var",
-            "pgr",
-            "dao",
-            "b",
-            "by",
-            "c",
-            "chr",
-            "i",
-            "l",
-            "s",
-            "o",
-            "n",
-            "dt",
-            "dat",
-            "a",
-            "arr"
-        };
-
-        private static readonly Regex HungarianIdentifierRegex = new Regex($"^({string.Join("|", HungarianPrefixes)})[A-Z0-9].*$");
-
         private static readonly List<DeclarationType> TargetDeclarationTypes = new List<DeclarationType>
         {
             DeclarationType.Parameter,
@@ -154,7 +92,7 @@ namespace Rubberduck.Inspections.Concrete
                                       && TargetDeclarationTypes.Contains(declaration.DeclarationType)
                                       && !IgnoredProcedureTypes.Contains(declaration.DeclarationType)
                                       && !IgnoredProcedureTypes.Contains(declaration.ParentDeclaration.DeclarationType)
-                                      && HungarianIdentifierRegex.IsMatch(declaration.IdentifierName))
+                                      && declaration.IdentifierName.TryMatchHungarianNotationCriteria(out _))
                 .Select(issue => new DeclarationInspectionResult(this,
                                                       string.Format(Resources.Inspections.InspectionResults.IdentifierNameInspection,
                                                                     RubberduckUI.ResourceManager.GetString($"DeclarationType_{issue.DeclarationType}", CultureInfo.CurrentUICulture),
