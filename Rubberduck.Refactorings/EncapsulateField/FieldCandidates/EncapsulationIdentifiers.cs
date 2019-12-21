@@ -1,7 +1,5 @@
 ﻿using Rubberduck.Parsing.Symbols;
-using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {

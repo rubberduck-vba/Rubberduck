@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    //TODO: All the raw strings here will be assigned keys in RubberduckUI.resx when the 'WIP' annotation is removed
+    //TODO: All the raw strings here will be assigned keys in RubberduckUI.resx 
+    //just before the 'WIP' annotation is removed
     public class EncapsulateFieldResources
     {
         public static string PreviewEndOfChangesMarker

@@ -2,11 +2,8 @@
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -94,19 +91,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
             get => _referenceQualifier;
         }
-
-        //public bool FieldQualifyUDTMemberPropertyNames
-        //{
-        //    set
-        //    {
-        //        foreach (var member in Members)
-        //        {
-        //            member.IncludeParentNameWithPropertyIdentifier = value;
-        //        }
-        //    }
-
-        //    get => Members.All(m => m.IncludeParentNameWithPropertyIdentifier);
-        //}
 
         protected override void LoadFieldReferenceContextReplacements()
         {
@@ -197,10 +181,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             if (!TypeDeclarationIsPrivate && !_validator.IsSelfConsistent(this, out errorMessage))
             {
-                //if (!_validator.IsSelfConsistent(this, out errorMessage))
-                //{
-                    return false;
-                //}
+                return false;
             }
 
             if (_validator.HasConflictingIdentifier(this, DeclarationType.Property, out errorMessage))
