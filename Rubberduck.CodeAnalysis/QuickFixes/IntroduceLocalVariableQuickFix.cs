@@ -9,6 +9,32 @@ using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Introduces a local Variant variable for an otherwise undeclared identifier.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="UndeclaredVariableInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     value = 42
+    ///     Debug.Print value
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim value As Variant
+    ///     value = 42
+    ///     Debug.Print value
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class IntroduceLocalVariableQuickFix : QuickFixBase
     {
         public IntroduceLocalVariableQuickFix()

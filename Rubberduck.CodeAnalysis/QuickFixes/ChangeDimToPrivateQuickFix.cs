@@ -6,6 +6,33 @@ using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Replaces the Dim keyword with Private in a module-scoped declaration.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="ModuleScopeDimKeywordInspection" />
+    /// </inspections>
+    /// <canfix procedure="false" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Dim thing As Long
+    /// 
+    /// Public Sub DoSomething()
+    ///     Debug.Print thing
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Private thing As Long
+    /// 
+    /// Public Sub DoSomething()
+    ///     Debug.Print thing
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class ChangeDimToPrivateQuickFix : QuickFixBase
     {
         public ChangeDimToPrivateQuickFix()

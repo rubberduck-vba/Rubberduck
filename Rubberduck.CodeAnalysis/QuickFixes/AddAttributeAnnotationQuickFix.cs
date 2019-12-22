@@ -10,6 +10,42 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Adds an annotation comment to document the presence of a hidden module or member attribute.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="MissingModuleAnnotationInspection" />
+    /// <inspection name="MissingMemberAnnotationInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Attribute VB_PredeclaredId = True
+    /// 
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    /// Attribute VB_Description = "Does something."
+    /// 
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Attribute VB_PredeclaredId = True
+    /// '@PredeclaredId
+    /// 
+    /// Option Explicit
+    /// 
+    /// '@Description("Does something.")
+    /// Public Sub DoSomething()
+    /// Attribute VB_Description = "Does something."
+    /// 
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public class AddAttributeAnnotationQuickFix : QuickFixBase
     {
         private readonly IAnnotationUpdater _annotationUpdater;

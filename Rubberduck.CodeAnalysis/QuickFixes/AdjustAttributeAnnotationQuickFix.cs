@@ -11,6 +11,41 @@ using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Adjusts existing Rubberduck annotations to match the corresponding hidden attributes.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="AttributeValueOutOfSyncInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Attribute VB_PredeclaredId = False
+    /// '@PredeclaredId
+    /// 
+    /// Option Explicit
+    /// 
+    /// '@Description("Does something.")
+    /// Public Sub DoSomething()
+    /// Attribute VB_Description = "Does something else."
+    /// 
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// 
+    /// Option Explicit
+    /// 
+    /// '@Description("Does something else.")
+    /// Public Sub DoSomething()
+    /// Attribute VB_Description = "Does something else."
+    /// 
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public class AdjustAttributeAnnotationQuickFix : QuickFixBase
     {
         private readonly IAnnotationUpdater _annotationUpdater;
