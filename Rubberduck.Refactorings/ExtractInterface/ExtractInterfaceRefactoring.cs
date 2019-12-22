@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using NLog;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.ImplementInterface;
@@ -28,8 +30,9 @@ namespace Rubberduck.Refactorings.ExtractInterface
             IParseManager parseManager, 
             IRefactoringPresenterFactory factory, 
             IRewritingManager rewritingManager,
-            ISelectionProvider selectionProvider)
-        :base(rewritingManager, selectionProvider, factory)
+            ISelectionProvider selectionProvider,
+            IUiDispatcher uiDispatcher)
+        :base(rewritingManager, selectionProvider, factory, uiDispatcher)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _parseManager = parseManager;
@@ -71,8 +74,16 @@ namespace Rubberduck.Refactorings.ExtractInterface
         {
             //We need to suspend here since adding the interface and rewriting will both trigger a reparse.
             var suspendResult = _parseManager.OnSuspendParser(this, new[] {ParserState.Ready}, () => AddInterface(model));
-            if (suspendResult != SuspensionResult.Completed)
+            var suspendOutcome = suspendResult.Outcome;
+            if (suspendOutcome != SuspensionOutcome.Completed)
             {
+                if ((suspendOutcome == SuspensionOutcome.UnexpectedError || suspendOutcome == SuspensionOutcome.Canceled)
+                    && suspendResult.EncounteredException != null)
+                {
+                    ExceptionDispatchInfo.Capture(suspendResult.EncounteredException).Throw();
+                    return;
+                }
+
                 _logger.Warn($"{nameof(AddInterface)} failed because a parser suspension request could not be fulfilled.  The request's result was '{suspendResult.ToString()}'.");
                 throw new SuspendParserFailureException();
             }

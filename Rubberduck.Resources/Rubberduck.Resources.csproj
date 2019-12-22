@@ -26,17 +26,4 @@
       <DependentUpon>$([System.String]::Copy('%(Filename)').Replace('.Designer', '')).resx</DependentUpon>
     </Compile>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Update="Inspections\InspectionInfo.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>InspectionInfo.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="Inspections\InspectionInfo.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>InspectionInfo.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
 </Project>

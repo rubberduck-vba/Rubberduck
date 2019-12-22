@@ -5,6 +5,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor;
@@ -26,8 +27,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
             IRefactoringPresenterFactory factory, 
             IRewritingManager rewritingManager,
             ISelectionProvider selectionProvider,
-            ISelectedDeclarationProvider selectedDeclarationProvider)
-        :base(rewritingManager, selectionProvider, factory)
+            ISelectedDeclarationProvider selectedDeclarationProvider,
+            IUiDispatcher uiDispatcher)
+        :base(rewritingManager, selectionProvider, factory, uiDispatcher)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;

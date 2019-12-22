@@ -4,6 +4,7 @@ using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;

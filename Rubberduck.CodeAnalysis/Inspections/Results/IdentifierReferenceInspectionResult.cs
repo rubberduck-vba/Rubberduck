@@ -34,8 +34,8 @@ namespace Rubberduck.Inspections.Results
 
         public override bool ChangesInvalidateResult(ICollection<QualifiedModuleName> modifiedModules)
         {
-            return modifiedModules.Contains(Target.QualifiedModuleName)
-                || base.ChangesInvalidateResult(modifiedModules);
+            return Target != null && modifiedModules.Contains(Target.QualifiedModuleName)
+                   || base.ChangesInvalidateResult(modifiedModules);
         }
     }
 }

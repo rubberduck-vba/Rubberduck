@@ -198,7 +198,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return null;
             }
-            return new NewTypeBinding(_declarationFinder, module, parent, expression, typeExpressionBinding);
+            return new NewTypeBinding(expression, typeExpressionBinding);
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.MarkedFileNumberExprContext expression, IBoundExpression withBlockVariable)
@@ -325,7 +325,12 @@ namespace Rubberduck.Parsing.Binding
                     if (expr.positionalArgument() != null)
                     {
                         var (binding, context, isAddressOfArgument) = VisitArgumentBinding(module, parent, expr.positionalArgument().argumentExpression(), withBlockVariable);
-                        convertedList.AddArgument(new ArgumentListArgument(binding, context, ArgumentListArgumentType.Positional, isAddressOfArgument));
+                        convertedList.AddArgument(new ArgumentListArgument(
+                            binding, 
+                            context,
+                            argumentList,
+                            ArgumentListArgumentType.Positional, 
+                            isAddressOfArgument));
                     }
                     else if (expr.namedArgument() != null)
                     {
@@ -333,6 +338,7 @@ namespace Rubberduck.Parsing.Binding
                         convertedList.AddArgument(new ArgumentListArgument(
                             binding, 
                             context, 
+                            argumentList,
                             ArgumentListArgumentType.Named,
                             CreateNamedArgumentExpressionCreator(expr.namedArgument().unrestrictedIdentifier().GetText(), expr.namedArgument().unrestrictedIdentifier()),
                             isAddressOfArgument));
@@ -344,6 +350,7 @@ namespace Rubberduck.Parsing.Binding
                         convertedList.AddArgument(new ArgumentListArgument(
                             binding,
                             missingArgumentContext,
+                            argumentList,
                             ArgumentListArgumentType.Missing,
                             false));
                     }
@@ -415,7 +422,7 @@ namespace Rubberduck.Parsing.Binding
                 Still, we have a specific binding for it in order to attach a reference to the called default member to the exclamation mark.
              */
             var fakeArgList = new ArgumentList();
-            fakeArgList.AddArgument(new ArgumentListArgument(new LiteralDefaultBinding(nameContext), nameContext, ArgumentListArgumentType.Positional));
+            fakeArgList.AddArgument(new ArgumentListArgument(new LiteralDefaultBinding(nameContext), nameContext, null, ArgumentListArgumentType.Positional));
             return new DictionaryAccessDefaultBinding(expression, lExpressionBinding, fakeArgList);
         }
 
@@ -429,12 +436,16 @@ namespace Rubberduck.Parsing.Binding
                 Still, we have a specific binding for it in order to attach a reference to the called default member to the exclamation mark.
              */
             var fakeArgList = new ArgumentList();
-            fakeArgList.AddArgument(new ArgumentListArgument(new LiteralDefaultBinding(nameContext), nameContext, ArgumentListArgumentType.Positional));
+            fakeArgList.AddArgument(new ArgumentListArgument(new LiteralDefaultBinding(nameContext), nameContext, null, ArgumentListArgumentType.Positional));
             return new DictionaryAccessDefaultBinding(expression, lExpression, fakeArgList);
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.WithMemberAccessExprContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
         {
+            if (withBlockVariable == null)
+            {
+                withBlockVariable = new ResolutionFailedExpression(expression);
+            }
             return new MemberAccessDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, withBlockVariable, expression.unrestrictedIdentifier().GetText(), statementContext, expression.unrestrictedIdentifier());
         }
 

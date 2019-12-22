@@ -21,7 +21,8 @@
         <Setter Property="Margin" Value="4" />
     </Style>
 
-   
+    <converters:GroupingGridLocationConverter x:Key="GroupingGridLocationConverter" />
+
     <SolidColorBrush x:Key="ToolBarHorizontalBackground" Color="#FFEEF5FD"/>
     <SolidColorBrush x:Key="ToolBarToggleButtonVerticalBackground" Color="#FFEEF5FD"/>
     <SolidColorBrush x:Key="ToolBarButtonHover" Color="#210080FF"/>

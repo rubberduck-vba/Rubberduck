@@ -4,6 +4,7 @@ namespace Rubberduck.Refactorings
 {
     public enum RefactoringDialogResult
     {
+        Undetermined,
         Execute,
         Cancel
     }

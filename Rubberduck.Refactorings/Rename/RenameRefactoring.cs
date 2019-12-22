@@ -6,6 +6,7 @@ using Rubberduck.VBEditor;
 using System;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Refactorings.Exceptions;
@@ -14,6 +15,7 @@ using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.Utility;
 using NLog;
+using Rubberduck.Parsing.UIContext;
 
 namespace Rubberduck.Refactorings.Rename
 {
@@ -37,8 +39,9 @@ namespace Rubberduck.Refactorings.Rename
             IRewritingManager rewritingManager,
             ISelectionProvider selectionProvider,
             ISelectedDeclarationProvider selectedDeclarationProvider,
-            IParseManager parseManager)
-        :base(rewritingManager, selectionProvider, factory)
+            IParseManager parseManager,
+            IUiDispatcher uiDispatcher)
+        :base(rewritingManager, selectionProvider, factory, uiDispatcher)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;
@@ -91,8 +94,16 @@ namespace Rubberduck.Refactorings.Rename
         private void RenameRefactorWithSuspendedParser(RenameModel model)
         {
             var suspendResult = _parseManager.OnSuspendParser(this, new[] { ParserState.Ready }, () => RenameRefactor(model));
-            if (suspendResult != SuspensionResult.Completed)
+            var suspendOutcome = suspendResult.Outcome;
+            if (suspendOutcome != SuspensionOutcome.Completed)
             {
+                if ((suspendOutcome == SuspensionOutcome.UnexpectedError || suspendOutcome == SuspensionOutcome.Canceled)
+                    && suspendResult.EncounteredException != null)
+                {
+                    ExceptionDispatchInfo.Capture(suspendResult.EncounteredException).Throw();
+                    return;
+                }
+
                 _logger.Warn($"{nameof(RenameRefactor)} failed because a parser suspension request could not be fulfilled.  The request's result was '{suspendResult.ToString()}'.");
                 throw new SuspendParserFailureException();
             }
@@ -465,7 +476,10 @@ namespace Rubberduck.Refactorings.Rename
         {
             var modules = target.References
                 .Where(reference =>
-                    reference.Context.GetText() != "Me").GroupBy(r => r.QualifiedModuleName);
+                    reference.Context.GetText() != "Me" 
+                    && !reference.IsArrayAccess
+                    && !reference.IsDefaultMemberAccess)
+                .GroupBy(r => r.QualifiedModuleName);
 
             foreach (var grouping in modules)
             {

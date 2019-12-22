@@ -14,8 +14,8 @@ using System.Windows.Input;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Interaction.Navigation;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.UIContext;
@@ -525,8 +525,7 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
-            var selectedResult = SelectedItem as IInspectionResult;
-            if (selectedResult == null)
+            if (!(SelectedItem is IInspectionResult selectedResult))
             {
                 return;
             }
@@ -553,8 +552,7 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
-            var selectedResult = SelectedItem as IInspectionResult;
-            if (selectedResult == null)
+            if (!(SelectedItem is IInspectionResult selectedResult))
             {
                 return;
             }

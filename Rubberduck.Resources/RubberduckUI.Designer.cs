@@ -316,6 +316,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} {1} {2} {3} {4} {5}.
+        /// </summary>
+        public static string CodeExplorer_IExportable_DeclarationFormat {
+            get {
+                return ResourceManager.GetString("CodeExplorer_IExportable_DeclarationFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to By module.
         /// </summary>
         public static string CodeInspectionResults_GroupByModule {
@@ -597,7 +606,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The VBEsetting &quot;Compile On Demand&quot; is currently enabled. This is not recommended as this may hide compilation errors and cause problems with parsing. Do you want to parse anyway?.
+        ///   Looks up a localized string similar to The VBE setting &quot;Compile On Demand&quot; is currently enabled. This is not recommended as this may hide compilation errors and cause problems with parsing. Do you want to parse anyway?.
         /// </summary>
         public static string Command_Reparse_CompileOnDemandEnabled {
             get {
@@ -764,6 +773,132 @@ namespace Rubberduck.Resources {
         public static string Component {
             get {
                 return ResourceManager.GetString("Component", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ActiveX Designer.
+        /// </summary>
+        public static string ComponentType_ActiveXDesigner {
+            get {
+                return ResourceManager.GetString("ComponentType_ActiveXDesigner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Class Module.
+        /// </summary>
+        public static string ComponentType_ClassModule {
+            get {
+                return ResourceManager.GetString("ComponentType_ClassModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to COM component.
+        /// </summary>
+        public static string ComponentType_ComComponent {
+            get {
+                return ResourceManager.GetString("ComponentType_ComComponent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document Object.
+        /// </summary>
+        public static string ComponentType_DocObject {
+            get {
+                return ResourceManager.GetString("ComponentType_DocObject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document Module.
+        /// </summary>
+        public static string ComponentType_Document {
+            get {
+                return ResourceManager.GetString("ComponentType_Document", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MDI Form.
+        /// </summary>
+        public static string ComponentType_MDIForm {
+            get {
+                return ResourceManager.GetString("ComponentType_MDIForm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Property Page.
+        /// </summary>
+        public static string ComponentType_PropPage {
+            get {
+                return ResourceManager.GetString("ComponentType_PropPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Related Document.
+        /// </summary>
+        public static string ComponentType_RelatedDocument {
+            get {
+                return ResourceManager.GetString("ComponentType_RelatedDocument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resource File.
+        /// </summary>
+        public static string ComponentType_ResFile {
+            get {
+                return ResourceManager.GetString("ComponentType_ResFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Standard Module.
+        /// </summary>
+        public static string ComponentType_StandardModule {
+            get {
+                return ResourceManager.GetString("ComponentType_StandardModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Undefined.
+        /// </summary>
+        public static string ComponentType_Undefined {
+            get {
+                return ResourceManager.GetString("ComponentType_Undefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Control.
+        /// </summary>
+        public static string ComponentType_UserControl {
+            get {
+                return ResourceManager.GetString("ComponentType_UserControl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UserForm.
+        /// </summary>
+        public static string ComponentType_UserForm {
+            get {
+                return ResourceManager.GetString("ComponentType_UserForm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VB Form.
+        /// </summary>
+        public static string ComponentType_VBForm {
+            get {
+                return ResourceManager.GetString("ComponentType_VBForm", resourceCulture);
             }
         }
         
@@ -1666,7 +1801,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to filter by description.
+        ///   Looks up a localized string similar to Filter.
         /// </summary>
         public static string GroupingGrid_Filter {
             get {
@@ -1798,6 +1933,50 @@ namespace Rubberduck.Resources {
         public static string ImplementInterfaceFailed_NoImplementsStatementSelected {
             get {
                 return ResourceManager.GetString("ImplementInterfaceFailed_NoImplementsStatementSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For file &apos;{0}&apos;, the required binary file(s) &apos;{1}&apos; are missing and the target component &apos;{2}&apos; does not already exists.
+        ///
+        ///Import aborted..
+        /// </summary>
+        public static string ImportCommand_BinaryAndComponentDoNotExist {
+            get {
+                return ResourceManager.GetString("ImportCommand_BinaryAndComponentDoNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For file &apos;{0}&apos;, the requires binary file(s) &apos;{1}&apos; are missing.
+        ///
+        ///Import aborted..
+        /// </summary>
+        public static string ImportCommand_BinaryDoesNotExist {
+            get {
+                return ResourceManager.GetString("ImportCommand_BinaryDoesNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is no existing document module with name &apos;{0}&apos;; file &apos;{1}&apos; cannot be imported.
+        ///
+        ///Import aborted..
+        /// </summary>
+        public static string ImportCommand_DocumentDoesNotExist {
+            get {
+                return ResourceManager.GetString("ImportCommand_DocumentDoesNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multiple files contain code for the component &apos;{0}&apos;.
+        ///
+        ///Import aborted..
+        /// </summary>
+        public static string ImportCommand_DuplicateModule {
+            get {
+                return ResourceManager.GetString("ImportCommand_DuplicateModule", resourceCulture);
             }
         }
         
@@ -4170,6 +4349,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rubberduck Test Results - {0}.
+        /// </summary>
+        public static string TestExplorer_AppendHeader {
+            get {
+                return ResourceManager.GetString("TestExplorer_AppendHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fail.
         /// </summary>
         public static string TestOutcome_Fail {
@@ -4188,7 +4376,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Suceeded.
+        ///   Looks up a localized string similar to Succeeded.
         /// </summary>
         public static string TestOutcome_Succeeded {
             get {
@@ -4383,44 +4571,11 @@ namespace Rubberduck.Resources {
         /// <summary>
         ///   Looks up a localized string similar to The component type of the existing component &apos;{0}&apos; does not agree with that indicated by the extension of file &apos;{1}&apos;.
         ///
-        ///Update aborted..
+        ///Import aborted..
         /// </summary>
         public static string UpdateFromFilesCommand_DifferentComponentType {
             get {
                 return ResourceManager.GetString("UpdateFromFilesCommand_DifferentComponentType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to There is no existing document module with name &apos;{0}&apos;; file &apos;{1}&apos; cannot be imported.
-        ///
-        ///Update aborted..
-        /// </summary>
-        public static string UpdateFromFilesCommand_DocumentDoesNotExist {
-            get {
-                return ResourceManager.GetString("UpdateFromFilesCommand_DocumentDoesNotExist", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Multiple files contain code for the component &apos;{0}&apos;.
-        ///
-        ///Update aborted..
-        /// </summary>
-        public static string UpdateFromFilesCommand_DuplicateModule {
-            get {
-                return ResourceManager.GetString("UpdateFromFilesCommand_DuplicateModule", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to There is no user form with name &apos;{0}&apos;; no code behind can be updated from file &apos;{1}&apos;.
-        ///
-        ///Update aborted..
-        /// </summary>
-        public static string UpdateFromFilesCommand_UserFormDoesNotExist {
-            get {
-                return ResourceManager.GetString("UpdateFromFilesCommand_UserFormDoesNotExist", resourceCulture);
             }
         }
         

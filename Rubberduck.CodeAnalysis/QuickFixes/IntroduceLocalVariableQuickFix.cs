@@ -22,10 +22,10 @@ namespace Rubberduck.Inspections.QuickFixes
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
             var identifierContext = result.Target.Context;
-            var enclosingStatmentContext = identifierContext.GetAncestor<VBAParser.BlockStmtContext>();
-            var instruction = IdentifierDeclarationText(result.Target.IdentifierName, EndOfStatementText(enclosingStatmentContext), FrontPadding(enclosingStatmentContext));
+            var enclosingStatementContext = identifierContext.GetAncestor<VBAParser.BlockStmtContext>();
+            var instruction = IdentifierDeclarationText(result.Target.IdentifierName, EndOfStatementText(enclosingStatementContext), FrontPadding(enclosingStatementContext));
             var rewriter = rewriteSession.CheckOutModuleRewriter(result.Target.QualifiedModuleName);
-            rewriter.InsertBefore(enclosingStatmentContext.Start.TokenIndex, instruction);
+            rewriter.InsertBefore(enclosingStatementContext.Start.TokenIndex, instruction);
         }
 
         private string EndOfStatementText(VBAParser.BlockStmtContext context)

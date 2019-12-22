@@ -1048,26 +1048,8 @@ End Sub</value>
   <data name="GeneralSettings_CheckVersion" xml:space="preserve">
     <value>Compruebe si hay una versión más nueva disponible en el inicio</value>
   </data>
-  <data name="AssignedByValDialog_DoesNotStartWithLetter" xml:space="preserve">
-    <value>Los nombres de las variables deben comenzar con una letra.</value>
-  </data>
-  <data name="AssignedByValDialog_InvalidCharacters" xml:space="preserve">
-    <value>Los nombres de variables no pueden contener caracteres especiales que no sean guiones bajos.</value>
-  </data>
-  <data name="AssignedByValDialog_IsByValIdentifierFormat" xml:space="preserve">
-    <value>La variable local no puede ser la misma que el parámetro '{0}' que reemplaza</value>
-    <comment>{0} = nombre de la variable propuesta.</comment>
-  </data>
   <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
     <value>'{0}' ya está accesible para este ámbito.</value>
-    <comment>{0} = nombre de la variable propuesta.</comment>
-  </data>
-  <data name="AssignedByValDialog_QuestionableEntryFormat" xml:space="preserve">
-    <value>El identificador '{0}' activará un resultado de inspección "Usar nombre significativo". Considere elegir un nombre diferente.</value>
-    <comment>{0} = nombre de la variable propuesta.</comment>
-  </data>
-  <data name="AssignedByValDialog_ReservedKeywordFormat" xml:space="preserve">
-    <value>'{0}' es una palabra clave reservada.</value>
     <comment>{0} = nombre de la variable propuesta.</comment>
   </data>
   <data name="ConfirmRemoveAssignmentWithUnusedDeclaration" xml:space="preserve">
@@ -1418,7 +1400,7 @@ NOTA: Es necesario reiniciar para que la configuración tenga efecto.</value>
     <value>En el método que usa '{0}', el nombre de esta variable ya hace referencia a otra declaración.</value>
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
-    <value>Filtrar</value>
+    <value />
   </data>
   <data name="GroupingStyle_ByName" xml:space="preserve">
     <value>Mediante inspección</value>

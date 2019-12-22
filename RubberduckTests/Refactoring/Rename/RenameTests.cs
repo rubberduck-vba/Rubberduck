@@ -13,6 +13,7 @@ using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
@@ -66,6 +67,98 @@ End Sub",
                     @"Private Sub Foo()
     Dim val2 As Integer
     val2 = val2 + 5
+End Sub"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        //See issue #5277 at https://github.com/rubberduck-vba/Rubberduck/issues/5277
+        public void RenameRefactoring_RenameArray_FromDeclaration()
+        {
+            var tdo = new RenameTestsDataObject(selectedIdentifier: "arr", newName: "bar");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Private Sub Foo()
+    Dim a|rr(0 To 1) As Integer
+    arr(1) = arr(0)
+End Sub",
+                Expected =
+                    @"Private Sub Foo()
+    Dim bar(0 To 1) As Integer
+    bar(1) = bar(0)
+End Sub"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        //See issue #5277 at https://github.com/rubberduck-vba/Rubberduck/issues/5277
+        public void RenameRefactoring_RenameReDimDeclaredArray_FromDeclaration()
+        {
+            var tdo = new RenameTestsDataObject(selectedIdentifier: "arr", newName: "bar");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Private Sub Foo()
+    ReDim a|rr(0 To 1)
+    arr(1) = arr(0)
+End Sub",
+                Expected =
+                    @"Private Sub Foo()
+    ReDim bar(0 To 1)
+    bar(1) = bar(0)
+End Sub"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        //See issue #5277 at https://github.com/rubberduck-vba/Rubberduck/issues/5277
+        public void RenameRefactoring_RenameArray_FromReference()
+        {
+            var tdo = new RenameTestsDataObject(selectedIdentifier: "arr", newName: "bar");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Private Sub Foo()
+    Dim arr(0 To 1) As Integer
+    arr(1) = ar|r(0)
+End Sub",
+                Expected =
+                    @"Private Sub Foo()
+    Dim bar(0 To 1) As Integer
+    bar(1) = bar(0)
+End Sub"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        //See issue #5277 at https://github.com/rubberduck-vba/Rubberduck/issues/5277
+        public void RenameRefactoring_RenameReDimDeclaredArray_FromReference()
+        {
+            var tdo = new RenameTestsDataObject(selectedIdentifier: "arr", newName: "bar");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Private Sub Foo()
+    ReDim arr(0 To 1)
+    arr(1) = a|rr(0)
+End Sub",
+                Expected =
+                    @"Private Sub Foo()
+    ReDim bar(0 To 1)
+    bar(1) = bar(0)
 End Sub"
             };
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
@@ -589,6 +682,84 @@ Private Sub Goo()
 End Sub"
             };
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenameFunction_DoesNotChangeIndexedDefaultMemberCalls()
+        {
+            var tdo = new RenameTestsDataObject(selectedIdentifier: "Foo", newName: "Goo");
+            var defaultMemberInputOutput = new RenameTestModuleDefinition("ClassFoo")
+            {
+                Input =
+                    @"Public Function Fo|o(arg As String) As Boolean
+Attribute Foo.VB_UserMemId = 0
+    Foo = True
+End Function",
+                //TODO: Make it possible that the attribute survives this appropriately adjusted.
+                //The VBE will remove the now invalid attribute, which does not happen in tests.
+                Expected =
+                    @"Public Function Goo(arg As String) As Boolean
+Attribute Foo.VB_UserMemId = 0
+    Goo = True
+End Function"
+            };
+            var callingModuleInputOutput = new RenameTestModuleDefinition("TestModule", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Private Function Baz(arg As String) As Boolean
+    Dim bar As ClassFoo
+    Set bar = New ClassFoo
+    Baz = bar(arg)
+End Function",
+                Expected =
+                    @"Private Function Baz(arg As String) As Boolean
+    Dim bar As ClassFoo
+    Set bar = New ClassFoo
+    Baz = bar(arg)
+End Function"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, defaultMemberInputOutput, callingModuleInputOutput);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenameFunction_DoesNotChangeNonIndexedDefaultMemberCalls()
+        {
+            var tdo = new RenameTestsDataObject(selectedIdentifier: "Foo", newName: "Goo");
+            var defaultMemberInputOutput = new RenameTestModuleDefinition("ClassFoo")
+            {
+                Input =
+                    @"Public Function Fo|o() As Boolean
+Attribute Foo.VB_UserMemId = 0
+    Foo = True
+End Function",
+                //TODO: Make it possible that the attribute survives this appropriately adjusted.
+                //The VBE will remove the now invalid attribute, which does not happen in tests.
+                Expected =
+                    @"Public Function Goo() As Boolean
+Attribute Foo.VB_UserMemId = 0
+    Goo = True
+End Function"
+            };
+            var callingModuleInputOutput = new RenameTestModuleDefinition("TestModule", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Private Function Baz(arg As String) As Boolean
+    Dim bar As ClassFoo
+    Set bar = New ClassFoo
+    Baz = bar
+End Function",
+                Expected =
+                    @"Private Function Baz(arg As String) As Boolean
+    Dim bar As ClassFoo
+    Set bar = New ClassFoo
+    Baz = bar
+End Function"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, defaultMemberInputOutput, callingModuleInputOutput);
         }
 
         [Test]
@@ -3194,7 +3365,11 @@ End Property";
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
         {
             var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
-            return new RenameRefactoring(factory, state, state?.ProjectsProvider, rewritingManager, selectionService, selectedDeclarationService, state);
+            var uiDispatcherMock = new Mock<IUiDispatcher>();
+            uiDispatcherMock
+                .Setup(m => m.Invoke(It.IsAny<Action>()))
+                .Callback((Action action) => action.Invoke());
+            return new RenameRefactoring(factory, state, state?.ProjectsProvider, rewritingManager, selectionService, selectedDeclarationService, state, uiDispatcherMock.Object);
         }
 
         #endregion

@@ -129,7 +129,7 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Existing file....
+        ///   Looks up a localized string similar to Existing files....
         /// </summary>
         public static string CodeExplorer_AddExistingFileText {
             get {
@@ -233,6 +233,15 @@ namespace Rubberduck.Resources.CodeExplorer {
         public static string CodeExplorer_AddVBFormText {
             get {
                 return ResourceManager.GetString("CodeExplorer_AddVBFormText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck User Declarations - {0}.
+        /// </summary>
+        public static string CodeExplorer_AppendHeader {
+            get {
+                return ResourceManager.GetString("CodeExplorer_AppendHeader", resourceCulture);
             }
         }
         

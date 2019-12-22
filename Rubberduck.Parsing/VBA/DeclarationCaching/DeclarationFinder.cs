@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
 using NLog;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Binding;
 using Rubberduck.Parsing.Grammar;
@@ -1002,7 +1003,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         {
             
             //The only forms we care about right now are MemberAccessExprContext or WithMemberAccessExprContext.
-            if (!(context is VBAParser.MemberAccessExprContext) && !(context is VBAParser.WithMemberAccessExprContext))
+            //For WithMemberAccessExpressions we can only save an unbout member if the withExpression is not null.
+            if (!(context is VBAParser.MemberAccessExprContext) && !(context is VBAParser.WithMemberAccessExprContext && withExpression != null))
             {
                 return;
             }

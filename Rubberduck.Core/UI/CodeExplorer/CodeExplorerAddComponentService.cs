@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Text;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
@@ -32,10 +33,17 @@ namespace Rubberduck.UI.CodeExplorer
 
             var prefixInModule = FolderAnnotation(node);
 
-            _parseManager.OnSuspendParser(
+            var suspensionResult = _parseManager.OnSuspendParser(
                 this,
                 Enum.GetValues(typeof(ParserState)).Cast<ParserState>(),
                 () => _addComponentService.AddComponent(projectId, componentType, code, prefixInModule));
+
+            if (suspensionResult.Outcome == SuspensionOutcome.UnexpectedError 
+                && suspensionResult.EncounteredException != null)
+            {
+                //This rethrows with the original stack trace.
+                ExceptionDispatchInfo.Capture(suspensionResult.EncounteredException).Throw();
+            }
         }
 
         public void AddComponentWithAttributes(CodeExplorerItemViewModel node, ComponentType componentType, string code, string additionalPrefixInModule = null)
@@ -60,10 +68,17 @@ namespace Rubberduck.UI.CodeExplorer
             }
             var prefixInModule = modulePrefix.ToString();
 
-            _parseManager.OnSuspendParser(
+            var suspensionResult = _parseManager.OnSuspendParser(
                 this,
                 Enum.GetValues(typeof(ParserState)).Cast<ParserState>(),
                 () => _addComponentService.AddComponentWithAttributes(projectId, componentType, code, prefixInModule));
+
+            if (suspensionResult.Outcome == SuspensionOutcome.UnexpectedError
+                && suspensionResult.EncounteredException != null)
+            {
+                //This rethrows with the original stack trace.
+                ExceptionDispatchInfo.Capture(suspensionResult.EncounteredException).Throw();
+            }
         }
 
         private string ProjectId(CodeExplorerItemViewModel node)

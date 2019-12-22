@@ -20,7 +20,7 @@ namespace Rubberduck.UI.CodeExplorer
         public CodeExplorerWindow(CodeExplorerViewModel viewModel) : this()
         {
             ViewModel = viewModel;
-            codeExplorerControl1.DataContext = viewModel;
+            codeExplorerControl1.DataContext = ViewModel;
         }
         public CodeExplorerViewModel ViewModel { get; }
     }

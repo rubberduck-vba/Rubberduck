@@ -8,6 +8,7 @@ using Rubberduck.VBEditor;
 using System.Diagnostics;
 using System.Linq;
 using NLog;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -115,7 +116,7 @@ namespace Rubberduck.Parsing.VBA
         {
             if (ParsingSuspendLock.IsReadLockHeld)
             {
-                e.Result = SuspensionResult.UnexpectedError;
+                e.Result = SuspensionOutcome.ReadLockAlreadyHeld;
                 const string errorMessage =
                     "A suspension action was attempted while a read lock was held. This indicates a bug in the code logic as suspension should not be requested from same thread that has a read lock.";
                 Logger.Error(errorMessage);
@@ -130,7 +131,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 if (!ParsingSuspendLock.TryEnterWriteLock(e.MillisecondsTimeout))
                 {
-                    e.Result = SuspensionResult.TimedOut;
+                    e.Result = SuspensionOutcome.TimedOut;
                     return;
                 }
 
@@ -142,17 +143,22 @@ namespace Rubberduck.Parsing.VBA
                 var originalStatus = State.Status;
                 if (!e.AllowedRunStates.Contains(originalStatus))
                 {
-                    e.Result = SuspensionResult.IncompatibleState;
+                    e.Result = SuspensionOutcome.IncompatibleState;
                     return;
                 }
                 _parserStateManager.SetStatusAndFireStateChanged(e.Requestor, ParserState.Busy,
                     CancellationToken.None);
                 e.BusyAction.Invoke();
             }
-            catch
+            catch (OperationCanceledException ex)
             {
-                e.Result = SuspensionResult.UnexpectedError;
-                throw;
+                e.Result = SuspensionOutcome.Canceled;
+                e.EncounteredException = ex;
+            }
+            catch (Exception ex)
+            {
+                e.Result = SuspensionOutcome.UnexpectedError;
+                e.EncounteredException = ex;
             }
             finally
             {
@@ -182,9 +188,9 @@ namespace Rubberduck.Parsing.VBA
                     ParsingSuspendLock.ExitWriteLock();
                 }
 
-                if (e.Result == SuspensionResult.Pending)
+                if (e.Result == SuspensionOutcome.Pending)
                 {
-                    e.Result = SuspensionResult.Completed;
+                    e.Result = SuspensionOutcome.Completed;
                 }
             }
 

@@ -995,17 +995,11 @@ Vous pouvez désactiver cette fonctionnalité dans le menu Rubberduck &gt; Param
   <data name="IndenterSettings_CodeSampleHeader" xml:space="preserve">
     <value>Échantillon de code indenté</value>
   </data>
-  <data name="AssignedByValDialog_ReservedKeywordFormat" xml:space="preserve">
-    <value>'{0}' est un mot-clé réservé.</value>
-  </data>
   <data name="RenameDialog_AmbiguousSelection" xml:space="preserve">
     <value>Veuillez sélectionner 1 seul contrôle à renommer.</value>
   </data>
   <data name="ContextMultipleControlsSelection" xml:space="preserve">
     <value>contrôles multiples</value>
-  </data>
-  <data name="AssignedByValDialog_InvalidCharacters" xml:space="preserve">
-    <value>Un nom de variable ne peut pas contenir de caractères spéciaux autre que la barre de soulignement ("underscore").</value>
   </data>
   <data name="AssignedByValParamQFixDialog_InstructionsLabelText" xml:space="preserve">
     <value>Veuillez spécifier le nom à utiliser pour la copie locale du paramètre {0} '{1}'.</value>
@@ -1015,12 +1009,6 @@ Vous pouvez désactiver cette fonctionnalité dans le menu Rubberduck &gt; Param
   </data>
   <data name="IndenterSettings_VerticalSpacingLabel" xml:space="preserve">
     <value>Espacement vertical</value>
-  </data>
-  <data name="AssignedByValDialog_IsByValIdentifierFormat" xml:space="preserve">
-    <value>Le nom de la variable doit être différent de celui du paramètre '{0}'.</value>
-  </data>
-  <data name="AssignedByValDialog_QuestionableEntryFormat" xml:space="preserve">
-    <value>L'identifiant '{0}' produira un résultat lors de l'inspection des noms. Considérez utiliser un nom plus descriptif.</value>
   </data>
   <data name="ConfirmRemoveAssignmentWithUnusedDeclaration" xml:space="preserve">
     <value>La varaible '{0}' est assignée. Supprimer l'/les assignation(s)?</value>
@@ -1033,9 +1021,6 @@ Vous pouvez désactiver cette fonctionnalité dans le menu Rubberduck &gt; Param
   </data>
   <data name="WindowSettings_StartupVisibilityHeader" xml:space="preserve">
     <value>Visibilité au démarrage</value>
-  </data>
-  <data name="AssignedByValDialog_DoesNotStartWithLetter" xml:space="preserve">
-    <value>Le nom d'une variable doit débuter par une lettre.</value>
   </data>
   <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
     <value>Impossible de renommer le membre '{0}' de l'interface.</value>
@@ -1382,10 +1367,10 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
     <value>'{0}' n'est utilisé ni dans le module où il est défini, ni dans un module standard.</value>
   </data>
   <data name="MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
-    <value>La procédure qui utilise '{0}' contient déjà une déclaration utilisant cet identifiant.</value>
+    <value>La procédure qui utilise '{0}' contient déjà une déclaration '{1}' utilisant cet identifiant.</value>
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
-    <value>Filtre</value>
+    <value>Filtrer</value>
   </data>
   <data name="GroupingStyle_ByName" xml:space="preserve">
     <value>Par inspection</value>
@@ -1404,7 +1389,6 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   </data>
   <data name="MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
     <value>'{0}' est accessible globalement, et est utilisé</value>
-    
   </data>
   <data name="SaveAndClose" xml:space="preserve">
     <value>Enregistrer &amp; Fermer</value>
@@ -1417,5 +1401,134 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   </data>
   <data name="VersionCheck_BuildType_Release" xml:space="preserve">
     <value>officielle</value>
+  </data>
+  <data name="RefactoringFailure_BaseMessage" xml:space="preserve">
+    <value>Échec du refactoring.</value>
+  </data>
+  <data name="RefactoringFailure_NoActiveSelection" xml:space="preserve">
+    <value>Cette opération requiert une sélection active.</value>
+  </data>
+  <data name="RefactoringFailure_NoTargetDeclarationForSelection" xml:space="preserve">
+    <value>La sélection ne semble pas contenir de déclaration utilisable.</value>
+  </data>
+  <data name="RefactoringFailure_TargetNull" xml:space="preserve">
+    <value>La déclaration ciblée est 'null', ...poof?</value>
+  </data>
+  <data name="RenameFailure_TargetModuleWithoutCodeModule" xml:space="preserve">
+    <value>Le module ciblé '{0}' n'est plus trouvable!</value>
+  </data>
+  <data name="RenameFailure_StandardEventHandler" xml:space="preserve">
+    <value>La cible '{0}' est une procédure gestionnaire d'événements, impossible de renommer cette pocédure sans briser quelque chose!</value>
+  </data>
+  <data name="RefactoringFailure_TargetNotUserDefined" xml:space="preserve">
+    <value>La cible n'est pas définie par l'utilisateur.</value>
+  </data>
+  <data name="RefactoringFailure_InvalidDeclarationType" xml:space="preserve">
+    <value>Le type de déclaration de la cible '{0}' est '{1}', plutôt que '{2}' tel qu'attendu.</value>
+  </data>
+  <data name="ImplementInterfaceFailed_NoImplementsStatementSelected" xml:space="preserve">
+    <value>Une instruction 'Implements' doit être sélectionnée.</value>
+  </data>
+  <data name="IntroduceFieldFailed_TargetIsAlreadyAField" xml:space="preserve">
+    <value>La cible '{0}' est déjà un champ.</value>
+  </data>
+  <data name="IntroduceParameterFailed_TargetNotContainedInMethod" xml:space="preserve">
+    <value>La cible '{0}' n'est pas contenue dans une procédure.</value>
+  </data>
+  <data name="RefactoringFailure_InvalidDeclarationType_multipleValid" xml:space="preserve">
+    <value>Le type de déclaration de la cible '{0}' est '{1}', mais le type attendu était '{2}'.</value>
+  </data>
+  <data name="RegexAssistant_EncloseWhitespaceFlag" xml:space="preserve">
+    <value>Indiquer les espaces dans la description</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_CarriageReturn" xml:space="preserve">
+    <value>retour</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_CarriageReturnNewLine" xml:space="preserve">
+    <value>retour-nouvelle-ligne</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_NewLine" xml:space="preserve">
+    <value>nouvelle-ligne</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_Space" xml:space="preserve">
+    <value>espace</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_Tab" xml:space="preserve">
+    <value>tab.</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_UnidentifiedWhitespace" xml:space="preserve">
+    <value>espace-non-identifié</value>
+  </data>
+  <data name="TestOutcome_Fail" xml:space="preserve">
+    <value>Échec</value>
+  </data>
+  <data name="TestOutcome_Inconclusive" xml:space="preserve">
+    <value>Inconcluant</value>
+  </data>
+  <data name="TestOutcome_Succeeded" xml:space="preserve">
+    <value>Succès</value>
+  </data>
+  <data name="TestOutcome_Unknown" xml:space="preserve">
+    <value>Inconnu</value>
+  </data>
+  <data name="InvalidNameCriteria_DoesNotStartWithLetterFormat" xml:space="preserve">
+    <value>'{0}' doit débuter par une lettre.</value>
+  </data>
+  <data name="InvalidNameCriteria_ExceedsMaximumLengthFormat" xml:space="preserve">
+    <value>'{0}' excède la longueur maximale permise.</value>
+  </data>
+  <data name="InvalidNameCriteria_InvalidCharactersFormat" xml:space="preserve">
+    <value>'{0}' contient des caractères spéciaux autres que la barre de soulignement.</value>
+  </data>
+  <data name="InvalidNameCriteria_IsNullOrEmpty" xml:space="preserve">
+    <value>Un identifiant vide n'est pas valide en VBA.</value>
+  </data>
+  <data name="InvalidNameCriteria_IsReservedKeywordFormat" xml:space="preserve">
+    <value>'{0}' est un mot-clé réservé.</value>
+  </data>
+  <data name="MeaninglessNameCriteriaMatchFormat" xml:space="preserve">
+    <value>L'identifiant '{0}' chatouillera l'inspection suggérant d'utiliser un nom conférant signification et importance.</value>
+  </data>
+  <data name="AssignedByValDialog_MeaninglessNameFormat" xml:space="preserve">
+    <value>{0} Considérez utiliser un nom plus descriptif.</value>
+  </data>
+  <data name="RenameFailure_TargetControlNotFound" xml:space="preserve">
+    <value>Le contrôle ciblé '{0}' est introuvable.</value>
+  </data>
+  <data name="TestExplorer_AppendHeader" xml:space="preserve">
+    <value>Rubberduck - Résultats des tests : {0}</value>
+  </data>
+  <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
+    <value>Impossible de suspendre l'analyse en cours pour effectuer le refactoring.</value>
+  </data>
+  <data name="ImportCommand_UnsupportedFileExtensions" xml:space="preserve">
+    <value>L'extension du fichier '{0}' n'est pas prise en charge.
+
+Importation annulée.</value>
+  </data>
+  <data name="ReplaceProjectContentsFromFilesCommand_DialogCaption" xml:space="preserve">
+    <value>Remplacer le contenu du projet</value>
+  </data>
+  <data name="ReplaceProjectContentsFromFilesCommand_ConfirmationMessage" xml:space="preserve">
+    <value>Ceci supprimera le contenu du projet '{0}' et remplacera les modules par le contenu des fichiers sélectionnés.
+Confirmer?</value>
+  </data>
+  <data name="UpdateFromFilesCommand_DialogCaption" xml:space="preserve">
+    <value>Mettre à jour les modules...</value>
+  </data>
+  <data name="ImportCommand_DuplicateModule" xml:space="preserve">
+    <value>Plus d'un fichier contient du code pour le componsant '{0}'.
+
+Mise à jour annulée.</value>
+  </data>
+  <data name="UpdateFromFilesCommand_DifferentComponentType" xml:space="preserve">
+    <value>Le type de composant de '{0}' ne correspond pas au type indiqué par l'extension du fichier '{1}'.
+
+Mise à jour annulée.</value>
+  </data>
+  <data name="ImportCommand_DocumentDoesNotExist" xml:space="preserve">
+    <value>Aucun module document existant avec le nom '{0}'; le fichier '{1}' ne pourra pas être importé.
+
+Mise à jour annulée.</value>
   </data>
 </root>
