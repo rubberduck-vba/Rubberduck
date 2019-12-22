@@ -285,4 +285,44 @@
   <data name="CodeExplorer_LibraryReferences" xml:space="preserve">
     <value>Referenzen zu Biblotheken</value>
   </data>
+  <data name="CodeExplorer_AddExistingFileText" xml:space="preserve">
+    <value>Existierende Dateien...</value>
+  </data>
+  <data name="CodeExplorer_Delete" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="CodeExplorer_Exclude" xml:space="preserve">
+    <value>Aus Projekt entfernen</value>
+  </data>
+  <data name="ConfirmBeforeDelete_Caption" xml:space="preserve">
+    <value>Löschen bestätigen</value>
+  </data>
+  <data name="ConfirmBeforeDelete_Prompt" xml:space="preserve">
+    <value>{0} wird permanent gelöscht.
+    
+Fortfahren?</value>
+  </data>
+  <data name="DeleteFailed_Caption" xml:space="preserve">
+    <value>Löschen fehlgeschlagen</value>
+  </data>
+  <data name="DeleteFailed_Message" xml:space="preserve">
+    <value>Die folgenden Dateien konnten nicht gelöscht werden.
+    
+{0}</value>
+  </data>
+  <data name="SyncProject" xml:space="preserve">
+    <value>Projekt synchronisieren</value>
+  </data>
+  <data name="UpdateFromFiles" xml:space="preserve">
+    <value>Komponenten aus Dateien aktualisieren...</value>
+  </data>
+  <data name="ReplaceFromFiles" xml:space="preserve">
+    <value>Projektinhalt durch Dateiinhalt ersetzen... </value>
+  </data>
+  <data name="CodeExplorer_ExtractInterfaceText" xml:space="preserve">
+    <value>Interface extrahieren</value>
+  </data>
+  <data name="CodeExplorer_AppendHeader" xml:space="preserve">
+    <value>Rubberduck: Benutzerdefinierte Deklarationen - {0}</value>
+  </data>
 </root>

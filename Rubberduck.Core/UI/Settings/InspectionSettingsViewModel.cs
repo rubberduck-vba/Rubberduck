@@ -11,12 +11,13 @@ using Rubberduck.Resources.Inspections;
 using System.Globalization;
 using System;
 using Rubberduck.Resources.Settings;
+using Rubberduck.CodeAnalysis.Settings;
 
 namespace Rubberduck.UI.Settings
 {
     public sealed class InspectionSettingsViewModel : SettingsViewModelBase<CodeInspectionSettings>, ISettingsViewModel<CodeInspectionSettings>
     {
-        public InspectionSettingsViewModel(Configuration config, IFilePersistanceService<CodeInspectionSettings> service) 
+        public InspectionSettingsViewModel(Configuration config, IConfigurationService<CodeInspectionSettings> service) 
             : base(service)
         {
             InspectionSettings = new ListCollectionView(
@@ -68,7 +69,9 @@ namespace Rubberduck.UI.Settings
                 if (_inspectionSettingsDescriptionFilter != value)
                 {
                     _inspectionSettingsDescriptionFilter = value;
-                    InspectionSettings.Filter = item => FilterResults(item);
+                    OnPropertyChanged();
+                    InspectionSettings.Filter = FilterResults;
+                    OnPropertyChanged(nameof(InspectionSettings));
                 }
             }
         }
@@ -86,14 +89,14 @@ namespace Rubberduck.UI.Settings
                 {
                     _selectedSeverityFilter = value.Replace(" ", string.Empty);
                     OnPropertyChanged();
-                    InspectionSettings.Filter = item => FilterResults(item);
+                    InspectionSettings.Filter = FilterResults;
+                    OnPropertyChanged(nameof(InspectionSettings));
                 }
             }
         }        
 
         private bool FilterResults(object setting)
         {
-            OnPropertyChanged(nameof(InspectionSettings));
             var cis = setting as CodeInspectionSetting;
 
             return cis.Description.ToUpper().Contains(_inspectionSettingsDescriptionFilter.ToUpper())
@@ -103,10 +106,7 @@ namespace Rubberduck.UI.Settings
         private ListCollectionView _inspectionSettings;
         public ListCollectionView InspectionSettings
         {
-            get
-            {
-                return _inspectionSettings;
-            }
+            get => _inspectionSettings;
 
             set
             {

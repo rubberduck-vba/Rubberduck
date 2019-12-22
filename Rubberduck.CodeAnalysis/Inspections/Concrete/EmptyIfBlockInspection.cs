@@ -7,13 +7,40 @@ using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
+using Rubberduck.Resources.Experimentals;
 using Rubberduck.Parsing.VBA;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    [Experimental]
+    /// <summary>
+    /// Identifies empty 'If' blocks.
+    /// </summary>
+    /// <why>
+    /// Conditional expression is inverted; there would not be a need for an 'Else' block otherwise.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal foo As Boolean)
+    ///     If foo Then
+    ///     Else
+    ///         ' ...
+    ///     End If
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal foo As Boolean)
+    ///     If Not foo Then
+    ///         ' ...
+    ///     End If
+    /// End Sub
+    /// ]]>
+    /// </example>
+    [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
     internal class EmptyIfBlockInspection : ParseTreeInspectionBase
     {
         public EmptyIfBlockInspection(RubberduckParserState state)
@@ -22,7 +49,6 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts
-                .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
                 .Select(result => new QualifiedContextInspectionResult(this,
                                                         InspectionResults.EmptyIfBlockInspection,
                                                         result));

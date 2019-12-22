@@ -9,10 +9,17 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.JunkDrawer.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
-
+    /// <summary>
+    /// Flags empty code modules.
+    /// </summary>
+    /// <why>
+    /// An empty module does not need to exist and can be safely removed.
+    /// </why>
     public sealed class EmptyModuleInspection : InspectionBase
     {
         private readonly EmptyModuleVisitor _emptyModuleVisitor;
@@ -37,8 +44,7 @@ namespace Rubberduck.Inspections.Concrete
                 .ToHashSet();
 
             var emptyModuleDeclarations = State.DeclarationFinder.UserDeclarations(DeclarationType.Module)
-                .Where(declaration => emptyModules.Contains(declaration.QualifiedName.QualifiedModuleName)
-                                        && !IsIgnoringInspectionResultFor(declaration, AnnotationName));
+                .Where(declaration => emptyModules.Contains(declaration.QualifiedName.QualifiedModuleName));
 
             return emptyModuleDeclarations.Select(declaration =>
                 new DeclarationInspectionResult(this, string.Format(InspectionResults.EmptyModuleInspection, declaration.IdentifierName), declaration));

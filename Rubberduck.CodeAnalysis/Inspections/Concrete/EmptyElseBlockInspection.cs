@@ -8,10 +8,38 @@ using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Resources.Experimentals;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    [Experimental]
+    /// <summary>
+    /// Identifies empty 'Else' blocks that can be safely removed.
+    /// </summary>
+    /// <why>
+    /// Empty code blocks are redundant, dead code that should be removed. They can also be misleading about their intent:
+    /// an empty block may be signalling an unfinished thought or an oversight.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal foo As Boolean)
+    ///     If foo Then
+    ///         ' ...
+    ///     Else
+    ///     End If
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal foo As Boolean)
+    ///     If foo Then
+    ///         ' ...
+    ///     End If
+    /// End Sub
+    /// ]]>
+    /// </example>
+    [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
     internal class EmptyElseBlockInspection : ParseTreeInspectionBase
     {
         public EmptyElseBlockInspection(RubberduckParserState state)
@@ -20,7 +48,6 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts
-                .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
                 .Select(result => new QualifiedContextInspectionResult(this,
                                                         InspectionResults.EmptyElseBlockInspection,
                                                         result));

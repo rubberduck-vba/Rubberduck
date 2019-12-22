@@ -15,11 +15,10 @@ namespace RubberduckTests.Inspections.ThunderCode
     public class ThunderCodeInspectionTests
     {
         [Test]
+        [Category("Inspections")]
         [TestCase(1, "Public Sub foo\u00A0bar()" + @"
 End Sub")]
         [TestCase(0, @"Public Sub foo()
-End Sub")]
-        [TestCase(0, @"Public Sub foo bar()
 End Sub")]
         public void NonBreakingSpaceIdentifier_ReturnsResult(int expectedCount, string inputCode)
         {
@@ -27,6 +26,24 @@ End Sub")]
                 new NonBreakingSpaceIdentifierInspection(state));
             ThunderCatsGo(func, inputCode, expectedCount);
         }
+
+        [Test]
+        [Category("Inspections")]
+        [TestCase(0, @"Public Sub foo bar()
+End Sub")]
+        public void NonBreakingSpaceIdentifier_IllegalInputCausesParserError(int expectedCount, string inputCode)
+        {
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            var parser = MockParser.Create(vbe.Object);
+            using (var state = parser.State)
+            {
+                parser.Parse(new CancellationTokenSource());
+                var actualStatus = state.Status;
+                Assert.AreEqual(ParserState.Error, actualStatus);
+            }
+        }
+
+
 
         [Test]
         [TestCase(2, @"Do")]

@@ -16,7 +16,7 @@ namespace Rubberduck.Inspections.QuickFixes
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
             var rewriter = rewriteSession.CheckOutModuleRewriter(result.QualifiedSelection.QualifiedName);
-            rewriter.InsertBefore(0, Tokens.Option + ' ' + Tokens.Explicit + Environment.NewLine + Environment.NewLine);
+            rewriter.InsertBefore(0, Tokens.Option + ' ' + Tokens.Explicit + Environment.NewLine);
         }
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.OptionExplicitQuickFix;

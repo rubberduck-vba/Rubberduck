@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -8,7 +8,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     {
         private static readonly ProjectType[] Types = { ProjectType.ActiveXExe, ProjectType.ActiveXDll };
 
-        public AddUserDocumentCommand(IVBE vbe) : base(vbe) { }
+        public AddUserDocumentCommand(
+            ICodeExplorerAddComponentService addComponentService, IVbeEvents vbeEvents) 
+            : base(addComponentService, vbeEvents)
+        { }
 
         public override IEnumerable<ProjectType> AllowableProjectTypes => Types;
 

@@ -1,41 +1,61 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
-using NLog;
 using Rubberduck.Interaction;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
+using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
     public class ExportCommand : CommandBase
     {
-        private static readonly Dictionary<ComponentType, string> ExportableFileExtensions = new Dictionary<ComponentType, string>
+        private static readonly Dictionary<ComponentType, string> VBAExportableFileExtensions = new Dictionary<ComponentType, string>
         {
-            { ComponentType.StandardModule, ".bas" },
-            { ComponentType.ClassModule, ".cls" },
-            { ComponentType.Document, ".cls" },
-            { ComponentType.UserForm, ".frm" }
+            { ComponentType.StandardModule, ComponentTypeExtensions.StandardExtension },
+            { ComponentType.ClassModule, ComponentTypeExtensions.ClassExtension },
+            { ComponentType.Document, ComponentTypeExtensions.DocClassExtension },
+            { ComponentType.UserForm, ComponentTypeExtensions.FormExtension }
+        };
+
+        private static readonly Dictionary<ComponentType, string> VB6ExportableFileExtensions = new Dictionary<ComponentType, string>
+        {
+            { ComponentType.StandardModule, ComponentTypeExtensions.StandardExtension },
+            { ComponentType.ClassModule, ComponentTypeExtensions.ClassExtension },
+            { ComponentType.VBForm, ComponentTypeExtensions.FormExtension },
+            { ComponentType.MDIForm, ComponentTypeExtensions.FormExtension },
+            { ComponentType.UserControl, ComponentTypeExtensions.UserControlExtension },
+            { ComponentType.DocObject, ComponentTypeExtensions.DocObjectExtension },
+            { ComponentType.ActiveXDesigner, ComponentTypeExtensions.ActiveXDesignerExtension },
+            { ComponentType.PropPage, ComponentTypeExtensions.PropertyPageExtension },
+            { ComponentType.ResFile, ComponentTypeExtensions.ResourceExtension },            
         };
 
         private readonly IFileSystemBrowserFactory _dialogFactory;
+        private readonly Dictionary<ComponentType, string> _exportableFileExtensions;
 
-        public ExportCommand(IFileSystemBrowserFactory dialogFactory, IMessageBox messageBox, IProjectsProvider projectsProvider)
-            : base(LogManager.GetCurrentClassLogger())
+        public ExportCommand(IFileSystemBrowserFactory dialogFactory, IMessageBox messageBox, IProjectsProvider projectsProvider, IVBE vbe)
         {
             _dialogFactory = dialogFactory;
             MessageBox = messageBox;
             ProjectsProvider = projectsProvider;
+
+            _exportableFileExtensions =
+                vbe.Kind == VBEKind.Hosted
+                    ? VBAExportableFileExtensions
+                    : VB6ExportableFileExtensions;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
         protected IMessageBox MessageBox { get; }
         protected IProjectsProvider ProjectsProvider { get; }
-
-        protected override bool EvaluateCanExecute(object parameter)
+        
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
             if (!(parameter is CodeExplorerComponentViewModel node) ||
                 node.Declaration == null)
@@ -44,13 +64,13 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
 
             var componentType = node.Declaration.QualifiedName.QualifiedModuleName.ComponentType;
-            return ExportableFileExtensions.Select(s => s.Key).Contains(componentType);
+
+            return _exportableFileExtensions.ContainsKey(componentType);
         }
 
         protected override void OnExecute(object parameter)
         {
-            if (!base.EvaluateCanExecute(parameter) || 
-                !(parameter is CodeExplorerComponentViewModel node) ||
+            if (!(parameter is CodeExplorerComponentViewModel node) ||
                 node.Declaration == null)
             {
                 return;
@@ -59,9 +79,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             PromptFileNameAndExport(node.Declaration.QualifiedName.QualifiedModuleName);
         }
 
-        protected bool PromptFileNameAndExport(QualifiedModuleName qualifiedModule)
+        public bool PromptFileNameAndExport(QualifiedModuleName qualifiedModule)
         {
-            if (!ExportableFileExtensions.TryGetValue(qualifiedModule.ComponentType, out var extension))
+            if (!_exportableFileExtensions.TryGetValue(qualifiedModule.ComponentType, out var extension))
             {
                 return false;
             }
@@ -84,6 +104,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 }
                 catch (Exception ex)
                 {
+                    Logger.Warn(ex, $"Failed to export component {qualifiedModule.Name}");
                     MessageBox.NotifyWarn(ex.Message, string.Format(Resources.CodeExplorer.CodeExplorerUI.ExportError_Caption, qualifiedModule.ComponentName));
                 }                    
                 return true;

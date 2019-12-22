@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Antlr4.Runtime;
 
 namespace Rubberduck.Parsing.Binding
 {
@@ -6,23 +8,48 @@ namespace Rubberduck.Parsing.Binding
     {
         private readonly List<IBoundExpression> _successfullyResolvedExpressions = new List<IBoundExpression>();
 
-        public ResolutionFailedExpression()
-            : base(null, ExpressionClassification.ResolutionFailed, null)
+        public ResolutionFailedExpression(ParserRuleContext context, bool isDefaultMemberResolution = false)
+            : base(null, ExpressionClassification.ResolutionFailed, context)
         {
-            _successfullyResolvedExpressions = new List<IBoundExpression>();
+            IsDefaultMemberResolution = isDefaultMemberResolution;
+            IsJoinedExpression = false;
         }
 
-        public IReadOnlyList<IBoundExpression> SuccessfullyResolvedExpressions
+        public ResolutionFailedExpression(ParserRuleContext context, IEnumerable<IBoundExpression> expressions)
+            : base(null, ExpressionClassification.ResolutionFailed, context)
         {
-            get
-            {
-                return _successfullyResolvedExpressions;
-            }
+            IsDefaultMemberResolution = false;
+            IsJoinedExpression = true;
+
+            AddSuccessfullyResolvedExpressions(expressions);
         }
+
+        public IReadOnlyList<IBoundExpression> SuccessfullyResolvedExpressions => _successfullyResolvedExpressions;
+        public bool IsDefaultMemberResolution { get; }
+        public bool IsJoinedExpression { get; }
 
         public void AddSuccessfullyResolvedExpression(IBoundExpression expression)
         {
             _successfullyResolvedExpressions.Add(expression);
+        }
+
+        public void AddSuccessfullyResolvedExpressions(IEnumerable<IBoundExpression> expressions)
+        {
+            _successfullyResolvedExpressions.AddRange(expressions);
+        }
+    }
+
+    public static class FailedResolutionExpressionExtensions
+    {
+        public static ResolutionFailedExpression JoinAsFailedResolution(this IBoundExpression expression, ParserRuleContext context, params IBoundExpression[] otherExpressions)
+        {
+            return expression.JoinAsFailedResolution(context, (IEnumerable<IBoundExpression>)otherExpressions);
+        }
+
+        public static ResolutionFailedExpression JoinAsFailedResolution(this IBoundExpression expression, ParserRuleContext context, IEnumerable<IBoundExpression> otherExpressions)
+        {
+            var expressions = otherExpressions.Concat(new[] {expression});
+            return new ResolutionFailedExpression(context, expressions);
         }
     }
 }

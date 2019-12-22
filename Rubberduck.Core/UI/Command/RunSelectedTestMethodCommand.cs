@@ -1,28 +1,27 @@
 ﻿using System.Linq;
-using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command
 {
     public class RunSelectedTestMethodCommand : CommandBase
     {
         private readonly ITestEngine _engine;
-        private readonly ISelectionService _selectionService;
+        private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
         private readonly IDeclarationFinderProvider _finderProvider;
 
-        public RunSelectedTestMethodCommand(ITestEngine engine, ISelectionService selectionService, IDeclarationFinderProvider finderProvider) 
-            : base(LogManager.GetCurrentClassLogger())
+        public RunSelectedTestMethodCommand(ITestEngine engine, ISelectedDeclarationProvider selectedDeclarationProvider, IDeclarationFinderProvider finderProvider) 
         {
             _engine = engine;
-            _selectionService = selectionService;
+            _selectedDeclarationProvider = selectedDeclarationProvider;
             _finderProvider = finderProvider;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
             return (parameter ?? FindDeclarationFromSelection()) is Declaration candidate &&
                    !(_engine.Tests.FirstOrDefault(test => test.Declaration.Equals(candidate)) is null) &&
@@ -43,15 +42,18 @@ namespace Rubberduck.UI.Command
 
         private Declaration FindDeclarationFromSelection()
         {
-            var active = _selectionService?.ActiveSelection();
-            if (!active.HasValue)
-            {
-                return null;
-            }
+            var selectedMember = _selectedDeclarationProvider.SelectedMember();
+            return IsTestMethod(selectedMember)
+                ? selectedMember
+                : null;
+        }
 
-            return _finderProvider.DeclarationFinder.FindDeclarationsForSelection(active.Value)
-                .SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Procedure &&
-                                                declaration.Annotations.Any(annotation => annotation is TestMethodAnnotation));
+        private bool IsTestMethod(Declaration member)
+        {
+            return member != null 
+                   && member.DeclarationType == DeclarationType.Procedure
+                   && member.Annotations.Any(parseTreeAnnotation =>
+                       parseTreeAnnotation.Annotation is TestMethodAnnotation);
         }
     }
 }

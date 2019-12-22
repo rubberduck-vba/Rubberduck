@@ -229,9 +229,6 @@ Si le paramètre peut être nul, ignorer ce résultat; passer une valeur nulle �
   <data name="MissingAnnotationArgumentInspection" xml:space="preserve">
     <value>Un paramètre d'annotation est manquant ou incorrectement spécifié. La syntaxe correcte est: '@Annotation([paramètre])\nExemple: '@Folder("Parent.Enfant")</value>
   </data>
-  <data name="ImplicitDefaultMemberAssignmentInspection" xml:space="preserve">
-    <value>De tels assignations semblent en surface assigner une valeur à un objet, mais en réalité assignent implicitement au membre par défaut de cet objet. Considérez plutôt assigner explicitement au membre par défaut, pour une lisibilité accrue.</value>
-  </data>
   <data name="MemberNotOnInterfaceInspection" xml:space="preserve">
     <value>Un membre est accédé mais ne semble pas exister dans l'interface de l'objet. Ceci causera probablement une erreur d'exécution #438.</value>
   </data>
@@ -304,9 +301,6 @@ Si le paramètre peut être nul, ignorer ce résultat; passer une valeur nulle �
   <data name="EmptyModuleInspection" xml:space="preserve">
     <value>Les modules et classes vides démontrent des fonctionnalités pas encore implémentées ou représentent un fardeau non nécessaire pouvant nuire à la maintenance du projet.</value>
   </data>
-  <data name="UnreachableCaseInspection" xml:space="preserve">
-    <value>Détecte les clauses 'Case' qui ne peuvent être exécutées.</value>
-  </data>
   <data name="UnhandledOnErrorResumeNextInspection" xml:space="preserve">
     <value>La gestion d'erreurs devrait être restaurée après l'utilisation de 'On Error Resume Next'</value>
   </data>
@@ -378,5 +372,65 @@ Si le paramètre peut être nul, ignorer ce résultat; passer une valeur nulle �
   </data>
   <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
     <value>Bien que légale, cette syntaxe a un effet peu documentée -- toute erreur courante est supprimée, en plus de désactiver la gestion d'erreurs. L'instruction peut également être ambiguë, si la procédure contient effectivement une ligne -1. La stratégie de gestion d'erreurs semble plus complexe que nécessaire et pourrait être à revoir.</value>
+  </data>
+  <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
+    <value>Les boucles 'While...Wend' existent pour compatibilité avec les anciennes versions de VB, et ont été remplaçées par l'introduction des structures itératives 'Do While...Loop', qui supportent l'instruction 'Exit Do'. Les boucles 'While...Wend' ne peuvent être terminées qu'en remplissant la condition de l'expression 'While'.</value>
+  </data>
+  <data name="UnreachableCaseInspection" xml:space="preserve">
+    <value>Une condition est toujours fausse, cause une erreur d'exécution, ou les effets cumulatifs de conditions précédentes représentent toutes les valeurs possibles, bref la condition a déjà été évaluée et ce bloc 'Case' est effectivement inatteignable.</value>
+  </data>
+  <data name="SetAssignmentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>VBA n'indiquera pas d'erreur au moment de la compilation si un objet est assigné à une variable avec un type incompatible au type déclaré. Dans la presque totalité des cas ceci causera une erreur à l'exécution. Pour tous les autres cas, un type compatible doit être utilisé.</value>
+  </data>
+  <data name="EmptyMethodInspection" xml:space="preserve">
+    <value>Une procédure sans instructions exécutables peut avoir l'air d'accomplir quelque chose qu'elle ne fait pas, ce qui peut occasionner un comportement inattendu.</value>
+  </data>
+  <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
+    <value>Un module de classe dont le but est de définir une interface abstraite, ne devrait pas comporter d'implémentations. Si l'intention est effectivement d'utiliser cette class comme un type concret, veuillez ignorer ce message.</value>
+  </data>
+  <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>VBA n'indiquera pas d'erreur au moment de la compilation si un objet est passé en argument à un paramètre de type incompatible. Dans la presque totalité des cas ceci causera une erreur à l'exécution. Pour tous les autres cas, un type compatible doit être utilisé.</value>
+  </data>
+  <data name="ValueRequiredInspection" xml:space="preserve">
+    <value>VBA n'indiquera pas d'erreur au moment de la compilation si un objet est utilisé à un endroit qui requerrait une valeur et que le type de l'objet utilisé ne définit pas de membre par défaut avec un type compatible. Dans la presque totalité des cas ceci causera une erreur à l'exécution. Pour tous les autres cas, un type compatible doit être utilisé.</value>
+  </data>
+  <data name="ProcedureRequiredInspection" xml:space="preserve">
+    <value>VBA n'indiquera pas d'erreur au moment de la compilation si un objet est utilisé à un endroit qui requerrait un appel de procédure, et que le type de l'objet utilisé ne définit pas de membre par défaut avec un type compatible. Dans la presque totalité des cas ceci causera une erreur à l'exécution. Pour tous les autres cas, un type compatible doit être utilisé.</value>
+  </data>
+  <data name="DefaultMemberRequiredInspection" xml:space="preserve">
+    <value>VBA n'indiquera pas d'erreur au moment de la compilation si l'appel indexé d'un membre par défaut est requis mais que le type de l'objet utilisé ne définit pas de membre par défaut avec un type compatible. Dans la presque totalité des cas ceci causera une erreur à l'exécution. Pour tous les autres cas, un type compatible doit être utilisé.</value>
+  </data>
+  <data name="UseOfBangNotationInspection" xml:space="preserve">
+    <value>La notation "Bang", ce point d'exclamation que l'on retrouve partout sur Internet, ressemble à du code ordinaire. Toutefois, il s'agit en fait d'une chaîne de caractères servant d'argument à un appel implicite du membre par défaut de l'objet utilisé.</value>
+  </data>
+  <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
+    <value>La notation "Bang", ce point d'exclamation que l'on retrouve partout sur Internet, ressemble à du code ordinaire. Toutefois, il s'agit en fait d'une chaîne de caractères servant d'argument à un appel implicite du membre par défaut de l'objet utilisé.</value>
+  </data>
+  <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
+    <value>La notation "Bang", ce point d'exclamation que l'on retrouve partout sur Internet, ressemble à du code ordinaire. Toutefois, il s'agit en fait d'une chaîne de caractères servant d'argument à un appel implicite du membre par défaut de l'objet utilisé.</value>
+  </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
+    <value>Un appel de procédure serait attendu, mais le code ne fait que référencer un objet, ce qui résulte en un appel implicite du membre par défaut de cet objet, appel pouvant pour un lecteur éventuel, raisonnablement paraître comme non-intentionnel; l'invocation implicitce de la procédure affecte négativement la lisibilité.</value>
+  </data>
+  <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Un appel implicite d'un membre par défaut exécute du code de façon implicite (et parfois, sournoise). Même pour accéder à une collection à l'aide d'un index - rendre tous les appels explicites améliore généralement la lisibilité.</value>
+  </data>
+  <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Un appel implicite d'un membre par défaut exécute du code de façon implicite (et parfois, sournoise). Même pour accéder à une collection à l'aide d'un index - rendre tous les appels explicites améliore généralement la lisibilité.</value>
+  </data>
+  <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Un appel implicite d'un membre par défaut exécute du code de façon implicite (et parfois, sournoise). Même pour accéder à une collection à l'aide d'un index - rendre tous les appels explicites améliore généralement la lisibilité.</value>
+  </data>
+  <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Un appel implicite d'un membre par défaut exécute du code de façon implicite (et parfois, sournoise). Même pour accéder à une collection à l'aide d'un index - rendre tous les appels explicites améliore généralement la lisibilité.</value>
+  </data>
+  <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Un appel implicite d'un membre par défaut exécute du code de façon implicite (et parfois, sournoise). Même pour accéder à une collection à l'aide d'un index - rendre tous les appels explicites améliore généralement la lisibilité.</value>
+  </data>
+  <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Un appel implicite d'un membre par défaut exécute du code de façon implicite (et parfois, sournoise). Même pour accéder à une collection à l'aide d'un index - rendre tous les appels explicites améliore généralement la lisibilité.</value>
+  </data>
+  <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
+    <value>Un appel implicite d'un membre par défaut exécute du code de façon implicite (et parfois, sournoise). Même pour accéder à une collection à l'aide d'un index - rendre tous les appels explicites améliore généralement la lisibilité.</value>
   </data>
 </root>

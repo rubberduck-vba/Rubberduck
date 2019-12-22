@@ -1,16 +1,43 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Inspections.Results;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Warns about 'Function' and 'Property Get' procedures whose return value is not assigned.
+    /// </summary>
+    /// <why>
+    /// Both 'Function' and 'Property Get' accessors should always return something. Omitting the return assignment is likely a bug.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Public Function GetFoo() As Long
+    ///     Dim foo As Long
+    ///     foo = 42
+    ///     'function will always return 0
+    /// End Function
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Public Function GetFoo() As Long
+    ///     Dim foo As Long
+    ///     foo = 42
+    ///     GetFoo = foo
+    /// End Function
+    /// ]]>
+    /// </example>
     public sealed class NonReturningFunctionInspection : InspectionBase
     {
         public NonReturningFunctionInspection(RubberduckParserState state)
@@ -24,28 +51,28 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            var declarations = UserDeclarations.ToList();
+            var interfaceMembers = State.DeclarationFinder.FindAllInterfaceMembers().ToHashSet();
 
-            var interfaceMembers = State.DeclarationFinder.FindAllInterfaceMembers();
+            var functions = State.DeclarationFinder.UserDeclarations(DeclarationType.Function)
+                .Where(declaration => !interfaceMembers.Contains(declaration));
 
-            var functions = declarations
-                .Where(declaration => ReturningMemberTypes.Contains(declaration.DeclarationType)
-                    && !interfaceMembers.Contains(declaration)).ToList();
-
-            var unassigned = (from function in functions
-                             let isUdt = IsReturningUserDefinedType(function)
-                             let inScopeRefs = function.References.Where(r => r.ParentScoping.Equals(function))
-                             where (!isUdt && (!inScopeRefs.Any(r => r.IsAssignment) && 
-                                               !inScopeRefs.Any(reference => IsAssignedByRefArgument(function, reference))))
-                                || (isUdt && !IsUserDefinedTypeAssigned(function))
-                             select function)
-                             .ToList();
+            var unassigned = functions.Where(function => IsReturningUserDefinedType(function) 
+                                                            && !IsUserDefinedTypeAssigned(function)
+                                                          || !IsReturningUserDefinedType(function) 
+                                                            && !IsAssigned(function));
 
             return unassigned
                 .Select(issue =>
                     new DeclarationInspectionResult(this,
                                          string.Format(InspectionResults.NonReturningFunctionInspection, issue.IdentifierName),
                                          issue));
+        }
+
+        private bool IsAssigned(Declaration function)
+        {
+            var inScopeIdentifierReferences = function.References.Where(r => r.ParentScoping.Equals(function));
+            return inScopeIdentifierReferences.Any(reference => reference.IsAssignment 
+                                                                || IsAssignedByRefArgument(function, reference));
         }
 
         private bool IsAssignedByRefArgument(Declaration enclosingProcedure, IdentifierReference reference)
@@ -59,7 +86,7 @@ namespace Rubberduck.Inspections.Concrete
                    && parameter.References.Any(r => r.IsAssignment);
         }
 
-        private bool IsReturningUserDefinedType(Declaration member)
+        private static bool IsReturningUserDefinedType(Declaration member)
         {
             return member.AsTypeDeclaration != null &&
                    member.AsTypeDeclaration.DeclarationType == DeclarationType.UserDefinedType;

@@ -3,18 +3,16 @@ using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Rubberduck.Resources;
 
 namespace Rubberduck.RegexAssistant.Atoms
 {
     internal class CharacterClass : IAtom
     {
-        public static readonly string Pattern = @"(?<!\\)\[(?<expression>.*?)(?<!\\)\]";
-        private static readonly Regex Matcher = new Regex($"^{Pattern}$", RegexOptions.Compiled);
-
         public bool InverseMatching { get; }
         public IList<string> CharacterSpecifiers { get; }
 
-        public CharacterClass(string specifier, Quantifier quantifier)
+        public CharacterClass(string specifier, Quantifier quantifier, bool spellOutWhiteSpace = false)
         {
             if (specifier == null || quantifier == null)
             {
@@ -22,15 +20,18 @@ namespace Rubberduck.RegexAssistant.Atoms
             }
 
             Quantifier = quantifier;
-            var m = Matcher.Match(specifier);
-            if (!m.Success)
+            if (!specifier.StartsWith("[") || !specifier.EndsWith("]"))
             {
                 throw new ArgumentException("The given specifier does not denote a character class");
             }
             Specifier = specifier;
-            var actualSpecifier = m.Groups["expression"].Value;
+            // trim leading and closing bracket
+            var actualSpecifier = specifier.Substring(1, specifier.Length - 2);
             InverseMatching = actualSpecifier.StartsWith("^");
-            CharacterSpecifiers= ExtractCharacterSpecifiers(InverseMatching ? actualSpecifier.Substring(1) : actualSpecifier);
+            CharacterSpecifiers = ExtractCharacterSpecifiers(InverseMatching 
+                    ? actualSpecifier.Substring(1) 
+                    : actualSpecifier
+                , spellOutWhiteSpace);
         }
 
         public string Specifier { get; }
@@ -38,7 +39,8 @@ namespace Rubberduck.RegexAssistant.Atoms
         public Quantifier Quantifier { get; }
 
         private static readonly Regex CharacterRanges = new Regex(@"(\\[dDwWsS]|(\\[ntfvr]|\\([0-7]{3}|x[\dA-F]{2}|u[\dA-F]{4}|[\\\.\[\]])|.)(-(\\[ntfvr]|\\([0-7]{3}|x[A-F]{2}|u[\dA-F]{4}|[\.\\\[\]])|.))?)", RegexOptions.Compiled);
-        private IList<string> ExtractCharacterSpecifiers(string characterClass)
+        
+        private IList<string> ExtractCharacterSpecifiers(string characterClass, bool spellOutWhitespace)
         {
             var specifiers = CharacterRanges.Matches(characterClass);
             var result = new List<string>();
@@ -58,12 +60,15 @@ namespace Rubberduck.RegexAssistant.Atoms
                         continue;
                     }
                 }
-                result.Add(specifier.Value);
+
+                result.Add(spellOutWhitespace && WhitespaceToString.IsFullySpellingOutApplicable(specifier.Value, out var spelledOutWhiteSpace)
+                    ? spelledOutWhiteSpace
+                    : specifier.Value);
             }
             return result;
         }
 
-        public string Description => string.Format(InverseMatching 
+        public string Description(bool spellOutWhitespace) => string.Format(InverseMatching 
                 ? AssistantResources.AtomDescription_CharacterClass_Inverted 
                 : AssistantResources.AtomDescription_CharacterClass
             , HumanReadableClass());

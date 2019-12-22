@@ -16,9 +16,11 @@ using Rubberduck.Common.WinAPI;
 using Rubberduck.Root;
 using Rubberduck.Resources;
 using Rubberduck.Resources.Registration;
+using Rubberduck.Runtime;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.ComManagement;
+using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.VbeRuntime;
@@ -42,6 +44,7 @@ namespace Rubberduck
         private IVBE _vbe;
         private IAddIn _addin;
         private IVbeNativeApi _vbeNativeApi;
+        private IBeepInterceptor _beepInterceptor;
         private bool _isInitialized;
         private bool _isBeginShutdownExecuted;
 
@@ -62,14 +65,12 @@ namespace Rubberduck
                 _addin = RootComWrapperFactory.GetAddInWrapper(AddInInst);
                 _addin.Object = this;
 
-                VbeProvider.Initialize(_vbe);
+                _vbeNativeApi = new VbeNativeApiAccessor();
+                _beepInterceptor = new BeepInterceptor(_vbeNativeApi);
+                VbeProvider.Initialize(_vbe, _vbeNativeApi, _beepInterceptor);
                 VbeNativeServices.HookEvents(_vbe);
 
-                _vbeNativeApi = VbeProvider.VbeRuntime;
-#if DEBUG
-                // FOR DEBUGGING/DEVELOPMENT PURPOSES, ALLOW ACCESS TO SOME VBETypeLibsAPI FEATURES FROM VBA
-                _addin.Object = new VBEditor.ComManagement.TypeLibsAPI.VBETypeLibsAPI_Object(_vbe);
-#endif
+                SetAddInObject();
 
                 switch (ConnectMode)
                 {
@@ -86,6 +87,13 @@ namespace Rubberduck
             {
                 Console.WriteLine(e);
             }
+        }
+
+        [Conditional("DEBUG")]
+        private void SetAddInObject()
+        {
+            // FOR DEBUGGING/DEVELOPMENT PURPOSES, ALLOW ACCESS TO SOME VBETypeLibsAPI FEATURES FROM VBA
+            _addin.Object = new VBETypeLibsAPI_Object(_vbe);
         }
 
         private Assembly LoadFromSameFolder(object sender, ResolveEventArgs args)
@@ -148,16 +156,11 @@ namespace Rubberduck
                     return;
                 }
 
-                var pathProvider = PersistancePathProvider.Instance;
-                var configLoader = new XmlPersistanceService<GeneralSettings>(pathProvider)
-                {
-                    FilePath =
-                        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                            "Rubberduck", "rubberduck.config")
-                };
+                var pathProvider = PersistencePathProvider.Instance;
+                var configLoader = new XmlPersistenceService<GeneralSettings>(pathProvider);
                 var configProvider = new GeneralConfigProvider(configLoader);
 
-                _initialSettings = configProvider.Create();
+                _initialSettings = configProvider.Read();
                 if (_initialSettings != null)
                 {
                     try
@@ -208,7 +211,9 @@ namespace Rubberduck
             catch (Exception exception)
             {
                 _logger.Fatal(exception);
-                System.Windows.Forms.MessageBox.Show(
+                // TODO Use Rubberduck Interaction instead and provide exception stack trace as
+                // an optional "more info" collapsible section to eliminate the conditional.
+                MessageBox.Show(
 #if DEBUG
                     exception.ToString(),
 #else
@@ -230,7 +235,7 @@ namespace Rubberduck
                 currentDomain.UnhandledException += HandlAppDomainException;
                 currentDomain.AssemblyResolve += LoadFromSameFolder;
 
-                _container = new WindsorContainer().Install(new RubberduckIoCInstaller(_vbe, _addin, _initialSettings, _vbeNativeApi));
+                _container = new WindsorContainer().Install(new RubberduckIoCInstaller(_vbe, _addin, _initialSettings, _vbeNativeApi, _beepInterceptor));
                 
                 _app = _container.Resolve<App>();
                 _app.Startup();
@@ -240,11 +245,7 @@ namespace Rubberduck
             catch (Exception e)
             {
                 _logger.Log(LogLevel.Fatal, e, "Startup sequence threw an unexpected exception.");
-#if DEBUG
-                throw;
-#else
-                throw new Exception("Rubberduck's startup sequence threw an unexpected exception. Please check the Rubberduck logs for more information and report an issue if necessary");
-#endif
+                throw new Exception("Rubberduck's startup sequence threw an unexpected exception. Please check the Rubberduck logs for more information and report an issue if necessary", e);
             }
         }
 

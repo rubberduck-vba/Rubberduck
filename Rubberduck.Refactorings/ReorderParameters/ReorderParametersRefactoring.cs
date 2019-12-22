@@ -1,257 +1,552 @@
-﻿﻿using Rubberduck.Common;
-using Rubberduck.Interaction;
-using Rubberduck.Parsing;
+﻿using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Rewriter;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
- using Rubberduck.Parsing.VBA;
- using Rubberduck.VBEditor.Utility;
+using Antlr4.Runtime;
+using Rubberduck.Parsing.Binding;
+using Rubberduck.Parsing.UIContext;
+using Rubberduck.Parsing.VBA;
+ using Rubberduck.Refactorings.Exceptions;
+using Rubberduck.VBEditor.Extensions;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {
-    public class ReorderParametersRefactoring : IRefactoring
+    public class ReorderParametersRefactoring : InteractiveRefactoringBase<IReorderParametersPresenter, ReorderParametersModel>
     {
-        private readonly RubberduckParserState _state;
-        private readonly IRefactoringPresenterFactory _factory;
-        private ReorderParametersModel _model;
-        private readonly IMessageBox _messageBox;
-        private readonly IRewritingManager _rewritingManager;
-        private readonly ISelectionService _selectionService;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
 
-        public ReorderParametersRefactoring(RubberduckParserState state, IRefactoringPresenterFactory factory, IMessageBox messageBox, IRewritingManager rewritingManager, ISelectionService selectionService)
+        public ReorderParametersRefactoring(
+            IDeclarationFinderProvider declarationFinderProvider, 
+            IRefactoringPresenterFactory factory, 
+            IRewritingManager rewritingManager,
+            ISelectionProvider selectionProvider,
+            ISelectedDeclarationProvider selectedDeclarationProvider,
+            IUiDispatcher uiDispatcher)
+        :base(rewritingManager, selectionProvider, factory, uiDispatcher)
         {
-            _state = state;
-            _selectionService = selectionService;
-            _factory = factory;
-            _messageBox = messageBox;
-            _rewritingManager = rewritingManager;
+            _declarationFinderProvider = declarationFinderProvider;
+            _selectedDeclarationProvider = selectedDeclarationProvider;
         }
 
-        private ReorderParametersModel InitializeModel()
+        protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
         {
-            var activeSelection = _selectionService.ActiveSelection();
-            if (!activeSelection.HasValue)
+            var selectedDeclaration = _selectedDeclarationProvider.SelectedDeclaration(targetSelection);
+            if (!ValidDeclarationTypes.Contains(selectedDeclaration.DeclarationType))
+            {
+                return selectedDeclaration.DeclarationType == DeclarationType.Parameter
+                    ? _selectedDeclarationProvider.SelectedMember(targetSelection)
+                    : null;
+            }
+
+            return selectedDeclaration;
+        }
+
+        protected override ReorderParametersModel InitializeModel(Declaration target)
+        {
+            if (target == null)
+            {
+                throw new TargetDeclarationIsNullException();
+            }
+
+            if (!ValidDeclarationTypes.Contains(target.DeclarationType))
+            {
+                throw new InvalidDeclarationTypeException(target);
+            }
+
+            var model = DerivedTarget(new ReorderParametersModel(target));
+
+            return model;
+        }
+
+        private ReorderParametersModel DerivedTarget(ReorderParametersModel model)
+        {
+            var preliminaryModel = ResolvedInterfaceMemberTarget(model)
+                                   ?? ResolvedEventTarget(model)
+                                   ?? model;
+            return ResolvedGetterTarget(preliminaryModel) ?? preliminaryModel;
+        }
+
+        private static ReorderParametersModel ResolvedInterfaceMemberTarget(ReorderParametersModel model)
+        {
+            var declaration = model.TargetDeclaration;
+            if (!(declaration is ModuleBodyElementDeclaration member) || !member.IsInterfaceImplementation)
             {
                 return null;
             }
 
-            return new ReorderParametersModel(_state, activeSelection.Value);
+            model.IsInterfaceMemberRefactoring = true;
+            model.TargetDeclaration = member.InterfaceMemberImplemented;
+
+            return model;
         }
 
-        public void Refactor()
+        private ReorderParametersModel ResolvedEventTarget(ReorderParametersModel model)
         {
-            _model = InitializeModel();
-            if (_model == null)
+            foreach (var eventDeclaration in _declarationFinderProvider
+                .DeclarationFinder
+                .UserDeclarations(DeclarationType.Event))
             {
+                if (_declarationFinderProvider.DeclarationFinder
+                    .FindEventHandlers(eventDeclaration)
+                    .Any(handler => Equals(handler, model.TargetDeclaration)))
+                {
+                    model.IsEventRefactoring = true;
+                    model.TargetDeclaration = eventDeclaration;
+                    return model;
+                }
+            }
+            return null;
+        }
+
+        private ReorderParametersModel ResolvedGetterTarget(ReorderParametersModel model)
+        {
+            var target = model.TargetDeclaration;
+            if (target == null || !target.DeclarationType.HasFlag(DeclarationType.Property))
+            {
+                return null;
+            }
+
+            if (target.DeclarationType == DeclarationType.PropertyGet)
+            {
+                model.IsPropertyRefactoringWithGetter = true;
+                return model;
+            }
+
+
+            var getter = _declarationFinderProvider.DeclarationFinder
+                .UserDeclarations(DeclarationType.PropertyGet)
+                .FirstOrDefault(item => item.Scope == target.Scope
+                                        && item.IdentifierName == target.IdentifierName);
+
+            if (getter == null)
+            {
+                return null;
+            }
+
+            model.IsPropertyRefactoringWithGetter = true;
+            model.TargetDeclaration = getter;
+
+            return model;
+        }
+
+        protected override void RefactorImpl(ReorderParametersModel model)
+        {
+            if (!model.Parameters.Where((param, index) => param.Index != index).Any())
+            {
+                //This is not an error: the user chose to leave everything as-is.
                 return;
             }
 
-            using (var container = DisposalActionContainer.Create(_factory.Create<IReorderParametersPresenter, ReorderParametersModel>(_model), p => _factory.Release(p)))
-            {
-                var presenter = container.Value;
-                if (presenter == null)
-                {
-                    return;
-                }
+            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
 
-                _model = presenter.Show();
-                if (_model == null || !_model.Parameters.Where((param, index) => param.Index != index).Any() ||
-                    !IsValidParamOrder())
-                {
-                    return;
-                }
-                
-                var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
-                AdjustReferences(_model.TargetDeclaration.References, rewriteSession);
-                AdjustSignatures(rewriteSession);
-                rewriteSession.TryRewrite();
-                _model.State.OnParseRequested(this);
+            RefactorImpl(model, rewriteSession);
+
+            if (!rewriteSession.TryRewrite())
+            {
+                throw new RewriteFailedException(rewriteSession);
             }
         }
 
-        public void Refactor(QualifiedSelection target)
+        private void RefactorImpl(ReorderParametersModel model, IRewriteSession rewriteSession)
         {
-            if (!_selectionService.TrySetActiveSelection(target))
-            {
-                return;
-            }
-            Refactor();
-        }
-
-        public void Refactor(Declaration target)
-        {
-            if (!ReorderParametersModel.ValidDeclarationTypes.Contains(target.DeclarationType))
-            {
-                throw new ArgumentException("Invalid declaration type");
-            }
-
-            Refactor(target.QualifiedSelection);
-        }
-
-        private bool IsValidParamOrder()
-        {
-            var indexOfFirstOptionalParam = _model.Parameters.FindIndex(param => param.IsOptional);
-            if (indexOfFirstOptionalParam >= 0)
-            {
-                for (var index = indexOfFirstOptionalParam + 1; index < _model.Parameters.Count; index++)
-                {
-                    if (!_model.Parameters.ElementAt(index).IsOptional)
-                    {
-                        _messageBox.NotifyWarn(RubberduckUI.ReorderPresenter_OptionalParametersMustBeLastError, RubberduckUI.ReorderParamsDialog_TitleText);
-                        return false;
-                    }
-                }
-            }
-
-            var indexOfParamArray = _model.Parameters.FindIndex(param => param.IsParamArray);
-            if (indexOfParamArray < 0 || indexOfParamArray == _model.Parameters.Count - 1)
-            {
-                return true;
-            }
-
-            _messageBox.NotifyWarn(RubberduckUI.ReorderPresenter_ParamArrayError, RubberduckUI.ReorderParamsDialog_TitleText);
-            return false;
-        }
-
-        private void AdjustReferences(IEnumerable<IdentifierReference> references, IRewriteSession rewriteSession)
-        {
-            foreach (var reference in references.Where(item => item.Context != _model.TargetDeclaration.Context))
-            {
-                VBAParser.ArgumentListContext argumentList = null;
-                var callStmt = reference.Context.GetAncestor<VBAParser.CallStmtContext>();
-                if (callStmt != null)
-                {
-                    argumentList = CallStatement.GetArgumentList(callStmt);
-                }
-                
-                if (argumentList == null)
-                {
-                    var indexExpression = reference.Context.GetAncestor<VBAParser.IndexExprContext>();
-                    if (indexExpression != null)
-                    {
-                        argumentList = indexExpression.GetChild<VBAParser.ArgumentListContext>();
-                    }
-                }
-
-                if (argumentList == null)
-                {
-                    continue; 
-                }
-
-                var module = reference.QualifiedModuleName;
-                RewriteCall(argumentList, module, rewriteSession);
-            }
-        }
-
-        private void RewriteCall(VBAParser.ArgumentListContext argList, QualifiedModuleName module, IRewriteSession rewriteSession)
-        {
-            var rewriter = rewriteSession.CheckOutModuleRewriter(module);
-
-            var args = argList.argument().Select((s, i) => new { Index = i, Text = s.GetText() }).ToList();
-            for (var i = 0; i < _model.Parameters.Count; i++)
-            {
-                if (argList.argument().Length <= i)
-                {
-                    break;
-                }
-
-                var arg = argList.argument()[i];
-                rewriter.Replace(arg, args.Single(s => s.Index == _model.Parameters[i].Index).Text);
-            }
-        }
-
-        private void AdjustSignatures(IRewriteSession rewriteSession)
-        {
-            var proc = (dynamic)_model.TargetDeclaration.Context;
-            var paramList = (VBAParser.ArgListContext)proc.argList();
+            AdjustReferences(model, rewriteSession);
+            AdjustSignatures(model, rewriteSession);
 
             // if we are reordering a property getter, check if we need to reorder a letter/setter too
-            if (_model.TargetDeclaration.DeclarationType == DeclarationType.PropertyGet)
+            if (model.IsPropertyRefactoringWithGetter)
             {
-                var setter = _model.Declarations.FirstOrDefault(item => item.ParentScope == _model.TargetDeclaration.ParentScope &&
-                                              item.IdentifierName == _model.TargetDeclaration.IdentifierName &&
-                                              item.DeclarationType == DeclarationType.PropertySet);
-
+                var setter = GetLetterOrSetter(model.TargetDeclaration, DeclarationType.PropertySet);
                 if (setter != null)
                 {
-                    AdjustSignatures(setter, rewriteSession);
-                    AdjustReferences(setter.References, rewriteSession);
+                    var setterModel = ModelForNewTarget(model, setter);
+                    RefactorImpl(setterModel, rewriteSession);
                 }
 
-                var letter = _model.Declarations.FirstOrDefault(item => item.ParentScope == _model.TargetDeclaration.ParentScope &&
-                              item.IdentifierName == _model.TargetDeclaration.IdentifierName &&
-                              item.DeclarationType == DeclarationType.PropertyLet);
-
+                var letter = GetLetterOrSetter(model.TargetDeclaration, DeclarationType.PropertyLet);
                 if (letter != null)
                 {
-                    AdjustSignatures(letter, rewriteSession);
-                    AdjustReferences(letter.References, rewriteSession);
+                    var letterModel = ModelForNewTarget(model, letter);
+                    RefactorImpl(letterModel, rewriteSession);
                 }
             }
 
-            RewriteSignature(_model.TargetDeclaration, paramList, rewriteSession);
+            var eventImplementations = _declarationFinderProvider.DeclarationFinder
+                .FindEventHandlers(model.TargetDeclaration);
 
-            foreach (var withEvents in _model.Declarations.Where(item => item.IsWithEvents && item.AsTypeName == _model.TargetDeclaration.ComponentName))
+            foreach (var eventHandler in eventImplementations)
             {
-                foreach (var reference in _model.Declarations.FindEventProcedures(withEvents))
-                {
-                    AdjustReferences(reference.References, rewriteSession);
-                    AdjustSignatures(reference, rewriteSession);
-                }
+                var eventHandlerModel = ModelForNewTarget(model, eventHandler);
+                AdjustReferences(eventHandlerModel, rewriteSession);
+                AdjustSignatures(eventHandlerModel, rewriteSession);
             }
 
-            if (!(_model.TargetDeclaration is ModuleBodyElementDeclaration member) 
-                || !(member.IsInterfaceImplementation || member.IsInterfaceMember))
+            var interfaceImplementations = _declarationFinderProvider.DeclarationFinder
+                .FindInterfaceImplementationMembers(model.TargetDeclaration);
+
+            foreach (var interfaceImplementation in interfaceImplementations)
+            {
+                var interfaceImplementationModel = ModelForNewTarget(model, interfaceImplementation);
+                AdjustReferences(interfaceImplementationModel, rewriteSession);
+                AdjustSignatures(interfaceImplementationModel, rewriteSession);
+            }
+        }
+
+        private static void AdjustReferences(ReorderParametersModel model, IRewriteSession rewriteSession)
+        {
+            var parameterDeclarations = model.Parameters
+                .Select(param => param.Declaration)
+                .ToList();
+            var argumentReferences = ArgumentReferencesByLocation(parameterDeclarations);
+
+            foreach (var (module, moduleArgumentReferences) in argumentReferences)
+            {
+                AdjustReferences(model, module, moduleArgumentReferences, rewriteSession);
+            }
+        }
+
+        private static Dictionary<QualifiedModuleName, Dictionary<Selection, List<ArgumentReference>>> ArgumentReferencesByLocation(ICollection<ParameterDeclaration> parameters)
+        {
+            return parameters
+                .SelectMany(parameterDeclaration => parameterDeclaration.ArgumentReferences)
+                .GroupBy(argumentReference => argumentReference.QualifiedModuleName)
+                .ToDictionary(
+                    grouping => grouping.Key,
+                    grouping => grouping
+                        .GroupBy(reference => reference.ArgumentListSelection)
+                        .ToDictionary(group => group.Key, group => group.ToList()));
+        }
+
+        private static void AdjustReferences(
+            ReorderParametersModel model,
+            QualifiedModuleName module,
+            Dictionary<Selection, List<ArgumentReference>> argumentReferences,
+            IRewriteSession rewriteSession)
+        {
+            var rewriter = rewriteSession.CheckOutModuleRewriter(module);
+            foreach (var (argumentListSelection, sameArgumentListReferences) in argumentReferences)
+            {
+                //This happens for (with) dictionary access expressions only,
+                //which cannot be reordered anyway.
+                if (argumentListSelection.Equals(Selection.Empty))
+                {
+                    continue;
+                }
+
+                AdjustReferences(model, sameArgumentListReferences, rewriter);
+            }
+        }
+
+        private static void AdjustReferences(ReorderParametersModel model, IReadOnlyCollection<ArgumentReference> argumentReferences, IModuleRewriter rewriter)
+        {
+            if (!argumentReferences.Any())
             {
                 return;
             }
 
-            var implementations =
-                _model.State.DeclarationFinder.FindInterfaceImplementationMembers(member.IsInterfaceMember
-                    ? member
-                    : member.InterfaceMemberImplemented);
-
-            foreach (var interfaceImplentation in implementations)
+            if (argumentReferences.Any(argReference => argReference.ArgumentType == ArgumentListArgumentType.Named))
             {
-                AdjustReferences(interfaceImplentation.References, rewriteSession);
-                AdjustSignatures(interfaceImplentation, rewriteSession);
+                var positionalArguments = argumentReferences
+                    .Where(argReference => argReference.ArgumentType == ArgumentListArgumentType.Positional);
+                MakeArgumentsNamed(positionalArguments, rewriter);
+
+                var missingArguments = argumentReferences
+                    .Where(argReference => argReference.ArgumentType == ArgumentListArgumentType.Missing)
+                    .ToList();
+                RemoveArguments(missingArguments, rewriter);
+
+                return;
             }
+
+            var argumentReferencesWithoutParamArrayReferences = argumentReferences.Where(reference =>
+                !((ParameterDeclaration) reference.Declaration).IsParamArray)
+                .ToList();
+
+            var argumentsWithNewPosition = ArgumentsWithNewPosition(model, argumentReferencesWithoutParamArrayReferences);
+
+            if (argumentReferencesWithoutParamArrayReferences.Count == argumentReferences.Count)
+            {
+                //If no parameters for a param array are provided, the reordering can cause trailing missing arguments, which have to be removed.
+                argumentsWithNewPosition = RemoveMissingArgumentsTrailingAfterReorder(argumentsWithNewPosition, rewriter).ToList();
+            }
+
+            ReorderArguments(argumentsWithNewPosition, rewriter);
         }
 
-        private void AdjustSignatures(Declaration declaration, IRewriteSession rewriteSession)
+        private static void MakeArgumentsNamed(IEnumerable<ArgumentReference> argumentReferences, IModuleRewriter rewriter)
         {
-            var proc = (dynamic) declaration.Context.Parent;
-            VBAParser.ArgListContext paramList;
-
-            if (declaration.DeclarationType == DeclarationType.PropertySet ||
-                declaration.DeclarationType == DeclarationType.PropertyLet)
+            foreach (var argumentReference in argumentReferences)
             {
-                paramList = (VBAParser.ArgListContext) proc.children[0].argList();
-            }
-            else
-            {
-                paramList = (VBAParser.ArgListContext) proc.subStmt().argList();
-            }
+                if (argumentReference.ArgumentType != ArgumentListArgumentType.Positional)
+                {
+                    continue;
+                }
 
-            RewriteSignature(declaration, paramList, rewriteSession);
+                MakePositionalArgumentNamed(argumentReference, rewriter);
+            }
         }
 
-        private void RewriteSignature(Declaration target, VBAParser.ArgListContext paramList, IRewriteSession rewriteSession)
+        private static void MakePositionalArgumentNamed(ArgumentReference argumentReference, IModuleRewriter rewriter)
         {
-            var rewriter = rewriteSession.CheckOutModuleRewriter(target.QualifiedModuleName);
+            var parameterName = argumentReference.Declaration.IdentifierName;
+            var insertionCode = $"{parameterName}:=";
+            var argumentContext = argumentReference.Context;
+            var insertionIndex = argumentContext.Start.TokenIndex;
+            rewriter.InsertBefore(insertionIndex, insertionCode);
+        }
 
-            var parameters = paramList.arg().Select((s, i) => new { Index = i, Text = s.GetText() }).ToList();
-            for (var i = 0; i < _model.Parameters.Count; i++)
+        private static void RemoveArguments(IReadOnlyCollection<ArgumentReference> argumentReferences, IModuleRewriter rewriter)
+        {
+            if (!argumentReferences.Any())
             {
-                var param = paramList.arg()[i];
-                rewriter.Replace(param, parameters.SingleOrDefault(s => s.Index == _model.Parameters[i].Index)?.Text);
+                return;
+            }
+
+            var argumentIndicesToRemove = argumentReferences.Select(argumentReference => argumentReference.ArgumentPosition);
+            var argumentIndexRangesToRemove = IndexRanges(argumentIndicesToRemove);
+            var argumentList = argumentReferences.First().ArgumentListContext;
+
+            foreach (var (startIndex, stopIndex) in argumentIndexRangesToRemove)
+            {
+                RemoveArgumentRange(startIndex, stopIndex, argumentList, rewriter);
             }
         }
+
+        private static IEnumerable<(int startIndex, int stopIndex)> IndexRanges(IEnumerable<int> indices)
+        {
+            var sortedIndices = indices.OrderBy(num => num).ToList();
+            var ranges = new List<(int startIndex, int stopIndex)>();
+            int startIndex = -10;
+            int stopIndex = -10;
+            foreach (var currentIndex in sortedIndices)
+            {
+                if (currentIndex == stopIndex + 1)
+                {
+                    stopIndex = currentIndex;
+                }
+                else
+                {
+                    if (startIndex >= 0)
+                    {
+                        ranges.Add((startIndex, stopIndex));
+                    }
+
+                    startIndex = currentIndex;
+                    stopIndex = currentIndex;
+                }
+            }
+
+            if (startIndex >= 0)
+            {
+                ranges.Add((startIndex, stopIndex));
+            }
+
+            return ranges;
+        }
+
+        private static void RemoveArgumentRange(
+            int startArgumentIndex,
+            int stopArgumentIndex,
+            VBAParser.ArgumentListContext argumentList,
+            IModuleRewriter rewriter)
+        {
+            var (startTokenIndex, stopTokenIndex) = TokenIndexRange(startArgumentIndex, stopArgumentIndex, argumentList.argument());
+            rewriter.RemoveRange(startTokenIndex, stopTokenIndex);
+        }
+
+        private static (int startTokenIndex, int stopTokenIndex) TokenIndexRange(
+            int startIndex,
+            int stopIndex,
+            IReadOnlyList<ParserRuleContext> contexts)
+        {
+            int startTokenIndex;
+            int stopTokenIndex;
+
+            if (stopIndex == contexts.Count - 1)
+            {
+                startTokenIndex = startIndex == 0
+                    ? contexts[0].Start.TokenIndex
+                    : contexts[startIndex - 1].Stop.TokenIndex + 1;
+                stopTokenIndex = contexts[stopIndex].Stop.TokenIndex;
+                return (startTokenIndex, stopTokenIndex);
+            }
+
+            startTokenIndex = contexts[startIndex].Start.TokenIndex;
+            stopTokenIndex = contexts[stopIndex + 1].Start.TokenIndex - 1;
+            return (startTokenIndex, stopTokenIndex);
+        }
+
+        private static IEnumerable<(ArgumentReference argumentReference, int newIndex)> RemoveMissingArgumentsTrailingAfterReorder(
+            IEnumerable<(ArgumentReference reference, int Index)> argumentsWithNewPosition,
+            IModuleRewriter rewriter)
+        {
+            var argumentsWithNewPositionOrderedBackwards = argumentsWithNewPosition
+                .OrderByDescending(tuple => tuple.Index)
+                .ToList();
+
+            var numberOfTrailingMissingMembers = NumberOfTrailingMissingArguments(argumentsWithNewPositionOrderedBackwards);
+
+            if (numberOfTrailingMissingMembers > 0)
+            {
+                RemoveTrailingArguments(argumentsWithNewPositionOrderedBackwards, numberOfTrailingMissingMembers, rewriter);
+            }
+
+            return argumentsWithNewPositionOrderedBackwards.Skip(numberOfTrailingMissingMembers);
+        }
+
+        private static List<(ArgumentReference reference, int)> ArgumentsWithNewPosition(ReorderParametersModel model, IReadOnlyCollection<ArgumentReference> argumentReferences)
+        {
+            var newIndex = NewIndicesOfParameterIndices(model);
+            var argumentsWithNewPosition = argumentReferences
+                .Select(reference => (reference, newIndex[reference.ArgumentPosition]))
+                .ToList();
+            return argumentsWithNewPosition;
+        }
+
+        private static int[] NewIndicesOfParameterIndices(ReorderParametersModel model)
+        {
+            var newIndices = new int[model.Parameters.Count];
+            foreach (var (parameter, index) in model.Parameters.Select((parameter, index) => (parameter, index)))
+            {
+                newIndices[parameter.Index] = index;
+            }
+
+            return newIndices;
+        }
+
+        private static int NumberOfTrailingMissingArguments(IReadOnlyList<(ArgumentReference reference, int Index)> argumentsWithNewPositionOrderedBackwards)
+        {
+            var numberOfTrailingMissingMembers = 0;
+            while (numberOfTrailingMissingMembers < argumentsWithNewPositionOrderedBackwards.Count
+                   && argumentsWithNewPositionOrderedBackwards[numberOfTrailingMissingMembers].reference.ArgumentType ==
+                   ArgumentListArgumentType.Missing)
+            {
+                numberOfTrailingMissingMembers++;
+            }
+
+            return numberOfTrailingMissingMembers;
+        }
+
+        private static void RemoveTrailingArguments(
+            IReadOnlyList<(ArgumentReference reference, int Index)> argumentsWithNewPositionOrderedBackwards,
+            int numberOfTrailingMissingMembers,
+            IModuleRewriter rewriter)
+        {
+            var stopNewArgumentIndex = argumentsWithNewPositionOrderedBackwards.Count - 1;
+            var startNewArgumentIndex = stopNewArgumentIndex - numberOfTrailingMissingMembers + 1;
+
+            var argumentList = argumentsWithNewPositionOrderedBackwards[0].reference.ArgumentListContext;
+            RemoveArgumentRange(startNewArgumentIndex, stopNewArgumentIndex, argumentList, rewriter);
+        }
+
+        private static void ReorderArguments(
+            IReadOnlyList<(ArgumentReference argumentReference, int newIndex)> argumentsWithNewPosition,
+            IModuleRewriter rewriter)
+        {
+            if (!argumentsWithNewPosition.Any())
+            {
+                return;
+            }
+
+            var argumentList = argumentsWithNewPosition[0].argumentReference.ArgumentListContext;
+            var arguments = argumentList.argument();
+            foreach (var (argumentReference, newIndex) in argumentsWithNewPosition)
+            {
+                if (argumentReference.ArgumentPosition == newIndex)
+                {
+                    continue;
+                }
+
+                var replacementArgument = argumentReference.Context.GetText();
+                var contextToReplace = arguments[newIndex];
+
+                if (contextToReplace.missingArgument() != null)
+                {
+                    //Missing members have are empty and thus stopIndex < startIndex, which is not legal for replace. 
+                    rewriter.InsertBefore(contextToReplace.start.TokenIndex, replacementArgument);
+                }
+                else
+                {
+                    rewriter.Replace(contextToReplace, replacementArgument);
+                }
+            }
+        }
+
+        private static void AdjustSignatures(ReorderParametersModel model, IRewriteSession rewriteSession)
+        {
+            if (!model.Parameters.Any())
+            {
+                return;
+            }
+
+            var rewriter = rewriteSession.CheckOutModuleRewriter(model.TargetDeclaration.QualifiedModuleName);
+            var parameterList = model.Parameters[0].Declaration.Context.GetAncestor<VBAParser.ArgListContext>();
+            var newIndices = NewIndicesOfParameterIndices(model);
+
+            ReorderParameters(parameterList, newIndices, rewriter);
+        }
+
+        private static void ReorderParameters(VBAParser.ArgListContext parameterList, int[] newIndices, IModuleRewriter rewriter)
+        {
+            if (!newIndices.Any())
+            {
+                return;
+            }
+
+            var parameterContexts = parameterList.arg();
+            for(var oldIndex = 0; oldIndex < newIndices.Length; oldIndex++)
+            {
+                var newIndex = newIndices[oldIndex];
+
+                if (oldIndex == newIndex)
+                {
+                    continue;
+                }
+
+                var contextToReplace = parameterContexts[newIndex];
+                var replacementParameter = parameterContexts[oldIndex].GetText();
+                rewriter.Replace(contextToReplace, replacementParameter);
+            }
+        }
+
+        private Declaration GetLetterOrSetter(Declaration declaration, DeclarationType declarationType)
+        {
+            return _declarationFinderProvider.DeclarationFinder
+                .UserDeclarations(declarationType)
+                .FirstOrDefault(item => item.QualifiedModuleName.Equals(declaration.QualifiedModuleName)
+                                        && item.IdentifierName == declaration.IdentifierName);
+        }
+
+        private static ReorderParametersModel ModelForNewTarget(ReorderParametersModel oldModel, Declaration newTarget)
+        {
+            var newModel = new ReorderParametersModel(newTarget);
+            var newParameters = newModel.Parameters;
+
+            var newReorderedParameters = oldModel.Parameters
+                .Select(param => newParameters[param.Index])
+                .ToList();
+            if (newReorderedParameters.Count < newParameters.Count)
+            {
+                var additionalParameters = newParameters.Skip(newReorderedParameters.Count);
+                newReorderedParameters.AddRange(additionalParameters);
+            }
+
+            newModel.Parameters = newReorderedParameters;
+            return newModel;
+        }
+
+        public static readonly DeclarationType[] ValidDeclarationTypes =
+        {
+            DeclarationType.Event,
+            DeclarationType.Function,
+            DeclarationType.Procedure,
+            DeclarationType.PropertyGet,
+            DeclarationType.PropertyLet,
+            DeclarationType.PropertySet
+        };
     }
 }

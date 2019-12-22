@@ -48,27 +48,51 @@ namespace Rubberduck.Deployment.Build
 
     public class RubberduckPostBuildTask : AppDomainIsolatedTask
     {
+        /// <summary>
+        /// Visual Studio Build Configuration (e.g. Debug or Release)
+        /// </summary>
         [Required]
         public string Config { get; set; }
 
+        /// <summary>
+        /// Full path to NetFX SDK directory
+        /// </summary>
         [Required]
         public string NetToolsDir { get; set; }
 
+        /// <summary>
+        /// Full path to WiX SDK directory
+        /// </summary>
         [Required]
         public string WixToolsDir { get; set; }
 
+        /// <summary>
+        /// Full path to the directory containing all the source files we want to deploy.
+        /// </summary>
         [Required]
         public string SourceDir { get; set; }
 
+        /// <summary>
+        /// Full path to the directory we want to write our modified files into.
+        /// </summary>
         [Required]
         public string TargetDir { get; set; }
 
+        /// <summary>
+        /// Root path of the project executing the build task.
+        /// </summary>
         [Required]
         public string ProjectDir { get; set; }
 
+        /// <summary>
+        /// Full path to the Inno Setup's include files.
+        /// </summary>
         [Required]
         public string IncludeDir { get; set; }
 
+        /// <summary>
+        /// Pipe-delimited list of DLL to generate TLBs from. Should contain only name &amp; extension and exist in <see cref="SourceDir"/>.
+        /// </summary> 
         [Required]
         public string FilesToExtract { get; set; }
 
@@ -77,6 +101,12 @@ namespace Rubberduck.Deployment.Build
         private string RegFilePath =>
             Path.Combine(Path.Combine(ProjectDir, "LocalRegistryEntries"), "DebugRegistryEntries.reg");
 
+        /// <remarks>
+        /// Entry point for the build task. To use the build task in a csproj, the <c>UsingTask</c> element must be specified before defining the task. The task will
+        /// have the same name as the class, followed by the parameters. In this case, it would be <see cref="RubberduckPreBuildTask"/> element. See <c>Rubberduck.Deployment.csproj</c>
+        /// for usage example. The public properties are used as a parameter in the MSBuild task and are both settable and gettable. Thus, we must read from the properties when 
+        /// we run the <c>Execute</c> which influences the behvaior of the task.
+        /// </remarks>
         public override bool Execute()
         {
             var result = true;
@@ -191,7 +221,7 @@ namespace Rubberduck.Deployment.Build
         {
             this.LogMessage("Updating addin registration...");
             var addInRegFile = Path.Combine(Path.GetDirectoryName(RegFilePath), "RubberduckAddinRegistry.reg");
-            var command = $"reg.exe import \"{addInRegFile}";
+            var command = $"reg.exe import \"{addInRegFile}\"";
             ExecuteTask(command);
         }
 
@@ -336,14 +366,14 @@ namespace Rubberduck.Deployment.Build
                     var now = DateTime.UtcNow;
                     if (Environment.Is64BitOperatingSystem)
                     {
-                        var command = $"reg.exe import {lastRegFile} /reg:32";
+                        var command = $"reg.exe import \"{lastRegFile}\" /reg:32";
                         ExecuteTask(command);
-                        command = $"reg.exe import {lastRegFile} /reg:64";
+                        command = $"reg.exe import \"{lastRegFile}\" /reg:64";
                         ExecuteTask(command);
                     }
                     else
                     {
-                        var command = $"reg.exe import {lastRegFile}";
+                        var command = $"reg.exe import \"{lastRegFile}\"";
                         ExecuteTask(command);
                     }
 

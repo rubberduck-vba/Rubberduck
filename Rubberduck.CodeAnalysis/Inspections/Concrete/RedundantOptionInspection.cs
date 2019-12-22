@@ -9,9 +9,35 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Identifies redundant module options that are set to their implicit default.
+    /// </summary>
+    /// <why>
+    /// Module options that are redundant can be safely removed. Disable this inspection if your convention is to explicitly specify them; a future 
+    /// inspection may be used to enforce consistently explicit module options.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Option Explicit
+    /// Option Base 0
+    /// Option Compare Binary
+    /// 
+    /// Public Sub DoSomething()
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class RedundantOptionInspection : ParseTreeInspectionBase
     {
         public RedundantOptionInspection(RubberduckParserState state)
@@ -24,7 +50,7 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            return Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line))
+            return Listener.Contexts
                                    .Select(context => new QualifiedContextInspectionResult(this,
                                                                            string.Format(InspectionResults.RedundantOptionInspection, context.Context.GetText()),
                                                                            context));

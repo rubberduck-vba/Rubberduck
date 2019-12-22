@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-
-#if DEBUG
 using System.Linq;
-#endif
+using System.Collections.Generic;
 
 namespace Rubberduck.VBEditor.ComManagement
 {
@@ -22,16 +19,12 @@ namespace Rubberduck.VBEditor.ComManagement
                     GetComWrapperObjectHashCode(comWrapper), 
                     key =>
                     {
-#if DEBUG
                         TraceAdd(comWrapper);
-#endif
                         return (DateTime.UtcNow, new WeakReference<ISafeComWrapper>(comWrapper));
                     },
                     (key, value) =>
                     {
-#if DEBUG
                         TraceUpdate(comWrapper);
-#endif
                         return (value.insertTime, new WeakReference<ISafeComWrapper>(comWrapper));
                     });
             }
@@ -46,9 +39,8 @@ namespace Rubberduck.VBEditor.ComManagement
             }
 
             var result = _comWrapperCache.TryRemove(GetComWrapperObjectHashCode(comWrapper), out _);
-#if DEBUG
             TraceRemove(comWrapper, result);
-#endif
+
             return result;
         }
 
@@ -74,7 +66,6 @@ namespace Rubberduck.VBEditor.ComManagement
             _comWrapperCache.Clear();
         }
 
-#if DEBUG
         protected override IDictionary<int, ISafeComWrapper> GetWrappers()
         {
             var dictionary = new Dictionary<int, ISafeComWrapper>();
@@ -89,7 +80,6 @@ namespace Rubberduck.VBEditor.ComManagement
 
             return dictionary;
         }
-#endif
     }
 }
 

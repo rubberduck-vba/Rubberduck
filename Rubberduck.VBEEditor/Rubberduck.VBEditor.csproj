@@ -5,11 +5,12 @@
     <AssemblyName>Rubberduck.VBEditor</AssemblyName>
     <Title>Rubberduck.VBEditor</Title>
     <Product>Rubberduck.VBEditor</Product>
-    <Copyright>Copyright © 2015-2018</Copyright>
+    <Copyright>Copyright © 2015-2019</Copyright>
     <ProjectGuid>{8CE35EB3-8852-4BA1-84DD-DF3F5D2967B0}</ProjectGuid>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants></DefineConstants>
+    <NoWarn>1701;1702;;4011;1001;7035;1053;1591</NoWarn>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
   <ItemGroup>
@@ -21,6 +22,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Rubberduck.JunkDrawer\Rubberduck.JunkDrawer.csproj" />
     <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj" />
   </ItemGroup>
   <ItemGroup>

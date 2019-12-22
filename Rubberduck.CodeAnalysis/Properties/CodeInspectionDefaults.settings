@@ -1,0 +1,93 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Rubberduck.CodeAnalysis.Properties" GeneratedClassName="CodeInspectionDefaults">
+  <Profiles />
+  <Settings>
+    <Setting Name="CodeInspectionSettings" Type="Rubberduck.CodeAnalysis.Settings.CodeInspectionSettings" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;CodeInspectionSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;CodeInspections&gt;
+    &lt;CodeInspection Name="BooleanAssignedInIfElseInspection" Severity="Warning" InspectionType="MaintainabilityAndReadabilityIssues" /&gt;
+    &lt;CodeInspection Name="ObsoleteErrorSyntaxInspection" Severity="Suggestion" InspectionType="LanguageOpportunities" /&gt;
+    &lt;CodeInspection Name="StopKeywordInspection" Severity="Suggestion" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="UnhandledOnErrorResumeNextInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="EmptyStringLiteralInspection" Severity="Warning" InspectionType="LanguageOpportunities" /&gt;
+    &lt;CodeInspection Name="ImplicitByRefModifierInspection" Severity="Hint" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="FunctionReturnValueNotUsedInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="IllegalAnnotationInspection" Severity="Error" InspectionType="RubberduckOpportunities" /&gt;
+    &lt;CodeInspection Name="RedundantByRefModifierInspection" Severity="DoNotShow" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="MissingAttributeInspection" Severity="Warning" InspectionType="RubberduckOpportunities" /&gt;
+    &lt;CodeInspection Name="AttributeOutOfSyncInspection" Severity="Warning" InspectionType="RubberduckOpportunities" /&gt;
+    &lt;CodeInspection Name="MissingAnnotationArgumentInspection" Severity="Error" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="MissingMemberAnnotationInspection" Severity="Error" InspectionType="RubberduckOpportunities" /&gt;
+    &lt;CodeInspection Name="ModuleScopeDimKeywordInspection" Severity="Suggestion" InspectionType="LanguageOpportunities" /&gt;
+    &lt;CodeInspection Name="MultilineParameterInspection" Severity="Suggestion" InspectionType="MaintainabilityAndReadabilityIssues" /&gt;
+    &lt;CodeInspection Name="MultipleDeclarationsInspection" Severity="Warning" InspectionType="MaintainabilityAndReadabilityIssues" /&gt;
+    &lt;CodeInspection Name="ObsoleteCallStatementInspection" Severity="Suggestion" InspectionType="LanguageOpportunities" /&gt;
+    &lt;CodeInspection Name="ObsoleteCommentSyntaxInspection" Severity="Suggestion" InspectionType="LanguageOpportunities" /&gt;
+    &lt;CodeInspection Name="ObsoleteLetStatementInspection" Severity="Suggestion" InspectionType="LanguageOpportunities" /&gt;
+    &lt;CodeInspection Name="OptionBaseInspection" Severity="Hint" InspectionType="MaintainabilityAndReadabilityIssues" /&gt;
+    &lt;CodeInspection Name="RedundantOptionInspection" Severity="Hint" InspectionType="LanguageOpportunities" /&gt;
+    &lt;CodeInspection Name="OptionExplicitInspection" Severity="Error" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="ProcedureCanBeWrittenAsFunctionInspection" Severity="Suggestion" InspectionType="LanguageOpportunities" /&gt;
+    &lt;CodeInspection Name="ApplicationWorksheetFunctionInspection" Severity="Suggestion" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="AssignedByValParameterInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="EmptyModuleInspection" Severity="Hint" InspectionType="MaintainabilityAndReadabilityIssues" /&gt;
+    &lt;CodeInspection Name="LineLabelNotUsedInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="IntegerDataTypeInspection" Severity="Hint" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="ShadowedDeclarationInspection" Severity="DoNotShow" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="ConstantNotUsedInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="DefaultProjectNameInspection" Severity="Suggestion" InspectionType="MaintainabilityAndReadabilityIssues" /&gt;
+    &lt;CodeInspection Name="EmptyCaseBlockInspection" Severity="Warning" InspectionType="MaintainabilityAndReadabilityIssues" /&gt;
+    &lt;CodeInspection Name="EmptyDoWhileBlockInspection" Severity="Suggestion" InspectionType="MaintainabilityAndReadabilityIssues" /&gt;
+    &lt;CodeInspection Name="EmptyElseBlockInspection" Severity="Warning" InspectionType="MaintainabilityAndReadabilityIssues" /&gt;
+    &lt;CodeInspection Name="EmptyForEachBlockInspection" Severity="Warning" InspectionType="MaintainabilityAndReadabilityIssues" /&gt;
+    &lt;CodeInspection Name="EmptyForLoopBlockInspection" Severity="Warning" InspectionType="MaintainabilityAndReadabilityIssues" /&gt;
+    &lt;CodeInspection Name="EmptyIfBlockInspection" Severity="Warning" InspectionType="MaintainabilityAndReadabilityIssues" /&gt;
+    &lt;CodeInspection Name="EmptyWhileWendBlockInspection" Severity="Warning" InspectionType="MaintainabilityAndReadabilityIssues" /&gt;
+    &lt;CodeInspection Name="EncapsulatePublicFieldInspection" Severity="Suggestion" InspectionType="MaintainabilityAndReadabilityIssues" /&gt;
+    &lt;CodeInspection Name="HostSpecificExpressionInspection" Severity="Warning" InspectionType="LanguageOpportunities" /&gt;
+    &lt;CodeInspection Name="HungarianNotationInspection" Severity="Suggestion" InspectionType="MaintainabilityAndReadabilityIssues" /&gt;
+    &lt;CodeInspection Name="ImplicitActiveSheetReferenceInspection" Severity="Warning" InspectionType="LanguageOpportunities" /&gt;
+    &lt;CodeInspection Name="ImplicitActiveWorkbookReferenceInspection" Severity="Warning" InspectionType="LanguageOpportunities" /&gt;
+    &lt;CodeInspection Name="ImplicitDefaultMemberAssignmentInspection" Severity="Suggestion" InspectionType="LanguageOpportunities" /&gt;
+    &lt;CodeInspection Name="ImplicitPublicMemberInspection" Severity="Hint" InspectionType="LanguageOpportunities" /&gt;
+    &lt;CodeInspection Name="ImplicitVariantReturnTypeInspection" Severity="Hint" InspectionType="LanguageOpportunities" /&gt;
+    &lt;CodeInspection Name="MemberNotOnInterfaceInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="MoveFieldCloserToUsageInspection" Severity="Hint" InspectionType="MaintainabilityAndReadabilityIssues" /&gt;
+    &lt;CodeInspection Name="NonReturningFunctionInspection" Severity="Error" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="ObjectVariableNotSetInspection" Severity="Error" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="ObsoleteGlobalInspection" Severity="Suggestion" InspectionType="LanguageOpportunities" /&gt;
+    &lt;CodeInspection Name="ObsoleteTypeHintInspection" Severity="Suggestion" InspectionType="LanguageOpportunities" /&gt;
+    &lt;CodeInspection Name="ParameterCanBeByValInspection" Severity="Suggestion" InspectionType="MaintainabilityAndReadabilityIssues" /&gt;
+    &lt;CodeInspection Name="ParameterNotUsedInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="ProcedureNotUsedInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="SelfAssignedDeclarationInspection" Severity="Suggestion" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="UnassignedVariableUsageInspection" Severity="Error" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="UndeclaredVariableInspection" Severity="Error" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="UntypedFunctionUsageInspection" Severity="Hint" InspectionType="LanguageOpportunities" /&gt;
+    &lt;CodeInspection Name="UseMeaningfulNameInspection" Severity="Suggestion" InspectionType="MaintainabilityAndReadabilityIssues" /&gt;
+    &lt;CodeInspection Name="VariableNotAssignedInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="VariableNotUsedInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="VariableTypeNotDeclaredInspection" Severity="Warning" InspectionType="LanguageOpportunities" /&gt;
+    &lt;CodeInspection Name="WriteOnlyPropertyInspection" Severity="Suggestion" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="DefTypeStatementInspection" Severity="Suggestion" InspectionType="LanguageOpportunities" /&gt;
+    &lt;CodeInspection Name="StepIsNotSpecifiedInspection" Severity="DoNotShow" InspectionType="LanguageOpportunities" /&gt;
+    &lt;CodeInspection Name="StepOneIsRedundantInspection" Severity="Hint" InspectionType="LanguageOpportunities" /&gt;
+    &lt;CodeInspection Name="SheetAccessedUsingStringInspection" Severity="Suggestion" InspectionType="LanguageOpportunities" /&gt;
+    &lt;CodeInspection Name="ObsoleteMemberUsageInspection" Severity="Warning" InspectionType="MaintainabilityAndReadabilityIssues" /&gt;
+    &lt;CodeInspection Name="ObsoleteCallingConventionInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="DuplicatedAnnotationInspection" Severity="Error" InspectionType="RubberduckOpportunities" /&gt;
+    &lt;CodeInspection Name="ModuleWithoutFolderInspection" Severity="Suggestion" InspectionType="RubberduckOpportunities" /&gt;
+    &lt;CodeInspection Name="OnLocalErrorInspection" Severity="Suggestion" InspectionType="LanguageOpportunities" /&gt;
+    &lt;CodeInspection Name="IsMissingOnInappropriateArgumentInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="IsMissingWithNonArgumentParameterInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="AssignmentNotUsedInspection" Severity="Suggestion" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="UnderscoreInPublicClassModuleMemberInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="ExcelUdfNameIsValidCellReferenceInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
+  &lt;/CodeInspections&gt;
+  &lt;WhitelistedIdentifiers /&gt;
+  &lt;RunInspectionsOnSuccessfulParse&gt;true&lt;/RunInspectionsOnSuccessfulParse&gt;
+&lt;/CodeInspectionSettings&gt;</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

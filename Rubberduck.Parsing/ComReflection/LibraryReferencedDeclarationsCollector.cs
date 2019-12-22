@@ -9,7 +9,8 @@ namespace Rubberduck.Parsing.ComReflection
     {
         private readonly IComLibraryProvider _comLibraryProvider;
 
-        public LibraryReferencedDeclarationsCollector(IComLibraryProvider comLibraryProvider)
+        public LibraryReferencedDeclarationsCollector(IDeclarationsFromComProjectLoader declarationsFromComProjectLoader, IComLibraryProvider comLibraryProvider)
+        :base(declarationsFromComProjectLoader)
         {
             _comLibraryProvider = comLibraryProvider;
         }
@@ -19,10 +20,10 @@ namespace Rubberduck.Parsing.ComReflection
             return LoadDeclarationsFromLibrary(reference);
         }
 
-        private List<Declaration> LoadDeclarationsFromLibrary(ReferenceInfo reference)
+        private IReadOnlyCollection<Declaration> LoadDeclarationsFromLibrary(ReferenceInfo reference)
         {
             var libraryPath = reference.FullPath;
-            // Failure to load might mean that it's a "normal" VBProject that will get parsed by us anyway.
+            // Failure to load might mean that it's a "normal" VBProject that will get loaded through a different channel.
             var typeLibrary = GetTypeLibrary(libraryPath);
             if (typeLibrary == null)
             {

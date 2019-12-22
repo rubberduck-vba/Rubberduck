@@ -17,7 +17,7 @@ namespace Rubberduck.Parsing.Symbols
             string asTypeName,
             VBAParser.AsTypeClauseContext asTypeContext,
             string typeHint,
-            IEnumerable<IAnnotation> annotations,
+            IEnumerable<IParseTreeAnnotation> annotations,
             Accessibility accessibility, 
             DeclarationType declarationType,
             string value,

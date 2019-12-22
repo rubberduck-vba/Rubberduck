@@ -20,7 +20,7 @@ namespace Rubberduck.UnitTesting.CodeGeneration
         protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly bool _isAccess;
-        private readonly IConfigProvider<UnitTestSettings> _settings;
+        private readonly IConfigurationService<UnitTestSettings> _settings;
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
         private readonly IIndenter _indenter;
@@ -32,7 +32,7 @@ namespace Rubberduck.UnitTesting.CodeGeneration
             RubberduckParserState state, 
             IMessageBox messageBox, 
             IVBEInteraction interaction, 
-            IConfigProvider<UnitTestSettings> settings, 
+            IConfigurationService<UnitTestSettings> settings, 
             IIndenter indenter, 
             ICompilationArgumentsProvider argumentsProvider)
         {
@@ -62,7 +62,7 @@ namespace Rubberduck.UnitTesting.CodeGeneration
                 return;
             }
 
-            var settings = _settings.Create();
+            var settings = _settings.Read();
 
             AddReferenceIfNeeded(project, settings);
 
@@ -133,7 +133,7 @@ namespace Rubberduck.UnitTesting.CodeGeneration
 
         private string GetNewTestModuleCode(IVBComponent component)
         {
-            var settings = _settings.Create();
+            var settings = _settings.Read();
             var baseModule = (GetBaseTestModule(settings) + Environment.NewLine);
 
             if (settings.DefaultTestStubInNewModule)
@@ -162,7 +162,7 @@ namespace Rubberduck.UnitTesting.CodeGeneration
         {
             if (settings is null)
             {
-                settings = _settings.Create();
+                settings = _settings.Read();
             }
 
             string declaration;

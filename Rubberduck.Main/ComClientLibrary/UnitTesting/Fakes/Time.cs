@@ -7,7 +7,7 @@ namespace Rubberduck.UnitTesting.Fakes
     {
         public Time()
         {
-            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcGetTimeVar");
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeNativeApi.DllName, "rtcGetTimeVar");
 
             InjectDelegate(new TimeDelegate(TimeCallback), processAddress);
         }
@@ -25,7 +25,7 @@ namespace Rubberduck.UnitTesting.Fakes
             if (PassThrough)
             {
                 object result;
-                VbeProvider.VbeRuntime.GetTimeVar(out result);
+                VbeProvider.VbeNativeApi.GetTimeVar(out result);
                 Marshal.GetNativeVariantForObject(result, retVal);
                 return;
             }

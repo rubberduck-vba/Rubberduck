@@ -17,7 +17,7 @@
             True if <see cref="P:Rubberduck.AutoComplete.Service.SelfClosingPair.OpeningChar"/> is the same as <see cref="P:Rubberduck.AutoComplete.Service.SelfClosingPair.ClosingChar"/>.
             </summary>
         </member>
-        <member name="M:Rubberduck.AutoComplete.Service.IShowIntelliSenseCommand.Execute">
+        <member name="M:Rubberduck.AutoComplete.Service.IShowQuickInfoCommand.Execute">
             <summary>
             WARNING! Makes an utterly annoying DING! in the VBE if the "QuickInfo" command is unavailable.
             </summary>

@@ -1,17 +1,16 @@
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class ImplicitActiveWorkbookReferenceInspectionTests
+    public class ImplicitActiveWorkbookReferenceInspectionTests : InspectionTestsBase
     {
         [Test]
-        [Ignore("This was apparently only passing due to the test setup. See #4404")]
         [Category("Inspections")]
         public void ImplicitActiveWorkbookReference_ReportsWorksheets()
         {
@@ -181,31 +180,22 @@ End Sub";
 
         private int ArrangeAndGetInspectionCount(string code)
         {
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Module1", ComponentType.StandardModule, code)
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new ImplicitActiveWorkbookReferenceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                return inspectionResults.Count();
-            }
+            var modules = new(string, string, ComponentType)[] { ("Module1", code, ComponentType.StandardModule) };
+            return InspectionResultsForModules(modules, "Excel").Count();
         }
 
         [Test]
         [Category("Inspections")]
         public void InspectionName()
         {
-            const string inspectionName = "ImplicitActiveWorkbookReferenceInspection";
             var inspection = new ImplicitActiveWorkbookReferenceInspection(null);
 
-            Assert.AreEqual(inspectionName, inspection.Name);
+            Assert.AreEqual(nameof(ImplicitActiveWorkbookReferenceInspection), inspection.Name);
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new ImplicitActiveWorkbookReferenceInspection(state);
         }
     }
 }

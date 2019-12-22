@@ -8,10 +8,38 @@ using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Resources.Experimentals;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    [Experimental]
+    /// <summary>
+    /// Identifies empty 'For Each...Next' blocks that can be safely removed.
+    /// </summary>
+    /// <why>
+    /// Dead code should be removed. A loop without a body is usually redundant.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim sheet As Worksheet
+    ///     For Each sheet In ThisWorkbook.Worksheets
+    ///         ' no executable statement...
+    ///     Next
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim sheet As Worksheet
+    ///     For Each sheet In ThisWorkbook.Worksheets
+    ///         Debug.Print sheet.Name
+    ///     Next
+    /// End Sub
+    /// ]]>
+    /// </example>
+    [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
     internal class EmptyForEachBlockInspection : ParseTreeInspectionBase
     {
         public EmptyForEachBlockInspection(RubberduckParserState state)
@@ -20,7 +48,6 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts
-                .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
                 .Select(result => new QualifiedContextInspectionResult(this,
                                                         InspectionResults.EmptyForEachBlockInspection,
                                                         result));

@@ -231,9 +231,6 @@
   <data name="UndeclaredVariableInspection" xml:space="preserve">
     <value>Lokální proměnná '{0}' není deklarována</value>
   </data>
-  <data name="ImplicitDefaultMemberAssignmentInspection" xml:space="preserve">
-    <value>Přidělení '{0}' implicitně přidělí výchozího člena třídy '{1}'</value>
-  </data>
   <data name="AggregateInspection" xml:space="preserve">
     <value>{0} ({1} výsledky)</value>
   </data>
@@ -303,18 +300,6 @@
   <data name="EmptyModuleInspection" xml:space="preserve">
     <value>Modul/třída {0} je prázdná.</value>
   </data>
-  <data name="UnreachableCaseInspection" xml:space="preserve">
-    <value>Není schopno dosáhnout na 'Case' klauzuli '{0}'</value>
-  </data>
-  <data name="UnreachableCaseInspection_CaseElse" xml:space="preserve">
-    <value>Nedosažitelný 'Case Else': Všechny potřebné hodnoty jsou vyřešeny předchozím 'Case' příkazem/příkazy</value>
-  </data>
-  <data name="UnreachableCaseInspection_TypeMismatch" xml:space="preserve">
-    <value>Neplatný Typ: 'Case' Příkaz nemůže být vyhodnocen jako typ příkazu 'Select'</value>
-  </data>
-  <data name="UnreachableCaseInspection_Unreachable" xml:space="preserve">
-    <value>Nedosažitelné: 'Case' příkaz je vyřešen předchozím 'Case' příkazem/příkazy</value>
-  </data>
   <data name="UnhandledOnErrorResumeNextInspection" xml:space="preserve">
     <value>Errory jsou ignorovány, avšak už nikdy neřešeny</value>
   </data>
@@ -325,22 +310,16 @@
     <value>1 je výchozí krok pro 'for-next' smyčku a je tedy zbytečné ho definovat</value>
   </data>
   <data name="StepIsNotSpecifiedInspection" xml:space="preserve">
-    <value>'Step' není specifikován</value>
+    <value>'Step' není specifikován.</value>
   </data>
   <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
-    <value>Staticky přístupný list lze referovat jeho kódovým jménem</value>
+    <value>Staticky přístupný list lze referovat jeho kódovým jménem.</value>
   </data>
   <data name="ObsoleteMemberUsageInspection" xml:space="preserve">
     <value>Zvažte nahrazení volání '{0}'. {1}</value>
   </data>
   <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
     <value>'{0}' je deklarováno zastaralou 'CDecl' volací konvencí.</value>
-  </data>
-  <data name="UnreachableCaseInspection_InherentlyUnreachable" xml:space="preserve">
-    <value>Nedostupné: Case Statement obsahuje klauzuli(e) o neplatném rozsahu.</value>
-  </data>
-  <data name="UnreachableCaseInspection_Overflow" xml:space="preserve">
-    <value>Nedostupné: Case Statement způsobí Run-time chybu č. 6 (Přetečení)</value>
   </data>
   <data name="DuplicatedAnnotationInspection" xml:space="preserve">
     <value>Anotace '{0}' je duplikována.</value>
@@ -398,5 +377,83 @@ In memoriam, 1972-2018</value>
   </data>
   <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
     <value>Pevná mezera v identifikátoru '{0}'</value>
+  </data>
+  <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
+    <value>Bloková odmínka 'While...Wend' může být napsána jako 'Do While...Loop'.</value>
+  </data>
+  <data name="UnreachableCaseInspection" xml:space="preserve">
+    <value>Nelze dosáhnout klauzule '{0}'.</value>
+  </data>
+  <data name="UnreachableCaseInspection_CaseElse" xml:space="preserve">
+    <value>Výraz 'Case Else' je nedosažitelný</value>
+  </data>
+  <data name="UnreachableCaseInspection_TypeMismatch" xml:space="preserve">
+    <value>Výraz 'Case' způsobí za běhu programu chybu 13 (neshoda typu).</value>
+  </data>
+  <data name="UnreachableCaseInspection_Unreachable" xml:space="preserve">
+    <value>Výraz 'Case' je nedosažitelný</value>
+  </data>
+  <data name="UnreachableCaseInspection_InherentlyUnreachable" xml:space="preserve">
+    <value>Výraz 'Case' klauzule Range musí být vyjádřen '[x] To [y]' kde [x] je méně nebo rovno [y]</value>
+  </data>
+  <data name="UnreachableCaseInspection_Overflow" xml:space="preserve">
+    <value>Výraz 'Case' způsobí za běhu programu chybu 6 (Přetečení)</value>
+  </data>
+  <data name="EmptyMethodInspection" xml:space="preserve">
+    <value>{0} '{1}' neobsahuje žádné spustitelné příkazy.</value>
+  </data>
+  <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
+    <value>Modul třídy rozhraní '{2}' obsahuje konkrétní implementaci pro {0} '{1}'.</value>
+  </data>
+  <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>Argument '{2}' typu '{3}' je předán parametru '{0}' jako nekompatibilní typ '{1}'.</value>
+  </data>
+  <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Výraz '{0}' obsahuje přístup indexovaného výchozího člena k '{1}'.</value>
+  </data>
+  <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Výraz '{0}' obsahuje přístup indexovaného rekurzivního výchozího člena k '{1}'.</value>
+  </data>
+  <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Výraz '{0}' obsahuje přístup indexovaného nevázaného výchozího člena.</value>
+  </data>
+  <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Ve výrazu '{0}' existuje implicitní přístup k výchozímu členu '{1}'.</value>
+  </data>
+  <data name="SetAssignmentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>Proměnné '{0}' deklarovaného typu '{1}' je přiřazena hodnota nekompatibilního deklarovaného typu '{2}'.</value>
+  </data>
+  <data name="UseOfBangNotationInspection" xml:space="preserve">
+    <value>Výraz '{0}' používá 'bang' notaci.</value>
+  </data>
+  <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
+    <value>Výraz '{0}' používá rekurzivní 'bang' operátor.</value>
+  </data>
+  <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
+    <value>Výraz '{0}' používá 'unbound bang' operátor.</value>
+  </data>
+  <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Ve výrazu '{0}' existuje implicitní rekurzivní výchozí členský přístup k '{1}'.</value>
+  </data>
+  <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Ve výrazu '{0}' existuje implicitní rekurzivní výchozí členský přístup.</value>
+  </data>
+  <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
+    <value>Od výchozího člena je přirazen výsledek výrazu '{1}' k výrazu '{0}'.</value>
+  </data>
+  <data name="ValueRequiredInspection" xml:space="preserve">
+    <value>V kontextu, který vyžaduje typ 'hodnota', je použit výraz '{0}' typu objekt '{1}', který nemá vhodný výchozí člen.</value>
+  </data>
+  <data name="ProcedureRequiredInspection" xml:space="preserve">
+    <value>V kontextu, který vyžaduje 'proceduru', je použit výraz '{0}' typu objekt '{1}', který nemá vhodný výchozí člen.</value>
+  </data>
+  <data name="DefaultMemberRequiredInspection" xml:space="preserve">
+    <value>Výraz '{0}' vyžaduje výchozí členský přístup, avšak typ '{1}' nemá vhodný výchozí člen.</value>
+  </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
+    <value>Výraz '{0}' je použit v kontextu, který požaduje 'proceduru', což vede k volání výchozího člena '{1}'.</value>
+  </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection_Unbound" xml:space="preserve">
+    <value>Výraz '{0}' je použit v kontextu, který požaduje 'proceduru', což vede k volání výchozího člena, kterého nelze určit při kompilaci.</value>
   </data>
 </root>

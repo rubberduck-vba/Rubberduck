@@ -1,30 +1,31 @@
-﻿using NLog;
-using Rubberduck.UI.Command;
+﻿using Rubberduck.UI.Command;
 using Rubberduck.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting.Commands
 {
     internal class RunSucceededTestsCommand : CommandBase
     {
-        private readonly ITestEngine testEngine;
+        private readonly ITestEngine _testEngine;
 
-        public RunSucceededTestsCommand(ITestEngine testEngine) : base (LogManager.GetCurrentClassLogger())
+        public RunSucceededTestsCommand(ITestEngine testEngine)
         {
-            this.testEngine = testEngine;
+            _testEngine = testEngine;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
-            return testEngine.CanRun;
+            return _testEngine.CanRun;
         }
 
         protected override void OnExecute(object parameter)
         {
-            if (!EvaluateCanExecute(parameter))
+            if (!CanExecute(parameter))
             {
                 return;
             }
-            testEngine.RunByOutcome(TestOutcome.Succeeded);
+            _testEngine.RunByOutcome(TestOutcome.Succeeded);
         }
     }
 }

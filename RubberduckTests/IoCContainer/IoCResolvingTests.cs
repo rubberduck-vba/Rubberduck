@@ -7,6 +7,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.Root;
+using Rubberduck.Runtime;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.VbeRuntime;
 using RubberduckTests.Mocks;
@@ -28,12 +29,13 @@ namespace RubberduckTests.IoCContainer
             var addInBuilder = new MockAddInBuilder();
             var addin = addInBuilder.Build().Object;
             var vbeNativeApi = new Mock<IVbeNativeApi>();
+            var beepInterceptor = new Mock<IBeepInterceptor>();
 
             var initialSettings = new GeneralSettings
             {
-                EnableExperimentalFeatures = new List<ExperimentalFeatures>
+                EnableExperimentalFeatures = new List<ExperimentalFeature>
                 {
-                    new ExperimentalFeatures()
+                    new ExperimentalFeature()
                 }
             };
 
@@ -42,7 +44,7 @@ namespace RubberduckTests.IoCContainer
             {
                 try
                 {
-                    container = new WindsorContainer().Install(new RubberduckIoCInstaller(ide, addin, initialSettings, vbeNativeApi.Object));
+                    container = new WindsorContainer().Install(new RubberduckIoCInstaller(ide, addin, initialSettings, vbeNativeApi.Object, beepInterceptor.Object));
                 }
                 catch (Exception exception)
                 {
@@ -71,12 +73,13 @@ namespace RubberduckTests.IoCContainer
             var addInBuilder = new MockAddInBuilder();
             var addin = addInBuilder.Build().Object;
             var vbeNativeApi = new Mock<IVbeNativeApi>();
+            var beepInterceptor = new Mock<IBeepInterceptor>();
 
             var initialSettings = new GeneralSettings
             {
-                EnableExperimentalFeatures = new List<ExperimentalFeatures>
+                EnableExperimentalFeatures = new List<ExperimentalFeature>
                 {
-                    new ExperimentalFeatures()
+                    new ExperimentalFeature()
                 }
             };
 
@@ -85,7 +88,7 @@ namespace RubberduckTests.IoCContainer
             {
                 try
             {
-                container = new WindsorContainer().Install(new RubberduckIoCInstaller(ide, addin, initialSettings, vbeNativeApi.Object));
+                container = new WindsorContainer().Install(new RubberduckIoCInstaller(ide, addin, initialSettings, vbeNativeApi.Object, beepInterceptor.Object));
             }
             catch (Exception exception)
             {

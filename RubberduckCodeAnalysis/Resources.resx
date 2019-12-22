@@ -153,6 +153,15 @@
   <data name="MissingComDefaultInterfaceTitle" xml:space="preserve">
     <value>Missing ComDefaultInterface Attribute</value>
   </data>
+  <data name="MissingExampleElement" xml:space="preserve">
+    <value>Missing xml-doc 'example' element</value>
+  </data>
+  <data name="MissingExampleElementDescription" xml:space="preserve">
+    <value>Inspections xml-doc should have at least one 'example' element, ideally two. If only one example is provided, website assumes the code example triggers the inspection. If two examples are provided, the second example is assumed to not trigger the inspection. Any further example is assumed to trigger the inspection.</value>
+  </data>
+  <data name="MissingExampleElementMessageFormat" xml:space="preserve">
+    <value>XML documentation of type '{0}' has no &lt;example&gt; element.</value>
+  </data>
   <data name="MissingGuidDescription" xml:space="preserve">
     <value>COM-visible types must have an explicit Guid attribute. This is required to avoid verisoning problems. Refer to RubberduckGuid constants.</value>
     <comment>An optional longer localizable description of the diagnostic.</comment>
@@ -168,6 +177,42 @@
     <value>Missing Guid Attribute</value>
     <comment>The title of the diagnostic.</comment>
   </data>
+  <data name="MissingHasResultAttribute" xml:space="preserve">
+    <value>'example' element requires a 'hasresult' attribute (bool), which isn't supplied.</value>
+  </data>
+  <data name="MissingHasResultAttributeDescription" xml:space="preserve">
+    <value>This attribute value will be used to clearly identify which examples are for code that triggers an inspection, vs examples for code that doesn't.</value>
+  </data>
+  <data name="MissingHasResultAttributeMessageFormat" xml:space="preserve">
+    <value>'example' element has no 'hasresult' attribute.</value>
+  </data>
+  <data name="MissingInspectionReferenceElement" xml:space="preserve">
+    <value>Missing xml-doc 'reference' element</value>
+  </data>
+  <data name="MissingInspectionReferenceElementDescription" xml:space="preserve">
+    <value>XML documentation for inspections with a [RequiredLibraryAttribute] must include a &lt;reference&gt; element with a 'name' attribute with the same value as the [RequiredLibraryAttribute]. For example [RequiredLibrary("Excel")] mandates &lt;reference name="Excel" /&gt;.</value>
+  </data>
+  <data name="MissingInspectionReferenceElementMessageFormat" xml:space="preserve">
+    <value>XML documentation for type '{0}' is missing a 'reference' element.</value>
+  </data>
+  <data name="MissingInspectionSummaryElement" xml:space="preserve">
+    <value>Missing xml-doc 'summary' element</value>
+  </data>
+  <data name="MissingInspectionSummaryElementDescription" xml:space="preserve">
+    <value>All inspections must have a short &lt;summary&gt; xml-doc comment describing what the inspection is looking for, that reads comfortably in IntelliSense.</value>
+  </data>
+  <data name="MissingInspectionSummaryElementMessageFormat" xml:space="preserve">
+    <value>XML documentation for type '{0}' is missing a &lt;summary&gt; element.</value>
+  </data>
+  <data name="MissingInspectionWhyElement" xml:space="preserve">
+    <value>Missing xml-doc 'why' element</value>
+  </data>
+  <data name="MissingInspectionWhyElementDescription" xml:space="preserve">
+    <value>Inspections xml-doc must have a 'why' element that contains a paragraph explaining the reasoning behind the inspection.</value>
+  </data>
+  <data name="MissingInspectionWhyElementMessageFormat" xml:space="preserve">
+    <value>XML documentation for type '{0}' is missing a &lt;why&gt; element.</value>
+  </data>
   <data name="MissingInterfaceTypeDescription" xml:space="preserve">
     <value>COM-visible interfaces must have an explicit InterfaceType attribute, typically set to Dual or Dispatch for event interfaces. </value>
   </data>
@@ -180,6 +225,24 @@
   <data name="MissingInterfaceTypeTitle" xml:space="preserve">
     <value>Missing InterfaceType Attribute</value>
   </data>
+  <data name="MissingModuleElement" xml:space="preserve">
+    <value>XML documentation example is missing a 'module' element.</value>
+  </data>
+  <data name="MissingModuleElementDescription" xml:space="preserve">
+    <value>All inspection xml-doc examples should include one or more 'module' element with a 'name' attribute.</value>
+  </data>
+  <data name="MissingModuleElementMessageFormat" xml:space="preserve">
+    <value>'example' element has no 'module' child.</value>
+  </data>
+  <data name="MissingNameAttribute" xml:space="preserve">
+    <value>Missing 'name' attribute.</value>
+  </data>
+  <data name="MissingNameAttributeDescription" xml:space="preserve">
+    <value>This attribute value will be used to clearly identify each module in a code example.</value>
+  </data>
+  <data name="MissingNameAttributeMessageFormat" xml:space="preserve">
+    <value>A '{0}' element requires a 'name' attribute value.</value>
+  </data>
   <data name="MissingProgIdDescription" xml:space="preserve">
     <value>COM-visible classes must have an explicit ProgId attribute. This is required to avoid verisoning problems. Refer to RubberduckProgId constants.</value>
   </data>
@@ -191,5 +254,17 @@
   </data>
   <data name="MissingProgIdTitle" xml:space="preserve">
     <value>Missing ProgId Attribute</value>
+  </data>
+  <data name="MissingRequiredLibAttribute" xml:space="preserve">
+    <value>Missing 'RequiredLibrary' attribute</value>
+  </data>
+  <data name="MissingRequiredLibAttributeDescription" xml:space="preserve">
+    <value>The &lt;reference name="RequiredLibrary" /&gt; element means to document the presence of a [RequiredLibraryAttribute]. If the attribute is correctly missing, the xml-doc element should be removed.</value>
+  </data>
+  <data name="MissingRequiredLibAttributeMessageFormat" xml:space="preserve">
+    <value>XML documentation of type '{0}' includes a &lt;reference&gt; element, but no corresponding [RequiredLibraryAttribute] is decorating the inspection type. Expected: [RequiredLibrary("{1}")].</value>
+  </data>
+  <data name="XmlDocAnalyzerCategory" xml:space="preserve">
+    <value>Project website compatibility</value>
   </data>
 </root>

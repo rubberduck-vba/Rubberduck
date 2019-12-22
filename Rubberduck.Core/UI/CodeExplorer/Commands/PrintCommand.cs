@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.VBEditor.ComManagement;
+using Rubberduck.VBEditor.Events;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -17,17 +18,21 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private readonly IProjectsProvider _projectsProvider;
 
-        public PrintCommand(IProjectsProvider projectsProvider)
+        public PrintCommand(
+            IProjectsProvider projectsProvider, 
+            IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _projectsProvider = projectsProvider;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
         public sealed override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
-            if (!base.EvaluateCanExecute(parameter) || 
-                !(parameter is CodeExplorerComponentViewModel node) ||
+            if (!(parameter is CodeExplorerComponentViewModel node) ||
                 node.Declaration == null)
             {
                 return false;
@@ -50,7 +55,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override void OnExecute(object parameter)
         {
-            if (!base.EvaluateCanExecute(parameter) ||
+            if (!CanExecute(parameter) ||
                 !(parameter is CodeExplorerComponentViewModel node) ||
                 node.Declaration == null)
             {

@@ -7,9 +7,36 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Warns about member calls against an extensible interface, that cannot be validated at compile-time.
+    /// </summary>
+    /// <why>
+    /// Extensible COM types can have members attached at run-time; VBA cannot bind these member calls at compile-time.
+    /// If there is an early-bound alternative way to achieve the same result, it should be preferred.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal adoConnection As ADODB.Connection)
+    ///     adoConnection.SomeStoredProcedure 42
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal adoConnection As ADODB.Connection)
+    ///     Dim adoCommand As ADODB.Command
+    ///     Set adoCommand.ActiveConnection = adoConnection
+    ///     adoCommand.CommandText = "SomeStoredProcedure"
+    ///     adoCommand.CommandType = adCmdStoredProc
+    ///     adoCommand.Parameters.Append adocommand.CreateParameter(Value:=42)
+    ///     adoCommand.Execute
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class MemberNotOnInterfaceInspection : InspectionBase
     {
         public MemberNotOnInterfaceInspection(RubberduckParserState state)
@@ -17,7 +44,9 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            var unresolved = State.DeclarationFinder.UnresolvedMemberDeclarations.Where(decl => !IsIgnoringInspectionResultFor(decl, AnnotationName)).ToList();
+            // prefilter to reduce searchspace
+            var unresolved = State.DeclarationFinder.UnresolvedMemberDeclarations()
+                .Where(decl => !decl.IsIgnoringInspectionResultFor(AnnotationName)).ToList();
 
             var targets = Declarations.Where(decl => decl.AsTypeDeclaration != null &&
                                                      !decl.AsTypeDeclaration.IsUserDefined &&

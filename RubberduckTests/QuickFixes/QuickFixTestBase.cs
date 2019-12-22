@@ -34,12 +34,41 @@ namespace RubberduckTests.QuickFixes
                 codeKind);
         }
 
+        protected string ApplyQuickFixToFirstInspectionResult(
+            IVBE vbe,
+            string componentName,
+            Func<RubberduckParserState, IInspection> inspectionFactory,
+            CodeKind codeKind = CodeKind.CodePaneCode)
+        {
+            return ApplyQuickFixToAppropriateInspectionResults(
+                vbe,
+                componentName,
+                inspectionFactory,
+                ApplyToFirstResult,
+                codeKind);
+        }
+
         private string ApplyQuickFixToAppropriateInspectionResults(string inputCode,
             Func<RubberduckParserState, IInspection> inspectionFactory,
             Action<IQuickFix, IEnumerable<IInspectionResult>, IRewriteSession> applyQuickFix,
             CodeKind codeKind)
         {
             var vbe = TestVbe(inputCode, out var component);
+            return ApplyQuickFixToAppropriateInspectionResults(
+                vbe,
+                component.Name,
+                inspectionFactory,
+                applyQuickFix,
+                codeKind);
+        }
+
+        private string ApplyQuickFixToAppropriateInspectionResults(
+            IVBE vbe,
+            string componentName,
+            Func<RubberduckParserState, IInspection> inspectionFactory,
+            Action<IQuickFix, IEnumerable<IInspectionResult>, IRewriteSession> applyQuickFix,
+            CodeKind codeKind)
+        {
             var (state, rewriteManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
             using (state)
             {
@@ -53,7 +82,9 @@ namespace RubberduckTests.QuickFixes
 
                 applyQuickFix(quickFix, inspectionResults, rewriteSession);
 
-                return rewriteSession.CheckOutModuleRewriter(component.QualifiedModuleName).GetText();
+                var module = state.DeclarationFinder.AllModules.First(qmn => qmn.ComponentName == componentName);
+
+                return rewriteSession.CheckOutModuleRewriter(module).GetText();
             }
         }
 
@@ -72,6 +103,20 @@ namespace RubberduckTests.QuickFixes
         {
             var resultToFix = inspectionResults.First();
             quickFix.Fix(resultToFix, rewriteSession);
+        }
+
+        protected string ApplyQuickFixToAllInspectionResults(
+            IVBE vbe,
+            string componentName,
+            Func<RubberduckParserState, IInspection> inspectionFactory,
+            CodeKind codeKind = CodeKind.CodePaneCode)
+        {
+            return ApplyQuickFixToAppropriateInspectionResults(
+                vbe,
+                componentName,
+                inspectionFactory,
+                ApplyToAllResults,
+                codeKind);
         }
 
         protected string ApplyQuickFixToAllInspectionResults(string inputCode,

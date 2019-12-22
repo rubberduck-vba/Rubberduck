@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using NLog;
 using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
@@ -26,14 +26,15 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         private readonly IComLibraryProvider _comLibraryProvider;
 
         public SerializeProjectsCommand(RubberduckParserState state, IComProjectSerializationProvider serializationProvider, IComLibraryProvider comLibraryProvider) 
-            : base(LogManager.GetCurrentClassLogger())
         {
             _state = state;
             _serializationProvider = serializationProvider;
             _comLibraryProvider = comLibraryProvider;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
             return _state.Status == ParserState.Ready;
         }
@@ -77,9 +78,14 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 _serializationProvider.SerializeProject(library);
             }
 
-#if DEBUG
-            //This block must be inside a DEBUG block because the Serialize method 
-            //called is conditionally compiled and available only for a DEBUG build.
+            SerializeComSafe();
+        }
+
+        [Conditional("TRACE_COM_SAFE")]
+        private void SerializeComSafe()
+        {
+            //This block must be inside a conditional compilation block because the Serialize method 
+            //called is conditionally compiled and available only if the compilation constant TRACE_COM_SAFE is set.
             var path = !string.IsNullOrWhiteSpace(_serializationProvider.Target)
                 ? Path.GetDirectoryName(_serializationProvider.Target)
                 : Path.GetTempPath();
@@ -88,8 +94,8 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             {
                 Directory.CreateDirectory(traceDirectory);
             }
+
             Rubberduck.VBEditor.ComManagement.ComSafeManager.GetCurrentComSafe().Serialize(traceDirectory);
-#endif
         }
     }
 }

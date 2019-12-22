@@ -9,6 +9,27 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Highlights implicit Public access modifiers in user code.
+    /// </summary>
+    /// <why>
+    /// In modern VB (VB.NET), the implicit access modifier is Private, as it is in most other programming languages.
+    /// Making the Public modifiers explicit can help surface potentially unexpected language defaults.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Sub DoSomething()
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class ImplicitPublicMemberInspection : InspectionBase
     {
         public ImplicitPublicMemberInspection(RubberduckParserState state)

@@ -6,6 +6,7 @@ labels: bug
 assignees: ''
 
 ---
+
 **Rubberduck version information**
 The info below can be copy-paste-completed from the first lines of Rubberduck's log or the About box:
 

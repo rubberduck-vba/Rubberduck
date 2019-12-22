@@ -10,9 +10,27 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Flags declaration statements spanning multiple physical lines of code.
+    /// </summary>
+    /// <why>
+    /// Declaration statements should generally declare a single variable.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Dim foo As Long, bar As Long
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Dim foo As Long 
+    /// Dim bar As Long 
+    /// ]]>
+    /// </example>
     public sealed class MultipleDeclarationsInspection : ParseTreeInspectionBase
     {
         public MultipleDeclarationsInspection(RubberduckParserState state)
@@ -21,7 +39,6 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts
-                .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
                 .Select(context => new QualifiedContextInspectionResult(this,
                                                         InspectionResults.MultipleDeclarationsInspection,
                                                         context));

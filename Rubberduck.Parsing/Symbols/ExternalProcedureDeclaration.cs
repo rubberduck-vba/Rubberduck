@@ -20,9 +20,11 @@ namespace Rubberduck.Parsing.Symbols
             VBAParser.AsTypeClauseContext asTypeContext,
             Accessibility accessibility,
             ParserRuleContext context,
+            ParserRuleContext attributesPassContext,
             Selection selection,
             bool isUserDefined,
-            IEnumerable<IAnnotation> annotations)
+            IEnumerable<IParseTreeAnnotation> annotations,
+            Attributes attributes)
             : base(
                   name,
                   parent,
@@ -34,13 +36,13 @@ namespace Rubberduck.Parsing.Symbols
                   accessibility,
                   declarationType,
                   context,
-                  null,
+                  attributesPassContext,
                   selection,
                   false,
                   asTypeContext,
                   isUserDefined,
                   annotations,
-                  null)
+                  attributes)
         {
             _parameters = new List<ParameterDeclaration>();
         }

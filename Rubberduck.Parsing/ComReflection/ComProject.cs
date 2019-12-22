@@ -6,10 +6,11 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.Serialization;
+using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.Utility;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
-using TYPEKIND = System.Runtime.InteropServices.ComTypes.TYPEKIND;
 using TYPELIBATTR = System.Runtime.InteropServices.ComTypes.TYPELIBATTR;
+using TYPEKIND = System.Runtime.InteropServices.ComTypes.TYPEKIND;
 
 namespace Rubberduck.Parsing.ComReflection
 {
@@ -100,7 +101,7 @@ namespace Rubberduck.Parsing.ComReflection
                     {
                         var typeAttributes = Marshal.PtrToStructure<TYPEATTR>(typeAttributesPointer);
                         KnownTypes.TryGetValue(typeAttributes.guid, out var type);
-
+                        
                         switch (typeAttributes.typekind)
                         {
                             case TYPEKIND.TKIND_ENUM:

@@ -4,19 +4,27 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Windows;
+using System.Windows.Annotations;
 using System.Windows.Data;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Interaction.Navigation;
+using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Resources;
 using Rubberduck.Settings;
+using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.ComCommands;
 using Rubberduck.UI.Settings;
+using Rubberduck.UI.UnitTesting.ComCommands;
 using Rubberduck.UI.UnitTesting.Commands;
 using Rubberduck.UI.UnitTesting.ViewModels;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Utility;
-using DataFormats = System.Windows.DataFormats;
+using Rubberduck.Formatters;
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -28,6 +36,17 @@ namespace Rubberduck.UI.UnitTesting
         Location
     }
 
+    [Flags]
+    public enum TestExplorerOutcomeFilter
+    {
+        None = 0,
+        Unknown = 1,
+        Fail = 1 << 1,
+        Inconclusive = 1 << 2,
+        Succeeded = 1 << 3,
+        All = Unknown | Fail | Inconclusive | Succeeded
+    }
+
     internal sealed class TestExplorerViewModel : ViewModelBase, INavigateSelection, IDisposable
     {
         private readonly IClipboardWriter _clipboard;
@@ -37,8 +56,10 @@ namespace Rubberduck.UI.UnitTesting
             TestExplorerModel model,
             IClipboardWriter clipboard,
             // ReSharper disable once UnusedParameter.Local - left in place because it will likely be needed for app wide font settings, etc.
-            IGeneralConfigService configService,
-            ISettingsFormFactory settingsFormFactory)
+            IConfigurationService<Configuration> configService,
+            ISettingsFormFactory settingsFormFactory,
+            IRewritingManager rewritingManager,
+            IAnnotationUpdater annotationUpdater)
         {
             _clipboard = clipboard;
             _settingsFormFactory = settingsFormFactory;
@@ -53,6 +74,11 @@ namespace Rubberduck.UI.UnitTesting
             OpenTestSettingsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), OpenSettings);
             CollapseAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseAll);
             ExpandAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandAll);
+            IgnoreTestCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteIgnoreTestCommand);
+            UnignoreTestCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteUnignoreTestCommand);
+
+            RewritingManager = rewritingManager;
+            AnnotationUpdater = annotationUpdater;
 
             Model = model;
             Model.TestCompleted += HandleTestCompletion;
@@ -66,6 +92,8 @@ namespace Rubberduck.UI.UnitTesting
 
             OnPropertyChanged(nameof(Tests));
             TestGrouping = TestExplorerGrouping.Outcome;
+
+            OutcomeFilter = TestExplorerOutcomeFilter.All;
         }
 
         public TestExplorerModel Model { get; }
@@ -86,6 +114,7 @@ namespace Rubberduck.UI.UnitTesting
                 }
                 _mouseOverTest = value;
                 OnPropertyChanged();
+                RefreshContextMenu();
             }
         }
 
@@ -101,7 +130,14 @@ namespace Rubberduck.UI.UnitTesting
                 }
                 _mouseOverGroup = value;
                 OnPropertyChanged();
+                RefreshContextMenu();
             }
+        }
+
+        private void RefreshContextMenu()
+        {
+            OnPropertyChanged(nameof(DisplayUnignoreTestLabel));
+            OnPropertyChanged(nameof(DisplayIgnoreTestLabel));
         }
 
         private static readonly Dictionary<TestExplorerGrouping, PropertyGroupDescription> GroupDescriptions = new Dictionary<TestExplorerGrouping, PropertyGroupDescription>
@@ -131,6 +167,40 @@ namespace Rubberduck.UI.UnitTesting
             }
         }
 
+        private TestExplorerOutcomeFilter _outcomeFilter = TestExplorerOutcomeFilter.All;
+        public TestExplorerOutcomeFilter OutcomeFilter
+        {
+            get => _outcomeFilter;
+            set
+            {
+                if (value == _outcomeFilter)
+                {
+                    return;
+                }
+
+                _outcomeFilter = value;
+                OnPropertyChanged();
+
+                Tests.Filter = FilterResults;
+            }
+        }
+
+        private string _testNameFilter = string.Empty;
+        public string TestNameFilter
+        {
+            get => _testNameFilter;
+            set
+            {
+                if (_testNameFilter != value)
+                {
+                    _testNameFilter = value;
+                    OnPropertyChanged();
+                    Tests.Filter = FilterResults;
+                    OnPropertyChanged(nameof(Tests));
+                }
+            }
+        }
+
         private bool _expanded;
         public bool ExpandedState
         {
@@ -140,6 +210,21 @@ namespace Rubberduck.UI.UnitTesting
                 _expanded = value;
                 OnPropertyChanged();
             }
+        }
+        /// <summary>
+        /// Filtering for displaying the correct tests.
+        /// Uses both <see cref="OutcomeFilter"/> and <see cref="TestNameFilter"/>
+        /// </summary>
+        private bool FilterResults(object unitTest)
+        {
+            var testMethodViewModel = unitTest as TestMethodViewModel;
+
+            var passesNameFilter = testMethodViewModel.QualifiedName.MemberName.ToUpper().Contains(TestNameFilter?.ToUpper() ?? string.Empty);
+
+            Enum.TryParse(testMethodViewModel.Result.Outcome.ToString(), out TestExplorerOutcomeFilter convertedOutcome);
+            var passesOutcomeFilter = (OutcomeFilter & convertedOutcome) == convertedOutcome;
+
+            return passesNameFilter && passesOutcomeFilter;
         }
 
         private void HandleTestCompletion(object sender, TestCompletedEventArgs e)
@@ -152,6 +237,13 @@ namespace Rubberduck.UI.UnitTesting
             Tests.Refresh();
         }
 
+        public IRewritingManager RewritingManager { get; }
+        public IAnnotationUpdater AnnotationUpdater { get; }
+
+        private TestMethod _mousedOverTestMethod => ((TestMethodViewModel)SelectedItem).Method;
+        public bool DisplayUnignoreTestLabel => SelectedItem != null && _mousedOverTestMethod.IsIgnored;
+        public bool DisplayIgnoreTestLabel => SelectedItem != null && !_mousedOverTestMethod.IsIgnored;
+        
         #region Commands
 
         public ReparseCommand RefreshCommand { get; set; }
@@ -182,6 +274,9 @@ namespace Rubberduck.UI.UnitTesting
 
         public CommandBase CollapseAllCommand { get; }
         public CommandBase ExpandAllCommand { get; }
+
+        public CommandBase IgnoreTestCommand { get; }
+        public CommandBase UnignoreTestCommand { get; }
 
         #endregion
 
@@ -278,6 +373,29 @@ namespace Rubberduck.UI.UnitTesting
             Tests.Refresh();
         }
 
+        private void ExecuteIgnoreTestCommand(object parameter)
+        {
+            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
+
+            AnnotationUpdater.AddAnnotation(rewriteSession, _mousedOverTestMethod.Declaration, new IgnoreTestAnnotation());
+
+            rewriteSession.TryRewrite();
+        }
+
+        private void ExecuteUnignoreTestCommand(object parameter)
+        {
+            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
+            var ignoreTestAnnotations = _mousedOverTestMethod.Declaration.Annotations
+                .Where(pta => pta.Annotation is IgnoreTestAnnotation);
+
+            foreach (var ignoreTestAnnotation in ignoreTestAnnotations)
+            {
+                AnnotationUpdater.RemoveAnnotation(rewriteSession, ignoreTestAnnotation);
+            }
+
+            rewriteSession.TryRewrite();
+        }
+
         private void ExecuteCopyResultsCommand(object parameter)
         {
             const string XML_SPREADSHEET_DATA_FORMAT = "XML Spreadsheet";
@@ -290,7 +408,7 @@ namespace Rubberduck.UI.UnitTesting
 
             var title = string.Format($"Rubberduck Test Results - {DateTime.Now.ToString(CultureInfo.InvariantCulture)}");
 
-            //var textResults = title + Environment.NewLine + string.Join("", _results.Select(result => result.ToString() + Environment.NewLine).ToArray());
+            var textResults = title + Environment.NewLine + string.Join(string.Empty, aResults.Select(result => result.ToString() + Environment.NewLine).ToArray());
             var csvResults = ExportFormatter.Csv(aResults, title, columnInfos);
             var htmlResults = ExportFormatter.HtmlClipboardFragment(aResults, title, columnInfos);
             var rtfResults = ExportFormatter.RTF(aResults, title);
@@ -302,7 +420,7 @@ namespace Rubberduck.UI.UnitTesting
                 _clipboard.AppendString(DataFormats.Rtf, rtfResults);
                 _clipboard.AppendString(DataFormats.Html, htmlResults);
                 _clipboard.AppendString(DataFormats.CommaSeparatedValue, csvResults);
-                //_clipboard.AppendString(DataFormats.UnicodeText, textResults);
+                _clipboard.AppendString(DataFormats.UnicodeText, textResults);
 
                 _clipboard.Flush();
             }

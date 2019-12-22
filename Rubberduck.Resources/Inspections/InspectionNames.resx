@@ -231,9 +231,6 @@
   <data name="UndeclaredVariableInspection" xml:space="preserve">
     <value>Undeclared variable</value>
   </data>
-  <data name="ImplicitDefaultMemberAssignmentInspection" xml:space="preserve">
-    <value>Implicit default member assignment</value>
-  </data>
   <data name="HungarianNotationInspection" xml:space="preserve">
     <value>Variable uses Hungarian notation.</value>
   </data>
@@ -382,5 +379,62 @@
   <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
     <value>ThunderCode 101</value>
     <comment>meta easter egg; do not translate</comment>
+  </data>
+  <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
+    <value>Use of obsolete 'While...Wend' statement</value>
+  </data>
+  <data name="SetAssignmentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>Set assignment with incompatible object type</value>
+  </data>
+  <data name="EmptyMethodInspection" xml:space="preserve">
+    <value>Empty method</value>
+  </data>
+  <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
+    <value>Implemented member of interface class</value>
+  </data>
+  <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>Argument with incompatible object type</value>
+  </data>
+  <data name="ValueRequiredInspection" xml:space="preserve">
+    <value>Object used where a value is required</value>
+  </data>
+  <data name="ProcedureRequiredInspection" xml:space="preserve">
+    <value>Object without default member used where a procedure is required</value>
+  </data>
+  <data name="DefaultMemberRequiredInspection" xml:space="preserve">
+    <value>Indexed default member access without default member</value>
+  </data>
+  <data name="UseOfBangNotationInspection" xml:space="preserve">
+    <value>Use of bang notation</value>
+  </data>
+  <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
+    <value>Use of recursive bang notation</value>
+  </data>
+  <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
+    <value>Use of unbound bang notation</value>
+  </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
+    <value>Object used where a procedure is required</value>
+  </data>
+  <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Indexed default member access</value>
+  </data>
+  <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Indexed recursive default member access</value>
+  </data>
+  <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Indexed unbound default member access</value>
+  </data>
+  <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Implicit default member access</value>
+  </data>
+  <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Implicit recursive default member access</value>
+  </data>
+  <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Implicit unbound default member access</value>
+  </data>
+  <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
+    <value>Suspicious Let assignment</value>
   </data>
 </root>

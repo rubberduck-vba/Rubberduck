@@ -9,6 +9,8 @@ namespace Rubberduck.Parsing.Inspections.Abstract
     /// </summary>
     public interface IQuickFixProvider
     {
+        IEnumerable<IQuickFix> QuickFixes(Type inspectionType);
+
         IEnumerable<IQuickFix> QuickFixes(IInspectionResult result);
 
         void Fix(IQuickFix fix, IInspectionResult result);

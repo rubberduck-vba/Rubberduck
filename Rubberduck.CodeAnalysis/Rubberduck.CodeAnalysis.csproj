@@ -3,10 +3,17 @@
   <PropertyGroup>
     <Product>Rubberduck.CodeAnalysis</Product>
     <Description>Assembly Containing the Code Analysis features exposed by Rubberduck</Description>
-    <Copyright>Copyright © 2017-2018</Copyright>
+    <Copyright>Copyright © 2017-2019</Copyright>
     <AssemblyName>Rubberduck.CodeAnalysis</AssemblyName>
-    <RootNamespace>Rubberduck.Inspections</RootNamespace>
+    <RootNamespace>Rubberduck.CodeAnalysis</RootNamespace>
     <ProjectGuid>{DEF2FB9D-6E62-49D6-8E26-9983AC025768}</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DocumentationFile>Rubberduck.CodeAnalysis.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningsAsErrors>NU1605</WarningsAsErrors>
+    <NoWarn>1701;1702;;4011;1001;7035;1053;1591</NoWarn>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
 
@@ -15,8 +22,8 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj" />
     <ProjectReference Include="..\Rubberduck.Interaction\Rubberduck.Interaction.csproj" />
+    <ProjectReference Include="..\Rubberduck.JunkDrawer\Rubberduck.JunkDrawer.csproj" />
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
       <Private>False</Private>
     </ProjectReference>
@@ -51,5 +58,18 @@
     <PackageReference Include="System.ValueTuple">
       <Version>4.5.0</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\CodeInspectionDefaults.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CodeInspectionDefaults.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\CodeInspectionDefaults.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>CodeInspectionDefaults.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 </Project>

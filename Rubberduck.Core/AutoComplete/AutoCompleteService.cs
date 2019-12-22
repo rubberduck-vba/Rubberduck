@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using NLog;
 using Rubberduck.Settings;
+using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.Events;
 
 namespace Rubberduck.AutoComplete
@@ -15,7 +16,7 @@ namespace Rubberduck.AutoComplete
     {
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
 
-        private readonly IGeneralConfigService _configService;
+        private readonly IConfigurationService<Configuration> _configService;
         private readonly IEnumerable<AutoCompleteHandlerBase> _handlers;
 
         private AutoCompleteSettings _settings;
@@ -23,7 +24,7 @@ namespace Rubberduck.AutoComplete
         private bool _enabled;
         private bool _initialized;
 
-        public AutoCompleteService(IGeneralConfigService configService, IEnumerable<AutoCompleteHandlerBase> handlers)
+        public AutoCompleteService(IConfigurationService<Configuration> configService, IEnumerable<AutoCompleteHandlerBase> handlers)
         {
             _configService = configService;
             _configService.SettingsChanged += ConfigServiceSettingsChanged;
@@ -42,7 +43,7 @@ namespace Rubberduck.AutoComplete
             {
                 if (!_initialized)
                 {
-                    var config = _configService.LoadConfiguration();
+                    var config = _configService.Read();
                     ApplyAutoCompleteSettings(config);
                 }
             }
@@ -85,7 +86,7 @@ namespace Rubberduck.AutoComplete
 
         private void ConfigServiceSettingsChanged(object sender, ConfigurationChangedEventArgs e)
         {
-            var config = _configService.LoadConfiguration();
+            var config = _configService.Read();
             ApplyAutoCompleteSettings(config);
         }
         

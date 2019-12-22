@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Sunburst.NET.Sdk.WPF/1.0.47">
+  <PropertyGroup>
+    <Title>Rubberduck.JunkDrawer</Title>
+    <Product>Rubberduck.JunkDrawer</Product>
+    <Copyright>Copyright © 2019</Copyright>
+    <ProjectGuid>{D7A3F7A3-BD90-4845-B098-AC3AFBF0E16F}</ProjectGuid>
+    <RootNamespace>Rubberduck.JunkDrawer</RootNamespace>
+    <TargetFramework>net46</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;;4011;1001;7035;1053;1591</NoWarn>
+  </PropertyGroup>
+  <Import Project="..\RubberduckBaseProject.csproj" />
+</Project>

@@ -10,9 +10,38 @@ using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Antlr4.Runtime.Misc;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Flags obsolete 'On Local Error' statements.
+    /// </summary>
+    /// <why>
+    /// All errors are "local" - the keyword is redundant/confusing and should be removed.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     On Local Error GoTo ErrHandler
+    ///     ' ...
+    ///     Exit Sub
+    /// ErrHandler:
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     On Error GoTo ErrHandler
+    ///     ' ...
+    ///     Exit Sub
+    /// ErrHandler:
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class OnLocalErrorInspection : ParseTreeInspectionBase
     {
         public OnLocalErrorInspection(RubberduckParserState state)
@@ -24,7 +53,6 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts
-                .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
                 .Select(result => new QualifiedContextInspectionResult(this,
                                                        InspectionResults.OnLocalErrorInspection,
                                                        result));

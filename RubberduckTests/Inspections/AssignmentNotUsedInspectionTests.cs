@@ -4,28 +4,23 @@ using Rubberduck.Inspections.CodePathAnalysis;
 using Rubberduck.Inspections.Concrete;
 using RubberduckTests.Mocks;
 using System.Linq;
-using System.Threading;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class AssignmentNotUsedInspectionTests
+    [Category("Inspections")]
+    [Category("AssignmentNotUsed")]
+    public class AssignmentNotUsedInspectionTests : InspectionTestsBase
     {
-        private IEnumerable<IInspectionResult> GetInspectionResults(string code, bool includeLibraries = false)
+        private IEnumerable<IInspectionResult> InspectionResultsForStandardModuleUsingStdLibs(string code)
         {
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out _, referenceStdLibs: includeLibraries);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new AssignmentNotUsedInspection(state, new Walker());
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                return inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-            }
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out _, referenceStdLibs: true).Object;
+            return InspectionResults(vbe);
         }
 
         [Test]
-        [Category("Inspections")]
         public void IgnoresExplicitArrays()
         {
             const string code = @"
@@ -34,12 +29,11 @@ Sub Foo()
     bar(1) = 42
 End Sub
 ";
-            var results = GetInspectionResults(code);
+            var results = InspectionResultsForStandardModule(code);
             Assert.AreEqual(0, results.Count());
         }
 
         [Test]
-        [Category("Inspections")]
         public void IgnoresImplicitArrays()
         {
             const string code = @"
@@ -49,12 +43,11 @@ Sub Foo()
     bar(1) = ""Z""
 End Sub
 ";
-            var results = GetInspectionResults(code);
+            var results = InspectionResultsForStandardModule(code);
             Assert.AreEqual(0, results.Count());
         }
 
         [Test]
-        [Category("Inspections")]
         public void IgnoresImplicitReDimmedArray()
         {
             const string code = @"
@@ -64,12 +57,11 @@ Sub test()
     foo(1) = 42
 End Sub
 ";
-            var results = GetInspectionResults(code);
+            var results = InspectionResultsForStandardModule(code);
             Assert.AreEqual(0, results.Count());
         }
 
         [Test]
-        [Category("Inspections")]
         public void MarksSequentialAssignments()
         {
             const string code = @"
@@ -82,12 +74,11 @@ End Sub
 
 Sub Bar(ByVal i As Integer)
 End Sub";
-            var results = GetInspectionResults(code);
+            var results = InspectionResultsForStandardModule(code);
             Assert.AreEqual(1, results.Count());
         }
 
         [Test]
-        [Category("Inspections")]
         public void MarksLastAssignmentInDeclarationBlock()
         {
             const string code = @"
@@ -95,12 +86,11 @@ Sub Foo()
     Dim i As Integer
     i = 9
 End Sub";
-            var results = GetInspectionResults(code);
+            var results = InspectionResultsForStandardModule(code);
             Assert.AreEqual(1, results.Count());
         }
 
         [Test]
-        [Category("Inspections")]
         // Note: both assignments in the if/else can be marked in the future;
         // I just want feedback before I start mucking around that deep.
         public void DoesNotMarkLastAssignmentInNonDeclarationBlock()
@@ -115,12 +105,11 @@ Sub Foo()
         i = 8
     End If
 End Sub";
-            var results = GetInspectionResults(code);
+            var results = InspectionResultsForStandardModule(code);
             Assert.AreEqual(0, results.Count());
         }
 
         [Test]
-        [Category("Inspections")]
         public void DoesNotMarkAssignmentWithReferenceAfter()
         {
             const string code = @"
@@ -132,12 +121,11 @@ End Sub
 
 Sub Bar(ByVal i As Integer)
 End Sub";
-            var results = GetInspectionResults(code);
+            var results = InspectionResultsForStandardModule(code);
             Assert.AreEqual(0, results.Count());
         }
 
         [Test]
-        [Category("Inspections")]
         public void DoesNotMarkAssignment_UsedInForNext()
         {
             const string code = @"
@@ -147,12 +135,11 @@ Sub foo()
     For counter = i To 2
     Next
 End Sub";
-            var results = GetInspectionResults(code);
+            var results = InspectionResultsForStandardModule(code);
             Assert.AreEqual(0, results.Count());
         }
 
         [Test]
-        [Category("Inspections")]
         public void DoesNotMarkAssignment_UsedInWhileWend()
         {
             const string code = @"
@@ -164,12 +151,11 @@ Sub foo()
         i = i + 1
     Wend
 End Sub";
-            var results = GetInspectionResults(code);
+            var results = InspectionResultsForStandardModule(code);
             Assert.AreEqual(0, results.Count());
         }
 
         [Test]
-        [Category("Inspections")]
         public void DoesNotMarkAssignment_UsedInDoWhile()
         {
             const string code = @"
@@ -179,12 +165,11 @@ Sub foo()
     Do While i < 10
     Loop
 End Sub";
-            var results = GetInspectionResults(code);
+            var results = InspectionResultsForStandardModule(code);
             Assert.AreEqual(0, results.Count());
         }
 
         [Test]
-        [Category("Inspections")]
         public void DoesNotMarkAssignment_UsedInSelectCase()
         {
             const string code = @"
@@ -202,12 +187,11 @@ Sub foo()
             i = -1
     End Select
 End Sub";
-            var results = GetInspectionResults(code);
+            var results = InspectionResultsForStandardModule(code);
             Assert.AreEqual(0, results.Count());
         }
 
         [Test]
-        [Category("Inspections")]
         public void DoesNotMarkAssignment_UsingNothing()
         {
             const string code = @"
@@ -219,12 +203,11 @@ Debug.Print my_fso.GetFolder(""C:\Windows"").DateLastModified
 
 Set my_fso = Nothing
 End Sub";
-            var results = GetInspectionResults(code, includeLibraries:true);
+            var results = InspectionResultsForStandardModuleUsingStdLibs(code);
             Assert.AreEqual(0, results.Count());
         }
 
         [Test]
-        [Category("Inspections")]
         public void DoesMarkAssignment_UsingNothing_NotUsed()
         {
             const string code = @"
@@ -234,8 +217,51 @@ Set my_fso = New Scripting.FileSystemObject
 
 Set my_fso = Nothing
 End Sub";
-            var results = GetInspectionResults(code, includeLibraries: true);
+            var results = InspectionResultsForStandardModuleUsingStdLibs(code);
             Assert.AreEqual(1, results.Count());
+        }
+
+        [Test]
+        public void DoesNotMarkResults_InIgnoredModule()
+        {
+            const string code = @"'@IgnoreModule 
+Public Sub Test()
+    Dim foo As Long
+    foo = 1245316
+End Sub";
+            var results = InspectionResultsForStandardModule(code);
+            Assert.AreEqual(0, results.Count());
+        }
+
+        [Test]
+        public void DoesNotMarkAssignment_WithIgnoreOnceAnnotation()
+        {
+            const string code = @"Public Sub Test()
+    Dim foo As Long
+    '@Ignore AssignmentNotUsed
+    foo = 123451
+    foo = 56126
+End Sub";
+            var results = InspectionResultsForStandardModule(code);
+            Assert.AreEqual(1, results.Count());
+        }
+
+        [Test]
+        public void DoesNotMarkAssignment_ToIgnoredDeclaration()
+        {
+            const string code = @"Public Sub Test()
+    '@Ignore AssignmentNotUsed
+    Dim foo As Long
+    foo = 123467
+    foo = 45678
+End Sub";
+            var results = InspectionResultsForStandardModule(code);
+            Assert.AreEqual(0, results.Count());
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new AssignmentNotUsedInspection(state, new Walker());
         }
     }
 }

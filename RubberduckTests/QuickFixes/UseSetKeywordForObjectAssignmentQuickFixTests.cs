@@ -62,12 +62,12 @@ End Sub
         {
             var inputCode =
                 @"
-Private Function ReturnObject(ByVal source As Object) As Object
+Private Function ReturnObject(ByVal source As Object) As Class1
     ReturnObject = source
 End Function";
             var expectedCode =
                 @"
-Private Function ReturnObject(ByVal source As Object) As Object
+Private Function ReturnObject(ByVal source As Object) As Class1
     Set ReturnObject = source
 End Function";
 
@@ -95,6 +95,47 @@ End Property
 
             var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new ObjectVariableNotSetInspection(state));
             Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void BothSidesOfAssignmentHaveDefaultMemberAccess_NoExplicitLet_QuickFixWorks()
+        {
+            var class1Code = @"
+Public Property Get Baz() As Long
+Attribute Baz.VB_UserMemId = 0
+End Property
+
+Public Property Let Baz(RHS As Long)
+End Property
+";
+
+            var moduleCode = $@"
+Private Sub Bar() 
+    Dim cls1 As Class1
+    Dim cls2 As Class1
+    Set cls1 = New Class1
+    Set cls2 = New Class1
+    cls2 = cls1
+End Sub
+";
+
+            var expectedModuleCode = $@"
+Private Sub Bar() 
+    Dim cls1 As Class1
+    Dim cls2 As Class1
+    Set cls1 = New Class1
+    Set cls2 = New Class1
+    Set cls2 = cls1
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                ("Class1", class1Code, ComponentType.ClassModule),
+                ("Module1", moduleCode, ComponentType.StandardModule));
+
+            var actualModuleCode = ApplyQuickFixToAllInspectionResults(vbe.Object, "Module1", state => new SuspiciousLetAssignmentInspection(state));
+            Assert.AreEqual(expectedModuleCode, actualModuleCode);
         }
 
 

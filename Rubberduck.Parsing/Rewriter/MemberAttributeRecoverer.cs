@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Extensions;
@@ -19,15 +21,17 @@ namespace Rubberduck.Parsing.Rewriter
         private IRewritingManager _rewritingManager;
         private readonly IMemberAttributeRecoveryFailureNotifier _failureNotifier;
 
-        private readonly
-            IDictionary<QualifiedModuleName, IDictionary<string, HashSet<AttributeNode>>> _attributesToRecover
-                = new Dictionary<QualifiedModuleName, IDictionary<string, HashSet<AttributeNode>>>();
-        private readonly HashSet<QualifiedMemberName> _missingMembers = new HashSet<QualifiedMemberName>();
+        private readonly IDictionary<QualifiedModuleName, IDictionary<(string memberName, DeclarationType memberType), HashSet<AttributeNode>>> _attributesToRecover
+                = new Dictionary<QualifiedModuleName, IDictionary<(string memberName, DeclarationType memberType), HashSet<AttributeNode>>>();
+        private readonly HashSet<(QualifiedMemberName memberName, DeclarationType memberType)> _missingMembers = new HashSet<(QualifiedMemberName memberName, DeclarationType memberType)>();
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public MemberAttributeRecoverer(IDeclarationFinderProvider declarationFinderProvider,
-            IParseManager parseManager, IAttributesUpdater attributesUpdater, IMemberAttributeRecoveryFailureNotifier failureNotifier)
+        public MemberAttributeRecoverer(
+            IDeclarationFinderProvider declarationFinderProvider,
+            IParseManager parseManager, 
+            IAttributesUpdater attributesUpdater, 
+            IMemberAttributeRecoveryFailureNotifier failureNotifier)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _parseManager = parseManager;
@@ -83,7 +87,7 @@ namespace Rubberduck.Parsing.Rewriter
                 var attributesByMember = declarationsByModule[module]
                     .Where(decl => decl.Attributes.Any())
                     .ToDictionary(
-                        decl => decl.IdentifierName,
+                        decl => (decl.IdentifierName, decl.DeclarationType),
                         decl => (HashSet<AttributeNode>)decl.Attributes);
                 _attributesToRecover.Add(module, attributesByMember);
             }
@@ -130,7 +134,7 @@ namespace Rubberduck.Parsing.Rewriter
             EndTheCurrentParse(e.Token);
         }
 
-        private void Apply(IRewriteSession rewriteSession)
+        private void Apply(IExecutableRewriteSession rewriteSession)
         {
 
             var rewriteSucceeded = rewriteSession.TryRewrite();
@@ -154,12 +158,12 @@ namespace Rubberduck.Parsing.Rewriter
             _parseManager.OnParseCancellationRequested(this);
         }
 
-        private void RecoverAttributes(IRewriteSession rewriteSession, QualifiedModuleName module, IDictionary<string, HashSet<AttributeNode>> attributesByMember)
+        private void RecoverAttributes(IRewriteSession rewriteSession, QualifiedModuleName module, IDictionary<(string memberName, DeclarationType memberType), HashSet<AttributeNode>> attributesByMember)
         {
             var membersWithAttributesToRecover = attributesByMember.Keys.ToHashSet();
             var declarationFinder = _declarationFinderProvider.DeclarationFinder;
             var declarationsWithAttributesToRecover = declarationFinder.Members(module)
-                .Where(decl => membersWithAttributesToRecover.Contains(decl.IdentifierName) 
+                .Where(decl => membersWithAttributesToRecover.Contains((decl.IdentifierName, decl.DeclarationType)) 
                                && decl.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module))
                 .ToList();
 
@@ -167,28 +171,28 @@ namespace Rubberduck.Parsing.Rewriter
             {
                 var membersWithoutDeclarations = MembersWithoutDeclarations(membersWithAttributesToRecover, declarationsWithAttributesToRecover);
                 LogFailureToRecoverAllAttributes(module, membersWithoutDeclarations);
-                _missingMembers.UnionWith(membersWithoutDeclarations.Select(memberName => new QualifiedMemberName(module, memberName)));
+                _missingMembers.UnionWith(membersWithoutDeclarations.Select(tpl => (new QualifiedMemberName(module, tpl.memberName), tpl.memberType)));
             }
 
             foreach (var declaration in declarationsWithAttributesToRecover)
             {
-                RecoverAttributes(rewriteSession, declaration, attributesByMember[declaration.IdentifierName]);
+                RecoverAttributes(rewriteSession, declaration, attributesByMember[(declaration.IdentifierName, declaration.DeclarationType)]);
             }
         }
 
-        private static ICollection<string> MembersWithoutDeclarations(HashSet<string> membersWithAttributesToRecover, IEnumerable<Declaration> declarationsWithAttributesToRecover)
+        private static ICollection<(string memberName, DeclarationType memberType)> MembersWithoutDeclarations(HashSet<(string memberName, DeclarationType memberType)> membersWithAttributesToRecover, IEnumerable<Declaration> declarationsWithAttributesToRecover)
         {
             var membersWithoutDeclarations = membersWithAttributesToRecover.ToHashSet();
-            membersWithoutDeclarations.ExceptWith(declarationsWithAttributesToRecover.Select(decl => decl.IdentifierName));
+            membersWithoutDeclarations.ExceptWith(declarationsWithAttributesToRecover.Select(decl => (decl.IdentifierName, decl.DeclarationType)));
             return membersWithoutDeclarations;
         }
 
-        private void LogFailureToRecoverAllAttributes(QualifiedModuleName module, IEnumerable<string> membersWithoutDeclarations)
+        private void LogFailureToRecoverAllAttributes(QualifiedModuleName module, IEnumerable<(string memberName, DeclarationType memberType)> membersWithoutDeclarations)
         {
             _logger.Warn("Could not recover the attributes for all members because one or more members could no longer be found.");
-            foreach (var member in membersWithoutDeclarations)
+            foreach (var (memberName, memberType) in membersWithoutDeclarations)
             {
-                _logger.Trace($"Could not recover the attributes for member {member} in module {module} because a member of that name exists no longer.");
+                _logger.Trace($"Could not recover the attributes for member {memberName} of type {memberType} in module {module} because a member of that name and type exists no longer.");
             }
         }
 

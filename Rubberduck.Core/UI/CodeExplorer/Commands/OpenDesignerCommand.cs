@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.ComManagement;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -20,17 +21,23 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IProjectsProvider _projectsProvider;
         private readonly IVBE _vbe;
 
-        public OpenDesignerCommand(IProjectsProvider projectsProvider, IVBE vbe)
+        public OpenDesignerCommand(
+            IProjectsProvider projectsProvider, 
+            IVBE vbe, 
+            IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _projectsProvider = projectsProvider;
             _vbe = vbe;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
         public sealed override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
-            if (!base.EvaluateCanExecute(parameter) || !(parameter is CodeExplorerItemViewModel node))
+            if (!(parameter is CodeExplorerItemViewModel node))
             {
                 return false;   
             }
@@ -68,8 +75,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override void OnExecute(object parameter)
         {
-            if (!base.EvaluateCanExecute(parameter) || 
-                !(parameter is CodeExplorerItemViewModel node) ||
+            if (!(parameter is CodeExplorerItemViewModel node) ||
                 node.Declaration == null ||
                 !node.Declaration.DeclarationType.HasFlag(DeclarationType.ClassModule))
             {

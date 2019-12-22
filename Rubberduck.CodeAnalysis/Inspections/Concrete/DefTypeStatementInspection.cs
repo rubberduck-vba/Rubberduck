@@ -10,9 +10,27 @@ using Rubberduck.Parsing;
 using Rubberduck.VBEditor;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Warns about Def[Type] statements.
+    /// </summary>
+    /// <why>
+    /// These declarative statements make the first letter of identifiers determine the data type.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// DefBool B
+    /// DefDbl D
+    ///
+    /// Public Sub DoSomething() 
+    ///     Dim bar ' implicit Boolean
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class DefTypeStatementInspection : ParseTreeInspectionBase
     {
         public DefTypeStatementInspection(RubberduckParserState state)
@@ -25,7 +43,7 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            var results = Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line))
+            var results = Listener.Contexts
                 .Select(context => new QualifiedContextInspectionResult(this,
                                                                         string.Format(InspectionResults.DefTypeStatementInspection,
                                                                                       GetTypeOfDefType(context.Context.start.Text),

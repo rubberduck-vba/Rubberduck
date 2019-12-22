@@ -10,9 +10,31 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Warns about module-level declarations made using the 'Dim' keyword.
+    /// </summary>
+    /// <why>
+    /// Private module variables should be declared using the 'Private' keyword. While 'Dim' is also legal, it should preferably be 
+    /// restricted to declarations of procedure-scoped local variables, for consistency, since public module variables are declared with the 'Public' keyword.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Option Explicit
+    /// Dim foo As Long
+    /// ' ...
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Option Explicit
+    /// Private foo As Long
+    /// ' ...
+    /// ]]>
+    /// </example>
     public sealed class ModuleScopeDimKeywordInspection : ParseTreeInspectionBase
     {
         public ModuleScopeDimKeywordInspection(RubberduckParserState state) 
@@ -23,7 +45,6 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts
-                .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
                 .SelectMany(result => result.Context.GetDescendents<VBAParser.VariableSubStmtContext>()
                         .Select(r => new QualifiedContext<ParserRuleContext>(result.ModuleName, r)))
                 .Select(result => new QualifiedContextInspectionResult(this,

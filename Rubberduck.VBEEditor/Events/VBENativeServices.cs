@@ -1,7 +1,5 @@
 ﻿using System;
-#if DEBUG
 using System.Diagnostics;
-#endif
 using System.Linq;
 using System.Text;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -48,7 +46,7 @@ namespace Rubberduck.VBEditor.Events
                 WindowFocusChange = delegate { };
                 User32.UnhookWinEvent(_eventHandle);
                 Subclasses.Dispose();
-                VBEEvents.Terminate();
+                VbeEvents.Terminate();
                 _vbe = null;
             }
         }
@@ -82,19 +80,7 @@ namespace Rubberduck.VBEditor.Events
 
             var windowType = hwnd.ToWindowType();
 
-#if (DEBUG && (THIRSTY_DUCK || THIRSTY_DUCK_EVT))            
-
-            //This is an output window firehose, viewer discretion is advised.
-            if (idObject != (int)ObjId.Cursor)
-            {
-                var windowClassName = hwnd.ToClassName();
-                if (!WinEventMap.Lookup.TryGetValue((int)eventType, out var eventName))
-                {
-                    eventName = "Unknown";
-                }
-                Debug.WriteLine($"EVT: 0x{eventType:X4} ({eventName}) Hwnd 0x{(int)hwnd:X4} ({windowClassName}), idObject {idObject}, idChild {idChild}");
-            }
-#endif
+            PeekMessagePump(eventType, hwnd, idObject, idChild);
 
             if (windowType == WindowType.IntelliSense)
             {
@@ -307,6 +293,22 @@ namespace Rubberduck.VBEditor.Events
             var name = new StringBuilder(User32.MaxGetClassNameBufferSize);
             User32.GetClassName(hwnd, name, name.Capacity);
             return name.ToString();
+        }
+
+        [Conditional("THIRSTY_DUCK")]
+        [Conditional("THIRSTY_DUCK_EVT")]
+        private static void PeekMessagePump(uint eventType, IntPtr hwnd, int idObject, int idChild)
+        {
+            //This is an output window firehose, viewer discretion is advised.
+            if (idObject != (int)ObjId.Cursor)
+            {
+                var windowClassName = hwnd.ToClassName();
+                if (!WinEventMap.Lookup.TryGetValue((int)eventType, out var eventName))
+                {
+                    eventName = "Unknown";
+                }
+                Debug.WriteLine($"EVT: 0x{eventType:X4} ({eventName}) Hwnd 0x{(int)hwnd:X4} ({windowClassName}), idObject {idObject}, idChild {idChild}");
+            }
         }
     }
 }

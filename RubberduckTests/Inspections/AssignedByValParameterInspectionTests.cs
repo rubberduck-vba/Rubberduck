@@ -1,14 +1,14 @@
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
-using RubberduckTests.Mocks;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class AssignedByValParameterInspectionTests
+    public class AssignedByValParameterInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
@@ -18,16 +18,7 @@ namespace RubberduckTests.Inspections
 @"Public Sub Foo(ByVal arg1 As String)
     Let arg1 = ""test""
 End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new AssignedByValParameterInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -38,16 +29,7 @@ End Sub";
 @"Function Foo(ByVal arg1 As Integer) As Boolean
     Let arg1 = 9
 End Function";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new AssignedByValParameterInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -59,16 +41,7 @@ End Function";
     Let arg1 = ""test""
     Let arg2 = 9
 End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new AssignedByValParameterInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(2, inspectionResults.Count());
-            }
+            Assert.AreEqual(2, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -78,16 +51,7 @@ End Sub";
             const string inputCode =
 @"Public Sub Foo(ByVal arg1 As String)
 End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new AssignedByValParameterInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -99,16 +63,7 @@ End Sub";
 Public Sub Foo(ByVal arg1 As String)
     Let arg1 = ""test""
 End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new AssignedByValParameterInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -122,16 +77,7 @@ End Sub";
     Dim var1 As Integer
     var1 = arg2
 End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new AssignedByValParameterInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -154,20 +100,40 @@ Private Sub DoSomething(ByVal foo As Class1)
     foo.Something = 42
 End Sub
 ";
-            var builder = new MockVbeBuilder();
-            var vbe = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, class1)
-                .AddComponent("Module1", ComponentType.StandardModule, caller)
-                .AddProjectToVbeBuilder()
-                .Build();
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var modules = new(string, string, ComponentType)[] 
             {
-                var inspection = new AssignedByValParameterInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+                ("Class1", class1, ComponentType.ClassModule),
+                ("Module1", caller, ComponentType.StandardModule)
+            };
 
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, InspectionResultsForModules(modules).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void AssignedByValParameter_NoResultForDefaultMemberAssignment()
+        {
+            var class1 = @"
+Public Property Get Something() As Long
+Attribute Something.VB_UserMemId = 0
+End Property
+
+Public Property Let Something(ByVal value As Long)
+End Property
+";
+            var caller = @"
+Option Explicit
+Private Sub DoSomething(ByVal foo As Class1)
+    foo = 42
+End Sub
+";
+            var modules = new(string, string, ComponentType)[]
+            {
+                ("Class1", class1, ComponentType.ClassModule),
+                ("Module1", caller, ComponentType.StandardModule)
+            };
+
+            Assert.AreEqual(0, InspectionResultsForModules(modules).Count());
         }
 
         [Test]
@@ -178,6 +144,11 @@ End Sub
             var inspection = new AssignedByValParameterInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new AssignedByValParameterInspection(state);
         }
     }
 }

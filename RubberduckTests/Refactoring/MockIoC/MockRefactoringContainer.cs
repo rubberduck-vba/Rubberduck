@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Linq;
 using System.Threading;
 using Castle.Facilities.TypedFactory;
@@ -26,6 +23,7 @@ using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
+using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace RubberduckTests.Refactoring.MockIoC
@@ -202,8 +200,8 @@ namespace RubberduckTests.Refactoring.MockIoC
                 .LifestyleSingleton());
             container.Register(Component.For<IModuleParser>()
                 .ImplementedBy<ModuleParser>()
-                .DependsOn(Dependency.OnComponent("codePaneSourceCodeProvider", typeof(CodePaneSourceCodeHandler)),
-                    Dependency.OnComponent("attributesSourceCodeProvider", typeof(SourceFileHandlerSourceCodeHandlerAdapter)))
+                .DependsOn(Dependency.OnComponent("codePaneSourceCodeProvider", typeof(CodePaneHandler)),
+                    Dependency.OnComponent("attributesSourceCodeProvider", typeof(SourceFileHandlerComponentSourceCodeHandlerAdapter)))
                 .LifestyleSingleton());
             container.Register(Component.For<ITypeLibWrapperProvider>()
                 .ImplementedBy<TypeLibWrapperProvider>()

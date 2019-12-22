@@ -3,8 +3,11 @@
   <PropertyGroup>
     <Title>Rubberduck.VBEditor.VBA</Title>
     <Product>Rubberduck.VBEditor.VBA</Product>
-    <Copyright>Copyright © 2018</Copyright>
+    <Copyright>Copyright © 2018-2019</Copyright>
     <ProjectGuid>{D488071E-EDCB-4601-B734-1A3109ED903C}</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;;4011;1001;7035;1053;1591</NoWarn>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
 

@@ -1,67 +1,60 @@
-﻿using Antlr4.Runtime;
+﻿using System;
+using System.Collections.Generic;
+using Antlr4.Runtime;
 using Rubberduck.Parsing.Symbols;
 using System.Linq;
-using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Binding
 {
     public sealed class IndexDefaultBinding : IExpressionBinding
     {
-        private readonly DeclarationFinder _declarationFinder;
-        private readonly Declaration _project;
-        private readonly Declaration _module;
-        private readonly Declaration _parent;
         private readonly ParserRuleContext _expression;
         private readonly IExpressionBinding _lExpressionBinding;
         private IBoundExpression _lExpression;
         private readonly ArgumentList _argumentList;
+        private readonly Declaration _parent;
 
         private const int DEFAULT_MEMBER_RECURSION_LIMIT = 32;
-        private int _defaultMemberRecursionLimitCounter = 0;
+
+        //This is based on the spec at https://docs.microsoft.com/en-us/openspecs/microsoft_general_purpose_programming_languages/MS-VBAL/551030b2-72a4-4c95-9cb0-fb8f8c8774b4
+
+        //We pass _lExpression to the expressions we create instead of passing it along the call chain because this simplifies the handling
+        //when resolving recursive default member calls. For these we use a fake bound simple name expression, which leads to the right resolution.
+        //However, using this on the returned expressions would lead to no identifier references being generated for the original lExpression.
 
         public IndexDefaultBinding(
-            DeclarationFinder declarationFinder,
-            Declaration project,
-            Declaration module,
-            Declaration parent,
             ParserRuleContext expression,
             IExpressionBinding lExpressionBinding,
-            ArgumentList argumentList)
+            ArgumentList argumentList,
+            Declaration parent)
             : this(
-                  declarationFinder,
-                  project,
-                  module,
-                  parent,
                   expression,
                   (IBoundExpression)null,
-                  argumentList)
+                  argumentList,
+                  parent)
         {
             _lExpressionBinding = lExpressionBinding;
         }
 
         public IndexDefaultBinding(
-            DeclarationFinder declarationFinder,
-            Declaration project,
-            Declaration module,
-            Declaration parent,
             ParserRuleContext expression,
             IBoundExpression lExpression,
-            ArgumentList argumentList)
+            ArgumentList argumentList,
+            Declaration parent)
         {
-            _declarationFinder = declarationFinder;
-            _project = project;
-            _module = module;
-            _parent = parent;
             _expression = expression;
             _lExpression = lExpression;
             _argumentList = argumentList;
+            _parent = parent;
         }
 
-        private void ResolveArgumentList(Declaration calledProcedure)
+        private static void ResolveArgumentList(Declaration calledProcedure, ArgumentList argumentList, bool isArrayAccess = false)
         {
-            foreach (var argument in _argumentList.Arguments)
+            var arguments = argumentList.Arguments;
+            for (var index = 0; index < arguments.Count; index++)
             {
-                argument.Resolve(calledProcedure);
+                arguments[index].Resolve(calledProcedure, index, isArrayAccess);
             }
         }
 
@@ -71,234 +64,385 @@ namespace Rubberduck.Parsing.Binding
             {
                 _lExpression = _lExpressionBinding.Resolve();
             }
-            if (_lExpression.Classification != ExpressionClassification.ResolutionFailed)
-            {
-                ResolveArgumentList(_lExpression.ReferencedDeclaration);
-            }
-            else
-            {
-                ResolveArgumentList(null);
-            }
-            return Resolve(_lExpression);
+
+            return Resolve(_lExpression, _argumentList, _expression, _parent);
         }
 
-        private IBoundExpression Resolve(IBoundExpression lExpression)
+        private IBoundExpression Resolve(IBoundExpression lExpression, ArgumentList argumentList, ParserRuleContext expression, Declaration parent, int defaultMemberResolutionRecursionDepth = 0, RecursiveDefaultMemberAccessExpression containedExpression = null)
         {
-            IBoundExpression boundExpression = null;
             if (lExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
-                return CreateFailedExpression(lExpression);
+                ResolveArgumentList(null, argumentList);
+                var argumentExpressions = argumentList.Arguments.Select(arg => arg.Expression);
+                return lExpression.JoinAsFailedResolution(expression, argumentExpressions);
             }
-            boundExpression = ResolveLExpressionIsVariablePropertyFunctionNoParameters(lExpression);
-            if (boundExpression != null)
+
+            if (lExpression.Classification == ExpressionClassification.Unbound)
             {
-                return boundExpression;
+                return ResolveLExpressionIsUnbound(lExpression, argumentList, expression, defaultMemberResolutionRecursionDepth, containedExpression);
             }
-            boundExpression = ResolveLExpressionIsIndexExpression(lExpression);
-            if (boundExpression != null)
+
+            if(lExpression.ReferencedDeclaration != null)
             {
-                return boundExpression;
+                if (argumentList.HasArguments)
+                {
+                    switch (lExpression)
+                    {
+                        case IndexExpression indexExpression:
+                            var doubleIndexExpression = ResolveLExpressionIsIndexExpression(indexExpression, argumentList, expression, parent, defaultMemberResolutionRecursionDepth, containedExpression);
+                            if (doubleIndexExpression != null)
+                            {
+                                return doubleIndexExpression;
+                            }
+
+                            break;
+                        case DictionaryAccessExpression dictionaryAccessExpression:
+                            var indexOnBangExpression = ResolveLExpressionIsDictionaryAccessExpression(dictionaryAccessExpression, argumentList, expression, parent, defaultMemberResolutionRecursionDepth, containedExpression);
+                            if (indexOnBangExpression != null)
+                            {
+                                return indexOnBangExpression;
+                            }
+
+                            break;
+                    }
+
+                    if (IsVariablePropertyFunctionWithoutParameters(lExpression)
+                        && !(lExpression.Classification == ExpressionClassification.Variable 
+                                && parent.Equals(lExpression.ReferencedDeclaration)))
+                    {
+                        var parameterlessLExpressionAccess = ResolveLExpressionIsVariablePropertyFunctionNoParameters(lExpression, argumentList, expression, parent, defaultMemberResolutionRecursionDepth, containedExpression);
+                        if (parameterlessLExpressionAccess != null)
+                        {
+                            return parameterlessLExpressionAccess;
+                        }
+                    }
+                }    
             }
-            boundExpression = ResolveLExpressionIsPropertyFunctionSubroutine(lExpression);
-            if (boundExpression != null)
+
+            if (lExpression.Classification == ExpressionClassification.Property
+                || lExpression.Classification == ExpressionClassification.Function
+                || lExpression.Classification == ExpressionClassification.Subroutine
+                || lExpression.Classification == ExpressionClassification.Variable
+                    && parent.Equals(lExpression.ReferencedDeclaration))
             {
-                return boundExpression;
+                var procedureDeclaration = lExpression.ReferencedDeclaration as IParameterizedDeclaration;
+                var parameters = procedureDeclaration?.Parameters?.ToList();
+                if (parameters != null
+                   && ArgumentListIsCompatible(parameters, argumentList))
+                {
+                    return ResolveLExpressionIsPropertyFunctionSubroutine(lExpression, argumentList, expression, defaultMemberResolutionRecursionDepth, containedExpression);
+                }
             }
-            boundExpression = ResolveLExpressionIsUnbound(lExpression);
-            if (boundExpression != null)
-            {
-                return boundExpression;
-            }
-            return CreateFailedExpression(lExpression);
+
+            ResolveArgumentList(null, argumentList);
+            return CreateFailedExpression(lExpression, argumentList, expression, parent, defaultMemberResolutionRecursionDepth > 0);
         }
 
-        private IBoundExpression CreateFailedExpression(IBoundExpression lExpression)
+        private static IBoundExpression CreateFailedExpression(IBoundExpression lExpression, ArgumentList argumentList, ParserRuleContext context, Declaration parent, bool isDefaultMemberResolution)
         {
-            var failedExpr = new ResolutionFailedExpression();
-            failedExpr.AddSuccessfullyResolvedExpression(lExpression);
-            foreach (var arg in _argumentList.Arguments)
+            if (IsFailedDefaultMemberResolution(lExpression, parent))
             {
-                failedExpr.AddSuccessfullyResolvedExpression(arg.Expression);
+                return CreateFailedDefaultMemberAccessExpression(lExpression, argumentList, context);
             }
-            return failedExpr;
+
+            return CreateResolutionFailedExpression(lExpression, argumentList, context, isDefaultMemberResolution);
         }
 
-        private IBoundExpression ResolveLExpressionIsVariablePropertyFunctionNoParameters(IBoundExpression lExpression)
+        private static bool IsFailedDefaultMemberResolution(IBoundExpression lExpression, Declaration parent)
+        {
+            if (lExpression.Classification == ExpressionClassification.ResolutionFailed)
+            {
+                return false;
+            }
+
+            if (IsVariablePropertyFunctionWithoutParameters(lExpression)
+                && !(lExpression.Classification == ExpressionClassification.Variable
+                     && parent.Equals(lExpression.ReferencedDeclaration)))
+            {
+                return true;
+            }
+
+            if (lExpression is IndexExpression indexExpression)
+            {
+                var indexedDeclaration = indexExpression.ReferencedDeclaration;
+                if (indexedDeclaration != null
+                    && (!indexedDeclaration.IsArray
+                        || indexExpression.IsArrayAccess))
+                {
+                    return true;
+                }
+            }
+
+            if (lExpression is DictionaryAccessExpression dictionaryExpression)
+            {
+                var indexedDeclaration = dictionaryExpression.ReferencedDeclaration;
+                if (indexedDeclaration != null
+                    && !indexedDeclaration.IsArray)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static IBoundExpression CreateResolutionFailedExpression(IBoundExpression lExpression, ArgumentList argumentList, ParserRuleContext context, bool isDefaultMemberResolution)
+        {
+            var failedExpr = new ResolutionFailedExpression(context, isDefaultMemberResolution);
+            failedExpr.AddSuccessfullyResolvedExpression(lExpression);
+            var argumentExpressions = argumentList.Arguments.Select(arg => arg.Expression);
+            return failedExpr.JoinAsFailedResolution(context, argumentExpressions);
+        }
+
+        private static IBoundExpression CreateFailedDefaultMemberAccessExpression(IBoundExpression lExpression, ArgumentList argumentList, ParserRuleContext context)
+        {
+            var failedExpr = new IndexExpression(lExpression.ReferencedDeclaration, ExpressionClassification.ResolutionFailed, context, lExpression, argumentList, isDefaultMemberAccess: true);
+
+            var argumentExpressions = argumentList.Arguments.Select(arg => arg.Expression);
+            return failedExpr.JoinAsFailedResolution(context, argumentExpressions.Concat(new[] { lExpression }));
+        }
+
+        private IBoundExpression ResolveLExpressionIsVariablePropertyFunctionNoParameters(IBoundExpression lExpression, ArgumentList argumentList, ParserRuleContext expression, Declaration parent, int defaultMemberResolutionRecursionDepth, RecursiveDefaultMemberAccessExpression containedExpression)
         {
             /*
-             <l-expression> is classified as a variable, or <l-expression> is classified as a property or function 
-                    with a parameter list that cannot accept any parameters and an <argument-list> that is not 
-                    empty, and one of the following is true (see below):
+                <l-expression> is classified as a variable, or <l-expression> is classified as a property or function 
+                with a parameter list that cannot accept any parameters and an <argument-list> that is not 
+                empty, and one of the following is true (see below):
+
+                There are no parameters to the lExpression. So, this is either an array access or a default member call.
              */
-            bool isVariable = lExpression.Classification == ExpressionClassification.Variable;
-            bool propertyWithoutParameters = lExpression.Classification == ExpressionClassification.Property && !((IParameterizedDeclaration)lExpression.ReferencedDeclaration).Parameters.Any();
-            bool functionWithoutParameters = lExpression.Classification == ExpressionClassification.Function && !((IParameterizedDeclaration)lExpression.ReferencedDeclaration).Parameters.Any();
-            if (lExpression.ReferencedDeclaration != null && (isVariable || ((propertyWithoutParameters || functionWithoutParameters) && _argumentList.HasArguments)))
+
+            var indexedDeclaration = lExpression.ReferencedDeclaration;
+            if (indexedDeclaration == null)
             {
-                IBoundExpression boundExpression = null;
-                var asTypeName = lExpression.ReferencedDeclaration.AsTypeName;
-                var asTypeDeclaration = lExpression.ReferencedDeclaration.AsTypeDeclaration;
-                boundExpression = ResolveDefaultMember(lExpression, asTypeName, asTypeDeclaration);
-                if (boundExpression != null)
-                {
-                    return boundExpression;
-                }
-                boundExpression = ResolveLExpressionDeclaredTypeIsArray(lExpression, asTypeDeclaration);
-                if (boundExpression != null)
-                {
-                    return boundExpression;
-                }
-                return boundExpression;
+                return null;
             }
-            return null;
+
+            if (indexedDeclaration.IsArray && !(lExpression is IndexExpression indexExpression && indexExpression.IsArrayAccess))
+            {
+                return ResolveLExpressionDeclaredTypeIsArray(lExpression.ReferencedDeclaration, lExpression.Classification, argumentList, expression, defaultMemberResolutionRecursionDepth, containedExpression);
+            }
+
+            var asTypeName = indexedDeclaration.AsTypeName;
+            var asTypeDeclaration = indexedDeclaration.AsTypeDeclaration;
+
+            return ResolveDefaultMember(asTypeName, asTypeDeclaration, argumentList, expression, parent, defaultMemberResolutionRecursionDepth + 1, containedExpression);
         }
 
-        private IBoundExpression ResolveLExpressionIsIndexExpression(IBoundExpression lExpression)
+        private static bool IsVariablePropertyFunctionWithoutParameters(IBoundExpression lExpression)
+        {
+            switch(lExpression.Classification)
+            {
+                case ExpressionClassification.Variable:
+                    return true;
+                case ExpressionClassification.Function:
+                case ExpressionClassification.Property:
+                    return !((IParameterizedDeclaration)lExpression.ReferencedDeclaration).Parameters.Any();
+                default:
+                    return false;
+            }
+        }
+
+        private IBoundExpression ResolveLExpressionIsIndexExpression(IndexExpression indexExpression, ArgumentList argumentList, ParserRuleContext expression, Declaration parent, int defaultMemberResolutionRecursionDepth, RecursiveDefaultMemberAccessExpression containedExpression)
         {
             /*
              <l-expression> is classified as an index expression and the argument list is not empty.
                 Thus, me must be dealing with a default member access or an array access.
              */
-            if (lExpression is IndexExpression && _argumentList.HasArguments && lExpression.ReferencedDeclaration != null)
-            {
-                IBoundExpression boundExpression = null;
-                var asTypeName = lExpression.ReferencedDeclaration.AsTypeName;
-                var asTypeDeclaration = lExpression.ReferencedDeclaration.AsTypeDeclaration;
-                boundExpression = ResolveDefaultMember(lExpression, asTypeName, asTypeDeclaration);
-                if (boundExpression != null)
-                {
-                    return boundExpression;
-                }
-                boundExpression = ResolveLExpressionDeclaredTypeIsArray(lExpression, asTypeDeclaration);
-                if (boundExpression != null)
-                {
-                    return boundExpression;
-                }
-                return boundExpression;
-            }
-            return null;
-        }
 
-        private IBoundExpression ResolveDefaultMember(IBoundExpression lExpression, string asTypeName, Declaration asTypeDeclaration)
-        {
-            if (lExpression.ReferencedDeclaration.IsArray)
+            var indexedDeclaration = indexExpression.ReferencedDeclaration;
+            if (indexedDeclaration == null)
             {
                 return null;
             }
+
+            //The result of an array access is never an array. Any double array access requires either a default member access in between
+            //or an array assigned to a Variant, the access to which is counted as an unbound member access and, thus, is resolved correctly
+            //via the default member path.
+            if (indexedDeclaration.IsArray && !indexExpression.IsArrayAccess)
+            {
+                return ResolveLExpressionDeclaredTypeIsArray(indexedDeclaration, indexExpression.Classification, argumentList, expression, defaultMemberResolutionRecursionDepth, containedExpression);
+            }
+
+            var asTypeName = indexedDeclaration.AsTypeName;
+            var asTypeDeclaration = indexedDeclaration.AsTypeDeclaration;
+
+            return ResolveDefaultMember(asTypeName, asTypeDeclaration, argumentList, expression, parent, defaultMemberResolutionRecursionDepth + 1, containedExpression);
+        }
+
+        private IBoundExpression ResolveLExpressionIsDictionaryAccessExpression(DictionaryAccessExpression dictionaryAccessExpression, ArgumentList argumentList, ParserRuleContext expression, Declaration parent, int defaultMemberResolutionRecursionDepth, RecursiveDefaultMemberAccessExpression containedExpression)
+        {
+            //This is equivalent to the case in which the lExpression is an IndexExpression with the difference that it cannot be an array access.
+
+            var indexedDeclaration = dictionaryAccessExpression.ReferencedDeclaration;
+            if (indexedDeclaration == null)
+            {
+                return null;
+            }
+
+            if (indexedDeclaration.IsArray)
+            {
+                return ResolveLExpressionDeclaredTypeIsArray(indexedDeclaration, dictionaryAccessExpression.Classification, argumentList, expression, defaultMemberResolutionRecursionDepth, containedExpression);
+            }
+
+            var asTypeName = indexedDeclaration.AsTypeName;
+            var asTypeDeclaration = indexedDeclaration.AsTypeDeclaration;
+
+            return ResolveDefaultMember(asTypeName, asTypeDeclaration, argumentList, expression, parent, defaultMemberResolutionRecursionDepth + 1, containedExpression);
+        }
+
+        private IBoundExpression ResolveDefaultMember(string asTypeName, Declaration asTypeDeclaration, ArgumentList argumentList, ParserRuleContext expression, Declaration parent, int defaultMemberResolutionRecursionDepth, RecursiveDefaultMemberAccessExpression containedExpression)
+        {
             /*
                 The declared type of <l-expression> is Object or Variant, and <argument-list> contains no 
                 named arguments. In this case, the index expression is classified as an unbound member with 
                 a declared type of Variant, referencing <l-expression> with no member name. 
              */
-            if (
-                asTypeName != null
-                && (asTypeName.ToUpperInvariant() == "VARIANT" || asTypeName.ToUpperInvariant() == "OBJECT")
-                && !_argumentList.HasNamedArguments)
+            if (Tokens.Variant.Equals(asTypeName, StringComparison.InvariantCultureIgnoreCase)
+                && !argumentList.HasNamedArguments)
             {
-                return new IndexExpression(null, ExpressionClassification.Unbound, _expression, lExpression, _argumentList);
+                ResolveArgumentList(null, argumentList);
+                //We do not treat unbound accesses on variables of type Variant as default member accesses because they could be array accesses as well. 
+                return new IndexExpression(null, ExpressionClassification.Unbound, expression, _lExpression, argumentList, isDefaultMemberAccess: false, defaultMemberRecursionDepth: defaultMemberResolutionRecursionDepth, containedDefaultMemberRecursionExpression: containedExpression);
             }
+
+            if (Tokens.Object.Equals(asTypeName, StringComparison.InvariantCultureIgnoreCase)
+                && !argumentList.HasNamedArguments)
+            {
+                ResolveArgumentList(null, argumentList);
+                return new IndexExpression(null, ExpressionClassification.Unbound, expression, _lExpression, argumentList, isDefaultMemberAccess: true, defaultMemberRecursionDepth: defaultMemberResolutionRecursionDepth, containedDefaultMemberRecursionExpression: containedExpression);
+            }
+
             /*
                 The declared type of <l-expression> is a specific class, which has a public default Property 
                 Get, Property Let, function or subroutine, and one of the following is true:
             */
             if (asTypeDeclaration is ClassModuleDeclaration classModule
-                && classModule.DefaultMember is Declaration defaultMember)
+                && classModule.DefaultMember is Declaration defaultMember
+                && IsPropertyGetLetFunctionProcedure(defaultMember)
+                && IsPublic(defaultMember))
             {
-                bool isPropertyGetLetFunctionProcedure =
-                    defaultMember.DeclarationType == DeclarationType.PropertyGet
-                    || defaultMember.DeclarationType == DeclarationType.PropertyLet
-                    || defaultMember.DeclarationType == DeclarationType.Function
-                    || defaultMember.DeclarationType == DeclarationType.Procedure;
-                bool isPublic =
-                    defaultMember.Accessibility == Accessibility.Global
-                    || defaultMember.Accessibility == Accessibility.Implicit
-                    || defaultMember.Accessibility == Accessibility.Public;
-                if (isPropertyGetLetFunctionProcedure && isPublic)
+                var defaultMemberClassification = DefaultMemberExpressionClassification(defaultMember);
+
+                /*
+                    This default member’s parameter list is compatible with <argument-list>. In this case, the 
+                    index expression references this default member and takes on its classification and 
+                    declared type.  
+
+                    TODO: Improve argument compatibility check by checking the argument types.
+                 */
+                var parameters = ((IParameterizedDeclaration) defaultMember).Parameters.ToList();
+                if (ArgumentListIsCompatible(parameters, argumentList))
                 {
+                    ResolveArgumentList(defaultMember, argumentList);
+                    return new IndexExpression(defaultMember, ExpressionClassification.Variable, expression, _lExpression, argumentList, isDefaultMemberAccess: true, defaultMemberRecursionDepth: defaultMemberResolutionRecursionDepth, containedDefaultMemberRecursionExpression: containedExpression);
+                }
 
-                    /*
-                        This default member’s parameter list is compatible with <argument-list>. In this case, the 
-                        index expression references this default member and takes on its classification and 
-                        declared type.  
-
-                        TODO: Primitive argument compatibility checking for now.
-                     */
-                    if (((IParameterizedDeclaration)defaultMember).Parameters.Count() == _argumentList.Arguments.Count)
-                    {
-                        return new IndexExpression(defaultMember, lExpression.Classification, _expression, lExpression, _argumentList);
-                    }
-
-                    /**
-                        This default member cannot accept any parameters. In this case, the static analysis restarts 
-                        recursively, as if this default member was specified instead for <l-expression> with the 
-                        same <argument-list>.
-                    */
-                    if (((IParameterizedDeclaration)defaultMember).Parameters.Count() == 0)
-                    {
-                        // Recursion limit reached, abort.
-                        if (DEFAULT_MEMBER_RECURSION_LIMIT == _defaultMemberRecursionLimitCounter)
-                        {
-                            return null;
-                        }
-                        _defaultMemberRecursionLimitCounter++;
-                        ExpressionClassification classification;
-                        if (defaultMember.DeclarationType.HasFlag(DeclarationType.Property))
-                        {
-                            classification = ExpressionClassification.Property;
-                        }
-                        else if (defaultMember.DeclarationType == DeclarationType.Procedure)
-                        {
-                            classification = ExpressionClassification.Subroutine;
-                        }
-                        else
-                        {
-                            classification = ExpressionClassification.Function;
-                        }
-                        var defaultMemberAsLExpression = new SimpleNameExpression(defaultMember, classification, _expression);
-                        return Resolve(defaultMemberAsLExpression);
-                    }
+                /**
+                    This default member can accept no parameters. In this case, the static analysis restarts 
+                    recursively, as if this default member was specified instead for <l-expression> with the 
+                    same <argument-list>.
+                */
+                if (parameters.All(parameter => parameter.IsOptional)
+                    && DEFAULT_MEMBER_RECURSION_LIMIT >= defaultMemberResolutionRecursionDepth)
+                {
+                    return ResolveRecursiveDefaultMember(defaultMember, defaultMemberClassification, argumentList, expression, parent, defaultMemberResolutionRecursionDepth, containedExpression);
                 }
             }
+
             return null;
         }
 
-        private IBoundExpression ResolveLExpressionDeclaredTypeIsArray(IBoundExpression lExpression, Declaration asTypeDeclaration)
+        private static bool ArgumentListIsCompatible(ICollection<ParameterDeclaration> parameters, ArgumentList argumentList)
         {
+            return (parameters.Count >= (argumentList?.Arguments.Count ?? 0) 
+                        || parameters.Any(parameter => parameter.IsParamArray))
+                    && parameters.Count(parameter => !parameter.IsOptional && !parameter.IsParamArray) <= (argumentList?.Arguments.Count ?? 0);
+        }
+
+        private IBoundExpression ResolveRecursiveDefaultMember(Declaration defaultMember, ExpressionClassification defaultMemberClassification, ArgumentList argumentList, ParserRuleContext expression, Declaration parent, int defaultMemberResolutionRecursionDepth, RecursiveDefaultMemberAccessExpression containedExpression)
+        {
+            var defaultMemberRecursionExpression = new RecursiveDefaultMemberAccessExpression(defaultMember, defaultMemberClassification, _lExpression.Context, defaultMemberResolutionRecursionDepth, containedExpression);
+
+            var defaultMemberAsLExpression = new SimpleNameExpression(defaultMember, defaultMemberClassification, expression);
+            return Resolve(defaultMemberAsLExpression, argumentList, expression, parent, defaultMemberResolutionRecursionDepth, defaultMemberRecursionExpression);
+        }
+
+        private ExpressionClassification DefaultMemberExpressionClassification(Declaration defaultMember)
+        {
+            if (defaultMember.DeclarationType.HasFlag(DeclarationType.Property))
+            {
+                return ExpressionClassification.Property;
+            }
+
+            if (defaultMember.DeclarationType == DeclarationType.Procedure)
+            {
+                return ExpressionClassification.Subroutine;
+            }
+
+            return ExpressionClassification.Function;
+        }
+
+        private bool IsPropertyGetLetFunctionProcedure(Declaration declaration)
+        {
+            var declarationType = declaration.DeclarationType;
+            return declarationType == DeclarationType.PropertyGet
+                   || declarationType == DeclarationType.PropertyLet
+                   || declarationType == DeclarationType.Function
+                   || declarationType == DeclarationType.Procedure;
+        }
+
+        private static bool IsPublic(Declaration declaration)
+        {
+            var accessibility = declaration.Accessibility;
+            return accessibility == Accessibility.Global
+                   || accessibility == Accessibility.Implicit
+                   || accessibility == Accessibility.Public;
+        }
+
+        private IBoundExpression ResolveLExpressionDeclaredTypeIsArray(Declaration indexedDeclaration, ExpressionClassification originalExpressionClassification, ArgumentList argumentList, ParserRuleContext expression, int defaultMemberRecursionDepth, RecursiveDefaultMemberAccessExpression containedExpression)
+        {
+            if (indexedDeclaration == null 
+                || !indexedDeclaration.IsArray)
+            {
+                return null;
+            }
+
             /*
                  The declared type of <l-expression> is an array type, an empty argument list has not already 
                  been specified for it, and one of the following is true:  
              */
-            if (lExpression.ReferencedDeclaration.IsArray)
+
+            if (!argumentList.HasArguments)
             {
                 /*
                     <argument-list> represents an empty argument list. In this case, the index expression 
                     takes on the classification and declared type of <l-expression> and references the same 
                     array.  
                  */
-                if (!_argumentList.HasArguments)
-                {
-                    return new IndexExpression(asTypeDeclaration, lExpression.Classification, _expression, lExpression, _argumentList);
-                }
-                else
-                {
-                    /*
-                        <argument-list> represents an argument list with a number of positional arguments equal 
-                        to the rank of the array, and with no named arguments. In this case, the index expression 
-                        references an individual element of the array, is classified as a variable and has the 
-                        declared type of the array’s element type.  
-
-                        TODO: Implement compatibility checking / amend the grammar
-                     */
-                    if (!_argumentList.HasNamedArguments)
-                    {
-                        return new IndexExpression(asTypeDeclaration, ExpressionClassification.Variable, _expression, lExpression, _argumentList);
-                    }
-                }
+                ResolveArgumentList(indexedDeclaration, argumentList);
+                return new IndexExpression(indexedDeclaration, originalExpressionClassification, expression, _lExpression, argumentList, defaultMemberRecursionDepth: defaultMemberRecursionDepth, containedDefaultMemberRecursionExpression: containedExpression);
             }
+
+            if (!argumentList.HasNamedArguments)
+            {
+                /*
+                    <argument-list> represents an argument list with a number of positional arguments equal 
+                    to the rank of the array, and with no named arguments. In this case, the index expression 
+                    references an individual element of the array, is classified as a variable and has the 
+                    declared type of the array’s element type.  
+
+                    TODO: Implement compatibility checking
+                 */
+
+                ResolveArgumentList(indexedDeclaration, argumentList, true);
+                return new IndexExpression(indexedDeclaration, ExpressionClassification.Variable, expression, _lExpression, argumentList, isArrayAccess: true, defaultMemberRecursionDepth: defaultMemberRecursionDepth, containedDefaultMemberRecursionExpression: containedExpression);
+            }
+
             return null;
         }
 
-        private IBoundExpression ResolveLExpressionIsPropertyFunctionSubroutine(IBoundExpression lExpression)
+        private IBoundExpression ResolveLExpressionIsPropertyFunctionSubroutine(IBoundExpression lExpression, ArgumentList argumentList, ParserRuleContext expression, int defaultMemberRecursionDepth, RecursiveDefaultMemberAccessExpression containedExpression)
         {
             /*
                     <l-expression> is classified as a property or function and its parameter list is compatible with 
@@ -309,28 +453,20 @@ namespace Rubberduck.Parsing.Binding
                     list>. In this case, the index expression references <l-expression> and takes on its classification 
                     and declared type.   
 
-                    Note: We assume compatibility through enforcement by the VBE.
+                    Note: Apart from a check of the number of arguments provided, we assume compatibility through enforcement by the VBE.
              */
-            if (lExpression.Classification == ExpressionClassification.Property
-               || lExpression.Classification == ExpressionClassification.Function
-               || lExpression.Classification == ExpressionClassification.Subroutine)
-            {
-                return new IndexExpression(lExpression.ReferencedDeclaration, lExpression.Classification, _expression, lExpression, _argumentList);
-            }
-            return null;
+            ResolveArgumentList(lExpression.ReferencedDeclaration, argumentList);
+            return new IndexExpression(lExpression.ReferencedDeclaration, ExpressionClassification.Variable, expression, _lExpression, argumentList, defaultMemberRecursionDepth: defaultMemberRecursionDepth, containedDefaultMemberRecursionExpression: containedExpression);
         }
 
-        private IBoundExpression ResolveLExpressionIsUnbound(IBoundExpression lExpression)
+        private IBoundExpression ResolveLExpressionIsUnbound(IBoundExpression lExpression, ArgumentList argumentList, ParserRuleContext expression, int defaultMemberResolutionRecursionDepth, RecursiveDefaultMemberAccessExpression containedExpression)
         {
             /*
                  <l-expression> is classified as an unbound member. In this case, the index expression references 
                  <l-expression>, is classified as an unbound member and its declared type is Variant.  
             */
-            if (lExpression.Classification == ExpressionClassification.Unbound)
-            {
-                return new IndexExpression(lExpression.ReferencedDeclaration, ExpressionClassification.Unbound, _expression, lExpression, _argumentList);
-            }
-            return null;
+            ResolveArgumentList(lExpression.ReferencedDeclaration, argumentList);
+            return new IndexExpression(lExpression.ReferencedDeclaration, ExpressionClassification.Unbound, expression, _lExpression, argumentList, defaultMemberRecursionDepth: defaultMemberResolutionRecursionDepth, containedDefaultMemberRecursionExpression: containedExpression);
         }
     }
 }

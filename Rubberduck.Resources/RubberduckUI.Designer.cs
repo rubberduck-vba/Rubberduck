@@ -213,29 +213,11 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variable names must begin with a letter..
+        ///   Looks up a localized string similar to {0} Consider choosing a different name..
         /// </summary>
-        public static string AssignedByValDialog_DoesNotStartWithLetter {
+        public static string AssignedByValDialog_MeaninglessNameFormat {
             get {
-                return ResourceManager.GetString("AssignedByValDialog_DoesNotStartWithLetter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Variable names cannot contain special characters other than underscores..
-        /// </summary>
-        public static string AssignedByValDialog_InvalidCharacters {
-            get {
-                return ResourceManager.GetString("AssignedByValDialog_InvalidCharacters", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The local variable cannot be the same as the &apos;{0}&apos; parameter it replaces.
-        /// </summary>
-        public static string AssignedByValDialog_IsByValIdentifierFormat {
-            get {
-                return ResourceManager.GetString("AssignedByValDialog_IsByValIdentifierFormat", resourceCulture);
+                return ResourceManager.GetString("AssignedByValDialog_MeaninglessNameFormat", resourceCulture);
             }
         }
         
@@ -245,24 +227,6 @@ namespace Rubberduck.Resources {
         public static string AssignedByValDialog_NewNameAlreadyUsedFormat {
             get {
                 return ResourceManager.GetString("AssignedByValDialog_NewNameAlreadyUsedFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The identifier &apos;{0}&apos; will trigger a &quot;Use meaningful name&quot; inspection result. Consider choosing a different name..
-        /// </summary>
-        public static string AssignedByValDialog_QuestionableEntryFormat {
-            get {
-                return ResourceManager.GetString("AssignedByValDialog_QuestionableEntryFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is a reserved keyword..
-        /// </summary>
-        public static string AssignedByValDialog_ReservedKeywordFormat {
-            get {
-                return ResourceManager.GetString("AssignedByValDialog_ReservedKeywordFormat", resourceCulture);
             }
         }
         
@@ -348,6 +312,15 @@ namespace Rubberduck.Resources {
             get {
                 object obj = ResourceManager.GetObject("clock_select_pinned", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} {1} {2} {3} {4} {5}.
+        /// </summary>
+        public static string CodeExplorer_IExportable_DeclarationFormat {
+            get {
+                return ResourceManager.GetString("CodeExplorer_IExportable_DeclarationFormat", resourceCulture);
             }
         }
         
@@ -633,7 +606,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The VBEsetting &quot;Compile On Demand&quot; is currently enabled. This is not recommended as this may hide compilation errors and cause problems with parsing. Do you want to parse anyway?.
+        ///   Looks up a localized string similar to The VBE setting &quot;Compile On Demand&quot; is currently enabled. This is not recommended as this may hide compilation errors and cause problems with parsing. Do you want to parse anyway?.
         /// </summary>
         public static string Command_Reparse_CompileOnDemandEnabled {
             get {
@@ -800,6 +773,132 @@ namespace Rubberduck.Resources {
         public static string Component {
             get {
                 return ResourceManager.GetString("Component", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ActiveX Designer.
+        /// </summary>
+        public static string ComponentType_ActiveXDesigner {
+            get {
+                return ResourceManager.GetString("ComponentType_ActiveXDesigner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Class Module.
+        /// </summary>
+        public static string ComponentType_ClassModule {
+            get {
+                return ResourceManager.GetString("ComponentType_ClassModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to COM component.
+        /// </summary>
+        public static string ComponentType_ComComponent {
+            get {
+                return ResourceManager.GetString("ComponentType_ComComponent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document Object.
+        /// </summary>
+        public static string ComponentType_DocObject {
+            get {
+                return ResourceManager.GetString("ComponentType_DocObject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document Module.
+        /// </summary>
+        public static string ComponentType_Document {
+            get {
+                return ResourceManager.GetString("ComponentType_Document", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MDI Form.
+        /// </summary>
+        public static string ComponentType_MDIForm {
+            get {
+                return ResourceManager.GetString("ComponentType_MDIForm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Property Page.
+        /// </summary>
+        public static string ComponentType_PropPage {
+            get {
+                return ResourceManager.GetString("ComponentType_PropPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Related Document.
+        /// </summary>
+        public static string ComponentType_RelatedDocument {
+            get {
+                return ResourceManager.GetString("ComponentType_RelatedDocument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resource File.
+        /// </summary>
+        public static string ComponentType_ResFile {
+            get {
+                return ResourceManager.GetString("ComponentType_ResFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Standard Module.
+        /// </summary>
+        public static string ComponentType_StandardModule {
+            get {
+                return ResourceManager.GetString("ComponentType_StandardModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Undefined.
+        /// </summary>
+        public static string ComponentType_Undefined {
+            get {
+                return ResourceManager.GetString("ComponentType_Undefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Control.
+        /// </summary>
+        public static string ComponentType_UserControl {
+            get {
+                return ResourceManager.GetString("ComponentType_UserControl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UserForm.
+        /// </summary>
+        public static string ComponentType_UserForm {
+            get {
+                return ResourceManager.GetString("ComponentType_UserForm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VB Form.
+        /// </summary>
+        public static string ComponentType_VBForm {
+            get {
+                return ResourceManager.GetString("ComponentType_VBForm", resourceCulture);
             }
         }
         
@@ -1576,6 +1675,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tell me if a newer pre-release build is available.
+        /// </summary>
+        public static string GeneralSettings_IncludePreRelease {
+            get {
+                return ResourceManager.GetString("GeneralSettings_IncludePreRelease", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Info.
         /// </summary>
         public static string GeneralSettings_InfoLogLevel {
@@ -1820,6 +1928,59 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No implements selected..
+        /// </summary>
+        public static string ImplementInterfaceFailed_NoImplementsStatementSelected {
+            get {
+                return ResourceManager.GetString("ImplementInterfaceFailed_NoImplementsStatementSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For file &apos;{0}&apos;, the required binary file(s) &apos;{1}&apos; are missing and the target component &apos;{2}&apos; does not already exists.
+        ///
+        ///Import aborted..
+        /// </summary>
+        public static string ImportCommand_BinaryAndComponentDoNotExist {
+            get {
+                return ResourceManager.GetString("ImportCommand_BinaryAndComponentDoNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For file &apos;{0}&apos;, the requires binary file(s) &apos;{1}&apos; are missing.
+        ///
+        ///Import aborted..
+        /// </summary>
+        public static string ImportCommand_BinaryDoesNotExist {
+            get {
+                return ResourceManager.GetString("ImportCommand_BinaryDoesNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is no existing document module with name &apos;{0}&apos;; file &apos;{1}&apos; cannot be imported.
+        ///
+        ///Import aborted..
+        /// </summary>
+        public static string ImportCommand_DocumentDoesNotExist {
+            get {
+                return ResourceManager.GetString("ImportCommand_DocumentDoesNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multiple files contain code for the component &apos;{0}&apos;.
+        ///
+        ///Import aborted..
+        /// </summary>
+        public static string ImportCommand_DuplicateModule {
+            get {
+                return ResourceManager.GetString("ImportCommand_DuplicateModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All Files.
         /// </summary>
         public static string ImportCommand_OpenDialog_Filter_AllFiles {
@@ -1843,6 +2004,17 @@ namespace Rubberduck.Resources {
         public static string ImportCommand_OpenDialog_Title {
             get {
                 return ResourceManager.GetString("ImportCommand_OpenDialog_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The extension of the file &apos;{0}&apos; is not supported.
+        ///
+        ///Import aborted..
+        /// </summary>
+        public static string ImportCommand_UnsupportedFileExtensions {
+            get {
+                return ResourceManager.GetString("ImportCommand_UnsupportedFileExtensions", resourceCulture);
             }
         }
         
@@ -2193,6 +2365,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The target &apos;{0}&apos; is already a field..
+        /// </summary>
+        public static string IntroduceFieldFailed_TargetIsAlreadyAField {
+            get {
+                return ResourceManager.GetString("IntroduceFieldFailed_TargetIsAlreadyAField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rubberduck - Introduce Parameter.
         /// </summary>
         public static string IntroduceParameter_Caption {
@@ -2207,6 +2388,60 @@ namespace Rubberduck.Resources {
         public static string IntroduceParameter_PromptIfTargetIsInterface {
             get {
                 return ResourceManager.GetString("IntroduceParameter_PromptIfTargetIsInterface", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The target &apos;{0}&apos; is not contained in a method..
+        /// </summary>
+        public static string IntroduceParameterFailed_TargetNotContainedInMethod {
+            get {
+                return ResourceManager.GetString("IntroduceParameterFailed_TargetNotContainedInMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; does not begin with a letter.
+        /// </summary>
+        public static string InvalidNameCriteria_DoesNotStartWithLetterFormat {
+            get {
+                return ResourceManager.GetString("InvalidNameCriteria_DoesNotStartWithLetterFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; exceeds the maximum allowed string length.
+        /// </summary>
+        public static string InvalidNameCriteria_ExceedsMaximumLengthFormat {
+            get {
+                return ResourceManager.GetString("InvalidNameCriteria_ExceedsMaximumLengthFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; contains special character(s) other than underscores..
+        /// </summary>
+        public static string InvalidNameCriteria_InvalidCharactersFormat {
+            get {
+                return ResourceManager.GetString("InvalidNameCriteria_InvalidCharactersFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VBA Identifiers cannot be null or zero-length.
+        /// </summary>
+        public static string InvalidNameCriteria_IsNullOrEmpty {
+            get {
+                return ResourceManager.GetString("InvalidNameCriteria_IsNullOrEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is a reserved keyword..
+        /// </summary>
+        public static string InvalidNameCriteria_IsReservedKeywordFormat {
+            get {
+                return ResourceManager.GetString("InvalidNameCriteria_IsReservedKeywordFormat", resourceCulture);
             }
         }
         
@@ -2341,6 +2576,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The identifier &apos;{0}&apos; will trigger a &apos;Use Meaningful Name&apos; inspection result..
+        /// </summary>
+        public static string MeaninglessNameCriteriaMatchFormat {
+            get {
+                return ResourceManager.GetString("MeaninglessNameCriteriaMatchFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Member Attribute Recovery Failure .
         /// </summary>
         public static string MemberAttributeRecoveryFailureCaption {
@@ -2407,72 +2651,72 @@ namespace Rubberduck.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Invalid Selection..
         /// </summary>
-        public static string MoveCloserToUsage_InvalidSelection {
+        public static string MoveCloserToUsageFailure_InvalidSelection {
             get {
-                return ResourceManager.GetString("MoveCloserToUsage_InvalidSelection", resourceCulture);
+                return ResourceManager.GetString("MoveCloserToUsageFailure_InvalidSelection", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The method using &apos;{0}&apos; already has another declaration of the same name in scope..
+        ///   Looks up a localized string similar to The method using &apos;{0}&apos; already has the declaration &apos;{1}&apos; of the same name in scope..
         /// </summary>
-        public static string MoveCloserToUsage_ReferencingMethodHasSameNameDeclarationInScope {
+        public static string MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope {
             get {
-                return ResourceManager.GetString("MoveCloserToUsage_ReferencingMethodHasSameNameDeclarationInScope", resourceCulture);
+                return ResourceManager.GetString("MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; is not used anywhere..
         /// </summary>
-        public static string MoveCloserToUsage_TargetHasNoReferences {
+        public static string MoveCloserToUsageFailure_TargetHasNoReferences {
             get {
-                return ResourceManager.GetString("MoveCloserToUsage_TargetHasNoReferences", resourceCulture);
+                return ResourceManager.GetString("MoveCloserToUsageFailure_TargetHasNoReferences", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; is not defined in the same project it is used..
         /// </summary>
-        public static string MoveCloserToUsage_TargetIsInDifferentProject {
+        public static string MoveCloserToUsageFailure_TargetIsInDifferentProject {
             get {
-                return ResourceManager.GetString("MoveCloserToUsage_TargetIsInDifferentProject", resourceCulture);
+                return ResourceManager.GetString("MoveCloserToUsageFailure_TargetIsInDifferentProject", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; is defined neither in the component component it is used nor in a standard module. .
         /// </summary>
-        public static string MoveCloserToUsage_TargetIsInOtherNonStandardModule {
+        public static string MoveCloserToUsageFailure_TargetIsInOtherNonStandardModule {
             get {
-                return ResourceManager.GetString("MoveCloserToUsage_TargetIsInOtherNonStandardModule", resourceCulture);
+                return ResourceManager.GetString("MoveCloserToUsageFailure_TargetIsInOtherNonStandardModule", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is globally accessible and is in use..
+        ///   Looks up a localized string similar to &apos;{0}&apos; is a public member of of a class, form or document..
         /// </summary>
-        public static string MoveCloserToUsage_TargetIsNonPrivateInNonStandardModule {
+        public static string MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule {
             get {
-                return ResourceManager.GetString("MoveCloserToUsage_TargetIsNonPrivateInNonStandardModule", resourceCulture);
+                return ResourceManager.GetString("MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; is built-in..
         /// </summary>
-        public static string MoveCloserToUsage_TargetIsNotUserDefined {
+        public static string MoveCloserToUsageFailure_TargetIsNotUserDefined {
             get {
-                return ResourceManager.GetString("MoveCloserToUsage_TargetIsNotUserDefined", resourceCulture);
+                return ResourceManager.GetString("MoveCloserToUsageFailure_TargetIsNotUserDefined", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; has references in multiple methods..
         /// </summary>
-        public static string MoveCloserToUsage_TargetIsUsedInMultipleMethods {
+        public static string MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods {
             get {
-                return ResourceManager.GetString("MoveCloserToUsage_TargetIsUsedInMultipleMethods", resourceCulture);
+                return ResourceManager.GetString("MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods", resourceCulture);
             }
         }
         
@@ -2540,7 +2784,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ok.
+        ///   Looks up a localized string similar to OK.
         /// </summary>
         public static string OK {
             get {
@@ -2894,20 +3138,74 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to detect selected rename target.
+        ///   Looks up a localized string similar to Refactoring failed..
         /// </summary>
-        public static string RefactorRename_TargetNotDefinedError {
+        public static string RefactoringFailure_BaseMessage {
             get {
-                return ResourceManager.GetString("RefactorRename_TargetNotDefinedError", resourceCulture);
+                return ResourceManager.GetString("RefactoringFailure_BaseMessage", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Identifier {0} cannot be renamed..
+        ///   Looks up a localized string similar to Declaration type of target &apos;{0}&apos; is &apos;{1}&apos; instead of the expected &apos;{2}&apos;..
         /// </summary>
-        public static string RefactorRename_TargetNotUserDefinedError {
+        public static string RefactoringFailure_InvalidDeclarationType {
             get {
-                return ResourceManager.GetString("RefactorRename_TargetNotUserDefinedError", resourceCulture);
+                return ResourceManager.GetString("RefactoringFailure_InvalidDeclarationType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Declaration type of target &apos;{0}&apos; is &apos;{1}&apos; instead of one of the expected &apos;{2}&apos;..
+        /// </summary>
+        public static string RefactoringFailure_InvalidDeclarationType_multipleValid {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_InvalidDeclarationType_multipleValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is no active selection..
+        /// </summary>
+        public static string RefactoringFailure_NoActiveSelection {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_NoActiveSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No viable target selected..
+        /// </summary>
+        public static string RefactoringFailure_NoTargetDeclarationForSelection {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_NoTargetDeclarationForSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to suspend the Parser to perform the refactoring operation.
+        /// </summary>
+        public static string RefactoringFailure_SuspendParserFailure {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_SuspendParserFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The target is not user-defined..
+        /// </summary>
+        public static string RefactoringFailure_TargetNotUserDefined {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_TargetNotUserDefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Target declaration is null..
+        /// </summary>
+        public static string RefactoringFailure_TargetNull {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_TargetNull", resourceCulture);
             }
         }
         
@@ -3263,6 +3561,24 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;{0}&gt;.
+        /// </summary>
+        public static string RegexAssistant_EncloseWhitespace_EnclosingFormat {
+            get {
+                return ResourceManager.GetString("RegexAssistant_EncloseWhitespace_EnclosingFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spell out whitespace in the description.
+        /// </summary>
+        public static string RegexAssistant_EncloseWhitespaceFlag {
+            get {
+                return ResourceManager.GetString("RegexAssistant_EncloseWhitespaceFlag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Global.
         /// </summary>
         public static string RegexAssistant_GlobalFlag {
@@ -3304,6 +3620,60 @@ namespace Rubberduck.Resources {
         public static string RegexAssistant_RegexPatternLabel {
             get {
                 return ResourceManager.GetString("RegexAssistant_RegexPatternLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to carriage-return.
+        /// </summary>
+        public static string RegexAssistant_SpelledOut_CarriageReturn {
+            get {
+                return ResourceManager.GetString("RegexAssistant_SpelledOut_CarriageReturn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to carriage-return-new-line.
+        /// </summary>
+        public static string RegexAssistant_SpelledOut_CarriageReturnNewLine {
+            get {
+                return ResourceManager.GetString("RegexAssistant_SpelledOut_CarriageReturnNewLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to new-line.
+        /// </summary>
+        public static string RegexAssistant_SpelledOut_NewLine {
+            get {
+                return ResourceManager.GetString("RegexAssistant_SpelledOut_NewLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to space.
+        /// </summary>
+        public static string RegexAssistant_SpelledOut_Space {
+            get {
+                return ResourceManager.GetString("RegexAssistant_SpelledOut_Space", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to tab.
+        /// </summary>
+        public static string RegexAssistant_SpelledOut_Tab {
+            get {
+                return ResourceManager.GetString("RegexAssistant_SpelledOut_Tab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to unidentified-whitespace.
+        /// </summary>
+        public static string RegexAssistant_SpelledOut_UnidentifiedWhitespace {
+            get {
+                return ResourceManager.GetString("RegexAssistant_SpelledOut_UnidentifiedWhitespace", resourceCulture);
             }
         }
         
@@ -3570,6 +3940,33 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Target &apos;{0}&apos; is a standard event handler, which cannot be renamed..
+        /// </summary>
+        public static string RenameFailure_StandardEventHandler {
+            get {
+                return ResourceManager.GetString("RenameFailure_StandardEventHandler", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Target control &apos;{0}&apos; not found..
+        /// </summary>
+        public static string RenameFailure_TargetControlNotFound {
+            get {
+                return ResourceManager.GetString("RenameFailure_TargetControlNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No code module found for the target module &apos;{0}&apos;..
+        /// </summary>
+        public static string RenameFailure_TargetModuleWithoutCodeModule {
+            get {
+                return ResourceManager.GetString("RenameFailure_TargetModuleWithoutCodeModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Method &apos;{0}&apos; is an EventHandler for control &apos;{1}&apos;.  Only the control can be renamed.  Rename &apos;{1}&apos; instead?.
         /// </summary>
         public static string RenamePresenter_TargetIsControlEventHandler {
@@ -3678,6 +4075,24 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you really want to delete the contents of project &apos;{0}&apos; and replace them with the contents of the selected files?.
+        /// </summary>
+        public static string ReplaceProjectContentsFromFilesCommand_ConfirmationMessage {
+            get {
+                return ResourceManager.GetString("ReplaceProjectContentsFromFilesCommand_ConfirmationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace Project Content from Files.
+        /// </summary>
+        public static string ReplaceProjectContentsFromFilesCommand_DialogCaption {
+            get {
+                return ResourceManager.GetString("ReplaceProjectContentsFromFilesCommand_DialogCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Resolving....
         /// </summary>
         public static string ResolutionProgress {
@@ -3773,6 +4188,15 @@ namespace Rubberduck.Resources {
         public static string Run {
             get {
                 return ResourceManager.GetString("Run", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save &amp; Close.
+        /// </summary>
+        public static string SaveAndClose {
+            get {
+                return ResourceManager.GetString("SaveAndClose", resourceCulture);
             }
         }
         
@@ -3921,6 +4345,51 @@ namespace Rubberduck.Resources {
             get {
                 object obj = ResourceManager.GetObject("SyncArrows", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck Test Results - {0}.
+        /// </summary>
+        public static string TestExplorer_AppendHeader {
+            get {
+                return ResourceManager.GetString("TestExplorer_AppendHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fail.
+        /// </summary>
+        public static string TestOutcome_Fail {
+            get {
+                return ResourceManager.GetString("TestOutcome_Fail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inconclusive.
+        /// </summary>
+        public static string TestOutcome_Inconclusive {
+            get {
+                return ResourceManager.GetString("TestOutcome_Inconclusive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Succeeded.
+        /// </summary>
+        public static string TestOutcome_Succeeded {
+            get {
+                return ResourceManager.GetString("TestOutcome_Succeeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown.
+        /// </summary>
+        public static string TestOutcome_Unknown {
+            get {
+                return ResourceManager.GetString("TestOutcome_Unknown", resourceCulture);
             }
         }
         
@@ -4091,7 +4560,50 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck version {0} is now available! Would you like to review the release notes now?.
+        ///   Looks up a localized string similar to Update Components from Files.
+        /// </summary>
+        public static string UpdateFromFilesCommand_DialogCaption {
+            get {
+                return ResourceManager.GetString("UpdateFromFilesCommand_DialogCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The component type of the existing component &apos;{0}&apos; does not agree with that indicated by the extension of file &apos;{1}&apos;.
+        ///
+        ///Import aborted..
+        /// </summary>
+        public static string UpdateFromFilesCommand_DifferentComponentType {
+            get {
+                return ResourceManager.GetString("UpdateFromFilesCommand_DifferentComponentType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to pre-release.
+        /// </summary>
+        public static string VersionCheck_BuildType_PreRelease {
+            get {
+                return ResourceManager.GetString("VersionCheck_BuildType_PreRelease", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to release.
+        /// </summary>
+        public static string VersionCheck_BuildType_Release {
+            get {
+                return ResourceManager.GetString("VersionCheck_BuildType_Release", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are currently running Rubberduck version {0}.
+        ///Good news! Version {1} ({2}) is now available.
+        ///
+        ///To review the change log and manually upgrade Rubberduck, click &apos;Yes&apos;.
+        ///
+        ///This dialog is showing because version checks are enabled. You can turn off this feature in Rubberduck &gt; Settings..
         /// </summary>
         public static string VersionCheck_NewVersionAvailable {
             get {

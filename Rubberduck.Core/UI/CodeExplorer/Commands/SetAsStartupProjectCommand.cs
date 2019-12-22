@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -16,20 +17,25 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _parserState;
 
-        public SetAsStartupProjectCommand(IVBE vbe, RubberduckParserState parserState)
+        public SetAsStartupProjectCommand(
+            IVBE vbe, 
+            RubberduckParserState parserState, 
+            IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _vbe = vbe;
             _parserState = parserState;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
         public sealed override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
             try
             {
-                if (!base.EvaluateCanExecute(parameter) ||                   
-                    !(parameter is CodeExplorerProjectViewModel node) ||
+                if (!(parameter is CodeExplorerProjectViewModel node) ||
                     !(node.Declaration?.Project is IVBProject project) ||
                     !ProjectTypes.VB6.Contains(project.Type) ||
                     _vbe.ProjectsCount <= 1)
@@ -51,7 +57,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override void OnExecute(object parameter)
         {
-            if (!EvaluateCanExecute(parameter) ||
+            if (!CanExecute(parameter) ||
                 !(parameter is CodeExplorerProjectViewModel node))
             {
                 return;

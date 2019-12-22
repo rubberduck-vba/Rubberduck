@@ -288,4 +288,13 @@
   <data name="ApplyQuickFixFailedCaption" xml:space="preserve">
     <value>Quick Fix Application Failure</value>
   </data>
+  <data name="ReplaceWhileWendWithDoWhileLoopQuickFix" xml:space="preserve">
+    <value>Replace 'While...Wend' with 'Do While...Loop'</value>
+  </data>
+  <data name="ExpandBangNotationQuickFix" xml:space="preserve">
+    <value>Replace bang notation with explicit access</value>
+  </data>
+  <data name="ExpandDefaultMemberQuickFix" xml:space="preserve">
+    <value>Make default member access explicit</value>
+  </data>
 </root>

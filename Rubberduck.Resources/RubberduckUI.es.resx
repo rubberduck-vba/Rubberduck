@@ -589,11 +589,11 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="MoveCloserToUsage_Caption" xml:space="preserve">
     <value>Rubberduck - Acercar al uso</value>
   </data>
-  <data name="MoveCloserToUsage_TargetHasNoReferences" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetHasNoReferences" xml:space="preserve">
     <value>'{0}' no se usa en ninguna parte.</value>
     <comment>{0}: Nombre de la variable</comment>
   </data>
-  <data name="MoveCloserToUsage_TargetIsUsedInMultipleMethods" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods" xml:space="preserve">
     <value>'{0}' tiene referencias en múltiples métodos.</value>
     <comment>{0}: Nombre de la variable</comment>
   </data>
@@ -613,7 +613,7 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
   <data name="ImplementInterface_InvalidSelectionMessage" xml:space="preserve">
     <value>La selección actual no es válida.</value>
   </data>
-  <data name="MoveCloserToUsage_InvalidSelection" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
     <value>Selección invalida.</value>
   </data>
   <data name="ExtractInterface_Caption" xml:space="preserve">
@@ -1048,26 +1048,8 @@ End Sub</value>
   <data name="GeneralSettings_CheckVersion" xml:space="preserve">
     <value>Compruebe si hay una versión más nueva disponible en el inicio</value>
   </data>
-  <data name="AssignedByValDialog_DoesNotStartWithLetter" xml:space="preserve">
-    <value>Los nombres de las variables deben comenzar con una letra.</value>
-  </data>
-  <data name="AssignedByValDialog_InvalidCharacters" xml:space="preserve">
-    <value>Los nombres de variables no pueden contener caracteres especiales que no sean guiones bajos.</value>
-  </data>
-  <data name="AssignedByValDialog_IsByValIdentifierFormat" xml:space="preserve">
-    <value>La variable local no puede ser la misma que el parámetro '{0}' que reemplaza</value>
-    <comment>{0} = nombre de la variable propuesta.</comment>
-  </data>
   <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
     <value>'{0}' ya está accesible para este ámbito.</value>
-    <comment>{0} = nombre de la variable propuesta.</comment>
-  </data>
-  <data name="AssignedByValDialog_QuestionableEntryFormat" xml:space="preserve">
-    <value>El identificador '{0}' activará un resultado de inspección "Usar nombre significativo". Considere elegir un nombre diferente.</value>
-    <comment>{0} = nombre de la variable propuesta.</comment>
-  </data>
-  <data name="AssignedByValDialog_ReservedKeywordFormat" xml:space="preserve">
-    <value>'{0}' es una palabra clave reservada.</value>
     <comment>{0} = nombre de la variable propuesta.</comment>
   </data>
   <data name="ConfirmRemoveAssignmentWithUnusedDeclaration" xml:space="preserve">
@@ -1075,12 +1057,6 @@ End Sub</value>
   </data>
   <data name="Preview" xml:space="preserve">
     <value>Avance</value>
-  </data>
-  <data name="RefactorRename_TargetNotDefinedError" xml:space="preserve">
-    <value>No se puede detectar el objetivo de cambio de nombre seleccionado</value>
-  </data>
-  <data name="RefactorRename_TargetNotUserDefinedError" xml:space="preserve">
-    <value>El identificador {0} no puede ser renombrado.</value>
   </data>
   <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
     <value>No se pudo cambiar el nombre de {0}.</value>
@@ -1408,23 +1384,23 @@ NOTA: Es necesario reiniciar para que la configuración tenga efecto.</value>
   <data name="PerformanceWarningCaption" xml:space="preserve">
     <value>Advertencia de rendimiento</value>
   </data>
-  <data name="MoveCloserToUsage_TargetIsNotUserDefined" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsNotUserDefined" xml:space="preserve">
     <value>'{0}' está incorporado.</value>
   </data>
-  <data name="MoveCloserToUsage_TargetIsInDifferentProject" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsInDifferentProject" xml:space="preserve">
     <value>'{0}' no está definido en el mismo proyecto que se usa.</value>
   </data>
-  <data name="MoveCloserToUsage_TargetIsInOtherNonStandardModule" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsInOtherNonStandardModule" xml:space="preserve">
     <value>'{0}' no está definido ni en el componente que se usa, no en un módulo estándar.</value>
   </data>
-  <data name="MoveCloserToUsage_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
     <value>'{0}' es una variable de módulo no privado fuera de un módulo estándar.</value>
   </data>
-  <data name="MoveCloserToUsage_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
     <value>En el método que usa '{0}', el nombre de esta variable ya hace referencia a otra declaración.</value>
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
-    <value>Filtrar</value>
+    <value />
   </data>
   <data name="GroupingStyle_ByName" xml:space="preserve">
     <value>Mediante inspección</value>

@@ -27,14 +27,14 @@ namespace Rubberduck.UI.AddRemoveReferences
 
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
-        private readonly IConfigProvider<ReferenceSettings> _settings;
+        private readonly IConfigurationService<ReferenceSettings> _settings;
         private readonly IRegisteredLibraryFinderService _finder;
         private readonly IReferenceReconciler _reconciler;
         private readonly IFileSystemBrowserFactory _browser;
 
         public AddRemoveReferencesPresenterFactory(IVBE vbe,
             RubberduckParserState state,
-            IConfigProvider<ReferenceSettings> settingsProvider, 
+            IConfigurationService<ReferenceSettings> settingsProvider, 
             IRegisteredLibraryFinderService finder,
             IReferenceReconciler reconciler,
             IFileSystemBrowserFactory browser)
@@ -116,7 +116,7 @@ namespace Rubberduck.UI.AddRemoveReferences
                     models.Add(reference.Key, new ReferenceModel(reference.Value));
                 }
 
-                var settings = _settings.Create();
+                var settings = _settings.Read();
                 model = new AddRemoveReferencesModel(_state, project, models.Values, settings);
                 if (AddRemoveReferencesViewModel.HostHasProjects)
                 {
@@ -188,10 +188,41 @@ namespace Rubberduck.UI.AddRemoveReferences
 
         public AddRemoveReferencesPresenter Create()
         {
-            using (var pane = _vbe.ActiveCodePane)
+            var selectedProject = SelectedProjectDeclaration();
+            return selectedProject is null
+                ? null
+                : Create(selectedProject);
+        }
+
+        private ProjectDeclaration SelectedProjectDeclaration()
+        {
+            var projectId = SelectedProjectId();
+
+            if (projectId == null)
             {
-                var selected = (ProjectDeclaration)Declaration.GetProjectParent(_state.DeclarationFinder.FindSelectedDeclaration(pane));
-                return selected is null ? null : Create(selected);
+                return null;
+            }
+
+            return _state.DeclarationFinder
+                .UserDeclarations(DeclarationType.Project)
+                .OfType<ProjectDeclaration>()
+                .FirstOrDefault(item => item.ProjectId.Equals(projectId));
+        }
+
+        private string SelectedProjectId()
+        {
+            using (var selectedComponent = _vbe.SelectedVBComponent)
+            {
+                using (var project = selectedComponent.ParentProject)
+                {
+
+                    if (project == null || project.IsWrappingNullReference)
+                    {
+                        return null;
+                    }
+
+                    return project.ProjectId;
+                }
             }
         }
     }

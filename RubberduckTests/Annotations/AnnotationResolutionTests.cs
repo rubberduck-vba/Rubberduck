@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using NUnit.Framework;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using RubberduckTests.Mocks;
 
@@ -554,6 +555,51 @@ End Function";
                 var actualAnnotationCount = fooReference.Annotations.Count();
 
                 Assert.AreEqual(expectedAnnotationCount, actualAnnotationCount);
+            }
+        }
+
+        [Test]
+        //Cf. issue #5071 at https://github.com/rubberduck-vba/Rubberduck/issues/5071
+        public void AnnotationArgumentIsRecognisedWithWhiteSpaceInBetween()
+        {
+            const string inputCode =
+                @"
+'@description (""Function description"")
+Public Function Bar() As Variant
+End Function";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var declaration = state.DeclarationFinder.UserDeclarations(DeclarationType.Function).Single();
+                var annotation = declaration.Annotations.Where(pta => pta.Annotation is DescriptionAnnotation).Single();
+
+                var expectedAnnotationArgument = "\"Function description\"";
+                var actualAnnotationArgument = annotation.AnnotationArguments[0];
+
+                Assert.AreEqual(expectedAnnotationArgument, actualAnnotationArgument);
+            }
+        }
+
+        [Test]
+        public void AnnotationArgumentIsRecognisedWithLineContinuationsInBetween()
+        {
+            const string inputCode =
+                @"
+'@description _
+ _
+ (""Function description"")
+Public Function Bar() As Variant
+End Function";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var declaration = state.DeclarationFinder.UserDeclarations(DeclarationType.Function).Single();
+                var annotation = declaration.Annotations.Where(pta => pta.Annotation is DescriptionAnnotation).Single();
+
+                var expectedAnnotationArgument = "\"Function description\"";
+                var actualAnnotationArgument = annotation.AnnotationArguments[0];
+
+                Assert.AreEqual(expectedAnnotationArgument, actualAnnotationArgument);
             }
         }
     }

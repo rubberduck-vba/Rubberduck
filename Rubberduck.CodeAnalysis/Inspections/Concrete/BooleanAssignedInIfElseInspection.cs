@@ -9,9 +9,34 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Identifies redundant Boolean expressions in conditionals.
+    /// </summary>
+    /// <why>
+    /// A Boolean expression never needs to be compared to a Boolean literal in a conditional expression.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal foo As Boolean)
+    ///     If foo = True Then ' foo is known to already be a Boolean value.
+    ///         ' ...
+    ///     End If
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal foo As Boolean)
+    ///     If foo Then
+    ///         ' ...
+    ///     End If
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class BooleanAssignedInIfElseInspection : ParseTreeInspectionBase
     {
         public BooleanAssignedInIfElseInspection(RubberduckParserState state)
@@ -23,7 +48,6 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts
-                .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
                 .Select(result => new QualifiedContextInspectionResult(this,
                                                        string.Format(InspectionResults.BooleanAssignedInIfElseInspection,
                                                             (((VBAParser.IfStmtContext)result.Context).block().GetDescendent<VBAParser.LetStmtContext>()).lExpression().GetText().Trim()),

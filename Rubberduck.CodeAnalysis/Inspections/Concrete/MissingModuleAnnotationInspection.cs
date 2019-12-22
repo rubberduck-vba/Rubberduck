@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
@@ -13,6 +14,28 @@ using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Indicates that a hidden VB attribute is present for a module, but no Rubberduck annotation is documenting it.
+    /// </summary>
+    /// <why>
+    /// Rubberduck annotations mean to document the presence of hidden VB attributes; this inspection flags modules that
+    /// do not have a Rubberduck annotation corresponding to the hidden VB attribute.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Attribute VB_PredeclaredId = True
+    /// Option Explicit
+    /// ' ...
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Attribute VB_PredeclaredId = True
+    /// '@PredeclaredId
+    /// Option Explicit
+    /// ' ...
+    /// ]]>
+    /// </example>
     public sealed class MissingModuleAnnotationInspection : InspectionBase
     {
         public MissingModuleAnnotationInspection(RubberduckParserState state) 
@@ -26,8 +49,9 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(decl => decl.Attributes.Any());
 
             var declarationsToInspect = moduleDeclarationsWithAttributes
+                // prefilter declarations to reduce searchspace
                 .Where(decl => decl.QualifiedModuleName.ComponentType != ComponentType.Document
-                               && !IsIgnoringInspectionResultFor(decl, AnnotationName));
+                               && !decl.IsIgnoringInspectionResultFor(AnnotationName));
 
             var results = new List<DeclarationInspectionResult>();
             foreach (var declaration in declarationsToInspect)
@@ -70,16 +94,18 @@ namespace Rubberduck.Inspections.Concrete
             {
                 return false;
             }
-
             //VB_Ext_Key attributes are special in that identity also depends on the first value, the key.
             if (attribute.Name == "VB_Ext_Key")
             {
-                return !declaration.Annotations.OfType<IAttributeAnnotation>()
-                    .Any(annotation => annotation.Attribute.Equals("VB_Ext_Key") && attribute.Values[0].Equals(annotation.AttributeValues[0]));
+                return !declaration.Annotations.Where(pta => pta.Annotation is IAttributeAnnotation)
+                    .Any(pta => {
+                        var annotation = (IAttributeAnnotation)pta.Annotation;
+                        return annotation.Attribute(pta).Equals("VB_Ext_Key") && attribute.Values[0].Equals(annotation.AttributeValues(pta)[0]);
+                    });
             }
 
-            return !declaration.Annotations.OfType<IAttributeAnnotation>()
-                .Any(annotation => annotation.Attribute.Equals(attribute.Name));
+            return !declaration.Annotations.Where(pta => pta.Annotation is IAttributeAnnotation)
+                .Any(pta => ((IAttributeAnnotation)pta.Annotation).Attribute(pta).Equals(attribute.Name));
         }
     }
 }

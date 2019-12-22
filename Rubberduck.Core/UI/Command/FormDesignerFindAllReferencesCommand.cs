@@ -1,7 +1,6 @@
 ﻿using System.Runtime.InteropServices;
-using NLog;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.UI.Command.ComCommands;
+using Rubberduck.VBEditor.Events;
 
 namespace Rubberduck.UI.Command
 {
@@ -13,13 +12,16 @@ namespace Rubberduck.UI.Command
     {
         private readonly FindAllReferencesCommand _findAllReferences;
 
-        public FormDesignerFindAllReferencesCommand(FindAllReferencesCommand findAllReferences)
-             : base(LogManager.GetCurrentClassLogger())
+        public FormDesignerFindAllReferencesCommand(
+            FindAllReferencesCommand findAllReferences, 
+            IVbeEvents vbeEvents)
         {
             _findAllReferences = findAllReferences;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
             return _findAllReferences.CanExecute(parameter);
         }

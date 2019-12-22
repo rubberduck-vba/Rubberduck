@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Rubberduck.Navigation.CodeExplorer;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
@@ -18,17 +19,21 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private readonly IVBE _vbe;
 
-        public OpenProjectPropertiesCommand(IVBE vbe)
+        public OpenProjectPropertiesCommand(
+            IVBE vbe, 
+            IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             _vbe = vbe;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
         public sealed override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
-            if (!base.EvaluateCanExecute(parameter) ||
-                !(parameter is CodeExplorerItemViewModel node))
+            if (!(parameter is CodeExplorerItemViewModel node))
             {
                 return false;
             }

@@ -5,6 +5,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
+using static Rubberduck.Parsing.Grammar.VBAParser;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -20,7 +21,7 @@ namespace Rubberduck.Parsing.Symbols
             ParserRuleContext attributesPassContext,
             Selection selection,
             bool isUserDefined,
-            IEnumerable<IAnnotation> annotations,
+            IEnumerable<IParseTreeAnnotation> annotations,
             Attributes attributes)
             : base(
                 name,
@@ -87,5 +88,7 @@ namespace Rubberduck.Parsing.Symbols
                        || member.DeclarationType == DeclarationType.Variable
                        && !member.IsObject);
         }
+
+        public override BlockContext Block => ((PropertyLetStmtContext)Context).block();
     }
 }

@@ -171,7 +171,6 @@ namespace RubberduckTests.UnitTesting
             { TestOutcome.Succeeded,  (TestOutcome.Succeeded, "", 0)  },
             { TestOutcome.Inconclusive,  (TestOutcome.Inconclusive, "", 0)  },
             { TestOutcome.Failed,  (TestOutcome.Failed, "", 0)  },
-            { TestOutcome.SpectacularFail,  (TestOutcome.SpectacularFail, "", 0)  },
             { TestOutcome.Ignored,  (TestOutcome.Ignored, "", 0)  }
         };
 
@@ -184,7 +183,6 @@ namespace RubberduckTests.UnitTesting
         //[TestCase(new object[] { TestOutcome.Failed, TestOutcome.Failed, TestOutcome.Failed })]
         //[TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Ignored })]
         //[TestCase(new object[] { TestOutcome.Ignored, TestOutcome.Ignored, TestOutcome.Ignored })]
-        //[TestCase(new object[] { TestOutcome.Ignored, TestOutcome.SpectacularFail })]
         //[Category("Unit Testing")]
         //public void TestEngine_LastTestRun_UpdatesAfterRun(params TestOutcome[] tests)
         //{

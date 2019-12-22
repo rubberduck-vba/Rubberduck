@@ -1,10 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Sunburst.NET.Sdk.WPF/1.0.47">
   <PropertyGroup>
-    <Copyright>Copyright © 2018</Copyright>
+    <Copyright>Copyright © 2018-2019</Copyright>
     <Product>Rubberduck.Interaction</Product>
     <Title>Rubberduck.Interaction</Title>
     <ProjectGuid>{AC54B7FB-170D-4DA6-A30B-8CAD182F0E6B}</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;;4011;1001;7035;1053;1591</NoWarn>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
   
@@ -19,5 +22,10 @@
     <PackageReference Include="Antlr4.Runtime">
       <Version>4.6.4</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Refactorings\IAssignedByValParameterQuickFixDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

@@ -64,7 +64,12 @@ moduleConfigProperty :
 ;
 
 moduleConfigElement :
-    (unrestrictedIdentifier | lExpression) whiteSpace? EQ whiteSpace? (shortcut | resource | expression) endOfStatement
+    (unrestrictedIdentifier | lExpression) whiteSpace? EQ whiteSpace? (shortcut | resource | expression | germanStyleFloatingPointNumber) endOfStatement
+;
+
+germanStyleFloatingPointNumber : 
+    INTEGERLITERAL COMMA INTEGERLITERAL
+    | COMMA INTEGERLITERAL
 ;
 
 shortcut :
@@ -167,6 +172,7 @@ mainBlockStmt :
     | circleSpecialForm
     | scaleSpecialForm
     | pSetSpecialForm
+    | unqualifiedObjectPrintStmt
     | callStmt
     | nameStmt
 ;
@@ -181,7 +187,6 @@ fileStmt :
     | unlockStmt
     | lineInputStmt
     | widthStmt
-    | debugPrintStmt
     | printStmt
     | writeStmt
     | inputStmt
@@ -253,15 +258,10 @@ lineWidth : expression;
 
 
 // 5.4.5.8   Print Statement
-// Debug.Print is special because it seems to take an output list as argument.
-// To shield the rest of the parsing/binding from this peculiarity, we treat it as a statement
-// and let the resolver handle it.
-debugPrintStmt : debugPrint (whiteSpace outputList)?;
-// We split it up into separate rules so that we have context classes generated that can be used in declarations/references.
-debugPrint : debugModule whiteSpace? DOT whiteSpace? debugPrintSub;
-debugModule : DEBUG;
-debugPrintSub : PRINT;
-printStmt : PRINT whiteSpace markedFileNumber whiteSpace? COMMA (whiteSpace? outputList)?;
+//The unqualifiedObjectPrintStmt is an invocation of the Print member of the enclosing form or report, which also takes an output list as argument.
+printMethod : PRINT;
+printStmt : printMethod whiteSpace markedFileNumber whiteSpace? COMMA (whiteSpace? outputList)?;
+unqualifiedObjectPrintStmt : printMethod (whiteSpace outputList)?;
 
 // 5.4.5.8.1 Output Lists
 outputList : outputItem (whiteSpace? outputItem)*;
@@ -304,7 +304,7 @@ variable : expression;
 constStmt : (visibility whiteSpace)? CONST whiteSpace constSubStmt (whiteSpace? COMMA whiteSpace? constSubStmt)*;
 constSubStmt : identifier (whiteSpace asTypeClause)? whiteSpace? EQ whiteSpace? expression;
 
-declareStmt : (visibility whiteSpace)? DECLARE whiteSpace (PTRSAFE whiteSpace)? (FUNCTION | SUB) whiteSpace identifier whiteSpace (CDECL whiteSpace)? LIB whiteSpace STRINGLITERAL (whiteSpace ALIAS whiteSpace STRINGLITERAL)? (whiteSpace? argList)? (whiteSpace asTypeClause)?;
+declareStmt : (visibility whiteSpace)? DECLARE whiteSpace (PTRSAFE whiteSpace)? (FUNCTION | SUB) whiteSpace identifier whiteSpace (CDECL whiteSpace)? LIB whiteSpace STRINGLITERAL (whiteSpace ALIAS whiteSpace STRINGLITERAL)? (whiteSpace? argList)? (whiteSpace asTypeClause)? (endOfLine attributeStmt)*;
 
 argList : LPAREN (whiteSpace? arg (whiteSpace? COMMA whiteSpace? arg)*)? whiteSpace? RPAREN;
 
@@ -571,7 +571,13 @@ withStmt :
 ;
 
 // Special forms with special syntax, only available in VBA reports or VB6 forms and pictureboxes.
-lineSpecialForm : expression whiteSpace ((STEP whiteSpace?)? tuple)? MINUS (STEP whiteSpace?)? tuple whiteSpace? (COMMA whiteSpace? expression)? whiteSpace? (COMMA whiteSpace? lineSpecialFormOption)?;
+// lineSpecialFormOption is required if expression is missing
+lineSpecialForm : expression whiteSpace ((STEP whiteSpace?)? tuple)?
+    whiteSpace? MINUS whiteSpace?
+	(STEP whiteSpace?)? tuple whiteSpace?
+	(COMMA whiteSpace? expression? whiteSpace?)?
+	(COMMA whiteSpace? lineSpecialFormOption)?
+;
 circleSpecialForm : (expression whiteSpace? DOT whiteSpace?)? CIRCLE whiteSpace (STEP whiteSpace?)? tuple (whiteSpace? COMMA whiteSpace? expression)+;
 scaleSpecialForm : (expression whiteSpace? DOT whiteSpace?)? SCALE whiteSpace tuple whiteSpace? MINUS whiteSpace? tuple;
 pSetSpecialForm : (expression whiteSpace? DOT whiteSpace?)? PSET (whiteSpace STEP)? whiteSpace? tuple whiteSpace? (COMMA whiteSpace? expression)?;
@@ -641,6 +647,7 @@ visibility : PRIVATE | PUBLIC | FRIEND | GLOBAL;
 // 5.6 Expressions
 expression :
     // Literal Expression has to come before lExpression, otherwise it'll be classified as simple name expression instead.
+    //The same holds for Built-in Type Expression.
     whiteSpace? LPAREN whiteSpace? expression whiteSpace? RPAREN                                    # parenthesizedExpr
     | TYPEOF whiteSpace expression                                                                  # typeofexpr // To make the grammar SLL, the type-of-is-expression is actually the child of an IS relational op.
     | HASH expression                                                                               # markedFileNumberExpr // Added to support special forms such as Input(file1, #file1)
@@ -660,8 +667,8 @@ expression :
     | expression whiteSpace? EQV whiteSpace? expression                                             # logicalEqvOp
     | expression whiteSpace? IMP whiteSpace? expression                                             # logicalImpOp
     | literalExpression                                                                             # literalExpr
+    | {!IsTokenType(TokenTypeAtRelativePosition(2),LPAREN)}? builtInType                            # builtInTypeExpr
     | lExpression                                                                                   # lExpr
-    | builtInType                                                                                   # builtInTypeExpr
 ;
 
 // 5.6.5 Literal Expressions
@@ -679,14 +686,18 @@ variantLiteralIdentifier : EMPTY | NULL;
 
 lExpression :
     lExpression LPAREN whiteSpace? argumentList? whiteSpace? RPAREN                                                 # indexExpr
+    | lExpression mandatoryLineContinuation? DOT mandatoryLineContinuation? printMethod (whiteSpace outputList)?    # objectPrintExpr
     | lExpression mandatoryLineContinuation? DOT mandatoryLineContinuation? unrestrictedIdentifier                  # memberAccessExpr
-    | lExpression mandatoryLineContinuation? EXCLAMATIONPOINT mandatoryLineContinuation? unrestrictedIdentifier     # dictionaryAccessExpr
+    | lExpression mandatoryLineContinuation? dictionaryAccess mandatoryLineContinuation? unrestrictedIdentifier     # dictionaryAccessExpr
     | ME                                                                                                            # instanceExpr
     | identifier                                                                                                    # simpleNameExpr
     | DOT mandatoryLineContinuation? unrestrictedIdentifier                                                         # withMemberAccessExpr
-    | EXCLAMATIONPOINT mandatoryLineContinuation? unrestrictedIdentifier                                            # withDictionaryAccessExpr
+    | dictionaryAccess mandatoryLineContinuation? unrestrictedIdentifier                                            # withDictionaryAccessExpr
     | lExpression mandatoryLineContinuation whiteSpace? LPAREN whiteSpace? argumentList? whiteSpace? RPAREN         # whitespaceIndexExpr
 ;
+
+//This is a hack to allow attaching identifier references for default members to the exclaramtion mark.
+dictionaryAccess : EXCLAMATIONPOINT;
 
 // 3.3.5.3 Special Identifier Forms
 builtInType : 
@@ -945,11 +956,12 @@ annotationList : SINGLEQUOTE (AT annotation)+ (COLON commentBody)?;
 annotation : annotationName annotationArgList? whiteSpace?;
 annotationName : unrestrictedIdentifier;
 annotationArgList : 
-    whiteSpace annotationArg
-    | whiteSpace annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+
+    whiteSpace? LPAREN whiteSpace? annotationArg whiteSpace? RPAREN
     | whiteSpace? LPAREN whiteSpace? RPAREN
-    | whiteSpace? LPAREN whiteSpace? annotationArg whiteSpace? RPAREN
-    | whiteSpace? LPAREN annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+ whiteSpace? RPAREN;
+    | whiteSpace? LPAREN annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+ whiteSpace? RPAREN
+    | whiteSpace annotationArg
+    | whiteSpace annotationArg (whiteSpace? COMMA whiteSpace? annotationArg)+
+;
 annotationArg : expression;
 
 mandatoryLineContinuation : LINE_CONTINUATION WS*;

@@ -10,9 +10,32 @@ using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor;
+using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.JunkDrawer.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Highlights implicit ByRef modifiers in user code.
+    /// </summary>
+    /// <why>
+    /// In modern VB (VB.NET), the implicit modifier is ByVal, as it is in most other programming languages.
+    /// Making the ByRef modifiers explicit can help surface potentially unexpected language defaults.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Public Sub DoSomething(foo As Long)
+    ///     foo = 42
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByRef foo As Long)
+    ///     foo = 42
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class ImplicitByRefModifierInspection : ParseTreeInspectionBase
     {
         public ImplicitByRefModifierInspection(RubberduckParserState state)
@@ -28,7 +51,6 @@ namespace Rubberduck.Inspections.Concrete
             var interfaceImplementationMemberContexts = State.DeclarationFinder.FindAllInterfaceImplementingMembers().Select(member => member.Context).ToHashSet();
 
             var issues = Listener.Contexts.Where(context =>
-                !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line) &&
                 !builtInEventHandlerContexts.Contains(context.Context.Parent.Parent) &&
                 !interfaceImplementationMemberContexts.Contains(context.Context.Parent.Parent));
 

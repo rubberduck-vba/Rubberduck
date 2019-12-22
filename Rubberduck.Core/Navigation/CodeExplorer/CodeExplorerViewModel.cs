@@ -13,10 +13,12 @@ using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Templates;
-using Rubberduck.UI.UnitTesting.Commands;
+using Rubberduck.UI.Command.ComCommands;
+using Rubberduck.UI.UnitTesting.ComCommands;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Navigation.CodeExplorer
@@ -38,8 +40,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         // ReSharper disable NotAccessedField.Local - The settings providers aren't used, but several enhancement requests will need them.
         private readonly RubberduckParserState _state;
         private readonly RemoveCommand _externalRemoveCommand;
-        private readonly IConfigProvider<GeneralSettings> _generalSettingsProvider;      
-        private readonly IConfigProvider<WindowSettings> _windowSettingsProvider;
+        private readonly IConfigurationService<GeneralSettings> _generalSettingsProvider;      
+        private readonly IConfigurationService<WindowSettings> _windowSettingsProvider;
         private readonly IUiDispatcher _uiDispatcher;
         private readonly IVBE _vbe;
         private readonly ITemplateProvider _templateProvider;
@@ -48,8 +50,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         public CodeExplorerViewModel(
             RubberduckParserState state,
             RemoveCommand removeCommand,
-            IConfigProvider<GeneralSettings> generalSettingsProvider, 
-            IConfigProvider<WindowSettings> windowSettingsProvider, 
+            IConfigurationService<GeneralSettings> generalSettingsProvider, 
+            IConfigurationService<WindowSettings> windowSettingsProvider, 
             IUiDispatcher uiDispatcher,
             IVBE vbe,
             ITemplateProvider templateProvider,
@@ -113,8 +115,9 @@ namespace Rubberduck.Navigation.CodeExplorer
         }
 
         public bool AnyTemplatesCanExecute =>
-            BuiltInTemplates.Concat(UserDefinedTemplates)
-                .Any(template => AddTemplateCommand.CanExecuteForNode(SelectedItem));
+            AddTemplateCommand.CanExecuteForNode(SelectedItem)
+            && BuiltInTemplates.Concat(UserDefinedTemplates)
+                .Any(template => AddTemplateCommand.CanExecute((template.Name, SelectedItem)));
 
         private CodeExplorerSortOrder _sortOrder = CodeExplorerSortOrder.Name;
         public CodeExplorerSortOrder SortOrder
@@ -227,10 +230,12 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             Unparsed = false;
 
-            if (e.State == ParserState.Ready)
+            if (e.State == ParserState.Ready && e.OldState != ParserState.Busy)
             {
                 // Finished up resolving references, so we can now update the reference nodes.
-                _uiDispatcher.Invoke(() =>
+                //We have to wait for the task to guarantee that no new parse starts invalidating all cached components.
+                //CAUTION: This must not be executed from the UI thread!!!
+                _uiDispatcher.StartTask(() =>
                 {
                     var referenceFolders = Projects.SelectMany(node =>
                         node.Children.OfType<CodeExplorerReferenceFolderViewModel>());
@@ -242,7 +247,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                     Unparsed = !Projects.Any();
                     IsBusy = false;
                     ParserReady = true;
-                });
+                }).Wait();
                 return;
             }
 
@@ -263,7 +268,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         /// </param>
         private void Synchronize(IEnumerable<Declaration> declarations)
         {
-            _uiDispatcher.Invoke(() =>
+            //We have to wait for the task to guarantee that no new parse starts invalidating all cached components.
+            _uiDispatcher.StartTask(() =>
             {
                 var updates = declarations.ToList();
                 var existing = Projects.OfType<CodeExplorerProjectViewModel>().ToList();
@@ -286,7 +292,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 }
 
                 CanSearch = Projects.Any();
-            });
+            }).Wait();
         }
 
         private void ParserState_ModuleStateChanged(object sender, ParseProgressEventArgs e)
@@ -381,13 +387,17 @@ namespace Rubberduck.Navigation.CodeExplorer
         public CopyResultsCommand CopyResultsCommand { get; set; }
         public CommandBase ExpandAllSubnodesCommand { get; }
         public ImportCommand ImportCommand { get; set; }
+        public UpdateFromFilesCommand UpdateFromFilesCommand { get; set; }
+        public ReplaceProjectContentsFromFilesCommand ReplaceProjectContentsFromFilesCommand { get; set; }
         public ExportCommand ExportCommand { get; set; }
         public ExportAllCommand ExportAllCommand { get; set; }
+        public DeleteCommand DeleteCommand { get; set; }
         public CommandBase RemoveCommand { get; }
         public PrintCommand PrintCommand { get; set; }
         public AddRemoveReferencesCommand AddRemoveReferencesCommand { get; set; }
         public ICommand ClearSearchCommand { get; }
         public CommandBase SyncCodePaneCommand { get; }
+        public CodeExplorerExtractInterfaceCommand CodeExplorerExtractInterfaceCommand { get; set; }
 
         public ICodeExplorerNode FindVisibleNodeForDeclaration(Declaration declaration)
         {

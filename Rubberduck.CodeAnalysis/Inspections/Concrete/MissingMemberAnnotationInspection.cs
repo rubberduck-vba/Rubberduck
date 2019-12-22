@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
@@ -12,6 +13,30 @@ using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Indicates that a hidden VB attribute is present for a member, but no Rubberduck annotation is documenting it.
+    /// </summary>
+    /// <why>
+    /// Rubberduck annotations mean to document the presence of hidden VB attributes; this inspection flags members that
+    /// do not have a Rubberduck annotation corresponding to the hidden VB attribute.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    /// Attribute VB_Description = "foo"
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// '@Description("foo")
+    /// Public Sub DoSomething()
+    /// Attribute VB_Description = "foo"
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class MissingMemberAnnotationInspection : InspectionBase
     {
         public MissingMemberAnnotationInspection(RubberduckParserState state) 
@@ -25,8 +50,9 @@ namespace Rubberduck.Inspections.Concrete
                                 && decl.Attributes.Any());
 
             var declarationsToInspect = memberDeclarationsWithAttributes
+                // prefilter declarations to reduce searchspace
                 .Where(decl => decl.QualifiedModuleName.ComponentType != ComponentType.Document
-                               && !IsIgnoringInspectionResultFor(decl, AnnotationName));
+                               && !decl.IsIgnoringInspectionResultFor(AnnotationName));
 
             var results = new List<DeclarationInspectionResult>();
             foreach (var declaration in declarationsToInspect)
@@ -63,16 +89,18 @@ namespace Rubberduck.Inspections.Concrete
             }
 
             var attributeBaseName = AttributeBaseName(declaration, attribute);
-
-            //VB_Ext_Key attributes are special in that identity also depends on the first value, the key.
+            // VB_Ext_Key attributes are special in that identity also depends on the first value, the key.
             if (attributeBaseName == "VB_Ext_Key")
             {
-                return !declaration.Annotations.OfType<IAttributeAnnotation>()
-                    .Any(annotation => annotation.Attribute.Equals("VB_Ext_Key") && attribute.Values[0].Equals(annotation.AttributeValues[0]));
+                return !declaration.Annotations.Where(pta => pta.Annotation is IAttributeAnnotation)
+                    .Any(pta => {
+                            var annotation = (IAttributeAnnotation)pta.Annotation;
+                            return annotation.Attribute(pta).Equals("VB_Ext_Key") && attribute.Values[0].Equals(annotation.AttributeValues(pta)[0]);
+                        });
             }
 
-            return !declaration.Annotations.OfType<IAttributeAnnotation>()
-                .Any(annotation => annotation.Attribute.Equals(attributeBaseName));
+            return !declaration.Annotations.Where(pta => pta.Annotation is IAttributeAnnotation)
+                .Any(pta => ((IAttributeAnnotation)pta.Annotation).Attribute(pta).Equals(attributeBaseName));
         }
 
         private static string AttributeBaseName(Declaration declaration, AttributeNode attribute)

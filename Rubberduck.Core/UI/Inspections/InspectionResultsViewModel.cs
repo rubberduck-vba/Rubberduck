@@ -13,14 +13,18 @@ using System.Windows.Data;
 using System.Windows.Input;
 using NLog;
 using Rubberduck.Common;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Interaction.Navigation;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Settings;
+using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.ComCommands;
 using Rubberduck.UI.Settings;
 using Rubberduck.VBEditor;
 
@@ -66,7 +70,7 @@ namespace Rubberduck.UI.Inspections
         private readonly IInspector _inspector;
         private readonly IQuickFixProvider _quickFixProvider;
         private readonly IClipboardWriter _clipboard;
-        private readonly IGeneralConfigService _configService;
+        private readonly IConfigurationService<Configuration> _configService;
         private readonly ISettingsFormFactory _settingsFormFactory;
         private readonly IUiDispatcher _uiDispatcher;
 
@@ -78,8 +82,8 @@ namespace Rubberduck.UI.Inspections
             IQuickFixProvider quickFixProvider,
             INavigateCommand navigateCommand, 
             ReparseCommand reparseCommand,
-            IClipboardWriter clipboard, 
-            IGeneralConfigService configService, 
+            IClipboardWriter clipboard,
+            IConfigurationService<Configuration> configService,
             ISettingsFormFactory settingsFormFactory,
             IUiDispatcher uiDispatcher)
         {
@@ -95,8 +99,8 @@ namespace Rubberduck.UI.Inspections
             RefreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(),
                 o =>
                 {
-                    IsRefreshing = true;
                     IsBusy = true;
+                    _forceRefreshResults = true;
                     var cancellation = new ReparseCancellationFlag();
                     reparseCommand.Execute(cancellation);
                     if (cancellation.Canceled)
@@ -120,7 +124,7 @@ namespace Rubberduck.UI.Inspections
             _configService.SettingsChanged += _configService_SettingsChanged;
             
             // todo: remove I/O work in constructor
-            _runInspectionsOnReparse = _configService.LoadConfiguration().UserSettings.CodeInspectionSettings.RunInspectionsOnSuccessfulParse;
+            _runInspectionsOnReparse = _configService.Read().UserSettings.CodeInspectionSettings.RunInspectionsOnSuccessfulParse;
 
             if (CollectionViewSource.GetDefaultView(_results) is ListCollectionView results)
             {
@@ -134,11 +138,6 @@ namespace Rubberduck.UI.Inspections
 
             _state.StateChanged += HandleStateChanged;
         }
-
-        /// <summary>
-        /// Gets/sets a flag indicating whether the parser state changes are a result of our RefreshCommand.
-        /// </summary>
-        private bool IsRefreshing { get; set; }
 
         private void _configService_SettingsChanged(object sender, ConfigurationChangedEventArgs e)
         {            
@@ -234,9 +233,12 @@ namespace Rubberduck.UI.Inspections
                 }
 
                 _grouping = value;
-                Results.GroupDescriptions.Clear();
-                Results.GroupDescriptions.Add(GroupDescriptions[_grouping]);
-                Results.Refresh();
+                // Deferring refresh to avoid a rerendering without grouping
+                using (Results.DeferRefresh())
+                {
+                    Results.GroupDescriptions.Clear();
+                    Results.GroupDescriptions.Add(GroupDescriptions[_grouping]);
+                }
                 OnPropertyChanged();
             }
         }
@@ -254,8 +256,33 @@ namespace Rubberduck.UI.Inspections
 
                 _filters = value;
                 OnPropertyChanged();
-                Results.Refresh();
+
+                // updating Filter forces a Refresh
+                Results.Filter = i => InspectionFilter((IInspectionResult)i);
             }
+        }
+
+        private string _inspectionDescriptionFilter = string.Empty;
+        public string InspectionDescriptionFilter
+        {
+            get => _inspectionDescriptionFilter;
+            set
+            {
+                if (_inspectionDescriptionFilter != value)
+                {
+                    _inspectionDescriptionFilter = value;
+                    OnPropertyChanged();
+                    Results.Filter = FilterResults;
+                    OnPropertyChanged(nameof(Results));
+                }
+            }
+        }
+
+        private bool FilterResults(object inspectionResult)
+        {
+            var inspectionResultBase = inspectionResult as InspectionResultBase;
+            
+            return inspectionResultBase.Description.ToUpper().Contains(InspectionDescriptionFilter.ToUpper()); ;
         }
 
         private bool InspectionFilter(IInspectionResult result)
@@ -310,7 +337,6 @@ namespace Rubberduck.UI.Inspections
         }
 
         private bool _canQuickFix;
-
         public bool CanQuickFix
         {
             get => _canQuickFix;
@@ -331,6 +357,12 @@ namespace Rubberduck.UI.Inspections
                 OnPropertyChanged();
             } 
         }
+
+        /// <summary>
+        /// A boolean indicating that a local refresh was triggered.
+        /// When this is set to true, InspectionResults are refreshed, even when inspecting after successful parsing is disabled.
+        /// </summary>
+        private bool _forceRefreshResults = false;
 
         private bool _unparsed = true;
         public bool Unparsed
@@ -361,14 +393,17 @@ namespace Rubberduck.UI.Inspections
         private bool _runInspectionsOnReparse;
         private void HandleStateChanged(object sender, ParserStateEventArgs e)
         {
-            if (!IsRefreshing && (_state.Status == ParserState.Pending || _state.Status == ParserState.Error || _state.Status == ParserState.ResolverError))
+            if (_state.Status == ParserState.Pending || _state.Status == ParserState.Error || _state.Status == ParserState.ResolverError)
             {
+                // an error in parser state resets the busy state
                 IsBusy = false;
                 return;
             }
 
             if(_state.Status != ParserState.Ready)
             {
+                // not an error, but also not finished -> We're busy
+                IsBusy = true;
                 return;
             }
 
@@ -377,7 +412,9 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
-            if (_runInspectionsOnReparse || IsRefreshing)
+            // push Unparsed to false on the first successful parse
+            Unparsed = false;
+            if (_runInspectionsOnReparse || _forceRefreshResults)
             {
                 RefreshInspections(e.Token);
             }
@@ -387,6 +424,7 @@ namespace Rubberduck.UI.Inspections
                 var modifiedModules = _state.DeclarationFinder.AllModules.ToHashSet();
                 InvalidateStaleInspectionResults(modifiedModules);
             }
+            IsBusy = false;
         }
 
         private async void RefreshInspections(CancellationToken token)
@@ -408,9 +446,7 @@ namespace Rubberduck.UI.Inspections
             }
 
             stopwatch.Stop();
-            LogManager.GetCurrentClassLogger().Trace("Inspection results returned in {0}ms", stopwatch.ElapsedMilliseconds);
-
-            Unparsed = false;
+            Logger.Trace("Inspection results returned in {0}ms", stopwatch.ElapsedMilliseconds);
 
             _uiDispatcher.Invoke(() =>
             {
@@ -422,28 +458,27 @@ namespace Rubberduck.UI.Inspections
                     {
                         _results.Add(result);
                     }
-
                     Results.Refresh();
-                    SelectedItem = null;
                 }
                 catch (Exception exception)
                 {
-                    Logger.Error(exception, "Exception thrown trying to refresh the inspection results view on th UI thread.");
+                    Logger.Error(exception, "Exception thrown trying to refresh the inspection results view on the UI thread.");
                 }
                 finally
                 {
                     IsBusy = false;
-                    IsRefreshing = false;
+                    // refreshing results is only disabled when successful
+                    // It's basically a "refresh on success once".
+                    _forceRefreshResults = false;
                 }
 
                 stopwatch.Stop();
-                LogManager.GetCurrentClassLogger().Trace("Inspection results rendered in {0}ms", stopwatch.ElapsedMilliseconds);
+                Logger.Trace("Inspection results rendered in {0}ms", stopwatch.ElapsedMilliseconds);
             });
         }
 
-        private void InvalidateStaleInspectionResults(ICollection<QualifiedModuleName> modifiedModules)
+        private void InvalidateUIStaleInspectionResults(ICollection<IInspectionResult> staleResults)
         {
-            var staleResults = _results.Where(result => result.ChangesInvalidateResult(modifiedModules)).ToList();
             _uiDispatcher.Invoke(() =>
             {
                 foreach (var staleResult in staleResults)
@@ -452,6 +487,13 @@ namespace Rubberduck.UI.Inspections
                 }
                 Results.Refresh();
             });
+        }
+
+        private void InvalidateStaleInspectionResults(ICollection<QualifiedModuleName> modifiedModules)
+        {
+            // materialize the collection to take work off of the UI thread
+            var staleResults = _results.Where(result => result.ChangesInvalidateResult(modifiedModules)).ToList();
+            InvalidateUIStaleInspectionResults(staleResults);
         }
 
         private void ExecuteQuickFixCommand(object parameter)
@@ -483,8 +525,7 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
-            var selectedResult = SelectedItem as IInspectionResult;
-            if (selectedResult == null)
+            if (!(SelectedItem is IInspectionResult selectedResult))
             {
                 return;
             }
@@ -511,8 +552,7 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
-            var selectedResult = SelectedItem as IInspectionResult;
-            if (selectedResult == null)
+            if (!(SelectedItem is IInspectionResult selectedResult))
             {
                 return;
             }
@@ -539,21 +579,19 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
-            var config = _configService.LoadConfiguration();
+            var config = _configService.Read();
 
             var setting = config.UserSettings.CodeInspectionSettings.CodeInspections.Single(e => e.Name == _selectedInspection.Name);
             setting.Severity = CodeInspectionSeverity.DoNotShow;
 
-            Task.Run(() => _configService.SaveConfiguration(config));
+            Task.Run(() => _configService.Save(config));
 
-            _uiDispatcher.Invoke(() =>
-            {
-                RefreshCommand.Execute(null);
-            });
+            // remove inspection results of the selected inspection from the UI
+            // collection is materialized to take work off of the UI thread
+            InvalidateUIStaleInspectionResults(_results.Where(i => i.Inspection == _selectedInspection).ToList());
         }
 
         private bool _canDisableInspection;
-
         public bool CanDisableInspection
         {
             get => _canDisableInspection;
@@ -610,20 +648,20 @@ namespace Rubberduck.UI.Inspections
         private void ExecuteCopyResultsCommand(object parameter)
         {
             const string xmlSpreadsheetDataFormat = "XML Spreadsheet";
-            if (_results == null)
+            if (Results == null)
             {
                 return;
             }
 
-            var resultArray = _results.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
+            var resultArray = Results.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
 
-            var resource = _results.Count == 1
+            var resource = resultArray.Count() == 1
                 ? Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular
                 : Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Plural;
 
-            var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _results.Count);
+            var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), resultArray.Count());
 
-            var textResults = title + Environment.NewLine + string.Join("", _results.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
+            var textResults = title + Environment.NewLine + string.Join(string.Empty, Results.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
             var csvResults = ExportFormatter.Csv(resultArray, title, ColumnInformation);
             var htmlResults = ExportFormatter.HtmlClipboardFragment(resultArray, title, ColumnInformation);
             var rtfResults = ExportFormatter.RTF(resultArray, title);

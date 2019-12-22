@@ -22,27 +22,38 @@ namespace Rubberduck.Parsing.Symbols
             Declaration declaration, 
             bool isAssignmentTarget = false,
             bool hasExplicitLetStatement = false, 
-            IEnumerable<IAnnotation> annotations = null,
-            bool isSetAssigned = false)
+            IEnumerable<IParseTreeAnnotation> annotations = null,
+            bool isSetAssigned = false,
+            bool isIndexedDefaultMemberAccess = false,
+            bool isNonIndexedDefaultMemberAccess = false,
+            int defaultMemberRecursionDepth = 0,
+            bool isArrayAccess = false,
+            bool isProcedureCoercion = false,
+            bool isInnerRecursiveDefaultMemberAccess = false)
         {
             ParentScoping = parentScopingDeclaration;
             ParentNonScoping = parentNonScopingDeclaration;
-            QualifiedModuleName = qualifiedName;
+            QualifiedSelection = new QualifiedSelection(qualifiedName, selection);
             IdentifierName = identifierName;
-            Selection = selection;
             Context = context;
             Declaration = declaration;
             HasExplicitLetStatement = hasExplicitLetStatement;
             IsAssignment = isAssignmentTarget;
             IsSetAssignment = isSetAssigned;
-            Annotations = annotations ?? new List<IAnnotation>();
+            IsIndexedDefaultMemberAccess = isIndexedDefaultMemberAccess;
+            IsNonIndexedDefaultMemberAccess = isNonIndexedDefaultMemberAccess;
+            DefaultMemberRecursionDepth = defaultMemberRecursionDepth;
+            IsArrayAccess = isArrayAccess;
+            IsProcedureCoercion = isProcedureCoercion;
+            Annotations = annotations ?? new List<IParseTreeAnnotation>();
+            IsInnerRecursiveDefaultMemberAccess = isInnerRecursiveDefaultMemberAccess;
         }
 
-        public QualifiedModuleName QualifiedModuleName { get; }
+        public QualifiedSelection QualifiedSelection { get; }
+        public QualifiedModuleName QualifiedModuleName => QualifiedSelection.QualifiedName;
+        public Selection Selection => QualifiedSelection.Selection;
 
         public string IdentifierName { get; }
-
-        public Selection Selection { get; }
 
         /// <summary>
         /// Gets the scoping <see cref="Declaration"/> that contains this identifier reference,
@@ -60,23 +71,20 @@ namespace Rubberduck.Parsing.Symbols
 
         public bool IsSetAssignment { get; }
 
+        public bool IsIndexedDefaultMemberAccess { get; }
+        public bool IsNonIndexedDefaultMemberAccess { get; }
+        public bool IsDefaultMemberAccess => IsIndexedDefaultMemberAccess || IsNonIndexedDefaultMemberAccess;
+        public bool IsProcedureCoercion { get; }
+        public bool IsInnerRecursiveDefaultMemberAccess { get; }
+        public int DefaultMemberRecursionDepth { get; }
+
+        public bool IsArrayAccess { get; }
+
         public ParserRuleContext Context { get; }
 
         public Declaration Declaration { get; }
 
-        public IEnumerable<IAnnotation> Annotations { get; }
-
-        public bool IsIgnoringInspectionResultFor(string inspectionName)
-        {
-            var isIgnoredAtModuleLevel =
-                Declaration.GetModuleParent(ParentScoping).Annotations
-                .Any(annotation => annotation.AnnotationType == AnnotationType.IgnoreModule
-                    && ((IgnoreModuleAnnotation)annotation).IsIgnored(inspectionName));
-
-            return isIgnoredAtModuleLevel || Annotations.Any(annotation => 
-                       annotation.AnnotationType == AnnotationType.Ignore
-                       && ((IgnoreAnnotation) annotation).IsIgnored(inspectionName));
-        }
+        public IEnumerable<IParseTreeAnnotation> Annotations { get; }
 
         public bool HasExplicitLetStatement { get; }
 
@@ -109,7 +117,10 @@ namespace Rubberduck.Parsing.Symbols
                 return false;
             }
 
-            var hint = ((dynamic)Context.Parent).typeHint() as VBAParser.TypeHintContext;
+            var hint = Context.Parent is VBAParser.TypedIdentifierContext typedIdentifierContext
+                ? typedIdentifierContext.typeHint()
+                : null;
+
             token = hint?.GetText();
             _hasTypeHint = hint != null;
             return _hasTypeHint.Value;
@@ -126,7 +137,8 @@ namespace Rubberduck.Parsing.Symbols
             return other != null
                 && other.QualifiedModuleName.Equals(QualifiedModuleName)
                 && other.Selection.Equals(Selection)
-                && other.Declaration.Equals(Declaration);
+                && (other.Declaration != null && other.Declaration.Equals(Declaration)
+                    || other.Declaration == null && Declaration == null);
         }
 
         public override bool Equals(object obj)
@@ -136,7 +148,9 @@ namespace Rubberduck.Parsing.Symbols
 
         public override int GetHashCode()
         {
-            return HashCode.Compute(QualifiedModuleName, Selection, Declaration);
+            return Declaration != null
+                ? HashCode.Compute(QualifiedModuleName, Selection, Declaration)
+                : HashCode.Compute(QualifiedModuleName, Selection);
         }
     }
 }

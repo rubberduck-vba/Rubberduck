@@ -1,14 +1,14 @@
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Mocks;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class UndeclaredVariableInspectionTests
+    public class UndeclaredVariableInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
@@ -20,19 +20,7 @@ namespace RubberduckTests.Inspections
     Debug.Print a
 End Sub";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new UndeclaredVariableInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForModules(("MyClass", inputCode, ComponentType.ClassModule), "VBA").Count());
         }
 
         [Test]
@@ -46,19 +34,7 @@ End Sub";
     Debug.Print a
 End Sub";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new UndeclaredVariableInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, InspectionResultsForModules(("MyClass", inputCode, ComponentType.ClassModule), "VBA").Count());
         }
 
         [Test]
@@ -73,19 +49,24 @@ Sub Test()
     Debug.Print a
 End Sub";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
+            Assert.AreEqual(0, InspectionResultsForModules(("MyClass", inputCode, ComponentType.ClassModule), "VBA").Count());
+        }
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new UndeclaredVariableInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+        [Test]
+        [Category("Inspections")]
+        //ReDim acts as a declaration if the array is not declared already.
+        //See issue #2522 at https://github.com/rubberduck-vba/Rubberduck/issues/2522
+        public void UndeclaredVariable_ReturnsNoResultForReDim()
+        {
+            const string inputCode =
+                @"
+Sub Test()
+    Dim bar As Variant
+    ReDim arr(1 To 42) 
+    bar = arr
+End Sub";
 
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, InspectionResultsForModules(("MyClass", inputCode, ComponentType.ClassModule)).Count());
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/2525
@@ -100,29 +81,22 @@ End Sub";
     Debug.Print a
 End Sub";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new UndeclaredVariableInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, InspectionResultsForModules(("MyClass", inputCode, ComponentType.ClassModule), "VBA").Count());
         }
 
         [Test]
         [Category("Inspections")]
         public void InspectionName()
         {
-            const string inspectionName = "UndeclaredVariableInspection";
             var inspection = new UndeclaredVariableInspection(null);
 
-            Assert.AreEqual(inspectionName, inspection.Name);
+            Assert.AreEqual(nameof(UndeclaredVariableInspection), inspection.Name);
+        }
+
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new UndeclaredVariableInspection(state);
         }
     }
 }

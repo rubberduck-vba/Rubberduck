@@ -4,6 +4,9 @@ using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
+using RubberduckTests.Mocks;
+using System;
+using System.Linq;
 
 namespace RubberduckTests.QuickFixes
 {
@@ -15,7 +18,7 @@ namespace RubberduckTests.QuickFixes
         public void KnownModuleAttributeWithoutAnnotation_QuickFixWorks()
         {
             const string inputCode =
-                @"Attribute VB_PredeclaredID = True
+                @"Attribute VB_PredeclaredId = True
 Public Sub Foo()
     Const const1 As Integer = 9
 End Sub";
@@ -23,7 +26,7 @@ End Sub";
             //So adding on top is OK.
             const string expectedCode =
                 @"'@PredeclaredId
-Attribute VB_PredeclaredID = True
+Attribute VB_PredeclaredId = True
 Public Sub Foo()
     Const const1 As Integer = 9
 End Sub";
@@ -59,7 +62,7 @@ End Sub";
         public void KnownModuleAttributeWithoutAnnotationWhileOtherAttributeWithAnnotationPresent_QuickFixWorks()
         {
             const string inputCode =
-                @"Attribute VB_PredeclaredID = True
+                @"Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
 '@Exposed
 Public Sub Foo()
@@ -69,7 +72,7 @@ End Sub";
             //So adding on top is OK.
             const string expectedCode =
                 @"'@PredeclaredId
-Attribute VB_PredeclaredID = True
+Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
 '@Exposed
 Public Sub Foo()
@@ -153,7 +156,8 @@ End Sub";
 
         protected override IQuickFix QuickFix(RubberduckParserState state)
         {
-            return new AddAttributeAnnotationQuickFix(new AnnotationUpdater(), new AttributeAnnotationProvider());
+            return new AddAttributeAnnotationQuickFix(new AnnotationUpdater(),
+                new AttributeAnnotationProvider(MockParser.WellKnownAnnotations().OfType<IAttributeAnnotation>()));
         }
     }
 }

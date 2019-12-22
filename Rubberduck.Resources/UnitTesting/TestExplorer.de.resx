@@ -247,7 +247,7 @@
     <value>Einzelnen Test ausführen</value>
   </data>
   <data name="TestExplorer_ResetButtonTooltip" xml:space="preserve">
-    <value>Alle Testresultate zurücksetzen</value>
+    <value>Alle Testergebnisse zurücksetzen</value>
   </data>
   <data name="UnitTest_NewMethod_Act" xml:space="preserve">
     <value>Ausfuehren</value>
@@ -297,9 +297,6 @@
   <data name="TestOutcome_SummaryCaption" xml:space="preserve">
     <value>Zusammenfassung:</value>
   </data>
-  <data name="TestOutcome_SpectacularFail" xml:space="preserve">
-    <value>Spektakulärer Fehlschlag</value>
-  </data>
   <data name="TestOutcome_RunSummaryFormat" xml:space="preserve">
     <value>{0} von {1} Test(s) ausgeführt. (Laufzeit: {2:g})</value>
   </data>
@@ -314,5 +311,17 @@
   </data>
   <data name="UnitTest_NewMethod_TestFailLabel" xml:space="preserve">
     <value>TestFehlschlag</value>
+  </data>
+  <data name="TestExplorer_Filter" xml:space="preserve">
+    <value>Testname</value>
+  </data>
+  <data name="TestExplorer_AllResults" xml:space="preserve">
+    <value>Alle</value>
+  </data>
+  <data name="TestExplorer_TestToggle_Ignore" xml:space="preserve">
+    <value>Test ignorieren</value>
+  </data>
+  <data name="TestExplorer_TestToggle_Unignore" xml:space="preserve">
+    <value>Test nicht mehr ignorieren</value>
   </data>
 </root>

@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -15,6 +15,30 @@ using Rubberduck.Parsing.VBA.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Flags parameters that are passed by reference (ByRef), but could be passed by value (ByVal).
+    /// </summary>
+    /// <why>
+    /// Explicitly specifying a ByVal modifier on a parameter makes the intent explicit: this parameter is not meant to be assigned. In contrast, 
+    /// a parameter that is passed by reference (implicitly, or explicitly ByRef) makes it ambiguous from the calling code's standpoint, whether the 
+    /// procedure might re-assign these ByRef values and introduce a bug.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal foo As Long, bar As Long)
+    ///     Debug.Print foo, bar
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Option Explicit
+    /// Public Sub DoSomething(ByVal foo As long, ByRef bar As Long)
+    ///     bar = foo * 2 ' ByRef parameter assignment: passing it ByVal could introduce a bug.
+    ///     Debug.Print foo, bar
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class ParameterCanBeByValInspection : InspectionBase
     {
         public ParameterCanBeByValInspection(RubberduckParserState state)
@@ -36,8 +60,8 @@ namespace Rubberduck.Inspections.Concrete
             parametersThatCanBeChangedToBePassedByVal.AddRange(InterFaceMembersThatCanBeChangedToBePassedByVal(interfaceDeclarationMembers));
 
             var eventMembers = State.DeclarationFinder.UserDeclarations(DeclarationType.Event).ToList();
-            var formEventHandlerScopeDeclarations = State.FindFormEventHandlers();
-            var eventHandlerScopeDeclarations = State.DeclarationFinder.FindEventHandlers().Concat(parameters.FindUserEventHandlers());
+            var formEventHandlerScopeDeclarations = State.DeclarationFinder.FindFormEventHandlers();
+            var eventHandlerScopeDeclarations = State.DeclarationFinder.FindEventHandlers();
             var eventScopeDeclarations = eventMembers
                 .Concat(formEventHandlerScopeDeclarations)
                 .Concat(eventHandlerScopeDeclarations)
@@ -49,7 +73,6 @@ namespace Rubberduck.Inspections.Concrete
                 .AddRange(parameters.Where(parameter => CanBeChangedToBePassedByVal(parameter, eventScopeDeclarations, interfaceScopeDeclarations)));
 
             return parametersThatCanBeChangedToBePassedByVal
-                .Where(parameter => !IsIgnoringInspectionResultFor(parameter, AnnotationName))
                 .Select(parameter => new DeclarationInspectionResult(this, string.Format(InspectionResults.ParameterCanBeByValInspection, parameter.IdentifierName), parameter));
         }
 
@@ -71,8 +94,7 @@ namespace Rubberduck.Inspections.Concrete
                 && !IsParameterOfDeclaredLibraryFunction(parameter)
                 && (parameter.AsTypeDeclaration == null 
                     || (!parameter.AsTypeDeclaration.DeclarationType.HasFlag(DeclarationType.ClassModule)
-                        && parameter.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType 
-                        && parameter.AsTypeDeclaration.DeclarationType != DeclarationType.Enumeration))
+                        && parameter.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType))
                 && !parameter.References.Any(reference => reference.IsAssignment)
                 && !IsPotentiallyUsedAsByRefParameter(parameter);
             return canPossiblyBeChangedToBePassedByVal;
@@ -134,11 +156,8 @@ namespace Rubberduck.Inspections.Concrete
 
                 var parameterCanBeChangedToBeByVal = eventParameters.Select(parameter => parameter.IsByRef).ToList();
 
-                //todo: Find a better way to find the handlers.
                 var eventHandlers = State.DeclarationFinder
-                    .AllUserDeclarations
-                    .FindHandlersForEvent(memberDeclaration)
-                    .Select(s => s.Item2)
+                    .FindEventHandlers(memberDeclaration)
                     .ToList();
 
                 foreach (var eventHandler in eventHandlers.OfType<IParameterizedDeclaration>())

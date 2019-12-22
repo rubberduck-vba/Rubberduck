@@ -229,9 +229,6 @@ Jestliže může být parametr prázdný, ignorujte výsledek této inspekce; p�
   <data name="UnhandledOnErrorResumeNextInspection" xml:space="preserve">
     <value>Manipulace s chybami by měla být obnovena po použití 'On Error Resume Next'.</value>
   </data>
-  <data name="UnreachableCaseInspection" xml:space="preserve">
-    <value>Detekuje klauzule případů, které se nikdy nevykonají.</value>
-  </data>
   <data name="EmptyModuleInspection" xml:space="preserve">
     <value>Prázdné moduly a třídy buďto odkazují na dosud neimplementovanou funkcionalitu, nebo představují zbytečnou zátěž, která může poškodit udržovatelnost projektu.</value>
   </data>
@@ -264,9 +261,6 @@ Jestliže může být parametr prázdný, ignorujte výsledek této inspekce; p�
   </data>
   <data name="UndeclaredVariableInspection" xml:space="preserve">
     <value>Kód, ve kterém se nacházejí nedeklarované proměnné, a přitom je specifikována volba 'Option Explicit', nelze úspěšně zkompilovat. Nedeklarované proměnné jsou vždy typu Variant, datový typ, který způsobuje zbytečné nároky na výkon a paměť.</value>
-  </data>
-  <data name="ImplicitDefaultMemberAssignmentInspection" xml:space="preserve">
-    <value>Tato přiřazení na povrchu vypadají, že se snaží přiřadit objektovou proměnnou na proměnnou typu hodnota, avšak skutečnost je taková, že se snaží přiřadit implicitně výchozího člena objektu. Pro zvýšení čitelnosti zvažte explicitní referenci výchozího člena objektu.</value>
   </data>
   <data name="ObsoleteMemberUsageInspection" xml:space="preserve">
     <value>Tato metoda je označena jako '@Obsolete'. Neměla by být nadále používána, měla by existovat lepší alternativa.</value>
@@ -378,5 +372,65 @@ Jestliže může být parametr prázdný, ignorujte výsledek této inspekce; p�
   </data>
   <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
     <value>I když je tato "funkce" legální, je velmi špatně zdokumentována a dělá něco úplně jiného -- chybový stav je také vyčištěn a ještě k tomu je vypnuto jakékoli řešení chyb. Toto může být nejednoznačné, protože záporný řádek -1 může skončit jako cíl pro nadměrně složité zpracování chyb, které většinou potřebuje refaktorování procedury.</value>
+  </data>
+  <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
+    <value>Smyčky 'While...Wend' existují pro zpětnou kompatibilitu a byly nahrazeny zavedením bloků 'Do While...Loop', které podporují příkaz 'Exit Do'. Smyčky 'While...Wend' nelze ukončit jinak než splněním podmínky 'While'.</value>
+  </data>
+  <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
+    <value>Vykřičníková notace, formálně známá jako výraz přístupu ke slovníku, vypadá, že je silně zadaná. Ve skutečnosti je to však striktně zadaný přístup k parametrizovanému výchozímu členu objektu, na kterém je použit. Obzvláště zavádějící, pokud výchozí parametrizovaný člen není na samotném objektu a lze jej vyvolat pouze zavoláním výchozího člena bez parametrů.</value>
+  </data>
+  <data name="UseOfBangNotationInspection" xml:space="preserve">
+    <value>Vykřičníková notace, formálně známá jako výraz přístupu ke slovníku, vypadá, že je silně zadaná. Ve skutečnosti je to však striktně zadaný přístup k parametrizovanému výchozímu členu objektu, na kterém je použit.</value>
+  </data>
+  <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
+    <value>Vykřičníková notace, formálně známá jako výraz přístupu ke slovníku, vypadá, že je silně zadaná. Ve skutečnosti je to však striktně zadaný přístup k parametrizovanému výchozímu členu objektu, na kterém je použit. Obzvláště zavádějící, že není možné určit výchozího člena při kompilaci.</value>
+  </data>
+  <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Výchozí členský přístup skryje, který člen je skutečně volán. I když je zřejmé, že se některé volání provádí v případě, že je indexovaný výchozí členský přístup explicitní, což je obvykle lepší pro čitelnost.</value>
+  </data>
+  <data name="UnreachableCaseInspection" xml:space="preserve">
+    <value>Podmínka 'Case' se buď vždy vyhodnotí jako False, způsobí run-time chybu, nebo nakumulovaný efekt předchozích 'Case' výrazů představuje všechny možné hodnoty nebo nadmnožinu hodnot výrazu 'Case'. Důsledkem toho je, že se 'Case' blok nikdy nevykoná a je tedy "mrtvý kód", nebo je výraz 'Case' velmi náchylná k run-time chybě, která s velkou pravděpodobností nastane. Zvažte odstranění, změnu pořadí nebo úpravu výrazu 'Case'.</value>
+  </data>
+  <data name="SetAssignmentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>Kompilátor VBA nezpůsobí chybu, pokud je objekt přiřazen k proměnné s nekompatibilním deklarovaným typem objektu, tj. s typem, který není ani ten samý typ, supertyp ani subtyp. Téměř za všech okolností takové přirazení vede k chybě run-time, kterou je těžší detekovat a tento kód tedy indikuje chybu. Ve všech ostatních situacích lze kód změnit tak, aby používal pouze přiřazení mezi kompatibilními deklarovanými typy.</value>
+  </data>
+  <data name="EmptyMethodInspection" xml:space="preserve">
+    <value>Zdá se, že metody bez spustitelných příkazů mohou dělat něco, co ve skutečnosti nedělají, a proto způsobují neočekávaná chování.</value>
+  </data>
+  <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
+    <value>Modul třídy, který je používán jako interface pro konkrétní třídy, by měl být obecně zbaven všech implementací. Pokud je váš úmysl použít tento modul třídy jako konkrétní typ, můžete tento výsledek inspekce zvesela ignorovat.</value>
+  </data>
+  <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>Kompilátor VBA nezpůsobí chybu, pokud je objekt předán jako argument pro parametr s nekompatibilní deklarací typu objektu, tj. s typem objektu, který není ani ten samý typ, supertyp ani subtyp. Téměř za všech okolností předávání takového argumentu vede k run-time chybě, kterou je těžké detekovat a indikuje tedy chybu. Ve všech ostatních situacích lze kód změnit tak, aby předával pouze argumenty kompatibilních deklarovaných typů.</value>
+  </data>
+  <data name="ValueRequiredInspection" xml:space="preserve">
+    <value>Kompilátor VBA nezpůsobí chybu, pokud je objekt použit na místě, které vyžaduje typ 'hodnota' a deklarovaný typ objektu nemá vhodný výchozí člen. Toto vede téměř za všech okolností k run-time chybě 91 'Object or With block variable not set' nebo chybě 438 'Object doesn't support this property or method' v závislosti na tom, zda má má objekt hodnotu 'Nothing' nebo ne. Toto je těžké detekovat a indikuje to tedy chybu.</value>
+  </data>
+  <data name="ProcedureRequiredInspection" xml:space="preserve">
+    <value>Kompilátor VBA nezpůsobí chybu, pokud je proměnná objektu použita na místě, které vyžaduje proceduru a deklarovaný typ objektu nemá vhodný výchozí člen. Toto vede téměř za všech okolností k run-time chybě 91 'Object or With block variable not set' nebo chybě 438 'Object doesn't support this property or method' v závislosti na tom, zda má objekt hodnotu 'Nothing' nebo ne. Toto je těžké detekovat a indikuje to tedy chybu.</value>
+  </data>
+  <data name="DefaultMemberRequiredInspection" xml:space="preserve">
+    <value>Kompilátor VBA nezpůsobí chybu, pokud je vyžadováno výchozí indexované volání člena, ale deklarovaný typ objektu nemá vhodný výchozí člen. Toto vede téměř za všech okolností k run-time chybě 91 'Object or With block variable not set' nebo chybě 438 'Object doesn't support this property or method' v závislosti na tom, zda má objekt hodnotu 'Nothing' nebo ne. Toto je těžké detekovat a indikuje to tedy chybu.</value>
+  </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
+    <value>Použití objektu s výchozím členem v místě, které vyžaduje proceduru, vede k implicitnímu vyvolání výchozího člena. Toto je s největší pravděpodobností neúmyslné a negativně ovlivňuje čitelnost.</value>
+  </data>
+  <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Výchozí přístup člena skryje, který člen je skutečně volán. I když je zřejmé, že se některé volání provádí v případě, že je indexovaný výchozí přístup člena explicitní, je obvykle lepší pro čitelnost. To platí zejména případě, že přistupovaný výchozí člen není interface samotného objektu, ale musí být vyřešen prostřednictvím řetězce výchozích členských volání.</value>
+  </data>
+  <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Výchozí přístup člena skryje, který člen je skutečně volán. I když je zřejmé, že se některé volání provádí v případě, že je indexovaný výchozí přístup člena explicitní, je obvykle lepší pro čitelnost. To platí zejména v případě, kdy výchozí člen nemůže být určen při kompilaci. Dále, pokud by při run-time neexistoval vhodný výchozí člen, bude vyvolána chyba 438 'Object doesn't support this property ormethod'.</value>
+  </data>
+  <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Výchozí přístupy členů skryjí skutečně volaného člena. To je obzvláště zavádějící, pokud ve výrazu není žádný náznak, že je takové volání uskutečňováno. Toto může způsobit chyby, při kterých přejde bez povšimnutí, že bylo zapomenuto zavolat člena.</value>
+  </data>
+  <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Výchozí přístupy členů skryjí skutečně volaného člena. To je obzvláště zavádějící, pokud ve výrazu neexistuje žádný náznak, že je takové volání uskutečněno a konečný výchozí člen není součástí interface nebo samotného objektu. Zejména to může způsobit chyby, při kterých přejde bez povšimnutí, že bylo zapomenuto zavolat člena.</value>
+  </data>
+  <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Výchozí přístupy členů skryjí skutečně volaného člena. To je obzvláště zavádějící, pokud ve výrazu neexistuje žádný náznak, že je takové volání uskutečněno a pokud výchozí člen nemůže být určen z deklarovaného typu objektu. V důsledku toho mohou vzniknout chyby, při kterých přejde bez povšimnutí, že bylo zapomenuto zavolat člena a pokud se v průběhu run-time nevyskytne vhodný výchozí člen, objeví se chyba 438 'Object doesn't suport this property or method'.</value>
+  </data>
+  <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
+    <value>Kdykoli jsou obě strany přiřazení bez 'Set' typu Objekt, existuje přiřazení od výchozího člena RHS k druhému - LHS. I když by toto mohlo být úmyslné, v mnoha situacích to jen maskuje chybně zapomenuté klíčové slovo 'Set'. </value>
   </data>
 </root>

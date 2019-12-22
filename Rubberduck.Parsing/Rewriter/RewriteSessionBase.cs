@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NLog;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor;
@@ -9,7 +10,7 @@ using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Parsing.Rewriter
 {
-    public abstract class RewriteSessionBase : IRewriteSession
+    public abstract class RewriteSessionBase : IExecutableRewriteSession
     {
         protected readonly IDictionary<QualifiedModuleName, IExecutableModuleRewriter> CheckedOutModuleRewriters = new Dictionary<QualifiedModuleName, IExecutableModuleRewriter>();
         protected readonly IRewriterProvider RewriterProvider;
@@ -78,7 +79,7 @@ namespace Rubberduck.Parsing.Rewriter
         {
             if (!CheckedOutModuleRewriters.Any())
             {
-                return false;
+                return true;
             }
 
             //This is thread-safe because, once invalidated, there is no way back.

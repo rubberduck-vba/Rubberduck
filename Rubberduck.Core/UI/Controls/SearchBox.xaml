@@ -1,0 +1,72 @@
+﻿<UserControl x:Class="Rubberduck.UI.Controls.SearchBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:local="clr-namespace:Rubberduck.UI.Controls;assembly="
+             xmlns:ib="clr-namespace:Rubberduck.UI.Controls.Behavior;assembly="
+             xmlns:converters="clr-namespace:Rubberduck.UI.Converters;assembly="
+             mc:Ignorable="d" 
+             MinWidth="50" MinHeight="20"
+             Height="20"
+             Name="Root"
+             d:DesignHeight="20" d:DesignWidth="400"
+             d:DataContext="{d:DesignInstance local:SearchBox, IsDesignTimeCreatable=True}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="20" />
+        </Grid.ColumnDefinitions>
+        <TextBox Text="{Binding Path=Text, ElementName=Root, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 x:Name="ValueContainer" 
+                 Background="Transparent" 
+                 Panel.ZIndex="2" 
+                 VerticalContentAlignment="Center"
+                 Width="Auto"
+                 Grid.Row="0" Grid.Column="0">
+            <TextBox.InputBindings>
+                <KeyBinding Command="{Binding Path=ClearSearchCommand}" Key="Esc"/>
+            </TextBox.InputBindings>
+        </TextBox>
+        <!-- this is the actual hint container, it's BELOW the displaying control -->
+        <TextBox Text="{Binding Path=Hint, ElementName=Root, Mode=OneWay}" 
+                 Background="{Binding Path=Background, ElementName=Root}" 
+                 Width="{Binding Path=ActualWidth, ElementName=ValueContainer}"
+                 Height="{Binding Path=ActualHeight, ElementName=ValueContainer}"
+                 Panel.ZIndex="1" IsTabStop="False" IsReadOnly="True"
+                 VerticalContentAlignment="Center"
+                 Grid.Row="0" Grid.Column="0">
+            <TextBox.Style>
+                <Style TargetType="{x:Type TextBox}">
+                    <!-- Setter needs to be within this type to be overwritable with a trigger -->
+                    <Setter Property="Foreground" Value="Transparent" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=Text, Source={x:Reference ValueContainer}}" Value="">
+                            <Setter Property="Foreground" Value="{x:Static SystemColors.GrayTextBrush}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
+        <Button Name="SearchButton"  Grid.Column="1" Command="{Binding ClearSearchCommand}" 
+                BorderBrush="{x:Static SystemColors.ControlLightBrush}"
+                Background="Transparent"
+                Width="20" Height="20" Padding="0"
+                xmlns:sys="clr-namespace:System;assembly=mscorlib">
+            <Button.Resources>
+                <converters:SearchImageSourceConverter x:Key="SearchToIcon" />
+            </Button.Resources>
+            <Image VerticalAlignment="Center" HorizontalAlignment="Center"  
+                   Width="16" Height="16" 
+                   Source="{Binding Text, ElementName=ValueContainer, 
+                            Converter={StaticResource SearchToIcon}, 
+                            UpdateSourceTrigger=PropertyChanged}" />
+            <i:Interaction.Behaviors>
+                <local:FocusElementAfterClickBehavior FocusElement="{x:Reference ValueContainer}"/>
+                <ib:ResetValueBehavior Affects="{Binding Path=Text, ElementName=ValueContainer, Mode=OneWayToSource}"
+                                       Default="{x:Static sys:String.Empty}"/>
+            </i:Interaction.Behaviors>
+        </Button>
+    </Grid>
+</UserControl>

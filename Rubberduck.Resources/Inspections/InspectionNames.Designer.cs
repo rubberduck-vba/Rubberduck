@@ -70,6 +70,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Argument with incompatible object type.
+        /// </summary>
+        public static string ArgumentWithIncompatibleObjectTypeInspection {
+            get {
+                return ResourceManager.GetString("ArgumentWithIncompatibleObjectTypeInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ByVal parameter is assigned.
         /// </summary>
         public static string AssignedByValParameterInspection {
@@ -111,6 +120,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string ConstantNotUsedInspection {
             get {
                 return ResourceManager.GetString("ConstantNotUsedInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indexed default member access without default member.
+        /// </summary>
+        public static string DefaultMemberRequiredInspection {
+            get {
+                return ResourceManager.GetString("DefaultMemberRequiredInspection", resourceCulture);
             }
         }
         
@@ -192,6 +210,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string EmptyIfBlockInspection {
             get {
                 return ResourceManager.GetString("EmptyIfBlockInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Empty method.
+        /// </summary>
+        public static string EmptyMethodInspection {
+            get {
+                return ResourceManager.GetString("EmptyMethodInspection", resourceCulture);
             }
         }
         
@@ -286,6 +313,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Implemented member of interface class.
+        /// </summary>
+        public static string ImplementedInterfaceMemberInspection {
+            get {
+                return ResourceManager.GetString("ImplementedInterfaceMemberInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Implicit reference to ActiveSheet.
         /// </summary>
         public static string ImplicitActiveSheetReferenceInspection {
@@ -313,11 +349,11 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Implicit default member assignment.
+        ///   Looks up a localized string similar to Implicit default member access.
         /// </summary>
-        public static string ImplicitDefaultMemberAssignmentInspection {
+        public static string ImplicitDefaultMemberAccessInspection {
             get {
-                return ResourceManager.GetString("ImplicitDefaultMemberAssignmentInspection", resourceCulture);
+                return ResourceManager.GetString("ImplicitDefaultMemberAccessInspection", resourceCulture);
             }
         }
         
@@ -331,11 +367,56 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Implicit recursive default member access.
+        /// </summary>
+        public static string ImplicitRecursiveDefaultMemberAccessInspection {
+            get {
+                return ResourceManager.GetString("ImplicitRecursiveDefaultMemberAccessInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Implicit unbound default member access.
+        /// </summary>
+        public static string ImplicitUnboundDefaultMemberAccessInspection {
+            get {
+                return ResourceManager.GetString("ImplicitUnboundDefaultMemberAccessInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Member return type is implicitly &apos;Variant&apos;.
         /// </summary>
         public static string ImplicitVariantReturnTypeInspection {
             get {
                 return ResourceManager.GetString("ImplicitVariantReturnTypeInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indexed default member access.
+        /// </summary>
+        public static string IndexedDefaultMemberAccessInspection {
+            get {
+                return ResourceManager.GetString("IndexedDefaultMemberAccessInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indexed recursive default member access.
+        /// </summary>
+        public static string IndexedRecursiveDefaultMemberAccessInspection {
+            get {
+                return ResourceManager.GetString("IndexedRecursiveDefaultMemberAccessInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indexed unbound default member access.
+        /// </summary>
+        public static string IndexedUnboundDefaultMemberAccessInspection {
+            get {
+                return ResourceManager.GetString("IndexedUnboundDefaultMemberAccessInspection", resourceCulture);
             }
         }
         
@@ -520,6 +601,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Object used where a procedure is required.
+        /// </summary>
+        public static string ObjectWhereProcedureIsRequiredInspection {
+            get {
+                return ResourceManager.GetString("ObjectWhereProcedureIsRequiredInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use of &apos;CDecl&apos; calling convention on Windows.
         /// </summary>
         public static string ObsoleteCallingConventionInspection {
@@ -588,6 +678,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string ObsoleteTypeHintInspection {
             get {
                 return ResourceManager.GetString("ObsoleteTypeHintInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use of obsolete &apos;While...Wend&apos; statement.
+        /// </summary>
+        public static string ObsoleteWhileWendStatementInspection {
+            get {
+                return ResourceManager.GetString("ObsoleteWhileWendStatementInspection", resourceCulture);
             }
         }
         
@@ -673,6 +772,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Object without default member used where a procedure is required.
+        /// </summary>
+        public static string ProcedureRequiredInspection {
+            get {
+                return ResourceManager.GetString("ProcedureRequiredInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Redundant &apos;ByRef&apos; modifier.
         /// </summary>
         public static string RedundantByRefModifierInspection {
@@ -696,6 +804,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string SelfAssignedDeclarationInspection {
             get {
                 return ResourceManager.GetString("SelfAssignedDeclarationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set assignment with incompatible object type.
+        /// </summary>
+        public static string SetAssignmentWithIncompatibleObjectTypeInspection {
+            get {
+                return ResourceManager.GetString("SetAssignmentWithIncompatibleObjectTypeInspection", resourceCulture);
             }
         }
         
@@ -741,6 +858,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string StopKeywordInspection {
             get {
                 return ResourceManager.GetString("StopKeywordInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suspicious Let assignment.
+        /// </summary>
+        public static string SuspiciousLetAssignmentInspection {
+            get {
+                return ResourceManager.GetString("SuspiciousLetAssignmentInspection", resourceCulture);
             }
         }
         
@@ -804,6 +930,42 @@ namespace Rubberduck.Resources.Inspections {
         public static string UseMeaningfulNameInspection {
             get {
                 return ResourceManager.GetString("UseMeaningfulNameInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use of bang notation.
+        /// </summary>
+        public static string UseOfBangNotationInspection {
+            get {
+                return ResourceManager.GetString("UseOfBangNotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use of recursive bang notation.
+        /// </summary>
+        public static string UseOfRecursiveBangNotationInspection {
+            get {
+                return ResourceManager.GetString("UseOfRecursiveBangNotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use of unbound bang notation.
+        /// </summary>
+        public static string UseOfUnboundBangNotationInspection {
+            get {
+                return ResourceManager.GetString("UseOfUnboundBangNotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Object used where a value is required.
+        /// </summary>
+        public static string ValueRequiredInspection {
+            get {
+                return ResourceManager.GetString("ValueRequiredInspection", resourceCulture);
             }
         }
         

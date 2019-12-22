@@ -8,6 +8,31 @@ using Rubberduck.Resources.Inspections;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Warns about duplicated annotations.
+    /// </summary>
+    /// <why>
+    /// Rubberduck annotations should not be specified more than once for a given module, member, variable, or expression.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// '@Folder("Bar")
+    /// '@Folder("Foo")
+    ///
+    /// Public Sub DoSomething()
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// '@Folder("Foo.Bar")
+    ///
+    /// Public Sub DoSomething()
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class DuplicatedAnnotationInspection : InspectionBase
     {
         public DuplicatedAnnotationInspection(RubberduckParserState state) : base(state)
@@ -21,18 +46,15 @@ namespace Rubberduck.Inspections.Concrete
             foreach (var declaration in State.AllUserDeclarations)
             {
                 var duplicateAnnotations = declaration.Annotations
-                    .GroupBy(annotation => annotation.AnnotationType)
-                    .Where(group => !group.First().AllowMultiple && group.Count() > 1);
+                    .GroupBy(pta => pta.Annotation)
+                    .Where(group => !group.First().Annotation.AllowMultiple && group.Count() > 1);
 
                 issues.AddRange(duplicateAnnotations.Select(duplicate =>
                 {
                     var result = new DeclarationInspectionResult(
-                        this,
-                        string.Format(InspectionResults.DuplicatedAnnotationInspection, duplicate.Key.ToString()),
-                        declaration);
+                        this, string.Format(InspectionResults.DuplicatedAnnotationInspection, duplicate.Key.ToString()), declaration);
 
-                    result.Properties.AnnotationType = duplicate.Key;
-
+                    result.Properties.Annotation = duplicate.Key;
                     return result;
                 }));
             }

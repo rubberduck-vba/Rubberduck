@@ -1,28 +1,15 @@
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class FunctionReturnValueNotUsedInspectionTests
+    public class FunctionReturnValueNotUsedInspectionTests : InspectionTestsBase
     {
-        private IEnumerable<IInspectionResult> GetInspectionResults(string code)
-        {
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new FunctionReturnValueNotUsedInspection(state);
-                return inspection.GetInspectionResults(CancellationToken.None);
-            }
-        }
-
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
@@ -33,8 +20,7 @@ Public Function Foo() As Long
     Foo = 42
 End Function
 ";
-            var results = GetInspectionResults(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
@@ -51,8 +37,7 @@ Public Sub Bar()
     Call Foo(""Test"")
 End Sub
 ";
-            var results = GetInspectionResults(code);
-            Assert.AreEqual(1, results.Count());
+            Assert.AreEqual(1, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
@@ -69,8 +54,7 @@ Public Sub Bar()
     Foo ""Test""
 End Sub
 ";
-            var results = GetInspectionResults(code);
-            Assert.AreEqual(1, results.Count());
+            Assert.AreEqual(1, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
@@ -87,8 +71,7 @@ Public Sub Bar()
     Bar AddressOf Foo
 End Sub
 ";
-            var results = GetInspectionResults(code);
-            Assert.AreEqual(1, results.Count());
+            Assert.AreEqual(1, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
@@ -104,8 +87,7 @@ Public Sub Bar()
     Foo
 End Sub
 ";
-            var results = GetInspectionResults(code);
-            Assert.AreEqual(1, results.Count());
+            Assert.AreEqual(1, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
@@ -123,8 +105,7 @@ Public Sub Bar()
     Bar AddressOf Foo
 End Sub
 ";
-            var results = GetInspectionResults(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
@@ -141,8 +122,7 @@ Public Sub Baz()
     Foo Foo(Foo(""Bar""))
 End Sub
 ";
-            var results = GetInspectionResults(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
@@ -160,8 +140,7 @@ Public Sub Baz()
     End If
 End Sub
 ";
-            var results = GetInspectionResults(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
@@ -182,8 +161,7 @@ Public Sub Baz()
     Next Bar
 End Sub
 ";
-            var results = GetInspectionResults(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
@@ -204,8 +182,7 @@ Public Sub Baz()
     Wend
 End Sub
 ";
-            var results = GetInspectionResults(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
@@ -226,8 +203,7 @@ Public Sub Baz()
     Loop
 End Sub
 ";
-            var results = GetInspectionResults(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
@@ -244,8 +220,7 @@ Public Sub Baz()
     TestVal = Foo(""Test"")
 End Sub
 ";
-            var results = GetInspectionResults(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
@@ -262,8 +237,7 @@ Public Function Factorial(ByVal n As Long) As Long
     End If
 End Function
 ";
-            var results = GetInspectionResults(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
@@ -283,8 +257,7 @@ Public Sub Baz()
     Bar Foo(""Test"")
 End Sub
 ";
-            var results = GetInspectionResults(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
@@ -298,8 +271,7 @@ Public Sub Dummy()
     Workbooks.Add
 End Sub
 ";
-            var results = GetInspectionResults(code);
-            Assert.AreEqual(0, results.Count());
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
@@ -325,21 +297,14 @@ Public Sub Baz()
     result = testObj.Test
 End Sub
 ";
-            var builder = new MockVbeBuilder();
-            var vbe = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("IFoo", ComponentType.ClassModule, interfaceCode)
-                .AddComponent("Bar", ComponentType.ClassModule, implementationCode)
-                .AddComponent("TestModule", ComponentType.StandardModule, callSiteCode)
-                .AddProjectToVbeBuilder().Build();
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var modules = new (string, string, ComponentType)[] 
             {
+                ("IFoo", interfaceCode, ComponentType.ClassModule),
+                ("Bar", implementationCode, ComponentType.ClassModule),
+                ("TestModule", callSiteCode, ComponentType.StandardModule),
+            };
 
-                var inspection = new FunctionReturnValueNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
+            Assert.AreEqual(0, InspectionResultsForModules(modules).Count());
         }
 
 
@@ -355,19 +320,7 @@ End Function
 Public Sub Baz()
     GetIt(1).Select
 End Sub";
-            var builder = new MockVbeBuilder();
-            var vbe = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("TestModule", ComponentType.StandardModule, inputCode)
-                .AddProjectToVbeBuilder().Build();
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new FunctionReturnValueNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -392,21 +345,14 @@ Public Sub Baz()
     testObj.Test
 End Sub
 ";
-            var builder = new MockVbeBuilder();
-            var vbe = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("IFoo", ComponentType.ClassModule, interfaceCode)
-                .AddComponent("Bar", ComponentType.ClassModule, implementationCode)
-                .AddComponent("TestModule", ComponentType.StandardModule, callSiteCode)
-                .AddProjectToVbeBuilder().Build();
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var modules = new (string, string, ComponentType)[]
             {
+                ("IFoo", interfaceCode, ComponentType.ClassModule),
+                ("Bar", implementationCode, ComponentType.ClassModule),
+                ("TestModule", callSiteCode, ComponentType.StandardModule),
+            };
 
-                var inspection = new FunctionReturnValueNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForModules(modules).Count());
         }
 
         [Test]
@@ -414,10 +360,14 @@ End Sub
         [Category("Unused Value")]
         public void InspectionName()
         {
-            const string inspectionName = "FunctionReturnValueNotUsedInspection";
             var inspection = new FunctionReturnValueNotUsedInspection(null);
 
-            Assert.AreEqual(inspectionName, inspection.Name);
+            Assert.AreEqual(nameof(FunctionReturnValueNotUsedInspection), inspection.Name);
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new FunctionReturnValueNotUsedInspection(state);
         }
     }
 }

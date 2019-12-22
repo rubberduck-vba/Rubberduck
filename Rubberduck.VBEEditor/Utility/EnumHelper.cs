@@ -34,7 +34,7 @@ namespace Rubberduck.VBEditor.Utility
 
             return dictionary;
         }
-    }
+    } 
 
     public class ReflectionIgnoreAttribute : Attribute
     {

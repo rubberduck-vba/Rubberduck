@@ -10,7 +10,7 @@
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              mc:Ignorable="d" 
-             d:DesignWidth="500"
+             d:DesignWidth="700"
              d:DataContext="{d:DesignInstance {x:Type settings:InspectionSettingsViewModel}, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
         <converters:CodeInspectionSeverityEnumToTextConverter x:Key="CodeInspectionSeverityEnumToText" />
@@ -20,7 +20,7 @@
         <BitmapImage x:Key="AddImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/plus-circle.png" />
         <BitmapImage x:Key="DeleteImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-script.png" />
         <BitmapImage x:Key="FilterImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/Funnel.png" />
-        
+
         <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
             <GradientStop Color="#FFD9F4FF" Offset="0"/>
             <GradientStop Color="#FF9BDDFB" Offset="1"/>
@@ -31,7 +31,7 @@
         </LinearGradientBrush>
         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
         <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
-        
+
         <ObjectDataProvider x:Key="Severities"
                             MethodName="GetValues"
                             ObjectType="{x:Type core:Enum}">
@@ -256,10 +256,6 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-        <Style x:Key="HeaderBackground" TargetType="Label">
-            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-            <Setter Property="Background" Value="DarkGray"/>
-        </Style>
         <Style x:Key="HeaderText" TargetType="Label">
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
@@ -268,7 +264,7 @@
             <Setter Property="Background" Value="DarkGray"/>
             <Setter Property="CornerRadius" Value="5"/>
         </Style>
-        
+
         <Style TargetType="ScrollViewer">
             <Style.Setters>
                 <Setter Property="settings:ScrollViewerCorrector.FixScrolling" Value="True" />
@@ -279,22 +275,24 @@
         <ScrollViewer x:Name="ScrollViewer">
             <StackPanel Margin="5,5,5,0" ScrollViewer.VerticalScrollBarVisibility="Auto">
                 <Border Style="{StaticResource BorderHeader}"
-                       Margin="0,5,0,5">
+                       Margin="0,0,0,3" Height="36">
                     <DockPanel FlowDirection="LeftToRight">
                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
                             <Label Style="{StaticResource HeaderText}"
-                                Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionSettings_InspectionSeveritySettingsLabel}" />
+                                Content="{Resx Key=CodeInspectionSettings_InspectionSeveritySettingsLabel, ResxName=Rubberduck.Resources.RubberduckUI}" Margin="5,5,0,5" Width="127" />
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                                <Label Content="-"/>
-                                <Image Source="{StaticResource FilterImage}" />
-                                <Label Style="{StaticResource HeaderText}"
-                                       Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionSettings_FilterByDescription}" />
-                                <TextBox MinWidth="125"
-                                         Text="{Binding InspectionSettingsDescriptionFilter, UpdateSourceTrigger=PropertyChanged}"
-                                         HorizontalAlignment="Stretch" />
+                                <StackPanel.Resources>
+                                    <Style BasedOn="{StaticResource HeaderText}" TargetType="Label">
+                                        <Setter Property="Margin" Value="0,5" />
+                                    </Style>
+                                </StackPanel.Resources>
+                                <Label Content="-" />
+                                <Image Source="{StaticResource FilterImage}" Width="19" />
+                                <Label Content="{Resx Key=InspectionSettings_FilterByDescription, ResxName=Rubberduck.Resources.RubberduckUI}" />
+                                <controls:SearchBox Width="100"
+                                                    Text="{Binding InspectionSettingsDescriptionFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="26" />
                                 <Border Width="10" />
-                                <Label Style="{StaticResource HeaderText}"
-                                       Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionSettings_FilterBySeverity}" />
+                                <Label Content="{Resx Key=InspectionSettings_FilterBySeverity, ResxName=Rubberduck.Resources.RubberduckUI}" />
                                 <ComboBox Width="100"
                                           ItemsSource="{Binding SeverityFilters, UpdateSourceTrigger=PropertyChanged}"
                                           SelectedItem="{Binding SelectedSeverityFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />

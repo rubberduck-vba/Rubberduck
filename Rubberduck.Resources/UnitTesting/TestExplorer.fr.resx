@@ -252,10 +252,22 @@
   <data name="TestOutcome_RunSummaryFormat" xml:space="preserve">
     <value>{0} de {1} test(s) exécuté(s) (temps d'exécution: {2:g})</value>
   </data>
-  <data name="TestOutcome_SpectacularFail" xml:space="preserve">
-    <value>Échec Spectaculaire</value>
-  </data>
   <data name="TestOutcome_SummaryCaption" xml:space="preserve">
     <value>Sommaire:</value>
+  </data>
+  <data name="TestOutcome_DurationSecond" xml:space="preserve">
+    <value>s</value>
+  </data>
+  <data name="TestExplorer_Filter" xml:space="preserve">
+    <value>Nom du test</value>
+  </data>
+  <data name="TestExplorer_AllResults" xml:space="preserve">
+    <value>Tous</value>
+  </data>
+  <data name="TestExplorer_TestToggle_Ignore" xml:space="preserve">
+    <value>Ignorer le test</value>
+  </data>
+  <data name="TestExplorer_TestToggle_Unignore" xml:space="preserve">
+    <value>Réactiver le test</value>
   </data>
 </root>

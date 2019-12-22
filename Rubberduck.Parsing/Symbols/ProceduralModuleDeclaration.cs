@@ -1,6 +1,5 @@
 ﻿using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.ComReflection;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 
@@ -13,7 +12,7 @@ namespace Rubberduck.Parsing.Symbols
             Declaration projectDeclaration,
             string name,
             bool isUserDefined,
-            IEnumerable<IAnnotation> annotations,
+            IEnumerable<IParseTreeAnnotation> annotations,
             Attributes attributes)
             : base(
                   qualifiedName,
@@ -25,14 +24,17 @@ namespace Rubberduck.Parsing.Symbols
                   attributes)
         { }
 
-        public ProceduralModuleDeclaration(ComModule statics, Declaration parent, QualifiedModuleName module,
+        public ProceduralModuleDeclaration(
+            ComModule statics, 
+            Declaration parent, 
+            QualifiedModuleName module,
             Attributes attributes)
             : this(
                 module.QualifyMemberName(statics.Name),
                 parent,
                 statics.Name,
                 false,
-                new List<IAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 attributes)
         {
             IsPrivateModule = statics.IsRestricted;
@@ -45,7 +47,7 @@ namespace Rubberduck.Parsing.Symbols
                 parent,
                 $"_{pseudo.Name}",
                 false,
-                new List<IAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes()) { }
 
         public ProceduralModuleDeclaration(ComStruct pseudo, Declaration parent, QualifiedModuleName module)
@@ -54,7 +56,7 @@ namespace Rubberduck.Parsing.Symbols
                 parent,
                 $"_{pseudo.Name}",
                 false,
-                new List<IAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes()) { }
 
         public bool IsPrivateModule { get; internal set; }

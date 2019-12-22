@@ -7,7 +7,7 @@ namespace Rubberduck.UnitTesting
     {
         public Kill()
         {
-            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcKillFiles");
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeNativeApi.DllName, "rtcKillFiles");
 
             InjectDelegate(new KillDelegate(KillCallback), processAddress);
         }
@@ -22,7 +22,7 @@ namespace Rubberduck.UnitTesting
             TrackUsage("pathname", pathname);
             if (PassThrough)
             {
-                VbeProvider.VbeRuntime.KillFiles(pathname);
+                VbeProvider.VbeNativeApi.KillFiles(pathname);
             }
         }
     }

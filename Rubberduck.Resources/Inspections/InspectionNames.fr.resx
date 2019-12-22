@@ -228,9 +228,6 @@
   <data name="MissingAnnotationArgumentInspection" xml:space="preserve">
     <value>Paramètre d'annotation manquant</value>
   </data>
-  <data name="ImplicitDefaultMemberAssignmentInspection" xml:space="preserve">
-    <value>Assignation implicite au membre par défaut</value>
-  </data>
   <data name="ApplicationWorksheetFunctionInspection" xml:space="preserve">
     <value>Appel de fonction WorksheetFunction à liaison tardive.</value>
   </data>
@@ -349,7 +346,7 @@
     <value>Utilisation d'un membre marqué '@Obsolete'</value>
   </data>
   <data name="OnLocalErrorInspection" xml:space="preserve">
-    <value>Instruction 'On Local Error'</value>
+    <value>Instruction obsolète 'On Local Error'</value>
   </data>
   <data name="UnderscoreInPublicClassModuleMemberInspection" xml:space="preserve">
     <value>Caractère de soulignement dans le nom d'un membre d'un module de classe</value>
@@ -362,5 +359,62 @@
   </data>
   <data name="MissingModuleAnnotationInspection" xml:space="preserve">
     <value>Annotation manquante (module)</value>
+  </data>
+  <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
+    <value>Utilisation de l'instruction obsolète 'While...Wend'</value>
+  </data>
+  <data name="SetAssignmentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>Assignation 'Set' à un type d'objet incompatible</value>
+  </data>
+  <data name="EmptyMethodInspection" xml:space="preserve">
+    <value>Méthode vide</value>
+  </data>
+  <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
+    <value>Implémentation concrète d'un membre d'une interface abstraite</value>
+  </data>
+  <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>Argument d'un type incompatible avec le type d'objet attendu</value>
+  </data>
+  <data name="ValueRequiredInspection" xml:space="preserve">
+    <value>Une valeur est attendue, mais un objet est fourni</value>
+  </data>
+  <data name="ProcedureRequiredInspection" xml:space="preserve">
+    <value>Un appel de procédure est attendu, mais un objet sans membre par défaut est fourni</value>
+  </data>
+  <data name="DefaultMemberRequiredInspection" xml:space="preserve">
+    <value>Un appel indexé d'un membre par défaut est tenté sur un objet sans membre par défaut</value>
+  </data>
+  <data name="UseOfBangNotationInspection" xml:space="preserve">
+    <value>Utilisation de la notation "bang" (!)</value>
+  </data>
+  <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
+    <value>Utilisation récursive de la notation "bang" (!)</value>
+  </data>
+  <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
+    <value>Utilisation sans liaison de la notation "bang" (!)</value>
+  </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
+    <value>Un appel de procédure est attendu, mais un objet est fourni</value>
+  </data>
+  <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Appel indexé d'un membre par défaut</value>
+  </data>
+  <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Appel indexé récursif d'un membre par défaut</value>
+  </data>
+  <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Appel sans liaison d'un membre par défaut</value>
+  </data>
+  <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Appel implicite d'un membre par défaut</value>
+  </data>
+  <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Appel implicite récursif d'un membre par défaut</value>
+  </data>
+  <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Appel implicite et sans liaison d'un membre par défaut</value>
+  </data>
+  <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
+    <value>Assignation 'Let' suspecte</value>
   </data>
 </root>

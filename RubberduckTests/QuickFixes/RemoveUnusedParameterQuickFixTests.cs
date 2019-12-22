@@ -1,11 +1,15 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using NUnit.Framework;
 using Moq;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.Parsing.UIContext;
+using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
 
@@ -37,7 +41,14 @@ End Sub";
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
                 var selectionService = MockedSelectionService();
 
-                new RemoveUnusedParameterQuickFix(state, new Mock<IRefactoringPresenterFactory>().Object, rewritingManager, selectionService)
+                var factory = new Mock<IRefactoringPresenterFactory>().Object;
+                var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
+                var uiDispatcherMock = new Mock<IUiDispatcher>();
+                uiDispatcherMock
+                    .Setup(m => m.Invoke(It.IsAny<Action>()))
+                    .Callback((Action action) => action.Invoke());
+                var refactoring = new RemoveParametersRefactoring(state, factory, rewritingManager, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
+                new RemoveUnusedParameterQuickFix(refactoring)
                     .Fix(inspectionResults.First(), rewriteSession);
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }

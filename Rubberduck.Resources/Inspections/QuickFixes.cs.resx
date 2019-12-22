@@ -288,4 +288,13 @@
   <data name="ApplyQuickFixFailedCaption" xml:space="preserve">
     <value>Chyba Při Aplikování Rychlé Chyby</value>
   </data>
+  <data name="ReplaceWhileWendWithDoWhileLoopQuickFix" xml:space="preserve">
+    <value>Nahradit 'While...Wend' za 'Do While...Loop'</value>
+  </data>
+  <data name="ExpandBangNotationQuickFix" xml:space="preserve">
+    <value>Nahradit bang notaci explicitním přístupem</value>
+  </data>
+  <data name="ExpandDefaultMemberQuickFix" xml:space="preserve">
+    <value>Nastavit explicitního přístupu člena</value>
+  </data>
 </root>

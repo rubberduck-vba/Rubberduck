@@ -1,4 +1,5 @@
-﻿using Antlr4.Runtime;
+﻿using System;
+using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
@@ -14,7 +15,7 @@ namespace Rubberduck.Parsing.Binding
             _declarationFinder = declarationFinder;
         }
 
-        public IBoundExpression Resolve(Declaration module, Declaration parent, ParserRuleContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
+        public IBoundExpression Resolve(Declaration module, Declaration parent, IParseTree expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext, bool requiresLetCoercion = false, bool isLetAssignment = false)
         {
             IExpressionBinding bindingTree = BuildTree(module, parent, expression, withBlockVariable, statementContext);
             if (bindingTree != null)
@@ -24,26 +25,48 @@ namespace Rubberduck.Parsing.Binding
             return null;
         }
 
-        public IExpressionBinding BuildTree(Declaration module, Declaration parent, ParserRuleContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
+        public IExpressionBinding BuildTree(Declaration module, Declaration parent, IParseTree expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext, bool requiresLetCoercion = false, bool isLetAssignment = false)
         {
-            dynamic dynamicExpression = expression;
-            return Visit(module, parent, dynamicExpression);
-        }
-
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.ExpressionContext expression)
-        {
-            return Visit(module, parent, (dynamic)expression);
+            switch (expression)
+            {
+                case VBAParser.LExpressionContext lExpressionContext:
+                    return Visit(module, parent, lExpressionContext);
+                case VBAParser.ExpressionContext expressionContext:
+                    return Visit(module, parent, expressionContext);
+                case VBAParser.AddressOfExpressionContext addressOfExpressionContext:
+                    return Visit(module, parent, addressOfExpressionContext);
+                default:
+                    throw new NotSupportedException($"Unexpected context type {expression.GetType()}");
+            }
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.AddressOfExpressionContext expression)
         {
-            return Visit(module, parent, (dynamic)expression.expression());
+            return Visit(module, parent, expression.expression());
         }
 
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.LExprContext expression)
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.ExpressionContext expression)
         {
-            dynamic lexpr = expression.lExpression();
-            return Visit(module, parent, lexpr);
+            switch (expression)
+            {
+                case VBAParser.LExprContext lExprContext:
+                    return Visit(module, parent, lExprContext.lExpression());
+                default:
+                    throw new NotSupportedException($"Unexpected expression type {expression.GetType()}");
+            }
+        }
+
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.LExpressionContext expression)
+        {
+            switch (expression)
+            {
+                case VBAParser.SimpleNameExprContext simpleNameExprContext:
+                    return Visit(module, parent, simpleNameExprContext);
+                case VBAParser.MemberAccessExprContext memberAccessExprContext:
+                    return Visit(module, parent, memberAccessExprContext);
+                default:
+                    throw new NotSupportedException($"Unexpected lExpression type {expression.GetType()}");
+            }
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.SimpleNameExprContext expression)
@@ -53,7 +76,7 @@ namespace Rubberduck.Parsing.Binding
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.MemberAccessExprContext expression)
         {
-            dynamic lExpression = expression.lExpression();
+            var lExpression = expression.lExpression();
             var lExpressionBinding = Visit(module, parent, lExpression);
             return new MemberAccessProcedurePointerBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, expression.unrestrictedIdentifier(), lExpressionBinding);
         }

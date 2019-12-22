@@ -9,9 +9,30 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Locates legacy 'Error' statements.
+    /// </summary>
+    /// <why>
+    /// The legacy syntax is obsolete; prefer 'Err.Raise' instead.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Error 5 ' raises run-time error 5
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Err.Raise 5 ' raises run-time error 5
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class ObsoleteErrorSyntaxInspection : ParseTreeInspectionBase
     {
         public ObsoleteErrorSyntaxInspection(RubberduckParserState state)
@@ -24,7 +45,7 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            return Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line))
+            return Listener.Contexts
                 .Select(context => new QualifiedContextInspectionResult(this, InspectionResults.ObsoleteErrorSyntaxInspection, context));
         }
 

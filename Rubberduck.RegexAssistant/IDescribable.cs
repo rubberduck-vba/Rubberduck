@@ -2,6 +2,6 @@
 {
     public interface IDescribable
     {
-        string Description { get; }
+        string Description(bool spellOutWhiteSpace = false);
     }
 }

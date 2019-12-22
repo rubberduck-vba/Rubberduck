@@ -1,4 +1,9 @@
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Binding;
 using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA.Extensions;
@@ -118,5 +123,47 @@ namespace Rubberduck.Parsing.Symbols
         public bool IsImplicitByRef { get; }
         public bool IsParamArray { get; set; }
         public string DefaultValue { get; set; } = string.Empty;
+
+        private ConcurrentDictionary<ArgumentReference, int> _argumentReferences = new ConcurrentDictionary<ArgumentReference, int>();
+        public IEnumerable<ArgumentReference> ArgumentReferences => _argumentReferences.Keys;
+
+        public void AddArgumentReference(
+            QualifiedModuleName module,
+            Declaration scope,
+            Declaration parent,
+            Selection argumentSelection,
+            ParserRuleContext argumentContext,
+            VBAParser.ArgumentListContext argumentListContext,
+            ArgumentListArgumentType argumentType,
+            int argumentPosition,
+            string identifier,
+            IEnumerable<IParseTreeAnnotation> annotations)
+        {
+            var newReference = new ArgumentReference(
+                module,
+                scope,
+                parent,
+                identifier,
+                argumentSelection,
+                argumentContext,
+                argumentListContext,
+                argumentType,
+                argumentPosition,
+                this,
+                annotations);
+            _argumentReferences.AddOrUpdate(newReference, 1, (key, value) => 1);
+        }
+
+        public override void ClearReferences()
+        {
+            _argumentReferences = new ConcurrentDictionary<ArgumentReference, int>();
+            base.ClearReferences();
+        }
+
+        public override void RemoveReferencesFrom(IReadOnlyCollection<QualifiedModuleName> modulesByWhichToRemoveReferences)
+        {
+            _argumentReferences = new ConcurrentDictionary<ArgumentReference, int>(_argumentReferences.Where(reference => !modulesByWhichToRemoveReferences.Contains(reference.Key.QualifiedModuleName)));
+            base.RemoveReferencesFrom(modulesByWhichToRemoveReferences);
+        }
     }
 }

@@ -1,14 +1,13 @@
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Mocks;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.Inspections.Abstract;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class SelfAssignedDeclarationInspectionTests
+    public class SelfAssignedDeclarationInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
@@ -19,19 +18,7 @@ namespace RubberduckTests.Inspections
     Dim b As New Collection
 End Sub";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new SelfAssignedDeclarationInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -43,19 +30,7 @@ End Sub";
     Dim b As Collection
 End Sub";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new SelfAssignedDeclarationInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -68,29 +43,21 @@ End Sub";
     Dim b As New Collection
 End Sub";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new SelfAssignedDeclarationInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
         [Category("Inspections")]
         public void InspectionName()
         {
-            const string inspectionName = "SelfAssignedDeclarationInspection";
             var inspection = new SelfAssignedDeclarationInspection(null);
 
-            Assert.AreEqual(inspectionName, inspection.Name);
+            Assert.AreEqual(nameof(SelfAssignedDeclarationInspection), inspection.Name);
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new SelfAssignedDeclarationInspection(state);
         }
     }
 }

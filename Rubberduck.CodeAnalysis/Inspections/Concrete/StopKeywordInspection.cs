@@ -10,9 +10,34 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Locates 'Stop' instructions in user code.
+    /// </summary>
+    /// <why>
+    /// While a great debugging tool, 'Stop' instructions should not be reachable in production code; this inspection makes it easy to locate them all.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     ' ...
+    ///     Stop ' halts execution on-the-spot, bringing up the VBE; not very user-friendly!
+    ///     '....
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     ' ...
+    ///     'Stop ' the commented-out statement isn't executable. Could also be simply removed.
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class StopKeywordInspection : ParseTreeInspectionBase
     {
         public StopKeywordInspection(RubberduckParserState state)
@@ -24,7 +49,6 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts
-                .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
                 .Select(result => new QualifiedContextInspectionResult(this,
                                                        InspectionResults.StopKeywordInspection,
                                                        result));

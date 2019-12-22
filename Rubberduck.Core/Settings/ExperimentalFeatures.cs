@@ -1,10 +1,10 @@
 ﻿using System.Xml.Serialization;
 using Rubberduck.UI;
-using Rubberduck.Resources;
+using Rubberduck.Resources.Experimentals;
 
 namespace Rubberduck.Settings
 {
-    public class ExperimentalFeatures : ViewModelBase
+    public class ExperimentalFeature : ViewModelBase
     {
         private bool _isEnabled;
         public bool IsEnabled
@@ -30,7 +30,7 @@ namespace Rubberduck.Settings
         }
 
         [XmlIgnore]
-        public string DisplayValue => Key == null ? string.Empty : RubberduckUI.ResourceManager.GetString(Key);
+        public string DisplayValue => Key == null ? string.Empty : ExperimentalNames.ResourceManager.GetString(Key);
 
         public override string ToString()
         {
@@ -39,7 +39,7 @@ namespace Rubberduck.Settings
 
         public override bool Equals(object obj)
         {
-            return obj is ExperimentalFeatures value &&
+            return obj is ExperimentalFeature value &&
                    value.IsEnabled == IsEnabled &&
                    value.Key == Key;
         }

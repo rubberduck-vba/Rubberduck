@@ -11,11 +11,12 @@ using System.Diagnostics;
 namespace RubberduckTests.Grammar
 {
     [TestFixture]
+    [Category("Grammar")]
     public class VBAParserTests
     {
-        [Category("Parser")]
-        [Category("LineLabels")]
+        
         [Test]
+        [Category("LineLabels")]
         public void DoEventsKeywordDoesNotParseAsLineLabel()
         {
             var code = @"
@@ -28,9 +29,9 @@ End Sub
             AssertTree(result.Item1, result.Item2, "//subStmt");
         }
 
-        [Category("Parser")]
-        [Category("LineLabels")]
+        
         [Test]
+        [Category("LineLabels")]
         public void EndKeywordDoesNotParseAsLineLabel()
         {
             var code = @"
@@ -43,9 +44,9 @@ End Sub
             AssertTree(result.Item1, result.Item2, "//subStmt");
         }
 
-        [Category("Parser")]
-        [Category("LineLabels")]
+        
         [Test]
+        [Category("LineLabels")]
         public void CloseKeywordDoesNotParseAsLineLabel()
         {
             var code = @"
@@ -58,9 +59,9 @@ End Sub
             AssertTree(result.Item1, result.Item2, "//subStmt");
         }
 
-        [Category("Parser")]
-        [Category("LineLabels")]
+        
         [Test]
+        [Category("LineLabels")]
         public void DoKeywordDoesNotParseAsLineLabel()
         {
             var code = @"
@@ -74,9 +75,9 @@ End Sub
             AssertTree(result.Item1, result.Item2, "//subStmt");
         }
 
-        [Category("Parser")]
-        [Category("LineLabels")]
+        
         [Test]
+        [Category("LineLabels")]
         public void ElseKeywordDoesNotParseAsLineLabel()
         {
             var code = @"
@@ -92,9 +93,9 @@ End Sub
             AssertTree(result.Item1, result.Item2, "//subStmt");
         }
 
-        [Category("Parser")]
-        [Category("LineLabels")]
+        
         [Test]
+        [Category("LineLabels")]
         public void LoopKeywordDoesNotParseAsLineLabel()
         {
             var code = @"
@@ -109,7 +110,7 @@ End Sub
             AssertTree(result.Item1, result.Item2, "//subStmt");
         }
 
-        [Category("Parser")]
+        
         [Category("LineLabels")]
         [Test]
         public void NextKeywordDoesNotParseAsLineLabel()
@@ -126,9 +127,9 @@ End Sub
             AssertTree(result.Item1, result.Item2, "//subStmt");
         }
 
-        [Category("Parser")]
-        [Category("LineLabels")]
+        
         [Test]
+        [Category("LineLabels")]
         public void RandomizeKeywordDoesNotParseAsLineLabel()
         {
             var code = @"
@@ -141,9 +142,9 @@ End Sub
             AssertTree(result.Item1, result.Item2, "//subStmt");
         }
 
-        [Category("Parser")]
-        [Category("LineLabels")]
+        
         [Test]
+        [Category("LineLabels")]
         public void RemKeywordDoesNotParseAsLineLabel()
         {
             var code = @"
@@ -157,9 +158,9 @@ End Sub
             AssertTree(result.Item1, result.Item2, "//subStmt");
         }
 
-        [Category("Parser")]
-        [Category("LineLabels")]
+        
         [Test]
+        [Category("LineLabels")]
         public void ResumeKeywordDoesNotParseAsLineLabel()
         {
             var code = @"
@@ -173,9 +174,9 @@ End Sub
             AssertTree(result.Item1, result.Item2, "//subStmt");
         }
 
-        [Category("Parser")]
-        [Category("LineLabels")]
+        
         [Test]
+        [Category("LineLabels")]
         public void ReturnKeywordDoesNotParseAsLineLabel()
         {
             var code = @"
@@ -189,9 +190,9 @@ End Sub
             AssertTree(result.Item1, result.Item2, "//subStmt");
         }
 
-        [Category("Parser")]
-        [Category("LineLabels")]
+        
         [Test]
+        [Category("LineLabels")]
         public void StopKeywordDoesNotParseAsLineLabel()
         {
             var code = @"
@@ -205,9 +206,9 @@ End Sub
             AssertTree(result.Item1, result.Item2, "//subStmt");
         }
 
-        [Category("Parser")]
-        [Category("LineLabels")]
+        
         [Test]
+        [Category("LineLabels")]
         public void WendKeywordDoesNotParseAsLineLabel()
         {
             var code = @"
@@ -222,7 +223,7 @@ End Sub
             AssertTree(result.Item1, result.Item2, "//subStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParsesWithLineNumbers_EndSub()
         {
@@ -235,7 +236,7 @@ Sub DoSomething()
             AssertTree(result.Item1, result.Item2, "//subStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParsesWithLineNumbers_EndFunction()
         {
@@ -248,7 +249,7 @@ Function DoSomething()
             AssertTree(result.Item1, result.Item2, "//functionStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParsesWithLineNumbers_EndProperty()
         {
@@ -261,7 +262,7 @@ Property Get DoSomething()
             AssertTree(result.Item1, result.Item2, "//propertyGetStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParsesWithLineNumbers_IfStmt()
         {
@@ -275,7 +276,7 @@ End Sub
             AssertTree(result.Item1, result.Item2, "//singleLineIfStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParsesWithLineNumbers_ElseStmt()
         {
@@ -293,7 +294,7 @@ End Sub
             AssertTree(result.Item1, result.Item2, "//elseBlock");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParsesWithLineNumbers_SelectCaseStmt()
         {
@@ -312,7 +313,7 @@ End Sub
             AssertTree(result.Item1, result.Item2, "//caseClause", matches => matches.Count == 2);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParsesWithLineNumbers_ForNextLoop()
         {
@@ -328,7 +329,7 @@ End Sub
             AssertTree(result.Item1, result.Item2, "//forNextStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParsesWithLineNumbers_ForEachLoop()
         {
@@ -344,7 +345,7 @@ End Sub
             AssertTree(result.Item1, result.Item2, "//forEachStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParsesWithLineNumbers_DoLoop()
         {
@@ -360,7 +361,7 @@ End Sub
             AssertTree(result.Item1, result.Item2, "//doLoopStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParsesWithLineNumbers_WithBlock()
         {
@@ -376,7 +377,7 @@ End Sub
             AssertTree(result.Item1, result.Item2, "//withStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParsesWithLineNumbers_WhileLoop()
         {
@@ -392,7 +393,7 @@ End Sub
             AssertTree(result.Item1, result.Item2, "//whileWendStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestParsesEmptyForm()
         {
@@ -417,7 +418,7 @@ Attribute VB_Exposed = False
             AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestAttributeFirstLine()
         {
@@ -428,7 +429,7 @@ VERSION 5.00";
             AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestAttributeAfterModuleHeader()
         {
@@ -449,7 +450,7 @@ End
             AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestAttributeAfterModuleConfig()
         {
@@ -471,7 +472,7 @@ Private this As TProgressIndicator
         }
 
 
-        [Category("Parser")]
+        
         [Test]
         public void TestAttributeInsideModuleDeclarations()
         {
@@ -484,7 +485,7 @@ Public WithEvents colCBars2 As Office.CommandBars
             AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestAttributeAfterModuleDeclarations()
         {
@@ -499,7 +500,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestAttributeInsideProcedure()
         {
@@ -512,7 +513,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestAttributeEndOfFile()
         {
@@ -525,7 +526,7 @@ Attribute VB_Name = ""Form1""
             AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestAttributeNameIsMemberAccessExpr()
         {
@@ -536,7 +537,7 @@ Attribute view.VB_VarHelpID = -1
             AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestTrivialCase()
         {
@@ -545,7 +546,7 @@ Attribute view.VB_VarHelpID = -1
             AssertTree(parseResult.Item1, parseResult.Item2, "//module");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestEmptyModule()
         {
@@ -561,7 +562,7 @@ Attribute view.VB_VarHelpID = -1
             AssertTree(parseResult.Item1, parseResult.Item2, "//module");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestModuleHeader()
         {
@@ -570,7 +571,7 @@ Attribute view.VB_VarHelpID = -1
             AssertTree(parseResult.Item1, parseResult.Item2, "//moduleHeader");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestDefDirectiveSingleLetter()
         {
@@ -579,7 +580,7 @@ Attribute view.VB_VarHelpID = -1
             AssertTree(parseResult.Item1, parseResult.Item2, "//defDirective", matches => matches.Count == 13);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestDefDirectiveSameDefDirectiveMultipleLetterSpec()
         {
@@ -588,7 +589,7 @@ Attribute view.VB_VarHelpID = -1
             AssertTree(parseResult.Item1, parseResult.Item2, "//singleLetter", matches => matches.Count == 3);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestDefDirectiveLetterRange()
         {
@@ -597,7 +598,7 @@ Attribute view.VB_VarHelpID = -1
             AssertTree(parseResult.Item1, parseResult.Item2, "//letterRange", matches => matches.Count == 13);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestDefDirectiveUniversalLetterRange()
         {
@@ -606,7 +607,7 @@ Attribute view.VB_VarHelpID = -1
             AssertTree(parseResult.Item1, parseResult.Item2, "//universalLetterRange");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestModuleOption()
         {
@@ -620,7 +621,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//moduleOption");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestModuleOption_Indented()
         {
@@ -634,7 +635,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//moduleOption");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestModuleConfig()
         {
@@ -646,7 +647,7 @@ END";
             AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfigElement");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestVBFormModuleConfig()
         {
@@ -665,7 +666,7 @@ End
             AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfig", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestVBFormWithHexLiteralModuleConfig()
         {
@@ -685,7 +686,7 @@ End
             AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfig", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestVBFormWithAbsoluteResourcePathConfig()
         {
@@ -705,7 +706,7 @@ End
             AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfig", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestVBFormWithDnsUncResourcePathConfig()
         {
@@ -725,7 +726,7 @@ End
             AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfig", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestVBFormWithIPUncResourcePathConfig()
         {
@@ -745,7 +746,7 @@ End
             AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfig", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestVBFormWithDollarPrependedResourceModuleConfig()
         {
@@ -764,7 +765,7 @@ End
             AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfig", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestVBFormWithAlphaLeadingHexLiteralResourceOffsetModuleConfig()
         {
@@ -783,7 +784,7 @@ End
             AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfig", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestVBFormWithNumericLeadingHexLiteralResourceOffsetModuleConfig()
         {
@@ -802,7 +803,7 @@ End
             AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfig", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         [TestCase(@"^A")]
         [TestCase(@"^Z")]
@@ -844,7 +845,7 @@ End
         }
 
 
-        [Category("Parser")]
+        
         [Test]
         public void TestNestedVbFormModuleConfig()
         {
@@ -874,7 +875,7 @@ End
             AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfig", matches => matches.Count == 2);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestNestedVbFormModuleConfigWithObjectDeclarations()
         {
@@ -906,7 +907,7 @@ End
             AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfig", matches => matches.Count == 2);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestNestedVbFormModuleConfigWithMultipleChildren()
         {
@@ -950,7 +951,7 @@ End
             AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfig", matches => matches.Count == 3);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestNestedVbFormModuleConfigWithProperty()
         {
@@ -994,7 +995,95 @@ End
             AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfigProperty", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+
+        [Test]
+        public void GermanStyleFloatingPointsInFormsPart()
+        {
+            string code = @"
+Begin VB.Form Form1
+   Caption = ""Main""
+   ClientHeight = 2970
+   ClientLeft = 60
+   ClientTop = 450
+   ClientWidth = 8250
+   LinkTopic = ""Form1""
+   ScaleHeight = 2970
+   ScaleWidth = 8250
+   StartUpPosition = 2  'CenterScreen
+   Begin MSDataGridLib.DataGrid DataGrid1
+      Bindings = ""frmMain.frx"":0000
+      Height = 2055
+      Left = 2520
+      TabIndex = 0
+      Top = 120
+      Width = 5655
+      _ExtentX = 9975
+      _ExtentY = 3625
+      _Version = 393216
+      HeadLines = 1
+      RowHeight = 15
+      AllowAddNew = -1  'True
+      BeginProperty HeadFont {0BE35203-8F91-11CE-9DE3-00AA004BB851}
+            Name = ""MS Sans Serif""
+         Size = 8,25
+         Charset = 0
+         Weight = 400
+         Underline = 0   'False
+         Italic = 0   'False
+         Strikethrough = 0   'False
+      EndProperty
+   End
+End
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//germanStyleFloatingPointNumber", matches => matches.Count == 1);
+        }
+
+
+        [Test]
+        public void MixedStyleFloatingPointsInFormsPart()
+        {
+            string code = @"
+Begin VB.Form Form1
+   Caption = ""Main""
+   ClientHeight = 2970
+   ClientLeft = 60
+   ClientTop = 450
+   ClientWidth = 8250
+   LinkTopic = ""Form1""
+   ScaleHeight = 2970
+   ScaleWidth = 8250
+   StartUpPosition = 2  'CenterScreen
+   Begin MSDataGridLib.DataGrid DataGrid1
+      Bindings = ""frmMain.frx"":0000
+      Height = 2055
+      Left = 2520
+      TabIndex = 0
+      Top = 120
+      Width = 5655
+      _ExtentX = 9975
+      _ExtentY = 3625
+      _Version = 393216
+      HeadLines = 1
+      RowHeight = 15
+      AllowAddNew = -1  'True
+      BeginProperty HeadFont {0BE35203-8F91-11CE-9DE3-00AA004BB851}
+            Name = ""MS Sans Serif""
+         Size = 8,25
+         Charset = 0
+         Weight = 400.4
+         Underline = 0   'False
+         Italic = 0   'False
+         Strikethrough = 0   'False
+      EndProperty
+   End
+End
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//germanStyleFloatingPointNumber", matches => matches.Count == 1);
+        }
+
+
         [Test]
         public void TestNestedVbFormModuleConfigWithMultipleProperties()
         {
@@ -1048,7 +1137,7 @@ End
             AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfigProperty", matches => matches.Count == 2);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestNestedVbFormModuleConfigWithNestedProperties()
         {
@@ -1097,7 +1186,7 @@ End
             AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfigProperty", matches => matches.Count == 2);
         }
 		
-        [Category("Parser")]
+        
         [Test]
         public void TestNestedVbFormModuleConfigWithAnEmptyNestedProperty()
         {
@@ -1141,7 +1230,7 @@ Attribute VB_Exposed = False
             AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfigProperty", matches => matches.Count == 2);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestIndexedProperty()
         {
@@ -1159,7 +1248,7 @@ End
             AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfigProperty", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestEmptyComment()
         {
@@ -1168,7 +1257,7 @@ End
             AssertTree(parseResult.Item1, parseResult.Item2, "//comment");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestEmptyRemComment()
         {
@@ -1177,7 +1266,7 @@ End
             AssertTree(parseResult.Item1, parseResult.Item2, "//remComment");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestOneCharRemComment()
         {
@@ -1186,7 +1275,7 @@ End
             AssertTree(parseResult.Item1, parseResult.Item2, "//remComment");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestCommentThatLooksLikeAnnotation()
         {
@@ -1195,7 +1284,7 @@ End
             AssertTree(parseResult.Item1, parseResult.Item2, "//comment");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestForeignIdentifier()
         {
@@ -1215,7 +1304,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//identifier", matches => matches.Count == 11);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestOneCharComment()
         {
@@ -1224,7 +1313,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//comment");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestEndEnumMultipleWhiteSpace()
         {
@@ -1236,7 +1325,7 @@ End               Enum";
             AssertTree(parseResult.Item1, parseResult.Item2, "//enumerationStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestEndTypeMultipleWhiteSpace()
         {
@@ -1248,7 +1337,7 @@ End             Type";
             AssertTree(parseResult.Item1, parseResult.Item2, "//udtDeclaration");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestEndFunctionLineContinuation()
         {
@@ -1261,7 +1350,7 @@ Function";
             AssertTree(parseResult.Item1, parseResult.Item2, "//functionStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestExitFunctionLineContinuation()
         {
@@ -1274,7 +1363,7 @@ End Function";
             AssertTree(parseResult.Item1, parseResult.Item2, "//functionStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestEndSubroutineLineContinuation()
         {
@@ -1287,7 +1376,7 @@ Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//subStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestExitSubroutineLineContinuation()
         {
@@ -1300,7 +1389,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//subStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestPropertyGetLineContinuation()
         {
@@ -1312,7 +1401,7 @@ End Property";
             AssertTree(parseResult.Item1, parseResult.Item2, "//propertyGetStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestPropertyLetLineContinuation()
         {
@@ -1324,7 +1413,7 @@ End Property";
             AssertTree(parseResult.Item1, parseResult.Item2, "//propertyLetStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestPropertySetLineContinuation()
         {
@@ -1336,7 +1425,7 @@ End Property";
             AssertTree(parseResult.Item1, parseResult.Item2, "//propertySetStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestEndPropertyLineContinuation()
         {
@@ -1349,7 +1438,7 @@ Property";
             AssertTree(parseResult.Item1, parseResult.Item2, "//propertyGetStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestExitPropertyLineContinuation()
         {
@@ -1362,7 +1451,7 @@ End Property";
             AssertTree(parseResult.Item1, parseResult.Item2, "//propertyGetStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestEndIfLineContinuation()
         {
@@ -1376,7 +1465,7 @@ End Function";
             AssertTree(parseResult.Item1, parseResult.Item2, "//ifStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestEndSelectLineContinuation()
         {
@@ -1390,7 +1479,7 @@ End Property";
             AssertTree(parseResult.Item1, parseResult.Item2, "//selectCaseStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestEndWithContinuation()
         {
@@ -1404,7 +1493,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//withStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestExitDoContinuation()
         {
@@ -1419,7 +1508,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//doLoopStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestExitForContinuation()
         {
@@ -1434,7 +1523,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//forNextStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestLineInputLineContinuation()
         {
@@ -1447,7 +1536,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//lineInputStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestReadWriteKeywordLineContinuation()
         {
@@ -1460,7 +1549,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//openStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestLockReadKeywordLineContinuation()
         {
@@ -1473,7 +1562,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//openStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestLockWriteKeywordLineContinuation()
         {
@@ -1486,7 +1575,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//openStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestLockReadWriteKeywordLineContinuation()
         {
@@ -1500,7 +1589,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//openStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestOnErrorLineContinuation()
         {
@@ -1514,7 +1603,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//onErrorStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestOnLocalErrorLineContinuation()
         {
@@ -1529,7 +1618,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//onErrorStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestOptionBaseLineContinuation()
         {
@@ -1541,7 +1630,7 @@ Base _
             AssertTree(parseResult.Item1, parseResult.Item2, "//moduleOption");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestOptionExplicitLineContinuation()
         {
@@ -1552,7 +1641,7 @@ Explicit";
             AssertTree(parseResult.Item1, parseResult.Item2, "//moduleOption");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestOptionCompareLineContinuation()
         {
@@ -1564,7 +1653,7 @@ Text";
             AssertTree(parseResult.Item1, parseResult.Item2, "//moduleOption");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestOptionPrivateModuleLineContinuation()
         {
@@ -1576,7 +1665,7 @@ Module";
             AssertTree(parseResult.Item1, parseResult.Item2, "//moduleOption");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestDictionaryAccessExprLineContinuation()
         {
@@ -1590,7 +1679,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestWithDictionaryAccessExprLineContinuation()
         {
@@ -1605,7 +1694,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestLetStmtLineContinuation()
         {
@@ -1620,7 +1709,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//letStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestMemberAccessExprLineContinuation()
         {
@@ -1634,7 +1723,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestWithMemberAccessExprLineContinuation()
         {
@@ -1649,7 +1738,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestCallStmtLineContinuation()
         {
@@ -1663,7 +1752,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestDeclareLineContinuation()
         {
@@ -1675,7 +1764,7 @@ ByVal c As String, ByVal d As String, ByVal e As String, ByVal f As Long) As Lon
             AssertTree(parseResult.Item1, parseResult.Item2, "//declareStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestEraseStmt()
         {
@@ -1687,7 +1776,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//eraseStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestFixedLengthString()
         {
@@ -1699,7 +1788,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//fieldLength");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestDoLoopStatement()
         {
@@ -1712,7 +1801,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//doLoopStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestForNextStatement()
         {
@@ -1725,7 +1814,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//forNextStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestCombinedForNextStatement()
         {
@@ -1741,7 +1830,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//forNextStmt", matches => matches.Count == 2);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestCombinedForNextStatementWhithItermediateCode()
         {
@@ -1757,7 +1846,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//forNextStmt", matches => matches.Count == 2);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestCombinedForEachStatement()
         {
@@ -1776,7 +1865,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//forEachStmt", matches => matches.Count == 2);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestCombinedForEachStatementWhithItermediateCode()
         {
@@ -1794,7 +1883,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//forEachStmt", matches => matches.Count == 2);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestMixedCombinedForEachAndForNextStatement()
         {
@@ -1819,7 +1908,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//forNextStmt", matches => matches.Count == 3);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestMixedRegularAndCombinedForEachAndForNextStatement()
         {
@@ -1845,7 +1934,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//forNextStmt", matches => matches.Count == 4);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestLineLabelStatement()
         {
@@ -1869,7 +1958,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//statementLabelDefinition", matches => matches.Count == 10);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestLineLabelStatementWithCodeOnSameLine()
         {
@@ -1887,7 +1976,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//callStmt", matches => matches.Count == 7);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void NameStatement()
         {
@@ -1901,7 +1990,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//nameStmt", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ProcedureNamedName()
         {
@@ -1916,7 +2005,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//identifier", matches => matches.Count == 3);    // name, test, and name
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestAnnotations()
         {
@@ -1930,7 +2019,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//annotation", matches => matches.Count == 4);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestEmptyAnnotationsWithParentheses()
         {
@@ -1942,7 +2031,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//annotation");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void GivenIfElseBlock_ParsesElseBlockAsElseStatement()
         {
@@ -1959,7 +2048,7 @@ End Sub
             AssertTree(parser.Item1, parser.Item2, "//elseBlock", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestIfStmtSameLineElse()
         {
@@ -1974,7 +2063,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//elseIfBlock");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestSingleLineIfEmptyThenEmptyElse()
         {
@@ -1986,7 +2075,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestSingleLineIfEmptyThenEndOfStatement()
         {
@@ -1998,7 +2087,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestSingleLineIfMultipleThenNoElse()
         {
@@ -2010,7 +2099,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestSingleLineIfMultipleThenMultipleElse()
         {
@@ -2022,7 +2111,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestSingleLineIfEmptyThen()
         {
@@ -2034,7 +2123,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestSingleLineIfSingleThenEmptyElse()
         {
@@ -2046,7 +2135,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestSingleLineIfSingleEmptyThenEmptyElse()
         {
@@ -2080,7 +2169,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestSingleLineIfSingleEmptyMultiLineThenEmptyElse()
         {
@@ -2093,7 +2182,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestSingleLineIfSingleEmptyThenEmptyMultiLineElse()
         {
@@ -2106,7 +2195,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestSingleLineIfSingleEmptyThenElse()
         {
@@ -2119,7 +2208,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestSingleLineIfNestedEmptyThenEmptyElse()
         {
@@ -2131,7 +2220,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestSingleLineIfNestedThenEmptyElse()
         {
@@ -2143,7 +2232,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestSingleLineIfNestedEmptyThenElse()
         {
@@ -2155,7 +2244,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestSingleLineIfSingleEmptyMultiLineThenEmptyMultiLineElse()
         {
@@ -2169,7 +2258,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestSingleLineIfImplicitGoTo()
         {
@@ -2182,7 +2271,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//lineNumberLabel", matches => matches.Count == 2);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestSingleLineIfDoLoop()
         {
@@ -2194,7 +2283,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//doLoopStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestSingleLineIfWendLoop()
         {
@@ -2206,7 +2295,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//whileWendStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestSingleLineIfRealWorldExample1()
         {
@@ -2218,7 +2307,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestSingleLineIfRealWorldExample2()
         {
@@ -2232,7 +2321,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestSingleLineIfRealWorldExample3()
         {
@@ -2244,7 +2333,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt", matches => matches.Count == 2);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestSingleLineIfRealWorldExample4()
         {
@@ -2256,7 +2345,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt", matches => matches.Count == 2);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestEndStmt()
         {
@@ -2268,7 +2357,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//endStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestRedimStmtArray()
         {
@@ -2280,7 +2369,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//expression");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestRedimStmtLowerBoundsArgument()
         {
@@ -2292,7 +2381,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//lowerBoundArgumentExpression");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestRedimStmtUpperBoundsArgument()
         {
@@ -2304,7 +2393,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//upperBoundArgumentExpression");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestRedimStmtNormalArgument()
         {
@@ -2316,7 +2405,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestStringFunction()
         {
@@ -2328,7 +2417,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression");
         }
 
-        [Category("Parser")]
+
         [Test]
         public void TestArrayWithTypeSuffix()
         {
@@ -2346,7 +2435,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//typeHint", matches => matches.Count == 7);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestOpenStmt()
         {
@@ -2358,7 +2447,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//openStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestResetStmt()
         {
@@ -2370,7 +2459,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//resetStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestCloseStmt()
         {
@@ -2382,7 +2471,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//closeStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestSeekStmt()
         {
@@ -2394,7 +2483,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//seekStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestSeekFunction()
         {
@@ -2407,7 +2496,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestLockStmt()
         {
@@ -2419,7 +2508,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//lockStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestUnlockStmt()
         {
@@ -2431,7 +2520,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//unlockStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestLineInputStmt()
         {
@@ -2443,7 +2532,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//lineInputStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestWidthStmt()
         {
@@ -2455,7 +2544,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//widthStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestPrintStmt()
         {
@@ -2467,7 +2556,20 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//printStmt");
         }
 
-        [Category("Parser")]
+
+        [Test]
+        public void TestObjectPrintStmt()
+        {
+            string code = @"
+Sub Test()
+    Dim obj As Object
+    obj.Print ""Hello "";""World"", ""!"" ;
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//outputList");
+        }
+
+
         [Test]
         public void TestDebugPrintStmtNoArguments()
         {
@@ -2476,10 +2578,10 @@ Sub Test()
     Debug.Print
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt");
+            AssertTree(parseResult.Item1, parseResult.Item2, "//printMethod");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestDebugPrintStmtNormalArgumentSyntax()
         {
@@ -2488,10 +2590,10 @@ Sub Test()
     Debug.Print ""Anything""
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt/outputList");
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression/outputList");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestDebugPrintStmtOutputItemSemicolon()
         {
@@ -2500,10 +2602,10 @@ Sub Test()
     Debug.Print 1;
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt/outputList");
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression/outputList");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestDebugPrintStmtOutputItemComma()
         {
@@ -2512,10 +2614,10 @@ Sub Test()
     Debug.Print 1,
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt/outputList");
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression/outputList");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestDebugPrintRealWorldExample1()
         {
@@ -2529,10 +2631,10 @@ Sub Test()
     Next
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt", matches => matches.Count == 4);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//printMethod", matches => matches.Count == 4);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestDebugPrintRealWorldExample2()
         {
@@ -2544,10 +2646,10 @@ Sub Test()
     End If
 End Sub";
             var parseResult = Parse(code, PredictionMode.Sll);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt", matches => matches.Count == 2);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//printMethod", matches => matches.Count == 2);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestDebugPrintRealWorldExample3()
         {
@@ -2558,10 +2660,10 @@ Sub Test()
     Next i
 End Sub";
             var parseResult = Parse(code);
-            AssertTree(parseResult.Item1, parseResult.Item2, "//debugPrintStmt", matches => matches.Count == 1);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//printMethod", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestWriteStmt()
         {
@@ -2573,7 +2675,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//writeStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestInputStmt()
         {
@@ -2585,7 +2687,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//inputStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestInputFunction()
         {
@@ -2598,7 +2700,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestInputBFunction()
         {
@@ -2611,7 +2713,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//lExpression");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestCircleSpecialForm()
         {
@@ -2623,7 +2725,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//circleSpecialForm");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestCircleSpecialForm_WithoutStep()
         {
@@ -2635,7 +2737,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//circleSpecialForm");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestCircleSpecialForm_WithoutOptionalArguments()
         {
@@ -2647,7 +2749,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//circleSpecialForm");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestLineAccessReport()
         {
@@ -2659,7 +2761,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//lineSpecialForm");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestLineAccessReport_WithoutOptionalArguments()
         {
@@ -2671,7 +2773,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//lineSpecialForm");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestLineAccessReport_WithoutStartingTuple()
         {
@@ -2683,7 +2785,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//lineSpecialForm");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestLineAccessReport_WithoutStep()
         {
@@ -2695,7 +2797,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//lineSpecialForm");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestScaleSpecialForm()
         {
@@ -2707,7 +2809,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//scaleSpecialForm");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestPSetVBForm_WithoutStep()
         {
@@ -2719,7 +2821,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//pSetSpecialForm");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestPSetVBForm_WithoutOptionalArguments()
         {
@@ -2731,7 +2833,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//pSetSpecialForm");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestPSetSpecialForm()
         {
@@ -2743,7 +2845,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//pSetSpecialForm");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestPSetSpecialForm_WithoutStep()
         {
@@ -2755,7 +2857,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//pSetSpecialForm");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestPSetSpecialForm_WithoutOptionalArguments()
         {
@@ -2767,7 +2869,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//pSetSpecialForm");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestPtrSafeAsSub()
         {
@@ -2779,7 +2881,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//subStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestFunction_Indented()
         {
@@ -2791,7 +2893,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//functionStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestSub_Indented()
         {
@@ -2802,7 +2904,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//subStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestSub_InconsistentlyIndented()
         {
@@ -2813,7 +2915,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//subStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestPtrSafeAsVariable()
         {
@@ -2827,7 +2929,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//variableStmt");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestLiteralExpressionResolvesCorrectly()
         {
@@ -2839,7 +2941,7 @@ End Sub";
             AssertTree(parseResult.Item1, parseResult.Item2, "//literalExpression");
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestUdtReservedKeywords()
         {
@@ -2864,7 +2966,7 @@ End Type
             AssertTree(parseResult.Item1, parseResult.Item2, "//udtMember", matches => matches.Count == 13);
         }
         
-        [Category("Parser")]
+        
         [Test]
         public void TestNestedParensForLiteralExpression()
         {
@@ -2878,7 +2980,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//literalExpression", matches => matches.Count == 2);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestParensForByValSingleArg()
         {
@@ -2891,7 +2993,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestParensForByValFirstArg()
         {
@@ -2904,7 +3006,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 2);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestDefaultMemberAccessCallStmtOnFunctionReturnValue_Single()
         {
@@ -2919,7 +3021,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//argumentList", matches => matches.Count == 2);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestDefaultMemberAccessCallStmtOnFunctionReturnValue_Multiple()
         {
@@ -2934,7 +3036,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//argumentList", matches => matches.Count == 2);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestFunctionArgumentsOnContinuedLine_Multiple()
         {
@@ -2950,7 +3052,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 2);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestFunctionArgumentsOnContinuedLine_Single()
         {
@@ -2966,7 +3068,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestDefaultMemberAccessCallStmtOnFunctionReturnValue_FunctionArgumentsOnContinuedLine_Single()
         {
@@ -2982,7 +3084,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//argumentList", matches => matches.Count == 2);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestDefaultMemberAccessCallStmtOnFunctionReturnValue_FunctionArgumentsOnContinuedLine_Multiple()
         {
@@ -2998,7 +3100,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//argumentList", matches => matches.Count == 2);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParserDoesNotFailOnUnderscoreComment()
         {
@@ -3013,7 +3115,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//ifStmt", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParserDoesNotFailOnUnderscoreAfterNonBreakingSpaceInComment()
         {
@@ -3028,7 +3130,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//ifStmt", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParserDoesNotFailOnStartOfLineUnderscoreInLineContinuedComment()
         {
@@ -3044,7 +3146,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//ifStmt", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParserDoesNotFailOnLineContinuedMemberAccessExpressionInType1()
         {
@@ -3059,7 +3161,7 @@ End Sub
             var parseResult = Parse(code);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParserDoesNotFailOnLineContinuedMemberAccessExpressionInType2()
         {
@@ -3073,7 +3175,7 @@ End Sub
             var parseResult = Parse(code);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParserDoesNotFailOnLineContinuedMemberAccessExpressionOnObject1()
         {
@@ -3088,7 +3190,7 @@ End Sub
             var parseResult = Parse(code);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParserDoesNotFailOnLineContinuedMemberAccessExpressionOnObject2()
         {
@@ -3104,7 +3206,7 @@ End Sub
             var parseResult = Parse(code);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParserDoesNotFailOnLineContinuedMemberAccessExpressionOnObject3()
         {
@@ -3120,7 +3222,7 @@ End Sub
             var parseResult = Parse(code);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParserDoesNotFailDoubleBracketForgeignIdentifierWithTypeHint()
         {
@@ -3135,7 +3237,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//typeHint", matches => matches.Count == 2);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParserDoesNotFailOnBangOperatorFollowedByForeignIdentifier()
         {
@@ -3151,7 +3253,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//typeHint", matches => matches.Count == 0);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParserDoesNotFailOnBangOperator()
         {
@@ -3167,9 +3269,9 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//typeHint", matches => matches.Count == 0);
         }
 
-        [Category("Parser")]
+        
         [Test]
-        [Ignore("This cannot work with the current setup of identifiers bacause the SLL parser confuses the bang for a type hint.")]
+        [Ignore("This cannot work with the current setup of identifiers because the SLL parser confuses the bang for a type hint.")]
         public void ParserDoesNotFailOnBangOperatorOnForeignIdentifier()
         {
             const string code = @"
@@ -3182,7 +3284,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//typeHint", matches => matches.Count == 0);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParserDoesNotFailOnStackedBangOperator()
         {
@@ -3198,9 +3300,9 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//typeHint", matches => matches.Count == 0);
         }
 
-        [Category("Parser")]
+        
         [Test]
-        [Ignore("This cannot work with the current setup of identifiers bacause the SLL parser confuses the bang for a type hint.")]
+        [Ignore("This cannot work with the current setup of identifiers because the SLL parser confuses the bang for a type hint.")]
         public void ParserDoesNotFailOnStackedBangOperator_ForeignIdentifier()
         {
             const string code = @"
@@ -3215,7 +3317,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//typeHint", matches => matches.Count == 0);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParserDoesNotFailOnLineContinuedBangOperator1()
         {
@@ -3232,7 +3334,7 @@ End Sub
             var parseResult = Parse(code);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParserDoesNotFailOnLineContinuedBangOperator2()
         {
@@ -3250,7 +3352,7 @@ End Sub
             var parseResult = Parse(code);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParserDoesNotFailOnLineContinuedBangOperator3()
         {
@@ -3266,7 +3368,7 @@ End Sub
             var parseResult = Parse(code);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParserDoesNotFailOnLineContinuedTypeDeclaration()
         {
@@ -3279,7 +3381,7 @@ End Sub
             var parseResult = Parse(code);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParserDoesNotFailOnIdentifierEndingInUnderscore()
         {
@@ -3293,7 +3395,7 @@ End Sub
             var parseResult = Parse(code);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParserDoesNotFailOnLineNumberNotOnStartOfLineAfterALineContinuation()
         {
@@ -3309,7 +3411,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//standaloneLineNumberLabel", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParserDoesNotFailOnLineLAbelNotOnStartOfLineAfterALineContinuation()
         {
@@ -3323,7 +3425,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//identifierStatementLabel", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParserDoesNotFailOnLinecontinuedLabel()
         {
@@ -3337,7 +3439,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//identifierStatementLabel", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParserDoesNotFailOnLineNumberAndLineContinuedLabelNotOnStartOfLineAfterALineContinuation()
         {
@@ -3355,7 +3457,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//identifierStatementLabel", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParserDoesNotFailOnLineNumberAndLineContinuedLabelNotOnStartOfLineAfterMultipleLineContinuation()
         {
@@ -3377,7 +3479,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//identifierStatementLabel", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void LeftOutOptionalArgumentsAreCountedAsMissingArguments()
         {
@@ -3396,7 +3498,7 @@ End Function
             AssertTree(parseResult.Item1, parseResult.Item2, "//argumentList", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestReDimWithLineContinuation()
         {
@@ -3412,7 +3514,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 2);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestCaseIsEqExpressionWithLiteral()
         {
@@ -3428,7 +3530,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//rangeClause", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestCaseIsEqExpressionWithEnum()
         {
@@ -3444,7 +3546,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//rangeClause", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestRaiseEventByValParameter()
         {
@@ -3461,7 +3563,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//raiseEventStmt", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestRaiseEvent()
         {
@@ -3477,7 +3579,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//raiseEventStmt", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestAttributeAfterSub()
         {
@@ -3492,7 +3594,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestAttributeAfterFunction()
         {
@@ -3507,7 +3609,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestAttributeAfterPropertyGet()
         {
@@ -3522,7 +3624,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestAttributeAfterPropertyLet()
         {
@@ -3537,7 +3639,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void TestAttributeAfterPropertySet()
         {
@@ -3552,7 +3654,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//attributeStmt", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void SubtractionExpressionsAreNoLetterRanges()
         {
@@ -3572,7 +3674,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//universalLetterRange", matches => matches.Count == 0);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void SLLParserDoesNotThrowForArrayDefinitionInModuleWithMultipleSpacesInFromtOfAsType()
         {
@@ -3584,7 +3686,7 @@ Dim Foo1(0 To 3)       As Long
             AssertTree(parseResult.Item1, parseResult.Item2, "//variableSubStmt", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void SLLParserDoesNotThrowForArrayDefinitionInSubWithMultipleSpacesInFromtOfAsType()
         {
@@ -3597,7 +3699,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//variableSubStmt", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void UserDefinedType_TreatsFinalCommentAsComment()
         {
@@ -3614,7 +3716,7 @@ End Type
             AssertTree(parseResult.Item1, parseResult.Item2, "//commentOrAnnotation", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void MidStatement()
         {
@@ -3629,7 +3731,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//midStatement", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void MidDollarStatement()
         {
@@ -3644,6 +3746,8 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//midStatement", matches => matches.Count == 1);
         }
 
+        [Test]
+        
         public void MidBStatement()
         {
             const string code = @"
@@ -3657,7 +3761,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//midStatement", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void MidBDollarStatement()
         {
@@ -3672,7 +3776,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//midStatement", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void MidFunction()
         {
@@ -3689,7 +3793,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//midStatement", matches => matches.Count == 0);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void MidDollarFunction()
         {
@@ -3706,7 +3810,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//midStatement", matches => matches.Count == 0);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void MidBFunction()
         {
@@ -3723,7 +3827,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//midStatement", matches => matches.Count == 0);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void MidBDollarFunction()
         {
@@ -3740,7 +3844,7 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//midStatement", matches => matches.Count == 0);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParserAcceptsScaleMemberInUDT()
         {
@@ -3753,7 +3857,7 @@ End Type
             AssertTree(parseResult.Item1, parseResult.Item2, "//unrestrictedIdentifier", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+        
         [Test]
         public void ParserAcceptsCircleMemberInUDT()
         {
@@ -3766,7 +3870,7 @@ End Type
             AssertTree(parseResult.Item1, parseResult.Item2, "//unrestrictedIdentifier", matches => matches.Count == 1);
         }
 
-        [Category("Parser")]
+
         [Test]
         public void ParserAcceptsPSetMemberInUDT()
         {
@@ -3779,9 +3883,30 @@ End Type
             AssertTree(parseResult.Item1, parseResult.Item2, "//unrestrictedIdentifier", matches => matches.Count == 1);
         }
 
+        // Adapted from opened issue https://github.com/rubberduck-vba/Rubberduck/issues/4875
+        [Test]
+        [TestCase("form.Line (0, 0)-(12, 12), RGB(255, 255, 0), B")]
+        [TestCase("form.Line (0, 0)-(12, 12), , BF")]
+        [TestCase("form.Line (0, 0)-(12, 12), RGB(255, 255, 0)")]
+        [TestCase("form.Line (0, 0)-(12, 12)")]
+        [TestCase("form.Line -(12,12)")]
+        [TestCase(@"form.Line _
+            (0, 0)-(12, 12), RGB(0, 0, 255)")]
+        [TestCase(@"form.Line (0, 0)- _
+            (12, 12)")]
+        [TestCase(@"form.Line (0, 0) _
+            -(12, 12)")]
+        [TestCase(@"form.Line (0, 0)-(12, 12), _
+            , BF")]
+        public void LineSpecialForm_WithLineContinuations(string validLineSpecialForm)
+        {
+            string code = $"Sub Whatever()\r\n{validLineSpecialForm}\r\nEnd Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lineSpecialForm", matches => matches.Count == 1);
+        }
         
         [Test]
-        [Category("Parser")]
+        
         [TestCase("Private WithEvents foo As EventSource, WithEvents bar As EventSource", 2)]
         [TestCase("Private WithEvents foo As EventSource, bar As EventSource", 2)]
         [TestCase("Private foo As EventSource, WithEvents bar As EventSource", 2)]

@@ -3,8 +3,11 @@
   <PropertyGroup>
     <Title>Rubberduck.RegexAssistant</Title>
     <Product>Rubberduck.RegexAssistant</Product>
-    <Copyright>Copyright © 2016-2018</Copyright>
+    <Copyright>Copyright © 2016-2019</Copyright>
     <ProjectGuid>{40CC03E3-756C-4674-AF07-384115DEAEE2}</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;1591;4011;1001;7035;1053</NoWarn>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
 
@@ -24,5 +27,18 @@
     <PackageReference Include="System.ValueTuple">
       <Version>4.5.0</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="i18n\AssistantResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AssistantResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="i18n\AssistantResources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AssistantResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

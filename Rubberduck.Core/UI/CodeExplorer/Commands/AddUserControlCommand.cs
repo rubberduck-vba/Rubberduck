@@ -1,12 +1,15 @@
 using System.Collections.Generic;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
     public class AddUserControlCommand : AddComponentCommandBase
     {
-        public AddUserControlCommand(IVBE vbe) : base(vbe) { }
+        public AddUserControlCommand(
+            ICodeExplorerAddComponentService addComponentService, IVbeEvents vbeEvents) 
+            : base(addComponentService, vbeEvents)
+        { }
 
         public override IEnumerable<ProjectType> AllowableProjectTypes => ProjectTypes.VB6;
 

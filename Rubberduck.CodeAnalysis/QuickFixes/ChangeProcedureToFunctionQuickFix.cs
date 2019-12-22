@@ -23,7 +23,7 @@ namespace Rubberduck.Inspections.QuickFixes
             var argIndex = parameterizedDeclaration.Parameters.ToList().IndexOf(arg);
             
             UpdateSignature(result.Target, arg, rewriteSession);
-            foreach (var reference in result.Target.References)
+            foreach (var reference in result.Target.References.Where(reference => !reference.IsDefaultMemberAccess))
             {
                 UpdateCall(reference, argIndex, rewriteSession);
             }

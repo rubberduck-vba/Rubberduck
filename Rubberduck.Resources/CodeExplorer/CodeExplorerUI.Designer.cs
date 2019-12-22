@@ -129,6 +129,15 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Existing files....
+        /// </summary>
+        public static string CodeExplorer_AddExistingFileText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_AddExistingFileText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to UserForm (.frm).
         /// </summary>
         public static string CodeExplorer_AddFormText {
@@ -147,7 +156,7 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add Module.
+        ///   Looks up a localized string similar to Add.
         /// </summary>
         public static string CodeExplorer_AddModule {
             get {
@@ -228,7 +237,16 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Collapse node and all child nodes.
+        ///   Looks up a localized string similar to Rubberduck User Declarations - {0}.
+        /// </summary>
+        public static string CodeExplorer_AppendHeader {
+            get {
+                return ResourceManager.GetString("CodeExplorer_AppendHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Collapse all.
         /// </summary>
         public static string CodeExplorer_CollapseSubnodesToolTip {
             get {
@@ -242,6 +260,15 @@ namespace Rubberduck.Resources.CodeExplorer {
         public static string CodeExplorer_CopyToolTip {
             get {
                 return ResourceManager.GetString("CodeExplorer_CopyToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string CodeExplorer_Delete {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Delete", resourceCulture);
             }
         }
         
@@ -273,7 +300,16 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expand node and all child nodes.
+        ///   Looks up a localized string similar to Exclude from project.
+        /// </summary>
+        public static string CodeExplorer_Exclude {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Exclude", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expand all.
         /// </summary>
         public static string CodeExplorer_ExpandSubnodesToolTip {
             get {
@@ -296,6 +332,15 @@ namespace Rubberduck.Resources.CodeExplorer {
         public static string CodeExplorer_ExportAll {
             get {
                 return ResourceManager.GetString("CodeExplorer_ExportAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extract Interface.
+        /// </summary>
+        public static string CodeExplorer_ExtractInterfaceText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_ExtractInterfaceText", resourceCulture);
             }
         }
         
@@ -579,12 +624,52 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Confirm Delete.
+        /// </summary>
+        public static string ConfirmBeforeDelete_Caption {
+            get {
+                return ResourceManager.GetString("ConfirmBeforeDelete_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} will be permanently deleted.
+        ///    
+        ///Continue?.
+        /// </summary>
+        public static string ConfirmBeforeDelete_Prompt {
+            get {
+                return ResourceManager.GetString("ConfirmBeforeDelete_Prompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap cross_circle {
             get {
                 object obj = ResourceManager.GetObject("cross_circle", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete Failed.
+        /// </summary>
+        public static string DeleteFailed_Caption {
+            get {
+                return ResourceManager.GetString("DeleteFailed_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The following files could not be deleted:
+        ///    
+        ///{0}.
+        /// </summary>
+        public static string DeleteFailed_Message {
+            get {
+                return ResourceManager.GetString("DeleteFailed_Message", resourceCulture);
             }
         }
         
@@ -945,12 +1030,30 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Replace Contents from Files....
+        /// </summary>
+        public static string ReplaceFromFiles {
+            get {
+                return ResourceManager.GetString("ReplaceFromFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap status_offline {
             get {
                 object obj = ResourceManager.GetObject("status_offline", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sync Project.
+        /// </summary>
+        public static string SyncProject {
+            get {
+                return ResourceManager.GetString("SyncProject", resourceCulture);
             }
         }
         
@@ -971,6 +1074,15 @@ namespace Rubberduck.Resources.CodeExplorer {
             get {
                 object obj = ResourceManager.GetObject("ui_tab_content", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Components from Files....
+        /// </summary>
+        public static string UpdateFromFiles {
+            get {
+                return ResourceManager.GetString("UpdateFromFiles", resourceCulture);
             }
         }
     }

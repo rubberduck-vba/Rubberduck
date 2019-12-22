@@ -9,9 +9,32 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Locates explicit 'Let' assignments.
+    /// </summary>
+    /// <why>
+    /// The legacy syntax is obsolete/redundant; prefer implicit Let-coercion instead.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim foo As Long
+    ///     Let foo = 42 ' explicit Let is redundant
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim foo As Long
+    ///     foo = 42 ' [Let] is implicit
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class ObsoleteLetStatementInspection : ParseTreeInspectionBase
     {
         public ObsoleteLetStatementInspection(RubberduckParserState state)
@@ -24,7 +47,7 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            return Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line))
+            return Listener.Contexts
                 .Select(context => new QualifiedContextInspectionResult(this, InspectionResults.ObsoleteLetStatementInspection, context));
         }
 

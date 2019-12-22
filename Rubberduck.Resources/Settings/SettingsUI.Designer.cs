@@ -214,6 +214,15 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Warning! No Modifier!.
+        /// </summary>
+        public static string HotKeys_Exclamation {
+            get {
+                return ResourceManager.GetString("HotKeys_Exclamation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Import.
         /// </summary>
         public static string ImportPageSettingsButton {
@@ -304,7 +313,7 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Click [Ok] to close the window and apply changes, or [Cancel] to discard them..
+        ///   Looks up a localized string similar to Click [{0}] to close the window and apply changes, or [{1}] to discard them..
         /// </summary>
         public static string PageInstructions_GeneralSettings {
             get {

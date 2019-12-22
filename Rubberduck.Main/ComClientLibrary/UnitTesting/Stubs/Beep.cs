@@ -1,27 +1,33 @@
-﻿using System.Runtime.InteropServices;
+﻿using Rubberduck.Runtime;
 
 namespace Rubberduck.UnitTesting
 {
     internal class Beep : StubBase
     {
-        public Beep()
-        {
-            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcBeep");
+        private readonly IBeepInterceptor _interceptor;
 
-            InjectDelegate(new BeepDelegate(BeepCallback), processAddress);
+        public Beep(IBeepInterceptor interceptor)
+        {
+            _interceptor = interceptor;
+            _interceptor.Beep += BeepCallback;
         }
 
-        [UnmanagedFunctionPointer(CallingConvention.StdCall, SetLastError = true)]
-        private delegate void BeepDelegate();
-
-        public void BeepCallback()
+        public void BeepCallback(object sender, BeepEventArgs e)
         {
             OnCallBack(true);
 
             if (PassThrough)
             {
-                VbeProvider.VbeRuntime.Beep();
+                VbeProvider.VbeNativeApi.Beep();
             }
+
+            e.Handled = true;
+        }
+
+        public override void Dispose()
+        {
+            _interceptor.Beep -= BeepCallback;
+            base.Dispose();
         }
     }
 }

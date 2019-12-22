@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Rubberduck.Parsing.Common;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.VBA.Parsing
@@ -21,40 +21,55 @@ namespace Rubberduck.Parsing.VBA.Parsing
             parser)
         { }
 
-        public override void ParseModules(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)
+        protected override IReadOnlyCollection<(QualifiedModuleName module, ModuleParseResults results)> ModulePareResults(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)
         {
             if (!modules.Any())
             {
-                return;
+                return new List<(QualifiedModuleName module, ModuleParseResults results)>();
             }
 
             token.ThrowIfCancellationRequested();
 
-            var parsingStageTimer = ParsingStageTimer.StartNew();
+            var results = new List<(QualifiedModuleName module, ModuleParseResults results)>();
+            var lockObject = new object();
 
-            var options = new ParallelOptions();
-            options.CancellationToken = token;
-            options.MaxDegreeOfParallelism = _maxDegreeOfParserParallelism;
+            var options = new ParallelOptions
+            {
+                CancellationToken = token,
+                MaxDegreeOfParallelism = _maxDegreeOfParserParallelism
+            };
 
             try
             {
                 Parallel.ForEach(modules,
                     options,
-                    module => ParseModule(module, token)
+                    () => new List<(QualifiedModuleName module, ModuleParseResults results)>(), 
+                    (module, state, localList) =>
+                    {
+                        localList.Add((module, ModuleParseResults(module, token)));
+                        return localList;
+                    },
+                    (finalResult) =>
+                    {
+                        lock (lockObject)
+                        {
+                            results.AddRange(finalResult);
+                        }
+                    }
                 );
             }
             catch (AggregateException exception)
             {
                 if (exception.Flatten().InnerExceptions.All(ex => ex is OperationCanceledException))
                 {
-                    throw exception.InnerException ?? exception; //This eliminates the stack trace, but for the cancellation, this is irrelevant.
+                    //This rethrows the exception with the original stack trace.
+                    ExceptionDispatchInfo.Capture(exception.InnerException ?? exception).Throw();
                 }
                 StateManager.SetStatusAndFireStateChanged(this, ParserState.Error, token);
                 throw;
             }
 
-            parsingStageTimer.Stop();
-            parsingStageTimer.Log("Parsed user modules in {0}ms.");
+            return results;
         }
     }
 }

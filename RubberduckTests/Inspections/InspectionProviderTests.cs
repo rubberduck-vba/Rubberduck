@@ -5,6 +5,7 @@ using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Settings;
+using Rubberduck.CodeAnalysis.Settings;
 
 namespace RubberduckTests.Inspections
 {
@@ -15,7 +16,7 @@ namespace RubberduckTests.Inspections
         [Test]
         public void InspectionTypeIsAssignedFromDefaultSettingInConstructor()
         {
-            var defaultSettings = new DefaultSettings<CodeInspectionSettings>().Default;
+            var defaultSettings = new DefaultSettings<CodeInspectionSettings, Rubberduck.CodeAnalysis.Properties.CodeInspectionDefaults>().Default;
             var defaultSetting = defaultSettings.CodeInspections.First();
             defaultSetting.InspectionType = CodeInspectionType.Performance;
 

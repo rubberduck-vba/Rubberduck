@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
-using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
@@ -14,6 +13,32 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Warns about 'Sub' procedures that could be refactored into a 'Function'.
+    /// </summary>
+    /// <why>
+    /// Idiomatic VB code uses 'Function' procedures to return a single value. If the procedure isn't side-effecting, consider writing is as a
+    /// 'Function' rather than a 'Sub' the returns a result through a 'ByRef' parameter.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething(ByRef result As Long)
+    ///     ' ...
+    ///     result = 42
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Option Explicit
+    /// Public Function DoSomething() As Long
+    ///     ' ...
+    ///     DoSomething = 42
+    /// End Function
+    /// ]]>
+    /// </example>
     public sealed class ProcedureCanBeWrittenAsFunctionInspection : ParseTreeInspectionBase
     {
         public ProcedureCanBeWrittenAsFunctionInspection(RubberduckParserState state)
@@ -44,12 +69,11 @@ namespace Rubberduck.Inspections.Concrete
             return Listener.Contexts
                 .Where(context => context.Context.Parent is VBAParser.SubStmtContext
                                     && HasArgumentReferencesWithIsAssignmentFlagged(context))
-                .Select(context => GetSubStmtParentDeclaration(context))
+                .Select(GetSubStmtParentDeclaration)
                 .Where(decl => decl != null && 
-                                !IsIgnoringInspectionResultFor(decl, AnnotationName) &&
                                 !ignored.Contains(decl) &&
                                 userDeclarations.Where(item => item.IsWithEvents)
-                                   .All(withEvents => userDeclarations.FindEventProcedures(withEvents) == null) &&
+                                   .All(withEvents => !State.DeclarationFinder.FindHandlersForWithEventsField(withEvents).Any()) &&
                                !builtinHandlers.Contains(decl))
                 .Select(result => new DeclarationInspectionResult(this,
                     string.Format(InspectionResults.ProcedureCanBeWrittenAsFunctionInspection, result.IdentifierName),
@@ -57,9 +81,8 @@ namespace Rubberduck.Inspections.Concrete
 
             bool HasArgumentReferencesWithIsAssignmentFlagged(QualifiedContext<ParserRuleContext> context)
             {
-                return contextLookup.TryGetValue(context.Context.GetChild<VBAParser.ArgContext>(), out Declaration decl)
-                    ? decl.References.Any(rf => rf.IsAssignment)
-                        : false;
+                return contextLookup.TryGetValue(context.Context.GetChild<VBAParser.ArgContext>(), out Declaration decl) 
+                       && decl.References.Any(rf => rf.IsAssignment);
             }
 
             Declaration GetSubStmtParentDeclaration(QualifiedContext<ParserRuleContext> context)

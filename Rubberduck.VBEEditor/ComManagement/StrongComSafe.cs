@@ -19,16 +19,12 @@ namespace Rubberduck.VBEditor.ComManagement
                     comWrapper, 
                     key =>
                     {
-#if DEBUG
                         TraceAdd(comWrapper);
-#endif
                         return 1;
                     }, 
                     (key, value) =>
                     {
-#if DEBUG
                         TraceUpdate(comWrapper);
-#endif
                         return value;
                     });
             }
@@ -42,9 +38,8 @@ namespace Rubberduck.VBEditor.ComManagement
             }
 
             var result = _comWrapperCache.TryRemove(comWrapper, out _);
-#if DEBUG
             TraceRemove(comWrapper, result);
-#endif
+
             return result;
         }
 
@@ -67,12 +62,10 @@ namespace Rubberduck.VBEditor.ComManagement
             _comWrapperCache.Clear();
         }
 
-#if DEBUG
         protected override IDictionary<int, ISafeComWrapper> GetWrappers()
         {
             return _comWrapperCache.Keys.ToDictionary(GetComWrapperObjectHashCode);
         }
-#endif
     }
 }
 

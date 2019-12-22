@@ -8,6 +8,7 @@ using Rubberduck.VBEditor;
 using System.Diagnostics;
 using System.Linq;
 using NLog;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -31,6 +32,9 @@ namespace Rubberduck.Parsing.VBA
         private readonly IRewritingManager _rewritingManager;
         private readonly ConcurrentStack<object> _requestorStack;
         private bool _isSuspended;
+
+        private readonly HashSet<string> _projectsWithChangedCompilationArguments = new HashSet<string>();
+        private readonly object _changeCacheLockObject = new object();
 
         public ParseCoordinator(
             RubberduckParserState state,
@@ -112,13 +116,13 @@ namespace Rubberduck.Parsing.VBA
         {
             if (ParsingSuspendLock.IsReadLockHeld)
             {
-                e.Result = SuspensionResult.UnexpectedError;
+                e.Result = SuspensionOutcome.ReadLockAlreadyHeld;
                 const string errorMessage =
                     "A suspension action was attempted while a read lock was held. This indicates a bug in the code logic as suspension should not be requested from same thread that has a read lock.";
                 Logger.Error(errorMessage);
-#if DEBUG
+
                 Debug.Assert(false, errorMessage);
-#endif
+
                 return;
             }
 
@@ -127,7 +131,7 @@ namespace Rubberduck.Parsing.VBA
             {
                 if (!ParsingSuspendLock.TryEnterWriteLock(e.MillisecondsTimeout))
                 {
-                    e.Result = SuspensionResult.TimedOut;
+                    e.Result = SuspensionOutcome.TimedOut;
                     return;
                 }
 
@@ -139,17 +143,22 @@ namespace Rubberduck.Parsing.VBA
                 var originalStatus = State.Status;
                 if (!e.AllowedRunStates.Contains(originalStatus))
                 {
-                    e.Result = SuspensionResult.IncompatibleState;
+                    e.Result = SuspensionOutcome.IncompatibleState;
                     return;
                 }
                 _parserStateManager.SetStatusAndFireStateChanged(e.Requestor, ParserState.Busy,
                     CancellationToken.None);
                 e.BusyAction.Invoke();
             }
-            catch
+            catch (OperationCanceledException ex)
             {
-                e.Result = SuspensionResult.UnexpectedError;
-                throw;
+                e.Result = SuspensionOutcome.Canceled;
+                e.EncounteredException = ex;
+            }
+            catch (Exception ex)
+            {
+                e.Result = SuspensionOutcome.UnexpectedError;
+                e.EncounteredException = ex;
             }
             finally
             {
@@ -179,9 +188,9 @@ namespace Rubberduck.Parsing.VBA
                     ParsingSuspendLock.ExitWriteLock();
                 }
 
-                if (e.Result == SuspensionResult.Pending)
+                if (e.Result == SuspensionOutcome.Pending)
                 {
-                    e.Result = SuspensionResult.Completed;
+                    e.Result = SuspensionOutcome.Completed;
                 }
             }
 
@@ -236,35 +245,9 @@ namespace Rubberduck.Parsing.VBA
             _parserStateManager.SetStatusAndFireStateChanged(this, ParserState.LoadingReference, token);
             token.ThrowIfCancellationRequested();
 
-            _parsingStageService.SyncComReferences(token);
-            if (_parsingStageService.LastSyncOfCOMReferencesLoadedReferences || _parsingStageService.COMReferencesUnloadedInLastSync.Any())
-            {
-                var unloadedReferences = _parsingStageService.COMReferencesUnloadedInLastSync.ToHashSet();
-                var unloadedModules =
-                    _parsingCacheService.DeclarationFinder.AllModules
-                        .Where(qmn => unloadedReferences.Contains(qmn.ProjectId))
-                        .ToHashSet();
-                var additionalModulesToBeReresolved = OtherModulesReferencingAnyNotToBeParsed(unloadedModules.AsReadOnly(), toParse);
-                toReresolveReferences.UnionWith(additionalModulesToBeReresolved);
-                _parserStateManager.SetModuleStates(additionalModulesToBeReresolved, ParserState.ResolvingReferences, token);
-                ClearModuleToModuleReferences(unloadedModules);
-                RefreshDeclarationFinder();
-            }
+            ProcessUserComProjects(ref token, ref toParse, ref toReresolveReferences, ref newProjectIds);
 
-            if (_parsingStageService.COMReferencesAffectedByPriorityChangesInLastSync.Any())
-            {
-                //We only use the referencedProjectId because that simplifies the reference management immensely.  
-                var affectedReferences = _parsingStageService.COMReferencesAffectedByPriorityChangesInLastSync
-                    .Select(tpl => tpl.referencedProjectId)
-                    .ToHashSet();
-                var referenceModules =
-                    _parsingCacheService.DeclarationFinder.AllModules
-                        .Where(qmn => affectedReferences.Contains(qmn.ProjectId))
-                        .ToHashSet();
-                var additionalModulesToBeReresolved = OtherModulesReferencingAnyNotToBeParsed(referenceModules.AsReadOnly(), toParse);
-                toReresolveReferences.UnionWith(additionalModulesToBeReresolved);
-                _parserStateManager.SetModuleStates(additionalModulesToBeReresolved, ParserState.ResolvingReferences, token);
-            }
+            SyncComReferences(toParse, token, toReresolveReferences);
             token.ThrowIfCancellationRequested();
 
             _parsingStageService.LoadBuitInDeclarations();
@@ -357,6 +340,79 @@ namespace Rubberduck.Parsing.VBA
             token.ThrowIfCancellationRequested();
         }
 
+        //TODO: Remove the conditional compilation after loading from typelibs actually works.
+        //TODO: Improve the handling to avoid host crashing. See https://github.com/rubberduck-vba/Rubberduck/issues/5217
+        [Conditional("LOAD_USER_COM_PROJECTS")]
+        private void ProcessUserComProjects(ref CancellationToken token, ref IReadOnlyCollection<QualifiedModuleName> toParse, ref HashSet<QualifiedModuleName> toReresolveReferences, ref IReadOnlyCollection<string> newProjectIds)
+        {
+            RefreshUserComProjects(toParse, newProjectIds);
+            token.ThrowIfCancellationRequested();
+
+            SyncDeclarationsFromUserComProjects(toParse, token, toReresolveReferences);
+        }
+
+        private void SyncComReferences(IReadOnlyCollection<QualifiedModuleName> toParse, CancellationToken token, HashSet<QualifiedModuleName> toReresolveReferences)
+        {
+            _parsingStageService.SyncComReferences(token);
+            if (_parsingStageService.LastSyncOfCOMReferencesLoadedReferences ||
+                _parsingStageService.COMReferencesUnloadedInLastSync.Any())
+            {
+                var unloadedReferences = _parsingStageService.COMReferencesUnloadedInLastSync.ToHashSet();
+                var unloadedModules =
+                    _parsingCacheService.DeclarationFinder.AllModules
+                        .Where(qmn => unloadedReferences.Contains(qmn.ProjectId))
+                        .ToHashSet();
+                var additionalModulesToBeReresolved =
+                    OtherModulesReferencingAnyNotToBeParsed(unloadedModules.AsReadOnly(), toParse);
+                toReresolveReferences.UnionWith(additionalModulesToBeReresolved);
+                _parserStateManager.SetModuleStates(additionalModulesToBeReresolved, ParserState.ResolvingReferences, token);
+                ClearModuleToModuleReferences(unloadedModules);
+                RefreshDeclarationFinder();
+            }
+
+            if (_parsingStageService.COMReferencesAffectedByPriorityChangesInLastSync.Any())
+            {
+                //We only use the referencedProjectId because that simplifies the reference management immensely.  
+                var affectedReferences = _parsingStageService.COMReferencesAffectedByPriorityChangesInLastSync
+                    .Select(tpl => tpl.referencedProjectId)
+                    .ToHashSet();
+                var referenceModules =
+                    _parsingCacheService.DeclarationFinder.AllModules
+                        .Where(qmn => affectedReferences.Contains(qmn.ProjectId))
+                        .ToHashSet();
+                var additionalModulesToBeReresolved =
+                    OtherModulesReferencingAnyNotToBeParsed(referenceModules.AsReadOnly(), toParse);
+                toReresolveReferences.UnionWith(additionalModulesToBeReresolved);
+                _parserStateManager.SetModuleStates(additionalModulesToBeReresolved, ParserState.ResolvingReferences, token);
+            }
+        }
+
+        private void SyncDeclarationsFromUserComProjects(IReadOnlyCollection<QualifiedModuleName> toParse, CancellationToken token, HashSet<QualifiedModuleName> toReresolveReferences)
+        {
+            _parsingStageService.SyncUserComProjects();
+            if (_parsingStageService.LastSyncOfUserComProjectsLoadedDeclarations ||
+                _parsingStageService.UserProjectIdsUnloaded.Any())
+            {
+                var unloadedProjectIds = _parsingStageService.UserProjectIdsUnloaded.ToHashSet();
+                var unloadedModules =
+                    _parsingCacheService.DeclarationFinder.AllModules
+                        .Where(qmn => unloadedProjectIds.Contains(qmn.ProjectId))
+                        .ToHashSet();
+                var additionalModulesToBeReresolved =
+                    OtherModulesReferencingAnyNotToBeParsed(unloadedModules.AsReadOnly(), toParse);
+                toReresolveReferences.UnionWith(additionalModulesToBeReresolved);
+                _parserStateManager.SetModuleStates(additionalModulesToBeReresolved, ParserState.ResolvingReferences, token);
+                ClearModuleToModuleReferences(unloadedModules);
+                RefreshDeclarationFinder();
+            }
+        }
+
+        private void RefreshUserComProjects(IReadOnlyCollection<QualifiedModuleName> toParse, IReadOnlyCollection<string> newProjectIds)
+        {
+            var newOrModifiedProjects = toParse.Select(module => module.ProjectId).Concat(newProjectIds).ToHashSet();
+            _parsingCacheService.RefreshUserComProjects(newOrModifiedProjects);
+        }
+
         private void ClearModuleToModuleReferences(IEnumerable<QualifiedModuleName> modules)
         {
             foreach (var module in modules)
@@ -369,7 +425,7 @@ namespace Rubberduck.Parsing.VBA
         private void PerformPreParseCleanup(IReadOnlyCollection<QualifiedModuleName> toResolveReferences, CancellationToken token)
         {
             _parsingCacheService.ClearSupertypes(toResolveReferences);
-            //This is purely a security measure. In the success path, the reference remover removes the referernces.
+            //This is purely a security measure. In the success path, the reference remover removes the references.
             _parsingCacheService.RemoveReferencesBy(toResolveReferences, token);
 
         }
@@ -436,7 +492,7 @@ namespace Rubberduck.Parsing.VBA
                     ParsingSuspendLock.ExitReadLock();
                 }
             }
-            if (watch != null) Logger.Debug("Parsing run finished after {0}s. (thread {1}).", watch.Elapsed.TotalSeconds, Thread.CurrentThread.ManagedThreadId);
+            if (watch != null) Logger.Info("Parsing run finished after {0}s. (thread {1}).", watch.Elapsed.TotalSeconds, Thread.CurrentThread.ManagedThreadId);
         }
 
         protected void ParseAllInternal(object requestor, CancellationToken token)
@@ -452,10 +508,13 @@ namespace Rubberduck.Parsing.VBA
             _projectManager.RefreshProjects();
             token.ThrowIfCancellationRequested();
 
-            var modules = _projectManager.AllModules();
+            _parsingCacheService.RefreshProjectsToResolveFromComProjectSelector();
             token.ThrowIfCancellationRequested();
 
-            var projects = _projectManager.Projects;
+            var modules = _projectManager.AllModules().Where(module => !_parsingCacheService.ToBeResolvedFromComProject(module.ProjectId)).ToList();
+            token.ThrowIfCancellationRequested();
+
+            var projects = _projectManager.Projects.Where(tpl => !_parsingCacheService.ToBeResolvedFromComProject(tpl.ProjectId)).ToList();
             var projectIds = projects.Select(tpl => tpl.ProjectId).ToList().AsReadOnly();
             token.ThrowIfCancellationRequested();
 
@@ -468,10 +527,11 @@ namespace Rubberduck.Parsing.VBA
             _parsingCacheService.ReloadCompilationArguments(projectIds);
             token.ThrowIfCancellationRequested();
 
-            var projectsWithChangedCompilationArguments = _parsingCacheService.ProjectWhoseCompilationArgumentsChanged();
-            token.ThrowIfCancellationRequested();
-
-            toParse.UnionWith(ModulesInProjects(projectsWithChangedCompilationArguments));
+            lock (_changeCacheLockObject)
+            {
+                _projectsWithChangedCompilationArguments.UnionWith(_parsingCacheService.ProjectWhoseCompilationArgumentsChanged());
+                toParse.UnionWith(ModulesInProjects(_projectsWithChangedCompilationArguments));
+            }          
             token.ThrowIfCancellationRequested();
 
             toParse = toParse.Where(module => module.IsParsable).ToHashSet();
@@ -508,6 +568,11 @@ namespace Rubberduck.Parsing.VBA
             var newProjects = NewProjects(projectIds);
 
             ExecuteCommonParseActivities(toParse.AsReadOnly(), toReResolveReferences, newProjects, token);
+
+            lock (_changeCacheLockObject)
+            {
+                _projectsWithChangedCompilationArguments.Clear();
+            }
         }
 
         private IReadOnlyCollection<string> NewProjects(IReadOnlyCollection<string> projectIds)
@@ -580,8 +645,8 @@ namespace Rubberduck.Parsing.VBA
 
         private IReadOnlyCollection<string> RemovedProjects(IReadOnlyCollection<IVBProject> projects)
         {
-            var projectsWithProjectDeclarations = State.DeclarationFinder.UserDeclarations(DeclarationType.Project).Select(declaration => new Tuple<string,string>(declaration.ProjectId, declaration.ProjectName));
-            var currentlyExistingProjects = projects.Select(project => new Tuple<string, string>(project.ProjectId, project.Name)).ToHashSet();
+            var projectsWithProjectDeclarations = State.DeclarationFinder.UserDeclarations(DeclarationType.Project).Select(declaration => (declaration.ProjectId, declaration.ProjectName));
+            var currentlyExistingProjects = projects.Select(project => (project.ProjectId, project.Name)).ToHashSet();
             var removedProjects = projectsWithProjectDeclarations.Where(project => !currentlyExistingProjects.Contains(project));
             return removedProjects.Select(tuple => tuple.Item1).ToHashSet().AsReadOnly();
         }

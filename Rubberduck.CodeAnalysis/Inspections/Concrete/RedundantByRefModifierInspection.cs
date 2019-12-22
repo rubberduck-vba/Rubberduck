@@ -10,9 +10,37 @@ using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor;
+using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.JunkDrawer.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Identifies redundant ByRef modifiers.
+    /// </summary>
+    /// <why>
+    /// Out of convention or preference, explicit ByRef modifiers could be considered redundant since they are the implicit default. 
+    /// This inspection can ensure the consistency of the convention.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething(ByRef foo As Long)
+    ///     foo = foo + 17
+    ///     Debug.Print foo
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Option Explicit
+    /// Public Sub DoSomething(foo As Long)
+    ///     foo = foo + 17
+    ///     Debug.Print foo
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class RedundantByRefModifierInspection : ParseTreeInspectionBase
     {
         public RedundantByRefModifierInspection(RubberduckParserState state)
@@ -28,7 +56,6 @@ namespace Rubberduck.Inspections.Concrete
             var interfaceImplementationMemberContexts = State.DeclarationFinder.FindAllInterfaceImplementingMembers().Select(member => member.Context).ToHashSet();
 
             var issues = Listener.Contexts.Where(context =>
-                !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line) &&
                 !builtInEventHandlerContexts.Contains(context.Context.Parent.Parent) &&
                 !interfaceImplementationMemberContexts.Contains(context.Context.Parent.Parent));
 

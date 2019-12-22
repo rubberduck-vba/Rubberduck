@@ -13,6 +13,18 @@ namespace Rubberduck.VBEditor.WindowsApi
     /// </remarks>
     public static class NativeMethods
     {
+        [DllImport("user32.dll")]
+        public static extern IntPtr CreatePopupMenu();
+
+        [DllImport("user32.dll")]
+        public static extern bool TrackPopupMenuEx(IntPtr hmenu, uint fuFlags, int x, int y, IntPtr hwnd, IntPtr lptpm);
+
+        [DllImport("user32.dll", EntryPoint = "InsertMenuW", SetLastError = true, CharSet = CharSet.Unicode)]
+        public static extern bool InsertMenu(IntPtr hMenu, uint wPosition, uint wFlags, UIntPtr wIDNewItem, [MarshalAs(UnmanagedType.LPWStr)]string lpNewItem);
+
+        [DllImport("user32.dll")]
+        public static extern bool DestroyMenu(IntPtr hMenu);
+
         /// <summary>   Sends a message to the OS. </summary>
         ///
         /// <param name="hWnd">     The window handle. </param>
@@ -67,6 +79,14 @@ namespace Rubberduck.VBEditor.WindowsApi
         /// <returns>   An int. </returns>
         [DllImport("user32", ExactSpelling = true, CharSet = CharSet.Unicode)]
         public static extern int EnumChildWindows(IntPtr parentWindowHandle, EnumChildWindowsDelegate lpEnumFunction, IntPtr lParam);
+
+        /// <summary> Retrieves the name of the class to which the specified window belongs. </summary>
+        /// <param name="hWnd">A handle to the window and, indirectly, the class to which the window belongs.</param>
+        /// <param name="lpClassName">The class name string.</param>
+        /// <param name="nMaxCount">The length of the <see cref="lpClassName" /> buffer, in characters. The buffer must be large enough to include the terminating null character; otherwise, the class name string is truncated to <see cref="nMaxCount" /> characters.</param>
+        /// <returns>If the function succeeds, the return value is the number of characters copied to the buffer, not including the terminating null character. If the function fails, the return value is zero.To get extended error information, call GetLastError.</returns>
+        [DllImport("user32.dll", EntryPoint = "GetClassNameW", SetLastError = true, CharSet = CharSet.Unicode)]
+        public static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
 
         /// <summary>   Gets window text. </summary>
         ///

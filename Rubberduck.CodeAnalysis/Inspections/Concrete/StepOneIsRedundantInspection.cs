@@ -11,9 +11,37 @@ using Rubberduck.Parsing;
 using Rubberduck.VBEditor;
 using Rubberduck.Inspections.Results;
 using static Rubberduck.Parsing.Grammar.VBAParser;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Locates 'For' loops where the 'Step' token is specified with the default increment value (1).
+    /// </summary>
+    /// <why>
+    /// Out of convention or preference, explicit 'Step 1' specifiers could be considered redundant; 
+    /// this inspection can ensure the consistency of the convention.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim i As Long
+    ///     For i = 1 To 100 Step 1 ' 1 being the implicit default, 'Step 1' could be considered redundant.
+    ///         ' ...
+    ///     Next
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim i As Long
+    ///     For i = 1 To 100 ' implicit: 'Step 1'
+    ///         ' ...
+    ///     Next
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class StepOneIsRedundantInspection : ParseTreeInspectionBase
     {
         public StepOneIsRedundantInspection(RubberduckParserState state) : base(state) { }
@@ -21,7 +49,6 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts
-                .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
                 .Select(result => new QualifiedContextInspectionResult(this,
                                                         InspectionResults.StepOneIsRedundantInspection,
                                                         result));

@@ -324,7 +324,16 @@
   <data name="TestOutcome_SummaryCaption" xml:space="preserve">
     <value>Shrnutí:</value>
   </data>
-  <data name="TestOutcome_SpectacularFail" xml:space="preserve">
-    <value>Pozoruhodné Selhání</value>
+  <data name="TestExplorer_Filter" xml:space="preserve">
+    <value>Název Testu</value>
+  </data>
+  <data name="TestExplorer_AllResults" xml:space="preserve">
+    <value>Vše</value>
+  </data>
+  <data name="TestExplorer_TestToggle_Ignore" xml:space="preserve">
+    <value>Ignorovat test</value>
+  </data>
+  <data name="TestExplorer_TestToggle_Unignore" xml:space="preserve">
+    <value>Odignorovat test</value>
   </data>
 </root>

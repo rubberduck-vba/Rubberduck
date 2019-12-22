@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -12,6 +14,33 @@ using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Identifies identifiers that hide/"shadow" other identifiers otherwise accessible in that scope.
+    /// </summary>
+    /// <why>
+    /// Global namespace contains a number of perfectly legal identifier names that user code can use. But using these names in user code 
+    /// effectively "hides" the global ones. In general, avoid shadowing global-scope identifiers if possible.
+    /// </why>
+    /// <example hasResults="true">
+    /// <![CDATA[
+    /// Private MsgBox As String ' hides the global-scope VBA.Interaction.MsgBox function in this module.
+    /// 
+    /// Public Sub DoSomething()
+    ///     MsgBox = "Test" ' refers to the module variable in scope.
+    ///     VBA.Interaction.MsgBox MsgBox ' global function now needs to be fully qualified to be accessed.
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example hasResults="false">
+    /// <![CDATA[
+    /// Private message As String
+    /// 
+    /// Public Sub DoSomething()
+    ///     message = "Test"
+    ///     MsgBox message ' VBA.Interaction module qualifier is optional.
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class ShadowedDeclarationInspection : InspectionBase
     {
         private enum DeclarationSite
@@ -169,6 +198,12 @@ namespace Rubberduck.Inspections.Concrete
 
             // Events don't have a body, so their parameters can't be accessed
             if (userDeclaration.DeclarationType == DeclarationType.Parameter && userDeclaration.ParentDeclaration.DeclarationType == DeclarationType.Event)
+            {
+                return false;
+            }
+
+            // We insert Debug.Assert as a member access on an artificial Debug standard module. Thus, Assert will also be seen as shadowing Debug.Assert, which is not true. 
+            if (originalDeclaration.IdentifierName.Equals("Assert", StringComparison.InvariantCultureIgnoreCase) && originalDeclaration.QualifiedModuleName.ComponentName.Equals("Debug", StringComparison.InvariantCultureIgnoreCase))
             {
                 return false;
             }

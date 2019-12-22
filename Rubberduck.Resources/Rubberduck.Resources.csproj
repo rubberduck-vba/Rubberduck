@@ -3,8 +3,11 @@
   <PropertyGroup>
     <Title>Rubberduck.Resources</Title>
     <Product>Rubberduck.Resources</Product>
-    <Copyright>Copyright © 2018</Copyright>
+    <Copyright>Copyright © 2018-2019</Copyright>
     <ProjectGuid>{1B84B387-F7C4-4876-9BDF-C644C365359A}</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;1591;4011;1001;7035;1053</NoWarn>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
   <ItemGroup>
@@ -38,6 +41,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>CommandBarIcons.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Experimentals\ExperimentalNames.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ExperimentalNames.resx</DependentUpon>
     </Compile>
     <Compile Update="Inspections\InspectionInfo.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -132,6 +140,10 @@
     <EmbeddedResource Update="CommandBarIcons.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>CommandBarIcons.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Experimentals\ExperimentalNames.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ExperimentalNames.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Inspections\InspectionInfo.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

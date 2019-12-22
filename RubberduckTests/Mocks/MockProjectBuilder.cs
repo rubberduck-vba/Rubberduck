@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Moq;
 using Rubberduck.Parsing.Grammar;
@@ -190,7 +191,7 @@ namespace RubberduckTests.Mocks
             result.Setup(m => m[It.IsAny<int>()]).Returns<int>(index => Components.ElementAt(index));
             result.Setup(m => m[It.IsAny<string>()]).Returns<string>(name => Components.Single(item => item.Name == name));
             result.SetupGet(m => m.Count).Returns(() => Components.Count);
-
+            
             result.Setup(m => m.Add(It.IsAny<ComponentType>()))
                 .Callback((ComponentType c) =>
                 {
@@ -211,18 +212,18 @@ namespace RubberduckTests.Mocks
 
             result.Setup(m => m.Import(It.IsAny<string>())).Callback((string s) =>
             {
-                var parts = s.Split('.').ToList();
+                var extension = Path.GetExtension(s);
                 var types = new Dictionary<string, ComponentType>
                 {
-                    {"bas", ComponentType.StandardModule},
-                    {"cls", ComponentType.ClassModule},
-                    {"frm", ComponentType.UserForm}
+                    {".bas", ComponentType.StandardModule},
+                    {".cls", ComponentType.ClassModule},
+                    {".frm", ComponentType.UserForm}
                 };
 
                 ComponentType type;
-                types.TryGetValue(parts.Last(), out type);
+                types.TryGetValue(extension, out type);
 
-                _componentsMock.Add(CreateComponentMock(s.Split('\\').Last(), type, string.Empty, new Selection(), null, out var codeModule));
+                _componentsMock.Add(CreateComponentMock(Path.GetFileNameWithoutExtension(s), type, string.Empty, new Selection(), null, out var codeModule));
                 _codeModuleMocks.Add(codeModule);
             });
 
@@ -285,6 +286,10 @@ namespace RubberduckTests.Mocks
             result.SetupGet(m => m.Collection).Returns(() => _vbComponents.Object);
             result.SetupGet(m => m.Type).Returns(() => type);
             result.SetupGet(m => m.HasCodeModule).Returns(true);
+            if (type == ComponentType.UserForm)
+            {
+                result.Setup(m => m.HasDesigner).Returns(true);
+            }
             result.SetupProperty(m => m.Name, name);
             result.SetupGet(m => m.QualifiedModuleName).Returns(() => new QualifiedModuleName(result.Object));
             result.SetupGet(m => m.QualifiedModuleName).Returns(() => new QualifiedModuleName(result.Object));
@@ -310,7 +315,7 @@ namespace RubberduckTests.Mocks
         {
             var codePane = CreateCodePaneMock(name, selection, component);
 
-            var result = CreateCodeModuleMock(content, name);
+            var result = CreateCodeModuleMock(content);
             result.SetupReferenceEqualityIncludingHashCode();
             result.Setup(m => m.Equals(It.IsAny<ICodeModule>()))
                 .Returns((ICodeModule other) => ReferenceEquals(result.Object, other));
@@ -319,6 +324,9 @@ namespace RubberduckTests.Mocks
             result.SetupGet(m => m.CodePane).Returns(() => codePane.Object);
             result.SetupGet(m => m.QualifiedModuleName).Returns(() => new QualifiedModuleName(component.Object));
             result.Setup(m => m.AddFromFile(It.IsAny<string>()));
+
+            result.SetupGet(m => m.Name).Returns(() => component.Object.Name);
+            result.SetupSet(m => m.Name = It.IsAny<string>()).Callback<string>(value => component.Object.Name = value);
 
             codePane.SetupGet(m => m.CodeModule).Returns(() => result.Object);
             return result;
@@ -329,7 +337,7 @@ namespace RubberduckTests.Mocks
             Tokens.Sub + ' ', Tokens.Function + ' ', Tokens.Property + ' '
         };
 
-        private Mock<ICodeModule> CreateCodeModuleMock(string content, string name)
+        private Mock<ICodeModule> CreateCodeModuleMock(string content)
         {
             var lines = content.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
 
@@ -380,10 +388,8 @@ namespace RubberduckTests.Mocks
                     lines.AddRange(newLine.Split(new[] { Environment.NewLine }, StringSplitOptions.None));
                 });
 
-            codeModule.SetupProperty(m => m.Name, name);
-
             codeModule.Setup(m => m.Equals(It.IsAny<ICodeModule>()))
-                .Returns((ICodeModule other) => name.Equals(other.Name) && content.Equals(other.Content()));
+                .Returns((ICodeModule other) => codeModule.Object.Name.Equals(other.Name) && codeModule.Object.Content().Equals(other.Content()));
             codeModule.Setup(m => m.GetHashCode()).Returns(() => codeModule.Object.Target.GetHashCode());
 
             return codeModule;
