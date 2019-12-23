@@ -7,7 +7,7 @@
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
              mc:Ignorable="d"
              d:DesignHeight="800"
-             d:DesignWidth="1000">
+             d:DesignWidth="900">
     <UserControl.Resources>
         <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
         <converters:BoolToVisibleVisibilityConverter x:Key="BoolToVisibleVisibility" />
@@ -88,7 +88,7 @@
                                              Margin="5,0,0,5">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
-                                                <Grid Margin="5,0">
+                                                <Grid Margin="5,5,0,0">
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition />
                                                     </Grid.RowDefinitions>
@@ -212,7 +212,7 @@
                                         ShowLineNumbers="False"
                                         HorizontalScrollBarVisibility="Auto"
                                         VerticalScrollBarVisibility="Auto"
-                                        Height="400"
+                                        Height="300"
                                         IsReadOnly="True"
                                         IsTabStop="False"
                                         TabIndex="6"
