@@ -34,9 +34,15 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private IEncapsulateFieldCandidate _decoratedField;
 
+        public Selection Selection => _decoratedField.Selection;
+
+        public Accessibility Accessibility => _decoratedField.Accessibility;
+
+        public string AsTypeName => _decoratedField.AsTypeName;
+
         public IUserDefinedTypeCandidate Parent { private set; get; }
 
-        public void StageFieldReferenceReplacements(IStateUDT stateUDT = null) { }
+        public void StageFieldReferenceReplacements(IObjectStateUDT stateUDT = null) { }
 
         private string _referenceQualifier;
         public string ReferenceQualifier
@@ -195,7 +201,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => _decoratedField.ImplementSet;
         }
         public IEnumerable<IPropertyGeneratorAttributes> PropertyAttributeSets => _decoratedField.PropertyAttributeSets;
-        public string AsUDTMemberDeclaration { get; }
+        public string AsUDTMemberDeclaration //{ get; }
+            => _decoratedField.AsUDTMemberDeclaration; // $"{_decoratedField.PropertyName} {Tokens.As} {_decoratedField.AsTypeName_Field}";
 
         public IEnumerable<KeyValuePair<IdentifierReference, (ParserRuleContext, string)>> ReferenceReplacements => _decoratedField.ReferenceReplacements;
         public string ReferenceWithinNewProperty => $"{Parent.ReferenceWithinNewProperty}.{_decoratedField.IdentifierName}";

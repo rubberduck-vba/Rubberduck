@@ -29,7 +29,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public override string AsUDTMemberDeclaration
             => $"{PropertyName}({_subscripts}) {Tokens.As} {AsTypeName_Field}";
 
-        public override void StageFieldReferenceReplacements(IStateUDT stateUDT = null)
+        public override void StageFieldReferenceReplacements(IObjectStateUDT stateUDT = null)
         {
             PropertyAccessor = stateUDT is null ? AccessorTokens.Field : AccessorTokens.Property;
             ReferenceAccessor = AccessorTokens.Property;

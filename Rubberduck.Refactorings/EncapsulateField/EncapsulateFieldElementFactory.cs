@@ -23,9 +23,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _targetQMN = targetQMN;
         }
 
-        public IStateUDT CreateStateUDTField()
+        public IObjectStateUDT CreateStateUDTField()
         {
-            var stateUDT = new StateUDT(_targetQMN, _validator) as IStateUDT;
+            var stateUDT = new ObjectStateUDT(_targetQMN) as IObjectStateUDT;
 
             stateUDT = SetNonConflictIdentifier(stateUDT, c => { return _validator.IsConflictingStateUDTFieldIdentifier(stateUDT); }, (s) => { stateUDT.FieldIdentifier = s; }, () => stateUDT.FieldIdentifier, _validator);
 
@@ -92,7 +92,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return candidates;
         }
 
-        private IStateUDT SetNonConflictIdentifier(IStateUDT candidate, Predicate<IStateUDT> conflictDetector, Action<string> setValue, Func<string> getIdentifier, IEncapsulateFieldNamesValidator validator)
+        private IObjectStateUDT SetNonConflictIdentifier(IObjectStateUDT candidate, Predicate<IObjectStateUDT> conflictDetector, Action<string> setValue, Func<string> getIdentifier, IEncapsulateFieldNamesValidator validator)
         {
             var isConflictingIdentifier = conflictDetector(candidate);
             for (var count = 1; count < 10 && isConflictingIdentifier; count++)

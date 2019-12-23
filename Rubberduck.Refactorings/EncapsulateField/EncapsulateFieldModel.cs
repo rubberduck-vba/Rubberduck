@@ -10,16 +10,18 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         private readonly Func<EncapsulateFieldModel, string> _previewDelegate;
         private QualifiedModuleName _targetQMN;
+        private IEncapsulateFieldNamesValidator _validator;
 
         private IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> _udtFieldToUdtDeclarationMap = new Dictionary<Declaration, (Declaration, IEnumerable<Declaration>)>();
 
-        public EncapsulateFieldModel(Declaration target, IEnumerable<IEncapsulateFieldCandidate> candidates, IStateUDT stateUDTField, Func<EncapsulateFieldModel, string> previewDelegate)
+        public EncapsulateFieldModel(Declaration target, IEnumerable<IEncapsulateFieldCandidate> candidates, IObjectStateUDT stateUDTField, Func<EncapsulateFieldModel, string> previewDelegate, IEncapsulateFieldNamesValidator validator)
         {
             _previewDelegate = previewDelegate;
             _targetQMN = target.QualifiedModuleName;
+            _validator = validator;
 
             EncapsulationCandidates = candidates.ToList();
-            StateUDTField = stateUDTField;
+            //StateUDTField = stateUDTField;
         }
 
         public List<IEncapsulateFieldCandidate> EncapsulationCandidates { set; get; } = new List<IEncapsulateFieldCandidate>();
@@ -45,7 +47,31 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public bool EncapsulateWithUDT { set; get; }
 
-        public IStateUDT StateUDTField { set; get; }
+        private IObjectStateUDT _stateUDTField;
+        public IObjectStateUDT StateUDTField
+        {
+            set
+            {
+                _stateUDTField = value;
+            }
+            get
+            {
+                if (_stateUDTField != null)
+                {
+                    return _stateUDTField;
+                }
+
+                if (!EncapsulateWithUDT) { return null; }
+                var stateUDT = EncapsulationCandidates.Where(sfc => sfc is IUserDefinedTypeCandidate udt
+                        && udt.IsObjectStateUDT).Select(sfc => sfc as IUserDefinedTypeCandidate).FirstOrDefault();
+
+                _stateUDTField = stateUDT != null
+                    ? new ObjectStateUDT(stateUDT)
+                    : null;
+
+                return _stateUDTField;
+            }
+        }
 
         public string PreviewRefactoring() => _previewDelegate(this);
     }

@@ -14,6 +14,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         IEnumerable<IUserDefinedTypeMemberCandidate> Members { get; }
         void AddMember(IUserDefinedTypeMemberCandidate member);
         bool TypeDeclarationIsPrivate { set; get; }
+        bool IsObjectStateUDT { set; get; }
     }
 
     public class UserDefinedTypeCandidate : EncapsulateFieldCandidate, IUserDefinedTypeCandidate
@@ -34,6 +35,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public IEnumerable<IUserDefinedTypeMemberCandidate> Members => _udtMembers;
 
         public bool TypeDeclarationIsPrivate { set; get; }
+
+        private bool _isObjectStateUDT;
+        public bool IsObjectStateUDT
+        {
+            set => _isObjectStateUDT = value;
+            get => _isObjectStateUDT;
+        }
 
         public override string FieldIdentifier
         {
@@ -79,7 +87,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 }
                 base.EncapsulateFlag = value;
             }
-            get => _encapsulateFlag;
+            get => _encapsulateFlag && !_isObjectStateUDT;
         }
 
 
@@ -123,7 +131,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        public override void StageFieldReferenceReplacements(IStateUDT stateUDT = null)
+        public override void StageFieldReferenceReplacements(IObjectStateUDT stateUDT = null)
         {
 
             PropertyAccessor = stateUDT is null ? AccessorTokens.Field : AccessorTokens.Property;

@@ -7,16 +7,25 @@ using System.Collections.Generic;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public interface IEncapsulateFieldCandidate
+    public interface IEncapsulateFieldDeclaration
+    {
+        string IdentifierName { get; }
+        QualifiedModuleName QualifiedModuleName { get; }
+        string AsTypeName { get; }
+        Selection Selection { get; }
+        Accessibility Accessibility { get; }
+    }
+
+    public interface IEncapsulateFieldCandidate : IEncapsulateFieldDeclaration
     {
         Declaration Declaration { get; }
-        string IdentifierName { get; }
+        //string IdentifierName { get; }
         string TargetID { get; }
         bool IsReadOnly { get; set; }
         bool EncapsulateFlag { get; set; }
         string FieldIdentifier { set; get; }
         bool CanBeReadWrite { set; get; }
-        QualifiedModuleName QualifiedModuleName { get; }
+        //QualifiedModuleName QualifiedModuleName { get; }
         string PropertyName { get; set; }
         string AsTypeName_Field { get; set; }
         string AsTypeName_Property { get; set; }
@@ -29,7 +38,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         void SetReferenceRewriteContent(IdentifierReference idRef, string replacementText);
         string ReferenceQualifier { set; get; }
         string ReferenceWithinNewProperty { get; }
-        void StageFieldReferenceReplacements(IStateUDT stateUDT = null);
+        void StageFieldReferenceReplacements(IObjectStateUDT stateUDT = null);
         AccessorTokens PropertyAccessor { set; get; }
         AccessorTokens ReferenceAccessor { set; get; }
         bool TryValidateEncapsulationAttributes(out string errorMessage);
@@ -81,7 +90,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _hashCode = ($"{_qmn.Name}.{identifier}").GetHashCode();
         }
 
-        public virtual void StageFieldReferenceReplacements(IStateUDT stateUDT = null)
+        public virtual void StageFieldReferenceReplacements(IObjectStateUDT stateUDT = null)
         {
             PropertyAccessor = stateUDT is null ? AccessorTokens.Field : AccessorTokens.Property;
             ReferenceAccessor = AccessorTokens.Property;
@@ -92,6 +101,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
         protected Dictionary<IdentifierReference, (ParserRuleContext, string)> IdentifierReplacements { get; } = new Dictionary<IdentifierReference, (ParserRuleContext, string)>();
 
         public Declaration Declaration => _target;
+
+        public Selection Selection => _target.Selection;
+
+        public Accessibility Accessibility => _target.Accessibility;
+
+        public string AsTypeName => _target.AsTypeName;
 
         public bool HasConflictingPropertyIdentifier 
             => _validator.HasConflictingIdentifier(this, DeclarationType.Property, out var errorMessage);

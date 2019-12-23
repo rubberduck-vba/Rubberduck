@@ -11,50 +11,78 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public interface IStateUDT
+    public interface IObjectStateUDT : IEncapsulateFieldDeclaration
     {
         string TypeIdentifier { set; get; }
         string FieldIdentifier { set; get; }
         string TypeDeclarationBlock(IIndenter indenter = null);
         string FieldDeclarationBlock { get; }
         void AddMembers(IEnumerable<IEncapsulateFieldCandidate> fields);
-        QualifiedModuleName QualifiedModuleName { set; get; }
+        bool IsExistingDeclaration { get; }
     }
 
     /*
      * StateUDT is the UserDefinedType introduced by this refactoring 
      * whose members represent object state in lieu of individually declared member variables/fields.
      */
-    public class StateUDT : IStateUDT
+    public class ObjectStateUDT : IObjectStateUDT//, IEncapsulateFieldDeclaration
     {
         private static string _defaultNewFieldName = EncapsulateFieldResources.DefaultStateUDTFieldName;
         private List<IEncapsulateFieldCandidate> _members;
-        private readonly IEncapsulateFieldNamesValidator _validator;
+        private readonly IUserDefinedTypeCandidate _decoratedUDT;
 
-        public StateUDT(QualifiedModuleName qmn, IEncapsulateFieldNamesValidator validator)
-            :this($"{EncapsulateFieldResources.StateUserDefinedTypeIdentifierPrefix}{qmn.ComponentName.CapitalizeFirstLetter()}", validator)
+        public ObjectStateUDT(IUserDefinedTypeCandidate udt)
+            :this(udt.Declaration.AsTypeName)
+        {
+            if (!udt.Declaration.Accessibility.Equals(Accessibility.Private))
+            {
+                throw new ArgumentException();
+            }
+
+            _decoratedUDT = udt;
+            QualifiedModuleName = udt.Declaration.QualifiedModuleName;
+        }
+
+        public ObjectStateUDT(QualifiedModuleName qmn)
+            :this($"{EncapsulateFieldResources.StateUserDefinedTypeIdentifierPrefix}{qmn.ComponentName.CapitalizeFirstLetter()}")
         {
             QualifiedModuleName = qmn;
         }
 
-        public StateUDT(string typeIdentifier, IEncapsulateFieldNamesValidator validator)
+        public ObjectStateUDT(string typeIdentifier)
         {
-            _validator = validator;
             FieldIdentifier = _defaultNewFieldName;
             TypeIdentifier = typeIdentifier;
             _members = new List<IEncapsulateFieldCandidate>();
         }
 
+        public string IdentifierName => _decoratedUDT?.IdentifierName ?? FieldIdentifier;
+
+        public Selection Selection => _decoratedUDT?.Selection ?? new Selection();
+
+        public Accessibility Accessibility => Accessibility.Private; // _decoratedUDT.Accessibility;
+
+        public string AsTypeName => _decoratedUDT?.AsTypeName ?? TypeIdentifier;
+
         public QualifiedModuleName QualifiedModuleName { set;  get; }
 
         public string TypeIdentifier { set; get; }
 
+        public bool IsExistingDeclaration => _decoratedUDT != null;
+
         public string FieldIdentifier { set; get; }
 
-        public void AddMembers(IEnumerable<IEncapsulateFieldCandidate> fields) => _members = fields.ToList();
+        public void AddMembers(IEnumerable<IEncapsulateFieldCandidate> fields)
+        {
+            if (IsExistingDeclaration)
+            {
+                _members = _decoratedUDT.Members.Select(m => m).Cast<IEncapsulateFieldCandidate>().ToList();
+            }
+            _members.AddRange(fields);
+        }
 
         public string FieldDeclarationBlock
-            => $"{Accessibility.Private} {FieldIdentifier} {Tokens.As} {TypeIdentifier}";
+            => $"{Accessibility.Private} {IdentifierName} {Tokens.As} {AsTypeName}";
 
         public string TypeDeclarationBlock(IIndenter indenter = null)
         {

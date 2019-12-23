@@ -65,8 +65,17 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             return model =>
             {
                 model.EncapsulateWithUDT = userInput.EncapsulateAsUDT;
-                model.StateUDTField.TypeIdentifier = userInput.StateUDT_TypeName ?? model.StateUDTField.TypeIdentifier;
-                model.StateUDTField.FieldIdentifier = userInput.StateUDT_FieldName ?? model.StateUDTField.FieldIdentifier;
+                if (userInput.EncapsulateAsUDT)
+                {
+                    var stateUDT = model.SelectedFieldCandidates.Where(sfc => sfc is IUserDefinedTypeCandidate udt && udt.TargetID == userInput.ObjectStateUDTTargetID)
+                    .Select(sfc => sfc as IUserDefinedTypeCandidate).SingleOrDefault();
+                    if (stateUDT != null)
+                    {
+                        stateUDT.IsObjectStateUDT = userInput.ObjectStateUDTTargetID != null;
+                        model.StateUDTField = new ObjectStateUDT(stateUDT);
+                    }
+                }
+
                 foreach (var testModifiedAttribute in userInput.EncapsulateFieldAttributes)
                 {
                     var attrsInitializedByTheRefactoring = model[testModifiedAttribute.TargetFieldName]; //.EncapsulationAttributes;
@@ -227,6 +236,8 @@ namespace RubberduckTests.Refactoring.EncapsulateField
         }
 
         public bool EncapsulateAsUDT { set; get; }
+
+        public string ObjectStateUDTTargetID { set; get; }
 
         public string StateUDT_TypeName { set; get; }
 

@@ -96,7 +96,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
                                 target,
                                 candidates,
                                 _encapsulationCandidateFactory.CreateStateUDTField(),
-                                PreviewRewrite);
+                                PreviewRewrite,
+                                validator);
 
             _codeSectionStartIndex = _declarationFinderProvider.DeclarationFinder
                 .Members(_targetQMN).Where(m => m.IsMember())
@@ -127,7 +128,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return previewRewriter.GetText(maxConsecutiveNewLines: 3);
         }
 
-        private IStateUDT StateUDTField
+        private IObjectStateUDT StateUDTField
             => Model.EncapsulateWithUDT ? Model.StateUDTField : null;
 
 
@@ -179,12 +180,39 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             if (model.EncapsulateWithUDT)
             {
+                IModuleRewriter rewriter;
+
                 foreach (var field in model.SelectedFieldCandidates)
                 {
-                    var rewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
+                    rewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
 
                     refactorRewriteSession.Remove(field.Declaration, rewriter);
                 }
+
+                if (model.StateUDTField is null)
+                {
+                    model.StateUDTField = _encapsulationCandidateFactory.CreateStateUDTField();
+                    return;
+                }
+                var stateUDT = model.StateUDTField;
+                var stateUDTDeclaration = model.StateUDTField as IEncapsulateFieldDeclaration;
+                //if (stateUDT.WrappedUDT != null)
+                //{
+                stateUDT.AddMembers(model.SelectedFieldCandidates);
+                //}
+                var content = stateUDT.TypeDeclarationBlock(_indenter);
+                rewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
+
+                var udts = _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.UserDefinedType);
+
+                var udtDeclaration = _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.UserDefinedType)
+                    .Where(udt => udt.HasPrivateAccessibility() 
+                    && udt.QualifiedModuleName.Equals(stateUDTDeclaration.QualifiedModuleName)
+                    && udt.IdentifierName.Equals(stateUDTDeclaration.AsTypeName))
+                    .Single();
+
+                rewriter.Replace(udtDeclaration, content);
+
                 return;
             }
 
@@ -253,7 +281,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             if (model.EncapsulateWithUDT)
             {
-                var stateUDT = StateUDTField as IStateUDT;
+                //if (StateUDTField/*?.WrappedUDT*/ != null) { return; }
+                if (StateUDTField.IsExistingDeclaration) { return; }
+
+                var stateUDT = StateUDTField;
                 stateUDT.AddMembers(model.SelectedFieldCandidates);
 
                 AddCodeBlock(NewContentTypes.TypeDeclarationBlock, stateUDT.TypeDeclarationBlock(_indenter));

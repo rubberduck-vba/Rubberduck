@@ -121,6 +121,49 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
+        public void LoadsExistingUDT()
+        {
+            string inputCode =
+$@"
+Private Type TBar
+    First As String
+    Second As Long
+End Type
+
+Private my|Bar As TBar
+
+Public foo As Long
+Public bar As String
+Public foobar As Byte
+";
+
+            var userInput = new UserInputDataObject()
+                .UserSelectsField("foo")
+                .UserSelectsField("bar")
+                .UserSelectsField("foobar");
+
+            userInput.EncapsulateAsUDT = true;
+            userInput.ObjectStateUDTTargetID = "myBar";
+
+            var presenterAction = Support.SetParameters(userInput);
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            StringAssert.DoesNotContain($"Private this As {Support.StateUDTDefaultType}", actualCode);
+            //StringAssert.Contains($"Private Type {Support.StateUDTDefaultType}", actualCode);
+            StringAssert.Contains("Foo As Long", actualCode);
+            StringAssert.DoesNotContain("Public foo As Long", actualCode);
+            StringAssert.Contains("Bar As String", actualCode);
+            StringAssert.DoesNotContain("Public bar As Long", actualCode);
+            StringAssert.Contains("Foobar As Byte", actualCode);
+            StringAssert.DoesNotContain("Public foobar As Long", actualCode);
+            StringAssert.DoesNotContain("MyBar As TBar", actualCode);
+            StringAssert.DoesNotContain("Private this As TBar", actualCode);
+            StringAssert.Contains("First As String", actualCode);
+            StringAssert.Contains("Second As Long", actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void MultipleFields()
         {
             string inputCode =
