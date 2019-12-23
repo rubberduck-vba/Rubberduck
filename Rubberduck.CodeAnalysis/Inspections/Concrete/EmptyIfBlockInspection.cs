@@ -3,15 +3,12 @@ using Antlr4.Runtime.Misc;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
-using Rubberduck.Resources.Experimentals;
 using Rubberduck.Parsing.VBA;
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -40,7 +37,6 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
     internal class EmptyIfBlockInspection : ParseTreeInspectionBase
     {
         public EmptyIfBlockInspection(RubberduckParserState state)
