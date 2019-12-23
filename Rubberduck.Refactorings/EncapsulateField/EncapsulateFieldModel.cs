@@ -11,6 +11,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly Func<EncapsulateFieldModel, string> _previewDelegate;
         private QualifiedModuleName _targetQMN;
         private IEncapsulateFieldNamesValidator _validator;
+        private IObjectStateUDT _newObjectStateUDT;
 
         private IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> _udtFieldToUdtDeclarationMap = new Dictionary<Declaration, (Declaration, IEnumerable<Declaration>)>();
 
@@ -19,6 +20,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _previewDelegate = previewDelegate;
             _targetQMN = target.QualifiedModuleName;
             _validator = validator;
+            _newObjectStateUDT = stateUDTField;
 
             EncapsulationCandidates = candidates.ToList();
             //StateUDTField = stateUDTField;
@@ -56,18 +58,19 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
             get
             {
+                if (!EncapsulateWithUDT) { return null; }
+
                 if (_stateUDTField != null)
                 {
                     return _stateUDTField;
                 }
 
-                if (!EncapsulateWithUDT) { return null; }
-                var stateUDT = EncapsulationCandidates.Where(sfc => sfc is IUserDefinedTypeCandidate udt
+                var selectedStateUDT = EncapsulationCandidates.Where(sfc => sfc is IUserDefinedTypeCandidate udt
                         && udt.IsObjectStateUDT).Select(sfc => sfc as IUserDefinedTypeCandidate).FirstOrDefault();
 
-                _stateUDTField = stateUDT != null
-                    ? new ObjectStateUDT(stateUDT)
-                    : null;
+                _stateUDTField = selectedStateUDT != null
+                    ? new ObjectStateUDT(selectedStateUDT)
+                    : _newObjectStateUDT;
 
                 return _stateUDTField;
             }

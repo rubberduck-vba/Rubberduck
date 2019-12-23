@@ -29,28 +29,19 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public override string AsUDTMemberDeclaration
             => $"{PropertyName}({_subscripts}) {Tokens.As} {AsTypeName_Field}";
 
-        public override void StageFieldReferenceReplacements(IObjectStateUDT stateUDT = null)
+        public override void LoadFieldReferenceContextReplacements()
         {
-            PropertyAccessor = stateUDT is null ? AccessorTokens.Field : AccessorTokens.Property;
-            ReferenceAccessor = AccessorTokens.Property;
-            ReferenceQualifier = stateUDT?.FieldIdentifier ?? null;
-            LoadFieldReferenceContextReplacements();
-        }
-
-        protected override void LoadFieldReferenceContextReplacements()
-        {
-            var field = this;
-            foreach (var idRef in field.Declaration.References)
+            foreach (var idRef in Declaration.References)
             {
                 var replacementText = RequiresAccessQualification(idRef)
-                    ? $"{field.QualifiedModuleName.ComponentName}.{field.ReferenceForPreExistingReferences}"
-                    : field.FieldIdentifier;
+                    ? $"{QualifiedModuleName.ComponentName}.{ReferenceForPreExistingReferences}"
+                    : FieldIdentifier;
 
-                field.SetReferenceRewriteContent(idRef, replacementText);
+                SetReferenceRewriteContent(idRef, replacementText);
             }
         }
 
-        public override void SetReferenceRewriteContent(IdentifierReference idRef, string replacementText)
+        protected override void SetReferenceRewriteContent(IdentifierReference idRef, string replacementText)
         {
             var context = idRef.Context;
             if (idRef.Context is VBAParser.IndexExprContext idxExpression)

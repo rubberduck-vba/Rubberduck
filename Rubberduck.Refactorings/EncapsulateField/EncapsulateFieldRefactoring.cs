@@ -128,10 +128,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return previewRewriter.GetText(maxConsecutiveNewLines: 3);
         }
 
-        private IObjectStateUDT StateUDTField
-            => Model.EncapsulateWithUDT ? Model.StateUDTField : null;
-
-
         public IEncapsulateFieldRewriteSession GeneratePreview(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession)
         {
             if (!model.SelectedFieldCandidates.Any()) { return refactorRewriteSession; }
@@ -159,13 +155,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private void ModifyReferences(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession)
         {
-            var stateUDT = model.EncapsulateWithUDT
-                ? model.StateUDTField
-                : null;
-
             foreach (var field in model.SelectedFieldCandidates)
             {
-                field.StageFieldReferenceReplacements(stateUDT);
+                field.ReferenceQualifier = model.EncapsulateWithUDT
+                    ? model.StateUDTField.FieldIdentifier
+                    : null;
+
+                field.LoadFieldReferenceContextReplacements();
             }
 
             foreach (var rewriteReplacement in model.SelectedFieldCandidates.SelectMany(field => field.ReferenceReplacements))
@@ -189,29 +185,18 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     refactorRewriteSession.Remove(field.Declaration, rewriter);
                 }
 
-                if (model.StateUDTField is null)
+                if (!model.StateUDTField.IsExistingDeclaration)
                 {
-                    model.StateUDTField = _encapsulationCandidateFactory.CreateStateUDTField();
                     return;
                 }
+
                 var stateUDT = model.StateUDTField;
-                var stateUDTDeclaration = model.StateUDTField as IEncapsulateFieldDeclaration;
-                //if (stateUDT.WrappedUDT != null)
-                //{
+
                 stateUDT.AddMembers(model.SelectedFieldCandidates);
-                //}
-                var content = stateUDT.TypeDeclarationBlock(_indenter);
+
                 rewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
 
-                var udts = _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.UserDefinedType);
-
-                var udtDeclaration = _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.UserDefinedType)
-                    .Where(udt => udt.HasPrivateAccessibility() 
-                    && udt.QualifiedModuleName.Equals(stateUDTDeclaration.QualifiedModuleName)
-                    && udt.IdentifierName.Equals(stateUDTDeclaration.AsTypeName))
-                    .Single();
-
-                rewriter.Replace(udtDeclaration, content);
+                rewriter.Replace(stateUDT.AsTypeDeclaration, stateUDT.TypeDeclarationBlock(_indenter));
 
                 return;
             }
@@ -281,14 +266,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             if (model.EncapsulateWithUDT)
             {
-                //if (StateUDTField/*?.WrappedUDT*/ != null) { return; }
-                if (StateUDTField.IsExistingDeclaration) { return; }
+                if (model.StateUDTField?.IsExistingDeclaration ?? false) { return; }
 
-                var stateUDT = StateUDTField;
-                stateUDT.AddMembers(model.SelectedFieldCandidates);
+                model.StateUDTField = _encapsulationCandidateFactory.CreateStateUDTField();
 
-                AddCodeBlock(NewContentTypes.TypeDeclarationBlock, stateUDT.TypeDeclarationBlock(_indenter));
-                AddCodeBlock(NewContentTypes.DeclarationBlock, stateUDT.FieldDeclarationBlock);
+                model.StateUDTField.AddMembers(model.SelectedFieldCandidates);
+
+                AddCodeBlock(NewContentTypes.TypeDeclarationBlock, model.StateUDTField.TypeDeclarationBlock(_indenter));
+                AddCodeBlock(NewContentTypes.DeclarationBlock, model.StateUDTField.FieldDeclarationBlock);
                 return;
             }
 

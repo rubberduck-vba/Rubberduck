@@ -40,7 +40,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             IEncapsulateFieldCandidate candidate = CreateCandidate(target);
 
-            candidate = ApplyTypeSpecificAttributes(candidate);
             if (candidate is IUserDefinedTypeCandidate udtVariable)
             {
                 (Declaration udtDeclaration, IEnumerable<Declaration> udtMembers) = GetUDTAndMembersForField(udtVariable);
@@ -50,8 +49,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 foreach (var udtMemberDeclaration in udtMembers)
                 {
                     var candidateUDTMember = new UserDefinedTypeMemberCandidate(CreateCandidate(udtMemberDeclaration), udtVariable, _validator) as IUserDefinedTypeMemberCandidate;
-
-                    candidateUDTMember = ApplyTypeSpecificAttributes(candidateUDTMember);
 
                     udtVariable.AddMember(candidateUDTMember);
                 }
@@ -103,55 +100,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return candidate;
         }
 
-        private T ApplyTypeSpecificAttributes<T>(T candidate) where T: IEncapsulateFieldCandidate
-        {
-            /*
-             * Default values are:
-             * candidate.ImplementLetSetterType = true;
-             * candidate.ImplementSetSetterType = false;
-             * candidate.CanBeReadWrite = true;
-             * candidate.IsReadOnly = false;
-             */
-
-            if (candidate.Declaration.IsEnumField())
-            {
-                //5.3.1 The declared type of a function declaration may not be a private enum name.
-                if (candidate.Declaration.AsTypeDeclaration.HasPrivateAccessibility())
-                {
-                    candidate.AsTypeName_Property = Tokens.Long;
-                }
-            }
-            else if (candidate.Declaration.AsTypeName.Equals(Tokens.Variant)
-                && !candidate.Declaration.IsArray)
-            {
-                candidate.ImplementLet = true;
-                candidate.ImplementSet = true;
-            }
-            else if (candidate.Declaration.IsObject)
-            {
-                candidate.ImplementLet = false;
-                candidate.ImplementSet = true;
-            }
-            return candidate;
-        }
-
         private (Declaration TypeDeclaration, IEnumerable<Declaration> Members) GetUDTAndMembersForField(IUserDefinedTypeCandidate udtField)
         {
-            var userDefinedTypeDeclaration = _declarationFinderProvider.DeclarationFinder
-                .UserDeclarations(DeclarationType.UserDefinedType)
-                .Where(ut => ut.IdentifierName.Equals(udtField.AsTypeName_Field)
-                    && ut.QualifiedModuleName == udtField.QualifiedModuleName)
-                .SingleOrDefault();
-
-            if (userDefinedTypeDeclaration is null)
-            {
-                userDefinedTypeDeclaration = _declarationFinderProvider.DeclarationFinder
-                    .UserDeclarations(DeclarationType.UserDefinedType)
-                    .Where(ut => ut.IdentifierName.Equals(udtField.AsTypeName_Field)
-                        && ut.ProjectId == udtField.Declaration.ProjectId
-                        && ut.Accessibility != Accessibility.Private)
-                .SingleOrDefault();
-            }
+            var userDefinedTypeDeclaration = udtField.Declaration.AsTypeDeclaration;
 
             var udtMembers = _declarationFinderProvider.DeclarationFinder
                .UserDeclarations(DeclarationType.UserDefinedTypeMember)

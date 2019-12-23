@@ -12,40 +12,31 @@ namespace Rubberduck.Refactorings.EncapsulateField
         string IdentifierName { get; }
         QualifiedModuleName QualifiedModuleName { get; }
         string AsTypeName { get; }
-        Selection Selection { get; }
-        Accessibility Accessibility { get; }
     }
 
     public interface IEncapsulateFieldCandidate : IEncapsulateFieldDeclaration
     {
         Declaration Declaration { get; }
-        //string IdentifierName { get; }
         string TargetID { get; }
         bool IsReadOnly { get; set; }
         bool EncapsulateFlag { get; set; }
         string FieldIdentifier { set; get; }
         bool CanBeReadWrite { set; get; }
-        //QualifiedModuleName QualifiedModuleName { get; }
         string PropertyName { get; set; }
         string AsTypeName_Field { get; set; }
         string AsTypeName_Property { get; set; }
         string ParameterName { get; }
-        bool ImplementLet { get; set; }
-        bool ImplementSet { get; set; }
+        bool ImplementLet { get; }
+        bool ImplementSet { get; }
         IEnumerable<IPropertyGeneratorAttributes> PropertyAttributeSets { get; }
         string AsUDTMemberDeclaration { get; }
         IEnumerable<KeyValuePair<IdentifierReference, (ParserRuleContext, string)>> ReferenceReplacements { get; }
-        void SetReferenceRewriteContent(IdentifierReference idRef, string replacementText);
         string ReferenceQualifier { set; get; }
-        string ReferenceWithinNewProperty { get; }
-        void StageFieldReferenceReplacements(IObjectStateUDT stateUDT = null);
-        AccessorTokens PropertyAccessor { set; get; }
-        AccessorTokens ReferenceAccessor { set; get; }
+        void LoadFieldReferenceContextReplacements();
         bool TryValidateEncapsulationAttributes(out string errorMessage);
-
     }
 
-    public enum AccessorTokens { Field, Property }
+    public enum AccessorMember { Field, Property }
 
     public interface IEncapsulateFieldCandidateValidations
     {
@@ -67,44 +58,51 @@ namespace Rubberduck.Refactorings.EncapsulateField
             : this(declaration.IdentifierName, declaration.AsTypeName, declaration.QualifiedModuleName, validator)
         {
             _target = declaration;
+
+            if (_target.IsEnumField())
+            {
+                //5.3.1 The declared type of a function declaration may not be a private enum name.
+                if (_target.AsTypeDeclaration.HasPrivateAccessibility())
+                {
+                    AsTypeName_Property = Tokens.Long;
+                }
+            }
+            else if (_target.AsTypeName.Equals(Tokens.Variant)
+                && !_target.IsArray)
+            {
+                ImplementLet = true;
+                ImplementSet = true;
+            }
+            else if (Declaration.IsObject)
+            {
+                ImplementLet = false;
+                ImplementSet = true;
+            }
         }
 
         public EncapsulateFieldCandidate(string identifier, string asTypeName, QualifiedModuleName qmn, IEncapsulateFieldNamesValidator validator)
         {
-            _target = null;
-
             _fieldAndProperty = new EncapsulationIdentifiers(identifier);
             IdentifierName = identifier;
             AsTypeName_Field = asTypeName;
             AsTypeName_Property = asTypeName;
             _qmn = qmn;
-            PropertyAccessor = AccessorTokens.Field;
-            ReferenceAccessor = AccessorTokens.Property;
+            NewPropertyAccessor = AccessorMember.Field;
+            ReferenceAccessor = AccessorMember.Property;
 
             _validator = validator;
 
             ImplementLet = true;
             ImplementSet = false;
+
             CanBeReadWrite = true;
 
             _hashCode = ($"{_qmn.Name}.{identifier}").GetHashCode();
         }
 
-        public virtual void StageFieldReferenceReplacements(IObjectStateUDT stateUDT = null)
-        {
-            PropertyAccessor = stateUDT is null ? AccessorTokens.Field : AccessorTokens.Property;
-            ReferenceAccessor = AccessorTokens.Property;
-            ReferenceQualifier = stateUDT?.FieldIdentifier ?? null;
-            LoadFieldReferenceContextReplacements();
-        }
-
         protected Dictionary<IdentifierReference, (ParserRuleContext, string)> IdentifierReplacements { get; } = new Dictionary<IdentifierReference, (ParserRuleContext, string)>();
 
         public Declaration Declaration => _target;
-
-        public Selection Selection => _target.Selection;
-
-        public Accessibility Accessibility => _target.Accessibility;
 
         public string AsTypeName => _target.AsTypeName;
 
@@ -156,7 +154,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        public virtual void SetReferenceRewriteContent(IdentifierReference idRef, string replacementText)
+        protected virtual void SetReferenceRewriteContent(IdentifierReference idRef, string replacementText)
         {
             if (IdentifierReplacements.ContainsKey(idRef))
             {
@@ -249,6 +247,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
             set => _identifierName = value;
         }
 
+        public virtual string ReferenceQualifier { set; get; }
+
         public string ParameterName => _fieldAndProperty.SetLetParameter;
 
         private bool _implLet;
@@ -257,39 +257,45 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private bool _implSet;
         public bool ImplementSet { get => !IsReadOnly && _implSet; set => _implSet = value; }
 
-        public AccessorTokens PropertyAccessor { set; get; }
-
-        public AccessorTokens ReferenceAccessor { set; get; }
-
-        protected string _referenceQualifier;
-        public virtual string ReferenceQualifier
-        {
-            set => _referenceQualifier = value;
-            get => _referenceQualifier;
-        }
-
-        public virtual string ReferenceWithinNewProperty => AccessorTokenToContent(PropertyAccessor);
-
-        protected virtual string ReferenceForPreExistingReferences => AccessorTokenToContent(ReferenceAccessor);
-
-        private string AccessorTokenToContent(AccessorTokens token)
-        {
-            var accessor = token == AccessorTokens.Field
-                ? FieldIdentifier
-                : PropertyName;
-
-            if ((ReferenceQualifier?.Length ?? 0) > 0)
-            {
-                return $"{ReferenceQualifier}.{accessor}";
-            }
-            return accessor;
-        }
-
-        public virtual string AsUDTMemberDeclaration 
+        public virtual string AsUDTMemberDeclaration
             => $"{PropertyName} {Tokens.As} {AsTypeName_Field}";
 
-        public virtual IEnumerable<IPropertyGeneratorAttributes> PropertyAttributeSets 
+        public virtual IEnumerable<IPropertyGeneratorAttributes> PropertyAttributeSets
             => new List<IPropertyGeneratorAttributes>() { AsPropertyAttributeSet };
+
+        public virtual void LoadFieldReferenceContextReplacements()
+        {
+            foreach (var idRef in Declaration.References)
+            {
+                var replacementText = RequiresAccessQualification(idRef)
+                    ? $"{QualifiedModuleName.ComponentName}.{ReferenceForPreExistingReferences}"
+                    : ReferenceForPreExistingReferences;
+
+                SetReferenceRewriteContent(idRef, replacementText);
+            }
+        }
+
+        protected AccessorMember NewPropertyAccessor { set; get; }
+
+        protected AccessorMember ReferenceAccessor { set; get; }
+
+        protected virtual string ReferenceWithinNewProperty 
+            => AccessorMemberToContent(NewPropertyAccessor);
+
+        protected virtual string ReferenceForPreExistingReferences 
+            => AccessorMemberToContent(ReferenceAccessor);
+
+        private string AccessorMemberToContent(AccessorMember accessorMember)
+        {
+            if ((ReferenceQualifier?.Length ?? 0) > 0)
+            {
+                return $"{ReferenceQualifier}.{PropertyName}";
+            }
+
+            return accessorMember == AccessorMember.Field
+                ? FieldIdentifier
+                : PropertyName;
+        }
 
         protected virtual IPropertyGeneratorAttributes AsPropertyAttributeSet
         {
@@ -308,20 +314,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        protected virtual void LoadFieldReferenceContextReplacements()
-        {
-            var field = this;
-            foreach (var idRef in field.Declaration.References)
-            {
-                var replacementText = RequiresAccessQualification(idRef)
-                    ? $"{field.QualifiedModuleName.ComponentName}.{field.ReferenceForPreExistingReferences}"
-                    : field.ReferenceForPreExistingReferences;
-
-                field.SetReferenceRewriteContent(idRef, replacementText);
-            }
-        }
-
-        protected bool RequiresAccessQualification(IdentifierReference idRef)
+        protected virtual bool RequiresAccessQualification(IdentifierReference idRef)
         {
             var isLHSOfMemberAccess =
                         (idRef.Context.Parent is VBAParser.MemberAccessExprContext

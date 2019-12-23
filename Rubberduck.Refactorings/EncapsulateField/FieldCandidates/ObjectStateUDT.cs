@@ -19,17 +19,16 @@ namespace Rubberduck.Refactorings.EncapsulateField
         string FieldDeclarationBlock { get; }
         void AddMembers(IEnumerable<IEncapsulateFieldCandidate> fields);
         bool IsExistingDeclaration { get; }
+        Declaration AsTypeDeclaration { get; }
     }
 
-    /*
-     * StateUDT is the UserDefinedType introduced by this refactoring 
-     * whose members represent object state in lieu of individually declared member variables/fields.
-     */
-    public class ObjectStateUDT : IObjectStateUDT//, IEncapsulateFieldDeclaration
+    //ObjectStateUDT can be an existing UDT (Private only) selected by the user, or a 
+    //newly inserted declaration
+    public class ObjectStateUDT : IObjectStateUDT
     {
         private static string _defaultNewFieldName = EncapsulateFieldResources.DefaultStateUDTFieldName;
         private List<IEncapsulateFieldCandidate> _members;
-        private readonly IUserDefinedTypeCandidate _decoratedUDT;
+        private readonly IUserDefinedTypeCandidate _wrappedUDT;
 
         public ObjectStateUDT(IUserDefinedTypeCandidate udt)
             :this(udt.Declaration.AsTypeName)
@@ -39,7 +38,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 throw new ArgumentException();
             }
 
-            _decoratedUDT = udt;
+            _wrappedUDT = udt;
             QualifiedModuleName = udt.Declaration.QualifiedModuleName;
         }
 
@@ -49,26 +48,24 @@ namespace Rubberduck.Refactorings.EncapsulateField
             QualifiedModuleName = qmn;
         }
 
-        public ObjectStateUDT(string typeIdentifier)
+        private ObjectStateUDT(string typeIdentifier)
         {
             FieldIdentifier = _defaultNewFieldName;
             TypeIdentifier = typeIdentifier;
             _members = new List<IEncapsulateFieldCandidate>();
         }
 
-        public string IdentifierName => _decoratedUDT?.IdentifierName ?? FieldIdentifier;
+        public string IdentifierName => _wrappedUDT?.IdentifierName ?? FieldIdentifier;
 
-        public Selection Selection => _decoratedUDT?.Selection ?? new Selection();
-
-        public Accessibility Accessibility => Accessibility.Private; // _decoratedUDT.Accessibility;
-
-        public string AsTypeName => _decoratedUDT?.AsTypeName ?? TypeIdentifier;
+        public string AsTypeName => _wrappedUDT?.AsTypeName ?? TypeIdentifier;
 
         public QualifiedModuleName QualifiedModuleName { set;  get; }
 
         public string TypeIdentifier { set; get; }
 
-        public bool IsExistingDeclaration => _decoratedUDT != null;
+        public bool IsExistingDeclaration => _wrappedUDT != null;
+
+        public Declaration AsTypeDeclaration => _wrappedUDT.Declaration.AsTypeDeclaration;
 
         public string FieldIdentifier { set; get; }
 
@@ -76,7 +73,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             if (IsExistingDeclaration)
             {
-                _members = _decoratedUDT.Members.Select(m => m).Cast<IEncapsulateFieldCandidate>().ToList();
+                _members = _wrappedUDT.Members.Select(m => m).Cast<IEncapsulateFieldCandidate>().ToList();
             }
             _members.AddRange(fields);
         }

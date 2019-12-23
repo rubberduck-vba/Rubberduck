@@ -22,8 +22,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public UserDefinedTypeCandidate(Declaration declaration, IEncapsulateFieldNamesValidator validator)
             : base(declaration, validator)
         {
-            PropertyAccessor = AccessorTokens.Field;
-            ReferenceAccessor = AccessorTokens.Field;
+            NewPropertyAccessor = AccessorMember.Field;
+            ReferenceAccessor = AccessorMember.Field;
         }
 
         public void AddMember(IUserDefinedTypeMemberCandidate member)
@@ -47,6 +47,20 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             get => TypeDeclarationIsPrivate ? _fieldAndProperty.TargetFieldName : _fieldAndProperty.Field;
             set => _fieldAndProperty.Field = value;
+        }
+
+        private string _referenceQualifier;
+        public override string ReferenceQualifier
+        {
+            set
+            {
+                _referenceQualifier = value;
+                foreach( var member in Members)
+                {
+                    member.ReferenceQualifier = ReferenceWithinNewProperty;
+                }
+            }
+            get => _referenceQualifier;
         }
 
         private bool _isReadOnly;
@@ -90,28 +104,23 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => _encapsulateFlag && !_isObjectStateUDT;
         }
 
-
-        public override string ReferenceQualifier
-        {
-            set
-            {
-                _referenceQualifier = value;
-                PropertyAccessor = (value?.Length ?? 0) == 0
-                    ? AccessorTokens.Field
-                    : AccessorTokens.Property;
-            }
-            get => _referenceQualifier;
-        }
-
-        protected override void LoadFieldReferenceContextReplacements()
+        public override void LoadFieldReferenceContextReplacements()
         {
             if (TypeDeclarationIsPrivate)
             {
-                LoadPrivateUDTFieldReferenceExpressions();
+                LoadPrivateUDTFieldLocalReferenceExpressions();
                 LoadUDTMemberReferenceExpressions();
                 return;
             }
-            base.LoadFieldReferenceContextReplacements();
+
+            foreach (var idRef in Declaration.References)
+            {
+                var replacementText = RequiresAccessQualification(idRef)
+                    ? $"{QualifiedModuleName.ComponentName}.{PropertyName}"
+                    : PropertyName;
+
+                SetReferenceRewriteContent(idRef, replacementText);
+            }
         }
 
         public override IEnumerable<IPropertyGeneratorAttributes> PropertyAttributeSets
@@ -128,19 +137,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     return specs;
                 }
                 return new List<IPropertyGeneratorAttributes>() { AsPropertyAttributeSet };
-            }
-        }
-
-        public override void StageFieldReferenceReplacements(IObjectStateUDT stateUDT = null)
-        {
-
-            PropertyAccessor = stateUDT is null ? AccessorTokens.Field : AccessorTokens.Property;
-            ReferenceAccessor = AccessorTokens.Property;
-            ReferenceQualifier = stateUDT?.FieldIdentifier ?? null;
-            LoadFieldReferenceContextReplacements();
-            foreach (var member in Members)
-            {
-                member.StageFieldReferenceReplacements(stateUDT);
             }
         }
 
@@ -207,7 +203,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return true;
         }
 
-        private void LoadPrivateUDTFieldReferenceExpressions()
+        private void LoadPrivateUDTFieldLocalReferenceExpressions()
         {
             foreach (var idRef in Declaration.References)
             {
@@ -223,23 +219,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             foreach (var member in Members)
             {
-                foreach (var rf in member.FieldRelatedReferences(this))
-                {
-                    if (rf.QualifiedModuleName == QualifiedModuleName
-                        && !rf.Context.TryGetAncestor<VBAParser.WithMemberAccessExprContext>(out _))
-                    {
-                        member.SetReferenceRewriteContent(rf, member.PropertyName);
-                    }
-                    else
-                    {
-                        var moduleQualifier = rf.Context.TryGetAncestor<VBAParser.WithStmtContext>(out _)
-                            || rf.QualifiedModuleName == QualifiedModuleName
-                            ? string.Empty
-                            : $"{QualifiedModuleName.ComponentName}";
-
-                        member.SetReferenceRewriteContent(rf, $"{moduleQualifier}.{member.PropertyName}");
-                    }
-                }
+                member.LoadReferenceExpressions();
             }
         }
     }

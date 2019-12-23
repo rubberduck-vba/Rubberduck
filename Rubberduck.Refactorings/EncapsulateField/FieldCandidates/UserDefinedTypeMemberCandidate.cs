@@ -14,49 +14,61 @@ namespace Rubberduck.Refactorings.EncapsulateField
         IUserDefinedTypeCandidate Parent { get; }
         IPropertyGeneratorAttributes AsPropertyGeneratorSpec { get; }
         Dictionary<IdentifierReference, (ParserRuleContext, string)> IdentifierReplacements { get; }
-        IEnumerable<IdentifierReference> FieldRelatedReferences(IUserDefinedTypeCandidate field);
+        IEnumerable<IdentifierReference> ParentContextReferences { get; }
+        void LoadReferenceExpressions();
     }
 
     public class UserDefinedTypeMemberCandidate : IUserDefinedTypeMemberCandidate
     {
         private readonly IEncapsulateFieldNamesValidator _validator;
         private int _hashCode;
-        public UserDefinedTypeMemberCandidate(IEncapsulateFieldCandidate efd, IUserDefinedTypeCandidate udtVariable, IEncapsulateFieldNamesValidator validator)
+        private readonly string _uniqueID;
+        public UserDefinedTypeMemberCandidate(IEncapsulateFieldCandidate candidate, IUserDefinedTypeCandidate udtVariable, IEncapsulateFieldNamesValidator validator)
         {
-            _decoratedField = efd;
+            _wrappedCandidate = candidate;
             Parent = udtVariable;
             _validator = validator;
             PropertyName = IdentifierName;
-            PropertyAccessor = AccessorTokens.Property;
-            ReferenceAccessor = AccessorTokens.Property;
-            _hashCode = ($"{efd.QualifiedModuleName.Name}.{efd.IdentifierName}").GetHashCode();
+            _uniqueID = BuildUniqueID(candidate);
+            _hashCode = _uniqueID.GetHashCode();
         }
 
-        private IEncapsulateFieldCandidate _decoratedField;
+        private IEncapsulateFieldCandidate _wrappedCandidate;
 
-        public Selection Selection => _decoratedField.Selection;
-
-        public Accessibility Accessibility => _decoratedField.Accessibility;
-
-        public string AsTypeName => _decoratedField.AsTypeName;
+        public string AsTypeName => _wrappedCandidate.AsTypeName;
 
         public IUserDefinedTypeCandidate Parent { private set; get; }
 
-        public void StageFieldReferenceReplacements(IObjectStateUDT stateUDT = null) { }
+        public void LoadFieldReferenceContextReplacements() { }
 
-        private string _referenceQualifier;
-        public string ReferenceQualifier
-        {
-            set => _referenceQualifier = value;
-            get => Parent.ReferenceWithinNewProperty;
-        }
+        public string ReferenceQualifier { set; get; }
 
         public string TargetID => $"{Parent.IdentifierName}.{IdentifierName}";
 
-        public IEnumerable<IdentifierReference> FieldRelatedReferences(IUserDefinedTypeCandidate field)
-            => GetUDTMemberReferencesForField(this, field);
+        public IEnumerable<IdentifierReference> ParentContextReferences
+            => GetUDTMemberReferencesForField(this, Parent);
 
-        public void SetReferenceRewriteContent(IdentifierReference idRef, string replacementText)
+        public void LoadReferenceExpressions()
+        {
+            foreach (var rf in ParentContextReferences)
+            {
+                if (rf.QualifiedModuleName == QualifiedModuleName
+                    && !rf.Context.TryGetAncestor<VBAParser.WithMemberAccessExprContext>(out _))
+                {
+                    SetReferenceRewriteContent(rf, PropertyName);
+                    continue;
+                }
+                var moduleQualifier = rf.Context.TryGetAncestor<VBAParser.WithStmtContext>(out _)
+                    || rf.QualifiedModuleName == QualifiedModuleName
+                    ? string.Empty
+                    : $"{QualifiedModuleName.ComponentName}";
+
+                SetReferenceRewriteContent(rf, $"{moduleQualifier}.{PropertyName}");
+            }
+        }
+
+
+        protected void SetReferenceRewriteContent(IdentifierReference idRef, string replacementText)
         {
             Debug.Assert(idRef.Context.Parent is ParserRuleContext, "idRef.Context.Parent is not convertable to ParserRuleContext");
 
@@ -87,17 +99,18 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public Dictionary<IdentifierReference, (ParserRuleContext, string)> IdentifierReplacements { get; } = new Dictionary<IdentifierReference, (ParserRuleContext, string)>();
 
-
         public override bool Equals(object obj)
         {
             return obj != null
-                && obj is IUserDefinedTypeMemberCandidate
-                && obj.GetHashCode() == GetHashCode();
+                && obj is IUserDefinedTypeMemberCandidate udtMember
+                && BuildUniqueID(udtMember) == _uniqueID;
         }
 
         public override int GetHashCode() => _hashCode;
 
-        private IEnumerable<IdentifierReference> GetUDTMemberReferencesForField(IEncapsulateFieldCandidate udtMember, IUserDefinedTypeCandidate field)
+        private static string BuildUniqueID(IEncapsulateFieldCandidate candidate) => $"{candidate.QualifiedModuleName.Name}.{candidate.IdentifierName}";
+
+        private static IEnumerable<IdentifierReference> GetUDTMemberReferencesForField(IEncapsulateFieldCandidate udtMember, IUserDefinedTypeCandidate field)
         {
             var refs = new List<IdentifierReference>();
             foreach (var idRef in udtMember.Declaration.References)
@@ -140,8 +153,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return refs;
         }
 
-        public Declaration Declaration => _decoratedField.Declaration;
-        public string IdentifierName => _decoratedField.IdentifierName;
+        public Declaration Declaration => _wrappedCandidate.Declaration;
+        public string IdentifierName => _wrappedCandidate.IdentifierName;
 
         public bool TryValidateEncapsulationAttributes(out string errorMessage)
         {
@@ -151,72 +164,56 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public bool IsReadOnly
         {
-            set => _decoratedField.IsReadOnly = value;
-            get => _decoratedField.IsReadOnly;
+            set => _wrappedCandidate.IsReadOnly = value;
+            get => _wrappedCandidate.IsReadOnly;
         }
         public bool EncapsulateFlag
         {
-            set => _decoratedField.EncapsulateFlag = value;
-            get => _decoratedField.EncapsulateFlag;
+            set => _wrappedCandidate.EncapsulateFlag = value;
+            get => _wrappedCandidate.EncapsulateFlag;
         }
         public string FieldIdentifier
         {
-            set => _decoratedField.FieldIdentifier = value;
-            get => _decoratedField.FieldIdentifier;
+            set => _wrappedCandidate.FieldIdentifier = value;
+            get => _wrappedCandidate.FieldIdentifier;
         }
         public bool CanBeReadWrite
         {
-            set => _decoratedField.CanBeReadWrite = value;
-            get => _decoratedField.CanBeReadWrite;
+            set => _wrappedCandidate.CanBeReadWrite = value;
+            get => _wrappedCandidate.CanBeReadWrite;
         }
         public bool HasValidEncapsulationAttributes => true;
 
         public QualifiedModuleName QualifiedModuleName 
-            => _decoratedField.QualifiedModuleName;
+            => _wrappedCandidate.QualifiedModuleName;
 
         public string PropertyName
         {
-            set => _decoratedField.PropertyName = value;
-            get => _decoratedField.PropertyName;
+            set => _wrappedCandidate.PropertyName = value;
+            get => _wrappedCandidate.PropertyName;
         }
         public string AsTypeName_Field
         {
-            set => _decoratedField.AsTypeName_Field = value;
-            get => _decoratedField.AsTypeName_Field;
+            set => _wrappedCandidate.AsTypeName_Field = value;
+            get => _wrappedCandidate.AsTypeName_Field;
         }
         public string AsTypeName_Property
         {
-            set => _decoratedField.AsTypeName_Property = value;
-            get => _decoratedField.AsTypeName_Property;
+            set => _wrappedCandidate.AsTypeName_Property = value;
+            get => _wrappedCandidate.AsTypeName_Property;
         }
-        public string ParameterName => _decoratedField.ParameterName;
-        public bool ImplementLet
-        {
-            set => _decoratedField.ImplementLet = value;
-            get => _decoratedField.ImplementLet;
-        }
-        public bool ImplementSet
-        {
-            set => _decoratedField.ImplementSet = value;
-            get => _decoratedField.ImplementSet;
-        }
-        public IEnumerable<IPropertyGeneratorAttributes> PropertyAttributeSets => _decoratedField.PropertyAttributeSets;
-        public string AsUDTMemberDeclaration //{ get; }
-            => _decoratedField.AsUDTMemberDeclaration; // $"{_decoratedField.PropertyName} {Tokens.As} {_decoratedField.AsTypeName_Field}";
+        public string ParameterName => _wrappedCandidate.ParameterName;
 
-        public IEnumerable<KeyValuePair<IdentifierReference, (ParserRuleContext, string)>> ReferenceReplacements => _decoratedField.ReferenceReplacements;
-        public string ReferenceWithinNewProperty => $"{Parent.ReferenceWithinNewProperty}.{_decoratedField.IdentifierName}";
+        public bool ImplementLet => _wrappedCandidate.ImplementLet;
 
-        public AccessorTokens PropertyAccessor
-        {
-            set => _decoratedField.PropertyAccessor = value;
-            get => _decoratedField.PropertyAccessor;
-        }
+        public bool ImplementSet => _wrappedCandidate.ImplementSet;
 
-        public AccessorTokens ReferenceAccessor
-        {
-            set => _decoratedField.ReferenceAccessor = value;
-            get => _decoratedField.ReferenceAccessor;
-        }
+        public IEnumerable<IPropertyGeneratorAttributes> PropertyAttributeSets => _wrappedCandidate.PropertyAttributeSets;
+        public string AsUDTMemberDeclaration
+            => _wrappedCandidate.AsUDTMemberDeclaration;
+
+        public IEnumerable<KeyValuePair<IdentifierReference, (ParserRuleContext, string)>> ReferenceReplacements => _wrappedCandidate.ReferenceReplacements;
+
+        private string ReferenceWithinNewProperty => $"{ReferenceQualifier}.{_wrappedCandidate.IdentifierName}";
     }
 }
