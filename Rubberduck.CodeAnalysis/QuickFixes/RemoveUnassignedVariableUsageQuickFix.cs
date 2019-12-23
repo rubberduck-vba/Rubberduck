@@ -11,6 +11,35 @@ using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Removes an instruction that references a variable that isn't assigned. This operation may break the code.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="UnassignedVariableUsageInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     Dim value As Long
+    ///     Debug.Print value
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     Dim value As Long
+    ///     
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class RemoveUnassignedVariableUsageQuickFix : QuickFixBase
     {
         public RemoveUnassignedVariableUsageQuickFix()

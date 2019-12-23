@@ -7,6 +7,33 @@ using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Declares an explicit Variant return type for a procedure that implicitly returns a Variant.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="ImplicitVariantReturnTypeInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Function WorksheetErrorValueNA()
+    ///     WorksheetErrorValueNA = CVErr(xlErrNA)
+    /// End Function
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Function WorksheetErrorValueNA() As Variant
+    ///     WorksheetErrorValueNA = CVErr(xlErrNA)
+    /// End Function
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class SetExplicitVariantReturnTypeQuickFix : QuickFixBase
     {
         public SetExplicitVariantReturnTypeQuickFix()

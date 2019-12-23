@@ -9,6 +9,38 @@ using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Introduces a 'Property Get' member to make a write-only property read/write; Rubberduck will not infer the property's backing field, the body of the new member must be implemented manually.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="WriteOnlyPropertyInspection" />
+    /// </inspections>
+    /// <canfix procedure="false" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Option Explicit
+    /// Private internalValue As Long
+    /// 
+    /// Public Property Let Something(ByVal value As Long)
+    ///     internalValue = value
+    /// End Property
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    /// Private internalValue As Long
+    /// 
+    /// Public Property Get Something() As Long
+    /// End Property
+    /// 
+    /// Public Property Let Something(ByVal value As Long)
+    ///     internalValue = value
+    /// End Property
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class WriteOnlyPropertyQuickFix : QuickFixBase
     {
         public WriteOnlyPropertyQuickFix()

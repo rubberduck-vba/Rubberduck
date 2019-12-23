@@ -9,6 +9,36 @@ using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Splits multiple declarations into separate statements.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="MultipleDeclarationsInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     Dim value As Long, something As String
+    ///     '...
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     Dim value As Long
+    ///     Dim something As String
+    ///     '...
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class SplitMultipleDeclarationsQuickFix : QuickFixBase
     {
         public SplitMultipleDeclarationsQuickFix()

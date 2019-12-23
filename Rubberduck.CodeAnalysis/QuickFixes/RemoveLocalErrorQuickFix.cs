@@ -6,6 +6,45 @@ using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Makes the 'Local' keyword of an 'On Error' statement implicit.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="OnLocalErrorInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     On Local Error GoTo CleanFail
+    ///     Debug.Print 42 / 0
+    /// CleanExit:
+    ///     Exit Sub
+    /// CleanFail:
+    ///     Debug.Print Err.Description
+    ///     Resume CleanExit
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     On Error GoTo CleanFail
+    ///     Debug.Print 42 / 0
+    /// CleanExit:
+    ///     Exit Sub
+    /// CleanFail:
+    ///     Debug.Print Err.Description
+    ///     Resume CleanExit
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class RemoveLocalErrorQuickFix : QuickFixBase
     {
         public RemoveLocalErrorQuickFix()
