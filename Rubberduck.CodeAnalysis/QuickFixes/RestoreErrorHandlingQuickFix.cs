@@ -9,6 +9,41 @@ using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Introduces an error-handling subroutine to ensure error state is properly handled on scope exit.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="UnhandledOnErrorResumeNextInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     On Error Resume Next
+    ///     Debug.Print ActiveWorkbook.FullName
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     On Error GoTo ErrHandler
+    ///     Debug.Print ActiveWorkbook.FullName
+    ///     Exit Sub
+    /// ErrHandler:
+    ///     If Err.Number > 0 Then 'TODO: handle specific error
+    ///         Err.Clear
+    ///         Resume Next
+    ///     End If
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class RestoreErrorHandlingQuickFix : QuickFixBase
     {
         private const string LabelPrefix = "ErrorHandler";

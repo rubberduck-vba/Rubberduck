@@ -12,6 +12,43 @@ using Rubberduck.Parsing.VBA.Parsing;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Adjusts existing hidden attributes to match the corresponding Rubberduck annotations.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="AttributeValueOutOfSyncInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Attribute VB_PredeclaredId = False
+    /// '@PredeclaredId
+    /// 
+    /// Option Explicit
+    /// 
+    /// '@Description("Does something.")
+    /// Public Sub DoSomething()
+    /// Attribute VB_Description = "Does something else."
+    /// 
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Attribute VB_PredeclaredId = True
+    /// '@PredeclaredId
+    /// 
+    /// Option Explicit
+    /// 
+    /// '@Description("Does something.")
+    /// Public Sub DoSomething()
+    /// Attribute VB_Description = "Does something."
+    /// 
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public class AdjustAttributeValuesQuickFix : QuickFixBase
     {
         private readonly IAttributesUpdater _attributesUpdater;

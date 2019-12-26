@@ -10,6 +10,29 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Modifies a parameter to be passed by value.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="ParameterCanBeByValInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByRef value As Long)
+    ///     Debug.Print value
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal value As Long)
+    ///     Debug.Print value
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class PassParameterByValueQuickFix : QuickFixBase
     {
         //TODO: Change this to IDeclarationFinderProvider once the FIXME below is handled.

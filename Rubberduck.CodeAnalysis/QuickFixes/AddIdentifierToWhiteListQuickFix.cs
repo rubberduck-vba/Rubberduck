@@ -8,6 +8,14 @@ using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Adds an identifier or Hungarian Notation prefix to a list of white-listed identifiers and prefixes in Rubberduck's inspection settings.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="HungarianNotationInspection" />
+    /// <inspection name="UseMeaningfulNameInspection" />
+    /// </inspections>
+    /// <canfix procedure="false" module="false" project="false" />
     public sealed class AddIdentifierToWhiteListQuickFix : QuickFixBase
     {
         private readonly IConfigurationService<CodeInspectionSettings> _settings;

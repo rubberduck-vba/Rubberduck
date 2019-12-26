@@ -1,21 +1,41 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.VBA.Parsing;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Adds an '@Ignore annotation to ignore a specific inspection result. Applicable to all inspections whose results can be annotated in a module.
+    /// </summary>
+    /// <canfix procedure="false" module="false" project="false" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim value As Long
+    ///     value = 42
+    ///     Debug.Print 42
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     '@Ignore VariableNotUsed
+    ///     Dim value As Long
+    ///     value = 42
+    ///     Debug.Print 42
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class IgnoreOnceQuickFix : QuickFixBase
     {
         private readonly RubberduckParserState _state;

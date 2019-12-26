@@ -7,6 +7,35 @@ using static Rubberduck.Parsing.Grammar.VBAParser;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Adds an explicit Step specifier to a For loop instruction.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="StepIsNotSpecifiedInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim i As Long
+    ///     For i = 1 To 10
+    ///         Debug.Print i
+    ///     Next
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim i As Long
+    ///     For i = 1 To 10 Step 1
+    ///         Debug.Print i
+    ///     Next
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class AddStepOneQuickFix : QuickFixBase
     {
         public AddStepOneQuickFix()

@@ -13,6 +13,42 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.CodeAnalysis.QuickFixes
 {
+    /// <summary>
+    /// Makes default member calls explicit.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="ObjectWhereProcedureIsRequiredInspection" />
+    /// <inspection name="IndexedDefaultMemberAccessInspection" />
+    /// <inspection name="IndexedRecursiveDefaultMemberAccessInspection" />
+    /// <inspection name="ImplicitDefaultMemberAccessInspection" />
+    /// <inspection name="ImplicitRecursiveDefaultMemberAccessInspection" />
+    /// <inspection name="SuspiciousLetAssignmentInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim values As Dictionary
+    ///     Set values = New Dictionary
+    ///     values("Value1") = 42
+    ///     values("Value2") = 24
+    ///     Debug.Print values("Value1")
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim values As Dictionary
+    ///     Set values = New Dictionary
+    ///     values.Item("Value1") = 42
+    ///     values.Item("Value2") = 24
+    ///     Debug.Print values.Item("Value1")
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public class ExpandDefaultMemberQuickFix : QuickFixBase
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;

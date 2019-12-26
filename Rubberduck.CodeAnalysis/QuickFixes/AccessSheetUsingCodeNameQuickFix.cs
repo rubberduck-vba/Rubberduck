@@ -11,7 +11,32 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public sealed class AccessSheetUsingCodeNameQuickFix : QuickFixBase
+    /// <summary>
+    /// Modifies a Workbook.Worksheets or Workbook.Sheets call accessing a sheet of ThisWorkbook that exists at compile-time.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="SheetAccessedUsingStringInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim sheet As Worksheet
+    ///     Set sheet = ThisWorkbook.Sheets("Sheet1")
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim sheet As Worksheet
+    ///     Set sheet = Sheet1 '<~ note: local variable becomes redundant
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
+    public sealed class AccessSheetUsingCodeNameQuickFix : QuickFixBase // fixme: rename as per action(s), not the inspection that uses it
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
 

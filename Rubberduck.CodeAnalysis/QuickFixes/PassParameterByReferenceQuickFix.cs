@@ -6,6 +6,31 @@ using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Modifies a parameter to be passed by reference.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="AssignedByValParameterInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal value As Long)
+    ///     value = 42
+    ///     Debug.Print value
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByRef value As Long)
+    ///     value = 42
+    ///     Debug.Print value
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class PassParameterByReferenceQuickFix : QuickFixBase
     {
         public PassParameterByReferenceQuickFix()

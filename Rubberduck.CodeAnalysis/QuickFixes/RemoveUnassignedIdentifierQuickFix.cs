@@ -5,6 +5,34 @@ using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Removes the declaration for a variable that is never assigned. This operation may result in broken code if the unassigned variable is in use.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="VariableNotAssignedInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     Dim value As Long
+    ///     Debug.Print value
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     Debug.Print value
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class RemoveUnassignedIdentifierQuickFix : QuickFixBase
     {
         public RemoveUnassignedIdentifierQuickFix()

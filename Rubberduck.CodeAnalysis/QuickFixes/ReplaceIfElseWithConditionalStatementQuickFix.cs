@@ -7,6 +7,41 @@ using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Simplifies conditional Boolean literal assignments with a direct assignment to the conditional expression.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="BooleanAssignedInIfElseInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething(ByVal value As Long)
+    ///     Dim result As Boolean
+    ///     If value > 10 Then
+    ///         result = True
+    ///     Else
+    ///         result = False
+    ///     End If
+    ///     Debug.Print result
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething(ByVal value As Long)
+    ///     Dim result As Boolean
+    ///     result = value > 10
+    ///     Debug.Print result
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class ReplaceIfElseWithConditionalStatementQuickFix : QuickFixBase
     {
         public ReplaceIfElseWithConditionalStatementQuickFix()

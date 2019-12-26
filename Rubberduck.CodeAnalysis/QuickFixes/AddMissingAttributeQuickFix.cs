@@ -9,6 +9,39 @@ using Rubberduck.Parsing.VBA.Parsing;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Exports the module, adds the hidden attributes as needed, re-imports the temporary file back into the project.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="MissingAttributeInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// '@ModuleDescription("Just a module.")
+    /// Option Explicit
+    /// 
+    /// '@Description("Does something.")
+    /// Public Sub DoSomething()
+    /// 
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Attribute VB_Description = "Just a module."
+    /// '@ModuleDescription("Just a module.")
+    /// Option Explicit
+    /// 
+    /// '@Description("Does something.")
+    /// Public Sub DoSomething()
+    /// Attribute VB_Description = "Does something."
+    /// 
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class AddMissingAttributeQuickFix : QuickFixBase
     {
         private readonly IAttributesUpdater _attributesUpdater; 

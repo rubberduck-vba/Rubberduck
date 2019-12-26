@@ -13,6 +13,38 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.CodeAnalysis.QuickFixes
 {
+    /// <summary>
+    /// Replaces bang operators ('dictionary access') with explicit default member calls.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="UseOfBangNotationInspection" />
+    /// <inspection name="UseOfRecursiveBangNotationInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim values As Dictionary
+    ///     Set values = New Dictionary
+    ///     values!Value1 = 42
+    ///     values!Value2 = 24
+    ///     Debug.Print values!Value1
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim values As Dictionary
+    ///     Set values = New Dictionary
+    ///     values.Item("Value1") = 42
+    ///     values.Item("Value2") = 24
+    ///     Debug.Print values.Item("Value1")
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public class ExpandBangNotationQuickFix : QuickFixBase
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider; 

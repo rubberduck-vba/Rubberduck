@@ -6,6 +6,28 @@ using Rubberduck.Parsing.VBA.Extensions;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Rewrites a parameter declaration that is split across multiple lines.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="MultilineParameterInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal value _
+    ///     As Long)
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal value As Long)
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class MakeSingleLineParameterQuickFix : QuickFixBase
     {
         public MakeSingleLineParameterQuickFix()

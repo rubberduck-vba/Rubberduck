@@ -6,6 +6,38 @@ using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Removes an empty Else block.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="EmptyElseBlockInspection" />
+    /// </inspections>
+    /// <canfix procedure="false" module="false" project="false" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     If Application.Calculation = xlCalculationAutomatic Then
+    ///         Application.Calculation = xlCalculationManual
+    ///     Else
+    ///     End If
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     If Application.Calculation = xlCalculationAutomatic Then
+    ///         Application.Calculation = xlCalculationManual
+    ///     End If
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class RemoveEmptyElseBlockQuickFix : QuickFixBase
     {
         public RemoveEmptyElseBlockQuickFix()
