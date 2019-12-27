@@ -57,14 +57,27 @@
                         <StackPanel Grid.Row="1">
                             <Grid Margin="5,10,0,2"
                                   VerticalAlignment="Center">
-                               <CheckBox Grid.Row="1"
+                                <StackPanel Orientation="Vertical">
+                               <CheckBox Name="WrapAsUDTCheckBox" 
+                                   Grid.Row="1"
                                           Grid.Column="0"
                                           Content="Wrap Fields in Private Type"
                                           IsChecked="{Binding EncapsulateAsUDT, Mode=TwoWay}"
                                           FontWeight="Bold"
                                           VerticalAlignment="Top"
                                           IsTabStop="False"
-                                          Margin="10,0,0,5" />
+                                         Width="200"
+                                         HorizontalAlignment="Left"
+                                          Margin="20,5,0,5" />
+                                    <ComboBox ItemsSource="{Binding UDTFields}"
+                                              Margin="20,5,0,5"
+                                              Width="300"
+                                              HorizontalAlignment="Left"
+                                              DisplayMemberPath="FieldDeclarationBlock"
+                                                SelectedItem="{Binding SelectedObjectStateUDT, Mode=TwoWay}"
+                                              Visibility="{Binding ShowStateUDTSelections, Converter={StaticResource BoolToVisibleVisibility}}">
+                                    </ComboBox>
+                                </StackPanel>
                             </Grid>
                             <Grid Margin="5,0,0,10">
                                 <Grid MaxHeight="150">
@@ -216,7 +229,7 @@
                                         IsReadOnly="True"
                                         IsTabStop="False"
                                         TabIndex="6"
-                                        Text="{Binding PropertyPreview,Mode=OneWay}" />
+                                        Text="{Binding PropertiesPreview,Mode=OneWay}" />
                                 </StackPanel>
                             </Grid>
                         </StackPanel>

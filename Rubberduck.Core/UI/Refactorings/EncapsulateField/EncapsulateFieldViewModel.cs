@@ -14,10 +14,19 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
     {
         private class MasterDetailSelectionManager
         {
-            private const string _neverATargeID = "_Never_a_TargetID_";
+            private const string _neverATargetID = "_Never_a_TargetID_";
             private bool _detailFieldIsFlagged;
 
-            public MasterDetailSelectionManager(string targetID)
+            public MasterDetailSelectionManager(IEncapsulateFieldCandidate selected)
+                : this(selected?.TargetID)
+            {
+                if (selected != null)
+                {
+                    DetailField = new ViewableEncapsulatedField(selected);
+                }
+            }
+
+            private MasterDetailSelectionManager(string targetID)
             {
                 SelectionTargetID = targetID;
                 DetailField = null;
@@ -36,7 +45,12 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
                 get => _detailField;
             }
 
-            public string SelectionTargetID { set; get; }
+            private string _selectionTargetID;
+            public string SelectionTargetID
+            {
+                set => _selectionTargetID = value;
+                get => _selectionTargetID ?? _neverATargetID;
+            }
 
             public bool DetailUpdateRequired
             {
@@ -52,7 +66,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
                         _detailFieldIsFlagged = !_detailFieldIsFlagged;
                         return true;
                     }
-                    return SelectionTargetID != (DetailField?.TargetID ?? _neverATargeID);
+                    return SelectionTargetID != DetailField?.TargetID;
                 }
             }
         }
@@ -60,7 +74,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         private MasterDetailSelectionManager _masterDetail;
         public RubberduckParserState State { get; }
 
-        public EncapsulateFieldViewModel(EncapsulateFieldModel model, RubberduckParserState state/*, IIndenter indenter*/) : base(model)
+        public EncapsulateFieldViewModel(EncapsulateFieldModel model, RubberduckParserState state) : base(model)
         {
             State = state;
 
@@ -73,15 +87,10 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             ReadOnlyChangeCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ChangeIsReadOnlyFlag);
 
             _lastCheckedBoxes = EncapsulationFields.Where(ef => ef.EncapsulateFlag).ToList();
-            var selectedField = model.SelectedFieldCandidates.FirstOrDefault();
 
-            _masterDetail = new MasterDetailSelectionManager(selectedField.TargetID);
-            if (selectedField != null)
-            {
-                _masterDetail.DetailField = EncapsulationFields.Where(ef => ef.EncapsulateFlag).Single();
-            }
+            _masterDetail = new MasterDetailSelectionManager(model.SelectedFieldCandidates.SingleOrDefault());
 
-            ManageEncapsulationFlagsAndSelectedItem(selectedField);
+            ManageEncapsulationFlagsAndSelectedItem();
 
             RefreshValidationResults();
         }
@@ -92,8 +101,8 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             {
                 var viewableFields = new ObservableCollection<IEncapsulatedFieldViewData>();
 
-                var orderedFields = Model.EncapsulationCandidates
-                    .OrderBy(efd => efd.Declaration.Selection);
+                var orderedFields = Model.EncapsulationCandidates.Where(ec => !(_selectedObjectStateUDT?.IsEncapsulateFieldCandidate(ec) ?? false))
+                                            .OrderBy(efd => efd.Declaration.Selection).ToList();
 
                 foreach (var efd in orderedFields)
                 {
@@ -103,6 +112,58 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
                 return viewableFields;
             }
         }
+
+        public ObservableCollection<IObjectStateUDT> UDTFields
+        {
+            get
+            {
+                var viewableFields = new ObservableCollection<IObjectStateUDT>();
+
+                foreach (var state in Model.ObjectStateUDTCandidates)
+                {
+                    viewableFields.Add(state);
+                }
+                return viewableFields;
+            }
+        }
+
+        public bool ShowStateUDTSelections
+        {
+            get
+            {
+                return Model.ObjectStateUDTCandidates.Count() > 1
+                    && EncapsulateAsUDT;
+            }
+        }
+
+        private IObjectStateUDT _selectedObjectStateUDT;
+        public IObjectStateUDT SelectedObjectStateUDT
+        {
+            get
+            {
+                    _selectedObjectStateUDT = UDTFields.Where(f => f.IsSelected)
+                        .SingleOrDefault() ?? UDTFields.FirstOrDefault();
+                return _selectedObjectStateUDT;
+            }
+            set
+            {
+                _selectedObjectStateUDT = value;
+                Model.StateUDTField = _selectedObjectStateUDT;
+                SetObjectStateUDT();
+            }
+        }
+
+        private void SetObjectStateUDT()
+        {
+            foreach (var field in UDTFields)
+            {
+                field.IsSelected = _selectedObjectStateUDT == field;
+            }
+            OnPropertyChanged(nameof(SelectedObjectStateUDT));
+            OnPropertyChanged(nameof(EncapsulationFields));
+            OnPropertyChanged(nameof(PropertiesPreview));
+        }
+
 
         public IEncapsulatedFieldViewData SelectedField
         {
@@ -118,10 +179,10 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
                     UpdateDetailForSelection();
                 }
 
-                OnPropertyChanged(nameof(PropertyPreview));
+                OnPropertyChanged(nameof(PropertiesPreview));
             }
 
-            get => EncapsulationFields.FirstOrDefault(f => f.TargetID.Equals(_masterDetail.SelectionTargetID)); // _selectedField;
+            get => EncapsulationFields.FirstOrDefault(f => f.TargetID.Equals(_masterDetail.SelectionTargetID));
         }
 
         private void UpdateDetailForSelection()
@@ -138,7 +199,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             OnPropertyChanged(nameof(SelectedFieldIsPrivateUDT));
             OnPropertyChanged(nameof(SelectedFieldHasEditablePropertyName));
             OnPropertyChanged(nameof(SelectionHasValidEncapsulationAttributes));
-            OnPropertyChanged(nameof(PropertyPreview));
+            OnPropertyChanged(nameof(PropertiesPreview));
             OnPropertyChanged(nameof(EncapsulationFields));
             OnPropertyChanged(nameof(ValidationErrorMessage));
         }
@@ -153,7 +214,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
                 UpdateDetailForSelection();
             }
 
-            get => _masterDetail.DetailField?.PropertyName ?? SelectedField?.PropertyName ?? string.Empty; // _propertyName;
+            get => _masterDetail.DetailField?.PropertyName ?? SelectedField?.PropertyName ?? string.Empty;
         }
 
         public bool SelectedFieldIsNotFlagged
@@ -199,7 +260,6 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             set
             {
                 _masterDetail.DetailField.IsReadOnly = value;
-                OnPropertyChanged(nameof(IsReadOnly));
             }
             get => _masterDetail.DetailField?.IsReadOnly ?? SelectedField?.IsReadOnly ?? false;
         }
@@ -210,7 +270,9 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             set
             {
                 Model.EncapsulateWithUDT = value;
-                OnPropertyChanged(nameof(PropertyPreview));
+                OnPropertyChanged(nameof(EncapsulationFields));
+                OnPropertyChanged(nameof(ShowStateUDTSelections));
+                OnPropertyChanged(nameof(PropertiesPreview));
             }
         }
 
@@ -244,7 +306,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             }
         }
 
-        public string PropertyPreview => Model.PreviewRefactoring();
+        public string PropertiesPreview => Model.PreviewRefactoring();
 
         public CommandBase SelectAllCommand { get; }
         public CommandBase DeselectAllCommand { get; }
@@ -290,18 +352,17 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         public string PrivateUDTPropertyText
             => EncapsulateFieldResources.PrivateUDTPropertyText;
 
-
         private void ChangeIsReadOnlyFlag(object param)
         {
             if (SelectedField is null) { return; }
 
             _masterDetail.DetailField.IsReadOnly = SelectedField.IsReadOnly;
             OnPropertyChanged(nameof(IsReadOnly));
-            OnPropertyChanged(nameof(PropertyPreview));
+            OnPropertyChanged(nameof(PropertiesPreview));
         }
 
         private List<IEncapsulatedFieldViewData> _lastCheckedBoxes = new List<IEncapsulatedFieldViewData>();
-        private void ManageEncapsulationFlagsAndSelectedItem(object param)
+        private void ManageEncapsulationFlagsAndSelectedItem(object param = null)
         {
             var selected = _lastCheckedBoxes.FirstOrDefault();
             if (_lastCheckedBoxes.Count == EncapsulationFields.Where(f => f.EncapsulateFlag).Count())
@@ -313,7 +374,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             var beforeChecked = _lastCheckedBoxes.ToList();
 
             nowChecked.RemoveAll(c => _lastCheckedBoxes.Contains(c));
-            beforeChecked.RemoveAll(c => EncapsulationFields.Where(ec => ec.EncapsulateFlag).Select(nc => nc).Contains(c)); //.TargetID));
+            beforeChecked.RemoveAll(c => EncapsulationFields.Where(ec => ec.EncapsulateFlag).Select(nc => nc).Contains(c));
             if (nowChecked.Any())
             {
                 selected = nowChecked.First();
@@ -322,9 +383,14 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             {
                 selected = beforeChecked.First();
             }
+            else
+            {
+                selected = null;
+            }
+
             _lastCheckedBoxes = EncapsulationFields.Where(ef => ef.EncapsulateFlag).ToList();
 
-            _masterDetail.SelectionTargetID = selected.TargetID;
+            _masterDetail.SelectionTargetID = selected?.TargetID ?? null;
             OnPropertyChanged(nameof(SelectedField));
             if (_masterDetail.DetailUpdateRequired)
             {
@@ -334,12 +400,12 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         }
 
         private void UpdatePreview() 
-            => OnPropertyChanged(nameof(PropertyPreview));
+            => OnPropertyChanged(nameof(PropertiesPreview));
 
         private void ReloadListAndPreview()
         {
             OnPropertyChanged(nameof(EncapsulationFields));
-            OnPropertyChanged(nameof(PropertyPreview));
+            OnPropertyChanged(nameof(PropertiesPreview));
         }
     }
 }
