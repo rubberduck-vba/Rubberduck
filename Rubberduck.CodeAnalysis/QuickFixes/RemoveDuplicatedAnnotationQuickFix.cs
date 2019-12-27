@@ -7,6 +7,34 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Removes a duplicated annotation comment.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="DuplicatedAnnotationInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// '@Obsolete
+    /// '@Obsolete
+    /// Public Sub DoSomething()
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// '@Obsolete
+    /// Public Sub DoSomething()
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class RemoveDuplicatedAnnotationQuickFix : QuickFixBase
     {
         private readonly IAnnotationUpdater _annotationUpdater;

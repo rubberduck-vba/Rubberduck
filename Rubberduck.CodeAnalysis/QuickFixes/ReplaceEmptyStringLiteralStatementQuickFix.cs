@@ -5,6 +5,37 @@ using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Replaces empty string literals '""' with the 'vbNullString' constant.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="EmptyStringLiteralInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     If ActiveCell.Text = "" Then
+    ///         Debug.Print ActiveCell.Address
+    ///     End If
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     If ActiveCell.Text = vbNullString Then
+    ///         Debug.Print ActiveCell.Address
+    ///     End If
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class ReplaceEmptyStringLiteralStatementQuickFix : QuickFixBase
     {
         public ReplaceEmptyStringLiteralStatementQuickFix()

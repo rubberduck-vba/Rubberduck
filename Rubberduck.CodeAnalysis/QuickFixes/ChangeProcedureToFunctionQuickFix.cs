@@ -10,6 +10,42 @@ using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Adjusts a Sub procedure to be a Function procedure, and updates all usages.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="ProcedureCanBeWrittenAsFunctionInspection" />
+    /// </inspections>
+    /// <canfix procedure="false" module="false" project="false" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim value As Long
+    ///     GetValue value
+    ///     Debug.Print value
+    /// End Sub
+    /// 
+    /// Private Sub GetValue(ByRef value As Long)
+    ///     value = 42
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim value As Long
+    ///     value = GetValue(value)
+    ///     Debug.Print value
+    /// End Sub
+    /// 
+    /// Private Function GetValue(ByVal value As Long) As Long
+    ///     value = 42
+    ///     GetValue = value
+    /// End Function
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class ChangeProcedureToFunctionQuickFix : QuickFixBase
     {
         public ChangeProcedureToFunctionQuickFix()

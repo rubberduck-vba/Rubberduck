@@ -14,26 +14,30 @@ using Rubberduck.Inspections.Inspections.Extensions;
 namespace Rubberduck.Inspections.Concrete
 {
     /// <summary>
-    /// Identifies redundant Boolean expressions in conditionals.
+    /// Identifies conditional assignments to mutually exclusive Boolean literal values in conditional branches.
     /// </summary>
     /// <why>
-    /// A Boolean expression never needs to be compared to a Boolean literal in a conditional expression.
+    /// The assignment could be made directly to the result of the conditional Boolean expression instead.
     /// </why>
     /// <example hasResults="true">
     /// <![CDATA[
-    /// Public Sub DoSomething(ByVal foo As Boolean)
-    ///     If foo = True Then ' foo is known to already be a Boolean value.
-    ///         ' ...
+    /// Public Sub DoSomething(ByVal value As Long)
+    ///     Dim result As Boolean
+    ///     If value > 10 Then
+    ///         result = True
+    ///     Else
+    ///         result = False
     ///     End If
+    ///     Debug.Print result
     /// End Sub
     /// ]]>
     /// </example>
     /// <example hasResults="false">
     /// <![CDATA[
-    /// Public Sub DoSomething(ByVal foo As Boolean)
-    ///     If foo Then
-    ///         ' ...
-    ///     End If
+    /// Public Sub DoSomething(ByVal value As Long)
+    ///     Dim result As Boolean
+    ///     result = value > 10
+    ///     Debug.Print result
     /// End Sub
     /// ]]>
     /// </example>

@@ -6,6 +6,39 @@ using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.CodeAnalysis.QuickFixes
 {
+    /// <summary>
+    /// Replaces 'While...Wend' loop statement with equivalent 'Do While...Loop'.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="ObsoleteWhileWendStatementInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     Dim value As Long
+    ///     While value < 99
+    ///         value = value + 1
+    ///     Wend
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     Dim value As Long
+    ///     Do While value < 99
+    ///         value = value + 1
+    ///     Loop
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class ReplaceWhileWendWithDoWhileLoopQuickFix : QuickFixBase
     {
         public ReplaceWhileWendWithDoWhileLoopQuickFix()

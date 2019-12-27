@@ -17,6 +17,35 @@ using Rubberduck.Refactorings.Common;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Introduces a new local variable and assigns it at the top of the procedure scope, then updates all parameter references to refer to the new local variable.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="AssignedByValParameterInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal value As Long)
+    ///     Debug.Print value
+    ///     value = 42
+    ///     Debug.Print value
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal value As Long)
+    ///     Dim localValue As Long
+    ///     localValue = value
+    ///     Debug.Print localValue
+    ///     localValue = 42
+    ///     Debug.Print localValue
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class AssignedByValParameterMakeLocalCopyQuickFix : QuickFixBase
     {
         private readonly IAssignedByValParameterQuickFixDialogFactory _dialogFactory;

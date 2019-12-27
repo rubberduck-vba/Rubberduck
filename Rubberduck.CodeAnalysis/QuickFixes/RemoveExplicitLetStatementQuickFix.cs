@@ -7,6 +7,37 @@ using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Makes the 'Let' keyword of a value assignment implicit.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="ObsoleteLetStatementInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     Dim value As Long
+    ///     Let value = 42
+    ///     Debug.Print value
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     Dim value As Long
+    ///     value = 42
+    ///     Debug.Print value
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class RemoveExplicitLetStatementQuickFix : QuickFixBase
     {
         public RemoveExplicitLetStatementQuickFix()

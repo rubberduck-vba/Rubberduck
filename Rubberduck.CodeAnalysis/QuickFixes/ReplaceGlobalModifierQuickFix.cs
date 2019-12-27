@@ -8,6 +8,27 @@ using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Replaces 'Global' access modifier with the equivalent 'Public' keyword.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="ObsoleteGlobalInspection" />
+    /// </inspections>
+    /// <canfix procedure="false" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Option Explicit
+    /// Global Something As Long
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    /// Public Something As Long
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class ReplaceGlobalModifierQuickFix : QuickFixBase
     {
         public ReplaceGlobalModifierQuickFix()

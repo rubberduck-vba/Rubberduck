@@ -7,6 +7,45 @@ using Rubberduck.Resources;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Prompts for a new name, renames a declaration accordingly, and updates all usages.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="HungarianNotationInspection" />
+    /// <inspection name="UseMeaningfulNameInspection" />
+    /// <inspection name="DefaultProjectNameInspection" />
+    /// <inspection name="UnderscoreInPublicClassModuleMemberInspection" />
+    /// <inspection name="ExcelUdfNameIsValidCellReferenceInspection" />
+    /// </inspections>
+    /// <canfix procedure="false" module="false" project="false" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     A1
+    /// End Sub
+    /// 
+    /// Public Sub A1(ByVal value As Long)
+    ///     Debug.Print value
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     Renamed
+    /// End Sub
+    /// 
+    /// Public Sub Renamed(ByVal value As Long)
+    ///     Debug.Print value
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class RenameDeclarationQuickFix : RefactoringQuickFixBase
     {
         public RenameDeclarationQuickFix(RenameRefactoring refactoring)
