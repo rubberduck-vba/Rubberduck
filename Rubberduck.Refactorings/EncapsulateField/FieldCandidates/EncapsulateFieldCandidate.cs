@@ -205,8 +205,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public override bool Equals(object obj)
         {
             return obj != null 
-                && obj is IEncapsulateFieldCandidate 
-                && obj.GetHashCode() == GetHashCode();
+                && obj is IEncapsulateFieldCandidate efc
+                && $"{efc.QualifiedModuleName.Name}.{efc.TargetID}" == $"{_qmn.Name}.{IdentifierName}";
         }
 
         public override int GetHashCode() => _hashCode;
@@ -309,7 +309,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     ParameterName = ParameterName,
                     GenerateLetter = ImplementLet,
                     GenerateSetter = ImplementSet,
-                    UsesSetAssignment = Declaration.IsObject
+                    UsesSetAssignment = Declaration.IsObject,
+                    IsUDTProperty = false
                 };
             }
         }

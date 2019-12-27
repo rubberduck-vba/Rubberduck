@@ -67,12 +67,13 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                 model.EncapsulateWithUDT = userInput.EncapsulateAsUDT;
                 if (userInput.EncapsulateAsUDT)
                 {
-                    var stateUDT = model.SelectedFieldCandidates.Where(sfc => sfc is IUserDefinedTypeCandidate udt && udt.TargetID == userInput.ObjectStateUDTTargetID)
+                    var stateUDT = model.EncapsulationCandidates.Where(sfc => sfc is IUserDefinedTypeCandidate udt && udt.TargetID == userInput.ObjectStateUDTTargetID)
                     .Select(sfc => sfc as IUserDefinedTypeCandidate).SingleOrDefault();
                     if (stateUDT != null)
                     {
-                        stateUDT.IsObjectStateUDT = userInput.ObjectStateUDTTargetID != null;
+                        stateUDT.EncapsulateFlag = false;
                         model.StateUDTField = new ObjectStateUDT(stateUDT);
+                        model.StateUDTField.IsSelected = true;
                     }
                 }
 
@@ -206,21 +207,8 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
         public UserInputDataObject() { }
 
-        //public UserInputDataObject(string fieldName, string propertyName = null, /*bool encapsulationFlag = true,*/ bool isReadOnly = false)
-        //    : this()
-        //{
-        //    UserSelectsField(fieldName, propertyName/*, encapsulationFlag*/, isReadOnly);
-        //}
-
         public UserInputDataObject UserSelectsField(string fieldName, string propertyName = null/*, bool encapsulationFlag = true*/, bool isReadOnly = false)
         {
-            //var attrs = new TestEncapsulationAttributes(fieldName, true, isReadOnly);
-            //attrs.PropertyName = propertyName ?? attrs.PropertyName;
-            //attrs.EncapsulateFlag = true;
-            //attrs.IsReadOnly = isReadOnly;
-
-            //_userInput.Add(attrs);
-            //return this;
             return AddUserInputSet(fieldName, propertyName, true, isReadOnly);
         }
 
@@ -237,6 +225,12 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
         public bool EncapsulateAsUDT { set; get; }
 
+        public void EncapsulateUsingUDTField(string targetID = null)
+        {
+            ObjectStateUDTTargetID = targetID;
+            EncapsulateAsUDT = true;
+        }
+
         public string ObjectStateUDTTargetID { set; get; }
 
         public string StateUDT_TypeName { set; get; }
@@ -247,10 +241,5 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             => EncapsulateFieldAttributes.Where(efa => efa.TargetFieldName == fieldName).Single();
 
         public IEnumerable<TestEncapsulationAttributes> EncapsulateFieldAttributes => _userInput;
-
-        //public void AddUDTMemberNameFlagPairs(params (string, string, bool)[] nameFlagPairs)
-        //    => _udtNameFlagPairs.AddRange(nameFlagPairs);
-
-        //public IEnumerable<(string, string, bool)> UDTMemberNameFlagPairs => _udtNameFlagPairs;
     }
 }

@@ -52,6 +52,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
                     udtVariable.AddMember(candidateUDTMember);
                 }
+
+                var udtVariablesOfSameType = _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
+                    .Where(v => v.AsTypeDeclaration == udtDeclaration);
+
+                udtVariable.CanBeObjectStateUDT = udtVariable.TypeDeclarationIsPrivate && udtVariablesOfSameType.Count() == 1;
             }
 
             _validator.RegisterFieldCandidate(candidate);

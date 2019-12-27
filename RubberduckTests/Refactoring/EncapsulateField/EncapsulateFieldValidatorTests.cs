@@ -161,6 +161,7 @@ $@"Public fizz As String
             Assert.IsFalse(model["fizz"].TryValidateEncapsulationAttributes(out _));
         }
 
+
         [TestCase("Number", "Bazzle", true, true)]
         [TestCase("Number", "Number", false, false)]
         [TestCase("Test", "Number", false, true)]
@@ -438,7 +439,7 @@ End Type
             var userInput = new UserInputDataObject()
                 .UserSelectsField(fieldUT);
 
-            userInput.EncapsulateAsUDT = true;
+            userInput.EncapsulateUsingUDTField();
 
             var presenterAction = Support.SetParameters(userInput);
 
@@ -481,7 +482,7 @@ Public mF|oo As Long
             var userInput = new UserInputDataObject()
                 .UserSelectsField(fieldUT);
 
-            userInput.EncapsulateAsUDT = true;
+            userInput.EncapsulateUsingUDTField();
 
             var presenterAction = Support.SetParameters(userInput);
 

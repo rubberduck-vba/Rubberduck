@@ -14,7 +14,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         IEnumerable<IUserDefinedTypeMemberCandidate> Members { get; }
         void AddMember(IUserDefinedTypeMemberCandidate member);
         bool TypeDeclarationIsPrivate { set; get; }
-        bool IsObjectStateUDT { set; get; }
+        bool CanBeObjectStateUDT { set; get; }
     }
 
     public class UserDefinedTypeCandidate : EncapsulateFieldCandidate, IUserDefinedTypeCandidate
@@ -36,11 +36,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public bool TypeDeclarationIsPrivate { set; get; }
 
-        private bool _isObjectStateUDT;
-        public bool IsObjectStateUDT
+        private bool _canBeObjectStateUDT;
+        public bool CanBeObjectStateUDT
         {
-            set => _isObjectStateUDT = value;
-            get => _isObjectStateUDT;
+            set => _canBeObjectStateUDT = value;
+            get => _canBeObjectStateUDT;
         }
 
         public override string FieldIdentifier
@@ -101,7 +101,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 }
                 base.EncapsulateFlag = value;
             }
-            get => _encapsulateFlag && !_isObjectStateUDT;
+            get => _encapsulateFlag; // && !_isObjectStateUDT;
         }
 
         public override void LoadFieldReferenceContextReplacements()
@@ -201,6 +201,24 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 return false;
             }
             return true;
+        }
+
+        protected override IPropertyGeneratorAttributes AsPropertyAttributeSet
+        {
+            get
+            {
+                return new PropertyAttributeSet()
+                {
+                    PropertyName = PropertyName,
+                    BackingField = ReferenceWithinNewProperty,
+                    AsTypeName = AsTypeName_Property,
+                    ParameterName = ParameterName,
+                    GenerateLetter = ImplementLet,
+                    GenerateSetter = ImplementSet,
+                    UsesSetAssignment = Declaration.IsObject,
+                    IsUDTProperty = true
+                };
+            }
         }
 
         private void LoadPrivateUDTFieldLocalReferenceExpressions()

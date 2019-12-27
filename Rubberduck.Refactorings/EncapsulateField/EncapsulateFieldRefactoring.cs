@@ -92,10 +92,18 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var selected = candidates.Single(c => c.Declaration == target);
             selected.EncapsulateFlag = true;
 
+            //var newObjectStateUDT = _encapsulationCandidateFactory.CreateStateUDTField();
+
+            if (!TryRetrieveExistingObjectStateUDT(target, candidates, out var objectStateUDT))
+            {
+                objectStateUDT = _encapsulationCandidateFactory.CreateStateUDTField();
+                objectStateUDT.IsSelected = true;
+            }
+
             Model = new EncapsulateFieldModel(
                                 target,
                                 candidates,
-                                _encapsulationCandidateFactory.CreateStateUDTField(),
+                                objectStateUDT,
                                 PreviewRewrite,
                                 validator);
 
@@ -105,6 +113,34 @@ namespace Rubberduck.Refactorings.EncapsulateField
                             .FirstOrDefault()?.Context.Start.TokenIndex ?? null;
 
             return Model;
+        }
+
+        //Identify an existing objectStateUDT and make it unavailable for the user to select for encapsulation.
+        //This prevents the user from inadvertently nesting a stateUDT within a new stateUDT
+        private bool TryRetrieveExistingObjectStateUDT(Declaration target, IEnumerable<IEncapsulateFieldCandidate> candidates, out IObjectStateUDT objectStateUDT)
+        {
+            objectStateUDT = null;
+            //Determination relies on matching the refactoring-generated name and a couple other UDT attributes
+            //to determine if an objectStateUDT pre-exists the refactoring.
+
+            //Question: would using an Annotations (like '@IsObjectStateUDT) be better?
+            //The logic would then be: if Annotated => it's the one.  else => apply the matching criteria below
+            
+            //e.g., In cases where the user chooses an existing UDT for the initial encapsulation, the matching 
+            //refactoring will not assign the name and the criteria below will fail => so applying an Annotation would
+            //make it possible to find again
+            var objectStateUDTIdentifier = $"{EncapsulateFieldResources.StateUserDefinedTypeIdentifierPrefix}{target.QualifiedModuleName.ComponentName}";
+
+            var objectStateUDTMatches = candidates.Where(c => c is IUserDefinedTypeCandidate udt
+                    && udt.Declaration.HasPrivateAccessibility()
+                    && udt.Declaration.AsTypeDeclaration.IdentifierName.StartsWith(objectStateUDTIdentifier, StringComparison.InvariantCultureIgnoreCase))
+                    .Select(pm => pm as IUserDefinedTypeCandidate);
+
+            if (objectStateUDTMatches.Count() == 1)
+            {
+                objectStateUDT = new ObjectStateUDT(objectStateUDTMatches.First()) { IsSelected = true };
+            }
+            return objectStateUDT != null;
         }
 
         protected override void RefactorImpl(EncapsulateFieldModel model)

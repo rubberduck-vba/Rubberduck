@@ -744,7 +744,11 @@ End Property
             Assert.AreEqual(expectedCode.Trim(), actualCode);
         }
 
+        //Consider...
+        //https://docs.microsoft.com/en-us/office/vba/language/reference/user-interface-help/can-t-redim-erase-or-assign-to-variant-that-contains-array-whose-element-is-with
+        //https://docs.microsoft.com/en-us/office/vba/language/reference/user-interface-help/constants-fixed-length-strings-arrays-user-defined-types-and-declare-statements
         [Test]
+        [Ignore("Resolve use of Redim locally and externally")]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
         public void EncapsulateArray_Redim()

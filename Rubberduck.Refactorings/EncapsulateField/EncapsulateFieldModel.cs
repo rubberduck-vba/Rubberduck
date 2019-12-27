@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.EncapsulateField
@@ -23,7 +24,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _newObjectStateUDT = stateUDTField;
 
             EncapsulationCandidates = candidates.ToList();
-            //StateUDTField = stateUDTField;
+            StateUDTField = stateUDTField;
         }
 
         public List<IEncapsulateFieldCandidate> EncapsulationCandidates { set; get; } = new List<IEncapsulateFieldCandidate>();
@@ -49,33 +50,29 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public bool EncapsulateWithUDT { set; get; }
 
-        private IObjectStateUDT _stateUDTField;
-        public IObjectStateUDT StateUDTField
-        {
-            set
-            {
-                _stateUDTField = value;
-            }
-            get
-            {
-                if (!EncapsulateWithUDT) { return null; }
-
-                if (_stateUDTField != null)
-                {
-                    return _stateUDTField;
-                }
-
-                var selectedStateUDT = EncapsulationCandidates.Where(sfc => sfc is IUserDefinedTypeCandidate udt
-                        && udt.IsObjectStateUDT).Select(sfc => sfc as IUserDefinedTypeCandidate).FirstOrDefault();
-
-                _stateUDTField = selectedStateUDT != null
-                    ? new ObjectStateUDT(selectedStateUDT)
-                    : _newObjectStateUDT;
-
-                return _stateUDTField;
-            }
-        }
+        public IObjectStateUDT StateUDTField { set; get; }
 
         public string PreviewRefactoring() => _previewDelegate(this);
+
+        private List<IObjectStateUDT>  _objStateCandidates;
+        public IEnumerable<IObjectStateUDT> ObjectStateUDTCandidates
+        {
+            get
+            {
+                 if (_objStateCandidates != null)
+                {
+                    return _objStateCandidates;
+                }
+
+                _objStateCandidates = new List<IObjectStateUDT>();
+                foreach (var candidate in UDTFieldCandidates.Where(udt => udt.CanBeObjectStateUDT))
+                {
+                    _objStateCandidates.Add(new ObjectStateUDT(candidate));
+                }
+
+                _objStateCandidates.Add(_newObjectStateUDT);
+                return _objStateCandidates;
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
@@ -75,7 +76,7 @@ Private my|Bar As TBar";
             var userInput = new UserInputDataObject()
                 .UserSelectsField("myBar");
 
-            userInput.EncapsulateAsUDT = true;
+            userInput.EncapsulateUsingUDTField();
 
             var presenterAction = Support.SetParameters(userInput);
 
@@ -110,7 +111,7 @@ End Sub";
             var userInput = new UserInputDataObject()
                 .UserSelectsField("myBar");
 
-            userInput.EncapsulateAsUDT = true;
+            userInput.EncapsulateUsingUDTField();
 
             var presenterAction = Support.SetParameters(userInput);
 
@@ -142,8 +143,8 @@ Public foobar As Byte
                 .UserSelectsField("bar")
                 .UserSelectsField("foobar");
 
-            userInput.EncapsulateAsUDT = true;
-            userInput.ObjectStateUDTTargetID = "myBar";
+            userInput.EncapsulateUsingUDTField("myBar");
+            //userInput.ObjectStateUDTTargetID = "myBar";
 
             var presenterAction = Support.SetParameters(userInput);
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
@@ -178,7 +179,7 @@ Public foobar As Byte
                 .UserSelectsField("bar")
                 .UserSelectsField("foobar");
 
-            userInput.EncapsulateAsUDT = true;
+            userInput.EncapsulateUsingUDTField();
 
             var presenterAction = Support.SetParameters(userInput);
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
@@ -209,7 +210,7 @@ Public myBar As TBar
             var userInput = new UserInputDataObject()
                 .UserSelectsField("myBar");
 
-            userInput.EncapsulateAsUDT = true;
+            userInput.EncapsulateUsingUDTField();
 
             var presenterAction = Support.SetParameters(userInput);
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
@@ -220,6 +221,35 @@ Public myBar As TBar
             var index = actualCode.IndexOf("Get Second", StringComparison.InvariantCultureIgnoreCase);
             var indexLast = actualCode.LastIndexOf("Get Second", StringComparison.InvariantCultureIgnoreCase);
             Assert.AreEqual(index, indexLast);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void UserDefinedType_MultipleFieldsOfSameUDT()
+        {
+            string inputCode =
+$@"
+
+Private Type TBar
+    First As Long
+    Second As String
+End Type
+
+Public fooBar As TBar
+Public myBar As TBar
+";
+
+            var userInput = new UserInputDataObject()
+                .UserSelectsField("myBar");
+
+            userInput.EncapsulateUsingUDTField();
+
+            var presenterAction = Support.SetParameters(userInput);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
+            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, "myBar", DeclarationType.Variable, presenterAction);
+
+            Assert.AreEqual(1, model.ObjectStateUDTCandidates.Count());
         }
 
         [Test]
@@ -242,7 +272,7 @@ Public numberT|ype As NumberTypes
             var userInput = new UserInputDataObject()
                 .UserSelectsField("numberType");
 
-            userInput.EncapsulateAsUDT = true;
+            userInput.EncapsulateUsingUDTField();
 
             var presenterAction = Support.SetParameters(userInput);
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
@@ -267,12 +297,43 @@ Public {selectedInput}({dimensions}) As String
             var userInput = new UserInputDataObject()
                 .UserSelectsField(arrayIdentifier);
 
-            userInput.EncapsulateAsUDT = true;
+            userInput.EncapsulateUsingUDTField();
 
             var presenterAction = Support.SetParameters(userInput);
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Property Get AnArray() As Variant", actualCode);
             StringAssert.Contains("AnArray = this.AnArray", actualCode);
+            StringAssert.Contains($" AnArray({dimensions}) As String", actualCode);
+        }
+
+        [TestCase("anArray", "5")]
+        [TestCase("anArray", "1 To 100")]
+        [TestCase("anArray", "")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void UserDefinedType_LocallyReferencedArray(string arrayIdentifier, string dimensions)
+        {
+            var selectedInput = arrayIdentifier.Replace("n", "n|");
+            string inputCode =
+$@"
+Public {selectedInput}({dimensions}) As String
+
+Public Property Get AnArrayTest() As Variant
+    AnArrayTest = anArray
+End Property
+
+";
+
+            var userInput = new UserInputDataObject()
+                .UserSelectsField(arrayIdentifier);
+
+            userInput.EncapsulateUsingUDTField();
+
+            var presenterAction = Support.SetParameters(userInput);
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            StringAssert.Contains("Property Get AnArray() As Variant", actualCode);
+            StringAssert.Contains("AnArray = this.AnArray", actualCode);
+            StringAssert.Contains("AnArrayTest = this.AnArray", actualCode);
             StringAssert.Contains($" AnArray({dimensions}) As String", actualCode);
         }
 
@@ -303,13 +364,44 @@ Public myBar As TBar
                 .UserSelectsField("myBar");
 
 
-            userInput.EncapsulateAsUDT = true;
+            userInput.EncapsulateUsingUDTField();
 
             var presenterAction = Support.SetParameters(userInput);
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains($"Private Type {expectedIdentifier}", actualCode);
         }
 
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void StateObjectCandidatesContent()
+        {
+            string inputCode =
+$@"
+Private Type TBar
+    First As String
+    Second As Long
+End Type
+
+Public mFoo As String
+Public mBar As Long
+Private mFizz
+
+Public myBar As TBar";
+
+            var userInput = new UserInputDataObject()
+                .UserSelectsField("mFizz");
+
+            userInput.EncapsulateUsingUDTField();
+
+            var presenterAction = Support.SetParameters(userInput);
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
+            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, "mFizz", DeclarationType.Variable, presenterAction);
+            var test = model.ObjectStateUDTCandidates;
+
+            Assert.AreEqual(2, model.ObjectStateUDTCandidates.Count());
+        }
 
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
         {

@@ -1,4 +1,5 @@
-﻿using Rubberduck.SmartIndenter;
+﻿using Rubberduck.Parsing.Grammar;
+using Rubberduck.SmartIndenter;
 using System;
 using System.Collections.Generic;
 
@@ -13,6 +14,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         bool GenerateLetter { get; }
         bool GenerateSetter { get; }
         bool UsesSetAssignment { get; }
+        bool IsUDTProperty { get; }
     }
 
     public class PropertyAttributeSet : IPropertyGeneratorAttributes
@@ -24,6 +26,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public bool GenerateLetter { get; set; }
         public bool GenerateSetter { get; set; }
         public bool UsesSetAssignment { get; set; }
+        public bool IsUDTProperty { get; set; }
     }
 
     public class PropertyGenerator
@@ -37,6 +40,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public bool GenerateLetter { get; set; }
         public bool GenerateSetter { get; set; }
         public bool UsesSetAssignment { get; set; }
+        public bool IsUDTProperty { get; set; }
 
         public string AsPropertyBlock(IPropertyGeneratorAttributes spec, IIndenter indenter)
         {
@@ -47,6 +51,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             GenerateLetter = spec.GenerateLetter;
             GenerateSetter = spec.GenerateSetter;
             UsesSetAssignment = spec.UsesSetAssignment;
+            IsUDTProperty = spec.IsUDTProperty;
             return string.Join(Environment.NewLine, indenter.Indent(AsLines, true));
         }
 
@@ -104,8 +109,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 {
                     return string.Empty;
                 }
+
+                var byVal_byRef = IsUDTProperty ? Tokens.ByRef : Tokens.ByVal;
+
                 return string.Join(Environment.NewLine,
-                                   $"Public Property Let {PropertyName}(ByVal {ParameterName} As {AsTypeName})",
+                                   $"Public Property Let {PropertyName}({byVal_byRef} {ParameterName} As {AsTypeName})",
                                    $"    {BackingField} = {ParameterName}",
                                    "End Property",
                                    Environment.NewLine);

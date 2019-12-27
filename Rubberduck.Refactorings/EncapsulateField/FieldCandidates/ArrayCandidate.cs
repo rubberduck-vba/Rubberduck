@@ -35,7 +35,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 var replacementText = RequiresAccessQualification(idRef)
                     ? $"{QualifiedModuleName.ComponentName}.{ReferenceForPreExistingReferences}"
-                    : FieldIdentifier;
+                    : ReferenceForPreExistingReferences;
 
                 SetReferenceRewriteContent(idRef, replacementText);
             }

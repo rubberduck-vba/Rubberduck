@@ -472,6 +472,7 @@ End Type
                 StringAssert.DoesNotContain($"this.First = value", actualCode);
                 StringAssert.DoesNotContain($"this.Second = value", actualCode);
                 StringAssert.DoesNotContain($"Second = Second", actualCode);
+                StringAssert.Contains($"Public Property Let MyType(ByRef value As TBar", actualCode);
             }
         }
 
