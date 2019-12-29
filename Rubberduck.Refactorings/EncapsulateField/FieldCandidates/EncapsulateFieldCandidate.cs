@@ -34,6 +34,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         string ReferenceQualifier { set; get; }
         void LoadFieldReferenceContextReplacements();
         bool TryValidateEncapsulationAttributes(out string errorMessage);
+        bool ConvertFieldToUDTMember { set; get; }
     }
 
     public enum AccessorMember { Field, Property }
@@ -51,13 +52,28 @@ namespace Rubberduck.Refactorings.EncapsulateField
         protected QualifiedModuleName _qmn;
         protected int _hashCode;
         private string _identifierName;
-        protected IEncapsulateFieldNamesValidator _validator;
+        protected IValidateEncapsulateFieldNames _validator;
         protected EncapsulationIdentifiers _fieldAndProperty;
 
-        public EncapsulateFieldCandidate(Declaration declaration, IEncapsulateFieldNamesValidator validator)
-            : this(declaration.IdentifierName, declaration.AsTypeName, declaration.QualifiedModuleName, validator)
+        public EncapsulateFieldCandidate(Declaration declaration, IValidateEncapsulateFieldNames validator)
         {
             _target = declaration;
+            _validator = validator;
+            _fieldAndProperty = new EncapsulationIdentifiers(declaration.IdentifierName, (string name) => _validator.IsValidVBAIdentifier(name, DeclarationType.Property, out _));
+            IdentifierName = declaration.IdentifierName;
+            AsTypeName_Field = declaration.AsTypeName;
+            AsTypeName_Property = declaration.AsTypeName;
+            _qmn = declaration.QualifiedModuleName;
+            NewPropertyAccessor = AccessorMember.Field;
+            ReferenceAccessor = AccessorMember.Property;
+
+
+            ImplementLet = true;
+            ImplementSet = false;
+
+            CanBeReadWrite = true;
+
+            _hashCode = ($"{_qmn.Name}.{declaration.IdentifierName}").GetHashCode();
 
             if (_target.IsEnumField())
             {
@@ -80,26 +96,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        public EncapsulateFieldCandidate(string identifier, string asTypeName, QualifiedModuleName qmn, IEncapsulateFieldNamesValidator validator)
-        {
-            _fieldAndProperty = new EncapsulationIdentifiers(identifier);
-            IdentifierName = identifier;
-            AsTypeName_Field = asTypeName;
-            AsTypeName_Property = asTypeName;
-            _qmn = qmn;
-            NewPropertyAccessor = AccessorMember.Field;
-            ReferenceAccessor = AccessorMember.Property;
-
-            _validator = validator;
-
-            ImplementLet = true;
-            ImplementSet = false;
-
-            CanBeReadWrite = true;
-
-            _hashCode = ($"{_qmn.Name}.{identifier}").GetHashCode();
-        }
-
         protected Dictionary<IdentifierReference, (ParserRuleContext, string)> IdentifierReplacements { get; } = new Dictionary<IdentifierReference, (ParserRuleContext, string)>();
 
         public Declaration Declaration => _target;
@@ -117,17 +113,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
             errorMessage = string.Empty;
             if (!EncapsulateFlag) { return true; }
 
-            if (!_validator.IsValidVBAIdentifier(PropertyName, DeclarationType.Property, out errorMessage))
+            if (ConvertFieldToUDTMember)
             {
-                return false;
+                return TryValidateAsUDTMemberEncapsulationAttributes(out errorMessage);
             }
 
-            if (!_validator.IsSelfConsistent(this, out errorMessage))
-            {
-                return false;
-            }
-
-            if (_validator.HasConflictingIdentifier(this, DeclarationType.Property, out errorMessage))
+            if (!TryValidateEncapsulationAttributes(DeclarationType.Property, out errorMessage))
             {
                 return false;
             }
@@ -138,6 +129,41 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
             return true;
         }
+
+        protected virtual bool TryValidateAsUDTMemberEncapsulationAttributes(out string errorMessage, bool isArray = false)
+        {
+            errorMessage = string.Empty;
+            if (!EncapsulateFlag) { return true; }
+
+            if (!TryValidateEncapsulationAttributes(DeclarationType.UserDefinedTypeMember, out errorMessage, isArray))
+            {
+                return false;
+            }
+            return TryValidateEncapsulationAttributes(Declaration.DeclarationType, out errorMessage, isArray);
+        }
+
+        protected bool TryValidateEncapsulationAttributes(DeclarationType declarationType, out string errorMessage, bool isArray = false)
+        {
+            errorMessage = string.Empty;
+            if (!EncapsulateFlag) { return true; }
+
+            if (!_validator.IsValidVBAIdentifier(PropertyName, declarationType, out errorMessage, isArray))
+            {
+                return false;
+            }
+
+            if (!_validator.IsSelfConsistent(this, out errorMessage))
+            {
+                return false;
+            }
+
+            if (_validator.HasConflictingIdentifier(this, declarationType, out errorMessage))
+            {
+                return false;
+            }
+            return true;
+        }
+
 
         public virtual IEnumerable<KeyValuePair<IdentifierReference, (ParserRuleContext, string)>> ReferenceReplacements
         {
@@ -256,6 +282,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private bool _implSet;
         public bool ImplementSet { get => !IsReadOnly && _implSet; set => _implSet = value; }
+
+        public bool ConvertFieldToUDTMember { set; get; }
 
         public virtual string AsUDTMemberDeclaration
             => $"{PropertyName} {Tokens.As} {AsTypeName_Field}";

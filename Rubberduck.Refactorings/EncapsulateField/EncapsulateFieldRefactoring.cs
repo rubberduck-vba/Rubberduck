@@ -85,14 +85,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             _targetQMN = target.QualifiedModuleName;
 
-            var validator = new EncapsulateFieldNamesValidator(_declarationFinderProvider);
+            var validator = new EncapsulateFieldValidator(_declarationFinderProvider) as IEncapsulateFieldValidator;
             _encapsulationCandidateFactory = new EncapsulateFieldElementFactory(_declarationFinderProvider, _targetQMN, validator);
 
             var candidates = _encapsulationCandidateFactory.CreateEncapsulationCandidates();
             var selected = candidates.Single(c => c.Declaration == target);
             selected.EncapsulateFlag = true;
-
-            //var newObjectStateUDT = _encapsulationCandidateFactory.CreateStateUDTField();
 
             if (!TryRetrieveExistingObjectStateUDT(target, candidates, out var objectStateUDT))
             {
@@ -193,7 +191,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             foreach (var field in model.SelectedFieldCandidates)
             {
-                field.ReferenceQualifier = model.EncapsulateWithUDT
+                field.ReferenceQualifier = model.ConvertFieldsToUDTMembers
                     ? model.StateUDTField.FieldIdentifier
                     : null;
 
@@ -210,7 +208,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private void ModifyFields(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession)
         {
-            if (model.EncapsulateWithUDT)
+            if (model.ConvertFieldsToUDTMembers)
             {
                 IModuleRewriter rewriter;
 
@@ -300,7 +298,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private void LoadNewDeclarationBlocks(EncapsulateFieldModel model)
         {
-            if (model.EncapsulateWithUDT)
+            if (model.ConvertFieldsToUDTMembers)
             {
                 if (model.StateUDTField?.IsExistingDeclaration ?? false) { return; }
 

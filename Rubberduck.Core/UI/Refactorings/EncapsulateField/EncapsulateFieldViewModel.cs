@@ -132,7 +132,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             get
             {
                 return Model.ObjectStateUDTCandidates.Count() > 1
-                    && EncapsulateAsUDT;
+                    && ConvertFieldsToUDTMembers;
             }
         }
 
@@ -264,15 +264,15 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             get => _masterDetail.DetailField?.IsReadOnly ?? SelectedField?.IsReadOnly ?? false;
         }
 
-        public bool EncapsulateAsUDT
+        public bool ConvertFieldsToUDTMembers
         {
-            get => Model.EncapsulateWithUDT;
+            get => Model.ConvertFieldsToUDTMembers;
             set
             {
-                Model.EncapsulateWithUDT = value;
-                OnPropertyChanged(nameof(EncapsulationFields));
-                OnPropertyChanged(nameof(ShowStateUDTSelections));
-                OnPropertyChanged(nameof(PropertiesPreview));
+                Model.ConvertFieldsToUDTMembers = value;
+                ReloadListAndPreview();
+                RefreshValidationResults();
+                UpdateDetailForSelection();
             }
         }
 

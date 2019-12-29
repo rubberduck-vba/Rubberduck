@@ -3,6 +3,7 @@ using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Common;
 using System.Collections.Generic;
 using Rubberduck.Refactorings.EncapsulateField.Extensions;
+using System;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -14,27 +15,31 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private string _targetIdentifier;
         private string _setLetParameter;
 
-        public EncapsulationIdentifiers(Declaration target)
-            : this(target.IdentifierName) { }
-
-        public EncapsulationIdentifiers(string field)
+        public EncapsulationIdentifiers(string field, Predicate<string> IsValidPropertyName)
         {
             _targetIdentifier = field;
+
+            DefaultPropertyName = field.CapitalizeFirstLetter();
+            DefaultNewFieldName = (field.ToLowerCaseFirstLetter()).IncrementEncapsulationIdentifier();
+
             if (field.TryMatchHungarianNotationCriteria(out var nonHungarianName))
             {
-                DefaultPropertyName = nonHungarianName;
-                DefaultNewFieldName = field;
+                if (IsValidPropertyName(nonHungarianName))
+                {
+                    DefaultPropertyName = nonHungarianName;
+                    DefaultNewFieldName = field;
+                }
             }
             else if (field.StartsWith("m_"))
             {
-                DefaultPropertyName = field.Substring(2).CapitalizeFirstLetter();
-                DefaultNewFieldName = field;
+                var propertyName = field.Substring(2).CapitalizeFirstLetter();
+                if (IsValidPropertyName(propertyName))
+                {
+                    DefaultPropertyName = propertyName;
+                    DefaultNewFieldName = field;
+                }
             }
-            else
-            {
-                DefaultPropertyName = field.CapitalizeFirstLetter();
-                DefaultNewFieldName = (field.ToLowerCaseFirstLetter()).IncrementEncapsulationIdentifier();
-            }
+
             _fieldAndProperty = new KeyValuePair<string, string>(DefaultNewFieldName, DefaultPropertyName);
             _setLetParameter = DEFAULT_WRITE_PARAMETER;
         }

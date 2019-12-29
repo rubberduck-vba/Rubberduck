@@ -6,10 +6,15 @@ using System.Linq;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public class ArrayCandidate : EncapsulateFieldCandidate
+    public interface IArrayCandidate : IEncapsulateFieldCandidate
+    {
+
+    }
+
+    public class ArrayCandidate : EncapsulateFieldCandidate, IArrayCandidate
     {
         private string _subscripts;
-        public ArrayCandidate(Declaration declaration, IEncapsulateFieldNamesValidator validator)
+        public ArrayCandidate(Declaration declaration, IValidateEncapsulateFieldNames validator)
             :base(declaration, validator)
         {
             ImplementLet = false;
@@ -28,6 +33,28 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public override string AsUDTMemberDeclaration
             => $"{PropertyName}({_subscripts}) {Tokens.As} {AsTypeName_Field}";
+
+        public override bool TryValidateEncapsulationAttributes(out string errorMessage) //, bool isArray = false)
+        {
+            errorMessage = string.Empty;
+            if (!EncapsulateFlag) { return true; }
+
+            if (ConvertFieldToUDTMember)
+            {
+                return TryValidateAsUDTMemberEncapsulationAttributes(out errorMessage, true);
+            }
+
+            if (!TryValidateEncapsulationAttributes(DeclarationType.Property, out errorMessage, true))
+            {
+                return false;
+            }
+
+            if (_validator.HasConflictingIdentifier(this, DeclarationType.Variable, out errorMessage))
+            {
+                return false;
+            }
+            return true;
+        }
 
         public override void LoadFieldReferenceContextReplacements()
         {

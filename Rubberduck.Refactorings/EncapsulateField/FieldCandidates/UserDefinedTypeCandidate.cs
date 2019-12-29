@@ -19,7 +19,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
     public class UserDefinedTypeCandidate : EncapsulateFieldCandidate, IUserDefinedTypeCandidate
     {
-        public UserDefinedTypeCandidate(Declaration declaration, IEncapsulateFieldNamesValidator validator)
+        public UserDefinedTypeCandidate(Declaration declaration, IValidateEncapsulateFieldNames validator)
             : base(declaration, validator)
         {
             NewPropertyAccessor = AccessorMember.Field;
@@ -101,7 +101,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 }
                 base.EncapsulateFlag = value;
             }
-            get => _encapsulateFlag; // && !_isObjectStateUDT;
+            get => _encapsulateFlag;
         }
 
         public override void LoadFieldReferenceContextReplacements()

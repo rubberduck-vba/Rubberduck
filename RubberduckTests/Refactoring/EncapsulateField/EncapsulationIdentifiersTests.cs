@@ -85,7 +85,7 @@ $@"Public fizz As String
         [Category("Encapsulate Field")]
         public void AccountsForHungarianNamesAndMemberPrefix(string inputName, string expectedPropertyName, string expectedFieldName)
         {
-            var sut = new EncapsulationIdentifiers(inputName);
+            var sut = new EncapsulationIdentifiers(inputName, (string name) => true);
 
             Assert.AreEqual(expectedPropertyName, sut.DefaultPropertyName);
             Assert.AreEqual(expectedFieldName, sut.DefaultNewFieldName);

@@ -20,10 +20,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
     public class UserDefinedTypeMemberCandidate : IUserDefinedTypeMemberCandidate
     {
-        private readonly IEncapsulateFieldNamesValidator _validator;
+        private readonly IValidateEncapsulateFieldNames _validator;
         private int _hashCode;
         private readonly string _uniqueID;
-        public UserDefinedTypeMemberCandidate(IEncapsulateFieldCandidate candidate, IUserDefinedTypeCandidate udtVariable, IEncapsulateFieldNamesValidator validator)
+        public UserDefinedTypeMemberCandidate(IEncapsulateFieldCandidate candidate, IUserDefinedTypeCandidate udtVariable, IValidateEncapsulateFieldNames validator)
         {
             _wrappedCandidate = candidate;
             Parent = udtVariable;
@@ -207,6 +207,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public bool ImplementLet => _wrappedCandidate.ImplementLet;
 
         public bool ImplementSet => _wrappedCandidate.ImplementSet;
+
+        public bool ConvertFieldToUDTMember { set; get; }
 
         public IEnumerable<IPropertyGeneratorAttributes> PropertyAttributeSets => _wrappedCandidate.PropertyAttributeSets;
         public string AsUDTMemberDeclaration

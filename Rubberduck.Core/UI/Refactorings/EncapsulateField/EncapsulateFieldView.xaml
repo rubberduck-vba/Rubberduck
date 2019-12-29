@@ -58,26 +58,26 @@
                             <Grid Margin="5,10,0,2"
                                   VerticalAlignment="Center">
                                 <StackPanel Orientation="Vertical">
-                               <CheckBox Name="WrapAsUDTCheckBox" 
-                                   Grid.Row="1"
-                                          Grid.Column="0"
-                                          Content="Wrap Fields in Private Type"
-                                          IsChecked="{Binding EncapsulateAsUDT, Mode=TwoWay}"
-                                          FontWeight="Bold"
-                                          VerticalAlignment="Top"
-                                          IsTabStop="False"
-                                         Width="200"
-                                         HorizontalAlignment="Left"
-                                          Margin="20,5,0,5" />
-                                    <ComboBox ItemsSource="{Binding UDTFields}"
-                                              Margin="20,5,0,5"
-                                              Width="300"
-                                              HorizontalAlignment="Left"
-                                              DisplayMemberPath="FieldDeclarationBlock"
-                                                SelectedItem="{Binding SelectedObjectStateUDT, Mode=TwoWay}"
-                                              Visibility="{Binding ShowStateUDTSelections, Converter={StaticResource BoolToVisibleVisibility}}">
-                                    </ComboBox>
-                                </StackPanel>
+                                   <CheckBox Name="WrapAsUDTCheckBox" 
+                                            Grid.Row="1"
+                                            Grid.Column="0"
+                                            Content="Wrap Fields in Private Type"
+                                            IsChecked="{Binding ConvertFieldsToUDTMembers, Mode=TwoWay}"
+                                            FontWeight="Bold"
+                                            VerticalAlignment="Top"
+                                            IsTabStop="False"
+                                            Width="200"
+                                            HorizontalAlignment="Left"
+                                            Margin="20,5,0,5" />
+                                        <ComboBox ItemsSource="{Binding UDTFields}"
+                                                  Margin="20,5,0,5"
+                                                  Width="300"
+                                                  HorizontalAlignment="Left"
+                                                  DisplayMemberPath="FieldDeclarationBlock"
+                                                    SelectedItem="{Binding SelectedObjectStateUDT, Mode=TwoWay}"
+                                                  Visibility="{Binding ShowStateUDTSelections, Converter={StaticResource BoolToVisibleVisibility}}">
+                                        </ComboBox>
+                                    </StackPanel>
                             </Grid>
                             <Grid Margin="5,0,0,10">
                                 <Grid MaxHeight="150">

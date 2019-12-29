@@ -11,12 +11,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         private readonly Func<EncapsulateFieldModel, string> _previewDelegate;
         private QualifiedModuleName _targetQMN;
-        private IEncapsulateFieldNamesValidator _validator;
+        private IValidateEncapsulateFieldNames _validator;
         private IObjectStateUDT _newObjectStateUDT;
 
         private IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> _udtFieldToUdtDeclarationMap = new Dictionary<Declaration, (Declaration, IEnumerable<Declaration>)>();
 
-        public EncapsulateFieldModel(Declaration target, IEnumerable<IEncapsulateFieldCandidate> candidates, IObjectStateUDT stateUDTField, Func<EncapsulateFieldModel, string> previewDelegate, IEncapsulateFieldNamesValidator validator)
+        public EncapsulateFieldModel(Declaration target, IEnumerable<IEncapsulateFieldCandidate> candidates, IObjectStateUDT stateUDTField, Func<EncapsulateFieldModel, string> previewDelegate, IValidateEncapsulateFieldNames validator)
         {
             _previewDelegate = previewDelegate;
             _targetQMN = target.QualifiedModuleName;
@@ -48,7 +48,19 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public IEncapsulateFieldCandidate this[Declaration fieldDeclaration]
             => EncapsulationCandidates.Where(c => c.Declaration == fieldDeclaration).Single();
 
-        public bool EncapsulateWithUDT { set; get; }
+        private bool _convertFieldsToUDTMembers;
+        public bool ConvertFieldsToUDTMembers
+        {
+            set
+            {
+                _convertFieldsToUDTMembers = value;
+                foreach (var candidate in EncapsulationCandidates)
+                {
+                    candidate.ConvertFieldToUDTMember = value;
+                }
+            }
+            get => _convertFieldsToUDTMembers;
+        }
 
         public IObjectStateUDT StateUDTField { set; get; }
 

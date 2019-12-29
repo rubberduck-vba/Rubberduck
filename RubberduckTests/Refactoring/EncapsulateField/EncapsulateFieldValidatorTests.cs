@@ -500,6 +500,26 @@ Public mF|oo As Long
             StringAssert.Contains($"Private Type TModuleOne_1", actualCode);
         }
 
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void UDTReservedMemberArrayIdentifier()
+        {
+            var fieldName = "Name";
+            var userInput = new UserInputDataObject()
+                .UserSelectsField(fieldName);
+
+            userInput.EncapsulateAsUDT = true;
+
+            var presenterAction = Support.SetParameters(userInput);
+
+            var vbe = MockVbeBuilder.BuildFromModules(
+                (MockVbeBuilder.TestModuleName, $"Private {fieldName}(5) As String", ComponentType.StandardModule)).Object;
+
+            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, fieldName, DeclarationType.Variable, presenterAction);
+
+            Assert.AreEqual(false, model[fieldName].TryValidateEncapsulationAttributes(out var message), message);
+        }
 
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
         {

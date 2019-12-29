@@ -8,20 +8,27 @@ using System.Linq;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public interface IEncapsulateFieldNamesValidator
+    public interface IObjectStateUDTNamesValidator
     {
-        void RegisterFieldCandidate(IEncapsulateFieldCandidate candidate);
-        bool IsValidVBAIdentifier(string identifier, DeclarationType declarationType, out string errorMessage);
+        bool IsConflictingStateUDTTypeIdentifier(IObjectStateUDT stateUDT);
+        bool IsConflictingStateUDTFieldIdentifier(IObjectStateUDT stateUDT);
+    }
+
+    public interface IValidateEncapsulateFieldNames
+    {
+        bool IsValidVBAIdentifier(string identifier, DeclarationType declarationType, out string errorMessage, bool isArray = false);
         bool HasConflictingIdentifier(IEncapsulateFieldCandidate candidate, DeclarationType declarationType, out string errorMessage);
         bool IsSelfConsistent(IEncapsulateFieldCandidate candidate, out string errorMessage);
         bool IsConflictingFieldIdentifier(string fieldName, IEncapsulateFieldCandidate candidate, DeclarationType declarationType);
-        bool HasValidEncapsulationIdentifiers(IEncapsulateFieldCandidate candidate, out string errorMessage);
-        bool IsConflictingStateUDTTypeIdentifier(IObjectStateUDT stateUDT);
-        bool IsConflictingStateUDTFieldIdentifier(IObjectStateUDT stateUDT);
         IEncapsulateFieldCandidate AssignNoConflictIdentifier(IEncapsulateFieldCandidate candidate, DeclarationType declarationType);
     }
 
-    public class EncapsulateFieldNamesValidator : IEncapsulateFieldNamesValidator
+    public interface IEncapsulateFieldValidator : IObjectStateUDTNamesValidator, IValidateEncapsulateFieldNames
+    {
+        void RegisterFieldCandidate(IEncapsulateFieldCandidate candidate);
+    }
+
+    public class EncapsulateFieldValidator : IEncapsulateFieldValidator
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
@@ -31,7 +38,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private List<IEncapsulateFieldCandidate> FlaggedCandidates => FieldCandidates.Where(rc => rc.EncapsulateFlag).ToList();
 
-        public EncapsulateFieldNamesValidator(IDeclarationFinderProvider declarationFinderProvider)
+        public EncapsulateFieldValidator(IDeclarationFinderProvider declarationFinderProvider)
         {
             _declarationFinderProvider = declarationFinderProvider;
             FieldCandidates = new List<IEncapsulateFieldCandidate>();
@@ -55,23 +62,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private DeclarationFinder DeclarationFinder => _declarationFinderProvider.DeclarationFinder;
 
-
-        public bool HasValidEncapsulationIdentifiers(IEncapsulateFieldCandidate candidate, out string errorMessage)
+        public bool IsValidVBAIdentifier(string identifier, DeclarationType declarationType, out string errorMessage, bool isArray = false)
         {
-            if (VBAIdentifierValidator.TryMatchInvalidIdentifierCriteria(candidate.PropertyName, DeclarationType.Property, out errorMessage))
-            {
-                return false;
-            }
-            if (!IsSelfConsistent(candidate, out errorMessage))
-            {
-                return false;
-            }
-            return true;
-        }
-
-        public bool IsValidVBAIdentifier(string identifier, DeclarationType declarationType, out string errorMessage)
-        {
-            return !VBAIdentifierValidator.TryMatchInvalidIdentifierCriteria(identifier, declarationType, out errorMessage);
+            return !VBAIdentifierValidator.TryMatchInvalidIdentifierCriteria(identifier, declarationType, out errorMessage, isArray);
         }
 
         public bool IsSelfConsistent(IEncapsulateFieldCandidate candidate, out string errorMessage)
@@ -97,7 +90,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private List<string> PotentialConflictIdentifiers(IEncapsulateFieldCandidate candidate, DeclarationType declarationType)
         {
-            var members = _declarationFinderProvider.DeclarationFinder.Members(candidate.QualifiedModuleName)
+            var members = DeclarationFinder.Members(candidate.QualifiedModuleName)
                 .Where(d => d != candidate.Declaration);
 
             var nameConflictCandidates = members
@@ -123,7 +116,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var stateUDTDeclaration = stateUDT as IEncapsulateFieldDeclaration;
             var potentialDeclarationIdentifierConflicts = new List<string>();
 
-            var members = _declarationFinderProvider.DeclarationFinder.Members(stateUDTDeclaration.QualifiedModuleName);
+            var members = DeclarationFinder.Members(stateUDTDeclaration.QualifiedModuleName);
 
             var nameConflictCandidates = members
                 .Where(d => !IsAlwaysIgnoreNameConflictType(d, declarationType)).ToList();

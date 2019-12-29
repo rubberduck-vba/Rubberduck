@@ -64,8 +64,8 @@ End Type
 Public th|is As TBar
 Public that As TBar";
 
-            var expectedThis = new EncapsulationIdentifiers("this");
-            var expectedThat = new EncapsulationIdentifiers("that");
+            var expectedThis = new EncapsulationIdentifiers("this", (string name) => true);
+            var expectedThat = new EncapsulationIdentifiers("that", (string name) => true);
 
             var userInput = new UserInputDataObject()
                     .AddUserInputSet(expectedThis.TargetFieldName, encapsulationFlag: encapsulateThis)

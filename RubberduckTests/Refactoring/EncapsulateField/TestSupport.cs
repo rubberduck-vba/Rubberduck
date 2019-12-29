@@ -36,7 +36,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
         {
             return model =>
             {
-                model.EncapsulateWithUDT = asUDT;
+                model.ConvertFieldsToUDTMembers = asUDT;
                 return model;
             };
         }
@@ -64,7 +64,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
         {
             return model =>
             {
-                model.EncapsulateWithUDT = userInput.EncapsulateAsUDT;
+                model.ConvertFieldsToUDTMembers = userInput.EncapsulateAsUDT;
                 if (userInput.EncapsulateAsUDT)
                 {
                     var stateUDT = model.EncapsulationCandidates.Where(sfc => sfc is IUserDefinedTypeCandidate udt && udt.TargetID == userInput.ObjectStateUDTTargetID)
@@ -98,7 +98,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                 encapsulatedField.IsReadOnly = attrs.IsReadOnly;
                 encapsulatedField.EncapsulateFlag = attrs.EncapsulateFlag;
 
-                model.EncapsulateWithUDT = asUDT;
+                model.ConvertFieldsToUDTMembers = asUDT;
                 return model;
             };
         }
@@ -127,7 +127,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             using (state)
             {
                 var match = state.DeclarationFinder.MatchName(fieldName).Single();
-                return new EncapsulateFieldCandidate(match, new EncapsulateFieldNamesValidator(state)) as IEncapsulateFieldCandidate;
+                return new EncapsulateFieldCandidate(match, new EncapsulateFieldValidator(state)) as IEncapsulateFieldCandidate;
             }
         }
 
@@ -141,7 +141,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             using (state)
             {
                 var match = state.DeclarationFinder.MatchName(fieldName).Where(m => m.DeclarationType.Equals(declarationType)).Single();
-                return new EncapsulateFieldCandidate(match, new EncapsulateFieldNamesValidator(state)) as IEncapsulateFieldCandidate;
+                return new EncapsulateFieldCandidate(match, new EncapsulateFieldValidator(state)) as IEncapsulateFieldCandidate;
             }
         }
 
@@ -178,7 +178,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
     {
         public TestEncapsulationAttributes(string fieldName, bool encapsulationFlag = true, bool isReadOnly = false)
         {
-            _identifiers = new EncapsulationIdentifiers(fieldName);
+            _identifiers = new EncapsulationIdentifiers(fieldName, (string name) => true);
             EncapsulateFlag = encapsulationFlag;
             IsReadOnly = isReadOnly;
         }
