@@ -35,7 +35,7 @@ $@"Public fizz As String
                 fizz1 = value
             End Property
             ";
-            var encapsulatedField = Support.RetrieveEncapsulatedField(inputCode, "fizz");
+            var encapsulatedField = Support.RetrieveEncapsulateFieldCandidate(inputCode, "fizz");
             Assert.IsTrue(encapsulatedField.TryValidateEncapsulationAttributes(out _));
         }
 
@@ -46,7 +46,7 @@ $@"Public fizz As String
         {
             string inputCode = "Public fizz As String";
 
-            var encapsulatedField = Support.RetrieveEncapsulatedField(inputCode, "fizz");
+            var encapsulatedField = Support.RetrieveEncapsulateFieldCandidate(inputCode, "fizz");
             StringAssert.AreEqualIgnoringCase("fizz_1", encapsulatedField.FieldIdentifier);
 
             encapsulatedField.PropertyName = "Test";
@@ -69,7 +69,7 @@ $@"Public fizz As String
         {
             string inputCode = "Public value As String";
 
-            var encapsulatedField = Support.RetrieveEncapsulatedField(inputCode, "value");
+            var encapsulatedField = Support.RetrieveEncapsulateFieldCandidate(inputCode, "value");
 
             encapsulatedField.PropertyName = "Test";
             StringAssert.AreEqualIgnoringCase("value_value", encapsulatedField.ParameterName);

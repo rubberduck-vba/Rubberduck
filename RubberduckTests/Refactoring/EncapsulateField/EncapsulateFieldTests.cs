@@ -362,54 +362,31 @@ End Enum
         }
 
         //5.3.1 The declared type of a function declaration may not be a private enum name.
-        [TestCase("Public")]
-        [TestCase("Private")]
+        [TestCase("Public", null)]
+        [TestCase("Private", null)]
+        [TestCase("Public", ", foo As Long, bar As String")]
+        [TestCase("Private", ", foo As Long, bar As String")]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        public void EncapsulateEnumField_PrivateEnum(string fieldAccessibility)
+        public void EncapsulateEnumField(string enumTypeAccessibility, string declarationList)
         {
             string inputCode =
                 $@"
 
-Private Enum NumberTypes 
+{enumTypeAccessibility} Enum NumberTypes 
  Whole = -1 
  Integral = 0 
  Rational = 1 
 End Enum
 
-{fieldAccessibility} numberT|ype As NumberTypes
+Private numberT|ype As NumberTypes{declarationList ?? string.Empty}
 ";
 
             var presenterAction = Support.UserAcceptsDefaults();
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            var expectedPropertyType = enumTypeAccessibility == "Public" ? "NumberTypes" : "Long";
             StringAssert.Contains("Private numberType_1 As NumberTypes", actualCode);
-            StringAssert.Contains("Public Property Get NumberType() As Long", actualCode);
-            StringAssert.Contains("NumberType = numberType_1", actualCode);
-        }
-
-        //5.3.1 The declared type of a function declaration may not be a private enum name.
-        [Test]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void EncapsulatePrivateEnumFieldInList_PrivateEnum()
-        {
-            const string inputCode =
-                @"
-
-Private Enum NumberTypes 
- Whole = -1 
- Integral = 0 
- Rational = 1 
-End Enum
-
-Public foo As Long, bar As String, numberT|ype As NumberTypes, fooBar As Variant
-";
-
-            var presenterAction = Support.UserAcceptsDefaults();
-            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            StringAssert.Contains("Public foo As Long", actualCode);
-            StringAssert.Contains("Private numberType_1 As NumberTypes", actualCode);
-            StringAssert.Contains("Public Property Get NumberType() As Long", actualCode);
+            StringAssert.Contains($"Public Property Get NumberType() As {expectedPropertyType}", actualCode);
             StringAssert.Contains("NumberType = numberType_1", actualCode);
         }
 
@@ -470,7 +447,7 @@ End Property
             const string inputCode =
                 @"|Private fizz As Integer";
 
-            var presenterAction = Support.UserAcceptsDefaults(asUDT: true);
+            var presenterAction = Support.UserAcceptsDefaults(convertFieldToUDTMember: true);
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Fizz As Integer", actualCode);
             StringAssert.Contains($"this As {Support.StateUDTDefaultType}", actualCode);
@@ -641,137 +618,6 @@ End Property
             var presenterAction = Support.SetParametersForSingleTarget("Foo", "bar");
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             Assert.AreEqual(expectedCode.Trim(), actualCode);
-        }
-
-        [TestCase("Private", "mArray(5) As String", "mArray(5) As String")]
-        [TestCase("Public", "mArray(5) As String", "mArray(5) As String")]
-        [TestCase("Private", "mArray(5,2,3) As String", "mArray(5,2,3) As String")]
-        [TestCase("Public", "mArray(5,2,3) As String", "mArray(5,2,3) As String")]
-        [TestCase("Private", "mArray(1 to 10) As String", "mArray(1 to 10) As String")]
-        [TestCase("Public", "mArray(1 to 10) As String", "mArray(1 to 10) As String")]
-        [TestCase("Private", "mArray() As String", "mArray() As String")]
-        [TestCase("Public", "mArray() As String", "mArray() As String")]
-        [TestCase("Private", "mArray(5)", "mArray(5) As Variant")]
-        [TestCase("Public", "mArray(5)", "mArray(5) As Variant")]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void EncapsulateArray(string visibility, string arrayDeclaration, string expectedArrayDeclaration)
-        {
-            string inputCode =
-                $@"Option Explicit
-
-{visibility} {arrayDeclaration}";
-
-            var selection = new Selection(3, 8, 3, 11);
-
-            string expectedCode =
-                $@"Option Explicit
-
-Private {expectedArrayDeclaration}
-
-Public Property Get MyArray() As Variant
-    MyArray = mArray
-End Property
-";
-            var userInput = new UserInputDataObject()
-                .UserSelectsField("mArray", "MyArray");
-
-            var presenterAction = Support.SetParameters(userInput);
-            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
-            Assert.AreEqual(expectedCode.Trim(), actualCode);
-        }
-
-        [TestCase("5")]
-        [TestCase("5,2,3")]
-        [TestCase("1 to 100")]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void EncapsulateArray_DeclaredInList(string dimensions)
-        {
-            string inputCode =
-                $@"Option Explicit
-
-Public mArray({dimensions}) As String, anotherVar As Long, andOneMore As Variant";
-
-            var selection = new Selection(3, 8, 3, 11);
-
-            string expectedCode =
-                $@"Option Explicit
-
-Public anotherVar As Long, andOneMore As Variant
-Private mArray({dimensions}) As String
-
-Public Property Get MyArray() As Variant
-    MyArray = mArray
-End Property
-";
-            var presenterAction = Support.SetParametersForSingleTarget("mArray", "MyArray");
-            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
-            StringAssert.Contains("Public anotherVar As Long, andOneMore As Variant", actualCode);
-            StringAssert.Contains($"Private mArray({dimensions}) As String", actualCode);
-            StringAssert.Contains("Get MyArray() As Variant", actualCode);
-            StringAssert.Contains("MyArray = mArray", actualCode);
-            StringAssert.DoesNotContain("Let MyArray", actualCode);
-            StringAssert.DoesNotContain("Set MyArray", actualCode);
-        }
-
-        [TestCase("mArr|ay(5) As String, mNextVar As Long", "Private mArray(5) As String")]
-        [TestCase("mNextVar As Long, mArr|ay(5) As String", "Private mArray(5) As String")]
-        [TestCase("mArr|ay(5), mNextVar As Long", "Private mArray(5) As Variant")]
-        [TestCase("mNextVar As Long, mAr|ray(5)", "Private mArray(5) As Variant")]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void EncapsulateArray_newFieldNameForFieldInList(string declarationList, string expectedDeclaration)
-        {
-            string inputCode =
-                $@"Option Explicit
-
-Public {declarationList}";
-
-            string expectedCode =
-                $@"Option Explicit
-
-Public mNextVar As Long
-
-{expectedDeclaration}
-
-Public Property Get MyArray() As Variant
-    MyArray = mArray
-End Property
-";
-            var presenterAction = Support.SetParametersForSingleTarget("mArray", "MyArray");
-            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            Assert.AreEqual(expectedCode.Trim(), actualCode);
-        }
-
-        //Consider...
-        //https://docs.microsoft.com/en-us/office/vba/language/reference/user-interface-help/can-t-redim-erase-or-assign-to-variant-that-contains-array-whose-element-is-with
-        //https://docs.microsoft.com/en-us/office/vba/language/reference/user-interface-help/constants-fixed-length-strings-arrays-user-defined-types-and-declare-statements
-        [Test]
-        [Ignore("Resolve use of Redim locally and externally")]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void EncapsulateArray_Redim()
-        {
-            string inputCode =
-                $@"Option Explicit
-
-Private myA|rray() As Integer
-
-Private Sub InitializeArray(size As Long)
-    Redim myArray(size)
-    For idx = 1 To size  
-        myArray(idx) = idx 
-    Next idx
-End Sub
-";
-
-            var presenterAction = Support.UserAcceptsDefaults();
-            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
-            StringAssert.Contains("Public Property Get MyArray() As Variant", actualCode);
-            StringAssert.DoesNotContain("Public Property Let MyArray(", actualCode);
-            StringAssert.Contains("Redim myArray_1(size)", actualCode);
-            StringAssert.Contains("myArray_1(idx) = idx", actualCode);
         }
 
         [TestCase(false)]

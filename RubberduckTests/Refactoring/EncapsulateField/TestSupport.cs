@@ -32,11 +32,11 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             return testAttrs;
         }
 
-        public Func<EncapsulateFieldModel, EncapsulateFieldModel> UserAcceptsDefaults(bool asUDT = false)
+        public Func<EncapsulateFieldModel, EncapsulateFieldModel> UserAcceptsDefaults(bool convertFieldToUDTMember = false)
         {
             return model =>
             {
-                model.ConvertFieldsToUDTMembers = asUDT;
+                model.ConvertFieldsToUDTMembers = convertFieldToUDTMember;
                 return model;
             };
         }
@@ -117,26 +117,20 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             return new EncapsulateFieldRefactoring(state, indenter, factory, rewritingManager, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
         }
 
-        public IEncapsulateFieldCandidate RetrieveEncapsulatedField(string inputCode, string fieldName)
+        public IEncapsulateFieldCandidate RetrieveEncapsulateFieldCandidate(string inputCode, string fieldName)
         {
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
-
-            var selectedComponentName = vbe.SelectedVBComponent.Name;
-
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
-            using (state)
-            {
-                var match = state.DeclarationFinder.MatchName(fieldName).Single();
-                return new EncapsulateFieldCandidate(match, new EncapsulateFieldValidator(state)) as IEncapsulateFieldCandidate;
-            }
+            return RetrieveEncapsulateFieldCandidate(vbe, fieldName);
         }
 
-        public IEncapsulateFieldCandidate RetrieveEncapsulatedField(string inputCode, string fieldName, DeclarationType declarationType)
+        public IEncapsulateFieldCandidate RetrieveEncapsulateFieldCandidate(string inputCode, string fieldName, DeclarationType declarationType)
         {
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
+            return RetrieveEncapsulateFieldCandidate(vbe, fieldName, declarationType);
+        }
 
-            var selectedComponentName = vbe.SelectedVBComponent.Name;
-
+        public IEncapsulateFieldCandidate RetrieveEncapsulateFieldCandidate(IVBE vbe, string fieldName, DeclarationType declarationType = DeclarationType.Variable)
+        {
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
             using (state)
             {

@@ -31,7 +31,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             string inputCode =
 $@"Public {originalFieldName} As String";
 
-            var encapsulatedField = Support.RetrieveEncapsulatedField(inputCode, originalFieldName);
+            var encapsulatedField = Support.RetrieveEncapsulateFieldCandidate(inputCode, originalFieldName);
 
             encapsulatedField.PropertyName = newPropertyName;
             encapsulatedField.EncapsulateFlag = true;
@@ -100,8 +100,8 @@ Private Function First() As String
     First = myBar.First
 End Function";
 
-            var encapsulatedField = Support.RetrieveEncapsulatedField(inputCode, "First", DeclarationType.UserDefinedTypeMember);
-            var validation = encapsulatedField as IEncapsulateFieldCandidateValidations;
+            var candidate = Support.RetrieveEncapsulateFieldCandidate(inputCode, "First", DeclarationType.UserDefinedTypeMember);
+            var validation = candidate as IEncapsulateFieldCandidateValidations;
             var result = validation.HasConflictingPropertyIdentifier;
             Assert.AreEqual(true, validation.HasConflictingPropertyIdentifier);
         }
@@ -125,7 +125,7 @@ $@"Public fizz As String
                 fizzle = value
             End Property
             ";
-            var encapsulatedField = Support.RetrieveEncapsulatedField(inputCode, "fizz");
+            var encapsulatedField = Support.RetrieveEncapsulateFieldCandidate(inputCode, "fizz");
             Assert.IsTrue(encapsulatedField.TryValidateEncapsulationAttributes(out _));
         }
 

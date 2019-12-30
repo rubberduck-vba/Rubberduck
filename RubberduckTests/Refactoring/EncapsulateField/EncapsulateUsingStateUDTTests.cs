@@ -52,7 +52,7 @@ End Type
 Private this As Long";
 
 
-            var presenterAction = Support.UserAcceptsDefaults(asUDT: true);
+            var presenterAction = Support.UserAcceptsDefaults(convertFieldToUDTMember: true);
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.Contains("Private this As Long", actualCode);
             StringAssert.Contains($"Private this_1 As {Support.StateUDTDefaultType}", actualCode);

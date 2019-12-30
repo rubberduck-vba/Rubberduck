@@ -48,5 +48,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public static string Parameter => "Parameter";
 
         public static string NameConflictDetected => "Name Conflict Detected";
+
+        public static string ArrayHasExternalRedimFormat => "Storage space for {0} is reallocated external to module '{1}'";
     }
 }

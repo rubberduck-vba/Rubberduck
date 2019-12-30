@@ -8,7 +8,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
 {
     public interface IArrayCandidate : IEncapsulateFieldCandidate
     {
-
     }
 
     public class ArrayCandidate : EncapsulateFieldCandidate, IArrayCandidate
@@ -31,13 +30,24 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
+        private bool HasExternalRedimOperation
+            => Declaration.References.Any(rf => rf.QualifiedModuleName != QualifiedModuleName
+                    && rf.Context.TryGetAncestor<VBAParser.RedimVariableDeclarationContext>(out _));
+
+
         public override string AsUDTMemberDeclaration
             => $"{PropertyName}({_subscripts}) {Tokens.As} {AsTypeName_Field}";
 
-        public override bool TryValidateEncapsulationAttributes(out string errorMessage) //, bool isArray = false)
+        public override bool TryValidateEncapsulationAttributes(out string errorMessage)
         {
             errorMessage = string.Empty;
             if (!EncapsulateFlag) { return true; }
+
+            if (HasExternalRedimOperation)
+            {
+                errorMessage = string.Format(EncapsulateFieldResources.ArrayHasExternalRedimFormat, Declaration.IdentifierName, Declaration.QualifiedModuleName.ComponentName);
+                return false;
+            }
 
             if (ConvertFieldToUDTMember)
             {
@@ -60,6 +70,17 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             foreach (var idRef in Declaration.References)
             {
+                //Locally, we do all operations using the backing field
+                if (idRef.QualifiedModuleName == QualifiedModuleName)
+                {
+                    var accessor = ConvertFieldToUDTMember 
+                        ? ReferenceForPreExistingReferences 
+                        : FieldIdentifier;
+
+                    SetReferenceRewriteContent(idRef, accessor);
+                    continue;
+                }
+
                 var replacementText = RequiresAccessQualification(idRef)
                     ? $"{QualifiedModuleName.ComponentName}.{ReferenceForPreExistingReferences}"
                     : ReferenceForPreExistingReferences;
