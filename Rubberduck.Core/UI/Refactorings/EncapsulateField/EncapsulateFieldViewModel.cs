@@ -367,6 +367,14 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             var selected = _lastCheckedBoxes.FirstOrDefault();
             if (_lastCheckedBoxes.Count == EncapsulationFields.Where(f => f.EncapsulateFlag).Count())
             {
+                _lastCheckedBoxes = EncapsulationFields.Where(f => f.EncapsulateFlag).ToList();
+                if (EncapsulationFields.Where(f => f.EncapsulateFlag).Count() == 0
+                    && EncapsulationFields.Count() > 0)
+                {
+                    SetSelectedField(EncapsulationFields.First());
+                    return;
+                }
+                SetSelectedField(_lastCheckedBoxes.First());
                 return;
             }
 
@@ -390,6 +398,11 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
 
             _lastCheckedBoxes = EncapsulationFields.Where(ef => ef.EncapsulateFlag).ToList();
 
+            SetSelectedField(selected);
+        }
+
+        private void SetSelectedField(IEncapsulatedFieldViewData selected)
+        {
             _masterDetail.SelectionTargetID = selected?.TargetID ?? null;
             OnPropertyChanged(nameof(SelectedField));
             if (_masterDetail.DetailUpdateRequired)

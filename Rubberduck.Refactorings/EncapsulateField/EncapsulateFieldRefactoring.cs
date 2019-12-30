@@ -92,7 +92,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var selected = candidates.Single(c => c.Declaration == target);
             selected.EncapsulateFlag = true;
 
-            if (!TryRetrieveExistingObjectStateUDT(target, candidates, out var objectStateUDT))
+            var forceUseOfObjectStateUDT = false;
+            if (TryRetrieveExistingObjectStateUDT(target, candidates, out var objectStateUDT))
+            {
+                objectStateUDT.IsSelected = true;
+                forceUseOfObjectStateUDT = true;
+            }
+            else
             {
                 objectStateUDT = _encapsulationCandidateFactory.CreateStateUDTField();
                 objectStateUDT.IsSelected = true;
@@ -110,6 +116,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 .OrderBy(c => c.Selection)
                             .FirstOrDefault()?.Context.Start.TokenIndex ?? null;
 
+            Model.ConvertFieldsToUDTMembers = forceUseOfObjectStateUDT;
             return Model;
         }
 

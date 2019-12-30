@@ -12,12 +12,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
     public class EncapsulateFieldResources
     {
         public static string PreviewEndOfChangesMarker
-            => "'<===== No Changes below this line =====>";
+            => "'<===== Property and Declaration changes above this line =====>";
 
         public static string DefaultPropertyParameter => "value";
 
         public static string DefaultStateUDTFieldName => "this";
 
+        //TODO: Is it meaningful to change the Type prefix for different cultures?
+        //If not, remove this declaration
         public static string StateUserDefinedTypeIdentifierPrefix => "T";
 
         public static string GroupBoxHeaderSuffix = "Encapsulation Property Name:";

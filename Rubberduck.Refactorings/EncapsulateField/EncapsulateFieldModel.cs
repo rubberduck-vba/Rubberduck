@@ -66,7 +66,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public string PreviewRefactoring() => _previewDelegate(this);
 
-        private List<IObjectStateUDT>  _objStateCandidates;
+        private HashSet<IObjectStateUDT>  _objStateCandidates;
         public IEnumerable<IObjectStateUDT> ObjectStateUDTCandidates
         {
             get
@@ -76,7 +76,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     return _objStateCandidates;
                 }
 
-                _objStateCandidates = new List<IObjectStateUDT>();
+                _objStateCandidates = new HashSet<IObjectStateUDT>();
                 foreach (var candidate in UDTFieldCandidates.Where(udt => udt.CanBeObjectStateUDT))
                 {
                     _objStateCandidates.Add(new ObjectStateUDT(candidate));
