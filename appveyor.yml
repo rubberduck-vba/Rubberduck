@@ -50,11 +50,15 @@ dotnet_csproj:
   version: '{version}'
   assembly_version: '{version}'
 
+# set up the environment variables used later in the build process
+environment:
+  installer_dir: Rubberduck.Deployment\InnoSetup\Installers\
+  codecov_token:
+    secure: WXzsqA7du+xTCQN0p06UFYOe94bKkB1ZtyCWS0Xlsu7OwIwKIa/OPaHj8Yev1JGl
 
 before_build:
   - development/java/Rubberduck.Parsing/Grammar/gradlew.bat -p development/java/Rubberduck.Parsing/Grammar clean build
   - cinst innosetup -version 5.6.1
-  - cinst codecov
   - cinst opencover.portable
   - nuget restore RubberduckMeta.sln
   - nuget restore Rubberduck.sln
@@ -66,14 +70,15 @@ build:
 # Otherwise we might run tests against artifacts that do not exist
 test_script:
   # we use -returntargetcode to fail the build if tests fail
-  - cmd: OpenCover.Console.exe -register:user -returntargetcode -target:"nunit3-console.exe" -targetargs:".\RubberduckTests\bin\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
-  - cmd: OpenCover.Console.exe -register:user -returntargetcode -target:"nunit3-console.exe" -targetargs:".\RubberduckTestsCodeAnalysis\bin\RubberduckTestsCodeAnalysis.dll" -output:".\RubberduckCodeAnalysis_Coverage.xml"
   # when using test_script, after_test seems to not be executed
-  - cmd: codecov -f "Rubberduck_Coverage.xml RubberduckCodeAnalysis_Coverage.xml"
+  # Manually select coverage instrumentation using "-register:Path64" to fix coverage generation
+  - |
+    OpenCover.Console.exe -register:Path64 -returntargetcode -target:"nunit3-console.exe" -targetargs:".\RubberduckTests\bin\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
+    OpenCover.Console.exe -register:Path64 -returntargetcode -target:"nunit3-console.exe" -targetargs:".\RubberduckTestsCodeAnalysis\bin\RubberduckTestsCodeAnalysis.dll" -output:".\RubberduckCodeAnalysis_Coverage.xml"
+    curl --silent https://codecov.io/bash --output codecov
+    bash codecov -f Rubberduck_Coverage.xml -f RubberduckCodeAnalysis_Coverage.xml
 
 # Define the installer-name depending on what branch we're building on
-environment:
-  installer_dir: Rubberduck.Deployment\InnoSetup\Installers\
 for:
 - 
   branches:
@@ -116,6 +121,10 @@ artifacts:
     name: InspectionDocs
   - path: Rubberduck.Deployment\InnoSetup\Installers\*.hash
     name: InstallerHashes
+  - path: Rubberduck_Coverage.xml
+    name: MainCoverage
+  - path: RubberduckCodeAnalysis_Coverage.xml
+    name: AnalysisCoverage
 deploy:
   - provider: GitHub
     tag: RETAGMEWITHAMESSAGE
