@@ -155,8 +155,7 @@ $@"Public fizz As String
 
             var presenterAction = Support.SetParameters(userInput);
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
-            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, fieldUT, DeclarationType.Variable, presenterAction);
+            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(inputCode, fieldUT, DeclarationType.Variable, presenterAction);
 
             Assert.IsFalse(model["fizz"].TryValidateEncapsulationAttributes(out _));
         }
@@ -188,8 +187,7 @@ End Property";
 
             var presenterAction = Support.SetParameters(userInput);
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
-            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, fieldUT, DeclarationType.Variable, presenterAction);
+            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(inputCode, fieldUT, DeclarationType.Variable, presenterAction);
 
             Assert.AreEqual(fizz_expectedResult, model["fizz"].TryValidateEncapsulationAttributes(out _), "fizz failed");
             Assert.AreEqual(bazz_expectedResult, model["bazz"].TryValidateEncapsulationAttributes(out _), "bazz failed");
@@ -221,8 +219,7 @@ End Type
 
             var presenterAction = Support.SetParameters(userInput);
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
-            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, fieldUT, DeclarationType.Variable, presenterAction);
+            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(inputCode, fieldUT, DeclarationType.Variable, presenterAction);
 
             Assert.AreEqual(true, model[fieldUT].TryValidateEncapsulationAttributes(out var message), message);
         }
@@ -244,8 +241,7 @@ Public wholeNumber As String
 
             var presenterAction = Support.SetParameters(userInput);
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
-            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, fieldUT, DeclarationType.Variable, presenterAction);
+            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(inputCode, fieldUT, DeclarationType.Variable, presenterAction);
 
             Assert.AreEqual(false, model[fieldUT].TryValidateEncapsulationAttributes(out _));
         }
@@ -310,8 +306,7 @@ Private strTest As String";
 
             var presenterAction = Support.UserAcceptsDefaults(fieldUT, "strTest");
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
-            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, fieldUT, DeclarationType.Variable, presenterAction);
+            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(inputCode, fieldUT, DeclarationType.Variable, presenterAction);
 
             Assert.AreEqual(true, model[fieldUT].TryValidateEncapsulationAttributes(out var errorMsg), errorMsg);
         }
@@ -363,8 +358,7 @@ End Function
 
             var presenterAction = Support.SetParameters(userInput);
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
-            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, fieldUT, DeclarationType.Variable, presenterAction);
+            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(inputCode, fieldUT, DeclarationType.Variable, presenterAction);
 
             Assert.AreEqual(false, model[fieldUT].TryValidateEncapsulationAttributes(out _));
         }
@@ -519,6 +513,71 @@ Public mF|oo As Long
             var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, fieldName, DeclarationType.Variable, presenterAction);
 
             Assert.AreEqual(false, model[fieldName].TryValidateEncapsulationAttributes(out var message), message);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void UserEntersUDTMemberPropertyNameInConflictWithExistingField()
+        {
+            const string inputCode =
+                @"
+
+Private Type TVehicle
+    Wheels As Integer
+    MPG As Double
+End Type
+
+Private vehicle As TVehicle
+
+Private seats As Integer
+
+Private foo As String
+";
+            var userInput = new UserInputDataObject()
+                .UserSelectsField("seats", "Foo");
+
+            userInput.ConvertFieldsToUDTMembers = true;
+            userInput.ObjectStateUDTTargetID = "TVehicle";
+
+            var presenterAction = Support.SetParameters(userInput);
+
+            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(inputCode, "seats", DeclarationType.Variable, presenterAction);
+            Assert.AreEqual(false, model["seats"].TryValidateEncapsulationAttributes(out var errorMessage), errorMessage);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void UserClearsConflictingNameByEncapsulatingConflictingVariable()
+        {
+            const string inputCode =
+                @"
+
+Private Type TVehicle
+    Wheels As Integer
+    MPG As Double
+End Type
+
+Private mVehicle As TVehicle
+
+Private seats As Integer
+
+Private foo As String
+";
+            //By encapsulating variable mVehicle, the variable disappears and
+            //is converted to UDTMember name "Vehicle" and "Vehicle" properties
+            // - thus removing the conflict created by the user editing the "seats" property
+            var userInput = new UserInputDataObject()
+                .UserSelectsField("seats", "MVehicle")
+                .UserSelectsField("mVehicle");
+
+            userInput.ConvertFieldsToUDTMembers = true;
+
+            var presenterAction = Support.SetParameters(userInput);
+
+            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(inputCode, "seats", DeclarationType.Variable, presenterAction);
+            Assert.AreEqual(true, model["seats"].TryValidateEncapsulationAttributes(out var errorMessage), errorMessage);
         }
 
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)

@@ -139,6 +139,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 return false;
             }
+
+            if (!TryValidateEncapsulationAttributes(DeclarationType.Property, out errorMessage, isArray))
+            {
+                return false;
+            }
+
             return TryValidateEncapsulationAttributes(Declaration.DeclarationType, out errorMessage, isArray);
         }
 
@@ -161,6 +167,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 return false;
             }
+
             return true;
         }
 

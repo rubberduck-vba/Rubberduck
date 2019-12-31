@@ -281,8 +281,7 @@ Public myBar As TBar
             userInput.EncapsulateUsingUDTField();
 
             var presenterAction = Support.SetParameters(userInput);
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
-            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, "myBar", DeclarationType.Variable, presenterAction);
+            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(inputCode, "myBar", DeclarationType.Variable, presenterAction);
 
             Assert.AreEqual(1, model.ObjectStateUDTCandidates.Count());
         }
@@ -431,8 +430,7 @@ Public myBar As TBar";
 
             var presenterAction = Support.SetParameters(userInput);
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
-            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe, "mFizz", DeclarationType.Variable, presenterAction);
+            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(inputCode, "mFizz", DeclarationType.Variable, presenterAction);
             var test = model.ObjectStateUDTCandidates;
 
             Assert.AreEqual(2, model.ObjectStateUDTCandidates.Count());

@@ -139,6 +139,14 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             }
         }
 
+
+
+        public EncapsulateFieldModel RetrieveUserModifiedModelPriorToRefactoring(string inputCode, string declarationName, DeclarationType declarationType, Func<EncapsulateFieldModel, EncapsulateFieldModel> presenterAdjustment)
+        {
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
+            return RetrieveUserModifiedModelPriorToRefactoring(vbe, declarationName, declarationType, presenterAdjustment);
+        }
+
         public EncapsulateFieldModel RetrieveUserModifiedModelPriorToRefactoring(IVBE vbe, string declarationName, DeclarationType declarationType, Func<EncapsulateFieldModel, EncapsulateFieldModel> presenterAdjustment)
         {
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);

@@ -44,7 +44,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             FieldIdentifier = udt.IdentifierName;
             _wrappedUDT = udt;
-            udt.EncapsulateFlag = false;
             _hashCode = ($"{_qmn.Name}.{_wrappedUDT.IdentifierName}").GetHashCode();
         }
 
@@ -65,7 +64,19 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public string AsTypeName => _wrappedUDT?.AsTypeName ?? TypeIdentifier;
 
-        public bool IsSelected { set; get; }
+        private bool _isSelected;
+        public bool IsSelected
+        {
+            set
+            {
+                _isSelected = value;
+                if (_isSelected && IsExistingDeclaration)
+                {
+                    _wrappedUDT.EncapsulateFlag = false;
+                }
+            }
+            get => _isSelected;
+        }
 
         public IEnumerable<IUserDefinedTypeMemberCandidate> ExistingMembers
         {

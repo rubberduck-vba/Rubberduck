@@ -93,6 +93,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var members = DeclarationFinder.Members(candidate.QualifiedModuleName)
                 .Where(d => d != candidate.Declaration);
 
+            if (candidate.ConvertFieldToUDTMember)
+            {
+                var membersToRemove = FieldCandidates.Where(fc => fc.EncapsulateFlag && fc.Declaration.DeclarationType.HasFlag(DeclarationType.Variable))
+                    .Select(fc => fc.Declaration);
+
+                members = members.Except(membersToRemove);
+            }
+
             var nameConflictCandidates = members
                 .Where(d => !IsAlwaysIgnoreNameConflictType(d, declarationType)).ToList();
 
