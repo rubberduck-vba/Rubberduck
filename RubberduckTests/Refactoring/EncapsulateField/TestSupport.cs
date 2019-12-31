@@ -64,8 +64,8 @@ namespace RubberduckTests.Refactoring.EncapsulateField
         {
             return model =>
             {
-                model.ConvertFieldsToUDTMembers = userInput.EncapsulateAsUDT;
-                if (userInput.EncapsulateAsUDT)
+                model.ConvertFieldsToUDTMembers = userInput.ConvertFieldsToUDTMembers;
+                if (userInput.ConvertFieldsToUDTMembers)
                 {
                     var stateUDT = model.EncapsulationCandidates.Where(sfc => sfc is IUserDefinedTypeCandidate udt && udt.TargetID == userInput.ObjectStateUDTTargetID)
                     .Select(sfc => sfc as IUserDefinedTypeCandidate).SingleOrDefault();
@@ -79,7 +79,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
                 foreach (var testModifiedAttribute in userInput.EncapsulateFieldAttributes)
                 {
-                    var attrsInitializedByTheRefactoring = model[testModifiedAttribute.TargetFieldName]; //.EncapsulationAttributes;
+                    var attrsInitializedByTheRefactoring = model[testModifiedAttribute.TargetFieldName];
 
                     attrsInitializedByTheRefactoring.PropertyName = testModifiedAttribute.PropertyName;
                     attrsInitializedByTheRefactoring.EncapsulateFlag = testModifiedAttribute.EncapsulateFlag;
@@ -89,7 +89,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             };
         }
 
-        public Func<EncapsulateFieldModel, EncapsulateFieldModel> SetParameters(string originalField, TestEncapsulationAttributes attrs, bool asUDT = false)
+        public Func<EncapsulateFieldModel, EncapsulateFieldModel> SetParameters(string originalField, TestEncapsulationAttributes attrs, bool convertFieldsToUDTMembers = false)
         {
             return model =>
             {
@@ -98,7 +98,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                 encapsulatedField.IsReadOnly = attrs.IsReadOnly;
                 encapsulatedField.EncapsulateFlag = attrs.EncapsulateFlag;
 
-                model.ConvertFieldsToUDTMembers = asUDT;
+                model.ConvertFieldsToUDTMembers = convertFieldsToUDTMembers;
                 return model;
             };
         }
@@ -139,7 +139,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             }
         }
 
-        public EncapsulateFieldModel RetrieveUserModifiedModelPriorToRefactoring(IVBE vbe, string declarationName, DeclarationType declarationType, Func<EncapsulateFieldModel, EncapsulateFieldModel> presenterAdjustment) //, params string[] fieldIdentifiers)
+        public EncapsulateFieldModel RetrieveUserModifiedModelPriorToRefactoring(IVBE vbe, string declarationName, DeclarationType declarationType, Func<EncapsulateFieldModel, EncapsulateFieldModel> presenterAdjustment)
         {
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
             using (state)
@@ -217,12 +217,12 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             return this;
         }
 
-        public bool EncapsulateAsUDT { set; get; }
+        public bool ConvertFieldsToUDTMembers { set; get; }
 
         public void EncapsulateUsingUDTField(string targetID = null)
         {
             ObjectStateUDTTargetID = targetID;
-            EncapsulateAsUDT = true;
+            ConvertFieldsToUDTMembers = true;
         }
 
         public string ObjectStateUDTTargetID { set; get; }

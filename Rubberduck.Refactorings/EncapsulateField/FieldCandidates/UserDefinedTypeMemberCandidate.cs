@@ -16,6 +16,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         Dictionary<IdentifierReference, (ParserRuleContext, string)> IdentifierReplacements { get; }
         IEnumerable<IdentifierReference> ParentContextReferences { get; }
         void LoadReferenceExpressions();
+        bool IsExistingMember { get; }
     }
 
     public class UserDefinedTypeMemberCandidate : IUserDefinedTypeMemberCandidate
@@ -167,11 +168,24 @@ namespace Rubberduck.Refactorings.EncapsulateField
             set => _wrappedCandidate.IsReadOnly = value;
             get => _wrappedCandidate.IsReadOnly;
         }
+
+        private bool _encapsulateFlag;
         public bool EncapsulateFlag
         {
-            set => _wrappedCandidate.EncapsulateFlag = value;
-            get => _wrappedCandidate.EncapsulateFlag;
+            set
+            {
+                _encapsulateFlag = value;
+                if (!IsExistingMember)
+                {
+                    _wrappedCandidate.EncapsulateFlag = value;
+                }
+            }
+
+            get => _encapsulateFlag; //=> _wrappedCandidate.EncapsulateFlag;
         }
+
+        public bool IsExistingMember => _wrappedCandidate.Declaration.ParentDeclaration.DeclarationType is DeclarationType.UserDefinedType;
+
         public string FieldIdentifier
         {
             set => _wrappedCandidate.FieldIdentifier = value;
@@ -208,7 +222,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public bool ImplementSet => _wrappedCandidate.ImplementSet;
 
-        public bool ConvertFieldToUDTMember { set; get; }
+        private bool _convertFieldToUDTMember;
+        public bool ConvertFieldToUDTMember
+        {
+            set  => _convertFieldToUDTMember = value;
+            get => false;
+        }
 
         public IEnumerable<IPropertyGeneratorAttributes> PropertyAttributeSets => _wrappedCandidate.PropertyAttributeSets;
         public string AsUDTMemberDeclaration

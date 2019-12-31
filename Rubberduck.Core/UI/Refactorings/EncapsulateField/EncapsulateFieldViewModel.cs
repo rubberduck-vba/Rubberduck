@@ -273,6 +273,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
                 ReloadListAndPreview();
                 RefreshValidationResults();
                 UpdateDetailForSelection();
+                OnPropertyChanged(nameof(ShowStateUDTSelections));
             }
         }
 

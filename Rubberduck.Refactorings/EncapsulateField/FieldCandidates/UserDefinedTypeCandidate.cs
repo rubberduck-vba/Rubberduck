@@ -83,10 +83,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 if (TypeDeclarationIsPrivate)
                 {
-                    foreach (var member in Members)
+                    foreach (var member in Members.Where(m => !m.ConvertFieldToUDTMember && m.IsExistingMember))
                     {
                         member.EncapsulateFlag = value;
-                        if (!_validator.HasConflictingIdentifier(member, DeclarationType.Property, out _))
+                        if (!member.EncapsulateFlag || !_validator.HasConflictingIdentifier(member, DeclarationType.Property, out _))
                         {
                             continue;
                         }

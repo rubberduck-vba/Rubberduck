@@ -24,7 +24,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _newObjectStateUDT = stateUDTField;
 
             EncapsulationCandidates = candidates.ToList();
-            StateUDTField = stateUDTField;
+            ConvertFieldsToUDTMembers = false;
         }
 
         public List<IEncapsulateFieldCandidate> EncapsulationCandidates { set; get; } = new List<IEncapsulateFieldCandidate>();
@@ -54,15 +54,25 @@ namespace Rubberduck.Refactorings.EncapsulateField
             set
             {
                 _convertFieldsToUDTMembers = value;
-                foreach (var candidate in EncapsulationCandidates)
-                {
-                    candidate.ConvertFieldToUDTMember = value;
-                }
+                SetFieldsToUDTMemberFlags(value);
             }
             get => _convertFieldsToUDTMembers;
         }
 
-        public IObjectStateUDT StateUDTField { set; get; }
+        private IObjectStateUDT _activeObjectStateUDT;
+        public IObjectStateUDT StateUDTField
+        {
+            set => _activeObjectStateUDT = value;
+            get => _activeObjectStateUDT ?? _newObjectStateUDT;
+        }
+
+        private void SetFieldsToUDTMemberFlags(bool value)
+        {
+            foreach (var candidate in EncapsulationCandidates)
+            {
+                candidate.ConvertFieldToUDTMember = value;
+            }
+        }
 
         public string PreviewRefactoring() => _previewDelegate(this);
 

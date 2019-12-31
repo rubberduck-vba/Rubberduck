@@ -22,6 +22,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         Declaration AsTypeDeclaration { get; }
         bool IsSelected { set; get; }
         bool IsEncapsulateFieldCandidate(IEncapsulateFieldCandidate efc);
+        IEnumerable<IUserDefinedTypeMemberCandidate> ExistingMembers { get; }
     }
 
     //ObjectStateUDT can be an existing UDT (Private only) selected by the user, or a 
@@ -65,6 +66,19 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public string AsTypeName => _wrappedUDT?.AsTypeName ?? TypeIdentifier;
 
         public bool IsSelected { set; get; }
+
+        public IEnumerable<IUserDefinedTypeMemberCandidate> ExistingMembers
+        {
+            get
+            {
+                if (IsExistingDeclaration)
+                {
+                    return _wrappedUDT.Members;
+                }
+                return Enumerable.Empty<IUserDefinedTypeMemberCandidate>();
+            }
+        }
+
 
         private QualifiedModuleName _qmn;
         public QualifiedModuleName QualifiedModuleName

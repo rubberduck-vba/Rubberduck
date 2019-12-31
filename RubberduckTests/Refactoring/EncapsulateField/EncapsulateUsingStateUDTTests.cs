@@ -144,12 +144,10 @@ Public foobar As Byte
                 .UserSelectsField("foobar");
 
             userInput.EncapsulateUsingUDTField("myBar");
-            //userInput.ObjectStateUDTTargetID = "myBar";
 
             var presenterAction = Support.SetParameters(userInput);
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.DoesNotContain($"Private this As {Support.StateUDTDefaultType}", actualCode);
-            //StringAssert.Contains($"Private Type {Support.StateUDTDefaultType}", actualCode);
             StringAssert.Contains("Foo As Long", actualCode);
             StringAssert.DoesNotContain("Public foo As Long", actualCode);
             StringAssert.Contains("Bar As String", actualCode);
@@ -160,6 +158,43 @@ Public foobar As Byte
             StringAssert.DoesNotContain("Private this As TBar", actualCode);
             StringAssert.Contains("First As String", actualCode);
             StringAssert.Contains("Second As Long", actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void DoesNotChangeExistingUDTMembers()
+        {
+            string inputCode =
+$@"
+Private Type T{MockVbeBuilder.TestModuleName}
+    Name As String
+End Type
+
+Private this As T{MockVbeBuilder.TestModuleName}
+
+Public foo As Long
+Public bar As String
+Public foo|bar As Byte
+
+Public Property Let Name(value As String)
+    this.Name = value
+End Property
+
+Public Property Get Name() As String
+    Name = this.Name
+End Property
+";
+
+            var userInput = new UserInputDataObject()
+                .UserSelectsField("foobar");
+
+            userInput.EncapsulateUsingUDTField($"T{MockVbeBuilder.TestModuleName}");
+
+            var presenterAction = Support.SetParameters(userInput);
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+            StringAssert.DoesNotContain($"Name_1 As String", actualCode);
+            StringAssert.DoesNotContain($"ThisName As String", actualCode);
         }
 
         [Test]

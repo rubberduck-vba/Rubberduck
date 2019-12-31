@@ -509,7 +509,7 @@ Public mF|oo As Long
             var userInput = new UserInputDataObject()
                 .UserSelectsField(fieldName);
 
-            userInput.EncapsulateAsUDT = true;
+            userInput.ConvertFieldsToUDTMembers = true;
 
             var presenterAction = Support.SetParameters(userInput);
 

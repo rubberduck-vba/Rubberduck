@@ -98,25 +98,28 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 objectStateUDT.IsSelected = true;
                 forceUseOfObjectStateUDT = true;
             }
-            else
-            {
-                objectStateUDT = _encapsulationCandidateFactory.CreateStateUDTField();
-                objectStateUDT.IsSelected = true;
-            }
+
+            var defaultStateUDT = _encapsulationCandidateFactory.CreateStateUDTField();
+            defaultStateUDT.IsSelected = objectStateUDT is null;
 
             Model = new EncapsulateFieldModel(
                                 target,
                                 candidates,
-                                objectStateUDT,
+                                defaultStateUDT,
                                 PreviewRewrite,
                                 validator);
+
+            if (forceUseOfObjectStateUDT)
+            {
+                Model.ConvertFieldsToUDTMembers = true;
+                Model.StateUDTField = objectStateUDT;
+            }
 
             _codeSectionStartIndex = _declarationFinderProvider.DeclarationFinder
                 .Members(_targetQMN).Where(m => m.IsMember())
                 .OrderBy(c => c.Selection)
                             .FirstOrDefault()?.Context.Start.TokenIndex ?? null;
 
-            Model.ConvertFieldsToUDTMembers = forceUseOfObjectStateUDT;
             return Model;
         }
 
