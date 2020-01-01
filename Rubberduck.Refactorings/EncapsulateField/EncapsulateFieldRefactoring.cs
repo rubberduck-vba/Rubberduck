@@ -10,7 +10,6 @@ using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.Utility;
 using System.Collections.Generic;
 using System;
-using Antlr4.Runtime;
 using Rubberduck.Refactorings.EncapsulateField.Extensions;
 
 namespace Rubberduck.Refactorings.EncapsulateField
@@ -26,14 +25,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
         private readonly IIndenter _indenter;
         private QualifiedModuleName _targetQMN;
-        private EncapsulateFieldElementFactory _encapsulationCandidateFactory;
-
-        private enum NewContentTypes { TypeDeclarationBlock, DeclarationBlock, MethodBlock, PostContentMessage };
-        private Dictionary<NewContentTypes, List<string>> _newContent { set; get; }
-
-        private int? _codeSectionStartIndex;
-
-        private static string DoubleSpace => $"{Environment.NewLine}{Environment.NewLine}";
 
         public EncapsulateFieldRefactoring(
             IDeclarationFinderProvider declarationFinderProvider,
@@ -50,7 +41,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _indenter = indenter;
         }
 
-        public EncapsulateFieldModel Model { set; get; }
+        public EncapsulateFieldModel TestUserInteractionOnly(Declaration target, Func<EncapsulateFieldModel, EncapsulateFieldModel> userInteraction)
+        {
+            var model = InitializeModel(target);
+            return userInteraction(model);
+        }
 
         protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
         {
@@ -65,62 +60,56 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return selectedDeclaration;
         }
 
-        public EncapsulateFieldModel TestUserInteractionOnly(Declaration target, Func<EncapsulateFieldModel, EncapsulateFieldModel> userInteraction)
-        {
-            var model = InitializeModel(target);
-            return userInteraction(model);
-        }
-
         protected override EncapsulateFieldModel InitializeModel(Declaration target)
         {
-            if (target == null)
-            {
-                throw new TargetDeclarationIsNullException();
-            }
+            if (target == null) { throw new TargetDeclarationIsNullException(); }
 
-            if (!target.DeclarationType.Equals(DeclarationType.Variable))
-            {
-                throw new InvalidDeclarationTypeException(target);
-            }
+            if (!target.DeclarationType.Equals(DeclarationType.Variable)) { throw new InvalidDeclarationTypeException(target); }
 
             _targetQMN = target.QualifiedModuleName;
 
-            var validator = new EncapsulateFieldValidator(_declarationFinderProvider) as IEncapsulateFieldValidator;
-            _encapsulationCandidateFactory = new EncapsulateFieldElementFactory(_declarationFinderProvider, _targetQMN, validator);
+            var validator = new EncapsulateFieldValidator(_declarationFinderProvider);
 
-            var candidates = _encapsulationCandidateFactory.CreateEncapsulationCandidates();
+            var encapsulationCandidateFactory = new EncapsulateFieldElementFactory(_declarationFinderProvider, _targetQMN);
+
+            var candidates = encapsulationCandidateFactory.CreateEncapsulationCandidates(validator as IValidateEncapsulateFieldNames);
+
+            validator.RegisterFieldCandidates(candidates);
+
+            foreach (var candidate in candidates)
+            {
+                if (candidate is IAssignNoConflictNames namer)
+                {
+                    namer.AssignIdentifiers(validator);
+                }
+            }
+
             var selected = candidates.Single(c => c.Declaration == target);
             selected.EncapsulateFlag = true;
 
-            var forceUseOfObjectStateUDT = false;
+            var defaultObjectStateUDT = encapsulationCandidateFactory.CreateStateUDTField(validator);
+            defaultObjectStateUDT.IsSelected = true;
+
             if (TryRetrieveExistingObjectStateUDT(target, candidates, out var objectStateUDT))
             {
                 objectStateUDT.IsSelected = true;
-                forceUseOfObjectStateUDT = true;
+                defaultObjectStateUDT.IsSelected = false;
             }
 
-            var defaultStateUDT = _encapsulationCandidateFactory.CreateStateUDTField();
-            defaultStateUDT.IsSelected = objectStateUDT is null;
-
-            Model = new EncapsulateFieldModel(
+            var model = new EncapsulateFieldModel(
                                 target,
                                 candidates,
-                                defaultStateUDT,
+                                defaultObjectStateUDT,
                                 PreviewRewrite,
                                 validator);
 
-            if (forceUseOfObjectStateUDT)
+            if (objectStateUDT != null)
             {
-                Model.ConvertFieldsToUDTMembers = true;
-                Model.StateUDTField = objectStateUDT;
+                model.StateUDTField = objectStateUDT;
+                model.ConvertFieldsToUDTMembers = true;
             }
 
-            _codeSectionStartIndex = _declarationFinderProvider.DeclarationFinder
-                .Members(_targetQMN).Where(m => m.IsMember())
-                .OrderBy(c => c.Selection)
-                            .FirstOrDefault()?.Context.Start.TokenIndex ?? null;
-
-            return Model;
+            return model;
         }
 
         //Identify an existing objectStateUDT and make it unavailable for the user to select for encapsulation.
@@ -154,6 +143,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         protected override void RefactorImpl(EncapsulateFieldModel model)
         {
             var refactorRewriteSession = new EncapsulateFieldRewriteSession(RewritingManager.CheckOutCodePaneSession()) as IEncapsulateFieldRewriteSession;
+
             refactorRewriteSession = RefactorRewrite(model, refactorRewriteSession);
 
             if (!refactorRewriteSession.TryRewrite())
@@ -165,191 +155,23 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private string PreviewRewrite(EncapsulateFieldModel model)
         {
             IEncapsulateFieldRewriteSession refactorRewriteSession = new EncapsulateFieldRewriteSession(RewritingManager.CheckOutCodePaneSession());
-            refactorRewriteSession = GeneratePreview(model, refactorRewriteSession);
+
+            refactorRewriteSession = RefactorRewrite(model, refactorRewriteSession, true);
 
             var previewRewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
 
             return previewRewriter.GetText(maxConsecutiveNewLines: 3);
         }
 
-        public IEncapsulateFieldRewriteSession GeneratePreview(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession)
+        private IEncapsulateFieldRewriteSession RefactorRewrite(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession, bool asPreview = false)
         {
             if (!model.SelectedFieldCandidates.Any()) { return refactorRewriteSession; }
 
-            return RefactorRewrite(model, refactorRewriteSession, asPreview: true);
+            var strategy = model.ConvertFieldsToUDTMembers
+                ? new ConvertFieldsToUDTMembers(_declarationFinderProvider, _targetQMN, _indenter) as IEncapsulateStrategy
+                : new UseBackingFields(_declarationFinderProvider, _targetQMN, _indenter) as IEncapsulateStrategy;
+
+            return strategy.RefactorRewrite(model, refactorRewriteSession, asPreview);
         }
-
-        public IEncapsulateFieldRewriteSession RefactorRewrite(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession)
-        {
-            if (!model.SelectedFieldCandidates.Any()) { return refactorRewriteSession; }
-
-            return RefactorRewrite(model, refactorRewriteSession, asPreview: false);
-        }
-
-        private IEncapsulateFieldRewriteSession RefactorRewrite(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession, bool asPreview)
-        {
-            ModifyFields(model, refactorRewriteSession);
-
-            ModifyReferences(model, refactorRewriteSession);
-
-            InsertNewContent(model, refactorRewriteSession, asPreview);
-
-            return refactorRewriteSession;
-        }
-
-        private void ModifyReferences(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession)
-        {
-            foreach (var field in model.SelectedFieldCandidates)
-            {
-                field.ReferenceQualifier = model.ConvertFieldsToUDTMembers
-                    ? model.StateUDTField.FieldIdentifier
-                    : null;
-
-                field.LoadFieldReferenceContextReplacements();
-            }
-
-            foreach (var rewriteReplacement in model.SelectedFieldCandidates.SelectMany(field => field.ReferenceReplacements))
-            {
-                (ParserRuleContext Context, string Text) = rewriteReplacement.Value;
-                var rewriter = refactorRewriteSession.CheckOutModuleRewriter(rewriteReplacement.Key.QualifiedModuleName);
-                rewriter.Replace(Context, Text);
-            }
-        }
-
-        private void ModifyFields(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession)
-        {
-            if (model.ConvertFieldsToUDTMembers)
-            {
-                IModuleRewriter rewriter;
-
-                foreach (var field in model.SelectedFieldCandidates)
-                {
-                    rewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
-
-                    refactorRewriteSession.Remove(field.Declaration, rewriter);
-                }
-
-                if (!model.StateUDTField.IsExistingDeclaration)
-                {
-                    return;
-                }
-
-                var stateUDT = model.StateUDTField;
-
-                stateUDT.AddMembers(model.SelectedFieldCandidates);
-
-                rewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
-
-                rewriter.Replace(stateUDT.AsTypeDeclaration, stateUDT.TypeDeclarationBlock(_indenter));
-
-                return;
-            }
-
-            foreach (var field in model.SelectedFieldCandidates)
-            {
-                var rewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
-
-                if (field.Declaration.HasPrivateAccessibility() && field.FieldIdentifier.Equals(field.Declaration.IdentifierName))
-                {
-                    rewriter.MakeImplicitDeclarationTypeExplicit(field.Declaration);
-                    continue;
-                }
-
-                if (field.Declaration.IsDeclaredInList() && !field.Declaration.HasPrivateAccessibility())
-                {
-                    refactorRewriteSession.Remove(field.Declaration, rewriter);
-                    continue;
-                }
-
-                rewriter.Rename(field.Declaration, field.FieldIdentifier);
-                rewriter.SetVariableVisiblity(field.Declaration, Accessibility.Private.TokenString());
-                rewriter.MakeImplicitDeclarationTypeExplicit(field.Declaration);
-            }
-        }
-
-        private void InsertNewContent(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession, bool postPendPreviewMessage = false)
-        {
-            _newContent = new Dictionary<NewContentTypes, List<string>>
-            {
-                { NewContentTypes.PostContentMessage, new List<string>() },
-                { NewContentTypes.DeclarationBlock, new List<string>() },
-                { NewContentTypes.MethodBlock, new List<string>() },
-                { NewContentTypes.TypeDeclarationBlock, new List<string>() }
-            };
-
-            var rewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
-
-            LoadNewDeclarationBlocks(model);
-
-            LoadNewPropertyBlocks(model);
-
-            if (postPendPreviewMessage)
-            {
-                _newContent[NewContentTypes.PostContentMessage].Add(EncapsulateFieldResources.PreviewEndOfChangesMarker);
-            }
-
-            var newContentBlock = string.Join(DoubleSpace,
-                            (_newContent[NewContentTypes.TypeDeclarationBlock])
-                            .Concat(_newContent[NewContentTypes.DeclarationBlock])
-                            .Concat(_newContent[NewContentTypes.MethodBlock])
-                            .Concat(_newContent[NewContentTypes.PostContentMessage]))
-                        .Trim();
-
-
-            if (_codeSectionStartIndex.HasValue)
-            {
-                rewriter.InsertBefore(_codeSectionStartIndex.Value, $"{newContentBlock}{DoubleSpace}");
-            }
-            else
-            {
-                rewriter.InsertAtEndOfFile($"{DoubleSpace}{newContentBlock}");
-            }
-        }
-
-        private void LoadNewDeclarationBlocks(EncapsulateFieldModel model)
-        {
-            if (model.ConvertFieldsToUDTMembers)
-            {
-                if (model.StateUDTField?.IsExistingDeclaration ?? false) { return; }
-
-                model.StateUDTField = _encapsulationCandidateFactory.CreateStateUDTField();
-
-                model.StateUDTField.AddMembers(model.SelectedFieldCandidates);
-
-                AddCodeBlock(NewContentTypes.TypeDeclarationBlock, model.StateUDTField.TypeDeclarationBlock(_indenter));
-                AddCodeBlock(NewContentTypes.DeclarationBlock, model.StateUDTField.FieldDeclarationBlock);
-                return;
-            }
-
-            //New field declarations created here were removed from their list within ModifyFields(...)
-            var fieldsRequiringNewDeclaration = model.SelectedFieldCandidates
-                .Where(field => field.Declaration.IsDeclaredInList()
-                                    && field.Declaration.Accessibility != Accessibility.Private);
-
-            foreach (var field in fieldsRequiringNewDeclaration)
-            {
-                var targetIdentifier = field.Declaration.Context.GetText().Replace(field.IdentifierName, field.FieldIdentifier);
-                var newField = field.Declaration.IsTypeSpecified
-                    ? $"{Tokens.Private} {targetIdentifier}"
-                    : $"{Tokens.Private} {targetIdentifier} {Tokens.As} {field.Declaration.AsTypeName}";
-
-                AddCodeBlock(NewContentTypes.DeclarationBlock, newField);
-            }
-        }
-
-        private void LoadNewPropertyBlocks(EncapsulateFieldModel model)
-        {
-            var propertyGenerationSpecs = model.SelectedFieldCandidates
-                                                .SelectMany(f => f.PropertyAttributeSets);
-
-            var generator = new PropertyGenerator();
-            foreach (var spec in propertyGenerationSpecs)
-            {
-                AddCodeBlock(NewContentTypes.MethodBlock, generator.AsPropertyBlock(spec, _indenter));
-            }
-        }
-
-        private void AddCodeBlock(NewContentTypes contentType, string block)
-            => _newContent[contentType].Add(block);
     }
 }

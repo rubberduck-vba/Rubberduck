@@ -11,21 +11,23 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         private readonly Func<EncapsulateFieldModel, string> _previewDelegate;
         private QualifiedModuleName _targetQMN;
-        private IValidateEncapsulateFieldNames _validator;
+        //private IValidateEncapsulateFieldNames _validator;
         private IObjectStateUDT _newObjectStateUDT;
 
         private IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> _udtFieldToUdtDeclarationMap = new Dictionary<Declaration, (Declaration, IEnumerable<Declaration>)>();
 
-        public EncapsulateFieldModel(Declaration target, IEnumerable<IEncapsulateFieldCandidate> candidates, IObjectStateUDT stateUDTField, Func<EncapsulateFieldModel, string> previewDelegate, IValidateEncapsulateFieldNames validator)
+        public EncapsulateFieldModel(Declaration target, IEnumerable<IEncapsulateFieldCandidate> candidates, IObjectStateUDT stateUDTField, Func<EncapsulateFieldModel, string> previewDelegate, IEncapsulateFieldValidator validator)
         {
             _previewDelegate = previewDelegate;
             _targetQMN = target.QualifiedModuleName;
-            _validator = validator;
             _newObjectStateUDT = stateUDTField;
 
+            Validator = validator;
             EncapsulationCandidates = candidates.ToList();
             ConvertFieldsToUDTMembers = false;
         }
+
+        public IEncapsulateFieldValidator Validator {set; get;}
 
         public List<IEncapsulateFieldCandidate> EncapsulationCandidates { set; get; } = new List<IEncapsulateFieldCandidate>();
 

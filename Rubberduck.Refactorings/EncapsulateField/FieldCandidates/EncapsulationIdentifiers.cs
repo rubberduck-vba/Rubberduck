@@ -77,20 +77,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             _setLetParameter = DEFAULT_WRITE_PARAMETER;
 
-            if (!(Field.IsEquivalentVBAIdentifierTo(DEFAULT_WRITE_PARAMETER)
-                    || Property.IsEquivalentVBAIdentifierTo(DEFAULT_WRITE_PARAMETER)))
+            var guard = 0;
+            while ( guard++ < 10 && (Field.IsEquivalentVBAIdentifierTo(_setLetParameter)
+                    || Property.IsEquivalentVBAIdentifierTo(_setLetParameter)))
             {
-                return;
-            }
-
-            if (Field.IsEquivalentVBAIdentifierTo(SetLetParameter))
-            {
-                _setLetParameter = $"{Field}_{DEFAULT_WRITE_PARAMETER}";
-            }
-
-            if (Property.IsEquivalentVBAIdentifierTo(SetLetParameter))
-            {
-                _setLetParameter = $"{Property}_{Field}_{DEFAULT_WRITE_PARAMETER}";
+                _setLetParameter = _setLetParameter.IncrementEncapsulationIdentifier();
             }
         }
     }

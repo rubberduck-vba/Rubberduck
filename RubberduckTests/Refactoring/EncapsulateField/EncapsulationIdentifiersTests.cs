@@ -72,10 +72,10 @@ $@"Public fizz As String
             var encapsulatedField = Support.RetrieveEncapsulateFieldCandidate(inputCode, "value");
 
             encapsulatedField.PropertyName = "Test";
-            StringAssert.AreEqualIgnoringCase("value_value", encapsulatedField.ParameterName);
+            StringAssert.AreEqualIgnoringCase("value_1", encapsulatedField.ParameterName);
 
             encapsulatedField.PropertyName = "Value";
-            StringAssert.AreEqualIgnoringCase("Value_value_1_value", encapsulatedField.ParameterName);
+            StringAssert.AreEqualIgnoringCase("value_2", encapsulatedField.ParameterName);
         }
 
         [TestCase("strValue", "Value", "strValue")]

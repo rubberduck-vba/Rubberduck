@@ -18,14 +18,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         bool IsValidVBAIdentifier(string identifier, DeclarationType declarationType, out string errorMessage, bool isArray = false);
         bool HasConflictingIdentifier(IEncapsulateFieldCandidate candidate, DeclarationType declarationType, out string errorMessage);
-        bool IsSelfConsistent(IEncapsulateFieldCandidate candidate, out string errorMessage);
-        bool IsConflictingFieldIdentifier(string fieldName, IEncapsulateFieldCandidate candidate, DeclarationType declarationType);
-        IEncapsulateFieldCandidate AssignNoConflictIdentifier(IEncapsulateFieldCandidate candidate, DeclarationType declarationType);
+        bool HasConflictingIdentifierIgnoreEncapsulationFlag(IEncapsulateFieldCandidate field, DeclarationType declarationType, out string errorMessage);
+        bool IsConflictingProposedIdentifier(string fieldName, IEncapsulateFieldCandidate candidate, DeclarationType declarationType);
     }
 
     public interface IEncapsulateFieldValidator : IObjectStateUDTNamesValidator, IValidateEncapsulateFieldNames
     {
-        void RegisterFieldCandidate(IEncapsulateFieldCandidate candidate);
+        void RegisterFieldCandidates(IEnumerable<IEncapsulateFieldCandidate> candidates);
     }
 
     public class EncapsulateFieldValidator : IEncapsulateFieldValidator
@@ -45,15 +44,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
             UDTMemberCandidates = new List<IUserDefinedTypeMemberCandidate>();
         }
 
-        public void RegisterFieldCandidate(IEncapsulateFieldCandidate candidate)
+        public void RegisterFieldCandidates(IEnumerable<IEncapsulateFieldCandidate> candidates)
         {
-            FieldCandidates.Add(candidate);
-            AssignNoConflictIdentifier(candidate, DeclarationType.Property);
-            AssignNoConflictIdentifier(candidate, DeclarationType.Variable);
-
-            if (candidate is IUserDefinedTypeCandidate udt)
+            FieldCandidates.AddRange(candidates);
+            foreach (var udtCandidate in candidates.Where(c => c is IUserDefinedTypeCandidate).Cast<IUserDefinedTypeCandidate>())
             {
-                foreach (var member in udt.Members)
+                foreach (var member in udtCandidate.Members)
                 {
                     UDTMemberCandidates.Add(member);
                 }
@@ -65,27 +61,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public bool IsValidVBAIdentifier(string identifier, DeclarationType declarationType, out string errorMessage, bool isArray = false)
         {
             return !VBAIdentifierValidator.TryMatchInvalidIdentifierCriteria(identifier, declarationType, out errorMessage, isArray);
-        }
-
-        public bool IsSelfConsistent(IEncapsulateFieldCandidate candidate, out string errorMessage)
-        {
-            errorMessage = string.Empty;
-            if (candidate.PropertyName.IsEquivalentVBAIdentifierTo(candidate.FieldIdentifier))
-            {
-                errorMessage = $"{EncapsulateFieldResources.Conflict}: {EncapsulateFieldResources.Property}({candidate.PropertyName}) => {EncapsulateFieldResources.Field}({candidate.FieldIdentifier})";
-                return false;
-            }
-            if (candidate.PropertyName.IsEquivalentVBAIdentifierTo(candidate.ParameterName))
-            {
-                errorMessage = $"{EncapsulateFieldResources.Conflict}: {EncapsulateFieldResources.Property}({candidate.PropertyName}) => {EncapsulateFieldResources.Parameter}({candidate.ParameterName})";
-                return false;
-            }
-            if (candidate.FieldIdentifier.IsEquivalentVBAIdentifierTo(candidate.ParameterName))
-            {
-                errorMessage = $"{EncapsulateFieldResources.Conflict}: {EncapsulateFieldResources.Field}({candidate.FieldIdentifier}) => {EncapsulateFieldResources.Parameter}({candidate.ParameterName})";
-                return false;
-            }
-            return true;
         }
 
         private List<string> PotentialConflictIdentifiers(IEncapsulateFieldCandidate candidate, DeclarationType declarationType)
@@ -134,7 +109,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return potentialDeclarationIdentifierConflicts.ToList();
         }
 
-        public bool HasConflictingIdentifier(IEncapsulateFieldCandidate field, DeclarationType declarationType, out string errorMessage) 
+        public bool HasConflictingIdentifierIgnoreEncapsulationFlag(IEncapsulateFieldCandidate field, DeclarationType declarationType, out string errorMessage)
+            => InternalHasConflictingIdentifier(field, declarationType, true, out errorMessage);
+
+        public bool HasConflictingIdentifier(IEncapsulateFieldCandidate field, DeclarationType declarationType, out string errorMessage)
             => InternalHasConflictingIdentifier(field, declarationType, false, out errorMessage);
 
         private bool InternalHasConflictingIdentifier(IEncapsulateFieldCandidate field, DeclarationType declarationType, bool ignoreEncapsulationFlags, out string errorMessage)
@@ -166,30 +144,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return false;
         }
 
-        public IEncapsulateFieldCandidate AssignNoConflictIdentifier(IEncapsulateFieldCandidate candidate, DeclarationType declarationType)
-        {
-            var isConflictingIdentifier = InternalHasConflictingIdentifier(candidate, declarationType, true, out _);
-            for (var count = 1; count < 10 && isConflictingIdentifier; count++)
-            {
-                var identifier = declarationType.HasFlag(DeclarationType.Property)
-                    ? candidate.PropertyName
-                    : candidate.FieldIdentifier;
-
-                if (declarationType.HasFlag(DeclarationType.Property))
-                {
-                    candidate.PropertyName = identifier.IncrementEncapsulationIdentifier();
-                }
-                else
-                {
-                    candidate.FieldIdentifier = identifier.IncrementEncapsulationIdentifier();
-                }
-                isConflictingIdentifier = InternalHasConflictingIdentifier(candidate, declarationType, true, out _);
-            }
-            return candidate;
-        }
-
-
-        public bool IsConflictingFieldIdentifier(string fieldName, IEncapsulateFieldCandidate candidate, DeclarationType declarationType)
+        public bool IsConflictingProposedIdentifier(string fieldName, IEncapsulateFieldCandidate candidate, DeclarationType declarationType)
         {
             var members = PotentialConflictIdentifiers(candidate, declarationType);
 

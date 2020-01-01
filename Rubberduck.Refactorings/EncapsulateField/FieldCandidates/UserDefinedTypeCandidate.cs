@@ -86,7 +86,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     foreach (var member in Members.Where(m => !m.ConvertFieldToUDTMember && m.IsExistingMember))
                     {
                         member.EncapsulateFlag = value;
-                        if (!member.EncapsulateFlag || !_validator.HasConflictingIdentifier(member, DeclarationType.Property, out _))
+                        if (!member.EncapsulateFlag || !NamesValidator.HasConflictingIdentifier(member, DeclarationType.Property, out _))
                         {
                             continue;
                         }
@@ -96,7 +96,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
                         //Try to use a name involving the parent's identifier to make it unique/meaningful 
                         //before giving up and creating incremented value(s).
                         member.PropertyName = $"{FieldIdentifier.CapitalizeFirstLetter()}{member.PropertyName.CapitalizeFirstLetter()}";
-                        _validator.AssignNoConflictIdentifier(member, DeclarationType.Property);
+                        //_validator.AssignNoConflictIdentifier(member, DeclarationType.Property);
+                        AssignNoConflictIdentifier(member, DeclarationType.Property, NamesValidator);
                     }
                 }
                 base.EncapsulateFlag = value;
@@ -104,8 +105,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => _encapsulateFlag;
         }
 
-        public override void LoadFieldReferenceContextReplacements()
+        public override void LoadFieldReferenceContextReplacements(string referenceQualifier = null)
         {
+            ReferenceQualifier = referenceQualifier;
             if (TypeDeclarationIsPrivate)
             {
                 LoadPrivateUDTFieldLocalReferenceExpressions();
@@ -181,22 +183,17 @@ namespace Rubberduck.Refactorings.EncapsulateField
             errorMessage = string.Empty;
             if (!EncapsulateFlag) { return true; }
 
-            if (!_validator.IsValidVBAIdentifier(PropertyName, DeclarationType.Property, out errorMessage))
+            if (!NamesValidator.IsValidVBAIdentifier(PropertyName, DeclarationType.Property, out errorMessage))
             {
                 return false;
             }
 
-            if (!TypeDeclarationIsPrivate && !_validator.IsSelfConsistent(this, out errorMessage))
+            if (NamesValidator.HasConflictingIdentifier(this, DeclarationType.Property, out errorMessage))
             {
                 return false;
             }
 
-            if (_validator.HasConflictingIdentifier(this, DeclarationType.Property, out errorMessage))
-            {
-                return false;
-            }
-
-            if (_validator.HasConflictingIdentifier(this, DeclarationType.Variable, out errorMessage))
+            if (NamesValidator.HasConflictingIdentifier(this, DeclarationType.Variable, out errorMessage))
             {
                 return false;
             }

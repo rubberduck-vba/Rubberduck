@@ -14,6 +14,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
         string AsTypeName { get; }
     }
 
+    public interface IAssignNoConflictNames
+    {
+        void AssignIdentifiers(IValidateEncapsulateFieldNames validator);
+        IValidateEncapsulateFieldNames NamesValidator { set; get; }
+    }
+
     public interface IEncapsulateFieldCandidate : IEncapsulateFieldDeclaration
     {
         Declaration Declaration { get; }
@@ -32,7 +38,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         string AsUDTMemberDeclaration { get; }
         IEnumerable<KeyValuePair<IdentifierReference, (ParserRuleContext, string)>> ReferenceReplacements { get; }
         string ReferenceQualifier { set; get; }
-        void LoadFieldReferenceContextReplacements();
+        void LoadFieldReferenceContextReplacements(string referenceQualifier = null);
         bool TryValidateEncapsulationAttributes(out string errorMessage);
         bool ConvertFieldToUDTMember { set; get; }
     }
@@ -45,21 +51,19 @@ namespace Rubberduck.Refactorings.EncapsulateField
         bool HasConflictingFieldIdentifier { get; }
     }
 
-
-    public class EncapsulateFieldCandidate : IEncapsulateFieldCandidate, IEncapsulateFieldCandidateValidations
+    public class EncapsulateFieldCandidate : IEncapsulateFieldCandidate, IEncapsulateFieldCandidateValidations, IAssignNoConflictNames
     {
         protected Declaration _target;
         protected QualifiedModuleName _qmn;
         protected int _hashCode;
         private string _identifierName;
-        protected IValidateEncapsulateFieldNames _validator;
         protected EncapsulationIdentifiers _fieldAndProperty;
 
         public EncapsulateFieldCandidate(Declaration declaration, IValidateEncapsulateFieldNames validator)
         {
             _target = declaration;
-            _validator = validator;
-            _fieldAndProperty = new EncapsulationIdentifiers(declaration.IdentifierName, (string name) => _validator.IsValidVBAIdentifier(name, DeclarationType.Property, out _));
+            NamesValidator = validator;
+            _fieldAndProperty = new EncapsulationIdentifiers(declaration.IdentifierName, (string name) => NamesValidator.IsValidVBAIdentifier(name, DeclarationType.Property, out _));
             IdentifierName = declaration.IdentifierName;
             AsTypeName_Field = declaration.AsTypeName;
             AsTypeName_Property = declaration.AsTypeName;
@@ -67,14 +71,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
             NewPropertyAccessor = AccessorMember.Field;
             ReferenceAccessor = AccessorMember.Property;
 
-
-            ImplementLet = true;
-            ImplementSet = false;
-
             CanBeReadWrite = true;
 
             _hashCode = ($"{_qmn.Name}.{declaration.IdentifierName}").GetHashCode();
 
+            ImplementLet = true;
+            ImplementSet = false;
             if (_target.IsEnumField())
             {
                 //5.3.1 The declared type of a function declaration may not be a private enum name.
@@ -86,7 +88,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             else if (_target.AsTypeName.Equals(Tokens.Variant)
                 && !_target.IsArray)
             {
-                ImplementLet = true;
                 ImplementSet = true;
             }
             else if (Declaration.IsObject)
@@ -102,11 +103,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public string AsTypeName => _target.AsTypeName;
 
+        public IValidateEncapsulateFieldNames NamesValidator { set; get; }
+
         public bool HasConflictingPropertyIdentifier 
-            => _validator.HasConflictingIdentifier(this, DeclarationType.Property, out var errorMessage);
+            => NamesValidator.HasConflictingIdentifier(this, DeclarationType.Property, out var errorMessage);
 
         public bool HasConflictingFieldIdentifier
-            => _validator.HasConflictingIdentifier(this, DeclarationType.Variable, out var errorMessage);
+            => NamesValidator.HasConflictingIdentifier(this, DeclarationType.Variable, out var errorMessage);
 
         public virtual bool TryValidateEncapsulationAttributes(out string errorMessage)
         {
@@ -123,7 +126,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 return false;
             }
 
-            if (_validator.HasConflictingIdentifier(this, DeclarationType.Variable, out errorMessage))
+            if (NamesValidator.HasConflictingIdentifier(this, DeclarationType.Variable, out errorMessage))
             {
                 return false;
             }
@@ -153,24 +156,18 @@ namespace Rubberduck.Refactorings.EncapsulateField
             errorMessage = string.Empty;
             if (!EncapsulateFlag) { return true; }
 
-            if (!_validator.IsValidVBAIdentifier(PropertyName, declarationType, out errorMessage, isArray))
+            if (!NamesValidator.IsValidVBAIdentifier(PropertyName, declarationType, out errorMessage, isArray))
             {
                 return false;
             }
 
-            if (!_validator.IsSelfConsistent(this, out errorMessage))
-            {
-                return false;
-            }
-
-            if (_validator.HasConflictingIdentifier(this, declarationType, out errorMessage))
+            if (NamesValidator.HasConflictingIdentifier(this, declarationType, out errorMessage))
             {
                 return false;
             }
 
             return true;
         }
-
 
         public virtual IEnumerable<KeyValuePair<IdentifierReference, (ParserRuleContext, string)>> ReferenceReplacements
         {
@@ -208,8 +205,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 if (!_encapsulateFlag)
                 {
                     PropertyName = _fieldAndProperty.DefaultPropertyName;
-                    _validator.AssignNoConflictIdentifier(this, DeclarationType.Property);
-                    _validator.AssignNoConflictIdentifier(this, DeclarationType.Variable);
+                    AssignNoConflictIdentifier(this, DeclarationType.Property, NamesValidator);
+                    AssignNoConflictIdentifier(this, DeclarationType.Variable, NamesValidator);
                 }
             }
             get => _encapsulateFlag;
@@ -244,11 +241,40 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public override int GetHashCode() => _hashCode;
 
+        public void AssignIdentifiers(IValidateEncapsulateFieldNames validator)
+        {
+            AssignNoConflictIdentifier(this, DeclarationType.Property, validator);
+            AssignNoConflictIdentifier(this, DeclarationType.Variable, validator);
+        }
+
+        protected static IEncapsulateFieldCandidate AssignNoConflictIdentifier(IEncapsulateFieldCandidate candidate, DeclarationType declarationType, IValidateEncapsulateFieldNames validator)
+        {
+            var isConflictingIdentifier = validator.HasConflictingIdentifierIgnoreEncapsulationFlag(candidate, declarationType, out _);
+            for (var count = 1; count < 10 && isConflictingIdentifier; count++)
+            {
+                var identifier = declarationType.HasFlag(DeclarationType.Property)
+                    ? candidate.PropertyName
+                    : candidate.FieldIdentifier;
+
+                if (declarationType.HasFlag(DeclarationType.Property))
+                {
+                    candidate.PropertyName = identifier.IncrementEncapsulationIdentifier();
+                }
+                else
+                {
+                    candidate.FieldIdentifier = identifier.IncrementEncapsulationIdentifier();
+                }
+                isConflictingIdentifier = validator.HasConflictingIdentifierIgnoreEncapsulationFlag(candidate, declarationType, out _);
+            }
+            return candidate;
+        }
+
+
         //The preferred NewFieldName is the original Identifier
         private void TryRestoreNewFieldNameAsOriginalFieldIdentifierName()
         {
             var canNowUseOriginalFieldName = !_fieldAndProperty.TargetFieldName.IsEquivalentVBAIdentifierTo(_fieldAndProperty.Property)
-                && !_validator.IsConflictingFieldIdentifier(_fieldAndProperty.TargetFieldName, this, DeclarationType.Variable);
+                && !NamesValidator.IsConflictingProposedIdentifier(_fieldAndProperty.TargetFieldName, this, DeclarationType.Variable);
 
             if (canNowUseOriginalFieldName)
             {
@@ -259,11 +285,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
             if (_fieldAndProperty.Field.IsEquivalentVBAIdentifierTo(_fieldAndProperty.TargetFieldName))
             {
                 _fieldAndProperty.Field = _fieldAndProperty.DefaultNewFieldName;
-                var isConflictingFieldIdentifier = _validator.HasConflictingIdentifier(this, DeclarationType.Variable, out _);
+                var isConflictingFieldIdentifier = NamesValidator.HasConflictingIdentifier(this, DeclarationType.Variable, out _);
                 for (var count = 1; count < 10 && isConflictingFieldIdentifier; count++)
                 {
                     FieldIdentifier = FieldIdentifier.IncrementEncapsulationIdentifier();
-                    isConflictingFieldIdentifier = _validator.HasConflictingIdentifier(this, DeclarationType.Variable, out _);
+                    isConflictingFieldIdentifier = NamesValidator.HasConflictingIdentifier(this, DeclarationType.Variable, out _);
                 }
             }
         }
@@ -298,8 +324,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public virtual IEnumerable<IPropertyGeneratorAttributes> PropertyAttributeSets
             => new List<IPropertyGeneratorAttributes>() { AsPropertyAttributeSet };
 
-        public virtual void LoadFieldReferenceContextReplacements()
+        public virtual void LoadFieldReferenceContextReplacements(string referenceQualifier = null)
         {
+            ReferenceQualifier = referenceQualifier;
             foreach (var idRef in Declaration.References)
             {
                 var replacementText = RequiresAccessQualification(idRef)

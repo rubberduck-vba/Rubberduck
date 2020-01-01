@@ -40,7 +40,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public IUserDefinedTypeCandidate Parent { private set; get; }
 
-        public void LoadFieldReferenceContextReplacements() { }
+        public void LoadFieldReferenceContextReplacements(string referenceQualifier = null)
+        {
+            ReferenceQualifier = referenceQualifier;
+        }
 
         public string ReferenceQualifier { set; get; }
 

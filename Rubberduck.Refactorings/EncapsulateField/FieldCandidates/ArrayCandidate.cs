@@ -59,15 +59,16 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 return false;
             }
 
-            if (_validator.HasConflictingIdentifier(this, DeclarationType.Variable, out errorMessage))
+            if (NamesValidator.HasConflictingIdentifier(this, DeclarationType.Variable, out errorMessage))
             {
                 return false;
             }
             return true;
         }
 
-        public override void LoadFieldReferenceContextReplacements()
+        public override void LoadFieldReferenceContextReplacements(string referenceQualifier = null)
         {
+            ReferenceQualifier = referenceQualifier;
             foreach (var idRef in Declaration.References)
             {
                 //Locally, we do all operations using the backing field
