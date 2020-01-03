@@ -140,6 +140,8 @@ namespace Rubberduck.UI.UnitTesting
         {
             OnPropertyChanged(nameof(DisplayUnignoreTestLabel));
             OnPropertyChanged(nameof(DisplayIgnoreTestLabel));
+            OnPropertyChanged(nameof(DisplayUnignoreGroupLabel));
+            OnPropertyChanged(nameof(DisplayIgnoreGroupLabel));
         }
 
         private static readonly Dictionary<TestExplorerGrouping, PropertyGroupDescription> GroupDescriptions = new Dictionary<TestExplorerGrouping, PropertyGroupDescription>
@@ -245,6 +247,36 @@ namespace Rubberduck.UI.UnitTesting
         private TestMethod _mousedOverTestMethod => ((TestMethodViewModel)SelectedItem).Method;
         public bool DisplayUnignoreTestLabel => SelectedItem != null && _mousedOverTestMethod.IsIgnored;
         public bool DisplayIgnoreTestLabel => SelectedItem != null && !_mousedOverTestMethod.IsIgnored;
+
+        public bool DisplayUnignoreGroupLabel
+        {
+            get
+            {
+                if (MouseOverGroup?.Items == null)
+                {
+                    return false;
+                }
+
+                var testsInGroup = MouseOverGroup.Items.Cast<TestMethodViewModel>();
+
+                return testsInGroup.Where(test => test.Method.IsIgnored).Any(); ;
+            }
+        }
+
+        public bool DisplayIgnoreGroupLabel
+        {
+            get
+            {
+                if (MouseOverGroup?.Items == null)
+                {
+                    return false;
+                }
+
+                var testsInGroup = MouseOverGroup.Items.Cast<TestMethodViewModel>();
+
+                return testsInGroup.Where(test => test.Method.IsIgnored).Count() != MouseOverGroup.Items.Count;
+            }
+        }
         
         #region Commands
 
@@ -428,10 +460,19 @@ namespace Rubberduck.UI.UnitTesting
             
             foreach (TestMethodViewModel test in testGroup.Items)
             {
-                //    var testMethod = parameter == null
-                //        ? _mousedOverTestMethod
-                //        : (parameter as TestMethodViewModel).Method;                
-                AnnotationUpdater.AddAnnotation(rewriteSession, test.Method.Declaration, ignoreTestAnnotation);
+                var needsIgnoreAnnotationAdded = true;
+                foreach (var annotation in test.Method.Declaration.Annotations)
+                {
+                    if (annotation.Annotation is IgnoreTestAnnotation)
+                    {
+                        needsIgnoreAnnotationAdded = false;
+                    };
+                }
+
+                if (needsIgnoreAnnotationAdded)
+                {
+                    AnnotationUpdater.AddAnnotation(rewriteSession, test.Method.Declaration, ignoreTestAnnotation);
+                }
             }
 
             rewriteSession.TryRewrite();
@@ -441,15 +482,11 @@ namespace Rubberduck.UI.UnitTesting
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
             var testGroup = GroupContainingSelectedTest(MouseOverTest);
+
             foreach (TestMethodViewModel test in testGroup.Items)
             {
-                //ExecuteUnignoreTestCommand(test);
-                //var ignoreTestAnnotations = test.Method.Declaration.Annotations
-                //    .Where(iannotations => iannotations.AnnotationType == Parsing.Annotations.AnnotationType.IgnoreTest);
-
                 var ignoreTestAnnotations = test.Method.Declaration.Annotations
-                    .Where(pta => pta.Annotation.Target == AnnotationTarget.Member
-                        && pta.AnnotationArguments.Contains("'@IgnoreTest"));
+                    .Where(pta => pta.Annotation is IgnoreTestAnnotation);
 
                 foreach (var ignoreTestAnnotation in ignoreTestAnnotations)
                 {
