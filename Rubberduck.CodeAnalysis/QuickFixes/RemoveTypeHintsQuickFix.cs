@@ -8,6 +8,37 @@ using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Removes type hint characters from identifier declarations and value literals.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="ObsoleteTypeHintInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     Dim message$
+    ///     message$ = "Hi"
+    ///     MsgBox message$
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     Dim message As String
+    ///     message = "Hi"
+    ///     MsgBox message
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class RemoveTypeHintsQuickFix : QuickFixBase
     {
         public RemoveTypeHintsQuickFix()

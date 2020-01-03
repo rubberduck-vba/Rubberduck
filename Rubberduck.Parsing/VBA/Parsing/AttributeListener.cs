@@ -42,6 +42,23 @@ namespace Rubberduck.Parsing.VBA.Parsing
             }
         }
 
+        public override void EnterDeclareStmt(VBAParser.DeclareStmtContext context)
+        {
+            var name = Identifier.GetName(context.identifier());
+            var declarationType = context.FUNCTION() != null
+                ? DeclarationType.LibraryFunction
+                : DeclarationType.LibraryProcedure;
+            var attributeScope = (name, declarationType);
+            PushNewScope(attributeScope);
+            _membersAllowingAttributes[attributeScope] = context;
+        }
+
+        public override void ExitDeclareStmt(VBAParser.DeclareStmtContext context)
+        {
+            SaveCurrentScopeAttributes(context);
+            PopScope();
+        }
+
         public override void EnterSubStmt(VBAParser.SubStmtContext context)
         {
             var attributeScope = (Identifier.GetName(context.subroutineName()), DeclarationType.Procedure);

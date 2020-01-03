@@ -9,6 +9,33 @@ using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Replaces the use of a Variant-returning standard library function with its String-returning equivalent. Using this when the argument can be 'Null' will break the code.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="UntypedFunctionUsageInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     Debug.Print Format(VBA.DateTime.Date, "yyyy-MM-dd")
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     Debug.Print Format$(VBA.DateTime.Date, "yyyy-MM-dd")
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class UntypedFunctionUsageQuickFix : QuickFixBase
     {
         public UntypedFunctionUsageQuickFix()
@@ -37,7 +64,7 @@ namespace Rubberduck.Inspections.QuickFixes
             });
         }
 
-        public override bool CanFixInProcedure => false;
+        public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;
         public override bool CanFixInProject => true;
     }

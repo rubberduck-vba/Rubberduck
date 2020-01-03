@@ -48,10 +48,12 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
+            // FIXME don't actually use listeners here, iterate the Annotations instead
+            // FIXME don't maintain a separate list for annotations that require arguments, instead use AnnotationAttribute to store that information
             return (from result in Listener.Contexts
                     let context = (VBAParser.AnnotationContext)result.Context 
-                    where context.annotationName().GetText() == AnnotationType.Ignore.ToString() 
-                       || context.annotationName().GetText() == AnnotationType.Folder.ToString() 
+                    where context.annotationName().GetText() == "Ignore"
+                       || context.annotationName().GetText() == "Folder" 
                     where context.annotationArgList() == null 
                     select new QualifiedContextInspectionResult(this,
                                                 string.Format(InspectionResults.MissingAnnotationArgumentInspection,

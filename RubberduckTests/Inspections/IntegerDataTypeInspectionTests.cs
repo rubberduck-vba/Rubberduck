@@ -1,124 +1,25 @@
 ﻿using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class IntegerDataTypeInspectionTests
+    public class IntegerDataTypeInspectionTests : InspectionTestsBase
     {
-        [Test]
+        [TestCase("Function Foo() As Integer\r\nEnd Function")]
+        [TestCase("Property Get Foo() As Integer\r\nEnd Property")]
+        [TestCase("Sub Foo(arg As Integer)\r\nEnd Sub")]
+        [TestCase("Sub Foo()\r\nDim v as Integer\r\nEnd Sub")]
+        [TestCase("Sub Foo()\r\nConst c As Integer = 0\r\nEnd Sub")]
+        [TestCase("Type T\r\ni As Integer\r\nEnd Type")]
         [Category("Inspections")]
-        public void IntegerDataType_ReturnsResult_Function()
+        public void IntegerDataType_Various_ReturnsResults(string inputCode)
         {
-            const string inputCode =
-                @"Function Foo() As Integer
-End Function";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void IntegerDataType_ReturnsResult_PropertyGet()
-        {
-            const string inputCode =
-                @"Property Get Foo() As Integer
-End Property";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void IntegerDataType_ReturnsResult_Parameter()
-        {
-            const string inputCode =
-                @"Sub Foo(arg as Integer)
-End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void IntegerDataType_ReturnsResult_Variable()
-        {
-            const string inputCode =
-                @"Sub Foo()
-    Dim v as Integer
-End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void IntegerDataType_ReturnsResult_Constant()
-        {
-            const string inputCode =
-                @"Sub Foo()
-    Const c as Integer = 0
-End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void IntegerDataType_ReturnsResult_UserDefinedTypeMember()
-        {
-            const string inputCode =
-                @"Type T
-    i as Integer
-End Type";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
@@ -135,21 +36,13 @@ End Function";
 Function IClass1_Foo() As Integer
 End Function";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var modules = new(string, string, ComponentType)[]
             {
+                ("IClass1", inputCode1, ComponentType.ClassModule),
+                ("Class1", inputCode2, ComponentType.ClassModule),
+            };
 
-                var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForModules(modules).Count());
         }
 
         [Test]
@@ -166,21 +59,13 @@ End Property";
 Property Get IClass1_Foo() As Integer
 End Property";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var modules = new(string, string, ComponentType)[]
             {
+                ("IClass1", inputCode1, ComponentType.ClassModule),
+                ("Class1", inputCode2, ComponentType.ClassModule),
+            };
 
-                var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForModules(modules).Count());
         }
 
         [Test]
@@ -197,21 +82,13 @@ End Sub";
 Sub IClass1_Foo(arg As Integer)
 End Sub";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var modules = new(string, string, ComponentType)[]
             {
+                ("IClass1", inputCode1, ComponentType.ClassModule),
+                ("Class1", inputCode2, ComponentType.ClassModule),
+            };
 
-                var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForModules(modules).Count());
         }
 
         [Test]
@@ -234,102 +111,38 @@ End Sub";
 Sub IClass1_Foo(arg As Integer)
 End Sub";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
-                .AddComponent("Class2", ComponentType.ClassModule, inputCode3)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var modules = new(string, string, ComponentType)[] 
             {
+                ("IClass1", inputCode1, ComponentType.ClassModule),
+                ("Class1", inputCode2, ComponentType.ClassModule),
+                ("Class2", inputCode3, ComponentType.ClassModule),
+            };
 
-                var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResultsForModules(modules).Count());
         }
 
-        [Test]
+        [TestCase(@"Declare Function Foo Lib ""lib.dll"" () As Integer")] //ignores library function elements
+        [TestCase(@"Declare Function Foo Lib ""lib.dll"" (arg As Integer) As String")] //ignores library function elements
+        [TestCase(@"Declare Sub Foo Lib ""lib.dll"" (arg As Integer)")] //ignores library function elements
+        [TestCase("'@Ignore IntegerDataType\r\nSub Foo(arg1 As Integer)\r\nEnd Sub")]
         [Category("Inspections")]
-        public void IntegerDataType_DoesNotReturnResult_LibraryFunction()
+        public void IntegerDataType_Various_NoResults(string inputCode)
         {
-            const string inputCode =
-                @"Declare Function Foo Lib ""lib.dll"" () As Integer";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void IntegerDataType_DoesNotReturnResult_LibraryFunctionParameter()
-        {
-            const string inputCode =
-                @"Declare Function Foo Lib ""lib.dll"" (arg As Integer) As String";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void IntegerDataType_DoesNotReturnResult_LibraryProcedureParameter()
-        {
-            const string inputCode =
-                @"Declare Sub Foo Lib ""lib.dll"" (arg As Integer)";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void IntegerDataType_Ignored_DoesNotReturnResult()
-        {
-            const string inputCode =
-                @"'@Ignore IntegerDataType
-Sub Foo(arg1 As Integer)
-End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new IntegerDataTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
         }
 
         [Test]
         [Category("Inspections")]
         public void InspectionName()
         {
-            const string inspectionName = "IntegerDataTypeInspection";
             var inspection = new IntegerDataTypeInspection(null);
 
-            Assert.AreEqual(inspectionName, inspection.Name);
+            Assert.AreEqual(nameof(IntegerDataTypeInspection), inspection.Name);
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new IntegerDataTypeInspection(state);
         }
     }
 }

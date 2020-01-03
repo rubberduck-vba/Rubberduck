@@ -4,6 +4,7 @@ using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
@@ -13,6 +14,33 @@ using Rubberduck.Parsing.VBA.Extensions;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Changes 16-bit (max value 32,767) Integer declarations to use 32-bit (max value 2,147,483,647‬) Long integer type instead.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="IntegerDataTypeInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim row As Integer
+    ///     row = Sheet1.Range("A" & Sheet1.Rows.Count).End(xlUp).Row
+    ///     Debug.Print row
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim row As Long
+    ///     row = Sheet1.Range("A" & Sheet1.Rows.Count).End(xlUp).Row
+    ///     Debug.Print row
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class ChangeIntegerToLongQuickFix : QuickFixBase
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;

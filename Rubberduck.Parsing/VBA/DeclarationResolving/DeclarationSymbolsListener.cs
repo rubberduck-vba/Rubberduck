@@ -18,7 +18,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
         private Declaration _currentScopeDeclaration;
         private Declaration _parentDeclaration;
 
-        private readonly IDictionary<int, List<IAnnotation>> _annotations;
+        private readonly IDictionary<int, List<IParseTreeAnnotation>> _annotations;
         private readonly IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> _attributes;
         private readonly IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> _membersAllowingAttributes;
 
@@ -27,7 +27,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
 
         public DeclarationSymbolsListener(
             Declaration moduleDeclaration,
-            IDictionary<int, List<IAnnotation>> annotations,
+            IDictionary<int, List<IParseTreeAnnotation>> annotations,
             IDictionary<(string scopeIdentifier, DeclarationType scopeType),
             Attributes> attributes,
             IDictionary<(string scopeIdentifier, DeclarationType scopeType),
@@ -42,12 +42,12 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
             SetCurrentScope();
         }
 
-        private IEnumerable<IAnnotation> FindMemberAnnotations(int firstMemberLine)
+        private IEnumerable<IParseTreeAnnotation> FindMemberAnnotations(int firstMemberLine)
         {
-            return FindAnnotations(firstMemberLine, AnnotationType.MemberAnnotation);
+            return FindAnnotations(firstMemberLine, AnnotationTarget.Member);
         }
 
-        private IEnumerable<IAnnotation> FindAnnotations(int firstLine, AnnotationType annotationTypeFlag)
+        private IEnumerable<IParseTreeAnnotation> FindAnnotations(int firstLine, AnnotationTarget requiredTarget)
         {
             if (_annotations == null)
             {
@@ -56,20 +56,20 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
 
             if (_annotations.TryGetValue(firstLine, out var scopedAnnotations))
             {
-                return scopedAnnotations.Where(annotation => annotation.AnnotationType.HasFlag(annotationTypeFlag));
+                return scopedAnnotations.Where(annotation => annotation.Annotation.Target.HasFlag(requiredTarget));
             }
 
-            return Enumerable.Empty<IAnnotation>();
+            return Enumerable.Empty<IParseTreeAnnotation>();
         }
 
-        private IEnumerable<IAnnotation> FindVariableAnnotations(int firstVariableLine)
+        private IEnumerable<IParseTreeAnnotation> FindVariableAnnotations(int firstVariableLine)
         {
-            return FindAnnotations(firstVariableLine, AnnotationType.VariableAnnotation);
+            return FindAnnotations(firstVariableLine, AnnotationTarget.Variable);
         }
 
-        private IEnumerable<IAnnotation> FindGeneralAnnotations(int firstLine)
+        private IEnumerable<IParseTreeAnnotation> FindGeneralAnnotations(int firstLine)
         {
-            return FindAnnotations(firstLine, AnnotationType.GeneralAnnotation);
+            return FindAnnotations(firstLine, AnnotationTarget.General);
         }
 
         private Declaration CreateDeclaration(
@@ -176,10 +176,12 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                             asTypeName, 
                             asTypeContext, 
                             accessibility, 
-                            context, 
+                            context,
+                            attributesPassContext,
                             selection, 
                             true,
-                            FindMemberAnnotations(selection.StartLine));
+                            FindMemberAnnotations(selection.StartLine),
+                            attributes);
                         break;
                     case DeclarationType.PropertyGet:
                         result = new PropertyGetDeclaration(
@@ -827,7 +829,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
         public override void EnterEnumerationStmt_Constant(VBAParser.EnumerationStmt_ConstantContext context)
         {
             AddDeclaration(CreateDeclaration(
-                context.identifier().GetText(),
+                WithBracketsRemoved(context.identifier().GetText()),
                 "Long",
                 Accessibility.Implicit,
                 DeclarationType.EnumerationMember,
@@ -836,6 +838,16 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                 false,
                 null,
                 null));
+        }
+
+        private static string WithBracketsRemoved(string enumElementName)
+        {
+            if (enumElementName.StartsWith("[") && enumElementName.EndsWith("]"))
+            {
+                return enumElementName.Substring(1, enumElementName.Length - 2);
+            }
+
+            return enumElementName;
         }
 
         public override void EnterOptionPrivateModuleStmt(VBAParser.OptionPrivateModuleStmtContext context)

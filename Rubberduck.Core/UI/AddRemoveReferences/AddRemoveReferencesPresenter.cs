@@ -2,7 +2,6 @@
 using System.Windows.Forms;
 using Rubberduck.AddRemoveReferences;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.UI.AddRemoveReferences
 {

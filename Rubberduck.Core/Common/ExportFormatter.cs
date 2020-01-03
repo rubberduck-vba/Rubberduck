@@ -75,7 +75,7 @@ namespace Rubberduck.Common
 
         private static string CsvEncode(object value)
         {
-            var s = "";
+            var s = string.Empty;
             if (value is string)
             {
                 s = value.ToString();
@@ -121,7 +121,7 @@ namespace Rubberduck.Common
                 "</body>\r\n" +
                 "</html>";
 
-            var html = ExportFormatter.HtmlTable(data, title, columnInfos);
+            var html = HtmlTable(data, title, columnInfos);
 
             var CFHeaderLength = string.Format(CFHeaderTemplate, OffsetFormat, OffsetFormat, OffsetFormat, OffsetFormat).Length;
             var startFragment = CFHeaderLength + HtmlHeader.Length;

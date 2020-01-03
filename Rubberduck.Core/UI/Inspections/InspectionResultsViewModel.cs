@@ -13,7 +13,9 @@ using System.Windows.Data;
 using System.Windows.Input;
 using NLog;
 using Rubberduck.Common;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Interaction.Navigation;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.UIContext;
@@ -22,6 +24,7 @@ using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.ComCommands;
 using Rubberduck.UI.Settings;
 using Rubberduck.VBEditor;
 
@@ -257,6 +260,29 @@ namespace Rubberduck.UI.Inspections
                 // updating Filter forces a Refresh
                 Results.Filter = i => InspectionFilter((IInspectionResult)i);
             }
+        }
+
+        private string _inspectionDescriptionFilter = string.Empty;
+        public string InspectionDescriptionFilter
+        {
+            get => _inspectionDescriptionFilter;
+            set
+            {
+                if (_inspectionDescriptionFilter != value)
+                {
+                    _inspectionDescriptionFilter = value;
+                    OnPropertyChanged();
+                    Results.Filter = FilterResults;
+                    OnPropertyChanged(nameof(Results));
+                }
+            }
+        }
+
+        private bool FilterResults(object inspectionResult)
+        {
+            var inspectionResultBase = inspectionResult as InspectionResultBase;
+            
+            return inspectionResultBase.Description.ToUpper().Contains(InspectionDescriptionFilter.ToUpper()); ;
         }
 
         private bool InspectionFilter(IInspectionResult result)
@@ -499,8 +525,7 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
-            var selectedResult = SelectedItem as IInspectionResult;
-            if (selectedResult == null)
+            if (!(SelectedItem is IInspectionResult selectedResult))
             {
                 return;
             }
@@ -527,8 +552,7 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
-            var selectedResult = SelectedItem as IInspectionResult;
-            if (selectedResult == null)
+            if (!(SelectedItem is IInspectionResult selectedResult))
             {
                 return;
             }
@@ -624,20 +648,20 @@ namespace Rubberduck.UI.Inspections
         private void ExecuteCopyResultsCommand(object parameter)
         {
             const string xmlSpreadsheetDataFormat = "XML Spreadsheet";
-            if (_results == null)
+            if (Results == null)
             {
                 return;
             }
 
-            var resultArray = _results.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
+            var resultArray = Results.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
 
-            var resource = _results.Count == 1
+            var resource = resultArray.Count() == 1
                 ? Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular
                 : Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Plural;
 
-            var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _results.Count);
+            var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), resultArray.Count());
 
-            var textResults = title + Environment.NewLine + string.Join("", _results.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
+            var textResults = title + Environment.NewLine + string.Join(string.Empty, Results.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
             var csvResults = ExportFormatter.Csv(resultArray, title, ColumnInformation);
             var htmlResults = ExportFormatter.HtmlClipboardFragment(resultArray, title, ColumnInformation);
             var rtfResults = ExportFormatter.RTF(resultArray, title);

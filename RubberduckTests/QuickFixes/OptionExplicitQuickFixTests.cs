@@ -13,10 +13,14 @@ namespace RubberduckTests.QuickFixes
         [Category("QuickFixes")]
         public void NotAlreadySpecified_QuickFixWorks()
         {
-            const string inputCode = "";
-            const string expectedCode =
-@"Option Explicit
+            const string inputCode = @"
+Public Sub Test() ' inspection won't yield any results if module is empty (#2621)
+End Sub
+";
+            const string expectedCode = @"Option Explicit
 
+Public Sub Test() ' inspection won't yield any results if module is empty (#2621)
+End Sub
 ";
 
             var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new OptionExplicitInspection(state));

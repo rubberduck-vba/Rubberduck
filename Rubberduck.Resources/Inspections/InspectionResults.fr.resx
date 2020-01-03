@@ -231,9 +231,6 @@
   <data name="MissingAnnotationArgumentInspection" xml:space="preserve">
     <value>Un paramètre était attendu dans l'annotation '{0}'.</value>
   </data>
-  <data name="ImplicitDefaultMemberAssignmentInspection" xml:space="preserve">
-    <value>Assignation de '{0}' réfère implicitement au membre par défaut '{1}' de la classe '{2}'</value>
-  </data>
   <data name="AggregateInspection" xml:space="preserve">
     <value>{0} ({1} résultats)</value>
   </data>
@@ -306,18 +303,6 @@
   <data name="EmptyModuleInspection" xml:space="preserve">
     <value>Le module/classe {0} est vide.</value>
   </data>
-  <data name="UnreachableCaseInspection" xml:space="preserve">
-    <value>Le bloc '{0}' est inatteignable</value>
-  </data>
-  <data name="UnreachableCaseInspection_CaseElse" xml:space="preserve">
-    <value>Le bloc 'Case Else' est inatteignable : toutes les valeurs possibles sont prises en charge par les blocs 'Case' précédents.</value>
-  </data>
-  <data name="UnreachableCaseInspection_TypeMismatch" xml:space="preserve">
-    <value>Type invalide : l'expression 'Case' ne peut être évaluée selon le type de l'expression 'Select'.</value>
-  </data>
-  <data name="UnreachableCaseInspection_Unreachable" xml:space="preserve">
-    <value>Bloc inatteignable : l'expression 'Case' est prise en charge par un bloc 'Case' précédent.</value>
-  </data>
   <data name="UnhandledOnErrorResumeNextInspection" xml:space="preserve">
     <value>La gestion d'erreurs est désactivée sans être réactivée.</value>
   </data>
@@ -366,12 +351,6 @@
   <data name="UnderscoreInPublicClassModuleMemberInspection" xml:space="preserve">
     <value>Le nom du membre public '{0}' contient un caractère de soulignement.</value>
   </data>
-  <data name="UnreachableCaseInspection_InherentlyUnreachable" xml:space="preserve">
-    <value>Bloc inatteignable: l'expression 'Case' contient une clause invalide.</value>
-  </data>
-  <data name="UnreachableCaseInspection_Overflow" xml:space="preserve">
-    <value>Bloc inatteignable: l'expression 'Case' causera une erreur d'exécution 6 : Overflow.</value>
-  </data>
   <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
     <value>La valeur de l'attribut {0} ({1}) est désynchronisée avec l'annotation {2}.</value>
   </data>
@@ -404,5 +383,80 @@ In memoriam, 1972-2018</value>
   </data>
   <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
     <value>La boucle conditionelle 'While...Wend' pourrait être 'Do While...Loop'</value>
+  </data>
+  <data name="UnreachableCaseInspection" xml:space="preserve">
+    <value>Le bloc sous la condition '{0}' est inatteignable</value>
+  </data>
+  <data name="UnreachableCaseInspection_CaseElse" xml:space="preserve">
+    <value>Le bloc 'Case Else' est inatteignable</value>
+  </data>
+  <data name="UnreachableCaseInspection_TypeMismatch" xml:space="preserve">
+    <value>L'expression du bloc 'Case' causera une erreur d'exécution 13 (type mismatch).</value>
+  </data>
+  <data name="UnreachableCaseInspection_Unreachable" xml:space="preserve">
+    <value>Le bloc 'Case' est inatteignable</value>
+  </data>
+  <data name="UnreachableCaseInspection_Overflow" xml:space="preserve">
+    <value>L'expression du bloc 'Case' causera une erreur d'exécution 6 (overflow).</value>
+  </data>
+  <data name="UnreachableCaseInspection_InherentlyUnreachable" xml:space="preserve">
+    <value>Les plages de valeurs d'un bloc 'Case' doivent être exprimés sous la forme '[x] To [y]', où [x] est plus petit ou égal à [y].</value>
+  </data>
+  <data name="SetAssignmentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>Une référence de type '{2}' est assignée ('Set') à la variable '{0}' du type déclaré '{1}', incompatible.</value>
+  </data>
+  <data name="EmptyMethodInspection" xml:space="preserve">
+    <value>{0} '{1}' ne contient aucune instruction exécutable.</value>
+  </data>
+  <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
+    <value>L'interface abstraite définie par '{2}' contient une implémentation concrète pour {0} '{1}'.</value>
+  </data>
+  <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>L'argument '{2}', de type '{3}', est passé au paramètre '{0}', du type incompatible '{1}'.</value>
+  </data>
+  <data name="ValueRequiredInspection" xml:space="preserve">
+    <value>Dans un contexte qui requiert une valeur (ex. [Let] foo = x), l'expression '{0}' renvoie un objet de type '{1}', qui n'a pas de membre par défaut pouvant renvoyer la valeur attendue.</value>
+  </data>
+  <data name="ProcedureRequiredInspection" xml:space="preserve">
+    <value>Dans un contexte qui requiert un appel de procédure, l'expression '{0}' renvoie un objet de type '{1}', qui n'a pas de membre par défaut pouvant rendre cette instruction légale.</value>
+  </data>
+  <data name="DefaultMemberRequiredInspection" xml:space="preserve">
+    <value>L'expression '{0}' comporte un appel d'un membre par défaut, mais le type ('{1}') n'a pas de membre par défaut compatible.</value>
+  </data>
+  <data name="UseOfBangNotationInspection" xml:space="preserve">
+    <value>L'expression '{0}' implique une liaison tardive.</value>
+  </data>
+  <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
+    <value>L'expression '{0}' implique une liaison tardive... dont la résolution est récursive.</value>
+  </data>
+  <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
+    <value>L'expression '{0}' implique une liaison tardive.</value>
+  </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
+    <value>L'expression '{0}' est utilisée dans un contexte qui demande un appel de procédure: le membre par défaut '{1}' est appelé implicitement.</value>
+  </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection_Unbound" xml:space="preserve">
+    <value>L'expression '{0}' est utilisée dans un contexte qui demande un appel de procédure: le membre par défaut qui sera appelé implicitement ne sera résolu/lié qu'au moment de l'exécution.</value>
+  </data>
+  <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
+    <value>L'expression '{0}' contient un appel indexé au membre par défaut '{1}'.</value>
+  </data>
+  <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>L'expression '{0}' contient un appel indexé récursif au membre par défaut '{1}'.</value>
+  </data>
+  <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>L'expression '{0}' contient un appel indexé sans liaison d'un membre par défaut.</value>
+  </data>
+  <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
+    <value>L'expression '{0}' comporte un appel implicite au membre par défaut '{1}'.</value>
+  </data>
+  <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>L'expression '{0}' comporte un appel implicite au membre par défaut '{1}'.</value>
+  </data>
+  <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>L'expression '{0}' comporte un appel implicite sans lisaison à un membre par défaut.</value>
+  </data>
+  <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
+    <value>Le résultat de l'expression '{1}' est assigné à celui de l'expression '{0}'.</value>
   </data>
 </root>

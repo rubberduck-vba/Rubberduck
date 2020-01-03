@@ -10,7 +10,7 @@ namespace Rubberduck.UnitTesting.Fakes
     {
         public MsgBox()
         {
-            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcMsgBox");
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeNativeApi.DllName, "rtcMsgBox");
 
             InjectDelegate(new MessageBoxDelegate(MsgBoxCallback), processAddress);
         }

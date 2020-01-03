@@ -1,7 +1,9 @@
-﻿using Moq;
+﻿using System;
+using Moq;
 using NUnit.Framework;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ReorderParameters;
@@ -163,9 +165,14 @@ End Property";
         {
             var factory = new Mock<IRefactoringPresenterFactory>().Object;
             var msgBox = new Mock<IMessageBox>().Object;
-            var refactoring = new ReorderParametersRefactoring(state, factory, rewritingManager, selectionService);
+            var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
+            var uiDispatcherMock = new Mock<IUiDispatcher>();
+            uiDispatcherMock
+                .Setup(m => m.Invoke(It.IsAny<Action>()))
+                .Callback((Action action) => action.Invoke());
+            var refactoring = new ReorderParametersRefactoring(state, factory, rewritingManager, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
             var notifier = new ReorderParametersFailedNotifier(msgBox);
-            return new RefactorReorderParametersCommand(refactoring, notifier, state, selectionService);
+            return new RefactorReorderParametersCommand(refactoring, notifier, state, selectionService, selectedDeclarationProvider);
         }
 
         protected override IVBE SetupAllowingExecution()

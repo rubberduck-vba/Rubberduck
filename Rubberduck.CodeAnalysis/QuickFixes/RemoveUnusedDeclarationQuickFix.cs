@@ -6,12 +6,44 @@ using Rubberduck.Parsing.Rewriter;
 namespace Rubberduck.Inspections.QuickFixes
 {
     /// <summary>
-    /// A code inspection quickfix that removes an unused identifier declaration.
+    /// Removes the declaration for a constant, variable, procedure, or line label that isn't used. This operation can break the code if the declaration is actually in use but Rubberduck couldn't find where.
     /// </summary>
+    /// <inspections>
+    /// <inspection name="ConstantNotUsedInspection" />
+    /// <inspection name="ProcedureNotUsedInspection" />
+    /// <inspection name="VariableNotUsedInspection" />
+    /// <inspection name="LineLabelNotUsedInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     Const value = 42
+    ///     Debug.Print 42
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     
+    ///     Debug.Print 42
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class RemoveUnusedDeclarationQuickFix : QuickFixBase
     {
         public RemoveUnusedDeclarationQuickFix()
-            : base(typeof(ConstantNotUsedInspection), typeof(ProcedureNotUsedInspection), typeof(VariableNotUsedInspection), typeof(LineLabelNotUsedInspection))
+            : base(typeof(ConstantNotUsedInspection), 
+                  typeof(ProcedureNotUsedInspection), 
+                  typeof(VariableNotUsedInspection), 
+                  typeof(LineLabelNotUsedInspection))
         {}
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)

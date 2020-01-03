@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Moq;
 using Rubberduck.Parsing.Grammar;
@@ -190,7 +191,7 @@ namespace RubberduckTests.Mocks
             result.Setup(m => m[It.IsAny<int>()]).Returns<int>(index => Components.ElementAt(index));
             result.Setup(m => m[It.IsAny<string>()]).Returns<string>(name => Components.Single(item => item.Name == name));
             result.SetupGet(m => m.Count).Returns(() => Components.Count);
-
+            
             result.Setup(m => m.Add(It.IsAny<ComponentType>()))
                 .Callback((ComponentType c) =>
                 {
@@ -211,18 +212,18 @@ namespace RubberduckTests.Mocks
 
             result.Setup(m => m.Import(It.IsAny<string>())).Callback((string s) =>
             {
-                var parts = s.Split('.').ToList();
+                var extension = Path.GetExtension(s);
                 var types = new Dictionary<string, ComponentType>
                 {
-                    {"bas", ComponentType.StandardModule},
-                    {"cls", ComponentType.ClassModule},
-                    {"frm", ComponentType.UserForm}
+                    {".bas", ComponentType.StandardModule},
+                    {".cls", ComponentType.ClassModule},
+                    {".frm", ComponentType.UserForm}
                 };
 
                 ComponentType type;
-                types.TryGetValue(parts.Last(), out type);
+                types.TryGetValue(extension, out type);
 
-                _componentsMock.Add(CreateComponentMock(s.Split('\\').Last(), type, string.Empty, new Selection(), null, out var codeModule));
+                _componentsMock.Add(CreateComponentMock(Path.GetFileNameWithoutExtension(s), type, string.Empty, new Selection(), null, out var codeModule));
                 _codeModuleMocks.Add(codeModule);
             });
 
@@ -285,6 +286,10 @@ namespace RubberduckTests.Mocks
             result.SetupGet(m => m.Collection).Returns(() => _vbComponents.Object);
             result.SetupGet(m => m.Type).Returns(() => type);
             result.SetupGet(m => m.HasCodeModule).Returns(true);
+            if (type == ComponentType.UserForm)
+            {
+                result.Setup(m => m.HasDesigner).Returns(true);
+            }
             result.SetupProperty(m => m.Name, name);
             result.SetupGet(m => m.QualifiedModuleName).Returns(() => new QualifiedModuleName(result.Object));
             result.SetupGet(m => m.QualifiedModuleName).Returns(() => new QualifiedModuleName(result.Object));

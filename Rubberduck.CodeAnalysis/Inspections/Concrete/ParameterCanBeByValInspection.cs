@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -12,7 +12,6 @@ using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Extensions;
-using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -61,8 +60,8 @@ namespace Rubberduck.Inspections.Concrete
             parametersThatCanBeChangedToBePassedByVal.AddRange(InterFaceMembersThatCanBeChangedToBePassedByVal(interfaceDeclarationMembers));
 
             var eventMembers = State.DeclarationFinder.UserDeclarations(DeclarationType.Event).ToList();
-            var formEventHandlerScopeDeclarations = State.FindFormEventHandlers();
-            var eventHandlerScopeDeclarations = State.DeclarationFinder.FindEventHandlers().Concat(parameters.FindUserEventHandlers());
+            var formEventHandlerScopeDeclarations = State.DeclarationFinder.FindFormEventHandlers();
+            var eventHandlerScopeDeclarations = State.DeclarationFinder.FindEventHandlers();
             var eventScopeDeclarations = eventMembers
                 .Concat(formEventHandlerScopeDeclarations)
                 .Concat(eventHandlerScopeDeclarations)
@@ -74,7 +73,6 @@ namespace Rubberduck.Inspections.Concrete
                 .AddRange(parameters.Where(parameter => CanBeChangedToBePassedByVal(parameter, eventScopeDeclarations, interfaceScopeDeclarations)));
 
             return parametersThatCanBeChangedToBePassedByVal
-                .Where(parameter => !parameter.IsIgnoringInspectionResultFor(AnnotationName))
                 .Select(parameter => new DeclarationInspectionResult(this, string.Format(InspectionResults.ParameterCanBeByValInspection, parameter.IdentifierName), parameter));
         }
 
@@ -96,8 +94,7 @@ namespace Rubberduck.Inspections.Concrete
                 && !IsParameterOfDeclaredLibraryFunction(parameter)
                 && (parameter.AsTypeDeclaration == null 
                     || (!parameter.AsTypeDeclaration.DeclarationType.HasFlag(DeclarationType.ClassModule)
-                        && parameter.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType 
-                        && parameter.AsTypeDeclaration.DeclarationType != DeclarationType.Enumeration))
+                        && parameter.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType))
                 && !parameter.References.Any(reference => reference.IsAssignment)
                 && !IsPotentiallyUsedAsByRefParameter(parameter);
             return canPossiblyBeChangedToBePassedByVal;
@@ -159,11 +156,8 @@ namespace Rubberduck.Inspections.Concrete
 
                 var parameterCanBeChangedToBeByVal = eventParameters.Select(parameter => parameter.IsByRef).ToList();
 
-                //todo: Find a better way to find the handlers.
                 var eventHandlers = State.DeclarationFinder
-                    .AllUserDeclarations
-                    .FindHandlersForEvent(memberDeclaration)
-                    .Select(s => s.Item2)
+                    .FindEventHandlers(memberDeclaration)
                     .ToList();
 
                 foreach (var eventHandler in eventHandlers.OfType<IParameterizedDeclaration>())

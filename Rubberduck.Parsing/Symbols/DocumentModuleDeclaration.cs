@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.VBEditor;
 
@@ -15,7 +10,7 @@ namespace Rubberduck.Parsing.Symbols
             QualifiedMemberName qualifiedName,
             Declaration projectDeclaration,
             string name,
-            IEnumerable<IAnnotation> annotations,
+            IEnumerable<IParseTreeAnnotation> annotations,
             Attributes attributes)
             : base(qualifiedName, 
                 projectDeclaration,

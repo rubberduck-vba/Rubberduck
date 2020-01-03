@@ -18,9 +18,9 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources.ToDoExplorer;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.UIContext;
-using Rubberduck.VBEditor.Utility;
 using Rubberduck.SettingsProvider;
 using System.Windows.Controls;
+using Rubberduck.Formatters;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -42,8 +42,8 @@ namespace Rubberduck.UI.ToDoItems
             RubberduckParserState state,
             IConfigurationService<Configuration> configService, 
             ISettingsFormFactory settingsFormFactory, 
-            ISelectionService selectionService, 
-            IUiDispatcher uiDispatcher)
+            IUiDispatcher uiDispatcher,
+            INavigateCommand navigateCommand)
         {
             _state = state;
             _configService = configService;
@@ -51,6 +51,7 @@ namespace Rubberduck.UI.ToDoItems
             _uiDispatcher = uiDispatcher;
             _state.StateChanged += HandleStateChanged;
 
+            NavigateCommand = navigateCommand;
             RefreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(),
                 _ =>
                 {
@@ -79,7 +80,6 @@ namespace Rubberduck.UI.ToDoItems
                             return false;
                     }
                 });
-            NavigateCommand = new NavigateCommand(selectionService);
             RemoveCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveCommand, CanExecuteRemoveCommand);
             CollapseAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseAll);
             ExpandAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandAll);
@@ -194,7 +194,7 @@ namespace Rubberduck.UI.ToDoItems
 
         public INavigateCommand NavigateCommand { get; }
 
-        public CommandBase RefreshCommand { get; set; }
+        public CommandBase RefreshCommand { get; }
 
         public CommandBase RemoveCommand { get; }
 
@@ -257,7 +257,7 @@ namespace Rubberduck.UI.ToDoItems
 
             var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _items.Count);
 
-            var textResults = title + Environment.NewLine + string.Join("", _items.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
+            var textResults = title + Environment.NewLine + string.Join(string.Empty, _items.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
             var csvResults = ExportFormatter.Csv(resultArray, title, columnInfos);
             var htmlResults = ExportFormatter.HtmlClipboardFragment(resultArray, title, columnInfos);
             var rtfResults = ExportFormatter.RTF(resultArray, title);

@@ -1,16 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class MissingAttributeInspectionTests
+    public class MissingAttributeInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
@@ -373,15 +372,59 @@ End Sub";
             Assert.IsFalse(inspectionResults.Any());
         }
 
+        [Test]
+        [Category("Inspections")]
+        public void AttributeAnnotationOnDeclarationNotAllowingAttributes_NoResult()
+        {
+            const string inputCode =
+                @"
+Private Sub Foo()
+'local variables do not allow attributes
+    '@VariableDescription(""Desc"")
+    Dim bar As Variant
+End Sub
+";
+
+            var inspectionResults = InspectionResults(inputCode);
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MissingMemberAttributeOnDeclareStatement_OneResult()
+        {
+            const string inputCode =
+                @"'@Description(""Desc"")
+Private Declare Sub CopyMemory Lib ""kernel32.dll"" Alias ""RtlMoveMemory"" (ByRef Destination As Any, ByRef Source As Any, ByVal length As Long)
+";
+
+            var inspectionResults = InspectionResults(inputCode);
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MemberAttributeAnnotationOnDeclareStatement_WithAttribute_NoResult()
+        {
+            const string inputCode =
+                @"'@Description(""Desc"")
+Private Declare Sub CopyMemory Lib ""kernel32.dll"" Alias ""RtlMoveMemory"" (ByRef Destination As Any, ByRef Source As Any, ByVal length As Long)
+Attribute CopyMemory.VB_Description = ""Desc""
+";
+
+            var inspectionResults = InspectionResults(inputCode);
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
 
         private IEnumerable<IInspectionResult> InspectionResults(string inputCode, ComponentType componentType = ComponentType.StandardModule)
         {
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, componentType, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new MissingAttributeInspection(state);
-                return inspection.GetInspectionResults(CancellationToken.None);
-            }
+            return InspectionResultsForModules(("TestModule", inputCode, componentType));
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new MissingAttributeInspection(state);
         }
     }
 }

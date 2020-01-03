@@ -1,6 +1,5 @@
 using NUnit.Framework;
-using Rubberduck.SmartIndenter;
-using Rubberduck.UI.Command;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -15,11 +14,11 @@ namespace RubberduckTests.Commands
         public void AddNoIndentAnnotation()
         {
             IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule("", out component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule("", out component, Selection.Home);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
-
-                var noIndentAnnotationCommand = new NoIndentAnnotationCommand(vbe.Object, state);
+                var noIndentAnnotationCommand = MockIndenter.ArrangeNoIndentAnnotationCommand(vbe, state, rewritingManager);
                 noIndentAnnotationCommand.Execute(null);
 
                 Assert.AreEqual("'@NoIndent\r\n", component.CodeModule.Content());
@@ -46,11 +45,11 @@ Sub Foo()
 End Sub";
 
             IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, Selection.Home);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
-
-                var noIndentAnnotationCommand = new NoIndentAnnotationCommand(vbe.Object, state);
+                var noIndentAnnotationCommand = MockIndenter.ArrangeNoIndentAnnotationCommand(vbe, state, rewritingManager);
                 noIndentAnnotationCommand.Execute(null);
 
                 Assert.AreEqual(expected, component.CodeModule.Content());
@@ -65,10 +64,10 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule("", out component);
             vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
-
-                var noIndentAnnotationCommand = new NoIndentAnnotationCommand(vbe.Object, state);
+                var noIndentAnnotationCommand = MockIndenter.ArrangeNoIndentAnnotationCommand(vbe, state, rewritingManager);
                 Assert.IsFalse(noIndentAnnotationCommand.CanExecute(null));
             }
         }
@@ -81,10 +80,10 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule("'@NoIndent\r\n", out component);
             vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
-
-                var noIndentAnnotationCommand = new NoIndentAnnotationCommand(vbe.Object, state);
+                var noIndentAnnotationCommand = MockIndenter.ArrangeNoIndentAnnotationCommand(vbe, state, rewritingManager);
                 Assert.IsFalse(noIndentAnnotationCommand.CanExecute(null));
             }
         }
@@ -135,8 +134,7 @@ End Sub
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-
-                var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object), state);
+                var indentCommand = MockIndenter.ArrangeIndentCurrentModuleCommand(vbe, state);
                 indentCommand.Execute(null);
 
                 var module1 = project.Object.VBComponents["Comp1"].CodeModule;
@@ -157,8 +155,7 @@ End Sub
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-
-                var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object), state);
+                var indentCommand = MockIndenter.ArrangeIndentCurrentModuleCommand(vbe, state);
                 Assert.IsFalse(indentCommand.CanExecute(null));
             }
         }
@@ -171,15 +168,9 @@ End Sub
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule("", out component);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-
-                var indentCommand = new IndentCurrentModuleCommand(vbe.Object, CreateIndenter(vbe.Object), state);
+                var indentCommand = MockIndenter.ArrangeIndentCurrentModuleCommand(vbe, state);
                 Assert.IsTrue(indentCommand.CanExecute(null));
             }
-        }
-
-        private static IIndenter CreateIndenter(IVBE vbe)
-        {
-            return new Indenter(vbe, () => Settings.IndenterSettingsTests.GetMockIndenterSettings());
         }
     }
 }

@@ -11,6 +11,41 @@ using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Adjusts existing Rubberduck annotations to match the corresponding hidden attributes.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="AttributeValueOutOfSyncInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Attribute VB_PredeclaredId = False
+    /// '@PredeclaredId
+    /// 
+    /// Option Explicit
+    /// 
+    /// '@Description("Does something.")
+    /// Public Sub DoSomething()
+    /// Attribute VB_Description = "Does something else."
+    /// 
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// 
+    /// Option Explicit
+    /// 
+    /// '@Description("Does something else.")
+    /// Public Sub DoSomething()
+    /// Attribute VB_Description = "Does something else."
+    /// 
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public class AdjustAttributeAnnotationQuickFix : QuickFixBase
     {
         private readonly IAnnotationUpdater _annotationUpdater;
@@ -25,7 +60,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            IAttributeAnnotation oldAnnotation = result.Properties.Annotation;
+            IParseTreeAnnotation oldAnnotation = result.Properties.Annotation;
             string attributeName = result.Properties.AttributeName;
             IReadOnlyList<string> attributeValues = result.Properties.AttributeValues;
 
@@ -39,15 +74,15 @@ namespace Rubberduck.Inspections.QuickFixes
                 }
                 else
                 {
-                    var (newAnnotationType, newAnnotationValues) = _attributeAnnotationProvider.ModuleAttributeAnnotation(attributeName, attributeValues);
-                    _annotationUpdater.UpdateAnnotation(rewriteSession, oldAnnotation, newAnnotationType, newAnnotationValues);
+                    var (newAnnotation, newAnnotationValues) = _attributeAnnotationProvider.ModuleAttributeAnnotation(attributeName, attributeValues);
+                    _annotationUpdater.UpdateAnnotation(rewriteSession, oldAnnotation, newAnnotation, newAnnotationValues);
                 }
             }
             else
             {
                 var attributeBaseName = AttributeBaseName(attributeName, declaration);
-                var (newAnnotationType, newAnnotationValues) = _attributeAnnotationProvider.MemberAttributeAnnotation(attributeBaseName, attributeValues);
-                _annotationUpdater.UpdateAnnotation(rewriteSession, oldAnnotation, newAnnotationType, newAnnotationValues);
+                var (newAnnotation, newAnnotationValues) = _attributeAnnotationProvider.MemberAttributeAnnotation(attributeBaseName, attributeValues);
+                _annotationUpdater.UpdateAnnotation(rewriteSession, oldAnnotation, newAnnotation, newAnnotationValues);
             }
         }
 

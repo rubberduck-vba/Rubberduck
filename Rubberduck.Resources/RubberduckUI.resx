@@ -172,7 +172,10 @@
     <value>Name:</value>
   </data>
   <data name="OK" xml:space="preserve">
-    <value>Ok</value>
+    <value>OK</value>
+  </data>
+  <data name="SaveAndClose" xml:space="preserve">
+    <value>Save &amp; Close</value>
   </data>
   <data name="RenameDialog_Caption" xml:space="preserve">
     <value>Rubberduck - Rename</value>
@@ -1043,31 +1046,19 @@ Would you like to import them to Rubberduck?</value>
     <value>Indented Code Sample</value>
   </data>
   <data name="VersionCheck_NewVersionAvailable" xml:space="preserve">
-    <value>Rubberduck version {0} is now available! Would you like to review the release notes now?</value>
+    <value>You are currently running Rubberduck version {0}.
+Good news! Version {1} ({2}) is now available.
+
+To review the change log and manually upgrade Rubberduck, click 'Yes'.
+
+This dialog is showing because version checks are enabled. You can turn off this feature in Rubberduck &gt; Settings.</value>
+    <comment>{0}=local; {1}=latest; {2}=buildtype (release/pre-release)</comment>
   </data>
   <data name="GeneralSettings_CheckVersion" xml:space="preserve">
     <value>Check if a newer version is available at startup</value>
   </data>
-  <data name="AssignedByValDialog_DoesNotStartWithLetter" xml:space="preserve">
-    <value>Variable names must begin with a letter.</value>
-  </data>
-  <data name="AssignedByValDialog_InvalidCharacters" xml:space="preserve">
-    <value>Variable names cannot contain special characters other than underscores.</value>
-  </data>
-  <data name="AssignedByValDialog_IsByValIdentifierFormat" xml:space="preserve">
-    <value>The local variable cannot be the same as the '{0}' parameter it replaces</value>
-    <comment>{0} = proposed variable name.</comment>
-  </data>
   <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
     <value>'{0}' is already accessible to this scope.</value>
-    <comment>{0} = proposed variable name.</comment>
-  </data>
-  <data name="AssignedByValDialog_QuestionableEntryFormat" xml:space="preserve">
-    <value>The identifier '{0}' will trigger a "Use meaningful name" inspection result. Consider choosing a different name.</value>
-    <comment>{0} = proposed variable name.</comment>
-  </data>
-  <data name="AssignedByValDialog_ReservedKeywordFormat" xml:space="preserve">
-    <value>'{0}' is a reserved keyword.</value>
     <comment>{0} = proposed variable name.</comment>
   </data>
   <data name="ConfirmRemoveAssignmentWithUnusedDeclaration" xml:space="preserve">
@@ -1179,7 +1170,7 @@ Would you like to import them to Rubberduck?</value>
     <value>Unexpected Error</value>
   </data>
   <data name="Command_Reparse_CompileOnDemandEnabled" xml:space="preserve">
-    <value>The VBEsetting "Compile On Demand" is currently enabled. This is not recommended as this may hide compilation errors and cause problems with parsing. Do you want to parse anyway?</value>
+    <value>The VBE setting "Compile On Demand" is currently enabled. This is not recommended as this may hide compilation errors and cause problems with parsing. Do you want to parse anyway?</value>
   </data>
   <data name="Command_Reparse_CompileOnDemandEnabled_Caption" xml:space="preserve">
     <value>Compile On Demand Setting</value>
@@ -1562,7 +1553,7 @@ NOTE: Restart is required for the setting to take effect.</value>
     <value>No code module found for the target module '{0}'.</value>
     <comment>{0}: name of module</comment>
   </data>
-  <data name="RenameFailure_TargetContriolNotFound" xml:space="preserve">
+  <data name="RenameFailure_TargetControlNotFound" xml:space="preserve">
     <value>Target control '{0}' not found.</value>
     <comment>{0}: name of control</comment>
   </data>
@@ -1624,9 +1615,143 @@ NOTE: Restart is required for the setting to take effect.</value>
     <value>Inconclusive</value>
   </data>
   <data name="TestOutcome_Succeeded" xml:space="preserve">
-    <value>Suceeded</value>
+    <value>Succeeded</value>
   </data>
   <data name="TestOutcome_Unknown" xml:space="preserve">
     <value>Unknown</value>
+  </data>
+  <data name="InvalidNameCriteria_DoesNotStartWithLetterFormat" xml:space="preserve">
+    <value>'{0}' does not begin with a letter</value>
+    <comment>{0} = code element name</comment>
+  </data>
+  <data name="InvalidNameCriteria_ExceedsMaximumLengthFormat" xml:space="preserve">
+    <value>'{0}' exceeds the maximum allowed string length</value>
+    <comment>{0} = code element name</comment>
+  </data>
+  <data name="InvalidNameCriteria_InvalidCharactersFormat" xml:space="preserve">
+    <value>'{0}' contains special character(s) other than underscores.</value>
+    <comment>{0} = code element name</comment>
+  </data>
+  <data name="InvalidNameCriteria_IsNullOrEmpty" xml:space="preserve">
+    <value>VBA Identifiers cannot be null or zero-length</value>
+  </data>
+  <data name="InvalidNameCriteria_IsReservedKeywordFormat" xml:space="preserve">
+    <value>'{0}' is a reserved keyword.</value>
+    <comment>{0} = code element name</comment>
+  </data>
+  <data name="MeaninglessNameCriteriaMatchFormat" xml:space="preserve">
+    <value>The identifier '{0}' will trigger a 'Use Meaningful Name' inspection result.</value>
+    <comment>{0} = code element name</comment>
+  </data>
+  <data name="AssignedByValDialog_MeaninglessNameFormat" xml:space="preserve">
+    <value>{0} Consider choosing a different name.</value>
+    <comment>{0} = Meaningless name message</comment>
+  </data>
+  <data name="TestExplorer_AppendHeader" xml:space="preserve">
+    <value>Rubberduck Test Results - {0}</value>
+  </data>
+  <data name="CodeExplorer_IExportable_DeclarationFormat" xml:space="preserve">
+    <value>{0} {1} {2} {3} {4} {5}</value>
+    <comment>{0}=Project; {1}=Folder; {2}=Component; {3}=DeclarationType; {4}=Scope; {5}=Name</comment>
+  </data>
+  <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
+    <value>Unable to suspend the Parser to perform the refactoring operation</value>
+  </data>
+  <data name="GeneralSettings_IncludePreRelease" xml:space="preserve">
+    <value>Tell me if a newer pre-release build is available</value>
+  </data>
+  <data name="VersionCheck_BuildType_PreRelease" xml:space="preserve">
+    <value>pre-release</value>
+  </data>
+  <data name="VersionCheck_BuildType_Release" xml:space="preserve">
+    <value>release</value>
+  </data>
+  <data name="ImportCommand_UnsupportedFileExtensions" xml:space="preserve">
+    <value>The extension of the file '{0}' is not supported.
+
+Import aborted.</value>
+    <comment>{0} filename of unsupported file</comment>
+  </data>
+  <data name="ReplaceProjectContentsFromFilesCommand_DialogCaption" xml:space="preserve">
+    <value>Replace Project Content from Files</value>
+  </data>
+  <data name="ReplaceProjectContentsFromFilesCommand_ConfirmationMessage" xml:space="preserve">
+    <value>Do you really want to delete the contents of project '{0}' and replace them with the contents of the selected files?</value>
+    <comment>{0} project name</comment>
+  </data>
+  <data name="UpdateFromFilesCommand_DialogCaption" xml:space="preserve">
+    <value>Update Components from Files</value>
+  </data>
+  <data name="ImportCommand_DuplicateModule" xml:space="preserve">
+    <value>Multiple files contain code for the component '{0}'.
+
+Import aborted.</value>
+    <comment>{0} module name</comment>
+  </data>
+  <data name="UpdateFromFilesCommand_DifferentComponentType" xml:space="preserve">
+    <value>The component type of the existing component '{0}' does not agree with that indicated by the extension of file '{1}'.
+
+Import aborted.</value>
+    <comment>{0} module name, {1} filename</comment>
+  </data>
+  <data name="ImportCommand_DocumentDoesNotExist" xml:space="preserve">
+    <value>There is no existing document module with name '{0}'; file '{1}' cannot be imported.
+
+Import aborted.</value>
+    <comment>{0} module name, {1} filename</comment>
+  </data>
+  <data name="ImportCommand_BinaryAndComponentDoNotExist" xml:space="preserve">
+    <value>For file '{0}', the required binary file(s) '{1}' are missing and the target component '{2}' does not already exists.
+
+Import aborted.</value>
+    <comment>{0} filename, {1} binaries, {2} module name</comment>
+  </data>
+  <data name="ImportCommand_BinaryDoesNotExist" xml:space="preserve">
+    <value>For file '{0}', the requires binary file(s) '{1}' are missing.
+
+Import aborted.</value>
+    <comment>{0} filename, {1} binaries</comment>
+  </data>
+  <data name="ComponentType_ActiveXDesigner" xml:space="preserve">
+    <value>ActiveX Designer</value>
+  </data>
+  <data name="ComponentType_ClassModule" xml:space="preserve">
+    <value>Class Module</value>
+  </data>
+  <data name="ComponentType_ComComponent" xml:space="preserve">
+    <value>COM component</value>
+  </data>
+  <data name="ComponentType_DocObject" xml:space="preserve">
+    <value>Document Object</value>
+  </data>
+  <data name="ComponentType_Document" xml:space="preserve">
+    <value>Document Module</value>
+  </data>
+  <data name="ComponentType_MDIForm" xml:space="preserve">
+    <value>MDI Form</value>
+  </data>
+  <data name="ComponentType_PropPage" xml:space="preserve">
+    <value>Property Page</value>
+  </data>
+  <data name="ComponentType_RelatedDocument" xml:space="preserve">
+    <value>Related Document</value>
+  </data>
+  <data name="ComponentType_ResFile" xml:space="preserve">
+    <value>Resource File</value>
+  </data>
+  <data name="ComponentType_StandardModule" xml:space="preserve">
+    <value>Standard Module</value>
+  </data>
+  <data name="ComponentType_Undefined" xml:space="preserve">
+    <value>Undefined</value>
+  </data>
+  <data name="ComponentType_UserControl" xml:space="preserve">
+    <value>User Control</value>
+  </data>
+  <data name="ComponentType_UserForm" xml:space="preserve">
+    <value>UserForm</value>
+  </data>
+  <data name="ComponentType_VBForm" xml:space="preserve">
+    <value>VB Form</value>
   </data>
 </root>

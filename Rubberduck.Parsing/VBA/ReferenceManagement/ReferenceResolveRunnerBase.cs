@@ -12,6 +12,7 @@ using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.Parsing.VBA.ReferenceManagement.CompilationPasses;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Parsing.VBA.ReferenceManagement
@@ -113,8 +114,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             parsingStageTimer.Restart();
 
             AddNewUndeclaredVariablesToDeclarations();
-            AddNewUnresolvedMemberDeclarations();
-            AddNewUnboundDefaultMemberAccesses();
+            AddNewFailedResolutions();
 
             _toResolve.Clear();
         }
@@ -124,6 +124,10 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             _referenceRemover.RemoveReferencesBy(toResolve, token);
             _moduleToModuleReferenceManager.ClearModuleToModuleReferencesFromModule(toResolve);
             _moduleToModuleReferenceManager.ClearModuleToModuleReferencesToModule(toResolve);
+            foreach (var module in toResolve)
+            {
+                _state.ClearFailedResolutions(module);
+            }
         }
 
         private void ExecuteCompilationPasses(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)
@@ -290,23 +294,12 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             }
         }
 
-        private void AddNewUnresolvedMemberDeclarations()
+        private void AddNewFailedResolutions()
         {
-            var unresolved = _state.DeclarationFinder.FreshUnresolvedMemberDeclarations
-                .GroupBy(declaration => declaration.QualifiedModuleName);
-            foreach (var declaration in unresolved)
+            var failedResolutionStores = _state.DeclarationFinder.FreshFailedResolutionStores;
+            foreach (var (module, store) in failedResolutionStores)
             {
-                _state.AddUnresolvedMemberDeclarations(declaration.Key, declaration);
-            }
-        }
-
-        private void AddNewUnboundDefaultMemberAccesses()
-        {
-            var unboundDefaultMembers = _state.DeclarationFinder.FreshUnboundDefaultMemberAccesses
-                .GroupBy(access => access.QualifiedModuleName); ;
-            foreach (var access in unboundDefaultMembers)
-            {
-                _state.AddUnboundDefaultMemberAccesses(access.Key, access);
+                _state.AddFailedResolutions(module, store);
             }
         }
     }

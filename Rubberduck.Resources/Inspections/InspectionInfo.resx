@@ -221,7 +221,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>A member is written as a function, but used as a procedure. Unless the function is recursive, consider converting the 'Function' into a 'Sub'. If the function is recursive, none of its external callers are using the returned value.</value>
   </data>
   <data name="ObjectVariableNotSetInspection" xml:space="preserve">
-    <value>As far as Rubberduck can tell, this variable is an object variable, assigned without the 'Set' keyword. This causes run-time error 91 'Object or With block variable not set'.</value>
+    <value>As far as Rubberduck can tell, this variable is an object variable, assigned without the 'Set' keyword. This causes run-time error 91 'Object or With block variable not set' or 438 'Object doesn't support this property or method' depending on whether the variable has the value 'Nothing' or not.</value>
   </data>
   <data name="MissingAnnotationArgumentInspection" xml:space="preserve">
     <value>An annotation parameter is missing or incorrectly specified. The correct syntax is : '@Annotation([parameter])\nExample: '@Folder("Parent.Child")</value>
@@ -231,9 +231,6 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   </data>
   <data name="UndeclaredVariableInspection" xml:space="preserve">
     <value>Code that uses undeclared variables does not compile when Option Explicit is specified. Undeclared variables are always Variant, a data type that incurs unnecessary overhead and storage.</value>
-  </data>
-  <data name="ImplicitDefaultMemberAssignmentInspection" xml:space="preserve">
-    <value>Such assignments look like they are assigning an object variable to a value type on the surface, but they are actually assigning that object's default member, implicitly. Consider referring to the default member explicitly, for improved readability.</value>
   </data>
   <data name="HungarianNotationInspection" xml:space="preserve">
     <value>Hungarian notation makes code less readable, and is redundant when strongly typed variables and meaningful names are used.</value>
@@ -305,7 +302,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Empty modules and classes either point to not yet implemented functionality or represent unnecessary baggage that can hurt the maintainability of a project.</value>
   </data>
   <data name="UnreachableCaseInspection" xml:space="preserve">
-    <value>Detects Case Clauses that will never execute. </value>
+    <value>A 'Case' condition either always evaluates to False, causes a run-time error, or the cumulative effect of prior 'Case' statements represents all possible values or a superset of the 'Case' statement's values.  As a result, the 'Case' block will never execute and is "dead code", or the 'Case' statement is a run-time error waiting to happen. Consider removing, reordering, or modifying the 'Case' statement.</value>
   </data>
   <data name="UnhandledOnErrorResumeNextInspection" xml:space="preserve">
     <value>Error handling should be restored after using 'On Error Resume Next'.</value>
@@ -389,6 +386,51 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Methods without executable statements may appear to be doing something which they actually don't, and therefore causing unexpected behaviour.</value>
   </data>
   <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
-    <value>A class module that is meant to be used as interface for concrete classes should gnerally be abstracted of any implementations. If it is your intention to use this class module as a concrete, you can safely ignore this inspection result.</value>
+    <value>A class module that is meant to be used as interface for concrete classes should generally be abstracted of any implementations. If it is your intention to use this class module as a concrete type, you can safely ignore this inspection result.</value>
+  </data>
+  <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>The VBA compiler does not raise an error if an object is passed as an argument for a parameter with an incompatible declared object type, i.e. with an object type that is neither the same type, a supertype nor a subtype. Under almost all circumstances passing such an argument leads to a run-time error, which is harder to detect and indicates a bug. In all other situations the code can be changed to only pass arguments of compatible declared types.</value>
+  </data>
+  <data name="ValueRequiredInspection" xml:space="preserve">
+    <value>The VBA compiler does not raise an error if an object is used in a place that requires a value type and the object's declared type does not have a suitable default member. Under almost all circumstances, this leads to a run-time error 91 'Object or With block variable not set' or 438 'Object doesn't support this property or method' depending on whether the object has the value 'Nothing' or not, which is harder to detect and indicates a bug.</value>
+  </data>
+  <data name="ProcedureRequiredInspection" xml:space="preserve">
+    <value>The VBA compiler does not raise an error if an object variable is used in a place that requires a procedure and the object's declared type does not have a suitable default member. Under almost all circumstances, this leads to a run-time error 91 'Object or With block variable not set' or 438 'Object doesn't support this property or method' depending on whether the object has the value 'Nothing' or not, which is harder to detect and indicates a bug.</value>
+  </data>
+  <data name="DefaultMemberRequiredInspection" xml:space="preserve">
+    <value>The VBA compiler does not raise an error if an indexed default member call is required but the object's declared type does not have a suitable default member. Under almost all circumstances, this leads to a run-time error 91 'Object or With block variable not set' or 438 'Object doesn't support this property or method' depending on whether the object has the value 'Nothing' or not, which is harder to detect and indicates a bug.</value>
+  </data>
+  <data name="UseOfBangNotationInspection" xml:space="preserve">
+    <value>Bang notation, formally known as dictionary access expression, looks like it is strongly typed. However, it is actually a stringly-typed access to the parameterized default member of the object it is used on.</value>
+  </data>
+  <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
+    <value>Bang notation, formally known as dictionary access expression, looks like it is strongly typed. However, it is actually a stringly-typed access to the parameterized default member of the object it is used on. This is especially misleading if the parameterized default member is not on the object itself and can only be reached by calling the parameterless default member first.</value>
+  </data>
+  <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
+    <value>Bang notation, formally known as dictionary access expression, looks like it is strongly typed. However, it is actually a stringly-typed access to the parameterized default member of the object it is used on. This is especially misleading the default member cannot be determined at compile time.</value>
+  </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
+    <value>Using an object with a default member in a place that requires a procedure leads to an implicit invocation of the default member. This is most likely unintentional and negatively affects readability.</value>
+  </data>
+  <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
+    <value>A default member access hides away which member is actually called. Although it is apparent that some call is made in the case of an indexed default member access being explicit is usually better for readability.</value>
+  </data>
+  <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>A default member access hides away which member is actually called. Although it is apparent that some call is made in the case of an indexed default member access being explicit is usually better for readability. This especially holds if the accessed default member is not on the interface of the object itself but has to be resolved via a chain of default member calls.</value>
+  </data>
+  <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>A default member access hides away which member is actually called. Although it is apparent that some call is made in the case of an indexed default member access being explicit is usually better for readability. This is especially true if the default member cannot be determined at compile time. In addition, should there not be a suitable default member at runtime, an error 438 'Object doesn't support this property or method' will be raised.</value>
+  </data>
+  <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Default member accesses hide away the actually called member. This is especially misleading if there is no indication in the expression that such a call is made. It can cause errors in which a member was forgotten to be called to go unnoticed.</value>
+  </data>
+  <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Default member accesses hide away the actually called member. This is especially misleading if there is no indication in the expression that such a call is made and the final default member is not on the interface of the object itself. In particular, this can cause errors in which a member was forgotten to be called to go unnoticed.</value>
+  </data>
+  <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Default member accesses hide away the actually called member. This is especially misleading if there is no indication in the expression that such a call is made and if the default member cannot be determined from the declared type of the object. As a consequence, errors in which a member was forgotten to be called can go unnoticed and should there not be a suitable default member at runtime, an error 438 'Object doesn't support this property or method' will be raised.</value>
+  </data>
+  <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
+    <value>Whenever both sides of an assignment without Set are objects, there is an assignment from the default member of the RHS to the one on the LHS. Although this might be intentional, in many situations it will just mask an erroneously forgotten Set.</value>
   </data>
 </root>

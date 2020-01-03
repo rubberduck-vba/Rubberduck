@@ -22,18 +22,19 @@ namespace Rubberduck.Parsing.Symbols
             Declaration declaration, 
             bool isAssignmentTarget = false,
             bool hasExplicitLetStatement = false, 
-            IEnumerable<IAnnotation> annotations = null,
+            IEnumerable<IParseTreeAnnotation> annotations = null,
             bool isSetAssigned = false,
             bool isIndexedDefaultMemberAccess = false,
             bool isNonIndexedDefaultMemberAccess = false,
             int defaultMemberRecursionDepth = 0,
-            bool isArrayAccess = false)
+            bool isArrayAccess = false,
+            bool isProcedureCoercion = false,
+            bool isInnerRecursiveDefaultMemberAccess = false)
         {
             ParentScoping = parentScopingDeclaration;
             ParentNonScoping = parentNonScopingDeclaration;
-            QualifiedModuleName = qualifiedName;
+            QualifiedSelection = new QualifiedSelection(qualifiedName, selection);
             IdentifierName = identifierName;
-            Selection = selection;
             Context = context;
             Declaration = declaration;
             HasExplicitLetStatement = hasExplicitLetStatement;
@@ -43,14 +44,16 @@ namespace Rubberduck.Parsing.Symbols
             IsNonIndexedDefaultMemberAccess = isNonIndexedDefaultMemberAccess;
             DefaultMemberRecursionDepth = defaultMemberRecursionDepth;
             IsArrayAccess = isArrayAccess;
-            Annotations = annotations ?? new List<IAnnotation>();
+            IsProcedureCoercion = isProcedureCoercion;
+            Annotations = annotations ?? new List<IParseTreeAnnotation>();
+            IsInnerRecursiveDefaultMemberAccess = isInnerRecursiveDefaultMemberAccess;
         }
 
-        public QualifiedModuleName QualifiedModuleName { get; }
+        public QualifiedSelection QualifiedSelection { get; }
+        public QualifiedModuleName QualifiedModuleName => QualifiedSelection.QualifiedName;
+        public Selection Selection => QualifiedSelection.Selection;
 
         public string IdentifierName { get; }
-
-        public Selection Selection { get; }
 
         /// <summary>
         /// Gets the scoping <see cref="Declaration"/> that contains this identifier reference,
@@ -71,6 +74,8 @@ namespace Rubberduck.Parsing.Symbols
         public bool IsIndexedDefaultMemberAccess { get; }
         public bool IsNonIndexedDefaultMemberAccess { get; }
         public bool IsDefaultMemberAccess => IsIndexedDefaultMemberAccess || IsNonIndexedDefaultMemberAccess;
+        public bool IsProcedureCoercion { get; }
+        public bool IsInnerRecursiveDefaultMemberAccess { get; }
         public int DefaultMemberRecursionDepth { get; }
 
         public bool IsArrayAccess { get; }
@@ -79,7 +84,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public Declaration Declaration { get; }
 
-        public IEnumerable<IAnnotation> Annotations { get; }
+        public IEnumerable<IParseTreeAnnotation> Annotations { get; }
 
         public bool HasExplicitLetStatement { get; }
 

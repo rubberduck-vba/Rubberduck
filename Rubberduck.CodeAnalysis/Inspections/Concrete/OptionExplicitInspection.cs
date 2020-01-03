@@ -52,7 +52,6 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts
-                .Where(context => !context.IsIgnoringInspectionResultFor(State.DeclarationFinder, AnnotationName))
                 .Select(context => new QualifiedContextInspectionResult(this,
                     string.Format(InspectionResults.OptionExplicitInspection, context.ModuleName.ComponentName),
                     context));
@@ -60,14 +59,22 @@ namespace Rubberduck.Inspections.Concrete
 
         public class MissingOptionExplicitListener : VBAParserBaseListener, IInspectionListener
         {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
+            private readonly IDictionary<string, QualifiedContext<ParserRuleContext>> _contexts = new Dictionary<string,QualifiedContext<ParserRuleContext>>();
+            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts.Values.ToList();
 
             public QualifiedModuleName CurrentModuleName { get; set; }
 
             public void ClearContexts()
             {
                 _contexts.Clear();
+            }
+
+            public override void ExitModuleBody(VBAParser.ModuleBodyContext context)
+            {
+                if (context.ChildCount == 0 && _contexts.ContainsKey(CurrentModuleName.Name))
+                {
+                    _contexts.Remove(CurrentModuleName.Name);
+                }
             }
 
             public override void ExitModuleDeclarations([NotNull] VBAParser.ModuleDeclarationsContext context)
@@ -83,7 +90,7 @@ namespace Rubberduck.Inspections.Concrete
 
                 if (!hasOptionExplicit)
                 {
-                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, (ParserRuleContext)context.Parent));
+                    _contexts.Add(CurrentModuleName.Name, new QualifiedContext<ParserRuleContext>(CurrentModuleName, (ParserRuleContext)context.Parent));
                 }
             }
         }

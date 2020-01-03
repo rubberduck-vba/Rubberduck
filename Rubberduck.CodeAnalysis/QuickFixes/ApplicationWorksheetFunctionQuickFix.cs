@@ -5,6 +5,29 @@ using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Replaces a late-bound Application.{Member} call to the corresponding early-bound Application.WorksheetFunction.{Member} call.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="ApplicationWorksheetFunctionInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Debug.Print Application.Sum(Sheet1.Range("A1:A10"))
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Debug.Print Application.WorksheetFunction.Sum(Sheet1.Range("A1:A10"))
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class ApplicationWorksheetFunctionQuickFix : QuickFixBase
     {
         public ApplicationWorksheetFunctionQuickFix()

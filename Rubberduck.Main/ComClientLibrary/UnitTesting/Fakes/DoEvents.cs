@@ -7,7 +7,7 @@ namespace Rubberduck.UnitTesting.Fakes
     {
         public DoEvents()
         {
-            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcDoEvents");
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeNativeApi.DllName, "rtcDoEvents");
 
             InjectDelegate(new DoEventsDelegate(DoEventsCallback), processAddress);
         }
@@ -29,7 +29,7 @@ namespace Rubberduck.UnitTesting.Fakes
 
             if (PassThrough)
             {
-                return VbeProvider.VbeRuntime.DoEvents();
+                return VbeProvider.VbeNativeApi.DoEvents();
             }
             return (int)(ReturnValue ?? 0);
         }

@@ -11,6 +11,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor;
 using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.JunkDrawer.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -50,7 +51,6 @@ namespace Rubberduck.Inspections.Concrete
             var interfaceImplementationMemberContexts = State.DeclarationFinder.FindAllInterfaceImplementingMembers().Select(member => member.Context).ToHashSet();
 
             var issues = Listener.Contexts.Where(context =>
-                !context.IsIgnoringInspectionResultFor(State.DeclarationFinder, AnnotationName) &&
                 !builtInEventHandlerContexts.Contains(context.Context.Parent.Parent) &&
                 !interfaceImplementationMemberContexts.Contains(context.Context.Parent.Parent));
 

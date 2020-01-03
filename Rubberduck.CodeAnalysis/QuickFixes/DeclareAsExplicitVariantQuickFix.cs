@@ -7,6 +7,33 @@ using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Adds an explicit Variant data type to an implicitly typed declaration. Note: a more specific data type might be more appropriate.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="VariableTypeNotDeclaredInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim value
+    ///     value = Sheet1.Range("A1").Value
+    ///     Debug.Print TypeName(value)
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim value As Variant
+    ///     value = Sheet1.Range("A1").Value
+    ///     Debug.Print TypeName(value)
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class DeclareAsExplicitVariantQuickFix : QuickFixBase
     {
         public DeclareAsExplicitVariantQuickFix()

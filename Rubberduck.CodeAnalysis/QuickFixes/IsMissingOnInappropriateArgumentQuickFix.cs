@@ -12,6 +12,33 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Replaces misuses of the IsMissing function with the appropriate default value for the specified parameter type.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="IsMissingOnInappropriateArgumentInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="false" project="false" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal value As Date)
+    ///     If Not IsMissing(value) Then
+    ///         Debug.Print value
+    ///     End If
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal value As Date)
+    ///     If Not value = CDate(0) Then
+    ///         Debug.Print value
+    ///     End If
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class IsMissingOnInappropriateArgumentQuickFix : QuickFixBase
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;

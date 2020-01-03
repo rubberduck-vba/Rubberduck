@@ -4,6 +4,41 @@ using Rubberduck.Refactorings.RemoveParameters;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Refactors a procedure's signature to remove a parameter that isn't used. Also updates usages.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="ParameterNotUsedInspection" />
+    /// </inspections>
+    /// <canfix procedure="false" module="false" project="false" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     DoSomethingElse 42
+    /// End Sub
+    /// 
+    /// Private Sub DoSomethingElse(ByVal value As Long)
+    ///     Debug.Print 42
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     DoSomethingElse
+    /// End Sub
+    /// 
+    /// Private Sub DoSomethingElse()
+    ///     Debug.Print 42
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class RemoveUnusedParameterQuickFix : RefactoringQuickFixBase
     {
         public RemoveUnusedParameterQuickFix(RemoveParametersRefactoring refactoring)

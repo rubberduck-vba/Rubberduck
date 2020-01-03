@@ -6,6 +6,33 @@ using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Replaces the obsolete 'Error' statement with an 'ErrObject.Raise' member call.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="ObsoleteErrorSyntaxInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     Error 5
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     Err.Raise 5
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class ReplaceObsoleteErrorStatementQuickFix : QuickFixBase
     {
         public ReplaceObsoleteErrorStatementQuickFix()

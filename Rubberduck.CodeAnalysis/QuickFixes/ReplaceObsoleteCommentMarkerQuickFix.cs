@@ -6,6 +6,33 @@ using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Replaces the obsolete 'Rem' comment marker token with a single quote character.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="ObsoleteCommentSyntaxInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     Rem some comment...
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     ' some comment...
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class ReplaceObsoleteCommentMarkerQuickFix : QuickFixBase
     {
         public ReplaceObsoleteCommentMarkerQuickFix()

@@ -24,6 +24,6 @@ namespace Rubberduck.Parsing.Grammar
     public interface IAnnotatingContext
     {
         ParserRuleContext AnnotatedContext { get; }
-        AnnotationType AnnotationType { get; }
+        string AnnotationType { get; }
     }
 }

@@ -19,6 +19,7 @@ using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
+using Rubberduck.Parsing.VBA.ReferenceManagement;
 using Rubberduck.VBEditor.Extensions;
 
 // ReSharper disable LoopCanBeConvertedToQuery
@@ -59,39 +60,6 @@ namespace Rubberduck.Parsing.VBA
                                 State == ParserState.UnexpectedError);
     }
 
-    public enum SuspensionResult
-    {
-        /// <summary>
-        /// The busy action has been queued but has not run yet.
-        /// </summary>
-        Pending,
-        /// <summary>
-        /// The busy action was completed successfully.
-        /// </summary>
-        Completed,
-        /// <summary>
-        /// The busy action could not executed because it timed out when
-        /// attempting to obtain a suspension lock. The timeout is 
-        /// governed by the MillisecondsTimeout argument.
-        /// </summary>
-        TimedOut,
-        /// <summary>
-        /// The parser arrived to one of states that wasn't listed in the 
-        /// AllowedRunStates specified by the requestor (e.g. an error state)
-        /// and thus the busy action was not executed.
-        /// </summary>
-        IncompatibleState,
-        /// <summary>
-        /// Indicates that the suspension request cannot be made because there 
-        /// is no handler for it. This points to a bug in the code.
-        /// </summary>
-        NotEnabled,
-        /// <summary>
-        /// An unexpected error; usually indicates a bug in code.
-        /// </summary>
-        UnexpectedError
-    }
-
     public class RubberduckStatusSuspendParserEventArgs : EventArgs
     {
         public RubberduckStatusSuspendParserEventArgs(object requestor, IEnumerable<ParserState> allowedRunStates, Action busyAction, int millisecondsTimeout)
@@ -100,14 +68,15 @@ namespace Rubberduck.Parsing.VBA
             AllowedRunStates = allowedRunStates;
             BusyAction = busyAction;
             MillisecondsTimeout = millisecondsTimeout;
-            Result = SuspensionResult.Pending;
+            Result = SuspensionOutcome.Pending;
         }
 
         public object Requestor { get; }
         public IEnumerable<ParserState> AllowedRunStates { get; }
         public Action BusyAction { get; }
         public int MillisecondsTimeout { get; }
-        public SuspensionResult Result { get; set; }
+        public SuspensionOutcome Result { get; set; }
+        public Exception EncounteredException { get; set; }
     }
 
     public class RubberduckStatusMessageEventArgs : EventArgs
@@ -142,13 +111,13 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly IVBE _vbe;
         private readonly IProjectsRepository _projectRepository;
-        private readonly IVBEEvents _vbeEvents;
+        private readonly IVbeEvents _vbeEvents;
         private readonly IHostApplication _hostApp;
         private readonly IDeclarationFinderFactory _declarationFinderFactory;
 
-        /// <param name="vbeEvents">Provides event handling from the VBE. Static method <see cref="VBEEvents.Initialize"/> must be already called prior to constructing the method.</param>
+        /// <param name="vbeEvents">Provides event handling from the VBE. Static method <see cref="VbeEvents.Initialize"/> must be already called prior to constructing the method.</param>
         [SuppressMessage("ReSharper", "JoinNullCheckWithUsage")]
-        public RubberduckParserState(IVBE vbe, IProjectsRepository projectRepository, IDeclarationFinderFactory declarationFinderFactory, IVBEEvents vbeEvents)
+        public RubberduckParserState(IVBE vbe, IProjectsRepository projectRepository, IDeclarationFinderFactory declarationFinderFactory, IVbeEvents vbeEvents)
         {
             if (vbe == null)
             {
@@ -189,9 +158,13 @@ namespace Rubberduck.Parsing.VBA
 
         private void RefreshFinder(IHostApplication host)
         {
-            var oldDecalarationFinder = DeclarationFinder;
-            DeclarationFinder = _declarationFinderFactory.Create(AllDeclarationsFromModuleStates, AllAnnotations, AllUnresolvedMemberDeclarationsFromModulestates, AllUnboundDefaultMemberAccessesFromModuleStates, host);
-            _declarationFinderFactory.Release(oldDecalarationFinder);
+            var oldDeclarationFinder = DeclarationFinder;
+            DeclarationFinder = _declarationFinderFactory.Create(
+                AllDeclarationsFromModuleStates, 
+                AllAnnotations,
+                AllFailedResolutionsFromModuleStates,
+                host);
+            _declarationFinderFactory.Release(oldDeclarationFinder);
         }
 
         public void RefreshDeclarationFinder()
@@ -560,12 +533,19 @@ namespace Rubberduck.Parsing.VBA
                 }
             }
 
-#if DEBUG
+            DebugParserState(state, stateCounts);
+            
+            return result;
+        }
+
+        [Conditional("DEBUG")]
+        private static void DebugParserState(ParserState state, int[] stateCounts)
+        {
             if (state == ParserState.Ready)
             {
                 for (var i = 0; i < stateCounts.Length; i++)
                 {
-                    if (i == (int)ParserState.Ready || i == (int)ParserState.None)
+                    if (i == (int) ParserState.Ready || i == (int) ParserState.None)
                     {
                         continue;
                     }
@@ -576,9 +556,6 @@ namespace Rubberduck.Parsing.VBA
                     }
                 }
             }
-#endif
-            
-            return result;
         }
 
         public ParserState GetOrCreateModuleState(QualifiedModuleName module)
@@ -674,11 +651,11 @@ namespace Rubberduck.Parsing.VBA
             return moduleState.Comments;
         }
 
-        public List<IAnnotation> AllAnnotations
+        public List<IParseTreeAnnotation> AllAnnotations
         {
             get
             {
-                var annotations = new List<IAnnotation>();
+                var annotations = new List<IParseTreeAnnotation>();
                 foreach (var state in _moduleStates.Values)
                 {
                     annotations.AddRange(state.Annotations);
@@ -688,19 +665,19 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public IEnumerable<IAnnotation> GetModuleAnnotations(QualifiedModuleName module)
+        public IEnumerable<IParseTreeAnnotation> GetModuleAnnotations(QualifiedModuleName module)
         {
             if (_moduleStates.TryGetValue(module, out var result))
             {
                 return result.Annotations;
             }
 
-            return Enumerable.Empty<IAnnotation>();
+            return Enumerable.Empty<IParseTreeAnnotation>();
         }
 
-        public void SetModuleAnnotations(QualifiedModuleName module, IEnumerable<IAnnotation> annotations)
+        public void SetModuleAnnotations(QualifiedModuleName module, IEnumerable<IParseTreeAnnotation> annotations)
         {
-            _moduleStates[module].SetAnnotations(new List<IAnnotation>(annotations));
+            _moduleStates[module].SetAnnotations(new List<IParseTreeAnnotation>(annotations));
         }
 
         /// <summary>
@@ -718,7 +695,7 @@ namespace Rubberduck.Parsing.VBA
                 var declarations = new List<Declaration>();
                 foreach (var state in _moduleStates.Values.Where(state => state.Declarations != null))
                 {
-                    declarations.AddRange(state.Declarations.Keys);
+                    declarations.AddRange(state.Declarations);
                 }
 
                 return declarations;
@@ -727,40 +704,23 @@ namespace Rubberduck.Parsing.VBA
 
         private bool ThereAreDeclarations()
         {
-            return _moduleStates.Values.Any(state => state.Declarations != null && state.Declarations.Keys.Any());
+            return _moduleStates.Values.Any(state => state.Declarations != null && state.Declarations.Any());
         }
 
         /// <summary>
-        /// Gets a copy of the unresolved member declarations directly from the module states. (Used for refreshing the DeclarationFinder.)
+        /// Gets a copy of the failed resolution stores directly from the module states. (Used for refreshing the DeclarationFinder.)
         /// </summary>
-        private IReadOnlyList<UnboundMemberDeclaration> AllUnresolvedMemberDeclarationsFromModulestates
+        private IReadOnlyDictionary<QualifiedModuleName, IFailedResolutionStore> AllFailedResolutionsFromModuleStates
         {
             get
             {
-                var declarations = new List<UnboundMemberDeclaration>();
-                foreach (var state in _moduleStates.Values.Where(state => state.UnresolvedMemberDeclarations != null))
-                {
-                    declarations.AddRange(state.UnresolvedMemberDeclarations.Keys);
-                }
-
-                return declarations;
-            }
-        }
-
-        /// <summary>
-        /// Gets a copy of the unbound default member accesses directly from the module states. (Used for refreshing the DeclarationFinder.)
-        /// </summary>
-        private IReadOnlyDictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>> AllUnboundDefaultMemberAccessesFromModuleStates
-        {
-            get
-            {
-                var defaultMemberAccesses = new Dictionary<QualifiedModuleName, IReadOnlyCollection<IdentifierReference>>();
+                var failedResolutionStores = new Dictionary<QualifiedModuleName, IFailedResolutionStore>();
                 foreach (var (module, state) in _moduleStates)
                 {
-                    defaultMemberAccesses.Add(module, state.UnboundDefaultMemberAccesses);
+                    failedResolutionStores.Add(module, state.FailedResolutionStore);
                 }
 
-                return defaultMemberAccesses;
+                return failedResolutionStores;
             }
         }
 
@@ -785,76 +745,30 @@ namespace Rubberduck.Parsing.VBA
         public void AddDeclaration(Declaration declaration)
         {
             var key = declaration.QualifiedName.QualifiedModuleName;
-            var declarations = _moduleStates.GetOrAdd(key, new ModuleState(new ConcurrentDictionary<Declaration, byte>())).Declarations;
+            var declarations = _moduleStates.GetOrAdd(key, new ModuleState(new HashSet<Declaration>())).Declarations;
 
-            if (declarations.ContainsKey(declaration))
+            if (declarations.Contains(declaration))
             {
-                byte _;
-                while (!declarations.TryRemove(declaration, out _))
+                while (!declarations.Remove(declaration))
                 {
                     Logger.Warn("Could not remove existing declaration for '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
                 }
             }
-            while (!declarations.TryAdd(declaration, 0) && !declarations.ContainsKey(declaration))
-            {
-                Logger.Warn("Could not add declaration '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
-            }
+
+            declarations.Add(declaration);
         }
 
-        /// <summary>
-        /// Adds the specified <see cref="UnboundMemberDeclaration"/> to the collection (replaces existing).
-        /// </summary>
-        public void AddUnresolvedMemberDeclaration(UnboundMemberDeclaration declaration)
+        public void AddFailedResolutions(QualifiedModuleName module, IFailedResolutionStore store)
         {
-            var key = declaration.QualifiedName.QualifiedModuleName;
-            var declarations = _moduleStates.GetOrAdd(key, new ModuleState(new ConcurrentDictionary<Declaration, byte>())).UnresolvedMemberDeclarations;
-
-            if (declarations.ContainsKey(declaration))
-            {
-                while (!declarations.TryRemove(declaration, out var _))
-                {
-                    Logger.Warn("Could not remove existing unresolved member declaration for '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
-                }
-            }
-            while (!declarations.TryAdd(declaration, 0) && !declarations.ContainsKey(declaration))
-            {
-                Logger.Warn("Could not add unresolved member declaration '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
-            }
+            var moduleState = _moduleStates.GetOrAdd(module, new ModuleState(new HashSet<Declaration>()));
+            moduleState.SetFailedResolutionStore(store);
         }
 
-        public void AddUnresolvedMemberDeclarations(QualifiedModuleName module, IEnumerable<UnboundMemberDeclaration> unboundDeclarations)
+        public void ClearFailedResolutions(QualifiedModuleName module)
         {
-            var declarations = _moduleStates.GetOrAdd(module, new ModuleState(new ConcurrentDictionary<Declaration, byte>())).UnresolvedMemberDeclarations;
-
-            foreach (var declaration in unboundDeclarations)
+            if (_moduleStates.TryGetValue(module, out var moduleState))
             {
-                if (declarations.ContainsKey(declaration))
-                {
-                    while (!declarations.TryRemove(declaration, out var _))
-                    {
-                        Logger.Warn("Could not remove existing unresolved member declaration for '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
-                    }
-                }
-                while (!declarations.TryAdd(declaration, 0) && !declarations.ContainsKey(declaration))
-                {
-                    Logger.Warn("Could not add unresolved member declaration '{0}' ({1}). Retrying.", declaration.IdentifierName, declaration.DeclarationType);
-                }
-            }
-        }
-
-        public void AddUnboundDefaultMemberAccess(IdentifierReference defaultMemberAccess)
-        {
-            var key = defaultMemberAccess.QualifiedModuleName;
-            var moduleState = _moduleStates.GetOrAdd(key, new ModuleState(new ConcurrentDictionary<Declaration, byte>()));
-            moduleState.AddUnboundDefaultMemberAccess(defaultMemberAccess);
-        }
-
-        public void AddUnboundDefaultMemberAccesses(QualifiedModuleName module, IEnumerable<IdentifierReference> defaultMemberAccesses)
-        {
-            var moduleState = _moduleStates.GetOrAdd(module, new ModuleState(new ConcurrentDictionary<Declaration, byte>()));
-            foreach(var defaultMemberAccess in defaultMemberAccesses)
-            {
-                moduleState.AddUnboundDefaultMemberAccess(defaultMemberAccess);
+                moduleState.ClearFailedResolutionStore();
             }
         }
 
@@ -1026,9 +940,7 @@ namespace Rubberduck.Parsing.VBA
         public bool RemoveDeclaration(Declaration declaration)
         {
             var key = declaration.QualifiedName.QualifiedModuleName;
-
-            byte _;
-            return _moduleStates[key].Declarations.TryRemove(declaration, out _);
+            return _moduleStates[key].Declarations.Remove(declaration);
         }
 
         /// <inheritdoc />
@@ -1066,10 +978,10 @@ namespace Rubberduck.Parsing.VBA
             {
                 var args = new RubberduckStatusSuspendParserEventArgs(requestor, allowedRunStates, busyAction, millisecondsTimeout);
                 handler.Invoke(requestor, args);
-                return args.Result;
+                return new SuspensionResult(args.Result, args.EncounteredException);
             }
 
-            return SuspensionResult.NotEnabled;
+            return new SuspensionResult(SuspensionOutcome.NotEnabled);
         }
 
         public bool IsNewOrModified(IVBComponent component)
@@ -1106,19 +1018,6 @@ namespace Rubberduck.Parsing.VBA
             if (_moduleStates.TryGetValue(module, out var moduleState))
             {
                 moduleState.MarkAsModified();
-            }
-        }
-
-        public Declaration FindSelectedDeclaration(ICodePane activeCodePane)
-        {
-            if (activeCodePane != null)
-            {
-                return DeclarationFinder?.FindSelectedDeclaration(activeCodePane);
-            }
-
-            using (var active = _vbe.ActiveCodePane)
-            {
-                return DeclarationFinder?.FindSelectedDeclaration(active);
             }
         }
 
@@ -1173,7 +1072,7 @@ namespace Rubberduck.Parsing.VBA
             }
 
             RemoveEventHandlers();
-            VBEEvents.Terminate();
+            VbeEvents.Terminate();
 
             _moduleStates.Clear();
 

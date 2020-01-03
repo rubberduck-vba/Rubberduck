@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.ComCommands;
+using Rubberduck.VBEditor.Events;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public abstract class CodeExplorerCommandBase : CommandBase
+    public abstract class CodeExplorerCommandBase : ComCommandBase
     {
-        protected CodeExplorerCommandBase()
+        protected CodeExplorerCommandBase(IVbeEvents vbeEvents) 
+            : base(vbeEvents)
         {
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }

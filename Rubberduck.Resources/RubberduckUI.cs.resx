@@ -942,28 +942,18 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
     <value>Příklad Odsazeného Kódu</value>
   </data>
   <data name="VersionCheck_NewVersionAvailable" xml:space="preserve">
-    <value>Rubberduck verze {0} je nyní k dispozici! Přejete si přečíst novinky v této verzi?</value>
+    <value>Momentálně používáte Rubberduck verzi {0}.
+Dobré zprávy! Verze {1} ({2}) je nyní k dispozici.
+
+Chcete-li se podívat na změny a ručně aktualizovat Rubberduck, klikněte na "Ano".
+
+Toto dialogové okno se zobrazuje, protože je povolena kontrola nových verzí. Tuto funkci můžete vypnout v Rubberduck &gt; Nastavení.</value>
   </data>
   <data name="GeneralSettings_CheckVersion" xml:space="preserve">
     <value>Při startu zkontrolovat, zda je dostupná nová verze</value>
   </data>
-  <data name="AssignedByValDialog_DoesNotStartWithLetter" xml:space="preserve">
-    <value>Názvy proměnných musejí začínat písmenem.</value>
-  </data>
-  <data name="AssignedByValDialog_InvalidCharacters" xml:space="preserve">
-    <value>Názvy proměnných nesmějí obsahovat žádný jiný speciální znak, než je podtržítko '_'</value>
-  </data>
-  <data name="AssignedByValDialog_IsByValIdentifierFormat" xml:space="preserve">
-    <value>Lokální proměnná nemůže být stejná jako '{0}' parametr, který nahrazuje</value>
-  </data>
   <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
     <value>'{0}' je již přístupný v tomto rozsahu.</value>
-  </data>
-  <data name="AssignedByValDialog_QuestionableEntryFormat" xml:space="preserve">
-    <value>Identifikátor '{0}' vyústí jako výsledek inspekce "Použij smysluplné jméno". Zvažte použití jiného názvu.</value>
-  </data>
-  <data name="AssignedByValDialog_ReservedKeywordFormat" xml:space="preserve">
-    <value>'{0}' je rezervované klíčové slovo.</value>
   </data>
   <data name="ConfirmRemoveAssignmentWithUnusedDeclaration" xml:space="preserve">
     <value>Proměnná '{0}' je přidělena. Odstranit přidělení instrukce?</value>
@@ -1270,7 +1260,7 @@ End Enum</value>
     <value>Nedávné sledované reference:</value>
   </data>
   <data name="ReferenceSettings_TrackHostReferences" xml:space="preserve">
-    <value>Sledované reference nebyly přidány Rubberduckem</value>
+    <value>Sledovat reference, které nebyly přidány Rubberduckem</value>
   </data>
   <data name="References_BrowseFilterOutlook" xml:space="preserve">
     <value>Outlook VBA Soubory ({0})|{0}</value>
@@ -1372,7 +1362,7 @@ End Enum</value>
   <data name="ImplementInterfaceFailed_NoImplementsStatementSelected" xml:space="preserve">
     <value>Nebyl vybrán žádný příkaz implementace.</value>
   </data>
-  <data name="RenameFailure_TargetContriolNotFound" xml:space="preserve">
+  <data name="RenameFailure_TargetControlNotFound" xml:space="preserve">
     <value>Cílový control '{0}' nebyl nalezen.</value>
   </data>
   <data name="RenameFailure_TargetModuleWithoutCodeModule" xml:space="preserve">
@@ -1395,5 +1385,164 @@ End Enum</value>
   </data>
   <data name="RefactoringFailure_InvalidDeclarationType_multipleValid" xml:space="preserve">
     <value>Typ deklarace cíle '{0}' je '{1}' namísto jednoho z očekávaných '{2}'.</value>
+  </data>
+  <data name="SaveAndClose" xml:space="preserve">
+    <value>Uložit a Zavřít</value>
+  </data>
+  <data name="RegexAssistant_EncloseWhitespace_EnclosingFormat" xml:space="preserve">
+    <value>&lt;{0}&gt;</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_NewLine" xml:space="preserve">
+    <value>nový-řádek</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_Space" xml:space="preserve">
+    <value>mezera</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_Tab" xml:space="preserve">
+    <value>tab</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_UnidentifiedWhitespace" xml:space="preserve">
+    <value>neidentifikovaná-mezera</value>
+  </data>
+  <data name="TestOutcome_Fail" xml:space="preserve">
+    <value>Selhání</value>
+  </data>
+  <data name="TestOutcome_Succeeded" xml:space="preserve">
+    <value>Úspěch</value>
+  </data>
+  <data name="TestOutcome_Unknown" xml:space="preserve">
+    <value>Neznámý</value>
+  </data>
+  <data name="TestOutcome_Inconclusive" xml:space="preserve">
+    <value>Bezvýsledný</value>
+  </data>
+  <data name="InvalidNameCriteria_DoesNotStartWithLetterFormat" xml:space="preserve">
+    <value>'{0}' nezačíná písmenem</value>
+  </data>
+  <data name="InvalidNameCriteria_ExceedsMaximumLengthFormat" xml:space="preserve">
+    <value>'{0}' překročil maximální povolenou délku řetězce</value>
+  </data>
+  <data name="InvalidNameCriteria_InvalidCharactersFormat" xml:space="preserve">
+    <value>'{0}' obsahuje speciální znak(y) jiné než podtržítka.</value>
+  </data>
+  <data name="InvalidNameCriteria_IsNullOrEmpty" xml:space="preserve">
+    <value>Identifikátory VBA nemohou být prázdné, nebo mít nulovou délku</value>
+  </data>
+  <data name="InvalidNameCriteria_IsReservedKeywordFormat" xml:space="preserve">
+    <value>'{0}' je vyhrazené klíčové slovo.</value>
+  </data>
+  <data name="MeaninglessNameCriteriaMatchFormat" xml:space="preserve">
+    <value>Identifikátor '{0}' zobrazí inspekci 'Použij Smysluplnější Slovo'.</value>
+  </data>
+  <data name="AssignedByValDialog_MeaninglessNameFormat" xml:space="preserve">
+    <value>{0} Zvaž použití jiného jména.</value>
+  </data>
+  <data name="GeneralSettings_IncludePreRelease" xml:space="preserve">
+    <value>Oznámení, pokud je k dispozici novější verze předběžného vydání</value>
+  </data>
+  <data name="VersionCheck_BuildType_PreRelease" xml:space="preserve">
+    <value>předběžné vydání</value>
+  </data>
+  <data name="VersionCheck_BuildType_Release" xml:space="preserve">
+    <value>vydání</value>
+  </data>
+  <data name="ComponentType_VBForm" xml:space="preserve">
+    <value>VB Form</value>
+  </data>
+  <data name="ComponentType_ActiveXDesigner" xml:space="preserve">
+    <value>ActiveX Designer</value>
+  </data>
+  <data name="RegexAssistant_EncloseWhitespaceFlag" xml:space="preserve">
+    <value>V popisu uveďte mezeru</value>
+  </data>
+  <data name="TestExplorer_AppendHeader" xml:space="preserve">
+    <value>Rubberduck: Výsledky Testů - {0}</value>
+  </data>
+  <data name="CodeExplorer_IExportable_DeclarationFormat" xml:space="preserve">
+    <value>{0} {1} {2} {3} {4} {5}</value>
+  </data>
+  <data name="RefactoringFailure_SuspendParserFailure" xml:space="preserve">
+    <value>Nelze přerušit Parser k provedení operace refaktoringu</value>
+  </data>
+  <data name="ImportCommand_UnsupportedFileExtensions" xml:space="preserve">
+    <value>Přípona souboru '{0}' není podporována.
+
+Import přerušen.</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_CarriageReturn" xml:space="preserve">
+    <value>carriage-return (CR)</value>
+  </data>
+  <data name="RegexAssistant_SpelledOut_CarriageReturnNewLine" xml:space="preserve">
+    <value>carriage-return-new-line</value>
+  </data>
+  <data name="ReplaceProjectContentsFromFilesCommand_DialogCaption" xml:space="preserve">
+    <value>Nahrazení obsahu projektu ze souborů</value>
+  </data>
+  <data name="ReplaceProjectContentsFromFilesCommand_ConfirmationMessage" xml:space="preserve">
+    <value>Opravdu chcete odstranit obsah projektu '{0}' a nahradit jej obsahem vybraných souborů?</value>
+  </data>
+  <data name="UpdateFromFilesCommand_DialogCaption" xml:space="preserve">
+    <value>Update Komponentů ze Souborů</value>
+  </data>
+  <data name="ImportCommand_DuplicateModule" xml:space="preserve">
+    <value>Kód pro komponentu '{0}' obsahuje více souborů.
+
+Import přerušen.</value>
+  </data>
+  <data name="UpdateFromFilesCommand_DifferentComponentType" xml:space="preserve">
+    <value>Typ komponenty z existující komponenty '{0}' nesouhlasí s typem označeným příponou souboru '{1}'.
+
+Import přerušen.</value>
+  </data>
+  <data name="ImportCommand_DocumentDoesNotExist" xml:space="preserve">
+    <value>Neexistuje žádný modul dokumentu s názvem '{0}'; soubor '{1}' nelze importovat.
+
+Import přerušen.</value>
+  </data>
+  <data name="ImportCommand_BinaryAndComponentDoNotExist" xml:space="preserve">
+    <value>Pro soubor '{0}' chybí požadované binární soubor(y) '{1}' a cílová komponenta '{2}' ještě neexistuje.
+
+Import přerušen.</value>
+  </data>
+  <data name="ImportCommand_BinaryDoesNotExist" xml:space="preserve">
+    <value>U souboru '{0}' chybí požadované binární soubory '{1}'.
+
+Import přerušen.</value>
+  </data>
+  <data name="ComponentType_ClassModule" xml:space="preserve">
+    <value>Modul Třídy</value>
+  </data>
+  <data name="ComponentType_ComComponent" xml:space="preserve">
+    <value>COM komponenta</value>
+  </data>
+  <data name="ComponentType_DocObject" xml:space="preserve">
+    <value>Objekt Dokumentu</value>
+  </data>
+  <data name="ComponentType_Document" xml:space="preserve">
+    <value>Modul Dokumentu</value>
+  </data>
+  <data name="ComponentType_MDIForm" xml:space="preserve">
+    <value>MDI Formulář</value>
+  </data>
+  <data name="ComponentType_PropPage" xml:space="preserve">
+    <value>Stránka Vlastností</value>
+  </data>
+  <data name="ComponentType_RelatedDocument" xml:space="preserve">
+    <value>Související Dokument</value>
+  </data>
+  <data name="ComponentType_ResFile" xml:space="preserve">
+    <value>Soubor Prostředků</value>
+  </data>
+  <data name="ComponentType_StandardModule" xml:space="preserve">
+    <value>Standardní Modul</value>
+  </data>
+  <data name="ComponentType_Undefined" xml:space="preserve">
+    <value>Nedefinováno</value>
+  </data>
+  <data name="ComponentType_UserForm" xml:space="preserve">
+    <value>UserForm</value>
+  </data>
+  <data name="ComponentType_UserControl" xml:space="preserve">
+    <value>Uživatelský Control</value>
   </data>
 </root>

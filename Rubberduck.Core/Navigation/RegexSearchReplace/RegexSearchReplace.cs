@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Antlr4.Runtime;
-using Rubberduck.Common;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -16,14 +15,14 @@ namespace Rubberduck.Navigation.RegexSearchReplace
     public class RegexSearchReplace : IRegexSearchReplace
     {
         private readonly IVBE _vbe;
-        private readonly IParseCoordinator _parser;
         private readonly ISelectionService _selectionService;
+        private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
 
-        public RegexSearchReplace(IVBE vbe, IParseCoordinator parser, ISelectionService selectionService)
+        public RegexSearchReplace(IVBE vbe, ISelectionService selectionService, ISelectedDeclarationProvider selectedDeclarationProvider)
         {
             _vbe = vbe;
-            _parser = parser;
             _selectionService = selectionService;
+            _selectedDeclarationProvider = selectedDeclarationProvider;
             _search = new Dictionary<RegexSearchReplaceScope, Func<string, IEnumerable<RegexSearchResult>>>
             {
                 { RegexSearchReplaceScope.Selection, SearchSelection},
@@ -81,13 +80,71 @@ namespace Rubberduck.Navigation.RegexSearchReplace
             // VBA uses 1-based indexing
             for (var i = 1; i <= module.CountOfLines; i++)
             {
-                var matches =
-                    Regex.Matches(module.GetLines(i, 1), searchPattern)
-                        .OfType<Match>()
+                var codeLine = module.GetLines(i, 1);
+                var matches = LineMatches(codeLine, searchPattern)
                         .Select(m => new RegexSearchResult(m, module, i));
 
                 results.AddRange(matches);
             }
+            return results;
+        }
+
+        private IEnumerable<Match> LineMatches(string line, string searchPattern)
+        {
+            return Regex.Matches(line, searchPattern)
+                .OfType<Match>();
+        }
+
+        private IEnumerable<Match> LineMatches(string line, int startColumn, int? endColumn, string searchPattern)
+        {
+            var shortenedLine = endColumn.HasValue 
+                ? line.Substring(startColumn - 1, endColumn.Value - startColumn + 1)
+                : line.Substring(startColumn - 1);
+            return LineMatches(shortenedLine, searchPattern);
+        }
+
+        private IEnumerable<RegexSearchResult> GetResultsFromModule(ICodeModule module, string searchPattern, Selection selection)
+        {
+            var startLine = selection.StartLine > 1
+                ? selection.StartLine
+                : 1;
+
+            var moduleLines = module.CountOfLines;
+            var stopLine = selection.EndLine < moduleLines
+                ? selection.EndLine
+                : moduleLines;
+
+            if (startLine > stopLine)
+            {
+                return new List<RegexSearchResult>();
+            }
+
+            if (startLine == stopLine)
+            {
+                return LineMatches(module.GetLines(startLine, 1), selection.StartColumn, null, searchPattern)
+                    .Select(m => new RegexSearchResult(m, module, startLine, selection.StartColumn - 1))
+                    .ToList();
+            }
+
+            var results = new List<RegexSearchResult>();
+
+            var firstLineMatches = LineMatches(module.GetLines(startLine, 1), selection.StartColumn, selection.EndColumn, searchPattern)
+                .Select(m => new RegexSearchResult(m, module, startLine));
+            results.AddRange(firstLineMatches);
+
+            for (var lineIndex = startLine + 1; lineIndex < stopLine; lineIndex++)
+            {
+                var codeLine = module.GetLines(lineIndex, 1);
+                var matches = LineMatches(codeLine, searchPattern)
+                    .Select(m => new RegexSearchResult(m, module, lineIndex));
+
+                results.AddRange(matches);
+            }
+
+            var lastLineMatches = LineMatches(module.GetLines(stopLine, 1), 1, selection.EndColumn, searchPattern)
+                .Select(m => new RegexSearchResult(m, module, stopLine));
+            results.AddRange(lastLineMatches);
+
             return results;
         }
 
@@ -96,7 +153,7 @@ namespace Rubberduck.Navigation.RegexSearchReplace
             _selectionService.TrySetActiveSelection(item.Module.QualifiedModuleName, item.Selection);
         }
 
-        private List<RegexSearchResult> SearchSelection(string searchPattern)
+        private IEnumerable<RegexSearchResult> SearchSelection(string searchPattern)
         {
             using (var pane = _vbe.ActiveCodePane)
             {
@@ -107,25 +164,31 @@ namespace Rubberduck.Navigation.RegexSearchReplace
 
                 using (var module = pane.CodeModule)
                 {
-                    var results = GetResultsFromModule(module, searchPattern);
-                    return results.Where(r => pane.Selection.Contains(r.Selection)).ToList();
+                    return GetResultsFromModule(module, searchPattern, pane.Selection);
                 }
             }
         }
 
-        private List<RegexSearchResult> SearchCurrentBlock(string searchPattern)
+        private IEnumerable<RegexSearchResult> SearchCurrentBlock(string searchPattern)
         {
-            var declarationTypes = new[]
-                    {
-                        DeclarationType.Event,
-                        DeclarationType.Function,
-                        DeclarationType.Procedure,
-                        DeclarationType.PropertyGet,
-                        DeclarationType.PropertyLet,
-                        DeclarationType.PropertySet
-                    };
+            var activeSelection = _selectionService.ActiveSelection();
+            if (!activeSelection.HasValue)
+            {
+                return new List<RegexSearchResult>();
+            }
+            
+            var block = _selectedDeclarationProvider
+                .SelectedMember(activeSelection.Value)
+                ?.Context
+                .GetSmallestDescendentContainingSelection<VBAParser.BlockContext>(activeSelection.Value.Selection);
 
-            var state = _parser.State;
+            if (block == null)
+            {
+                return new List<RegexSearchResult>();
+            }
+
+            var blockSelection = block.GetSelection();
+
             using (var pane = _vbe.ActiveCodePane)
             {
                 if (pane == null || pane.IsWrappingNullReference)
@@ -135,23 +198,8 @@ namespace Rubberduck.Navigation.RegexSearchReplace
 
                 using (var module = pane.CodeModule)
                 {
-                    var results = GetResultsFromModule(module, searchPattern);
-
-                    var qualifiedSelection = pane.GetQualifiedSelection();
-
-                    if (!qualifiedSelection.HasValue)
-                    {
-                        return new List<RegexSearchResult>();
-                    }
-
-                    var block = (ParserRuleContext)state.AllDeclarations
-                        .FindTarget(qualifiedSelection.Value, declarationTypes)
-                        .Context
-                        .Parent;
-                    var selection = new Selection(block.Start.Line, block.Start.Column, block.Stop.Line,
-                        block.Stop.Column);
-
-                    return results.Where(r => selection.Contains(r.Selection)).ToList();
+                    //FIXME: This is a catastrophe waiting to happen since the module, which will get disposed, is saved on the result.
+                    return GetResultsFromModule(module, searchPattern, blockSelection);
                 }
             }
         }

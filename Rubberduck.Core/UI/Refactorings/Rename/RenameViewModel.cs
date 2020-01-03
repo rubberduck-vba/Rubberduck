@@ -8,6 +8,8 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.Resources;
+using Rubberduck.Common;
+using Rubberduck.Refactorings.Common;
 
 namespace Rubberduck.UI.Refactorings.Rename
 {
@@ -57,25 +59,21 @@ namespace Rubberduck.UI.Refactorings.Rename
         {
             get
             {
-                if (Target == null)
+                if (Target == null) { return false; }
+
+                if (VBAIdentifierValidator.IsValidIdentifier(NewName, Target.DeclarationType))
                 {
-                    return false;
+                    return !NewName.Equals(Target.IdentifierName, StringComparison.InvariantCultureIgnoreCase);
                 }
 
-                var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
-
-                return !(NewName.Equals(Target.IdentifierName, StringComparison.InvariantCultureIgnoreCase)) &&
-                       char.IsLetter(NewName.FirstOrDefault()) &&
-                       !tokenValues.Contains(NewName, StringComparer.InvariantCultureIgnoreCase) &&
-                       !NewName.Any(c => !char.IsLetterOrDigit(c) && c != '_') &&
-                       NewName.Length <= (Target.DeclarationType.HasFlag(DeclarationType.Module) ? Declaration.MaxModuleNameLength : Declaration.MaxMemberNameLength);
+                return false;
             }
         }
 
         protected override void DialogOk()
         {
             if (Target == null
-                || (DeclarationsWithConflictingName(Model.NewName, Model.Target).Any()
+                || (_declarationFinderProvider.DeclarationFinder.FindNewDeclarationNameConflicts(NewName, Model.Target).Any()
                     && !UserConfirmsToProceedWithConflictingName(Model.NewName, Model.Target)))
             {
                 base.DialogCancel();
@@ -84,11 +82,6 @@ namespace Rubberduck.UI.Refactorings.Rename
             {
                 base.DialogOk();
             }
-        }
-
-        private IEnumerable<Declaration> DeclarationsWithConflictingName(string newName, Declaration target)
-        {
-            return _declarationFinderProvider.DeclarationFinder.FindNewDeclarationNameConflicts(newName, target);
         }
 
         private bool UserConfirmsToProceedWithConflictingName(string newName, Declaration target)

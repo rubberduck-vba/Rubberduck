@@ -5,6 +5,33 @@ using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Removes a comment.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="ObsoleteCommentSyntaxInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     Rem does something
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class RemoveCommentQuickFix : QuickFixBase
     {
         public RemoveCommentQuickFix()
@@ -17,7 +44,7 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.Remove(result.Context);
         }
 
-        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.RemoveObsoleteStatementQuickFix;
+        public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.RemoveCommentQuickFix;
 
         public override bool CanFixInProcedure => true;
         public override bool CanFixInModule => true;

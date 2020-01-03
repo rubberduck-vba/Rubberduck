@@ -1,15 +1,15 @@
-﻿using System.Linq;
-using System.Threading;
+﻿using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class ExcelMemberMayReturnNothingInspectionTests
+    public class ExcelMemberMayReturnNothingInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
@@ -22,15 +22,7 @@ namespace RubberduckTests.Inspections
     foo = ws.UsedRange.Find(""foo"").Row
 End Sub
 ";
-
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-
-                var inspection = new ExcelMemberMayReturnNothingInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResults(inputCode).Count());
         }
 
         [Test]
@@ -46,14 +38,7 @@ End Sub
 End Sub
 ";
 
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-
-                var inspection = new ExcelMemberMayReturnNothingInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, InspectionResults(inputCode).Count());
         }
 
         [Test]
@@ -69,14 +54,7 @@ End Sub
 End Sub
 ";
 
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-
-                var inspection = new ExcelMemberMayReturnNothingInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, InspectionResults(inputCode).Count());
         }
 
         [Test]
@@ -93,14 +71,7 @@ End Sub
 End Sub
 ";
 
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-
-                var inspection = new ExcelMemberMayReturnNothingInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, InspectionResults(inputCode).Count());
         }
 
         [Test]
@@ -119,14 +90,7 @@ End Sub
 End Sub
 ";
 
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-
-                var inspection = new ExcelMemberMayReturnNothingInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+            Assert.AreEqual(0, InspectionResults(inputCode).Count());
         }
 
         [Test]
@@ -143,14 +107,7 @@ End Sub
 End Sub
 ";
 
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-
-                var inspection = new ExcelMemberMayReturnNothingInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResults(inputCode).Count());
         }
 
         [Test]
@@ -169,14 +126,7 @@ End Sub
 End Sub
 ";
 
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-
-                var inspection = new ExcelMemberMayReturnNothingInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResults(inputCode).Count());
         }
 
         [Test]
@@ -195,14 +145,7 @@ End Sub
 End Sub
 ";
 
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-
-                var inspection = new ExcelMemberMayReturnNothingInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResults(inputCode).Count());
         }
 
         [Test]
@@ -221,14 +164,7 @@ End Sub
 End Sub
 ";
 
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-
-                var inspection = new ExcelMemberMayReturnNothingInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResults(inputCode).Count());
         }
 
         [Test]
@@ -245,14 +181,7 @@ End Sub
 End Sub
 ";
 
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-
-                var inspection = new ExcelMemberMayReturnNothingInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResults(inputCode).Count());
         }
 
         [Test]
@@ -269,14 +198,7 @@ End Sub
 End Sub
 ";
 
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-
-                var inspection = new ExcelMemberMayReturnNothingInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResults(inputCode).Count());
         }
 
         [Test]
@@ -295,27 +217,15 @@ End Sub
 End Sub
 ";
 
-            using (var state = ArrangeParserAndParse(inputCode))
-            {
-
-                var inspection = new ExcelMemberMayReturnNothingInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(1, InspectionResults(inputCode).Count());
         }
 
-        private static RubberduckParserState ArrangeParserAndParse(string inputCode)
+        private IEnumerable<IInspectionResult> InspectionResults(string inputCode)
+            => InspectionResultsForModules(("Module1", inputCode, ComponentType.StandardModule), "Excel");
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("Module1", ComponentType.StandardModule, inputCode)
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
-                .Build();
-
-            var vbe = builder.AddProject(project).Build();
-
-            return MockParser.CreateAndParse(vbe.Object); ;
+            return new ExcelMemberMayReturnNothingInspection(state);
         }
     }
 }

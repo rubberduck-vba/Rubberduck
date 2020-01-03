@@ -2,11 +2,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Inspections.Results;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Inspections.Concrete
@@ -58,40 +61,19 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            var declarations = UserDeclarations.ToList();
-
             var classes = State.DeclarationFinder.UserDeclarations(DeclarationType.ClassModule)
                 .Concat(State.DeclarationFinder.UserDeclarations(DeclarationType.Document))
                 .ToList(); 
             var modules = State.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule).ToList();
 
-            var handlers = State.DeclarationFinder.UserDeclarations(DeclarationType.Control)
-                .SelectMany(control => declarations.FindEventHandlers(control)).ToList();
+            var handlers = State.DeclarationFinder.FindEventHandlers().ToHashSet();
 
-            var builtInHandlers = State.DeclarationFinder.FindEventHandlers();
-            handlers.AddRange(builtInHandlers);
+            var interfaceMembers = State.DeclarationFinder.FindAllInterfaceMembers().ToHashSet();
+            var implementingMembers = State.DeclarationFinder.FindAllInterfaceImplementingMembers().ToHashSet();
 
-            var withEventFields = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Where(item => item.IsWithEvents).ToList();
-            var withHanders = withEventFields
-                .SelectMany(field => State.DeclarationFinder.FindHandlersForWithEventsField(field))
+            var items = State.AllUserDeclarations
+                .Where(item => !IsIgnoredDeclaration(item, interfaceMembers, implementingMembers, handlers, classes, modules))
                 .ToList();
-
-            handlers.AddRange(withHanders);
-
-            var forms = State.DeclarationFinder.UserDeclarations(DeclarationType.ClassModule)
-                .Where(item => item.QualifiedName.QualifiedModuleName.ComponentType == ComponentType.UserForm)
-                .ToList();
-
-            if (forms.Any())
-            {
-                handlers.AddRange(forms.SelectMany(form => State.FindFormEventHandlers(form)));
-            }
-
-            var interfaceMembers = State.DeclarationFinder.FindAllInterfaceMembers().ToList();
-            var implementingMembers = State.DeclarationFinder.FindAllInterfaceImplementingMembers().ToList();
-
-            var items = declarations
-                .Where(item => !IsIgnoredDeclaration(item, interfaceMembers, implementingMembers, handlers, classes, modules)).ToList();
             var issues = items.Select(issue => new DeclarationInspectionResult(this,
                                                                     string.Format(InspectionResults.IdentifierNotUsedInspection, issue.DeclarationType.ToLocalizedString(), issue.IdentifierName),
                                                                     issue));

@@ -5,6 +5,36 @@ using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Removes 'Option Base 0' statement from a module, making it implicit (0 being the default implicit lower bound for implicitly-sized arrays).
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="RedundantOptionInspection" />
+    /// </inspections>
+    /// <canfix procedure="false" module="false" project="false" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Option Explicit
+    /// Option Base 0
+    /// 
+    /// Public Sub DoSomething()
+    ///     Dim values(10) ' implicit lower bound is 0
+    ///     Debug.Print LBound(values), UBound(values)
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     Dim values(10) ' implicit lower bound is 0
+    ///     Debug.Print LBound(values), UBound(values)
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class RemoveOptionBaseStatementQuickFix : QuickFixBase
     {
         public RemoveOptionBaseStatementQuickFix()

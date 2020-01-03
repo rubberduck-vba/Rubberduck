@@ -16,9 +16,7 @@ namespace Rubberduck.Parsing.ComReflection
 {
     [DataContract]
     [KnownType(typeof(ComTypeName))]
-#if DEBUG
     [DebuggerDisplay("{" + nameof(DeclarationName) + "}")]
-#endif
     public class ComParameter
     {
         public static ComParameter Void = new ComParameter { _typeName = new ComTypeName(null, string.Empty) };
@@ -26,18 +24,7 @@ namespace Rubberduck.Parsing.ComReflection
         [DataMember(IsRequired = true)]
         public string Name { get; private set; }
 
-#if DEBUG
-        // ReSharper disable once UseStringInterpolation
-        public string DeclarationName => string.Format("{0}{1} {2} As {3}{4}{5}",
-            IsOptional ? "Optional " : string.Empty,
-            IsByRef ? "ByRef" : "ByVal",
-            Name,
-            TypeName,
-            IsOptional && DefaultValue != null ? " = " : string.Empty,
-            IsOptional && DefaultValue != null ?
-                _typeName.IsEnumMember ? DefaultAsEnum : DefaultValue
-                : string.Empty);
-#endif
+        public string DeclarationName => $"{(IsOptional ? "Optional " : string.Empty)}{(IsByRef ? "ByRef" : "ByVal")} {Name} As {TypeName}{(IsOptional && DefaultValue != null ? " = " : string.Empty)}{(IsOptional && DefaultValue != null ? _typeName.IsEnumMember ? DefaultAsEnum : DefaultValue : string.Empty)}";
 
         [DataMember(IsRequired = true)]
         public bool IsArray { get; private set; }
@@ -73,7 +60,7 @@ namespace Rubberduck.Parsing.ComReflection
 
         [DataMember(IsRequired = true)]
         private ComTypeName _typeName;
-        public string TypeName => IsArray ? $"{_typeName.Name}()" : _typeName.Name;
+        public string TypeName => _typeName.Name;
 
         [DataMember(IsRequired = true)]
         ComMember Parent { get; set; }

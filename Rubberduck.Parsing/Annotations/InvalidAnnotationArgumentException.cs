@@ -7,7 +7,6 @@ namespace Rubberduck.Parsing.Annotations
     {
         public InvalidAnnotationArgumentException(string message)
             : base(message)
-        {
-        }
+        { }
     }
 }

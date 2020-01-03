@@ -9,6 +9,35 @@ using Rubberduck.Parsing.VBA.Parsing;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Removes a hidden attribute, in order to maintain consistency between hidden attributes and (missing) annotation comments.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="MissingModuleAnnotationInspection" />
+    /// <inspection name="MissingMemberAnnotationInspection" />
+    /// </inspections>
+    /// <canfix procedure="false" module="false" project="false" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    /// Attribute VB_UserMemId = 0
+    /// 
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    /// 
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public class RemoveAttributeQuickFix : QuickFixBase
     {
         private readonly IAttributesUpdater _attributesUpdater;

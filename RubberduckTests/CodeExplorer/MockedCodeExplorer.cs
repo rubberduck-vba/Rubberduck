@@ -12,18 +12,19 @@ using Rubberduck.Settings;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer.Commands;
-using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.SettingsProvider;
 using Rubberduck.Interaction;
-using Rubberduck.UI.CodeExplorer;
-using Rubberduck.UI.UnitTesting.Commands;
+using Rubberduck.UI.Command.ComCommands;
+using Rubberduck.UI.UnitTesting.ComCommands;
 using Rubberduck.UnitTesting;
 using Rubberduck.UnitTesting.CodeGeneration;
 using Rubberduck.UnitTesting.Settings;
+using Rubberduck.VBEditor.Events;
+using Rubberduck.UI.CodeExplorer;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SourceCodeHandling;
@@ -88,7 +89,7 @@ namespace RubberduckTests.CodeExplorer
             VbComponent = project.MockComponents.First();
             VbProject = project.Build();
             Vbe = builder.AddProject(VbProject).Build();
-
+            VbeEvents = MockVbeEvents.CreateMockVbeEvents(Vbe);
             ProjectsRepository = new Mock<IProjectsRepository>();
             ProjectsRepository.Setup(x => x.Project(It.IsAny<string>())).Returns(VbProject.Object);
             ProjectsRepository.Setup(x => x.Component(It.IsAny<QualifiedModuleName>())).Returns(VbComponent.Object);
@@ -125,7 +126,7 @@ namespace RubberduckTests.CodeExplorer
             VbComponent = project.MockComponents.First();
             VbProject = project.Build();
             Vbe = builder.AddProject(VbProject).Build();
-
+            VbeEvents = MockVbeEvents.CreateMockVbeEvents(Vbe);
             ProjectsRepository = new Mock<IProjectsRepository>();
             ProjectsRepository.Setup(x => x.Project(It.IsAny<string>())).Returns(VbProject.Object);
             ProjectsRepository.Setup(x => x.Component(It.IsAny<QualifiedModuleName>())).Returns(VbComponent.Object);
@@ -135,20 +136,54 @@ namespace RubberduckTests.CodeExplorer
             VbProject.SetupGet(m => m.VBComponents.Count).Returns(componentTypes.Count);
         }
 
+        public MockedCodeExplorer(
+            ProjectType projectType,
+            params (string componentName, ComponentType componentTypes, string code)[] modules) 
+            : this()
+        {
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected, projectType);
+
+            for (var index = 0; index < modules.Length; index++)
+            {
+                var (name, componentType, code) = modules[index];
+                if (componentType == ComponentType.UserForm)
+                {
+                    project.MockUserFormBuilder(name, code).AddFormToProjectBuilder();
+                }
+                else
+                {
+                    project.AddComponent(name, componentType, code);
+                }
+            }
+
+            VbComponents = project.MockVBComponents;
+            VbComponent = project.MockComponents.First();
+            VbProject = project.Build();
+            Vbe = builder.AddProject(VbProject).Build();
+            VbeEvents = MockVbeEvents.CreateMockVbeEvents(Vbe);
+            ProjectsRepository = new Mock<IProjectsRepository>();
+            ProjectsRepository.Setup(x => x.Project(It.IsAny<string>())).Returns(VbProject.Object);
+            ProjectsRepository.Setup(x => x.Component(It.IsAny<QualifiedModuleName>())).Returns(VbComponent.Object);
+
+            SetupViewModelAndParse();
+        }
+
         private void SetupViewModelAndParse()
         {
-            var parser = MockParser.Create(Vbe.Object, null, MockVbeEvents.CreateMockVbeEvents(Vbe));
+            var vbeEvents = MockVbeEvents.CreateMockVbeEvents(Vbe);
+            var parser = MockParser.Create(Vbe.Object, null, vbeEvents);
             State = parser.State;
 
             var exportCommand = new ExportCommand(BrowserFactory.Object, MessageBox.Object, State.ProjectsProvider, Vbe.Object);
-            var removeCommand = new RemoveCommand(exportCommand, ProjectsRepository.Object, MessageBox.Object, Vbe.Object);
+            var removeCommand = new RemoveCommand(exportCommand, ProjectsRepository.Object, MessageBox.Object, Vbe.Object, vbeEvents.Object);
 
             ViewModel = new CodeExplorerViewModel(State, removeCommand,
                 _generalSettingsProvider.Object,
                 _windowSettingsProvider.Object,
                 _uiDispatcher.Object, Vbe.Object,
                 null,
-                new CodeExplorerSyncProvider(Vbe.Object, State));
+                new CodeExplorerSyncProvider(Vbe.Object, State, VbeEvents.Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error)
@@ -159,6 +194,7 @@ namespace RubberduckTests.CodeExplorer
 
         public RubberduckParserState State { get; set; }
         public Mock<IVBE> Vbe { get; }
+        public Mock<IVbeEvents> VbeEvents { get; }
         public CodeExplorerViewModel ViewModel { get; set; }
         public Mock<IVBProject> VbProject { get; }
         public Mock<IVBComponents> VbComponents { get; }
@@ -174,7 +210,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddStdModuleCommand()
         {
-            ViewModel.AddStdModuleCommand = new AddStdModuleCommand(AddComponentService());
+            ViewModel.AddStdModuleCommand = new AddStdModuleCommand(AddComponentService(), VbeEvents.Object);
             return this;
         }
 
@@ -198,7 +234,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddClassModuleCommand()
         {
-            ViewModel.AddClassModuleCommand = new AddClassModuleCommand(AddComponentService());
+            ViewModel.AddClassModuleCommand = new AddClassModuleCommand(AddComponentService(), VbeEvents.Object);
             return this;
         }
 
@@ -213,7 +249,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddUserFormCommand()
         {
-            ViewModel.AddUserFormCommand = new AddUserFormCommand(AddComponentService());
+            ViewModel.AddUserFormCommand = new AddUserFormCommand(AddComponentService(), VbeEvents.Object);
             return this;
         }
 
@@ -228,7 +264,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddVbFormCommand()
         {
-            ViewModel.AddVBFormCommand = new AddVBFormCommand(AddComponentService());
+            ViewModel.AddVBFormCommand = new AddVBFormCommand(AddComponentService(), VbeEvents.Object);
             return this;
         }
 
@@ -243,7 +279,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddMdiFormCommand()
         {
-            ViewModel.AddMDIFormCommand = new AddMDIFormCommand(AddComponentService());
+            ViewModel.AddMDIFormCommand = new AddMDIFormCommand(AddComponentService(), VbeEvents.Object);
             return this;
         }
 
@@ -258,7 +294,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddUserControlCommand()
         {
-            ViewModel.AddUserControlCommand = new AddUserControlCommand(AddComponentService());
+            ViewModel.AddUserControlCommand = new AddUserControlCommand(AddComponentService(), VbeEvents.Object);
             return this;
         }
 
@@ -273,7 +309,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddPropertyPageCommand()
         {
-            ViewModel.AddPropertyPageCommand = new AddPropertyPageCommand(AddComponentService());
+            ViewModel.AddPropertyPageCommand = new AddPropertyPageCommand(AddComponentService(), VbeEvents.Object);
             return this;
         }
 
@@ -288,7 +324,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddUserDocumentCommand()
         {
-            ViewModel.AddUserDocumentCommand = new AddUserDocumentCommand(AddComponentService());
+            ViewModel.AddUserDocumentCommand = new AddUserDocumentCommand(AddComponentService(), VbeEvents.Object);
             return this;
         }
 
@@ -305,7 +341,7 @@ namespace RubberduckTests.CodeExplorer
         {
             var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
             var codeGenerator = new TestCodeGenerator(Vbe.Object, State, MessageBox.Object, _interaction.Object, _unitTestSettingsProvider.Object, indenter, null);
-            ViewModel.AddTestModuleCommand = new AddTestComponentCommand(Vbe.Object, State, codeGenerator);
+            ViewModel.AddTestModuleCommand = new AddTestComponentCommand(Vbe.Object, State, codeGenerator, VbeEvents.Object);
             return this;
         }
 
@@ -321,7 +357,7 @@ namespace RubberduckTests.CodeExplorer
         public MockedCodeExplorer ImplementAddTestModuleWithStubsCommand()
         {
             ImplementAddTestModuleCommand();
-            ViewModel.AddTestModuleWithStubsCommand = new AddTestModuleWithStubsCommand(Vbe.Object, ViewModel.AddTestModuleCommand);
+            ViewModel.AddTestModuleWithStubsCommand = new AddTestModuleWithStubsCommand(Vbe.Object, ViewModel.AddTestModuleCommand, VbeEvents.Object);
             return this;
         }
 
@@ -334,10 +370,73 @@ namespace RubberduckTests.CodeExplorer
             ViewModel.AddTestModuleWithStubsCommand.Execute(ViewModel.SelectedItem);
         }
 
-        public void ExecuteImportCommand()
+        public void ExecuteImportCommand(
+            Func<string, string> fileNameToModuleNameConverter = null,
+            Mock<IMessageBox> mockMessageBock = null,
+            IEnumerable<IRequiredBinaryFilesFromFileNameExtractor> binaryFileNameExtractors = null,
+            Mock<IFileExistenceChecker> fileChecker = null)
         {
-            ViewModel.ImportCommand = new ImportCommand(Vbe.Object, BrowserFactory.Object);
+            var messageBox = mockMessageBock?.Object ?? new Mock<IMessageBox>().Object;
+            var mockModuleNameExtractor = new Mock<IModuleNameFromFileExtractor>();
+            var fileNameConverter = fileNameToModuleNameConverter ?? ((fileName) => fileName);
+            mockModuleNameExtractor.Setup(m => m.ModuleName(It.IsAny<string>())).Returns((string filename) => fileNameConverter(filename));
+            var extractors = binaryFileNameExtractors ?? Enumerable.Empty<IRequiredBinaryFilesFromFileNameExtractor>();
+            var mockFileChecker = fileChecker;
+            if (mockFileChecker == null)
+            {
+                mockFileChecker = new Mock<IFileExistenceChecker>();
+                mockFileChecker.Setup(m => m.FileExists(It.IsAny<string>())).Returns(true);
+            }
+            ViewModel.ImportCommand = new ImportCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object, State, State, State.ProjectsProvider, mockModuleNameExtractor.Object, extractors, mockFileChecker.Object, messageBox);
             ViewModel.ImportCommand.Execute(ViewModel.SelectedItem);
+        }
+
+        public void ExecuteUpdateFromFileCommand(
+            Func<string, string> fileNameToModuleNameConverter, 
+            Mock<IMessageBox> mockMessageBox = null, 
+            IEnumerable<IRequiredBinaryFilesFromFileNameExtractor> binaryFileNameExtractors = null, 
+            Mock<IFileExistenceChecker> fileChecker = null)
+        {
+            var messageBox = mockMessageBox?.Object ?? new Mock<IMessageBox>().Object;
+            var mockModuleNameExtractor = new Mock<IModuleNameFromFileExtractor>();
+            mockModuleNameExtractor.Setup(m => m.ModuleName(It.IsAny<string>())).Returns((string filename) => fileNameToModuleNameConverter(filename));
+            var extractors = binaryFileNameExtractors ?? Enumerable.Empty<IRequiredBinaryFilesFromFileNameExtractor>();
+            var mockFileChecker = fileChecker;
+            if (mockFileChecker == null)
+            {
+                mockFileChecker = new Mock<IFileExistenceChecker>();
+                mockFileChecker.Setup(m => m.FileExists(It.IsAny<string>())).Returns(true);
+            }
+            ViewModel.UpdateFromFilesCommand = new UpdateFromFilesCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object, State, State, State.ProjectsProvider, mockModuleNameExtractor.Object, extractors, mockFileChecker.Object, messageBox);
+            ViewModel.UpdateFromFilesCommand.Execute(ViewModel.SelectedItem);
+        }
+
+        public void ExecuteReplaceProjectContentsFromFilesCommand(
+            Func<string, string> fileNameToModuleNameConverter = null,
+            Mock<IMessageBox> mockMessageBock = null,
+            IEnumerable<IRequiredBinaryFilesFromFileNameExtractor> binaryFileNameExtractors = null,
+            Mock<IFileExistenceChecker> fileChecker = null)
+        {
+            var messageBoxMock = mockMessageBock;
+            if (messageBoxMock == null)
+            {
+                messageBoxMock = new Mock<IMessageBox>();
+                messageBoxMock
+                    .Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()))
+                    .Returns(true);
+            }
+            var mockModuleNameExtractor = new Mock<IModuleNameFromFileExtractor>();
+            var fileNameConverter = fileNameToModuleNameConverter ?? ((fileName) => fileName);
+            mockModuleNameExtractor.Setup(m => m.ModuleName(It.IsAny<string>())).Returns((string filename) => fileNameConverter(filename));
+            var extractors = binaryFileNameExtractors ?? Enumerable.Empty<IRequiredBinaryFilesFromFileNameExtractor>();
+            var mockFileChecker = fileChecker;
+            if (mockFileChecker == null)
+            {
+                mockFileChecker = new Mock<IFileExistenceChecker>();
+                mockFileChecker.Setup(m => m.FileExists(It.IsAny<string>())).Returns(true);
+            }
+            ViewModel.ReplaceProjectContentsFromFilesCommand = new ReplaceProjectContentsFromFilesCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object, State, State, State.ProjectsProvider, mockModuleNameExtractor.Object, extractors, mockFileChecker.Object, messageBoxMock.Object);
+            ViewModel.ReplaceProjectContentsFromFilesCommand.Execute(ViewModel.SelectedItem);
         }
 
         public void ExecuteExportAllCommand()
@@ -351,7 +450,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementExportAllCommand()
         {
-            ViewModel.ExportAllCommand = new ExportAllCommand(Vbe.Object, BrowserFactory.Object);
+            ViewModel.ExportAllCommand = new ExportAllCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object);
             return this;
         }
 
@@ -381,7 +480,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementOpenDesignerCommand()
         {
-            ViewModel.OpenDesignerCommand = new OpenDesignerCommand(State.ProjectsProvider, Vbe.Object);
+            ViewModel.OpenDesignerCommand = new OpenDesignerCommand(State.ProjectsProvider, Vbe.Object, VbeEvents.Object);
             return this;
         }
 
@@ -396,7 +495,16 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementIndenterCommand()
         {
-            ViewModel.IndenterCommand = new IndentCommand(State, new Indenter(Vbe.Object, () => IndenterSettingsTests.GetMockIndenterSettings()), null);
+            ViewModel.IndenterCommand = new IndentCommand(State, new Indenter(Vbe.Object, () => IndenterSettingsTests.GetMockIndenterSettings()), null, VbeEvents.Object);
+            return this;
+        }
+
+        public MockedCodeExplorer ImplementExtractInterfaceCommand()
+        {
+            ViewModel.CodeExplorerExtractInterfaceCommand = new CodeExplorerExtractInterfaceCommand(
+                new Rubberduck.Refactorings.ExtractInterface.ExtractInterfaceRefactoring(
+                    State, State, null, null, null, _uiDispatcher.Object),
+                State, null, VbeEvents.Object);
             return this;
         }
 

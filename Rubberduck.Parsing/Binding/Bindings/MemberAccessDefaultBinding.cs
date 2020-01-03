@@ -34,9 +34,32 @@ namespace Rubberduck.Parsing.Binding
                   parent,
                   expression,
                   null,
-                  Identifier.GetName(expression.unrestrictedIdentifier()),
+                  expression.unrestrictedIdentifier().GetText(),
                   statementContext,
                   unrestrictedNameContext)
+        {
+            _lExpressionBinding = lExpressionBinding;
+        }
+
+        public MemberAccessDefaultBinding(
+            DeclarationFinder declarationFinder,
+            Declaration project,
+            Declaration module,
+            Declaration parent,
+            VBAParser.ObjectPrintExprContext expression,
+            IExpressionBinding lExpressionBinding,
+            StatementResolutionContext statementContext,
+            ParserRuleContext unrestrictedNameContext)
+            : this(
+                declarationFinder,
+                project,
+                module,
+                parent,
+                expression,
+                null,
+                Tokens.Print,
+                statementContext,
+                unrestrictedNameContext)
         {
             _lExpressionBinding = lExpressionBinding;
         }

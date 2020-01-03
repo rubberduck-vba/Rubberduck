@@ -1,146 +1,50 @@
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Mocks;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class OptionBaseInspectionTests
+    public class OptionBaseInspectionTests : InspectionTestsBase
     {
-        [Test]
+        [TestCase("Option Base 1", 1)]
+        [TestCase("", 0)]
+        [TestCase("Option Base 0", 0)]
+        [TestCase("'@Ignore OptionBase\r\nOption Base 1", 0)]
         [Category("Inspections")]
-        public void OptionBaseOneSpecified_ReturnsResult()
+        public void OptionBaseInspection_VariousScenarios_StdModule(string inputCode, int expectedCount)
         {
-            const string inputCode = @"Option Base 1";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new OptionBaseInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+            Assert.AreEqual(expectedCount, InspectionResultsForStandardModule(inputCode).Count());
         }
 
-        [Test]
+        [TestCase("Option Base 1", "Option Base 1", 2)]
+        [TestCase("", "Option Base 1", 1)]
         [Category("Inspections")]
-        public void OptionBaseNotSpecified_DoesNotReturnResult()
+        public void OptionBaseInspection_VariousScenarios_Classes(string inputCode1, string inputCode2, int expectedCount)
         {
-            const string inputCode = @"";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var modules = new(string, string, ComponentType)[]
             {
-
-                var inspection = new OptionBaseInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void OptionBaseZeroSpecified_DoesNotReturnResult()
-        {
-            const string inputCode = @"Option Base 0";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new OptionBaseInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(0, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void OptionBaseOneSpecified_ReturnsMultipleResults()
-        {
-            const string inputCode = @"Option Base 1";
-
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode)
-                .AddComponent("Class2", ComponentType.ClassModule, inputCode)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new OptionBaseInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(2, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void OptionBaseOnePartiallySpecified_ReturnsResults()
-        {
-            const string inputCode1 = @"";
-            const string inputCode2 = @"Option Base 1";
-
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new OptionBaseInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void OptionBaseOneSpecified_Ignored_DoesNotReturnResult()
-        {
-            const string inputCode =
-                @"'@Ignore OptionBase
-Option Base 1";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new OptionBaseInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
+                ("Class1", inputCode1, ComponentType.ClassModule),
+                ("Class2", inputCode2, ComponentType.ClassModule),
+            };
+            Assert.AreEqual(expectedCount, InspectionResultsForModules(modules).Count());
         }
 
         [Test]
         [Category("Inspections")]
         public void InspectionName()
         {
-            const string inspectionName = "OptionBaseInspection";
             var inspection = new OptionBaseInspection(null);
 
-            Assert.AreEqual(inspectionName, inspection.Name);
+            Assert.AreEqual(nameof(OptionBaseInspection), inspection.Name);
+        }
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
+        {
+            return new OptionBaseInspection(state);
         }
     }
 }

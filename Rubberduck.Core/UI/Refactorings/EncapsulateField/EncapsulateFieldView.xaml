@@ -118,7 +118,8 @@
                                              FontFamily="Courier New "
                                              ShowLineNumbers="False"
                                              HorizontalScrollBarVisibility="Auto"
-                                             VerticalScrollBarVisibility="Disabled"
+                                             VerticalScrollBarVisibility="Auto"
+                                             MinHeight="200"
                                              IsReadOnly="True"
                                              Text="{Binding PropertyPreview,Mode=OneWay}"/>
             </Expander>

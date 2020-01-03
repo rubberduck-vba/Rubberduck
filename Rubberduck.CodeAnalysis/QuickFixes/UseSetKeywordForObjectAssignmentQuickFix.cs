@@ -7,10 +7,40 @@ using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Introduces a 'Set' keyword for what appears to be a suspicious or malformed object reference assignment.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="ObjectVariableNotSetInspection" />
+    /// <inspection name="SuspiciousLetAssignmentInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     Dim c As VBA.Collection
+    ///     c = New VBA.Collection
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     Dim c As VBA.Collection
+    ///     Set c = New VBA.Collection
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class UseSetKeywordForObjectAssignmentQuickFix : QuickFixBase
     {
         public UseSetKeywordForObjectAssignmentQuickFix()
-            : base(typeof(ObjectVariableNotSetInspection))
+            : base(typeof(ObjectVariableNotSetInspection), typeof(SuspiciousLetAssignmentInspection))
         {}
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
@@ -18,13 +48,15 @@ namespace Rubberduck.Inspections.QuickFixes
             var rewriter = rewriteSession.CheckOutModuleRewriter(result.QualifiedSelection.QualifiedName);
             var letStmt = result.Context.GetAncestor<VBAParser.LetStmtContext>();
             var letToken = letStmt.LET();
+            var setToken = Tokens.Set;
             if (letToken != null)
             {
-                rewriter.Replace(letToken, "Set");
+                rewriter.Replace(letToken, setToken);
             }
             else
             {
-                rewriter.InsertBefore(letStmt.Start.TokenIndex, "Set ");
+                setToken += " ";
+                rewriter.InsertBefore(letStmt.Start.TokenIndex, setToken);
             }
         }
 

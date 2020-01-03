@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
@@ -9,7 +10,6 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
 {
     public class DebugDeclarations : ICustomDeclarationLoader
     {
-        public static Declaration DebugPrint;
         private readonly IDeclarationFinderProvider _finderProvider;
 
         public DebugDeclarations(IDeclarationFinderProvider finderProvider)
@@ -53,21 +53,11 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
         private List<Declaration> LoadDebugDeclarations(Declaration parentProject)
         {
             var debugModule = DebugModuleDeclaration(parentProject);
-            var debugClass = DebugClassDeclaration(parentProject); 
-            var debugObject = DebugObjectDeclaration(debugModule);
-            var debugAssert = DebugAssertDeclaration(debugClass);
-            var debugPrint = DebugPrintDeclaration(debugClass);
-
-            // Debug.Print has the same special syntax as the print and write statement.
-            // Because of that it is treated specially in the grammar and normally wouldn't be resolved.
-            // Since we still want it to be resolved we make it easier for the resolver to access the debug print
-            // declaration by exposing it in this way.
-            DebugPrint = debugPrint;
+            var debugAssert = DebugAssertDeclaration(debugModule);
+            var debugPrint = DebugPrintDeclaration(debugModule);
 
             return new List<Declaration> { 
                 debugModule,
-                debugClass,
-                debugObject,
                 debugAssert,
                 debugPrint
             };
@@ -77,11 +67,11 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
         private static ProceduralModuleDeclaration DebugModuleDeclaration(Declaration parentProject)
         {
             return new ProceduralModuleDeclaration(
-                new QualifiedMemberName(DebugModuleName(parentProject), "DebugModule"),
+                new QualifiedMemberName(DebugModuleName(parentProject), Tokens.Debug),
                 parentProject,
                 "DebugModule",
                 false,
-                new List<IAnnotation>(),
+                new List<IParseTreeAnnotation>(),
                 new Attributes());
 }
                 
@@ -90,78 +80,38 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 return new QualifiedModuleName(
                     parentProject.QualifiedName.QualifiedModuleName.ProjectName,
                     parentProject.QualifiedName.QualifiedModuleName.ProjectPath,
-                    "DebugModule");
+                    Tokens.Debug);
             }
 
-
-        private static ClassModuleDeclaration DebugClassDeclaration(Declaration parentProject)
+        private static SubroutineDeclaration DebugAssertDeclaration(ProceduralModuleDeclaration debugModule)
         {
-            return new ClassModuleDeclaration(
-                new QualifiedMemberName(DebugClassName(parentProject), "DebugClass"), 
-                parentProject, 
-                "DebugClass", 
-                false, 
-                new List<IAnnotation>(), 
-                new Attributes(), 
-                true);
-        }
-
-        private static QualifiedModuleName DebugClassName(Declaration parentProject)
-        {
-            return new QualifiedModuleName(
-                parentProject.QualifiedName.QualifiedModuleName.ProjectName,
-                parentProject.QualifiedName.QualifiedModuleName.ProjectPath,
-                "DebugClass");
-        }
-
-        private static Declaration DebugObjectDeclaration(ProceduralModuleDeclaration debugModule)
-        {
-            return new Declaration(
-                new QualifiedMemberName(debugModule.QualifiedName.QualifiedModuleName, "Debug"), 
+            return new SubroutineDeclaration(
+                new QualifiedMemberName(debugModule.QualifiedName.QualifiedModuleName, "Assert"),
+                debugModule,
                 debugModule, 
-                "Global", 
-                "DebugClass", 
-                null, 
-                true, 
-                false, 
-                Accessibility.Global, 
-                DeclarationType.Variable, 
-                false, 
-                null,
-                false,
-                new List<IAnnotation>(),
-                new Attributes());
-        }
-
-        private static SubroutineDeclaration DebugAssertDeclaration(ClassModuleDeclaration debugClass)
-        {
-            return new SubroutineDeclaration(
-                new QualifiedMemberName(debugClass.QualifiedName.QualifiedModuleName, "Assert"), 
-                debugClass, 
-                debugClass, 
                 null, 
                 Accessibility.Global, 
                 null,
                 null,
                 Selection.Home, 
                 false,
-                new List<IAnnotation>(), 
+                new List<IParseTreeAnnotation>(), 
                 new Attributes());
         }
 
-        private static SubroutineDeclaration DebugPrintDeclaration(ClassModuleDeclaration debugClass)
+        private static SubroutineDeclaration DebugPrintDeclaration(ProceduralModuleDeclaration debugModule)
         {
             return new SubroutineDeclaration(
-                new QualifiedMemberName(debugClass.QualifiedName.QualifiedModuleName, "Print"), 
-                debugClass, 
-                debugClass, 
+                new QualifiedMemberName(debugModule.QualifiedName.QualifiedModuleName, "Print"),
+                debugModule,
+                debugModule, 
                 null, 
                 Accessibility.Global, 
                 null, 
                 null,
                 Selection.Home, 
                 false,
-                new List<IAnnotation>(), 
+                new List<IParseTreeAnnotation>(), 
                 new Attributes());
         }
     }

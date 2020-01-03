@@ -48,21 +48,26 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var declarationsWithAttributeAnnotations = State.DeclarationFinder.AllUserDeclarations
-                .Where(declaration => declaration.Annotations.Any(annotation => annotation.AnnotationType.HasFlag(AnnotationType.Attribute)));
+                .Where(declaration => declaration.Annotations.Any(pta => pta.Annotation is IAttributeAnnotation)
+                    && (declaration.DeclarationType.HasFlag(DeclarationType.Module) 
+                        || declaration.AttributesPassContext != null));
             var results = new List<DeclarationInspectionResult>();
-            foreach (var declaration in declarationsWithAttributeAnnotations.Where(decl => decl.QualifiedModuleName.ComponentType != ComponentType.Document
-                                                                                                   && !decl.IsIgnoringInspectionResultFor(AnnotationName)))
+
+            // prefilter declarations to reduce searchspace
+            var interestingDeclarations = declarationsWithAttributeAnnotations.Where(decl => decl.QualifiedModuleName.ComponentType != ComponentType.Document
+                                                                                                   && !decl.IsIgnoringInspectionResultFor(AnnotationName));
+            foreach (var declaration in interestingDeclarations)
             {
-                foreach(var annotation in declaration.Annotations.OfType<IAttributeAnnotation>())
+                foreach (var annotationInstance in declaration.Annotations.Where(pta => pta.Annotation is IAttributeAnnotation))
                 {
-                    if (MissesCorrespondingAttribute(declaration, annotation))
+                    var annotation = (IAttributeAnnotation)annotationInstance.Annotation;
+                    if (MissesCorrespondingAttribute(declaration, annotationInstance))
                     {
-                        var description = string.Format(InspectionResults.MissingAttributeInspection, declaration.IdentifierName,
-                            annotation.AnnotationType.ToString());
+                        var description = string.Format(InspectionResults.MissingAttributeInspection, declaration.IdentifierName, annotation.Name);
 
                         var result = new DeclarationInspectionResult(this, description, declaration,
-                            new QualifiedContext(declaration.QualifiedModuleName, annotation.Context));
-                        result.Properties.Annotation = annotation;
+                            new QualifiedContext(declaration.QualifiedModuleName, annotationInstance.Context));
+                        result.Properties.Annotation = annotationInstance;
 
                         results.Add(result);
                     }
@@ -72,15 +77,20 @@ namespace Rubberduck.Inspections.Concrete
             return results;
         }
 
-        private static bool MissesCorrespondingAttribute(Declaration declaration, IAttributeAnnotation annotation)
+        private static bool MissesCorrespondingAttribute(Declaration declaration, IParseTreeAnnotation annotationInstance)
         {
-            if (string.IsNullOrEmpty(annotation.Attribute))
+            if (!(annotationInstance.Annotation is IAttributeAnnotation annotation))
+            {
+                return false;
+            }
+            var attribute = annotation.Attribute(annotationInstance);
+            if (string.IsNullOrEmpty(attribute))
             {
                 return false;
             }
             return declaration.DeclarationType.HasFlag(DeclarationType.Module)
-                ? !declaration.Attributes.HasAttributeFor(annotation)
-                : !declaration.Attributes.HasAttributeFor(annotation, declaration.IdentifierName);
+                ? !declaration.Attributes.HasAttributeFor(annotationInstance)
+                : !declaration.Attributes.HasAttributeFor(annotationInstance, declaration.IdentifierName);
         }
     }
 }

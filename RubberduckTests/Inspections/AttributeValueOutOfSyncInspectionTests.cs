@@ -1,16 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    public class AttributeValueOutOfSyncInspectionTests
+    public class AttributeValueOutOfSyncInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
@@ -218,20 +217,21 @@ End Sub";
 
             var inspectionResults = InspectionResults(inputCode);
             var inspectionResult = inspectionResults.First();
-            Assert.AreEqual(AnnotationType.MemberAttribute, inspectionResult.Properties.Annotation.AnnotationType);
-            Assert.AreEqual("VB_UserMemId", inspectionResult.Properties.Annotation.Attribute);
-            Assert.AreEqual("-4", inspectionResult.Properties.Annotation.AttributeValues[0]);
+
+            var pta = (IParseTreeAnnotation)inspectionResult.Properties.Annotation;
+
+            Assert.IsInstanceOf<MemberAttributeAnnotation>(pta.Annotation);
+            Assert.AreEqual("VB_UserMemId", inspectionResult.Properties.AttributeName);
+            Assert.AreEqual("-4", ((IAttributeAnnotation)pta.Annotation).AttributeValues(pta)[0]);
             Assert.AreEqual("40", inspectionResult.Properties.AttributeValues[0]);
         }
 
         private IEnumerable<IInspectionResult> InspectionResults(string inputCode, ComponentType componentType = ComponentType.StandardModule)
+            => InspectionResultsForModules(("TestComponent", inputCode, componentType));
+
+        protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, componentType, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new AttributeValueOutOfSyncInspection(state);
-                return inspection.GetInspectionResults(CancellationToken.None);
-            }
+            return new AttributeValueOutOfSyncInspection(state);
         }
     }
 }

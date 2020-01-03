@@ -12,16 +12,17 @@ namespace Rubberduck.AutoComplete.SelfClosingPairs
 {
     public class SelfClosingPairCompletionService
     {
-        /*
-         // note: this works... but the VBE makes an annoying DING! when the command isn't available.
-         // todo: implement our own intellisense, then uncomment this code.
-        private readonly IShowIntelliSenseCommand _showIntelliSense;
+        private readonly IShowQuickInfoCommand _showQuickInfo;
 
-        public SelfClosingPairCompletionService(IShowIntelliSenseCommand showIntelliSense)
+        public SelfClosingPairCompletionService(IShowQuickInfoCommand showQuickInfo)
         {
-            _showIntelliSense = showIntelliSense;
+            _showQuickInfo = showQuickInfo;
         }
-        */
+
+        public void ShowQuickInfo()
+        {
+            _showQuickInfo.Execute();
+        }
 
         public bool Execute(SelfClosingPair pair, CodeString original, char input, out CodeString result)
         {

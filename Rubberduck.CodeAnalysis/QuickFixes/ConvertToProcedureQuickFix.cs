@@ -11,6 +11,42 @@ using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Adjusts a Function procedure to be a Sub procedure. This operation may result in broken code.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="NonReturningFunctionInspection" />
+    /// <inspection name="FunctionReturnValueNotUsedInspection" />
+    /// </inspections>
+    /// <canfix procedure="false" module="true" project="false" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim value As Long
+    ///     GetValue value
+    ///     Debug.Print value
+    /// End Sub
+    /// 
+    /// Private Function GetValue(ByRef value As Long)
+    ///     value = 42
+    /// End Function
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim value As Long
+    ///     GetValue value
+    ///     Debug.Print value
+    /// End Sub
+    /// 
+    /// Private Sub GetValue(ByRef value As Long)
+    ///     value = 42
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class ConvertToProcedureQuickFix : QuickFixBase
     {
         public ConvertToProcedureQuickFix()
@@ -34,47 +70,87 @@ namespace Rubberduck.Inspections.QuickFixes
 
         private void ConvertFunction(IInspectionResult result, VBAParser.FunctionStmtContext functionContext, IModuleRewriter rewriter)
         {
+            RemoveAsTypeDeclaration(functionContext, rewriter);
+            RemoveTypeHint(result, functionContext, rewriter);
+
+            ConvertFunctionDeclaration(functionContext, rewriter);
+            ConvertExitFunctionStatements(functionContext, rewriter);
+
+            RemoveReturnStatements(result, rewriter);
+        }
+
+        private static void RemoveAsTypeDeclaration(ParserRuleContext functionContext, IModuleRewriter rewriter)
+        {
             var asTypeContext = functionContext.GetChild<VBAParser.AsTypeClauseContext>();
             if (asTypeContext != null)
             {
                 rewriter.Remove(asTypeContext);
-                rewriter.Remove(functionContext.children.ElementAt(functionContext.children.IndexOf(asTypeContext) - 1) as ParserRuleContext);
+                rewriter.Remove(
+                    functionContext.children.ElementAt(functionContext.children.IndexOf(asTypeContext) -
+                                                       1) as ParserRuleContext);
             }
+        }
 
+        private static void RemoveTypeHint(IInspectionResult result, ParserRuleContext functionContext, IModuleRewriter rewriter)
+        {
             if (result.Target.TypeHint != null)
             {
                 rewriter.Remove(functionContext.GetDescendent<VBAParser.TypeHintContext>());
             }
+        }
 
-            rewriter.Replace(functionContext.FUNCTION(), Tokens.Sub);
-            rewriter.Replace(functionContext.END_FUNCTION(), "End Sub");
-
+        private void RemoveReturnStatements(IInspectionResult result, IModuleRewriter rewriter)
+        {
             foreach (var returnStatement in GetReturnStatements(result.Target))
             {
                 rewriter.Remove(returnStatement);
             }
         }
 
+        private static void ConvertFunctionDeclaration(VBAParser.FunctionStmtContext functionContext, IModuleRewriter rewriter)
+        {
+            rewriter.Replace(functionContext.FUNCTION(), Tokens.Sub);
+            rewriter.Replace(functionContext.END_FUNCTION(), "End Sub");
+        }
+
+        private static void ConvertExitFunctionStatements(VBAParser.FunctionStmtContext context, IModuleRewriter rewriter)
+        {
+            var exitStatements = context.GetDescendents<VBAParser.ExitStmtContext>();
+            foreach (var exitStatement in exitStatements)
+            {
+                if (exitStatement.EXIT_FUNCTION() != null)
+                {
+                    rewriter.Replace(exitStatement, $"{Tokens.Exit} {Tokens.Sub}");
+                }
+            }
+        }
+
         private void ConvertPropertyGet(IInspectionResult result, VBAParser.PropertyGetStmtContext propertyGetContext, IModuleRewriter rewriter)
         {
-            var asTypeContext = propertyGetContext.GetChild<VBAParser.AsTypeClauseContext>();
-            if (asTypeContext != null)
-            {
-                rewriter.Remove(asTypeContext);
-                rewriter.Remove(propertyGetContext.children.ElementAt(propertyGetContext.children.IndexOf(asTypeContext) - 1) as ParserRuleContext);
-            }
+            RemoveAsTypeDeclaration(propertyGetContext, rewriter);
+            RemoveTypeHint(result, propertyGetContext, rewriter);
 
-            if (result.Target.TypeHint != null)
-            {
-                rewriter.Remove(propertyGetContext.GetDescendent<VBAParser.TypeHintContext>());
-            }
+            ConvertPropertyGetDeclaration(propertyGetContext, rewriter);
+            ConvertExitPropertyStatements(propertyGetContext, rewriter);
 
+            RemoveReturnStatements(result, rewriter);
+        }
+
+        private static void ConvertPropertyGetDeclaration(VBAParser.PropertyGetStmtContext propertyGetContext, IModuleRewriter rewriter)
+        {
             rewriter.Replace(propertyGetContext.PROPERTY_GET(), Tokens.Sub);
             rewriter.Replace(propertyGetContext.END_PROPERTY(), "End Sub");
+        }
 
-            foreach (var returnStatement in GetReturnStatements(result.Target))
+        private static void ConvertExitPropertyStatements(VBAParser.PropertyGetStmtContext context, IModuleRewriter rewriter)
+        {
+            var exitStatements = context.GetDescendents<VBAParser.ExitStmtContext>();
+            foreach (var exitStatement in exitStatements)
             {
-                rewriter.Remove(returnStatement);
+                if (exitStatement.EXIT_PROPERTY() != null)
+                {
+                    rewriter.Replace(exitStatement, $"{Tokens.Exit} {Tokens.Sub}");
+                }
             }
         }
 

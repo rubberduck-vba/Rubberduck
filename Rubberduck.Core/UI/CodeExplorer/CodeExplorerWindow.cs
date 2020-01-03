@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Windows.Forms;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Resources.CodeExplorer;
@@ -10,8 +9,8 @@ namespace Rubberduck.UI.CodeExplorer
     public sealed partial class CodeExplorerWindow : UserControl, IDockableUserControl
     {
         private const string ClassId = "C5318B59-172F-417C-88E3-B377CDA2D809";
-        string IDockableUserControl.ClassId { get { return ClassId; } }
-        string IDockableUserControl.Caption { get { return CodeExplorerUI.CodeExplorerDockablePresenter_Caption; } }
+        string IDockableUserControl.ClassId => ClassId;
+        string IDockableUserControl.Caption => CodeExplorerUI.CodeExplorerDockablePresenter_Caption;
 
         private CodeExplorerWindow()
         {
@@ -20,14 +19,9 @@ namespace Rubberduck.UI.CodeExplorer
 
         public CodeExplorerWindow(CodeExplorerViewModel viewModel) : this()
         {
-            _viewModel = viewModel;
-            codeExplorerControl1.DataContext = _viewModel;
+            ViewModel = viewModel;
+            codeExplorerControl1.DataContext = ViewModel;
         }
-
-        private readonly CodeExplorerViewModel _viewModel;
-        public CodeExplorerViewModel ViewModel
-        {
-            get { return _viewModel; }
-        }
+        public CodeExplorerViewModel ViewModel { get; }
     }
 }

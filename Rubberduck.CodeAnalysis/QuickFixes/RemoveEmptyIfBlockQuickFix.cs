@@ -10,6 +10,41 @@ using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Removes an empty conditional block by inverting the condition expression.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="EmptyIfBlockInspection" />
+    /// </inspections>
+    /// <canfix procedure="false" module="false" project="false" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     If Application.Calculation = xlCalculationManual Then
+    ///     Else
+    ///         Application.Calculation = xlCalculationManual
+    ///     End If
+    ///     '...
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     If Application.Calculation <> xlCalculationManual Then
+    ///     
+    ///         Application.Calculation = xlCalculationManual
+    ///     End If
+    ///     '...
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class RemoveEmptyIfBlockQuickFix : QuickFixBase
     {
         public RemoveEmptyIfBlockQuickFix()

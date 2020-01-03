@@ -9,9 +9,9 @@ using System.Linq;
 using System.Threading;
 using Rubberduck.VBEditor;
 using Antlr4.Runtime;
-using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using System;
 
 namespace RubberduckTests.Symbols
 {
@@ -445,6 +445,45 @@ End Sub
             Assert.AreEqual(isConflict, conflicts.Where(cf => cf.IdentifierName.Equals(nameToCheck)).Any(), ConflictMessage(isConflict, nameToCheck, conflicts));
         }
 
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/4969
+        private const string projectOneModuleName = "projectOneModule";
+        private const string projectTwoModuleName = "projectTwoModule";
+        [TestCase(projectOneModuleName, 0)]  //Duplicate module name found in a separate project
+        [TestCase(projectTwoModuleName, 1)] //Duplicate module name found in the same project
+        [Category("Resolver")]
+        public void DeclarationFinder_NameConflictDetectionRespectsProjectScope(string proposedTestModuleName, int expectedCount)
+        {
+
+            string renameTargetModuleName = "TargetModule";
+
+            string moduleContent = $"Private Sub Foo(){Environment.NewLine}End Sub";
+
+            var projectOneContent = new TestComponentSpecification[]
+            {
+                new TestComponentSpecification(projectOneModuleName, moduleContent, ComponentType.StandardModule)
+            };
+
+            var projectTwoContent = new TestComponentSpecification[]
+            {
+                new TestComponentSpecification(renameTargetModuleName, moduleContent, ComponentType.StandardModule),
+                new TestComponentSpecification(projectTwoModuleName, moduleContent, ComponentType.StandardModule)
+            };
+
+            var vbe = BuildProjects(new (string, IEnumerable<TestComponentSpecification>)[]
+                {("ProjectOne", projectOneContent),("ProjectTwo", projectTwoContent)});
+
+            using(var parser = MockParser.CreateAndParse(vbe))
+            {
+                var target = parser.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule)
+                    .FirstOrDefault(item => item.IdentifierName.Equals(renameTargetModuleName));
+
+                var results = parser.DeclarationFinder.FindNewDeclarationNameConflicts(proposedTestModuleName, target);
+
+                Assert.AreEqual(expectedCount, results.Count());
+            }
+        }
+
         private static string ConflictMessage(bool isConflict, string name, IEnumerable<Declaration> conflicts)
         {
             return isConflict ? $"Identifier '{name}' is a conflict but was not identified" : $"Identifier '{name}' was incorrectly found as a conflict";
@@ -499,13 +538,32 @@ End Sub
 
         private IVBE BuildProject(string projectName, List<TestComponentSpecification> testComponents)
         {
+            var projectDefs = new (string, IEnumerable<TestComponentSpecification>)[] { (projectName, testComponents) };
+            return BuildProjects(projectDefs);
+        }
+
+        private IVBE BuildProjects(IEnumerable<(string ProjectName, IEnumerable<TestComponentSpecification> TestComponents)> projectDefinitions)
+        {
             var builder = new MockVbeBuilder();
+            foreach (var projectDef in projectDefinitions)
+            {
+                builder = AddProject(builder, projectDef.ProjectName, projectDef.TestComponents);
+            }
+            return builder.Build().Object;
+        }
+
+        private MockVbeBuilder AddProject(MockVbeBuilder builder, string projectName, IEnumerable<TestComponentSpecification> testComponents)
+        {
             var enclosingProjectBuilder = builder.ProjectBuilder(projectName, ProjectProtection.Unprotected);
 
-            testComponents.ForEach(c => enclosingProjectBuilder.AddComponent(c.Name, c.ModuleType, c.Content));
+            foreach (var testComponent in testComponents)
+            {
+                enclosingProjectBuilder.AddComponent(testComponent.Name, testComponent.ModuleType, testComponent.Content);
+            }
+
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
-            return builder.Build().Object;
+            return builder;
         }
 
         private IVBComponent RetrieveComponent(AccessibilityTestsDataObject tdo, string componentName)
@@ -553,217 +611,6 @@ End Sub
             public string Code => _codeString.Code;
             public Selection Target => _codeString.CaretPosition.ToOneBased();
         }
-        
-        [Test]
-        [Category("Resolver")]
-        public void FiendishlyAmbiguousNameSelectsSmallestScopedDeclaration()
-        {
-            var code =
-            @"
-Option Explicit
-
-Public Sub foo()
-    Dim foo As Long
-    foo = 42
-    Debug.Print foo
-End Sub
-";
-            var vbe = new MockVbeBuilder()
-                .ProjectBuilder("foo", ProjectProtection.Unprotected)
-                .AddComponent("foo", ComponentType.StandardModule, code, new Selection(6, 6))
-                .AddProjectToVbeBuilder()
-                .Build();
-
-            var parser = MockParser.Create(vbe.Object);
-            parser.Parse(new CancellationTokenSource());
-
-            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable).Single();
-            var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
-
-            Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
-        }
-
-        [Test]
-        [Category("Resolver")]
-        public void AmbiguousNameSelectsSmallestScopedDeclaration()
-        {
-            var code =
-@"
-Option Explicit
-
-Public Sub foo()
-    Dim foo As Long
-    foo = 42
-    Debug.Print foo
-End Sub
-";
-            var vbe = new MockVbeBuilder()
-                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(6, 6))
-                .AddProjectToVbeBuilder()
-                .Build();
-
-            var parser = MockParser.Create(vbe.Object);
-            parser.Parse(new CancellationTokenSource());
-
-            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable).Single();
-            var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
-
-            Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
-        }
-
-        [Test]
-        [Category("Resolver")]
-        public void AmbiguousNameSelectsParameterOverProperty()
-        {
-            var code =
-                @"
-Option Explicit
-
-Public Property Get Item()
-    Item = 12
-End Property
-
-Public Property Let Item(ByVal Item As Variant)
-    DoSomething Item
-End Property
-
-Private Sub DoSomething(ByVal value As Variant)
-    Debug.Print value
-End Sub
-";
-            var vbe = new MockVbeBuilder()
-                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(9, 18))
-                .AddProjectToVbeBuilder()
-                .Build();
-
-            var parser = MockParser.Create(vbe.Object);
-            parser.Parse(new CancellationTokenSource());
-
-            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.Parameter).Single(d => d.IdentifierName == "Item");
-            var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
-
-            Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
-        }
-
-        [Test]
-        [Category("Resolver")]
-        public void AmbiguousNameSelectsParameterOverSub()
-        {
-            var code =
-                @"
-Option Explicit
-
-Public Sub foo(ByVal foo As Bookmarks)
-    Dim bar As Bookmark
-    For Each bar In foo
-        Debug.Print bar.Name
-    Next
-End Sub
-";
-            var vbe = new MockVbeBuilder()
-                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(6, 22))
-                .AddProjectToVbeBuilder()
-                .Build();
-
-            var parser = MockParser.Create(vbe.Object);
-            parser.Parse(new CancellationTokenSource());
-
-            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.Parameter).Single(d => d.IdentifierName == "foo");
-            var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
-
-            Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
-        }
-
-        [Test]
-        [Category("Resolver")]
-        public void SameNameForProjectAndClass_ScopedDeclaration_ProjectSelection()
-        {
-            var refEditClass = @"
-Option Explicit
-
-Private ValueField As Variant
-
-Public Property Get Value()
-  Value = ValueField
-End Property
-
-Public Property Let Value(Value As Variant)
-  ValueField = Value
-End Property";
-
-            var code =
-                @"
-Option Explicit
-
-Public Sub foo()
-    Dim myEdit As RefEdit.RefEdit
-    Set myEdit = New RefEdit.RefEdit
-
-    myEdit.Value = ""abc""
-End Sub
-";
-            var vbe = new MockVbeBuilder()
-                .ProjectBuilder("RefEdit", ProjectProtection.Unprotected)
-                .AddComponent("RefEdit", ComponentType.ClassModule, refEditClass)
-                .AddComponent("Test", ComponentType.StandardModule, code, new Selection(6, 23))
-                .AddProjectToVbeBuilder()
-                .Build();
-
-            var parser = MockParser.Create(vbe.Object);
-            parser.Parse(new CancellationTokenSource());
-
-            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.Project).Single();
-            var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
-
-            Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
-        }
-
-        [Test]
-        [Category("Resolver")]
-        public void SameNameForProjectAndClass_ScopedDeclaration_ClassSelection()
-        {
-            var refEditClass = @"
-Option Explicit
-
-Private ValueField As Variant
-
-Public Property Get Value()
-  Value = ValueField
-End Property
-
-Public Property Let Value(Value As Variant)
-  ValueField = Value
-End Property";
-
-            var code =
-                @"
-Option Explicit
-
-Public Sub foo()
-    Dim myEdit As RefEdit.RefEdit
-    Set myEdit = New RefEdit.RefEdit
-
-    myEdit.Value = ""abc""
-End Sub
-";
-            var vbe = new MockVbeBuilder()
-                .ProjectBuilder("RefEdit", ProjectProtection.Unprotected)
-                .AddComponent("RefEdit", ComponentType.ClassModule, refEditClass)
-                .AddComponent("Test", ComponentType.StandardModule, code, new Selection(6, 31))
-                .AddProjectToVbeBuilder()
-                .Build();
-
-            var parser = MockParser.Create(vbe.Object);
-            parser.Parse(new CancellationTokenSource());
-
-            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.ClassModule).Single();
-            var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
-
-            Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
-        }
 
         [Test]
         [Category("Resolver")]
@@ -808,376 +655,6 @@ End Sub
             var actual = parser.State.Status;
 
             Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected, actual);
-        }
-
-        [Test]
-        [Category("Resolver")]
-        public void Resolve_RecursiveCall_AssignmentLHS()
-        {
-            var sillyClass = @"
-Option Explicit
-
-Public Function Class1() As Class1
-    Set Class1 = Me
-End Function";
-
-            var code =
-                @"
-Option Explicit
-
-Public Function Class1(this As Class1) As Class1
-    Set this = New Class1
-    
-    Set Class1 = Class1(this)
-End Function";
-
-            var vbe = new MockVbeBuilder()
-                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, sillyClass)
-                .AddComponent("Test", ComponentType.StandardModule, code, new Selection(7, 10))
-                .AddProjectToVbeBuilder()
-                .Build();
-
-            var parser = MockParser.Create(vbe.Object);
-            parser.Parse(new CancellationTokenSource());
-            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.Function).Single(d => d.QualifiedModuleName.ComponentName == "Test");
-            var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
-
-            Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected, actual);
-        }
-
-        [Test]
-        [Category("Resolver")]
-        public void Resolve_RecursiveCall_AssignmentRHS()
-        {
-            var sillyClass = @"
-Option Explicit
-
-Public Function Class1() As Class1
-    Set Class1 = Me
-End Function";
-
-            var code =
-                @"
-Option Explicit
-
-Public Function Class1(this As Class1) As Class1
-    Set this = New Class1
-    
-    Set Class1 = Class1(this)
-End Function";
-
-            var vbe = new MockVbeBuilder()
-                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, sillyClass)
-                .AddComponent("Test", ComponentType.StandardModule, code, new Selection(7, 19))
-                .AddProjectToVbeBuilder()
-                .Build();
-
-            var parser = MockParser.Create(vbe.Object);
-            parser.Parse(new CancellationTokenSource());
-
-            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.Function).Single(d => d.QualifiedModuleName.ComponentName == "Test");
-            var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
-
-            Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected, actual);
-        }
-
-        [Test]
-        [Category("Resolver")]
-        public void Resolve_RecursiveCall_PropertyAssignment_PropertyLetAccessor()
-        {
-            var sillyClass = @"
-Option Explicit
-
-Public Property Get Class1() As Class1
-    Set Class1 = Me
-End Property
-
-Public Property Let Class1(Class1 As Class1)
-    Set Class1 = Class1
-End Property";
-
-            var code =
-                @"
-Option Explicit
-
-Public Function Class1(this As Class1) As Class1
-    Set this = New Class1
-    
-    Set Class1 = this.Class1(this)
-End Function";
-
-            var vbe = new MockVbeBuilder()
-                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("Test", ComponentType.StandardModule, code)
-                .AddComponent("Class1", ComponentType.ClassModule, sillyClass, new Selection(8, 22))
-                .AddProjectToVbeBuilder()
-                .Build();
-
-            var parser = MockParser.Create(vbe.Object);
-            parser.Parse(new CancellationTokenSource());
-
-            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.PropertyLet).Single(d => d.QualifiedModuleName.ComponentName == "Class1");
-            var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
-
-            Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected, actual);
-        }
-
-        [Test]
-        [Category("Resolver")]
-        public void Resolve_RecursiveCall_PropertyAssignment_Parameter()
-        {
-            var sillyClass = @"
-Option Explicit
-
-Public Property Get Class1() As Class1
-    Set Class1 = Me
-End Property
-
-Public Property Let Class1(Class1 As Class1)
-    Set Class1 = Class1
-End Property";
-
-            var code =
-                @"
-Option Explicit
-
-Public Function Class1(this As Class1) As Class1
-    Set this = New Class1
-    
-    Set Class1 = this.Class1(this)
-End Function";
-
-            var vbe = new MockVbeBuilder()
-                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("Test", ComponentType.StandardModule, code)
-                .AddComponent("Class1", ComponentType.ClassModule, sillyClass, new Selection(8, 29))
-                .AddProjectToVbeBuilder()
-                .Build();
-
-            var parser = MockParser.Create(vbe.Object);
-            parser.Parse(new CancellationTokenSource());
-
-            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.Parameter).Single(d => d.QualifiedModuleName.ComponentName == "Class1");
-            var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
-
-            Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected, actual);
-        }
-
-        [Test]
-        [Category("Resolver")]
-        public void Resolve_RecursiveCall_PropertyAssignment_AsType()
-        {
-            var sillyClass = @"
-Option Explicit
-
-Public Property Get Class1() As Class1
-    Set Class1 = Me
-End Property
-
-Public Property Let Class1(Class1 As Class1)
-    Set Class1 = Class1
-End Property";
-
-            var code =
-                @"
-Option Explicit
-
-Public Function Class1(this As Class1) As Class1
-    Set this = New Class1
-    
-    Set Class1 = this.Class1(this)
-End Function";
-
-            var vbe = new MockVbeBuilder()
-                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("Test", ComponentType.StandardModule, code)
-                .AddComponent("Class1", ComponentType.ClassModule, sillyClass, new Selection(8, 39))
-                .AddProjectToVbeBuilder()
-                .Build();
-
-            var parser = MockParser.Create(vbe.Object);
-            parser.Parse(new CancellationTokenSource());
-
-            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.ClassModule).Single(d => d.QualifiedModuleName.ComponentName == "Class1");
-            var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
-
-            Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected, actual);
-        }
-
-        [Test]
-        [Category("Resolver")]
-        public void Resolve_RecursiveCall_PropertyAssignment_ParameterInBody()
-        {
-            var sillyClass = @"
-Option Explicit
-
-Public Property Get Class1() As Class1
-    Set Class1 = Me
-End Property
-
-Public Property Let Class1(Class1 As Class1)
-    Set Class1 = Class1
-End Property";
-
-            var code =
-                @"
-Option Explicit
-
-Public Function Class1(this As Class1) As Class1
-    Set this = New Class1
-    
-    Set Class1 = this.Class1(this)
-End Function";
-
-            var vbe = new MockVbeBuilder()
-                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("Test", ComponentType.StandardModule, code)
-                .AddComponent("Class1", ComponentType.ClassModule, sillyClass, new Selection(9, 19))
-                .AddProjectToVbeBuilder()
-                .Build();
-
-            var parser = MockParser.Create(vbe.Object);
-            parser.Parse(new CancellationTokenSource());
-
-            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.Parameter).Single(d => d.QualifiedModuleName.ComponentName == "Class1");
-            var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
-
-            Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected, actual);
-        }
-
-        [Test]
-        [Category("Resolver")]
-        public void Resolve_RecursiveCall_PropertyAssignment_ParameterInAssignment()
-        {
-            // The assignment of the Property Let actually modifies the parameter, not the property getter
-            // Therefore, we expect a parameter as the target of assignment. It is not actually recursive
-            // though it may look like one.
-            var sillyClass = @"
-Option Explicit
-
-Public Property Get Class1() As Class1
-    Set Class1 = Me
-End Property
-
-Public Property Let Class1(Class1 As Class1)
-    Set Class1 = Class1
-End Property";
-
-            var code =
-                @"
-Option Explicit
-
-Public Function Class1(this As Class1) As Class1
-    Set this = New Class1
-    
-    Set Class1 = this.Class1(this)
-End Function";
-
-            var vbe = new MockVbeBuilder()
-                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("Test", ComponentType.StandardModule, code)
-                .AddComponent("Class1", ComponentType.ClassModule, sillyClass, new Selection(9, 10))
-                .AddProjectToVbeBuilder()
-                .Build();
-
-            var parser = MockParser.Create(vbe.Object);
-            parser.Parse(new CancellationTokenSource());
-
-            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.Parameter).Single(d => d.QualifiedModuleName.ComponentName == "Class1");
-            var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
-
-            Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected, actual);
-        }
-
-        [Category("Resolver")]
-        [Test]
-        public void Identify_NamedParameter_Parameter()
-        {
-            const string code = @"
-Public Function Foo(Item As String) As Boolean
-    MsgBox (Item)
-End Function
-
-Public Sub DoIt()
-    Dim Result As Boolean
-    Dim Item As String
-    
-    Item = ""abc""
-    Result = Foo(Item:=Item)
-End Sub";
-            var vbe = new MockVbeBuilder()
-                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(11, 19))
-                .AddProjectToVbeBuilder()
-                .Build();
-
-            var parser = MockParser.Create(vbe.Object);
-            parser.Parse(new CancellationTokenSource());
-
-            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.Parameter).Single();
-            var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
-
-            Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
-        }
-
-        [Category("Resolver")]
-        [Test]
-        public void Identify_NamedParameter_LocalVariable()
-        {
-            const string code = @"
-Public Function Foo(Item As String) As Boolean
-    MsgBox (Item)
-End Function
-
-Public Sub DoIt()
-    Dim Result As Boolean
-    Dim Item As String
-    
-    Item = ""abc""
-    Result = Foo(Item:=Item)
-End Sub";
-            var vbe = new MockVbeBuilder()
-                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(11, 25))
-                .AddProjectToVbeBuilder()
-                .Build();
-
-            var parser = MockParser.Create(vbe.Object);
-            parser.Parse(new CancellationTokenSource());
-
-            var expected = parser.State.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable)
-                .Single(p => p.IdentifierName == "Item");
-            var actual = parser.State.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
-
-            Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
-        }
-
-        [Category("Resolver")]
-        [Test]
-        public void Identify_NamedParameter_Parameter_FromExcel()
-        {
-            const string code = @"
-Public Sub DoIt()
-    Dim sht As WorkSheet
-
-    sht.Paste Link:=True
-End Sub";
-            var vbe = new MockVbeBuilder()
-                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
-                .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(5, 16))
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
-                .AddProjectToVbeBuilder()
-                .Build();
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var expected = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Parameter).Single(p => !p.IsUserDefined && p.IdentifierName == "Link" && p.ParentScope == "EXCEL.EXE;Excel.Worksheet.Paste");
-                var actual = state.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
-
-                Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
-            }
         }
 
         [Category("Resolver")]
@@ -2122,7 +1599,7 @@ End Property
 
         private static void AddReference(Declaration toDeclaration, Declaration fromModuleDeclaration, ParserRuleContext context = null)
         {
-            toDeclaration.AddReference(toDeclaration.QualifiedName.QualifiedModuleName, fromModuleDeclaration, fromModuleDeclaration, context, toDeclaration.IdentifierName, toDeclaration, Selection.Home, new List<Rubberduck.Parsing.Annotations.IAnnotation>());
+            toDeclaration.AddReference(toDeclaration.QualifiedName.QualifiedModuleName, fromModuleDeclaration, fromModuleDeclaration, context, toDeclaration.IdentifierName, toDeclaration, Selection.Home, new List<Rubberduck.Parsing.Annotations.IParseTreeAnnotation>());
         }
     }
 }

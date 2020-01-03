@@ -7,6 +7,34 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Removes a duplicated annotation comment.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="DuplicatedAnnotationInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// '@Obsolete
+    /// '@Obsolete
+    /// Public Sub DoSomething()
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// '@Obsolete
+    /// Public Sub DoSomething()
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class RemoveDuplicatedAnnotationQuickFix : QuickFixBase
     {
         private readonly IAnnotationUpdater _annotationUpdater;
@@ -20,8 +48,8 @@ namespace Rubberduck.Inspections.QuickFixes
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
             var duplicateAnnotations = result.Target.Annotations
-                .Where(annotation => annotation.AnnotationType == result.Properties.AnnotationType)
-                .OrderBy(annotation => annotation.Context.Start.StartIndex)
+                .Where(pta => pta.Annotation == result.Properties.Annotation)
+                .OrderBy(annotation => annotation.AnnotatedLine)
                 .Skip(1)
                 .ToList();
 

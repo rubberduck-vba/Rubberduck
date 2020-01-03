@@ -231,9 +231,6 @@
   <data name="ApplicationWorksheetFunctionInspection" xml:space="preserve">
     <value>Laufzeitgebundener Aufruf an WorksheetFunction</value>
   </data>
-  <data name="ImplicitDefaultMemberAssignmentInspection" xml:space="preserve">
-    <value>Implizite Zuweisung an Standard-Member</value>
-  </data>
   <data name="HostSpecificExpressionInspection" xml:space="preserve">
     <value>Hostspezifischer geklammerter Ausdruck wird nur zur Laufzeit ausgewertet</value>
   </data>
@@ -368,5 +365,56 @@
   </data>
   <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
     <value>Verwendung der veralteten 'While...Wend'-Anweisung</value>
+  </data>
+  <data name="ArgumentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>Argument mit nicht kompatiblem Objekttyp</value>
+  </data>
+  <data name="EmptyMethodInspection" xml:space="preserve">
+    <value>Lehre Methode</value>
+  </data>
+  <data name="ImplementedInterfaceMemberInspection" xml:space="preserve">
+    <value>Implementierte Methode einer Interface-Klasse</value>
+  </data>
+  <data name="ValueRequiredInspection" xml:space="preserve">
+    <value>Objekt statt Wert verwendet</value>
+  </data>
+  <data name="ProcedureRequiredInspection" xml:space="preserve">
+    <value>Objekt ohne Standardmember statt Prozedur verwendet</value>
+  </data>
+  <data name="DefaultMemberRequiredInspection" xml:space="preserve">
+    <value>Standardmemberzugriff ohne Standardmember</value>
+  </data>
+  <data name="UseOfBangNotationInspection" xml:space="preserve">
+    <value>Verwendung der Ausrufezeichennotation</value>
+  </data>
+  <data name="UseOfRecursiveBangNotationInspection" xml:space="preserve">
+    <value>Verwendung rekursiver Ausrufezeichennotation</value>
+  </data>
+  <data name="UseOfUnboundBangNotationInspection" xml:space="preserve">
+    <value>Verwendung nicht gebundener Ausrufezeichennotation</value>
+  </data>
+  <data name="ObjectWhereProcedureIsRequiredInspection" xml:space="preserve">
+    <value>Objekt an Stell einer Prozedur verwendet</value>
+  </data>
+  <data name="IndexedDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Parametrisierter Zugriff auf einen Standardmember</value>
+  </data>
+  <data name="IndexedRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Parametrisierter rekursiver Zugriff auf einen Standardmember</value>
+  </data>
+  <data name="IndexedUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Parametrisierter nicht gebundener Zugriff auf einen Standardmember</value>
+  </data>
+  <data name="ImplicitDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Impliziter Zugriff auf einen Standardmember</value>
+  </data>
+  <data name="ImplicitRecursiveDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Impliziter rekursiver Zugriff auf einen Standardmember</value>
+  </data>
+  <data name="ImplicitUnboundDefaultMemberAccessInspection" xml:space="preserve">
+    <value>Impliziter nicht gebundener Zugriff auf einen Standardmember</value>
+  </data>
+  <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
+    <value>Verdächtige Let-Zuweisung</value>
   </data>
 </root>

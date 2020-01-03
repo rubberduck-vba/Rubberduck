@@ -42,8 +42,11 @@ namespace Rubberduck.Inspections.Inspections.Concrete
         {
             var results = new List<IInspectionResult>();
 
-            foreach (var reference in IsMissingDeclarations.SelectMany(decl => decl.References
-                .Where(candidate => !candidate.IsIgnoringInspectionResultFor(AnnotationName))))
+            // prefilter to reduce searchspace
+            var prefilteredReferences = IsMissingDeclarations.SelectMany(decl => decl.References
+                .Where(candidate => !candidate.IsIgnoringInspectionResultFor(AnnotationName)));
+
+            foreach (var reference in prefilteredReferences)
             {
                 var parameter = GetParameterForReference(reference);
 

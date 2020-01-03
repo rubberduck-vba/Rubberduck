@@ -3,14 +3,41 @@ using Rubberduck.Parsing.Grammar;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.VBA.Extensions;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Introduces an explicit 'ByRef' modifier for a parameter that is implicitly passed by reference.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="ImplicitByRefModifierInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething(value As Long)
+    ///     Debug.Print value
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething(ByRef value As Long)
+    ///     Debug.Print value
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class SpecifyExplicitByRefModifierQuickFix : QuickFixBase
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;

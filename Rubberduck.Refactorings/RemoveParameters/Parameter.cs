@@ -1,5 +1,4 @@
 ﻿using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Extensions;
 
 namespace Rubberduck.Refactorings.RemoveParameters
@@ -13,9 +12,9 @@ namespace Rubberduck.Refactorings.RemoveParameters
         public string Name { get; }
         public bool IsParamArray => Declaration.IsParamArray;
 
-        public Parameter(Declaration declaration, bool isRemoved = false)
+        public Parameter(ParameterDeclaration declaration, bool isRemoved = false)
         {
-            Declaration = (ParameterDeclaration)declaration;
+            Declaration = declaration;
             Name = declaration.Context.GetText().RemoveExtraSpacesLeavingIndentation();
         }
     }

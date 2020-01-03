@@ -9,6 +9,32 @@ using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
+    /// <summary>
+    /// Introduces a local Variant variable for an otherwise undeclared identifier.
+    /// </summary>
+    /// <inspections>
+    /// <inspection name="UndeclaredVariableInspection" />
+    /// </inspections>
+    /// <canfix procedure="true" module="true" project="true" />
+    /// <example>
+    /// <before>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     value = 42
+    ///     Debug.Print value
+    /// End Sub
+    /// ]]>
+    /// </before>
+    /// <after>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim value As Variant
+    ///     value = 42
+    ///     Debug.Print value
+    /// End Sub
+    /// ]]>
+    /// </after>
+    /// </example>
     public sealed class IntroduceLocalVariableQuickFix : QuickFixBase
     {
         public IntroduceLocalVariableQuickFix()
@@ -22,10 +48,10 @@ namespace Rubberduck.Inspections.QuickFixes
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
             var identifierContext = result.Target.Context;
-            var enclosingStatmentContext = identifierContext.GetAncestor<VBAParser.BlockStmtContext>();
-            var instruction = IdentifierDeclarationText(result.Target.IdentifierName, EndOfStatementText(enclosingStatmentContext), FrontPadding(enclosingStatmentContext));
+            var enclosingStatementContext = identifierContext.GetAncestor<VBAParser.BlockStmtContext>();
+            var instruction = IdentifierDeclarationText(result.Target.IdentifierName, EndOfStatementText(enclosingStatementContext), FrontPadding(enclosingStatementContext));
             var rewriter = rewriteSession.CheckOutModuleRewriter(result.Target.QualifiedModuleName);
-            rewriter.InsertBefore(enclosingStatmentContext.Start.TokenIndex, instruction);
+            rewriter.InsertBefore(enclosingStatementContext.Start.TokenIndex, instruction);
         }
 
         private string EndOfStatementText(VBAParser.BlockStmtContext context)

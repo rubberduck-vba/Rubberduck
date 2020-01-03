@@ -4,24 +4,27 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Windows;
 using System.Windows.Annotations;
 using System.Windows.Data;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Interaction.Navigation;
-using Rubberduck.Parsing;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.ComCommands;
 using Rubberduck.UI.Settings;
+using Rubberduck.UI.UnitTesting.ComCommands;
 using Rubberduck.UI.UnitTesting.Commands;
 using Rubberduck.UI.UnitTesting.ViewModels;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.Utility;
-using DataFormats = System.Windows.DataFormats;
+using Rubberduck.Formatters;
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -397,7 +400,7 @@ namespace Rubberduck.UI.UnitTesting
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
 
-            AnnotationUpdater.AddAnnotation(rewriteSession, _mousedOverTestMethod.Declaration, Parsing.Annotations.AnnotationType.IgnoreTest);
+            AnnotationUpdater.AddAnnotation(rewriteSession, _mousedOverTestMethod.Declaration, new IgnoreTestAnnotation());
 
             rewriteSession.TryRewrite();
         }
@@ -407,7 +410,7 @@ namespace Rubberduck.UI.UnitTesting
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
             
             var ignoreTestAnnotations = _mousedOverTestMethod.Declaration.Annotations
-                .Where(iannotations => iannotations.AnnotationType == Parsing.Annotations.AnnotationType.IgnoreTest);
+                .Where(pta => pta.Annotation is IgnoreTestAnnotation);
 
             foreach (var ignoreTestAnnotation in ignoreTestAnnotations)
             {
@@ -463,7 +466,7 @@ namespace Rubberduck.UI.UnitTesting
 
             var title = string.Format($"Rubberduck Test Results - {DateTime.Now.ToString(CultureInfo.InvariantCulture)}");
 
-            //var textResults = title + Environment.NewLine + string.Join("", _results.Select(result => result.ToString() + Environment.NewLine).ToArray());
+            var textResults = title + Environment.NewLine + string.Join(string.Empty, aResults.Select(result => result.ToString() + Environment.NewLine).ToArray());
             var csvResults = ExportFormatter.Csv(aResults, title, columnInfos);
             var htmlResults = ExportFormatter.HtmlClipboardFragment(aResults, title, columnInfos);
             var rtfResults = ExportFormatter.RTF(aResults, title);
@@ -475,7 +478,7 @@ namespace Rubberduck.UI.UnitTesting
                 _clipboard.AppendString(DataFormats.Rtf, rtfResults);
                 _clipboard.AppendString(DataFormats.Html, htmlResults);
                 _clipboard.AppendString(DataFormats.CommaSeparatedValue, csvResults);
-                //_clipboard.AppendString(DataFormats.UnicodeText, textResults);
+                _clipboard.AppendString(DataFormats.UnicodeText, textResults);
 
                 _clipboard.Flush();
             }
