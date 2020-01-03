@@ -424,12 +424,14 @@ namespace Rubberduck.UI.UnitTesting
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
             var testGroup = GroupContainingSelectedTest(MouseOverTest);
+            var ignoreTestAnnotation = new IgnoreTestAnnotation();
+            
             foreach (TestMethodViewModel test in testGroup.Items)
             {
                 //    var testMethod = parameter == null
                 //        ? _mousedOverTestMethod
-                //        : (parameter as TestMethodViewModel).Method;
-                AnnotationUpdater.AddAnnotation(rewriteSession, test.Method.Declaration, Parsing.Annotations.AnnotationType.IgnoreTest);
+                //        : (parameter as TestMethodViewModel).Method;                
+                AnnotationUpdater.AddAnnotation(rewriteSession, test.Method.Declaration, ignoreTestAnnotation);
             }
 
             rewriteSession.TryRewrite();
@@ -442,8 +444,12 @@ namespace Rubberduck.UI.UnitTesting
             foreach (TestMethodViewModel test in testGroup.Items)
             {
                 //ExecuteUnignoreTestCommand(test);
+                //var ignoreTestAnnotations = test.Method.Declaration.Annotations
+                //    .Where(iannotations => iannotations.AnnotationType == Parsing.Annotations.AnnotationType.IgnoreTest);
+
                 var ignoreTestAnnotations = test.Method.Declaration.Annotations
-                    .Where(iannotations => iannotations.AnnotationType == Parsing.Annotations.AnnotationType.IgnoreTest);
+                    .Where(pta => pta.Annotation.Target == AnnotationTarget.Member
+                        && pta.AnnotationArguments.Contains("'@IgnoreTest"));
 
                 foreach (var ignoreTestAnnotation in ignoreTestAnnotations)
                 {
