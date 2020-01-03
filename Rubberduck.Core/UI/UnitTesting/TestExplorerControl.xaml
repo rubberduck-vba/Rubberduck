@@ -454,14 +454,15 @@
                                     <Image Source="{StaticResource UnignoreTestImage}" />
                                 </MenuItem.Icon>
                             </MenuItem>
-							<MenuItem Command="{Binding IgnoreSelectedGroupCommand}"
+							
+							<MenuItem Command="{Binding IgnoreGroupCommand}"
                                       Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuIgnoreGroup}"
 									  Visibility="{Binding DisplayIgnoreGroupLabel, Converter={StaticResource BoolToVisibility}}">
 								<MenuItem.Icon>
                                     <Image Source="{StaticResource IgnoreTestGroupImage}" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Command="{Binding UnignoreSelectedGroupCommand}"
+                            <MenuItem Command="{Binding UnignoreGroupCommand}"
                                       Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuUnignoreGroup}"
 									  Visibility="{Binding DisplayUnignoreGroupLabel, Converter={StaticResource BoolToVisibility}}">
                                 <MenuItem.Icon>

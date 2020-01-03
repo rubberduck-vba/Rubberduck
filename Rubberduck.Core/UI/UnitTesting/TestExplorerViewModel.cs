@@ -67,7 +67,7 @@ namespace Rubberduck.UI.UnitTesting
             NavigateCommand = new NavigateCommand(selectionService);  
             RunSingleTestCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteSingleTestCommand, CanExecuteSingleTest);
             RunSelectedTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteSelectedTestsCommand, CanExecuteSelectedTestsCommand);
-            RunSelectedGroupCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRunSelectedGroupCommand, CanExecuteSelectedGroupCommand);
+            RunSelectedGroupCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRunSelectedGroupCommand, CanExecuteGroupCommand);
             CancelTestRunCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCancelTestRunCommand, CanExecuteCancelTestRunCommand);
             ResetResultsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteResetResultsCommand, CanExecuteResetResultsCommand);
             CopyResultsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCopyResultsCommand);
@@ -76,8 +76,8 @@ namespace Rubberduck.UI.UnitTesting
             ExpandAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandAll);
             IgnoreTestCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteIgnoreTestCommand);
             UnignoreTestCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteUnignoreTestCommand);
-            IgnoreSelectedGroupCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteIgnoreGroupCommand, CanIgnoreSelectedGroupCommand);
-            UnignoreSelectedGroupCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteUnignoreGroupCommand, CanUnignoreSelectedGroupCommand);
+            IgnoreGroupCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteIgnoreGroupCommand, CanIgnoreGroupCommand);
+            UnignoreGroupCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteUnignoreGroupCommand, CanUnignoreGroupCommand);
 
             RewritingManager = rewritingManager;
             AnnotationUpdater = annotationUpdater;
@@ -312,8 +312,8 @@ namespace Rubberduck.UI.UnitTesting
         public CommandBase IgnoreTestCommand { get; }
         public CommandBase UnignoreTestCommand { get; }
 
-        public CommandBase IgnoreSelectedGroupCommand { get; }
-        public CommandBase UnignoreSelectedGroupCommand { get; }
+        public CommandBase IgnoreGroupCommand { get; }
+        public CommandBase UnignoreGroupCommand { get; }
 
         #endregion
 
@@ -329,19 +329,19 @@ namespace Rubberduck.UI.UnitTesting
             return !Model.IsBusy && obj is IList viewModels && viewModels.Count > 0;
         }
 
-        private bool CanExecuteSelectedGroupCommand(object obj)
+        private bool CanExecuteGroupCommand(object obj)
         {
             return !Model.IsBusy && (MouseOverTest != null || MouseOverGroup != null);
         }
 
-        private bool CanIgnoreSelectedGroupCommand(object obj)
+        private bool CanIgnoreGroupCommand(object obj)
         {
-            return CanExecuteSelectedGroupCommand(obj);
+            return CanExecuteGroupCommand(obj);
         }
 
-        private bool CanUnignoreSelectedGroupCommand(object obj)
+        private bool CanUnignoreGroupCommand(object obj)
         {
-            return CanExecuteSelectedGroupCommand(obj);
+            return CanExecuteGroupCommand(obj);
         }
 
         private bool CanExecuteResetResultsCommand(object obj)
@@ -460,16 +460,21 @@ namespace Rubberduck.UI.UnitTesting
             
             foreach (TestMethodViewModel test in testGroup.Items)
             {
-                var needsIgnoreAnnotationAdded = true;
-                foreach (var annotation in test.Method.Declaration.Annotations)
-                {
-                    if (annotation.Annotation is IgnoreTestAnnotation)
-                    {
-                        needsIgnoreAnnotationAdded = false;
-                    };
-                }
+                //var needsIgnoreAnnotationAdded = true;
+                //foreach (var annotation in test.Method.Declaration.Annotations)
+                //{
+                //    if (annotation.Annotation is IgnoreTestAnnotation)
+                //    {
+                //        needsIgnoreAnnotationAdded = false;
+                //    };
+                //}
 
-                if (needsIgnoreAnnotationAdded)
+                //if (needsIgnoreAnnotationAdded)
+                //{
+                //    AnnotationUpdater.AddAnnotation(rewriteSession, test.Method.Declaration, ignoreTestAnnotation);
+                //}
+
+                if (!test.Method.IsIgnored)
                 {
                     AnnotationUpdater.AddAnnotation(rewriteSession, test.Method.Declaration, ignoreTestAnnotation);
                 }
