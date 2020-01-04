@@ -216,7 +216,7 @@
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
     <value>La referencia de la variable de objeto es una instancia automática</value>
   </data>
-  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
+  <data name="FunctionReturnValueNeverUsedInspection" xml:space="preserve">
     <value>El valor de retorno de la función nunca se usa</value>
   </data>
   <data name="ObjectVariableNotSetInspection" xml:space="preserve">

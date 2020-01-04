@@ -60,7 +60,28 @@ End Sub
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_ReturnsResult_AddressOf()
+        public void FunctionReturnValueNotUsed_TwoUses_TwoResults()
+        {
+            const string code = @"
+Public Function Foo(ByVal bar As String) As Integer
+    Foo = 42
+End Function
+
+Public Sub Bar()
+    Foo ""Test""
+End Sub
+
+Public Sub Baz()
+    Foo ""Test""
+End Sub
+";
+            Assert.AreEqual(2, InspectionResultsForStandardModule(code).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [Category("Unused Value")]
+        public void AddressOf_NoResult()
         {
             const string code = @"
 Public Function Foo(ByVal bar As String) As Integer
@@ -71,7 +92,7 @@ Public Sub Bar()
     Bar AddressOf Foo
 End Sub
 ";
-            Assert.AreEqual(1, InspectionResultsForStandardModule(code).Count());
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
@@ -111,7 +132,7 @@ End Sub
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_DoesNotReturnResult_MultipleConsecutiveCalls()
+        public void FunctionReturnValueNotUsed_MultipleConsecutiveCalls_returnsOneResult()
         {
             const string code = @"
 Public Function Foo(ByVal bar As String) As Integer
@@ -122,7 +143,7 @@ Public Sub Baz()
     Foo Foo(Foo(""Bar""))
 End Sub
 ";
-            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
+            Assert.AreEqual(1, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
@@ -353,6 +374,58 @@ End Sub
             };
 
             Assert.AreEqual(1, InspectionResultsForModules(modules).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [Category("Unused Value")]
+        public void MemberCallOnReturnValue_NoResult()
+        {
+            const string classCode = @"
+Public Function Test() As Bar
+End Function
+
+Public Sub FooBar()
+End Sub
+";
+            const string callSiteCode = @"
+Public Sub Baz()
+    Dim testObj As Bar
+    Set testObj = new Bar
+    testObj.Test.FooBar
+End Sub
+";
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("Bar", classCode, ComponentType.ClassModule),
+                ("TestModule", callSiteCode, ComponentType.StandardModule),
+            };
+
+            Assert.AreEqual(0, InspectionResultsForModules(modules).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [Category("Unused Value")]
+        public void InterfaceMemberNotUsed_NoResult()
+        {
+            const string interfaceCode = @"
+Public Function Test() As Integer
+End Function
+";
+            const string implementationCode =
+                @"Implements IFoo
+Public Function IFoo_Test() As Integer
+    IFoo_Test = 42
+End Function
+";
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("IFoo", interfaceCode, ComponentType.ClassModule),
+                ("Bar", implementationCode, ComponentType.ClassModule)
+            };
+
+            Assert.AreEqual(0, InspectionResultsForModules(modules).Count());
         }
 
         [Test]

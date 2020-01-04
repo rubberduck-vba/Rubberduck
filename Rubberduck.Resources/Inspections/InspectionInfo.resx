@@ -217,7 +217,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
     <value>An auto-instantiated object variable declaration at procedure scope changes how nulling the reference works, which can lead to unexpected behavior.</value>
   </data>
-  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
+  <data name="FunctionReturnValueNeverUsedInspection" xml:space="preserve">
     <value>A member is written as a function, but used as a procedure. Unless the function is recursive, consider converting the 'Function' into a 'Sub'. If the function is recursive, none of its external callers are using the returned value.</value>
   </data>
   <data name="ObjectVariableNotSetInspection" xml:space="preserve">
@@ -432,5 +432,8 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   </data>
   <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
     <value>Whenever both sides of an assignment without Set are objects, there is an assignment from the default member of the RHS to the one on the LHS. Although this might be intentional, in many situations it will just mask an erroneously forgotten Set.</value>
+  </data>
+  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
+    <value>The return value of a function is not used, i.e. it is used like a procedure. This is either an oversight or the function is used for its side-effects, whose existence would also be a code smell.</value>
   </data>
 </root>

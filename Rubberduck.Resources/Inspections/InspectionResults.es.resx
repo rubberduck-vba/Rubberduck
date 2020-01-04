@@ -138,7 +138,7 @@
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
     <value>La referencia de objeto '{0}' se crea automáticamente.</value>
   </data>
-  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
+  <data name="FunctionReturnValueNeverUsedInspection" xml:space="preserve">
     <value>El valor de retorno de la función '{0}' nunca se usa.</value>
   </data>
   <data name="AssignedByValParameterInspection" xml:space="preserve">

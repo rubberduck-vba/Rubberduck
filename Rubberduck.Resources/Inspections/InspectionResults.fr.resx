@@ -137,7 +137,7 @@
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
     <value>La variable '{0}' est assignée lors de sa déclaration</value>
   </data>
-  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
+  <data name="FunctionReturnValueNeverUsedInspection" xml:space="preserve">
     <value>La valeur de retour de la fonction '{0}' n'est jamais utilisée.</value>
   </data>
   <data name="AssignedByValParameterInspection" xml:space="preserve">

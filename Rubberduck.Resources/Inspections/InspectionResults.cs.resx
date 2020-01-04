@@ -195,7 +195,7 @@
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
     <value>Reference '{0}' objektu je automaticky instancovaná</value>
   </data>
-  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
+  <data name="FunctionReturnValueNeverUsedInspection" xml:space="preserve">
     <value>Návratná hodnota funkce '{0}' není nikdy použita.</value>
   </data>
   <data name="AssignedByValParameterInspection" xml:space="preserve">

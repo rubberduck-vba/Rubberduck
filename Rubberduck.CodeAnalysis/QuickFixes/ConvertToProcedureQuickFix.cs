@@ -50,7 +50,7 @@ namespace Rubberduck.Inspections.QuickFixes
     public sealed class ConvertToProcedureQuickFix : QuickFixBase
     {
         public ConvertToProcedureQuickFix()
-            : base(typeof(NonReturningFunctionInspection), typeof(FunctionReturnValueNotUsedInspection))
+            : base(typeof(NonReturningFunctionInspection), typeof(FunctionReturnValueNeverUsedInspection))
         {}
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)

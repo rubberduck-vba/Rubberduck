@@ -213,8 +213,8 @@
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
     <value>Objektvariable ist selbstzugewiesen.</value>
   </data>
-  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
-    <value>Der Rückgabewert der Funktion wird nicht genutzt.</value>
+  <data name="FunctionReturnValueNeverUsedInspection" xml:space="preserve">
+    <value>Der Rückgabewert der Funktion wird nie genutzt.</value>
   </data>
   <data name="ObjectVariableNotSetInspection" xml:space="preserve">
     <value>Zuweisung in eine Objektvariable benötigt das 'Set'-Schlüsselwort.</value>
@@ -416,5 +416,8 @@
   </data>
   <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
     <value>Verdächtige Let-Zuweisung</value>
+  </data>
+  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
+    <value>Der Rückgabewert der Funktion wird nicht genutzt.</value>
   </data>
 </root>

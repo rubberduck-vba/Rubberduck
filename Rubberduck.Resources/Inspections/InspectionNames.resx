@@ -216,7 +216,7 @@
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
     <value>Object variable reference is auto-instantiated</value>
   </data>
-  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
+  <data name="FunctionReturnValueNeverUsedInspection" xml:space="preserve">
     <value>Function return value is never used</value>
   </data>
   <data name="ObjectVariableNotSetInspection" xml:space="preserve">
@@ -436,5 +436,8 @@
   </data>
   <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
     <value>Suspicious Let assignment</value>
+  </data>
+  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
+    <value>Function return value is not used</value>
   </data>
 </root>

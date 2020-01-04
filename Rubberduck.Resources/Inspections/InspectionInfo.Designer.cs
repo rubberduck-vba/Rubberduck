@@ -279,6 +279,15 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to A member is written as a function, but used as a procedure. Unless the function is recursive, consider converting the &apos;Function&apos; into a &apos;Sub&apos;. If the function is recursive, none of its external callers are using the returned value..
         /// </summary>
+        public static string FunctionReturnValueNeverUsedInspection {
+            get {
+                return ResourceManager.GetString("FunctionReturnValueNeverUsedInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The return value of a function is not used, i.e. it is used like a procedure. This is either an oversight or the function is used for its side-effects, whose existence would also be a code smell..
+        /// </summary>
         public static string FunctionReturnValueNotUsedInspection {
             get {
                 return ResourceManager.GetString("FunctionReturnValueNotUsedInspection", resourceCulture);
