@@ -139,6 +139,32 @@ End Sub";
 
         [Test]
         [Category("QuickFixes")]
+        [Category("Unused Value")]
+        public void FunctionReturnValueNeverUsed_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+                @"Public Function Foo(ByVal bar As String) As Boolean
+End Function
+
+Public Sub Goo()
+    Foo ""test""
+End Sub";
+
+            const string expectedCode =
+                @"'@Ignore FunctionReturnValueNeverUsed
+Public Function Foo(ByVal bar As String) As Boolean
+End Function
+
+Public Sub Goo()
+    Foo ""test""
+End Sub";
+
+            var actualCode = ApplyIgnoreOnceToFirstResult(inputCode, state => new FunctionReturnValueNeverUsedInspection(state), TestStandardModuleVbeSetup);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
         public void AnnotationListFollowedByCommentAddsAnnotationCorrectly()
         {
             const string inputCode = @"

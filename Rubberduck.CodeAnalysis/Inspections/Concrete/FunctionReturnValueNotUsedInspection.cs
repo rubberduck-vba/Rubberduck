@@ -85,13 +85,6 @@ namespace Rubberduck.Inspections.Concrete
                 return false;
             }
 
-            ////AddressOf statements are ignored because they are supposed to not use the return value.
-            //var addressOfParent = context.GetAncestor<VBAParser.AddressOfExpressionContext>();
-            //if (addressOfParent != null)
-            //{
-            //    return false;
-            //}
-
             return true;
         }
 
