@@ -55,12 +55,9 @@
             <BitmapImage x:Key="OutcomeSucceeded" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/tick-circle.png" />
 
             <BitmapImage x:Key="IgnoreTestImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask-empty.png" />
-            <BitmapImage x:Key="UnignoreTestImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask-undo.png" />
+			<BitmapImage x:Key="UnignoreTestImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask-undo.png" />
 
-            <BitmapImage x:Key="IgnoreTestGroupImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask-empty.png" />
-            <BitmapImage x:Key="UnignoreTestGroupImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask-undo.png" />
-
-            <local:TestOutcomeImageSourceConverter x:Key="OutcomeIconConverter" />
+			<local:TestOutcomeImageSourceConverter x:Key="OutcomeIconConverter" />
             <converters:MillisecondToTimeMagnitudeConverter x:Key="FormattedTime" />
             <converters:InvertBoolValueConverter x:Key="InvertBoolValue" />
             <BooleanToVisibilityConverter x:Key="BoolToVisibility" />            
@@ -459,17 +456,32 @@
                                       Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuIgnoreGroup}"
 									  Visibility="{Binding DisplayIgnoreGroupLabel, Converter={StaticResource BoolToVisibility}}">
 								<MenuItem.Icon>
-                                    <Image Source="{StaticResource IgnoreTestGroupImage}" />
+                                    <Image Source="{StaticResource IgnoreTestImage}" />
                                 </MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Command="{Binding UnignoreGroupCommand}"
                                       Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuUnignoreGroup}"
 									  Visibility="{Binding DisplayUnignoreGroupLabel, Converter={StaticResource BoolToVisibility}}">
                                 <MenuItem.Icon>
-                                    <Image Source="{StaticResource UnignoreTestGroupImage}" />
+                                    <Image Source="{StaticResource UnignoreTestImage}" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                        </ContextMenu>
+
+							<MenuItem Command="{Binding IgnoreSelectedTestsCommand}"
+									  CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItems}"
+									  Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuIgnoreSelectedTests}" >
+								<MenuItem.Icon>
+									<Image Source="{StaticResource IgnoreTestImage}" />
+								</MenuItem.Icon>
+							</MenuItem>
+							<MenuItem Command="{Binding UnignoreSelectedTestsCommand}"
+									  CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItems}"
+									  Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuUnignoreSelectedTests}" >
+								<MenuItem.Icon>
+									<Image Source="{StaticResource UnignoreTestImage}" />
+								</MenuItem.Icon>
+							</MenuItem>
+						</ContextMenu>
                     </DataGrid.ContextMenu>
                     <i:Interaction.Behaviors>
                         <local:TestExplorerRowMouseOverBehavior MouseOverTest="{Binding MouseOverTest, Mode=TwoWay}" MouseOverGroup="{Binding MouseOverGroup, Mode=TwoWay}" />

@@ -357,4 +357,10 @@
   <data name="TestExplorer_ContextMenuUnignoreGroup" xml:space="preserve">
     <value>Unignore group tests</value>
   </data>
+  <data name="TestExplorer_ContextMenuUnignoreSelectedTests" xml:space="preserve">
+    <value>Unignore selected tests</value>
+  </data>
+  <data name="TestExplorer_ContextMenuIgnoreSelectedTests" xml:space="preserve">
+    <value>Ignore selected tests</value>
+  </data>
 </root>

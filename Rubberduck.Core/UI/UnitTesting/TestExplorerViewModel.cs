@@ -78,6 +78,8 @@ namespace Rubberduck.UI.UnitTesting
             UnignoreTestCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteUnignoreTestCommand);
             IgnoreGroupCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteIgnoreGroupCommand, CanIgnoreGroupCommand);
             UnignoreGroupCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteUnignoreGroupCommand, CanUnignoreGroupCommand);
+            IgnoreSelectedTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteIgnoreSelectedTestsCommand, CanExecuteSelectedTestsCommand);
+            UnignoreSelectedTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteUnignoreSelectedTestsCommand, CanUnignoreSelectedTestsCommand);
 
             RewritingManager = rewritingManager;
             AnnotationUpdater = annotationUpdater;
@@ -259,7 +261,7 @@ namespace Rubberduck.UI.UnitTesting
 
                 var testsInGroup = MouseOverGroup.Items.Cast<TestMethodViewModel>();
 
-                return testsInGroup.Where(test => test.Method.IsIgnored).Any(); ;
+                return testsInGroup.Any(test => test.Method.IsIgnored);
             }
         }
 
@@ -274,7 +276,7 @@ namespace Rubberduck.UI.UnitTesting
 
                 var testsInGroup = MouseOverGroup.Items.Cast<TestMethodViewModel>();
 
-                return testsInGroup.Where(test => test.Method.IsIgnored).Count() != MouseOverGroup.Items.Count;
+                return testsInGroup.Count(test => test.Method.IsIgnored) != MouseOverGroup.ItemCount;
             }
         }
         
@@ -315,6 +317,9 @@ namespace Rubberduck.UI.UnitTesting
         public CommandBase IgnoreGroupCommand { get; }
         public CommandBase UnignoreGroupCommand { get; }
 
+        public CommandBase IgnoreSelectedTestsCommand { get; }
+        public CommandBase UnignoreSelectedTestsCommand { get; }
+
         #endregion
 
         #region Delegates
@@ -327,6 +332,11 @@ namespace Rubberduck.UI.UnitTesting
         private bool CanExecuteSelectedTestsCommand(object obj)
         {
             return !Model.IsBusy && obj is IList viewModels && viewModels.Count > 0;
+        }
+
+        private bool CanUnignoreSelectedTestsCommand(object obj)
+        {
+            return true;
         }
 
         private bool CanExecuteGroupCommand(object obj)
@@ -432,22 +442,27 @@ namespace Rubberduck.UI.UnitTesting
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
 
-            AnnotationUpdater.AddAnnotation(rewriteSession, _mousedOverTestMethod.Declaration, new IgnoreTestAnnotation());
+            var testMethod = parameter is null
+                ? _mousedOverTestMethod
+                : (TestMethod)parameter;
+
+            AnnotationUpdater.AddAnnotation(rewriteSession, testMethod.Declaration, new IgnoreTestAnnotation());
 
             rewriteSession.TryRewrite();
         }
 
         private void ExecuteUnignoreTestCommand(object parameter)
         {
-            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
-            
-            var ignoreTestAnnotations = _mousedOverTestMethod.Declaration.Annotations
+            var testMethod = parameter is null
+                ? _mousedOverTestMethod
+                : (TestMethod)parameter;
+
+            var ignoreTestAnnotations = testMethod.Declaration.Annotations
                 .Where(pta => pta.Annotation is IgnoreTestAnnotation);
 
-            foreach (var ignoreTestAnnotation in ignoreTestAnnotations)
-            {
-                AnnotationUpdater.RemoveAnnotation(rewriteSession, ignoreTestAnnotation);
-            }
+            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
+
+            AnnotationUpdater.RemoveAnnotations(rewriteSession, ignoreTestAnnotations);
 
             rewriteSession.TryRewrite();
         }
@@ -460,20 +475,6 @@ namespace Rubberduck.UI.UnitTesting
             
             foreach (TestMethodViewModel test in testGroup.Items)
             {
-                //var needsIgnoreAnnotationAdded = true;
-                //foreach (var annotation in test.Method.Declaration.Annotations)
-                //{
-                //    if (annotation.Annotation is IgnoreTestAnnotation)
-                //    {
-                //        needsIgnoreAnnotationAdded = false;
-                //    };
-                //}
-
-                //if (needsIgnoreAnnotationAdded)
-                //{
-                //    AnnotationUpdater.AddAnnotation(rewriteSession, test.Method.Declaration, ignoreTestAnnotation);
-                //}
-
                 if (!test.Method.IsIgnored)
                 {
                     AnnotationUpdater.AddAnnotation(rewriteSession, test.Method.Declaration, ignoreTestAnnotation);
@@ -497,6 +498,60 @@ namespace Rubberduck.UI.UnitTesting
                 {
                     AnnotationUpdater.RemoveAnnotation(rewriteSession, ignoreTestAnnotation);
                 }
+            }
+
+            rewriteSession.TryRewrite();
+        }
+
+        private void ExecuteUnignoreSelectedTestsCommand(object parameter)
+        {
+            if (Model.IsBusy || !(parameter is IList viewModels && viewModels.Count > 0))
+            {
+                return;
+            }
+
+            var ignoredModels = viewModels.OfType<TestMethodViewModel>()
+                .Where(model => model.Method.IsIgnored);
+
+            if (!ignoredModels.Any())
+            {
+                return; 
+            }
+
+            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
+
+            foreach (var test in ignoredModels)
+            {
+                var ignoreTestAnnotations = test.Method.Declaration.Annotations
+                    .Where(pta => pta.Annotation is IgnoreTestAnnotation);
+
+                AnnotationUpdater.RemoveAnnotations(rewriteSession, ignoreTestAnnotations);
+            }
+
+            rewriteSession.TryRewrite();
+        }
+
+        private void ExecuteIgnoreSelectedTestsCommand(object parameter)
+        {
+            if (Model.IsBusy || !(parameter is IList viewModels && viewModels.Count > 0))
+            {
+                return;
+            }
+
+            var unignoredModels = viewModels.OfType<TestMethodViewModel>()
+                .Where(model => !model.Method.IsIgnored);
+
+            if (!unignoredModels.Any())
+            {
+                return;
+            }
+
+            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
+            var ignoreTestAnnotation = new IgnoreTestAnnotation();
+
+            foreach (var test in unignoredModels)
+            {
+                AnnotationUpdater.AddAnnotation(rewriteSession, test.Method.Declaration, ignoreTestAnnotation);
             }
 
             rewriteSession.TryRewrite();
