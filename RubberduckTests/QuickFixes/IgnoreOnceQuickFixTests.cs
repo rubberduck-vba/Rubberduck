@@ -125,11 +125,11 @@ Public Sub Goo()
 End Sub";
 
             const string expectedCode =
-                @"'@Ignore FunctionReturnValueNotUsed
-Public Function Foo(ByVal bar As String) As Boolean
+                @"Public Function Foo(ByVal bar As String) As Boolean
 End Function
 
 Public Sub Goo()
+    '@Ignore FunctionReturnValueNotUsed
     Foo ""test""
 End Sub";
 
