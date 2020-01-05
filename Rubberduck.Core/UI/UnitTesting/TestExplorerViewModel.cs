@@ -389,9 +389,6 @@ namespace Rubberduck.UI.UnitTesting
 
         private void ExecuteRunSelectedGroupCommand(object obj)
         {
-            //var tests = MouseOverTest is null
-            //    ? MouseOverGroup
-            //    : Tests.Groups.OfType<CollectionViewGroup>().FirstOrDefault(group => group.Items.Contains(MouseOverTest));
             var tests = GroupContainingSelectedTest(MouseOverTest);
 
             if (tests is null)
