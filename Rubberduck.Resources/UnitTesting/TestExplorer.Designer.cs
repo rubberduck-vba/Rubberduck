@@ -124,7 +124,7 @@ namespace Rubberduck.Resources.UnitTesting {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ignore group tests.
+        ///   Looks up a localized string similar to Ignore all tests in group.
         /// </summary>
         public static string TestExplorer_ContextMenuIgnoreGroup {
             get {
@@ -178,7 +178,7 @@ namespace Rubberduck.Resources.UnitTesting {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unignore group tests.
+        ///   Looks up a localized string similar to Unignore all tests in group.
         /// </summary>
         public static string TestExplorer_ContextMenuUnignoreGroup {
             get {
