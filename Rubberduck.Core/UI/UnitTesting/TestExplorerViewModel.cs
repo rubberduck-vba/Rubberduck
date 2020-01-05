@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
-using System.Windows.Annotations;
 using System.Windows.Data;
 using NLog;
 using Rubberduck.Common;
@@ -14,7 +12,6 @@ using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Resources;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
@@ -25,7 +22,6 @@ using Rubberduck.UI.UnitTesting.Commands;
 using Rubberduck.UI.UnitTesting.ViewModels;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.Utility;
-using Rubberduck.Formatters;
 
 namespace Rubberduck.UI.UnitTesting
 {

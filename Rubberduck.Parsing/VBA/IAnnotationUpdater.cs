@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Antlr4.Runtime;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
