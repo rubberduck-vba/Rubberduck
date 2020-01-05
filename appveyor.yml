@@ -72,9 +72,10 @@ test_script:
   # we use -returntargetcode to fail the build if tests fail
   # when using test_script, after_test seems to not be executed
   # Manually select coverage instrumentation using "-register:Path64" to fix coverage generation
+  # Limit number of visits recorded with threshold to improve performance
   - |
-    OpenCover.Console.exe -register:Path64 -returntargetcode -target:"nunit3-console.exe" -targetargs:".\RubberduckTests\bin\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
-    OpenCover.Console.exe -register:Path64 -returntargetcode -target:"nunit3-console.exe" -targetargs:".\RubberduckTestsCodeAnalysis\bin\RubberduckTestsCodeAnalysis.dll" -output:".\RubberduckCodeAnalysis_Coverage.xml"
+    OpenCover.Console.exe -register:Path64 -returntargetcode -target:"nunit3-console.exe" -threshold:10 -targetargs:".\RubberduckTests\bin\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
+    OpenCover.Console.exe -register:Path64 -returntargetcode -target:"nunit3-console.exe" -threshold:10 -targetargs:".\RubberduckTestsCodeAnalysis\bin\RubberduckTestsCodeAnalysis.dll" -output:".\RubberduckCodeAnalysis_Coverage.xml"
     curl --silent https://codecov.io/bash --output codecov
     bash codecov -f Rubberduck_Coverage.xml -f RubberduckCodeAnalysis_Coverage.xml
 
