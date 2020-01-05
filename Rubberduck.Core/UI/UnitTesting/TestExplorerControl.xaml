@@ -437,46 +437,45 @@
                                     <Image Source="{StaticResource RunAllTestsImage}" />
                                 </MenuItem.Icon>
                             </MenuItem>
+
+							<Separator/>
+
                             <MenuItem Command="{Binding IgnoreTestCommand}"
-                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_TestToggle_Ignore}"
-                                      Visibility="{Binding DisplayIgnoreTestLabel, Converter={StaticResource BoolToVisibility}}">
+                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_TestToggle_Ignore}" >
                                 <MenuItem.Icon>
                                     <Image Source="{StaticResource IgnoreTestImage}" />
                                 </MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Command="{Binding UnignoreTestCommand}"
-                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_TestToggle_Unignore}"
-                                      Visibility="{Binding DisplayUnignoreTestLabel, Converter={StaticResource BoolToVisibility}}">
-                                <MenuItem.Icon>
-                                    <Image Source="{StaticResource UnignoreTestImage}" />
-                                </MenuItem.Icon>
-                            </MenuItem>
-							
-							<MenuItem Command="{Binding IgnoreGroupCommand}"
-                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuIgnoreGroup}"
-									  Visibility="{Binding DisplayIgnoreGroupLabel, Converter={StaticResource BoolToVisibility}}">
-								<MenuItem.Icon>
-                                    <Image Source="{StaticResource IgnoreTestImage}" />
-                                </MenuItem.Icon>
-                            </MenuItem>
-                            <MenuItem Command="{Binding UnignoreGroupCommand}"
-                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuUnignoreGroup}"
-									  Visibility="{Binding DisplayUnignoreGroupLabel, Converter={StaticResource BoolToVisibility}}">
+                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_TestToggle_Unignore}" >
                                 <MenuItem.Icon>
                                     <Image Source="{StaticResource UnignoreTestImage}" />
                                 </MenuItem.Icon>
                             </MenuItem>
 
-							<MenuItem Command="{Binding IgnoreSelectedTestsCommand}"
-									  CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItems}"
-									  Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuIgnoreSelectedTests}" >
+	                        <MenuItem Command="{Binding IgnoreSelectedTestsCommand}"
+	                                  CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItems}"
+	                                  Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuIgnoreSelectedTests}" >
+		                        <MenuItem.Icon>
+			                        <Image Source="{StaticResource IgnoreTestImage}" />
+		                        </MenuItem.Icon>
+	                        </MenuItem>
+	                        <MenuItem Command="{Binding UnignoreSelectedTestsCommand}"
+	                                  CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItems}"
+	                                  Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuUnignoreSelectedTests}" >
+		                        <MenuItem.Icon>
+			                        <Image Source="{StaticResource UnignoreTestImage}" />
+		                        </MenuItem.Icon>
+	                        </MenuItem>
+
+							<MenuItem Command="{Binding IgnoreGroupCommand}"
+                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuIgnoreGroup}" >
 								<MenuItem.Icon>
-									<Image Source="{StaticResource IgnoreTestImage}" />
-								</MenuItem.Icon>
-							</MenuItem>
-							<MenuItem Command="{Binding UnignoreSelectedTestsCommand}"
-									  CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItems}"
-									  Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuUnignoreSelectedTests}" >
+                                    <Image Source="{StaticResource IgnoreTestImage}" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+							<MenuItem Command="{Binding UnignoreGroupCommand}"
+                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuUnignoreGroup}" >
 								<MenuItem.Icon>
 									<Image Source="{StaticResource UnignoreTestImage}" />
 								</MenuItem.Icon>
