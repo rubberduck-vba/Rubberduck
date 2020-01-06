@@ -5,6 +5,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Parsing.Inspections;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
@@ -57,9 +58,9 @@ namespace Rubberduck.Inspections.Concrete
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        protected override IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module)
+        protected override IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module, DeclarationFinder finder)
         {
-            return DeclarationFinderProvider.DeclarationFinder.UnboundDefaultMemberAccesses(module);
+            return finder.UnboundDefaultMemberAccesses(module);
         }
 
         protected override bool IsResultReference(IdentifierReference reference)

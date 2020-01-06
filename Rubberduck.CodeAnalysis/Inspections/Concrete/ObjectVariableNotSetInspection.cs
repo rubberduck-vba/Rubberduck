@@ -8,7 +8,6 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
@@ -43,27 +42,19 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class ObjectVariableNotSetInspection : InspectionBase
     {
+        private IDeclarationFinderProvider _declarationFinderProvider;
+
         public ObjectVariableNotSetInspection(RubberduckParserState state)
-            : base(state) { }
+            : base(state)
+        {
+            _declarationFinderProvider = state;
+        }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            var finder = State.DeclarationFinder;
+            var finder = _declarationFinderProvider.DeclarationFinder;
 
-            var failedLetResolutionResults = FailedLetResolutionResults(finder);
-
-            return failedLetResolutionResults
-                .Select(reference =>
-                    new IdentifierReferenceInspectionResult(
-                        this,
-                        string.Format(InspectionResults.ObjectVariableNotSetInspection, reference.IdentifierName),
-                        State, 
-                        reference));
-        }
-
-        private IEnumerable<IdentifierReference> FailedLetResolutionResults(DeclarationFinder finder)
-        {
-            var results = new List<IdentifierReference>();
+            var results = new List<IInspectionResult>();
             foreach (var moduleDeclaration in finder.UserDeclarations(DeclarationType.Module))
             {
                 if (moduleDeclaration == null)
@@ -72,13 +63,32 @@ namespace Rubberduck.Inspections.Concrete
                 }
 
                 var module = moduleDeclaration.QualifiedModuleName;
-                var failedLetCoercionAssignmentsInModule = FailedLetResolutionAssignments(module, finder);
-                var possiblyObjectLhsLetAssignmentsWithFailedLetResolutionOnRhs = PossiblyObjectLhsLetAssignmentsWithNonValueOnRhs(module, finder);
-                results.AddRange(failedLetCoercionAssignmentsInModule);
-                results.AddRange(possiblyObjectLhsLetAssignmentsWithFailedLetResolutionOnRhs);
+                results.AddRange(DoGetInspectionResults(module, finder));
             }
 
             return results;
+        }
+
+        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
+        {
+            var finder = _declarationFinderProvider.DeclarationFinder;
+            return DoGetInspectionResults(module, finder);
+        }
+
+        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
+        {
+            var failedailedLetResolutionResultReferences = FailedLetResolutionResultReferences(module, finder);
+
+            return failedailedLetResolutionResultReferences
+                .Select(reference => InspectionResult(reference, _declarationFinderProvider));
+        }
+
+        private IEnumerable<IdentifierReference> FailedLetResolutionResultReferences(QualifiedModuleName module, DeclarationFinder finder)
+        {
+            var failedLetCoercionAssignmentsInModule = FailedLetResolutionAssignments(module, finder);
+            var possiblyObjectLhsLetAssignmentsWithFailedLetResolutionOnRhs = PossiblyObjectLhsLetAssignmentsWithNonValueOnRhs(module, finder);
+            return failedLetCoercionAssignmentsInModule
+                .Concat(possiblyObjectLhsLetAssignmentsWithFailedLetResolutionOnRhs);
         }
 
         private static IEnumerable<IdentifierReference> FailedLetResolutionAssignments(QualifiedModuleName module, DeclarationFinder finder)
@@ -120,6 +130,20 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(reference => reference.IsAssignment);
 
             return assignments.Concat(unboundAssignments);
+        }
+
+        private IInspectionResult InspectionResult(IdentifierReference reference, IDeclarationFinderProvider declarationFinderProvider)
+        {
+            return new IdentifierReferenceInspectionResult(
+                this,
+                ResultDescription(reference),
+                declarationFinderProvider,
+                reference);
+        }
+
+        private static string ResultDescription(IdentifierReference reference)
+        {
+            return string.Format(InspectionResults.ObjectVariableNotSetInspection, reference.IdentifierName);
         }
     }
 }

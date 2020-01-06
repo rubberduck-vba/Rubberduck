@@ -4,6 +4,7 @@ using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Abstract
@@ -23,6 +24,8 @@ namespace Rubberduck.Inspections.Abstract
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
+            var finder = DeclarationFinderProvider.DeclarationFinder;
+
             var results = new List<IInspectionResult>();
             foreach (var moduleDeclaration in State.DeclarationFinder.UserDeclarations(DeclarationType.Module))
             {
@@ -32,15 +35,15 @@ namespace Rubberduck.Inspections.Abstract
                 }
 
                 var module = moduleDeclaration.QualifiedModuleName;
-                results.AddRange(DoGetInspectionResults(module));
+                results.AddRange(DoGetInspectionResults(module, finder));
             }
 
             return results;
         }
 
-        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
+        protected IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
         {
-            var objectionableReferences = ReferencesInModule(module)
+            var objectionableReferences = ReferencesInModule(module, finder)
                 .Where(IsResultReference);
 
             return objectionableReferences
@@ -48,9 +51,15 @@ namespace Rubberduck.Inspections.Abstract
                 .ToList();
         }
 
-        protected virtual IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module)
+        protected IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
         {
-            return DeclarationFinderProvider.DeclarationFinder.IdentifierReferences(module);
+            var finder = DeclarationFinderProvider.DeclarationFinder;
+            return DoGetInspectionResults(module, finder);
+        }
+
+        protected virtual IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module, DeclarationFinder finder)
+        {
+            return finder.IdentifierReferences(module);
         }
 
         protected virtual IInspectionResult InspectionResult(IdentifierReference reference, IDeclarationFinderProvider declarationFinderProvider)
