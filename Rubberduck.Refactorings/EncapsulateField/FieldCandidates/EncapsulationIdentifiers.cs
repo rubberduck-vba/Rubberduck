@@ -15,7 +15,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private string _targetIdentifier;
         private string _setLetParameter;
 
-        public EncapsulationIdentifiers(string field, Predicate<string> IsValidPropertyName)
+        public EncapsulationIdentifiers(string field, IValidateVBAIdentifiers identifierValidator) // Predicate<string> IsValidPropertyName)
         {
             _targetIdentifier = field;
 
@@ -24,7 +24,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             if (field.TryMatchHungarianNotationCriteria(out var nonHungarianName))
             {
-                if (IsValidPropertyName(nonHungarianName))
+                if (identifierValidator.IsValidVBAIdentifier(nonHungarianName, out _))
                 {
                     DefaultPropertyName = nonHungarianName;
                     DefaultNewFieldName = field;
@@ -33,7 +33,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             else if (field.StartsWith("m_"))
             {
                 var propertyName = field.Substring(2).CapitalizeFirstLetter();
-                if (IsValidPropertyName(propertyName))
+                if (identifierValidator.IsValidVBAIdentifier(propertyName, out _))
                 {
                     DefaultPropertyName = propertyName;
                     DefaultNewFieldName = field;

@@ -101,7 +101,10 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             {
                 var viewableFields = new ObservableCollection<IEncapsulatedFieldViewData>();
 
-                var orderedFields = Model.EncapsulationCandidates.Where(ec => !(_selectedObjectStateUDT?.IsEncapsulateFieldCandidate(ec) ?? false))
+                //var orderedFields = Model.EncapsulationCandidates.Where(ec => !(_selectedObjectStateUDT?.IsEncapsulateFieldCandidate(ec) ?? false))
+                //                            .OrderBy(efd => efd.Declaration.Selection).ToList();
+
+                var orderedFields = Model.EncapsulationCandidates.Where(ec => !(_selectedObjectStateUDT?.IsExistingDeclaration ?? false))
                                             .OrderBy(efd => efd.Declaration.Selection).ToList();
 
                 foreach (var efd in orderedFields)
@@ -266,10 +269,13 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
 
         public bool ConvertFieldsToUDTMembers
         {
-            get => Model.ConvertFieldsToUDTMembers;
+            get => Model.EncapsulateFieldStrategy == EncapsulateFieldStrategy.ConvertFieldsToUDTMembers; // Model.ConvertFieldsToUDTMembers;
             set
             {
-                Model.ConvertFieldsToUDTMembers = value;
+                //Model.ConvertFieldsToUDTMembers = value;
+                Model.EncapsulateFieldStrategy = value
+                    ? EncapsulateFieldStrategy.ConvertFieldsToUDTMembers
+                    : EncapsulateFieldStrategy.UseBackingFields;
                 ReloadListAndPreview();
                 RefreshValidationResults();
                 UpdateDetailForSelection();

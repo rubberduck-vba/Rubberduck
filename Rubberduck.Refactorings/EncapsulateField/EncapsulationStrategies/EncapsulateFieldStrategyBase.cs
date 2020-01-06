@@ -28,10 +28,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
         protected Dictionary<NewContentTypes, List<string>> _newContent { set; get; }
         private static string DoubleSpace => $"{Environment.NewLine}{Environment.NewLine}";
 
-        public EncapsulateFieldStrategyBase(IDeclarationFinderProvider declarationFinderProvider, QualifiedModuleName qmn, IIndenter indenter)
+        protected IEnumerable<IEncapsulateFieldCandidate> SelectedFields { private set; get; }
+
+        public EncapsulateFieldStrategyBase(IDeclarationFinderProvider declarationFinderProvider, EncapsulateFieldModel model, IIndenter indenter)
         {
-            _targetQMN = qmn;
+            _targetQMN = model.QualifiedModuleName;
             _indenter = indenter;
+            SelectedFields = model.SelectedFieldCandidates;
 
             _codeSectionStartIndex = declarationFinderProvider.DeclarationFinder
                 .Members(_targetQMN).Where(m => m.IsMember())
@@ -58,7 +61,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         protected void RewriteReferences(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession)
         {
-            foreach (var rewriteReplacement in model.SelectedFieldCandidates.SelectMany(field => field.ReferenceReplacements))
+            //foreach (var rewriteReplacement in model.SelectedFieldCandidates.SelectMany(field => field.ReferenceReplacements))
+            foreach (var rewriteReplacement in SelectedFields.SelectMany(field => field.ReferenceReplacements))
             {
                 (ParserRuleContext Context, string Text) = rewriteReplacement.Value;
                 var rewriter = refactorRewriteSession.CheckOutModuleRewriter(rewriteReplacement.Key.QualifiedModuleName);
@@ -106,9 +110,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        private void LoadNewPropertyBlocks(EncapsulateFieldModel model)
+        protected virtual void LoadNewPropertyBlocks(EncapsulateFieldModel model)
         {
-            var propertyGenerationSpecs = model.SelectedFieldCandidates
+            var propertyGenerationSpecs = SelectedFields // model.SelectedFieldCandidates
                                                 .SelectMany(f => f.PropertyAttributeSets);
 
             var generator = new PropertyGenerator();

@@ -5,6 +5,7 @@ using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,23 +14,50 @@ namespace Rubberduck.Refactorings.EncapsulateField
 {
     public class ConvertFieldsToUDTMembers : EncapsulateFieldStrategyBase
     {
-        public ConvertFieldsToUDTMembers(IDeclarationFinderProvider declarationFinderProvider, QualifiedModuleName qmn, IIndenter indenter)
-            : base(declarationFinderProvider, qmn, indenter) { }
+        private List<IConvertToUDTMember> _convertedFields;
+        private IObjectStateUDT _stateUDTField;
+
+        public ConvertFieldsToUDTMembers(IDeclarationFinderProvider declarationFinderProvider, EncapsulateFieldModel model, IIndenter indenter)
+            : base(declarationFinderProvider, model, indenter)
+        {
+            model.AssignCandidateValidations(EncapsulateFieldStrategy.ConvertFieldsToUDTMembers);
+            _convertedFields = new List<IConvertToUDTMember>();
+            if (File.Exists("C:\\Users\\Brian\\Documents\\UseNewUDTStructure.txt"))
+            {
+                foreach (var field in model.SelectedFieldCandidates)
+                {
+                    _convertedFields.Add(new ConvertToUDTMember(field, model.StateUDTField));
+                }
+            }
+            else
+            {
+                _convertedFields = model.SelectedFieldCandidates.Cast<IConvertToUDTMember>().ToList();
+            }
+            foreach (var convert in _convertedFields)
+            {
+                convert.NameValidator = convert.Declaration.IsArray
+                    ? model.ValidatorProvider.NameOnlyValidator(Validators.UserDefinedTypeMemberArray)
+                    : model.ValidatorProvider.NameOnlyValidator(Validators.UserDefinedTypeMember);
+
+                convert.ConflictFinder = model.ValidatorProvider.ConflictDetector(EncapsulateFieldStrategy.ConvertFieldsToUDTMembers, declarationFinderProvider);
+            }
+            _stateUDTField = model.StateUDTField;
+        }
 
         protected override void ModifyFields(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession)
         {
             var rewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
 
-            foreach (var field in model.SelectedFieldCandidates)
+            foreach (var field in  model.SelectedFieldCandidates)
             {
                 refactorRewriteSession.Remove(field.Declaration, rewriter);
             }
 
-            if (model.StateUDTField.IsExistingDeclaration)
+            if (_stateUDTField.IsExistingDeclaration)
             {
-                model.StateUDTField.AddMembers(model.SelectedFieldCandidates);
+                _stateUDTField.AddMembers(_convertedFields);
 
-                rewriter.Replace(model.StateUDTField.AsTypeDeclaration, model.StateUDTField.TypeDeclarationBlock(_indenter));
+                rewriter.Replace(_stateUDTField.AsTypeDeclaration, _stateUDTField.TypeDeclarationBlock(_indenter));
             }
         }
 
@@ -37,7 +65,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             foreach (var field in model.SelectedFieldCandidates)
             {
-                field.LoadFieldReferenceContextReplacements(model.StateUDTField.FieldIdentifier);
+                field.LoadFieldReferenceContextReplacements(_stateUDTField.FieldIdentifier);
             }
 
             RewriteReferences(model, refactorRewriteSession);
@@ -45,14 +73,26 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         protected override void LoadNewDeclarationBlocks(EncapsulateFieldModel model)
         {
-            if (model.StateUDTField.IsExistingDeclaration) { return; }
+            if (_stateUDTField.IsExistingDeclaration) { return; }
 
-            model.StateUDTField.AddMembers(model.SelectedFieldCandidates);
+            _stateUDTField.AddMembers(_convertedFields);
 
-            AddContentBlock(NewContentTypes.TypeDeclarationBlock, model.StateUDTField.TypeDeclarationBlock(_indenter));
+            AddContentBlock(NewContentTypes.TypeDeclarationBlock, _stateUDTField.TypeDeclarationBlock(_indenter));
 
-            AddContentBlock(NewContentTypes.DeclarationBlock, model.StateUDTField.FieldDeclarationBlock);
+            AddContentBlock(NewContentTypes.DeclarationBlock, _stateUDTField.FieldDeclarationBlock);
             return;
+        }
+
+        protected override void LoadNewPropertyBlocks(EncapsulateFieldModel model)
+        {
+            var propertyGenerationSpecs = _convertedFields // model.SelectedFieldCandidates
+                                                .SelectMany(f => f.PropertyAttributeSets);
+
+            var generator = new PropertyGenerator();
+            foreach (var spec in propertyGenerationSpecs)
+            {
+                AddContentBlock(NewContentTypes.MethodBlock, generator.AsPropertyBlock(spec, _indenter));
+            }
         }
     }
 }

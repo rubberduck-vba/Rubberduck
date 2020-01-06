@@ -48,17 +48,26 @@ $@"Public fizz As String
 
             var encapsulatedField = Support.RetrieveEncapsulateFieldCandidate(inputCode, "fizz");
             StringAssert.AreEqualIgnoringCase("fizz_1", encapsulatedField.FieldIdentifier);
+            //StringAssert.AreEqualIgnoringCase("fizz_1", encapsulatedField.FieldIdentifierOld);
 
-            encapsulatedField.PropertyName = "Test";
+            //encapsulatedField.PropertyName = "Test";
+            encapsulatedField.PropertyIdentifier = "Test";
+            //StringAssert.AreEqualIgnoringCase("fizz", encapsulatedField.FieldIdentifierOld);
             StringAssert.AreEqualIgnoringCase("fizz", encapsulatedField.FieldIdentifier);
 
-            encapsulatedField.PropertyName = "Fizz";
+            //encapsulatedField.PropertyName = "Fizz";
+            encapsulatedField.PropertyIdentifier = "Fizz";
+            //StringAssert.AreEqualIgnoringCase("fizz_1", encapsulatedField.FieldIdentifierOld);
             StringAssert.AreEqualIgnoringCase("fizz_1", encapsulatedField.FieldIdentifier);
 
-            encapsulatedField.PropertyName = "Fiz";
+            //encapsulatedField.PropertyName = "Fiz";
+            encapsulatedField.PropertyIdentifier = "Fiz";
+            //StringAssert.AreEqualIgnoringCase("fizz", encapsulatedField.FieldIdentifierOld);
             StringAssert.AreEqualIgnoringCase("fizz", encapsulatedField.FieldIdentifier);
 
-            encapsulatedField.PropertyName = "Fizz";
+            //encapsulatedField.PropertyName = "Fizz";
+            encapsulatedField.PropertyIdentifier = "Fizz";
+            //StringAssert.AreEqualIgnoringCase("fizz_1", encapsulatedField.FieldIdentifierOld);
             StringAssert.AreEqualIgnoringCase("fizz_1", encapsulatedField.FieldIdentifier);
         }
 
@@ -71,10 +80,12 @@ $@"Public fizz As String
 
             var encapsulatedField = Support.RetrieveEncapsulateFieldCandidate(inputCode, "value");
 
-            encapsulatedField.PropertyName = "Test";
+            //encapsulatedField.PropertyName = "Test";
+            encapsulatedField.PropertyIdentifier = "Test";
             StringAssert.AreEqualIgnoringCase("value_1", encapsulatedField.ParameterName);
 
-            encapsulatedField.PropertyName = "Value";
+            //encapsulatedField.PropertyName = "Value";
+            encapsulatedField.PropertyIdentifier = "Value";
             StringAssert.AreEqualIgnoringCase("value_2", encapsulatedField.ParameterName);
         }
 
@@ -85,7 +96,8 @@ $@"Public fizz As String
         [Category("Encapsulate Field")]
         public void AccountsForHungarianNamesAndMemberPrefix(string inputName, string expectedPropertyName, string expectedFieldName)
         {
-            var sut = new EncapsulationIdentifiers(inputName, (string name) => true);
+            var validator = new EncapsulateFieldValidationsProvider().NameOnlyValidator(Validators.Default);
+            var sut = new EncapsulationIdentifiers(inputName, validator);
 
             Assert.AreEqual(expectedPropertyName, sut.DefaultPropertyName);
             Assert.AreEqual(expectedFieldName, sut.DefaultNewFieldName);

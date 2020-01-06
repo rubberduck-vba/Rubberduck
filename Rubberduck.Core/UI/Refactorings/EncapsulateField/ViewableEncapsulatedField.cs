@@ -73,7 +73,8 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
 
         public bool CanBeReadWrite => _efd.CanBeReadWrite;
 
-        public string PropertyName { get => _efd.PropertyName; set => _efd.PropertyName = value; }
+        public string PropertyName { get => _efd.PropertyIdentifier; set => _efd.PropertyIdentifier = value; }
+        //public string PropertyIdentifier { get => _efd.PropertyIdentifier; set => _efd.PropertyIdentifier = value; }
 
         public bool EncapsulateFlag { get => _efd.EncapsulateFlag; set => _efd.EncapsulateFlag = value; }
 

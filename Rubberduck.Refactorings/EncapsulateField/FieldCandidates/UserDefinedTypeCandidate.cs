@@ -4,6 +4,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.EncapsulateField.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -19,11 +20,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
     public class UserDefinedTypeCandidate : EncapsulateFieldCandidate, IUserDefinedTypeCandidate
     {
-        public UserDefinedTypeCandidate(Declaration declaration, IValidateEncapsulateFieldNames validator)
-            : base(declaration, validator)
+        public UserDefinedTypeCandidate(Declaration declaration, IValidateVBAIdentifiers identifierValidator) // Predicate<string> nameValidator/*, IValidateEncapsulateFieldNames validator*/)
+            : base(declaration, identifierValidator)
         {
             NewPropertyAccessor = AccessorMember.Field;
             ReferenceAccessor = AccessorMember.Field;
+            //AccessorInProperty = AccessorMember.Field;
         }
 
         public void AddMember(IUserDefinedTypeMemberCandidate member)
@@ -48,6 +50,36 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => TypeDeclarationIsPrivate ? _fieldAndProperty.TargetFieldName : _fieldAndProperty.Field;
             set => _fieldAndProperty.Field = value;
         }
+
+        private IValidateVBAIdentifiers _namesValidator;
+        public override IValidateVBAIdentifiers NameValidator
+        {
+            set
+            {
+                _namesValidator = value;
+                foreach (var member in Members)
+                {
+                    member.NameValidator = value;
+                }
+            }
+            get => _namesValidator;
+        }
+
+        private IEncapsulateFieldConflictFinder _conflictsValidator;
+        public override IEncapsulateFieldConflictFinder ConflictFinder
+        {
+            set
+            {
+                _conflictsValidator = value;
+                foreach (var member in Members)
+                {
+                    member.ConflictFinder = value;
+                }
+            }
+            get => _conflictsValidator;
+        }
+
+
 
         private string _referenceQualifier;
         public override string ReferenceQualifier
@@ -77,6 +109,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
+        //public override string AccessorInProperty
+        //    => AccessorMemberToContent(NewPropertyAccessor);
+
         public override bool EncapsulateFlag
         {
             set
@@ -86,7 +121,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     foreach (var member in Members.Where(m => !m.ConvertFieldToUDTMember && m.IsExistingMember))
                     {
                         member.EncapsulateFlag = value;
-                        if (!member.EncapsulateFlag || !NamesValidator.HasConflictingIdentifier(member, DeclarationType.Property, out _))
+                        if (!member.EncapsulateFlag || !ConflictFinder.HasConflictingIdentifier(member, DeclarationType.Property, out _))
                         {
                             continue;
                         }
@@ -95,9 +130,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
                         //Type within the module.
                         //Try to use a name involving the parent's identifier to make it unique/meaningful 
                         //before giving up and creating incremented value(s).
-                        member.PropertyName = $"{FieldIdentifier.CapitalizeFirstLetter()}{member.PropertyName.CapitalizeFirstLetter()}";
-                        //_validator.AssignNoConflictIdentifier(member, DeclarationType.Property);
-                        AssignNoConflictIdentifier(member, DeclarationType.Property, NamesValidator);
+                        member.PropertyIdentifier = $"{FieldIdentifier.CapitalizeFirstLetter()}{member.PropertyIdentifier.CapitalizeFirstLetter()}";
+                        ConflictFinder.AssignNoConflictIdentifier(member, DeclarationType.Property);
                     }
                 }
                 base.EncapsulateFlag = value;
@@ -118,8 +152,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
             foreach (var idRef in Declaration.References)
             {
                 var replacementText = RequiresAccessQualification(idRef)
-                    ? $"{QualifiedModuleName.ComponentName}.{PropertyName}"
-                    : PropertyName;
+                    ? $"{QualifiedModuleName.ComponentName}.{PropertyIdentifier}"
+                    : PropertyIdentifier;
 
                 SetReferenceRewriteContent(idRef, replacementText);
             }
@@ -180,24 +214,25 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public override bool TryValidateEncapsulationAttributes(out string errorMessage)
         {
-            errorMessage = string.Empty;
-            if (!EncapsulateFlag) { return true; }
+            return ConflictFinder.TryValidateEncapsulationAttributes(this, out errorMessage);
+            //errorMessage = string.Empty;
+            //if (!EncapsulateFlag) { return true; }
 
-            if (!NamesValidator.IsValidVBAIdentifier(PropertyName, DeclarationType.Property, out errorMessage))
-            {
-                return false;
-            }
+            //if (!NameValidator.IsValidVBAIdentifier(PropertyName, out errorMessage))
+            //{
+            //    return false;
+            //}
 
-            if (NamesValidator.HasConflictingIdentifier(this, DeclarationType.Property, out errorMessage))
-            {
-                return false;
-            }
+            //if (ConflictFinder.HasConflictingIdentifier(this, DeclarationType.Property, out errorMessage))
+            //{
+            //    return false;
+            //}
 
-            if (NamesValidator.HasConflictingIdentifier(this, DeclarationType.Variable, out errorMessage))
-            {
-                return false;
-            }
-            return true;
+            //if (ConflictFinder.HasConflictingIdentifier(this, DeclarationType.Variable, out errorMessage))
+            //{
+            //    return false;
+            //}
+            //return true;
         }
 
         protected override IPropertyGeneratorAttributes AsPropertyAttributeSet
@@ -206,9 +241,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 return new PropertyAttributeSet()
                 {
-                    PropertyName = PropertyName,
+                    PropertyName = PropertyIdentifier,
                     BackingField = ReferenceWithinNewProperty,
-                    AsTypeName = AsTypeName_Property,
+                    AsTypeName = PropertyAsTypeName,
                     ParameterName = ParameterName,
                     GenerateLetter = ImplementLet,
                     GenerateSetter = ImplementSet,

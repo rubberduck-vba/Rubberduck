@@ -33,7 +33,8 @@ $@"Public {originalFieldName} As String";
 
             var encapsulatedField = Support.RetrieveEncapsulateFieldCandidate(inputCode, originalFieldName);
 
-            encapsulatedField.PropertyName = newPropertyName;
+            //encapsulatedField.PropertyName = newPropertyName;
+            encapsulatedField.PropertyIdentifier = newPropertyName;
             encapsulatedField.EncapsulateFlag = true;
             Assert.AreEqual(expectedResult, encapsulatedField.TryValidateEncapsulationAttributes(out _));
         }
@@ -94,16 +95,15 @@ Private Type TBar
     Second As Long
 End Type
 
-Public myBar As TBar
+Private myBar As TBar
 
 Private Function First() As String
     First = myBar.First
 End Function";
 
-            var candidate = Support.RetrieveEncapsulateFieldCandidate(inputCode, "First", DeclarationType.UserDefinedTypeMember);
-            var validation = candidate as IEncapsulateFieldCandidateValidations;
-            var result = validation.HasConflictingPropertyIdentifier;
-            Assert.AreEqual(true, validation.HasConflictingPropertyIdentifier);
+            var candidate = Support.RetrieveEncapsulateFieldCandidate(inputCode, "myBar", DeclarationType.Variable);
+            var result = candidate.ConflictFinder/*NamesValidator*/.IsConflictingProposedIdentifier("First", candidate, DeclarationType.Property);
+            Assert.AreEqual(true, result);
         }
 
         [Test]

@@ -64,8 +64,9 @@ End Type
 Public th|is As TBar
 Public that As TBar";
 
-            var expectedThis = new EncapsulationIdentifiers("this", (string name) => true);
-            var expectedThat = new EncapsulationIdentifiers("that", (string name) => true);
+            var validator = new EncapsulateFieldValidationsProvider().NameOnlyValidator(Validators.Default);
+            var expectedThis = new EncapsulationIdentifiers("this", validator);
+            var expectedThat = new EncapsulationIdentifiers("that", validator);
 
             var userInput = new UserInputDataObject()
                     .AddUserInputSet(expectedThis.TargetFieldName, encapsulationFlag: encapsulateThis)

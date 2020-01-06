@@ -15,14 +15,37 @@ namespace Rubberduck.Refactorings.EncapsulateField
 {
     public class UseBackingFields : EncapsulateFieldStrategyBase
     {
-        public UseBackingFields(IDeclarationFinderProvider declarationFinderProvider, QualifiedModuleName qmn, IIndenter indenter)
-            : base(declarationFinderProvider, qmn, indenter) { }
+        //private IEnumerable<IEncapsulateFieldCandidate> _convertedFields;
+        public UseBackingFields(IDeclarationFinderProvider declarationFinderProvider, EncapsulateFieldModel model, IIndenter indenter)
+            : base(declarationFinderProvider, model, indenter)
+        {
+            //_convertedFields = model.SelectedFieldCandidates; //.Cast<IUsingBackingField>().ToList();
+            model.AssignCandidateValidations(EncapsulateFieldStrategy.UseBackingFields);
+            //foreach (var candidate in _convertedFields)
+            //{
+            //    if (candidate is IUserDefinedTypeCandidate)
+            //    {
+            //        candidate.NameValidator = model.ValidatorProvider.NameOnlyValidator(Validators.UserDefinedType);
+            //    }
+            //    else if (candidate is IUserDefinedTypeMemberCandidate)
+            //    {
+            //        candidate.NameValidator = candidate.Declaration.IsArray
+            //            ? model.ValidatorProvider.NameOnlyValidator(Validators.UserDefinedTypeMemberArray)
+            //            : model.ValidatorProvider.NameOnlyValidator(Validators.UserDefinedTypeMember);
+            //    }
+            //    else
+            //    {
+            //        candidate.NameValidator = model.ValidatorProvider.NameOnlyValidator(Validators.Default);
+            //    }
+            //    candidate.ConflictFinder = model.ValidatorProvider.ConflictDetector(EncapsulateFieldStrategy.UseBackingFields, declarationFinderProvider);
+            //}
+        }
 
         protected override void ModifyFields(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession)
         {
             var rewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
 
-            foreach (var field in model.SelectedFieldCandidates)
+            foreach (var field in SelectedFields)
             {
                 if (field.Declaration.HasPrivateAccessibility() && field.FieldIdentifier.Equals(field.Declaration.IdentifierName))
                 {
@@ -44,7 +67,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         protected override void ModifyReferences(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession)
         {
-            foreach (var field in model.SelectedFieldCandidates)
+            foreach (var field in SelectedFields)
             {
                 field.LoadFieldReferenceContextReplacements();
             }
@@ -55,7 +78,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         protected override void LoadNewDeclarationBlocks(EncapsulateFieldModel model)
         {
             //New field declarations created here were removed from their list within ModifyFields(...)
-            var fieldsRequiringNewDeclaration = model.SelectedFieldCandidates
+            var fieldsRequiringNewDeclaration = SelectedFields
                 .Where(field => field.Declaration.IsDeclaredInList()
                                     && field.Declaration.Accessibility != Accessibility.Private);
 

@@ -2,24 +2,26 @@
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using System;
 using System.Linq;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
     public interface IArrayCandidate : IEncapsulateFieldCandidate
     {
+        string UDTMemberDeclaration { get;}
     }
 
     public class ArrayCandidate : EncapsulateFieldCandidate, IArrayCandidate
     {
         private string _subscripts;
-        public ArrayCandidate(Declaration declaration, IValidateEncapsulateFieldNames validator)
+        public ArrayCandidate(Declaration declaration, IValidateVBAIdentifiers validator)
             :base(declaration, validator)
         {
             ImplementLet = false;
             ImplementSet = false;
-            AsTypeName_Field = declaration.AsTypeName;
-            AsTypeName_Property = Tokens.Variant;
+            FieldAsTypeName = declaration.AsTypeName;
+            PropertyAsTypeName = Tokens.Variant;
             CanBeReadWrite = false;
             IsReadOnly = true;
 
@@ -34,36 +36,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
             => Declaration.References.Any(rf => rf.QualifiedModuleName != QualifiedModuleName
                     && rf.Context.TryGetAncestor<VBAParser.RedimVariableDeclarationContext>(out _));
 
-
-        public override string AsUDTMemberDeclaration
-            => $"{PropertyName}({_subscripts}) {Tokens.As} {AsTypeName_Field}";
-
         public override bool TryValidateEncapsulationAttributes(out string errorMessage)
         {
-            errorMessage = string.Empty;
-            if (!EncapsulateFlag) { return true; }
-
-            if (HasExternalRedimOperation)
-            {
-                errorMessage = string.Format(EncapsulateFieldResources.ArrayHasExternalRedimFormat, Declaration.IdentifierName, Declaration.QualifiedModuleName.ComponentName);
-                return false;
-            }
-
-            if (ConvertFieldToUDTMember)
-            {
-                return TryValidateAsUDTMemberEncapsulationAttributes(out errorMessage, true);
-            }
-
-            if (!TryValidateEncapsulationAttributes(DeclarationType.Property, out errorMessage, true))
-            {
-                return false;
-            }
-
-            if (NamesValidator.HasConflictingIdentifier(this, DeclarationType.Variable, out errorMessage))
-            {
-                return false;
-            }
-            return true;
+            return ConflictFinder.TryValidateEncapsulationAttributes(this, out errorMessage);
         }
 
         public override void LoadFieldReferenceContextReplacements(string referenceQualifier = null)
@@ -75,7 +50,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 if (idRef.QualifiedModuleName == QualifiedModuleName)
                 {
                     var accessor = ConvertFieldToUDTMember 
-                        ? ReferenceForPreExistingReferences 
+                        ? ReferenceForPreExistingReferences
                         : FieldIdentifier;
 
                     SetReferenceRewriteContent(idRef, accessor);
@@ -104,5 +79,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
             IdentifierReplacements.Add(idRef, (context, replacementText));
         }
+
+        public override string AccessorInProperty
+            => $"{ObjectStateUDT.FieldIdentifier}.{UDTMemberIdentifier}";
+
+        public override string AccessorLocalReference
+            => $"{ObjectStateUDT.FieldIdentifier}.{UDTMemberIdentifier}";
+
+        public override string UDTMemberDeclaration
+            => $"{PropertyIdentifier}({_subscripts}) {Tokens.As} {Declaration.AsTypeName}";
     }
 }

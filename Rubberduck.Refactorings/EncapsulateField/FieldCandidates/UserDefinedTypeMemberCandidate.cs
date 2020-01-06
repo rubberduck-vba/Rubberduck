@@ -19,17 +19,15 @@ namespace Rubberduck.Refactorings.EncapsulateField
         bool IsExistingMember { get; }
     }
 
-    public class UserDefinedTypeMemberCandidate : IUserDefinedTypeMemberCandidate
+    public class UserDefinedTypeMemberCandidate : IUserDefinedTypeMemberCandidate, IConvertToUDTMember
     {
-        private readonly IValidateEncapsulateFieldNames _validator;
         private int _hashCode;
         private readonly string _uniqueID;
-        public UserDefinedTypeMemberCandidate(IEncapsulateFieldCandidate candidate, IUserDefinedTypeCandidate udtVariable, IValidateEncapsulateFieldNames validator)
+        public UserDefinedTypeMemberCandidate(IEncapsulateFieldCandidate candidate, IUserDefinedTypeCandidate udtVariable/*, IValidateEncapsulateFieldNames validator*/)
         {
             _wrappedCandidate = candidate;
             Parent = udtVariable;
-            _validator = validator;
-            PropertyName = IdentifierName;
+            PropertyIdentifier = IdentifierName;
             _uniqueID = BuildUniqueID(candidate);
             _hashCode = _uniqueID.GetHashCode();
         }
@@ -38,11 +36,25 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public string AsTypeName => _wrappedCandidate.AsTypeName;
 
+        //public string AccessorInProperty { /*set;*/ get; }
+
         public IUserDefinedTypeCandidate Parent { private set; get; }
 
         public void LoadFieldReferenceContextReplacements(string referenceQualifier = null)
         {
             ReferenceQualifier = referenceQualifier;
+        }
+
+        public IValidateVBAIdentifiers NameValidator
+        {
+            set => _wrappedCandidate.NameValidator = value;
+            get => _wrappedCandidate.NameValidator;
+        }
+
+        public IEncapsulateFieldConflictFinder ConflictFinder
+        {
+            set => _wrappedCandidate.ConflictFinder = value;
+            get => _wrappedCandidate.ConflictFinder;
         }
 
         public string ReferenceQualifier { set; get; }
@@ -59,7 +71,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 if (rf.QualifiedModuleName == QualifiedModuleName
                     && !rf.Context.TryGetAncestor<VBAParser.WithMemberAccessExprContext>(out _))
                 {
-                    SetReferenceRewriteContent(rf, PropertyName);
+                    SetReferenceRewriteContent(rf, PropertyIdentifier);
                     continue;
                 }
                 var moduleQualifier = rf.Context.TryGetAncestor<VBAParser.WithStmtContext>(out _)
@@ -67,10 +79,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     ? string.Empty
                     : $"{QualifiedModuleName.ComponentName}";
 
-                SetReferenceRewriteContent(rf, $"{moduleQualifier}.{PropertyName}");
+                SetReferenceRewriteContent(rf, $"{moduleQualifier}.{PropertyIdentifier}");
             }
         }
-
 
         protected void SetReferenceRewriteContent(IdentifierReference idRef, string replacementText)
         {
@@ -90,13 +101,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 return new PropertyAttributeSet()
                 {
-                    PropertyName = PropertyName,
+                    PropertyName = PropertyIdentifier,
                     BackingField = ReferenceWithinNewProperty,
-                    AsTypeName = AsTypeName_Property,
+                    AsTypeName = PropertyAsTypeName,
                     ParameterName = ParameterName,
                     GenerateLetter = ImplementLet,
                     GenerateSetter = ImplementSet,
-                    UsesSetAssignment = Declaration.IsObject
+                    UsesSetAssignment = Declaration.IsObject,
+                    IsUDTProperty = false //TODO: If the member is a UDT, this needs to be true
                 };
             }
         }
@@ -111,6 +123,26 @@ namespace Rubberduck.Refactorings.EncapsulateField
         }
 
         public override int GetHashCode() => _hashCode;
+
+        /*
+         * IConvertToUDTMemberInterface
+         */
+        public string AccessorInProperty
+            => $"{Parent.FieldIdentifier}.{Declaration.IdentifierName}";
+
+        public string AccessorLocalReference
+            => $"{Parent.FieldIdentifier}.{PropertyIdentifier}";
+
+        public string AccessorExternalReference { set; get; }
+        public string PropertyIdentifier { set; get; }
+
+        public string PropertyAsTypeName2 { set; get; }
+        public string UDTMemberIdentifier { set; get; }
+
+        public virtual string UDTMemberDeclaration
+            => $"{Declaration.IdentifierName} {Tokens.As} {FieldAsTypeName}";
+
+        public IObjectStateUDT ObjectStateUDT { set; get; }
 
         private static string BuildUniqueID(IEncapsulateFieldCandidate candidate) => $"{candidate.QualifiedModuleName.Name}.{candidate.IdentifierName}";
 
@@ -184,7 +216,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 }
             }
 
-            get => _encapsulateFlag; //=> _wrappedCandidate.EncapsulateFlag;
+            get => _encapsulateFlag;
         }
 
         public bool IsExistingMember => _wrappedCandidate.Declaration.ParentDeclaration.DeclarationType is DeclarationType.UserDefinedType;
@@ -194,6 +226,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             set => _wrappedCandidate.FieldIdentifier = value;
             get => _wrappedCandidate.FieldIdentifier;
         }
+
         public bool CanBeReadWrite
         {
             set => _wrappedCandidate.CanBeReadWrite = value;
@@ -204,20 +237,15 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public QualifiedModuleName QualifiedModuleName 
             => _wrappedCandidate.QualifiedModuleName;
 
-        public string PropertyName
+        public string FieldAsTypeName // AsTypeName_Field
         {
-            set => _wrappedCandidate.PropertyName = value;
-            get => _wrappedCandidate.PropertyName;
+            set => _wrappedCandidate.FieldAsTypeName = value;
+            get => _wrappedCandidate.FieldAsTypeName;
         }
-        public string AsTypeName_Field
+        public string PropertyAsTypeName
         {
-            set => _wrappedCandidate.AsTypeName_Field = value;
-            get => _wrappedCandidate.AsTypeName_Field;
-        }
-        public string AsTypeName_Property
-        {
-            set => _wrappedCandidate.AsTypeName_Property = value;
-            get => _wrappedCandidate.AsTypeName_Property;
+            set => _wrappedCandidate.PropertyAsTypeName = value;
+            get => _wrappedCandidate.PropertyAsTypeName;
         }
         public string ParameterName => _wrappedCandidate.ParameterName;
 
@@ -232,9 +260,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => false;
         }
 
+        public EncapsulateFieldStrategy EncapsulateFieldStrategy { set; get; } = EncapsulateFieldStrategy.UseBackingFields;
+
         public IEnumerable<IPropertyGeneratorAttributes> PropertyAttributeSets => _wrappedCandidate.PropertyAttributeSets;
-        public string AsUDTMemberDeclaration
-            => _wrappedCandidate.AsUDTMemberDeclaration;
 
         public IEnumerable<KeyValuePair<IdentifierReference, (ParserRuleContext, string)>> ReferenceReplacements => _wrappedCandidate.ReferenceReplacements;
 

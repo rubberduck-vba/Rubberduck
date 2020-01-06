@@ -36,7 +36,10 @@ namespace RubberduckTests.Refactoring.EncapsulateField
         {
             return model =>
             {
-                model.ConvertFieldsToUDTMembers = convertFieldToUDTMember;
+                //model.ConvertFieldsToUDTMembers = convertFieldToUDTMember;
+                model.EncapsulateFieldStrategy = convertFieldToUDTMember
+                    ? EncapsulateFieldStrategy.ConvertFieldsToUDTMembers
+                    : EncapsulateFieldStrategy.UseBackingFields;
                 return model;
             };
         }
@@ -64,7 +67,11 @@ namespace RubberduckTests.Refactoring.EncapsulateField
         {
             return model =>
             {
-                model.ConvertFieldsToUDTMembers = userInput.ConvertFieldsToUDTMembers;
+                //model.ConvertFieldsToUDTMembers = userInput.ConvertFieldsToUDTMembers;
+                model.EncapsulateFieldStrategy = userInput.ConvertFieldsToUDTMembers
+                    ? EncapsulateFieldStrategy.ConvertFieldsToUDTMembers
+                    : EncapsulateFieldStrategy.UseBackingFields;
+
                 if (userInput.ConvertFieldsToUDTMembers)
                 {
                     var stateUDT = model.EncapsulationCandidates.Where(sfc => sfc is IUserDefinedTypeCandidate udt && udt.TargetID == userInput.ObjectStateUDTTargetID)
@@ -81,7 +88,8 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                 {
                     var attrsInitializedByTheRefactoring = model[testModifiedAttribute.TargetFieldName];
 
-                    attrsInitializedByTheRefactoring.PropertyName = testModifiedAttribute.PropertyName;
+                    //attrsInitializedByTheRefactoring.PropertyName = testModifiedAttribute.PropertyName;
+                    attrsInitializedByTheRefactoring.PropertyIdentifier = testModifiedAttribute.PropertyName;
                     attrsInitializedByTheRefactoring.EncapsulateFlag = testModifiedAttribute.EncapsulateFlag;
                     attrsInitializedByTheRefactoring.IsReadOnly = testModifiedAttribute.IsReadOnly;
                 }
@@ -94,11 +102,15 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             return model =>
             {
                 var encapsulatedField = model[originalField];
-                encapsulatedField.PropertyName = attrs.PropertyName;
+                //encapsulatedField.PropertyName = attrs.PropertyName;
+                encapsulatedField.PropertyIdentifier = attrs.PropertyName;
                 encapsulatedField.IsReadOnly = attrs.IsReadOnly;
                 encapsulatedField.EncapsulateFlag = attrs.EncapsulateFlag;
 
-                model.ConvertFieldsToUDTMembers = convertFieldsToUDTMembers;
+                //model.ConvertFieldsToUDTMembers = convertFieldsToUDTMembers;
+                model.EncapsulateFieldStrategy = convertFieldsToUDTMembers
+                    ? EncapsulateFieldStrategy.ConvertFieldsToUDTMembers
+                    : EncapsulateFieldStrategy.UseBackingFields;
                 return model;
             };
         }
@@ -135,7 +147,13 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             using (state)
             {
                 var match = state.DeclarationFinder.MatchName(fieldName).Where(m => m.DeclarationType.Equals(declarationType)).Single();
-                return new EncapsulateFieldCandidate(match, new EncapsulateFieldValidator(state)) as IEncapsulateFieldCandidate;
+                var factory = new EncapsulateFieldElementFactory(state, match.QualifiedModuleName);
+                //var validator = new EncapsulateFieldValidator(state, factory.Candidates);
+                foreach (var candidate in factory.Candidates)
+                {
+                    candidate.NameValidator = factory.ValidatorProvider.NameOnlyValidator(Validators.Default);
+                }
+                return factory.Candidates.First();
             }
         }
 
@@ -178,7 +196,8 @@ namespace RubberduckTests.Refactoring.EncapsulateField
     {
         public TestEncapsulationAttributes(string fieldName, bool encapsulationFlag = true, bool isReadOnly = false)
         {
-            _identifiers = new EncapsulationIdentifiers(fieldName, (string name) => true);
+            var validator = new EncapsulateFieldValidationsProvider().NameOnlyValidator(Validators.Default);
+            _identifiers = new EncapsulationIdentifiers(fieldName, validator);
             EncapsulateFlag = encapsulationFlag;
             IsReadOnly = isReadOnly;
         }

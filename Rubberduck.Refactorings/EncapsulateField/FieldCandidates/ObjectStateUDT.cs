@@ -8,29 +8,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Rubberduck.Refactorings.EncapsulateField.Extensions;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public interface IObjectStateUDT : IEncapsulateFieldDeclaration
+    public interface IObjectStateUDT : IEncapsulateFieldRefactoringElement
     {
         string TypeIdentifier { set; get; }
         string FieldIdentifier { set; get; }
         string TypeDeclarationBlock(IIndenter indenter = null);
         string FieldDeclarationBlock { get; }
-        void AddMembers(IEnumerable<IEncapsulateFieldCandidate> fields);
+        //void AddMembers(IEnumerable<IEncapsulateFieldCandidate> fields);
+        void AddMembers(IEnumerable<IConvertToUDTMember> fields);
         bool IsExistingDeclaration { get; }
         Declaration AsTypeDeclaration { get; }
         bool IsSelected { set; get; }
-        bool IsEncapsulateFieldCandidate(IEncapsulateFieldCandidate efc);
+        //bool IsEncapsulateFieldCandidate(IEncapsulateFieldCandidate efc);
         IEnumerable<IUserDefinedTypeMemberCandidate> ExistingMembers { get; }
     }
 
     //ObjectStateUDT can be an existing UDT (Private only) selected by the user, or a 
     //newly inserted declaration
-    public class ObjectStateUDT : IObjectStateUDT
+    public class ObjectStateUDT : IObjectStateUDT//, IAssignNoConflictNames
     {
         private static string _defaultNewFieldName = EncapsulateFieldResources.DefaultStateUDTFieldName;
-        private List<IEncapsulateFieldCandidate> _members;
+        //private List<IEncapsulateFieldCandidate> _members;
+        private List<IConvertToUDTMember> _convertedMembers;
+
         private readonly IUserDefinedTypeCandidate _wrappedUDT;
         private int _hashCode;
 
@@ -57,7 +61,40 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             FieldIdentifier = _defaultNewFieldName;
             TypeIdentifier = typeIdentifier;
-            _members = new List<IEncapsulateFieldCandidate>();
+            //_members = new List<IEncapsulateFieldCandidate>();
+            _convertedMembers = new List<IConvertToUDTMember>();
+        }
+
+        //public void AssignIdentifiers(IEncapsulateFieldValidator validator)
+        //{
+        //    FieldIdentifier = validator.CreateNonConflictIdentifierForProposedType(FieldIdentifier, QualifiedModuleName, DeclarationType.Variable);
+        //    TypeIdentifier = validator.CreateNonConflictIdentifierForProposedType(TypeIdentifier, QualifiedModuleName, DeclarationType.UserDefinedType);
+        //}
+
+        protected static IEncapsulateFieldCandidate AssignNoConflictIdentifier(IEncapsulateFieldCandidate candidate, DeclarationType declarationType, IValidateEncapsulateFieldNames validator)
+        {
+            var isConflictingIdentifier = validator.HasConflictingIdentifierIgnoreEncapsulationFlag(candidate, declarationType, out _);
+            for (var count = 1; count < 10 && isConflictingIdentifier; count++)
+            {
+                var identifier = declarationType.HasFlag(DeclarationType.Property)
+                    //? candidate.PropertyName
+                    ? candidate.PropertyIdentifier
+                    : candidate.FieldIdentifier;
+                    //: candidate.FieldIdentifierOld;
+
+                if (declarationType.HasFlag(DeclarationType.Property))
+                {
+                    //candidate.PropertyName = identifier.IncrementEncapsulationIdentifier();
+                    candidate.PropertyIdentifier = identifier.IncrementEncapsulationIdentifier();
+                }
+                else
+                {
+                    //candidate.FieldIdentifierOld = identifier.IncrementEncapsulationIdentifier();
+                    candidate.FieldIdentifier = identifier.IncrementEncapsulationIdentifier();
+                }
+                isConflictingIdentifier = validator.HasConflictingIdentifierIgnoreEncapsulationFlag(candidate, declarationType, out _);
+            }
+            return candidate;
         }
 
         public string IdentifierName => _wrappedUDT?.IdentifierName ?? FieldIdentifier;
@@ -106,13 +143,24 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public string FieldIdentifier { set; get; }
 
-        public void AddMembers(IEnumerable<IEncapsulateFieldCandidate> fields)
+        //public void AddMembers(IEnumerable<IEncapsulateFieldCandidate> fields)
+        //{
+        //    AddMembers(fields.Cast<IConvertToUDTMember>());
+        //    //if (IsExistingDeclaration)
+        //    //{
+        //    //    _members = _wrappedUDT.Members.Select(m => m).Cast<IEncapsulateFieldCandidate>().ToList();
+        //    //}
+        //    //_members.AddRange(fields);
+        //}
+
+        public void AddMembers(IEnumerable<IConvertToUDTMember> fields)
         {
             if (IsExistingDeclaration)
             {
-                _members = _wrappedUDT.Members.Select(m => m).Cast<IEncapsulateFieldCandidate>().ToList();
+                _convertedMembers = _wrappedUDT.Members.Select(m => m).Cast<IConvertToUDTMember>().ToList();
             }
-            _members.AddRange(fields);
+            //_members.AddRange(fields);
+            _convertedMembers.AddRange(fields);
         }
 
         public string FieldDeclarationBlock
@@ -133,21 +181,21 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 return true;
             }
-            if (obj is IEncapsulateFieldDeclaration fd && fd.IdentifierName == IdentifierName)
+            if (obj is IEncapsulateFieldRefactoringElement fd && fd.IdentifierName == IdentifierName)
             {
                 return true;
             }
             return false;
         }
 
-        public bool IsEncapsulateFieldCandidate(IEncapsulateFieldCandidate efc)
-        {
-            if (efc is IEncapsulateFieldDeclaration fd && fd.IdentifierName == IdentifierName)
-            {
-                return true;
-            }
-            return false;
-        }
+        //public bool IsEncapsulateFieldCandidate(IEncapsulateFieldCandidate efc)
+        //{
+        //    if (efc is IEncapsulateFieldDeclaration fd && fd.IdentifierName == IdentifierName)
+        //    {
+        //        return true;
+        //    }
+        //    return false;
+        //}
 
         public override int GetHashCode() => _hashCode;
 
@@ -157,7 +205,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             blockLines.Add($"{accessibility.TokenString()} {Tokens.Type} {TypeIdentifier}");
 
-            _members.ForEach(m => blockLines.Add($"{m.AsUDTMemberDeclaration}"));
+            //_members.ForEach(m => blockLines.Add($"{m.AsUDTMemberDeclaration}"));
+            _convertedMembers.ForEach(m => blockLines.Add($"{m.UDTMemberDeclaration}"));
 
             blockLines.Add($"{Tokens.End} {Tokens.Type}");
 
