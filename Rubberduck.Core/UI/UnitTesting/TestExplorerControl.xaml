@@ -349,7 +349,7 @@
 
         <Border Grid.Row="3" Padding="2">
             <Grid>
-				<ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto">
+                <ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto">
 		            <controls:GroupingGrid x:Name="TestGrid"
 	                                       ItemsSource="{Binding Tests}"
 	                                       SelectionMode="Extended"
