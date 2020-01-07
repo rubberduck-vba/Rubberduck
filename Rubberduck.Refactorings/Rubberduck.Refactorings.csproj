@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Sunburst.NET.Sdk.WPF/1.0.47">
+<Project Sdk="Sunburst.NET.Sdk.WPF.Patched/1.0.49">
   <PropertyGroup>
     <ProjectGuid>{D4B6A510-14E1-420A-A8D5-6A09890FD7D8}</ProjectGuid>
     <RootNamespace>Rubberduck.Refactorings</RootNamespace>
