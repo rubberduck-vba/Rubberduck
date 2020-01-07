@@ -92,11 +92,9 @@ namespace Rubberduck.UI.Command.ComCommands
 
             // If .GetDirectoryName is passed an empty string for a RootFolder, 
             // it defaults to the Documents library (Win 7+) or equivalent.
-            var path = string.Empty;
-            if (!string.IsNullOrWhiteSpace(project.FileName))
-            {
-                path = Path.GetDirectoryName(project.FileName);
-            }
+            var path = string.IsNullOrWhiteSpace(project.FileName)
+                ? string.Empty
+                : Path.GetDirectoryName(project.FileName);
 
             using (var _folderBrowser = _factory.CreateFolderBrowser(desc, true, path))
             {
