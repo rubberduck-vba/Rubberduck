@@ -472,7 +472,7 @@ End Sub";
 
             var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name");
 
-            var validator = new EncapsulateFieldValidationsProvider().NameOnlyValidator(Validators.Default);
+            var validator = new EncapsulateFieldValidationsProvider().NameOnlyValidator(NameValidators.Default);
             var enapsulationIdentifiers = new EncapsulationIdentifiers("fizz", validator/*(string name) => true*/) { Property = "Name" };
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
@@ -496,10 +496,10 @@ Sub Foo()
     fizz = 1
 End Sub";
             const string codeClass2 =
-                @"Sub Foo()
-    Dim c As Class1
-    c.fizz = 0
-    Bar c.fizz
+@"Sub Foo()
+    Dim theClass As Class1
+    theClass.fizz = 0
+    Bar theClass.fizz
 End Sub
 
 Sub Bar(ByVal v As Integer)
@@ -518,8 +518,8 @@ End Sub";
                 ("Class2", codeClass2, ComponentType.ClassModule));
 
             StringAssert.Contains("Name = 1", actualCode["Class1"]);
-            StringAssert.Contains("c.Name = 0", actualCode["Class2"]);
-            StringAssert.Contains("Bar c.Name", actualCode["Class2"]);
+            StringAssert.Contains("theClass.Name = 0", actualCode["Class2"]);
+            StringAssert.Contains("Bar theClass.Name", actualCode["Class2"]);
             StringAssert.DoesNotContain("fizz", actualCode["Class2"]);
         }
 

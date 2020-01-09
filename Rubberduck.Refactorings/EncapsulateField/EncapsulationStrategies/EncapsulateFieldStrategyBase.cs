@@ -1,4 +1,5 @@
 ﻿using Antlr4.Runtime;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -24,11 +25,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
         protected QualifiedModuleName _targetQMN;
         private readonly int? _codeSectionStartIndex;
 
+        protected Dictionary<IdentifierReference, (ParserRuleContext, string)> IdentifierReplacements { get; } = new Dictionary<IdentifierReference, (ParserRuleContext, string)>();
+
         protected enum NewContentTypes { TypeDeclarationBlock, DeclarationBlock, MethodBlock, PostContentMessage };
         protected Dictionary<NewContentTypes, List<string>> _newContent { set; get; }
         private static string DoubleSpace => $"{Environment.NewLine}{Environment.NewLine}";
 
-        protected IEnumerable<IEncapsulateFieldCandidate> SelectedFields { private set; get; }
+        protected IEnumerable<IEncapsulatableField> SelectedFields { private set; get; }
 
         public EncapsulateFieldStrategyBase(IDeclarationFinderProvider declarationFinderProvider, EncapsulateFieldModel model, IIndenter indenter)
         {
@@ -61,11 +64,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         protected void RewriteReferences(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession)
         {
-            //foreach (var rewriteReplacement in model.SelectedFieldCandidates.SelectMany(field => field.ReferenceReplacements))
-            foreach (var rewriteReplacement in SelectedFields.SelectMany(field => field.ReferenceReplacements))
+            foreach (var replacement in IdentifierReplacements)
             {
-                (ParserRuleContext Context, string Text) = rewriteReplacement.Value;
-                var rewriter = refactorRewriteSession.CheckOutModuleRewriter(rewriteReplacement.Key.QualifiedModuleName);
+                (ParserRuleContext Context, string Text) = replacement.Value;
+                var rewriter = refactorRewriteSession.CheckOutModuleRewriter(replacement.Key.QualifiedModuleName);
                 rewriter.Replace(Context, Text);
             }
         }
@@ -89,7 +91,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             if (isPreview)
             {
-                AddContentBlock(NewContentTypes.PostContentMessage, EncapsulateFieldResources.PreviewEndOfChangesMarker);
+                AddContentBlock(NewContentTypes.PostContentMessage, EncapsulateFieldResources.PreviewMarker);
             }
 
             var newContentBlock = string.Join(DoubleSpace,
@@ -112,14 +114,98 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         protected virtual void LoadNewPropertyBlocks(EncapsulateFieldModel model)
         {
-            var propertyGenerationSpecs = SelectedFields // model.SelectedFieldCandidates
-                                                .SelectMany(f => f.PropertyAttributeSets);
+            var propertyGenerationSpecs = SelectedFields.SelectMany(f => f.PropertyAttributeSets);
 
             var generator = new PropertyGenerator();
             foreach (var spec in propertyGenerationSpecs)
             {
                 AddContentBlock(NewContentTypes.MethodBlock, generator.AsPropertyBlock(spec, _indenter));
             }
+        }
+
+        protected virtual void LoadFieldReferenceContextReplacements(IEncapsulatableField field)
+        {
+            if (field is IUserDefinedTypeCandidate udt && udt.TypeDeclarationIsPrivate)
+            {
+                foreach (var member in udt.Members)
+                {
+                    foreach (var idRef in member.ParentContextReferences)
+                    {
+                        var replacementText = member.ReferenceAccessor(idRef);
+                        SetUDTMemberReferenceRewriteContent(idRef, replacementText);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var idRef in field.Declaration.References)
+                {
+                    var replacementText = field.ReferenceAccessor(idRef);
+                    if (IsExternalReferenceRequiringModuleQualification(idRef))
+                    {
+                        replacementText = $"{field.QualifiedModuleName.ComponentName}.{replacementText}";
+                    }
+                    SetReferenceRewriteContent(idRef, replacementText);
+                }
+            }
+        }
+
+        protected bool IsExternalReferenceRequiringModuleQualification(IdentifierReference idRef)
+        {
+            var isLHSOfMemberAccess =
+                        (idRef.Context.Parent is VBAParser.MemberAccessExprContext
+                            || idRef.Context.Parent is VBAParser.WithMemberAccessExprContext)
+                        && !(idRef.Context == idRef.Context.Parent.GetChild(0));
+
+            return idRef.QualifiedModuleName != idRef.Declaration.QualifiedModuleName
+                        && !isLHSOfMemberAccess;
+        }
+
+        protected virtual void SetReferenceRewriteContent(IdentifierReference idRef, string replacementText)
+        {
+            if (idRef.Context is VBAParser.IndexExprContext idxExpression)
+            {
+                AddIdentifierReplacement(idRef, idxExpression.children.ElementAt(0) as ParserRuleContext, replacementText);
+            }
+            else if (idRef.Context is VBAParser.UnrestrictedIdentifierContext
+                || idRef.Context is VBAParser.SimpleNameExprContext)
+            {
+                AddIdentifierReplacement(idRef, idRef.Context, replacementText);
+            }
+            else if (idRef.Context.TryGetAncestor<VBAParser.WithMemberAccessExprContext>(out var wmac))
+            {
+                AddIdentifierReplacement(idRef, wmac.GetChild<VBAParser.UnrestrictedIdentifierContext>(), replacementText);
+            }
+            else if (idRef.Context.TryGetAncestor<VBAParser.MemberAccessExprContext>(out var maec))
+            {
+                AddIdentifierReplacement(idRef, maec, replacementText);
+            }
+        }
+
+        protected virtual void SetUDTMemberReferenceRewriteContent(IdentifierReference idRef, string replacementText)
+        {
+            if (idRef.Context is VBAParser.IndexExprContext idxExpression)
+            {
+                AddIdentifierReplacement(idRef, idxExpression.children.ElementAt(0) as ParserRuleContext, replacementText);
+            }
+            else if (idRef.Context.TryGetAncestor<VBAParser.WithMemberAccessExprContext>(out var wmac))
+            {
+                AddIdentifierReplacement(idRef, wmac.GetChild<VBAParser.UnrestrictedIdentifierContext>(), replacementText);
+            }
+            else if (idRef.Context.TryGetAncestor<VBAParser.MemberAccessExprContext>(out var maec))
+            {
+                AddIdentifierReplacement(idRef, maec, replacementText);
+            }
+        }
+
+        private void AddIdentifierReplacement( IdentifierReference idRef, ParserRuleContext context, string replacementText)
+        {
+            if (IdentifierReplacements.ContainsKey(idRef))
+            {
+                IdentifierReplacements[idRef] = (context, replacementText);
+                return;
+            }
+            IdentifierReplacements.Add(idRef, (context, replacementText));
         }
     }
 }

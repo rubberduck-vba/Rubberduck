@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public interface IUserDefinedTypeCandidate : IEncapsulateFieldCandidate
+    public interface IUserDefinedTypeCandidate : IEncapsulatableField
     {
         IEnumerable<IUserDefinedTypeMemberCandidate> Members { get; }
         void AddMember(IUserDefinedTypeMemberCandidate member);
@@ -20,12 +20,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
     public class UserDefinedTypeCandidate : EncapsulateFieldCandidate, IUserDefinedTypeCandidate
     {
-        public UserDefinedTypeCandidate(Declaration declaration, IValidateVBAIdentifiers identifierValidator) // Predicate<string> nameValidator/*, IValidateEncapsulateFieldNames validator*/)
+        public UserDefinedTypeCandidate(Declaration declaration, IValidateVBAIdentifiers identifierValidator)
             : base(declaration, identifierValidator)
         {
-            NewPropertyAccessor = AccessorMember.Field;
-            ReferenceAccessor = AccessorMember.Field;
-            //AccessorInProperty = AccessorMember.Field;
         }
 
         public void AddMember(IUserDefinedTypeMemberCandidate member)
@@ -45,7 +42,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => _canBeObjectStateUDT;
         }
 
-        public override string FieldIdentifier
+        public override string BackingIdentifier
         {
             get => TypeDeclarationIsPrivate ? _fieldAndProperty.TargetFieldName : _fieldAndProperty.Field;
             set => _fieldAndProperty.Field = value;
@@ -79,22 +76,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => _conflictsValidator;
         }
 
-
-
-        private string _referenceQualifier;
-        public override string ReferenceQualifier
-        {
-            set
-            {
-                _referenceQualifier = value;
-                foreach( var member in Members)
-                {
-                    member.ReferenceQualifier = ReferenceWithinNewProperty;
-                }
-            }
-            get => _referenceQualifier;
-        }
-
         private bool _isReadOnly;
         public override bool IsReadOnly
         {
@@ -109,16 +90,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        //public override string AccessorInProperty
-        //    => AccessorMemberToContent(NewPropertyAccessor);
-
         public override bool EncapsulateFlag
         {
             set
             {
                 if (TypeDeclarationIsPrivate)
                 {
-                    foreach (var member in Members.Where(m => !m.ConvertFieldToUDTMember && m.IsExistingMember))
+                    foreach (var member in Members)
                     {
                         member.EncapsulateFlag = value;
                         if (!member.EncapsulateFlag || !ConflictFinder.HasConflictingIdentifier(member, DeclarationType.Property, out _))
@@ -130,7 +108,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                         //Type within the module.
                         //Try to use a name involving the parent's identifier to make it unique/meaningful 
                         //before giving up and creating incremented value(s).
-                        member.PropertyIdentifier = $"{FieldIdentifier.CapitalizeFirstLetter()}{member.PropertyIdentifier.CapitalizeFirstLetter()}";
+                        member.PropertyIdentifier = $"{BackingIdentifier.CapitalizeFirstLetter()}{member.PropertyIdentifier.CapitalizeFirstLetter()}";
                         ConflictFinder.AssignNoConflictIdentifier(member, DeclarationType.Property);
                     }
                 }
@@ -139,62 +117,33 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => _encapsulateFlag;
         }
 
-        public override void LoadFieldReferenceContextReplacements(string referenceQualifier = null)
+        protected override string AccessorInProperty
+            => $"{BackingIdentifier}";
+
+        protected override string AccessorLocalReference(IdentifierReference idRef)
         {
-            ReferenceQualifier = referenceQualifier;
-            if (TypeDeclarationIsPrivate)
+            if (idRef.Context.Parent.Parent is VBAParser.WithStmtContext wsc)
             {
-                LoadPrivateUDTFieldLocalReferenceExpressions();
-                LoadUDTMemberReferenceExpressions();
-                return;
+                return BackingIdentifier;
             }
 
-            foreach (var idRef in Declaration.References)
-            {
-                var replacementText = RequiresAccessQualification(idRef)
-                    ? $"{QualifiedModuleName.ComponentName}.{PropertyIdentifier}"
-                    : PropertyIdentifier;
-
-                SetReferenceRewriteContent(idRef, replacementText);
-            }
+            return TypeDeclarationIsPrivate ? $"{BackingIdentifier}" : $"{PropertyIdentifier}";
         }
 
-        public override IEnumerable<IPropertyGeneratorAttributes> PropertyAttributeSets
+        public override IEnumerable<PropertyAttributeSet> PropertyAttributeSets
         {
             get
             {
                 if (TypeDeclarationIsPrivate)
                 {
-                    var specs = new List<IPropertyGeneratorAttributes>();
+                    var specs = new List<PropertyAttributeSet>();
                     foreach (var member in Members)
                     {
                         specs.Add(member.AsPropertyGeneratorSpec);
                     }
                     return specs;
                 }
-                return new List<IPropertyGeneratorAttributes>() { AsPropertyAttributeSet };
-            }
-        }
-
-        public override IEnumerable<KeyValuePair<IdentifierReference, (ParserRuleContext, string)>> ReferenceReplacements
-        {
-            get
-            {
-                var results = new List<KeyValuePair<IdentifierReference, (ParserRuleContext, string)>>();
-                foreach (var replacement in IdentifierReplacements)
-                {
-                    var kv = new KeyValuePair<IdentifierReference, (ParserRuleContext, string)>
-                        (replacement.Key, replacement.Value);
-                    results.Add(kv);
-                }
-
-                foreach (var replacement in Members.SelectMany(m => m.IdentifierReplacements))
-                {
-                    var kv = new KeyValuePair<IdentifierReference, (ParserRuleContext, string)>
-                        (replacement.Key, replacement.Value);
-                    results.Add(kv);
-                }
-                return results;
+                return new List<PropertyAttributeSet>() { AsPropertyAttributeSet };
             }
         }
 
@@ -212,37 +161,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return base.GetHashCode();
         }
 
-        public override bool TryValidateEncapsulationAttributes(out string errorMessage)
-        {
-            return ConflictFinder.TryValidateEncapsulationAttributes(this, out errorMessage);
-            //errorMessage = string.Empty;
-            //if (!EncapsulateFlag) { return true; }
-
-            //if (!NameValidator.IsValidVBAIdentifier(PropertyName, out errorMessage))
-            //{
-            //    return false;
-            //}
-
-            //if (ConflictFinder.HasConflictingIdentifier(this, DeclarationType.Property, out errorMessage))
-            //{
-            //    return false;
-            //}
-
-            //if (ConflictFinder.HasConflictingIdentifier(this, DeclarationType.Variable, out errorMessage))
-            //{
-            //    return false;
-            //}
-            //return true;
-        }
-
-        protected override IPropertyGeneratorAttributes AsPropertyAttributeSet
+        protected override PropertyAttributeSet AsPropertyAttributeSet
         {
             get
             {
                 return new PropertyAttributeSet()
                 {
                     PropertyName = PropertyIdentifier,
-                    BackingField = ReferenceWithinNewProperty,
+                    BackingField = AccessorInProperty,
                     AsTypeName = PropertyAsTypeName,
                     ParameterName = ParameterName,
                     GenerateLetter = ImplementLet,
@@ -253,24 +179,5 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        private void LoadPrivateUDTFieldLocalReferenceExpressions()
-        {
-            foreach (var idRef in Declaration.References)
-            {
-                if (idRef.QualifiedModuleName == QualifiedModuleName
-                    && idRef.Context.Parent.Parent is VBAParser.WithStmtContext wsc)
-                {
-                    SetReferenceRewriteContent(idRef, FieldIdentifier);
-                }
-            }
-        }
-
-        private void LoadUDTMemberReferenceExpressions()
-        {
-            foreach (var member in Members)
-            {
-                member.LoadReferenceExpressions();
-            }
-        }
     }
 }

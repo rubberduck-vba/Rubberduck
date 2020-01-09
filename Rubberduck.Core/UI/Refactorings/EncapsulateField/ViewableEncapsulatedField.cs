@@ -19,9 +19,9 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
 
     public class ViewableEncapsulatedField : IEncapsulatedFieldViewData
     {
-        private IEncapsulateFieldCandidate _efd;
+        private IEncapsulatableField _efd;
         private readonly int _hashCode;
-        public ViewableEncapsulatedField(IEncapsulateFieldCandidate efd)
+        public ViewableEncapsulatedField(IEncapsulatableField efd)
         {
             _efd = efd;
             _hashCode = efd.TargetID.GetHashCode();
@@ -74,7 +74,6 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         public bool CanBeReadWrite => _efd.CanBeReadWrite;
 
         public string PropertyName { get => _efd.PropertyIdentifier; set => _efd.PropertyIdentifier = value; }
-        //public string PropertyIdentifier { get => _efd.PropertyIdentifier; set => _efd.PropertyIdentifier = value; }
 
         public bool EncapsulateFlag { get => _efd.EncapsulateFlag; set => _efd.EncapsulateFlag = value; }
 

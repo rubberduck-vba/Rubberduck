@@ -15,31 +15,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 {
     public class UseBackingFields : EncapsulateFieldStrategyBase
     {
-        //private IEnumerable<IEncapsulateFieldCandidate> _convertedFields;
         public UseBackingFields(IDeclarationFinderProvider declarationFinderProvider, EncapsulateFieldModel model, IIndenter indenter)
-            : base(declarationFinderProvider, model, indenter)
-        {
-            //_convertedFields = model.SelectedFieldCandidates; //.Cast<IUsingBackingField>().ToList();
-            model.AssignCandidateValidations(EncapsulateFieldStrategy.UseBackingFields);
-            //foreach (var candidate in _convertedFields)
-            //{
-            //    if (candidate is IUserDefinedTypeCandidate)
-            //    {
-            //        candidate.NameValidator = model.ValidatorProvider.NameOnlyValidator(Validators.UserDefinedType);
-            //    }
-            //    else if (candidate is IUserDefinedTypeMemberCandidate)
-            //    {
-            //        candidate.NameValidator = candidate.Declaration.IsArray
-            //            ? model.ValidatorProvider.NameOnlyValidator(Validators.UserDefinedTypeMemberArray)
-            //            : model.ValidatorProvider.NameOnlyValidator(Validators.UserDefinedTypeMember);
-            //    }
-            //    else
-            //    {
-            //        candidate.NameValidator = model.ValidatorProvider.NameOnlyValidator(Validators.Default);
-            //    }
-            //    candidate.ConflictFinder = model.ValidatorProvider.ConflictDetector(EncapsulateFieldStrategy.UseBackingFields, declarationFinderProvider);
-            //}
-        }
+            : base(declarationFinderProvider, model, indenter) { }
 
         protected override void ModifyFields(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession)
         {
@@ -47,7 +24,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             foreach (var field in SelectedFields)
             {
-                if (field.Declaration.HasPrivateAccessibility() && field.FieldIdentifier.Equals(field.Declaration.IdentifierName))
+                if (field.Declaration.HasPrivateAccessibility() && field.BackingIdentifier.Equals(field.Declaration.IdentifierName))
                 {
                     rewriter.MakeImplicitDeclarationTypeExplicit(field.Declaration);
                     continue;
@@ -59,7 +36,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     continue;
                 }
 
-                rewriter.Rename(field.Declaration, field.FieldIdentifier);
+                rewriter.Rename(field.Declaration, field.BackingIdentifier);
                 rewriter.SetVariableVisiblity(field.Declaration, Accessibility.Private.TokenString());
                 rewriter.MakeImplicitDeclarationTypeExplicit(field.Declaration);
             }
@@ -69,7 +46,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             foreach (var field in SelectedFields)
             {
-                field.LoadFieldReferenceContextReplacements();
+                LoadFieldReferenceContextReplacements(field);
             }
 
             RewriteReferences(model, refactorRewriteSession);
@@ -84,7 +61,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             foreach (var field in fieldsRequiringNewDeclaration)
             {
-                var targetIdentifier = field.Declaration.Context.GetText().Replace(field.IdentifierName, field.FieldIdentifier);
+                var targetIdentifier = field.Declaration.Context.GetText().Replace(field.IdentifierName, field.BackingIdentifier);
                 var newField = field.Declaration.IsTypeSpecified
                     ? $"{Tokens.Private} {targetIdentifier}"
                     : $"{Tokens.Private} {targetIdentifier} {Tokens.As} {field.Declaration.AsTypeName}";

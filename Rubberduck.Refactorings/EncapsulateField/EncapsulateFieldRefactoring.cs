@@ -33,14 +33,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private QualifiedModuleName _targetQMN;
 
         public EncapsulateFieldRefactoring(
-            IDeclarationFinderProvider declarationFinderProvider,
-            IIndenter indenter,
-            IRefactoringPresenterFactory factory,
-            IRewritingManager rewritingManager,
-            ISelectionProvider selectionProvider,
-            ISelectedDeclarationProvider selectedDeclarationProvider,
-            IUiDispatcher uiDispatcher)
-        :base(rewritingManager, selectionProvider, factory, uiDispatcher)
+                IDeclarationFinderProvider declarationFinderProvider,
+                IIndenter indenter,
+                IRefactoringPresenterFactory factory,
+                IRewritingManager rewritingManager,
+                ISelectionProvider selectionProvider,
+                ISelectedDeclarationProvider selectedDeclarationProvider,
+                IUiDispatcher uiDispatcher)
+            :base(rewritingManager, selectionProvider, factory, uiDispatcher)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;
@@ -74,11 +74,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             _targetQMN = target.QualifiedModuleName;
 
-            var encapsulationCandidateFactory = new EncapsulateFieldElementFactory(_declarationFinderProvider, _targetQMN);
+            var builder = new EncapsulateFieldElementsBuilder(_declarationFinderProvider, _targetQMN);
 
-            var validatorProvider = encapsulationCandidateFactory.ValidatorProvider;
-            var candidates = encapsulationCandidateFactory.Candidates;
-            var defaultObjectStateUDT = encapsulationCandidateFactory.ObjectStateUDT;
+            var validationsProvider = builder.ValidationsProvider;
+            var candidates = builder.Candidates;
+            var defaultObjectStateUDT = builder.ObjectStateUDT;
 
             var selected = candidates.Single(c => c.Declaration == target);
             selected.EncapsulateFlag = true;
@@ -95,7 +95,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                                 defaultObjectStateUDT,
                                 PreviewRewrite,
                                 _declarationFinderProvider,
-                                validatorProvider);
+                                validationsProvider);
 
             if (objectStateUDT != null)
             {
@@ -104,34 +104,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
 
             return model;
-        }
-
-        //Identify an existing objectStateUDT and make it unavailable for the user to select for encapsulation.
-        //This prevents the user from inadvertently nesting a stateUDT within a new stateUDT
-        private bool TryRetrieveExistingObjectStateUDT(Declaration target, IEnumerable<IEncapsulateFieldCandidate> candidates, out IObjectStateUDT objectStateUDT)
-        {
-            objectStateUDT = null;
-            //Determination relies on matching the refactoring-generated name and a couple other UDT attributes
-            //to determine if an objectStateUDT pre-exists the refactoring.
-
-            //Question: would using an Annotations (like '@IsObjectStateUDT) be better?
-            //The logic would then be: if Annotated => it's the one.  else => apply the matching criteria below
-            
-            //e.g., In cases where the user chooses an existing UDT for the initial encapsulation, the matching 
-            //refactoring will not assign the name and the criteria below will fail => so applying an Annotation would
-            //make it possible to find again
-            var objectStateUDTIdentifier = $"{EncapsulateFieldResources.StateUserDefinedTypeIdentifierPrefix}{target.QualifiedModuleName.ComponentName}";
-
-            var objectStateUDTMatches = candidates.Where(c => c is IUserDefinedTypeCandidate udt
-                    && udt.Declaration.HasPrivateAccessibility()
-                    && udt.Declaration.AsTypeDeclaration.IdentifierName.StartsWith(objectStateUDTIdentifier, StringComparison.InvariantCultureIgnoreCase))
-                    .Select(pm => pm as IUserDefinedTypeCandidate);
-
-            if (objectStateUDTMatches.Count() == 1)
-            {
-                objectStateUDT = new ObjectStateUDT(objectStateUDTMatches.First()) { IsSelected = true };
-            }
-            return objectStateUDT != null;
         }
 
         protected override void RefactorImpl(EncapsulateFieldModel model)
@@ -148,24 +120,40 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private string PreviewRewrite(EncapsulateFieldModel model)
         {
-            IEncapsulateFieldRewriteSession refactorRewriteSession = new EncapsulateFieldRewriteSession(RewritingManager.CheckOutCodePaneSession());
+            var previewSession = new EncapsulateFieldRewriteSession(RewritingManager.CheckOutCodePaneSession()) as IEncapsulateFieldRewriteSession; ;
 
-            refactorRewriteSession = RefactorRewrite(model, refactorRewriteSession, true);
+            previewSession = RefactorRewrite(model, previewSession, true);
 
-            var previewRewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
-
-            return previewRewriter.GetText(maxConsecutiveNewLines: 3);
+            return previewSession.CreatePreview(_targetQMN);
         }
 
         private IEncapsulateFieldRewriteSession RefactorRewrite(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession, bool asPreview = false)
         {
             if (!model.SelectedFieldCandidates.Any()) { return refactorRewriteSession; }
 
-            var strategy = model.EncapsulateFieldStrategy == EncapsulateFieldStrategy.ConvertFieldsToUDTMembers // model.ConvertFieldsToUDTMembers
+            var strategy = model.EncapsulateFieldStrategy == EncapsulateFieldStrategy.ConvertFieldsToUDTMembers
                 ? new ConvertFieldsToUDTMembers(_declarationFinderProvider, model, _indenter) as IEncapsulateStrategy
                 : new UseBackingFields(_declarationFinderProvider, model, _indenter) as IEncapsulateStrategy;
 
             return strategy.RefactorRewrite(model, refactorRewriteSession, asPreview);
+        }
+
+        private bool TryRetrieveExistingObjectStateUDT(Declaration target, IEnumerable<IEncapsulatableField> candidates, out IObjectStateUDT objectStateUDT)
+        {
+            objectStateUDT = null;
+
+            var objectStateUDTIdentifier = $"T{target.QualifiedModuleName.ComponentName}";
+
+            var objectStateUDTMatches = candidates.Where(c => c is IUserDefinedTypeCandidate udt
+                    && udt.Declaration.HasPrivateAccessibility()
+                    && udt.Declaration.AsTypeDeclaration.IdentifierName.StartsWith(objectStateUDTIdentifier, StringComparison.InvariantCultureIgnoreCase))
+                    .Select(pm => pm as IUserDefinedTypeCandidate);
+
+            if (objectStateUDTMatches.Count() == 1)
+            {
+                objectStateUDT = new ObjectStateUDT(objectStateUDTMatches.First()) { IsSelected = true };
+            }
+            return objectStateUDT != null;
         }
     }
 }

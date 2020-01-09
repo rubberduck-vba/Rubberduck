@@ -11,12 +11,12 @@ using System.Linq;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public class EncapsulateFieldElementFactory
+    public class EncapsulateFieldElementsBuilder
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private QualifiedModuleName _targetQMN;
 
-        public EncapsulateFieldElementFactory(IDeclarationFinderProvider declarationFinderProvider, QualifiedModuleName targetQMN)//, IEncapsulateFieldValidator validator )
+        public EncapsulateFieldElementsBuilder(IDeclarationFinderProvider declarationFinderProvider, QualifiedModuleName targetQMN)//, IEncapsulateFieldValidator validator )
         {
             _declarationFinderProvider = declarationFinderProvider;
             _targetQMN = targetQMN;
@@ -25,9 +25,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public IObjectStateUDT ObjectStateUDT { private set; get; }
 
-        public IEncapsulateFieldValidationsProvider ValidatorProvider { private set; get; }
+        public IEncapsulateFieldValidationsProvider ValidationsProvider { private set; get; }
 
-        public IEnumerable<IEncapsulateFieldCandidate> Candidates { private set; get; }
+        public IEnumerable<IEncapsulatableField> Candidates { private set; get; }
 
         private void CreateRefactoringElements()
         {
@@ -35,11 +35,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 .Members(_targetQMN)
                 .Where(v => v.IsMemberVariable() && !v.IsWithEvents);
 
-            ValidatorProvider = new EncapsulateFieldValidationsProvider();
+            ValidationsProvider = new EncapsulateFieldValidationsProvider();
 
-            var nameValidator = ValidatorProvider.NameOnlyValidator(Validators.Default);
+            var nameValidator = ValidationsProvider.NameOnlyValidator(NameValidators.Default);
 
-            var candidates = new List<IEncapsulateFieldCandidate>();
+            var candidates = new List<IEncapsulatableField>();
             foreach (var fieldDeclaration in fieldDeclarations)
             {
                 Debug.Assert(!fieldDeclaration.DeclarationType.Equals(DeclarationType.UserDefinedTypeMember));
@@ -50,9 +50,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 candidates.Add(fieldEncapsulationCandidate);
             }
 
-            ValidatorProvider.RegisterCandidates(candidates);
+            ValidationsProvider.RegisterCandidates(candidates);
 
-            var conflictsValidator = ValidatorProvider.ConflictDetector(EncapsulateFieldStrategy.UseBackingFields, _declarationFinderProvider);
+            var conflictsValidator = ValidationsProvider.ConflictDetector(EncapsulateFieldStrategy.UseBackingFields, _declarationFinderProvider);
 
             ObjectStateUDT = CreateStateUDTField(conflictsValidator);
             foreach (var candidate in candidates)
@@ -60,9 +60,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 candidate.ConflictFinder = conflictsValidator;
                 conflictsValidator.AssignNoConflictIdentifier(candidate, DeclarationType.Property);
                 conflictsValidator.AssignNoConflictIdentifier(candidate, DeclarationType.Variable);
-
-                var converted = candidate as IConvertToUDTMember;
-                converted.ObjectStateUDT = ObjectStateUDT;
             }
 
             Candidates = candidates;
@@ -81,11 +78,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return stateUDT;
         }
 
-        private IEncapsulateFieldCandidate CreateCandidate(Declaration target, IValidateVBAIdentifiers validator)// Predicate<string> nameValidator)
+        private IEncapsulatableField CreateCandidate(Declaration target, IValidateVBAIdentifiers validator)// Predicate<string> nameValidator)
         {
             if (target.IsUserDefinedTypeField())
             {
-                var udtValidator = ValidatorProvider.NameOnlyValidator(Validators.UserDefinedType);
+                var udtValidator = ValidationsProvider.NameOnlyValidator(NameValidators.UserDefinedType);
                 var udtField = new UserDefinedTypeCandidate(target, udtValidator) as IUserDefinedTypeCandidate;
 
                 (Declaration udtDeclaration, IEnumerable<Declaration> udtMembers) = GetUDTAndMembersForField(udtField);
@@ -96,10 +93,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
                 foreach (var udtMemberDeclaration in udtMembers)
                 {
-                    var udtMemberValidator = ValidatorProvider.NameOnlyValidator(Validators.UserDefinedTypeMember);
+                    var udtMemberValidator = ValidationsProvider.NameOnlyValidator(NameValidators.UserDefinedTypeMember);
                     if (udtMemberDeclaration.IsArray)
                     {
-                        udtMemberValidator = ValidatorProvider.NameOnlyValidator(Validators.UserDefinedTypeMemberArray);
+                        udtMemberValidator = ValidationsProvider.NameOnlyValidator(NameValidators.UserDefinedTypeMemberArray);
                     }
                     var candidateUDTMember = new UserDefinedTypeMemberCandidate(CreateCandidate(udtMemberDeclaration, udtMemberValidator), udtField) as IUserDefinedTypeMemberCandidate;
 

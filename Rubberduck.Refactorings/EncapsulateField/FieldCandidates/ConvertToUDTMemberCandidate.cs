@@ -3,11 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Antlr4.Runtime;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
+
+    public interface IConvertToUDTMember : IEncapsulatableField
+    {
+        string UDTMemberDeclaration { get; }
+        IObjectStateUDT ObjectStateUDT { set; get; }
+        IEncapsulatableField WrappedCandidate { get; }
+    }
 
     public class ConvertToUDTMember : IConvertToUDTMember
     {
@@ -15,13 +24,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public ConvertToUDTMember(IEncapsulatableField candidate, IObjectStateUDT objStateUDT)
         {
             _wrapped = candidate;
+            BackingIdentifier = _wrapped.PropertyIdentifier;
             ObjectStateUDT = objStateUDT;
-        }
-
-        public string UDTMemberIdentifier
-        {
-            set => _wrapped.PropertyIdentifier = value;
-            get => _wrapped.PropertyIdentifier;
         }
 
         public virtual string UDTMemberDeclaration
@@ -32,9 +36,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 {
                    return array.UDTMemberDeclaration;
                 }
-                return $"{_wrapped.PropertyIdentifier} As {_wrapped.AsTypeName}";
+                return $"{BackingIdentifier} As {_wrapped.AsTypeName}";
             }
         }
+
+        public IEncapsulatableField WrappedCandidate => _wrapped;
 
         public IObjectStateUDT ObjectStateUDT { set; get; }
 
@@ -54,11 +60,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => _wrapped.PropertyIdentifier;
         }
 
-        public string PropertyAsTypeName
-        {
-            set => _wrapped.PropertyAsTypeName = value;
-            get => _wrapped.PropertyAsTypeName;
-        }
+        public string PropertyAsTypeName => _wrapped.PropertyAsTypeName;
+
+        public string BackingIdentifier { get; set; }
+
+        public string BackingAsTypeName => Declaration.AsTypeName;
 
         public bool CanBeReadWrite
         {
@@ -90,23 +96,26 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => _wrapped.ConflictFinder;
         }
 
-        public string AccessorInProperty
+        private string AccessorInProperty
         {
             get
             {
-                if (_wrapped is IUserDefinedTypeCandidate udt)
+                if (_wrapped is IUserDefinedTypeMemberCandidate udtm)
                 {
-                    return $"{ObjectStateUDT.FieldIdentifier}.{udt.PropertyIdentifier}.{UDTMemberIdentifier}";
+                    return $"{ObjectStateUDT.FieldIdentifier}.{udtm.Parent.PropertyIdentifier}.{BackingIdentifier}";
                 }
-                return $"{ObjectStateUDT.FieldIdentifier}.{UDTMemberIdentifier}";
+                return $"{ObjectStateUDT.FieldIdentifier}.{BackingIdentifier}";
             }
         }
 
-        public string AccessorLocalReference
-            => $"{ObjectStateUDT.FieldIdentifier}.{UDTMemberIdentifier}";
-
-        public string AccessorExternalReference
-            => $"{QualifiedModuleName.ComponentName}.{PropertyIdentifier}";
+        public string ReferenceAccessor(IdentifierReference idRef)
+        {
+            if (idRef.QualifiedModuleName != QualifiedModuleName)
+            {
+                return $"{QualifiedModuleName.ComponentName}.{PropertyIdentifier}";
+            }
+            return  $"{BackingIdentifier}";
+        }
 
         public string IdentifierName => _wrapped.IdentifierName;
 
@@ -119,36 +128,46 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return ConflictFinder.TryValidateEncapsulationAttributes(this, out errorMessage);
         }
 
-        public IEnumerable<IPropertyGeneratorAttributes> PropertyAttributeSets
+        public IEnumerable<PropertyAttributeSet> PropertyAttributeSets
         {
             get
             {
-                //if (TypeDeclarationIsPrivate)
-                //{
-                    if (_wrapped is IUserDefinedTypeCandidate udt)
+                if (_wrapped is IUserDefinedTypeCandidate udt && udt.TypeDeclarationIsPrivate)
                 {
-                    return _wrapped.PropertyAttributeSets;
+                    var sets = new List<PropertyAttributeSet>();
+                    foreach (var member in udt.Members)
+                    {
+                        sets.Add(CreateMemberPropertyAttributeSet(member));
+                    }
+                    return sets;
                 }
-                    //var specs = new List<IPropertyGeneratorAttributes>();
-                    //foreach (var member in Members)
-                    //{
-                    //    specs.Add(member.AsPropertyGeneratorSpec);
-                    //}
-                    //return specs;
-                //}
-                return new List<IPropertyGeneratorAttributes>() { AsPropertyAttributeSet };
+                return new List<PropertyAttributeSet>() { AsPropertyAttributeSet };
             }
         }
 
+        private PropertyAttributeSet CreateMemberPropertyAttributeSet (IUserDefinedTypeMemberCandidate udtMember)
+        {
+            return new PropertyAttributeSet()
+            {
+                PropertyName = udtMember.PropertyIdentifier,
+                BackingField = $"{ObjectStateUDT.FieldIdentifier}.{udtMember.Parent.PropertyIdentifier}.{udtMember.BackingIdentifier}",
+                AsTypeName = udtMember.PropertyAsTypeName,
+                ParameterName = udtMember.ParameterName,
+                GenerateLetter = udtMember.ImplementLet,
+                GenerateSetter = udtMember.ImplementSet,
+                UsesSetAssignment = udtMember.Declaration.IsObject,
+                IsUDTProperty = false //TODO: If udtMember is a UDT, this needs to be true
+            };
+        }
 
-        private IPropertyGeneratorAttributes AsPropertyAttributeSet
+        private PropertyAttributeSet AsPropertyAttributeSet
         {
             get
             {
                 return new PropertyAttributeSet()
                 {
                     PropertyName = PropertyIdentifier,
-                    BackingField = AccessorInProperty, // ReferenceWithinNewProperty,
+                    BackingField = AccessorInProperty,
                     AsTypeName = PropertyAsTypeName,
                     ParameterName = ParameterName,
                     GenerateLetter = ImplementLet,

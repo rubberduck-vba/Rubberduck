@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Rubberduck.Refactorings.EncapsulateField.Extensions;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -16,6 +17,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         IExecutableRewriteSession RewriteSession { get; }
         IModuleRewriter CheckOutModuleRewriter(QualifiedModuleName qmn);
         bool TryRewrite();
+        string CreatePreview(QualifiedModuleName qmn);
         void Remove(Declaration target, IModuleRewriter rewriter);
     }
 
@@ -39,6 +41,15 @@ namespace Rubberduck.Refactorings.EncapsulateField
             ExecuteCachedRemoveRequests();
 
             return _rewriteSession.TryRewrite();
+        }
+
+        public string CreatePreview(QualifiedModuleName qmn)
+        {
+            ExecuteCachedRemoveRequests();
+
+            var previewRewriter = _rewriteSession.CheckOutModuleRewriter(qmn);
+
+            return previewRewriter.GetText(maxConsecutiveNewLines: 3);
         }
 
         public void Remove(Declaration target, IModuleRewriter rewriter)

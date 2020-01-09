@@ -5,6 +5,7 @@ using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -20,26 +21,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public ConvertFieldsToUDTMembers(IDeclarationFinderProvider declarationFinderProvider, EncapsulateFieldModel model, IIndenter indenter)
             : base(declarationFinderProvider, model, indenter)
         {
-            model.AssignCandidateValidations(EncapsulateFieldStrategy.ConvertFieldsToUDTMembers);
             _convertedFields = new List<IConvertToUDTMember>();
-            if (File.Exists("C:\\Users\\Brian\\Documents\\UseNewUDTStructure.txt"))
+            foreach (var field in model.SelectedFieldCandidates)
             {
-                foreach (var field in model.SelectedFieldCandidates)
-                {
-                    _convertedFields.Add(new ConvertToUDTMember(field, model.StateUDTField));
-                }
-            }
-            else
-            {
-                _convertedFields = model.SelectedFieldCandidates.Cast<IConvertToUDTMember>().ToList();
-            }
-            foreach (var convert in _convertedFields)
-            {
-                convert.NameValidator = convert.Declaration.IsArray
-                    ? model.ValidatorProvider.NameOnlyValidator(Validators.UserDefinedTypeMemberArray)
-                    : model.ValidatorProvider.NameOnlyValidator(Validators.UserDefinedTypeMember);
-
-                convert.ConflictFinder = model.ValidatorProvider.ConflictDetector(EncapsulateFieldStrategy.ConvertFieldsToUDTMembers, declarationFinderProvider);
+                _convertedFields.Add(new ConvertToUDTMember(field, model.StateUDTField));
             }
             _stateUDTField = model.StateUDTField;
         }
@@ -48,7 +33,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             var rewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
 
-            foreach (var field in  model.SelectedFieldCandidates)
+            foreach (var field in _convertedFields)
             {
                 refactorRewriteSession.Remove(field.Declaration, rewriter);
             }
@@ -63,9 +48,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         protected override void ModifyReferences(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession)
         {
-            foreach (var field in model.SelectedFieldCandidates)
+            foreach (var field in _convertedFields)
             {
-                field.LoadFieldReferenceContextReplacements(_stateUDTField.FieldIdentifier);
+                LoadFieldReferenceContextReplacements(field);
             }
 
             RewriteReferences(model, refactorRewriteSession);
@@ -85,13 +70,54 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         protected override void LoadNewPropertyBlocks(EncapsulateFieldModel model)
         {
-            var propertyGenerationSpecs = _convertedFields // model.SelectedFieldCandidates
-                                                .SelectMany(f => f.PropertyAttributeSets);
+            var propertyGenerationSpecs = _convertedFields.SelectMany(f => f.PropertyAttributeSets);
 
             var generator = new PropertyGenerator();
             foreach (var spec in propertyGenerationSpecs)
             {
                 AddContentBlock(NewContentTypes.MethodBlock, generator.AsPropertyBlock(spec, _indenter));
+            }
+        }
+
+        protected override void LoadFieldReferenceContextReplacements(IEncapsulatableField field)
+        {
+            Debug.Assert(field is IConvertToUDTMember);
+
+            var converted = field as IConvertToUDTMember;
+            if (converted.WrappedCandidate is IUserDefinedTypeCandidate udt && udt.TypeDeclarationIsPrivate)
+            {
+                foreach (var member in udt.Members)
+                {
+                    foreach (var idRef in member.ParentContextReferences)
+                    {
+                        var replacementText = member.ReferenceAccessor(idRef);
+                        if (IsExternalReferenceRequiringModuleQualification(idRef))
+                        {
+                            replacementText = $"{udt.QualifiedModuleName.ComponentName}.{replacementText}";
+                        }
+
+                        SetUDTMemberReferenceRewriteContent(idRef, replacementText);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var idRef in field.Declaration.References)
+                {
+                    var replacementText = converted.ReferenceAccessor(idRef);
+
+                    if (IsExternalReferenceRequiringModuleQualification(idRef))
+                    {
+                        replacementText = $"{converted.QualifiedModuleName.ComponentName}.{replacementText}";
+                    }
+
+                    if (converted.Declaration.IsArray)
+                    {
+                        replacementText = $"{_stateUDTField.FieldIdentifier}.{replacementText}";
+                    }
+
+                    SetReferenceRewriteContent(idRef, replacementText);
+                }
             }
         }
     }

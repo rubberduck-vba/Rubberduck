@@ -17,7 +17,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             private const string _neverATargetID = "_Never_a_TargetID_";
             private bool _detailFieldIsFlagged;
 
-            public MasterDetailSelectionManager(IEncapsulateFieldCandidate selected)
+            public MasterDetailSelectionManager(IEncapsulatableField selected)
                 : this(selected?.TargetID)
             {
                 if (selected != null)

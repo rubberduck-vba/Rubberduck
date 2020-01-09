@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public interface IArrayCandidate : IEncapsulateFieldCandidate
+    public interface IArrayCandidate : IEncapsulatableField
     {
         string UDTMemberDeclaration { get;}
     }
@@ -20,7 +20,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             ImplementLet = false;
             ImplementSet = false;
-            FieldAsTypeName = declaration.AsTypeName;
             PropertyAsTypeName = Tokens.Variant;
             CanBeReadWrite = false;
             IsReadOnly = true;
@@ -32,61 +31,17 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
+        public string UDTMemberDeclaration
+            => $"{PropertyIdentifier}({_subscripts}) {Tokens.As} {Declaration.AsTypeName}";
+
+        protected override string AccessorInProperty
+            => $"{BackingIdentifier}";
+
+        protected override string AccessorLocalReference(IdentifierReference idRef)
+            => $"{BackingIdentifier}";
+
         private bool HasExternalRedimOperation
             => Declaration.References.Any(rf => rf.QualifiedModuleName != QualifiedModuleName
                     && rf.Context.TryGetAncestor<VBAParser.RedimVariableDeclarationContext>(out _));
-
-        public override bool TryValidateEncapsulationAttributes(out string errorMessage)
-        {
-            return ConflictFinder.TryValidateEncapsulationAttributes(this, out errorMessage);
-        }
-
-        public override void LoadFieldReferenceContextReplacements(string referenceQualifier = null)
-        {
-            ReferenceQualifier = referenceQualifier;
-            foreach (var idRef in Declaration.References)
-            {
-                //Locally, we do all operations using the backing field
-                if (idRef.QualifiedModuleName == QualifiedModuleName)
-                {
-                    var accessor = ConvertFieldToUDTMember 
-                        ? ReferenceForPreExistingReferences
-                        : FieldIdentifier;
-
-                    SetReferenceRewriteContent(idRef, accessor);
-                    continue;
-                }
-
-                var replacementText = RequiresAccessQualification(idRef)
-                    ? $"{QualifiedModuleName.ComponentName}.{ReferenceForPreExistingReferences}"
-                    : ReferenceForPreExistingReferences;
-
-                SetReferenceRewriteContent(idRef, replacementText);
-            }
-        }
-
-        protected override void SetReferenceRewriteContent(IdentifierReference idRef, string replacementText)
-        {
-            var context = idRef.Context;
-            if (idRef.Context is VBAParser.IndexExprContext idxExpression)
-            {
-                context = idxExpression.children.ElementAt(0) as ParserRuleContext;
-            }
-            if (IdentifierReplacements.ContainsKey(idRef))
-            {
-                IdentifierReplacements[idRef] = (context, replacementText);
-                return;
-            }
-            IdentifierReplacements.Add(idRef, (context, replacementText));
-        }
-
-        public override string AccessorInProperty
-            => $"{ObjectStateUDT.FieldIdentifier}.{UDTMemberIdentifier}";
-
-        public override string AccessorLocalReference
-            => $"{ObjectStateUDT.FieldIdentifier}.{UDTMemberIdentifier}";
-
-        public override string UDTMemberDeclaration
-            => $"{PropertyIdentifier}({_subscripts}) {Tokens.As} {Declaration.AsTypeName}";
     }
 }

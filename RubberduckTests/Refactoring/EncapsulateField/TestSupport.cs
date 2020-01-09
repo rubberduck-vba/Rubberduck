@@ -129,31 +129,30 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             return new EncapsulateFieldRefactoring(state, indenter, factory, rewritingManager, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
         }
 
-        public IEncapsulateFieldCandidate RetrieveEncapsulateFieldCandidate(string inputCode, string fieldName)
+        public IEncapsulatableField RetrieveEncapsulateFieldCandidate(string inputCode, string fieldName)
         {
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
             return RetrieveEncapsulateFieldCandidate(vbe, fieldName);
         }
 
-        public IEncapsulateFieldCandidate RetrieveEncapsulateFieldCandidate(string inputCode, string fieldName, DeclarationType declarationType)
+        public IEncapsulatableField RetrieveEncapsulateFieldCandidate(string inputCode, string fieldName, DeclarationType declarationType)
         {
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
             return RetrieveEncapsulateFieldCandidate(vbe, fieldName, declarationType);
         }
 
-        public IEncapsulateFieldCandidate RetrieveEncapsulateFieldCandidate(IVBE vbe, string fieldName, DeclarationType declarationType = DeclarationType.Variable)
+        public IEncapsulatableField RetrieveEncapsulateFieldCandidate(IVBE vbe, string fieldName, DeclarationType declarationType = DeclarationType.Variable)
         {
             var state = MockParser.CreateAndParse(vbe);
             using (state)
             {
                 var match = state.DeclarationFinder.MatchName(fieldName).Where(m => m.DeclarationType.Equals(declarationType)).Single();
-                var factory = new EncapsulateFieldElementFactory(state, match.QualifiedModuleName);
-                //var validator = new EncapsulateFieldValidator(state, factory.Candidates);
-                foreach (var candidate in factory.Candidates)
+                var builder = new EncapsulateFieldElementsBuilder(state, match.QualifiedModuleName);
+                foreach (var candidate in builder.Candidates)
                 {
-                    candidate.NameValidator = factory.ValidatorProvider.NameOnlyValidator(Validators.Default);
+                    candidate.NameValidator = builder.ValidationsProvider.NameOnlyValidator(NameValidators.Default);
                 }
-                return factory.Candidates.First();
+                return builder.Candidates.First();
             }
         }
 
@@ -196,7 +195,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
     {
         public TestEncapsulationAttributes(string fieldName, bool encapsulationFlag = true, bool isReadOnly = false)
         {
-            var validator = new EncapsulateFieldValidationsProvider().NameOnlyValidator(Validators.Default);
+            var validator = new EncapsulateFieldValidationsProvider().NameOnlyValidator(NameValidators.Default);
             _identifiers = new EncapsulationIdentifiers(fieldName, validator);
             EncapsulateFlag = encapsulationFlag;
             IsReadOnly = isReadOnly;

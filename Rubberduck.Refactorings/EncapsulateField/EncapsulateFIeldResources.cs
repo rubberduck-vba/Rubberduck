@@ -11,24 +11,20 @@ namespace Rubberduck.Refactorings.EncapsulateField
     //just before the 'WIP' annotation is removed
     public class EncapsulateFieldResources
     {
-        public static string PreviewEndOfChangesMarker
+        public static string PreviewMarker
             => "'<===== Property and Declaration changes above this line =====>";
 
         public static string DefaultPropertyParameter => "value";
 
         public static string DefaultStateUDTFieldName => "this";
 
-        //TODO: Is it meaningful to change the Type prefix for different cultures?
-        //If not, remove this declaration
-        public static string StateUserDefinedTypeIdentifierPrefix => "T";
-
-        public static string GroupBoxHeaderSuffix = "Encapsulation Property Name:";
+        public static string GroupBoxHeaderSuffix = "Property Name:";
 
         public static string Caption
             => RubberduckUI.EncapsulateField_Caption;
 
         public static string InstructionText  /* => RubberduckUI.EncapsulateField_InstructionText*/
-            => "Select one or more fields to encapsulate.  Optionally edit property names or accept the default value(s)";
+            => "Select one or more fields to encapsulate.  Accept the default values or edit property names";
 
         public static string Preview
             => RubberduckUI.EncapsulateField_Preview;
@@ -37,15 +33,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             => RubberduckUI.EncapsulateField_TitleText;
 
         public static string PrivateUDTPropertyText
-            => "Encapsulates Each UDT Member";
-
-        public static string Conflict => "Conflict";
-
-        public static string Property => "Property";
-
-        public static string Field => "Field";
-
-        public static string Parameter => "Parameter";
+            => "Creates a Property for Each UDT Member";
 
         public static string NameConflictDetected => "Name Conflict Detected";
 
