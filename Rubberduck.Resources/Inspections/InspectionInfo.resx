@@ -433,4 +433,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
     <value>Whenever both sides of an assignment without Set are objects, there is an assignment from the default member of the RHS to the one on the LHS. Although this might be intentional, in many situations it will just mask an erroneously forgotten Set.</value>
   </data>
+  <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
+    <value>If the type clause for a Const isn't included it is implicitly typed. Include an explicit ' As &lt;Type&gt;' replacing '&lt;Type&gt;' with the correct data type to explicitly type your const value.</value>
+  </data>
 </root>

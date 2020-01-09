@@ -437,4 +437,7 @@
   <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
     <value>Suspicious Let assignment</value>
   </data>
+  <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
+    <value>Implicitly typed Const</value>
+  </data>
 </root>
