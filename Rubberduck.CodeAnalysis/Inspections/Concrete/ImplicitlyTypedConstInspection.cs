@@ -20,7 +20,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
             var implicitlyTypedConsts = declarationFinder.AllDeclarations
                 .Where(declaration => declaration.DeclarationType == DeclarationType.Constant
-                    && declaration.AsTypeContext == null);
+                    && !declaration.IsTypeSpecified);
 
             return implicitlyTypedConsts.Select(Result);
         }

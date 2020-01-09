@@ -53,6 +53,24 @@ End Sub";
             Assert.AreEqual(expected, actual);
         }
 
+        [Test]
+        [Category("Inspections")]
+        public void ImplicitlyTypedConst_Ignored_DoesNotReturnResult()
+        {
+            const string inputCode =
+@"Sub Foo()
+    '@Ignore ImplicitlyTypedConst
+    Const bar = 0
+End Sub";
+
+            const int expected = 0;
+
+            var results = InspectionResultsForModules(("FooClass", inputCode, ComponentType.ClassModule));
+            var actual = results.Count();
+
+            Assert.AreEqual(expected, actual);
+        }
+
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
             return new ImplicitlyTypedConstInspection(state);
