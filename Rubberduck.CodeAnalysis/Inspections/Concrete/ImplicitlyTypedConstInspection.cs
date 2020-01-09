@@ -5,6 +5,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Resources.Inspections;
 
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
@@ -26,9 +27,11 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
         private IInspectionResult Result(Declaration declaration)
         {
+            var description = string.Format(InspectionResults.ImplicitlyTypedConstInspection, declaration.IdentifierName);
+
             return new IdentifierReferenceInspectionResult(
                 this,
-                declaration.DescriptionString,
+                description,
                 State,
                 new IdentifierReference(
                     declaration.QualifiedModuleName,
