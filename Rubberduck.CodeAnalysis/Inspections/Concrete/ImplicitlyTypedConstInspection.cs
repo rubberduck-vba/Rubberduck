@@ -29,18 +29,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         {
             var description = string.Format(InspectionResults.ImplicitlyTypedConstInspection, declaration.IdentifierName);
 
-            return new IdentifierReferenceInspectionResult(
+            return new DeclarationInspectionResult(
                 this,
                 description,
-                State,
-                new IdentifierReference(
-                    declaration.QualifiedModuleName,
-                    declaration.ParentScopeDeclaration,
-                    declaration.ParentDeclaration,
-                    declaration.IdentifierName,
-                    declaration.Selection,
-                    declaration.Context,
-                    declaration));
+                declaration);
         }
     }
 }
