@@ -14,10 +14,10 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void InspectionName()
         {
-            var inspection = new ImplicitlyTypedConstInspection(null);
+            var inspectionUnderTest = new ImplicitlyTypedConstInspection(null);
 
             var expected = nameof(ImplicitlyTypedConstInspection);
-            var actual = inspection.Name;
+            var actual = inspectionUnderTest.Name;
             Assert.AreEqual(expected, actual);
         }
 
