@@ -55,6 +55,52 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
+        [TestCase("!")]
+        [TestCase("@")]
+        [TestCase("#")]
+        [TestCase("$")]
+        [TestCase("%")]
+        [TestCase("^")]
+        [TestCase("&")]
+        public void ImplicitlyTypedConst_HasTypeHint_DoesNotReturnResult(string typeHint)
+        {
+            string inputCode =
+$@"Public Sub Foo()
+    Const bar{typeHint} = 0
+End Sub";
+
+            const int expected = 0;
+
+            var results = InspectionResultsForModules(("FooClass", inputCode, ComponentType.ClassModule));
+            var actual = results.Count();
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [TestCase("!")]
+        [TestCase("@")]
+        [TestCase("#")]
+        //[TestCase("$")] Errors out
+        [TestCase("%")]
+        [TestCase("^")]
+        [TestCase("&")]
+        public void ImplicitlyTypedConst_AssignedValueHasTypeHint_ReturnsResult(string typeHint)
+        {
+            string inputCode =
+$@"Public Sub Foo()
+    Const bar = 0{typeHint}
+End Sub";
+
+            const int expected = 1;
+
+            var results = InspectionResultsForModules(("FooClass", inputCode, ComponentType.ClassModule));
+            var actual = results.Count();
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void ImplicitlyTypedConst_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
