@@ -70,7 +70,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             return finder.FailedLetCoercions(module);
         }
 
-        protected override bool IsResultReference(IdentifierReference failedLetCoercion)
+        protected override bool IsResultReference(IdentifierReference failedLetCoercion, DeclarationFinder finder)
         {
             return !failedLetCoercion.IsAssignment;
         }

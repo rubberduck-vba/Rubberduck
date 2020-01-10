@@ -68,7 +68,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             return finder.FailedIndexedDefaultMemberAccesses(module);
         }
 
-        protected override bool IsResultReference(IdentifierReference failedIndexedDefaultMemberAccess)
+        protected override bool IsResultReference(IdentifierReference failedIndexedDefaultMemberAccess, DeclarationFinder finder)
         {
             return true;
         }

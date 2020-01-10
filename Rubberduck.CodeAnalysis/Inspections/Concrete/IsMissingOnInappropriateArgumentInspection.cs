@@ -5,7 +5,9 @@ using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 
 namespace Rubberduck.Inspections.Concrete
@@ -38,30 +40,35 @@ namespace Rubberduck.Inspections.Concrete
         public IsMissingOnInappropriateArgumentInspection(RubberduckParserState state)
             : base(state) { }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsUnsuitableArgument(ArgumentReference reference, DeclarationFinder finder)
         {
-            var results = new List<IInspectionResult>();
+            var parameter = GetParameterForReference(reference, finder);
 
-            var prefilteredReferences = IsMissingDeclarations.SelectMany(decl => decl.References
-                .Where(candidate => !candidate.IsIgnoringInspectionResultFor(AnnotationName)));
+            return parameter != null
+                    && (!parameter.IsOptional
+                        || !parameter.AsTypeName.Equals(Tokens.Variant)
+                        || !string.IsNullOrEmpty(parameter.DefaultValue)
+                        || parameter.IsArray);
+        }
 
-            foreach (var reference in prefilteredReferences)
-            {
-                var parameter = GetParameterForReference(reference);
+        protected override IInspectionResult InspectionResult(IdentifierReference reference, IDeclarationFinderProvider declarationFinderProvider)
+        {
+            //This is not ideal, put passing along the declaration finder used in the test itself or the parameter requires reimplementing half of the base class. 
+            var argumentReference = reference as ArgumentReference;
+            var finder = declarationFinderProvider.DeclarationFinder; 
+            var parameter = GetParameterForReference(argumentReference, finder);
 
-                if (parameter == null || 
-                    parameter.IsOptional 
-                    && parameter.AsTypeName.Equals(Tokens.Variant) 
-                    && string.IsNullOrEmpty(parameter.DefaultValue) 
-                    && !parameter.IsArray)
-                {
-                    continue;                   
-                }
+            return new IdentifierReferenceInspectionResult(
+                this,
+                ResultDescription(reference),
+                declarationFinderProvider,
+                reference,
+                parameter);
+        }
 
-                results.Add(new IdentifierReferenceInspectionResult(this, InspectionResults.IsMissingOnInappropriateArgumentInspection, State, reference, parameter));
-            }
-
-            return results;
+        protected override string ResultDescription(IdentifierReference reference)
+        {
+            return InspectionResults.IsMissingOnInappropriateArgumentInspection;
         }
     }
 }

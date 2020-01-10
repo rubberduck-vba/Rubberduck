@@ -66,7 +66,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             return finder.FailedProcedureCoercions(module);
         }
 
-        protected override bool IsResultReference(IdentifierReference failedCoercion)
+        protected override bool IsResultReference(IdentifierReference failedCoercion, DeclarationFinder finder)
         {
             // return true because no special ignore checking is required
             return true;

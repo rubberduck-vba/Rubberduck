@@ -11,15 +11,11 @@ namespace Rubberduck.Inspections.Abstract
 {
     public abstract class IdentifierReferenceInspectionBase : InspectionBase
     {
-        protected readonly IDeclarationFinderProvider DeclarationFinderProvider;
-
         public IdentifierReferenceInspectionBase(RubberduckParserState state)
             : base(state)
-        {
-            DeclarationFinderProvider = state;
-        }
+        {}
 
-        protected abstract bool IsResultReference(IdentifierReference reference);
+        protected abstract bool IsResultReference(IdentifierReference reference, DeclarationFinder finder);
         protected abstract string ResultDescription(IdentifierReference reference);
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
@@ -44,7 +40,7 @@ namespace Rubberduck.Inspections.Abstract
         protected IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
         {
             var objectionableReferences = ReferencesInModule(module, finder)
-                .Where(IsResultReference);
+                .Where(reference => IsResultReference(reference, finder));
 
             return objectionableReferences
                 .Select(reference => InspectionResult(reference, DeclarationFinderProvider))

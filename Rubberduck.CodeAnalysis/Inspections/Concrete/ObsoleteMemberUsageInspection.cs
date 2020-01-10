@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 
 namespace Rubberduck.Inspections.Inspections.Concrete
@@ -54,7 +55,7 @@ namespace Rubberduck.Inspections.Inspections.Concrete
         {
         }
 
-        protected override bool IsResultReference(IdentifierReference reference)
+        protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
             var declaration = reference?.Declaration;
             return declaration != null

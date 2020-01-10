@@ -4,6 +4,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Parsing.Inspections;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -74,7 +75,7 @@ namespace Rubberduck.Inspections.Concrete
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        protected override bool IsResultReference(IdentifierReference reference)
+        protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
             return reference.IsNonIndexedDefaultMemberAccess
                    && reference.DefaultMemberRecursionDepth > 1

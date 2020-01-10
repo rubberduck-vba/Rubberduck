@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -40,50 +38,13 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class ObjectVariableNotSetInspection : InspectionBase
+    public sealed class ObjectVariableNotSetInspection : IdentifierReferenceInspectionBase
     {
-        private IDeclarationFinderProvider _declarationFinderProvider;
-
         public ObjectVariableNotSetInspection(RubberduckParserState state)
             : base(state)
-        {
-            _declarationFinderProvider = state;
-        }
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
-        {
-            var finder = _declarationFinderProvider.DeclarationFinder;
-
-            var results = new List<IInspectionResult>();
-            foreach (var moduleDeclaration in finder.UserDeclarations(DeclarationType.Module))
-            {
-                if (moduleDeclaration == null)
-                {
-                    continue;
-                }
-
-                var module = moduleDeclaration.QualifiedModuleName;
-                results.AddRange(DoGetInspectionResults(module, finder));
-            }
-
-            return results;
-        }
-
-        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
-        {
-            var finder = _declarationFinderProvider.DeclarationFinder;
-            return DoGetInspectionResults(module, finder);
-        }
-
-        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
-        {
-            var failedailedLetResolutionResultReferences = FailedLetResolutionResultReferences(module, finder);
-
-            return failedailedLetResolutionResultReferences
-                .Select(reference => InspectionResult(reference, _declarationFinderProvider));
-        }
-
-        private IEnumerable<IdentifierReference> FailedLetResolutionResultReferences(QualifiedModuleName module, DeclarationFinder finder)
+        protected override IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module, DeclarationFinder finder)
         {
             var failedLetCoercionAssignmentsInModule = FailedLetResolutionAssignments(module, finder);
             var possiblyObjectLhsLetAssignmentsWithFailedLetResolutionOnRhs = PossiblyObjectLhsLetAssignmentsWithNonValueOnRhs(module, finder);
@@ -132,16 +93,12 @@ namespace Rubberduck.Inspections.Concrete
             return assignments.Concat(unboundAssignments);
         }
 
-        private IInspectionResult InspectionResult(IdentifierReference reference, IDeclarationFinderProvider declarationFinderProvider)
+        protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
-            return new IdentifierReferenceInspectionResult(
-                this,
-                ResultDescription(reference),
-                declarationFinderProvider,
-                reference);
+            return true;
         }
 
-        private static string ResultDescription(IdentifierReference reference)
+        protected override string ResultDescription(IdentifierReference reference)
         {
             return string.Format(InspectionResults.ObjectVariableNotSetInspection, reference.IdentifierName);
         }

@@ -47,7 +47,7 @@ namespace Rubberduck.Inspections.Concrete
             return finder.UnboundDefaultMemberAccesses(module);
         }
 
-        protected override bool IsResultReference(IdentifierReference reference)
+        protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
             return reference.IsIndexedDefaultMemberAccess
                    && !(reference.Context is VBAParser.DictionaryAccessContext)
