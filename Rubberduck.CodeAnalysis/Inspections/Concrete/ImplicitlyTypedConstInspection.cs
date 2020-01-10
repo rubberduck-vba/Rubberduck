@@ -18,9 +18,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
         {
             var declarationFinder = State.DeclarationFinder;
 
-            var implicitlyTypedConsts = declarationFinder.AllDeclarations
-                .Where(declaration => declaration.DeclarationType == DeclarationType.Constant
-                    && !declaration.IsTypeSpecified);
+            var implicitlyTypedConsts = declarationFinder.UserDeclarations(DeclarationType.Constant)
+                .Where(declaration => !declaration.IsTypeSpecified);
 
             return implicitlyTypedConsts.Select(Result);
         }
