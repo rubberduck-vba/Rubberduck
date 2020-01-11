@@ -1,15 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Inspections.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
+﻿using Rubberduck.Inspections.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Inspections.Concrete
+namespace Rubberduck.Inspections.Concrete
 {
     /// <summary>
     /// Identifies uses of 'IsMissing' involving a non-parameter argument.
@@ -42,7 +37,7 @@ namespace Rubberduck.Inspections.Inspections.Concrete
 
         protected override bool IsUnsuitableArgument(ArgumentReference reference, DeclarationFinder finder)
         {
-            var parameter = GetParameterForReference(reference, finder);
+            var parameter = ParameterForReference(reference, finder);
 
             return parameter == null;
         }

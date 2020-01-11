@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Interaction.Navigation;

@@ -1,10 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
-using NLog;
-using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Binding;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -12,7 +8,7 @@ using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Inspections.Abstract
 {
-    public abstract class IsMissingInspectionBase : IdentifierReferenceInspectionFromDeclarationsBase
+    public abstract class IsMissingInspectionBase : ArgumentReferenceInspectionFromDeclarationsBase
     {
         protected IsMissingInspectionBase(RubberduckParserState state) 
             : base(state) { }
@@ -23,9 +19,6 @@ namespace Rubberduck.Inspections.Inspections.Abstract
             "VBA6.DLL;VBA.Information.IsMissing"
         };
 
-        protected abstract bool IsUnsuitableArgument(ArgumentReference reference, DeclarationFinder finder);
-
-
         protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)
         {
             return IsMissingDeclarations(finder);
@@ -34,7 +27,7 @@ namespace Rubberduck.Inspections.Inspections.Abstract
         protected IReadOnlyList<Declaration> IsMissingDeclarations(DeclarationFinder finder)
         {
             var vbaProjects = finder.Projects
-                .Where(project => project.IdentifierName == "VBA")
+                .Where(project => project.IdentifierName == "VBA" && !project.IsUserDefined)
                 .ToList();
 
             if (!vbaProjects.Any())
@@ -60,22 +53,7 @@ namespace Rubberduck.Inspections.Inspections.Abstract
             return isMissing;
         }
 
-        protected override IEnumerable<IdentifierReference> ObjectionableReferences(DeclarationFinder finder)
-        {
-            return ObjectionableDeclarations(finder)
-                .OfType<ModuleBodyElementDeclaration>()
-                .SelectMany(declaration => declaration.Parameters)
-                .SelectMany(parameter => parameter.ArgumentReferences)
-                .Where(reference => IsResultReference(reference, finder));
-        }
-
-        protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
-        {
-            return reference is ArgumentReference argumentReference
-                   && IsUnsuitableArgument(argumentReference, finder);
-        }
-
-        protected ParameterDeclaration GetParameterForReference(ArgumentReference reference, DeclarationFinder finder)
+        protected ParameterDeclaration ParameterForReference(ArgumentReference reference, DeclarationFinder finder)
         {
             var argumentContext = reference.Context as VBAParser.LExprContext;
             if (!(argumentContext?.lExpression() is VBAParser.SimpleNameExprContext name))

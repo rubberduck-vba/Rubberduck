@@ -67,6 +67,54 @@ End Sub";
         }
 
         [Test]
+        [Ignore("Ref #4329")]
+        [Category("Inspections")]
+        public void SheetAccessedUsingString_DoesNotReturnResult_AccessingUsingWorkbookVariable()
+        {
+            const string inputCode =
+                @"Public Sub Foo()
+    Dim wkb As Excel.Workbook
+    Set wkb = Workbooks(""Foo"")
+    wkb.Worksheets(""Sheet1"").Range(""A1"") = ""Foo""
+    wkb.Sheets(""Sheet1"").Range(""A1"") = ""Foo""
+End Sub";
+            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode).Count());
+        }
+
+        [Test]
+        [Ignore("Ref #4329")]
+        [Category("Inspections")]
+        public void SheetAccessedUsingString_DoesNotReturnResult_AccessingUsingWorkbookProperty()
+        {
+            const string inputCode =
+                @"
+Public Property Get MyWorkbook() As Excel.Workbook
+    Set MyWorkbook = Workbooks(""Foo"")
+End Property
+
+Public Sub Foo()
+    MyWorkbook.Worksheets(""Sheet1"").Range(""A1"") = ""Foo""
+    MyWorkbook.Sheets(""Sheet1"").Range(""A1"") = ""Foo""
+End Sub";
+            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode).Count());
+        }
+
+        [Test]
+        [Ignore("Ref #4329")]
+        [Category("Inspections")]
+        public void SheetAccessedUsingString_DoesNotReturnResult_AccessingUsingWithBlockVariable()
+        {
+            const string inputCode =
+                @"Public Sub Foo()
+    With Workbooks(""Foo"")
+        .Worksheets(""Sheet1"").Range(""A1"") = ""Foo""
+        .Sheets(""Sheet1"").Range(""A1"") = ""Foo""
+    End With
+End Sub";
+            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode).Count());
+        }
+
+        [Test]
         [Category("Inspections")]
         public void SheetAccessedUsingString_DoesNotReturnResult_NoSheetWithGivenNameExists()
         {

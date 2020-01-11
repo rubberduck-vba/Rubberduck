@@ -40,30 +40,22 @@ namespace Rubberduck.Inspections.Concrete
         public IsMissingOnInappropriateArgumentInspection(RubberduckParserState state)
             : base(state) { }
 
-        protected override bool IsUnsuitableArgument(ArgumentReference reference, DeclarationFinder finder)
+        protected override (bool isResult, object properties) IsUnsuitableArgumentWithAdditionalProperties(ArgumentReference reference, DeclarationFinder finder)
         {
-            var parameter = GetParameterForReference(reference, finder);
+            var parameter = ParameterForReference(reference, finder);
 
-            return parameter != null
-                    && (!parameter.IsOptional
-                        || !parameter.AsTypeName.Equals(Tokens.Variant)
-                        || !string.IsNullOrEmpty(parameter.DefaultValue)
-                        || parameter.IsArray);
+            var isResult = parameter != null
+                           && (!parameter.IsOptional
+                               || !parameter.AsTypeName.Equals(Tokens.Variant)
+                               || !string.IsNullOrEmpty(parameter.DefaultValue)
+                               || parameter.IsArray);
+            return (isResult, parameter);
         }
 
-        protected override IInspectionResult InspectionResult(IdentifierReference reference, IDeclarationFinderProvider declarationFinderProvider)
+        protected override bool IsUnsuitableArgument(ArgumentReference reference, DeclarationFinder finder)
         {
-            //This is not ideal, put passing along the declaration finder used in the test itself or the parameter requires reimplementing half of the base class. 
-            var argumentReference = reference as ArgumentReference;
-            var finder = declarationFinderProvider.DeclarationFinder; 
-            var parameter = GetParameterForReference(argumentReference, finder);
-
-            return new IdentifierReferenceInspectionResult(
-                this,
-                ResultDescription(reference),
-                declarationFinderProvider,
-                reference,
-                parameter);
+            //No need to implement this, since we override IsUnsuitableArgumentWithAdditionalProperties.
+            throw new System.NotImplementedException();
         }
 
         protected override string ResultDescription(IdentifierReference reference)
