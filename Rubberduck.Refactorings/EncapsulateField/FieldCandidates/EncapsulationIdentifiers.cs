@@ -56,7 +56,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             set
             {
                 _fieldAndProperty = new KeyValuePair<string, string>(value, _fieldAndProperty.Value);
-                 SetNonConflictParameterName();
             }
         }
 
@@ -66,23 +65,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
             set
             {
                 _fieldAndProperty = new KeyValuePair<string, string>(_fieldAndProperty.Key, value);
-
-                SetNonConflictParameterName();
             }
         }
 
-        public string SetLetParameter => _setLetParameter;
-
-        private void SetNonConflictParameterName()
-        {
-            _setLetParameter = DEFAULT_WRITE_PARAMETER;
-
-            var guard = 0;
-            while ( guard++ < 10 && (Field.IsEquivalentVBAIdentifierTo(_setLetParameter)
-                    || Property.IsEquivalentVBAIdentifierTo(_setLetParameter)))
-            {
-                _setLetParameter = _setLetParameter.IncrementEncapsulationIdentifier();
-            }
-        }
+        public string SetLetParameter => DEFAULT_WRITE_PARAMETER;
     }
 }

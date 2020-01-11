@@ -11,20 +11,20 @@ using Rubberduck.VBEditor;
 namespace Rubberduck.Refactorings.EncapsulateField
 {
 
-    public interface IConvertToUDTMember : IEncapsulatableField
+    public interface IConvertToUDTMember : IEncapsulateFieldCandidate
     {
         string UDTMemberDeclaration { get; }
         IObjectStateUDT ObjectStateUDT { set; get; }
-        IEncapsulatableField WrappedCandidate { get; }
+        IEncapsulateFieldCandidate WrappedCandidate { get; }
     }
 
     public class ConvertToUDTMember : IConvertToUDTMember
     {
-        private readonly IEncapsulatableField _wrapped;
-        public ConvertToUDTMember(IEncapsulatableField candidate, IObjectStateUDT objStateUDT)
+        private readonly IEncapsulateFieldCandidate _wrapped;
+        public ConvertToUDTMember(IEncapsulateFieldCandidate candidate, IObjectStateUDT objStateUDT)
         {
             _wrapped = candidate;
-            BackingIdentifier = _wrapped.PropertyIdentifier;
+            PropertyIdentifier = _wrapped.PropertyIdentifier;
             ObjectStateUDT = objStateUDT;
         }
 
@@ -40,7 +40,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        public IEncapsulatableField WrappedCandidate => _wrapped;
+        public IEncapsulateFieldCandidate WrappedCandidate => _wrapped;
 
         public IObjectStateUDT ObjectStateUDT { set; get; }
 
@@ -62,8 +62,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public string PropertyAsTypeName => _wrapped.PropertyAsTypeName;
 
-        public string BackingIdentifier { get; set; }
-
+        public string BackingIdentifier
+        {
+            set { }
+            get => PropertyIdentifier;
+        }
         public string BackingAsTypeName => Declaration.AsTypeName;
 
         public bool CanBeReadWrite
@@ -82,9 +85,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => _wrapped.IsReadOnly;
         }
 
-        public string ParameterName => _wrapped.ParameterName;
+        public string ParameterName
+        {
+            set => _wrapped.ParameterName = value;
+            get => _wrapped.ParameterName;
+        }
 
-        public IValidateVBAIdentifiers NameValidator
+    public IValidateVBAIdentifiers NameValidator
         {
             set => _wrapped.NameValidator = value;
             get => _wrapped.NameValidator;

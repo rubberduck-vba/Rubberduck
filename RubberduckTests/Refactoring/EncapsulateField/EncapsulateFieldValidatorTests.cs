@@ -33,9 +33,8 @@ $@"Public {originalFieldName} As String";
 
             var encapsulatedField = Support.RetrieveEncapsulateFieldCandidate(inputCode, originalFieldName);
 
-            //encapsulatedField.PropertyName = newPropertyName;
-            encapsulatedField.PropertyIdentifier = newPropertyName;
             encapsulatedField.EncapsulateFlag = true;
+            encapsulatedField.PropertyIdentifier = newPropertyName;
             Assert.AreEqual(expectedResult, encapsulatedField.TryValidateEncapsulationAttributes(out _));
         }
 
@@ -102,7 +101,7 @@ Private Function First() As String
 End Function";
 
             var candidate = Support.RetrieveEncapsulateFieldCandidate(inputCode, "myBar", DeclarationType.Variable);
-            var result = candidate.ConflictFinder/*NamesValidator*/.IsConflictingProposedIdentifier("First", candidate, DeclarationType.Property);
+            var result = candidate.ConflictFinder.IsConflictingProposedIdentifier("First", candidate, DeclarationType.Property);
             Assert.AreEqual(true, result);
         }
 
@@ -578,6 +577,35 @@ Private foo As String
 
             var model = Support.RetrieveUserModifiedModelPriorToRefactoring(inputCode, "seats", DeclarationType.Variable, presenterAction);
             Assert.AreEqual(true, model["seats"].TryValidateEncapsulationAttributes(out var errorMessage), errorMessage);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void AddedUDTMemberConflictsWithExistingName()
+        {
+            var fieldUT = "mFirstValue";
+            string inputCode =
+                $@"
+
+Private Type MyType
+    FirstValue As Integer
+    SecondValue As Integer
+End Type
+
+Private {fieldUT} As Double
+
+Private myType As MyType
+";
+            var userInput = new UserInputDataObject()
+                .UserSelectsField(fieldUT);
+
+            userInput.EncapsulateUsingUDTField("myType");
+
+            var presenterAction = Support.SetParameters(userInput);
+
+            var model = Support.RetrieveUserModifiedModelPriorToRefactoring(inputCode, fieldUT, DeclarationType.Variable, presenterAction);
+            Assert.AreEqual(false, model[fieldUT].TryValidateEncapsulationAttributes(out var errorMessage), errorMessage);
         }
 
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)

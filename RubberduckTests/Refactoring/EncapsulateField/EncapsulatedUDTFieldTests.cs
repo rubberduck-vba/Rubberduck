@@ -64,7 +64,7 @@ End Type
 Public th|is As TBar
 Public that As TBar";
 
-            var validator = new EncapsulateFieldValidationsProvider().NameOnlyValidator(NameValidators.Default);
+            var validator = EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.Default);
             var expectedThis = new EncapsulationIdentifiers("this", validator);
             var expectedThat = new EncapsulationIdentifiers("that", validator);
 
@@ -85,12 +85,12 @@ Public that As TBar";
                 StringAssert.Contains($"Property Get Second", actualCode);
 
                 StringAssert.Contains($"Private {expectedThat.TargetFieldName} As TBar", actualCode);
-                StringAssert.Contains($"ThatFirst = {expectedThat.TargetFieldName}.First", actualCode);
-                StringAssert.Contains($"ThatSecond = {expectedThat.TargetFieldName}.Second", actualCode);
+                StringAssert.Contains($"First_1 = {expectedThat.TargetFieldName}.First", actualCode);
+                StringAssert.Contains($"Second_1 = {expectedThat.TargetFieldName}.Second", actualCode);
                 StringAssert.Contains($"{expectedThat.TargetFieldName}.First = value", actualCode);
                 StringAssert.Contains($"{expectedThat.TargetFieldName}.Second = value", actualCode);
-                StringAssert.Contains($"Property Get ThatFirst", actualCode);
-                StringAssert.Contains($"Property Get ThatSecond", actualCode);
+                StringAssert.Contains($"Property Get First_1", actualCode);
+                StringAssert.Contains($"Property Get Second_1", actualCode);
 
                 StringAssert.Contains($"Private {expectedThis.TargetFieldName} As TBar", actualCode);
                 StringAssert.Contains($"Private {expectedThat.TargetFieldName} As TBar", actualCode);
@@ -679,37 +679,6 @@ $@"
 
 Public th|is As TBar";
 
-//            var procedureModuleReferencingCode =
-//$@"Option Explicit
-
-//Public Type TBar
-//    First As String
-//    Second As Long
-//End Type
-
-//Private {sourceClassName} As {sourceModuleName}
-//Private Const foo As String = ""Foo""
-//Private Const bar As Long = 7
-
-//Public Sub Initialize()
-//    Set {sourceClassName} = New {sourceModuleName}
-//End Sub
-
-//Public Sub Foo()
-//    {sourceClassName}.this.First = foo
-//End Sub
-
-//Public Sub Bar()
-//    {sourceClassName}.this.Second = bar
-//End Sub
-
-//Public Sub FooBar()
-//    With {sourceClassName}
-//        .this.First = foo
-//        .this.Second = bar
-//    End With
-//End Sub
-//";
 
             string classModuleReferencingCode =
 $@"Option Explicit
@@ -751,14 +720,8 @@ End Sub
                 presenterAction,
                 null,
                 false,
-                //("StdModule", procedureModuleReferencingCode, ComponentType.StandardModule),
                 ("ClassModule", classModuleReferencingCode, ComponentType.ClassModule),
                 (sourceModuleName, sourceCodeString.Code, ComponentType.ClassModule));
-
-            //var referencingModuleCode = actualModuleCode["StdModule"];
-            //StringAssert.Contains($"{sourceClassName}.MyType.First = ", referencingModuleCode);
-            //StringAssert.Contains($"{sourceClassName}.MyType.Second = ", referencingModuleCode);
-            //StringAssert.Contains($"  .MyType.Second = ", referencingModuleCode);
 
             var referencingClassCode = actualModuleCode["ClassModule"];
             StringAssert.Contains($"{sourceClassName}.MyType.First = ", referencingClassCode);
@@ -811,33 +774,6 @@ Public Sub FooBar()
 End Sub
 ";
 
-//            string classModuleReferencingCode =
-//$@"Option Explicit
-
-//Private {sourceClassName} As {sourceModuleName}
-//Private Const foo As String = ""Foo""
-//Private Const bar As Long = 7
-
-//Private Sub Class_Initialize()
-//    Set {sourceClassName} = New {sourceModuleName}
-//End Sub
-
-//Public Sub Foo()
-//    {sourceClassName}.this.First = foo
-//End Sub
-
-//Public Sub Bar()
-//    {sourceClassName}.this.Second = bar
-//End Sub
-
-//Public Sub FooBar()
-//    With {sourceClassName}
-//        .this.First = foo
-//        .this.Second = bar
-//    End With
-//End Sub
-//";
-
             var userInput = new UserInputDataObject()
                 .UserSelectsField("this", "MyType");
 
@@ -852,18 +788,12 @@ End Sub
                 null,
                 false,
                 ("StdModule", procedureModuleReferencingCode, ComponentType.StandardModule),
-                //("ClassModule", classModuleReferencingCode, ComponentType.ClassModule),
                 (sourceModuleName, sourceCodeString.Code, ComponentType.ClassModule));
 
             var referencingModuleCode = actualModuleCode["StdModule"];
             StringAssert.Contains($"{sourceClassName}.MyType.First = ", referencingModuleCode);
             StringAssert.Contains($"{sourceClassName}.MyType.Second = ", referencingModuleCode);
             StringAssert.Contains($"  .MyType.Second = ", referencingModuleCode);
-
-            //var referencingClassCode = actualModuleCode["ClassModule"];
-            //StringAssert.Contains($"{sourceClassName}.MyType.First = ", referencingClassCode);
-            //StringAssert.Contains($"{sourceClassName}.MyType.Second = ", referencingClassCode);
-            //StringAssert.Contains($"  .MyType.Second = ", referencingClassCode);
         }
 
         [Test]
@@ -955,7 +885,7 @@ End Function";
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
 
-            StringAssert.Contains("Public Property Let MyBarFirst", actualCode);
+            StringAssert.Contains("Public Property Let First_1", actualCode);
             StringAssert.Contains("Public Property Let Second", actualCode);
         }
 

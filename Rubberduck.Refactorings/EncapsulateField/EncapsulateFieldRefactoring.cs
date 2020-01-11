@@ -76,31 +76,22 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             var builder = new EncapsulateFieldElementsBuilder(_declarationFinderProvider, _targetQMN);
 
-            var validationsProvider = builder.ValidationsProvider;
-            var candidates = builder.Candidates;
-            var defaultObjectStateUDT = builder.ObjectStateUDT;
-
-            var selected = candidates.Single(c => c.Declaration == target);
+            var selected = builder.Candidates.Single(c => c.Declaration == target);
             selected.EncapsulateFlag = true;
-
-            if (TryRetrieveExistingObjectStateUDT(target, candidates, out var objectStateUDT))
-            {
-                objectStateUDT.IsSelected = true;
-                defaultObjectStateUDT.IsSelected = false;
-            }
 
             var model = new EncapsulateFieldModel(
                                 target,
-                                candidates,
-                                defaultObjectStateUDT,
+                                builder.Candidates,
+                                builder.ObjectStateUDTCandidates,
+                                builder.DefaultObjectStateUDT,
                                 PreviewRewrite,
                                 _declarationFinderProvider,
-                                validationsProvider);
+                                builder.ValidationsProvider);
 
-            if (objectStateUDT != null)
+            if (builder.ObjectStateUDT != null)
             {
-                model.StateUDTField = objectStateUDT;
                 model.EncapsulateFieldStrategy = EncapsulateFieldStrategy.ConvertFieldsToUDTMembers;
+                model.StateUDTField = builder.ObjectStateUDT;
             }
 
             return model;
@@ -136,24 +127,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 : new UseBackingFields(_declarationFinderProvider, model, _indenter) as IEncapsulateStrategy;
 
             return strategy.RefactorRewrite(model, refactorRewriteSession, asPreview);
-        }
-
-        private bool TryRetrieveExistingObjectStateUDT(Declaration target, IEnumerable<IEncapsulatableField> candidates, out IObjectStateUDT objectStateUDT)
-        {
-            objectStateUDT = null;
-
-            var objectStateUDTIdentifier = $"T{target.QualifiedModuleName.ComponentName}";
-
-            var objectStateUDTMatches = candidates.Where(c => c is IUserDefinedTypeCandidate udt
-                    && udt.Declaration.HasPrivateAccessibility()
-                    && udt.Declaration.AsTypeDeclaration.IdentifierName.StartsWith(objectStateUDTIdentifier, StringComparison.InvariantCultureIgnoreCase))
-                    .Select(pm => pm as IUserDefinedTypeCandidate);
-
-            if (objectStateUDTMatches.Count() == 1)
-            {
-                objectStateUDT = new ObjectStateUDT(objectStateUDTMatches.First()) { IsSelected = true };
-            }
-            return objectStateUDT != null;
         }
     }
 }

@@ -13,21 +13,35 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly Func<EncapsulateFieldModel, string> _previewDelegate;
         private QualifiedModuleName _targetQMN;
         private IDeclarationFinderProvider _declarationFinderProvider;
-        private IEncapsulateFieldValidationsProvider _validatorProvider;
+        private IEncapsulateFieldValidationsProvider _validationsProvider;
         private IObjectStateUDT _newObjectStateUDT;
+
+        private List<IEncapsulateFieldCandidate> _convertedFields;
+        private HashSet<IObjectStateUDT> _objStateCandidates;
 
         private IDictionary<Declaration, (Declaration, IEnumerable<Declaration>)> _udtFieldToUdtDeclarationMap = new Dictionary<Declaration, (Declaration, IEnumerable<Declaration>)>();
 
-        public EncapsulateFieldModel(Declaration target, IEnumerable<IEncapsulatableField> candidates, IObjectStateUDT stateUDTField, Func<EncapsulateFieldModel, string> previewDelegate, IDeclarationFinderProvider declarationFinderProvider, IEncapsulateFieldValidationsProvider validatorProvider) // IEncapsulateFieldValidator validator)
+        public EncapsulateFieldModel(
+            Declaration target, 
+            IEnumerable<IEncapsulateFieldCandidate> candidates, 
+            IEnumerable<IObjectStateUDT> objectStateUDTCandidates, 
+            IObjectStateUDT stateUDTField, 
+            Func<EncapsulateFieldModel, string> previewDelegate, 
+            IDeclarationFinderProvider declarationFinderProvider, 
+            IEncapsulateFieldValidationsProvider validationsProvider)
         {
             _previewDelegate = previewDelegate;
             _targetQMN = target.QualifiedModuleName;
             _newObjectStateUDT = stateUDTField;
             _declarationFinderProvider = declarationFinderProvider;
-            _validatorProvider = validatorProvider;
+            _validationsProvider = validationsProvider;
 
-            EncapsulationCandidates = candidates.ToList();
+            _useBackingFieldCandidates = candidates.ToList();
+            _objStateCandidates = new HashSet<IObjectStateUDT>(objectStateUDTCandidates);
+            _objStateCandidates.Add(_newObjectStateUDT);
+
             EncapsulateFieldStrategy = EncapsulateFieldStrategy.UseBackingFields;
+            _activeObjectStateUDT = StateUDTField;
         }
 
         public QualifiedModuleName QualifiedModuleName => _targetQMN;
@@ -38,46 +52,81 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => _encapsulationFieldStategy;
             set
             {
+                if (_encapsulationFieldStategy == value) { return; }
+
                 _encapsulationFieldStategy = value;
+
                 if (_encapsulationFieldStategy == EncapsulateFieldStrategy.UseBackingFields)
                 {
-                    foreach (var candidate in EncapsulationCandidates)
-                    {
-                        candidate.ConflictFinder = _validatorProvider.ConflictDetector(_encapsulationFieldStategy, _declarationFinderProvider);// ConflictDetector;
-                        switch (candidate)
-                        {
-                            case IUserDefinedTypeCandidate udt:
-                                candidate.NameValidator = _validatorProvider.NameOnlyValidator(NameValidators.UserDefinedType);
-                                break;
-                            case IUserDefinedTypeMemberCandidate udtm:
-                                candidate.NameValidator = candidate.Declaration.IsArray
-                                    ? _validatorProvider.NameOnlyValidator(NameValidators.UserDefinedTypeMemberArray)
-                                    : _validatorProvider.NameOnlyValidator(NameValidators.UserDefinedTypeMember);
-                                break;
-                            default:
-                                candidate.NameValidator = _validatorProvider.NameOnlyValidator(NameValidators.Default);
-                                break;
-                        }
-                    }
+                    ChangeSettingToUseBackingFieldsStrategy();
+                    return;
                 }
-                else
-                {
-                    foreach (var candidate in EncapsulationCandidates)
-                    {
-                        candidate.ConflictFinder = _validatorProvider.ConflictDetector(_encapsulationFieldStategy, _declarationFinderProvider);// ConflictDetector;
-                        candidate.NameValidator = candidate.Declaration.IsArray
-                            ? _validatorProvider.NameOnlyValidator(NameValidators.UserDefinedTypeMemberArray)
-                            : _validatorProvider.NameOnlyValidator(NameValidators.UserDefinedTypeMember);
-                    }
-                }
+                ChangeSettingsToConvertFieldsToUDTMembersStrategy();
             }
         } 
 
-        public IEncapsulateFieldValidationsProvider ValidationsProvider => _validatorProvider;
+        private void ChangeSettingToUseBackingFieldsStrategy()
+        {
+            foreach (var candidate in EncapsulationCandidates)
+            {
+                candidate.ConflictFinder = _validationsProvider.ConflictDetector(EncapsulateFieldStrategy, _declarationFinderProvider);
+                switch (candidate)
+                {
+                    case IUserDefinedTypeCandidate udt:
+                        candidate.NameValidator = EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.UserDefinedType);
+                        break;
+                    case IUserDefinedTypeMemberCandidate udtm:
+                        candidate.NameValidator = candidate.Declaration.IsArray
+                            ? EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.UserDefinedTypeMemberArray)
+                            : EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.UserDefinedTypeMember);
+                        break;
+                    default:
+                        candidate.NameValidator = EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.Default);
+                        break;
+                }
+                EditIdentifiersAsRequired();
+            }
+        }
 
-        public List<IEncapsulatableField> EncapsulationCandidates { set; get; } = new List<IEncapsulatableField>();
+        private void ChangeSettingsToConvertFieldsToUDTMembersStrategy()
+        {
+            foreach (var candidate in EncapsulationCandidates)
+            {
+                candidate.ConflictFinder = _validationsProvider.ConflictDetector(EncapsulateFieldStrategy , _declarationFinderProvider);// ConflictDetector;
+                candidate.NameValidator = candidate.Declaration.IsArray
+                    ? EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.UserDefinedTypeMemberArray)
+                    : EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.UserDefinedTypeMember);
 
-        public IEnumerable<IEncapsulatableField> SelectedFieldCandidates
+                EditIdentifiersAsRequired();
+            }
+        }
+
+        public IEncapsulateFieldValidationsProvider ValidationsProvider => _validationsProvider;
+
+        private List<IEncapsulateFieldCandidate> _useBackingFieldCandidates;
+        public List<IEncapsulateFieldCandidate> EncapsulationCandidates
+        {
+            get
+            {
+                if (EncapsulateFieldStrategy == EncapsulateFieldStrategy.UseBackingFields)
+                {
+                    return _useBackingFieldCandidates;
+                }
+
+                if (_convertedFields is null)
+                {
+                    _convertedFields = new List<IEncapsulateFieldCandidate>();
+                    foreach (var field in _useBackingFieldCandidates)
+                    {
+                        _convertedFields.Add(new ConvertToUDTMember(field, StateUDTField));
+                    }
+                }
+
+                return _convertedFields;
+            }
+        } 
+
+        public IEnumerable<IEncapsulateFieldCandidate> SelectedFieldCandidates
             => EncapsulationCandidates.Where(v => v.EncapsulateFlag);
 
         public IEnumerable<IUserDefinedTypeCandidate> UDTFieldCandidates 
@@ -90,50 +139,57 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     .Where(v => v is IUserDefinedTypeCandidate)
                     .Cast<IUserDefinedTypeCandidate>();
 
-        public IEncapsulatableField this[string encapsulatedFieldTargetID]
+        public IEncapsulateFieldCandidate this[string encapsulatedFieldTargetID]
             => EncapsulationCandidates.Where(c => c.TargetID.Equals(encapsulatedFieldTargetID)).Single();
 
-        public IEncapsulatableField this[Declaration fieldDeclaration]
+        public IEncapsulateFieldCandidate this[Declaration fieldDeclaration]
             => EncapsulationCandidates.Where(c => c.Declaration == fieldDeclaration).Single();
         
         private IObjectStateUDT _activeObjectStateUDT;
         public IObjectStateUDT StateUDTField
         {
+            get
+            {
+                _activeObjectStateUDT = ObjectStateUDTCandidates
+                            .SingleOrDefault(os => os.IsSelected) ?? _newObjectStateUDT;
+
+                return _activeObjectStateUDT;
+            }
             set
             {
-                _activeObjectStateUDT = value;
-                foreach (var candidate in EncapsulationCandidates)
+                if (_activeObjectStateUDT.FieldIdentifier == (value?.FieldIdentifier ?? string.Empty))
                 {
-                    if (candidate is IConvertToUDTMember udtMember)
-                    {
-                        udtMember.ObjectStateUDT = value;
-                    }
+                    return;
+                }
+
+                foreach (var objectStateUDT in ObjectStateUDTCandidates)
+                {
+                    objectStateUDT.IsSelected = false;
+                }
+
+                _activeObjectStateUDT =
+                    ObjectStateUDTCandidates.SingleOrDefault(os => os.FieldIdentifier.Equals(value?.FieldIdentifier ?? null))
+                    ?? _newObjectStateUDT;
+
+                _activeObjectStateUDT.IsSelected = true;
+
+                if (EncapsulateFieldStrategy == EncapsulateFieldStrategy.ConvertFieldsToUDTMembers)
+                {
+                    EditIdentifiersAsRequired();
                 }
             }
-            get => _activeObjectStateUDT ?? _newObjectStateUDT;
+        }
+
+        private void EditIdentifiersAsRequired()
+        {
+            foreach (var candidate in EncapsulationCandidates)
+            {
+                candidate.ConflictFinder.AssignNoConflictIdentifiers(candidate);
+            }
         }
 
         public string PreviewRefactoring() => _previewDelegate(this);
 
-        private HashSet<IObjectStateUDT>  _objStateCandidates;
-        public IEnumerable<IObjectStateUDT> ObjectStateUDTCandidates
-        {
-            get
-            {
-                 if (_objStateCandidates != null)
-                {
-                    return _objStateCandidates;
-                }
-
-                _objStateCandidates = new HashSet<IObjectStateUDT>();
-                foreach (var candidate in UDTFieldCandidates.Where(udt => udt.CanBeObjectStateUDT))
-                {
-                    _objStateCandidates.Add(new ObjectStateUDT(candidate));
-                }
-
-                _objStateCandidates.Add(_newObjectStateUDT);
-                return _objStateCandidates;
-            }
-        }
+        public IEnumerable<IObjectStateUDT> ObjectStateUDTCandidates => _objStateCandidates;
     }
 }

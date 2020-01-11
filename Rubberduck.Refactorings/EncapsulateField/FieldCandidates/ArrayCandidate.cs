@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public interface IArrayCandidate : IEncapsulatableField
+    public interface IArrayCandidate : IEncapsulateFieldCandidate
     {
         string UDTMemberDeclaration { get;}
     }

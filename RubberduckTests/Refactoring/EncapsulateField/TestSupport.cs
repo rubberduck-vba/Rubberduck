@@ -36,7 +36,6 @@ namespace RubberduckTests.Refactoring.EncapsulateField
         {
             return model =>
             {
-                //model.ConvertFieldsToUDTMembers = convertFieldToUDTMember;
                 model.EncapsulateFieldStrategy = convertFieldToUDTMember
                     ? EncapsulateFieldStrategy.ConvertFieldsToUDTMembers
                     : EncapsulateFieldStrategy.UseBackingFields;
@@ -67,30 +66,28 @@ namespace RubberduckTests.Refactoring.EncapsulateField
         {
             return model =>
             {
-                //model.ConvertFieldsToUDTMembers = userInput.ConvertFieldsToUDTMembers;
-                model.EncapsulateFieldStrategy = userInput.ConvertFieldsToUDTMembers
-                    ? EncapsulateFieldStrategy.ConvertFieldsToUDTMembers
-                    : EncapsulateFieldStrategy.UseBackingFields;
-
                 if (userInput.ConvertFieldsToUDTMembers)
                 {
-                    var stateUDT = model.EncapsulationCandidates.Where(sfc => sfc is IUserDefinedTypeCandidate udt && udt.TargetID == userInput.ObjectStateUDTTargetID)
-                    .Select(sfc => sfc as IUserDefinedTypeCandidate).SingleOrDefault();
+                    model.EncapsulateFieldStrategy = EncapsulateFieldStrategy.ConvertFieldsToUDTMembers;
+                    var stateUDT = model.ObjectStateUDTCandidates.Where(os => os.IdentifierName == userInput.ObjectStateUDTTargetID)
+                        .Select(sfc => sfc).SingleOrDefault();
+
                     if (stateUDT != null)
                     {
-                        stateUDT.EncapsulateFlag = false;
-                        model.StateUDTField = new ObjectStateUDT(stateUDT);
-                        model.StateUDTField.IsSelected = true;
+                        model.StateUDTField = stateUDT;
                     }
+                }
+                else
+                {
+                    model.EncapsulateFieldStrategy = EncapsulateFieldStrategy.UseBackingFields;
                 }
 
                 foreach (var testModifiedAttribute in userInput.EncapsulateFieldAttributes)
                 {
                     var attrsInitializedByTheRefactoring = model[testModifiedAttribute.TargetFieldName];
 
-                    //attrsInitializedByTheRefactoring.PropertyName = testModifiedAttribute.PropertyName;
-                    attrsInitializedByTheRefactoring.PropertyIdentifier = testModifiedAttribute.PropertyName;
                     attrsInitializedByTheRefactoring.EncapsulateFlag = testModifiedAttribute.EncapsulateFlag;
+                    attrsInitializedByTheRefactoring.PropertyIdentifier = testModifiedAttribute.PropertyName;
                     attrsInitializedByTheRefactoring.IsReadOnly = testModifiedAttribute.IsReadOnly;
                 }
                 return model;
@@ -101,16 +98,14 @@ namespace RubberduckTests.Refactoring.EncapsulateField
         {
             return model =>
             {
-                var encapsulatedField = model[originalField];
-                //encapsulatedField.PropertyName = attrs.PropertyName;
-                encapsulatedField.PropertyIdentifier = attrs.PropertyName;
-                encapsulatedField.IsReadOnly = attrs.IsReadOnly;
-                encapsulatedField.EncapsulateFlag = attrs.EncapsulateFlag;
-
-                //model.ConvertFieldsToUDTMembers = convertFieldsToUDTMembers;
                 model.EncapsulateFieldStrategy = convertFieldsToUDTMembers
                     ? EncapsulateFieldStrategy.ConvertFieldsToUDTMembers
                     : EncapsulateFieldStrategy.UseBackingFields;
+
+                var encapsulatedField = model[originalField];
+                encapsulatedField.EncapsulateFlag = attrs.EncapsulateFlag;
+                encapsulatedField.PropertyIdentifier = attrs.PropertyName;
+                encapsulatedField.IsReadOnly = attrs.IsReadOnly;
                 return model;
             };
         }
@@ -129,19 +124,19 @@ namespace RubberduckTests.Refactoring.EncapsulateField
             return new EncapsulateFieldRefactoring(state, indenter, factory, rewritingManager, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
         }
 
-        public IEncapsulatableField RetrieveEncapsulateFieldCandidate(string inputCode, string fieldName)
+        public IEncapsulateFieldCandidate RetrieveEncapsulateFieldCandidate(string inputCode, string fieldName)
         {
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
             return RetrieveEncapsulateFieldCandidate(vbe, fieldName);
         }
 
-        public IEncapsulatableField RetrieveEncapsulateFieldCandidate(string inputCode, string fieldName, DeclarationType declarationType)
+        public IEncapsulateFieldCandidate RetrieveEncapsulateFieldCandidate(string inputCode, string fieldName, DeclarationType declarationType)
         {
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
             return RetrieveEncapsulateFieldCandidate(vbe, fieldName, declarationType);
         }
 
-        public IEncapsulatableField RetrieveEncapsulateFieldCandidate(IVBE vbe, string fieldName, DeclarationType declarationType = DeclarationType.Variable)
+        public IEncapsulateFieldCandidate RetrieveEncapsulateFieldCandidate(IVBE vbe, string fieldName, DeclarationType declarationType = DeclarationType.Variable)
         {
             var state = MockParser.CreateAndParse(vbe);
             using (state)
@@ -150,7 +145,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
                 var builder = new EncapsulateFieldElementsBuilder(state, match.QualifiedModuleName);
                 foreach (var candidate in builder.Candidates)
                 {
-                    candidate.NameValidator = builder.ValidationsProvider.NameOnlyValidator(NameValidators.Default);
+                    candidate.NameValidator = EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.Default);
                 }
                 return builder.Candidates.First();
             }
@@ -195,7 +190,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
     {
         public TestEncapsulationAttributes(string fieldName, bool encapsulationFlag = true, bool isReadOnly = false)
         {
-            var validator = new EncapsulateFieldValidationsProvider().NameOnlyValidator(NameValidators.Default);
+            var validator = EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.Default);
             _identifiers = new EncapsulationIdentifiers(fieldName, validator);
             EncapsulateFlag = encapsulationFlag;
             IsReadOnly = isReadOnly;
@@ -255,7 +250,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
         public string StateUDT_FieldName { set; get; }
 
-        public TestEncapsulationAttributes this[string fieldName]
+        public TestEncapsulationAttributes this[string fieldName] 
             => EncapsulateFieldAttributes.Where(efa => efa.TargetFieldName == fieldName).Single();
 
         public IEnumerable<TestEncapsulationAttributes> EncapsulateFieldAttributes => _userInput;

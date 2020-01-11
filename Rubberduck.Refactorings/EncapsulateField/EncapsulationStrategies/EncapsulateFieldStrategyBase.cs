@@ -31,7 +31,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         protected Dictionary<NewContentTypes, List<string>> _newContent { set; get; }
         private static string DoubleSpace => $"{Environment.NewLine}{Environment.NewLine}";
 
-        protected IEnumerable<IEncapsulatableField> SelectedFields { private set; get; }
+        protected IEnumerable<IEncapsulateFieldCandidate> SelectedFields { private set; get; }
 
         public EncapsulateFieldStrategyBase(IDeclarationFinderProvider declarationFinderProvider, EncapsulateFieldModel model, IIndenter indenter)
         {
@@ -123,7 +123,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        protected virtual void LoadFieldReferenceContextReplacements(IEncapsulatableField field)
+        protected virtual void LoadFieldReferenceContextReplacements(IEncapsulateFieldCandidate field)
         {
             if (field is IUserDefinedTypeCandidate udt && udt.TypeDeclarationIsPrivate)
             {

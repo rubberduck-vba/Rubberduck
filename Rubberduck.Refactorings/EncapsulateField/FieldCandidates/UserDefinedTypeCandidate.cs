@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public interface IUserDefinedTypeCandidate : IEncapsulatableField
+    public interface IUserDefinedTypeCandidate : IEncapsulateFieldCandidate
     {
         IEnumerable<IUserDefinedTypeMemberCandidate> Members { get; }
         void AddMember(IUserDefinedTypeMemberCandidate member);
@@ -99,22 +99,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     foreach (var member in Members)
                     {
                         member.EncapsulateFlag = value;
-                        if (!member.EncapsulateFlag || !ConflictFinder.HasConflictingIdentifier(member, DeclarationType.Property, out _))
-                        {
-                            continue;
-                        }
-
-                        //Reaching this line probably implies that there are multiple fields of the same User Defined 
-                        //Type within the module.
-                        //Try to use a name involving the parent's identifier to make it unique/meaningful 
-                        //before giving up and creating incremented value(s).
-                        member.PropertyIdentifier = $"{BackingIdentifier.CapitalizeFirstLetter()}{member.PropertyIdentifier.CapitalizeFirstLetter()}";
-                        ConflictFinder.AssignNoConflictIdentifier(member, DeclarationType.Property);
                     }
                 }
                 base.EncapsulateFlag = value;
             }
-            get => _encapsulateFlag;
+            get => base.EncapsulateFlag;
         }
 
         protected override string AccessorInProperty

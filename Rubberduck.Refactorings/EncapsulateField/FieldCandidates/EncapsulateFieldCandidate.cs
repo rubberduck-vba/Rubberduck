@@ -16,20 +16,20 @@ namespace Rubberduck.Refactorings.EncapsulateField
         string AsTypeName { get; }
     }
 
-    public interface IEncapsulatableField : IEncapsulateFieldRefactoringElement
+    public interface IEncapsulateFieldCandidate : IEncapsulateFieldRefactoringElement
     {
         string TargetID { get; }
         Declaration Declaration { get; }
         bool EncapsulateFlag { get; set; }
         string BackingIdentifier { set; get; }
-        string BackingAsTypeName { /*set;*/ get; }
+        string BackingAsTypeName { get; }
         string PropertyIdentifier { set; get; }
-        string PropertyAsTypeName { /*set;*/ get; }
+        string PropertyAsTypeName { get; }
         bool CanBeReadWrite { set; get; }
         bool ImplementLet { get; }
         bool ImplementSet { get; }
         bool IsReadOnly { set; get; }
-        string ParameterName { get; }
+        string ParameterName { set; get; }
         IValidateVBAIdentifiers NameValidator { set; get; }
         IEncapsulateFieldConflictFinder ConflictFinder { set; get; }
         bool TryValidateEncapsulationAttributes(out string errorMessage);
@@ -37,11 +37,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         IEnumerable<PropertyAttributeSet> PropertyAttributeSets { get; }
     }
 
-    public interface IUsingBackingField : IEncapsulatableField
-    {
-    }
-
-    public class EncapsulateFieldCandidate : IEncapsulatableField
+    public class EncapsulateFieldCandidate : IEncapsulateFieldCandidate
     {
         protected Declaration _target;
         protected QualifiedModuleName _qmn;
@@ -65,13 +61,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             ImplementLet = true;
             ImplementSet = false;
-            if (_target.IsEnumField())
+            if (_target.IsEnumField() && _target.AsTypeDeclaration.HasPrivateAccessibility())
             {
-                //5.3.1 The declared type of a function declaration may not be a private enum name.
-                if (_target.AsTypeDeclaration.HasPrivateAccessibility())
-                {
-                    PropertyAsTypeName = Tokens.Long;
-                }
+                //5.3.1 The declared type of a function declaration 
+                //may not be a private enum name.
+                PropertyAsTypeName = Tokens.Long;
             }
             else if (_target.AsTypeName.Equals(Tokens.Variant)
                 && !_target.IsArray)
@@ -113,12 +107,16 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             set
             {
+                var valueChanged = _encapsulateFlag != value;
+
                 _encapsulateFlag = value;
                 if (!_encapsulateFlag)
                 {
                     PropertyIdentifier = _fieldAndProperty.DefaultPropertyName;
-                    ConflictFinder.AssignNoConflictIdentifier(this, DeclarationType.Property);
-                    ConflictFinder.AssignNoConflictIdentifier(this, DeclarationType.Variable);
+                }
+                else if (valueChanged)
+                {
+                    ConflictFinder.AssignNoConflictIdentifiers(this);
                 }
             }
             get => _encapsulateFlag;
@@ -130,7 +128,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public override bool Equals(object obj)
         {
             return obj != null
-                && obj is IEncapsulatableField efc
+                && obj is IEncapsulateFieldCandidate efc
                 && $"{efc.QualifiedModuleName.Name}.{efc.TargetID}" == $"{_qmn.Name}.{IdentifierName}";
         }
 
@@ -162,6 +160,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 _fieldAndProperty.Property = value;
 
                 TryRestoreNewFieldNameAsOriginalFieldIdentifierName();
+
+                EncapsulateFieldValidationsProvider.AssignNoConflictParameter(this);
             }
         }
 
@@ -200,7 +200,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public virtual string ReferenceQualifier { set; get; }
 
-        public string ParameterName => _fieldAndProperty.SetLetParameter;
+        public string ParameterName { set; get; } = EncapsulateFieldResources.DefaultPropertyParameter;
 
         private bool _implLet;
         public bool ImplementLet { get => !IsReadOnly && _implLet; set => _implLet = value; }

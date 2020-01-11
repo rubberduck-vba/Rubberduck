@@ -15,17 +15,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
 {
     public class ConvertFieldsToUDTMembers : EncapsulateFieldStrategyBase
     {
-        private List<IConvertToUDTMember> _convertedFields;
         private IObjectStateUDT _stateUDTField;
 
         public ConvertFieldsToUDTMembers(IDeclarationFinderProvider declarationFinderProvider, EncapsulateFieldModel model, IIndenter indenter)
             : base(declarationFinderProvider, model, indenter)
         {
-            _convertedFields = new List<IConvertToUDTMember>();
-            foreach (var field in model.SelectedFieldCandidates)
-            {
-                _convertedFields.Add(new ConvertToUDTMember(field, model.StateUDTField));
-            }
             _stateUDTField = model.StateUDTField;
         }
 
@@ -33,14 +27,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             var rewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
 
-            foreach (var field in _convertedFields)
+            foreach (var field in model.SelectedFieldCandidates)
             {
                 refactorRewriteSession.Remove(field.Declaration, rewriter);
             }
 
             if (_stateUDTField.IsExistingDeclaration)
             {
-                _stateUDTField.AddMembers(_convertedFields);
+                _stateUDTField.AddMembers(model.SelectedFieldCandidates.Cast<IConvertToUDTMember>());
 
                 rewriter.Replace(_stateUDTField.AsTypeDeclaration, _stateUDTField.TypeDeclarationBlock(_indenter));
             }
@@ -48,7 +42,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         protected override void ModifyReferences(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession)
         {
-            foreach (var field in _convertedFields)
+            foreach (var field in model.SelectedFieldCandidates)
             {
                 LoadFieldReferenceContextReplacements(field);
             }
@@ -60,7 +54,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             if (_stateUDTField.IsExistingDeclaration) { return; }
 
-            _stateUDTField.AddMembers(_convertedFields);
+            _stateUDTField.AddMembers(model.SelectedFieldCandidates.Cast<IConvertToUDTMember>());
 
             AddContentBlock(NewContentTypes.TypeDeclarationBlock, _stateUDTField.TypeDeclarationBlock(_indenter));
 
@@ -70,7 +64,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         protected override void LoadNewPropertyBlocks(EncapsulateFieldModel model)
         {
-            var propertyGenerationSpecs = _convertedFields.SelectMany(f => f.PropertyAttributeSets);
+            var propertyGenerationSpecs = model.SelectedFieldCandidates.SelectMany(f => f.PropertyAttributeSets);
 
             var generator = new PropertyGenerator();
             foreach (var spec in propertyGenerationSpecs)
@@ -79,7 +73,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        protected override void LoadFieldReferenceContextReplacements(IEncapsulatableField field)
+        protected override void LoadFieldReferenceContextReplacements(IEncapsulateFieldCandidate field)
         {
             Debug.Assert(field is IConvertToUDTMember);
 

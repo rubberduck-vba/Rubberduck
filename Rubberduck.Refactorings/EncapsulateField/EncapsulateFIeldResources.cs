@@ -18,7 +18,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public static string DefaultStateUDTFieldName => "this";
 
-        public static string GroupBoxHeaderSuffix = "Property Name:";
+        public static string GroupBoxHeaderSuffix = "Property Name";
 
         public static string Caption
             => RubberduckUI.EncapsulateField_Caption;

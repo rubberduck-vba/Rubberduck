@@ -19,9 +19,9 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
 
     public class ViewableEncapsulatedField : IEncapsulatedFieldViewData
     {
-        private IEncapsulatableField _efd;
+        private IEncapsulateFieldCandidate _efd;
         private readonly int _hashCode;
-        public ViewableEncapsulatedField(IEncapsulatableField efd)
+        public ViewableEncapsulatedField(IEncapsulateFieldCandidate efd)
         {
             _efd = efd;
             _hashCode = efd.TargetID.GetHashCode();

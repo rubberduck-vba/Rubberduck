@@ -371,15 +371,12 @@ End Property
             StringAssert.Contains($" AnArray({dimensions}) As String", actualCode);
         }
 
-        [TestCase("Public Sub This_Type()\r\nEnd Sub", "This_Type_1")]
-        [TestCase("Private This_Type As Long\r\nPrivate This_Type_1 As String", "This_Type_2")]
-        [TestCase("Public Property Get This_Type() As Long\r\nEnd Property", "This_Type_1")]
+        [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        public void UserDefinedTypeDefaultNameHasConflicts(string declaration, string expectedIdentifier)
+        public void UserDefinedTypeDefaultNameHasConflict()
         {
-            declaration = declaration.Replace("This_Type", $"{Support.StateUDTDefaultType}");
-            expectedIdentifier = expectedIdentifier.Replace("This_Type", $"{Support.StateUDTDefaultType}");
+            var expectedIdentifier = "TTestModule1_1";
             string inputCode =
 $@"
 
@@ -388,13 +385,16 @@ Private Type TBar
     Second As String
 End Type
 
+Private Type TTestModule1
+    Bar As Long
+End Type
+
 Public fo|o As Long
 Public myBar As TBar
-
-{declaration}
 ";
 
             var userInput = new UserInputDataObject()
+                .UserSelectsField("foo")
                 .UserSelectsField("myBar");
 
 
@@ -405,10 +405,11 @@ Public myBar As TBar
             StringAssert.Contains($"Private Type {expectedIdentifier}", actualCode);
         }
 
-        [Test]
+        [TestCase("Public", 1)]
+        [TestCase("Private", 2)]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        public void StateObjectCandidatesContent()
+        public void ObjectStateUDTs(string udtFieldAccessibility, int expectedCount)
         {
             string inputCode =
 $@"
@@ -421,7 +422,7 @@ Public mFoo As String
 Public mBar As Long
 Private mFizz
 
-Public myBar As TBar";
+{udtFieldAccessibility} myBar As TBar";
 
             var userInput = new UserInputDataObject()
                 .UserSelectsField("mFizz");
@@ -433,7 +434,7 @@ Public myBar As TBar";
             var model = Support.RetrieveUserModifiedModelPriorToRefactoring(inputCode, "mFizz", DeclarationType.Variable, presenterAction);
             var test = model.ObjectStateUDTCandidates;
 
-            Assert.AreEqual(2, model.ObjectStateUDTCandidates.Count());
+            Assert.AreEqual(expectedCount, model.ObjectStateUDTCandidates.Count());
         }
 
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)

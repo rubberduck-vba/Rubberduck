@@ -472,7 +472,7 @@ End Sub";
 
             var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name");
 
-            var validator = new EncapsulateFieldValidationsProvider().NameOnlyValidator(NameValidators.Default);
+            var validator = EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.Default);
             var enapsulationIdentifiers = new EncapsulationIdentifiers("fizz", validator/*(string name) => true*/) { Property = "Name" };
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);

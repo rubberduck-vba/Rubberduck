@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public interface IUserDefinedTypeMemberCandidate : IEncapsulatableField
+    public interface IUserDefinedTypeMemberCandidate : IEncapsulateFieldCandidate
     {
         IUserDefinedTypeCandidate Parent { get; }
         PropertyAttributeSet AsPropertyGeneratorSpec { get; }
@@ -20,7 +20,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         private int _hashCode;
         private readonly string _uniqueID;
-        public UserDefinedTypeMemberCandidate(IEncapsulatableField candidate, IUserDefinedTypeCandidate udtVariable)
+        public UserDefinedTypeMemberCandidate(IEncapsulateFieldCandidate candidate, IUserDefinedTypeCandidate udtVariable)
         {
             _wrappedCandidate = candidate;
             Parent = udtVariable;
@@ -30,11 +30,15 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _hashCode = _uniqueID.GetHashCode();
         }
 
-        private IEncapsulatableField _wrappedCandidate;
+        private IEncapsulateFieldCandidate _wrappedCandidate;
 
         public string AsTypeName => _wrappedCandidate.AsTypeName;
 
-        public string BackingIdentifier { get; set; }
+        public string BackingIdentifier
+        {
+            get => _wrappedCandidate.IdentifierName;
+            set { }
+        }
 
         public string BackingAsTypeName => Declaration.AsTypeName;
 
@@ -89,9 +93,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public string PropertyIdentifier { set; get; }
 
-        private static string BuildUniqueID(IEncapsulatableField candidate) => $"{candidate.QualifiedModuleName.Name}.{candidate.IdentifierName}";
+        private static string BuildUniqueID(IEncapsulateFieldCandidate candidate) => $"{candidate.QualifiedModuleName.Name}.{candidate.IdentifierName}";
 
-        private static IEnumerable<IdentifierReference> GetUDTMemberReferencesForField(IEncapsulatableField udtMember, IUserDefinedTypeCandidate field)
+        private static IEnumerable<IdentifierReference> GetUDTMemberReferencesForField(IEncapsulateFieldCandidate udtMember, IUserDefinedTypeCandidate field)
         {
             var refs = new List<IdentifierReference>();
             foreach (var idRef in udtMember.Declaration.References)
@@ -150,7 +154,26 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => _wrappedCandidate.IsReadOnly;
         }
 
-        public bool EncapsulateFlag { set; get; }
+        private bool _encapsulateFlag;
+        public bool EncapsulateFlag
+        {
+            set
+            {
+                var valueChanged = _encapsulateFlag != value;
+
+                _encapsulateFlag = value;
+                if (!_encapsulateFlag)
+                {
+                    _wrappedCandidate.EncapsulateFlag = value;
+                    PropertyIdentifier = _wrappedCandidate.PropertyIdentifier;
+                }
+                else if (valueChanged)
+                {
+                    ConflictFinder.AssignNoConflictIdentifiers(this);
+                }
+            }
+            get => _encapsulateFlag;
+        }
 
         public bool CanBeReadWrite
         {
@@ -164,9 +187,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public string PropertyAsTypeName => _wrappedCandidate.PropertyAsTypeName;
 
-        public string ParameterName => _wrappedCandidate.ParameterName;
+        public string ParameterName
+        {
+            set => _wrappedCandidate.ParameterName = value;
+            get => _wrappedCandidate.ParameterName;
+        }
 
-        public bool ImplementLet => _wrappedCandidate.ImplementLet;
+    public bool ImplementLet => _wrappedCandidate.ImplementLet;
 
         public bool ImplementSet => _wrappedCandidate.ImplementSet;
 

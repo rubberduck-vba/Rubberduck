@@ -17,7 +17,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             private const string _neverATargetID = "_Never_a_TargetID_";
             private bool _detailFieldIsFlagged;
 
-            public MasterDetailSelectionManager(IEncapsulatableField selected)
+            public MasterDetailSelectionManager(IEncapsulateFieldCandidate selected)
                 : this(selected?.TargetID)
             {
                 if (selected != null)
@@ -101,12 +101,12 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             {
                 var viewableFields = new ObservableCollection<IEncapsulatedFieldViewData>();
 
-                //var orderedFields = Model.EncapsulationCandidates.Where(ec => !(_selectedObjectStateUDT?.IsEncapsulateFieldCandidate(ec) ?? false))
-                //                            .OrderBy(efd => efd.Declaration.Selection).ToList();
-
-                var orderedFields = Model.EncapsulationCandidates.Where(ec => !(_selectedObjectStateUDT?.IsExistingDeclaration ?? false))
-                                            .OrderBy(efd => efd.Declaration.Selection).ToList();
-
+                var orderedFields = Model.EncapsulationCandidates.OrderBy(efd => efd.Declaration.Selection).ToList();
+                if (_selectedObjectStateUDT != null && _selectedObjectStateUDT.IsExistingDeclaration)
+                {
+                    orderedFields = Model.EncapsulationCandidates.Where(ec => !_selectedObjectStateUDT.FieldIdentifier.Equals(ec.IdentifierName))
+                                                .OrderBy(efd => efd.Declaration.Selection).ToList();
+                }
                 foreach (var efd in orderedFields)
                 {
                     viewableFields.Add(new ViewableEncapsulatedField(efd));

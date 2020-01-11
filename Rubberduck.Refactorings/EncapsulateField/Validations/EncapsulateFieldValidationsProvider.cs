@@ -1,6 +1,7 @@
 ﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
+using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
@@ -20,47 +21,43 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
     public interface IEncapsulateFieldValidationsProvider
     {
-        IValidateVBAIdentifiers NameOnlyValidator(NameValidators validatorType);
         IEncapsulateFieldConflictFinder ConflictDetector(EncapsulateFieldStrategy strategy, IDeclarationFinderProvider declarationFinderProvider);
-        void RegisterCandidates(IEnumerable<IEncapsulatableField> candidates);
     }
 
     public class EncapsulateFieldValidationsProvider : IEncapsulateFieldValidationsProvider
     {
-        private Dictionary<NameValidators, IValidateVBAIdentifiers> _nameOnlyValidators;
+        private static Dictionary<NameValidators, IValidateVBAIdentifiers> _nameOnlyValidators = new Dictionary<NameValidators, IValidateVBAIdentifiers>()
+        {
+            [NameValidators.Default] = new IdentifierOnlyValidator(DeclarationType.Variable, false),
+            [NameValidators.UserDefinedType] = new IdentifierOnlyValidator(DeclarationType.UserDefinedType, false),
+            [NameValidators.UserDefinedTypeMember] = new IdentifierOnlyValidator(DeclarationType.UserDefinedTypeMember, false),
+            [NameValidators.UserDefinedTypeMemberArray] = new IdentifierOnlyValidator(DeclarationType.UserDefinedTypeMember, true),
+        };
 
-        private List<IEncapsulatableField> _candidates;
+        private static DeclarationType[] _udtTypeIdentifierNonConflictTypes = new DeclarationType[]
+        {
+            DeclarationType.Project,
+            DeclarationType.Module,
+            DeclarationType.Property,
+            DeclarationType.Function,
+            DeclarationType.Procedure,
+            DeclarationType.Variable,
+            DeclarationType.Constant,
+            DeclarationType.UserDefinedTypeMember,
+            DeclarationType.EnumerationMember,
+            DeclarationType.Parameter
+        };
+
+
+        private List<IEncapsulateFieldCandidate> _candidates;
         private List<IUserDefinedTypeMemberCandidate> _udtMemberCandidates;
+        private List<IObjectStateUDT> _objectStateUDTs;
 
-        public EncapsulateFieldValidationsProvider()
+        public EncapsulateFieldValidationsProvider(IEnumerable<IEncapsulateFieldCandidate> candidates, IEnumerable<IObjectStateUDT> objectStateUDTCandidates)
         {
-            _nameOnlyValidators = new Dictionary<NameValidators, IValidateVBAIdentifiers>()
-            {
-                [NameValidators.Default] = new IdentifierOnlyValidator(DeclarationType.Variable, false),
-                [NameValidators.UserDefinedType] = new IdentifierOnlyValidator(DeclarationType.UserDefinedType, false),
-                [NameValidators.UserDefinedTypeMember] = new IdentifierOnlyValidator(DeclarationType.UserDefinedTypeMember, false),
-                [NameValidators.UserDefinedTypeMemberArray] = new IdentifierOnlyValidator(DeclarationType.UserDefinedTypeMember, true),
-            };
-
-            _candidates = new List<IEncapsulatableField>();
             _udtMemberCandidates = new List<IUserDefinedTypeMemberCandidate>();
-        }
-
-        public IValidateVBAIdentifiers NameOnlyValidator(NameValidators validatorType)
-            => _nameOnlyValidators[validatorType];
-
-        public IEncapsulateFieldConflictFinder ConflictDetector(EncapsulateFieldStrategy strategy, IDeclarationFinderProvider declarationFinderProvider)
-        {
-            if (strategy == EncapsulateFieldStrategy.UseBackingFields)
-            {
-                return new UseBackingFieldsConflictFinder(declarationFinderProvider, _candidates, _udtMemberCandidates);
-            }
-            return new ConvertFieldsToUDTMembersConflictFinder(declarationFinderProvider, _candidates, _udtMemberCandidates);
-        }
-
-        public void RegisterCandidates(IEnumerable<IEncapsulatableField> candidates)
-        {
-            _candidates.AddRange(candidates);
+            _objectStateUDTs = objectStateUDTCandidates.ToList();
+            _candidates = candidates.ToList();
             foreach (var udtCandidate in candidates.Where(c => c is IUserDefinedTypeCandidate).Cast<IUserDefinedTypeCandidate>())
             {
                 foreach (var member in udtCandidate.Members)
@@ -68,6 +65,51 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     _udtMemberCandidates.Add(member);
                 }
             }
+        }
+
+        public static IValidateVBAIdentifiers NameOnlyValidator(NameValidators validatorType)
+            => _nameOnlyValidators[validatorType];
+
+        public static IEncapsulateFieldCandidate AssignNoConflictParameter(IEncapsulateFieldCandidate candidate)
+        {
+            candidate.ParameterName = EncapsulateFieldResources.DefaultPropertyParameter;
+
+            var guard = 0;
+            while (guard++ < 10 && (candidate.BackingIdentifier.IsEquivalentVBAIdentifierTo(candidate.ParameterName)
+                    || candidate.PropertyIdentifier.IsEquivalentVBAIdentifierTo(candidate.ParameterName)))
+            {
+                candidate.ParameterName = candidate.ParameterName.IncrementEncapsulationIdentifier();
+            }
+            return candidate;
+        }
+
+        public static IObjectStateUDT AssignNoConflictIdentifiers(IObjectStateUDT stateUDT, IDeclarationFinderProvider declarationFinderProvider) //, DeclarationType declarationType)
+        {
+            var members = declarationFinderProvider.DeclarationFinder.Members(stateUDT.QualifiedModuleName);
+            var guard = 0;
+            while (guard++ < 10 && members.Any(m => m.IdentifierName.IsEquivalentVBAIdentifierTo(stateUDT.FieldIdentifier)))
+            {
+                stateUDT.FieldIdentifier = stateUDT.FieldIdentifier.IncrementEncapsulationIdentifier();
+            }
+
+            members = declarationFinderProvider.DeclarationFinder.Members(stateUDT.QualifiedModuleName)
+                .Where(m => !_udtTypeIdentifierNonConflictTypes.Any(nct => m.DeclarationType.HasFlag(nct)));
+
+            guard = 0;
+            while (guard++ < 10 && members.Any(m => m.IdentifierName.IsEquivalentVBAIdentifierTo(stateUDT.TypeIdentifier)))
+            {
+                stateUDT.TypeIdentifier = stateUDT.TypeIdentifier.IncrementEncapsulationIdentifier();
+            }
+            return stateUDT;
+        }
+
+        public IEncapsulateFieldConflictFinder ConflictDetector(EncapsulateFieldStrategy strategy, IDeclarationFinderProvider declarationFinderProvider)
+        {
+            if (strategy == EncapsulateFieldStrategy.UseBackingFields)
+            {
+                return new UseBackingFieldsStrategyConflictFinder(declarationFinderProvider,  _candidates,  _udtMemberCandidates);
+            }
+            return new ConvertFieldsToUDTMembersStrategyConflictFinder(declarationFinderProvider, _candidates, _udtMemberCandidates, _objectStateUDTs);
         }
     }
 }
