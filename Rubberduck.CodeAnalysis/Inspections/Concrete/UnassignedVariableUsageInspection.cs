@@ -4,12 +4,15 @@ using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -41,7 +44,7 @@ namespace Rubberduck.Inspections.Concrete
     /// ]]>
     /// </example>
     [SuppressMessage("ReSharper", "LoopCanBeConvertedToQuery")]
-    public sealed class UnassignedVariableUsageInspection : InspectionBase
+    public sealed class UnassignedVariableUsageInspection : IdentifierReferenceInspectionFromDeclarationsBase
     {
         public UnassignedVariableUsageInspection(RubberduckParserState state)
             : base(state) { }
@@ -55,32 +58,97 @@ namespace Rubberduck.Inspections.Concrete
             "VBA6.DLL;VBA.Strings.LenB"
         };
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)
         {
-            var declarations = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                .Where(declaration => !declaration.IsArray &&
-                    State.DeclarationFinder.MatchName(declaration.AsTypeName)
-                        .All(d => d.DeclarationType != DeclarationType.UserDefinedType)
-                    && !declaration.IsSelfAssigned
-                    && !declaration.References.Any(reference => reference.IsAssignment));
-
-            var excludedDeclarations = BuiltInDeclarations.Where(decl => IgnoredFunctions.Contains(decl.QualifiedName.ToString())).ToList();
-
-            return declarations
-                .Where(d => d.References.Any() && !excludedDeclarations.Any(excl => DeclarationReferencesContainsReference(excl, d)))
-                .SelectMany(d => d.References.Where(r => !IsAssignedByRefArgument(r.ParentScoping, r)))
-                .Distinct()
-                .Where(r => !r.Context.TryGetAncestor<VBAParser.RedimStmtContext>(out _) && !IsArraySubscriptAssignment(r))
-                .Select(r => new IdentifierReferenceInspectionResult(this,
-                    string.Format(InspectionResults.UnassignedVariableUsageInspection, r.IdentifierName),
-                    State,
-                    r)).ToList();
+            return finder.UserDeclarations(DeclarationType.Variable)
+                .Where(declaration => !declaration.IsArray
+                                      && !declaration.IsSelfAssigned
+                                      && finder.MatchName(declaration.AsTypeName)
+                                          .All(d => d.DeclarationType != DeclarationType.UserDefinedType)
+                                      && !declaration.References
+                                          .Any(reference => reference.IsAssignment));
         }
 
-        private bool IsAssignedByRefArgument(Declaration enclosingProcedure, IdentifierReference reference)
+        //We override this in order to look up the argument usage exclusion references only once.
+        protected override IEnumerable<IdentifierReference> ObjectionableReferences(DeclarationFinder finder)
+        {
+            var excludedReferenceSelections = DeclarationsWithExcludedArgumentUsage(finder)
+                .SelectMany(SingleVariableArgumentSelections)
+                .ToHashSet();
+
+            return base.ObjectionableReferences(finder)
+                .Where(reference => !excludedReferenceSelections.Contains(reference.QualifiedSelection));
+        }
+
+        private IEnumerable<ModuleBodyElementDeclaration> DeclarationsWithExcludedArgumentUsage(DeclarationFinder finder)
+        {
+            var vbaProjects = finder.Projects
+                .Where(project => project.IdentifierName == "VBA" && !project.IsUserDefined)
+                .ToList();
+
+            if (!vbaProjects.Any())
+            {
+                return new List<ModuleBodyElementDeclaration>();
+            }
+
+            var stringModules = vbaProjects
+                .Select(project => finder.FindStdModule("Strings", project, true))
+                .OfType<ModuleDeclaration>()
+                .ToList();
+
+            if (!stringModules.Any())
+            {
+                return new List<ModuleBodyElementDeclaration>();
+            }
+
+            return stringModules
+                .SelectMany(module => module.Members)
+                .Where(decl => IgnoredFunctions.Contains(decl.QualifiedName.ToString()))
+                .OfType<ModuleBodyElementDeclaration>();
+        }
+
+        private static IEnumerable<QualifiedSelection> SingleVariableArgumentSelections(ModuleBodyElementDeclaration member)
+        {
+            return member.Parameters
+                .SelectMany(parameter => parameter.ArgumentReferences)
+                .Select(SingleVariableArgumentSelection)
+                .Where(maybeSelection => maybeSelection.HasValue)
+                .Select(selection => selection.Value);
+        }
+
+        private static QualifiedSelection? SingleVariableArgumentSelection(ArgumentReference argumentReference)
+        {
+            var argumentContext = argumentReference.Context as VBAParser.LExprContext;
+            if (!(argumentContext?.lExpression() is VBAParser.SimpleNameExprContext name))
+            {
+                return null;
+            }
+
+            return new QualifiedSelection(argumentReference.QualifiedModuleName, name.GetSelection());
+        }
+
+        protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
+        {
+            //FIXME: stop filtering out too many results.
+            return reference != null
+                   && !IsAssignedByRefArgument(reference.ParentScoping, reference, finder)
+                   && !IsArraySubscriptAssignment(reference) 
+                   && !reference.Context.TryGetAncestor<VBAParser.RedimStmtContext>(out _); 
+                
+        }
+
+        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
+        {
+            var identifierName = reference.IdentifierName;
+            return string.Format(
+                InspectionResults.UnassignedVariableUsageInspection,
+                identifierName);
+        }
+
+        private static bool IsAssignedByRefArgument(Declaration enclosingProcedure, IdentifierReference reference, DeclarationFinder finder)
         {
             var argExpression = reference.Context.GetAncestor<VBAParser.ArgumentExpressionContext>();
-            var parameter = State.DeclarationFinder.FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(argExpression, enclosingProcedure);
+            var parameter = finder.FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(argExpression, enclosingProcedure);
 
             // note: not recursive, by design.
             return parameter != null
@@ -90,28 +158,12 @@ namespace Rubberduck.Inspections.Concrete
 
         private static bool IsArraySubscriptAssignment(IdentifierReference reference)
         {
+            //FIXME: stop returning true for too many cases.
             var isLetAssignment = reference.Context.TryGetAncestor<VBAParser.LetStmtContext>(out var letStmt);
             var isSetAssignment = reference.Context.TryGetAncestor<VBAParser.SetStmtContext>(out var setStmt);
 
-            return isLetAssignment && letStmt.lExpression() is VBAParser.IndexExprContext ||
-                   isSetAssignment && setStmt.lExpression() is VBAParser.IndexExprContext;
-        }
-
-        private static bool DeclarationReferencesContainsReference(Declaration parentDeclaration, Declaration target)
-        {
-            foreach (var targetReference in target.References)
-            {
-                foreach (var reference in parentDeclaration.References)
-                {
-                    var context = (ParserRuleContext)reference.Context.Parent;
-                    if (context.GetSelection().Contains(targetReference.Selection))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
+            return isLetAssignment && letStmt.lExpression() is VBAParser.IndexExprContext 
+                   || isSetAssignment && setStmt.lExpression() is VBAParser.IndexExprContext;
         }
     }
 }

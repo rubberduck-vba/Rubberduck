@@ -3,6 +3,7 @@ using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace RubberduckTests.Inspections
 {
@@ -120,7 +121,8 @@ End Sub
 Sub DoSomething()
     Dim foo
     AssignThing foo
-    Debug.Print foo
+    Dim bar As Variant
+    bar = foo
 End Sub
 
 Sub AssignThing(ByRef thing As Variant)
@@ -143,31 +145,95 @@ End Sub
         }
 
         [Test]
-        [Ignore("Test concurrency issue. Only passes if run individually.")]
         [Category("Inspections")]
         public void UnassignedVariableUsage_NoResultForLenFunction()
         {
             const string code = @"
 Sub DoSomething()
     Dim foo As LongPtr
-    Debug.Print Len(foo)
+    Dim bar As Variant
+    bar = Len(foo)
 End Sub
 ";
-            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
+            var inspectionResults = InspectionResultsForModules(("TestModule", code, ComponentType.StandardModule), "VBA");
+            Assert.AreEqual(0, inspectionResults.Count());
         }
 
         [Test]
-        [Ignore("Test concurrency issue. Only passes if run individually.")]
         [Category("Inspections")]
         public void UnassignedVariableUsage_NoResultForLenBFunction()
         {
             const string code = @"
 Sub DoSomething()
     Dim foo As LongPtr
-    Debug.Print LenB(foo)
+    Dim bar As Variant
+    bar = LenB(foo)
 End Sub
 ";
-            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
+            var inspectionResults = InspectionResultsForModules(("TestModule", code, ComponentType.StandardModule), "VBA");
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void UnassignedVariableUsage_ResultForOthersIfLenFunctionIsUsed()
+        {
+            const string code = @"
+Sub DoSomething()
+    Dim foo As Variant
+    Dim bar As Variant
+    bar = Len(foo)
+    bar = foo + 5
+End Sub
+";
+            var inspectionResults = InspectionResultsForModules(("TestModule", code, ComponentType.StandardModule), "VBA");
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void UnassignedVariableUsage_ResultForOthersIfLenBFunctionIsUsed()
+        {
+            const string code = @"
+Sub DoSomething()
+    Dim foo As Variant
+    Dim bar As Variant
+    bar = LenB(foo)
+    bar = foo + 5
+End Sub
+";
+            var inspectionResults = InspectionResultsForModules(("TestModule", code, ComponentType.StandardModule), "VBA");
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void UnassignedVariableUsage_ResultForUsageInsideArgumentOfLen()
+        {
+            const string code = @"
+Sub DoSomething()
+    Dim foo As Variant
+    Dim bar As Variant
+    bar = Len(foo + 5)
+End Sub
+";
+            var inspectionResults = InspectionResultsForModules(("TestModule", code, ComponentType.StandardModule), "VBA");
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void UnassignedVariableUsage_ResultForUsageInsideArgumentOfLenB()
+        {
+            const string code = @"
+Sub DoSomething()
+    Dim foo As Variant
+    Dim bar As Variant
+    bar = LenB(foo + 5)
+End Sub
+";
+            var inspectionResults = InspectionResultsForModules(("TestModule", code, ComponentType.StandardModule), "VBA");
+            Assert.AreEqual(1, inspectionResults.Count());
         }
 
         [Test]
