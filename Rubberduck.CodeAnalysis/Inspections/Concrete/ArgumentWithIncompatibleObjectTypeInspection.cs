@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Inspections.Abstract;
 using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
@@ -77,53 +78,47 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 	/// End Sub
 	/// ]]>
 	/// </example>
-    public class ArgumentWithIncompatibleObjectTypeInspection : InspectionBase
+    public class ArgumentWithIncompatibleObjectTypeInspection : ArgumentReferenceInspectionFromDeclarationsBase
     {
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly ISetTypeResolver _setTypeResolver;
 
         public ArgumentWithIncompatibleObjectTypeInspection(RubberduckParserState state, ISetTypeResolver setTypeResolver)
             : base(state)
         {
-            _declarationFinderProvider = state;
             _setTypeResolver = setTypeResolver;
 
             //This will most likely cause a runtime error. The exceptions are rare and should be refactored or made explicit with an @Ignore annotation.
             Severity = CodeInspectionSeverity.Error;
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)
         {
-            var finder = _declarationFinderProvider.DeclarationFinder;
-
-            var strictlyTypedObjectParameters = finder.DeclarationsWithType(DeclarationType.Parameter)
-                .Where(ToBeConsidered)
-                .OfType<ParameterDeclaration>();
-
-            var offendingArguments = strictlyTypedObjectParameters
-                .SelectMany(param => param.ArgumentReferences)
-                .Select(argumentReference => ArgumentReferenceWithArgumentTypeName(argumentReference, finder))
-                .Where(argumentReferenceWithTypeName =>  argumentReferenceWithTypeName.argumentTypeName != null
-                                                         && !ArgumentPossiblyLegal(
-                                                             argumentReferenceWithTypeName.argumentReference.Declaration, 
-                                                             argumentReferenceWithTypeName.argumentTypeName));
-
-            return offendingArguments
-                // Ignoring the Declaration disqualifies all assignments
-                .Where(argumentReferenceWithTypeName => !argumentReferenceWithTypeName.Item1.Declaration.IsIgnoringInspectionResultFor(AnnotationName))
-                .Select(argumentReference => InspectionResult(argumentReference, _declarationFinderProvider));
+            return finder.DeclarationsWithType(DeclarationType.Parameter)
+                .Where(ToBeConsidered);
         }
 
         private static bool ToBeConsidered(Declaration declaration)
         {
-            return declaration != null
-                   && declaration.AsTypeDeclaration != null
+            return declaration?.AsTypeDeclaration != null
                    && declaration.IsObject;
         }
 
-        private (IdentifierReference argumentReference, string argumentTypeName) ArgumentReferenceWithArgumentTypeName(IdentifierReference argumentReference, DeclarationFinder finder)
+        protected override (bool isResult, object properties) IsUnsuitableArgumentWithAdditionalProperties(ArgumentReference reference, DeclarationFinder finder)
         {
-            return (argumentReference, ArgumentSetTypeName(argumentReference, finder));
+            var argumentSetTypeName = ArgumentSetTypeName(reference, finder);
+
+            if (argumentSetTypeName == null || ArgumentPossiblyLegal(reference.Declaration, argumentSetTypeName))
+            {
+                return (false, null);
+            }
+
+            return (true, argumentSetTypeName);
+        }
+
+        protected override bool IsUnsuitableArgument(ArgumentReference reference, DeclarationFinder finder)
+        {
+            //No need to implement this since we overwrite IsUnsuitableArgumentWithAdditionalProperties.
+            throw new System.NotImplementedException();
         }
 
         private string ArgumentSetTypeName(IdentifierReference argumentReference, DeclarationFinder finder)
@@ -146,7 +141,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                 || HasSubType(parameterDeclaration, assignedTypeName);
         }
 
-        private bool HasBaseType(Declaration declaration, string typeName)
+        private static bool HasBaseType(Declaration declaration, string typeName)
         {
             var ownType = declaration.AsTypeDeclaration;
             if (ownType == null || !(ownType is ClassModuleDeclaration classType))
@@ -157,7 +152,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             return classType.Subtypes.Select(subtype => subtype.QualifiedModuleName.ToString()).Contains(typeName);
         }
 
-        private bool HasSubType(Declaration declaration, string typeName)
+        private static bool HasSubType(Declaration declaration, string typeName)
         {
             var ownType = declaration.AsTypeDeclaration;
             if (ownType == null || !(ownType is ClassModuleDeclaration classType))
@@ -168,20 +163,12 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             return classType.Supertypes.Select(supertype => supertype.QualifiedModuleName.ToString()).Contains(typeName);
         }
 
-        private IInspectionResult InspectionResult((IdentifierReference argumentReference, string argumentTypeName) argumentReferenceWithTypeName, IDeclarationFinderProvider declarationFinderProvider)
+        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
         {
-            var (argumentReference, argumentTypeName) = argumentReferenceWithTypeName;
-            return new IdentifierReferenceInspectionResult(this,
-                ResultDescription(argumentReference, argumentTypeName),
-                declarationFinderProvider,
-                argumentReference);
-        }
-
-        private string ResultDescription(IdentifierReference argumentReference, string argumentTypeName)
-        {
-            var parameterName = argumentReference.Declaration.IdentifierName;
-            var parameterTypeName = argumentReference.Declaration.FullAsTypeName;
-            var argumentExpression = argumentReference.Context.GetText();
+            var parameterName = reference.Declaration.IdentifierName;
+            var parameterTypeName = reference.Declaration.FullAsTypeName;
+            var argumentExpression = reference.Context.GetText();
+            var argumentTypeName = (string)properties;
             return string.Format(InspectionResults.SetAssignmentWithIncompatibleObjectTypeInspection, parameterName, parameterTypeName, argumentExpression, argumentTypeName);
         }
     }

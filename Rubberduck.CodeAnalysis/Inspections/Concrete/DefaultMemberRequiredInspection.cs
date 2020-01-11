@@ -73,7 +73,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             return true;
         }
 
-        protected override string ResultDescription(IdentifierReference failedIndexedDefaultMemberAccess)
+        protected override string ResultDescription(IdentifierReference failedIndexedDefaultMemberAccess, dynamic properties = null)
         {
             var expression = failedIndexedDefaultMemberAccess.IdentifierName;
             var typeName = failedIndexedDefaultMemberAccess.Declaration?.FullAsTypeName;

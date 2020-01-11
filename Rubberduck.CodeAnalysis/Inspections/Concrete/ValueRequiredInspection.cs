@@ -75,7 +75,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             return !failedLetCoercion.IsAssignment;
         }
 
-        protected override string ResultDescription(IdentifierReference failedLetCoercion)
+        protected override string ResultDescription(IdentifierReference failedLetCoercion, dynamic properties = null)
         {
             var expression = failedLetCoercion.IdentifierName;
             var typeName = failedLetCoercion.Declaration?.FullAsTypeName;

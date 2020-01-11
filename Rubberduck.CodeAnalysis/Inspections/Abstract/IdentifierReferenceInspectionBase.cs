@@ -16,7 +16,7 @@ namespace Rubberduck.Inspections.Abstract
         {}
 
         protected abstract bool IsResultReference(IdentifierReference reference, DeclarationFinder finder);
-        protected abstract string ResultDescription(IdentifierReference reference);
+        protected abstract string ResultDescription(IdentifierReference reference, dynamic properties = null);
 
         protected virtual (bool isResult, object properties) IsResultReferenceWithAdditionalProperties(IdentifierReference reference, DeclarationFinder finder)
         {
@@ -69,7 +69,7 @@ namespace Rubberduck.Inspections.Abstract
         {
             return new IdentifierReferenceInspectionResult(
                 this,
-                ResultDescription(reference),
+                ResultDescription(reference, properties),
                 declarationFinderProvider,
                 reference,
                 properties);

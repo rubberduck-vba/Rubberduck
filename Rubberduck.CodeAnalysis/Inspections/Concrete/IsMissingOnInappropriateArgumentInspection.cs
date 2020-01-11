@@ -58,7 +58,7 @@ namespace Rubberduck.Inspections.Concrete
             throw new System.NotImplementedException();
         }
 
-        protected override string ResultDescription(IdentifierReference reference)
+        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
         {
             return InspectionResults.IsMissingOnInappropriateArgumentInspection;
         }

@@ -10,6 +10,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.VBEditor.ComManagement;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -49,8 +50,13 @@ namespace Rubberduck.Inspections.Concrete
         //TODO: revisit this and its tests after clarification of intended behaviour.
         //This relates to the handling of implicit references to ActiveWorkbook.
 
-        public SheetAccessedUsingStringInspection(RubberduckParserState state) 
-            : base(state) { }
+        private readonly IProjectsProvider _projectsProvider;
+
+        public SheetAccessedUsingStringInspection(RubberduckParserState state, IProjectsProvider projectsProvider)
+            : base(state)
+        {
+            _projectsProvider = projectsProvider;
+        }
 
         private static readonly string[] InterestingMembers =
         {
@@ -123,7 +129,7 @@ namespace Rubberduck.Inspections.Concrete
 
         private string CodeNameOfVBComponentMatchingSheetName(string projectId, string sheetName)
         {
-            var components = State.ProjectsProvider.Components(projectId);
+            var components = _projectsProvider.Components(projectId);
 
             foreach (var (module, component) in components)
             {
@@ -161,7 +167,7 @@ namespace Rubberduck.Inspections.Concrete
             return null;
         }
 
-        protected override string ResultDescription(IdentifierReference reference)
+        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
         {
             return InspectionResults.SheetAccessedUsingStringInspection;
         }

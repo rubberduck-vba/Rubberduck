@@ -42,7 +42,7 @@ namespace Rubberduck.Inspections.Concrete
             return parameter == null;
         }
 
-        protected override string ResultDescription(IdentifierReference reference)
+        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
         {
             return InspectionResults.IsMissingWithNonArgumentParameterInspection;
         }

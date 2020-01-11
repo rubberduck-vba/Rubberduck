@@ -48,9 +48,11 @@ namespace Rubberduck.Inspections.Inspections.Abstract
             var isMissing = informationModules
                 .SelectMany(module => module.Members)
                 .Where(decl => IsMissingQualifiedNames.Contains(decl.QualifiedName.ToString()))
-                .ToList();
+                .OfType<ModuleBodyElementDeclaration>();
 
-            return isMissing;
+            return isMissing
+                .SelectMany(declaration => declaration.Parameters)
+                .ToList();
         }
 
         protected ParameterDeclaration ParameterForReference(ArgumentReference reference, DeclarationFinder finder)

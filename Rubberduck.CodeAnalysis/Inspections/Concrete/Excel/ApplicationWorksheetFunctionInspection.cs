@@ -88,7 +88,7 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(decl => worksheetFunctionNames.Contains(decl.IdentifierName));
         }
 
-        protected override string ResultDescription(IdentifierReference reference)
+        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
         {
             return string.Format(InspectionResults.ApplicationWorksheetFunctionInspection, reference.IdentifierName);
         }

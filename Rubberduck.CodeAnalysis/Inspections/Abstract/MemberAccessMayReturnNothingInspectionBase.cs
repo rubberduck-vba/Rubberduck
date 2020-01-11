@@ -100,7 +100,7 @@ namespace Rubberduck.Inspections.Abstract
             }
         }
 
-        protected override string ResultDescription(IdentifierReference reference)
+        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
         {
             var semiQualifiedName = $"{reference.Declaration.ParentDeclaration.IdentifierName}.{reference.IdentifierName}";
             return string.Format(ResultTemplate, semiQualifiedName);

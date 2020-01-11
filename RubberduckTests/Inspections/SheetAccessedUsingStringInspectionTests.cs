@@ -56,6 +56,19 @@ End Sub";
         [Test]
         [Ignore("Ref #4329")]
         [Category("Inspections")]
+        public void SheetAccessedUsingString_DoesNotReturnResult_AccessingUsingActiveWorkbookProperty()
+        {
+            const string inputCode =
+                @"Public Sub Foo()
+    ActiveWorkbook.Worksheets(""Sheet1"").Range(""A1"") = ""Foo""
+    ActiveWorkbook.Sheets(""Sheet1"").Range(""A1"") = ""Foo""
+End Sub";
+            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode).Count());
+        }
+
+        [Test]
+        [Ignore("Ref #4329")]
+        [Category("Inspections")]
         public void SheetAccessedUsingString_DoesNotReturnResult_AccessingUsingWorkbooksProperty()
         {
             const string inputCode =
@@ -199,7 +212,7 @@ End Sub";
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
-            return new SheetAccessedUsingStringInspection(state);
+            return new SheetAccessedUsingStringInspection(state, state.ProjectsProvider);
         }
     }
 }

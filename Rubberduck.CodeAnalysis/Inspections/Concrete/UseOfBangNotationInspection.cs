@@ -69,7 +69,7 @@ namespace Rubberduck.Inspections.Concrete
                    && reference.Context is VBAParser.DictionaryAccessContext;
         }
 
-        protected override string ResultDescription(IdentifierReference reference)
+        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
         {
             var expression = reference.IdentifierName;
             return string.Format(InspectionResults.UseOfBangNotationInspection, expression);

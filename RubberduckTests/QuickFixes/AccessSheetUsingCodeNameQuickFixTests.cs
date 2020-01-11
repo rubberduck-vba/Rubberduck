@@ -27,7 +27,7 @@ Public Sub Foo()
     Sheet1.Range(""A1"") = ""foo""
 End Sub";
 
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state));
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state, state.ProjectsProvider));
             Assert.AreEqual(expectedCode, actualCode);
         }
 
@@ -45,7 +45,7 @@ Public Sub Foo()
     Sheet1.Range(""A1"") = ""foo""
 End Sub";
 
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state));
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state, state.ProjectsProvider));
             Assert.AreEqual(expectedCode, actualCode);
         }
 
@@ -63,7 +63,7 @@ Public Sub Foo()
     Sheet1.Range(""A1"") = ""foo""
 End Sub";
 
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state));
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state, state.ProjectsProvider));
             Assert.AreEqual(expectedCode, actualCode);
         }
 
@@ -93,7 +93,7 @@ End Sub
 Public Sub Bar(ws As Worksheet)
 End Sub";
 
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state));
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state, state.ProjectsProvider));
             Assert.AreEqual(expectedCode, actualCode);
         }
 
@@ -113,7 +113,7 @@ Public Sub Foo()
     
 End Sub";
 
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state));
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state, state.ProjectsProvider));
             Assert.AreEqual(expectedCode, actualCode);
         }
 
@@ -135,7 +135,7 @@ Public Sub Foo()
     Sheet1.Cells(1, 1) = ""foo""
 End Sub";
 
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state));
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state, state.ProjectsProvider));
             Assert.AreEqual(expectedCode, actualCode);
         }
 
@@ -157,7 +157,7 @@ Public Sub Foo()
     Sheet1.Cells(1, 1) = ""foo""
 End Sub";
 
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state));
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state, state.ProjectsProvider));
             Assert.AreEqual(expectedCode, actualCode);
         }
 
@@ -187,7 +187,7 @@ Public Sub ws()
     Dim ws As Worksheet
 End Sub";
 
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state));
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state, state.ProjectsProvider));
             Assert.AreEqual(expectedCode, actualCode);
         }
 
@@ -217,7 +217,7 @@ Public Sub ws()
     Dim ws As Worksheet
 End Sub";
 
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state));
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state, state.ProjectsProvider));
             Assert.AreEqual(expectedCode, actualCode);
         }
         
@@ -239,7 +239,7 @@ Sub Test()
     Debug.Print ws.Name
 End Sub";
 
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state));
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state, state.ProjectsProvider));
             Assert.AreEqual(expectedCode, actualCode);
         }
 
@@ -261,7 +261,7 @@ Sub Test()
     End If
 End Sub";
 
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state));
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state, state.ProjectsProvider));
             Assert.AreEqual(expectedCode, actualCode);
         }
 
@@ -281,7 +281,7 @@ Sub Test()
     Sheet1.Name = ""Foo""
 End Sub";
 
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state));
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state, state.ProjectsProvider));
             Assert.AreEqual(expectedCode, actualCode);
         }
 

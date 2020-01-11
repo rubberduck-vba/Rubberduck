@@ -19,15 +19,11 @@ namespace Rubberduck.Inspections.Inspections.Abstract
             return (IsUnsuitableArgument(reference, finder), null);
         }
 
-        protected override IEnumerable<(IdentifierReference reference, object properties)> ObjectionableReferences(DeclarationFinder finder)
+        protected override IEnumerable<IdentifierReference> ObjectionableReferences(DeclarationFinder finder)
         {
             return ObjectionableDeclarations(finder)
-                .OfType<ModuleBodyElementDeclaration>()
-                .SelectMany(declaration => declaration.Parameters)
-                .SelectMany(parameter => parameter.ArgumentReferences)
-                .Select(reference => (reference, IsResultReferenceWithAdditionalProperties(reference, finder)))
-                .Where(tpl => tpl.Item2.isResult)
-                .Select(tpl => ((IdentifierReference) tpl.reference, tpl.Item2.properties)); ;
+                .OfType<ParameterDeclaration>()
+                .SelectMany(parameter => parameter.ArgumentReferences);
         }
 
         protected override (bool isResult, object properties) IsResultReferenceWithAdditionalProperties(IdentifierReference reference, DeclarationFinder finder)
