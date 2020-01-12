@@ -129,12 +129,10 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
-            //FIXME: stop filtering out too many results.
             return reference != null
                    && !IsAssignedByRefArgument(reference.ParentScoping, reference, finder)
                    && !IsArraySubscriptAssignment(reference) 
-                   && !reference.Context.TryGetAncestor<VBAParser.RedimStmtContext>(out _); 
-                
+                   && !IsArrayReDim(reference);
         }
 
         protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
@@ -158,12 +156,29 @@ namespace Rubberduck.Inspections.Concrete
 
         private static bool IsArraySubscriptAssignment(IdentifierReference reference)
         {
-            //FIXME: stop returning true for too many cases.
-            var isLetAssignment = reference.Context.TryGetAncestor<VBAParser.LetStmtContext>(out var letStmt);
-            var isSetAssignment = reference.Context.TryGetAncestor<VBAParser.SetStmtContext>(out var setStmt);
+            var nameExpression = reference.Context;
+            if (!(nameExpression.Parent is VBAParser.IndexExprContext indexExpression))
+            {
+                return false;
+            }
 
-            return isLetAssignment && letStmt.lExpression() is VBAParser.IndexExprContext 
-                   || isSetAssignment && setStmt.lExpression() is VBAParser.IndexExprContext;
+            var callingExpression = indexExpression.Parent;
+
+            return callingExpression is VBAParser.SetStmtContext 
+                   || callingExpression is VBAParser.LetStmtContext;
+        }
+
+        private static bool IsArrayReDim(IdentifierReference reference)
+        {
+            var nameExpression = reference.Context;
+            if (!(nameExpression.Parent is VBAParser.IndexExprContext indexExpression))
+            {
+                return false;
+            }
+
+            var reDimVariableStmt = indexExpression.Parent?.Parent;
+
+            return reDimVariableStmt is VBAParser.RedimVariableDeclarationContext;
         }
     }
 }

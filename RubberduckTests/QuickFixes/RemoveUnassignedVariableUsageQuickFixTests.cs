@@ -43,23 +43,29 @@ End Sub";
         {
             const string inputCode =
                 @"Sub test()
-    Dim wb As Workbook
+    Dim wb As Variant
     With wb
-        Debug.Print .Name
-        Debug.Print .Name
-        Debug.Print .Name
+        Bar .Name
+        Bar .Name
+        Bar .Name
     End With
+End Sub
+
+Private Sub Bar(ByVal arg)
 End Sub";
 
             const string expectedCode =
                 @"Sub test()
-    Dim wb As Workbook
+    Dim wb As Variant
     'TODO - {0}
 '    With wb
-'        Debug.Print .Name
-'        Debug.Print .Name
-'        Debug.Print .Name
+'        Bar .Name
+'        Bar .Name
+'        Bar .Name
 '    End With
+End Sub
+
+Private Sub Bar(ByVal arg)
 End Sub";
 
             var (actual, inspectionDescription) =
