@@ -358,6 +358,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to If the type clause for a Const isn&apos;t included it is implicitly typed. Include an explicit &apos; As &lt;Type&gt;&apos; replacing &apos;&lt;Type&gt;&apos; with the correct data type to explicitly type your const value..
+        /// </summary>
+        public static string ImplicitlyTypedConstInspection {
+            get {
+                return ResourceManager.GetString("ImplicitlyTypedConstInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Module members are public by default, which can be counter-intuitive. Consider specifying explicit access modifiers to avoid ambiguity..
         /// </summary>
         public static string ImplicitPublicMemberInspection {
