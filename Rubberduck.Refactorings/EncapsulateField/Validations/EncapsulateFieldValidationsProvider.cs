@@ -58,12 +58,23 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _udtMemberCandidates = new List<IUserDefinedTypeMemberCandidate>();
             _objectStateUDTs = objectStateUDTCandidates.ToList();
             _candidates = candidates.ToList();
+            var udtCandidates = candidates.Where(c => c is IUserDefinedTypeCandidate).Cast<IUserDefinedTypeCandidate>();
+
             foreach (var udtCandidate in candidates.Where(c => c is IUserDefinedTypeCandidate).Cast<IUserDefinedTypeCandidate>())
             {
-                foreach (var member in udtCandidate.Members)
+                LoadUDTMemberCandidates(udtCandidate);
+            }
+        }
+
+        private void LoadUDTMemberCandidates(IUserDefinedTypeCandidate udtCandidate)
+        {
+            foreach (var member in udtCandidate.Members)
+            {
+                if (member.WrappedCandidate is IUserDefinedTypeCandidate udt)
                 {
-                    _udtMemberCandidates.Add(member);
+                    LoadUDTMemberCandidates(udt);
                 }
+                _udtMemberCandidates.Add(member);
             }
         }
 
@@ -83,7 +94,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return candidate;
         }
 
-        public static IObjectStateUDT AssignNoConflictIdentifiers(IObjectStateUDT stateUDT, IDeclarationFinderProvider declarationFinderProvider) //, DeclarationType declarationType)
+        public static IObjectStateUDT AssignNoConflictIdentifiers(IObjectStateUDT stateUDT, IDeclarationFinderProvider declarationFinderProvider)
         {
             var members = declarationFinderProvider.DeclarationFinder.Members(stateUDT.QualifiedModuleName);
             var guard = 0;

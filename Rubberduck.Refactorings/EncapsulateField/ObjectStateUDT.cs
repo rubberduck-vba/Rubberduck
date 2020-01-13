@@ -71,6 +71,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
             set
             {
                 _isSelected = value;
+                if (_wrappedUDT != null)
+                {
+                    _wrappedUDT.IsSelectedObjectStateUDT = value;
+                }
+
                 if (_isSelected && IsExistingDeclaration)
                 {
                     _wrappedUDT.EncapsulateFlag = false;

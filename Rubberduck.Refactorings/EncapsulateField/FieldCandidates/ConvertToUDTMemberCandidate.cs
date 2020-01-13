@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
+using Rubberduck.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
@@ -14,18 +15,21 @@ namespace Rubberduck.Refactorings.EncapsulateField
     public interface IConvertToUDTMember : IEncapsulateFieldCandidate
     {
         string UDTMemberDeclaration { get; }
-        IObjectStateUDT ObjectStateUDT { set; get; }
         IEncapsulateFieldCandidate WrappedCandidate { get; }
     }
 
     public class ConvertToUDTMember : IConvertToUDTMember
     {
+        private int _hashCode;
+        private readonly string _uniqueID;
         private readonly IEncapsulateFieldCandidate _wrapped;
         public ConvertToUDTMember(IEncapsulateFieldCandidate candidate, IObjectStateUDT objStateUDT)
         {
             _wrapped = candidate;
             PropertyIdentifier = _wrapped.PropertyIdentifier;
             ObjectStateUDT = objStateUDT;
+            _uniqueID = BuildUniqueID(candidate, objStateUDT);
+            _hashCode = _uniqueID.GetHashCode();
         }
 
         public virtual string UDTMemberDeclaration
@@ -42,7 +46,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public IEncapsulateFieldCandidate WrappedCandidate => _wrapped;
 
-        public IObjectStateUDT ObjectStateUDT { set; get; }
+        public IObjectStateUDT ObjectStateUDT { private set; get; }
 
         public string TargetID => _wrapped.TargetID;
 
@@ -91,7 +95,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => _wrapped.ParameterName;
         }
 
-    public IValidateVBAIdentifiers NameValidator
+        public IValidateVBAIdentifiers NameValidator
         {
             set => _wrapped.NameValidator = value;
             get => _wrapped.NameValidator;
@@ -109,7 +113,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 if (_wrapped is IUserDefinedTypeMemberCandidate udtm)
                 {
-                    return $"{ObjectStateUDT.FieldIdentifier}.{udtm.Parent.PropertyIdentifier}.{BackingIdentifier}";
+                    return $"{ObjectStateUDT.FieldIdentifier}.{udtm.UDTField.PropertyIdentifier}.{BackingIdentifier}";
                 }
                 return $"{ObjectStateUDT.FieldIdentifier}.{BackingIdentifier}";
             }
@@ -119,9 +123,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             if (idRef.QualifiedModuleName != QualifiedModuleName)
             {
-                return $"{QualifiedModuleName.ComponentName}.{PropertyIdentifier}";
+                return PropertyIdentifier;
             }
-            return  $"{BackingIdentifier}";
+            return  BackingIdentifier;
         }
 
         public string IdentifierName => _wrapped.IdentifierName;
@@ -139,31 +143,46 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             get
             {
-                if (_wrapped is IUserDefinedTypeCandidate udt && udt.TypeDeclarationIsPrivate)
+                var modifiedSets = new List<PropertyAttributeSet>();
+                var sets = _wrapped.PropertyAttributeSets;
+                for (var idx = 0; idx < sets.Count(); idx++)
                 {
-                    var sets = new List<PropertyAttributeSet>();
-                    foreach (var member in udt.Members)
-                    {
-                        sets.Add(CreateMemberPropertyAttributeSet(member));
-                    }
-                    return sets;
+                    var attributeSet = sets.ElementAt(idx);
+                    var fields = attributeSet.BackingField.Split(new char[] { '.' });
+
+                    attributeSet.BackingField = fields.Count() > 1
+                        ? $"{ObjectStateUDT.FieldIdentifier}.{attributeSet.BackingField.CapitalizeFirstLetter()}"
+                        : $"{ObjectStateUDT.FieldIdentifier}.{attributeSet.PropertyName.CapitalizeFirstLetter()}";
+
+                    modifiedSets.Add(attributeSet);
                 }
-                return new List<PropertyAttributeSet>() { AsPropertyAttributeSet };
+                return modifiedSets;
             }
         }
+
+        public override bool Equals(object obj)
+        {
+            return obj != null
+                && obj is ConvertToUDTMember convertWrapper
+                && BuildUniqueID(convertWrapper, convertWrapper.ObjectStateUDT) == _uniqueID;
+        }
+
+        public override int GetHashCode() => _hashCode;
+
+        private static string BuildUniqueID(IEncapsulateFieldCandidate candidate, IObjectStateUDT field) => $"{candidate.QualifiedModuleName.Name}.{field.IdentifierName}.{candidate.IdentifierName}";
 
         private PropertyAttributeSet CreateMemberPropertyAttributeSet (IUserDefinedTypeMemberCandidate udtMember)
         {
             return new PropertyAttributeSet()
             {
                 PropertyName = udtMember.PropertyIdentifier,
-                BackingField = $"{ObjectStateUDT.FieldIdentifier}.{udtMember.Parent.PropertyIdentifier}.{udtMember.BackingIdentifier}",
+                BackingField = $"{ObjectStateUDT.FieldIdentifier}.{udtMember.UDTField.PropertyIdentifier}.{udtMember.BackingIdentifier}",
                 AsTypeName = udtMember.PropertyAsTypeName,
                 ParameterName = udtMember.ParameterName,
                 GenerateLetter = udtMember.ImplementLet,
                 GenerateSetter = udtMember.ImplementSet,
                 UsesSetAssignment = udtMember.Declaration.IsObject,
-                IsUDTProperty = false //TODO: If udtMember is a UDT, this needs to be true
+                IsUDTProperty = (udtMember.Declaration.AsTypeDeclaration?.DeclarationType ?? DeclarationType.Variable) == DeclarationType.UserDefinedType
             };
         }
 

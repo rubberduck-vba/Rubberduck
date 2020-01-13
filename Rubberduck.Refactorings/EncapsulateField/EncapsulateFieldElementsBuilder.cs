@@ -16,7 +16,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private QualifiedModuleName _targetQMN;
 
-        public EncapsulateFieldElementsBuilder(IDeclarationFinderProvider declarationFinderProvider, QualifiedModuleName targetQMN)//, IEncapsulateFieldValidator validator )
+        public EncapsulateFieldElementsBuilder(IDeclarationFinderProvider declarationFinderProvider, QualifiedModuleName targetQMN)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _targetQMN = targetQMN;
@@ -77,7 +77,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        private IEnumerable<IObjectStateUDT> BuildObjectStateUDTCandidates(IEnumerable<IEncapsulateFieldCandidate> candidates) //, IObjectStateUDT defaultObjectStateUDT)
+        private IEnumerable<IObjectStateUDT> BuildObjectStateUDTCandidates(IEnumerable<IEncapsulateFieldCandidate> candidates)
         {
             var udtCandidates = candidates.Where(c => c is IUserDefinedTypeCandidate udt
                         && udt.CanBeObjectStateUDT);
@@ -105,9 +105,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return stateUDT;
         }
 
-        private IEncapsulateFieldCandidate CreateCandidate(Declaration target, IValidateVBAIdentifiers validator)// Predicate<string> nameValidator)
+        private IEncapsulateFieldCandidate CreateCandidate(Declaration target, IValidateVBAIdentifiers validator)
         {
-            if (target.IsUserDefinedTypeField())
+            if (target.IsUserDefinedType())
             {
                 var udtValidator = EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.UserDefinedType);
                 var udtField = new UserDefinedTypeCandidate(target, udtValidator) as IUserDefinedTypeCandidate;

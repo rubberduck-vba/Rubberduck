@@ -437,6 +437,226 @@ Private mFizz
             Assert.AreEqual(expectedCount, model.ObjectStateUDTCandidates.Count());
         }
 
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void UDTMemberIsPrivateUDT()
+        {
+            string inputCode =
+$@"
+
+Private Type TFoo
+    Foo As Integer
+    Bar As Byte
+End Type
+
+Private Type TBar
+    FooBar As TFoo
+End Type
+
+Private my|Bar As TBar
+";
+
+            var userInput = new UserInputDataObject();
+
+            userInput.EncapsulateUsingUDTField();
+
+            var presenterAction = Support.SetParameters(userInput);
+
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+
+            StringAssert.Contains("Public Property Let Foo(", actualCode);
+            StringAssert.Contains("Public Property Let Bar(", actualCode);
+            StringAssert.Contains("this.MyBar.FooBar.Foo = value", actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void UDTMemberIsPublicUDT()
+        {
+            string inputCode =
+$@"
+
+Public Type TFoo
+    Foo As Integer
+    Bar As Byte
+End Type
+
+Private Type TBar
+    FooBar As TFoo
+End Type
+
+Private my|Bar As TBar
+";
+
+            var userInput = new UserInputDataObject();
+
+            userInput.EncapsulateUsingUDTField();
+
+            var presenterAction = Support.SetParameters(userInput);
+
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+
+            StringAssert.Contains("Public Property Let FooBar(", actualCode);
+            StringAssert.Contains("this.MyBar.FooBar = value", actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void UDTMemberIsPrivateUDT_RepeatedType()
+        {
+            string inputCode =
+$@"
+
+Private Type TFoo
+    Foo As Integer
+    Bar As Byte
+End Type
+
+Private Type TBar
+    FooBar As TFoo
+    ReBar As TFoo
+End Type
+
+Private my|Bar As TBar
+";
+
+            var userInput = new UserInputDataObject();
+
+            userInput.EncapsulateUsingUDTField();
+
+            var presenterAction = Support.SetParameters(userInput);
+
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+
+            StringAssert.Contains("Public Property Let Foo(", actualCode);
+            StringAssert.Contains("Public Property Let Bar(", actualCode);
+            StringAssert.Contains("Public Property Let Foo_1(", actualCode);
+            StringAssert.Contains("Public Property Let Bar_1(", actualCode);
+            StringAssert.Contains("this.MyBar.FooBar.Foo = value", actualCode);
+            StringAssert.Contains("this.MyBar.ReBar.Foo = value", actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void GivenReferencedPublicField_UpdatesReferenceToNewProperty()
+        {
+            const string codeClass1 =
+                @"|Public fizz As Integer
+
+Sub Foo()
+    fizz = 1
+End Sub";
+            const string codeClass2 =
+@"Sub Foo()
+    Dim theClass As Class1
+    theClass.fizz = 0
+    Bar theClass.fizz
+End Sub
+
+Sub Bar(ByVal v As Integer)
+End Sub";
+
+            var userInput = new UserInputDataObject()
+                .AddUserInputSet("fizz", "Name");
+
+            userInput.EncapsulateUsingUDTField();
+
+            var presenterAction = Support.SetParameters(userInput);
+
+            var class1CodeString = codeClass1.ToCodeString();
+            var actualCode = RefactoredCode(
+                "Class1",
+                class1CodeString.CaretPosition.ToOneBased(),
+                presenterAction,
+                null,
+                false,
+                ("Class1", class1CodeString.Code, ComponentType.ClassModule),
+                ("Class2", codeClass2, ComponentType.ClassModule));
+
+            StringAssert.Contains("Name = 1", actualCode["Class1"]);
+            StringAssert.Contains("theClass.Name = 0", actualCode["Class2"]);
+            StringAssert.Contains("Bar theClass.Name", actualCode["Class2"]);
+            StringAssert.DoesNotContain("fizz", actualCode["Class2"]);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void StandardModuleSource_ExternalReferences(bool moduleResolve)
+        {
+            var sourceModuleName = "SourceModule";
+            var referenceExpression = moduleResolve ? $"{sourceModuleName}." : string.Empty;
+            var sourceModuleCode =
+$@"
+
+Public th|is As Long";
+
+            var procedureModuleReferencingCode =
+$@"Option Explicit
+
+Private Const bar As Long = 7
+
+Public Sub Bar()
+    {referenceExpression}this = bar
+End Sub
+
+Public Sub Foo()
+    With {sourceModuleName}
+        .this = bar
+    End With
+End Sub
+";
+
+            string classModuleReferencingCode =
+$@"Option Explicit
+
+Private Const bar As Long = 7
+
+Public Sub Bar()
+    {referenceExpression}this = bar
+End Sub
+
+Public Sub Foo()
+    With {sourceModuleName}
+        .this = bar
+    End With
+End Sub
+";
+
+            var userInput = new UserInputDataObject()
+                .UserSelectsField("this", "MyProperty");
+
+            userInput.EncapsulateUsingUDTField();
+
+            var presenterAction = Support.SetParameters(userInput);
+
+            var sourceCodeString = sourceModuleCode.ToCodeString();
+            var actualModuleCode = RefactoredCode(
+                sourceModuleName,
+                sourceCodeString.CaretPosition.ToOneBased(),
+                presenterAction,
+                null,
+                false,
+                ("StdModule", procedureModuleReferencingCode, ComponentType.StandardModule),
+                ("ClassModule", classModuleReferencingCode, ComponentType.ClassModule),
+                (sourceModuleName, sourceCodeString.Code, ComponentType.StandardModule));
+
+            var referencingModuleCode = actualModuleCode["StdModule"];
+            StringAssert.Contains($"{sourceModuleName}.MyProperty = ", referencingModuleCode);
+            StringAssert.DoesNotContain($"{sourceModuleName}.{sourceModuleName}.MyProperty = ", referencingModuleCode);
+            StringAssert.Contains($"  .MyProperty = bar", referencingModuleCode);
+
+            var referencingClassCode = actualModuleCode["ClassModule"];
+            StringAssert.Contains($"{sourceModuleName}.MyProperty = ", referencingClassCode);
+            StringAssert.DoesNotContain($"{sourceModuleName}.{sourceModuleName}.MyProperty = ", referencingClassCode);
+            StringAssert.Contains($"  .MyProperty = bar", referencingClassCode);
+        }
+
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
         {
             return Support.SupportTestRefactoring(rewritingManager, state, factory, selectionService);

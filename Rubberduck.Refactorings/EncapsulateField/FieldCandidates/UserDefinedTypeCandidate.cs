@@ -16,6 +16,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         void AddMember(IUserDefinedTypeMemberCandidate member);
         bool TypeDeclarationIsPrivate { set; get; }
         bool CanBeObjectStateUDT { set; get; }
+        bool IsSelectedObjectStateUDT { set; get; }
     }
 
     public class UserDefinedTypeCandidate : EncapsulateFieldCandidate, IUserDefinedTypeCandidate
@@ -33,7 +34,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private List<IUserDefinedTypeMemberCandidate> _udtMembers = new List<IUserDefinedTypeMemberCandidate>();
         public IEnumerable<IUserDefinedTypeMemberCandidate> Members => _udtMembers;
 
-        public bool TypeDeclarationIsPrivate { set; get; }
+        private bool _isPrivate;
+        public bool TypeDeclarationIsPrivate
+        {
+            set => _isPrivate = value;
+            get => Declaration.AsTypeDeclaration?.HasPrivateAccessibility() ?? false;
+        }
+
+        public bool IsSelectedObjectStateUDT { set; get; }
 
         private bool _canBeObjectStateUDT;
         public bool CanBeObjectStateUDT
@@ -119,23 +127,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return TypeDeclarationIsPrivate ? $"{BackingIdentifier}" : $"{PropertyIdentifier}";
         }
 
-        public override IEnumerable<PropertyAttributeSet> PropertyAttributeSets
-        {
-            get
-            {
-                if (TypeDeclarationIsPrivate)
-                {
-                    var specs = new List<PropertyAttributeSet>();
-                    foreach (var member in Members)
-                    {
-                        specs.Add(member.AsPropertyGeneratorSpec);
-                    }
-                    return specs;
-                }
-                return new List<PropertyAttributeSet>() { AsPropertyAttributeSet };
-            }
-        }
-
         public override bool Equals(object obj)
         {
             if (obj is IUserDefinedTypeCandidate udt)
@@ -148,6 +139,32 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public override int GetHashCode()
         {
             return base.GetHashCode();
+        }
+
+        public override IEnumerable<PropertyAttributeSet> PropertyAttributeSets
+        {
+            get
+            {
+                if (TypeDeclarationIsPrivate)
+                {
+                    var specs = new List<PropertyAttributeSet>();
+                    foreach (var member in Members)
+                    {
+                        var sets = member.PropertyAttributeSets;
+                        var modifiedSets = new List<PropertyAttributeSet>();
+                        PropertyAttributeSet newSet;
+                        foreach (var set in sets)
+                        {
+                            newSet = set;
+                            newSet.BackingField = $"{BackingIdentifier}.{set.BackingField}";
+                            modifiedSets.Add(newSet);
+                        }
+                        specs.AddRange(modifiedSets);
+                    }
+                    return specs;
+                }
+                return new List<PropertyAttributeSet>() { AsPropertyAttributeSet };
+            }
         }
 
         protected override PropertyAttributeSet AsPropertyAttributeSet

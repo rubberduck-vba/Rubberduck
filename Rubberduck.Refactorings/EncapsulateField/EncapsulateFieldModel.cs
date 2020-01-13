@@ -92,7 +92,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             foreach (var candidate in EncapsulationCandidates)
             {
-                candidate.ConflictFinder = _validationsProvider.ConflictDetector(EncapsulateFieldStrategy , _declarationFinderProvider);// ConflictDetector;
+                candidate.ConflictFinder = _validationsProvider.ConflictDetector(EncapsulateFieldStrategy , _declarationFinderProvider);
                 candidate.NameValidator = candidate.Declaration.IsArray
                     ? EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.UserDefinedTypeMemberArray)
                     : EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.UserDefinedTypeMember);

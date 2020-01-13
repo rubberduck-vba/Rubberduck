@@ -115,7 +115,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
         public IRefactoring SupportTestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
         {
-            var indenter = CreateIndenter(); //The refactoring only uses method independent of the VBE instance.
+            var indenter = CreateIndenter();
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
             var uiDispatcherMock = new Mock<IUiDispatcher>();
             uiDispatcherMock
@@ -220,7 +220,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
         public UserInputDataObject() { }
 
-        public UserInputDataObject UserSelectsField(string fieldName, string propertyName = null/*, bool encapsulationFlag = true*/, bool isReadOnly = false)
+        public UserInputDataObject UserSelectsField(string fieldName, string propertyName = null, bool isReadOnly = false)
         {
             return AddUserInputSet(fieldName, propertyName, true, isReadOnly);
         }

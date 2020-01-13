@@ -15,7 +15,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private string _targetIdentifier;
         private string _setLetParameter;
 
-        public EncapsulationIdentifiers(string field, IValidateVBAIdentifiers identifierValidator) // Predicate<string> IsValidPropertyName)
+        public EncapsulationIdentifiers(string field, IValidateVBAIdentifiers identifierValidator)
         {
             _targetIdentifier = field;
 

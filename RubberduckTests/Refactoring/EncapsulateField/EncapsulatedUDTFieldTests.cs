@@ -889,6 +889,96 @@ End Function";
             StringAssert.Contains("Public Property Let Second", actualCode);
         }
 
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void UDTMemberIsPrivateUDT()
+        {
+            string inputCode =
+$@"
+
+Private Type TFoo
+    Foo As Integer
+    Bar As Byte
+End Type
+
+Private Type TBar
+    FooBar As TFoo
+End Type
+
+Private my|Bar As TBar
+";
+
+            var presenterAction = Support.UserAcceptsDefaults();
+
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+
+            StringAssert.Contains("Public Property Let Foo(", actualCode);
+            StringAssert.Contains("Public Property Let Bar(", actualCode);
+            StringAssert.Contains("myBar.FooBar.Foo = value", actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void UDTMemberIsPrivateUDT_RepeatedType()
+        {
+            string inputCode =
+$@"
+
+Private Type TFoo
+    Foo As Integer
+    Bar As Byte
+End Type
+
+Private Type TBar
+    FooBar As TFoo
+    ReBar As TFoo
+End Type
+
+Private my|Bar As TBar
+";
+
+            var presenterAction = Support.UserAcceptsDefaults();
+
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+
+            StringAssert.Contains("Public Property Let Foo(", actualCode);
+            StringAssert.Contains("Public Property Let Bar(", actualCode);
+            StringAssert.Contains("Public Property Let Foo_1(", actualCode);
+            StringAssert.Contains("Public Property Let Bar_1(", actualCode);
+            StringAssert.Contains("myBar.FooBar.Foo = value", actualCode);
+            StringAssert.Contains("myBar.ReBar.Foo = value", actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void UDTMemberIsPublicUDT()
+        {
+            string inputCode =
+$@"
+
+Public Type TFoo
+    Foo As Integer
+    Bar As Byte
+End Type
+
+Private Type TBar
+    FooBar As TFoo
+End Type
+
+Private my|Bar As TBar
+";
+
+            var presenterAction = Support.UserAcceptsDefaults();
+
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+
+            StringAssert.Contains("Public Property Let FooBar(", actualCode);
+            StringAssert.Contains("myBar.FooBar = value", actualCode);
+        }
+
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
         {
             return Support.SupportTestRefactoring(rewritingManager, state, factory, selectionService);

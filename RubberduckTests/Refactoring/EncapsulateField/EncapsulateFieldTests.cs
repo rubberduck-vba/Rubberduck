@@ -473,7 +473,7 @@ End Sub";
             var presenterAction = Support.SetParametersForSingleTarget("fizz", "Name");
 
             var validator = EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.Default);
-            var enapsulationIdentifiers = new EncapsulationIdentifiers("fizz", validator/*(string name) => true*/) { Property = "Name" };
+            var enapsulationIdentifiers = new EncapsulationIdentifiers("fizz", validator) { Property = "Name" };
 
             var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
             StringAssert.AreEqualIgnoringCase(enapsulationIdentifiers.TargetFieldName, "fizz");

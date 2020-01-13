@@ -37,7 +37,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             candidate = base.AssignNoConflictIdentifier(candidate, DeclarationType.Property);
 
-            //Compare to existing members...they cannot change.  
             var objectStateUDT = _objectStateUDTs.SingleOrDefault(os => os.IsSelected);
             var guard = 0;
             while (guard++ < 10 && ConflictsWithExistingUDTMembers(objectStateUDT, candidate.PropertyIdentifier))
@@ -52,7 +51,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             candidate = base.AssignNoConflictIdentifier(candidate, declarationType);
 
-            //Compare to existing members first...they cannot change
             var objectStateUDT = _objectStateUDTs.SingleOrDefault(os => os.IsSelected);
             var guard = 0;
             while (guard++ < 10 && ConflictsWithExistingUDTMembers(objectStateUDT, candidate.BackingIdentifier))

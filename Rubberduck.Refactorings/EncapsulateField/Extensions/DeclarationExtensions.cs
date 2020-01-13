@@ -30,7 +30,10 @@ namespace Rubberduck.Refactorings.EncapsulateField.Extensions
             => declaration.DeclarationType.HasFlag(DeclarationType.Constant);
 
         public static bool IsUserDefinedTypeField(this Declaration declaration)
-            => declaration.IsMemberVariable() && (declaration.AsTypeDeclaration?.DeclarationType.Equals(DeclarationType.UserDefinedType) ?? false);
+            => declaration.IsMemberVariable() && IsUserDefinedType(declaration);
+
+        public static bool IsUserDefinedType(this Declaration declaration)
+            => (declaration.AsTypeDeclaration?.DeclarationType.Equals(DeclarationType.UserDefinedType) ?? false);
 
         public static bool IsEnumField(this Declaration declaration)
             => declaration.IsMemberVariable() && (declaration.AsTypeDeclaration?.DeclarationType.Equals(DeclarationType.Enumeration) ?? false);
@@ -39,13 +42,6 @@ namespace Rubberduck.Refactorings.EncapsulateField.Extensions
         {
             return declaration.Context.TryGetAncestor<VBAParser.VariableListStmtContext>(out var varList)
                             && varList.ChildCount > 1;
-        }
-
-        public static IEnumerable<IdentifierReference> AllReferences(this IEnumerable<Declaration> declarations)
-        {
-            return from dec in declarations
-                   from reference in dec.References
-                   select reference;
         }
     }
 }

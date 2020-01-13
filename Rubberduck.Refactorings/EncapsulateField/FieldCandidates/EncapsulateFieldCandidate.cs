@@ -41,6 +41,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         protected Declaration _target;
         protected QualifiedModuleName _qmn;
+        protected readonly string _uniqueID;
         protected int _hashCode;
         private string _identifierName;
         protected EncapsulationIdentifiers _fieldAndProperty;
@@ -57,7 +58,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             CanBeReadWrite = true;
 
-            _hashCode = ($"{_qmn.Name}.{declaration.IdentifierName}").GetHashCode();
+            _uniqueID = $"{_qmn.Name}.{declaration.IdentifierName}";
+            _hashCode = _uniqueID.GetHashCode();
 
             ImplementLet = true;
             ImplementSet = false;
@@ -129,10 +131,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             return obj != null
                 && obj is IEncapsulateFieldCandidate efc
-                && $"{efc.QualifiedModuleName.Name}.{efc.TargetID}" == $"{_qmn.Name}.{IdentifierName}";
+                && $"{efc.QualifiedModuleName.Name}.{efc.IdentifierName}" == _uniqueID;
         }
 
         public override int GetHashCode() => _hashCode;
+
+        public override string ToString()
+            =>$"({TargetID}){Declaration.ToString()}";
 
         protected virtual string AccessorInProperty
             => $"{BackingIdentifier}";
