@@ -71,7 +71,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             }
         }
 
-        private MasterDetailSelectionManager _masterDetail;
+        private MasterDetailSelectionManager _masterDetailManager;
         public RubberduckParserState State { get; }
 
         public EncapsulateFieldViewModel(EncapsulateFieldModel model, RubberduckParserState state) : base(model)
@@ -88,7 +88,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
 
             _lastCheckedBoxes = EncapsulationFields.Where(ef => ef.EncapsulateFlag).ToList();
 
-            _masterDetail = new MasterDetailSelectionManager(model.SelectedFieldCandidates.SingleOrDefault());
+            _masterDetailManager = new MasterDetailSelectionManager(model.SelectedFieldCandidates.SingleOrDefault());
 
             ManageEncapsulationFlagsAndSelectedItem();
 
@@ -177,18 +177,18 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             {
                 if (value is null) { return; }
 
-                _masterDetail.SelectionTargetID = value.TargetID;
+                _masterDetailManager.SelectionTargetID = value.TargetID;
                 OnPropertyChanged(nameof(SelectedField));
-                if (_masterDetail.DetailUpdateRequired)
+                if (_masterDetailManager.DetailUpdateRequired)
                 {
-                    _masterDetail.DetailField = SelectedField;
+                    _masterDetailManager.DetailField = SelectedField;
                     UpdateDetailForSelection();
                 }
 
                 OnPropertyChanged(nameof(PropertiesPreview));
             }
 
-            get => EncapsulationFields.FirstOrDefault(f => f.TargetID.Equals(_masterDetail.SelectionTargetID));
+            get => EncapsulationFields.FirstOrDefault(f => f.TargetID.Equals(_masterDetailManager.SelectionTargetID));
         }
 
         private void UpdateDetailForSelection()
@@ -216,26 +216,26 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             {
                 if (SelectedField is null || value is null) { return; }
 
-                _masterDetail.DetailField.PropertyName = value;
+                _masterDetailManager.DetailField.PropertyName = value;
                 UpdateDetailForSelection();
             }
 
-            get => _masterDetail.DetailField?.PropertyName ?? SelectedField?.PropertyName ?? string.Empty;
+            get => _masterDetailManager.DetailField?.PropertyName ?? SelectedField?.PropertyName ?? string.Empty;
         }
 
         public bool SelectedFieldIsNotFlagged
-            => !(_masterDetail.DetailField?.EncapsulateFlag ?? false);
+            => !(_masterDetailManager.DetailField?.EncapsulateFlag ?? false);
 
         public bool SelectedFieldIsPrivateUDT
-            => (_masterDetail.DetailField?.IsPrivateUserDefinedType ?? false);
+            => (_masterDetailManager.DetailField?.IsPrivateUserDefinedType ?? false);
 
         public bool SelectedFieldHasEditablePropertyName => !SelectedFieldIsPrivateUDT;
 
         public bool EnableReadOnlyOption 
-            => !(_masterDetail.DetailField?.IsRequiredToBeReadOnly ?? false);
+            => !(_masterDetailManager.DetailField?.IsRequiredToBeReadOnly ?? false);
 
-        public string GroupBoxHeaderContent 
-            => $"{_masterDetail.DetailField?.TargetID ?? string.Empty} {EncapsulateFieldResources.GroupBoxHeaderSuffix} ";
+        public string GroupBoxHeaderContent
+            => $"{_masterDetailManager.DetailField?.TargetID ?? string.Empty} {RubberduckUI.EncapsulateField_PropertyName} ";
 
         private string _validationErrorMessage;
         public string ValidationErrorMessage => _validationErrorMessage;
@@ -265,9 +265,9 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         {
             set
             {
-                _masterDetail.DetailField.IsReadOnly = value;
+                _masterDetailManager.DetailField.IsReadOnly = value;
             }
-            get => _masterDetail.DetailField?.IsReadOnly ?? SelectedField?.IsReadOnly ?? false;
+            get => _masterDetailManager.DetailField?.IsReadOnly ?? SelectedField?.IsReadOnly ?? false;
         }
 
         public bool ConvertFieldsToUDTMembers
@@ -308,7 +308,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             }
 
             _hasValidNames = !_failedValidationResults.Any();
-            if (_failedValidationResults.TryGetValue(_masterDetail.SelectionTargetID, out var errorMsg))
+            if (_failedValidationResults.TryGetValue(_masterDetailManager.SelectionTargetID, out var errorMsg))
             {
                 _validationErrorMessage = errorMsg;
                 _selectionHasValidEncapsulationAttributes = false;
@@ -333,7 +333,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             }
             else
             {
-                _masterDetail.DetailField = null;
+                _masterDetailManager.DetailField = null;
             }
             ReloadListAndPreview();
             RefreshValidationResults();
@@ -346,26 +346,11 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         public CommandBase EncapsulateFlagChangeCommand { get; }
         public CommandBase ReadOnlyChangeCommand { get; }
 
-        public string Caption
-            => EncapsulateFieldResources.Caption;
-
-        public string InstructionText
-            => EncapsulateFieldResources.InstructionText;
-
-        public string Preview
-            => EncapsulateFieldResources.Preview;
-
-        public string TitleText
-            => EncapsulateFieldResources.TitleText;
-
-        public string PrivateUDTPropertyText
-            => EncapsulateFieldResources.PrivateUDTPropertyText;
-
         private void ChangeIsReadOnlyFlag(object param)
         {
             if (SelectedField is null) { return; }
 
-            _masterDetail.DetailField.IsReadOnly = SelectedField.IsReadOnly;
+            _masterDetailManager.DetailField.IsReadOnly = SelectedField.IsReadOnly;
             OnPropertyChanged(nameof(IsReadOnly));
             OnPropertyChanged(nameof(PropertiesPreview));
         }
@@ -412,11 +397,11 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
 
         private void SetSelectedField(IEncapsulatedFieldViewData selected)
         {
-            _masterDetail.SelectionTargetID = selected?.TargetID ?? null;
+            _masterDetailManager.SelectionTargetID = selected?.TargetID ?? null;
             OnPropertyChanged(nameof(SelectedField));
-            if (_masterDetail.DetailUpdateRequired)
+            if (_masterDetailManager.DetailUpdateRequired)
             {
-                _masterDetail.DetailField = SelectedField;
+                _masterDetailManager.DetailField = SelectedField;
                 UpdateDetailForSelection();
             }
         }
