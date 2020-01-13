@@ -498,4 +498,7 @@ In memoriam, 1972-2018</value>
     <value>There is an assignment from the default member of the result of expression '{1}' to that of the expression '{0}'.</value>
     <comment>{0} lhsExpression; {1} rhsExpression</comment>
   </data>
+  <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
+    <value>Constant '{0}' is implicitly typed.</value>
+  </data>
 </root>
