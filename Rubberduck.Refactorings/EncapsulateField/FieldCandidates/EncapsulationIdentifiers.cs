@@ -4,12 +4,13 @@ using Rubberduck.Common;
 using System.Collections.Generic;
 using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using System;
+using Rubberduck.Resources;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
     public class EncapsulationIdentifiers
     {
-        private static string DEFAULT_WRITE_PARAMETER = EncapsulateFieldResources.DefaultPropertyParameter;
+        private static string DEFAULT_WRITE_PARAMETER = RubberduckUI.EncapsulateField_DefaultPropertyParameter;
 
         private KeyValuePair<string, string> _fieldAndProperty;
         private string _targetIdentifier;

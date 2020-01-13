@@ -136,6 +136,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public bool TryValidateEncapsulationAttributes(out string errorMessage)
         {
+            if (_wrapped is IArrayCandidate ac)
+            {
+                return ac.TryValidateEncapsulationAttributes(out errorMessage);
+            }
             return ConflictFinder.TryValidateEncapsulationAttributes(this, out errorMessage);
         }
 
@@ -169,22 +173,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public override int GetHashCode() => _hashCode;
 
-        private static string BuildUniqueID(IEncapsulateFieldCandidate candidate, IObjectStateUDT field) => $"{candidate.QualifiedModuleName.Name}.{field.IdentifierName}.{candidate.IdentifierName}";
-
-        private PropertyAttributeSet CreateMemberPropertyAttributeSet (IUserDefinedTypeMemberCandidate udtMember)
-        {
-            return new PropertyAttributeSet()
-            {
-                PropertyName = udtMember.PropertyIdentifier,
-                BackingField = $"{ObjectStateUDT.FieldIdentifier}.{udtMember.UDTField.PropertyIdentifier}.{udtMember.BackingIdentifier}",
-                AsTypeName = udtMember.PropertyAsTypeName,
-                ParameterName = udtMember.ParameterName,
-                GenerateLetter = udtMember.ImplementLet,
-                GenerateSetter = udtMember.ImplementSet,
-                UsesSetAssignment = udtMember.Declaration.IsObject,
-                IsUDTProperty = (udtMember.Declaration.AsTypeDeclaration?.DeclarationType ?? DeclarationType.Variable) == DeclarationType.UserDefinedType
-            };
-        }
+        private static string BuildUniqueID(IEncapsulateFieldCandidate candidate, IObjectStateUDT field) 
+            => $"{candidate.QualifiedModuleName.Name}.{field.IdentifierName}.{candidate.IdentifierName}";
 
         private PropertyAttributeSet AsPropertyAttributeSet
         {

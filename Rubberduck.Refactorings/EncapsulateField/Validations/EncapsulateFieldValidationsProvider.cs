@@ -2,6 +2,7 @@
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.EncapsulateField.Extensions;
+using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
@@ -83,7 +84,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public static IEncapsulateFieldCandidate AssignNoConflictParameter(IEncapsulateFieldCandidate candidate)
         {
-            candidate.ParameterName = EncapsulateFieldResources.DefaultPropertyParameter;
+            candidate.ParameterName = RubberduckUI.EncapsulateField_DefaultPropertyParameter;
 
             var guard = 0;
             while (guard++ < 10 && (candidate.BackingIdentifier.IsEquivalentVBAIdentifierTo(candidate.ParameterName)

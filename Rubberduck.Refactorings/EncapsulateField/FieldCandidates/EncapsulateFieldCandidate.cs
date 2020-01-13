@@ -2,6 +2,7 @@
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.EncapsulateField.Extensions;
+using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using System;
@@ -99,7 +100,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public virtual IEncapsulateFieldConflictFinder ConflictFinder { set; get; }
 
-        public bool TryValidateEncapsulationAttributes(out string errorMessage) 
+        public virtual bool TryValidateEncapsulationAttributes(out string errorMessage) 
             => ConflictFinder.TryValidateEncapsulationAttributes(this, out errorMessage);
 
         public virtual string TargetID => _target?.IdentifierName ?? IdentifierName;
@@ -205,7 +206,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public virtual string ReferenceQualifier { set; get; }
 
-        public string ParameterName { set; get; } = EncapsulateFieldResources.DefaultPropertyParameter;
+        public string ParameterName { set; get; } = RubberduckUI.EncapsulateField_DefaultPropertyParameter;
 
         private bool _implLet;
         public bool ImplementLet { get => !IsReadOnly && _implLet; set => _implLet = value; }

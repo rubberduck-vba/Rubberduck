@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Rubberduck.Refactorings.EncapsulateField.Extensions;
+using Rubberduck.Resources;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -29,7 +30,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
     //newly inserted declaration
     public class ObjectStateUDT : IObjectStateUDT
     {
-        private static string _defaultNewFieldName = EncapsulateFieldResources.DefaultStateUDTFieldName;
+        private static string _defaultNewFieldName = RubberduckUI.EncapsulateField_DefaultObjectStateUDTFieldName; // EncapsulateFieldResources.DefaultStateUDTFieldName;
         private List<IConvertToUDTMember> _convertedMembers;
 
         private readonly IUserDefinedTypeCandidate _wrappedUDT;

@@ -2,6 +2,7 @@
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Resources;
 using System;
 using System.Linq;
 
@@ -29,6 +30,19 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 _subscripts = ctxt.GetText();
             }
+        }
+
+        public override bool TryValidateEncapsulationAttributes(out string errorMessage)
+        {
+            errorMessage = string.Empty;
+            if (!EncapsulateFlag) { return true; }
+
+            if (HasExternalRedimOperation)
+            {
+                errorMessage = string.Format(RubberduckUI.EncapsulateField_ArrayHasExternalRedimFormat, IdentifierName);
+                return false;
+            }
+            return ConflictFinder.TryValidateEncapsulationAttributes(this, out errorMessage);
         }
 
         public string UDTMemberDeclaration

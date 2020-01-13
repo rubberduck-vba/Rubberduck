@@ -4,6 +4,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
+using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Mocks;
@@ -204,9 +205,13 @@ End Sub
             var vbe = MockVbeBuilder.BuildFromStdModules(("SourceModule", inputCode), ("ClientModule", redimCode));
             var model = Support.RetrieveUserModifiedModelPriorToRefactoring(vbe.Object, fieldUT, DeclarationType.Variable, presenterAction);
 
-            model[fieldUT].TryValidateEncapsulationAttributes(out var errorMessage);
+            var field = model[fieldUT];
 
-            StringAssert.AreNotEqualIgnoringCase(EncapsulateFieldResources.ArrayHasExternalRedimFormat, errorMessage);
+            field.TryValidateEncapsulationAttributes(out var errorMessage);
+
+            var expectedError = string.Format(RubberduckUI.EncapsulateField_ArrayHasExternalRedimFormat, field.IdentifierName);
+
+            StringAssert.AreEqualIgnoringCase(expectedError, errorMessage);
         }
 
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
