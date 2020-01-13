@@ -153,7 +153,8 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <StackPanel>
-                                    <GroupBox Grid.Column="0"
+                                    <GroupBox Visibility="{Binding Path=IsEmptyList, Converter={StaticResource BoolToHiddenVisibility}}"
+                                                Grid.Column="0"
                                               Margin="5,0,0,5"
                                               MaxHeight="125"
                                               MinHeight="75"

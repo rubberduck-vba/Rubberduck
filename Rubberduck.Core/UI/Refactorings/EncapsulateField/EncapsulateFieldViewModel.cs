@@ -107,6 +107,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
                     orderedFields = Model.EncapsulationCandidates.Where(ec => !_selectedObjectStateUDT.FieldIdentifier.Equals(ec.IdentifierName))
                                                 .OrderBy(efd => efd.Declaration.Selection).ToList();
                 }
+                IsEmptyList = orderedFields.Count() == 0;
                 foreach (var efd in orderedFields)
                 {
                     viewableFields.Add(new ViewableEncapsulatedField(efd));
@@ -115,6 +116,8 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
                 return viewableFields;
             }
         }
+
+        public bool IsEmptyList { set; get; }
 
         public ObservableCollection<IObjectStateUDT> UDTFields
         {
@@ -269,10 +272,9 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
 
         public bool ConvertFieldsToUDTMembers
         {
-            get => Model.EncapsulateFieldStrategy == EncapsulateFieldStrategy.ConvertFieldsToUDTMembers; // Model.ConvertFieldsToUDTMembers;
+            get => Model.EncapsulateFieldStrategy == EncapsulateFieldStrategy.ConvertFieldsToUDTMembers;
             set
             {
-                //Model.ConvertFieldsToUDTMembers = value;
                 Model.EncapsulateFieldStrategy = value
                     ? EncapsulateFieldStrategy.ConvertFieldsToUDTMembers
                     : EncapsulateFieldStrategy.UseBackingFields;
