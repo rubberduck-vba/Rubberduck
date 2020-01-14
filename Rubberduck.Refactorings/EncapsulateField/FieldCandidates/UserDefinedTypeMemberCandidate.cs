@@ -68,7 +68,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public IEnumerable<IdentifierReference> FieldContextReferences
             => GetUDTMemberReferencesForField(this, UDTField);
 
-        public string ReferenceAccessor(IdentifierReference idRef)
+        public string IdentifierForReference(IdentifierReference idRef)
             => PropertyIdentifier;
 
         public PropertyAttributeSet AsPropertyGeneratorSpec

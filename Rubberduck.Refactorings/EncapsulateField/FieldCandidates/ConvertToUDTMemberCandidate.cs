@@ -119,7 +119,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        public string ReferenceAccessor(IdentifierReference idRef)
+        public string IdentifierForReference(IdentifierReference idRef)
         {
             if (idRef.QualifiedModuleName != QualifiedModuleName)
             {
@@ -136,9 +136,15 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public bool TryValidateEncapsulationAttributes(out string errorMessage)
         {
+            errorMessage = string.Empty;
+            if (!_wrapped.EncapsulateFlag) { return true; }
+
             if (_wrapped is IArrayCandidate ac)
             {
-                return ac.TryValidateEncapsulationAttributes(out errorMessage);
+                if (ac.HasExternalRedimOperation(out errorMessage))
+                {
+                    return false;
+                }
             }
             return ConflictFinder.TryValidateEncapsulationAttributes(this, out errorMessage);
         }

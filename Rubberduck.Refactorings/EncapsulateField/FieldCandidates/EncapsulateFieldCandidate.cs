@@ -34,7 +34,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         IValidateVBAIdentifiers NameValidator { set; get; }
         IEncapsulateFieldConflictFinder ConflictFinder { set; get; }
         bool TryValidateEncapsulationAttributes(out string errorMessage);
-        string ReferenceAccessor(IdentifierReference idRef);
+        string IdentifierForReference(IdentifierReference idRef);
         IEnumerable<PropertyAttributeSet> PropertyAttributeSets { get; }
     }
 
@@ -140,22 +140,19 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public override string ToString()
             =>$"({TargetID}){Declaration.ToString()}";
 
-        protected virtual string AccessorInProperty
-            => $"{BackingIdentifier}";
+        protected string IdentifierInNewProperties
+            => BackingIdentifier;
 
-        public string ReferenceAccessor(IdentifierReference idRef)
+        public string IdentifierForReference(IdentifierReference idRef)
         {
             if (idRef.QualifiedModuleName != QualifiedModuleName)
             {
-                return AccessorExternalReference(idRef);
+                return PropertyIdentifier;
             }
-            return AccessorLocalReference(idRef);
+            return IdentifierForLocalReferences(idRef);
         }
 
-        protected virtual string AccessorLocalReference(IdentifierReference idRef)
-            => PropertyIdentifier;
-
-        protected virtual string AccessorExternalReference(IdentifierReference idRef)
+        protected virtual string IdentifierForLocalReferences(IdentifierReference idRef)
             => PropertyIdentifier;
 
         public string PropertyIdentifier
@@ -226,7 +223,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 return new PropertyAttributeSet()
                 {
                     PropertyName = PropertyIdentifier,
-                    BackingField = AccessorInProperty,
+                    BackingField = IdentifierInNewProperties,
                     AsTypeName = PropertyAsTypeName,
                     ParameterName = ParameterName,
                     GenerateLetter = ImplementLet,

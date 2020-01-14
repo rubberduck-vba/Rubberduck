@@ -84,7 +84,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 {
                     foreach (var idRef in member.FieldContextReferences)
                     {
-                        var replacementText = member.ReferenceAccessor(idRef);
+                        var replacementText = member.IdentifierForReference(idRef);
                         if (IsExternalReferenceRequiringModuleQualification(idRef))
                         {
                             replacementText = $"{udt.QualifiedModuleName.ComponentName}.{replacementText}";
@@ -98,7 +98,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 foreach (var idRef in field.Declaration.References)
                 {
-                    var replacementText = converted.ReferenceAccessor(idRef);
+                    var replacementText = converted.IdentifierForReference(idRef);
 
                     if (IsExternalReferenceRequiringModuleQualification(idRef))
                     {

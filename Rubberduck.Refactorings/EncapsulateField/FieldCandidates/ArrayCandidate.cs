@@ -11,6 +11,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
     public interface IArrayCandidate : IEncapsulateFieldCandidate
     {
         string UDTMemberDeclaration { get;}
+        bool HasExternalRedimOperation(out string errorMessage);
     }
 
     public class ArrayCandidate : EncapsulateFieldCandidate, IArrayCandidate
@@ -37,9 +38,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
             errorMessage = string.Empty;
             if (!EncapsulateFlag) { return true; }
 
-            if (HasExternalRedimOperation)
+            if (HasExternalRedimOperation(out errorMessage))
             {
-                errorMessage = string.Format(RubberduckUI.EncapsulateField_ArrayHasExternalRedimFormat, IdentifierName);
                 return false;
             }
             return ConflictFinder.TryValidateEncapsulationAttributes(this, out errorMessage);
@@ -48,14 +48,19 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public string UDTMemberDeclaration
             => $"{PropertyIdentifier}({_subscripts}) {Tokens.As} {Declaration.AsTypeName}";
 
-        protected override string AccessorInProperty
-            => $"{BackingIdentifier}";
+        protected override string IdentifierForLocalReferences(IdentifierReference idRef)
+            => BackingIdentifier;
 
-        protected override string AccessorLocalReference(IdentifierReference idRef)
-            => $"{BackingIdentifier}";
-
-        private bool HasExternalRedimOperation
-            => Declaration.References.Any(rf => rf.QualifiedModuleName != QualifiedModuleName
-                    && rf.Context.TryGetAncestor<VBAParser.RedimVariableDeclarationContext>(out _));
+        public bool HasExternalRedimOperation(out string errorMessage)
+        {
+            errorMessage = string.Empty;
+            if (Declaration.References.Any(rf => rf.QualifiedModuleName != QualifiedModuleName
+                    && rf.Context.TryGetAncestor<VBAParser.RedimVariableDeclarationContext>(out _)))
+            {
+                errorMessage = string.Format(RubberduckUI.EncapsulateField_ArrayHasExternalRedimFormat, IdentifierName);
+                return true;
+            }
+            return false;
+        }
     }
 }

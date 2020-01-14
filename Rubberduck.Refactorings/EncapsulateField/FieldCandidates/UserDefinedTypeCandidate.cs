@@ -114,17 +114,14 @@ namespace Rubberduck.Refactorings.EncapsulateField
             get => base.EncapsulateFlag;
         }
 
-        protected override string AccessorInProperty
-            => $"{BackingIdentifier}";
-
-        protected override string AccessorLocalReference(IdentifierReference idRef)
+        protected override string IdentifierForLocalReferences(IdentifierReference idRef)
         {
             if (idRef.Context.Parent.Parent is VBAParser.WithStmtContext wsc)
             {
                 return BackingIdentifier;
             }
 
-            return TypeDeclarationIsPrivate ? $"{BackingIdentifier}" : $"{PropertyIdentifier}";
+            return TypeDeclarationIsPrivate ? BackingIdentifier : PropertyIdentifier;
         }
 
         public override bool Equals(object obj)
@@ -174,7 +171,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 return new PropertyAttributeSet()
                 {
                     PropertyName = PropertyIdentifier,
-                    BackingField = AccessorInProperty,
+                    BackingField = IdentifierInNewProperties,
                     AsTypeName = PropertyAsTypeName,
                     ParameterName = ParameterName,
                     GenerateLetter = ImplementLet,

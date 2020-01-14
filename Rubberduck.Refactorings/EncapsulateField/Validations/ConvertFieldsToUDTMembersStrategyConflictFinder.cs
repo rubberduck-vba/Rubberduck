@@ -46,7 +46,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return candidate;
         }
 
-
         protected override IEncapsulateFieldCandidate AssignNoConflictIdentifier(IEncapsulateFieldCandidate candidate, DeclarationType declarationType)
         {
             candidate = base.AssignNoConflictIdentifier(candidate, declarationType);

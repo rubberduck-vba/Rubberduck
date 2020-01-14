@@ -15,11 +15,13 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private QualifiedModuleName _targetQMN;
+        private string _defaultObjectStateUDTTypeName;
 
         public EncapsulateFieldElementsBuilder(IDeclarationFinderProvider declarationFinderProvider, QualifiedModuleName targetQMN)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _targetQMN = targetQMN;
+            _defaultObjectStateUDTTypeName = $"T{_targetQMN.ComponentName}";
             CreateRefactoringElements();
         }
 
@@ -55,8 +57,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             ObjectStateUDTCandidates = BuildObjectStateUDTCandidates(candidates).ToList();
 
-            var objectStateUDTIdentifier = $"T{_targetQMN.ComponentName}";
-            ObjectStateUDT = ObjectStateUDTCandidates.FirstOrDefault(os => os.AsTypeDeclaration.IdentifierName.StartsWith(objectStateUDTIdentifier, StringComparison.InvariantCultureIgnoreCase));
+            ObjectStateUDT = ObjectStateUDTCandidates.FirstOrDefault(os => os.AsTypeDeclaration.IdentifierName.StartsWith(_defaultObjectStateUDTTypeName, StringComparison.InvariantCultureIgnoreCase));
 
             DefaultObjectStateUDT = CreateStateUDTField();
             DefaultObjectStateUDT.IsSelected = true;
@@ -88,8 +89,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 objectStateUDTs.Add(new ObjectStateUDT(udt as IUserDefinedTypeCandidate));
             }
 
-            var objectStateUDTIdentifier = $"T{_targetQMN.ComponentName}";
-            var objectStateUDT = objectStateUDTs.FirstOrDefault(os => os.AsTypeDeclaration.IdentifierName.StartsWith(objectStateUDTIdentifier, StringComparison.InvariantCultureIgnoreCase));
+            var objectStateUDT = objectStateUDTs.FirstOrDefault(os => os.AsTypeDeclaration.IdentifierName.StartsWith(_defaultObjectStateUDTTypeName, StringComparison.InvariantCultureIgnoreCase));
 
             return objectStateUDTs;
         }
