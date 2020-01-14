@@ -126,7 +126,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 ? new ConvertFieldsToUDTMembers(_declarationFinderProvider, model, _indenter) as IEncapsulateStrategy
                 : new UseBackingFields(_declarationFinderProvider, model, _indenter) as IEncapsulateStrategy;
 
-            return strategy.RefactorRewrite(model, refactorRewriteSession, asPreview);
+            return strategy.RefactorRewrite(refactorRewriteSession, asPreview);
         }
     }
 }

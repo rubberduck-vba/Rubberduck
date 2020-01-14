@@ -18,7 +18,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public UseBackingFields(IDeclarationFinderProvider declarationFinderProvider, EncapsulateFieldModel model, IIndenter indenter)
             : base(declarationFinderProvider, model, indenter){ }
 
-        protected override void ModifyFields(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession)
+        protected override void ModifyFields(IEncapsulateFieldRewriteSession refactorRewriteSession)
         {
             var rewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
 
@@ -42,17 +42,17 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        protected override void ModifyReferences(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession)
+        protected override void ModifyReferences(IEncapsulateFieldRewriteSession refactorRewriteSession)
         {
             foreach (var field in SelectedFields)
             {
                 LoadFieldReferenceContextReplacements(field);
             }
 
-            RewriteReferences(model, refactorRewriteSession);
+            RewriteReferences(refactorRewriteSession);
         }
 
-        protected override void LoadNewDeclarationBlocks(EncapsulateFieldModel model)
+        protected override void LoadNewDeclarationBlocks()
         {
             //New field declarations created here were removed from their list within ModifyFields(...)
             var fieldsRequiringNewDeclaration = SelectedFields

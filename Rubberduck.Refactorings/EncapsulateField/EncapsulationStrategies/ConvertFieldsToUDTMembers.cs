@@ -23,38 +23,38 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _stateUDTField = model.StateUDTField;
         }
 
-        protected override void ModifyFields(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession)
+        protected override void ModifyFields(IEncapsulateFieldRewriteSession refactorRewriteSession)
         {
             var rewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
 
-            foreach (var field in model.SelectedFieldCandidates)
+            foreach (var field in SelectedFields)
             {
                 refactorRewriteSession.Remove(field.Declaration, rewriter);
             }
 
             if (_stateUDTField.IsExistingDeclaration)
             {
-                _stateUDTField.AddMembers(model.SelectedFieldCandidates.Cast<IConvertToUDTMember>());
+                _stateUDTField.AddMembers(SelectedFields.Cast<IConvertToUDTMember>());
 
                 rewriter.Replace(_stateUDTField.AsTypeDeclaration, _stateUDTField.TypeDeclarationBlock(_indenter));
             }
         }
 
-        protected override void ModifyReferences(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession)
+        protected override void ModifyReferences(IEncapsulateFieldRewriteSession refactorRewriteSession)
         {
-            foreach (var field in model.SelectedFieldCandidates)
+            foreach (var field in SelectedFields)
             {
                 LoadFieldReferenceContextReplacements(field);
             }
 
-            RewriteReferences(model, refactorRewriteSession);
+            RewriteReferences(refactorRewriteSession);
         }
 
-        protected override void LoadNewDeclarationBlocks(EncapsulateFieldModel model)
+        protected override void LoadNewDeclarationBlocks()
         {
             if (_stateUDTField.IsExistingDeclaration) { return; }
 
-            _stateUDTField.AddMembers(model.SelectedFieldCandidates.Cast<IConvertToUDTMember>());
+            _stateUDTField.AddMembers(SelectedFields.Cast<IConvertToUDTMember>());
 
             AddContentBlock(NewContentTypes.TypeDeclarationBlock, _stateUDTField.TypeDeclarationBlock(_indenter));
 
@@ -62,9 +62,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return;
         }
 
-        protected override void LoadNewPropertyBlocks(EncapsulateFieldModel model)
+        protected override void LoadNewPropertyBlocks(/*EncapsulateFieldModel model*/)
         {
-            var propertyGenerationSpecs = model.SelectedFieldCandidates.SelectMany(f => f.PropertyAttributeSets);
+            var propertyGenerationSpecs = /*model.SelectedFieldCandidates*/SelectedFields.SelectMany(f => f.PropertyAttributeSets);
 
             var generator = new PropertyGenerator();
             foreach (var spec in propertyGenerationSpecs)

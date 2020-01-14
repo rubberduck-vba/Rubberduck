@@ -17,7 +17,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 {
     public interface IEncapsulateStrategy
     {
-        IEncapsulateFieldRewriteSession RefactorRewrite(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession, bool asPreview);
+        IEncapsulateFieldRewriteSession RefactorRewrite(IEncapsulateFieldRewriteSession refactorRewriteSession, bool asPreview);
     }
 
     public abstract class EncapsulateFieldStrategyBase : IEncapsulateStrategy
@@ -46,24 +46,24 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 .FirstOrDefault()?.Context.Start.TokenIndex ?? null;
         }
 
-        public IEncapsulateFieldRewriteSession RefactorRewrite(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession, bool asPreview)
+        public IEncapsulateFieldRewriteSession RefactorRewrite(IEncapsulateFieldRewriteSession refactorRewriteSession, bool asPreview)
         {
-            ModifyFields(model, refactorRewriteSession);
+            ModifyFields(refactorRewriteSession);
 
-            ModifyReferences(model, refactorRewriteSession);
+            ModifyReferences(refactorRewriteSession);
 
-            InsertNewContent(model, refactorRewriteSession, asPreview);
+            InsertNewContent(refactorRewriteSession, asPreview);
 
             return refactorRewriteSession;
         }
 
-        protected abstract void ModifyFields(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession rewriteSession);
+        protected abstract void ModifyFields(IEncapsulateFieldRewriteSession rewriteSession);
 
-        protected abstract void ModifyReferences(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession);
+        protected abstract void ModifyReferences(IEncapsulateFieldRewriteSession refactorRewriteSession);
 
-        protected abstract void LoadNewDeclarationBlocks(EncapsulateFieldModel model);
+        protected abstract void LoadNewDeclarationBlocks();
 
-        protected void RewriteReferences(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession)
+        protected void RewriteReferences(IEncapsulateFieldRewriteSession refactorRewriteSession)
         {
             foreach (var replacement in IdentifierReplacements)
             {
@@ -76,7 +76,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         protected void AddContentBlock(NewContentTypes contentType, string block)
             => _newContent[contentType].Add(block);
 
-        private void InsertNewContent(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession, bool isPreview = false)
+        private void InsertNewContent(IEncapsulateFieldRewriteSession refactorRewriteSession, bool isPreview = false)
         {
             _newContent = new Dictionary<NewContentTypes, List<string>>
             {
@@ -86,9 +86,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 { NewContentTypes.TypeDeclarationBlock, new List<string>() }
             };
 
-            LoadNewDeclarationBlocks(model);
+            LoadNewDeclarationBlocks();
 
-            LoadNewPropertyBlocks(model);
+            LoadNewPropertyBlocks();
 
             if (isPreview)
             {
@@ -113,7 +113,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        protected virtual void LoadNewPropertyBlocks(EncapsulateFieldModel model)
+        protected virtual void LoadNewPropertyBlocks()
         {
             var propertyGenerationSpecs = SelectedFields.SelectMany(f => f.PropertyAttributeSets);
 
