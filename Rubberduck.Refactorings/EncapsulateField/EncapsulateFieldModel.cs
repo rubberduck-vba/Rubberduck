@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -41,7 +42,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             _objStateCandidates.Add(_newObjectStateUDT);
 
             EncapsulateFieldStrategy = EncapsulateFieldStrategy.UseBackingFields;
-            _activeObjectStateUDT = StateUDTField;
+            _activeObjectStateUDT = ObjectStateUDTField;
         }
 
         public QualifiedModuleName QualifiedModuleName => _targetQMN;
@@ -86,10 +87,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     _convertedFields = new List<IEncapsulateFieldCandidate>();
                     foreach (var field in _useBackingFieldCandidates)
                     {
-                        _convertedFields.Add(new ConvertToUDTMember(field, StateUDTField));
+                        _convertedFields.Add(new ConvertToUDTMember(field, ObjectStateUDTField));
                     }
                 }
-
                 return _convertedFields;
             }
         } 
@@ -114,7 +114,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             => EncapsulationCandidates.Where(c => c.Declaration == fieldDeclaration).Single();
         
         private IObjectStateUDT _activeObjectStateUDT;
-        public IObjectStateUDT StateUDTField
+        public IObjectStateUDT ObjectStateUDTField
         {
             get
             {
@@ -143,7 +143,15 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
                 if (EncapsulateFieldStrategy == EncapsulateFieldStrategy.ConvertFieldsToUDTMembers)
                 {
-                    AssignNoConflictIdentifiers();
+                    foreach (var field in EncapsulationCandidates)
+                    {
+                        if (field is IConvertToUDTMember convertedField)
+                        {
+                            convertedField.ObjectStateUDT = _activeObjectStateUDT;
+                            convertedField.ConflictFinder = _validationsProvider.ConflictDetector(EncapsulateFieldStrategy, _declarationFinderProvider);
+                            convertedField.ConflictFinder.AssignNoConflictIdentifiers(convertedField);
+                        }
+                    }
                 }
             }
         }
@@ -166,26 +174,20 @@ namespace Rubberduck.Refactorings.EncapsulateField
                         candidate.NameValidator = EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.Default);
                         break;
                 }
-                AssignNoConflictIdentifiers();
+                candidate.ConflictFinder = _validationsProvider.ConflictDetector(EncapsulateFieldStrategy, _declarationFinderProvider);
+                candidate.ConflictFinder.AssignNoConflictIdentifiers(candidate);
             }
         }
 
         private void UpdateFieldCandidatesForConvertFieldsToUDTMembersStrategy()
         {
-            foreach (var candidate in EncapsulationCandidates)
+            foreach (var candidate in EncapsulationCandidates.Cast<IConvertToUDTMember>())
             {
+                candidate.ObjectStateUDT = ObjectStateUDTField;
                 candidate.NameValidator = candidate.Declaration.IsArray
                     ? EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.UserDefinedTypeMemberArray)
                     : EncapsulateFieldValidationsProvider.NameOnlyValidator(NameValidators.UserDefinedTypeMember);
 
-                AssignNoConflictIdentifiers();
-            }
-        }
-
-        private void AssignNoConflictIdentifiers()
-        {
-            foreach (var candidate in EncapsulationCandidates)
-            {
                 candidate.ConflictFinder = _validationsProvider.ConflictDetector(EncapsulateFieldStrategy, _declarationFinderProvider);
                 candidate.ConflictFinder.AssignNoConflictIdentifiers(candidate);
             }

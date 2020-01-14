@@ -20,7 +20,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public ConvertFieldsToUDTMembers(IDeclarationFinderProvider declarationFinderProvider, EncapsulateFieldModel model, IIndenter indenter)
             : base(declarationFinderProvider, model, indenter)
         {
-            _stateUDTField = model.StateUDTField;
+            _stateUDTField = model.ObjectStateUDTField;
         }
 
         protected override void ModifyFields(IEncapsulateFieldRewriteSession refactorRewriteSession)
@@ -62,9 +62,9 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return;
         }
 
-        protected override void LoadNewPropertyBlocks(/*EncapsulateFieldModel model*/)
+        protected override void LoadNewPropertyBlocks()
         {
-            var propertyGenerationSpecs = /*model.SelectedFieldCandidates*/SelectedFields.SelectMany(f => f.PropertyAttributeSets);
+            var propertyGenerationSpecs = SelectedFields.SelectMany(f => f.PropertyAttributeSets);
 
             var generator = new PropertyGenerator();
             foreach (var spec in propertyGenerationSpecs)

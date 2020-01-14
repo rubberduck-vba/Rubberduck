@@ -74,7 +74,7 @@ namespace RubberduckTests.Refactoring.EncapsulateField
 
                     if (stateUDT != null)
                     {
-                        model.StateUDTField = stateUDT;
+                        model.ObjectStateUDTField = stateUDT;
                     }
                 }
                 else

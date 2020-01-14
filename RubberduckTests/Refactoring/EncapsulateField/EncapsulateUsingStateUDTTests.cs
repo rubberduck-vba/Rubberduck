@@ -657,6 +657,56 @@ End Sub
             StringAssert.Contains($"  .MyProperty = bar", referencingClassCode);
         }
 
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void PrivateUDT_SelectedOtherThanObjectStateUDT()
+        {
+            string inputCode =
+$@"
+
+Private Type TTest
+    TestValue As String
+    TestNumber As Long
+End Type
+
+Private Type TTestModule1
+    SomeValue As Long
+End Type
+
+Private mTest As TTest
+
+Private this As TTestModule1
+
+Private the|Target As Variant
+
+Public Property Get SomeValue() As Long
+    SomeValue = this.SomeValue
+End Property
+
+Public Property Let SomeValue(ByVal value As Long)
+    this.SomeValue = value
+End Property
+
+Public Sub Foo(arg As Long)
+    SomeValue = arg * 4
+End Sub
+";
+
+            var userInput = new UserInputDataObject()
+                .UserSelectsField("theTarget");
+
+            userInput.EncapsulateUsingUDTField("mTest");
+
+            var presenterAction = Support.SetParameters(userInput);
+
+            var actualCode = Support.RefactoredCode(inputCode.ToCodeString(), presenterAction);
+
+            StringAssert.DoesNotContain("TheTarget = this.TheTarget", actualCode);
+            StringAssert.Contains("TheTarget = mTest.TheTarget", actualCode);
+            StringAssert.Contains("TheTarget As Variant", actualCode);
+        }
+
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
         {
             return Support.SupportTestRefactoring(rewritingManager, state, factory, selectionService);

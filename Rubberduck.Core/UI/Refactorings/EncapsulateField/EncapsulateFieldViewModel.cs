@@ -92,7 +92,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             set
             {
                 _selectedObjectStateUDT = value;
-                Model.StateUDTField = _selectedObjectStateUDT;
+                Model.ObjectStateUDTField = _selectedObjectStateUDT;
                 SetObjectStateUDT();
             }
         }

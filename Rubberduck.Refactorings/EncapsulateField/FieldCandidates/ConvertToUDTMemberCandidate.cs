@@ -16,6 +16,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
     {
         string UDTMemberDeclaration { get; }
         IEncapsulateFieldCandidate WrappedCandidate { get; }
+        IObjectStateUDT ObjectStateUDT { set; get; }
     }
 
     public class ConvertToUDTMember : IConvertToUDTMember
@@ -46,7 +47,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public IEncapsulateFieldCandidate WrappedCandidate => _wrapped;
 
-        public IObjectStateUDT ObjectStateUDT { private set; get; }
+        public IObjectStateUDT ObjectStateUDT { set; get; }
 
         public string TargetID => _wrapped.TargetID;
 

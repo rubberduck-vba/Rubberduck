@@ -91,7 +91,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             if (builder.ObjectStateUDT != null)
             {
                 model.EncapsulateFieldStrategy = EncapsulateFieldStrategy.ConvertFieldsToUDTMembers;
-                model.StateUDTField = builder.ObjectStateUDT;
+                model.ObjectStateUDTField = builder.ObjectStateUDT;
             }
 
             return model;

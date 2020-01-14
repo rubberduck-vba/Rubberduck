@@ -120,7 +120,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
             {
                 foreach (var member in _wrappedUDT.Members)
                 {
-                    _convertedMembers.Add(new ConvertToUDTMember(member, this));
+                    var convertedMember = new ConvertToUDTMember(member, this) { EncapsulateFlag = false };
+                    _convertedMembers.Add(convertedMember);
                 }
             }
             _convertedMembers.AddRange(fields);
