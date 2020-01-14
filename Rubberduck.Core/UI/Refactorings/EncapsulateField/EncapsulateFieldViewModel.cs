@@ -12,72 +12,10 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
 {
     public class EncapsulateFieldViewModel : RefactoringViewModelBase<EncapsulateFieldModel>
     {
-        private class MasterDetailSelectionManager
-        {
-            private const string _neverATargetID = "_Never_a_TargetID_";
-            private bool _detailFieldIsFlagged;
-
-            public MasterDetailSelectionManager(IEncapsulateFieldCandidate selected)
-                : this(selected?.TargetID)
-            {
-                if (selected != null)
-                {
-                    DetailField = new ViewableEncapsulatedField(selected);
-                }
-            }
-
-            private MasterDetailSelectionManager(string targetID)
-            {
-                SelectionTargetID = targetID;
-                DetailField = null;
-                _detailFieldIsFlagged = false;
-            }
-
-
-            private IEncapsulatedFieldViewData _detailField;
-            public IEncapsulatedFieldViewData DetailField
-            {
-                set
-                {
-                    _detailField = value;
-                    _detailFieldIsFlagged = _detailField?.EncapsulateFlag ?? false;
-                }
-                get => _detailField;
-            }
-
-            private string _selectionTargetID;
-            public string SelectionTargetID
-            {
-                set => _selectionTargetID = value;
-                get => _selectionTargetID ?? _neverATargetID;
-            }
-
-            public bool DetailUpdateRequired
-            {
-                get
-                {
-                    if (DetailField is null)
-                    {
-                        return true;
-                    }
-
-                    if (_detailFieldIsFlagged != DetailField.EncapsulateFlag)
-                    {
-                        _detailFieldIsFlagged = !_detailFieldIsFlagged;
-                        return true;
-                    }
-                    return SelectionTargetID != DetailField?.TargetID;
-                }
-            }
-        }
-
         private MasterDetailSelectionManager _masterDetailManager;
-        public RubberduckParserState State { get; }
 
-        public EncapsulateFieldViewModel(EncapsulateFieldModel model, RubberduckParserState state) : base(model)
+        public EncapsulateFieldViewModel(EncapsulateFieldModel model) : base(model)
         {
-            State = state;
-
             SelectAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ToggleSelection(true));
             DeselectAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ToggleSelection(false));
 
@@ -159,18 +97,6 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             }
         }
 
-        private void SetObjectStateUDT()
-        {
-            foreach (var field in UDTFields)
-            {
-                field.IsSelected = _selectedObjectStateUDT == field;
-            }
-            OnPropertyChanged(nameof(SelectedObjectStateUDT));
-            OnPropertyChanged(nameof(EncapsulationFields));
-            OnPropertyChanged(nameof(PropertiesPreview));
-        }
-
-
         public IEncapsulatedFieldViewData SelectedField
         {
             set
@@ -189,25 +115,6 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             }
 
             get => EncapsulationFields.FirstOrDefault(f => f.TargetID.Equals(_masterDetailManager.SelectionTargetID));
-        }
-
-        private void UpdateDetailForSelection()
-        {
-
-            RefreshValidationResults();
-
-            OnPropertyChanged(nameof(SelectedFieldIsNotFlagged));
-            OnPropertyChanged(nameof(GroupBoxHeaderContent));
-            OnPropertyChanged(nameof(PropertyName));
-            OnPropertyChanged(nameof(IsReadOnly));
-            OnPropertyChanged(nameof(HasValidNames));
-            OnPropertyChanged(nameof(EnableReadOnlyOption));
-            OnPropertyChanged(nameof(SelectedFieldIsPrivateUDT));
-            OnPropertyChanged(nameof(SelectedFieldHasEditablePropertyName));
-            OnPropertyChanged(nameof(SelectionHasValidEncapsulationAttributes));
-            OnPropertyChanged(nameof(PropertiesPreview));
-            OnPropertyChanged(nameof(EncapsulationFields));
-            OnPropertyChanged(nameof(ValidationErrorMessage));
         }
 
         public string PropertyName
@@ -291,6 +198,52 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         private bool _selectionHasValidEncapsulationAttributes;
         public bool SelectionHasValidEncapsulationAttributes => _selectionHasValidEncapsulationAttributes;
 
+        public string PropertiesPreview => Model.PreviewRefactoring();
+
+        public CommandBase SelectAllCommand { get; }
+
+        public CommandBase DeselectAllCommand { get; }
+
+        public CommandBase IsReadOnlyCommand { get; }
+
+        public CommandBase PropertyChangeCommand { get; }
+
+        public CommandBase EncapsulateFlagChangeCommand { get; }
+
+        public CommandBase ReadOnlyChangeCommand { get; }
+
+        private void SetObjectStateUDT()
+        {
+            foreach (var field in UDTFields)
+            {
+                field.IsSelected = _selectedObjectStateUDT == field;
+            }
+            OnPropertyChanged(nameof(SelectedObjectStateUDT));
+            OnPropertyChanged(nameof(EncapsulationFields));
+            OnPropertyChanged(nameof(PropertiesPreview));
+        }
+
+        private void ToggleSelection(bool value)
+        {
+            _lastCheckedBoxes.Clear();
+            foreach (var item in EncapsulationFields)
+            {
+                item.EncapsulateFlag = value;
+            }
+            _lastCheckedBoxes = EncapsulationFields.Where(ef => ef.EncapsulateFlag).ToList();
+            if (value)
+            {
+                SelectedField = _lastCheckedBoxes.FirstOrDefault();
+            }
+            else
+            {
+                _masterDetailManager.DetailField = null;
+            }
+            ReloadListAndPreview();
+            RefreshValidationResults();
+            UpdateDetailForSelection();
+        }
+
         private Dictionary<string, string> _failedValidationResults = new Dictionary<string, string>();
         private void RefreshValidationResults()
         {
@@ -315,36 +268,24 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             }
         }
 
-        public string PropertiesPreview => Model.PreviewRefactoring();
-
-        public CommandBase SelectAllCommand { get; }
-        public CommandBase DeselectAllCommand { get; }
-        private void ToggleSelection(bool value)
+        private void UpdateDetailForSelection()
         {
-            _lastCheckedBoxes.Clear();
-            foreach (var item in EncapsulationFields)
-            {
-                item.EncapsulateFlag = value;
-            }
-            _lastCheckedBoxes = EncapsulationFields.Where(ef => ef.EncapsulateFlag).ToList();
-            if (value)
-            {
-                SelectedField = _lastCheckedBoxes.FirstOrDefault();
-            }
-            else
-            {
-                _masterDetailManager.DetailField = null;
-            }
-            ReloadListAndPreview();
+
             RefreshValidationResults();
-            UpdateDetailForSelection();
+
+            OnPropertyChanged(nameof(SelectedFieldIsNotFlagged));
+            OnPropertyChanged(nameof(GroupBoxHeaderContent));
+            OnPropertyChanged(nameof(PropertyName));
+            OnPropertyChanged(nameof(IsReadOnly));
+            OnPropertyChanged(nameof(HasValidNames));
+            OnPropertyChanged(nameof(EnableReadOnlyOption));
+            OnPropertyChanged(nameof(SelectedFieldIsPrivateUDT));
+            OnPropertyChanged(nameof(SelectedFieldHasEditablePropertyName));
+            OnPropertyChanged(nameof(SelectionHasValidEncapsulationAttributes));
+            OnPropertyChanged(nameof(PropertiesPreview));
+            OnPropertyChanged(nameof(EncapsulationFields));
+            OnPropertyChanged(nameof(ValidationErrorMessage));
         }
-
-        public CommandBase IsReadOnlyCommand { get; }
-        public CommandBase PropertyChangeCommand { get; }
-
-        public CommandBase EncapsulateFlagChangeCommand { get; }
-        public CommandBase ReadOnlyChangeCommand { get; }
 
         private void ChangeIsReadOnlyFlag(object param)
         {

@@ -57,10 +57,6 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
         public bool TryValidateEncapsulationAttributes(out string errorMessage)
         {
             errorMessage = string.Empty;
-            if (IsPrivateUserDefinedType)
-            {
-                return true;
-            }
             return _efd.TryValidateEncapsulationAttributes(out errorMessage);
         }
 
