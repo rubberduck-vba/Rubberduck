@@ -26,7 +26,8 @@ namespace Rubberduck.Refactorings
 
         public override void Refactor(Declaration target)
         {
-            Refactor(InitializeModel(target));
+            var model = InitializeModel(target);
+            Refactor(model);
         }
 
         protected void Refactor(TModel initialModel)

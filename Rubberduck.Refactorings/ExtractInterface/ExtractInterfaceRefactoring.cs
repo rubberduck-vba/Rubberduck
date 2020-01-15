@@ -140,6 +140,12 @@ namespace Rubberduck.Refactorings.ExtractInterface
         private void AddInterfaceMembersToClass(ExtractInterfaceModel model, IModuleRewriter rewriter)
         {
             _implementInterfaceRefactoring.Refactor(model.SelectedMembers.Select(m => m.Member).ToList(), rewriter, model.InterfaceName);
+
+            var classIsExposed = Convert.ToBoolean(model.TargetDeclaration.Attributes.ExposedAttribute.Values.First());
+            if (classIsExposed)
+            {
+                model.TargetDeclaration.Attributes.AddExposedClassAttribute();
+            }
         }
 
         private string GetInterfaceModuleBody(ExtractInterfaceModel model)

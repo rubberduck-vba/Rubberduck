@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.CSharp.RuntimeBinder;
-using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using MSO = Microsoft.Office.Core;
 

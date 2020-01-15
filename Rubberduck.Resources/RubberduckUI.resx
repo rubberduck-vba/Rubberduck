@@ -1754,4 +1754,13 @@ Import aborted.</value>
   <data name="ComponentType_VBForm" xml:space="preserve">
     <value>VB Form</value>
   </data>
+  <data name="ExtractInterface_InstancingGroupBox" xml:space="preserve">
+    <value>Instancing</value>
+  </data>
+  <data name="ExtractInterface_PrivateRadioButton" xml:space="preserve">
+    <value>Private</value>
+  </data>
+  <data name="ExtractInterface_PublicNotCreatableRadioButton" xml:space="preserve">
+    <value>Public Not Creatable</value>
+  </data>
 </root>

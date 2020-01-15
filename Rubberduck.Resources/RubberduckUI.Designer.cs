@@ -1349,6 +1349,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Instancing.
+        /// </summary>
+        public static string ExtractInterface_InstancingGroupBox {
+            get {
+                return ResourceManager.GetString("ExtractInterface_InstancingGroupBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please specify interface name and members..
         /// </summary>
         public static string ExtractInterface_InstructionLabel {
@@ -1363,6 +1372,24 @@ namespace Rubberduck.Resources {
         public static string ExtractInterface_MembersGroupBox {
             get {
                 return ResourceManager.GetString("ExtractInterface_MembersGroupBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Private.
+        /// </summary>
+        public static string ExtractInterface_PrivateRadioButton {
+            get {
+                return ResourceManager.GetString("ExtractInterface_PrivateRadioButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Public Not Creatable.
+        /// </summary>
+        public static string ExtractInterface_PublicNotCreatableRadioButton {
+            get {
+                return ResourceManager.GetString("ExtractInterface_PublicNotCreatableRadioButton", resourceCulture);
             }
         }
         
