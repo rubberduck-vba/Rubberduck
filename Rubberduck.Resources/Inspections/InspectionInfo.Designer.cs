@@ -367,7 +367,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If the type clause for a Const isn&apos;t included it is implicitly typed. Include an explicit &apos; As &lt;Type&gt;&apos; replacing &apos;&lt;Type&gt;&apos; with the correct data type to explicitly type your const value..
+        ///   Looks up a localized string similar to If the as type clause for a Const isn&apos;t included it is implicitly typed. Include an explicit &apos; As &lt;Type&gt;&apos; replacing &apos;&lt;Type&gt;&apos; with the correct data type to explicitly type your const value..
         /// </summary>
         public static string ImplicitlyTypedConstInspection {
             get {
@@ -547,7 +547,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Modules without the &apos;@Folder&apos; annotation cannot receive custom groupings in the Code Explorer. .
+        ///   Looks up a localized string similar to Modules without the &apos;@Folder&apos; annotation cannot receive custom groupings in the Code Explorer..
         /// </summary>
         public static string ModuleWithoutFolderInspection {
             get {

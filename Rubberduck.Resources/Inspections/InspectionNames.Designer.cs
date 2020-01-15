@@ -133,7 +133,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Project name is not specified.
+        ///   Looks up a localized string similar to Project name is not specified..
         /// </summary>
         public static string DefaultProjectNameInspection {
             get {
@@ -277,7 +277,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Function return value is always discarded.
+        ///   Looks up a localized string similar to Function return value is always discarded..
         /// </summary>
         public static string FunctionReturnValueAlwaysDiscardedInspection {
             get {
@@ -286,7 +286,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Function return value gets discarded.
+        ///   Looks up a localized string similar to Function return value gets discarded..
         /// </summary>
         public static string FunctionReturnValueDiscardedInspection {
             get {
@@ -556,7 +556,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scope of variable is broader than it needs to be.
+        ///   Looks up a localized string similar to Scope of variable is broader than it needs to be..
         /// </summary>
         public static string MoveFieldCloserToUsageInspection {
             get {
@@ -565,7 +565,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Parameter declaration is split on multiple lines.
+        ///   Looks up a localized string similar to Parameter declaration is split on multiple lines..
         /// </summary>
         public static string MultilineParameterInspection {
             get {
@@ -610,7 +610,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Object variable assignment requires &apos;Set&apos; keyword.
+        ///   Looks up a localized string similar to Object variable assignment requires &apos;Set&apos; keyword..
         /// </summary>
         public static string ObjectVariableNotSetInspection {
             get {
@@ -727,7 +727,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;Option Base 1&apos; is specified.
+        ///   Looks up a localized string similar to &apos;Option Base 1&apos; is specified..
         /// </summary>
         public static string OptionBaseInspection {
             get {
@@ -745,7 +745,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;Option Explicit&apos; is not specified.
+        ///   Looks up a localized string similar to &apos;Option Explicit&apos; is not specified..
         /// </summary>
         public static string OptionExplicitInspection {
             get {
@@ -754,7 +754,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Parameter can be passed by value.
+        ///   Looks up a localized string similar to Parameter can be passed by value..
         /// </summary>
         public static string ParameterCanBeByValInspection {
             get {
@@ -763,7 +763,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Parameter is not referred to.
+        ///   Looks up a localized string similar to Parameter is not referred to..
         /// </summary>
         public static string ParameterNotUsedInspection {
             get {
@@ -772,7 +772,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Procedure can be written as a function.
+        ///   Looks up a localized string similar to Procedure can be written as a function..
         /// </summary>
         public static string ProcedureCanBeWrittenAsFunctionInspection {
             get {
@@ -781,7 +781,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Procedure is not referred to.
+        ///   Looks up a localized string similar to Procedure is not referred to..
         /// </summary>
         public static string ProcedureNotUsedInspection {
             get {
@@ -817,7 +817,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Object variable reference is auto-instantiated.
+        ///   Looks up a localized string similar to Object variable reference is auto-instantiated..
         /// </summary>
         public static string SelfAssignedDeclarationInspection {
             get {
@@ -889,7 +889,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variable is used but not assigned.
+        ///   Looks up a localized string similar to Variable is used but not assigned..
         /// </summary>
         public static string UnassignedVariableUsageInspection {
             get {
@@ -925,7 +925,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Case Clause(s) cannot be reached.
+        ///   Looks up a localized string similar to Case Clause(s) cannot be reached..
         /// </summary>
         public static string UnreachableCaseInspection {
             get {
@@ -988,7 +988,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variable is not assigned.
+        ///   Looks up a localized string similar to Variable is not assigned..
         /// </summary>
         public static string VariableNotAssignedInspection {
             get {
@@ -997,7 +997,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variable is not referred to.
+        ///   Looks up a localized string similar to Variable is not referred to..
         /// </summary>
         public static string VariableNotUsedInspection {
             get {
