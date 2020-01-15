@@ -56,7 +56,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             Identifier = member.IdentifierName;
             Type = member.AsTypeName;
             
-            GetMethodType();
+            MemberType = GetMethodType(Member.Context);
 
             if (member is IParameterizedDeclaration memberWithParams)
             {
@@ -83,34 +83,34 @@ namespace Rubberduck.Refactorings.ExtractInterface
             }
         }
 
-        private void GetMethodType()
+        private string GetMethodType(Antlr4.Runtime.ParserRuleContext context)
         {
-            var context = Member.Context;
-
             if (context is VBAParser.SubStmtContext)
             {
-                MemberType = Tokens.Sub;
+                return Tokens.Sub;
             }
 
             if (context is VBAParser.FunctionStmtContext)
             {
-                MemberType = Tokens.Function;
+                return Tokens.Function;
             }
 
             if (context is VBAParser.PropertyGetStmtContext)
             {
-                MemberType = $"{Tokens.Property} {Tokens.Get}";
+                return $"{Tokens.Property} {Tokens.Get}";
             }
 
             if (context is VBAParser.PropertyLetStmtContext)
             {
-                MemberType = $"{Tokens.Property} {Tokens.Let}";
+                return $"{Tokens.Property} {Tokens.Let}";
             }
 
             if (context is VBAParser.PropertySetStmtContext)
             {
-                MemberType = $"{Tokens.Property} {Tokens.Set}";
+                return $"{Tokens.Property} {Tokens.Set}";
             }
+
+            return null;
         }
 
         public string Body => string.Format("Public {0}{1}End {2}{1}", FullMemberSignature, Environment.NewLine, MemberType.Split(' ').First());
