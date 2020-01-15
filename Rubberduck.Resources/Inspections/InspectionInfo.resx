@@ -436,4 +436,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="FunctionReturnValueDiscardedInspection" xml:space="preserve">
     <value>The return value of a function gets discarded, i.e. the function is used like a procedure. This is either an oversight or the function is used for its side-effects, whose existence would also be a code smell.</value>
   </data>
+  <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
+    <value>If the type clause for a Const isn't included it is implicitly typed. Include an explicit ' As &lt;Type&gt;' replacing '&lt;Type&gt;' with the correct data type to explicitly type your const value.</value>
+  </data>
 </root>

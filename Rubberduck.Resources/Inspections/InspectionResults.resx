@@ -503,4 +503,7 @@ In memoriam, 1972-2018</value>
     <value>Return value of function '{0}' gets discarded.</value>
     <comment>{0} function name</comment>
   </data>
+  <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
+    <value>Constant '{0}' is implicitly typed.</value>
+  </data>
 </root>

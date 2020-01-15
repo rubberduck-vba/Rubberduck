@@ -12,6 +12,7 @@ using RubberduckTests.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
 
 namespace RubberduckTests.QuickFixes
 {
@@ -1074,6 +1075,26 @@ End Sub";
 
             var actualCode = ApplyIgnoreOnceToFirstResult(inputCode, state => new UndeclaredVariableInspection(state), TestClassVbeSetup);
             Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void ImplicitlyTypedConst_IgnoreOnceQuickFixWorks()
+        {
+            const string inputCode =
+@"Public Sub Foo()
+    Const bar = 0
+End Sub";
+            
+            const string expected =
+@"Public Sub Foo()
+    '@Ignore ImplicitlyTypedConst
+    Const bar = 0
+End Sub";
+
+            var actual = ApplyIgnoreOnceToFirstResult(inputCode, state => new ImplicitlyTypedConstInspection(state), TestStandardModuleVbeSetup);
+
+            Assert.AreEqual(expected, actual);
         }
 
         private string ApplyIgnoreOnceToFirstResult(
