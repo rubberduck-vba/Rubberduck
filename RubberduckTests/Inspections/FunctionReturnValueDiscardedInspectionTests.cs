@@ -8,12 +8,12 @@ using Rubberduck.VBEditor.SafeComWrappers;
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class FunctionReturnValueNotUsedInspectionTests : InspectionTestsBase
+    public class FunctionReturnValueDiscardedInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_IgnoresUnusedFunction()
+        public void FunctionReturnValueDiscarded_IgnoresUnusedFunction()
         {
             const string code = @"
 Public Function Foo() As Long
@@ -26,7 +26,7 @@ End Function
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_ReturnsResult_ExplicitCallWithoutAssignment()
+        public void FunctionReturnValueDiscarded_ReturnsResult_ExplicitCallWithoutAssignment()
         {
             const string code = @"
 Public Function Foo(ByVal bar As String) As Integer
@@ -43,7 +43,7 @@ End Sub
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_ReturnsResult_CallWithoutAssignment()
+        public void FunctionReturnValueDiscarded_ReturnsResult_CallWithoutAssignment()
         {
             const string code = @"
 Public Function Foo(ByVal bar As String) As Integer
@@ -60,7 +60,7 @@ End Sub
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_TwoUses_TwoResults()
+        public void FunctionReturnValueDiscarded_TwoUses_TwoResults()
         {
             const string code = @"
 Public Function Foo(ByVal bar As String) As Integer
@@ -98,7 +98,7 @@ End Sub
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_ReturnsResult_NoReturnValueAssignment()
+        public void FunctionReturnValueDiscarded_ReturnsResult_NoReturnValueAssignment()
         {
             const string code = @"
 Public Function Foo() As Integer
@@ -114,10 +114,10 @@ End Sub
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_Ignored_DoesNotReturnResult_AddressOf()
+        public void FunctionReturnValueDiscarded_Ignored_DoesNotReturnResult_AddressOf()
         {
             const string code = @"
-'@Ignore FunctionReturnValueNotUsed
+'@Ignore FunctionReturnValueDiscarded
 Public Function Foo(ByVal bar As String) As Integer
     Foo = 42
 End Function
@@ -132,7 +132,7 @@ End Sub
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_MultipleConsecutiveCalls_returnsOneResult()
+        public void FunctionReturnValueDiscarded_MultipleConsecutiveCalls_returnsOneResult()
         {
             const string code = @"
 Public Function Foo(ByVal bar As String) As Integer
@@ -149,7 +149,7 @@ End Sub
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_DoesNotReturnResult_IfStatement()
+        public void FunctionReturnValueDiscarded_DoesNotReturnResult_IfStatement()
         {
             const string code = @"
 Public Function Foo(ByVal bar As String) As Integer
@@ -167,7 +167,7 @@ End Sub
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_DoesNotReturnResult_ForEachStatement()
+        public void FunctionReturnValueDiscarded_DoesNotReturnResult_ForEachStatement()
         {
             const string code = @"
 Public Function Foo(ByVal bar As String) As Integer
@@ -188,7 +188,7 @@ End Sub
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_DoesNotReturnResult_WhileStatement()
+        public void FunctionReturnValueDiscarded_DoesNotReturnResult_WhileStatement()
         {
             const string code = @"
 Public Function Foo(ByVal bar As String) As Integer
@@ -209,7 +209,7 @@ End Sub
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_DoesNotReturnResult_DoUntilStatement()
+        public void FunctionReturnValueDiscarded_DoesNotReturnResult_DoUntilStatement()
         {
             const string code = @"
 Public Function Foo(ByVal bar As String) As Integer
@@ -230,7 +230,7 @@ End Sub
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_DoesNotReturnResult_ReturnValueAssignment()
+        public void FunctionReturnValueDiscarded_DoesNotReturnResult_ReturnValueAssignment()
         {
             const string code = @"
 Public Function Foo(ByVal bar As String) As Integer
@@ -247,7 +247,7 @@ End Sub
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_DoesNotReturnResult_RecursiveFunction()
+        public void FunctionReturnValueDiscarded_DoesNotReturnResult_RecursiveFunction()
         {
             const string code = @"
 Public Function Factorial(ByVal n As Long) As Long
@@ -264,7 +264,7 @@ End Function
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_DoesNotReturnResult_ArgumentFunctionCall()
+        public void FunctionReturnValueDiscarded_DoesNotReturnResult_ArgumentFunctionCall()
         {
             const string code = @"
 Public Function Foo(ByVal bar As String) As Integer
@@ -284,7 +284,7 @@ End Sub
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_DoesNotReturnResult_IgnoresBuiltInFunctions()
+        public void FunctionReturnValueDiscarded_DoesNotReturnResult_IgnoresBuiltInFunctions()
         {
             const string code = @"
 Public Sub Dummy()
@@ -347,7 +347,7 @@ End Sub";
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_ReturnsResult_InterfaceMember()
+        public void FunctionReturnValueDiscarded_ReturnsResult_InterfaceMember()
         {
             const string interfaceCode = @"
 Public Function Test() As Integer
@@ -433,14 +433,14 @@ End Function
         [Category("Unused Value")]
         public void InspectionName()
         {
-            var inspection = new FunctionReturnValueNotUsedInspection(null);
+            var inspection = new FunctionReturnValueDiscardedInspection(null);
 
-            Assert.AreEqual(nameof(FunctionReturnValueNotUsedInspection), inspection.Name);
+            Assert.AreEqual(nameof(FunctionReturnValueDiscardedInspection), inspection.Name);
         }
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
-            return new FunctionReturnValueNotUsedInspection(state);
+            return new FunctionReturnValueDiscardedInspection(state);
         }
     }
 }

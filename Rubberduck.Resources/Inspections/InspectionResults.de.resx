@@ -137,8 +137,8 @@
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
     <value>Objekt-Referenz '{0}' ist sebstzugewiesen.</value>
   </data>
-  <data name="FunctionReturnValueNeverUsedInspection" xml:space="preserve">
-    <value>Der Rückgabewert der Funktion '{0}' wird nie verwendet.</value>
+  <data name="FunctionReturnValueAlwaysDiscardedInspection" xml:space="preserve">
+    <value>Der Rückgabewert der Funktion '{0}' wird immer verworfen.</value>
   </data>
   <data name="AssignedByValParameterInspection" xml:space="preserve">
     <value>Der Parameter '{0}' wird als byVal übergeben und bekommt ienen Wert zugesiesen.</value>
@@ -458,7 +458,7 @@ In Memoriam, 1972-2018</value>
   <data name="UnreachableCaseInspection_InherentlyUnreachable" xml:space="preserve">
     <value>Bereichsbedingungen in Case-Ausdrücken müssen von der Form '[x] T [y]' sein, wobei [x] kleiner oder gleich [y] ist.</value>
   </data>
-  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
-    <value>Der Rückgabewert der Funktion '{0}' wird nicht verwendet.</value>
+  <data name="FunctionReturnValueDiscardedInspection" xml:space="preserve">
+    <value>Der Rückgabewert der Funktion '{0}' wird verworfen.</value>
   </data>
 </root>

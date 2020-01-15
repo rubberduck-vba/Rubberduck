@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -44,10 +38,13 @@ namespace Rubberduck.Inspections.Concrete
     /// End Function
     /// ]]>
     /// </example>
-    public sealed class FunctionReturnValueNotUsedInspection : IdentifierReferenceInspectionBase
+    public sealed class FunctionReturnValueDiscardedInspection : IdentifierReferenceInspectionBase
     {
-        public FunctionReturnValueNotUsedInspection(RubberduckParserState state)
-            : base(state) { }
+        public FunctionReturnValueDiscardedInspection(RubberduckParserState state)
+            : base(state)
+        {
+            Severity = CodeInspectionSeverity.Suggestion;
+        }
 
         protected override bool IsResultReference(IdentifierReference reference)
         {
@@ -91,7 +88,7 @@ namespace Rubberduck.Inspections.Concrete
         protected override string ResultDescription(IdentifierReference reference)
         {
             var functionName = reference.Declaration.QualifiedName.ToString();
-            return string.Format(InspectionResults.FunctionReturnValueNotUsedInspection, functionName);
+            return string.Format(InspectionResults.FunctionReturnValueDiscardedInspection, functionName);
         }
     }
 }

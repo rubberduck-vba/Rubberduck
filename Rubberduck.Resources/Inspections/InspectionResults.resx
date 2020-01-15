@@ -141,8 +141,9 @@
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
     <value>Object reference '{0}' is auto-instantiated.</value>
   </data>
-  <data name="FunctionReturnValueNeverUsedInspection" xml:space="preserve">
+  <data name="FunctionReturnValueAlwaysDiscardedInspection" xml:space="preserve">
     <value>Return value of function '{0}' is never used.</value>
+    <comment>{0} function name</comment>
   </data>
   <data name="AssignedByValParameterInspection" xml:space="preserve">
     <value>Parameter '{0}' is passed 'ByVal' and assigned a value.</value>
@@ -498,7 +499,8 @@ In memoriam, 1972-2018</value>
     <value>There is an assignment from the default member of the result of expression '{1}' to that of the expression '{0}'.</value>
     <comment>{0} lhsExpression; {1} rhsExpression</comment>
   </data>
-  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
-    <value>Return value of function '{0}' is not used.</value>
+  <data name="FunctionReturnValueDiscardedInspection" xml:space="preserve">
+    <value>Return value of function '{0}' gets discarded.</value>
+    <comment>{0} function name</comment>
   </data>
 </root>

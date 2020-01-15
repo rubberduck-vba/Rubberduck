@@ -46,7 +46,7 @@ Public Sub Test()
 End Sub
 ";
 
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new FunctionReturnValueNeverUsedInspection(state));
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new FunctionReturnValueAlwaysDiscardedInspection(state));
             Assert.AreEqual(expectedCode, actualCode);
         }
 
@@ -86,13 +86,13 @@ Public Sub Test()
 End Sub
 ";
 
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new FunctionReturnValueNeverUsedInspection(state));
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new FunctionReturnValueAlwaysDiscardedInspection(state));
             Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
         [Category("QuickFixes")]
-        public void FunctionReturnValueNeverUsed_QuickFixWorks_Interface()
+        public void FunctionReturnValueAlwaysDiscarded_QuickFixWorks_Interface()
         {
             const string inputInterfaceCode =
                 @"Public Function Test() As Integer
@@ -146,7 +146,7 @@ End Function";
             using (state)
             {
 
-                var inspection = new FunctionReturnValueNeverUsedInspection(state);
+                var inspection = new FunctionReturnValueAlwaysDiscardedInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
 

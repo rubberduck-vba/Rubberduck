@@ -8,7 +8,7 @@ using Rubberduck.VBEditor.SafeComWrappers;
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class FunctionReturnValueNeverUsedInspectionTests : InspectionTestsBase
+    public class FunctionReturnValueAlwaysDiscardedInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
@@ -120,7 +120,7 @@ End Sub
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void AdressOfAndCallWithoutAssignment_NoResult()
+        public void AddressOfAndCallWithoutAssignment_NoResult()
         {
             const string code = @"
 Public Function Foo(ByVal bar As String) As Integer
@@ -177,7 +177,7 @@ End Sub
         public void Ignored_DoesNotReturnResult()
         {
             const string code = @"
-'@Ignore FunctionReturnValueNeverUsed
+'@Ignore FunctionReturnValueAlwaysDiscarded
 Public Function Foo() As Integer
 End Function
 
@@ -477,12 +477,12 @@ End Function
         {
             var inspection = InspectionUnderTest(null);
 
-            Assert.AreEqual(nameof(FunctionReturnValueNeverUsedInspection), inspection.Name);
+            Assert.AreEqual(nameof(FunctionReturnValueAlwaysDiscardedInspection), inspection.Name);
         }
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
-            return new FunctionReturnValueNeverUsedInspection(state);
+            return new FunctionReturnValueAlwaysDiscardedInspection(state);
         }
     }
 }

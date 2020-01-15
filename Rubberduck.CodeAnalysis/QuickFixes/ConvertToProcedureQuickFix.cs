@@ -53,7 +53,7 @@ namespace Rubberduck.Inspections.QuickFixes
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
         public ConvertToProcedureQuickFix(IDeclarationFinderProvider declarationFinderProvider)
-            : base(typeof(NonReturningFunctionInspection), typeof(FunctionReturnValueNeverUsedInspection))
+            : base(typeof(NonReturningFunctionInspection), typeof(FunctionReturnValueAlwaysDiscardedInspection))
         {
             _declarationFinderProvider = declarationFinderProvider;
         }

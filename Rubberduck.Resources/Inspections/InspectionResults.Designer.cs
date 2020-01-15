@@ -279,18 +279,18 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Return value of function &apos;{0}&apos; is never used..
         /// </summary>
-        public static string FunctionReturnValueNeverUsedInspection {
+        public static string FunctionReturnValueAlwaysDiscardedInspection {
             get {
-                return ResourceManager.GetString("FunctionReturnValueNeverUsedInspection", resourceCulture);
+                return ResourceManager.GetString("FunctionReturnValueAlwaysDiscardedInspection", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Return value of function &apos;{0}&apos; is not used..
+        ///   Looks up a localized string similar to Return value of function &apos;{0}&apos; gets discarded..
         /// </summary>
-        public static string FunctionReturnValueNotUsedInspection {
+        public static string FunctionReturnValueDiscardedInspection {
             get {
-                return ResourceManager.GetString("FunctionReturnValueNotUsedInspection", resourceCulture);
+                return ResourceManager.GetString("FunctionReturnValueDiscardedInspection", resourceCulture);
             }
         }
         
