@@ -62,7 +62,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         }
 
         public virtual bool BeginGroup => false;
-        public virtual int DisplayOrder => default(int);
+        public virtual int DisplayOrder => default;
 
         public void Localize()
         {
