@@ -10,6 +10,12 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Refactorings
 {
+    public enum ClassInstancing
+    {
+        Private = 0,
+        PublicNotCreatable,
+    }
+
     public class ExtractInterfaceViewModel : RefactoringViewModelBase<ExtractInterfaceModel>
     {
         public ExtractInterfaceViewModel(ExtractInterfaceModel model) : base(model)
@@ -61,7 +67,7 @@ namespace Rubberduck.UI.Refactorings
             }
         }
 
-        public bool IsInterfacePublicNotCreateable
+        public bool IsInterfacePublicNotCreateableEnabled
         {
             get
             {
@@ -75,6 +81,23 @@ namespace Rubberduck.UI.Refactorings
                 }
             }
         }
+
+        private ClassInstancing classInstancing = ClassInstancing.Private;
+        public ClassInstancing ClassInstancing
+        {
+            get => classInstancing;
+            set
+            {
+                if (value == classInstancing)
+                {
+                    return;
+                }
+
+                classInstancing = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         private void ToggleSelection(bool value)
         {
