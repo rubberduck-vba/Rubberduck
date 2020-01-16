@@ -6,6 +6,12 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
+    public enum ClassInstancing
+    {
+        Private = 0,
+        PublicNotCreatable,
+    }
+
     public class ExtractInterfaceModel : IRefactoringModel
     {
         public IDeclarationFinderProvider DeclarationFinderProvider { get; }
@@ -14,6 +20,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
         public string InterfaceName { get; set; }
         public ObservableCollection<InterfaceMember> Members { get; set; } = new ObservableCollection<InterfaceMember>();
         public IEnumerable<InterfaceMember> SelectedMembers => Members.Where(m => m.IsSelected);
+        public ClassInstancing ClassInstancing { get; set; }
 
         public static readonly DeclarationType[] MemberTypes =
         {

@@ -13,6 +13,7 @@ using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.Utility;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
@@ -127,25 +128,50 @@ namespace Rubberduck.Refactorings.ExtractInterface
                         interfaceComponent.Name = interfaceName;
 
                         var optionPresent = interfaceModule.CountOfLines > 1;
+                        var optionExplicit = $"{Tokens.Option} {Tokens.Explicit}{Environment.NewLine}";
                         if (!optionPresent)
                         {
-                            interfaceModule.InsertLines(1, $"{Tokens.Option} {Tokens.Explicit}{Environment.NewLine}");
+                            interfaceModule.InsertLines(1, optionExplicit);
                         }
+
                         interfaceModule.InsertLines(3, interfaceBody);
+
+                        var classIsExposed = Convert.ToBoolean(implementingClass.Attributes.ExposedAttribute.Values.First());
+                        if (classIsExposed)
+                        {
+                            AddExposedAttribute(components, interfaceComponent);
+                        }
                     }
                 }
+            }
+        }
+
+        private void AddExposedAttribute(IVBComponents components, IVBComponent interfaceComponent)
+        {
+            try
+            {
+                var tempExportDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + System.IO.Path.DirectorySeparatorChar + "Rubberduck" + System.IO.Path.DirectorySeparatorChar;
+                var tempFile = interfaceComponent.ExportAsSourceFile(tempExportDirectory + interfaceComponent.Name);
+
+                var text = System.IO.File.ReadAllText(tempFile);
+                var sb = new System.Text.StringBuilder(text);
+                sb.Replace("Attribute VB_Exposed = False", "Attribute VB_Exposed = True");
+                System.IO.File.WriteAllText(tempFile, sb.ToString());
+
+                components.Remove(interfaceComponent);
+                components.ImportSourceFile(tempFile);
+
+                System.IO.File.Delete(tempFile);
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
         private void AddInterfaceMembersToClass(ExtractInterfaceModel model, IModuleRewriter rewriter)
         {
             _implementInterfaceRefactoring.Refactor(model.SelectedMembers.Select(m => m.Member).ToList(), rewriter, model.InterfaceName);
-
-            var classIsExposed = Convert.ToBoolean(model.TargetDeclaration.Attributes.ExposedAttribute.Values.First());
-            if (classIsExposed)
-            {
-                model.TargetDeclaration.Attributes.AddExposedClassAttribute();
-            }
         }
 
         private string GetInterfaceModuleBody(ExtractInterfaceModel model)

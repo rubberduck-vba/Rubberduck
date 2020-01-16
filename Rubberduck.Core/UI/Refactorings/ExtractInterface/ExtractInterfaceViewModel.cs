@@ -10,12 +10,6 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Refactorings
 {
-    public enum ClassInstancing
-    {
-        Private = 0,
-        PublicNotCreatable,
-    }
-
     public class ExtractInterfaceViewModel : RefactoringViewModelBase<ExtractInterfaceModel>
     {
         public ExtractInterfaceViewModel(ExtractInterfaceModel model) : base(model)
