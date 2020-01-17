@@ -1095,7 +1095,7 @@ This dialog is showing because version checks are enabled. You can turn off this
     <value>Experimental Features (Requires a restart to take effect):</value>
   </data>
   <data name="ExportAllCommand_SaveAsDialog_Title" xml:space="preserve">
-    <value>Choose a folder to export the source of {0} to:</value>
+    <value>Select a folder to export the source of {0} to:</value>
     <comment>{0} VBProject.Name</comment>
   </data>
   <data name="CommandDescription_ExportAllCommand" xml:space="preserve">
@@ -1765,13 +1765,13 @@ Import aborted.</value>
     <value>value</value>
   </data>
   <data name="EncapsulateField_NameConflictDetected" xml:space="preserve">
-    <value>Name Conflict Detected</value>
+    <value>Name conflict</value>
   </data>
   <data name="EncapsulateField_PreviewMarker" xml:space="preserve">
-    <value>'&lt;===== Property and Declaration changes above this line =====&gt;</value>
+    <value>'&lt;===== Property and declaration changes above this line =====&gt;</value>
   </data>
   <data name="EncapsulateField_PrivateUDTPropertyText" xml:space="preserve">
-    <value>Creates a Property for each UDT Member</value>
+    <value>Creates a property for each UDT Member</value>
   </data>
   <data name="EncapsulateField_ReadOnlyCheckBoxContent" xml:space="preserve">
     <value>Read Only</value>

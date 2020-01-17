@@ -1257,7 +1257,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Name Conflict Detected.
+        ///   Looks up a localized string similar to Name conflict.
         /// </summary>
         public static string EncapsulateField_NameConflictDetected {
             get {
@@ -1284,7 +1284,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;&lt;===== Property and Declaration changes above this line =====&gt;.
+        ///   Looks up a localized string similar to &apos;&lt;===== Property and declaration changes above this line =====&gt;.
         /// </summary>
         public static string EncapsulateField_PreviewMarker {
             get {
@@ -1293,7 +1293,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creates a Property for each UDT Member.
+        ///   Looks up a localized string similar to Creates a property for each UDT Member.
         /// </summary>
         public static string EncapsulateField_PrivateUDTPropertyText {
             get {
@@ -1403,7 +1403,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose a folder to export the source of {0} to:.
+        ///   Looks up a localized string similar to Select a folder to export the source of {0} to:.
         /// </summary>
         public static string ExportAllCommand_SaveAsDialog_Title {
             get {
