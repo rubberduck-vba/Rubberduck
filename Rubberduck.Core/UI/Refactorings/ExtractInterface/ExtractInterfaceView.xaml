@@ -8,6 +8,7 @@
     <UserControl.Resources>
         <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
         <converters:ClassInstancingToBooleanConverter x:Key="ClassInstancingToBool" />
+        <converters:InvertBoolValueConverter x:Key="InvertBool" />
 
         <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
             <GradientStop Color="#FFD9F4FF" Offset="0"/>
@@ -93,12 +94,12 @@
 
             <GroupBox Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_InstancingGroupBox}"
                       Grid.Row="1" Margin="5" Padding="5">
-                <StackPanel Orientation="Horizontal">
-                    <RadioButton x:Name="IsPrivateInstancing"
-                                 Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_PrivateRadioButton}"
-                                 IsChecked="{Binding Converter={StaticResource ClassInstancingToBool}, Mode=TwoWay, Path=ClassInstancing}" />
+                <StackPanel Orientation="Vertical">
+                    <RadioButton Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_PrivateRadioButton}"
+                                 IsEnabled="{Binding IsPrivateInterfaceEnabled}"
+                                 IsChecked="{Binding IsPublicInterfaceChecked, Converter={StaticResource InvertBool}}" />
                     <RadioButton Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_PublicNotCreatableRadioButton}"
-                                 IsEnabled="{Binding IsInterfacePublicNotCreateableEnabled}" />
+                                 IsChecked="{Binding IsPublicInterfaceChecked, Mode=TwoWay}" />
                 </StackPanel>
             </GroupBox>
 

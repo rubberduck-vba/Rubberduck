@@ -20,7 +20,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
         public string InterfaceName { get; set; }
         public ObservableCollection<InterfaceMember> Members { get; set; } = new ObservableCollection<InterfaceMember>();
         public IEnumerable<InterfaceMember> SelectedMembers => Members.Where(m => m.IsSelected);
-        public ClassInstancing ClassInstancing { get; set; }
+        public ClassInstancing ImplementingClassInstancing { get; set; }
 
         public static readonly DeclarationType[] MemberTypes =
         {
@@ -35,6 +35,9 @@ namespace Rubberduck.Refactorings.ExtractInterface
         {
             TargetDeclaration = target;
             DeclarationFinderProvider = declarationFinderProvider;
+            ImplementingClassInstancing = System.Convert.ToBoolean(target.Attributes.ExposedAttribute.Values.First())
+                ? ClassInstancing.PublicNotCreatable
+                : ClassInstancing.Private;
 
             if (TargetDeclaration == null)
             {

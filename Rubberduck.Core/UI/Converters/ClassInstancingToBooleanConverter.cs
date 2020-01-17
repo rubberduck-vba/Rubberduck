@@ -9,14 +9,14 @@ namespace Rubberduck.UI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (ClassInstancing)value == ClassInstancing.Private;
+            return (ClassInstancing)value == ClassInstancing.PublicNotCreatable;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return (bool)value
-                ? ClassInstancing.Private
-                : ClassInstancing.PublicNotCreatable;
+                ? ClassInstancing.PublicNotCreatable
+                : ClassInstancing.Private;
         }
     }
 }

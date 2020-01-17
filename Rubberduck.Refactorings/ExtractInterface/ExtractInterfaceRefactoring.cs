@@ -98,7 +98,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
                 return; //The target project is not available.
             }
 
-            AddInterfaceClass(model.TargetDeclaration, model.InterfaceName, GetInterfaceModuleBody(model));
+            AddInterfaceClass(model.TargetDeclaration, model.InterfaceName, GetInterfaceModuleBody(model), model.ImplementingClassInstancing);
 
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
             var rewriter = rewriteSession.CheckOutModuleRewriter(model.TargetDeclaration.QualifiedModuleName);
@@ -116,7 +116,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             }
         }
 
-        private void AddInterfaceClass(Declaration implementingClass, string interfaceName, string interfaceBody)
+        private void AddInterfaceClass(Declaration implementingClass, string interfaceName, string interfaceBody, ClassInstancing interfaceInstancing)
         {
             var targetProject = implementingClass.Project;
             using (var components = targetProject.VBComponents)
@@ -128,16 +128,15 @@ namespace Rubberduck.Refactorings.ExtractInterface
                         interfaceComponent.Name = interfaceName;
 
                         var optionPresent = interfaceModule.CountOfLines > 1;
-                        var optionExplicit = $"{Tokens.Option} {Tokens.Explicit}{Environment.NewLine}";
                         if (!optionPresent)
                         {
-                            interfaceModule.InsertLines(1, optionExplicit);
+                            interfaceModule.InsertLines(1, "Option Explicit" + Environment.NewLine);
                         }
 
-                        interfaceModule.InsertLines(3, interfaceBody);
+                        interfaceModule.InsertLines(1, "'@Interface");
+                        interfaceModule.InsertLines(4, interfaceBody);
 
-                        var classIsExposed = Convert.ToBoolean(implementingClass.Attributes.ExposedAttribute.Values.First());
-                        if (classIsExposed)
+                        if (interfaceInstancing == ClassInstancing.PublicNotCreatable)
                         {
                             AddExposedAttribute(components, interfaceComponent);
                         }
@@ -155,6 +154,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
                 var text = System.IO.File.ReadAllText(tempFile);
                 var sb = new System.Text.StringBuilder(text);
+                sb.Insert(text.IndexOf("Option Explicit"), "'@Exposed" + Environment.NewLine);
                 sb.Replace("Attribute VB_Exposed = False", "Attribute VB_Exposed = True");
                 System.IO.File.WriteAllText(tempFile, sb.ToString());
 

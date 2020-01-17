@@ -7,6 +7,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.UI.Command;
+using System.Windows.Data;
 
 namespace Rubberduck.UI.Refactorings
 {
@@ -61,37 +62,32 @@ namespace Rubberduck.UI.Refactorings
             }
         }
 
-        public bool IsInterfacePublicNotCreateableEnabled
+        public bool IsPrivateInterfaceEnabled
         {
             get
             {
-                try
-                {
-                    return Convert.ToBoolean(Model.TargetDeclaration.Attributes.ExposedAttribute.Values.First());
-                }
-                catch (FormatException)
-                {
-                    return false;
-                }
+                return Model.ImplementingClassInstancing != ClassInstancing.PublicNotCreatable;
             }
         }
 
-        private ClassInstancing classInstancing = ClassInstancing.Private;
-        public ClassInstancing ClassInstancing
+        private readonly IValueConverter classInstancingConverter = new Converters.ClassInstancingToBooleanConverter();
+
+        private bool isPublicInterfaceChecked = true;
+        public bool IsPublicInterfaceChecked
         {
-            get => classInstancing;
+            get => isPublicInterfaceChecked;
             set
             {
-                if (value == classInstancing)
+                if (value == isPublicInterfaceChecked)
                 {
                     return;
                 }
 
-                classInstancing = value;
-                OnPropertyChanged();
+                Model.ImplementingClassInstancing = (ClassInstancing)classInstancingConverter.ConvertBack(value, null, null, null);
+                isPublicInterfaceChecked = value;
+                OnPropertyChanged();                
             }
         }
-
 
         private void ToggleSelection(bool value)
         {

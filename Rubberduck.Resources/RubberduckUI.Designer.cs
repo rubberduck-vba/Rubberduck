@@ -1385,7 +1385,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Public Not Creatable.
+        ///   Looks up a localized string similar to Public (Not Creatable).
         /// </summary>
         public static string ExtractInterface_PublicNotCreatableRadioButton {
             get {

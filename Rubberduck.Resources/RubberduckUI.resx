@@ -1761,6 +1761,6 @@ Import aborted.</value>
     <value>Private</value>
   </data>
   <data name="ExtractInterface_PublicNotCreatableRadioButton" xml:space="preserve">
-    <value>Public Not Creatable</value>
+    <value>Public (Not Creatable)</value>
   </data>
 </root>
