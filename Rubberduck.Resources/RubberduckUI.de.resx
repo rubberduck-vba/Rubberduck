@@ -575,12 +575,6 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="EncapsulateField_TitleText" xml:space="preserve">
     <value>Feld Kapseln</value>
   </data>
-  <data name="EncapsulateField_ParameterName" xml:space="preserve">
-    <value>Eigenschaftsname</value>
-  </data>
-  <data name="EncapsulateField_SetterType" xml:space="preserve">
-    <value>Typ für 'Set':</value>
-  </data>
   <data name="MoveCloserToUsageFailure_TargetHasNoReferences" xml:space="preserve">
     <value>'{0}' hat keine Referenzen.</value>
   </data>

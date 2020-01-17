@@ -8,6 +8,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
@@ -49,34 +50,59 @@ namespace Rubberduck.Inspections.QuickFixes
     /// </example>
     public sealed class ConvertToProcedureQuickFix : QuickFixBase
     {
-        public ConvertToProcedureQuickFix()
-            : base(typeof(NonReturningFunctionInspection), typeof(FunctionReturnValueNotUsedInspection))
-        {}
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
+
+        public ConvertToProcedureQuickFix(IDeclarationFinderProvider declarationFinderProvider)
+            : base(typeof(NonReturningFunctionInspection), typeof(FunctionReturnValueAlwaysDiscardedInspection))
+        {
+            _declarationFinderProvider = declarationFinderProvider;
+        }
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            var rewriter = rewriteSession.CheckOutModuleRewriter(result.Target.QualifiedModuleName);
+            if (!(result.Target is ModuleBodyElementDeclaration moduleBodyElementDeclaration))
+            {
+                return;
+            }
 
-            switch (result.Context)
+            if (moduleBodyElementDeclaration.IsInterfaceMember)
+            {
+                var implementations = _declarationFinderProvider
+                    .DeclarationFinder
+                    .FindInterfaceImplementationMembers(moduleBodyElementDeclaration);
+                foreach (var implementation in implementations)
+                {
+                    ConvertMember(implementation, rewriteSession);
+                }
+            }
+
+            ConvertMember(moduleBodyElementDeclaration, rewriteSession);
+        }
+
+        private void ConvertMember(ModuleBodyElementDeclaration member, IRewriteSession rewriteSession)
+        {
+            var rewriter = rewriteSession.CheckOutModuleRewriter(member.QualifiedModuleName);
+
+            switch (member.Context)
             {
                 case VBAParser.FunctionStmtContext functionContext:
-                    ConvertFunction(result, functionContext, rewriter);
+                    ConvertFunction(member, functionContext, rewriter);
                     break;
                 case VBAParser.PropertyGetStmtContext propertyGetContext:
-                    ConvertPropertyGet(result, propertyGetContext, rewriter);
+                    ConvertPropertyGet(member, propertyGetContext, rewriter);
                     break;
             }
         }
 
-        private void ConvertFunction(IInspectionResult result, VBAParser.FunctionStmtContext functionContext, IModuleRewriter rewriter)
+        private void ConvertFunction(ModuleBodyElementDeclaration member, VBAParser.FunctionStmtContext functionContext, IModuleRewriter rewriter)
         {
             RemoveAsTypeDeclaration(functionContext, rewriter);
-            RemoveTypeHint(result, functionContext, rewriter);
+            RemoveTypeHint(member, functionContext, rewriter);
 
             ConvertFunctionDeclaration(functionContext, rewriter);
             ConvertExitFunctionStatements(functionContext, rewriter);
 
-            RemoveReturnStatements(result, rewriter);
+            RemoveReturnStatements(member, rewriter);
         }
 
         private static void RemoveAsTypeDeclaration(ParserRuleContext functionContext, IModuleRewriter rewriter)
@@ -91,17 +117,17 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        private static void RemoveTypeHint(IInspectionResult result, ParserRuleContext functionContext, IModuleRewriter rewriter)
+        private static void RemoveTypeHint(ModuleBodyElementDeclaration member, ParserRuleContext functionContext, IModuleRewriter rewriter)
         {
-            if (result.Target.TypeHint != null)
+            if (member.TypeHint != null)
             {
                 rewriter.Remove(functionContext.GetDescendent<VBAParser.TypeHintContext>());
             }
         }
 
-        private void RemoveReturnStatements(IInspectionResult result, IModuleRewriter rewriter)
+        private void RemoveReturnStatements(ModuleBodyElementDeclaration member, IModuleRewriter rewriter)
         {
-            foreach (var returnStatement in GetReturnStatements(result.Target))
+            foreach (var returnStatement in GetReturnStatements(member))
             {
                 rewriter.Remove(returnStatement);
             }
@@ -125,15 +151,15 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        private void ConvertPropertyGet(IInspectionResult result, VBAParser.PropertyGetStmtContext propertyGetContext, IModuleRewriter rewriter)
+        private void ConvertPropertyGet(ModuleBodyElementDeclaration member, VBAParser.PropertyGetStmtContext propertyGetContext, IModuleRewriter rewriter)
         {
             RemoveAsTypeDeclaration(propertyGetContext, rewriter);
-            RemoveTypeHint(result, propertyGetContext, rewriter);
+            RemoveTypeHint(member, propertyGetContext, rewriter);
 
             ConvertPropertyGetDeclaration(propertyGetContext, rewriter);
             ConvertExitPropertyStatements(propertyGetContext, rewriter);
 
-            RemoveReturnStatements(result, rewriter);
+            RemoveReturnStatements(member, rewriter);
         }
 
         private static void ConvertPropertyGetDeclaration(VBAParser.PropertyGetStmtContext propertyGetContext, IModuleRewriter rewriter)

@@ -213,8 +213,8 @@
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
     <value>Objektvariable ist selbstzugewiesen.</value>
   </data>
-  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
-    <value>Der Rückgabewert der Funktion wird nicht genutzt.</value>
+  <data name="FunctionReturnValueAlwaysDiscardedInspection" xml:space="preserve">
+    <value>Der Rückgabewert einer Funktion wird immer verworfen.</value>
   </data>
   <data name="ObjectVariableNotSetInspection" xml:space="preserve">
     <value>Zuweisung in eine Objektvariable benötigt das 'Set'-Schlüsselwort.</value>
@@ -229,13 +229,13 @@
     <value>Verwendung von 'Dim' auf Modulebene</value>
   </data>
   <data name="ApplicationWorksheetFunctionInspection" xml:space="preserve">
-    <value>Laufzeitgebundener Aufruf an WorksheetFunction</value>
+    <value>Laufzeitgebundener Aufruf an WorksheetFunction.</value>
   </data>
   <data name="HostSpecificExpressionInspection" xml:space="preserve">
     <value>Hostspezifischer geklammerter Ausdruck wird nur zur Laufzeit ausgewertet</value>
   </data>
   <data name="HungarianNotationInspection" xml:space="preserve">
-    <value>Variable verwendet 'Ungarische Notation'</value>
+    <value>Variable verwendet 'Ungarische Notation'.</value>
   </data>
   <data name="MemberNotOnInterfaceInspection" xml:space="preserve">
     <value>Member existiert auf dem Interface nicht</value>
@@ -322,7 +322,7 @@
     <value>Verwendung eines als '@Obsolete' markierten Members</value>
   </data>
   <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
-    <value>Verwendung der 'CDecl' Aufrufkonvention unter Windows </value>
+    <value>Verwendung der 'CDecl' Aufrufkonvention unter Windows</value>
   </data>
   <data name="DuplicatedAnnotationInspection" xml:space="preserve">
     <value>Annotation ist dupliziert</value>
@@ -416,5 +416,11 @@
   </data>
   <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
     <value>Verdächtige Let-Zuweisung</value>
+  </data>
+  <data name="FunctionReturnValueDiscardedInspection" xml:space="preserve">
+    <value>Der Rückgabewert einer Funktion wird verworfen.</value>
+  </data>
+  <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
+    <value>Konstante mit implizit bestimmtem Datentyp</value>
   </data>
 </root>

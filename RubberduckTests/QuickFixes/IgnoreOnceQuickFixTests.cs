@@ -115,7 +115,7 @@ Public fizz As Boolean";
         [Test]
         [Category("QuickFixes")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_IgnoreQuickFixWorks()
+        public void FunctionReturnValueDiscarded_IgnoreQuickFixWorks()
         {
             const string inputCode =
                 @"Public Function Foo(ByVal bar As String) As Boolean
@@ -126,7 +126,33 @@ Public Sub Goo()
 End Sub";
 
             const string expectedCode =
-                @"'@Ignore FunctionReturnValueNotUsed
+                @"Public Function Foo(ByVal bar As String) As Boolean
+End Function
+
+Public Sub Goo()
+    '@Ignore FunctionReturnValueDiscarded
+    Foo ""test""
+End Sub";
+
+            var actualCode = ApplyIgnoreOnceToFirstResult(inputCode, state => new FunctionReturnValueDiscardedInspection(state), TestStandardModuleVbeSetup);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        [Category("Unused Value")]
+        public void FunctionReturnValueAlwaysDiscarded_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+                @"Public Function Foo(ByVal bar As String) As Boolean
+End Function
+
+Public Sub Goo()
+    Foo ""test""
+End Sub";
+
+            const string expectedCode =
+                @"'@Ignore FunctionReturnValueAlwaysDiscarded
 Public Function Foo(ByVal bar As String) As Boolean
 End Function
 
@@ -134,7 +160,7 @@ Public Sub Goo()
     Foo ""test""
 End Sub";
 
-            var actualCode = ApplyIgnoreOnceToFirstResult(inputCode, state => new FunctionReturnValueNotUsedInspection(state), TestStandardModuleVbeSetup);
+            var actualCode = ApplyIgnoreOnceToFirstResult(inputCode, state => new FunctionReturnValueAlwaysDiscardedInspection(state), TestStandardModuleVbeSetup);
             Assert.AreEqual(expectedCode, actualCode);
         }
 

@@ -213,9 +213,6 @@
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
     <value>Reference k objektu proměnné je automaticky instancovaná</value>
   </data>
-  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
-    <value>Vratná hodnota funkce není nikdy použita</value>
-  </data>
   <data name="NonReturningFunctionInspection" xml:space="preserve">
     <value>Funkce, která nic nevrací, nebo property getter</value>
   </data>
