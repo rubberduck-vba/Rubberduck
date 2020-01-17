@@ -7,7 +7,6 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.UI.Command;
-using System.Windows.Data;
 
 namespace Rubberduck.UI.Refactorings
 {
@@ -70,8 +69,6 @@ namespace Rubberduck.UI.Refactorings
             }
         }
 
-        private readonly IValueConverter classInstancingConverter = new Converters.ClassInstancingToBooleanConverter();
-
         private bool isPublicInterfaceChecked = true;
         public bool IsPublicInterfaceChecked
         {
@@ -83,7 +80,9 @@ namespace Rubberduck.UI.Refactorings
                     return;
                 }
 
-                Model.ImplementingClassInstancing = (ClassInstancing)classInstancingConverter.ConvertBack(value, null, null, null);
+                Model.InterfaceInstancing = value 
+                    ? ClassInstancing.PublicNotCreatable 
+                    : ClassInstancing.Private;
                 isPublicInterfaceChecked = value;
                 OnPropertyChanged();                
             }

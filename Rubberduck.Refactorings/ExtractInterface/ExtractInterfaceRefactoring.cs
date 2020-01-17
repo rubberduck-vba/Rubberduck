@@ -98,7 +98,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
                 return; //The target project is not available.
             }
 
-            AddInterfaceClass(model.TargetDeclaration, model.InterfaceName, GetInterfaceModuleBody(model), model.ImplementingClassInstancing);
+            AddInterfaceClass(model.TargetDeclaration, model.InterfaceName, GetInterfaceModuleBody(model), model.InterfaceInstancing);
 
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
             var rewriter = rewriteSession.CheckOutModuleRewriter(model.TargetDeclaration.QualifiedModuleName);
