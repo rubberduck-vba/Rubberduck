@@ -8,12 +8,11 @@
              mc:Ignorable="d"
              MinHeight="600"
              d:DesignHeight="600"
-             d:DesignWidth="600" Background="AliceBlue">
+             d:DesignWidth="600">
     <UserControl.Resources>
         <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
         <converters:BoolToVisibleVisibilityConverter x:Key="BoolToVisibleVisibility" />
-        <BitmapImage x:Key="InvalidNameImage"
-                     UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
+        <BitmapImage x:Key="InvalidNameImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
         <Style TargetType="Image" x:Key="InvalidNameIconStyle">
             <Setter Property="Source" Value="{StaticResource InvalidNameImage}" />
             <Setter Property="Height" Value="16" />
