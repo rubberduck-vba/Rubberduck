@@ -79,7 +79,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
             throw new NotSupportedException();
         }
 
-        internal void Refactor(List<Declaration> members, IModuleRewriter rewriter, string interfaceName)
+        internal void Refactor(IEnumerable<Declaration> members, IModuleRewriter rewriter, string interfaceName)
         {
             AddItems(members, rewriter, interfaceName);
         }

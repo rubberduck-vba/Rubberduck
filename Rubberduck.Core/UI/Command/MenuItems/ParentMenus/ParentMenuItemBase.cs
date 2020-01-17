@@ -201,8 +201,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 
         private void child_Click(object sender, CommandBarButtonClickEventArgs e)
         {
-            var item = _items.Select(kvp => kvp.Key).SingleOrDefault(menu => e.Tag.EndsWith(menu.GetType().Name)) as ICommandMenuItem;
-            if (item == null)
+            if (!(_items.Select(kvp => kvp.Key).SingleOrDefault(menu => e.Tag.EndsWith(menu.GetType().Name)) is ICommandMenuItem item))
             {
                 return;
             }

@@ -171,7 +171,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         private void AddInterfaceMembersToClass(ExtractInterfaceModel model, IModuleRewriter rewriter)
         {
-            _implementInterfaceRefactoring.Refactor(model.SelectedMembers.Select(m => m.Member).ToList(), rewriter, model.InterfaceName);
+            _implementInterfaceRefactoring.Refactor(model.SelectedMembers.Select(m => m.Member), rewriter, model.InterfaceName);
         }
 
         private string GetInterfaceModuleBody(ExtractInterfaceModel model)

@@ -54,7 +54,7 @@ namespace Rubberduck.UI.Command.MenuItems
         public virtual bool HiddenWhenDisabled => false;
         public virtual bool IsVisible => true;
         public virtual bool BeginGroup => false;
-        public virtual int DisplayOrder => default(int);
+        public virtual int DisplayOrder => default;
         public virtual Image Image => null;
         public virtual Image Mask => null;
     }
