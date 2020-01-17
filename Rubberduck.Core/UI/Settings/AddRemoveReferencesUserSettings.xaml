@@ -10,26 +10,22 @@
              d:DesignHeight="350"
              d:DataContext="{d:DesignInstance {x:Type settings:AddRemoveReferencesUserSettingsViewModel}, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
-        <BitmapImage x:Key="AddImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/plus-circle.png" />
-        <BitmapImage x:Key="DeleteImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-script.png" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles/DefaultStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
 
-        <converters:SelectedItemToBooleanConverter x:Key="HasSelectedItems"/>
+            <BitmapImage x:Key="AddImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/plus-circle.png" />
+            <BitmapImage x:Key="DeleteImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-script.png" />
 
-        <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
-            <GradientStop Color="#FFD9F4FF" Offset="0"/>
-            <GradientStop Color="#FF9BDDFB" Offset="1"/>
-        </LinearGradientBrush>
-        <LinearGradientBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
-            <GradientStop Color="#FFEEEDED" Offset="0"/>
-            <GradientStop Color="#FFDDDDDD" Offset="1"/>
-        </LinearGradientBrush>
-        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
-        <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
-        <Style TargetType="ScrollViewer">
-            <Style.Setters>
-                <Setter Property="settings:ScrollViewerCorrector.FixScrolling" Value="True" />
-            </Style.Setters>
-        </Style>
+            <converters:SelectedItemToBooleanConverter x:Key="HasSelectedItems"/>
+
+            <Style TargetType="ScrollViewer">
+                <Style.Setters>
+                    <Setter Property="settings:ScrollViewerCorrector.FixScrolling" Value="True" />
+                </Style.Setters>
+            </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <ScrollViewer x:Name="ScrollViewer">

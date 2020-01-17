@@ -12,68 +12,63 @@
              d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type settings:GeneralSettingsViewModel}, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
-        <converters:DelimiterValueToTextConverter x:Key="DelimiterValueToText" />
-        <converters:DelimiterToTextConverter x:Key="DelimiterToText" />
-        <converters:HotkeyDisplayConverter x:Key="HotkeyDisplay" />
-        <hiddenVisibility:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
-        <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles/DefaultStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
 
-        <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
-            <GradientStop Color="#FFD9F4FF" Offset="0"/>
-            <GradientStop Color="#FF9BDDFB" Offset="1"/>
-        </LinearGradientBrush>
-        <LinearGradientBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
-            <GradientStop Color="#FFEEEDED" Offset="0"/>
-            <GradientStop Color="#FFDDDDDD" Offset="1"/>
-        </LinearGradientBrush>
-        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
-        <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
+            <converters:DelimiterValueToTextConverter x:Key="DelimiterValueToText" />
+            <converters:DelimiterToTextConverter x:Key="DelimiterToText" />
+            <converters:HotkeyDisplayConverter x:Key="HotkeyDisplay" />
+            <hiddenVisibility:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
+            <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
 
-        <ObjectDataProvider x:Key="Delimiters"
+            <ObjectDataProvider x:Key="Delimiters"
                             MethodName="GetValues"
                             ObjectType="{x:Type core:Enum}">
-            <ObjectDataProvider.MethodParameters>
-                <x:Type Type="settings:DelimiterOptions"/>
-            </ObjectDataProvider.MethodParameters>
-        </ObjectDataProvider>
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type Type="settings:DelimiterOptions"/>
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
 
-        <Style x:Key="PrettifyRow" TargetType="{x:Type DataGridRow}">
-            <Style.Resources>
-                <Style TargetType="{x:Type Border}">
-                    <Setter Property="CornerRadius" Value="2"/>
-                </Style>
-            </Style.Resources>
-            <Setter Property="BorderThickness" Value="0,.5,0,0" />
-            <Setter Property="BorderBrush" Value="DarkGray" />
-            <Setter Property="Height" Value="26" />
-            <Setter Property="TextBlock.FontWeight" Value="Normal" />
-            <Style.Triggers>
-                <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="BorderThickness" Value="1.5" />
-                </Trigger>
-                <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                        <Condition Property="IsSelected" Value="True" />
-                        <Condition Property="Selector.IsSelectionActive" Value="True" />
-                    </MultiTrigger.Conditions>
-                    <Setter Property="BorderBrush" Value="#adc6e5"/>
-                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
-                </MultiTrigger>
-                <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                        <Condition Property="IsSelected" Value="True" />
-                        <Condition Property="Selector.IsSelectionActive" Value="False" />
-                    </MultiTrigger.Conditions>
-                    <Setter Property="BorderBrush" Value="LightGray"/>
-                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}" />
-                </MultiTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style TargetType="ScrollViewer">
-            <Style.Setters>
-                <Setter Property="settings:ScrollViewerCorrector.FixScrolling" Value="True" />
-            </Style.Setters>
-        </Style>
+            <Style x:Key="PrettifyRow" TargetType="{x:Type DataGridRow}">
+                <Style.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="2"/>
+                    </Style>
+                </Style.Resources>
+                <Setter Property="BorderThickness" Value="0,.5,0,0" />
+                <Setter Property="BorderBrush" Value="DarkGray" />
+                <Setter Property="Height" Value="26" />
+                <Setter Property="TextBlock.FontWeight" Value="Normal" />
+                <Style.Triggers>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="BorderThickness" Value="1.5" />
+                    </Trigger>
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsSelected" Value="True" />
+                            <Condition Property="Selector.IsSelectionActive" Value="True" />
+                        </MultiTrigger.Conditions>
+                        <Setter Property="BorderBrush" Value="#adc6e5"/>
+                        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                    </MultiTrigger>
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsSelected" Value="True" />
+                            <Condition Property="Selector.IsSelectionActive" Value="False" />
+                        </MultiTrigger.Conditions>
+                        <Setter Property="BorderBrush" Value="LightGray"/>
+                        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}" />
+                    </MultiTrigger>
+                </Style.Triggers>
+            </Style>
+            <Style TargetType="ScrollViewer">
+                <Style.Setters>
+                    <Setter Property="settings:ScrollViewerCorrector.FixScrolling" Value="True" />
+                </Style.Setters>
+            </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <ScrollViewer x:Name="ScrollViewer">

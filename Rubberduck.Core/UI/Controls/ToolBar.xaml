@@ -2,7 +2,10 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
                     xmlns:converters="clr-namespace:Rubberduck.UI.Converters">
-
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="../Styles/DefaultStyle.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+    
     <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
 
     <DataTemplate x:Key="MenuItemHeaderDropdownIndicatorTemplate">
@@ -22,15 +25,6 @@
     </Style>
 
     <converters:GroupingGridLocationConverter x:Key="GroupingGridLocationConverter" />
-
-    <SolidColorBrush x:Key="ToolBarHorizontalBackground" Color="#FFEEF5FD"/>
-    <SolidColorBrush x:Key="ToolBarToggleButtonVerticalBackground" Color="#FFEEF5FD"/>
-    <SolidColorBrush x:Key="ToolBarButtonHover" Color="#210080FF"/>
-    <SolidColorBrush x:Key="ToolBarGripper" Color="#FF6D6D6D"/>
-    <SolidColorBrush x:Key="ToolBarVerticalBackground" Color="#FFEEF5FD"/>
-    <SolidColorBrush x:Key="ToolBarToggleButtonHorizontalBackground" Color="#FFEEF5FD"/>
-    <SolidColorBrush x:Key="ToolBarMenuBorder" Color="#FFB6BDC5"/>
-    <SolidColorBrush x:Key="ToolBarSubMenuBackground" Color="#FFEEF5FD"/>
 
     <Style x:Key="MenuItemStyle" TargetType="{x:Type MenuItem}">
         <Setter Property="OverridesDefaultStyle" Value="True"/>
