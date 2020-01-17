@@ -15,7 +15,7 @@ namespace RubberduckTests.QuickFixes
     {
         [Test]
         [Category("QuickFixes")]
-        public void FunctionReturnValueNotUsed_QuickFixWorks_NoInterface()
+        public void FunctionReturnValueNeverUsedInspection_QuickFixWorks_NoInterface()
         {
             const string inputCode =
                 @"Public Function Foo(ByVal bar As String) As Boolean
@@ -46,13 +46,13 @@ Public Sub Test()
 End Sub
 ";
 
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new FunctionReturnValueNotUsedInspection(state));
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new FunctionReturnValueAlwaysDiscardedInspection(state));
             Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
         [Category("QuickFixes")]
-        public void FunctionReturnValueNotUsed_QuickFixWorks_NoInterface_ManyBodyStatements()
+        public void FunctionReturnValueNeverUsedInspection_QuickFixWorks_NoInterface_ManyBodyStatements()
         {
             const string inputCode =
                 @"Function foo(ByRef fizz As Boolean) As Boolean
@@ -86,13 +86,13 @@ Public Sub Test()
 End Sub
 ";
 
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new FunctionReturnValueNotUsedInspection(state));
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new FunctionReturnValueAlwaysDiscardedInspection(state));
             Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
         [Category("QuickFixes")]
-        public void FunctionReturnValueNotUsed_QuickFixWorks_Interface()
+        public void FunctionReturnValueAlwaysDiscarded_QuickFixWorks_Interface()
         {
             const string inputInterfaceCode =
                 @"Public Function Test() As Integer
@@ -108,11 +108,23 @@ Public Function IFoo_Test() As Integer
     IFoo_Test = 42
 End Function";
 
+            const string expectedImplementationCode1 =
+                @"Implements IFoo
+Public Sub IFoo_Test()
+    
+End Sub";
+
             const string inputImplementationCode2 =
                 @"Implements IFoo
 Public Function IFoo_Test() As Integer
     IFoo_Test = 42
 End Function";
+
+            const string expectedImplementationCode2 =
+                @"Implements IFoo
+Public Sub IFoo_Test()
+    
+End Sub";
 
             const string callSiteCode =
                 @"
@@ -134,15 +146,23 @@ End Function";
             using (state)
             {
 
-                var inspection = new FunctionReturnValueNotUsedInspection(state);
+                var inspection = new FunctionReturnValueAlwaysDiscardedInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
 
-                new ConvertToProcedureQuickFix().Fix(inspectionResults.First(), rewriteSession);
+                new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First(), rewriteSession);
 
-                var component = vbe.Object.VBProjects[0].VBComponents[0];
-                var actualCode = rewriteSession.CheckOutModuleRewriter(component.QualifiedModuleName).GetText();
-                Assert.AreEqual(expectedInterfaceCode, actualCode);
+                var interfaceModule = state.DeclarationFinder.AllModules.Single(module => module.ComponentName.Equals("IFoo"));
+                var implementationModule1 = state.DeclarationFinder.AllModules.Single(module => module.ComponentName.Equals("Bar"));
+                var implementationModule2 = state.DeclarationFinder.AllModules.Single(module => module.ComponentName.Equals("Bar2"));
+
+                var actualInterfaceCode = rewriteSession.CheckOutModuleRewriter(interfaceModule).GetText();
+                var actualImplementationModule1Code = rewriteSession.CheckOutModuleRewriter(implementationModule1).GetText();
+                var actualImplementationModule2Code = rewriteSession.CheckOutModuleRewriter(implementationModule2).GetText();
+
+                Assert.AreEqual(expectedInterfaceCode, actualInterfaceCode);
+                Assert.AreEqual(expectedImplementationCode1, actualImplementationModule1Code);
+                Assert.AreEqual(expectedImplementationCode2, actualImplementationModule2Code);
             }
         }
 
@@ -335,7 +355,7 @@ End Sub";
 
         protected override IQuickFix QuickFix(RubberduckParserState state)
         {
-            return new ConvertToProcedureQuickFix();
+            return new ConvertToProcedureQuickFix(state);
         }
     }
 }

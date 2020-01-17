@@ -8,18 +8,20 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Abstract
 {
-    public abstract class IdentifierReferenceInspectionBase : InspectionBase
+    public abstract class DeclarationInspectionBase : InspectionBase
     {
         protected readonly IDeclarationFinderProvider DeclarationFinderProvider;
+        protected readonly DeclarationType[] RelevantDeclarationTypes;
 
-        protected IdentifierReferenceInspectionBase(RubberduckParserState state)
+        protected DeclarationInspectionBase(RubberduckParserState state, params DeclarationType[] relevantDeclarationTypes)
             : base(state)
         {
             DeclarationFinderProvider = state;
+            RelevantDeclarationTypes = relevantDeclarationTypes;
         }
 
-        protected abstract bool IsResultReference(IdentifierReference reference);
-        protected abstract string ResultDescription(IdentifierReference reference);
+        protected abstract bool IsResultDeclaration(Declaration declaration);
+        protected abstract string ResultDescription(Declaration declaration);
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
@@ -40,26 +42,27 @@ namespace Rubberduck.Inspections.Abstract
 
         private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
         {
-            var objectionableReferences = ReferencesInModule(module)
-                .Where(IsResultReference);
+            var objectionableDeclarations = RelevantDeclarationsInModule(module)
+                .Where(IsResultDeclaration);
 
-            return objectionableReferences
-                .Select(reference => InspectionResult(reference, DeclarationFinderProvider))
+            return objectionableDeclarations
+                .Select(InspectionResult)
                 .ToList();
         }
 
-        protected virtual IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module)
+        protected virtual IEnumerable<Declaration> RelevantDeclarationsInModule(QualifiedModuleName module)
         {
-            return DeclarationFinderProvider.DeclarationFinder.IdentifierReferences(module);
+            return RelevantDeclarationTypes
+                .SelectMany(declarationType => DeclarationFinderProvider.DeclarationFinder.Members(module, declarationType))
+                .Distinct();
         }
 
-        protected virtual IInspectionResult InspectionResult(IdentifierReference reference, IDeclarationFinderProvider declarationFinderProvider)
+        protected virtual IInspectionResult InspectionResult(Declaration declaration)
         {
-            return new IdentifierReferenceInspectionResult(
+            return new DeclarationInspectionResult(
                 this,
-                ResultDescription(reference),
-                declarationFinderProvider,
-                reference);
+                ResultDescription(declaration),
+                declaration);
         }
     }
 }

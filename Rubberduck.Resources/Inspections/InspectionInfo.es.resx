@@ -217,9 +217,6 @@ Si el parámetro puede ser nulo, ignore el resultado de esta inspección; pasar 
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
     <value>Una declaración de variable de objeto auto-instanciada en el ámbito del procedimiento cambia cómo funciona la anulación de la referencia, lo que puede llevar a un comportamiento inesperado.</value>
   </data>
-  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
-    <value>Un miembro se escribe como una función, pero se usa como un procedimiento. A menos que la función sea recursiva, considere convertir la 'Función' en un 'Sub'. Si la función es recursiva, ninguno de sus llamadores externos está utilizando el valor devuelto.</value>
-  </data>
   <data name="ObjectVariableNotSetInspection" xml:space="preserve">
     <value>Por lo que Rubberduck puede decir, esta variable es una variable de objeto, asignada sin la palabra clave 'Set'. Esto causa el error 91 en tiempo de ejecución 'Objeto o variable de bloque no establecida'.</value>
   </data>

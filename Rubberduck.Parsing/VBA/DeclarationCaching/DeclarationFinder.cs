@@ -26,7 +26,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
         private readonly IHostApplication _hostApp;
         private IDictionary<string, List<Declaration>> _declarationsByName;
-        private IDictionary<QualifiedModuleName, List<Declaration>> _declarations;
+        private IDictionary<QualifiedModuleName, IDictionary<DeclarationType, List<Declaration>>> _declarations;
 
         private readonly IReadOnlyDictionary<QualifiedModuleName, IFailedResolutionStore> _failedResolutionStores;
         private readonly ConcurrentDictionary<QualifiedModuleName, IMutableFailedResolutionStore> _newFailedResolutionStores;
@@ -104,6 +104,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 () =>
                     _declarations = declarations
                         .GroupBy(item => item.QualifiedName.QualifiedModuleName)
+                        .SelectMany(grp1 => grp1.GroupBy(declaration => declaration.DeclarationType), (grp1, grp2) => (grp1, grp2))
+                        .GroupBy(tpl => tpl.grp1.Key, tpl => tpl.grp2)
                         .ToDictionary(),
                 () =>
                     _declarationsByName = declarations
@@ -282,16 +284,33 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             return Members(module.QualifiedName.QualifiedModuleName);
         }
 
+        public IEnumerable<Declaration> Members(Declaration module, DeclarationType declarationType)
+        {
+            return Members(module.QualifiedName.QualifiedModuleName, declarationType);
+        }
+
         public IEnumerable<Declaration> Members(QualifiedModuleName module)
         {
             return _declarations.TryGetValue(module, out var members)
-                    ? members
+                    ? members.AllValues()
                     : Enumerable.Empty<Declaration>();
+        }
+
+        public IEnumerable<Declaration> Members(QualifiedModuleName module, DeclarationType declarationType)
+        {
+            if (!_declarations.TryGetValue(module, out var membersByType))
+            {
+                return Enumerable.Empty<Declaration>();
+            }
+
+            return membersByType
+                    .Where(item => item.Key.HasFlag(declarationType))
+                    .SelectMany(item => item.Value);
         }
 
         public Declaration ModuleDeclaration(QualifiedModuleName module)
         {
-            return Members(module).SingleOrDefault(member => member.DeclarationType.HasFlag(DeclarationType.Module));
+            return Members(module, DeclarationType.Module).SingleOrDefault();
         }
 
         public IReadOnlyCollection<QualifiedModuleName> AllModules => _declarations.Keys.AsReadOnly();
@@ -494,10 +513,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
         public IEnumerable<Declaration> FindMemberMatches(Declaration parent, string memberName)
         {
-            return _declarations.TryGetValue(parent.QualifiedName.QualifiedModuleName, out var children)
-                ? children.Where(item => item.DeclarationType.HasFlag(DeclarationType.Member)
-                                             && item.IdentifierName == memberName)
-                : Enumerable.Empty<Declaration>();
+            return Members(parent.QualifiedName.QualifiedModuleName, DeclarationType.Member)
+                .Where(member => member.IdentifierName.Equals(memberName));
         }
 
         public IEnumerable<IParseTreeAnnotation> FindAnnotations(QualifiedModuleName module, int annotatedLine)
