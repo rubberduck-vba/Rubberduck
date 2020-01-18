@@ -213,9 +213,6 @@
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
     <value>La variable objet est assignée lors de sa déclaration</value>
   </data>
-  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
-    <value>La valeur de retour de la fonction n'est jamais utilisée.</value>
-  </data>
   <data name="ObjectVariableNotSetInspection" xml:space="preserve">
     <value>L'assignation d'une référence d'objet requiert le mot-clé 'Set'</value>
   </data>

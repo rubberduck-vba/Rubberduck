@@ -572,7 +572,7 @@ Do you want to proceed with this rename?</value>
     <value>Rubberduck - Encapsulate Field</value>
   </data>
   <data name="EncapsulateField_InstructionText" xml:space="preserve">
-    <value>Please specify property name, parameter accessibility, and setter type.</value>
+    <value>Select one or more fields to encapsulate.  Accept the default values or edit property names</value>
   </data>
   <data name="EncapsulateField_Preview" xml:space="preserve">
     <value>Preview:</value>
@@ -1095,7 +1095,7 @@ This dialog is showing because version checks are enabled. You can turn off this
     <value>Experimental Features (Requires a restart to take effect):</value>
   </data>
   <data name="ExportAllCommand_SaveAsDialog_Title" xml:space="preserve">
-    <value>Choose a folder to export the source of {0} to:</value>
+    <value>Select a folder to export the source of {0} to:</value>
     <comment>{0} VBProject.Name</comment>
   </data>
   <data name="CommandDescription_ExportAllCommand" xml:space="preserve">
@@ -1753,5 +1753,30 @@ Import aborted.</value>
   </data>
   <data name="ComponentType_VBForm" xml:space="preserve">
     <value>VB Form</value>
+  </data>
+  <data name="EncapsulateField_ArrayHasExternalRedimFormat" xml:space="preserve">
+    <value>Unable to encapsulate {0}. Redim({0}) statement(s) exist in other modules</value>
+    <comment>{0} = selected field IdentifierName</comment>
+  </data>
+  <data name="EncapsulateField_DefaultObjectStateUDTFieldName" xml:space="preserve">
+    <value>this</value>
+  </data>
+  <data name="EncapsulateField_DefaultPropertyParameter" xml:space="preserve">
+    <value>value</value>
+  </data>
+  <data name="EncapsulateField_NameConflictDetected" xml:space="preserve">
+    <value>Name conflict</value>
+  </data>
+  <data name="EncapsulateField_PreviewMarker" xml:space="preserve">
+    <value>'&lt;===== Property and declaration changes above this line =====&gt;</value>
+  </data>
+  <data name="EncapsulateField_PrivateUDTPropertyText" xml:space="preserve">
+    <value>Creates a property for each UDT Member</value>
+  </data>
+  <data name="EncapsulateField_ReadOnlyCheckBoxContent" xml:space="preserve">
+    <value>Read Only</value>
+  </data>
+  <data name="EncapsulateField_WrapFieldsInPrivateType" xml:space="preserve">
+    <value>Wrap Fields in Private Type</value>
   </data>
 </root>

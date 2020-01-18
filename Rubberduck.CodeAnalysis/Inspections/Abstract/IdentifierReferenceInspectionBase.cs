@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
@@ -13,7 +12,7 @@ namespace Rubberduck.Inspections.Abstract
     {
         protected readonly IDeclarationFinderProvider DeclarationFinderProvider;
 
-        public IdentifierReferenceInspectionBase(RubberduckParserState state)
+        protected IdentifierReferenceInspectionBase(RubberduckParserState state)
             : base(state)
         {
             DeclarationFinderProvider = state;

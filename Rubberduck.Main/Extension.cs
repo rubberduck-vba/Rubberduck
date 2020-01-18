@@ -232,7 +232,7 @@ namespace Rubberduck
             try
             {
                 var currentDomain = AppDomain.CurrentDomain;
-                currentDomain.UnhandledException += HandlAppDomainException;
+                currentDomain.UnhandledException += HandleAppDomainException;
                 currentDomain.AssemblyResolve += LoadFromSameFolder;
 
                 _container = new WindsorContainer().Install(new RubberduckIoCInstaller(_vbe, _addin, _initialSettings, _vbeNativeApi, _beepInterceptor));
@@ -244,14 +244,25 @@ namespace Rubberduck
             }
             catch (Exception e)
             {
-                _logger.Log(LogLevel.Fatal, e, "Startup sequence threw an unexpected exception.");
+                _logger.Fatal(e, "Startup sequence threw an unexpected exception.");
                 throw new Exception("Rubberduck's startup sequence threw an unexpected exception. Please check the Rubberduck logs for more information and report an issue if necessary", e);
             }
         }
 
-        private void HandlAppDomainException(object sender, UnhandledExceptionEventArgs e)
+        private void HandleAppDomainException(object sender, UnhandledExceptionEventArgs e)
         {
-            _logger.Log(LogLevel.Fatal, e);
+            var message = e.IsTerminating
+                ? "An unhandled exception occurred. The runtime is shutting down."
+                : "An unhandled exception occurred. The runtime continues running.";
+            if (e.ExceptionObject is Exception exception)
+            {
+                _logger.Fatal(exception, message);
+
+            }
+            else
+            {
+                _logger.Fatal(message);
+            }
         }
 
         private void ShutdownAddIn()
@@ -259,12 +270,12 @@ namespace Rubberduck
             var currentDomain = AppDomain.CurrentDomain;
             try
             {
-                _logger.Log(LogLevel.Info, "Rubberduck is shutting down.");
-                _logger.Log(LogLevel.Trace, "Unhooking VBENativeServices events...");
+                _logger.Info("Rubberduck is shutting down.");
+                _logger.Trace("Unhooking VBENativeServices events...");
                 VbeNativeServices.UnhookEvents();
                 VbeProvider.Terminate();
 
-                _logger.Log(LogLevel.Trace, "Releasing dockable hosts...");
+                _logger.Trace("Releasing dockable hosts...");
 
                 using (var windows = _vbe.Windows)
                 {
@@ -273,14 +284,14 @@ namespace Rubberduck
 
                 if (_app != null)
                 {
-                    _logger.Log(LogLevel.Trace, "Initiating App.Shutdown...");
+                    _logger.Trace("Initiating App.Shutdown...");
                     _app.Shutdown();
                     _app = null;
                 }
 
                 if (_container != null)
                 {
-                    _logger.Log(LogLevel.Trace, "Disposing IoC container...");
+                    _logger.Trace("Disposing IoC container...");
                     _container.Dispose();
                     _container = null;
                 }
@@ -288,33 +299,33 @@ namespace Rubberduck
             catch (Exception e)
             {
                 _logger.Error(e);
-                _logger.Log(LogLevel.Warn, "Exception is swallowed.");
+                _logger.Warn("Exception is swallowed.");
                 //throw; // <<~ uncomment to crash the process
             }
             finally
             {
                 try
                 {
-                    _logger.Log(LogLevel.Trace, "Disposing COM safe...");
+                    _logger.Trace("Disposing COM safe...");
                     ComSafeManager.DisposeAndResetComSafe();
                     _addin = null;
                     _vbe = null;
 
                     _isInitialized = false;
-                    _logger.Log(LogLevel.Info, "No exceptions were thrown.");
+                    _logger.Info("No exceptions were thrown.");
                 }
                 catch (Exception e)
                 {
                     _logger.Error(e);
-                    _logger.Log(LogLevel.Warn, "Exception disposing the ComSafe has been swallowed.");
+                    _logger.Warn("Exception disposing the ComSafe has been swallowed.");
                     //throw; // <<~ uncomment to crash the process
                 }
                 finally
                 {
-                    _logger.Log(LogLevel.Trace, "Unregistering AppDomain handlers....");  
+                    _logger.Trace("Unregistering AppDomain handlers....");  
                     currentDomain.AssemblyResolve -= LoadFromSameFolder;
-                    currentDomain.UnhandledException -= HandlAppDomainException;
-                    _logger.Log(LogLevel.Trace, "Done. Main Shutdown completed. Toolwindows follow. Quack!");
+                    currentDomain.UnhandledException -= HandleAppDomainException;
+                    _logger.Trace( "Done. Main Shutdown completed. Toolwindows follow. Quack!");
                     _isInitialized = false;
                 }
             }

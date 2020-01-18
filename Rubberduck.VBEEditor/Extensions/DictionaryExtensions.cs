@@ -24,14 +24,25 @@ namespace Rubberduck.VBEditor.Extensions
             return source.SelectMany(item => item.Value);
         }
 
+        public static IEnumerable<TValue> AllValues<TKey1, TKey2, TValue>(
+            this IDictionary<TKey1, IDictionary<TKey2, List<TValue>>> source)
+        {
+            return source.SelectMany(item => item.Value.AllValues());
+        }
+
         public static ConcurrentDictionary<TKey, ConcurrentBag<TValue>> ToConcurrentDictionary<TKey, TValue>(this IEnumerable<IGrouping<TKey, TValue>> source)
         {
             return new ConcurrentDictionary<TKey, ConcurrentBag<TValue>>(source.Select(x => new KeyValuePair<TKey, ConcurrentBag<TValue>>(x.Key, new ConcurrentBag<TValue>(x))));
         }
 
-        public static Dictionary<TKey, List<TValue>> ToDictionary<TKey, TValue>(this IEnumerable<IGrouping<TKey, TValue>> source)
+        public static IDictionary<TKey, List<TValue>> ToDictionary<TKey, TValue>(this IEnumerable<IGrouping<TKey, TValue>> source)
         {
             return source.ToDictionary(group => group.Key, group => group.ToList());
+        }
+
+        public static IDictionary<TKey1, IDictionary<TKey2, List<TValue>>> ToDictionary<TKey1, TKey2, TValue>(this IEnumerable<IGrouping<TKey1, IGrouping<TKey2, TValue>>> source)
+        {
+            return source.ToDictionary(group => group.Key, group => group.ToDictionary());
         }
 
         public static IReadOnlyDictionary<TKey, IReadOnlyList<TValue>> ToReadonlyDictionary<TKey, TValue>(this IEnumerable<IGrouping<TKey, TValue>> source)
