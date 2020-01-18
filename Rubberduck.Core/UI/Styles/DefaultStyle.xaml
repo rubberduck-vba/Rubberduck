@@ -23,6 +23,8 @@
     <Color x:Key="HighlightInactiveBorderColor">#FFD3D3D3</Color>
     <Color x:Key="GlyphPanelHighlightBorderColor">#90006CD9</Color>
     <Color x:Key="GlyphPanelHighlightBackgroundColor">#90006CD9</Color>
+    <Color x:Key="MouseOverBackgroundColor">#1F26A0DA</Color>
+    <Color x:Key="MouseOverBorderColor">#A826A0DA</Color>
     <Color x:Key="ExpanderBorderColor">#FFA9A9A9</Color>
     <Color x:Key="ExpanderBackgroundColor">#FFFFFFFF</Color>
     <Color x:Key="CaptionLightColor">#FFFFFFFF</Color>
@@ -40,8 +42,6 @@
     <Color x:Key="BlackColor">#FFFFFFFF</Color>
     <Color x:Key="WhiteColor">#FF000000</Color>
     <Color x:Key="BusyIndicatorFillColor">#FF00569A</Color>
-    <Color x:Key="MouseOverBackgroundColor">#1F26A0DA</Color>
-    <Color x:Key="MouseOverBorderColor">#A826A0DA</Color>
 
     <Color x:Key="ToolBarButtonHoverColor">#210080FF</Color>
     <Color x:Key="ToolBarGripperColor">#FF6D6D6D</Color>
@@ -71,6 +71,8 @@
     <SolidColorBrush x:Key="HighlightInactiveBorderBrush" Color="{StaticResource HighlightInactiveBorderColor}"/>
     <SolidColorBrush x:Key="GlyphPanelHighlightBorderBrush" Color="{StaticResource HighlightBorderColor}"/>
     <SolidColorBrush x:Key="GlyphPanelHighlightBackgroundBrush" Color="{StaticResource HighlightBackgroundColor}"/>
+    <SolidColorBrush x:Key="MouseOverBackgroundBrush" Color="{StaticResource MouseOverBackgroundColor}"/>
+    <SolidColorBrush x:Key="MouseOverBorderBrush" Color="{StaticResource MouseOverBorderColor}"/>
     <SolidColorBrush x:Key="ExpanderBackgroundBrush" Color="{StaticResource ExpanderBackgroundColor}"/>
     <SolidColorBrush x:Key="ExpanderBorderBrush" Color="{StaticResource ExpanderBorderColor}"/>
     <SolidColorBrush x:Key="CaptionLightBrush" Color="{StaticResource CaptionLightColor}"/>
@@ -99,11 +101,6 @@
     <SolidColorBrush x:Key="ToolBarToggleButtonHorizontalBackgroundBrush" Color="{StaticResource ToolBarToggleButtonHorizontalBackgroundColor}"/>
     <SolidColorBrush x:Key="ToolBarMenuBorderBrush" Color="{StaticResource ToolBarMenuBorderColor}"/>
     <SolidColorBrush x:Key="ToolBarSubMenuBackgroundBrush" Color="{StaticResource ToolBarSubMenuBackgroundColor}"/>
-
-    <SolidColorBrush x:Key="Item.MouseOver.Background" Color="{StaticResource MouseOverBackgroundColor}"/>
-    <SolidColorBrush x:Key="Item.MouseOver.Border" Color="{StaticResource MouseOverBorderColor}"/>
-    <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="{StaticResource HighlightBorderActiveColor}"/>
-    <SolidColorBrush x:Key="Item.SelectedInactive.Border" Color="{StaticResource HighlightInactiveBorderColor}"/>
 
     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="{StaticResource WhiteColor}" />
     <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="{StaticResource WhiteColor}" />
@@ -192,8 +189,8 @@
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsMouseOver" Value="True"/>
                             </MultiTrigger.Conditions>
-                            <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.MouseOver.Background}"/>
-                            <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.MouseOver.Border}"/>
+                            <Setter Property="Background" TargetName="Bd" Value="{StaticResource MouseOverBackgroundBrush}"/>
+                            <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource MouseOverBorderBrush}"/>
                         </MultiTrigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
@@ -202,7 +199,7 @@
                             </MultiTrigger.Conditions>
                             <Setter Property="BorderThickness" Value="1.5" />
                             <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Background}"/>
-                            <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Border}"/>
+                            <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource HighlightInactiveBorderBrush}"/>
                         </MultiTrigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
@@ -211,7 +208,7 @@
                             </MultiTrigger.Conditions>
                             <Setter Property="BorderThickness" Value="1.5" />
                             <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Background}"/>
-                            <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Border}"/>
+                            <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource HighlightBorderActiveBrush}"/>
                         </MultiTrigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="TextElement.Foreground" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
