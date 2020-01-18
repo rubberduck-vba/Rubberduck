@@ -60,7 +60,8 @@
     <SolidColorBrush x:Key="CaptionLightBrush" Color="{StaticResource CaptionLightColor}"/>
     <SolidColorBrush x:Key="BackgroundDarkBrush" Color="{StaticResource BackgroundDarkColor}"/>
     <SolidColorBrush x:Key="BackgroundLightBrush" Color="{StaticResource BackgroundLightColor}"/>
-    
+    <SolidColorBrush x:Key="BackgroundWhiteBrush" Color="{StaticResource BackgroundWhiteColor}"/>
+
     <SolidColorBrush x:Key="Item.MouseOver.Background" Color="#1F26A0DA"/>
     <SolidColorBrush x:Key="Item.MouseOver.Border" Color="#A826A0DA"/>
     <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="#ADC6E5"/>

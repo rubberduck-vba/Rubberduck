@@ -389,7 +389,7 @@
 
         <TreeView x:Name="ProjectTree"
                   Grid.Row="2"
-                  Background="White"
+                  Background="{StaticResource BackgroundLightBrush}"
                   HorizontalContentAlignment="Stretch"
                   ItemsSource="{Binding Projects}"
                   ItemContainerStyle="{StaticResource TreeViewContainerStyle}"

@@ -94,7 +94,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
-        <StackPanel Background="White">
+        <StackPanel Background="{StaticResource BackgroundLightBrush}">
             <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=RemoveParamsDialog_TitleText}" FontWeight="Bold" />
             <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=RemoveParamsDialog_InstructionsLabelText}"
                        Margin="5,0" />

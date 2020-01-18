@@ -100,7 +100,7 @@
                 VerticalAlignment="Top"
                 BorderBrush="Black"
                 BorderThickness="0, 1">
-            <StackPanel Background="White">
+            <StackPanel Background="{StaticResource BackgroundLightBrush}">
                 <Label Content="{Binding ElementName=ListBox, Path=SelectedItem.Label}" FontWeight="Bold" />
                 <TextBlock Text="{Binding ElementName=ListBox, Path=SelectedItem.Instructions}" Margin="10, 0" />
             </StackPanel>

@@ -39,7 +39,7 @@
 
         <TreeView x:Name="ProjectTree"
                   Grid.RowSpan="2" Grid.Column="0"
-                  Background="White"
+                  Background="{StaticResource BackgroundLightBrush}"
                   HorizontalContentAlignment="Stretch"
                   ItemsSource="{Binding Projects}"
                   BorderThickness="0,1"

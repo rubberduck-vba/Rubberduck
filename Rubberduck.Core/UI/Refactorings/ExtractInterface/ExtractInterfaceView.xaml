@@ -21,7 +21,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
-        <DockPanel Dock="Top" Background="White">
+        <DockPanel Dock="Top" Background="{StaticResource BackgroundLightBrush}">
             <StackPanel>
 
             <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_TitleLabel}" FontWeight="Bold" />
