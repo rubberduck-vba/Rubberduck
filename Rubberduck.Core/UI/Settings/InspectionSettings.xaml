@@ -34,7 +34,7 @@
             </ObjectDataProvider>
 
             <Style x:Key="HeaderText" TargetType="Label">
-                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="Foreground" Value="{StaticResource CaptionLightBrush}"/>
                 <Setter Property="FontWeight" Value="SemiBold"/>
             </Style>
             <Style x:Key="BorderHeader" TargetType="Border">

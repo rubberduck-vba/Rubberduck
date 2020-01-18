@@ -38,7 +38,7 @@
                     </Label.Style>
                     <DockPanel Background="DarkGray" FlowDirection="LeftToRight">
                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                            <Label Foreground="White"
+                            <Label Foreground="{StaticResource CaptionLightBrush}"
                                 FontWeight="SemiBold" 
                                 Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=PageHeader}">
                             </Label>

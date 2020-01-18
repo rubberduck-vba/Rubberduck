@@ -114,7 +114,7 @@
                                        NavigateUri="https://github.com/rubberduck-vba/Rubberduck/issues/new/choose"
                                        TextDecorations="{x:Null}"
                                        Command="{Binding UriCommand}" CommandParameter="{Binding ElementName=GitHubIssueUrl, Path=NavigateUri}">
-                                <Label Height="40" Foreground="White" FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
+                                <Label Height="40" Foreground="{StaticResource CaptionLightBrush}" FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
                                        VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
                                        Content="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_ReportAnIssue}"/>
                             </Hyperlink>
