@@ -33,42 +33,6 @@ End Sub";
 
         [Test]
         [Category("QuickFixes")]
-        public void SheetAccessedUsingString_QuickFixWorks_UsingSheetThroughApplicationModule()
-        {
-            const string inputCode = @"
-Public Sub Foo()
-    Application.Sheets(""Sheet1"").Range(""A1"") = ""foo""
-End Sub";
-
-            const string expectedCode = @"
-Public Sub Foo()
-    Sheet1.Range(""A1"") = ""foo""
-End Sub";
-
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state, state.ProjectsProvider));
-            Assert.AreEqual(expectedCode, actualCode);
-        }
-
-        [Test]
-        [Category("QuickFixes")]
-        public void SheetAccessedUsingString_QuickFixWorks_UsingSheetThroughGlobalModule()
-        {
-            const string inputCode = @"
-Public Sub Foo()
-    Sheets(""Sheet1"").Range(""A1"") = ""foo""
-End Sub";
-
-            const string expectedCode = @"
-Public Sub Foo()
-    Sheet1.Range(""A1"") = ""foo""
-End Sub";
-
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state, state.ProjectsProvider));
-            Assert.AreEqual(expectedCode, actualCode);
-        }
-
-        [Test]
-        [Category("QuickFixes")]
         public void SheetAccessedUsingString_QuickFixWorks_AssigningSheetToVariable()
         {
             const string inputCode = @"
@@ -215,70 +179,6 @@ End Sub
 
 Public Sub ws()
     Dim ws As Worksheet
-End Sub";
-
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state, state.ProjectsProvider));
-            Assert.AreEqual(expectedCode, actualCode);
-        }
-        
-        [Test]
-        [Category("QuickFixes")]
-        public void SheetAccessedUsingString_QuickFixWorks_TransientReferenceSetStatement()
-        {
-            const string inputCode = @"
-Sub Test()
-    Dim ws As Worksheet
-    Set ws = Worksheets.Add(Worksheets(""Sheet1""))
-    Debug.Print ws.Name
-End Sub";
-
-            const string expectedCode = @"
-Sub Test()
-    Dim ws As Worksheet
-    Set ws = Worksheets.Add(Sheet1)
-    Debug.Print ws.Name
-End Sub";
-
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state, state.ProjectsProvider));
-            Assert.AreEqual(expectedCode, actualCode);
-        }
-
-        [Test]
-        [Category("QuickFixes")]
-        public void SheetAccessedUsingString_QuickFixWorks_TransientReferenceNoSetStatement()
-        {
-            const string inputCode = @"
-Sub Test()
-    If Not Worksheets.Add(Worksheets(""Sheet1"")) Is Nothing Then
-        Debug.Print ""Added""
-    End If
-End Sub";
-
-            const string expectedCode = @"
-Sub Test()
-    If Not Worksheets.Add(Sheet1) Is Nothing Then
-        Debug.Print ""Added""
-    End If
-End Sub";
-
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state, state.ProjectsProvider));
-            Assert.AreEqual(expectedCode, actualCode);
-        }
-
-        [Test]
-        [Category("QuickFixes")]
-        public void SheetAccessedUsingString_QuickFixWorks_ImplicitVariableAssignment()
-        {
-            const string inputCode = @"
-Sub Test()
-    Set ws = Worksheets(""Sheet1"")
-    ws.Name = ""Foo""
-End Sub";
-
-            const string expectedCode = @"
-Sub Test()
-    
-    Sheet1.Name = ""Foo""
 End Sub";
 
             var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new SheetAccessedUsingStringInspection(state, state.ProjectsProvider));

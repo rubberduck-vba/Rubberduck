@@ -29,7 +29,8 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void SheetAccessedUsingString_ReturnsResult_AccessingUsingApplicationModule()
+        //Access via Application is an access on the ActiveWorkbook, not necessarily ThisWorkbook.
+        public void SheetAccessedUsingString_ReturnsNoResult_AccessingUsingApplicationModule()
         {
             const string inputCode =
                 @"Public Sub Foo()
@@ -37,12 +38,13 @@ End Sub";
     Application.Sheets(""Sheet1"").Range(""A1"") = ""Foo""
 End Sub";
 
-            Assert.AreEqual(2, ArrangeParserAndGetResults(inputCode).Count());
+            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode).Count());
         }
 
         [Test]
         [Category("Inspections")]
-        public void SheetAccessedUsingString_ReturnsResult_AccessingUsingGlobalModule()
+        //Unqualified access is an access on the ActiveWorkbook, not necessarily ThisWorkbook.
+        public void SheetAccessedUsingString_ReturnsNoResult_AccessingUsingGlobalModule()
         {
             const string inputCode =
                 @"Public Sub Foo()
@@ -50,7 +52,7 @@ End Sub";
     Sheets(""Sheet1"").Range(""A1"") = ""Foo""
 End Sub";
 
-            Assert.AreEqual(2, ArrangeParserAndGetResults(inputCode).Count());
+            Assert.AreEqual(0, ArrangeParserAndGetResults(inputCode).Count());
         }
 
         [Test]

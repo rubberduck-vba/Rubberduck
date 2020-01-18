@@ -47,9 +47,6 @@ namespace Rubberduck.Inspections.Concrete
     [RequiredLibrary("Excel")]
     public class SheetAccessedUsingStringInspection : IdentifierReferenceInspectionFromDeclarationsBase
     {
-        //TODO: revisit this and its tests after clarification of intended behaviour.
-        //This relates to the handling of implicit references to ActiveWorkbook.
-
         private readonly IProjectsProvider _projectsProvider;
 
         public SheetAccessedUsingStringInspection(RubberduckParserState state, IProjectsProvider projectsProvider)
@@ -65,7 +62,7 @@ namespace Rubberduck.Inspections.Concrete
 
         private static readonly string[] InterestingClasses =
         {
-            "_Global", "_Application", "Global", "Application", "Workbook"
+            "Workbook"
         };
 
         protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)
