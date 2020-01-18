@@ -48,10 +48,8 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module, DeclarationFinder finder)
         {
-            //TODO: Revisit this once PR #5338 is merged.
-            var localNonArrayVariables = finder.Members(module)
-                .Where(declaration => declaration.DeclarationType == DeclarationType.Variable 
-                                      && !declaration.IsArray
+            var localNonArrayVariables = finder.Members(module, DeclarationType.Variable)
+                .Where(declaration => !declaration.IsArray
                                       && !declaration.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module));
             return localNonArrayVariables
                 .Where(declaration => !declaration.IsIgnoringInspectionResultFor(AnnotationName))

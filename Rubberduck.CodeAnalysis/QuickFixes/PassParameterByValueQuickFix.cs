@@ -35,19 +35,18 @@ namespace Rubberduck.Inspections.QuickFixes
     /// </example>
     public sealed class PassParameterByValueQuickFix : QuickFixBase
     {
-        //TODO: Change this to IDeclarationFinderProvider once the FIXME below is handled.
-        private readonly RubberduckParserState _state;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
-        public PassParameterByValueQuickFix(RubberduckParserState state)
+        public PassParameterByValueQuickFix(IDeclarationFinderProvider declarationFinderProvider)
             : base(typeof(ParameterCanBeByValInspection))
         {
-            _state = state;
+            _declarationFinderProvider = declarationFinderProvider;
         }
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
             if (result.Target.ParentDeclaration.DeclarationType == DeclarationType.Event ||
-                _state.DeclarationFinder.FindAllInterfaceMembers().Contains(result.Target.ParentDeclaration))
+                _declarationFinderProvider.DeclarationFinder.FindAllInterfaceMembers().Contains(result.Target.ParentDeclaration))
             {
                 FixMethods(result.Target, rewriteSession);
             }
@@ -62,7 +61,7 @@ namespace Rubberduck.Inspections.QuickFixes
         private void FixMethods(Declaration target, IRewriteSession rewriteSession)
         {
             var declarationParameters =
-                _state.DeclarationFinder.UserDeclarations(DeclarationType.Parameter)
+                _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Parameter)
                     .Where(declaration => Equals(declaration.ParentDeclaration, target.ParentDeclaration))
                     .OrderBy(o => o.Selection.StartLine)
                     .ThenBy(t => t.Selection.StartColumn)
@@ -75,10 +74,10 @@ namespace Rubberduck.Inspections.QuickFixes
             }
 
             var members = target.ParentDeclaration.DeclarationType == DeclarationType.Event
-                ? _state.DeclarationFinder
+                ? _declarationFinderProvider.DeclarationFinder
                     .FindEventHandlers(target.ParentDeclaration)
                     .ToList()
-                : _state.DeclarationFinder
+                : _declarationFinderProvider.DeclarationFinder
                     .FindInterfaceImplementationMembers(target.ParentDeclaration)
                     .Cast<Declaration>()
                     .ToList();
@@ -86,7 +85,7 @@ namespace Rubberduck.Inspections.QuickFixes
             foreach (var member in members)
             {
                 var parameters =
-                    _state.DeclarationFinder.UserDeclarations(DeclarationType.Parameter)
+                    _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Parameter)
                         .Where(declaration => Equals(declaration.ParentDeclaration, member))
                         .OrderBy(o => o.Selection.StartLine)
                         .ThenBy(t => t.Selection.StartColumn)

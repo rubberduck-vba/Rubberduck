@@ -64,8 +64,9 @@ namespace Rubberduck.Inspections.Inspections.Abstract
             }
 
             var procedure = reference.Context.GetAncestor<VBAParser.ModuleBodyElementContext>();
-            //TODO: revisit this once PR #5338 is merged.
-            return finder.UserDeclarations(DeclarationType.Member)
+            var module = reference.QualifiedModuleName;
+
+            return finder.Members(module, DeclarationType.Member)
                 .OfType<ModuleBodyElementDeclaration>()
                 .FirstOrDefault(decl => decl.Context.Parent == procedure)?.Parameters
                     .FirstOrDefault(param => param.IdentifierName.Equals(name.GetText()));
