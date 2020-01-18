@@ -256,7 +256,7 @@
 
         <GridSplitter Grid.Row="2" Height="5" ShowsPreview="True" Cursor="SizeNS" HorizontalAlignment="Stretch"/>
 
-        <Border Grid.Row="3" BorderThickness="0,1,0,0" BorderBrush="DimGray">
+        <Border Grid.Row="3" BorderThickness="0,1,0,0" BorderBrush="{StaticResource GrayBrush}">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                 <StackPanel Orientation="Vertical" MinHeight="48" Background="{StaticResource BackgroundLightBrush}">
                     <Grid Margin="4" HorizontalAlignment="Stretch">

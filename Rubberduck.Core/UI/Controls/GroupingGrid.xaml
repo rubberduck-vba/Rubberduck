@@ -29,7 +29,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate>
-                            <Expander Background="{StaticResource BackgroundLightBrush}" Foreground="Black" FontWeight="SemiBold" 
+                            <Expander Background="{StaticResource BackgroundLightBrush}" Foreground="{StaticResource CaptionDarkBrush}" FontWeight="SemiBold" 
                                   IsExpanded="{Binding InitialExpandedState, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:GroupingGrid}}}">
                                 <Expander.Header>
                                     <StackPanel Orientation="Horizontal">

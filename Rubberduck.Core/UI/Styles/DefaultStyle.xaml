@@ -23,7 +23,6 @@
     <Color x:Key="GlyphPanelColor">#FFF8F8FF</Color>
     <Color x:Key="GlyphPanelTemplateColor">#FF212121</Color>
     <Color x:Key="GlyphPanelBorderColor">#80DADADA</Color>
-    <Color x:Key="SoftBackgroundColor">#FFF8F8FF</Color>
     <Color x:Key="DropShadowColor">#71000000</Color>
     <Color x:Key="GreenButtonColor">#FF40C954</Color>
     <Color x:Key="GreenButtonBorderColor">#FF008000</Color>
@@ -36,12 +35,19 @@
     <Color x:Key="ExpanderBorderColor">#FFA9A9A9</Color>
     <Color x:Key="ExpanderBackgroundColor">#FFFFFFFF</Color>
     <Color x:Key="CaptionLightColor">#FFFFFFFF</Color>
+    <Color x:Key="CaptionDarkColor">#FF000000</Color>
+    <Color x:Key="CaptionErrorColor">#FFFF0000</Color>
     <Color x:Key="CaptionDisabledColor">#FF808080</Color>
     <Color x:Key="CaptionHyperlinkColor">#FF0000FF</Color>
     <Color x:Key="CaptionHyperlinkVisitedColor">#FFFF0000</Color>
     <Color x:Key="BackgroundDarkColor">#FFA9A9A9</Color>
     <Color x:Key="BackgroundLightColor">#FFF5F5F5</Color>
+    <Color x:Key="BackgroundSoftColor">#FFF8F8FF</Color>
     <Color x:Key="HeaderBackgroundDarkColor">#FFA9A9A9</Color>
+    <Color x:Key="TabSelectionUnderlineColor">#FF0000FF</Color>
+    <Color x:Key="GrayColor">#FF696969</Color>
+    <Color x:Key="BlackColor">#FFFFFFFF</Color>
+    <Color x:Key="WhiteColor">#FF000000</Color>
     
     <SolidColorBrush x:Key="HighlightGradientStartBrush" Color="{StaticResource HighlightGradientStartColor}"/>
     <SolidColorBrush x:Key="HighlightGradientEndBrush" Color="{StaticResource HighlightGradientEndColor}"/>
@@ -52,7 +58,6 @@
     <SolidColorBrush x:Key="GlyphPanelBrush" Color="{StaticResource GlyphPanelColor}"/>
     <SolidColorBrush x:Key="GlyphPanelTemplateBrush" Color="{StaticResource GlyphPanelTemplateColor}"/>
     <SolidColorBrush x:Key="GlyphPanelBorderBrush" Color="{StaticResource GlyphPanelBorderColor}"/>
-    <SolidColorBrush x:Key="SoftBackgroundBrush" Color="{StaticResource SoftBackgroundColor}"/>
     <SolidColorBrush x:Key="GreenButtonBrush" Color="{StaticResource GreenButtonColor}"/>
     <SolidColorBrush x:Key="GreenButtonBorderBrush" Color="{StaticResource GreenButtonBorderColor}"/>
     <SolidColorBrush x:Key="GreenButtonMouseOverBrush" Color="{StaticResource GreenButtonMouseOverColor}"/>
@@ -64,14 +69,21 @@
     <SolidColorBrush x:Key="ExpanderBackgroundBrush" Color="{StaticResource ExpanderBackgroundColor}"/>
     <SolidColorBrush x:Key="ExpanderBorderBrush" Color="{StaticResource ExpanderBorderColor}"/>
     <SolidColorBrush x:Key="CaptionLightBrush" Color="{StaticResource CaptionLightColor}"/>
+    <SolidColorBrush x:Key="CaptionDarkBrush" Color="{StaticResource CaptionDarkColor}"/>
+    <SolidColorBrush x:Key="CaptionErrorBrush" Color="{StaticResource CaptionErrorColor}"/>
     <SolidColorBrush x:Key="CaptionDisabledBrush" Color="{StaticResource CaptionDisabledColor}"/>
     <SolidColorBrush x:Key="CaptionHyperlinkBrush" Color="{StaticResource CaptionHyperlinkColor}"/>
     <SolidColorBrush x:Key="CaptionHyperlinkVisitedBrush" Color="{StaticResource CaptionHyperlinkVisitedColor}"/>
     <SolidColorBrush x:Key="BackgroundDarkBrush" Color="{StaticResource BackgroundDarkColor}"/>
     <SolidColorBrush x:Key="BackgroundLightBrush" Color="{StaticResource BackgroundLightColor}"/>
     <SolidColorBrush x:Key="BackgroundWhiteBrush" Color="{StaticResource BackgroundWhiteColor}"/>
+    <SolidColorBrush x:Key="BackgroundSoftBrush" Color="{StaticResource BackgroundSoftColor}"/>
     <SolidColorBrush x:Key="HeaderBackgroundDarkBrush" Color="{StaticResource HeaderBackgroundDarkColor}"/>
-
+    <SolidColorBrush x:Key="TabSelectionUnderlineBrush" Color="{StaticResource TabSelectionUnderlineColor}"/>
+    <SolidColorBrush x:Key="GrayBrush" Color="{StaticResource GrayColor}"/>
+    <SolidColorBrush x:Key="BlackBrush" Color="{StaticResource BlackColor}"/>
+    <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource WhiteColor}"/>
+    
     <SolidColorBrush x:Key="Item.MouseOver.Background" Color="#1F26A0DA"/>
     <SolidColorBrush x:Key="Item.MouseOver.Border" Color="#A826A0DA"/>
     <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="#ADC6E5"/>
@@ -112,7 +124,7 @@
             </Style>
         </Style.Resources>
         <Setter Property="BorderThickness" Value="0,.5,0,0" />
-        <Setter Property="BorderBrush" Value="DarkGray" />
+        <Setter Property="BorderBrush" Value="{StaticResource ExpanderBorderBrush}" />
         <Setter Property="Height" Value="26" />
         <Setter Property="TextBlock.FontWeight" Value="Normal" />
         <Style.Triggers>

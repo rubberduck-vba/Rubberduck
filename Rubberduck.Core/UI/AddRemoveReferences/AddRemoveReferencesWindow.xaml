@@ -49,7 +49,7 @@
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsSelected" Value="True">
-                                    <Setter TargetName="PART_Border" Property="BorderBrush" Value="Blue" />
+                                    <Setter TargetName="PART_Border" Property="BorderBrush" Value="{StaticResource TabSelectionUnderlineBrush}" />
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>

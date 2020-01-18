@@ -268,7 +268,7 @@
         <ProgressBar Height="6"
                      Grid.Row="1"
                      Margin="2"
-                     Background="DimGray" 
+                     Background="{StaticResource GrayBrush}" 
                      Maximum="{Binding Model.CurrentRunTestCount, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
                      Value="{Binding Model.ExecutedCount, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
             <ProgressBar.Foreground>

@@ -98,7 +98,7 @@
         <Border Grid.ColumnSpan="2"
                 Height="50"
                 VerticalAlignment="Top"
-                BorderBrush="Black"
+                BorderBrush="{StaticResource BlackBrush}"
                 BorderThickness="0, 1">
             <StackPanel Background="{StaticResource BackgroundLightBrush}">
                 <Label Content="{Binding ElementName=ListBox, Path=SelectedItem.Label}" FontWeight="Bold" />
@@ -123,7 +123,7 @@
                 Grid.ColumnSpan="2"
                 Height="40"
                 VerticalAlignment="Bottom"
-                BorderBrush="Black"
+                BorderBrush="{StaticResource BlackBrush}"
                 BorderThickness="0, 1, 0, 0">
             <DockPanel VerticalAlignment="Center"
                        Height="40"
