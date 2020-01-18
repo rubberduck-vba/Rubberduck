@@ -213,7 +213,7 @@
                 <EventSetter Event="MouseRightButtonDown" Handler="TreeView_OnMouseRightButtonDown" />
                 <Style.Triggers>
                     <Trigger Property="IsSelected" Value="True">
-                        <Setter Property="BorderBrush" Value="#adc6e5"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource HighlightBorderActiveBrush}"/>
                     </Trigger>
                     <MultiTrigger>
                         <MultiTrigger.Conditions>
