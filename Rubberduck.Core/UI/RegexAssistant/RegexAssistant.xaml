@@ -26,7 +26,7 @@
                             <Condition Property="IsSelected" Value="True"/>
                             <Condition Property="IsSelectionActive" Value="False"/>
                         </MultiTrigger.Conditions>
-                        <Setter Property="BorderBrush" Value="LightGray"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource HighlightInactiveBorderBrush}"/>
                     </MultiTrigger>
                 </Style.Triggers>
                 <Style.Resources>

@@ -30,6 +30,7 @@
     <Color x:Key="GreenButtonMouseOverColor">#FF61D156</Color>
     <Color x:Key="HighlightBorderColor">#80DADADA</Color>
     <Color x:Key="HighlightBackgroundColor">#210080FF</Color>
+    <Color x:Key="HighlightInactiveBorderColor">#FFD3D3D3</Color>
     <Color x:Key="GlyphPanelHighlightBorderColor">#90006CD9</Color>
     <Color x:Key="GlyphPanelHighlightBackgroundColor">#90006CD9</Color>
     <Color x:Key="ExpanderBorderColor">#FFA9A9A9</Color>
@@ -55,6 +56,7 @@
     <SolidColorBrush x:Key="GreenButtonMouseOverBrush" Color="{StaticResource GreenButtonMouseOverColor}"/>
     <SolidColorBrush x:Key="HighlightBorderBrush" Color="{StaticResource HighlightBorderColor}"/>
     <SolidColorBrush x:Key="HighlightBackgroundBrush" Color="{StaticResource HighlightBackgroundColor}"/>
+    <SolidColorBrush x:Key="HighlightInactiveBorderBrush" Color="{StaticResource HighlightInactiveBorderColor}"/>
     <SolidColorBrush x:Key="GlyphPanelHighlightBorderBrush" Color="{StaticResource HighlightBorderColor}"/>
     <SolidColorBrush x:Key="GlyphPanelHighlightBackgroundBrush" Color="{StaticResource HighlightBackgroundColor}"/>
     <SolidColorBrush x:Key="ExpanderBackgroundBrush" Color="{StaticResource ExpanderBackgroundColor}"/>
@@ -126,7 +128,7 @@
                     <Condition Property="IsSelected" Value="True" />
                     <Condition Property="Selector.IsSelectionActive" Value="False" />
                 </MultiTrigger.Conditions>
-                <Setter Property="BorderBrush" Value="LightGray"/>
+                <Setter Property="BorderBrush" Value="{StaticResource HighlightInactiveBorderBrush}"/>
                 <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}" />
             </MultiTrigger>
         </Style.Triggers>
