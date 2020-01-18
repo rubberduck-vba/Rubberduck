@@ -210,9 +210,6 @@
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
     <value>Une variable objet assignée lors de sa déclaration dans une procédure, modifie comment VBA gère cet objet, ce qui peut mener à un comportement inattendu.</value>
   </data>
-  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
-    <value>Un membre est implémenté comme une fonction, mais utilisé comme une procédure. À moins que la fonction soit récursive, considérez la convertir en procédure. Si la fonction est récursive, aucun appelant externe n'utilise sa valeur de retour.</value>
-  </data>
   <data name="ObjectVariableNotSetInspection" xml:space="preserve">
     <value>Rubberduck voit cette variable comme étant une référence à un objet, assignée sans le mot-clé 'Set'. Ceci cause une erreur d'exécution (#91 'Object or With block variable not set').</value>
   </data>

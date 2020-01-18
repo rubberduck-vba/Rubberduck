@@ -216,9 +216,6 @@
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
     <value>La referencia de la variable de objeto es una instancia automática</value>
   </data>
-  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
-    <value>El valor de retorno de la función nunca se usa</value>
-  </data>
   <data name="ObjectVariableNotSetInspection" xml:space="preserve">
     <value>La asignación de variables de objeto requiere la palabra clave 'Set'</value>
   </data>

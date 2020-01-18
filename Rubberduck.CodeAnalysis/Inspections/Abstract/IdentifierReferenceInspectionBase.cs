@@ -11,7 +11,7 @@ namespace Rubberduck.Inspections.Abstract
 {
     public abstract class IdentifierReferenceInspectionBase : InspectionBase
     {
-        public IdentifierReferenceInspectionBase(RubberduckParserState state)
+        protected IdentifierReferenceInspectionBase(RubberduckParserState state)
             : base(state)
         {}
 

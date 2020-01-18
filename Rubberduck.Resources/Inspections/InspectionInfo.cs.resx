@@ -247,9 +247,6 @@ Jestliže může být parametr prázdný, ignorujte výsledek této inspekce; p�
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
     <value>Deklarace proměnné objektu s automatickým instancí v rozsahu procedur mění, jak funguje nulling reference, což může vést k neočekávanému chování.</value>
   </data>
-  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
-    <value>Člen je definován jako funkce, ale používá se jako procedura. Pokud nejde o rekurzivní funkci, zvažte zapsání 'Function' jako 'Sub'. Pokud je funkce rekurzivní, žádný z jejich externích voláních nepoužívá její návratnou hodnotu.</value>
-  </data>
   <data name="ObjectVariableNotSetInspection" xml:space="preserve">
     <value>Rubberduck rozeznává tuto proměnnou jako proměnnou objektu, která je definována bez klíčového slova 'Set'. Tato skutečnost způsobuje run-time chybu 91 'Object or With block variable not set'.</value>
   </data>

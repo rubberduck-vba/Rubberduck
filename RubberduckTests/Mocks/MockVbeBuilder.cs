@@ -65,8 +65,6 @@ namespace RubberduckTests.Mocks
 
         //private Mock<IWindows> _vbWindows;
         private readonly Windows _windows = new Windows();
-
-        private Mock<IVBProjects> _vbProjects;
         private readonly ICollection<IVBProject> _projects = new List<IVBProject>();
 
         private Mock<ICodePanes> _vbCodePanes;
@@ -94,7 +92,7 @@ namespace RubberduckTests.Mocks
             AddOpenCodePanes(allCodePanes);
 
             _vbe.SetupGet(vbe => vbe.ActiveVBProject).Returns(project.Object);
-            _vbe.SetupGet(m => m.VBProjects).Returns(() => _vbProjects.Object);
+            _vbe.SetupGet(m => m.VBProjects).Returns(() => MockProjectsCollection.Object);
 
             return this;
         }
@@ -275,8 +273,8 @@ namespace RubberduckTests.Mocks
 
             vbe.SetupGet(m => m.MainWindow).Returns(() => mainWindow.Object);
 
-            _vbProjects = CreateProjectsMock();
-            vbe.SetupGet(m => m.VBProjects).Returns(() => _vbProjects.Object);
+            MockProjectsCollection = CreateProjectsMock();
+            vbe.SetupGet(m => m.VBProjects).Returns(() => MockProjectsCollection.Object);
 
             _vbCodePanes = CreateCodePanesMock();
             vbe.SetupGet(m => m.CodePanes).Returns(() => _vbCodePanes.Object);
@@ -379,6 +377,6 @@ namespace RubberduckTests.Mocks
             return result;
         }
 
-        public Mock<IVBProjects> MockProjectsCollection => _vbProjects;
+        public Mock<IVBProjects> MockProjectsCollection { get; private set; }
     }
 }

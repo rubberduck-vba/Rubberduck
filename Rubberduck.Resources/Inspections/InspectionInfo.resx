@@ -217,8 +217,8 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
     <value>An auto-instantiated object variable declaration at procedure scope changes how nulling the reference works, which can lead to unexpected behavior.</value>
   </data>
-  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
-    <value>A member is written as a function, but used as a procedure. Unless the function is recursive, consider converting the 'Function' into a 'Sub'. If the function is recursive, none of its external callers are using the returned value.</value>
+  <data name="FunctionReturnValueAlwaysDiscardedInspection" xml:space="preserve">
+    <value>A member is written as a function, but always used as a procedure. Consider converting the 'Function' into a 'Sub'.</value>
   </data>
   <data name="ObjectVariableNotSetInspection" xml:space="preserve">
     <value>As far as Rubberduck can tell, this variable is an object variable, assigned without the 'Set' keyword. This causes run-time error 91 'Object or With block variable not set' or 438 'Object doesn't support this property or method' depending on whether the variable has the value 'Nothing' or not.</value>
@@ -329,7 +329,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>An annotation is specified multiple times, but is intended to be specified only once.</value>
   </data>
   <data name="ModuleWithoutFolderInspection" xml:space="preserve">
-    <value>Modules without the '@Folder' annotation cannot receive custom groupings in the Code Explorer. </value>
+    <value>Modules without the '@Folder' annotation cannot receive custom groupings in the Code Explorer.</value>
   </data>
   <data name="OnLocalErrorInspection" xml:space="preserve">
     <value>On Local Error exists only for compatibility with previous versions of Visual Basic, and all Errors are treated as Local regardless of the On Local Error statement. Use of this keyword inaccurately gives the impression that there is a distinction between types of error handling when there is not.</value>
@@ -432,5 +432,11 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   </data>
   <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
     <value>Whenever both sides of an assignment without Set are objects, there is an assignment from the default member of the RHS to the one on the LHS. Although this might be intentional, in many situations it will just mask an erroneously forgotten Set.</value>
+  </data>
+  <data name="FunctionReturnValueDiscardedInspection" xml:space="preserve">
+    <value>The return value of a function gets discarded, i.e. the function is used like a procedure. This is either an oversight or the function is used for its side-effects, whose existence would also be a code smell.</value>
+  </data>
+  <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
+    <value>If the as type clause for a Const isn't included it is implicitly typed. Include an explicit ' As &lt;Type&gt;' replacing '&lt;Type&gt;' with the correct data type to explicitly type your const value.</value>
   </data>
 </root>
