@@ -24,7 +24,7 @@
         </Grid.RowDefinitions>
         <ScrollViewer x:Name="ScrollViewer" Grid.Row="0">
             <StackPanel Margin="5,5,5,0" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                <Label Background="DarkGray"
+                <Label Background="{StaticResource HeaderBackgroundDarkBrush}"
                        HorizontalContentAlignment="Stretch"
                        Margin="0,0,0,3">
                     <Label.Style>
@@ -36,7 +36,7 @@
                             </Style.Resources>
                         </Style>
                     </Label.Style>
-                    <DockPanel Background="DarkGray" FlowDirection="LeftToRight">
+                    <DockPanel Background="{StaticResource HeaderBackgroundDarkBrush}" FlowDirection="LeftToRight">
                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
                             <Label Foreground="{StaticResource CaptionLightBrush}"
                                 FontWeight="SemiBold" 

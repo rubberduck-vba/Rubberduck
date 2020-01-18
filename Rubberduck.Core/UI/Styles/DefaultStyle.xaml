@@ -38,6 +38,7 @@
     <Color x:Key="CaptionDisabledColor">#FF808080</Color>
     <Color x:Key="BackgroundDarkColor">#FFA9A9A9</Color>
     <Color x:Key="BackgroundLightColor">#FFF5F5F5</Color>
+    <Color x:Key="HeaderBackgroundDarkColor">#FFA9A9A9</Color>
     
     <SolidColorBrush x:Key="HighlightGradientStartBrush" Color="{StaticResource HighlightGradientStartColor}"/>
     <SolidColorBrush x:Key="HighlightGradientEndBrush" Color="{StaticResource HighlightGradientEndColor}"/>
@@ -63,6 +64,7 @@
     <SolidColorBrush x:Key="BackgroundDarkBrush" Color="{StaticResource BackgroundDarkColor}"/>
     <SolidColorBrush x:Key="BackgroundLightBrush" Color="{StaticResource BackgroundLightColor}"/>
     <SolidColorBrush x:Key="BackgroundWhiteBrush" Color="{StaticResource BackgroundWhiteColor}"/>
+    <SolidColorBrush x:Key="HeaderBackgroundDarkBrush" Color="{StaticResource HeaderBackgroundDarkColor}"/>
 
     <SolidColorBrush x:Key="Item.MouseOver.Background" Color="#1F26A0DA"/>
     <SolidColorBrush x:Key="Item.MouseOver.Border" Color="#A826A0DA"/>
@@ -96,7 +98,7 @@
         <Setter Property="Margin" Value="2,0,2,0" />
         <Setter Property="VerticalAlignment" Value="Top" />
     </Style>
-
+    
     <Style x:Key="PrettifyRow" TargetType="{x:Type DataGridRow}">
         <Style.Resources>
             <Style TargetType="{x:Type Border}">

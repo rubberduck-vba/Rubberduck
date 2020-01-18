@@ -38,7 +38,7 @@
                 <Setter Property="FontWeight" Value="SemiBold"/>
             </Style>
             <Style x:Key="BorderHeader" TargetType="Border">
-                <Setter Property="Background" Value="DarkGray"/>
+                <Setter Property="Background" Value="{StaticResource HeaderBackgroundDarkBrush}"/>
                 <Setter Property="CornerRadius" Value="5"/>
             </Style>
         </ResourceDictionary>
@@ -83,7 +83,7 @@
                         </StackPanel>
                     </DockPanel>
                 </Border>
-                <Border BorderBrush="DarkGray" BorderThickness="1" CornerRadius="2">
+                <Border BorderBrush="{StaticResource HeaderBackgroundDarkBrush}" BorderThickness="1" CornerRadius="2">
                     <controls:GroupingGrid ItemsSource="{Binding InspectionSettings}"
                                            AutoGenerateColumns="False"
                                            CanUserReorderColumns="False"
@@ -177,7 +177,7 @@
                         </Button>
                     </ToolBar>
                 </ToolBarTray>
-                <Border BorderBrush="DarkGray" BorderThickness="1" CornerRadius="2">
+                <Border BorderBrush="{StaticResource HeaderBackgroundDarkBrush}" BorderThickness="1" CornerRadius="2">
                     <DataGrid Name="WhitelistedIdentifiersGrid"
                               ItemsSource="{Binding WhitelistedIdentifierSettings}"
                               AutoGenerateColumns="False"
