@@ -178,7 +178,7 @@
                 <Setter Property="IsReadOnly" Value="True" />
                 <Setter Property="Margin" Value="4" />
                 <Setter Property="TextWrapping" Value="WrapWithOverflow" />
-                <Setter Property="Background" Value="WhiteSmoke" />
+                <Setter Property="Background" Value="{StaticResource BackgroundLightBrush}" />
                 <Setter Property="BorderThickness" Value="0" />
             </Style>
 
@@ -196,7 +196,7 @@
                 <Setter Property="IsReadOnly" Value="True" />
                 <Setter Property="Margin" Value="4" />
                 <Setter Property="TextWrapping" Value="WrapWithOverflow" />
-                <Setter Property="Background" Value="WhiteSmoke" />
+                <Setter Property="Background" Value="{StaticResource BackgroundLightBrush}" />
                 <Setter Property="BorderThickness" Value="0" />
             </Style>
 
@@ -595,7 +595,7 @@
         <GridSplitter Grid.Row="3" Height="5" ShowsPreview="True" Cursor="SizeNS" HorizontalAlignment="Stretch"/>
 
         <Border Grid.Row="4" BorderThickness="0,1,0,0" BorderBrush="{StaticResource BorderWireBrush}">
-            <ScrollViewer Background="WhiteSmoke" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer Background="{StaticResource BackgroundLightBrush}" VerticalScrollBarVisibility="Auto">
                 <WrapPanel Orientation="Vertical" MinHeight="70" >
                     <Grid Margin="4" HorizontalAlignment="Stretch">
                         <Grid.ColumnDefinitions>

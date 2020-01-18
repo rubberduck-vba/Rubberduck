@@ -258,7 +258,7 @@
 
         <Border Grid.Row="3" BorderThickness="0,1,0,0" BorderBrush="DimGray">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                <StackPanel Orientation="Vertical" MinHeight="48" Background="WhiteSmoke">
+                <StackPanel Orientation="Vertical" MinHeight="48" Background="{StaticResource BackgroundLightBrush}">
                     <Grid Margin="4" HorizontalAlignment="Stretch">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="25" />

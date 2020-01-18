@@ -32,6 +32,7 @@
     <Color x:Key="ExpanderBackgroundColor">#FFFFFFFF</Color>
     <Color x:Key="CaptionLightColor">#FFFFFFFF</Color>
     <Color x:Key="BackgroundDarkColor">#FFA9A9A9</Color>
+    <Color x:Key="BackgroundLightColor">#FFF5F5F5</Color>
     
     <SolidColorBrush x:Key="HighlightGradientStartBrush" Color="{StaticResource HighlightGradientStartColor}"/>
     <SolidColorBrush x:Key="HighlightGradientEndBrush" Color="{StaticResource HighlightGradientEndColor}"/>
@@ -53,6 +54,7 @@
     <SolidColorBrush x:Key="ExpanderBorderBrush" Color="{StaticResource ExpanderBorderColor}"/>
     <SolidColorBrush x:Key="CaptionLightBrush" Color="{StaticResource CaptionLightColor}"/>
     <SolidColorBrush x:Key="BackgroundDarkBrush" Color="{StaticResource BackgroundDarkColor}"/>
+    <SolidColorBrush x:Key="BackgroundLightBrush" Color="{StaticResource BackgroundLightColor}"/>
     
     <SolidColorBrush x:Key="Item.MouseOver.Background" Color="#1F26A0DA"/>
     <SolidColorBrush x:Key="Item.MouseOver.Border" Color="#A826A0DA"/>
