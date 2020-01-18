@@ -90,15 +90,15 @@
     <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource WhiteColor}"/>
     <SolidColorBrush x:Key="BusyIndicatorFillBrush" Color="{StaticResource BusyIndicatorFillColor}"/>
 
-    <SolidColorBrush x:Key="ToolBarButtonHover" Color="{StaticResource ToolBarButtonHoverColor}"/>
-    <SolidColorBrush x:Key="ToolBarGripper" Color="{StaticResource ToolBarGripperColor}"/>
+    <SolidColorBrush x:Key="ToolBarButtonHoverBrush" Color="{StaticResource ToolBarButtonHoverColor}"/>
+    <SolidColorBrush x:Key="ToolBarGripperBrush" Color="{StaticResource ToolBarGripperColor}"/>
     <SolidColorBrush x:Key="ToolBarBackgroundBrush" Color="{StaticResource ToolBarBackgroundColor}"/>
-    <SolidColorBrush x:Key="ToolBarVerticalBackground" Color="{StaticResource ToolBarVerticalBackgroundColor}"/>
-    <SolidColorBrush x:Key="ToolBarHorizontalBackground" Color="{StaticResource ToolBarHorizontalBackgroundColor}"/>
-    <SolidColorBrush x:Key="ToolBarToggleButtonVerticalBackground" Color="{StaticResource ToolBarToggleButtonVerticalBackgroundColor}"/>
-    <SolidColorBrush x:Key="ToolBarToggleButtonHorizontalBackground" Color="{StaticResource ToolBarToggleButtonHorizontalBackgroundColor}"/>
-    <SolidColorBrush x:Key="ToolBarMenuBorder" Color="{StaticResource ToolBarMenuBorderColor}"/>
-    <SolidColorBrush x:Key="ToolBarSubMenuBackground" Color="{StaticResource ToolBarSubMenuBackgroundColor}"/>
+    <SolidColorBrush x:Key="ToolBarVerticalBackgroundBrush" Color="{StaticResource ToolBarVerticalBackgroundColor}"/>
+    <SolidColorBrush x:Key="ToolBarHorizontalBackgroundBrush" Color="{StaticResource ToolBarHorizontalBackgroundColor}"/>
+    <SolidColorBrush x:Key="ToolBarToggleButtonVerticalBackgroundBrush" Color="{StaticResource ToolBarToggleButtonVerticalBackgroundColor}"/>
+    <SolidColorBrush x:Key="ToolBarToggleButtonHorizontalBackgroundBrush" Color="{StaticResource ToolBarToggleButtonHorizontalBackgroundColor}"/>
+    <SolidColorBrush x:Key="ToolBarMenuBorderBrush" Color="{StaticResource ToolBarMenuBorderColor}"/>
+    <SolidColorBrush x:Key="ToolBarSubMenuBackgroundBrush" Color="{StaticResource ToolBarSubMenuBackgroundColor}"/>
 
     <SolidColorBrush x:Key="Item.MouseOver.Background" Color="{StaticResource MouseOverBackgroundColor}"/>
     <SolidColorBrush x:Key="Item.MouseOver.Border" Color="{StaticResource MouseOverBorderColor}"/>
