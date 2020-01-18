@@ -210,7 +210,7 @@
                                 <Trigger Property="HasDropShadow" SourceName="OverflowPopup" Value="true">
                                     <Setter Property="Margin" TargetName="Shdw" Value="0,0,5,5"/>
                                     <Setter Property="SnapsToDevicePixels" TargetName="Shdw" Value="true"/>
-                                    <Setter Property="Color" TargetName="Shdw" Value="#71000000"/>
+                                    <Setter Property="Color" TargetName="Shdw" Value="{StaticResource DropShadowColor}"/>
                                 </Trigger>
                                 <Trigger Property="Orientation" Value="Vertical">
                                     <Setter Property="Margin" TargetName="Grid" Value="1,3,1,1"/>

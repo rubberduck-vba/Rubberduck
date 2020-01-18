@@ -159,8 +159,8 @@
             <Expander Grid.Row="1"
                       Grid.ColumnSpan="2"
                       IsExpanded="True"
-                      Background="#FFFFFFFF"
-                      BorderBrush="#FFA9A9A9"
+                      Background="{StaticResource ExpanderBackgroundBrush}"
+                      BorderBrush="{StaticResource ExpanderBorderBrush}"
                       Margin="5,0,5,5">
                 <Expander.Header>
                     <Label FontWeight="SemiBold">

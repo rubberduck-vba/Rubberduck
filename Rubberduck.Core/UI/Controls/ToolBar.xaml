@@ -50,7 +50,7 @@
                         </Grid.ColumnDefinitions>
                         <Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Grid.ColumnSpan="4" Margin="1,0"/>
                         <ContentPresenter x:Name="Icon" Content="{TemplateBinding Icon}" ContentSource="Icon" Margin="0" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center"/>
-                        <Border x:Name="GlyphPanel" BorderBrush="#80DADADA" BorderThickness="1" Background="GhostWhite" Height="20" Margin="0,1" Visibility="Hidden" Width="20">
+                        <Border x:Name="GlyphPanel" BorderBrush="{StaticResource GlyphPanelBorderBrush}" BorderThickness="1" Background="{StaticResource GlyphPanelBrush}" Height="20" Margin="0,1" Visibility="Hidden" Width="20">
                             <Path Data="M0,2.5L2.5,5 7,0.5" FlowDirection="LeftToRight" HorizontalAlignment="Center" Stroke="{TemplateBinding Foreground}" StrokeThickness="1.2" VerticalAlignment="Center"/>
                         </Border>
                         <ContentPresenter ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" Grid.Column="1" ContentStringFormat="{TemplateBinding HeaderStringFormat}" ContentSource="Header" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
@@ -65,10 +65,10 @@
                             <Setter Property="Visibility" TargetName="Icon" Value="Collapsed"/>
                         </Trigger>
                         <Trigger Property="IsHighlighted" Value="True">
-                            <Setter Property="BorderBrush" TargetName="Border" Value="#80DADADA"/>
-                            <Setter Property="Background" TargetName="Border" Value="#210080FF"/>
-                            <Setter Property="BorderBrush" TargetName="GlyphPanel" Value="#90006CD9"/>
-                            <Setter Property="Background" TargetName="GlyphPanel" Value="#FFEEF5FD"/>
+                            <Setter Property="BorderBrush" TargetName="Border" Value="{StaticResource HighlightBorderBrush}"/>
+                            <Setter Property="Background" TargetName="Border" Value="{StaticResource HighlightBackgroundBrush}"/>
+                            <Setter Property="BorderBrush" TargetName="GlyphPanel" Value="{StaticResource GlyphPanelHighlightBorderBrush}"/>
+                            <Setter Property="Background" TargetName="GlyphPanel" Value="{StaticResource GlyphPanelHighlightBackgroundBrush}"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
@@ -91,9 +91,9 @@
                                     <ContentPresenter ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" ContentStringFormat="{TemplateBinding HeaderStringFormat}" ContentSource="Header" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
                                     <Popup x:Name="PART_Popup" AllowsTransparency="True" Focusable="False" HorizontalOffset="-1" IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}" Placement="Bottom">
                                         <themes:SystemDropShadowChrome x:Name="Shdw" Color="Transparent">
-                                            <Border x:Name="SubMenuBorder" BorderBrush="#FFB6BDC5" BorderThickness="1" Background="#FFEEF5FD">
+                                            <Border x:Name="SubMenuBorder" BorderBrush="{StaticResource ToolBarMenuBorder}" BorderThickness="1" Background="{StaticResource ToolBarSubMenuBackground}">
                                                 <Grid>
-                                                    <Rectangle Fill="#FFEEF5FD" HorizontalAlignment="Left" Height="1" Margin="0,-1,0,0" VerticalAlignment="Top" Width="{Binding ActualWidth, ElementName=Header}"/>
+                                                    <Rectangle Fill="{StaticResource ToolBarSubMenuBackground}" HorizontalAlignment="Left" Height="1" Margin="0,-1,0,0" VerticalAlignment="Top" Width="{Binding ActualWidth, ElementName=Header}"/>
                                                     <ScrollViewer x:Name="SubMenuScrollViewer" Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}}">
                                                         <Grid RenderOptions.ClearTypeHint="Enabled" Grid.IsSharedSizeScope="True">
                                                             <Grid.ColumnDefinitions>
@@ -103,7 +103,7 @@
                                                             <Canvas HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">
                                                                 <Rectangle x:Name="OpaqueRect" Fill="{Binding Background, ElementName=SubMenuBorder}" Height="{Binding ActualHeight, ElementName=SubMenuBorder}" Width="{Binding ActualWidth, ElementName=SubMenuBorder}"/>
                                                             </Canvas>
-                                                            <Rectangle Fill="#FFEEF5FD" Margin="0,1"/>
+                                                            <Rectangle Fill="{StaticResource ToolBarSubMenuBackground}" Margin="0,1"/>
                                                             <ItemsPresenter x:Name="ItemsPresenter" Grid.ColumnSpan="2" KeyboardNavigation.DirectionalNavigation="Cycle" Margin="0,0,0,1" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" KeyboardNavigation.TabNavigation="Cycle"/>
                                                         </Grid>
                                                     </ScrollViewer>
@@ -125,17 +125,17 @@
                                     <Setter Property="Visibility" TargetName="Icon" Value="Collapsed"/>
                                 </Trigger>
                                 <Trigger Property="IsHighlighted" Value="True">
-                                    <Setter Property="BorderBrush" TargetName="Border" Value="#80DADADA"/>
-                                    <Setter Property="Background" TargetName="Border" Value="#210080FF"/>
+                                    <Setter Property="BorderBrush" TargetName="Border" Value="{StaticResource HighlightBorderBrush}"/>
+                                    <Setter Property="Background" TargetName="Border" Value="{StaticResource HighlightBackgroundBrush}"/>
                                 </Trigger>
                                 <Trigger Property="IsSubmenuOpen" Value="True">
-                                    <Setter Property="BorderBrush" TargetName="Border" Value="#FFB6BDC5"/>
-                                    <Setter Property="Background" TargetName="Border" Value="#FFEEF5FD"/>
+                                    <Setter Property="BorderBrush" TargetName="Border" Value="{StaticResource ToolBarMenuBorder}"/>
+                                    <Setter Property="Background" TargetName="Border" Value="{StaticResource ToolBarSubMenuBackground}"/>
                                 </Trigger>
                                 <Trigger Property="HasDropShadow" SourceName="PART_Popup" Value="True">
                                     <Setter Property="Margin" TargetName="Shdw" Value="0,0,5,5"/>
                                     <Setter Property="SnapsToDevicePixels" TargetName="Shdw" Value="True"/>
-                                    <Setter Property="Color" TargetName="Shdw" Value="#71000000"/>
+                                    <Setter Property="Color" TargetName="Shdw" Value="{StaticResource DropShadowColor}"/>
                                 </Trigger>
                                 <Trigger Property="IsEnabled" Value="False">
                                     <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
@@ -171,8 +171,8 @@
                                     <Setter Property="Visibility" TargetName="Icon" Value="Collapsed"/>
                                 </Trigger>
                                 <Trigger Property="IsHighlighted" Value="True">
-                                    <Setter Property="BorderBrush" TargetName="Border" Value="#80DADADA"/>
-                                    <Setter Property="Background" TargetName="Border" Value="#210080FF"/>
+                                    <Setter Property="BorderBrush" TargetName="Border" Value="{StaticResource HighlightBorderBrush}"/>
+                                    <Setter Property="Background" TargetName="Border" Value="{StaticResource HighlightBackgroundBrush}"/>
                                 </Trigger>
                                 <Trigger Property="IsEnabled" Value="False">
                                     <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
@@ -198,14 +198,14 @@
                                 </Grid.ColumnDefinitions>
                                 <Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Grid.ColumnSpan="4" Margin="1,0"/>
                                 <ContentPresenter x:Name="Icon" Content="{TemplateBinding Icon}" ContentSource="Icon" Margin="3" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center"/>
-                                <Border x:Name="GlyphPanel" BorderBrush="#80DADADA" BorderThickness="1" Background="#FF212121" Height="20" Margin="0,1" Visibility="Hidden" Width="20">
+                                <Border x:Name="GlyphPanel" BorderBrush="{StaticResource GlyphPanelBorderBrush}" BorderThickness="1" Background="{StaticResource GlyphPanelTemplateBrush}" Height="20" Margin="0,1" Visibility="Hidden" Width="20">
                                     <Path Data="M0,2.5L2.5,5 7,0.5" FlowDirection="LeftToRight" HorizontalAlignment="Center" Stroke="{TemplateBinding Foreground}" StrokeThickness="1.2" VerticalAlignment="Center"/>
                                 </Border>
                                 <ContentPresenter ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" Grid.Column="1" ContentStringFormat="{TemplateBinding HeaderStringFormat}" ContentSource="Header" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
                                 <Path Grid.Column="3" DockPanel.Dock="Right" Data="M0,0L4,3.5 0,7z" Fill="{TemplateBinding Foreground}" Margin="4,0,6,0" VerticalAlignment="Center"/>
                                 <Popup x:Name="PART_Popup" AllowsTransparency="True" Focusable="False" IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}" Placement="Right">
                                     <themes:SystemDropShadowChrome x:Name="Shdw" Color="Transparent">
-                                        <Border x:Name="SubMenuBorder" BorderBrush="#FFB6BDC5" BorderThickness="1" Background="#FFEEF5FD" Grid.IsSharedSizeScope="True">
+                                        <Border x:Name="SubMenuBorder" BorderBrush="{StaticResource ToolBarMenuBorder}" BorderThickness="1" Background="{StaticResource ToolBarSubMenuBackground}" Grid.IsSharedSizeScope="True">
                                             <ScrollViewer x:Name="SubMenuScrollViewer" Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}}">
                                                 <Grid RenderOptions.ClearTypeHint="Enabled">
                                                     <Grid.ColumnDefinitions>
@@ -215,7 +215,7 @@
                                                     <Canvas HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">
                                                         <Rectangle x:Name="OpaqueRect" Fill="{Binding Background, ElementName=SubMenuBorder}" Height="{Binding ActualHeight, ElementName=SubMenuBorder}" Width="{Binding ActualWidth, ElementName=SubMenuBorder}"/>
                                                     </Canvas>
-                                                    <Rectangle Fill="#FFEEF5FD" Margin="0,1"/>
+                                                    <Rectangle Fill="{StaticResource ToolBarSubMenuBackground}" Margin="0,1"/>
                                                     <ItemsPresenter x:Name="ItemsPresenter" Grid.ColumnSpan="2" KeyboardNavigation.DirectionalNavigation="Cycle" Margin="0,0,0,1" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" KeyboardNavigation.TabNavigation="Cycle"/>
                                                 </Grid>
                                             </ScrollViewer>
@@ -235,15 +235,15 @@
                                     <Setter Property="Visibility" TargetName="Icon" Value="Collapsed"/>
                                 </Trigger>
                                 <Trigger Property="IsHighlighted" Value="True">
-                                    <Setter Property="BorderBrush" TargetName="Border" Value="#80DADADA"/>
-                                    <Setter Property="Background" TargetName="Border" Value="#210080FF"/>
-                                    <Setter Property="BorderBrush" TargetName="GlyphPanel" Value="#90006CD9"/>
-                                    <Setter Property="Background" TargetName="GlyphPanel" Value="#FFEEF5FD"/>
+                                    <Setter Property="BorderBrush" TargetName="Border" Value="{StaticResource HighlightBorderBrush}"/>
+                                    <Setter Property="Background" TargetName="Border" Value="{StaticResource HighlightBackgroundBrush}"/>
+                                    <Setter Property="BorderBrush" TargetName="GlyphPanel" Value="{StaticResource GlyphPanelHighlightBorderBrush}"/>
+                                    <Setter Property="Background" TargetName="GlyphPanel" Value="{StaticResource GlyphPanelHighlightBackgroundBrush}"/>
                                 </Trigger>
                                 <Trigger Property="HasDropShadow" SourceName="PART_Popup" Value="True">
                                     <Setter Property="Margin" TargetName="Shdw" Value="0,0,5,5"/>
                                     <Setter Property="SnapsToDevicePixels" TargetName="Shdw" Value="True"/>
-                                    <Setter Property="Color" TargetName="Shdw" Value="#71000000"/>
+                                    <Setter Property="Color" TargetName="Shdw" Value="{StaticResource DropShadowColor}"/>
                                 </Trigger>
                                 <Trigger Property="IsEnabled" Value="False">
                                     <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
@@ -402,7 +402,7 @@
                         <Trigger Property="HasDropShadow" SourceName="OverflowPopup" Value="true">
                             <Setter Property="Margin" TargetName="Shdw" Value="0,0,5,5"/>
                             <Setter Property="SnapsToDevicePixels" TargetName="Shdw" Value="true"/>
-                            <Setter Property="Color" TargetName="Shdw" Value="#71000000"/>
+                            <Setter Property="Color" TargetName="Shdw" Value="{StaticResource DropShadowColor}"/>
                         </Trigger>
                         <Trigger Property="Orientation" Value="Vertical">
                             <Setter Property="Margin" TargetName="Grid" Value="1,3,1,1"/>

@@ -8,9 +8,15 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Controls/ToolBar.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
 
-        <BitmapImage x:Key="InvalidEntryImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
+            <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
+
+            <BitmapImage x:Key="InvalidEntryImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
+        </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -106,8 +112,8 @@
             <Expander Grid.Row="1"
                       Grid.ColumnSpan="2"
                       IsExpanded="{Binding ExpansionState}"
-                      Background="#FFFFFFFF"
-                      BorderBrush="#FFA9A9A9"
+                      Background="{StaticResource ExpanderBackgroundBrush}"
+                      BorderBrush="{StaticResource ExpanderBorderBrush}"
                       Margin="5,0,5,5">
                 <Expander.Header>
                     <Label FontWeight="SemiBold">

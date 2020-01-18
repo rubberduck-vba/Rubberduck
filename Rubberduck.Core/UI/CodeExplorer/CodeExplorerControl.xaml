@@ -594,7 +594,7 @@
 
         <GridSplitter Grid.Row="3" Height="5" ShowsPreview="True" Cursor="SizeNS" HorizontalAlignment="Stretch"/>
 
-        <Border Grid.Row="4" BorderThickness="0,1,0,0" BorderBrush="DimGray">
+        <Border Grid.Row="4" BorderThickness="0,1,0,0" BorderBrush="{StaticResource BorderWireBrush}">
             <ScrollViewer Background="WhiteSmoke" VerticalScrollBarVisibility="Auto">
                 <WrapPanel Orientation="Vertical" MinHeight="70" >
                     <Grid Margin="4" HorizontalAlignment="Stretch">
