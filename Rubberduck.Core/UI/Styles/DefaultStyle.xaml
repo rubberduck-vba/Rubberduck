@@ -150,7 +150,7 @@
                     <Condition Property="Selector.IsSelectionActive" Value="True" />
                 </MultiTrigger.Conditions>
                 <Setter Property="BorderBrush" Value="{StaticResource HighlightBorderActiveBrush}"/>
-                <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                <Setter Property="Background" Value="{StaticResource SystemColors.HighlightBrushKey}" />
             </MultiTrigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
@@ -158,9 +158,19 @@
                     <Condition Property="Selector.IsSelectionActive" Value="False" />
                 </MultiTrigger.Conditions>
                 <Setter Property="BorderBrush" Value="{StaticResource HighlightInactiveBorderBrush}"/>
-                <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}" />
+                <Setter Property="Background" Value="{StaticResource SystemColors.InactiveSelectionHighlightBrushKey}" />
             </MultiTrigger>
         </Style.Triggers>
+    </Style>
+
+    <Style x:Key="FocusVisual">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{StaticResource SystemColors.ControlTextBrushKey}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <Style x:Key="PrettyListBoxItem" TargetType="{x:Type ListBoxItem}">
@@ -211,7 +221,7 @@
                             <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource HighlightBorderActiveBrush}"/>
                         </MultiTrigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="TextElement.Foreground" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="Bd" Value="{StaticResource SystemColors.GrayTextBrushKey}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -219,16 +229,6 @@
         </Setter>
     </Style>
 
-    <Style x:Key="FocusVisual">
-        <Setter Property="Control.Template">
-            <Setter.Value>
-                <ControlTemplate>
-                    <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-    
     <Style TargetType="ScrollViewer">
         <Style.Setters>
             <Setter Property="settings:ScrollViewerCorrector.FixScrolling" Value="True" />
