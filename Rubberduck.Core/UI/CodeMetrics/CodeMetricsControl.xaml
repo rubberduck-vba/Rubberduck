@@ -85,7 +85,7 @@
                             <Setter Property="Foreground" Value="{Binding IsDimmed, Mode=OneWay, Converter={StaticResource BooleanToDimmed}}" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsObsolete}" Value="True">
-                                    <Setter Property="Foreground" Value="Gray" />
+                                    <Setter Property="Foreground" Value="{StaticResource CaptionDisabledColor}" />
                                     <Setter Property="TextDecorations" Value="Strikethrough" />
                                 </DataTrigger>
                             </Style.Triggers>

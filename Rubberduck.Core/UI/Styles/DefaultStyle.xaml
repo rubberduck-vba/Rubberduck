@@ -35,6 +35,7 @@
     <Color x:Key="ExpanderBorderColor">#FFA9A9A9</Color>
     <Color x:Key="ExpanderBackgroundColor">#FFFFFFFF</Color>
     <Color x:Key="CaptionLightColor">#FFFFFFFF</Color>
+    <Color x:Key="CaptionDisabledColor">#FF808080</Color>
     <Color x:Key="BackgroundDarkColor">#FFA9A9A9</Color>
     <Color x:Key="BackgroundLightColor">#FFF5F5F5</Color>
     
@@ -58,6 +59,7 @@
     <SolidColorBrush x:Key="ExpanderBackgroundBrush" Color="{StaticResource ExpanderBackgroundColor}"/>
     <SolidColorBrush x:Key="ExpanderBorderBrush" Color="{StaticResource ExpanderBorderColor}"/>
     <SolidColorBrush x:Key="CaptionLightBrush" Color="{StaticResource CaptionLightColor}"/>
+    <SolidColorBrush x:Key="CaptionDisabledBrush" Color="{StaticResource CaptionDisabledColor}"/>
     <SolidColorBrush x:Key="BackgroundDarkBrush" Color="{StaticResource BackgroundDarkColor}"/>
     <SolidColorBrush x:Key="BackgroundLightBrush" Color="{StaticResource BackgroundLightColor}"/>
     <SolidColorBrush x:Key="BackgroundWhiteBrush" Color="{StaticResource BackgroundWhiteColor}"/>
