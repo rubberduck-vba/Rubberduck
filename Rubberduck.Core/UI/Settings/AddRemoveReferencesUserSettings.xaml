@@ -17,14 +17,6 @@
 
             <BitmapImage x:Key="AddImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/plus-circle.png" />
             <BitmapImage x:Key="DeleteImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-script.png" />
-
-            <converters:SelectedItemToBooleanConverter x:Key="HasSelectedItems"/>
-
-            <Style TargetType="ScrollViewer">
-                <Style.Setters>
-                    <Setter Property="settings:ScrollViewerCorrector.FixScrolling" Value="True" />
-                </Style.Setters>
-            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>

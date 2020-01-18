@@ -13,8 +13,6 @@
                 <ResourceDictionary Source="../../Controls/ToolBar.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
-            <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
-
             <BitmapImage x:Key="InvalidEntryImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
         </ResourceDictionary>
     </UserControl.Resources>

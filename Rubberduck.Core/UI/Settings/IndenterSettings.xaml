@@ -36,11 +36,6 @@
                     <x:TypeExtension Type="{x:Type smartIndenter:EmptyLineHandling}"/>
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
-            <Style TargetType="ScrollViewer">
-                <Style.Setters>
-                    <Setter Property="settings:ScrollViewerCorrector.FixScrolling" Value="True" />
-                </Style.Setters>
-            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <ScrollViewer Margin="0,0,10,0">
