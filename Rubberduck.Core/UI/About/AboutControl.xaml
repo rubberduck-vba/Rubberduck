@@ -52,7 +52,7 @@
                 <Style.Setters>
                     <Setter Property="Margin" Value="10" />
                     <Setter Property="CornerRadius" Value="6" />
-                    <Setter Property="BorderBrush" Value="Green" />
+                    <Setter Property="BorderBrush" Value="{StaticResource GreenButtonBorderBrush}" />
                     <Setter Property="BorderThickness" Value="2" />
                     <Setter Property="Background" Value="{StaticResource GreenButtonBrush}" />
                 </Style.Setters>

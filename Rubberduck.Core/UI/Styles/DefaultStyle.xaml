@@ -26,6 +26,7 @@
     <Color x:Key="SoftBackgroundColor">#FFF8F8FF</Color>
     <Color x:Key="DropShadowColor">#71000000</Color>
     <Color x:Key="GreenButtonColor">#FF40C954</Color>
+    <Color x:Key="GreenButtonBorderColor">#FF008000</Color>
     <Color x:Key="GreenButtonMouseOverColor">#FF61D156</Color>
     <Color x:Key="HighlightBorderColor">#80DADADA</Color>
     <Color x:Key="HighlightBackgroundColor">#210080FF</Color>
@@ -48,6 +49,7 @@
     <SolidColorBrush x:Key="GlyphPanelBorderBrush" Color="{StaticResource GlyphPanelBorderColor}"/>
     <SolidColorBrush x:Key="SoftBackgroundBrush" Color="{StaticResource SoftBackgroundColor}"/>
     <SolidColorBrush x:Key="GreenButtonBrush" Color="{StaticResource GreenButtonColor}"/>
+    <SolidColorBrush x:Key="GreenButtonBorderBrush" Color="{StaticResource GreenButtonBorderColor}"/>
     <SolidColorBrush x:Key="GreenButtonMouseOverBrush" Color="{StaticResource GreenButtonMouseOverColor}"/>
     <SolidColorBrush x:Key="HighlightBorderBrush" Color="{StaticResource HighlightBorderColor}"/>
     <SolidColorBrush x:Key="HighlightBackgroundBrush" Color="{StaticResource HighlightBackgroundColor}"/>
