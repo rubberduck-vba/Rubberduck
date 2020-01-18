@@ -16,7 +16,7 @@
 
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
-            <Style x:Key="PrettifyRow" TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource PrettifyRow}">
+            <Style x:Key="PrettifyRowModified" TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource PrettifyRow}">
                 <EventSetter Event="MouseDoubleClick" Handler="GroupingGridItem_MouseDoubleClick" />
                 <Setter Property="Height" Value="Auto" />
                 <Setter Property="MinHeight" Value="26" />
@@ -79,7 +79,7 @@
             <Setter Property="VerticalGridLinesBrush" Value="Transparent" />
             <Setter Property="HeadersVisibility" Value="Column" />
             <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
-            <Setter Property="ItemContainerStyle" Value="{StaticResource PrettifyRow}" />
+            <Setter Property="ItemContainerStyle" Value="{StaticResource PrettifyRowModified}" />
             <Setter Property="ColumnHeaderHeight" Value="22" />
         </Style>
     </DataGrid.Style>

@@ -533,7 +533,7 @@
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="codeExplorer:ICodeExplorerNode" ItemsSource="{Binding Children}" ItemContainerStyle="{StaticResource TreeViewContainerStyle}">
                     <HierarchicalDataTemplate.Resources>
-                        <Style x:Key="TreeViewItemStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TreeViewItemStyle}">
+                        <Style x:Key="TreeViewItemStyleModified" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TreeViewItemStyle}">
                             <Setter Property="Text" Value="{Binding Name}" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding ElementName=DisplaySignatures, Path=IsChecked}" Value="True">
@@ -558,7 +558,7 @@
                             </Image>
                             <Image Source="{Binding Declaration, Converter={StaticResource AccessibilityToIcon}}" Style="{StaticResource ToolbarIconStyle}" />
                         </Grid>
-                        <TextBlock Style="{StaticResource TreeViewItemStyle}" />
+                        <TextBlock Style="{StaticResource TreeViewItemStyleModified}" />
                     </StackPanel>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
