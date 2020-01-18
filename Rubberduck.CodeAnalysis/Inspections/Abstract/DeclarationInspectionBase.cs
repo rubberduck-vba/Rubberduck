@@ -10,13 +10,11 @@ namespace Rubberduck.Inspections.Abstract
 {
     public abstract class DeclarationInspectionBase : InspectionBase
     {
-        protected readonly IDeclarationFinderProvider DeclarationFinderProvider;
         protected readonly DeclarationType[] RelevantDeclarationTypes;
 
         protected DeclarationInspectionBase(RubberduckParserState state, params DeclarationType[] relevantDeclarationTypes)
             : base(state)
         {
-            DeclarationFinderProvider = state;
             RelevantDeclarationTypes = relevantDeclarationTypes;
         }
 

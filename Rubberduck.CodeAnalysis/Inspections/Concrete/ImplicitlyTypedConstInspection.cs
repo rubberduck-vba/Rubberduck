@@ -16,7 +16,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            var declarationFinder = State.DeclarationFinder;
+            var declarationFinder = DeclarationFinderProvider.DeclarationFinder;
 
             var implicitlyTypedConsts = declarationFinder.UserDeclarations(DeclarationType.Constant)
                 .Where(declaration => !declaration.IsTypeSpecified);
