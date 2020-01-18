@@ -16,7 +16,7 @@
 
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
-            <Style x:Key="PrettifyRow" TargetType="{x:Type DataGridRow}">
+            <Style x:Key="PrettifyRow" TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource PrettifyRow}">
                 <EventSetter Event="MouseDoubleClick" Handler="GroupingGridItem_MouseDoubleClick" />
                 <Setter Property="Height" Value="Auto" />
                 <Setter Property="MinHeight" Value="26" />

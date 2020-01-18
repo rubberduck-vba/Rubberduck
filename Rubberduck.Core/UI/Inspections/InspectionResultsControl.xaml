@@ -49,10 +49,7 @@
                 <ToolBar.Resources>
                     <codeInspections:InspectionFilterToBooleanConverter x:Key="InspectionTypeToBooleanConverter" />
                     <codeInspections:InspectionResultGroupingToBooleanConverter x:Key="GroupingToBooleanConverter" />
-                    <Style x:Key="ToolBarToggleStyle" TargetType="ToggleButton">
-                        <Setter Property="Margin" Value="2" />
-                        <Setter Property="BorderBrush" Value="{x:Static SystemColors.ActiveBorderBrush}" />
-                    </Style>
+                    
                     <BitmapImage x:Key="CopyResultsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/document-copy.png" />
                     <BitmapImage x:Key="SettingsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/gear.png" />
                     <BitmapImage x:Key="RefreshImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-double.png" />

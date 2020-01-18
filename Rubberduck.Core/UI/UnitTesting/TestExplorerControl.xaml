@@ -74,10 +74,7 @@
                     <local:TestExplorerGroupingBooleanConverter x:Key="LocationConverter" />
                     <local:TestExplorerGroupingBooleanConverter x:Key="CategoryConverter" />
                     <local:TestExplorerOutcomeFilterToBooleanConverter x:Key="OutcomeFilterConverter" />
-                    <Style x:Key="ToolBarToggleStyle" TargetType="ToggleButton">
-                        <Setter Property="Margin" Value="2" />
-                        <Setter Property="BorderBrush" Value="{x:Static SystemColors.ActiveBorderBrush}" />
-                    </Style>
+                    
                     <Style TargetType="Image">
                         <Setter Property="Height" Value="16" />
                     </Style>

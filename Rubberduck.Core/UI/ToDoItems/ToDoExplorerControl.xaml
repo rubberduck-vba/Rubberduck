@@ -42,10 +42,7 @@
                 <ToolBar.Resources>
                     <converters:ToDoItemGroupingToBooleanConverter x:Key="GroupByLocationConverter" />
                     <converters:ToDoItemGroupingToBooleanConverter x:Key="GroupByMarkerConverter" />
-                    <Style x:Key="ToolBarToggleStyle" TargetType="ToggleButton">
-                        <Setter Property="Margin" Value="2" />
-                        <Setter Property="BorderBrush" Value="{x:Static SystemColors.ActiveBorderBrush}" />
-                    </Style>
+                    
                     <Style TargetType="Image">
                         <Setter Property="Height" Value="16" />
                     </Style>

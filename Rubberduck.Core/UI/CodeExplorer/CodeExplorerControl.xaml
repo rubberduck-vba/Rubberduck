@@ -47,7 +47,6 @@
             <BitmapImage x:Key="ExtractInterfaceImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/ExtractInterface.png" />
 
             <converters:BooleanToNullableDoubleConverter x:Key="BoolToDouble" />
-            <converters:BooleanToDimmedBrushConverter x:Key="BooleanToDimmed" />
             <converters:TemplateCommandParameterToTupleConverter x:Key="TemplateCommandParameterToTuple" />
             <converters:InvertBoolValueConverter x:Key="NotBool" />
             <converters:CodeExplorerNodeToIconConverter x:Key="NodeToIcon" />
@@ -534,21 +533,9 @@
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="codeExplorer:ICodeExplorerNode" ItemsSource="{Binding Children}" ItemContainerStyle="{StaticResource TreeViewContainerStyle}">
                     <HierarchicalDataTemplate.Resources>
-                        <Style x:Key="TreeViewItemStyle" TargetType="{x:Type TextBlock}">
+                        <Style x:Key="TreeViewItemStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TreeViewItemStyle}">
                             <Setter Property="Text" Value="{Binding Name}" />
-                            <Setter Property="FontSize" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeView}}, Path=FontSize}" />
-                            <Setter Property="FontWeight" Value="{Binding FontWeight}"/>
-                            <Setter Property="Margin" Value="2,0,2,0" />
-                            <Setter Property="VerticalAlignment" Value="Center" />
-                            <Setter Property="ToolTip" Value="{Binding ToolTip}" />
-                            <Setter Property="ToolTipService.InitialShowDelay" Value="500" />
-                            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                            <Setter Property="Foreground" Value="{Binding IsDimmed, Mode=OneWay, Converter={StaticResource BooleanToDimmed}}" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsObsolete}" Value="True">
-                                    <Setter Property="Foreground" Value="{StaticResource CaptionDisabledColor}" />
-                                    <Setter Property="TextDecorations" Value="Strikethrough" />
-                                </DataTrigger>
                                 <DataTrigger Binding="{Binding ElementName=DisplaySignatures, Path=IsChecked}" Value="True">
                                     <Setter Property="Text" Value="{Binding NameWithSignature}" />
                                 </DataTrigger>

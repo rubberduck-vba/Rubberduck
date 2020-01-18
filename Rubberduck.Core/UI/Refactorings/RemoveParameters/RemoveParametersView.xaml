@@ -20,7 +20,7 @@
             <BitmapImage x:Key="RemoveParameterImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-script.png" />
             <BitmapImage x:Key="RestoreParameterImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-return-180-left.png" />
 
-            <Style x:Key="PrettyListBoxItem" TargetType="{x:Type ListBoxItem}">
+            <Style x:Key="PrettyListBoxItem" TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource PrettyListBoxItem}">
                 <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick" />
             </Style>
         </ResourceDictionary>
