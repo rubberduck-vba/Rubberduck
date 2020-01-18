@@ -53,7 +53,7 @@ namespace Rubberduck.Inspections.Concrete
             :base(state, DeclarationType.Function)
         {}
 
-        protected override bool IsResultDeclaration(Declaration declaration)
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
             if (!(declaration is ModuleBodyElementDeclaration moduleBodyElementDeclaration))
             {
@@ -65,8 +65,6 @@ namespace Rubberduck.Inspections.Concrete
             {
                 return false;
             }
-
-            var finder = DeclarationFinderProvider.DeclarationFinder;
 
             if (moduleBodyElementDeclaration.IsInterfaceMember)
             {

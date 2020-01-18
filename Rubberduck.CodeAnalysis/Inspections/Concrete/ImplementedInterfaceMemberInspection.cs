@@ -1,14 +1,11 @@
 ﻿using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
-using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Common;
-using System;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -38,30 +35,49 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    internal class ImplementedInterfaceMemberInspection : InspectionBase
+    internal class ImplementedInterfaceMemberInspection : DeclarationInspectionBase
     {
         public ImplementedInterfaceMemberInspection(Parsing.VBA.RubberduckParserState state)
-            : base(state) { }
+            : base(state, DeclarationType.ClassModule)
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            var annotatedAsInterface = State.DeclarationFinder.Classes
-                .Where(cls => cls.Annotations.Any(an => an.Annotation is InterfaceAnnotation)).Cast<ClassModuleDeclaration>();
+            if (!IsInterfaceDeclaration(declaration))
+            {
+                return false;
+            }
 
-            var implementedAndOrAnnotatedInterfaceModules = State.DeclarationFinder.FindAllUserInterfaces()
-                .Union(annotatedAsInterface);
+            var moduleBodyElements = finder.Members(declaration, DeclarationType.Member)
+                .OfType<ModuleBodyElementDeclaration>();
 
-            return implementedAndOrAnnotatedInterfaceModules
-                .SelectMany(interfaceModule => interfaceModule.Members
-                    .Where(member => ((ModuleBodyElementDeclaration)member).Block.ContainsExecutableStatements(true)))
-                .Select(result => new DeclarationInspectionResult(this,
-                                        string.Format(InspectionResults.ImplementedInterfaceMemberInspection,
-                                                    result.QualifiedModuleName.ToString(),
-                                                    Resources.RubberduckUI.ResourceManager
-                                                        .GetString("DeclarationType_" + result.DeclarationType)
-                                                        .Capitalize(),
-                                                    result.IdentifierName),
-                                        result));
+            return moduleBodyElements
+                .Any(member => member.Block.ContainsExecutableStatements(true));
+        }
+
+        private static bool IsInterfaceDeclaration(Declaration declaration)
+        {
+            if (!(declaration is ClassModuleDeclaration classModule))
+            {
+                return false;
+            }
+            return classModule.IsInterface
+                || declaration.Annotations.Any(an => an.Annotation is InterfaceAnnotation);
+        }
+
+        protected override string ResultDescription(Declaration declaration)
+        {
+            var qualifiedName = declaration.QualifiedModuleName.ToString();
+            var declarationType = Resources.RubberduckUI.ResourceManager
+                .GetString("DeclarationType_" + declaration.DeclarationType)
+                .Capitalize();
+            var identifierName = declaration.IdentifierName;
+
+            return string.Format(
+                InspectionResults.ImplementedInterfaceMemberInspection,
+                qualifiedName,
+                declarationType,
+                identifierName);
         }
     }
 }

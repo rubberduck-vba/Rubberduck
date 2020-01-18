@@ -4,6 +4,7 @@ using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Abstract
@@ -20,11 +21,13 @@ namespace Rubberduck.Inspections.Abstract
             RelevantDeclarationTypes = relevantDeclarationTypes;
         }
 
-        protected abstract bool IsResultDeclaration(Declaration declaration);
+        protected abstract bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder);
         protected abstract string ResultDescription(Declaration declaration);
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
+            var finder = DeclarationFinderProvider.DeclarationFinder;
+
             var results = new List<IInspectionResult>();
             foreach (var moduleDeclaration in State.DeclarationFinder.UserDeclarations(DeclarationType.Module))
             {
@@ -34,7 +37,7 @@ namespace Rubberduck.Inspections.Abstract
                 }
 
                 var module = moduleDeclaration.QualifiedModuleName;
-                results.AddRange(DoGetInspectionResults(module));
+                results.AddRange(DoGetInspectionResults(module, finder));
             }
 
             return results;
@@ -42,15 +45,21 @@ namespace Rubberduck.Inspections.Abstract
 
         private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
         {
-            var objectionableDeclarations = RelevantDeclarationsInModule(module)
-                .Where(IsResultDeclaration);
+            var finder = DeclarationFinderProvider.DeclarationFinder;
+            return DoGetInspectionResults(module, finder);
+        }
+
+        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
+        {
+            var objectionableDeclarations = RelevantDeclarationsInModule(module, finder)
+                .Where(declaration => IsResultDeclaration(declaration, finder));
 
             return objectionableDeclarations
                 .Select(InspectionResult)
                 .ToList();
         }
 
-        protected virtual IEnumerable<Declaration> RelevantDeclarationsInModule(QualifiedModuleName module)
+        protected virtual IEnumerable<Declaration> RelevantDeclarationsInModule(QualifiedModuleName module, DeclarationFinder finder)
         {
             return RelevantDeclarationTypes
                 .SelectMany(declarationType => DeclarationFinderProvider.DeclarationFinder.Members(module, declarationType))
