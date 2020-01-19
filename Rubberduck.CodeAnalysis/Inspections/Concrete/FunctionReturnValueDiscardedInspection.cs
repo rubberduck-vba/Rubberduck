@@ -83,7 +83,9 @@ namespace Rubberduck.Inspections.Concrete
                 return false;
             }
 
-            return true;
+            //If we are in an output list, the value is used somewhere in defining the argument.
+            var outputListParent = context.GetAncestor<VBAParser.OutputListContext>();
+            return outputListParent == null;
         }
 
         protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)

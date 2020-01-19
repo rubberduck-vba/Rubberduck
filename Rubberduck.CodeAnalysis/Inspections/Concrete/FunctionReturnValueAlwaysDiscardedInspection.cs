@@ -144,7 +144,14 @@ namespace Rubberduck.Inspections.Concrete
                 ? methodCall
                 : context;
             var memberAccessParent = ownFunctionCallExpression.GetAncestor<VBAParser.MemberAccessExprContext>();
-            return memberAccessParent == null;
+            if (memberAccessParent != null)
+            {
+                return false;
+            }
+
+            //If we are in an output list, the value is used somewhere in defining the argument.
+            var outputListParent = context.GetAncestor<VBAParser.OutputListContext>();
+            return outputListParent == null;
         }
 
         protected override string ResultDescription(Declaration declaration)

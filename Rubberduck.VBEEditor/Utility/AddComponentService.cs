@@ -1,4 +1,6 @@
-﻿using Rubberduck.VBEditor.ComManagement;
+﻿using System.Runtime.InteropServices;
+using NLog;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SourceCodeHandling;
@@ -11,6 +13,8 @@ namespace Rubberduck.VBEditor.Utility
         private readonly IComponentSourceCodeHandler _codePaneSourceCodeHandler;
         private readonly IComponentSourceCodeHandler _attributeSourceCodeHandler;
 
+        private static ILogger _logger = LogManager.GetCurrentClassLogger();
+
         public AddComponentService(
             IProjectsProvider projectsProvider,
             IComponentSourceCodeHandler codePaneComponentSourceCodeProvider,
@@ -21,17 +25,17 @@ namespace Rubberduck.VBEditor.Utility
             _attributeSourceCodeHandler = attributesComponentSourceCodeProvider;
         }
 
-        public void AddComponent(string projectId, ComponentType componentType, string code = null, string additionalPrefixInModule = null)
+        public void AddComponent(string projectId, ComponentType componentType, string code = null, string additionalPrefixInModule = null, string componentName = null)
         {
-            AddComponent(_codePaneSourceCodeHandler, projectId, componentType, code, additionalPrefixInModule);
+            AddComponent(_codePaneSourceCodeHandler, projectId, componentType, code, additionalPrefixInModule, componentName);
         }
 
-        public void AddComponentWithAttributes(string projectId, ComponentType componentType, string code, string prefixInModule = null)
+        public void AddComponentWithAttributes(string projectId, ComponentType componentType, string code, string prefixInModule = null, string componentName = null)
         {
-            AddComponent(_attributeSourceCodeHandler, projectId, componentType, code, prefixInModule);
+            AddComponent(_attributeSourceCodeHandler, projectId, componentType, code, prefixInModule, componentName);
         }
 
-        public void AddComponent(IComponentSourceCodeHandler sourceCodeHandler, string projectId, ComponentType componentType, string code = null, string prefixInModule = null)
+        public void AddComponent(IComponentSourceCodeHandler sourceCodeHandler, string projectId, ComponentType componentType, string code = null, string prefixInModule = null, string componentName = null)
         {
             using (var newComponent = CreateComponent(projectId, componentType))
             {
@@ -45,14 +49,33 @@ namespace Rubberduck.VBEditor.Utility
                     using (var loadedComponent = sourceCodeHandler.SubstituteCode(newComponent, code))
                     {
                         AddPrefix(loadedComponent, prefixInModule);
+                        RenameComponent(loadedComponent, componentName);
                         ShowComponent(loadedComponent);
                     }
                 }
                 else
                 {
                     AddPrefix(newComponent, prefixInModule);
+                    RenameComponent(newComponent, componentName);
                     ShowComponent(newComponent);
                 }
+            }
+        }
+
+        private static void RenameComponent(IVBComponent newComponent, string componentName)
+        {
+            if (componentName == null)
+            {
+                return;
+            }
+
+            try
+            {
+                newComponent.Name = componentName;
+            }
+            catch (COMException ex)
+            {
+                _logger.Debug(ex, $"Unable to rename component to {componentName}.");
             }
         }
 
