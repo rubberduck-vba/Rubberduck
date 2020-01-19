@@ -284,6 +284,23 @@ End Sub
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
+        public void FunctionReturnValueDiscarded_DoesNotReturnResult_OutputListFunctionCall()
+        {
+            const string code = @"
+Public Function Foo(ByVal bar As String) As Integer
+    Foo = 42
+End Function
+
+Public Sub Baz()
+    Debug.Print Foo(""Test"")
+End Sub
+";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [Category("Unused Value")]
         public void FunctionReturnValueDiscarded_DoesNotReturnResult_IgnoresBuiltInFunctions()
         {
             const string code = @"
