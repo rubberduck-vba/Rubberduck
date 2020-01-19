@@ -30,7 +30,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
         private readonly IReadOnlyDictionary<QualifiedModuleName, IFailedResolutionStore> _failedResolutionStores;
         private readonly ConcurrentDictionary<QualifiedModuleName, IMutableFailedResolutionStore> _newFailedResolutionStores;
-        private readonly ConcurrentDictionary<QualifiedMemberName, ConcurrentBag<Declaration>> _newUndeclared;
+        private readonly ConcurrentDictionary<(QualifiedMemberName memberName, DeclarationType declarationType), ConcurrentBag<Declaration>> _newUndeclared;
 
         private IDictionary<(QualifiedModuleName module, int annotatedLine), List<IParseTreeAnnotation>> _annotations;
         private IDictionary<Declaration, List<ParameterDeclaration>> _parametersByParent;
@@ -78,7 +78,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             _failedResolutionStores = failedResolutionStores;
 
             _newFailedResolutionStores = new ConcurrentDictionary<QualifiedModuleName, IMutableFailedResolutionStore>();
-            _newUndeclared = new ConcurrentDictionary<QualifiedMemberName, ConcurrentBag<Declaration>>();
+            _newUndeclared = new ConcurrentDictionary<(QualifiedMemberName memberName, DeclarationType declarationType), ConcurrentBag<Declaration>>();
 
             var collectionConstructionActions = CollectionConstructionActions(declarations, annotations);
             ExecuteCollectionConstructionActions(collectionConstructionActions);
@@ -986,13 +986,14 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                     null,
                     !isReDimVariable);
 
-            var hasUndeclared = _newUndeclared.ContainsKey(enclosingProcedure.QualifiedName);
+            var enclosingScope = (enclosingProcedure.QualifiedName, enclosingProcedure.DeclarationType);
+            var hasUndeclared = _newUndeclared.ContainsKey(enclosingScope);
             if (hasUndeclared)
             {
                 ConcurrentBag<Declaration> undeclared;
-                while (!_newUndeclared.TryGetValue(enclosingProcedure.QualifiedName, out undeclared))
+                while (!_newUndeclared.TryGetValue(enclosingScope, out undeclared))
                 {
-                    _newUndeclared.TryGetValue(enclosingProcedure.QualifiedName, out undeclared);
+                    _newUndeclared.TryGetValue(enclosingScope, out undeclared);
                 }
                 var inScopeUndeclared = undeclared.FirstOrDefault(d => d.IdentifierName == identifierName);
                 if (inScopeUndeclared != null)
@@ -1003,7 +1004,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             }
             else
             {
-                _newUndeclared.TryAdd(enclosingProcedure.QualifiedName, new ConcurrentBag<Declaration> { undeclaredLocal });
+                _newUndeclared.TryAdd(enclosingScope, new ConcurrentBag<Declaration> { undeclaredLocal });
             }
             return undeclaredLocal;
         }
@@ -1067,14 +1068,16 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             Debug.Assert(hostApp != null, "Host application project can't be null. Make sure VBA standard library is included if host is unknown.");
 
             var qualifiedName = hostApp.QualifiedName.QualifiedModuleName.QualifyMemberName(expression);
+            var declarationType = DeclarationType.BracketedExpression;
+            var undeclaredScope = (qualifiedName, declarationType);
 
-            if (_newUndeclared.TryGetValue(qualifiedName, out var undeclared))
+            if (_newUndeclared.TryGetValue(undeclaredScope, out var undeclared))
             {
                 return undeclared.SingleOrDefault();
             }
 
             var item = new Declaration(qualifiedName, hostApp, hostApp, Tokens.Variant, string.Empty, false, false, Accessibility.Global, DeclarationType.BracketedExpression, context, null, context.GetSelection(), true, null);
-            _newUndeclared.TryAdd(qualifiedName, new ConcurrentBag<Declaration> { item });
+            _newUndeclared.TryAdd(undeclaredScope, new ConcurrentBag<Declaration> { item });
             return item;
         }
 
