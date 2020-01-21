@@ -13,7 +13,8 @@
             </ResourceDictionary.MergedDictionaries>
 
             <BitmapImage x:Key="InvalidInterfaceImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
-            <converters:InvertBoolValueConverter x:Key="InvertBool" />
+            <converters:BoolToVisibleVisibilityConverter x:Key="BoolToVisibility" />
+            <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -51,16 +52,17 @@
                        VerticalAlignment="Top"
                        Visibility="{Binding IsValidInterfaceName, Converter={StaticResource BoolToHiddenVisibility}}"/>
             </StackPanel>
-            
+
             <GroupBox Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_InstancingGroupBox}"
                       Grid.Row="1" Margin="5" Padding="5">
-                <StackPanel Orientation="Vertical">
-                    <RadioButton Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_PrivateRadioButton}"
-                                 IsEnabled="{Binding IsPrivateInterfaceEnabled}"
-                                 IsChecked="{Binding IsPublicInterfaceChecked, Converter={StaticResource InvertBool}}" />
-                    <RadioButton Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_PublicNotCreatableRadioButton}"
-                                 IsChecked="{Binding IsPublicInterfaceChecked, Mode=TwoWay}" />
-                </StackPanel>
+                <Grid>
+                    <ComboBox ItemsSource="{Binding ClassInstances}"
+                              SelectedValue="{Binding InterfaceInstancing, Mode=TwoWay}"
+                              Visibility="{Binding IsClassInstancingMutable, Converter={StaticResource BoolToVisibility}}">
+                    </ComboBox>
+                    <Label Visibility="{Binding IsClassInstancingMutable, Converter={StaticResource BoolToHiddenVisibility}}"
+                           Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_PublicInstancingMandatedByPublicClass}" />
+                </Grid>
             </GroupBox>
 
             <GroupBox Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_MembersGroupBox}"

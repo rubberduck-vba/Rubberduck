@@ -1782,10 +1782,13 @@ Import aborted.</value>
   <data name="ExtractInterface_InstancingGroupBox" xml:space="preserve">
     <value>Instancing</value>
   </data>
-  <data name="ExtractInterface_PrivateRadioButton" xml:space="preserve">
+  <data name="ExtractInterface_Private" xml:space="preserve">
     <value>Private</value>
   </data>
-  <data name="ExtractInterface_PublicNotCreatableRadioButton" xml:space="preserve">
-    <value>Public (Not Creatable)</value>
+  <data name="ExtractInterface_Public" xml:space="preserve">
+    <value>Public</value>
+  </data>
+  <data name="ExtractInterface_PublicInstancingMandatedByPublicClass" xml:space="preserve">
+    <value>'Public' will be chosen. For private instancing make implementing class private also.</value>
   </data>
 </root>

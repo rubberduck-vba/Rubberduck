@@ -136,7 +136,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
                         interfaceModule.InsertLines(1, "'@Interface");
                         interfaceModule.InsertLines(4, interfaceBody);
 
-                        if (interfaceInstancing == ClassInstancing.PublicNotCreatable)
+                        if (interfaceInstancing == ClassInstancing.Public)
                         {
                             AddExposedAttribute(components, interfaceComponent);
                         }

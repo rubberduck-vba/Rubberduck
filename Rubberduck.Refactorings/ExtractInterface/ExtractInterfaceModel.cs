@@ -8,8 +8,8 @@ namespace Rubberduck.Refactorings.ExtractInterface
 {
     public enum ClassInstancing
     {
-        Private = 0,
-        PublicNotCreatable,
+        Public = 0,
+        Private
     }
 
     public class ExtractInterfaceModel : IRefactoringModel
@@ -21,9 +21,9 @@ namespace Rubberduck.Refactorings.ExtractInterface
         public ObservableCollection<InterfaceMember> Members { get; set; } = new ObservableCollection<InterfaceMember>();
         public IEnumerable<InterfaceMember> SelectedMembers => Members.Where(m => m.IsSelected);
         public ClassInstancing ImplementingClassInstancing => System.Convert.ToBoolean(TargetDeclaration.Attributes.ExposedAttribute.Values.First())
-                ? ClassInstancing.PublicNotCreatable
+                ? ClassInstancing.Public
                 : ClassInstancing.Private;
-        public ClassInstancing InterfaceInstancing { get; set; } = ClassInstancing.PublicNotCreatable;
+        public ClassInstancing InterfaceInstancing { get; set; } = ClassInstancing.Public;
 
         public static readonly DeclarationType[] MemberTypes =
         {

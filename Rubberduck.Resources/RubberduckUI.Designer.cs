@@ -1450,18 +1450,27 @@ namespace Rubberduck.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Private.
         /// </summary>
-        public static string ExtractInterface_PrivateRadioButton {
+        public static string ExtractInterface_Private {
             get {
-                return ResourceManager.GetString("ExtractInterface_PrivateRadioButton", resourceCulture);
+                return ResourceManager.GetString("ExtractInterface_Private", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Public (Not Creatable).
+        ///   Looks up a localized string similar to Public.
         /// </summary>
-        public static string ExtractInterface_PublicNotCreatableRadioButton {
+        public static string ExtractInterface_Public {
             get {
-                return ResourceManager.GetString("ExtractInterface_PublicNotCreatableRadioButton", resourceCulture);
+                return ResourceManager.GetString("ExtractInterface_Public", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;Public&apos; will be chosen. For private instancing make implementing class private also..
+        /// </summary>
+        public static string ExtractInterface_PublicInstancingMandatedByPublicClass {
+            get {
+                return ResourceManager.GetString("ExtractInterface_PublicInstancingMandatedByPublicClass", resourceCulture);
             }
         }
         

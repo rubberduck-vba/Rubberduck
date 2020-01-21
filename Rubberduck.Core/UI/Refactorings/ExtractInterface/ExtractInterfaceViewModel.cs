@@ -61,11 +61,29 @@ namespace Rubberduck.UI.Refactorings
             }
         }
 
-        public bool IsPrivateInterfaceEnabled
+        public bool IsClassInstancingMutable
         {
             get
             {
-                return Model.ImplementingClassInstancing != ClassInstancing.PublicNotCreatable;
+                return Model.ImplementingClassInstancing != ClassInstancing.Public;
+            }
+        }
+
+        public IEnumerable<ClassInstancing> ClassInstances => Enum.GetValues(typeof(ClassInstancing)).Cast<ClassInstancing>();
+
+        public ClassInstancing InterfaceInstancing
+        {
+            get => Model.InterfaceInstancing;
+
+            set
+            {
+                if (value == Model.InterfaceInstancing)
+                {
+                    return;
+                }
+
+                Model.InterfaceInstancing = value;
+                OnPropertyChanged();
             }
         }
 
@@ -81,7 +99,7 @@ namespace Rubberduck.UI.Refactorings
                 }
 
                 Model.InterfaceInstancing = value 
-                    ? ClassInstancing.PublicNotCreatable 
+                    ? ClassInstancing.Public 
                     : ClassInstancing.Private;
                 isPublicInterfaceChecked = value;
                 OnPropertyChanged();                
