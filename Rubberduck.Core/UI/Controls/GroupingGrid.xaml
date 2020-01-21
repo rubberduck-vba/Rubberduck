@@ -9,84 +9,52 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <DataGrid.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
-            <GradientStop Color="#FFD9F4FF" Offset="0"/>
-            <GradientStop Color="#FF9BDDFB" Offset="1"/>
-        </LinearGradientBrush>
-        <LinearGradientBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
-            <GradientStop Color="#FFEEEDED" Offset="0"/>
-            <GradientStop Color="#FFDDDDDD" Offset="1"/>
-        </LinearGradientBrush>
-        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
-        <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
-        
-        <Style x:Key="PrettifyRow" TargetType="{x:Type DataGridRow}">
-            <Style.Resources>
-                <Style TargetType="{x:Type Border}">
-                    <Setter Property="CornerRadius" Value="2"/>
-                </Style>
-            </Style.Resources>
-            <EventSetter Event="MouseDoubleClick" Handler="GroupingGridItem_MouseDoubleClick" />
-            <Setter Property="BorderThickness" Value="0,.5,0,0" />
-            <Setter Property="BorderBrush" Value="DarkGray" />
-            <Setter Property="MinHeight" Value="26" />
-            <Setter Property="TextBlock.FontWeight" Value="Normal" />
-            <Style.Triggers>
-                <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="BorderThickness" Value="1.5" />
-                </Trigger>
-                <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                        <Condition Property="IsSelected" Value="True" />
-                        <Condition Property="Selector.IsSelectionActive" Value="True" />
-                    </MultiTrigger.Conditions>
-                    <Setter Property="BorderBrush" Value="#adc6e5"/>
-                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
-                </MultiTrigger>
-                <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                        <Condition Property="IsSelected" Value="True" />
-                        <Condition Property="Selector.IsSelectionActive" Value="False" />
-                    </MultiTrigger.Conditions>
-                    <Setter Property="BorderBrush" Value="LightGray"/>
-                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}" />
-                </MultiTrigger>
-            </Style.Triggers>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles/DefaultStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
 
-        <Style TargetType="{x:Type DataGridColumnHeadersPresenter}">
-            <Setter Property="Margin" Value="25,0,0,0" />
-        </Style>
-        <Style x:Key="GroupHeaderStyle" TargetType="{x:Type GroupItem}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate>
-                        <Expander Background="WhiteSmoke" Foreground="Black" FontWeight="SemiBold" 
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
+            <Style x:Key="PrettifyRowModified" TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource PrettifyRow}">
+                <EventSetter Event="MouseDoubleClick" Handler="GroupingGridItem_MouseDoubleClick" />
+                <Setter Property="Height" Value="Auto" />
+                <Setter Property="MinHeight" Value="26" />
+            </Style>
+
+            <Style TargetType="{x:Type DataGridColumnHeadersPresenter}">
+                <Setter Property="Margin" Value="25,0,0,0" />
+            </Style>
+            <Style x:Key="GroupHeaderStyle" TargetType="{x:Type GroupItem}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <Expander Background="{StaticResource BackgroundLightBrush}" Foreground="{StaticResource CaptionDarkBrush}" FontWeight="SemiBold" 
                                   IsExpanded="{Binding InitialExpandedState, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:GroupingGrid}}}">
-                            <Expander.Header>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Margin="4" 
+                                <Expander.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Margin="4" 
     									VerticalAlignment="Center" 
     									Text="{Binding Name}"
     									FontWeight="Bold"
     									TextWrapping="NoWrap"/>
-                                    <TextBlock Margin="4" 
+                                        <TextBlock Margin="4" 
     									VerticalAlignment="Center" 
     									Text="{Binding ItemCount, StringFormat=(\{0\})}" 
     									TextWrapping="NoWrap"
     									Visibility="{Binding ShowGroupingItemCount, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:GroupingGrid}}}"/>
-                                </StackPanel>
-                            </Expander.Header>
-                            <ItemsPresenter Margin="25,0,0,0" />
-                            <i:Interaction.Behaviors>
-                                <local:PersistGroupExpandedStateBehavior GroupName="{Binding Name}" />
-                            </i:Interaction.Behaviors>
-                        </Expander>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+                                    </StackPanel>
+                                </Expander.Header>
+                                <ItemsPresenter Margin="25,0,0,0" />
+                                <i:Interaction.Behaviors>
+                                    <local:PersistGroupExpandedStateBehavior GroupName="{Binding Name}" />
+                                </i:Interaction.Behaviors>
+                            </Expander>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
     </DataGrid.Resources>
     <DataGrid.GroupStyle>
         <GroupStyle ContainerStyle="{StaticResource GroupHeaderStyle}">
@@ -111,7 +79,7 @@
             <Setter Property="VerticalGridLinesBrush" Value="Transparent" />
             <Setter Property="HeadersVisibility" Value="Column" />
             <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
-            <Setter Property="ItemContainerStyle" Value="{StaticResource PrettifyRow}" />
+            <Setter Property="ItemContainerStyle" Value="{StaticResource PrettifyRowModified}" />
             <Setter Property="ColumnHeaderHeight" Value="22" />
         </Style>
     </DataGrid.Style>

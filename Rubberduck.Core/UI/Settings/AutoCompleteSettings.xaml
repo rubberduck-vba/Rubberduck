@@ -12,43 +12,11 @@
              d:DesignWidth="500"
              d:DesignHeight="350">
     <UserControl.Resources>
-        <Style x:Key="PrettifyRow" TargetType="{x:Type DataGridRow}">
-            <Style.Resources>
-                <Style TargetType="{x:Type Border}">
-                    <Setter Property="CornerRadius" Value="2"/>
-                </Style>
-            </Style.Resources>
-            <Setter Property="BorderThickness" Value="0,.5,0,0" />
-            <Setter Property="BorderBrush" Value="DarkGray" />
-            <Setter Property="Height" Value="26" />
-            <Setter Property="TextBlock.FontWeight" Value="Normal" />
-            <Style.Triggers>
-                <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="BorderThickness" Value="1.5" />
-                </Trigger>
-                <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                        <Condition Property="IsSelected" Value="True" />
-                        <Condition Property="Selector.IsSelectionActive" Value="True" />
-                    </MultiTrigger.Conditions>
-                    <Setter Property="BorderBrush" Value="#adc6e5"/>
-                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
-                </MultiTrigger>
-                <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                        <Condition Property="IsSelected" Value="True" />
-                        <Condition Property="Selector.IsSelectionActive" Value="False" />
-                    </MultiTrigger.Conditions>
-                    <Setter Property="BorderBrush" Value="LightGray"/>
-                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}" />
-                </MultiTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style TargetType="ScrollViewer">
-            <Style.Setters>
-                <Setter Property="settings:ScrollViewerCorrector.FixScrolling" Value="True" />
-            </Style.Setters>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Controls/ToolBar.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -56,7 +24,7 @@
         </Grid.RowDefinitions>
         <ScrollViewer x:Name="ScrollViewer" Grid.Row="0">
             <StackPanel Margin="5,5,5,0" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                <Label Background="DarkGray"
+                <Label Background="{StaticResource HeaderBackgroundDarkBrush}"
                        HorizontalContentAlignment="Stretch"
                        Margin="0,0,0,3">
                     <Label.Style>
@@ -68,9 +36,9 @@
                             </Style.Resources>
                         </Style>
                     </Label.Style>
-                    <DockPanel Background="DarkGray" FlowDirection="LeftToRight">
+                    <DockPanel Background="{StaticResource HeaderBackgroundDarkBrush}" FlowDirection="LeftToRight">
                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                            <Label Foreground="White"
+                            <Label Foreground="{StaticResource CaptionLightBrush}"
                                 FontWeight="SemiBold" 
                                 Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=PageHeader}">
                             </Label>

@@ -17,6 +17,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Controls/ToolBar.xaml"/>
+                <ResourceDictionary Source="../Styles/DefaultStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <CollectionViewSource x:Key="BuiltInTemplatesViewSource" x:Name="BuiltInTemplatesView" Source="{Binding BuiltInTemplates}" />
@@ -46,23 +47,10 @@
             <BitmapImage x:Key="ExtractInterfaceImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/ExtractInterface.png" />
 
             <converters:BooleanToNullableDoubleConverter x:Key="BoolToDouble" />
-            <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
-            <converters:BooleanToDimmedBrushConverter x:Key="BooleanToDimmed" />
             <converters:TemplateCommandParameterToTupleConverter x:Key="TemplateCommandParameterToTuple" />
             <converters:InvertBoolValueConverter x:Key="NotBool" />
             <converters:CodeExplorerNodeToIconConverter x:Key="NodeToIcon" />
             <converters:AccessibilityToIconConverter x:Key="AccessibilityToIcon" />
-
-            <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
-                <GradientStop Color="#FFD9F4FF" Offset="0"/>
-                <GradientStop Color="#FF9BDDFB" Offset="1"/>
-            </LinearGradientBrush>
-            <LinearGradientBrush x:Key="{x:Static SystemColors.ControlBrushKey}" EndPoint="0,1" StartPoint="0,0">
-                <GradientStop Color="#FFEEEDED" Offset="0"/>
-                <GradientStop Color="#FFDDDDDD" Offset="1"/>
-            </LinearGradientBrush>
-            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
-            <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
 
             <CompositeCollection x:Key="AddModuleCommands" x:Shared="False">
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddExistingFileText}"
@@ -176,19 +164,12 @@
                 </MenuItem>
             </CompositeCollection>
 
-            <Style x:Key="ToolbarIconStyle" TargetType="Image">
-                <Setter Property="Height" Value="16" />
-                <Setter Property="Width" Value="16" />
-                <Setter Property="Margin" Value="2,0,2,0" />
-                <Setter Property="VerticalAlignment" Value="Top" />
-            </Style>
-
             <Style x:Key="FooterStyle" TargetType="TextBox">
                 <Setter Property="FontSize" Value="{Binding FontSize, Mode=OneWay}" />
                 <Setter Property="IsReadOnly" Value="True" />
                 <Setter Property="Margin" Value="4" />
                 <Setter Property="TextWrapping" Value="WrapWithOverflow" />
-                <Setter Property="Background" Value="WhiteSmoke" />
+                <Setter Property="Background" Value="{StaticResource BackgroundLightBrush}" />
                 <Setter Property="BorderThickness" Value="0" />
             </Style>
 
@@ -206,7 +187,7 @@
                 <Setter Property="IsReadOnly" Value="True" />
                 <Setter Property="Margin" Value="4" />
                 <Setter Property="TextWrapping" Value="WrapWithOverflow" />
-                <Setter Property="Background" Value="WhiteSmoke" />
+                <Setter Property="Background" Value="{StaticResource BackgroundLightBrush}" />
                 <Setter Property="BorderThickness" Value="0" />
             </Style>
 
@@ -231,14 +212,14 @@
                 <EventSetter Event="MouseRightButtonDown" Handler="TreeView_OnMouseRightButtonDown" />
                 <Style.Triggers>
                     <Trigger Property="IsSelected" Value="True">
-                        <Setter Property="BorderBrush" Value="#adc6e5"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource HighlightBorderActiveBrush}"/>
                     </Trigger>
                     <MultiTrigger>
                         <MultiTrigger.Conditions>
                             <Condition Property="IsSelected" Value="True"/>
                             <Condition Property="IsSelectionActive" Value="False"/>
                         </MultiTrigger.Conditions>
-                        <Setter Property="BorderBrush" Value="LightGray"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource HighlightInactiveBorderBrush}"/>
                     </MultiTrigger>
                 </Style.Triggers>
                 <Style.Resources>
@@ -407,7 +388,7 @@
 
         <TreeView x:Name="ProjectTree"
                   Grid.Row="2"
-                  Background="White"
+                  Background="{StaticResource BackgroundLightBrush}"
                   HorizontalContentAlignment="Stretch"
                   ItemsSource="{Binding Projects}"
                   ItemContainerStyle="{StaticResource TreeViewContainerStyle}"
@@ -552,21 +533,9 @@
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="codeExplorer:ICodeExplorerNode" ItemsSource="{Binding Children}" ItemContainerStyle="{StaticResource TreeViewContainerStyle}">
                     <HierarchicalDataTemplate.Resources>
-                        <Style x:Key="TreeViewItemStyle" TargetType="{x:Type TextBlock}">
+                        <Style x:Key="TreeViewItemStyleModified" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TreeViewItemStyle}">
                             <Setter Property="Text" Value="{Binding Name}" />
-                            <Setter Property="FontSize" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeView}}, Path=FontSize}" />
-                            <Setter Property="FontWeight" Value="{Binding FontWeight}"/>
-                            <Setter Property="Margin" Value="2,0,2,0" />
-                            <Setter Property="VerticalAlignment" Value="Center" />
-                            <Setter Property="ToolTip" Value="{Binding ToolTip}" />
-                            <Setter Property="ToolTipService.InitialShowDelay" Value="500" />
-                            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                            <Setter Property="Foreground" Value="{Binding IsDimmed, Mode=OneWay, Converter={StaticResource BooleanToDimmed}}" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsObsolete}" Value="True">
-                                    <Setter Property="Foreground" Value="Gray" />
-                                    <Setter Property="TextDecorations" Value="Strikethrough" />
-                                </DataTrigger>
                                 <DataTrigger Binding="{Binding ElementName=DisplaySignatures, Path=IsChecked}" Value="True">
                                     <Setter Property="Text" Value="{Binding NameWithSignature}" />
                                 </DataTrigger>
@@ -589,7 +558,7 @@
                             </Image>
                             <Image Source="{Binding Declaration, Converter={StaticResource AccessibilityToIcon}}" Style="{StaticResource ToolbarIconStyle}" />
                         </Grid>
-                        <TextBlock Style="{StaticResource TreeViewItemStyle}" />
+                        <TextBlock Style="{StaticResource TreeViewItemStyleModified}" />
                     </StackPanel>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
@@ -604,8 +573,8 @@
 
         <GridSplitter Grid.Row="3" Height="5" ShowsPreview="True" Cursor="SizeNS" HorizontalAlignment="Stretch"/>
 
-        <Border Grid.Row="4" BorderThickness="0,1,0,0" BorderBrush="DimGray">
-            <ScrollViewer Background="WhiteSmoke" VerticalScrollBarVisibility="Auto">
+        <Border Grid.Row="4" BorderThickness="0,1,0,0" BorderBrush="{StaticResource BorderWireBrush}">
+            <ScrollViewer Background="{StaticResource BackgroundLightBrush}" VerticalScrollBarVisibility="Auto">
                 <WrapPanel Orientation="Vertical" MinHeight="70" >
                     <Grid Margin="4" HorizontalAlignment="Stretch">
                         <Grid.ColumnDefinitions>

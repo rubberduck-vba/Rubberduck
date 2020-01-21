@@ -6,10 +6,15 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <BitmapImage x:Key="DoubleArrowImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-double.png" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles/DefaultStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <BitmapImage x:Key="DoubleArrowImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-double.png" />
+        </ResourceDictionary>
     </UserControl.Resources>
 
-    <Border Background="AliceBlue" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext}">
+    <Border Background="{StaticResource BackgroundSoftBrush}" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext}">
         <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="WrapWithOverflow" TextAlignment="Center"
                        MinWidth="200">
             <Run FontWeight="Bold" Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EmptyUIRefreshMessage_Title}"/><LineBreak/>
