@@ -107,6 +107,17 @@ namespace RubberduckTests.Mocks
         /// <summary>
         /// Adds a mock reference to the project.
         /// </summary>
+        /// <param name="referenceLibrary">The reference library's enum.</param>
+        /// <returns>Returns the <see cref="MockProjectBuilder"/> instance.</returns>
+        public MockProjectBuilder AddReference(ReferenceLibrary referenceLibrary)
+        {
+            var (name, path, versionMajor, versionMinor, isBuiltIn) = MockVbeBuilder.ReferenceLibraries[referenceLibrary];
+            return AddReference(name, path, versionMajor, versionMinor, isBuiltIn);
+        }
+
+        /// <summary>
+        /// Adds a mock reference to the project.
+        /// </summary>
         /// <param name="name">The name of the referenced library.</param>
         /// <param name="filePath">The path to the referenced library.</param>
         /// <param name="isBuiltIn">Indicates whether the reference is a built-in reference.</param>

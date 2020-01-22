@@ -3205,8 +3205,8 @@ End Property";
 
             if (useLibraries)
             {
-                enclosingProjectBuilder.AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 1, true);
-                enclosingProjectBuilder.AddReference("EXCEL", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true);
+                enclosingProjectBuilder.AddReference(ReferenceLibrary.VBA);
+                enclosingProjectBuilder.AddReference(ReferenceLibrary.Excel);
             }
 
             foreach (var testModuleDefinition in testModuleDefinitions)

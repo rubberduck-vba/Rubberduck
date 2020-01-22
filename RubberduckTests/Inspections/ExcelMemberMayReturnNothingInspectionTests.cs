@@ -5,6 +5,7 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
+using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
@@ -221,7 +222,7 @@ End Sub
         }
 
         private IEnumerable<IInspectionResult> InspectionResults(string inputCode)
-            => InspectionResultsForModules(("Module1", inputCode, ComponentType.StandardModule), "Excel");
+            => InspectionResultsForModules(("Module1", inputCode, ComponentType.StandardModule), ReferenceLibrary.Excel);
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
