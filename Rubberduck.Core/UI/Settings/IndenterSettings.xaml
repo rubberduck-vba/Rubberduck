@@ -10,36 +10,37 @@
              xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
              x:Class="Rubberduck.UI.Settings.IndenterSettings">
     <UserControl.Resources>
-        <converters:EndOfLineCommentStyleToVisibilityConverter x:Key="EndOfLineCommentStyleToVisibility"/>
-        <converters:EndOfLineCommentStyleToTextConverter x:Key="LocalizedEndOfLineCommentStyles"/>
-        <converters:EndOfLineCommentStyleValueTextToEnumValueConverter x:Key="EndOfLineCommentStyleTextToEnumValue"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles/DefaultStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
 
-        <converters:EmptyLineHandlingToTextConverter x:Key="LocalizedEmptyLineHandlers"/>
-        <converters:EmptyLineHandlingValueTextToEnumValueConverter x:Key="EmptyLineHandlingValueTextToEnumValue"/>
+            <converters:EndOfLineCommentStyleToVisibilityConverter x:Key="EndOfLineCommentStyleToVisibility"/>
+            <converters:EndOfLineCommentStyleToTextConverter x:Key="LocalizedEndOfLineCommentStyles"/>
+            <converters:EndOfLineCommentStyleValueTextToEnumValueConverter x:Key="EndOfLineCommentStyleTextToEnumValue"/>
 
-        <ObjectDataProvider x:Key="CommentStyles"
+            <converters:EmptyLineHandlingToTextConverter x:Key="LocalizedEmptyLineHandlers"/>
+            <converters:EmptyLineHandlingValueTextToEnumValueConverter x:Key="EmptyLineHandlingValueTextToEnumValue"/>
+
+            <ObjectDataProvider x:Key="CommentStyles"
                  MethodName="GetValues"
                  ObjectType="{x:Type core:Enum}">
-            <ObjectDataProvider.MethodParameters>
-                <x:TypeExtension Type="{x:Type smartIndenter:EndOfLineCommentStyle}"/>
-            </ObjectDataProvider.MethodParameters>
-        </ObjectDataProvider>
-        <ObjectDataProvider x:Key="EmptyLineOptions"
+                <ObjectDataProvider.MethodParameters>
+                    <x:TypeExtension Type="{x:Type smartIndenter:EndOfLineCommentStyle}"/>
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+            <ObjectDataProvider x:Key="EmptyLineOptions"
                             MethodName="GetValues"
                             ObjectType="{x:Type core:Enum}">
-            <ObjectDataProvider.MethodParameters>
-                <x:TypeExtension Type="{x:Type smartIndenter:EmptyLineHandling}"/>
-            </ObjectDataProvider.MethodParameters>
-        </ObjectDataProvider>
-        <Style TargetType="ScrollViewer">
-            <Style.Setters>
-                <Setter Property="settings:ScrollViewerCorrector.FixScrolling" Value="True" />
-            </Style.Setters>
-        </Style>
+                <ObjectDataProvider.MethodParameters>
+                    <x:TypeExtension Type="{x:Type smartIndenter:EmptyLineHandling}"/>
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+        </ResourceDictionary>
     </UserControl.Resources>
     <ScrollViewer Margin="0,0,10,0">
         <StackPanel Margin="5">
-            <Label Background="#FFA9A9A9"
+            <Label Background="{StaticResource BackgroundDarkBrush}"
                      HorizontalContentAlignment="Stretch"
                      Margin="0,0,0,5">
                 <Label.Style>
@@ -51,9 +52,9 @@
                         </Style.Resources>
                     </Style>
                 </Label.Style>
-                <DockPanel Background="#FFA9A9A9" FlowDirection="LeftToRight">
+                <DockPanel Background="{StaticResource BackgroundDarkBrush}" FlowDirection="LeftToRight">
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                        <Label Foreground="#FFFFFFFF" FontWeight="SemiBold">
+                        <Label Foreground="{StaticResource CaptionLightBrush}" FontWeight="SemiBold">
                             <Resx ResxName="Rubberduck.Resources.Settings.SettingsUI" Key="PageHeader_IndenterSettings"/>
                         </Label>
                     </StackPanel>
@@ -93,8 +94,8 @@
                 </Grid.RowDefinitions>
                 <Expander Grid.Row="0"
                          IsExpanded="False"
-                         Background="#FFFFFFFF"
-                         BorderBrush="#FFA9A9A9"
+                         Background="{StaticResource ExpanderBackgroundBrush}"
+                         BorderBrush="{StaticResource ExpanderBorderBrush}"
                          Margin="0,0,0,3">
                     <Expander.Header>
                         <Label FontWeight="SemiBold">
@@ -186,8 +187,8 @@
                 </Expander>
                 <Expander Grid.Row="1"
                          IsExpanded="False"
-                         Background="#FFFFFFFF"
-                         BorderBrush="#FFA9A9A9"
+                         Background="{StaticResource ExpanderBackgroundBrush}"
+                         BorderBrush="{StaticResource ExpanderBorderBrush}"
                          Margin="0,0,0,3">
                     <Expander.Header>
                         <Label FontWeight="SemiBold">
@@ -264,8 +265,8 @@
                 </Expander>
                 <Expander Grid.Row="2"
                          IsExpanded="False"
-                         Background="#FFFFFFFF"
-                         BorderBrush="#FFA9A9A9"
+                         Background="{StaticResource ExpanderBackgroundBrush}"
+                         BorderBrush="{StaticResource ExpanderBorderBrush}"
                          Margin="0,0,0,3">
                     <Expander.Header>
                         <Label FontWeight="SemiBold">
@@ -327,8 +328,8 @@
                 </Expander>
                 <Expander Grid.Row="3"
                          IsExpanded="False"
-                         Background="#FFFFFFFF"
-                         BorderBrush="#FFA9A9A9"
+                         Background="{StaticResource ExpanderBackgroundBrush}"
+                         BorderBrush="{StaticResource ExpanderBorderBrush}"
                          Margin="0,0,0,3">
                     <Expander.Header>
                         <Label FontWeight="SemiBold">
@@ -358,8 +359,8 @@
                 </Expander>
                 <Expander Grid.Row="4"
                          IsExpanded="True"
-                         Background="#FFFFFFFF"
-                         BorderBrush="#FFA9A9A9"
+                         Background="{StaticResource ExpanderBackgroundBrush}"
+                         BorderBrush="{StaticResource ExpanderBorderBrush}"
                          Margin="0,0,0,3">
                     <Expander.Header>
                         <Label FontWeight="SemiBold">

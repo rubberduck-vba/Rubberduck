@@ -12,29 +12,35 @@
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type settings:UnitTestSettingsViewModel}, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
-        <converters:BindingModeToTextConverter x:Key="BindingModeToText" />
-        <converters:BindingModeValueToTextConverter x:Key="BindingModeValueToText" />
-        <converters:AssertModeToTextConverter x:Key="AssertModeToText" />
-        <converters:AssertModeValueToTextConverter x:Key="AssertModeValueToText" />
-        
-        <ObjectDataProvider x:Key="BindingMode"
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles/DefaultStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <converters:BindingModeToTextConverter x:Key="BindingModeToText" />
+            <converters:BindingModeValueToTextConverter x:Key="BindingModeValueToText" />
+            <converters:AssertModeToTextConverter x:Key="AssertModeToText" />
+            <converters:AssertModeValueToTextConverter x:Key="AssertModeValueToText" />
+
+            <ObjectDataProvider x:Key="BindingMode"
                             MethodName="GetValues"
                             ObjectType="{x:Type core:Enum}">
-            <ObjectDataProvider.MethodParameters>
-                <x:Type Type="settingsConfig:BindingMode"/>
-            </ObjectDataProvider.MethodParameters>
-        </ObjectDataProvider>
-        <ObjectDataProvider x:Key="AssertMode"
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type Type="settingsConfig:BindingMode"/>
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+            <ObjectDataProvider x:Key="AssertMode"
                             MethodName="GetValues"
                             ObjectType="{x:Type core:Enum}">
-            <ObjectDataProvider.MethodParameters>
-                <x:Type Type="settingsConfig:AssertMode"/>
-            </ObjectDataProvider.MethodParameters>
-        </ObjectDataProvider>
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type Type="settingsConfig:AssertMode"/>
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+        </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <StackPanel Margin="5,5,5,0">
-            <Label Background="DarkGray"
+            <Label Background="{StaticResource HeaderBackgroundDarkBrush}"
                        HorizontalContentAlignment="Stretch"
                        Margin="0,0,0,3">
                 <Label.Style>
@@ -46,9 +52,9 @@
                         </Style.Resources>
                     </Style>
                 </Label.Style>
-                <DockPanel Background="DarkGray" FlowDirection="LeftToRight">
+                <DockPanel Background="{StaticResource HeaderBackgroundDarkBrush}" FlowDirection="LeftToRight">
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                        <Label Foreground="White"
+                        <Label Foreground="{StaticResource CaptionLightBrush}"
                                    FontWeight="SemiBold" 
                                    Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=PageHeader_UnitTestSettings}">
                         </Label>

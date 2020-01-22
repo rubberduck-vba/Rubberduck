@@ -18,8 +18,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Controls/ToolBar.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            
             <BitmapImage x:Key="SettingsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/gear.png" />
-
             <BitmapImage x:Key="RefreshImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-double.png" />
             <BitmapImage x:Key="RunImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/control.png" />
             <BitmapImage x:Key="RunAllTestsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask--arrow.png" />
@@ -31,47 +31,28 @@
             <BitmapImage x:Key="RunPassedTestsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/tick-circle.png" />
             <BitmapImage x:Key="RunFailedTestsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
             <BitmapImage x:Key="RepeatLastRunImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-repeat.png" />
-
             <BitmapImage x:Key="ResetResultsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask-undo.png" />
             <BitmapImage x:Key="StopImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/control-stop-square.png" />
-
             <BitmapImage x:Key="AddIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask--plus.png" />
             <BitmapImage x:Key="AddTestMethodIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask.png" />
             <BitmapImage x:Key="AddErrorTestMethodIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask--exclamation.png" />
-
             <BitmapImage x:Key="GroupByOutcomeImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask-question.png" />
             <BitmapImage x:Key="GroupByLocationImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/ObjectClass.png" />
             <BitmapImage x:Key="GroupByCategoryImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/tag-label-gray.png" />
-
             <BitmapImage x:Key="ExpandAllImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/expand-all.png" />
             <BitmapImage x:Key="CollapseAllImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/collapse-all.png" />
-
             <BitmapImage x:Key="CopyResultsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/document-copy.png" />
-
             <BitmapImage x:Key="FilterImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/Funnel.png" />
             <BitmapImage x:Key="OutcomeUnknown" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/question-white.png" />
             <BitmapImage x:Key="OutcomeFail" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
             <BitmapImage x:Key="OutcomeInconclusive" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/exclamation.png" />
             <BitmapImage x:Key="OutcomeSucceeded" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/tick-circle.png" />
-
             <BitmapImage x:Key="IgnoreTestImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask-empty.png" />
             <BitmapImage x:Key="UnignoreTestImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask-undo.png" />
 
             <local:TestOutcomeImageSourceConverter x:Key="OutcomeIconConverter" />
             <converters:MillisecondToTimeMagnitudeConverter x:Key="FormattedTime" />
             <converters:InvertBoolValueConverter x:Key="InvertBoolValue" />
-            <BooleanToVisibilityConverter x:Key="BoolToVisibility" />            
-
-            <Style x:Key="ToolbarImageOpacity" TargetType="Image" >
-                <Setter Property="Height" Value="16" />
-                <Setter Property="Width" Value="16" />
-                <Setter Property="Margin" Value="2,0,2,0" />
-                <Style.Triggers>
-                    <Trigger Property="IsEnabled"  Value="False">
-                        <Setter Property="Opacity" Value="0.3" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -84,7 +65,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Grid.RowSpan="3" Background="#FFEEF5FD" />
+        <Border Grid.Row="0" Grid.RowSpan="3" Background="{StaticResource ToolBarBackgroundBrush}" />
 
         <ToolBarTray Grid.Row="0" IsLocked="True">
             <ToolBar Style="{StaticResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
@@ -93,10 +74,7 @@
                     <local:TestExplorerGroupingBooleanConverter x:Key="LocationConverter" />
                     <local:TestExplorerGroupingBooleanConverter x:Key="CategoryConverter" />
                     <local:TestExplorerOutcomeFilterToBooleanConverter x:Key="OutcomeFilterConverter" />
-                    <Style x:Key="ToolBarToggleStyle" TargetType="ToggleButton">
-                        <Setter Property="Margin" Value="2" />
-                        <Setter Property="BorderBrush" Value="{x:Static SystemColors.ActiveBorderBrush}" />
-                    </Style>
+                    
                     <Style TargetType="Image">
                         <Setter Property="Height" Value="16" />
                     </Style>
@@ -287,7 +265,7 @@
         <ProgressBar Height="6"
                      Grid.Row="1"
                      Margin="2"
-                     Background="DimGray" 
+                     Background="{StaticResource GrayBrush}" 
                      Maximum="{Binding Model.CurrentRunTestCount, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
                      Value="{Binding Model.ExecutedCount, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
             <ProgressBar.Foreground>

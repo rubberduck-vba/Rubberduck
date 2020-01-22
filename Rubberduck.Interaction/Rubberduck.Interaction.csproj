@@ -24,8 +24,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Refactorings\IAssignedByValParameterQuickFixDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Update="Refactorings\IAssignedByValParameterQuickFixDialog.cs" />
   </ItemGroup>
 </Project>
