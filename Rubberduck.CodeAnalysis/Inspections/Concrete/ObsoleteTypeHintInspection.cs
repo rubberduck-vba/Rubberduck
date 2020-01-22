@@ -48,7 +48,7 @@ namespace Rubberduck.Inspections.Concrete
             var finder = _declarationFinderProvider.DeclarationFinder;
 
             var results = new List<IInspectionResult>();
-            foreach (var moduleDeclaration in State.DeclarationFinder.UserDeclarations(DeclarationType.Module))
+            foreach (var moduleDeclaration in finder.UserDeclarations(DeclarationType.Module))
             {
                 if (moduleDeclaration == null)
                 {
@@ -91,7 +91,7 @@ namespace Rubberduck.Inspections.Concrete
                 declaration);
         }
 
-        private string ResultDescription(Declaration declaration)
+        private static string ResultDescription(Declaration declaration)
         {
             var declarationTypeName = declaration.DeclarationType.ToString().ToLower();
             var identifierName = declaration.IdentifierName;
