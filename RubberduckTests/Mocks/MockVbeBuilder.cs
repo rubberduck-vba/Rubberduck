@@ -1,7 +1,5 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Moq;
@@ -43,7 +41,6 @@ namespace RubberduckTests.Mocks
         public const string TestProjectName = "TestProject1";
         public const string TestModuleName = "TestModule1";
         private readonly Mock<IVBE> _vbe;
-        private readonly Mock<IVbeEvents> _vbeEvents;
 
         public static Dictionary<ReferenceLibrary, (string Name, string Path)> ReferenceLibraryIdentifiers = new Dictionary<ReferenceLibrary, (string Name, string Path)>()
         {
@@ -72,7 +69,6 @@ namespace RubberduckTests.Mocks
             [ReferenceLibrary.MsForms] = (ReferenceLibrary.MsForms.Name(), ReferenceLibrary.MsForms.Path(), 2, 0, true),
         };
 
-        //private Mock<IWindows> _vbWindows;
         private readonly Windows _windows = new Windows();
         private readonly ICollection<IVBProject> _projects = new List<IVBProject>();
 
