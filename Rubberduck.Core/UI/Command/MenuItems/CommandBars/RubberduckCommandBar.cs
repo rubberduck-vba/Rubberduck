@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Rubberduck.Resources;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
@@ -99,30 +100,49 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
         private void SetStatusLabelCaption(string caption, int? errorCount = null)
         {
-            var reparseCommandButton = FindChildByTag(typeof(ReparseCommandMenuItem).FullName) as ReparseCommandMenuItem;
-            if (reparseCommandButton == null) { return; }
-
-            var showErrorsCommandButton = FindChildByTag(typeof(ShowParserErrorsCommandMenuItem).FullName) as ShowParserErrorsCommandMenuItem;
-            if (showErrorsCommandButton == null) { return; }
-
-            _uiDispatcher.Invoke(() =>
+            //This try-catch block guarantees that problems with the COM registration of the command bar classes
+            //only affect the status label text instead of aborting the status change or even crashing the host.
+            //See issue #5349 at https://github.com/rubberduck-vba/Rubberduck/issues/5349
+            try
             {
-                try
+                var reparseCommandButton =
+                    FindChildByTag(typeof(ReparseCommandMenuItem).FullName) as ReparseCommandMenuItem;
+                if (reparseCommandButton == null)
                 {
-                    reparseCommandButton.SetCaption(caption);
-                    reparseCommandButton.SetToolTip(string.Format(RubberduckUI.ReparseToolTipText, caption));
-                    if (errorCount.HasValue && errorCount.Value > 0)
+                    return;
+                }
+
+                var showErrorsCommandButton =
+                    FindChildByTag(typeof(ShowParserErrorsCommandMenuItem).FullName) as ShowParserErrorsCommandMenuItem;
+                if (showErrorsCommandButton == null)
+                {
+                    return;
+                }
+
+                _uiDispatcher.Invoke(() =>
+                {
+                    try
                     {
-                        showErrorsCommandButton.SetToolTip(
-                            string.Format(RubberduckUI.ParserErrorToolTipText, errorCount.Value));
+                        reparseCommandButton.SetCaption(caption);
+                        reparseCommandButton.SetToolTip(string.Format(RubberduckUI.ReparseToolTipText, caption));
+                        if (errorCount.HasValue && errorCount.Value > 0)
+                        {
+                            showErrorsCommandButton.SetToolTip(
+                                string.Format(RubberduckUI.ParserErrorToolTipText, errorCount.Value));
+                        }
                     }
-                }
-                catch (Exception exception)
-                {
-                    Logger.Error(exception, "Exception thrown trying to set the status label caption on the UI thread.");
-                }
-            });
-            Localize();
+                    catch (Exception exception)
+                    {
+                        Logger.Error(exception,
+                            "Exception thrown trying to set the status label caption on the UI thread.");
+                    }
+                });
+                Localize();
+            }
+            catch (COMException exception)
+            {
+                Logger.Error(exception, "COMException thrown trying to set the status label caption.");
+            }
         }
 
         private void SetContextSelectionCaption(string caption, int contextReferenceCount, string description)
