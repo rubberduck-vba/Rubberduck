@@ -99,49 +99,39 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
         private void SetStatusLabelCaption(string caption, int? errorCount = null)
         {
-            //This try-catch block guarantees that problems with the COM registration of the command bar classes
-            //only affect the status label text instead of aborting the status change or even crashing the host.
-            //See issue #5349 at https://github.com/rubberduck-vba/Rubberduck/issues/5349
-            try
+            var reparseCommandButton =
+                FindChildByTag(typeof(ReparseCommandMenuItem).FullName) as ReparseCommandMenuItem;
+            if (reparseCommandButton == null)
             {
-                var reparseCommandButton =
-                    FindChildByTag(typeof(ReparseCommandMenuItem).FullName) as ReparseCommandMenuItem;
-                if (reparseCommandButton == null)
-                {
-                    return;
-                }
-
-                var showErrorsCommandButton =
-                    FindChildByTag(typeof(ShowParserErrorsCommandMenuItem).FullName) as ShowParserErrorsCommandMenuItem;
-                if (showErrorsCommandButton == null)
-                {
-                    return;
-                }
-
-                _uiDispatcher.Invoke(() =>
-                {
-                    try
-                    {
-                        reparseCommandButton.SetCaption(caption);
-                        reparseCommandButton.SetToolTip(string.Format(RubberduckUI.ReparseToolTipText, caption));
-                        if (errorCount.HasValue && errorCount.Value > 0)
-                        {
-                            showErrorsCommandButton.SetToolTip(
-                                string.Format(RubberduckUI.ParserErrorToolTipText, errorCount.Value));
-                        }
-                    }
-                    catch (Exception exception)
-                    {
-                        Logger.Error(exception,
-                            "Exception thrown trying to set the status label caption on the UI thread.");
-                    }
-                });
-                Localize();
+                return;
             }
-            catch (COMException exception)
+
+            var showErrorsCommandButton =
+                FindChildByTag(typeof(ShowParserErrorsCommandMenuItem).FullName) as ShowParserErrorsCommandMenuItem;
+            if (showErrorsCommandButton == null)
             {
-                Logger.Error(exception, "COMException thrown trying to set the status label caption.");
+                return;
             }
+
+            _uiDispatcher.Invoke(() =>
+            {
+                try
+                {
+                    reparseCommandButton.SetCaption(caption);
+                    reparseCommandButton.SetToolTip(string.Format(RubberduckUI.ReparseToolTipText, caption));
+                    if (errorCount.HasValue && errorCount.Value > 0)
+                    {
+                        showErrorsCommandButton.SetToolTip(
+                            string.Format(RubberduckUI.ParserErrorToolTipText, errorCount.Value));
+                    }
+                }
+                catch (Exception exception)
+                {
+                    Logger.Error(exception,
+                        "Exception thrown trying to set the status label caption on the UI thread.");
+                }
+            });
+            Localize();
         }
 
         private void SetContextSelectionCaption(string caption, int contextReferenceCount, string description)
