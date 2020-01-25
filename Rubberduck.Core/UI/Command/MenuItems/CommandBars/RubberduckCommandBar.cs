@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Resources;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
@@ -15,18 +14,18 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
     public class RubberduckCommandBar : AppCommandBarBase, IDisposable
     {
         private readonly IContextFormatter _formatter;
-        private readonly IParseCoordinator _parser;
+        private readonly RubberduckParserState _state;
         private readonly ISelectionChangeService _selectionService;
 
-        public RubberduckCommandBar(IParseCoordinator parser, IEnumerable<ICommandMenuItem> items, IContextFormatter formatter, ISelectionChangeService selectionService, IUiDispatcher uiDispatcher) 
+        public RubberduckCommandBar(RubberduckParserState state, IEnumerable<ICommandMenuItem> items, IContextFormatter formatter, ISelectionChangeService selectionService, IUiDispatcher uiDispatcher) 
             : base("Rubberduck", CommandBarPosition.Top, items, uiDispatcher)
         {
-            _parser = parser;
+            _state = state;
             _formatter = formatter;
             _selectionService = selectionService;
            
-            _parser.State.StateChanged += OnParserStateChanged;
-            _parser.State.StatusMessageUpdate += OnParserStatusMessageUpdate;
+            _state.StateChangedHighPriority += OnParserStateChanged;
+            _state.StatusMessageUpdate += OnParserStatusMessageUpdate;
             _selectionService.SelectionChanged += OnSelectionChange;
         }
 
@@ -36,14 +35,14 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         {
             base.Initialize();
             SetStatusLabelCaption(ParserState.Pending);
-            EvaluateCanExecute(_parser.State);
+            EvaluateCanExecute(_state);
         }
 
         private Declaration _lastDeclaration;
         private ParserState _lastStatus = ParserState.None;
         private void EvaluateCanExecute(RubberduckParserState state, Declaration selected)
         {
-            var currentStatus = _parser.State.Status;
+            var currentStatus = _state.Status;
             if (_lastStatus == currentStatus && 
                 (selected == null || selected.Equals(_lastDeclaration)) &&
                 (selected != null || _lastDeclaration == null))
@@ -69,7 +68,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             var description = e.Declaration?.DescriptionString ?? string.Empty;
             //& renders the next character as if it was an accelerator.
             SetContextSelectionCaption(caption?.Replace("&", "&&"), refCount, description);
-            EvaluateCanExecute(_parser.State, e.Declaration);
+            EvaluateCanExecute(_state, e.Declaration);
         }
 
         
@@ -82,14 +81,14 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 message = RubberduckUI.ParserState_LoadingReference;
             }
 
-            SetStatusLabelCaption(message, _parser.State.ModuleExceptions.Count);            
+            SetStatusLabelCaption(message, _state.ModuleExceptions.Count);            
         }
 
         private void OnParserStateChanged(object sender, EventArgs e)
         {
-            _lastStatus = _parser.State.Status;
-            EvaluateCanExecute(_parser.State);    
-            SetStatusLabelCaption(_parser.State.Status, _parser.State.ModuleExceptions.Count);                 
+            _lastStatus = _state.Status;
+            EvaluateCanExecute(_state);    
+            SetStatusLabelCaption(_state.Status, _state.ModuleExceptions.Count);                 
         }
 
         public void SetStatusLabelCaption(ParserState state, int? errorCount = null)
@@ -182,8 +181,8 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             }
 
             _selectionService.SelectionChanged -= OnSelectionChange;
-            _parser.State.StateChanged -= OnParserStateChanged;
-            _parser.State.StatusMessageUpdate -= OnParserStatusMessageUpdate;
+            _state.StateChanged -= OnParserStateChanged;
+            _state.StatusMessageUpdate -= OnParserStatusMessageUpdate;
 
             RemoveCommandBar();
 
