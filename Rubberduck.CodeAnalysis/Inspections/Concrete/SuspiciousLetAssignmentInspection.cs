@@ -45,12 +45,9 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class SuspiciousLetAssignmentInspection : InspectionBase
     {
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
-
         public SuspiciousLetAssignmentInspection(RubberduckParserState state)
             : base(state)
         {
-            _declarationFinderProvider = state;
             Severity = CodeInspectionSeverity.Warning;
         }
 
@@ -73,7 +70,7 @@ namespace Rubberduck.Inspections.Concrete
 
         private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
         {
-            var finder = _declarationFinderProvider.DeclarationFinder;
+            var finder = DeclarationFinderProvider.DeclarationFinder;
             return BoundLhsInspectionResults(module, finder)
                 .Concat(UnboundLhsInspectionResults(module, finder));
         }
@@ -92,7 +89,7 @@ namespace Rubberduck.Inspections.Concrete
 
                 if (rhsDefaultMemberAccess != null)
                 {
-                    var result = InspectionResult(assignment, rhsDefaultMemberAccess, isUnbound, _declarationFinderProvider);
+                    var result = InspectionResult(assignment, rhsDefaultMemberAccess, isUnbound);
                     results.Add(result);
                 }
             }
@@ -133,12 +130,12 @@ namespace Rubberduck.Inspections.Concrete
             return (unboundRhsDefaultMemberAccess, true);
         }
 
-        private IInspectionResult InspectionResult(IdentifierReference lhsReference, IdentifierReference rhsReference, bool isUnbound, IDeclarationFinderProvider declarationFinderProvider)
+        private IInspectionResult InspectionResult(IdentifierReference lhsReference, IdentifierReference rhsReference, bool isUnbound)
         {
             var result = new IdentifierReferenceInspectionResult(
                 this,
                 ResultDescription(lhsReference, rhsReference),
-                declarationFinderProvider,
+                DeclarationFinderProvider,
                 lhsReference);
             result.Properties.RhSReference = rhsReference;
             if (isUnbound)
@@ -169,7 +166,7 @@ namespace Rubberduck.Inspections.Concrete
 
                 if (rhsDefaultMemberAccess != null)
                 {
-                    var result = InspectionResult(assignment, rhsDefaultMemberAccess, true, _declarationFinderProvider);
+                    var result = InspectionResult(assignment, rhsDefaultMemberAccess, true);
                     results.Add(result);
                 }
             }

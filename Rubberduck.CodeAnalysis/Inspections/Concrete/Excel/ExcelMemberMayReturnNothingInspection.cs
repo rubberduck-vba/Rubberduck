@@ -5,6 +5,7 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 
 namespace Rubberduck.Inspections.Concrete
@@ -43,16 +44,33 @@ namespace Rubberduck.Inspections.Concrete
     {
         public ExcelMemberMayReturnNothingInspection(RubberduckParserState state) : base(state) { }
 
-        private static readonly List<string> ExcelMembers = new List<string>
+        private static readonly List<(string className, string memberName)> ExcelMembers = new List<(string className, string memberName)>
         {
-            "Range.Find",
-            "Range.FindNext",
-            "Range.FindPrevious"
+            ("Range","Find"),
+            ("Range","FindNext"),
+            ("Range","FindPrevious")
         };
 
-        public override List<Declaration> MembersUnderTest => BuiltInDeclarations
-            .Where(decl => decl.ProjectName.Equals("Excel") && ExcelMembers.Any(member => decl.QualifiedName.ToString().EndsWith(member)))
-            .ToList();
+        public override IEnumerable<Declaration> MembersUnderTest(DeclarationFinder finder)
+        {
+            var excel = finder.Projects
+                .SingleOrDefault(item => !item.IsUserDefined
+                                         && item.IdentifierName == "Excel");
+            if (excel == null)
+            {
+                return Enumerable.Empty<Declaration>();
+            }
+
+            var memberModules = ExcelMembers
+                .Select(tpl => tpl.className)
+                .Distinct()
+                .Select(className => finder.FindClassModule(className, excel, true))
+                .OfType<ModuleDeclaration>();
+
+            return memberModules
+                .SelectMany(module => module.Members)
+                .Where(member => ExcelMembers.Contains((member.ComponentName, member.IdentifierName)));
+        }
 
         public override string ResultTemplate => InspectionResults.ExcelMemberMayReturnNothingInspection;
     }

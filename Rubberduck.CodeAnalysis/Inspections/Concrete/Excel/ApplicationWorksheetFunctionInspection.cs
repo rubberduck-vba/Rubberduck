@@ -9,6 +9,8 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.JunkDrawer.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -54,34 +56,41 @@ namespace Rubberduck.Inspections.Concrete
     /// ]]>
     /// </example>
     [RequiredLibrary("Excel")]
-    public class ApplicationWorksheetFunctionInspection : InspectionBase
+    public class ApplicationWorksheetFunctionInspection : IdentifierReferenceInspectionFromDeclarationsBase
     {
         public ApplicationWorksheetFunctionInspection(RubberduckParserState state)
             : base(state) { }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)
         {
             var excel = State.DeclarationFinder.Projects.SingleOrDefault(item => !item.IsUserDefined && item.IdentifierName == "Excel");
-            if (excel == null) { return Enumerable.Empty<IInspectionResult>(); }
+            if (excel == null)
+            {
+                return Enumerable.Empty<Declaration>();
+            }
 
-            var members = new HashSet<string>(BuiltInDeclarations.Where(decl => decl.DeclarationType == DeclarationType.Function &&
-                                                                        decl.ParentDeclaration != null && 
-                                                                        decl.ParentDeclaration.ComponentName.Equals("WorksheetFunction"))
-                                                                 .Select(decl => decl.IdentifierName));
+            if (!(State.DeclarationFinder.FindClassModule("WorksheetFunction", excel, true) is ModuleDeclaration worksheetFunctionsModule))
+            {
+                return Enumerable.Empty<Declaration>();
+            }
 
-            var usages = BuiltInDeclarations.Where(decl => decl.References.Any() &&
-                                                           decl.ProjectName.Equals("Excel") &&
-                                                           decl.ComponentName.Equals("Application") &&
-                                                           members.Contains(decl.IdentifierName));
+            if (!(State.DeclarationFinder.FindClassModule("Application", excel, true) is ModuleDeclaration excelApplicationClass))
+            {
+                return Enumerable.Empty<Declaration>();
+            }
 
-            return from usage in usages
-                   // filtering on references isn't the default ignore filtering
-                   from reference in usage.References.Where(use => !use.IsIgnoringInspectionResultFor(AnnotationName))
-                   let qualifiedSelection = new QualifiedSelection(reference.QualifiedModuleName, reference.Selection)
-                   select new IdentifierReferenceInspectionResult(this,
-                                               string.Format(InspectionResults.ApplicationWorksheetFunctionInspection, usage.IdentifierName),
-                                               State,
-                                               reference);
+            var worksheetFunctionNames = worksheetFunctionsModule.Members
+                .Where(decl => decl.DeclarationType == DeclarationType.Function)
+                .Select(decl => decl.IdentifierName)
+                .ToHashSet();
+
+            return excelApplicationClass.Members
+                .Where(decl => worksheetFunctionNames.Contains(decl.IdentifierName));
+        }
+
+        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
+        {
+            return string.Format(InspectionResults.ApplicationWorksheetFunctionInspection, reference.IdentifierName);
         }
     }
 }

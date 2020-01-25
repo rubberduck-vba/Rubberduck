@@ -26,6 +26,48 @@ End Sub
 
         [Test]
         [Category("Inspections")]
+        public void ImplicitActiveSheetReference_ReportsCells()
+        {
+            const string inputCode =
+                @"Sub foo()
+    Dim arr1() As Variant
+    arr1 = Cells(1,2)
+End Sub
+";
+            var modules = new (string, string, ComponentType)[] { ("Class1", inputCode, ComponentType.ClassModule) };
+            Assert.AreEqual(1, InspectionResultsForModules(modules, "Excel").Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ImplicitActiveSheetReference_ReportsColumns()
+        {
+            const string inputCode =
+                @"Sub foo()
+    Dim arr1() As Variant
+    arr1 = Columns(3)
+End Sub
+";
+            var modules = new (string, string, ComponentType)[] { ("Class1", inputCode, ComponentType.ClassModule) };
+            Assert.AreEqual(1, InspectionResultsForModules(modules, "Excel").Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ImplicitActiveSheetReference_ReportsRows()
+        {
+            const string inputCode =
+                @"Sub foo()
+    Dim arr1() As Variant
+    arr1 = Rows(3)
+End Sub
+";
+            var modules = new (string, string, ComponentType)[] { ("Class1", inputCode, ComponentType.ClassModule) };
+            Assert.AreEqual(1, InspectionResultsForModules(modules, "Excel").Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void ImplicitActiveSheetReference_Ignored_DoesNotReportRange()
         {
             const string inputCode =

@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.VBEditor.ComManagement;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -45,9 +45,15 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     [RequiredHost("EXCEL.EXE")]
     [RequiredLibrary("Excel")]
-    public class SheetAccessedUsingStringInspection : InspectionBase
+    public class SheetAccessedUsingStringInspection : IdentifierReferenceInspectionFromDeclarationsBase
     {
-        public SheetAccessedUsingStringInspection(RubberduckParserState state) : base(state) { }
+        private readonly IProjectsProvider _projectsProvider;
+
+        public SheetAccessedUsingStringInspection(RubberduckParserState state, IProjectsProvider projectsProvider)
+            : base(state)
+        {
+            _projectsProvider = projectsProvider;
+        }
 
         private static readonly string[] InterestingMembers =
         {
@@ -56,109 +62,111 @@ namespace Rubberduck.Inspections.Concrete
 
         private static readonly string[] InterestingClasses =
         {
-            "_Global", "_Application", "Global", "Application", "Workbook"
+            "Workbook"
         };
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)
         {
-            var excel = State.DeclarationFinder.Projects.SingleOrDefault(item => !item.IsUserDefined && item.IdentifierName == "Excel");
+            var excel = finder.Projects
+                .SingleOrDefault(project => project.IdentifierName == "Excel" && !project.IsUserDefined);
             if (excel == null)
             {
-                return Enumerable.Empty<IInspectionResult>();                
+                return Enumerable.Empty<Declaration>();
             }
 
-            var targetProperties = BuiltInDeclarations
+            var relevantClasses = InterestingClasses
+                .Select(className => finder.FindClassModule(className, excel, true))
+                .OfType<ModuleDeclaration>();
+
+            var relevantProperties = relevantClasses
+                .SelectMany(classDeclaration => classDeclaration.Members)
                 .OfType<PropertyDeclaration>()
-                .Where(x => InterestingMembers.Contains(x.IdentifierName) && InterestingClasses.Contains(x.ParentDeclaration?.IdentifierName))
-                .ToList();
+                .Where(member => InterestingMembers.Contains(member.IdentifierName));
 
-            var references = targetProperties.SelectMany(declaration => declaration.References
-                .Where(reference => IsAccessedWithStringLiteralParameter(reference))
-                .Select(reference => new IdentifierReferenceInspectionResult(this,
-                    InspectionResults.SheetAccessedUsingStringInspection, State, reference)));
-
-            var issues = new List<IdentifierReferenceInspectionResult>();
-
-            foreach (var reference in references)
-            {
-                using (var component = GetVBComponentMatchingSheetName(reference)) 
-                {
-                    if (component == null)
-                    {
-                        continue;
-                    }
-                    using (var properties = component.Properties)
-                    {
-                        reference.Properties.CodeName = (string)properties.Single(property => property.Name == "CodeName").Value;
-                    }
-                    issues.Add(reference);
-                }
-            }
-            return issues;
+            return relevantProperties;
         }
 
-        private static bool IsAccessedWithStringLiteralParameter(IdentifierReference reference)
+        protected override (bool isResult, object properties) IsResultReferenceWithAdditionalProperties(IdentifierReference reference, DeclarationFinder finder)
+        {
+            var sheetNameArgumentLiteralExpressionContext = SheetNameArgumentLiteralExpressionContext(reference);
+
+            if (sheetNameArgumentLiteralExpressionContext?.STRINGLITERAL() == null)
+            {
+                return (false, null);
+            }
+
+            var projectId = reference.QualifiedModuleName.ProjectId;
+            var sheetName = sheetNameArgumentLiteralExpressionContext.GetText().UnQuote();
+            var codeName = CodeNameOfVBComponentMatchingSheetName(projectId, sheetName);
+
+            if (codeName == null)
+            {
+                return (false, null);
+            }
+
+            dynamic properties = new PropertyBag();
+            properties.CodeName = codeName;
+            return (true, properties);
+        }
+
+        private static VBAParser.LiteralExpressionContext SheetNameArgumentLiteralExpressionContext(IdentifierReference reference)
         {
             // Second case accounts for global modules
             var indexExprContext = reference.Context.Parent.Parent as VBAParser.IndexExprContext ??
                                    reference.Context.Parent as VBAParser.IndexExprContext;
 
-            var literalExprContext = indexExprContext
+            return (indexExprContext
                 ?.argumentList()
                 ?.argument(0)
                 ?.positionalArgument()
-                ?.argumentExpression().expression() as VBAParser.LiteralExprContext;
-
-            return literalExprContext?.literalExpression().STRINGLITERAL() != null;
+                ?.argumentExpression()
+                ?.expression() as VBAParser.LiteralExprContext)
+                ?.literalExpression();
         }
 
-        private IVBComponent GetVBComponentMatchingSheetName(IdentifierReferenceInspectionResult reference)
+        private string CodeNameOfVBComponentMatchingSheetName(string projectId, string sheetName)
         {
-            // Second case accounts for global modules
-            var indexExprContext = reference.Context.Parent.Parent as VBAParser.IndexExprContext ??
-                                   reference.Context.Parent as VBAParser.IndexExprContext;
+            var components = _projectsProvider.Components(projectId);
 
-            if (indexExprContext == null)
+            foreach (var (module, component) in components)
             {
-                return null;
+                if (component.Type != ComponentType.Document)
+                {
+                    continue;
+                }
+
+                var name = ComponentPropertyValue(component, "Name");
+                if (sheetName.Equals(name))
+                {
+                    return ComponentPropertyValue(component, "CodeName");
+                }
             }
 
-            var sheetArgumentContext = indexExprContext.argumentList().argument(0);
-            var sheetName = FormatSheetName(sheetArgumentContext.GetText());
-            var project = State.ProjectsProvider.Project(reference.QualifiedName.ProjectId);
+            return null;
+        }
 
-            using (var components = project.VBComponents)
+        private static string ComponentPropertyValue(IVBComponent component, string propertyName)
+        {
+            using (var properties = component.Properties)
             {
-                foreach (var component in components)
+                foreach (var property in properties)
                 {
-                    using (var properties = component.Properties)
+                    using (property)
                     {
-                        if (component.Type != ComponentType.Document)
+                        if (property.Name == propertyName)
                         {
-                            component.Dispose();
-                            continue;
-                        }
-                        foreach (var property in properties)
-                        {
-                            var found = property.Name.Equals("Name") && ((string)property.Value).Equals(sheetName);
-                            property.Dispose();
-                            if (found)
-                            {
-                                return component;
-                            }                          
+                            return (string)property.Value;
                         }
                     }
-                    component.Dispose();
                 }
-                return null;
             }
+
+            return null;
         }
 
-        private static string FormatSheetName(string sheetName)
+        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
         {
-            return sheetName.StartsWith("\"") && sheetName.EndsWith("\"")
-                ? sheetName.Substring(1, sheetName.Length - 2)
-                : sheetName;
+            return InspectionResults.SheetAccessedUsingStringInspection;
         }
     }
 }
