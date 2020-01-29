@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.Parsing.Annotations
 {
-    public interface ITestAnnotation
+    public interface ITestAnnotation : IAnnotation
     {
     }
 }
