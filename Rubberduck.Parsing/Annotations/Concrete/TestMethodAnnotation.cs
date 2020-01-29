@@ -10,7 +10,7 @@ namespace Rubberduck.Parsing.Annotations
     /// <summary>
     /// Marks a method that the test engine will execute as a unit test.
     /// </summary>
-    public sealed class TestMethodAnnotation : AnnotationBase
+    public sealed class TestMethodAnnotation : AnnotationBase, ITestAnnotation
     {
         public TestMethodAnnotation()
             : base("TestMethod", AnnotationTarget.Member)
