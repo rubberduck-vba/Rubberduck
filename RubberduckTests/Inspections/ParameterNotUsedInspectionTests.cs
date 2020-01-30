@@ -4,7 +4,6 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
@@ -75,7 +74,7 @@ End Sub";
                 ("Module1", inputCode, ComponentType.StandardModule),
             };
 
-            Assert.AreEqual(0, InspectionResultsForModules(modules, ReferenceLibrary.AdoDb).Count());
+            Assert.AreEqual(0, InspectionResultsForModules(modules, "ADODB").Count());
         }
 
         [Test]

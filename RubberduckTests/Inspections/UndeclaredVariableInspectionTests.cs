@@ -4,7 +4,6 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
-using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
@@ -21,7 +20,7 @@ namespace RubberduckTests.Inspections
     Debug.Print a
 End Sub";
 
-            Assert.AreEqual(1, InspectionResultsForModules(("MyClass", inputCode, ComponentType.ClassModule), ReferenceLibrary.VBA).Count());
+            Assert.AreEqual(1, InspectionResultsForModules(("MyClass", inputCode, ComponentType.ClassModule), "VBA").Count());
         }
 
         [Test]
@@ -35,7 +34,7 @@ End Sub";
     Debug.Print a
 End Sub";
 
-            Assert.AreEqual(0, InspectionResultsForModules(("MyClass", inputCode, ComponentType.ClassModule), ReferenceLibrary.VBA).Count());
+            Assert.AreEqual(0, InspectionResultsForModules(("MyClass", inputCode, ComponentType.ClassModule), "VBA").Count());
         }
 
         [Test]
@@ -50,7 +49,7 @@ Sub Test()
     Debug.Print a
 End Sub";
 
-            Assert.AreEqual(0, InspectionResultsForModules(("MyClass", inputCode, ComponentType.ClassModule), ReferenceLibrary.VBA).Count());
+            Assert.AreEqual(0, InspectionResultsForModules(("MyClass", inputCode, ComponentType.ClassModule), "VBA").Count());
         }
 
         [Test]
@@ -82,7 +81,7 @@ End Sub";
     Debug.Print a
 End Sub";
 
-            Assert.AreEqual(0, InspectionResultsForModules(("MyClass", inputCode, ComponentType.ClassModule), ReferenceLibrary.VBA).Count());
+            Assert.AreEqual(0, InspectionResultsForModules(("MyClass", inputCode, ComponentType.ClassModule), "VBA").Count());
         }
 
         [Test]

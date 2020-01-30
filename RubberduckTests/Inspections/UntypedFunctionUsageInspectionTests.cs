@@ -4,7 +4,6 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.Parsing.Inspections.Abstract;
-using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
@@ -21,7 +20,7 @@ namespace RubberduckTests.Inspections
     str = Left(""test"", 1)
 End Sub";
 
-            Assert.AreEqual(1, InspectionResultsForModules(("MyClass", inputCode, ComponentType.ClassModule), ReferenceLibrary.VBA).Count());
+            Assert.AreEqual(1, InspectionResultsForModules(("MyClass", inputCode, ComponentType.ClassModule), "VBA").Count());
         }
 
         [Test]
@@ -34,7 +33,7 @@ End Sub";
     str = Left$(""test"", 1)
 End Sub";
 
-            Assert.AreEqual(0, InspectionResultsForModules(("MyClass", inputCode, ComponentType.ClassModule), ReferenceLibrary.VBA).Count());
+            Assert.AreEqual(0, InspectionResultsForModules(("MyClass", inputCode, ComponentType.ClassModule), "VBA").Count());
         }
 
         [Test]
@@ -49,7 +48,7 @@ End Sub";
     str = Left(""test"", 1)
 End Sub";
 
-            Assert.AreEqual(0, InspectionResultsForModules(("MyClass", inputCode, ComponentType.ClassModule), ReferenceLibrary.VBA).Count());
+            Assert.AreEqual(0, InspectionResultsForModules(("MyClass", inputCode, ComponentType.ClassModule), "VBA").Count());
         }
 
         [Test]

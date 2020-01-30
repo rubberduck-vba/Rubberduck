@@ -194,7 +194,7 @@ End Sub";
                         CreateVBComponentPropertyMock("CodeName", "Sheet1").Object
                     })
                 .AddReference("ReferencedProject", string.Empty, 0, 0)
-                .AddReference(ReferenceLibrary.Excel)
+                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
                 .Build();
 
             var vbe = builder.AddProject(referencedProject).AddProject(project).Build();
