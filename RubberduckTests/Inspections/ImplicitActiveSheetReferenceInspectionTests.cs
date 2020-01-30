@@ -4,6 +4,7 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
+using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
@@ -21,7 +22,7 @@ namespace RubberduckTests.Inspections
 End Sub
 ";
             var modules = new(string, string, ComponentType)[] { ("Class1", inputCode, ComponentType.ClassModule) };
-            Assert.AreEqual(1, InspectionResultsForModules(modules, "Excel").Count());
+            Assert.AreEqual(1, InspectionResultsForModules(modules, ReferenceLibrary.Excel).Count());
         }
 
         [Test]
@@ -80,7 +81,7 @@ End Sub
 ";
 
             var modules = new(string, string, ComponentType)[] { ("Class1", inputCode, ComponentType.ClassModule) };
-            Assert.AreEqual(0, InspectionResultsForModules(modules, "Excel").Count());
+            Assert.AreEqual(0, InspectionResultsForModules(modules, ReferenceLibrary.Excel).Count());
         }
 
         [Test]

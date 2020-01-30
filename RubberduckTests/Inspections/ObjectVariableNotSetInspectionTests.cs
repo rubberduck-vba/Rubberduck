@@ -5,6 +5,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
+using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
@@ -140,7 +141,7 @@ Private Sub Workbook_Open()
     target = Range(""A1"")
     target.Value = ""all good""
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel");
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, ReferenceLibrary.Excel);
         }
 
         [Test]
@@ -156,7 +157,7 @@ Private Sub TestSub(ByRef testParam As Variant)
     testParam = target
     testParam.Add 100
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "VBA");
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, ReferenceLibrary.VBA);
         }
 
         [Test]
@@ -192,7 +193,7 @@ End Sub
 Private Sub TestSub(ByRef testParam As Variant)
     testParam = New Collection     
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "VBA");
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, ReferenceLibrary.VBA);
         }
 
         [Test]
@@ -225,7 +226,7 @@ Private Sub Workbook_Open()
     target.Value = ""forgot something?""
 
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel");
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, ReferenceLibrary.Excel);
         }
 
         [Test]
@@ -243,7 +244,7 @@ Private Sub Workbook_Open()
     target.Value = ""All good""
 
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel");
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, ReferenceLibrary.Excel);
         }
 
         [Test]
@@ -285,7 +286,7 @@ Private Sub TestSelfAssigned()
     Dim arg1 As new Collection
     arg1.Add 7
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "VBA");
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, ReferenceLibrary.VBA);
         }
 
         [Test]
@@ -342,7 +343,7 @@ End Sub";
 Private Function Test() As Collection
     Test = New Collection
 End Function";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "VBA");
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, ReferenceLibrary.VBA);
         }
 
         [Test]
@@ -493,7 +494,7 @@ Private Sub Test()
     bar.Add ""x"", ""x""
     foo = ""Test"" & bar.Item(""x"")
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "VBA");
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, ReferenceLibrary.VBA);
         }
 
         [Test]
@@ -527,7 +528,7 @@ Private Sub Test()
     Dim bar As Variant    
     bar = foo
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel");
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, ReferenceLibrary.Excel);
         }
 
         [Test]
@@ -543,7 +544,7 @@ Private Sub Test()
     bar = foo
 End Sub";
             //The default member of Recordset is Fields, which is an object.
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "ADODB");
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, ReferenceLibrary.AdoDb);
         }
 
         [Test]
@@ -559,7 +560,7 @@ Private Sub Test()
     foo = bar
 End Sub";
             //The default member of Recordset is Fields, which is an object and only has a paramterized default member.
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "ADODB");
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, ReferenceLibrary.AdoDb);
         }
 
         [Test]
@@ -573,7 +574,7 @@ Private Sub Test()
     Dim foo As Variant  
     foo = New Connection
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "ADODB");
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, ReferenceLibrary.AdoDb);
         }
 
         [Test]
@@ -588,7 +589,7 @@ Private Sub Test()
     foo = New Recordset
 End Sub";
             //The default member of Recordset is Fields, which is an object.
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "ADODB");
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, ReferenceLibrary.AdoDb);
         }
 
         [Test]
@@ -1410,7 +1411,7 @@ End Function
             return new ObjectVariableNotSetInspection(state);
         }
 
-        private void AssertInputCodeYieldsExpectedInspectionResultCount(string inputCode, int expected, params string[] testLibraries)
+        private void AssertInputCodeYieldsExpectedInspectionResultCount(string inputCode, int expected, params ReferenceLibrary[] testLibraries)
         {
             var inspectionResults = InspectionResultsForModules(("Class1", inputCode, ComponentType.ClassModule), testLibraries);
             Assert.AreEqual(expected, inspectionResults.Count());
