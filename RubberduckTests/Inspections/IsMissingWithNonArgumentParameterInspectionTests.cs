@@ -4,7 +4,6 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
@@ -131,7 +130,7 @@ End Function
                 ("Module1", code, ComponentType.StandardModule)
             };
 
-            return InspectionResultsForModules(modules, ReferenceLibrary.VBA).Count();
+            return InspectionResultsForModules(modules, "VBA").Count();
         }
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)

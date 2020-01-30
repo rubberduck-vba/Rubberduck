@@ -448,7 +448,7 @@ End Sub
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, code)
-                .AddReference(ReferenceLibrary.VBA)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
             component = project.Object.VBComponents.First();

@@ -22,9 +22,9 @@ Public Sub DoSomething()
     [A1] = 42
 End Sub
 ";
-            var vbe = MockVbeBuilder.BuildFromModules(("Module1", code, ComponentType.StandardModule), new ReferenceLibrary[] { ReferenceLibrary.VBA, ReferenceLibrary.Excel });
+            var vbe = MockVbeBuilder.BuildFromModules(("Module1", code, ComponentType.StandardModule), new string[] { "VBA", "Excel" });
             var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupGet(m => m.ApplicationName).Returns(ReferenceLibrary.Excel.Name());
+            mockHost.SetupGet(m => m.ApplicationName).Returns("Excel");
             vbe.Setup(m => m.HostApplication()).Returns(() => mockHost.Object);
 
             Assert.AreEqual(1, InspectionResults(vbe.Object).Count());
