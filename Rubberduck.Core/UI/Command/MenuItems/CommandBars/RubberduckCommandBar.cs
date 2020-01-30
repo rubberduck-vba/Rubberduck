@@ -171,7 +171,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             }
 
             _selectionService.SelectionChanged -= OnSelectionChange;
-            _state.StateChanged -= OnParserStateChanged;
+            _state.StateChangedHighPriority -= OnParserStateChanged;
             _state.StatusMessageUpdate -= OnParserStatusMessageUpdate;
 
             RemoveCommandBar();
