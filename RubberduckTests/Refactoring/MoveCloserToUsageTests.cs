@@ -824,7 +824,7 @@ End Sub";
             var vbe = new MockVbeBuilder()
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Module", ComponentType.StandardModule, inputCode)
-                .AddReference("EXCEL", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
+                .AddReference(ReferenceLibrary.Excel)
                 .AddProjectToVbeBuilder()
                 .Build()
                 .Object;

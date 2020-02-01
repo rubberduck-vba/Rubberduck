@@ -4,6 +4,7 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
+using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
@@ -303,7 +304,7 @@ Sub DoSomething()
     bar = Len(foo)
 End Sub
 ";
-            var inspectionResults = InspectionResultsForModules(("TestModule", code, ComponentType.StandardModule), "VBA");
+            var inspectionResults = InspectionResultsForModules(("TestModule", code, ComponentType.StandardModule), ReferenceLibrary.VBA);
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
@@ -318,7 +319,7 @@ Sub DoSomething()
     bar = LenB(foo)
 End Sub
 ";
-            var inspectionResults = InspectionResultsForModules(("TestModule", code, ComponentType.StandardModule), "VBA");
+            var inspectionResults = InspectionResultsForModules(("TestModule", code, ComponentType.StandardModule), ReferenceLibrary.VBA);
             Assert.AreEqual(0, inspectionResults.Count());
         }
 
@@ -334,7 +335,7 @@ Sub DoSomething()
     bar = foo + 5
 End Sub
 ";
-            var inspectionResults = InspectionResultsForModules(("TestModule", code, ComponentType.StandardModule), "VBA");
+            var inspectionResults = InspectionResultsForModules(("TestModule", code, ComponentType.StandardModule), ReferenceLibrary.VBA);
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
@@ -350,7 +351,7 @@ Sub DoSomething()
     bar = foo + 5
 End Sub
 ";
-            var inspectionResults = InspectionResultsForModules(("TestModule", code, ComponentType.StandardModule), "VBA");
+            var inspectionResults = InspectionResultsForModules(("TestModule", code, ComponentType.StandardModule), ReferenceLibrary.VBA);
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
@@ -365,7 +366,7 @@ Sub DoSomething()
     bar = Len(foo + 5)
 End Sub
 ";
-            var inspectionResults = InspectionResultsForModules(("TestModule", code, ComponentType.StandardModule), "VBA");
+            var inspectionResults = InspectionResultsForModules(("TestModule", code, ComponentType.StandardModule), ReferenceLibrary.VBA);
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
@@ -380,7 +381,7 @@ Sub DoSomething()
     bar = LenB(foo + 5)
 End Sub
 ";
-            var inspectionResults = InspectionResultsForModules(("TestModule", code, ComponentType.StandardModule), "VBA");
+            var inspectionResults = InspectionResultsForModules(("TestModule", code, ComponentType.StandardModule), ReferenceLibrary.VBA);
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
