@@ -2,13 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Inspections.CodePathAnalysis.Extensions
 {
     public static class NodeExtensions
     {
-        public static IEnumerable<INode> GetFlattenedNodes(this INode node, IEnumerable<Type> excludedTypes)
+        public static IEnumerable<INode> FlattenedNodes(this INode node, IEnumerable<Type> excludedTypes)
         {
             foreach (var child in node.Children)
             {
@@ -18,7 +17,7 @@ namespace Rubberduck.Inspections.CodePathAnalysis.Extensions
                 }
                 else
                 {
-                    foreach (var nextChild in GetFlattenedNodes(child, excludedTypes))
+                    foreach (var nextChild in FlattenedNodes(child, excludedTypes))
                     {
                         yield return nextChild;
                     }
@@ -26,7 +25,7 @@ namespace Rubberduck.Inspections.CodePathAnalysis.Extensions
             }
         }
 
-        public static IEnumerable<INode> GetNodes(this INode node, IEnumerable<Type> types)
+        public static IEnumerable<INode> Nodes(this INode node, ICollection<Type> types)
         {
             if (types.Contains(node.GetType()))
             {
@@ -35,50 +34,26 @@ namespace Rubberduck.Inspections.CodePathAnalysis.Extensions
 
             foreach (var child in node.Children)
             {
-                foreach (var childNode in GetNodes(child, types))
+                foreach (var childNode in Nodes(child, types))
                 {
                     yield return childNode;
                 }
             }
         }
 
-        public static INode GetFirstNode(this INode node, IEnumerable<Type> excludedTypes)
+        public static INode GetFirstNode(this INode node, ICollection<Type> excludedTypes)
         {
             if (!excludedTypes.Contains(node.GetType()))
             {
                 return node;
             }
 
-            return GetFirstNode(node.Children[0], excludedTypes);
-        }
-
-        public static List<IdentifierReference> GetIdentifierReferences(this INode node)
-        {
-            var nodes = new List<IdentifierReference>();
-
-            var blockNodes = node.GetNodes(new[] { typeof(BlockNode) });
-            foreach (var block in blockNodes)
+            if (!node.Children.Any())
             {
-                INode lastNode = default;
-                foreach (var flattenedNode in block.GetFlattenedNodes(new[] { typeof(GenericNode), typeof(BlockNode) }))
-                {
-                    if (flattenedNode is AssignmentNode &&
-                        lastNode is AssignmentNode)
-                    {
-                        nodes.Add(lastNode.Reference);
-                    }
-
-                    lastNode = flattenedNode;
-                }
-
-                if (lastNode is AssignmentNode &&
-                    block.Children[0].GetFirstNode(new[] { typeof(GenericNode) }) is DeclarationNode)
-                {
-                    nodes.Add(lastNode.Reference);
-                }
+                return null;
             }
 
-            return nodes;
+            return GetFirstNode(node.Children[0], excludedTypes);
         }
     }
 }

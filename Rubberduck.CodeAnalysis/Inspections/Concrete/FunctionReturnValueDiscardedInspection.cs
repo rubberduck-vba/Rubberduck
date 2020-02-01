@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Inspections;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -46,7 +47,7 @@ namespace Rubberduck.Inspections.Concrete
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        protected override bool IsResultReference(IdentifierReference reference)
+        protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
             return reference?.Declaration != null
                 && !reference.IsAssignment
@@ -87,7 +88,7 @@ namespace Rubberduck.Inspections.Concrete
             return outputListParent == null;
         }
 
-        protected override string ResultDescription(IdentifierReference reference)
+        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
         {
             var functionName = reference.Declaration.QualifiedName.ToString();
             return string.Format(InspectionResults.FunctionReturnValueDiscardedInspection, functionName);

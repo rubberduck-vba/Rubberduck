@@ -169,7 +169,7 @@ End Sub
 
         [Test]
         [Category("Inspections")]
-        public void ExcelMemberMayReturnNothing_ReturnsResult_DefaultAccessExpression()
+        public void ExcelMemberMayReturnNothing_ReturnsResult_DefaultAccessExpression_Let()
         {
             const string inputCode =
                 @"Sub UnderTest()
@@ -182,6 +182,133 @@ End Sub
 ";
 
             Assert.AreEqual(1, InspectionResults(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ExcelMemberMayReturnNothing_ReturnsResult_DefaultAccessExpression_Argument()
+        {
+            const string inputCode =
+                @"Sub UnderTest()
+    Dim ws As Worksheet
+    Set ws = Sheet1
+    Bar ws.Range(""B:B"").Find(""bar"")
+End Sub
+
+Private Sub Bar(arg As Long)
+End Sub
+";
+
+            Assert.AreEqual(1, InspectionResults(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ExcelMemberMayReturnNothing_ReturnsResult_ObjectArgument()
+        {
+            const string inputCode =
+                @"Sub UnderTest()
+    Dim ws As Worksheet
+    Set ws = Sheet1
+    Bar ws.Range(""B:B"").Find(""bar"")
+End Sub
+
+Private Sub Bar(arg As Range)
+End Sub
+";
+
+            Assert.AreEqual(1, InspectionResults(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ExcelMemberMayReturnNothing_ReturnsResult_DefaultAccessExpression_Argument_ExplicitCall()
+        {
+            const string inputCode =
+                @"Sub UnderTest()
+    Dim ws As Worksheet
+    Set ws = Sheet1
+    Call Bar(ws.Range(""B:B"").Find(""bar""))
+End Sub
+
+Private Sub Bar(arg As Long)
+End Sub
+";
+
+            Assert.AreEqual(1, InspectionResults(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ExcelMemberMayReturnNothing_ReturnsResult_ObjectArgument_ExplicitCall()
+        {
+            const string inputCode =
+                @"Sub UnderTest()
+    Dim ws As Worksheet
+    Set ws = Sheet1
+    Call Bar(ws.Range(""B:B"").Find(""bar""))
+End Sub
+
+Private Sub Bar(arg As Range)
+End Sub
+";
+
+            Assert.AreEqual(1, InspectionResults(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ExcelMemberMayReturnNothing_ReturnsResult_WithBlock()
+        {
+            const string inputCode =
+                @"Sub UnderTest()
+    Dim ws As Worksheet
+    Set ws = Sheet1
+    With ws.Range(""B:B"").Find(""bar"")
+    End With
+End Sub
+
+Private Sub Bar(arg As Range)
+End Sub
+";
+
+            Assert.AreEqual(1, InspectionResults(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ExcelMemberMayReturnNothing_DoesNotReturnResult_CallStatement()
+        {
+            const string inputCode =
+                @"Sub UnderTest()
+    Dim ws As Worksheet
+    Set ws = Sheet1
+    ws.Range(""B:B"").Find ""bar""
+End Sub
+
+Private Sub Bar(arg As Range)
+End Sub
+";
+
+            Assert.AreEqual(0, InspectionResults(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ExcelMemberMayReturnNothing_DoesNotReturnResult_ExplicitCallStatement()
+        {
+            const string inputCode =
+                @"Sub UnderTest()
+    Dim ws As Worksheet
+    Set ws = Sheet1
+    Call ws.Range(""B:B"").Find(""bar"")
+End Sub
+
+Private Sub Bar(arg As Range)
+End Sub
+";
+
+            Assert.AreEqual(0, InspectionResults(inputCode).Count());
         }
 
         [Test]

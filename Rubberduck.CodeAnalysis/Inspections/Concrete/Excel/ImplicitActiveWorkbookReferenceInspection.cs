@@ -1,13 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -38,7 +36,7 @@ namespace Rubberduck.Inspections.Concrete
     /// ]]>
     /// </example>
     [RequiredLibrary("Excel")]
-    public sealed class ImplicitActiveWorkbookReferenceInspection : InspectionBase
+    public sealed class ImplicitActiveWorkbookReferenceInspection : IdentifierReferenceInspectionFromDeclarationsBase
     {
         public ImplicitActiveWorkbookReferenceInspection(RubberduckParserState state)
             : base(state) { }
@@ -53,27 +51,31 @@ namespace Rubberduck.Inspections.Concrete
             "_Global", "_Application", "Global", "Application"
         };
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)
         {
-            var excel = State.DeclarationFinder.Projects.SingleOrDefault(item => !item.IsUserDefined && item.IdentifierName == "Excel");
+            var excel = finder.Projects
+                .SingleOrDefault(project => project.IdentifierName == "Excel" && !project.IsUserDefined);
             if (excel == null)
             {
-                return Enumerable.Empty<IInspectionResult>();
+                return Enumerable.Empty<Declaration>();
             }
 
-            var targetProperties = BuiltInDeclarations
+            var relevantClasses = InterestingClasses
+                .Select(className => finder.FindClassModule(className, excel, true))
+                .OfType<ModuleDeclaration>();
+
+            var relevantProperties = relevantClasses
+                .SelectMany(classDeclaration => classDeclaration.Members)
                 .OfType<PropertyGetDeclaration>()
-                .Where(x => InterestingMembers.Contains(x.IdentifierName) && InterestingClasses.Contains(x.ParentDeclaration?.IdentifierName))
-                .ToList();
+                .Where(member => InterestingMembers.Contains(member.IdentifierName));
 
-            // only inspects references, must filter ignores manually, because default filtering doesn't work here
-            var members = targetProperties.SelectMany(item =>
-                item.References.Where(reference => !reference.IsIgnoringInspectionResultFor(AnnotationName)));
+            return relevantProperties;
+        }
 
-            return members.Select(issue => new IdentifierReferenceInspectionResult(this,
-                                                                string.Format(InspectionResults.ImplicitActiveWorkbookReferenceInspection, issue.Context.GetText()),
-                                                                State,
-                                                                issue));
+        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
+        {
+            var referenceText = reference.Context.GetText();
+            return string.Format(InspectionResults.ImplicitActiveWorkbookReferenceInspection, referenceText);
         }
     }
 }

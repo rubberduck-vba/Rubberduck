@@ -5,6 +5,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -61,14 +62,14 @@ namespace Rubberduck.Inspections.Concrete
             Severity = CodeInspectionSeverity.Suggestion;
         }
 
-        protected override bool IsResultReference(IdentifierReference reference)
+        protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
             return reference.IsIndexedDefaultMemberAccess
                    && reference.DefaultMemberRecursionDepth == 1
                    && reference.Context is VBAParser.DictionaryAccessContext;
         }
 
-        protected override string ResultDescription(IdentifierReference reference)
+        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
         {
             var expression = reference.IdentifierName;
             return string.Format(InspectionResults.UseOfBangNotationInspection, expression);

@@ -1,5 +1,4 @@
-﻿using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.VBA.Parsing;
+﻿using Rubberduck.Parsing.VBA.Parsing;
 
 namespace Rubberduck.Parsing.Inspections.Abstract
 {
