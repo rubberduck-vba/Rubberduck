@@ -4,6 +4,7 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
+using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
@@ -21,7 +22,49 @@ namespace RubberduckTests.Inspections
 End Sub
 ";
             var modules = new(string, string, ComponentType)[] { ("Class1", inputCode, ComponentType.ClassModule) };
-            Assert.AreEqual(1, InspectionResultsForModules(modules, "Excel").Count());
+            Assert.AreEqual(1, InspectionResultsForModules(modules, ReferenceLibrary.Excel).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ImplicitActiveSheetReference_ReportsCells()
+        {
+            const string inputCode =
+                @"Sub foo()
+    Dim arr1() As Variant
+    arr1 = Cells(1,2)
+End Sub
+";
+            var modules = new (string, string, ComponentType)[] { ("Class1", inputCode, ComponentType.ClassModule) };
+            Assert.AreEqual(1, InspectionResultsForModules(modules, ReferenceLibrary.Excel).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ImplicitActiveSheetReference_ReportsColumns()
+        {
+            const string inputCode =
+                @"Sub foo()
+    Dim arr1() As Variant
+    arr1 = Columns(3)
+End Sub
+";
+            var modules = new (string, string, ComponentType)[] { ("Class1", inputCode, ComponentType.ClassModule) };
+            Assert.AreEqual(1, InspectionResultsForModules(modules, ReferenceLibrary.Excel).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ImplicitActiveSheetReference_ReportsRows()
+        {
+            const string inputCode =
+                @"Sub foo()
+    Dim arr1() As Variant
+    arr1 = Rows(3)
+End Sub
+";
+            var modules = new (string, string, ComponentType)[] { ("Class1", inputCode, ComponentType.ClassModule) };
+            Assert.AreEqual(1, InspectionResultsForModules(modules, ReferenceLibrary.Excel).Count());
         }
 
         [Test]
@@ -38,7 +81,7 @@ End Sub
 ";
 
             var modules = new(string, string, ComponentType)[] { ("Class1", inputCode, ComponentType.ClassModule) };
-            Assert.AreEqual(0, InspectionResultsForModules(modules, "Excel").Count());
+            Assert.AreEqual(0, InspectionResultsForModules(modules, ReferenceLibrary.Excel).Count());
         }
 
         [Test]

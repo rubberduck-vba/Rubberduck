@@ -4,6 +4,7 @@ using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor;
 
@@ -60,18 +61,18 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             Severity = CodeInspectionSeverity.Error;
         }
 
-        protected override IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module)
+        protected override IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module, DeclarationFinder finder)
         {
-            return DeclarationFinderProvider.DeclarationFinder.FailedProcedureCoercions(module);
+            return finder.FailedProcedureCoercions(module);
         }
 
-        protected override bool IsResultReference(IdentifierReference failedCoercion)
+        protected override bool IsResultReference(IdentifierReference failedCoercion, DeclarationFinder finder)
         {
             // return true because no special ignore checking is required
             return true;
         }
 
-        protected override string ResultDescription(IdentifierReference failedCoercion)
+        protected override string ResultDescription(IdentifierReference failedCoercion, dynamic properties = null)
         {
             var expression = failedCoercion.IdentifierName;
             var typeName = failedCoercion.Declaration?.FullAsTypeName;

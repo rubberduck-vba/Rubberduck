@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections.QuickFixes
     /// ]]>
     /// </after>
     /// </example>
-    public sealed class AccessSheetUsingCodeNameQuickFix : QuickFixBase // fixme: rename as per action(s), not the inspection that uses it
+    public sealed class AccessSheetUsingCodeNameQuickFix : QuickFixBase
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
 

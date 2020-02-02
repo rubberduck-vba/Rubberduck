@@ -13,56 +13,61 @@
              d:DesignHeight="380" d:DesignWidth="600"
              d:DataContext="{d:DesignInstance local:AddRemoveReferencesViewModel}">
     <UserControl.Resources>
-        <system:Int32 x:Key="ToolTipDelay">2000</system:Int32>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles/DefaultStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
 
-        <BitmapImage x:Key="BrowseIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/folder-open.png" />
-        <BitmapImage x:Key="LibraryIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/node-select-all.png" />
-        <BitmapImage x:Key="VbaProjectIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/ObjectClass.png" />
-        <BitmapImage x:Key="PinnedIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/pinned.png" />
-        <BitmapImage x:Key="RecentIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/clock-select.png" />
-        <BitmapImage x:Key="AddIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow.png" />
-        <BitmapImage x:Key="RemoveIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-180.png" />
+            <system:Int32 x:Key="ToolTipDelay">2000</system:Int32>
 
-        <local:ReferenceStatusImageSourceConverter x:Key="StatusToIcon" />
-        <local:PriorityButtonVisibilityConverter x:Key="PriorityButtonVisibility" />
-        <local:PriorityButtonImageSourceConverter x:Key="PriorityButtonIcon" />
-        <converters:BooleanToNonDimmedBrushConverter x:Key="BooleanToNonDimmed" />
-        <converters:BoolToHiddenVisibilityConverter x:Key="ProjectVisibilityConverter" />
+            <BitmapImage x:Key="BrowseIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/folder-open.png" />
+            <BitmapImage x:Key="LibraryIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/node-select-all.png" />
+            <BitmapImage x:Key="VbaProjectIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/ObjectClass.png" />
+            <BitmapImage x:Key="PinnedIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/pinned.png" />
+            <BitmapImage x:Key="RecentIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/clock-select.png" />
+            <BitmapImage x:Key="AddIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow.png" />
+            <BitmapImage x:Key="RemoveIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-180.png" />
 
-        <Style x:Key="DialogButtonStyle" TargetType="Button">
-            <Setter Property="Margin" Value="5,0" />
-            <Setter Property="Height" Value="24" />
-            <Setter Property="Padding" Value="10,0" />
-        </Style>
-        <Style TargetType="{x:Type TabItem}">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type TabItem}">
-                        <Border x:Name="PART_Border" Background="{TemplateBinding Background}" BorderThickness="0,0,0,2" BorderBrush="Transparent" Margin="2">
-                            <ContentPresenter ContentSource="Header" Margin="2" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="PART_Border" Property="BorderBrush" Value="Blue" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style  TargetType="{x:Type TabControl}">
-            <Setter Property="OverridesDefaultStyle" Value="True" />
-            <Setter Property="SnapsToDevicePixels" Value="True" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type TabControl}">
-                        <Grid KeyboardNavigation.TabNavigation="Local">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <TabPanel 
+            <local:ReferenceStatusImageSourceConverter x:Key="StatusToIcon" />
+            <local:PriorityButtonVisibilityConverter x:Key="PriorityButtonVisibility" />
+            <local:PriorityButtonImageSourceConverter x:Key="PriorityButtonIcon" />
+            <converters:BooleanToNonDimmedBrushConverter x:Key="BooleanToNonDimmed" />
+            <converters:BoolToHiddenVisibilityConverter x:Key="ProjectVisibilityConverter" />
+
+            <Style x:Key="DialogButtonStyle" TargetType="Button">
+                <Setter Property="Margin" Value="5,0" />
+                <Setter Property="Height" Value="24" />
+                <Setter Property="Padding" Value="10,0" />
+            </Style>
+            <Style TargetType="{x:Type TabItem}">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type TabItem}">
+                            <Border x:Name="PART_Border" Background="{TemplateBinding Background}" BorderThickness="0,0,0,2" BorderBrush="Transparent" Margin="2">
+                                <ContentPresenter ContentSource="Header" Margin="2" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter TargetName="PART_Border" Property="BorderBrush" Value="{StaticResource TabSelectionUnderlineBrush}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style  TargetType="{x:Type TabControl}">
+                <Setter Property="OverridesDefaultStyle" Value="True" />
+                <Setter Property="SnapsToDevicePixels" Value="True" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type TabControl}">
+                            <Grid KeyboardNavigation.TabNavigation="Local">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TabPanel 
                                 Name="HeaderPanel"
                                 Grid.Row="0"
                                 Panel.ZIndex="1" 
@@ -70,29 +75,30 @@
                                 IsItemsHost="True"
                                 KeyboardNavigation.TabIndex="1"
                                 Background="Transparent" />
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsEnabled" Value="False" />
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="SelectableText" TargetType="{x:Type TextBox}">
-            <Setter Property="Margin" Value="2" />
-            <Setter Property="Foreground" Value ="{x:Static SystemColors.GrayTextBrush}" />
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="IsReadOnly" Value="True" />
-            <Setter Property="TextWrapping" Value="NoWrap" />
-            <Setter Property="VerticalAlignment" Value="Center" />
-        </Style>
-        <Style x:Key="BorderStyle" TargetType="{x:Type Border}">
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="BorderBrush" Value="{x:Static SystemColors.ActiveBorderBrush}" />
-            <Setter Property="Background" Value="{x:Static SystemColors.ControlBrush}" />
-            <Setter Property="Padding" Value="2" />
-        </Style>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsEnabled" Value="False" />
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="SelectableText" TargetType="{x:Type TextBox}">
+                <Setter Property="Margin" Value="2" />
+                <Setter Property="Foreground" Value ="{x:Static SystemColors.GrayTextBrush}" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="IsReadOnly" Value="True" />
+                <Setter Property="TextWrapping" Value="NoWrap" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+            <Style x:Key="BorderStyle" TargetType="{x:Type Border}">
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="BorderBrush" Value="{x:Static SystemColors.ActiveBorderBrush}" />
+                <Setter Property="Background" Value="{x:Static SystemColors.ControlBrush}" />
+                <Setter Property="Padding" Value="2" />
+            </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
     <Grid Margin="0,0,0,0">
         <Grid.RowDefinitions>
@@ -257,7 +263,7 @@
                                                 <ColumnDefinition Width="*" />
                                                 <ColumnDefinition Width="50" />
                                             </Grid.ColumnDefinitions>
-                                            <Button Name="MoveUpButton" Grid.Column="0" Margin="1" Background="Transparent" BorderBrush="LightGray"
+                                            <Button Name="MoveUpButton" Grid.Column="0" Margin="1" Background="Transparent" BorderBrush="{StaticResource ButtonFaceBrush}"
                                                     Command="{Binding DataContext.MoveUpCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:AddRemoveReferencesWindow}}}"
                                                     ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_MoveUpToolTip}" ToolTipService.InitialShowDelay="{StaticResource ToolTipDelay}">
                                                 <Button.Style>
@@ -304,7 +310,7 @@
                                                     <controls:BindableListItemDrillThroughBehavior />
                                                 </i:Interaction.Behaviors>
                                             </Button>
-                                            <Button Name="MoveDownButton" Grid.Column="1" Margin="1" Background="Transparent" BorderBrush="LightGray"
+                                            <Button Name="MoveDownButton" Grid.Column="1" Margin="1" Background="Transparent" BorderBrush="{StaticResource ButtonFaceBrush}"
                                                 Command="{Binding DataContext.MoveDownCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:AddRemoveReferencesWindow}}}"
                                                 ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_MoveDownToolTip}" ToolTipService.InitialShowDelay="{StaticResource ToolTipDelay}">
                                                 <Button.Style>

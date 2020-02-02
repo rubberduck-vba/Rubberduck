@@ -111,6 +111,23 @@ End Sub";
             Assert.AreEqual(0, InspectionResultsForModules(modules).Count(result => result.Target.DeclarationType == DeclarationType.Procedure));
         }
 
+        [TestCase("@TestMethod(\"TestCategory\")")]
+        [TestCase("@ModuleInitialize")]
+        [TestCase("@ModuleCleanup")]
+        [TestCase("@TestInitialize")]
+        [TestCase("@TestCleanup")]
+        [Category("Inspections")]
+        public void ProcedureNotUsed_NoResultForTestRelatedMethods(string annotationText)
+        {
+            string inputCode =
+                $@"
+'{annotationText}
+Private Sub TestRelatedMethod()
+End Sub";
+            
+            Assert.AreEqual(0, InspectionResultsForModules(("TestClass", inputCode, ComponentType.StandardModule)).Count());
+        }
+
         [TestCase("Class_Initialize")]
         [TestCase("class_initialize")]
         [TestCase("Class_Terminate")]

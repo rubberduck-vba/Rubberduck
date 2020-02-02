@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
@@ -31,13 +30,13 @@ namespace RubberduckTests.Inspections
             return InspectionResults(vbe);
         }
 
-        public IEnumerable<IInspectionResult> InspectionResultsForModules((string name, string content, ComponentType componentType) module, params string[] libraries)
+        public IEnumerable<IInspectionResult> InspectionResultsForModules((string name, string content, ComponentType componentType) module, params ReferenceLibrary[] libraries)
             => InspectionResultsForModules(new (string, string, ComponentType)[] { module }, libraries);
 
-        public IEnumerable<IInspectionResult> InspectionResultsForModules(IEnumerable<(string name, string content, ComponentType componentType)> modules, string library)
-            => InspectionResultsForModules(modules, new string[] { library });
+        public IEnumerable<IInspectionResult> InspectionResultsForModules(IEnumerable<(string name, string content, ComponentType componentType)> modules, ReferenceLibrary library)
+            => InspectionResultsForModules(modules, new ReferenceLibrary[] { library });
 
-        public IEnumerable<IInspectionResult> InspectionResultsForModules(IEnumerable<(string name, string content, ComponentType componentType)> modules, IEnumerable<string> libraries)
+        public IEnumerable<IInspectionResult> InspectionResultsForModules(IEnumerable<(string name, string content, ComponentType componentType)> modules, IEnumerable<ReferenceLibrary> libraries)
         {
             var vbe = MockVbeBuilder.BuildFromModules(modules, libraries).Object;
             return InspectionResults(vbe);

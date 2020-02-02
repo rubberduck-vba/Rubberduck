@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
@@ -41,44 +38,18 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class ObjectVariableNotSetInspection : InspectionBase
+    public sealed class ObjectVariableNotSetInspection : IdentifierReferenceInspectionBase
     {
         public ObjectVariableNotSetInspection(RubberduckParserState state)
-            : base(state) { }
+            : base(state)
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module, DeclarationFinder finder)
         {
-            var finder = State.DeclarationFinder;
-
-            var failedLetResolutionResults = FailedLetResolutionResults(finder);
-
-            return failedLetResolutionResults
-                .Select(reference =>
-                    new IdentifierReferenceInspectionResult(
-                        this,
-                        string.Format(InspectionResults.ObjectVariableNotSetInspection, reference.IdentifierName),
-                        State, 
-                        reference));
-        }
-
-        private IEnumerable<IdentifierReference> FailedLetResolutionResults(DeclarationFinder finder)
-        {
-            var results = new List<IdentifierReference>();
-            foreach (var moduleDeclaration in finder.UserDeclarations(DeclarationType.Module))
-            {
-                if (moduleDeclaration == null)
-                {
-                    continue;
-                }
-
-                var module = moduleDeclaration.QualifiedModuleName;
-                var failedLetCoercionAssignmentsInModule = FailedLetResolutionAssignments(module, finder);
-                var possiblyObjectLhsLetAssignmentsWithFailedLetResolutionOnRhs = PossiblyObjectLhsLetAssignmentsWithNonValueOnRhs(module, finder);
-                results.AddRange(failedLetCoercionAssignmentsInModule);
-                results.AddRange(possiblyObjectLhsLetAssignmentsWithFailedLetResolutionOnRhs);
-            }
-
-            return results;
+            var failedLetCoercionAssignmentsInModule = FailedLetResolutionAssignments(module, finder);
+            var possiblyObjectLhsLetAssignmentsWithFailedLetResolutionOnRhs = PossiblyObjectLhsLetAssignmentsWithNonValueOnRhs(module, finder);
+            return failedLetCoercionAssignmentsInModule
+                .Concat(possiblyObjectLhsLetAssignmentsWithFailedLetResolutionOnRhs);
         }
 
         private static IEnumerable<IdentifierReference> FailedLetResolutionAssignments(QualifiedModuleName module, DeclarationFinder finder)
@@ -120,6 +91,16 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(reference => reference.IsAssignment);
 
             return assignments.Concat(unboundAssignments);
+        }
+
+        protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
+        {
+            return true;
+        }
+
+        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
+        {
+            return string.Format(InspectionResults.ObjectVariableNotSetInspection, reference.IdentifierName);
         }
     }
 }
