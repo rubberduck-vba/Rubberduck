@@ -207,7 +207,7 @@ End Sub";
                         CreateVBComponentPropertyMock("Name", "Name").Object,
                         CreateVBComponentPropertyMock("CodeName", "CodeName").Object
                     })
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
+                .AddReference(ReferenceLibrary.Excel)
                 .Build();
 
             component = project.Object.VBComponents[0];
