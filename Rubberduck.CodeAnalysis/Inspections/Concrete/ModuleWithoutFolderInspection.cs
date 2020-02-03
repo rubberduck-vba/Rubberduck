@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -30,21 +28,20 @@ namespace Rubberduck.Inspections.Concrete
     /// ' ...
     /// ]]>
     /// </example>
-    public sealed class ModuleWithoutFolderInspection : InspectionBase
+    public sealed class ModuleWithoutFolderInspection : DeclarationInspectionBase
     {
         public ModuleWithoutFolderInspection(RubberduckParserState state)
-            : base(state)
+            : base(state, DeclarationType.Module)
         {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            var modulesWithoutFolderAnnotation = State.DeclarationFinder.UserDeclarations(Parsing.Symbols.DeclarationType.Module)
-                .Where(w => !w.Annotations.Any(pta => pta.Annotation is FolderAnnotation))
-                .ToList();
+            return !declaration.Annotations.Any(pta => pta.Annotation is FolderAnnotation);
+        }
 
-            return modulesWithoutFolderAnnotation
-                .Select(declaration =>
-                new DeclarationInspectionResult(this, string.Format(InspectionResults.ModuleWithoutFolderInspection, declaration.IdentifierName), declaration));
+        protected override string ResultDescription(Declaration declaration)
+        {
+            return string.Format(InspectionResults.ModuleWithoutFolderInspection, declaration.IdentifierName);
         }
     }
 }

@@ -1,15 +1,10 @@
-using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
-using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -37,23 +32,25 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class ConstantNotUsedInspection : InspectionBase
+    public sealed class ConstantNotUsedInspection : DeclarationInspectionBase
     {
         public ConstantNotUsedInspection(RubberduckParserState state)
-            : base(state) { }
+            : base(state, DeclarationType.Constant) { }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            var results = State.DeclarationFinder.UserDeclarations(DeclarationType.Constant)
-                .Where(declaration => declaration.Context != null
-                    && !declaration.References.Any())
-                .ToList();
+            return declaration?.Context != null 
+                   && !declaration.References.Any();
+        }
 
-            return results.Select(issue => 
-                new DeclarationInspectionResult(this,
-                                     string.Format(InspectionResults.IdentifierNotUsedInspection, issue.DeclarationType.ToLocalizedString(), issue.IdentifierName),
-                                     issue,
-                                     new QualifiedContext<ParserRuleContext>(issue.QualifiedName.QualifiedModuleName, ((dynamic)issue.Context).identifier())));
+        protected override string ResultDescription(Declaration declaration)
+        {
+            var declarationType = declaration.DeclarationType.ToLocalizedString();
+            var declarationName = declaration.IdentifierName;
+            return string.Format(
+                InspectionResults.IdentifierNotUsedInspection,
+                declarationType,
+                declarationName);
         }
     }
 }

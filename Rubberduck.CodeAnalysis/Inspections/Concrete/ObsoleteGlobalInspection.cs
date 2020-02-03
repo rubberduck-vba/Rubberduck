@@ -1,13 +1,9 @@
-using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -29,17 +25,25 @@ namespace Rubberduck.Inspections.Concrete
     /// Public Foo As Long
     /// ]]>
     /// </example>
-    public sealed class ObsoleteGlobalInspection : InspectionBase
+    public sealed class ObsoleteGlobalInspection : DeclarationInspectionBase
     {
         public ObsoleteGlobalInspection(RubberduckParserState state)
             : base(state) { }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            return from item in UserDeclarations
-                   where item.Accessibility == Accessibility.Global && item.Context != null
-                   select new DeclarationInspectionResult(this,
-                       string.Format(InspectionResults.ObsoleteGlobalInspection, item.DeclarationType.ToLocalizedString(), item.IdentifierName), item);
+            return declaration.Accessibility == Accessibility.Global 
+                   && declaration.Context != null;
+        }
+
+        protected override string ResultDescription(Declaration declaration)
+        {
+            var declarationType = declaration.DeclarationType.ToLocalizedString();
+            var declarationName = declaration.IdentifierName;
+            return string.Format(
+                    InspectionResults.ObsoleteGlobalInspection,
+                    declarationType,
+                    declarationName);
         }
     }
 }

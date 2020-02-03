@@ -2,10 +2,12 @@
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 
 namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
@@ -19,23 +21,21 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
     /// While perfectly legal as Type or Enum member names, these identifiers should be avoided: 
     /// they need to be square-bracketed everywhere they are used.
     /// </why>
-    public class KeywordsUsedAsMemberInspection : InspectionBase
+    public class KeywordsUsedAsMemberInspection : DeclarationInspectionBase
     {
-        public KeywordsUsedAsMemberInspection(RubberduckParserState state) : base(state) { }
+        public KeywordsUsedAsMemberInspection(RubberduckParserState state) 
+            : base(state, DeclarationType.EnumerationMember, DeclarationType.UserDefinedTypeMember)
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            return State.DeclarationFinder.UserDeclarations(DeclarationType.UserDefinedTypeMember)
-                .Concat(State.DeclarationFinder.UserDeclarations(DeclarationType.EnumerationMember))
-                .Where(m => ReservedKeywords.Any(k => 
-                    k.ToLowerInvariant().Equals(
-                        m.IdentifierName.Trim().TrimStart('[').TrimEnd(']').ToLowerInvariant())))
-                .Select(m => new DeclarationInspectionResult(
-                    this,
-                    InspectionResults.KeywordsUsedAsMemberInspection.
-                        ThunderCodeFormat(m.IdentifierName),
-                    m
-                ));
+            var normalizedMemberName = declaration.IdentifierName.ToLowerInvariant();
+            return ReservedKeywordsInLowerCase.Contains(normalizedMemberName);
+        }
+
+        protected override string ResultDescription(Declaration declaration)
+        {
+            return InspectionResults.KeywordsUsedAsMemberInspection.ThunderCodeFormat(declaration.IdentifierName);
         }
 
         // MS-VBAL 3.3.5.2 Reserved Identifiers and IDENTIFIER
@@ -164,5 +164,9 @@ operator-identifier = "AddressOf" / "And" / "Eqv" / "Imp" / "Is" / "Like" / "New
             Tokens.TypeOf,
             Tokens.XOr
         };
+
+        private static readonly HashSet<string> ReservedKeywordsInLowerCase =
+            ReservedKeywords.Select(keyword => keyword.ToLowerInvariant())
+                .ToHashSet();
     }
 }

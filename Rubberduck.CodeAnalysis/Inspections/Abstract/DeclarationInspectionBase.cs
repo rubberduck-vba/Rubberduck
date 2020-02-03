@@ -12,11 +12,20 @@ namespace Rubberduck.Inspections.Abstract
     public abstract class DeclarationInspectionBase : InspectionBase
     {
         protected readonly DeclarationType[] RelevantDeclarationTypes;
+        protected readonly DeclarationType[] ExcludeDeclarationTypes;
 
         protected DeclarationInspectionBase(RubberduckParserState state, params DeclarationType[] relevantDeclarationTypes)
             : base(state)
         {
             RelevantDeclarationTypes = relevantDeclarationTypes;
+            ExcludeDeclarationTypes = new DeclarationType[0];
+        }
+
+        protected DeclarationInspectionBase(RubberduckParserState state, DeclarationType[] relevantDeclarationTypes, DeclarationType[] excludeDeclarationTypes)
+            : base(state)
+        {
+            RelevantDeclarationTypes = relevantDeclarationTypes;
+            ExcludeDeclarationTypes = excludeDeclarationTypes;
         }
 
         protected abstract bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder);
@@ -59,9 +68,13 @@ namespace Rubberduck.Inspections.Abstract
 
         protected virtual IEnumerable<Declaration> RelevantDeclarationsInModule(QualifiedModuleName module, DeclarationFinder finder)
         {
-            return RelevantDeclarationTypes
-                .SelectMany(declarationType => DeclarationFinderProvider.DeclarationFinder.Members(module, declarationType))
-                .Distinct();
+            var potentiallyRelevantDeclarations = RelevantDeclarationTypes.Length == 0
+                ? finder.AllUserDeclarations
+                : RelevantDeclarationTypes
+                    .SelectMany(declarationType => finder.Members(module, declarationType))
+                    .Distinct();
+            return potentiallyRelevantDeclarations
+                .Where(declaration => !ExcludeDeclarationTypes.Contains(declaration.DeclarationType));
         }
 
         protected virtual IInspectionResult InspectionResult(Declaration declaration)
@@ -76,11 +89,20 @@ namespace Rubberduck.Inspections.Abstract
     public abstract class DeclarationInspectionBase<T> : InspectionBase
     {
         protected readonly DeclarationType[] RelevantDeclarationTypes;
+        protected readonly DeclarationType[] ExcludeDeclarationTypes;
 
         protected DeclarationInspectionBase(RubberduckParserState state, params DeclarationType[] relevantDeclarationTypes)
             : base(state)
         {
             RelevantDeclarationTypes = relevantDeclarationTypes;
+            ExcludeDeclarationTypes = new DeclarationType[0];
+        }
+
+        protected DeclarationInspectionBase(RubberduckParserState state, DeclarationType[] relevantDeclarationTypes, DeclarationType[] excludeDeclarationTypes)
+            : base(state)
+        {
+            RelevantDeclarationTypes = relevantDeclarationTypes;
+            ExcludeDeclarationTypes = excludeDeclarationTypes;
         }
 
         protected abstract (bool isResult, T properties) IsResultDeclarationWithAdditionalProperties(Declaration declaration, DeclarationFinder finder);
@@ -125,9 +147,13 @@ namespace Rubberduck.Inspections.Abstract
 
         protected virtual IEnumerable<Declaration> RelevantDeclarationsInModule(QualifiedModuleName module, DeclarationFinder finder)
         {
-            return RelevantDeclarationTypes
-                .SelectMany(declarationType => DeclarationFinderProvider.DeclarationFinder.Members(module, declarationType))
-                .Distinct();
+            var potentiallyRelevantDeclarations = RelevantDeclarationTypes.Length == 0
+                ? finder.AllUserDeclarations
+                : RelevantDeclarationTypes
+                    .SelectMany(declarationType => finder.Members(module, declarationType))
+                    .Distinct();
+            return potentiallyRelevantDeclarations
+                .Where(declaration => ! ExcludeDeclarationTypes.Contains(declaration.DeclarationType));
         }
 
         protected virtual IInspectionResult InspectionResult(Declaration declaration, T properties)
