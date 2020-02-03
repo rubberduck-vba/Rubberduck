@@ -45,7 +45,7 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     [RequiredHost("EXCEL.EXE")]
     [RequiredLibrary("Excel")]
-    public class SheetAccessedUsingStringInspection : IdentifierReferenceInspectionFromDeclarationsBase
+    public class SheetAccessedUsingStringInspection : IdentifierReferenceInspectionFromDeclarationsBase<PropertyBag>
     {
         private readonly IProjectsProvider _projectsProvider;
 
@@ -86,7 +86,7 @@ namespace Rubberduck.Inspections.Concrete
             return relevantProperties;
         }
 
-        protected override (bool isResult, object properties) IsResultReferenceWithAdditionalProperties(IdentifierReference reference, DeclarationFinder finder)
+        protected override (bool isResult, PropertyBag properties) IsResultReferenceWithAdditionalProperties(IdentifierReference reference, DeclarationFinder finder)
         {
             var sheetNameArgumentLiteralExpressionContext = SheetNameArgumentLiteralExpressionContext(reference);
 
@@ -164,7 +164,7 @@ namespace Rubberduck.Inspections.Concrete
             return null;
         }
 
-        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
+        protected override string ResultDescription(IdentifierReference reference, PropertyBag properties)
         {
             return InspectionResults.SheetAccessedUsingStringInspection;
         }

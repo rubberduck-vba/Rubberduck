@@ -40,7 +40,7 @@ namespace Rubberduck.Inspections.Concrete
         public IsMissingOnInappropriateArgumentInspection(RubberduckParserState state)
             : base(state) { }
 
-        protected override (bool isResult, object properties) IsUnsuitableArgumentWithAdditionalProperties(ArgumentReference reference, DeclarationFinder finder)
+        protected override (bool isResult, ParameterDeclaration properties) IsUnsuitableArgumentWithAdditionalProperties(ArgumentReference reference, DeclarationFinder finder)
         {
             var parameter = ParameterForReference(reference, finder);
 
@@ -52,13 +52,7 @@ namespace Rubberduck.Inspections.Concrete
             return (isResult, parameter);
         }
 
-        protected override bool IsUnsuitableArgument(ArgumentReference reference, DeclarationFinder finder)
-        {
-            //No need to implement this, since we override IsUnsuitableArgumentWithAdditionalProperties.
-            throw new System.NotImplementedException();
-        }
-
-        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
+        protected override string ResultDescription(IdentifierReference reference, ParameterDeclaration parameter)
         {
             return InspectionResults.IsMissingOnInappropriateArgumentInspection;
         }

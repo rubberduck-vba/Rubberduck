@@ -72,7 +72,7 @@ namespace Rubberduck.Inspections.Concrete
             return relevantProperties;
         }
 
-        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
+        protected override string ResultDescription(IdentifierReference reference)
         {
             var referenceText = reference.Context.GetText();
             return string.Format(InspectionResults.ImplicitActiveWorkbookReferenceInspection, referenceText);
