@@ -76,7 +76,7 @@ namespace Rubberduck.CodeAnalysis.QuickFixes
 
             if (result.Inspection is SuspiciousLetAssignmentInspection)
             {
-                IdentifierReference rhsReference = result.Properties.RhSReference;
+                var rhsReference = result.Properties<IdentifierReference>();
                 var rhsLExpressionContext = rhsReference.Context;
                 var rhsSelection = rhsReference.QualifiedSelection;
                 InsertDefaultMember(rhsLExpressionContext, rhsSelection, finder, rewriter);

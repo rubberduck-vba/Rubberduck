@@ -55,7 +55,7 @@ namespace Rubberduck.Inspections.QuickFixes
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
             var declaration = result.Target;
-            IParseTreeAnnotation annotationInstance = result.Properties.Annotation;
+            var annotationInstance = result.Properties<IParseTreeAnnotation>();
             if (!(annotationInstance.Annotation is IAttributeAnnotation annotation))
             {
                 return;

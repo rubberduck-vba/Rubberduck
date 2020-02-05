@@ -51,10 +51,10 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            if (!(result.Properties is ParameterDeclaration parameter))
+            var parameter = result.Properties<ParameterDeclaration>();
+            if (parameter == null)
             {
-                Logger.Trace(
-                    $"Properties for IsMissingOnInappropriateArgumentQuickFix was {(result.Properties == null ? "null" : "not a ParameterDeclaration")}.");
+                Logger.Trace($"Properties for IsMissingOnInappropriateArgumentQuickFix was null.");
                 return;
             }
 

@@ -132,18 +132,16 @@ namespace Rubberduck.Inspections.Concrete
 
         private IInspectionResult InspectionResult(IdentifierReference lhsReference, IdentifierReference rhsReference, bool isUnbound)
         {
-            var result = new IdentifierReferenceInspectionResult(
+            var disabledQuickFixes = isUnbound
+                ? new List<string> {"ExpandDefaultMemberQuickFix"}
+                : new List<string>();
+            return new IdentifierReferenceInspectionResult<IdentifierReference>(
                 this,
                 ResultDescription(lhsReference, rhsReference),
                 DeclarationFinderProvider,
-                lhsReference);
-            result.Properties.RhSReference = rhsReference;
-            if (isUnbound)
-            {
-                result.Properties.DisableFixes = "ExpandDefaultMemberQuickFix";
-            }
-
-            return result;
+                lhsReference,
+                rhsReference,
+                disabledQuickFixes);
         }
 
         private string ResultDescription(IdentifierReference lhsReference, IdentifierReference rhsReference)

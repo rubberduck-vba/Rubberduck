@@ -130,13 +130,13 @@ namespace Rubberduck.Inspections.Concrete
 
         private IInspectionResult UnboundInspectionResult(IdentifierReference reference, IDeclarationFinderProvider declarationFinderProvider)
         {
-            var result = new IdentifierReferenceInspectionResult(
+            var disabledQuickFixes = new List<string>{ "ExpandDefaultMemberQuickFix" };
+            return new IdentifierReferenceInspectionResult(
                 this,
                 UnboundResultDescription(reference),
                 declarationFinderProvider,
-                reference);
-            result.Properties.DisableFixes = "ExpandDefaultMemberQuickFix";
-            return result;
+                reference,
+                disabledQuickFixes);
         }
 
         private static string UnboundResultDescription(IdentifierReference reference)

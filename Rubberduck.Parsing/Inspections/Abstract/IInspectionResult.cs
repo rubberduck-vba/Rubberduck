@@ -14,7 +14,8 @@ namespace Rubberduck.Parsing.Inspections.Abstract
         IInspection Inspection { get; }
         Declaration Target { get; }
         ParserRuleContext Context { get; }
-        dynamic Properties { get; }
+        ICollection<string> DisabledQuickFixes { get; }
+        T Properties<T>();
         bool ChangesInvalidateResult(ICollection<QualifiedModuleName> modifiedModules);
     }
 }

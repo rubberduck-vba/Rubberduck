@@ -177,8 +177,7 @@ End Sub";
             var expectedAttributeValues = new List<string>{"-4"};
 
             var inspectionResult = inspectionResults.Single();
-            var actualAttributeBaseName = inspectionResult.Properties.AttributeName;
-            var actualAttributeValues = inspectionResult.Properties.AttributeValues;
+            var (actualAttributeBaseName, actualAttributeValues) = inspectionResult.Properties<(string AttributeName, IReadOnlyList<string> AttributeValues)>();
 
             Assert.AreEqual(expectedAttributeName, actualAttributeBaseName);
             Assert.AreEqual(expectedAttributeValues.Count, actualAttributeValues.Count);

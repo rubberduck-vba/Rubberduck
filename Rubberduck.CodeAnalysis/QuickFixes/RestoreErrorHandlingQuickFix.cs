@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing;
@@ -88,7 +89,8 @@ namespace Rubberduck.Inspections.QuickFixes
             var context = (VBAParser.OnErrorStmtContext)result.Context;
             var labels = bodyElementContext.GetDescendents<VBAParser.IdentifierStatementLabelContext>().ToArray();
             var maximumExistingLabelIndex = GetMaximumExistingLabelIndex(labels);
-            int offset = result.Properties.UnhandledContexts.IndexOf(result.Context);
+            var unhandledContexts = result.Properties<List<ParserRuleContext>>();
+            var offset = unhandledContexts.IndexOf(result.Context);
             var labelIndex = maximumExistingLabelIndex + offset;
 
             var labelSuffix = labelIndex == 0

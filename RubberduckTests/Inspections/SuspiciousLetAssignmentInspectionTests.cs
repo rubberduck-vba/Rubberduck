@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 
@@ -46,13 +47,13 @@ End Sub
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
             var inspectionResult = inspectionResults.Single();
-
-            Assert.IsNotNull(inspectionResult.Properties.RhSReference);
+            var rhsReference = inspectionResult.Properties<IdentifierReference>();
+            Assert.IsNotNull(rhsReference);
 
             if (assignedTypeName.Equals("Object") || assignedToTypeName.Equals("Object"))
             {
-                var deactivatedFixes = inspectionResult.Properties.DisableFixes;
-                Assert.AreEqual("ExpandDefaultMemberQuickFix", deactivatedFixes);
+                var deactivatedFix = inspectionResult.DisabledQuickFixes.Single();
+                Assert.AreEqual("ExpandDefaultMemberQuickFix", deactivatedFix);
             }
         }
 

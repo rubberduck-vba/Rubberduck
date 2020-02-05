@@ -62,7 +62,8 @@ namespace Rubberduck.Inspections.QuickFixes
                 var indexExprContext = referenceResult.Context.Parent.Parent as VBAParser.IndexExprContext ??
                                        referenceResult.Context.Parent as VBAParser.IndexExprContext;
 
-                rewriter.Replace(indexExprContext, (string)referenceResult.Properties.CodeName);
+                var codeName = referenceResult.Properties<string>();
+                rewriter.Replace(indexExprContext, codeName);
             }
             else
             {
@@ -97,7 +98,8 @@ namespace Rubberduck.Inspections.QuickFixes
 
                 foreach (var reference in sheetDeclaration.References)
                 {
-                    rewriter.Replace(reference.Context, (string)referenceResult.Properties.CodeName);
+                    var codeName = referenceResult.Properties<string>();
+                    rewriter.Replace(reference.Context, codeName);
                 }
 
                 rewriter.Remove(setStatement);

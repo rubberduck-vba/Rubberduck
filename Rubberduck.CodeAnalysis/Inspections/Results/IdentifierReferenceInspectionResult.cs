@@ -13,15 +13,20 @@ namespace Rubberduck.Inspections.Results
     {
         public IdentifierReference Reference { get; }
 
-        public IdentifierReferenceInspectionResult(IInspection inspection, string description, IDeclarationFinderProvider declarationFinderProvider, IdentifierReference reference, dynamic properties = null) :
-            base(inspection,
+        public IdentifierReferenceInspectionResult(
+            IInspection inspection, 
+            string description, 
+            IDeclarationFinderProvider declarationFinderProvider, 
+            IdentifierReference reference,
+            ICollection<string> disabledQuickFixes = null) 
+            : base(inspection,
                  description,
                  reference.QualifiedModuleName,
                  reference.Context,
                  reference.Declaration,
                  new QualifiedSelection(reference.QualifiedModuleName, reference.Context.GetSelection()),
                  GetQualifiedMemberName(declarationFinderProvider, reference),
-                 (object)properties)
+                 disabledQuickFixes)
         {
             Reference = reference;
         }
@@ -36,6 +41,38 @@ namespace Rubberduck.Inspections.Results
         {
             return Target != null && modifiedModules.Contains(Target.QualifiedModuleName)
                    || base.ChangesInvalidateResult(modifiedModules);
+        }
+    }
+
+    public class IdentifierReferenceInspectionResult<TProperties> : IdentifierReferenceInspectionResult
+    {
+        private readonly TProperties _properties;
+
+        public IdentifierReferenceInspectionResult(
+            IInspection inspection, 
+            string description, 
+            IDeclarationFinderProvider declarationFinderProvider, 
+            IdentifierReference reference, 
+            TProperties properties,
+            ICollection<string> disabledQuickFixes = null) 
+            : base(
+                inspection,
+                description,
+                declarationFinderProvider, 
+                reference,
+                disabledQuickFixes)
+        {
+            _properties = properties;
+        }
+
+        public override T Properties<T>()
+        {
+            if (_properties is T properties)
+            {
+                return properties;
+            }
+
+            return base.Properties<T>();
         }
     }
 }

@@ -61,8 +61,7 @@ namespace Rubberduck.Inspections.QuickFixes
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
             var declaration = result.Target;
-            string attributeName = result.Properties.AttributeName;
-            IReadOnlyList<string> attributeValues = result.Properties.AttributeValues;
+            var (attributeName, attributeValues) = result.Properties<(string attributeName, IReadOnlyList<string> AttributeValues)>();
             var (annotationType, annotationValues) = declaration.DeclarationType.HasFlag(DeclarationType.Module)
                 ? _attributeAnnotationProvider.ModuleAttributeAnnotation(attributeName, attributeValues)
                 : _attributeAnnotationProvider.MemberAttributeAnnotation(AttributeBaseName(attributeName, declaration), attributeValues);

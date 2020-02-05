@@ -218,12 +218,12 @@ End Sub";
             var inspectionResults = InspectionResults(inputCode);
             var inspectionResult = inspectionResults.First();
 
-            var pta = (IParseTreeAnnotation)inspectionResult.Properties.Annotation;
+            var (pta, attributeName, attributeValues) = inspectionResult.Properties<(IParseTreeAnnotation Annotation, string AttributeName, IReadOnlyList<string> AttributeValues)>();
 
             Assert.IsInstanceOf<MemberAttributeAnnotation>(pta.Annotation);
-            Assert.AreEqual("VB_UserMemId", inspectionResult.Properties.AttributeName);
+            Assert.AreEqual("VB_UserMemId", attributeName);
             Assert.AreEqual("-4", ((IAttributeAnnotation)pta.Annotation).AttributeValues(pta)[0]);
-            Assert.AreEqual("40", inspectionResult.Properties.AttributeValues[0]);
+            Assert.AreEqual("40", attributeValues[0]);
         }
 
         private IEnumerable<IInspectionResult> InspectionResults(string inputCode, ComponentType componentType = ComponentType.StandardModule)

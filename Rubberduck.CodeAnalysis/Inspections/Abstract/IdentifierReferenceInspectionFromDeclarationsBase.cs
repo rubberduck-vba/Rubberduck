@@ -18,6 +18,8 @@ namespace Rubberduck.Inspections.Abstract
         protected abstract IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder);
         protected abstract string ResultDescription(IdentifierReference reference);
 
+        protected virtual ICollection<string> DisabledQuickFixes(IdentifierReference reference) => new List<string>();
+
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var finder = DeclarationFinderProvider.DeclarationFinder;
@@ -60,7 +62,8 @@ namespace Rubberduck.Inspections.Abstract
                 this,
                 ResultDescription(reference),
                 declarationFinderProvider,
-                reference);
+                reference,
+                DisabledQuickFixes(reference));
         }
     }
 
@@ -73,6 +76,8 @@ namespace Rubberduck.Inspections.Abstract
         protected abstract IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder);
         protected abstract (bool isResult, T properties) IsResultReferenceWithAdditionalProperties(IdentifierReference reference, DeclarationFinder finder);
         protected abstract string ResultDescription(IdentifierReference reference, T properties);
+
+        protected virtual ICollection<string> DisabledQuickFixes(IdentifierReference reference, T properties) => new List<string>();
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
@@ -112,12 +117,13 @@ namespace Rubberduck.Inspections.Abstract
 
         protected virtual IInspectionResult InspectionResult(IdentifierReference reference, IDeclarationFinderProvider declarationFinderProvider, T properties)
         {
-            return new IdentifierReferenceInspectionResult(
+            return new IdentifierReferenceInspectionResult<T>(
                 this,
                 ResultDescription(reference, properties),
                 declarationFinderProvider,
                 reference,
-                properties);
+                properties,
+                DisabledQuickFixes(reference, properties));
         }
     }
 }

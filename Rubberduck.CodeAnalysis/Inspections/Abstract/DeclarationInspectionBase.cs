@@ -31,6 +31,8 @@ namespace Rubberduck.Inspections.Abstract
         protected abstract bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder);
         protected abstract string ResultDescription(Declaration declaration);
 
+        protected virtual ICollection<string> DisabledQuickFixes(Declaration declaration) => new List<string>();
+
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var finder = DeclarationFinderProvider.DeclarationFinder;
@@ -82,7 +84,8 @@ namespace Rubberduck.Inspections.Abstract
             return new DeclarationInspectionResult(
                 this,
                 ResultDescription(declaration),
-                declaration);
+                declaration,
+                disabledQuickFixes: DisabledQuickFixes(declaration));
         }
     }
 
@@ -107,6 +110,8 @@ namespace Rubberduck.Inspections.Abstract
 
         protected abstract (bool isResult, T properties) IsResultDeclarationWithAdditionalProperties(Declaration declaration, DeclarationFinder finder);
         protected abstract string ResultDescription(Declaration declaration, T properties);
+
+        protected virtual ICollection<string> DisabledQuickFixes(Declaration declaration, T properties) => new List<string>();
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
@@ -158,11 +163,12 @@ namespace Rubberduck.Inspections.Abstract
 
         protected virtual IInspectionResult InspectionResult(Declaration declaration, T properties)
         {
-            return new DeclarationInspectionResult(
+            return new DeclarationInspectionResult<T>(
                 this,
                 ResultDescription(declaration, properties),
                 declaration,
-                properties: properties);
+                properties: properties,
+                disabledQuickFixes: DisabledQuickFixes(declaration, properties));
         }
     }
 }
