@@ -9,56 +9,22 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Abstract
 {
-    public abstract class DeclarationInspectionBase : InspectionBase
+    public abstract class DeclarationInspectionBase : DeclarationInspectionBaseBase
     {
-        protected readonly DeclarationType[] RelevantDeclarationTypes;
-        protected readonly DeclarationType[] ExcludeDeclarationTypes;
-
         protected DeclarationInspectionBase(RubberduckParserState state, params DeclarationType[] relevantDeclarationTypes)
-            : base(state)
-        {
-            RelevantDeclarationTypes = relevantDeclarationTypes;
-            ExcludeDeclarationTypes = new DeclarationType[0];
-        }
+            : base(state, relevantDeclarationTypes)
+        {}
 
         protected DeclarationInspectionBase(RubberduckParserState state, DeclarationType[] relevantDeclarationTypes, DeclarationType[] excludeDeclarationTypes)
-            : base(state)
-        {
-            RelevantDeclarationTypes = relevantDeclarationTypes;
-            ExcludeDeclarationTypes = excludeDeclarationTypes;
-        }
+            : base(state, relevantDeclarationTypes, excludeDeclarationTypes)
+        {}
 
         protected abstract bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder);
         protected abstract string ResultDescription(Declaration declaration);
 
         protected virtual ICollection<string> DisabledQuickFixes(Declaration declaration) => new List<string>();
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
-        {
-            var finder = DeclarationFinderProvider.DeclarationFinder;
-
-            var results = new List<IInspectionResult>();
-            foreach (var moduleDeclaration in State.DeclarationFinder.UserDeclarations(DeclarationType.Module))
-            {
-                if (moduleDeclaration == null)
-                {
-                    continue;
-                }
-
-                var module = moduleDeclaration.QualifiedModuleName;
-                results.AddRange(DoGetInspectionResults(module, finder));
-            }
-
-            return results;
-        }
-
-        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
-        {
-            var finder = DeclarationFinderProvider.DeclarationFinder;
-            return DoGetInspectionResults(module, finder);
-        }
-
-        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
         {
             var objectionableDeclarations = RelevantDeclarationsInModule(module, finder)
                 .Where(declaration => IsResultDeclaration(declaration, finder));
@@ -66,17 +32,6 @@ namespace Rubberduck.Inspections.Abstract
             return objectionableDeclarations
                 .Select(InspectionResult)
                 .ToList();
-        }
-
-        protected virtual IEnumerable<Declaration> RelevantDeclarationsInModule(QualifiedModuleName module, DeclarationFinder finder)
-        {
-            var potentiallyRelevantDeclarations = RelevantDeclarationTypes.Length == 0
-                ? finder.AllUserDeclarations
-                : RelevantDeclarationTypes
-                    .SelectMany(declarationType => finder.Members(module, declarationType))
-                    .Distinct();
-            return potentiallyRelevantDeclarations
-                .Where(declaration => !ExcludeDeclarationTypes.Contains(declaration.DeclarationType));
         }
 
         protected virtual IInspectionResult InspectionResult(Declaration declaration)
@@ -89,56 +44,22 @@ namespace Rubberduck.Inspections.Abstract
         }
     }
 
-    public abstract class DeclarationInspectionBase<T> : InspectionBase
+    public abstract class DeclarationInspectionBase<T> : DeclarationInspectionBaseBase
     {
-        protected readonly DeclarationType[] RelevantDeclarationTypes;
-        protected readonly DeclarationType[] ExcludeDeclarationTypes;
-
         protected DeclarationInspectionBase(RubberduckParserState state, params DeclarationType[] relevantDeclarationTypes)
-            : base(state)
-        {
-            RelevantDeclarationTypes = relevantDeclarationTypes;
-            ExcludeDeclarationTypes = new DeclarationType[0];
-        }
+            : base(state, relevantDeclarationTypes)
+        {}
 
         protected DeclarationInspectionBase(RubberduckParserState state, DeclarationType[] relevantDeclarationTypes, DeclarationType[] excludeDeclarationTypes)
-            : base(state)
-        {
-            RelevantDeclarationTypes = relevantDeclarationTypes;
-            ExcludeDeclarationTypes = excludeDeclarationTypes;
-        }
+            : base(state, relevantDeclarationTypes, excludeDeclarationTypes)
+        {}
 
         protected abstract (bool isResult, T properties) IsResultDeclarationWithAdditionalProperties(Declaration declaration, DeclarationFinder finder);
         protected abstract string ResultDescription(Declaration declaration, T properties);
 
         protected virtual ICollection<string> DisabledQuickFixes(Declaration declaration, T properties) => new List<string>();
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
-        {
-            var finder = DeclarationFinderProvider.DeclarationFinder;
-
-            var results = new List<IInspectionResult>();
-            foreach (var moduleDeclaration in State.DeclarationFinder.UserDeclarations(DeclarationType.Module))
-            {
-                if (moduleDeclaration == null)
-                {
-                    continue;
-                }
-
-                var module = moduleDeclaration.QualifiedModuleName;
-                results.AddRange(DoGetInspectionResults(module, finder));
-            }
-
-            return results;
-        }
-
-        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
-        {
-            var finder = DeclarationFinderProvider.DeclarationFinder;
-            return DoGetInspectionResults(module, finder);
-        }
-
-        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
         {
             var objectionableDeclarationsWithAdditionalProperties = RelevantDeclarationsInModule(module, finder)
                     .Select(declaration => (declaration, IsResultDeclarationWithAdditionalProperties(declaration, finder)))
@@ -148,17 +69,6 @@ namespace Rubberduck.Inspections.Abstract
             return objectionableDeclarationsWithAdditionalProperties
                 .Select(tpl => InspectionResult(tpl.declaration, tpl.properties))
                 .ToList();
-        }
-
-        protected virtual IEnumerable<Declaration> RelevantDeclarationsInModule(QualifiedModuleName module, DeclarationFinder finder)
-        {
-            var potentiallyRelevantDeclarations = RelevantDeclarationTypes.Length == 0
-                ? finder.AllUserDeclarations
-                : RelevantDeclarationTypes
-                    .SelectMany(declarationType => finder.Members(module, declarationType))
-                    .Distinct();
-            return potentiallyRelevantDeclarations
-                .Where(declaration => ! ExcludeDeclarationTypes.Contains(declaration.DeclarationType));
         }
 
         protected virtual IInspectionResult InspectionResult(Declaration declaration, T properties)
