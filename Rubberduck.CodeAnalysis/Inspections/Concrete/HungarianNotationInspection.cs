@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Rubberduck.CodeAnalysis.Settings;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
@@ -10,8 +8,9 @@ using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Resources;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.SettingsProvider;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -49,7 +48,6 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class HungarianNotationInspection : InspectionBase
     {
-        #region statics
         private static readonly List<DeclarationType> TargetDeclarationTypes = new List<DeclarationType>
         {
             DeclarationType.Parameter,
@@ -72,8 +70,6 @@ namespace Rubberduck.Inspections.Concrete
             DeclarationType.LibraryProcedure
         };
 
-        #endregion
-
         private readonly IConfigurationService<CodeInspectionSettings> _settings;
 
         public HungarianNotationInspection(RubberduckParserState state, IConfigurationService<CodeInspectionSettings> settings)
@@ -84,22 +80,79 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
+            var finder = DeclarationFinderProvider.DeclarationFinder;
             var settings = _settings.Read();
-            var whitelistedNames = settings.WhitelistedIdentifiers.Select(s => s.Identifier).ToList();
+            var whitelistedNames = settings.WhitelistedIdentifiers
+                .Select(s => s.Identifier)
+                .ToList();
 
-            var hungarians = UserDeclarations
-                .Where(declaration => !whitelistedNames.Contains(declaration.IdentifierName)
-                                      && TargetDeclarationTypes.Contains(declaration.DeclarationType)
-                                      && !IgnoredProcedureTypes.Contains(declaration.DeclarationType)
-                                      && !IgnoredProcedureTypes.Contains(declaration.ParentDeclaration.DeclarationType)
-                                      && declaration.IdentifierName.TryMatchHungarianNotationCriteria(out _))
-                .Select(issue => new DeclarationInspectionResult(this,
-                                                      string.Format(Resources.Inspections.InspectionResults.IdentifierNameInspection,
-                                                                    RubberduckUI.ResourceManager.GetString($"DeclarationType_{issue.DeclarationType}", CultureInfo.CurrentUICulture),
-                                                                    issue.IdentifierName),
-                                                      issue));
+            var results = new List<IInspectionResult>();
+            foreach (var moduleDeclaration in State.DeclarationFinder.UserDeclarations(DeclarationType.Module))
+            {
+                if (moduleDeclaration == null)
+                {
+                    continue;
+                }
 
-            return hungarians;
+                var module = moduleDeclaration.QualifiedModuleName;
+                results.AddRange(DoGetInspectionResults(module, finder, whitelistedNames));
+            }
+
+            return results;
+        }
+
+        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
+        {
+            var finder = DeclarationFinderProvider.DeclarationFinder;
+            var settings = _settings.Read();
+            var whitelistedNames = settings.WhitelistedIdentifiers
+                .Select(s => s.Identifier)
+                .ToList();
+            return DoGetInspectionResults(module, finder, whitelistedNames);
+        }
+
+        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder, List<string> whitelistedNames)
+        {
+            var objectionableDeclarations = RelevantDeclarationsInModule(module, finder)
+                .Where(declaration => IsResultDeclaration(declaration, whitelistedNames));
+
+            return objectionableDeclarations
+                .Select(InspectionResult)
+                .ToList();
+        }
+
+        private static bool IsResultDeclaration(Declaration declaration, ICollection<string> whitelistedNames)
+        {
+            return !whitelistedNames.Contains(declaration.IdentifierName)
+                   && !IgnoredProcedureTypes.Contains(declaration.ParentDeclaration.DeclarationType)
+                   && declaration.IdentifierName.TryMatchHungarianNotationCriteria(out _);
+        }
+
+        private IInspectionResult InspectionResult(Declaration declaration)
+        {
+            return new DeclarationInspectionResult(
+                this,
+                ResultDescription(declaration),
+                declaration);
+        }
+
+        private static string ResultDescription(Declaration declaration)
+        {
+            var declarationType = declaration.DeclarationType.ToLocalizedString();
+            var declarationName = declaration.IdentifierName;
+            return string.Format(
+                Resources.Inspections.InspectionResults.IdentifierNameInspection,
+                declarationType,
+                declarationName);
+        }
+
+        private IEnumerable<Declaration> RelevantDeclarationsInModule(QualifiedModuleName module, DeclarationFinder finder)
+        {
+            var potentiallyRelevantDeclarations = TargetDeclarationTypes
+                    .SelectMany(declarationType => finder.Members(module, declarationType))
+                    .Distinct();
+            return potentiallyRelevantDeclarations
+                .Where(declaration => !IgnoredProcedureTypes.Contains(declaration.DeclarationType));
         }
     }
 }

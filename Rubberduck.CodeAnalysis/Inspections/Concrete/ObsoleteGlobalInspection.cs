@@ -33,7 +33,8 @@ namespace Rubberduck.Inspections.Concrete
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
             return declaration.Accessibility == Accessibility.Global 
-                   && declaration.Context != null;
+                   && declaration.Context != null
+                   && declaration.DeclarationType != DeclarationType.BracketedExpression;
         }
 
         protected override string ResultDescription(Declaration declaration)

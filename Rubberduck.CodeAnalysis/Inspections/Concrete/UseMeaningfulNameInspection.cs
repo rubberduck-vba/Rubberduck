@@ -58,7 +58,9 @@ namespace Rubberduck.Inspections.Concrete
         {
             var finder = DeclarationFinderProvider.DeclarationFinder;
             var settings = _settings.Read();
-            var whitelistedNames = settings.WhitelistedIdentifiers.Select(s => s.Identifier).ToArray();
+            var whitelistedNames = settings.WhitelistedIdentifiers
+                .Select(s => s.Identifier)
+                .ToArray();
             var handlers = finder.FindEventHandlers().ToHashSet();
 
             var results = new List<IInspectionResult>();
@@ -80,7 +82,9 @@ namespace Rubberduck.Inspections.Concrete
         {
             var finder = DeclarationFinderProvider.DeclarationFinder;
             var settings = _settings.Read();
-            var whitelistedNames = settings.WhitelistedIdentifiers.Select(s => s.Identifier).ToArray();
+            var whitelistedNames = settings.WhitelistedIdentifiers
+                .Select(s => s.Identifier)
+                .ToArray();
             var handlers = finder.FindEventHandlers().ToHashSet();
             return DoGetInspectionResults(module, finder, whitelistedNames, handlers);
         }
@@ -88,14 +92,14 @@ namespace Rubberduck.Inspections.Concrete
         private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder, string[] whitelistedNames, ICollection<Declaration> eventHandlers)
         {
             var objectionableDeclarations = finder.Members(module)
-                .Where(declaration => IsResultDeclaration(declaration, finder, whitelistedNames, eventHandlers));
+                .Where(declaration => IsResultDeclaration(declaration, whitelistedNames, eventHandlers));
 
             return objectionableDeclarations
                 .Select(InspectionResult)
                 .ToList();
         }
 
-        private static bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder, string[] whitelistedNames, ICollection<Declaration> eventHandlers)
+        private static bool IsResultDeclaration(Declaration declaration, string[] whitelistedNames, ICollection<Declaration> eventHandlers)
         {
             return !string.IsNullOrEmpty(declaration.IdentifierName)
                    && !IgnoreDeclarationTypes.Contains(declaration.DeclarationType)
