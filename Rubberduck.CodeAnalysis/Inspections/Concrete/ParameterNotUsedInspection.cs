@@ -1,12 +1,11 @@
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -37,34 +36,109 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class ParameterNotUsedInspection : InspectionBase
+    public sealed class ParameterNotUsedInspection : DeclarationInspectionBase
     {
         public ParameterNotUsedInspection(RubberduckParserState state)
-            : base(state) { }
+            : base(state, DeclarationType.Parameter)
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            var interfaceMembers = State.DeclarationFinder.FindAllInterfaceMembers();
-            var interfaceImplementationMembers = State.DeclarationFinder.FindAllInterfaceImplementingMembers();
+            if (declaration.References.Any()
+                || !(declaration is ParameterDeclaration parameter))
+            {
+                return false;
+            }
 
-            var handlers = State.DeclarationFinder.FindEventHandlers();
+            var enclosingMember = parameter.ParentDeclaration;
+            if (IsLibraryMethod(enclosingMember))
+            {
+                return false;
+            }
 
-            var parameters = State.DeclarationFinder
-                .UserDeclarations(DeclarationType.Parameter)
-                .OfType<ParameterDeclaration>()
-                .Where(parameter => !parameter.References.Any()
-                                    && parameter.ParentDeclaration.DeclarationType != DeclarationType.Event
-                                    && parameter.ParentDeclaration.DeclarationType != DeclarationType.LibraryFunction
-                                    && parameter.ParentDeclaration.DeclarationType != DeclarationType.LibraryProcedure
-                                    && !interfaceMembers.Contains(parameter.ParentDeclaration)
-                                    && !handlers.Contains(parameter.ParentDeclaration))
-                .ToList();
+            if (enclosingMember is EventDeclaration eventDeclaration)
+            {
+                return ThereAreHandlersAndNoneUsesTheParameter(parameter, eventDeclaration, finder);
+            }
 
-            var issues = from issue in parameters
-                let isInterfaceImplementationMember = interfaceImplementationMembers.Contains(issue.ParentDeclaration)
-                select new DeclarationInspectionResult(this, string.Format(InspectionResults.ParameterNotUsedInspection, issue.IdentifierName).Capitalize(), issue);
+            if (enclosingMember is ModuleBodyElementDeclaration member)
+            {
+                if (member.IsInterfaceMember)
+                {
+                    return ThereAreImplementationsAndNoneUsesTheParameter(parameter, member, finder);
+                }
 
-            return issues;
+                if (member.IsInterfaceImplementation
+                    || finder.FindEventHandlers().Contains(member))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static bool IsLibraryMethod(Declaration declaration)
+        {
+            return declaration.DeclarationType == DeclarationType.LibraryProcedure
+                   || declaration.DeclarationType == DeclarationType.LibraryFunction;
+        }
+
+        private static bool ThereAreImplementationsAndNoneUsesTheParameter(ParameterDeclaration parameter, ModuleBodyElementDeclaration interfaceMember, DeclarationFinder finder)
+        {
+            if (!TryFindParameterIndex(parameter, interfaceMember, out var parameterIndex))
+            {
+                //This really should never happen.
+                Debug.Fail($"Could not find index for parameter {parameter.IdentifierName} in interface member {interfaceMember.IdentifierName}.");
+                return false;
+            }
+
+            var implementations = finder.FindInterfaceImplementationMembers(interfaceMember).ToList();
+
+            //We do not want to report all parameters of not implemented interfaces.
+            return implementations.Any() 
+                   && implementations.All(implementation => ParameterAtIndexIsNotUsed(implementation, parameterIndex));
+        }
+
+        private static bool TryFindParameterIndex(ParameterDeclaration parameter, IParameterizedDeclaration enclosingMember, out int parameterIndex)
+        {
+            parameterIndex = enclosingMember.Parameters
+                .ToList()
+                .IndexOf(parameter);
+            return parameterIndex != -1;
+        }
+
+        private static bool ParameterAtIndexIsNotUsed(IParameterizedDeclaration declaration, int parameterIndex)
+        {
+            var parameter = declaration.Parameters.ElementAtOrDefault(parameterIndex);
+            return parameter != null
+                   && !parameter.References.Any();
+        }
+
+        private static bool ThereAreHandlersAndNoneUsesTheParameter(ParameterDeclaration parameter, EventDeclaration eventDeclaration, DeclarationFinder finder)
+        {
+            if (!TryFindParameterIndex(parameter, eventDeclaration, out var parameterIndex))
+            {
+                //This really should never happen.
+                Debug.Fail($"Could not find index for parameter {parameter.IdentifierName} in event {eventDeclaration.IdentifierName}.");
+                return false;
+            }
+
+            if (!eventDeclaration.IsUserDefined)
+            {
+                return false;
+            }
+
+            var handlers = finder.FindEventHandlers(eventDeclaration).ToList();
+
+            //We do not want to report all parameters of not handled events.
+            return handlers.Any() 
+                   && handlers.All(handler => ParameterAtIndexIsNotUsed(handler, parameterIndex));
+        }
+
+        protected override string ResultDescription(Declaration declaration)
+        {
+            return string.Format(InspectionResults.ParameterNotUsedInspection, declaration.IdentifierName).Capitalize();
         }
     }
 }
