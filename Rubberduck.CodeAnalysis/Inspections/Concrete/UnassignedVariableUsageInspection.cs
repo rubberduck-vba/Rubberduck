@@ -1,13 +1,10 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;

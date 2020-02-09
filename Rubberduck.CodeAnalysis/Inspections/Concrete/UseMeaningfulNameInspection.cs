@@ -4,7 +4,6 @@ using Rubberduck.CodeAnalysis.Settings;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Inspections.Results;
-using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -61,7 +60,7 @@ namespace Rubberduck.Inspections.Concrete
             var whitelistedNames = settings.WhitelistedIdentifiers
                 .Select(s => s.Identifier)
                 .ToArray();
-            var handlers = finder.FindEventHandlers().ToHashSet();
+            var handlers = finder.FindEventHandlers();
 
             var results = new List<IInspectionResult>();
             foreach (var moduleDeclaration in State.DeclarationFinder.UserDeclarations(DeclarationType.Module))
@@ -85,7 +84,7 @@ namespace Rubberduck.Inspections.Concrete
             var whitelistedNames = settings.WhitelistedIdentifiers
                 .Select(s => s.Identifier)
                 .ToArray();
-            var handlers = finder.FindEventHandlers().ToHashSet();
+            var handlers = finder.FindEventHandlers();
             return DoGetInspectionResults(module, finder, whitelistedNames, handlers);
         }
 

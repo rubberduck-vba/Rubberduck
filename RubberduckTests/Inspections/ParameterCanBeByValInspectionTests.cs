@@ -261,7 +261,7 @@ End Sub";
 Sub DoSomething(foo As Integer)
     RaiseEvent Bar(BYVAL foo)
 End Sub";
-            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Where(result => result.Target.IdentifierName.Equals("foo")).Count());
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count(result => result.Target.IdentifierName.Equals("foo")));
         }
 
 
@@ -1104,6 +1104,36 @@ Private Sub DoSomething(e As TestEnum)
 End Sub";
 
             Assert.AreEqual("e", InspectionResultsForStandardModule(inputCode).Single().Target.IdentifierName);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ParameterCanBeByVal_LibraryFunction_DoesNotReturnResult()
+        {
+            const string inputCode1 =
+                @"Public Declare Function MyLibFunction Lib ""MyLib"" (arg1 As Integer) As Integer";
+
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("Class1", inputCode1, ComponentType.ClassModule)
+            };
+
+            Assert.AreEqual(0, InspectionResultsForModules(modules).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ParameterCanBeByVal_LibraryProcedure_DoesNotReturnResult()
+        {
+            const string inputCode1 =
+                @"Public Declare Sub MyLibProcedure Lib ""MyLib"" (arg1 As Integer)";
+
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("Class1", inputCode1, ComponentType.ClassModule)
+            };
+
+            Assert.AreEqual(0, InspectionResultsForModules(modules).Count());
         }
 
         [Test]
