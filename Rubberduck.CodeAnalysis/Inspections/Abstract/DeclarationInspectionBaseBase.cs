@@ -54,7 +54,7 @@ namespace Rubberduck.Inspections.Abstract
             return DoGetInspectionResults(module, finder);
         }
 
-        protected IEnumerable<Declaration> RelevantDeclarationsInModule(QualifiedModuleName module, DeclarationFinder finder)
+        protected virtual IEnumerable<Declaration> RelevantDeclarationsInModule(QualifiedModuleName module, DeclarationFinder finder)
         {
             var potentiallyRelevantDeclarations = RelevantDeclarationTypes.Length == 0
                 ? finder.Members(module)
