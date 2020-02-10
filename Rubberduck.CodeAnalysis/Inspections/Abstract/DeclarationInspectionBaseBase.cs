@@ -48,7 +48,7 @@ namespace Rubberduck.Inspections.Abstract
             return results;
         }
 
-        protected IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
+        protected virtual IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
         {
             var finder = DeclarationFinderProvider.DeclarationFinder;
             return DoGetInspectionResults(module, finder);
