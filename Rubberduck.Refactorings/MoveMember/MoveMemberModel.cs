@@ -4,6 +4,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Common;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using System;
@@ -15,164 +16,149 @@ namespace Rubberduck.Refactorings.MoveMember
 {
     public class MoveMemberModel : IRefactoringModel
     {
-        public IDeclarationFinderProvider DeclarationFinderProvider => State;
-        public RubberduckParserState State { get; }
+        private readonly Func<MoveMemberModel, string> _previewDelegate;
+        public IDeclarationFinderProvider DeclarationFinderProvider { get; }
+        private List<Declaration> _selectedDeclarations;
 
-        public MoveMemberModel(RubberduckParserState state, IRewritingManager rewritingManager)
+        public MoveMemberModel(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager, Func<MoveMemberModel, string> previewDelegate)
         {
-            State = state;
-            MoveRewritingManager = new MoveMemberRewritingManager(rewritingManager);
+            MoveRewritingManager = rewritingManager;
+            _previewDelegate = previewDelegate;
+            DeclarationFinderProvider = declarationFinderProvider;
+            _selectedDeclarations = new List<Declaration>();
         }
 
         public void DefineMove(Declaration member, Declaration destinationModule = null)
         {
             DefiningMember = member;
-            CurrentScenario = CreateMoveScenario(DeclarationFinderProvider, member, new MoveDefinitionEndpoint(destinationModule));
-            SetStrategy();
+            InitializeSelectedDeclarations(member);
+            var sourceModule = DeclarationFinderProvider.DeclarationFinder.ModuleDeclaration(member.QualifiedModuleName);
+            Source = new MoveSource(new MoveMemberEndpoint(sourceModule));
+            Destination = new MoveDestination(new MoveMemberEndpoint(destinationModule));
+
+            MoveGroups = new MoveMemberGroups(SelectedDeclarations, DeclarationFinderProvider);
         }
 
-        public void DefineMove(Declaration member, string destinationModuleName, ComponentType destinationType)
+        public void DefineMove(Declaration member, string destinationModuleName, ComponentType destinationType = ComponentType.StandardModule)
         {
             DefiningMember = member;
-            CurrentScenario = CreateMoveScenario(DeclarationFinderProvider, member, new MoveDefinitionEndpoint(destinationModuleName, destinationType));
-            SetStrategy();
+            InitializeSelectedDeclarations(member);
+            var sourceModule = DeclarationFinderProvider.DeclarationFinder.ModuleDeclaration(member.QualifiedModuleName);
+            Source = new MoveSource(new MoveMemberEndpoint(sourceModule));
+            Destination = new MoveDestination(new MoveMemberEndpoint(destinationModuleName, destinationType));
+
+            MoveGroups = new MoveMemberGroups(SelectedDeclarations, DeclarationFinderProvider);
         }
 
-        private void SetStrategy()
+        public IEnumerable<Declaration> SelectedDeclarations => _selectedDeclarations;
+
+        public void AddDeclarationToMove(Declaration declaration)
         {
-            Strategy = null;
-
-            var groups = CurrentScenario as IProvideMoveDeclarationGroups;
-
-            //if (MoveMemberStrategy_Common.IsUnsupportedMove_General(CurrentScenario, groups)) { return; }
-
-            //if (MoveMemberStrategy_Common.IsUnsupportedMove_General_Member(CurrentScenario, groups)) { return; }
-
-            var strategies = MoveMemberStrategyProvider.FindStrategies(CurrentScenario, MoveRewritingManager);
-            if (strategies.Count() == 1)
-            {
-                Strategy = strategies.Single();
-                return;
-            }
-            //TODO: display info for 0 and >1 cases
+            _selectedDeclarations.Add(declaration);
+            MoveGroups = new MoveMemberGroups(_selectedDeclarations, DeclarationFinderProvider);
         }
 
-        public IMoveMemberRefactoringStrategy Strategy { private set; get; }
-
-        public void ChangeDestination(string destinationModuleName)
+        public void RemoveDeclarationToMove(Declaration declaration)
         {
-            var destinations = DeclarationFinderProvider.DeclarationFinder.MatchName(destinationModuleName)
-                .Where(d => d.DeclarationType.HasFlag(DeclarationType.Module) && d.IsUserDefined);
-
-            DefineMove(CurrentScenario.SelectedElements.First(), destinations.Single());
+            _selectedDeclarations.Remove(declaration);
+            MoveGroups = new MoveMemberGroups(_selectedDeclarations, DeclarationFinderProvider);
         }
 
-        private IDictionary<QualifiedModuleName, Declaration> _defaultMembers;
-        private IDictionary<QualifiedModuleName, Declaration> DefaultMembers
+        public IMoveMemberGroups MoveGroups { private set; get; }
+
+        public IEnumerable<Declaration> AllSourceModuleDeclarations
+            => DeclarationFinderProvider.DeclarationFinder.Members(Source.QualifiedModuleName);
+
+        public IEnumerable<Declaration> AllDestinationModuleDeclarations
+            => Destination.IsExistingModule(out var module)
+                ? DeclarationFinderProvider.DeclarationFinder.Members(module.QualifiedModuleName)
+                : Enumerable.Empty<Declaration>();
+
+        public bool IsStdModuleSource => Source.ComponentType.Equals(ComponentType.StandardModule);
+
+        public bool IsStdModuleDestination => Destination?.ComponentType.Equals(ComponentType.StandardModule) ?? false;
+
+        public IMoveMemberRefactoringStrategy Strategy
         {
             get
             {
-                if (_defaultMembers is null)
+                var strategy = new MoveMemberToStdModule();
+                if (strategy.IsApplicable(this))
                 {
-                    _defaultMembers = new Dictionary<QualifiedModuleName, Declaration>();
-                    var modules = DeclarationFinderProvider.DeclarationFinder.AllDeclarations.Where(d => d.DeclarationType.HasFlag(DeclarationType.Module) && d.IsUserDefined);
-
-                    foreach (var module in modules)
-                    {
-                        _defaultMembers.Add(module.QualifiedModuleName, MoveMemberDefaultMember(module)); //, DeclarationFinderProvider));
-                    }
+                    return strategy;
                 }
-                return _defaultMembers;
-            }
-        }
-
-        private Declaration MoveMemberDefaultMember(Declaration sourceModule) //, IDeclarationFinderProvider _declarationFinderProvider)
-        {
-            if (sourceModule is null)
-            {
                 return null;
             }
-
-            var members = DeclarationFinderProvider.DeclarationFinder.Members(sourceModule)
-                .Where(m => m.IsMember());
-
-            if (sourceModule.QualifiedModuleName.ComponentType == ComponentType.ClassModule)
-            {
-                members = members.Except(members.Where(m => MoveMemberResources.IsOrNamedLikeALifeCycleHandler(m)));
-            }
-
-            if (members.Count() <= 1)
-            {
-                return members.FirstOrDefault();
-            }
-
-            var publicMembers = members.Where(m => !m.HasPrivateAccessibility()).OrderBy(m => m.IdentifierName);
-            if (publicMembers.Any())
-            {
-                return publicMembers.OrderBy(m => m.IdentifierName).First();
-            }
-            return members.OrderBy(m => m.IdentifierName).FirstOrDefault();
         }
 
-        public Declaration DefaultMemberToMove(QualifiedModuleName qmn)
-            => DefaultMembers.ContainsKey(qmn) ? DefaultMembers[qmn] : null;
+        public void ChangeDestination(string destinationModuleName)
+        {
+            var destination = DeclarationFinderProvider.DeclarationFinder.MatchName(destinationModuleName)
+                .Where(d => d.DeclarationType.HasFlag(DeclarationType.Module) && d.IsUserDefined).SingleOrDefault();
 
-        public MoveMemberRewritingManager MoveRewritingManager { get; }
+            if (destination is null)
+            {
+                DefineMove(SelectedDeclarations.First(), destinationModuleName);
+                return;
+            }
+            DefineMove(SelectedDeclarations.First(), destination);
+        }
 
-        public IMoveScenario CurrentScenario { set; get; } = MoveScenario.NullMove();
+        public IRewritingManager MoveRewritingManager { get; }
 
         public string PreviewDestination()
         {
-            SetStrategy();
-            return Strategy?.PreviewDestination() ?? string.Empty;
+            if (_previewDelegate is null)
+            {
+                return string.Empty;
+            }
+
+            return _previewDelegate(this);
         }
 
-        public bool IsValidMoveDefinition => CurrentScenario.IsValidMoveDefinition;
+        public bool HasValidDestination
+        {
+            get
+            {
+                return !(Destination.ModuleName.Equals(Source.ModuleName)
+                    || IsInvalidDestinationModuleName());
+            }
+        }
 
-        public Declaration SourceModule => CurrentScenario.SourceContentProvider.Module;
+        private bool IsInvalidDestinationModuleName()
+        {
+            if (string.IsNullOrEmpty(Destination.ModuleName))
+            {
+                return false;
+            }
 
-        public Declaration DestinationModule => CurrentScenario.DestinationContentProvider.Module;
+            return VBAIdentifierValidator.TryMatchInvalidIdentifierCriteria(Destination.ModuleName, DeclarationType.Module, out var criteriaMatchMessage);
+        }
 
-        public string DestinationModuleName => CurrentScenario.DestinationContentProvider.ModuleName;
+        public string DestinationModuleName => Destination.ModuleName;
 
         public bool CreatesNewModule
-            => DestinationModule is null && !string.IsNullOrEmpty(DestinationModuleName);
+            => !Destination.IsExistingModule(out _) && !string.IsNullOrEmpty(Destination.ModuleName);
 
         public Declaration DefiningMember { private set; get; }
 
-        private static Dictionary<MoveDefinition, IMoveScenario> Scenarios { get; } = new Dictionary<MoveDefinition, IMoveScenario>();
+        public IMoveSource Source { private set; get; }
 
-        public static IMoveScenario CreateMoveScenario(IDeclarationFinderProvider declarationFinderProvider, Declaration selectedDeclaration, MoveDefinitionEndpoint destinationEndpoint)
+        public IMoveDestination Destination { private set; get; }
+
+        private void InitializeSelectedDeclarations(Declaration member)
         {
-            if (selectedDeclaration is null)
+            _selectedDeclarations = new List<Declaration>() { member };
+            if (member.DeclarationType.HasFlag(DeclarationType.Property))
             {
-                return MoveScenario.NullMove();
+                var sourceModule = DeclarationFinderProvider.DeclarationFinder.ModuleDeclaration(member.QualifiedModuleName);
+                _selectedDeclarations = (from dec in DeclarationFinderProvider.DeclarationFinder.Members(sourceModule)
+                                         where dec.DeclarationType.HasFlag(DeclarationType.Property)
+                                                 && dec.IdentifierName.Equals(member.IdentifierName)
+                                         orderby dec.Selection
+                                         select dec).ToList();
             }
-
-            var sourceModule = declarationFinderProvider.DeclarationFinder.ModuleDeclaration(selectedDeclaration.QualifiedModuleName);
-
-            var selectedDeclarations = new List<Declaration>() { selectedDeclaration };
-
-            if (selectedDeclaration.DeclarationType.HasFlag(DeclarationType.Property))
-            {
-                selectedDeclarations = (from dec in declarationFinderProvider.DeclarationFinder.Members(sourceModule)
-                                 where dec.DeclarationType.HasFlag(DeclarationType.Property)
-                                         && dec.IdentifierName.Equals(selectedDeclaration.IdentifierName)
-                                 orderby dec.Selection
-                                 select dec).ToList();
-            }
-
-            var moveDefinition = new MoveDefinition(new MoveDefinitionEndpoint(sourceModule), destinationEndpoint, selectedDeclarations);
-
-            if (Scenarios.TryGetValue(moveDefinition, out IMoveScenario scenario))
-            {
-                return scenario;
-            }
-
-            scenario = new MoveScenario(moveDefinition, declarationFinderProvider);
-
-            Scenarios.Add(moveDefinition, scenario);
-            return scenario;
+            return;
         }
     }
 }

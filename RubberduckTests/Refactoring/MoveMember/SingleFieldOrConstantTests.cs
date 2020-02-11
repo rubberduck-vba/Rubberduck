@@ -139,6 +139,75 @@ End Function
             }
         }
 
+        [TestCase(MoveEndpoints.FormToStd, "Private")]
+        [TestCase(MoveEndpoints.ClassToStd, "Private")]
+        [TestCase(MoveEndpoints.StdToStd, "Public")]
+        [TestCase(MoveEndpoints.StdToStd, "Private")]
+        [Category("Refactorings")]
+        [Category("MoveMember")]
+        public void XToStd_MoveNonAggregateValueTypeFields_HasReferences(MoveEndpoints moveEndpoints, string accessibility)
+        {
+            var source =
+$@"
+Option Explicit
+
+{accessibility} mFoo As Long
+{accessibility} mFoo1 As Long
+{accessibility} mFoo2 As Long
+{accessibility} mFoo3 As Long
+
+Public Function FooMath(arg1 As Long) As Long
+    FooMath = arg1 * mFoo * mFoo2
+End Function
+";
+
+            var moveDefinition = new TestMoveDefinition(moveEndpoints, ("mFoo", DeclarationType.Variable), sourceContent: source);
+
+            var callSiteModuleName = "CallSiteModule";
+            if (moveDefinition.IsStdModuleSource && accessibility.Equals(Tokens.Public))
+            {
+                var otherModuleReference =
+    $@"
+Option Explicit
+
+Public Function MemberAccessFoo(arg1 As Long) As Long
+    MemberAccessFoo = arg1 * {moveDefinition.SourceModuleName}.mFoo * 2
+End Function
+
+Public Function WithMemberAccessFoo(arg1 As Long) As Long
+    Dim result As Long
+    With {moveDefinition.SourceModuleName}
+        result = (.mFoo + arg1) * 2
+    End With
+    WithMemberAccessFoo = result
+End Function
+
+Public Function NonQualifiedFoo(arg1 As Long) As Long
+    NonQualifiedFoo = (mFoo2 + arg1) * 2
+End Function
+";
+                moveDefinition.Add(new ModuleDefinition(callSiteModuleName, ComponentType.StandardModule, otherModuleReference));
+            }
+            var decType = DeclarationType.Variable;
+            var refactoredCode = RefactoredCode(moveDefinition, source, null, ("mFoo1", decType), ("mFoo2", decType), ("mFoo3", decType));
+
+            var destinationDeclaration = "Public mFoo As Long";
+
+            StringAssert.DoesNotContain("mFoo As Long", refactoredCode.Source);
+            StringAssert.DoesNotContain("mFoo1 As Long", refactoredCode.Source);
+            StringAssert.DoesNotContain("mFoo2 As Long", refactoredCode.Source);
+            StringAssert.DoesNotContain("mFoo3 As Long", refactoredCode.Source);
+            StringAssert.Contains(destinationDeclaration, refactoredCode.Destination);
+            StringAssert.Contains($"{moveDefinition.DestinationModuleName}.{moveDefinition.SelectedElement}", refactoredCode.Source);
+            StringAssert.Contains($"{moveDefinition.DestinationModuleName}.mFoo2", refactoredCode.Source);
+            if (moveDefinition.IsStdModuleSource && accessibility.Equals(Tokens.Public))
+            {
+                StringAssert.Contains($"{moveDefinition.DestinationModuleName}.{moveDefinition.SelectedElement}", refactoredCode[callSiteModuleName]);
+                StringAssert.Contains($"result = ({moveDefinition.DestinationModuleName}.{moveDefinition.SelectedElement} + arg1) * 2", refactoredCode[callSiteModuleName]);
+                StringAssert.Contains($"NonQualifiedFoo = ({moveDefinition.DestinationModuleName}.mFoo2 + arg1) * 2", refactoredCode[callSiteModuleName]);
+            }
+        }
+
         [TestCase("Public")]
         [TestCase("Private")]
         [Category("Refactorings")]
@@ -410,14 +479,5 @@ End Function
             }
         }
 
-        //private IEnumerable<IMoveMemberRefactoringStrategy> RetrieveStrategies(IDeclarationFinderProvider declarationFinderProvider, string declarationName, DeclarationType declarationType, IRewritingManager rewritingManager)
-        //{
-        //    var target = declarationFinderProvider.DeclarationFinder.DeclarationsWithType(declarationType)
-        //         .Single(declaration => declaration.IdentifierName == declarationName);
-
-        //    var scenario = MoveMemberModel.CreateMoveScenario(declarationFinderProvider, target, new MoveDefinitionEndpoint("DefaultDestinationModule", ComponentType.StandardModule));
-        //    var manager = new MoveMemberRewritingManager(rewritingManager);
-        //    return MoveMemberStrategyProvider.FindStrategies(scenario, manager);
-        //}
     }
 }

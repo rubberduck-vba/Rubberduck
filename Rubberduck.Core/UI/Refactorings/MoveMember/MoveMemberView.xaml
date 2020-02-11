@@ -1,0 +1,159 @@
+﻿<UserControl x:Class="Rubberduck.UI.Refactorings.MoveMember.MoveMemberView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Rubberduck.UI.Refactorings.MoveMember"
+             xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="70" />
+            <RowDefinition Height="70" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="40" />
+        </Grid.RowDefinitions>
+        <DockPanel Dock="Top" Background="White">
+            <StackPanel>
+                <Label Content="{Binding RefactorName}" FontWeight="Bold" />
+                <TextBlock Text="{Binding Instructions}" Margin="5,0" Padding="0,5" />
+            </StackPanel>
+        </DockPanel>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50"></ColumnDefinition>
+                <ColumnDefinition Width="200"></ColumnDefinition>
+                <ColumnDefinition Width="50"></ColumnDefinition>
+                <ColumnDefinition Width="200"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="1">
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="Source Module"
+                            Padding="10,0" 
+                           FontWeight="Bold"
+                           Height="20">
+                    </TextBlock>
+                    <ComboBox 
+                        Height = "30" 
+                        Width = "200" 
+                        HorizontalAlignment = "Left" 
+                        VerticalContentAlignment="Center"
+                        Padding="10,0"
+                        SelectedValue="{Binding SourceModule, Mode=TwoWay}"
+                        ItemsSource="{Binding SourceModules }"
+                        SelectedValuePath="Key"
+                        DisplayMemberPath="Value">
+                    </ComboBox>
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Column="3">
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="Destination Module"
+                            Padding="10,0"
+                            FontWeight="Bold"
+                               Height="20">
+                    </TextBlock>
+                    <Grid>
+                        <ComboBox x:Name="DestinationModuleName" 
+                        IsEditable ="True"
+                        IsTextSearchEnabled="True"
+                        Height = "30" 
+                        Width = "200" 
+                        HorizontalAlignment = "Right" 
+                        VerticalContentAlignment="Center"
+                        Padding="10,0"
+                        SelectedValue="{Binding DestinationModule, Mode=TwoWay}"
+                        Text="{Binding DestinationModuleName, Mode=TwoWay}"
+                        ItemsSource="{Binding DestinationModules, Mode=OneWay}"
+                        SelectedValuePath="Key"
+                        DisplayMemberPath="Value">
+                        </ComboBox>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+
+        </Grid>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="1">
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="Member to Move" 
+                            HorizontalAlignment="Left"
+                            Padding="10,0"
+                           FontWeight="Bold"
+                               Height="20">
+                    </TextBlock>
+                    <ComboBox 
+                        Height = "30" 
+                        Width="450"
+                        HorizontalAlignment="Left"
+                        VerticalContentAlignment="Center"
+                        Padding="10,0"
+                        SelectedValue="{Binding MemberToMove, Mode=TwoWay}"
+                        ItemsSource="{Binding MoveCandidates }"
+                        SelectedValuePath="Key"
+                        DisplayMemberPath="Value" 
+                        />
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Column="3">
+                <StackPanel VerticalAlignment="Center">
+                </StackPanel>
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="3">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Image Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png"
+                            Grid.Row="0" Height="16"
+                            Margin="0,-10,0,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            Visibility="{Binding IsExecutableMove, Converter={StaticResource BoolToHiddenVisibility}}"/>
+                <TextBox
+                        Grid.Row="1"
+                        IsReadOnly="True"
+                        Text="{Binding MoveCommentary,Mode=OneWay}"
+                        >
+                </TextBox>
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Row="4" Background="{x:Static SystemColors.ControlDarkBrush}" Grid.IsSharedSizeScope="True">
+            <Grid HorizontalAlignment="Right"
+                  Margin="5,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition SharedSizeGroup="SettingsButtons" />
+                    <ColumnDefinition SharedSizeGroup="SettingsButtons" />
+                </Grid.ColumnDefinitions>
+                <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=OK}"
+                        Grid.Column="0"
+                        Height="20"
+                        Margin="5,0"
+                        Padding="10,0"
+                        IsEnabled="{Binding IsExecutableMove}"
+                        IsDefault="True"
+                        Command="{Binding OkButtonCommand}" />
+                <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CancelButtonText}"
+                        Grid.Column="1"
+                        Height="20"
+                        Margin="5,0"
+                        Padding="10,0"
+                        IsCancel="True"
+                        Command="{Binding CancelButtonCommand}">
+                </Button>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>
