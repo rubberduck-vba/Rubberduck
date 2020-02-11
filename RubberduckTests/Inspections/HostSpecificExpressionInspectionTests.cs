@@ -22,7 +22,7 @@ Public Sub DoSomething()
     [A1] = 42
 End Sub
 ";
-            var vbe = MockVbeBuilder.BuildFromModules(("Module1", code, ComponentType.StandardModule), new string[] { "VBA", "Excel" });
+            var vbe = MockVbeBuilder.BuildFromModules(("Module1", code, ComponentType.StandardModule), new ReferenceLibrary[] { ReferenceLibrary.VBA, ReferenceLibrary.Excel });
             var mockHost = new Mock<IHostApplication>();
             mockHost.SetupGet(m => m.ApplicationName).Returns("Excel");
             vbe.Setup(m => m.HostApplication()).Returns(() => mockHost.Object);

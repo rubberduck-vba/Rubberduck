@@ -43,7 +43,7 @@ namespace RubberduckTests.Mocks
         }
 
         public MockProjectBuilder(string name, string filename, ProjectProtection protection, ProjectType projectType, Func<IVBE> getVbe, MockVbeBuilder mockVbeBuilder)
-        :this(
+        : this(
             name,
             filename,
             Guid.NewGuid().ToString(),
@@ -102,6 +102,17 @@ namespace RubberduckTests.Mocks
             _codeModuleMocks.Add(codeModule);
             _getVbe().ActiveCodePane = component.Object.CodeModule.CodePane;
             return this;
+        }
+
+        /// <summary>
+        /// Adds a mock reference to the project.
+        /// </summary>
+        /// <param name="referenceLibrary">The reference library's enum.</param>
+        /// <returns>Returns the <see cref="MockProjectBuilder"/> instance.</returns>
+        public MockProjectBuilder AddReference(ReferenceLibrary referenceLibrary)
+        {
+            var (name, path, versionMajor, versionMinor, isBuiltIn) = MockVbeBuilder.ReferenceLibraries[referenceLibrary];
+            return AddReference(name, path, versionMajor, versionMinor, isBuiltIn);
         }
 
         /// <summary>
@@ -191,7 +202,7 @@ namespace RubberduckTests.Mocks
             result.Setup(m => m[It.IsAny<int>()]).Returns<int>(index => Components.ElementAt(index));
             result.Setup(m => m[It.IsAny<string>()]).Returns<string>(name => Components.Single(item => item.Name == name));
             result.SetupGet(m => m.Count).Returns(() => Components.Count);
-            
+
             result.Setup(m => m.Add(It.IsAny<ComponentType>()))
                 .Callback((ComponentType c) =>
                 {
@@ -272,7 +283,7 @@ namespace RubberduckTests.Mocks
             return result;
         }
 
-        private Mock<IVBComponent> CreateComponentMock(string name, ComponentType type, string content, Selection selection, 
+        private Mock<IVBComponent> CreateComponentMock(string name, ComponentType type, string content, Selection selection,
             IEnumerable<IProperty> properties, out Mock<ICodeModule> moduleMock)
         {
             var result = new Mock<IVBComponent>();
@@ -356,7 +367,7 @@ namespace RubberduckTests.Mocks
 
             codeModule.Setup(m => m.GetLines(It.IsAny<Selection>()))
                 .Returns((Selection selection) => string.Join(Environment.NewLine, lines.Skip(selection.StartLine - 1).Take(selection.LineCount)));
-            
+
             codeModule.Setup(m => m.GetLines(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns<int, int>((start, count) => string.Join(Environment.NewLine, lines.Skip(start - 1).Take(count)));
 

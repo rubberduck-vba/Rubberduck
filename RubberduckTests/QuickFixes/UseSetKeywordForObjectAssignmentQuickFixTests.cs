@@ -149,7 +149,7 @@ End Sub
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, code)
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
+                .AddReference(ReferenceLibrary.Excel)
                 .Build();
 
             var vbe = builder.AddProject(project).Build().Object;
