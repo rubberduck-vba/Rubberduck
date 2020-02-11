@@ -296,7 +296,7 @@ namespace RubberduckTests.Refactoring.MoveMember
             return MockVbeBuilder.BuildFromModules(moveDefinition.ModuleDefinitions.Select(tc => tc.AsTuple)).Object;
         }
 
-        public static IVBE BuildVBEStub(TestMoveDefinition moveDefinition, string sourceContent, string destinationContent = null, params string[] libraries)
+        public static IVBE BuildVBEStub(TestMoveDefinition moveDefinition, string sourceContent, string destinationContent = null, params ReferenceLibrary[] libraries)
         {
             if (moveDefinition.CreateNewModule)
             {
