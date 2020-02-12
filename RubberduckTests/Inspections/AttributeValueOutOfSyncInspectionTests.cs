@@ -218,12 +218,19 @@ End Sub";
             var inspectionResults = InspectionResults(inputCode);
             var inspectionResult = inspectionResults.First();
 
-            var (pta, attributeName, attributeValues) = inspectionResult.Properties<(IParseTreeAnnotation Annotation, string AttributeName, IReadOnlyList<string> AttributeValues)>();
+            if (inspectionResult is IWithInspectionResultProperties<(IParseTreeAnnotation Annotation, string AttributeName, IReadOnlyList<string> AttributeValues)> resultProperties)
+            {
+                var (pta, attributeName, attributeValues) = resultProperties.Properties;
 
-            Assert.IsInstanceOf<MemberAttributeAnnotation>(pta.Annotation);
-            Assert.AreEqual("VB_UserMemId", attributeName);
-            Assert.AreEqual("-4", ((IAttributeAnnotation)pta.Annotation).AttributeValues(pta)[0]);
-            Assert.AreEqual("40", attributeValues[0]);
+                Assert.IsInstanceOf<MemberAttributeAnnotation>(pta.Annotation);
+                Assert.AreEqual("VB_UserMemId", attributeName);
+                Assert.AreEqual("-4", ((IAttributeAnnotation)pta.Annotation).AttributeValues(pta)[0]);
+                Assert.AreEqual("40", attributeValues[0]);
+            }
+            else
+            {
+                Assert.Fail("Result is missing expected properties.");
+            }
         }
 
         private IEnumerable<IInspectionResult> InspectionResults(string inputCode, ComponentType componentType = ComponentType.StandardModule)

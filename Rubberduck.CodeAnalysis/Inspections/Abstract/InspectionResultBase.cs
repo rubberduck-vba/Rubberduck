@@ -37,8 +37,6 @@ namespace Rubberduck.Inspections.Abstract
         public Declaration Target { get; }
         public ICollection<string> DisabledQuickFixes { get; }
 
-        public virtual T Properties<T>() => default;
-
         public virtual bool ChangesInvalidateResult(ICollection<QualifiedModuleName> modifiedModules)
         {
             return modifiedModules.Contains(QualifiedName) 

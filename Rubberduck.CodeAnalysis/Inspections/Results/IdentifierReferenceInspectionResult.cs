@@ -44,16 +44,14 @@ namespace Rubberduck.Inspections.Results
         }
     }
 
-    public class IdentifierReferenceInspectionResult<TProperties> : IdentifierReferenceInspectionResult
+    public class IdentifierReferenceInspectionResult<T> : IdentifierReferenceInspectionResult, IWithInspectionResultProperties<T>
     {
-        private readonly TProperties _properties;
-
         public IdentifierReferenceInspectionResult(
             IInspection inspection, 
             string description, 
             IDeclarationFinderProvider declarationFinderProvider, 
             IdentifierReference reference, 
-            TProperties properties,
+            T properties,
             ICollection<string> disabledQuickFixes = null) 
             : base(
                 inspection,
@@ -62,17 +60,9 @@ namespace Rubberduck.Inspections.Results
                 reference,
                 disabledQuickFixes)
         {
-            _properties = properties;
+            Properties = properties;
         }
 
-        public override T Properties<T>()
-        {
-            if (_properties is T properties)
-            {
-                return properties;
-            }
-
-            return base.Properties<T>();
-        }
+        public T Properties { get; }
     }
 }

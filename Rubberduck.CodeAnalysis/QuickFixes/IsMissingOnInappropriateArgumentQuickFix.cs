@@ -51,7 +51,12 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            var parameter = result.Properties<ParameterDeclaration>();
+            if (!(result is IWithInspectionResultProperties<ParameterDeclaration> resultProperties))
+            {
+                return;
+            }
+
+            var parameter = resultProperties.Properties;
             if (parameter == null)
             {
                 Logger.Trace($"Properties for IsMissingOnInappropriateArgumentQuickFix was null.");

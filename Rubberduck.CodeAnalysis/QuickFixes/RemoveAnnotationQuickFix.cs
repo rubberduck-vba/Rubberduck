@@ -49,7 +49,12 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            _annotationUpdater.RemoveAnnotation(rewriteSession, result.Properties<IParseTreeAnnotation>());
+            if (!(result is IWithInspectionResultProperties<IParseTreeAnnotation> resultProperties))
+            {
+                return;
+            }
+
+            _annotationUpdater.RemoveAnnotation(rewriteSession, resultProperties.Properties);
         }
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.RemoveAnnotationQuickFix;

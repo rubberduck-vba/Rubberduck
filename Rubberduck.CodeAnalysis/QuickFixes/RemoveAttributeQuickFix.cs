@@ -51,8 +51,13 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
+            if (!(result is IWithInspectionResultProperties<(string AttributeName, IReadOnlyList<string> AttributeValues)> resultProperties))
+            {
+                return;
+            }
+
             var declaration = result.Target;
-            var (attributeBaseName, attributeValues) = result.Properties<(string AttributeName, IReadOnlyList<string> AttributeValues)>();
+            var (attributeBaseName, attributeValues) = resultProperties.Properties;
 
             var attributeName = declaration.DeclarationType.HasFlag(DeclarationType.Module)
                 ? attributeBaseName

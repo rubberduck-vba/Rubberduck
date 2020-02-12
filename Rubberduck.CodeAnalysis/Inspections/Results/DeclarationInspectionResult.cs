@@ -44,15 +44,13 @@ namespace Rubberduck.Inspections.Results
         }
     }
 
-    public class DeclarationInspectionResult<TProperties> : DeclarationInspectionResult
+    public class DeclarationInspectionResult<T> : DeclarationInspectionResult, IWithInspectionResultProperties<T>
     {
-        private readonly TProperties _properties;
-
         public DeclarationInspectionResult(
             IInspection inspection, 
             string description, 
             Declaration target,
-            TProperties properties, 
+            T properties, 
             QualifiedContext context = null,
             ICollection<string> disabledQuickFixes = null) :
             base(
@@ -62,17 +60,9 @@ namespace Rubberduck.Inspections.Results
                 context,
                 disabledQuickFixes)
         {
-            _properties = properties;
+            Properties = properties;
         }
 
-        public override T Properties<T>()
-        {
-            if (_properties is T properties)
-            {
-                return properties;
-            }
-
-            return base.Properties<T>();
-        }
+        public T Properties { get; }
     }
 }

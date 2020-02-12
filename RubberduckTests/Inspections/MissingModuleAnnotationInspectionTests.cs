@@ -425,11 +425,19 @@ End Sub";
             var expectedAttributeValues = new List<string> { "\"Desc\"" };
 
             var inspectionResult = inspectionResults.Single();
-            var (actualAttributeBaseName, actualAttributeValues) = inspectionResult.Properties<(string AttributeName, IReadOnlyList<string> AttributeValues)>();
 
-            Assert.AreEqual(expectedAttributeName, actualAttributeBaseName);
-            Assert.AreEqual(expectedAttributeValues.Count, actualAttributeValues.Count);
-            Assert.AreEqual(expectedAttributeValues[0], actualAttributeValues[0]);
+            if (inspectionResult is IWithInspectionResultProperties<(string AttributeName, IReadOnlyList<string> AttributeValues)> resultProperties)
+            {
+                var (actualAttributeBaseName, actualAttributeValues) = resultProperties.Properties;
+
+                Assert.AreEqual(expectedAttributeName, actualAttributeBaseName);
+                Assert.AreEqual(expectedAttributeValues.Count, actualAttributeValues.Count);
+                Assert.AreEqual(expectedAttributeValues[0], actualAttributeValues[0]);
+            }
+            else
+            {
+                Assert.Fail("Result is missing expected properties.");
+            }
         }
 
         private IEnumerable<IInspectionResult> InspectionResults(string inputCode, ComponentType componentType = ComponentType.StandardModule)

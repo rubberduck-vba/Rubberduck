@@ -48,7 +48,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            var referenceResult = (IdentifierReferenceInspectionResult)result;
+            var referenceResult = (IdentifierReferenceInspectionResult<string>)result;
 
             var rewriter = rewriteSession.CheckOutModuleRewriter(referenceResult.QualifiedName);
 
@@ -62,7 +62,7 @@ namespace Rubberduck.Inspections.QuickFixes
                 var indexExprContext = referenceResult.Context.Parent.Parent as VBAParser.IndexExprContext ??
                                        referenceResult.Context.Parent as VBAParser.IndexExprContext;
 
-                var codeName = referenceResult.Properties<string>();
+                var codeName = referenceResult.Properties;
                 rewriter.Replace(indexExprContext, codeName);
             }
             else
@@ -98,7 +98,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
                 foreach (var reference in sheetDeclaration.References)
                 {
-                    var codeName = referenceResult.Properties<string>();
+                    var codeName = referenceResult.Properties;
                     rewriter.Replace(reference.Context, codeName);
                 }
 

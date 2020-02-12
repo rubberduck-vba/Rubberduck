@@ -61,8 +61,13 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
+            if (!(result is IWithInspectionResultProperties<(IParseTreeAnnotation Annotation, string AttributeName, IReadOnlyList<string> AttributeValues)> resultProperties))
+            {
+                return;
+            }
+
             var declaration = result.Target;
-            var (parseTreeAnnotation, attributeBaseName, attributeValues) = result.Properties<(IParseTreeAnnotation Annotation, string AttributeName, IReadOnlyList<string> AttributeValues)>();
+            var (parseTreeAnnotation, attributeBaseName, attributeValues) = resultProperties.Properties;
 
             var attributeName = declaration.DeclarationType.HasFlag(DeclarationType.Module)
                 ? attributeBaseName

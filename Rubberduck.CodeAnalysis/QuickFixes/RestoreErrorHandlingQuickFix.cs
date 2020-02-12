@@ -55,6 +55,11 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
+            if (!(result is IWithInspectionResultProperties<List<ParserRuleContext>> resultProperties))
+            {
+                return;
+            }
+
             var exitStatement = "Exit ";
             VBAParser.BlockContext block;
             var bodyElementContext = result.Context.GetAncestor<VBAParser.ModuleBodyElementContext>();
@@ -89,7 +94,7 @@ namespace Rubberduck.Inspections.QuickFixes
             var context = (VBAParser.OnErrorStmtContext)result.Context;
             var labels = bodyElementContext.GetDescendents<VBAParser.IdentifierStatementLabelContext>().ToArray();
             var maximumExistingLabelIndex = GetMaximumExistingLabelIndex(labels);
-            var unhandledContexts = result.Properties<List<ParserRuleContext>>();
+            var unhandledContexts = resultProperties.Properties;
             var offset = unhandledContexts.IndexOf(result.Context);
             var labelIndex = maximumExistingLabelIndex + offset;
 

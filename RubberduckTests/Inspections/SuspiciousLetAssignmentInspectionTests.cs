@@ -47,13 +47,21 @@ End Sub
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
             var inspectionResult = inspectionResults.Single();
-            var rhsReference = inspectionResult.Properties<IdentifierReference>();
-            Assert.IsNotNull(rhsReference);
 
-            if (assignedTypeName.Equals("Object") || assignedToTypeName.Equals("Object"))
+            if (inspectionResult is IWithInspectionResultProperties<IdentifierReference> resultProperties)
             {
-                var deactivatedFix = inspectionResult.DisabledQuickFixes.Single();
-                Assert.AreEqual("ExpandDefaultMemberQuickFix", deactivatedFix);
+                var rhsReference = resultProperties.Properties;
+                Assert.IsNotNull(rhsReference);
+
+                if (assignedTypeName.Equals("Object") || assignedToTypeName.Equals("Object"))
+                {
+                    var deactivatedFix = inspectionResult.DisabledQuickFixes.Single();
+                    Assert.AreEqual("ExpandDefaultMemberQuickFix", deactivatedFix);
+                }
+            }
+            else
+            {
+                Assert.Fail("Result is missing expected properties.");
             }
         }
 

@@ -48,7 +48,12 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            var resultAnnotation = result.Properties<IAnnotation>();
+            if (!(result is IWithInspectionResultProperties<IAnnotation> resultProperties))
+            {
+                return;
+            }
+
+            var resultAnnotation = resultProperties.Properties;
             var duplicateAnnotations = result.Target.Annotations
                 .Where(pta => pta.Annotation == resultAnnotation)
                 .OrderBy(annotation => annotation.AnnotatedLine)
