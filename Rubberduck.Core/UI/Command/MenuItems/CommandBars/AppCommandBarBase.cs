@@ -37,7 +37,13 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             }
             catch (COMException exception)
             {
-                Logger.Error(exception,$"COMException while finding child with tag '{tag}'.");
+                Logger.Error(exception, $"COMException while finding child with tag '{tag}' in the command bar.");
+            }
+            catch (InvalidCastException exception)
+            {
+                //This exception will be encountered whenever the registration of the command bar control not correct in the system.
+                //See issue #5349 at https://github.com/rubberduck-vba/Rubberduck/issues/5349
+                Logger.Error(exception, $"Invalid cast exception while finding child with tag '{tag}' in the command bar.");
             }
             return null;
         }

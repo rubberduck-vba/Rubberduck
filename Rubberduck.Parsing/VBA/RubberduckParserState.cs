@@ -359,6 +359,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        public event EventHandler<ParserStateEventArgs> StateChangedHighPriority;
         public event EventHandler<ParserStateEventArgs> StateChanged;
 
         private int _stateChangedInvocations;
@@ -367,6 +368,27 @@ namespace Rubberduck.Parsing.VBA
             Interlocked.Increment(ref _stateChangedInvocations);
 
             Logger.Info($"{nameof(RubberduckParserState)} ({_stateChangedInvocations}) is invoking {nameof(StateChanged)} ({Status})");
+
+            var highPriorityHandler = StateChangedHighPriority;
+            if (highPriorityHandler != null && !token.IsCancellationRequested)
+            {
+                try
+                {
+                    var args = new ParserStateEventArgs(state, oldStatus, token);
+                    highPriorityHandler.Invoke(requestor, args);
+                }
+                catch (OperationCanceledException cancellation)
+                {
+                    throw;
+                }
+                catch (Exception e)
+                {
+                    // Error state, because this implies consumers are not exception-safe!
+                    // this behaviour could leave us in a state where some consumers have correctly updated and some have not
+                    Logger.Error(e, "An exception occurred when notifying consumers of updated parser state.");
+                }
+            }
+
             var handler = StateChanged;
             if (handler != null && !token.IsCancellationRequested)
             {
