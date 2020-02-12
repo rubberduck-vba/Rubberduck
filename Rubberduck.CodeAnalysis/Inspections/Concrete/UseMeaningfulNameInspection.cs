@@ -3,14 +3,11 @@ using System.Linq;
 using Rubberduck.CodeAnalysis.Settings;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.SettingsProvider;
-using Rubberduck.VBEditor;
 using static Rubberduck.Parsing.Grammar.VBAParser;
 
 namespace Rubberduck.Inspections.Concrete
@@ -36,7 +33,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class UseMeaningfulNameInspection : InspectionBase
+    public sealed class UseMeaningfulNameInspection : DeclarationInspectionUsingGlobalInformationBase<string[]>
     {
         private readonly IConfigurationService<CodeInspectionSettings> _settings;
 
@@ -53,73 +50,27 @@ namespace Rubberduck.Inspections.Concrete
             DeclarationType.LibraryProcedure, 
         };
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string[] GlobalInformation(DeclarationFinder finder)
         {
-            var finder = DeclarationFinderProvider.DeclarationFinder;
             var settings = _settings.Read();
-            var whitelistedNames = settings.WhitelistedIdentifiers
+            return settings.WhitelistedIdentifiers
                 .Select(s => s.Identifier)
                 .ToArray();
-            var handlers = finder.FindEventHandlers();
-
-            var results = new List<IInspectionResult>();
-            foreach (var moduleDeclaration in State.DeclarationFinder.UserDeclarations(DeclarationType.Module))
-            {
-                if (moduleDeclaration == null)
-                {
-                    continue;
-                }
-
-                var module = moduleDeclaration.QualifiedModuleName;
-                results.AddRange(DoGetInspectionResults(module, finder, whitelistedNames, handlers));
-            }
-
-            return results;
         }
 
-        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
-        {
-            var finder = DeclarationFinderProvider.DeclarationFinder;
-            var settings = _settings.Read();
-            var whitelistedNames = settings.WhitelistedIdentifiers
-                .Select(s => s.Identifier)
-                .ToArray();
-            var handlers = finder.FindEventHandlers();
-            return DoGetInspectionResults(module, finder, whitelistedNames, handlers);
-        }
-
-        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder, string[] whitelistedNames, ICollection<Declaration> eventHandlers)
-        {
-            var objectionableDeclarations = finder.Members(module)
-                .Where(declaration => IsResultDeclaration(declaration, whitelistedNames, eventHandlers));
-
-            return objectionableDeclarations
-                .Select(InspectionResult)
-                .ToList();
-        }
-
-        private static bool IsResultDeclaration(Declaration declaration, string[] whitelistedNames, ICollection<Declaration> eventHandlers)
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder, string[] whitelistedNames)
         {
             return !string.IsNullOrEmpty(declaration.IdentifierName)
                    && !IgnoreDeclarationTypes.Contains(declaration.DeclarationType)
                    && !(declaration.Context is LineNumberLabelContext)
                    && (declaration.ParentDeclaration == null
                        || !IgnoreDeclarationTypes.Contains(declaration.ParentDeclaration.DeclarationType)
-                            && !eventHandlers.Contains(declaration.ParentDeclaration))
+                       && !finder.FindEventHandlers().Contains(declaration.ParentDeclaration))
                    && !whitelistedNames.Contains(declaration.IdentifierName)
                    && !VBAIdentifierValidator.IsMeaningfulIdentifier(declaration.IdentifierName);
         }
 
-        private IInspectionResult InspectionResult(Declaration declaration)
-        {
-            return new DeclarationInspectionResult(
-                this,
-                ResultDescription(declaration),
-                declaration,
-                disabledQuickFixes: DisabledQuickFixes(declaration));
-        }
-
-        private static string ResultDescription(Declaration declaration)
+        protected override string ResultDescription(Declaration declaration)
         {
             var declarationType = declaration.DeclarationType.ToLocalizedString();
             var declarationName = declaration.IdentifierName;
@@ -129,7 +80,7 @@ namespace Rubberduck.Inspections.Concrete
                 declarationName);
         }
 
-        private static ICollection<string> DisabledQuickFixes(Declaration declaration)
+        protected override ICollection<string> DisabledQuickFixes(Declaration declaration)
         {
             return declaration.DeclarationType.HasFlag(DeclarationType.Module)
                    || declaration.DeclarationType.HasFlag(DeclarationType.Project)

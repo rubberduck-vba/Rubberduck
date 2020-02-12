@@ -553,10 +553,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 return Enumerable.Empty<Declaration>();
             }
 
-            var members = Members(module.QualifiedName.QualifiedModuleName);
-            return members == null 
-                ? Enumerable.Empty<Declaration>() 
-                : members.Where(declaration => declaration.DeclarationType == DeclarationType.Event);
+            return Members(module.QualifiedName.QualifiedModuleName, DeclarationType.Event);
         }
 
         public Declaration FindEvent(Declaration module, string eventName)

@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Inspections.Results;
 using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Inspections.Concrete
@@ -40,7 +43,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class ShadowedDeclarationInspection : InspectionBase
+    public sealed class ShadowedDeclarationInspection : DeclarationInspectionUsingGlobalInformationBase<IDictionary<string, HashSet<string>>, Declaration>
     {
         private enum DeclarationSite
         {
@@ -50,55 +53,85 @@ namespace Rubberduck.Inspections.Concrete
             SameComponent = 3
         }
 
-        public ShadowedDeclarationInspection(RubberduckParserState state) : base(state)
+        public ShadowedDeclarationInspection(RubberduckParserState state) 
+            : base(state)
+        {}
+
+        protected override IDictionary<string, HashSet<string>> GlobalInformation(DeclarationFinder finder)
         {
+           return finder.UserDeclarations(DeclarationType.Project)
+                .OfType<ProjectDeclaration>()
+                .ToDictionary(project => project.ProjectId, ReferencedProjectIds);
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IDictionary<string, HashSet<string>> GlobalInformation(QualifiedModuleName module, DeclarationFinder finder)
         {
-            var builtInEventHandlers = State.DeclarationFinder.FindEventHandlers().ToHashSet();
+            return finder.UserDeclarations(DeclarationType.Project)
+                .Where(project => project.ProjectId == module.ProjectId)
+                .OfType<ProjectDeclaration>()
+                .ToDictionary(project => project.ProjectId, ReferencedProjectIds);
+        }
 
-            var issues = new List<IInspectionResult>();
+        private static HashSet<string> ReferencedProjectIds(ProjectDeclaration project)
+        {
+            return project.ProjectReferences
+                .Select(reference => reference.ReferencedProjectId)
+                .ToHashSet();
+        }
 
-            var allUserProjects = State.DeclarationFinder.UserDeclarations(DeclarationType.Project).Cast<ProjectDeclaration>();
-
-            foreach (var userProject in allUserProjects)
+        protected override (bool isResult, Declaration properties) IsResultDeclarationWithAdditionalProperties(
+            Declaration userDeclaration,
+            DeclarationFinder finder,
+            IDictionary<string, HashSet<string>> referencedProjectIdsByProjectId)
+        {
+            // The user has no control over build-in event handlers or their parameters, so we skip them.
+            //TODO: Find a way to restrict this to event handlers for built-in events. (Revisit after #5379 is closed.)
+            var eventHandlers = finder.FindEventHandlers();
+            if (DeclarationIsPartOfEventHandler(userDeclaration, eventHandlers))
             {
-                var referencedProjectIds = userProject.ProjectReferences.Select(reference => reference.ReferencedProjectId).ToHashSet();
-
-                var userDeclarations = UserDeclarations.Where(declaration =>
-                    declaration.ProjectId == userProject.ProjectId &&
-                    // User has no control over build-in event handlers or their parameters, so we skip them
-                    !DeclarationIsPartOfBuiltInEventHandler(declaration, builtInEventHandlers));
-
-                foreach (var userDeclaration in userDeclarations)
-                {
-                    var shadowedDeclaration = State.DeclarationFinder
-                        .MatchName(userDeclaration.IdentifierName).FirstOrDefault(declaration => 
-                            !declaration.Equals(userDeclaration) &&
-                            DeclarationCanBeShadowed(declaration, userDeclaration, GetDeclarationSite(declaration, userDeclaration, referencedProjectIds)));
-
-                    if (shadowedDeclaration != null)
-                    {
-                        issues.Add(new DeclarationInspectionResult(this,
-                            string.Format(Resources.Inspections.InspectionResults.ShadowedDeclarationInspection,
-                                RubberduckUI.ResourceManager.GetString("DeclarationType_" + userDeclaration.DeclarationType, CultureInfo.CurrentUICulture),
-                                userDeclaration.QualifiedName,
-                                RubberduckUI.ResourceManager.GetString("DeclarationType_" + shadowedDeclaration.DeclarationType, CultureInfo.CurrentUICulture),
-                                shadowedDeclaration.QualifiedName),
-                            userDeclaration));
-                    }
-                }
+                return (false, null);
             }
 
-            return issues;
+            if(!referencedProjectIdsByProjectId.TryGetValue(userDeclaration.ProjectId, out var referencedProjectIds))
+            {
+                referencedProjectIds = new HashSet<string>();
+            }
+
+            var shadowedDeclaration = ShadowedDeclaration(userDeclaration, referencedProjectIds, finder);
+            return (shadowedDeclaration != null, shadowedDeclaration);
+        }
+
+        private static bool DeclarationIsPartOfEventHandler(Declaration declaration, ICollection<Declaration> eventHandlers)
+        {
+            if (eventHandlers.Contains(declaration))
+            {
+                return true;
+            }
+
+            return declaration is ParameterDeclaration parameterDeclaration
+                   && eventHandlers.Contains(parameterDeclaration.ParentDeclaration);
+        }
+
+        private static Declaration ShadowedDeclaration(Declaration userDeclaration, ICollection<string> referencedProjectIds, DeclarationFinder finder)
+        {
+            return finder.MatchName(userDeclaration.IdentifierName)
+                .FirstOrDefault(declaration => !declaration.Equals(userDeclaration)
+                                               && DeclarationCanBeShadowed(declaration, userDeclaration, referencedProjectIds));
+        }
+
+        private static bool DeclarationCanBeShadowed(Declaration originalDeclaration, Declaration userDeclaration, ICollection<string> referencedProjectIds)
+        {
+            var originalDeclarationSite = GetDeclarationSite(originalDeclaration, userDeclaration, referencedProjectIds);
+            return DeclarationCanBeShadowed(originalDeclaration, userDeclaration, originalDeclarationSite);
         }
 
         private static DeclarationSite GetDeclarationSite(Declaration originalDeclaration, Declaration userDeclaration, ICollection<string> referencedProjectIds)
         {
             if (originalDeclaration.ProjectId != userDeclaration.ProjectId)
             {
-                return referencedProjectIds.Contains(originalDeclaration.ProjectId) ? DeclarationSite.ReferencedProject : DeclarationSite.NotApplicable;
+                return referencedProjectIds.Contains(originalDeclaration.ProjectId) 
+                    ? DeclarationSite.ReferencedProject 
+                    : DeclarationSite.NotApplicable;
             }
 
             if (originalDeclaration.QualifiedName.QualifiedModuleName.ComponentName != userDeclaration.QualifiedName.QualifiedModuleName.ComponentName)
@@ -107,17 +140,6 @@ namespace Rubberduck.Inspections.Concrete
             }
 
             return DeclarationSite.SameComponent;
-        }
-
-        private static bool DeclarationIsPartOfBuiltInEventHandler(Declaration declaration, ICollection<Declaration> builtInEventHandlers)
-        {
-            if (builtInEventHandlers.Contains(declaration))
-            {
-                return true;
-            }
-
-            return declaration is ParameterDeclaration parameterDeclaration &&
-                   builtInEventHandlers.Contains(parameterDeclaration.ParentDeclaration);
         }
 
         private static bool DeclarationCanBeShadowed(Declaration originalDeclaration, Declaration userDeclaration, DeclarationSite originalDeclarationSite)
@@ -130,9 +152,9 @@ namespace Rubberduck.Inspections.Concrete
                     return DeclarationInReferencedProjectCanBeShadowed(originalDeclaration, userDeclaration);
                 case DeclarationSite.OtherComponent:
                     return DeclarationInAnotherComponentCanBeShadowed(originalDeclaration, userDeclaration);
+                default:
+                    return DeclarationInTheSameComponentCanBeShadowed(originalDeclaration, userDeclaration);
             }
-
-            return DeclarationInTheSameComponentCanBeShadowed(originalDeclaration, userDeclaration);
         }
 
         private static bool DeclarationInReferencedProjectCanBeShadowed(Declaration originalDeclaration, Declaration userDeclaration)
@@ -622,5 +644,19 @@ namespace Rubberduck.Inspections.Concrete
                     DeclarationType.Parameter
                 }.ToHashSet()
         };
+
+        protected override string ResultDescription(Declaration declaration, Declaration shadowedDeclaration)
+        {
+            var declarationType = declaration.DeclarationType.ToLocalizedString();
+            var declarationName = declaration.QualifiedName.ToString();
+            var shadowedDeclarationType = shadowedDeclaration.DeclarationType.ToLocalizedString();
+            var shadowedDeclarationName = shadowedDeclaration.QualifiedName.ToString();
+            return string.Format(
+                Resources.Inspections.InspectionResults.ShadowedDeclarationInspection,
+                declarationType,
+                declarationName,
+                shadowedDeclarationType,
+                shadowedDeclarationName);
+        }
     }
 }

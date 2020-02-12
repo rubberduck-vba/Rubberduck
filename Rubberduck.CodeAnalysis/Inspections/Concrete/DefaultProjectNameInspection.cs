@@ -21,25 +21,6 @@ namespace Rubberduck.Inspections.Concrete
             : base(state, DeclarationType.Project)
         {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
-        {
-            var finder = DeclarationFinderProvider.DeclarationFinder;
-
-            var results = new List<IInspectionResult>();
-            foreach (var projectDeclaration in State.DeclarationFinder.UserDeclarations(DeclarationType.Project))
-            {
-                if (projectDeclaration == null)
-                {
-                    continue;
-                }
-
-                var module = projectDeclaration.QualifiedModuleName;
-                results.AddRange(DoGetInspectionResults(module, finder));
-            }
-
-            return results;
-        }
-
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
             return declaration.IdentifierName.StartsWith("VBAProject");
