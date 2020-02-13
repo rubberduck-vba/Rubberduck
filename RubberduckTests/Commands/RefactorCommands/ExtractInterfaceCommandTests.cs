@@ -173,7 +173,7 @@ End Property";
                 .Callback((Action action) => action.Invoke());
             var addImplementationsBaseRefactoring = new AddInterFaceImplementationsBaseRefactoring(rewritingManager);
             var baseRefactoring = new ExtractInterfaceBaseRefactoring(addImplementationsBaseRefactoring, state, state, rewritingManager);
-            var refactoring = new ExtractInterfaceRefactoring(baseRefactoring, state, factory, rewritingManager, selectionService, uiDispatcherMock.Object);
+            var refactoring = new ExtractInterfaceRefactoring(baseRefactoring, state, factory, selectionService, uiDispatcherMock.Object);
             var notifier = new ExtractInterfaceFailedNotifier(msgBox);
             return new RefactorExtractInterfaceCommand(refactoring, notifier, state, selectionService);
         }

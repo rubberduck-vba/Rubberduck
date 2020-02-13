@@ -1975,7 +1975,7 @@ End Sub";
                 .Setup(m => m.Invoke(It.IsAny<Action>()))
                 .Callback((Action action) => action.Invoke());
             var baseRefactoring = new RemoveParameterBaseRefactoring(state, rewritingManager);
-            return new RemoveParametersRefactoring(baseRefactoring, state, factory, rewritingManager, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
+            return new RemoveParametersRefactoring(baseRefactoring, state, factory, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
         }
     }
 }

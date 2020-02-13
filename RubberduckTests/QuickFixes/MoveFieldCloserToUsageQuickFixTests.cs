@@ -129,7 +129,7 @@ End Sub";
                 var selectionService = MockedSelectionService();
                 var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
                 var baseRefactoring = new MoveCloserToUsageBaseRefactoring(rewritingManager);
-                var refactoring = new MoveCloserToUsageRefactoring(baseRefactoring, state, rewritingManager, selectionService, selectedDeclarationProvider);
+                var refactoring = new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider);
                 var quickFix = new MoveFieldCloserToUsageQuickFix(refactoring);
 
                 quickFix.Fix(resultToFix, rewriteSession);

@@ -59,7 +59,7 @@ Dim b As Variant";
             var msgBox = new Mock<IMessageBox>().Object;
             var addImplementationsBaseRefactoring = new AddInterFaceImplementationsBaseRefactoring(rewritingManager);
             var baseRefactoring = new ImplementInterfaceBaseRefactoring(addImplementationsBaseRefactoring, rewritingManager);
-            var refactoring = new ImplementInterfaceRefactoring(baseRefactoring, state, rewritingManager, selectionService);
+            var refactoring = new ImplementInterfaceRefactoring(baseRefactoring, state, selectionService);
             var notifier = new ImplementInterfaceFailedNotifier(msgBox);
             return new RefactorImplementInterfaceCommand(refactoring, notifier, state, selectionService);
         }

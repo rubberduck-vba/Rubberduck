@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Interaction;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Rewriter;
+﻿using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
@@ -23,10 +18,9 @@ namespace Rubberduck.Refactorings.IntroduceParameter
         public IntroduceParameterRefactoring(
             IntroduceParameterBaseRefactoring baseRefactoring, 
             IMessageBox messageBox, 
-            IRewritingManager rewritingManager,
             ISelectionProvider selectionProvider,
             ISelectedDeclarationProvider selectedDeclarationProvider)
-        :base(rewritingManager, selectionProvider)
+        :base(selectionProvider)
         {
             _baseRefactoring = baseRefactoring;
             _selectedDeclarationProvider = selectedDeclarationProvider;

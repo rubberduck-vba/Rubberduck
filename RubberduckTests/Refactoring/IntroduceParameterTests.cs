@@ -560,7 +560,7 @@ End Sub";
             }
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
             var baseRefactoring = new IntroduceParameterBaseRefactoring(state, rewritingManager);
-            return new IntroduceParameterRefactoring(baseRefactoring, msgBox, rewritingManager, selectionService, selectedDeclarationProvider);
+            return new IntroduceParameterRefactoring(baseRefactoring, msgBox, selectionService, selectedDeclarationProvider);
         }
 
         private IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IMessageBox msgBox = null, QualifiedSelection? initialSelection = null)

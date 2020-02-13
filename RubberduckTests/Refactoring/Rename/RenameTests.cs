@@ -3370,7 +3370,7 @@ End Property";
                 .Setup(m => m.Invoke(It.IsAny<Action>()))
                 .Callback((Action action) => action.Invoke());
             var baseRefactoring = new RenameBaseRefactoring(state, state?.ProjectsProvider, state, rewritingManager);
-            return new RenameRefactoring(baseRefactoring, factory, state, state?.ProjectsProvider, rewritingManager, selectionService, selectedDeclarationService, uiDispatcherMock.Object);
+            return new RenameRefactoring(baseRefactoring, factory, state, state?.ProjectsProvider, selectionService, selectedDeclarationService, uiDispatcherMock.Object);
         }
 
         #endregion

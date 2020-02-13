@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
@@ -19,9 +18,8 @@ namespace Rubberduck.Refactorings.ImplementInterface
         public ImplementInterfaceRefactoring(
             ImplementInterfaceBaseRefactoring baseRefactoring,
             IDeclarationFinderProvider declarationFinderProvider, 
-            IRewritingManager rewritingManager,
             ISelectionProvider selectionProvider)
-        :base(rewritingManager, selectionProvider)
+        :base(selectionProvider)
         {
             _baseRefactoring = baseRefactoring;
             _declarationFinderProvider = declarationFinderProvider;

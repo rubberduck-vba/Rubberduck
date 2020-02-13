@@ -27,6 +27,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
         private readonly IIndenter _indenter;
+        private readonly IRewritingManager _rewritingManager;
 
         public EncapsulateFieldRefactoring(
                 IDeclarationFinderProvider declarationFinderProvider,
@@ -36,11 +37,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 ISelectionProvider selectionProvider,
                 ISelectedDeclarationProvider selectedDeclarationProvider,
                 IUiDispatcher uiDispatcher)
-            :base(rewritingManager, selectionProvider, factory, uiDispatcher)
+            :base(selectionProvider, factory, uiDispatcher)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;
             _indenter = indenter;
+            _rewritingManager = rewritingManager;
         }
 
         public EncapsulateFieldModel TestUserInteractionOnly(Declaration target, Func<EncapsulateFieldModel, EncapsulateFieldModel> userInteraction)
@@ -99,7 +101,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         protected override void RefactorImpl(EncapsulateFieldModel model)
         {
-            var refactorRewriteSession = new EncapsulateFieldRewriteSession(RewritingManager.CheckOutCodePaneSession()) as IEncapsulateFieldRewriteSession;
+            var refactorRewriteSession = new EncapsulateFieldRewriteSession(_rewritingManager.CheckOutCodePaneSession()) as IEncapsulateFieldRewriteSession;
 
             refactorRewriteSession = RefactorRewrite(model, refactorRewriteSession);
 
@@ -111,7 +113,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private string PreviewRewrite(EncapsulateFieldModel model)
         {
-            var previewSession = new EncapsulateFieldRewriteSession(RewritingManager.CheckOutCodePaneSession()) as IEncapsulateFieldRewriteSession; ;
+            var previewSession = new EncapsulateFieldRewriteSession(_rewritingManager.CheckOutCodePaneSession()) as IEncapsulateFieldRewriteSession; ;
 
             previewSession = RefactorRewrite(model, previewSession, true);
 

@@ -1,5 +1,4 @@
-﻿using Rubberduck.Parsing.Rewriter;
-using Rubberduck.VBEditor.Utility;
+﻿using Rubberduck.VBEditor.Utility;
 using System;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
@@ -13,12 +12,11 @@ namespace Rubberduck.Refactorings
     {
         private readonly Func<TModel, IDisposalActionContainer<TPresenter>> _presenterFactory;
 
-        protected InteractiveRefactoringBase(
-            IRewritingManager rewritingManager, 
+        protected InteractiveRefactoringBase( 
             ISelectionProvider selectionProvider, 
             IRefactoringPresenterFactory factory,
             IUiDispatcher uiDispatcher) 
-        :base(rewritingManager, selectionProvider)
+        :base(selectionProvider)
         {
             Action<TPresenter> presenterDisposalAction = (TPresenter presenter) => uiDispatcher.Invoke(() => factory.Release(presenter)); 
             _presenterFactory = ((model) => DisposalActionContainer.Create(factory.Create<TPresenter, TModel>(model), presenterDisposalAction));

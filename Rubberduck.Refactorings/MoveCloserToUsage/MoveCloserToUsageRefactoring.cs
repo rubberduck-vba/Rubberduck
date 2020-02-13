@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
@@ -17,11 +16,10 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
         public MoveCloserToUsageRefactoring(
             MoveCloserToUsageBaseRefactoring baseRefactoring,
-            IDeclarationFinderProvider declarationFinderProvider, 
-            IRewritingManager rewritingManager,
+            IDeclarationFinderProvider declarationFinderProvider,
             ISelectionProvider selectionProvider,
             ISelectedDeclarationProvider selectedDeclarationProvider)
-        :base(rewritingManager, selectionProvider)
+        :base(selectionProvider)
         {
             _baseRefactoring = baseRefactoring;
             _declarationFinderProvider = declarationFinderProvider;

@@ -1076,7 +1076,7 @@ End Sub";
         {
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
             var baseRefactoring = new MoveCloserToUsageBaseRefactoring(rewritingManager);
-            return new MoveCloserToUsageRefactoring(baseRefactoring, state, rewritingManager, selectionService, selectedDeclarationProvider);
+            return new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider);
         }
     }
 }

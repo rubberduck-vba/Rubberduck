@@ -427,7 +427,7 @@ End Sub
                 .Callback((Action action) => action.Invoke());
             var addImplementationsBaseRefactoring = new AddInterFaceImplementationsBaseRefactoring(rewritingManager);
             var baseRefactoring = new ExtractInterfaceBaseRefactoring(addImplementationsBaseRefactoring, state, state, rewritingManager);
-            return new ExtractInterfaceRefactoring(baseRefactoring, state, factory, rewritingManager, selectionService, uiDispatcherMock.Object);
+            return new ExtractInterfaceRefactoring(baseRefactoring, state, factory, selectionService, uiDispatcherMock.Object);
         }
     }
 }

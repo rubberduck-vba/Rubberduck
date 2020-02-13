@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
@@ -20,10 +19,9 @@ namespace Rubberduck.Refactorings.ExtractInterface
             ExtractInterfaceBaseRefactoring baseRefactoring,
             IDeclarationFinderProvider declarationFinderProvider, 
             IRefactoringPresenterFactory factory, 
-            IRewritingManager rewritingManager,
             ISelectionProvider selectionProvider,
             IUiDispatcher uiDispatcher)
-        :base(rewritingManager, selectionProvider, factory, uiDispatcher)
+        :base(selectionProvider, factory, uiDispatcher)
         {
             _baseRefactoring = baseRefactoring;
             _declarationFinderProvider = declarationFinderProvider;

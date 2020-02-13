@@ -351,7 +351,7 @@ End Sub";
         {
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
             var baseRefactoring = new IntroduceFieldBaseRefactoring(state, rewritingManager);
-            return new IntroduceFieldRefactoring(baseRefactoring, rewritingManager, selectionService, selectedDeclarationProvider);
+            return new IntroduceFieldRefactoring(baseRefactoring, selectionService, selectedDeclarationProvider);
         }
     }
 }

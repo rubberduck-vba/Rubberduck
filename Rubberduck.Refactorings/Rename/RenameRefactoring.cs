@@ -3,7 +3,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Exceptions.Rename;
 using Rubberduck.VBEditor.ComManagement;
@@ -24,11 +23,10 @@ namespace Rubberduck.Refactorings.Rename
             IRefactoringPresenterFactory factory, 
             IDeclarationFinderProvider declarationFinderProvider,
             IProjectsProvider projectsProvider, 
-            IRewritingManager rewritingManager,
             ISelectionProvider selectionProvider,
             ISelectedDeclarationProvider selectedDeclarationProvider,
             IUiDispatcher uiDispatcher)
-            : base(rewritingManager, selectionProvider, factory, uiDispatcher)
+            : base(selectionProvider, factory, uiDispatcher)
         {
             _baseRefactoring = baseRefactoring;
             _declarationFinderProvider = declarationFinderProvider;

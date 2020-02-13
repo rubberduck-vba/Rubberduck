@@ -913,7 +913,7 @@ End Sub
         {
             var addImplementationsBaseRefactoring = new AddInterFaceImplementationsBaseRefactoring(rewritingManager);
             var baseRefactoring = new ImplementInterfaceBaseRefactoring(addImplementationsBaseRefactoring, rewritingManager);
-            return new ImplementInterfaceRefactoring(baseRefactoring, state, rewritingManager, selectionService);
+            return new ImplementInterfaceRefactoring(baseRefactoring, state, selectionService);
         }
     }
 }

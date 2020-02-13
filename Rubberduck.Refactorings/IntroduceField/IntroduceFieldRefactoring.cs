@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
@@ -16,10 +15,9 @@ namespace Rubberduck.Refactorings.IntroduceField
 
         public IntroduceFieldRefactoring(
             IntroduceFieldBaseRefactoring baseRefactoring, 
-            IRewritingManager rewritingManager,
             ISelectionProvider selectionProvider,
             ISelectedDeclarationProvider selectedDeclarationProvider)
-        :base(rewritingManager, selectionProvider)
+        :base(selectionProvider)
         {
             _baseRefactoring = baseRefactoring;
             _selectedDeclarationProvider = selectedDeclarationProvider;
