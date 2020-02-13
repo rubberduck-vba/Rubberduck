@@ -559,7 +559,8 @@ End Sub";
                 msgBox = new Mock<IMessageBox>().Object;
             }
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            return new IntroduceParameterRefactoring(state, msgBox, rewritingManager, selectionService, selectedDeclarationProvider);
+            var baseRefactoring = new IntroduceParameterBaseRefactoring(state, rewritingManager);
+            return new IntroduceParameterRefactoring(baseRefactoring, msgBox, rewritingManager, selectionService, selectedDeclarationProvider);
         }
 
         private IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IMessageBox msgBox = null, QualifiedSelection? initialSelection = null)

@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
@@ -8,9 +7,7 @@ using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.Utility;
-using System.Collections.Generic;
 using System;
-using Rubberduck.Refactorings.EncapsulateField.Extensions;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -30,7 +27,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
         private readonly IIndenter _indenter;
-        private QualifiedModuleName _targetQMN;
 
         public EncapsulateFieldRefactoring(
                 IDeclarationFinderProvider declarationFinderProvider,
@@ -68,13 +64,17 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         protected override EncapsulateFieldModel InitializeModel(Declaration target)
         {
-            if (target == null) { throw new TargetDeclarationIsNullException(); }
+            if (target == null)
+            {
+                throw new TargetDeclarationIsNullException();
+            }
 
-            if (!target.DeclarationType.Equals(DeclarationType.Variable)) { throw new InvalidDeclarationTypeException(target); }
+            if (!target.DeclarationType.Equals(DeclarationType.Variable))
+            {
+                throw new InvalidDeclarationTypeException(target);
+            }
 
-            _targetQMN = target.QualifiedModuleName;
-
-            var builder = new EncapsulateFieldElementsBuilder(_declarationFinderProvider, _targetQMN);
+            var builder = new EncapsulateFieldElementsBuilder(_declarationFinderProvider, target.QualifiedModuleName);
 
             var selected = builder.Candidates.Single(c => c.Declaration == target);
             selected.EncapsulateFlag = true;
@@ -115,7 +115,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             previewSession = RefactorRewrite(model, previewSession, true);
 
-            return previewSession.CreatePreview(_targetQMN);
+            return previewSession.CreatePreview(model.QualifiedModuleName);
         }
 
         private IEncapsulateFieldRewriteSession RefactorRewrite(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession, bool asPreview = false)

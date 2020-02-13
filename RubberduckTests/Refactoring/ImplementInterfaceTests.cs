@@ -5,6 +5,7 @@ using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.AddInterfaceImplementations;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Exceptions.ImplementInterface;
 using Rubberduck.Refactorings.ImplementInterface;
@@ -910,7 +911,9 @@ End Sub
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state,
             ISelectionService selectionService)
         {
-            return new ImplementInterfaceRefactoring(state, rewritingManager, selectionService);
+            var addImplementationsBaseRefactoring = new AddInterFaceImplementationsBaseRefactoring(rewritingManager);
+            var baseRefactoring = new ImplementInterfaceBaseRefactoring(addImplementationsBaseRefactoring, rewritingManager);
+            return new ImplementInterfaceRefactoring(baseRefactoring, state, rewritingManager, selectionService);
         }
     }
 }

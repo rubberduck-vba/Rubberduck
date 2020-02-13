@@ -47,7 +47,8 @@ End Sub";
                 uiDispatcherMock
                     .Setup(m => m.Invoke(It.IsAny<Action>()))
                     .Callback((Action action) => action.Invoke());
-                var refactoring = new RemoveParametersRefactoring(state, factory, rewritingManager, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
+                var baseRefactoring = new RemoveParameterBaseRefactoring(state, rewritingManager);
+                var refactoring = new RemoveParametersRefactoring(baseRefactoring, state, factory, rewritingManager, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
                 new RemoveUnusedParameterQuickFix(refactoring)
                     .Fix(inspectionResults.First(), rewriteSession);
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());

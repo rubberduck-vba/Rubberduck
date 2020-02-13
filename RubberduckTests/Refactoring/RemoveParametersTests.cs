@@ -1974,7 +1974,8 @@ End Sub";
             uiDispatcherMock
                 .Setup(m => m.Invoke(It.IsAny<Action>()))
                 .Callback((Action action) => action.Invoke());
-            return new RemoveParametersRefactoring(state, factory, rewritingManager, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
+            var baseRefactoring = new RemoveParameterBaseRefactoring(state, rewritingManager);
+            return new RemoveParametersRefactoring(baseRefactoring, state, factory, rewritingManager, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
         }
     }
 }

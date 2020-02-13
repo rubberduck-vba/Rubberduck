@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.AddInterfaceImplementations;
 using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Refactorings;
@@ -170,7 +171,9 @@ End Property";
             uiDispatcherMock
                 .Setup(m => m.Invoke(It.IsAny<Action>()))
                 .Callback((Action action) => action.Invoke());
-            var refactoring = new ExtractInterfaceRefactoring(state, state, factory, rewritingManager, selectionService, uiDispatcherMock.Object);
+            var addImplementationsBaseRefactoring = new AddInterFaceImplementationsBaseRefactoring(rewritingManager);
+            var baseRefactoring = new ExtractInterfaceBaseRefactoring(addImplementationsBaseRefactoring, state, state, rewritingManager);
+            var refactoring = new ExtractInterfaceRefactoring(baseRefactoring, state, factory, rewritingManager, selectionService, uiDispatcherMock.Object);
             var notifier = new ExtractInterfaceFailedNotifier(msgBox);
             return new RefactorExtractInterfaceCommand(refactoring, notifier, state, selectionService);
         }
