@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Linq;
+using Antlr4.Runtime;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.Refactorings.AddInterfaceImplementations;
 using Rubberduck.VBEditor.SafeComWrappers;
 
@@ -12,17 +15,17 @@ namespace Rubberduck.Refactorings.ExtractInterface
     public class ExtractInterfaceBaseRefactoring : BaseRefactoringWithSuspensionBase<ExtractInterfaceModel>
     {
         private readonly ICodeOnlyBaseRefactoring<AddInterfaceImplementationsModel> _addImplementationsRefactoring;
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        private readonly IParseTreeProvider _parseTreeProvider;
 
         public ExtractInterfaceBaseRefactoring(
             AddInterFaceImplementationsBaseRefactoring addImplementationsRefactoring,
-            IDeclarationFinderProvider declarationFinderProvider,
+            IParseTreeProvider parseTreeProvider,
             IParseManager parseManager, 
             IRewritingManager rewritingManager) 
             : base(parseManager, rewritingManager)
         {
             _addImplementationsRefactoring = addImplementationsRefactoring;
-            _declarationFinderProvider = declarationFinderProvider;
+            _parseTreeProvider = parseTreeProvider;
         }
 
         protected override bool RequiresSuspension(ExtractInterfaceModel model)
@@ -44,14 +47,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             }
 
             AddInterfaceClass(model.TargetDeclaration, model.InterfaceName, GetInterfaceModuleBody(model));
-
-            var rewriter = rewriteSession.CheckOutModuleRewriter(model.TargetDeclaration.QualifiedModuleName);
-
-            var firstNonFieldMember = _declarationFinderProvider.DeclarationFinder.Members(model.TargetDeclaration)
-                                            .OrderBy(o => o.Selection)
-                                            .First(m => ExtractInterfaceModel.MemberTypes.Contains(m.DeclarationType));
-            rewriter.InsertBefore(firstNonFieldMember.Context.Start.TokenIndex, $"Implements {model.InterfaceName}{Environment.NewLine}{Environment.NewLine}");
-
+            AddImplementsStatement(model, rewriteSession);
             AddInterfaceMembersToClass(model, rewriteSession);
         }
 
@@ -76,6 +72,55 @@ namespace Rubberduck.Refactorings.ExtractInterface
                 }
             }
         }
+
+        private void AddImplementsStatement(ExtractInterfaceModel model, IRewriteSession rewriteSession)
+        {
+            var rewriter = rewriteSession.CheckOutModuleRewriter(model.TargetDeclaration.QualifiedModuleName);
+
+            var implementsStatement = $"Implements {model.InterfaceName}";
+
+            var (insertionIndex, isImplementsStatement) = InsertionIndex(model);
+
+            if (insertionIndex == -1)
+            {
+                rewriter.InsertBefore(0, $"{implementsStatement}{Environment.NewLine}{Environment.NewLine}");
+            }
+            else
+            {
+                rewriter.InsertAfter(insertionIndex, $"{Environment.NewLine}{(isImplementsStatement ? string.Empty : Environment.NewLine)}{implementsStatement}");
+            }
+        }
+
+        private (int index, bool isImplementsStatement) InsertionIndex(ExtractInterfaceModel model)
+        {
+            var tree = (ParserRuleContext)_parseTreeProvider.GetParseTree(model.TargetDeclaration.QualifiedModuleName, CodeKind.CodePaneCode);
+
+            var moduleDeclarations = tree.GetDescendent<VBAParser.ModuleDeclarationsContext>();
+            if (moduleDeclarations == null)
+            {
+                return (-1, false);
+            }
+
+            var lastImplementsStatement = moduleDeclarations
+                .GetDescendents<VBAParser.ImplementsStmtContext>()
+                .LastOrDefault();
+            if (lastImplementsStatement != null)
+            {
+                return (lastImplementsStatement.Stop.TokenIndex, true);
+            }
+
+            var lastOptionStatement = moduleDeclarations
+                .GetDescendents<VBAParser.ModuleOptionContext>()
+                .LastOrDefault();
+            if (lastOptionStatement != null)
+            {
+                return (lastOptionStatement.Stop.TokenIndex, false);
+            }
+
+            return (-1, false);
+        }
+
+
 
         private void AddInterfaceMembersToClass(ExtractInterfaceModel model, IRewriteSession rewriteSession)
         {

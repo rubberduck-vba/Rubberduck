@@ -152,8 +152,8 @@ End Property";
             var selection = new Selection(1, 23, 1, 27);
 
             //Expectation
-            const string expectedCode = @"
-Implements IClass
+            const string expectedCode = @"Implements IClass
+
 
 Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
@@ -414,6 +414,230 @@ End Sub
             };
 
             var actualCode = RefactoredCode("Class", DeclarationType.ClassModule, presenterAction, null, ("Class", inputCode, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class"]);
+            var actualInterfaceCode = actualCode[actualCode.Keys.Single(componentName => !componentName.Equals("Class"))];
+            Assert.AreEqual(expectedInterfaceCode, actualInterfaceCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Extract Interface")]
+        public void ExtractInterfaceRefactoring_BelowLastImplementStatement()
+        {
+            //Input
+            const string inputCode =
+                @"
+
+Option Explicit 
+
+Implements Interface1
+
+
+Implements Interface2
+
+
+
+Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub";
+            var selection = new Selection(1, 23, 1, 27);
+
+            //Expectation
+            const string expectedCode =
+                @"
+
+Option Explicit 
+
+Implements Interface1
+
+
+Implements Interface2
+Implements IClass
+
+
+
+Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub
+
+Private Sub IClass_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+    Err.Raise 5 'TODO implement interface member
+End Sub
+";
+
+            const string expectedInterfaceCode =
+                @"Option Explicit
+
+Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub
+
+";
+            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
+            {
+                foreach (var interfaceMember in model.Members)
+                {
+                    interfaceMember.IsSelected = true;
+                }
+
+                return model;
+            };
+
+            var actualCode = RefactoredCode("Class", selection, presenterAction, null, false, 
+                ("Class", inputCode, ComponentType.ClassModule),
+                ("Interface1", string.Empty, ComponentType.ClassModule),
+                ("Interface2", string.Empty, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class"]);
+            var actualInterfaceCode = actualCode[actualCode.Keys.Single(componentName => !new[]{"Class", "Interface1", "Interface2"}.Contains(componentName))];
+            Assert.AreEqual(expectedInterfaceCode, actualInterfaceCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Extract Interface")]
+        public void ExtractInterfaceRefactoring_BelowLastOptionStatement()
+        {
+            //Input
+            const string inputCode =
+                @"
+
+Option Explicit 
+
+
+
+Option Base 1
+
+
+
+
+
+Private bar As Variant
+
+
+Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub";
+            var selection = new Selection(1, 23, 1, 27);
+
+            //Expectation
+            const string expectedCode =
+                @"
+
+Option Explicit 
+
+
+
+Option Base 1
+
+Implements IClass
+
+
+
+
+
+Private bar As Variant
+
+
+Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub
+
+Private Sub IClass_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+    Err.Raise 5 'TODO implement interface member
+End Sub
+";
+
+            const string expectedInterfaceCode =
+                @"Option Explicit
+
+Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub
+
+";
+            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
+            {
+                foreach (var interfaceMember in model.Members)
+                {
+                    interfaceMember.IsSelected = true;
+                }
+
+                return model;
+            };
+
+            var actualCode = RefactoredCode("Class", selection, presenterAction, null, false,
+                ("Class", inputCode, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class"]);
+            var actualInterfaceCode = actualCode[actualCode.Keys.Single(componentName => !componentName.Equals("Class"))];
+            Assert.AreEqual(expectedInterfaceCode, actualInterfaceCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Extract Interface")]
+        public void ExtractInterfaceRefactoring_AtTopOfModule()
+        {
+            //Input
+            const string inputCode =
+                @"
+
+
+
+
+
+
+
+
+
+
+
+Private bar As Variant
+
+
+Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub";
+            var selection = new Selection(1, 23, 1, 27);
+
+            //Expectation
+            const string expectedCode =
+                @"Implements IClass
+
+
+
+
+
+
+
+
+
+
+
+
+
+Private bar As Variant
+
+
+Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub
+
+Private Sub IClass_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+    Err.Raise 5 'TODO implement interface member
+End Sub
+";
+
+            const string expectedInterfaceCode =
+                @"Option Explicit
+
+Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub
+
+";
+            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
+            {
+                foreach (var interfaceMember in model.Members)
+                {
+                    interfaceMember.IsSelected = true;
+                }
+
+                return model;
+            };
+
+            var actualCode = RefactoredCode("Class", selection, presenterAction, null, false,
+                ("Class", inputCode, ComponentType.ClassModule));
             Assert.AreEqual(expectedCode, actualCode["Class"]);
             var actualInterfaceCode = actualCode[actualCode.Keys.Single(componentName => !componentName.Equals("Class"))];
             Assert.AreEqual(expectedInterfaceCode, actualInterfaceCode);
