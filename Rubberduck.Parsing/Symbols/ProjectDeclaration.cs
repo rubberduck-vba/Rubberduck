@@ -10,6 +10,7 @@ namespace Rubberduck.Parsing.Symbols
     public sealed class ProjectDeclaration : Declaration, IDisposable
     {
         private readonly List<ProjectReference> _projectReferences;
+        private readonly IVBProject _project;
 
         public ProjectDeclaration(
             QualifiedMemberName qualifiedName,
@@ -57,15 +58,6 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        private readonly IVBProject _project;
-        /// <summary>
-        /// Gets a reference to the VBProject the declaration is made in.
-        /// </summary>
-        /// <remarks>
-        /// This property is intended to differenciate identically-named VBProjects.
-        /// </remarks>
-        public override IVBProject Project => IsDisposed ? null : _project;
-
         public void AddProjectReference(string referencedProjectId, int priority)
         {
             if (_projectReferences.Any(p => p.ReferencedProjectId == referencedProjectId))
@@ -97,7 +89,6 @@ namespace Rubberduck.Parsing.Symbols
                 return _displayName;
             }
         }
-
 
         public bool IsDisposed { get; private set; }
 

@@ -22,7 +22,13 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly IVBE _vbe;
 
-        public CodeExplorerProjectViewModel(Declaration project, ref List<Declaration> declarations, RubberduckParserState state, IVBE vbe, bool references = true) : base(null, project)
+        public CodeExplorerProjectViewModel(
+            Declaration project, 
+            ref List<Declaration> declarations, 
+            RubberduckParserState state, 
+            IVBE vbe, 
+            bool references = true) 
+            : base(null, project)
         {
             State = state;         
             _vbe = vbe;
@@ -47,7 +53,13 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             get
             {
-                if (_vbe.Kind == VBEKind.Hosted || Declaration.Project == null)
+                if (_vbe.Kind == VBEKind.Hosted || Declaration == null)
+                {
+                    return base.FontWeight;
+                }
+
+                var project = State.ProjectsProvider.Project(Declaration.ProjectId);
+                if (project == null)
                 {
                     return base.FontWeight;
                 }
@@ -55,7 +67,9 @@ namespace Rubberduck.Navigation.CodeExplorer
                 using (var vbProjects = _vbe.VBProjects)
                 using (var startProject = vbProjects?.StartProject)
                 {
-                    return Declaration.Project.Equals(startProject) ? FontWeights.Bold : base.FontWeight;
+                    return project.Equals(startProject) 
+                        ? FontWeights.Bold 
+                        : base.FontWeight;
                 }
             }
         }
@@ -139,7 +153,12 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private List<ReferenceModel> GetProjectReferenceModels()
         {
-            var project = Declaration?.Project;
+            if (Declaration == null)
+            {
+                return new List<ReferenceModel>();
+            }
+
+            var project = State.ProjectsProvider.Project(Declaration.ProjectId);
             if (project == null)
             {
                 return new List<ReferenceModel>();

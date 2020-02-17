@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 
@@ -9,8 +10,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     public class AddVBFormCommand : AddComponentCommandBase
     {
         public AddVBFormCommand(
-            ICodeExplorerAddComponentService addComponentService, IVbeEvents vbeEvents) 
-            : base(addComponentService, vbeEvents)
+            ICodeExplorerAddComponentService addComponentService, 
+            IVbeEvents vbeEvents,
+            IProjectsProvider projectsProvider) 
+            : base(addComponentService, vbeEvents, projectsProvider)
         { }
 
         public override IEnumerable<ProjectType> AllowableProjectTypes => ProjectTypes.VB6;

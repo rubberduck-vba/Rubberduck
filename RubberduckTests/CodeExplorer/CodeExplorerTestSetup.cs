@@ -5,6 +5,8 @@ using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.UI.Command.MenuItems.ParentMenus;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.AddRemoveReferences;
 
@@ -173,7 +175,7 @@ namespace RubberduckTests.CodeExplorer
             ProjectTwo = parser.AllUserDeclarations.ToList();
         }
 
-        public static List<Declaration> GetProjectDeclarationsWithReferences(bool libraries, bool projects)
+        public static List<Declaration> GetProjectDeclarationsWithReferences(bool libraries, bool projects, out RubberduckParserState state)
         {
             var builder = new MockVbeBuilder();
 
@@ -197,8 +199,8 @@ namespace RubberduckTests.CodeExplorer
             }
 
             builder.AddProject(project.Build());
-            var parser = MockParser.CreateAndParse(builder.Build().Object);
-            return parser.AllUserDeclarations.ToList();
+            state = MockParser.CreateAndParse(builder.Build().Object);
+            return state.AllUserDeclarations.ToList();
         }
 
         public static List<Declaration> GetAllChildDeclarations(this ICodeExplorerNode node)

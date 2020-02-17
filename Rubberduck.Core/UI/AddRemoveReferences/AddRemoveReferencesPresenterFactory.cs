@@ -10,6 +10,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -17,7 +18,7 @@ namespace Rubberduck.UI.AddRemoveReferences
 {
     public interface IAddRemoveReferencesPresenterFactory
     {
-        AddRemoveReferencesPresenter Create(ProjectDeclaration project);
+        AddRemoveReferencesPresenter Create(ProjectDeclaration projectDeclaration);
     }
 
     public class AddRemoveReferencesPresenterFactory : IAddRemoveReferencesPresenterFactory
@@ -31,13 +32,15 @@ namespace Rubberduck.UI.AddRemoveReferences
         private readonly IRegisteredLibraryFinderService _finder;
         private readonly IReferenceReconciler _reconciler;
         private readonly IFileSystemBrowserFactory _browser;
+        private readonly IProjectsProvider _projectsProvider;
 
         public AddRemoveReferencesPresenterFactory(IVBE vbe,
             RubberduckParserState state,
             IConfigurationService<ReferenceSettings> settingsProvider, 
             IRegisteredLibraryFinderService finder,
             IReferenceReconciler reconciler,
-            IFileSystemBrowserFactory browser)
+            IFileSystemBrowserFactory browser,
+            IProjectsProvider projectsProvider)
         {
             _vbe = vbe;
             _state = state;
@@ -45,11 +48,19 @@ namespace Rubberduck.UI.AddRemoveReferences
             _finder = finder;
             _reconciler = reconciler;
             _browser = browser;
+            _projectsProvider = projectsProvider;
         }
 
-        public AddRemoveReferencesPresenter Create(ProjectDeclaration project)
+        public AddRemoveReferencesPresenter Create(ProjectDeclaration projectDeclaration)
         {
-            if (project is null)
+            if (projectDeclaration is null)
+            {
+                return null;
+            }
+
+            var project = _projectsProvider.Project(projectDeclaration.ProjectId);
+
+            if (project == null)
             {
                 return null;
             }
@@ -75,7 +86,7 @@ namespace Rubberduck.UI.AddRemoveReferences
                 }
 
                 var models = new Dictionary<RegisteredLibraryKey, ReferenceModel>();
-                using (var references = project.Project?.References)
+                using (var references = project.References)
                 {
                     if (references is null)
                     {
@@ -101,7 +112,7 @@ namespace Rubberduck.UI.AddRemoveReferences
                             : new ReferenceModel(reference, priority++);
 
                         adding.IsUsed = adding.IsBuiltIn ||
-                                        _state.DeclarationFinder.IsReferenceUsedInProject(project,
+                                        _state.DeclarationFinder.IsReferenceUsedInProject(projectDeclaration,
                                             adding.ToReferenceInfo());
 
                         models.Add(libraryId, adding);
@@ -117,7 +128,7 @@ namespace Rubberduck.UI.AddRemoveReferences
                 }
 
                 var settings = _settings.Read();
-                model = new AddRemoveReferencesModel(_state, project, models.Values, settings);
+                model = new AddRemoveReferencesModel(_state, projectDeclaration, models.Values, settings);
                 if (AddRemoveReferencesViewModel.HostHasProjects)
                 {
                     model.References.AddRange(GetUserProjectFolderModels(model.Settings).Where(proj =>

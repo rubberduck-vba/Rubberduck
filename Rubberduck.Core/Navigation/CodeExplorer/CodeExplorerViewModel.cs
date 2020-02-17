@@ -13,7 +13,6 @@ using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers;
 using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Input;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Templates;
@@ -305,12 +304,12 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return;
             }
 
-            var componentProject = _state.ProjectsProvider.Project(e.Module.ProjectId);
+            var componentProjectId = e.Module.ProjectId;
             
             var module = Projects.OfType<CodeExplorerProjectViewModel>()
-                .FirstOrDefault(p => p.Declaration.Project?.Equals(componentProject) ?? false)?.Children
-                .OfType<CodeExplorerComponentViewModel>().FirstOrDefault(component =>
-                    component.QualifiedSelection?.QualifiedName.Equals(e.Module) ?? false);
+                .FirstOrDefault(p => p.Declaration?.ProjectId.Equals(componentProjectId) ?? false)?.Children
+                .OfType<CodeExplorerComponentViewModel>()
+                .FirstOrDefault(component => component.QualifiedSelection?.QualifiedName.Equals(e.Module) ?? false);
 
             if (module == null)
             {

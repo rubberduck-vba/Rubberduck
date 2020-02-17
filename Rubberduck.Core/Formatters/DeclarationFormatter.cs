@@ -21,7 +21,7 @@ namespace Rubberduck.Formatters
         public string ToClipboardString()
         {
             return string.Format(RubberduckUI.CodeExplorer_IExportable_DeclarationFormat,
-                _declaration.Project.Name,
+                _declaration.ProjectName,
                 _declaration.CustomFolder,
                 _declaration.ComponentName,
                 _declaration.DeclarationType,

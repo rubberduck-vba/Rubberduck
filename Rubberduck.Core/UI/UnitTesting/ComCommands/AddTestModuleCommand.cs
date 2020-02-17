@@ -3,6 +3,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.ComCommands;
 using Rubberduck.UnitTesting.CodeGeneration;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -17,17 +18,20 @@ namespace Rubberduck.UI.UnitTesting.ComCommands
     {
         private readonly RubberduckParserState _state;
         private readonly ITestCodeGenerator _codeGenerator;
+        private readonly IProjectsProvider _projectsProvider;
 
         public AddTestModuleCommand(
             IVBE vbe, 
             RubberduckParserState state, 
             ITestCodeGenerator codeGenerator,
-            IVbeEvents vbeEvents)
+            IVbeEvents vbeEvents,
+            IProjectsProvider projectsProvider)
             : base(vbeEvents)
         {
             Vbe = vbe;
             _state = state;
             _codeGenerator = codeGenerator;
+            _projectsProvider = projectsProvider;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
@@ -78,7 +82,8 @@ namespace Rubberduck.UI.UnitTesting.ComCommands
                     _codeGenerator.AddTestModuleToProject(project);
                     break;
                 case Declaration declaration when parameterIsModuleDeclaration:
-                    _codeGenerator.AddTestModuleToProject(declaration.Project, declaration);
+                    var declarationProject = _projectsProvider.Project(declaration.ProjectId);
+                    _codeGenerator.AddTestModuleToProject(declarationProject, declaration);
                     break;
                 default:
                     using (var project = GetProject())

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Navigation.CodeExplorer;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 
@@ -19,12 +20,16 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         };
 
         private readonly ICodeExplorerAddComponentService _addComponentService;
+        private readonly IProjectsProvider _projectsProvider;
 
         protected AddComponentCommandBase(
-            ICodeExplorerAddComponentService addComponentService, IVbeEvents vbeEvents) 
+            ICodeExplorerAddComponentService addComponentService, 
+            IVbeEvents vbeEvents,
+            IProjectsProvider projectsProvider) 
             : base(vbeEvents)
         {
             _addComponentService = addComponentService;
+            _projectsProvider = projectsProvider;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
@@ -50,8 +55,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             try
             {
-                var project = node.Declaration.Project;
-                return AllowableProjectTypes.Contains(project.Type);
+                var project = _projectsProvider.Project(node.Declaration.ProjectId);
+                return project != null 
+                       && AllowableProjectTypes.Contains(project.Type);
             }
             catch (COMException)
             {

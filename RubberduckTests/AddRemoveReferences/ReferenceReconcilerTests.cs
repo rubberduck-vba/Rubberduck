@@ -332,8 +332,8 @@ namespace RubberduckTests.AddRemoveReferences
         [Category("AddRemoveReferences")]
         public void ReconcileReferences_ReturnsEmptyWithoutNewReferences()
         {
-            var model = AddRemoveReferencesSetup.ArrangeParsedAddRemoveReferencesModel(null, null, null, out _, out _);
-            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler();
+            var model = AddRemoveReferencesSetup.ArrangeParsedAddRemoveReferencesModel(null, null, null, out _, out _, out var projectsProvider);
+            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler(projectsProvider);
 
             var output = reconciler.ReconcileReferences(model.Object);
 
@@ -344,8 +344,8 @@ namespace RubberduckTests.AddRemoveReferences
         [Category("AddRemoveReferences")]
         public void ReconcileReferencesOverload_ReturnsEmptyWithoutNewReferences()
         {
-            var model = AddRemoveReferencesSetup.ArrangeParsedAddRemoveReferencesModel(null, null, null, out _, out _);
-            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler();
+            var model = AddRemoveReferencesSetup.ArrangeParsedAddRemoveReferencesModel(null, null, null, out _, out _, out var projectsProvider);
+            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler(projectsProvider);
             var output = reconciler.ReconcileReferences(model.Object, null);
 
             Assert.IsEmpty(output);
@@ -358,8 +358,8 @@ namespace RubberduckTests.AddRemoveReferences
             var newReferences = AddRemoveReferencesSetup.LibraryReferenceInfoList
                 .Select(reference => new ReferenceModel(reference, ReferenceKind.TypeLibrary)).ToList();
 
-            var model = AddRemoveReferencesSetup.ArrangeParsedAddRemoveReferencesModel(null, newReferences, null, out _, out _);
-            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler();
+            var model = AddRemoveReferencesSetup.ArrangeParsedAddRemoveReferencesModel(null, newReferences, null, out _, out _, out var projectsProvider);
+            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler(projectsProvider);
 
             var pinned = newReferences.First();
             pinned.IsPinned = true;
@@ -377,8 +377,9 @@ namespace RubberduckTests.AddRemoveReferences
             var newReferences = AddRemoveReferencesSetup.LibraryReferenceInfoList
                 .Select(reference => new ReferenceModel(reference, ReferenceKind.TypeLibrary)).ToList();
 
-            var model = AddRemoveReferencesSetup.ArrangeParsedAddRemoveReferencesModel(newReferences, newReferences, newReferences, out var references, out var builder);
-            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler();
+            var model = AddRemoveReferencesSetup.ArrangeParsedAddRemoveReferencesModel(newReferences, newReferences, newReferences, out var references, out var builder, out var projectsProvider);
+
+            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler(projectsProvider);
 
             var priority = references.Object.Count;
             foreach (var item in newReferences)
@@ -398,8 +399,8 @@ namespace RubberduckTests.AddRemoveReferences
         public void ReconcileReferences_RemoveNotCalledOnBuiltIn()
         {
             var registered = AddRemoveReferencesSetup.DummyReferencesList;
-            var model = AddRemoveReferencesSetup.ArrangeParsedAddRemoveReferencesModel(registered, registered, registered, out var references, out _);
-            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler();
+            var model = AddRemoveReferencesSetup.ArrangeParsedAddRemoveReferencesModel(registered, registered, registered, out var references, out _, out var projectsProvider);
+            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler(projectsProvider);
 
             var vba = references.Object.First(lib => lib.Name.Equals("VBA"));
             var excel = references.Object.First(lib => lib.Name.Equals("Excel"));
