@@ -1,6 +1,5 @@
 ﻿using Rubberduck.Common;
 using Rubberduck.Parsing.Inspections.Abstract;
-using System.IO;
 using Rubberduck.Resources.Inspections;
 
 namespace Rubberduck.Formatters
