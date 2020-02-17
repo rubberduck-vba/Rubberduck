@@ -1075,7 +1075,7 @@ End Sub";
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, ISelectionService selectionService)
         {
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            var baseRefactoring = new MoveCloserToUsageBaseRefactoring(rewritingManager);
+            var baseRefactoring = new MoveCloserToUsageRefactoringAction(rewritingManager);
             return new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider);
         }
     }

@@ -7,11 +7,11 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Refactorings.MoveToFolder
 {
-    public class MoveToFolderBaseRefactoring : CodeOnlyBaseRefactoringBase<MoveToFolderModel>
+    public class MoveToFolderRefactoringAction : CodeOnlyRefactoringActionBase<MoveToFolderModel>
     {
         private readonly IAnnotationUpdater _annotationUpdater;
 
-        public MoveToFolderBaseRefactoring(
+        public MoveToFolderRefactoringAction(
             IRewritingManager rewritingManager,
             IAnnotationUpdater annotationUpdater)
             : base(rewritingManager)

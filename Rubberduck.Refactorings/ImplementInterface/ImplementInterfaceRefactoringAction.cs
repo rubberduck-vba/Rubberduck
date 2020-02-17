@@ -5,16 +5,16 @@ using Rubberduck.Refactorings.AddInterfaceImplementations;
 
 namespace Rubberduck.Refactorings.ImplementInterface
 {
-    public class ImplementInterfaceBaseRefactoring : BaseRefactoringBase<ImplementInterfaceModel>
+    public class ImplementInterfaceRefactoringAction : RefactoringActionBase<ImplementInterfaceModel>
     {
-        private readonly ICodeOnlyBaseRefactoring<AddInterfaceImplementationsModel> _addImplementationsRefactoring;
+        private readonly ICodeOnlyRefactoringAction<AddInterfaceImplementationsModel> _addImplementationsRefactoringAction;
 
-        public ImplementInterfaceBaseRefactoring(
-            AddInterFaceImplementationsBaseRefactoring addImplementationsRefactoring,
+        public ImplementInterfaceRefactoringAction(
+            AddInterfaceImplementationsRefactoringAction addImplementationsRefactoringAction,
             IRewritingManager rewritingManager)
             : base(rewritingManager)
         {
-            _addImplementationsRefactoring = addImplementationsRefactoring;
+            _addImplementationsRefactoringAction = addImplementationsRefactoringAction;
         }
 
         protected override void Refactor(ImplementInterfaceModel model, IRewriteSession rewriteSession)
@@ -35,7 +35,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
             var nonImplementedMembers = interfaceMembers.Where(member => !implemented.Contains(member));
 
             var addMembersModel = new AddInterfaceImplementationsModel(targetClass.QualifiedModuleName, targetInterface.IdentifierName, nonImplementedMembers.ToList());
-            _addImplementationsRefactoring.Refactor(addMembersModel, rewriteSession);
+            _addImplementationsRefactoringAction.Refactor(addMembersModel, rewriteSession);
         }
     }
 }

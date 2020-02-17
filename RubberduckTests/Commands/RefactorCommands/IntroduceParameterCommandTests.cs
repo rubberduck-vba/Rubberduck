@@ -44,7 +44,7 @@ End Property";
         {
             var msgBox = new Mock<IMessageBox>().Object;
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            var baseRefactoring = new IntroduceParameterBaseRefactoring(state, rewritingManager);
+            var baseRefactoring = new IntroduceParameterRefactoringAction(state, rewritingManager);
             var refactoring = new IntroduceParameterRefactoring(baseRefactoring, msgBox, selectionService, selectedDeclarationProvider);
             var notifier = new IntroduceParameterFailedNotifier(msgBox);
             return new RefactorIntroduceParameterCommand(refactoring, notifier, state, selectionService, selectedDeclarationProvider);

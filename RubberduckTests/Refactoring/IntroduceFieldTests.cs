@@ -350,7 +350,7 @@ End Sub";
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, ISelectionService selectionService)
         {
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            var baseRefactoring = new IntroduceFieldBaseRefactoring(state, rewritingManager);
+            var baseRefactoring = new IntroduceFieldRefactoringAction(state, rewritingManager);
             return new IntroduceFieldRefactoring(baseRefactoring, selectionService, selectedDeclarationProvider);
         }
     }

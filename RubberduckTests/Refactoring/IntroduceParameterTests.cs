@@ -559,7 +559,7 @@ End Sub";
                 msgBox = new Mock<IMessageBox>().Object;
             }
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            var baseRefactoring = new IntroduceParameterBaseRefactoring(state, rewritingManager);
+            var baseRefactoring = new IntroduceParameterRefactoringAction(state, rewritingManager);
             return new IntroduceParameterRefactoring(baseRefactoring, msgBox, selectionService, selectedDeclarationProvider);
         }
 

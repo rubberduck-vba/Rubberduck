@@ -12,11 +12,11 @@ using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.RemoveParameters
 {
-    public class RemoveParameterBaseRefactoring : BaseRefactoringBase<RemoveParametersModel>
+    public class RemoveParameterRefactoringAction : RefactoringActionBase<RemoveParametersModel>
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
-        public RemoveParameterBaseRefactoring(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager) 
+        public RemoveParameterRefactoringAction(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager) 
             : base(rewritingManager)
         {
             _declarationFinderProvider = declarationFinderProvider;

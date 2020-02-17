@@ -10,18 +10,18 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 {
     public class MoveCloserToUsageRefactoring : RefactoringBase
     {
-        private readonly IBaseRefactoring<MoveCloserToUsageModel> _baseRefactoring;
+        private readonly IRefactoringAction<MoveCloserToUsageModel> _refactoringAction;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
 
         public MoveCloserToUsageRefactoring(
-            MoveCloserToUsageBaseRefactoring baseRefactoring,
+            MoveCloserToUsageRefactoringAction refactoringAction,
             IDeclarationFinderProvider declarationFinderProvider,
             ISelectionProvider selectionProvider,
             ISelectedDeclarationProvider selectedDeclarationProvider)
         :base(selectionProvider)
         {
-            _baseRefactoring = baseRefactoring;
+            _refactoringAction = refactoringAction;
             _declarationFinderProvider = declarationFinderProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;
         }
@@ -188,7 +188,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
         private void MoveCloserToUsage(Declaration target)
         {
             var model = Model(target);
-            _baseRefactoring.Refactor(model);
+            _refactoringAction.Refactor(model);
         }
     }
 }

@@ -11,18 +11,18 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 {
     public class IntroduceParameterRefactoring : RefactoringBase
     {
-        private readonly IBaseRefactoring<IntroduceParameterModel> _baseRefactoring;
+        private readonly IRefactoringAction<IntroduceParameterModel> _refactoringAction;
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
         private readonly IMessageBox _messageBox;
 
         public IntroduceParameterRefactoring(
-            IntroduceParameterBaseRefactoring baseRefactoring, 
+            IntroduceParameterRefactoringAction refactoringAction, 
             IMessageBox messageBox, 
             ISelectionProvider selectionProvider,
             ISelectedDeclarationProvider selectedDeclarationProvider)
         :base(selectionProvider)
         {
-            _baseRefactoring = baseRefactoring;
+            _refactoringAction = refactoringAction;
             _selectedDeclarationProvider = selectedDeclarationProvider;
             _messageBox = messageBox;
         }
@@ -67,7 +67,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             }
 
             var model = Model(target);
-            _baseRefactoring.Refactor(model);
+            _refactoringAction.Refactor(model);
         }
 
         private IntroduceParameterModel Model(Declaration target)

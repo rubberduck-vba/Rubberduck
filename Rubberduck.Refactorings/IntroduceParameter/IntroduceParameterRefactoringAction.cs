@@ -8,11 +8,11 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Refactorings.IntroduceParameter
 {
-    public class IntroduceParameterBaseRefactoring : BaseRefactoringBase<IntroduceParameterModel>
+    public class IntroduceParameterRefactoringAction : RefactoringActionBase<IntroduceParameterModel>
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
-        public IntroduceParameterBaseRefactoring(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager)
+        public IntroduceParameterRefactoringAction(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager)
             : base(rewritingManager)
         {
             _declarationFinderProvider = declarationFinderProvider;

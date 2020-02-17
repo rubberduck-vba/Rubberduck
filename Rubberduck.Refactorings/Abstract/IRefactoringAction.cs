@@ -6,7 +6,7 @@ namespace Rubberduck.Refactorings
     /// The heart of a refactoring: this part of the refactoring performs the actual transformation of the code once all necessary information has been gathered.
     /// </summary>
     /// <typeparam name="TModel">The model used by the refactoring containing all information needed to specify what to do.</typeparam>
-    public interface IBaseRefactoring<in TModel> where TModel : class, IRefactoringModel
+    public interface IRefactoringAction<in TModel> where TModel : class, IRefactoringModel
     {
         /// <summary>
         /// Performs the actual refactoring based on the parameters specified in the model.
@@ -26,7 +26,7 @@ namespace Rubberduck.Refactorings
         string Preview(TModel model);
     }
 
-    public interface ICodeOnlyBaseRefactoring<in TModel> : IBaseRefactoring<TModel>
+    public interface ICodeOnlyRefactoringAction<in TModel> : IRefactoringAction<TModel>
         where TModel : class, IRefactoringModel
     {
         /// <summary>

@@ -44,7 +44,7 @@ namespace RubberduckTests.Refactoring
             }
         }
 
-        protected abstract IBaseRefactoring<TModel> TestBaseRefactoring(
+        protected abstract IRefactoringAction<TModel> TestBaseRefactoring(
             RubberduckParserState state,
             IRewritingManager rewritingManager
         );

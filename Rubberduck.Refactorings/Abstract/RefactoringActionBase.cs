@@ -4,17 +4,17 @@ using Rubberduck.Refactorings.Exceptions;
 
 namespace Rubberduck.Refactorings
 {
-    public abstract class CodeOnlyBaseRefactoringBase<TModel> : ICodeOnlyBaseRefactoring<TModel>
+    public abstract class RefactoringActionBase<TModel> : IRefactoringAction<TModel>
         where TModel : class, IRefactoringModel
     {
         private readonly IRewritingManager _rewritingManager;
 
-        protected CodeOnlyBaseRefactoringBase(IRewritingManager rewritingManager)
+        protected RefactoringActionBase(IRewritingManager rewritingManager)
         {
             _rewritingManager = rewritingManager;
         }
 
-        public abstract void Refactor(TModel model, IRewriteSession rewriteSession);
+        protected abstract void Refactor(TModel model, IRewriteSession rewriteSession);
 
         public virtual void Refactor(TModel model)
         {
@@ -30,8 +30,8 @@ namespace Rubberduck.Refactorings
 
         private IExecutableRewriteSession RewriteSession(CodeKind codeKind)
         {
-            return codeKind == CodeKind.AttributesCode
-                ? _rewritingManager.CheckOutAttributesSession()
+            return codeKind == CodeKind.AttributesCode 
+                ? _rewritingManager.CheckOutAttributesSession() 
                 : _rewritingManager.CheckOutCodePaneSession();
         }
 

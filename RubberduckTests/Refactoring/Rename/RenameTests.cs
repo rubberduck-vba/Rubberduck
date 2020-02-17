@@ -3369,7 +3369,7 @@ End Property";
             uiDispatcherMock
                 .Setup(m => m.Invoke(It.IsAny<Action>()))
                 .Callback((Action action) => action.Invoke());
-            var baseRefactoring = new RenameBaseRefactoring(state, state?.ProjectsProvider, state, rewritingManager);
+            var baseRefactoring = new RenameRefactoringAction(state, state?.ProjectsProvider, state, rewritingManager);
             return new RenameRefactoring(baseRefactoring, factory, state, state?.ProjectsProvider, selectionService, selectedDeclarationService, uiDispatcherMock.Object);
         }
 

@@ -13,13 +13,13 @@ namespace Rubberduck.Refactorings.Rename
 {
     public class RenameRefactoring : InteractiveRefactoringBase<IRenamePresenter, RenameModel>
     {
-        private readonly IBaseRefactoring<RenameModel> _baseRefactoring;
+        private readonly IRefactoringAction<RenameModel> _refactoringAction;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
         private readonly IProjectsProvider _projectsProvider;
 
         public RenameRefactoring(
-            RenameBaseRefactoring baseRefactoring,
+            RenameRefactoringAction refactoringAction,
             IRefactoringPresenterFactory factory, 
             IDeclarationFinderProvider declarationFinderProvider,
             IProjectsProvider projectsProvider, 
@@ -28,7 +28,7 @@ namespace Rubberduck.Refactorings.Rename
             IUiDispatcher uiDispatcher)
             : base(selectionProvider, factory, uiDispatcher)
         {
-            _baseRefactoring = baseRefactoring;
+            _refactoringAction = refactoringAction;
             _declarationFinderProvider = declarationFinderProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;
             _projectsProvider = projectsProvider;
@@ -55,7 +55,7 @@ namespace Rubberduck.Refactorings.Rename
 
         protected override void RefactorImpl(RenameModel model)
         {
-            _baseRefactoring.Refactor(model);
+            _refactoringAction.Refactor(model);
         }
 
         private RenameModel DeriveTarget(RenameModel model)

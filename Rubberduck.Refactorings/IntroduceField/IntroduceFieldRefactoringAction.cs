@@ -7,11 +7,11 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Refactorings.IntroduceField
 {
-    public class IntroduceFieldBaseRefactoring : BaseRefactoringBase<IntroduceFieldModel>
+    public class IntroduceFieldRefactoringAction : RefactoringActionBase<IntroduceFieldModel>
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
-        public IntroduceFieldBaseRefactoring(IDeclarationFinderProvider declarationFinderProvider,
+        public IntroduceFieldRefactoringAction(IDeclarationFinderProvider declarationFinderProvider,
             IRewritingManager rewritingManager)
             : base(rewritingManager)
         {

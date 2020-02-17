@@ -170,7 +170,7 @@ End Property";
             uiDispatcherMock
                 .Setup(m => m.Invoke(It.IsAny<Action>()))
                 .Callback((Action action) => action.Invoke());
-            var baseRefactoring = new ReorderParameterBaseRefactoring(state, rewritingManager);
+            var baseRefactoring = new ReorderParameterRefactoringAction(state, rewritingManager);
             var refactoring = new ReorderParametersRefactoring(baseRefactoring, state, factory, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
             var notifier = new ReorderParametersFailedNotifier(msgBox);
             return new RefactorReorderParametersCommand(refactoring, notifier, state, selectionService, selectedDeclarationProvider);

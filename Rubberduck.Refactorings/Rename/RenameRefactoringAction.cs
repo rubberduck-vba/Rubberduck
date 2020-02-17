@@ -12,7 +12,7 @@ using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Refactorings.Rename
 {
-    public class RenameBaseRefactoring : BaseRefactoringWithSuspensionBase<RenameModel>
+    public class RenameRefactoringAction : RefactoringActionWithSuspension<RenameModel>
     {
         private const string AppendUnderscoreFormat = "{0}_";
         private const string PrependUnderscoreFormat = "_{0}";
@@ -21,7 +21,7 @@ namespace Rubberduck.Refactorings.Rename
         private readonly IProjectsProvider _projectsProvider;
         private readonly IDictionary<DeclarationType, Action<RenameModel, IRewriteSession>> _renameActions;
 
-        public RenameBaseRefactoring(
+        public RenameRefactoringAction(
             IDeclarationFinderProvider declarationFinderProvider,
             IProjectsProvider projectsProvider,
             IParseManager parserManager,

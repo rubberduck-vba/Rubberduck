@@ -911,8 +911,8 @@ End Sub
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state,
             ISelectionService selectionService)
         {
-            var addImplementationsBaseRefactoring = new AddInterFaceImplementationsBaseRefactoring(rewritingManager);
-            var baseRefactoring = new ImplementInterfaceBaseRefactoring(addImplementationsBaseRefactoring, rewritingManager);
+            var addImplementationsBaseRefactoring = new AddInterfaceImplementationsRefactoringAction(rewritingManager);
+            var baseRefactoring = new ImplementInterfaceRefactoringAction(addImplementationsBaseRefactoring, rewritingManager);
             return new ImplementInterfaceRefactoring(baseRefactoring, state, selectionService);
         }
     }

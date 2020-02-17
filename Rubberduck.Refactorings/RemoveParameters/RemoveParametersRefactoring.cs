@@ -11,12 +11,12 @@ namespace Rubberduck.Refactorings.RemoveParameters
 {
     public class RemoveParametersRefactoring : InteractiveRefactoringBase<IRemoveParametersPresenter, RemoveParametersModel>
     {
-        private readonly IBaseRefactoring<RemoveParametersModel> _baseRefactoring;
+        private readonly IRefactoringAction<RemoveParametersModel> _refactoringAction;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
 
         public RemoveParametersRefactoring(
-            RemoveParameterBaseRefactoring baseRefactoring,
+            RemoveParameterRefactoringAction refactoringAction,
             IDeclarationFinderProvider declarationFinderProvider, 
             IRefactoringPresenterFactory factory, 
             ISelectionProvider selectionProvider,
@@ -24,7 +24,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             IUiDispatcher uiDispatcher)
         :base(selectionProvider, factory, uiDispatcher)
         {
-            _baseRefactoring = baseRefactoring;
+            _refactoringAction = refactoringAction;
             _declarationFinderProvider = declarationFinderProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;
         }
@@ -137,7 +137,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 throw new TargetDeclarationIsNullException();
             }
 
-            _baseRefactoring.Refactor(model);
+            _refactoringAction.Refactor(model);
         }
 
         public void QuickFix(QualifiedSelection selection)
@@ -160,7 +160,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
 
             model.RemoveParameters.Add(target);
-            _baseRefactoring.Refactor(model);
+            _refactoringAction.Refactor(model);
         }
 
         public static readonly DeclarationType[] ValidDeclarationTypes =

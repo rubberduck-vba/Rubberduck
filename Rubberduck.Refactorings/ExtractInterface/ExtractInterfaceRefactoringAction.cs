@@ -14,21 +14,21 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
-    public class ExtractInterfaceBaseRefactoring : BaseRefactoringWithSuspensionBase<ExtractInterfaceModel>
+    public class ExtractInterfaceRefactoringAction : RefactoringActionWithSuspension<ExtractInterfaceModel>
     {
-        private readonly ICodeOnlyBaseRefactoring<AddInterfaceImplementationsModel> _addImplementationsRefactoring;
+        private readonly ICodeOnlyRefactoringAction<AddInterfaceImplementationsModel> _addImplementationsRefactoringAction;
         private readonly IParseTreeProvider _parseTreeProvider;
         private readonly IProjectsProvider _projectsProvider;
 
-        public ExtractInterfaceBaseRefactoring(
-            AddInterFaceImplementationsBaseRefactoring addImplementationsRefactoring,
+        public ExtractInterfaceRefactoringAction(
+            AddInterfaceImplementationsRefactoringAction addImplementationsRefactoringAction,
             IParseTreeProvider parseTreeProvider,
             IParseManager parseManager, 
             IRewritingManager rewritingManager,
             IProjectsProvider projectsProvider) 
             : base(parseManager, rewritingManager)
         {
-            _addImplementationsRefactoring = addImplementationsRefactoring;
+            _addImplementationsRefactoringAction = addImplementationsRefactoringAction;
             _parseTreeProvider = parseTreeProvider;
             _projectsProvider = projectsProvider;
         }
@@ -131,7 +131,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             var membersToImplement = model.SelectedMembers.Select(m => m.Member).ToList();
 
             var addMembersModel = new AddInterfaceImplementationsModel(targetModule, interfaceName, membersToImplement);
-            _addImplementationsRefactoring.Refactor(addMembersModel, rewriteSession);
+            _addImplementationsRefactoringAction.Refactor(addMembersModel, rewriteSession);
         }
 
         private static string GetInterfaceModuleBody(ExtractInterfaceModel model)

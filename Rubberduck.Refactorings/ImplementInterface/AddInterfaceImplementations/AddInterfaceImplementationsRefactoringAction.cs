@@ -8,11 +8,11 @@ using Rubberduck.Refactorings.ImplementInterface;
 
 namespace Rubberduck.Refactorings.AddInterfaceImplementations
 {
-    public class AddInterFaceImplementationsBaseRefactoring : CodeOnlyBaseRefactoringBase<AddInterfaceImplementationsModel>
+    public class AddInterfaceImplementationsRefactoringAction : CodeOnlyRefactoringActionBase<AddInterfaceImplementationsModel>
     {
         private const string MemberBody = "    Err.Raise 5 'TODO implement interface member";
 
-        public AddInterFaceImplementationsBaseRefactoring(IRewritingManager rewritingManager) 
+        public AddInterfaceImplementationsRefactoringAction(IRewritingManager rewritingManager) 
             : base(rewritingManager)
         {}
 

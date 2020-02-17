@@ -12,18 +12,18 @@ namespace Rubberduck.Refactorings.ExtractInterface
 {
     public class ExtractInterfaceRefactoring : InteractiveRefactoringBase<IExtractInterfacePresenter, ExtractInterfaceModel>
     {
-        private readonly IBaseRefactoring<ExtractInterfaceModel> _baseRefactoring;
+        private readonly IRefactoringAction<ExtractInterfaceModel> _refactoringAction;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
         public ExtractInterfaceRefactoring(
-            ExtractInterfaceBaseRefactoring baseRefactoring,
+            ExtractInterfaceRefactoringAction refactoringAction,
             IDeclarationFinderProvider declarationFinderProvider, 
             IRefactoringPresenterFactory factory, 
             ISelectionProvider selectionProvider,
             IUiDispatcher uiDispatcher)
         :base(selectionProvider, factory, uiDispatcher)
         {
-            _baseRefactoring = baseRefactoring;
+            _refactoringAction = refactoringAction;
             _declarationFinderProvider = declarationFinderProvider;
         }
 
@@ -61,7 +61,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         protected override void RefactorImpl(ExtractInterfaceModel model)
         {
-            _baseRefactoring.Refactor(model);
+            _refactoringAction.Refactor(model);
         }
 
         //TODO: Redesign how refactoring commands are wired up to make this a responsibility of the command again. 

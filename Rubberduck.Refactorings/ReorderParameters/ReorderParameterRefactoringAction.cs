@@ -12,11 +12,11 @@ using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {
-    public class ReorderParameterBaseRefactoring : BaseRefactoringBase<ReorderParametersModel>
+    public class ReorderParameterRefactoringAction : RefactoringActionBase<ReorderParametersModel>
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
-        public ReorderParameterBaseRefactoring(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager) 
+        public ReorderParameterRefactoringAction(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager) 
             : base(rewritingManager)
         {
             _declarationFinderProvider = declarationFinderProvider;

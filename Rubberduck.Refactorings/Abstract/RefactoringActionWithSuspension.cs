@@ -6,14 +6,14 @@ using Rubberduck.Refactorings.Exceptions;
 
 namespace Rubberduck.Refactorings
 {
-    public abstract class BaseRefactoringWithSuspensionBase<TModel> : BaseRefactoringBase<TModel>
+    public abstract class RefactoringActionWithSuspension<TModel> : RefactoringActionBase<TModel>
         where TModel : class, IRefactoringModel
     {
         private readonly IParseManager _parseManager;
 
         private readonly Logger _logger;
 
-        protected BaseRefactoringWithSuspensionBase(IParseManager parseManager, IRewritingManager rewritingManager)
+        protected RefactoringActionWithSuspension(IParseManager parseManager, IRewritingManager rewritingManager)
             : base(rewritingManager)
         {
             _parseManager = parseManager;

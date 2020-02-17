@@ -57,8 +57,8 @@ Dim b As Variant";
         protected override CommandBase TestCommand(IVBE vbe, RubberduckParserState state, IRewritingManager rewritingManager, ISelectionService selectionService)
         {
             var msgBox = new Mock<IMessageBox>().Object;
-            var addImplementationsBaseRefactoring = new AddInterFaceImplementationsBaseRefactoring(rewritingManager);
-            var baseRefactoring = new ImplementInterfaceBaseRefactoring(addImplementationsBaseRefactoring, rewritingManager);
+            var addImplementationsBaseRefactoring = new AddInterfaceImplementationsRefactoringAction(rewritingManager);
+            var baseRefactoring = new ImplementInterfaceRefactoringAction(addImplementationsBaseRefactoring, rewritingManager);
             var refactoring = new ImplementInterfaceRefactoring(baseRefactoring, state, selectionService);
             var notifier = new ImplementInterfaceFailedNotifier(msgBox);
             return new RefactorImplementInterfaceCommand(refactoring, notifier, state, selectionService);

@@ -12,16 +12,16 @@ namespace Rubberduck.Refactorings.ImplementInterface
 {
     public class ImplementInterfaceRefactoring : RefactoringBase
     {
-        private readonly IBaseRefactoring<ImplementInterfaceModel> _baseRefactoring;
+        private readonly IRefactoringAction<ImplementInterfaceModel> _refactoringAction;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
         public ImplementInterfaceRefactoring(
-            ImplementInterfaceBaseRefactoring baseRefactoring,
+            ImplementInterfaceRefactoringAction refactoringAction,
             IDeclarationFinderProvider declarationFinderProvider, 
             ISelectionProvider selectionProvider)
         :base(selectionProvider)
         {
-            _baseRefactoring = baseRefactoring;
+            _refactoringAction = refactoringAction;
             _declarationFinderProvider = declarationFinderProvider;
         }
 
@@ -59,7 +59,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
             }
 
             var model = Model(targetInterface, targetClass);
-            _baseRefactoring.Refactor(model);
+            _refactoringAction.Refactor(model);
         }
 
         private static ImplementInterfaceModel Model(ClassModuleDeclaration targetInterface, ClassModuleDeclaration targetClass)

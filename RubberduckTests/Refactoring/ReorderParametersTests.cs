@@ -1348,7 +1348,7 @@ End Sub";
             uiDispatcherMock
                 .Setup(m => m.Invoke(It.IsAny<Action>()))
                 .Callback((Action action) => action.Invoke());
-            var baseRefactoring = new ReorderParameterBaseRefactoring(state, rewritingManager);
+            var baseRefactoring = new ReorderParameterRefactoringAction(state, rewritingManager);
             return new ReorderParametersRefactoring(baseRefactoring, state, factory, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
         }
 

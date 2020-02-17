@@ -7,9 +7,9 @@ using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Refactorings.MoveCloserToUsage
 {
-    public class MoveCloserToUsageBaseRefactoring : BaseRefactoringBase<MoveCloserToUsageModel>
+    public class MoveCloserToUsageRefactoringAction : RefactoringActionBase<MoveCloserToUsageModel>
     {
-        public MoveCloserToUsageBaseRefactoring(IRewritingManager rewritingManager) 
+        public MoveCloserToUsageRefactoringAction(IRewritingManager rewritingManager) 
             : base(rewritingManager)
         {}
 

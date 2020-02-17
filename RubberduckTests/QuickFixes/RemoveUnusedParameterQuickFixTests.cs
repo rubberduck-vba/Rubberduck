@@ -47,7 +47,7 @@ End Sub";
                 uiDispatcherMock
                     .Setup(m => m.Invoke(It.IsAny<Action>()))
                     .Callback((Action action) => action.Invoke());
-                var baseRefactoring = new RemoveParameterBaseRefactoring(state, rewritingManager);
+                var baseRefactoring = new RemoveParameterRefactoringAction(state, rewritingManager);
                 var refactoring = new RemoveParametersRefactoring(baseRefactoring, state, factory, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
                 new RemoveUnusedParameterQuickFix(refactoring)
                     .Fix(inspectionResults.First(), rewriteSession);

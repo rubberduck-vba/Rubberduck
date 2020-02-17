@@ -12,10 +12,10 @@ namespace Rubberduck.Refactorings.ReorderParameters
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
-        private readonly IBaseRefactoring<ReorderParametersModel> _baseRefactoring;
+        private readonly IRefactoringAction<ReorderParametersModel> _refactoringAction;
 
         public ReorderParametersRefactoring(
-            ReorderParameterBaseRefactoring baseRefactoring,
+            ReorderParameterRefactoringAction refactoringAction,
             IDeclarationFinderProvider declarationFinderProvider, 
             IRefactoringPresenterFactory factory, 
             ISelectionProvider selectionProvider,
@@ -23,7 +23,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             IUiDispatcher uiDispatcher)
         :base(selectionProvider, factory, uiDispatcher)
         {
-            _baseRefactoring = baseRefactoring;
+            _refactoringAction = refactoringAction;
             _declarationFinderProvider = declarationFinderProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;
         }
@@ -131,7 +131,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         protected override void RefactorImpl(ReorderParametersModel model)
         {
-            _baseRefactoring.Refactor(model);
+            _refactoringAction.Refactor(model);
         }
 
         public static readonly DeclarationType[] ValidDeclarationTypes =

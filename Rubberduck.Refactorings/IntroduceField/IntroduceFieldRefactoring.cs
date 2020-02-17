@@ -10,16 +10,16 @@ namespace Rubberduck.Refactorings.IntroduceField
 {
     public class IntroduceFieldRefactoring : RefactoringBase
     {
-        private readonly IBaseRefactoring<IntroduceFieldModel> _baseRefactoring;
+        private readonly IRefactoringAction<IntroduceFieldModel> _refactoringAction;
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
 
         public IntroduceFieldRefactoring(
-            IntroduceFieldBaseRefactoring baseRefactoring, 
+            IntroduceFieldRefactoringAction refactoringAction, 
             ISelectionProvider selectionProvider,
             ISelectedDeclarationProvider selectedDeclarationProvider)
         :base(selectionProvider)
         {
-            _baseRefactoring = baseRefactoring;
+            _refactoringAction = refactoringAction;
             _selectedDeclarationProvider = selectedDeclarationProvider;
         }
 
@@ -58,7 +58,7 @@ namespace Rubberduck.Refactorings.IntroduceField
         private void PromoteVariable(Declaration target)
         {
             var model = Model(target);
-            _baseRefactoring.Refactor(model);
+            _refactoringAction.Refactor(model);
         }
 
         private static IntroduceFieldModel Model(Declaration target)

@@ -65,10 +65,10 @@ End Sub
             Assert.AreEqual(expectedCode, refactoredCode);
         }
 
-        protected override IBaseRefactoring<MoveToFolderModel> TestBaseRefactoring(RubberduckParserState state, IRewritingManager rewritingManager)
+        protected override IRefactoringAction<MoveToFolderModel> TestBaseRefactoring(RubberduckParserState state, IRewritingManager rewritingManager)
         {
             var annotationUpdater = new AnnotationUpdater();
-            return new MoveToFolderBaseRefactoring(rewritingManager, annotationUpdater);
+            return new MoveToFolderRefactoringAction(rewritingManager, annotationUpdater);
         }
     }
 }
