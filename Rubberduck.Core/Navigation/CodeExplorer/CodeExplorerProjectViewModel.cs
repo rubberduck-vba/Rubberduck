@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using Rubberduck.AddRemoveReferences;
@@ -193,9 +194,22 @@ namespace Rubberduck.Navigation.CodeExplorer
             _name = Declaration?.IdentifierName ?? string.Empty;
 
             // F' the flicker. Digging into the properties has some even more evil side-effects, and is a performance nightmare by comparison.
-            _displayName = Declaration?.ProjectDisplayName ?? string.Empty;
+            _displayName = DisplayName(Declaration);
 
             OnNameChanged();
+        }
+
+        private string DisplayName(Declaration declaration)
+        {
+            if (declaration == null)
+            {
+                return string.Empty;
+            }
+
+            var project = _projectsProvider.Project(declaration.ProjectId);
+            return project != null 
+                ? project.ProjectDisplayName 
+                : string.Empty;
         }
 
         private static readonly List<DeclarationType> UntrackedTypes = new List<DeclarationType>

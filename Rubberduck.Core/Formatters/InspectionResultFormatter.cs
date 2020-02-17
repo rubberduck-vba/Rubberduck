@@ -1,6 +1,5 @@
 ﻿using Rubberduck.Common;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Inspections.Abstract;
 using System.IO;
 using Rubberduck.Resources.Inspections;
 

@@ -283,7 +283,7 @@ namespace RubberduckTests.AddRemoveReferences
             var reconciler = ArrangeReferenceReconciler(settings, projectsProvider, out _, out libraryProvider);
             browserFactory = new Mock<IFileSystemBrowserFactory>();
 
-            return new AddRemoveReferencesViewModel(model, reconciler, browserFactory.Object);
+            return new AddRemoveReferencesViewModel(model, reconciler, browserFactory.Object, projectsProvider);
         }
 
         public static void SetupMockedOpenDialog(this Mock<IFileSystemBrowserFactory> factory, string filename, DialogResult result)

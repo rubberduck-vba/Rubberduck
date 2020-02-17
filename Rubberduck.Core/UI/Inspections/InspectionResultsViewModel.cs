@@ -20,7 +20,6 @@ using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
@@ -669,7 +668,7 @@ namespace Rubberduck.UI.Inspections
 
             var resultArray = Results.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
 
-            var resource = resultArray.Count() == 1
+            var resource = resultArray.Length == 1
                 ? Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular
                 : Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Plural;
 

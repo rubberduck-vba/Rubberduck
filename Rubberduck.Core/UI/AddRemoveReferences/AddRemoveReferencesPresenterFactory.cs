@@ -147,7 +147,7 @@ namespace Rubberduck.UI.AddRemoveReferences
 
             return (model != null)
                 ? new AddRemoveReferencesPresenter(
-                    new AddRemoveReferencesDialog(new AddRemoveReferencesViewModel(model, _reconciler, _browser)))
+                    new AddRemoveReferencesDialog(new AddRemoveReferencesViewModel(model, _reconciler, _browser, _projectsProvider)))
                 : null;                 
         }
 
