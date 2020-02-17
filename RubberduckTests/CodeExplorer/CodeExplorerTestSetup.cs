@@ -6,8 +6,7 @@ using RubberduckTests.Mocks;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI.Command.MenuItems.ParentMenus;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.ComManagement;
 using RubberduckTests.AddRemoveReferences;
 
 namespace RubberduckTests.CodeExplorer
@@ -16,7 +15,10 @@ namespace RubberduckTests.CodeExplorer
     {
         private static readonly List<Declaration> ProjectOne;
         private static readonly List<Declaration> ProjectTwo;
-       
+
+        public static readonly IProjectsProvider ProjectOneProvider;
+        public static readonly IProjectsProvider ProjectTwoProvider;
+
         public const string TestProjectOneName = "TestProject1";
         public const string TestProjectTwoName = "TestProject2";
         public const string TestDocumentName = "TestDocument1";
@@ -117,7 +119,7 @@ namespace RubberduckTests.CodeExplorer
             { TestUserFormName, ComponentType.UserForm }
         };
 
-        public static List<Declaration> TestProjectWithFolderStructure(IEnumerable<(string Name, string Folder)> modules, out Declaration projectDeclaration)
+        public static List<Declaration> TestProjectWithFolderStructure(IEnumerable<(string Name, string Folder)> modules, out Declaration projectDeclaration, out RubberduckParserState state)
         {
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder(TestProjectOneName, ProjectProtection.Unprotected);
@@ -139,8 +141,8 @@ namespace RubberduckTests.CodeExplorer
             }
 
             builder.AddProject(project.Build());
-            var parser = MockParser.CreateAndParse(builder.Build().Object);
-            var output = parser.AllUserDeclarations.ToList();
+            state = MockParser.CreateAndParse(builder.Build().Object);
+            var output = state.AllUserDeclarations.ToList();
 
             projectDeclaration = output.Single(declaration => declaration.DeclarationType == DeclarationType.Project);
             return output;
@@ -158,8 +160,9 @@ namespace RubberduckTests.CodeExplorer
             project.MockUserFormBuilder(TestUserFormName, CodeExplorerTestCode.TestUserFormCode).AddFormToProjectBuilder();
             builder.AddProject(project.Build());
 
-            var parser = MockParser.CreateAndParse(builder.Build().Object);
-            ProjectOne = parser.AllUserDeclarations.ToList();
+            var state = MockParser.CreateAndParse(builder.Build().Object);
+            ProjectOne = state.AllUserDeclarations.ToList();
+            ProjectOneProvider = state.ProjectsProvider;
 
             builder = new MockVbeBuilder();
 
@@ -171,8 +174,9 @@ namespace RubberduckTests.CodeExplorer
             project.MockUserFormBuilder(TestUserFormName, CodeExplorerTestCode.TestUserFormCode).AddFormToProjectBuilder();
             builder.AddProject(project.Build());
 
-            parser = MockParser.CreateAndParse(builder.Build().Object);
-            ProjectTwo = parser.AllUserDeclarations.ToList();
+            state = MockParser.CreateAndParse(builder.Build().Object);
+            ProjectTwo = state.AllUserDeclarations.ToList();
+            ProjectTwoProvider = state.ProjectsProvider;
         }
 
         public static List<Declaration> GetProjectDeclarationsWithReferences(bool libraries, bool projects, out RubberduckParserState state)

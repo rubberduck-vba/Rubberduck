@@ -5,6 +5,7 @@ using Rubberduck.AddRemoveReferences;
 using Rubberduck.Navigation.Folders;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -21,17 +22,20 @@ namespace Rubberduck.Navigation.CodeExplorer
         };
 
         private readonly IVBE _vbe;
+        private readonly IProjectsProvider _projectsProvider;
 
         public CodeExplorerProjectViewModel(
             Declaration project, 
             ref List<Declaration> declarations, 
             RubberduckParserState state, 
             IVBE vbe, 
+            IProjectsProvider projectsProvider,
             bool references = true) 
             : base(null, project)
         {
-            State = state;         
+            State = state;
             _vbe = vbe;
+            _projectsProvider = projectsProvider;
             ShowReferences = references;
 
             SetName();
@@ -58,7 +62,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                     return base.FontWeight;
                 }
 
-                var project = State.ProjectsProvider.Project(Declaration.ProjectId);
+                var project = _projectsProvider.Project(Declaration.ProjectId);
                 if (project == null)
                 {
                     return base.FontWeight;
@@ -158,7 +162,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return new List<ReferenceModel>();
             }
 
-            var project = State.ProjectsProvider.Project(Declaration.ProjectId);
+            var project = _projectsProvider.Project(Declaration.ProjectId);
             if (project == null)
             {
                 return new List<ReferenceModel>();
