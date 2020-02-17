@@ -3,20 +3,17 @@ using Rubberduck.Parsing.ComReflection;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.Symbols
 {
     public sealed class ProjectDeclaration : Declaration, IDisposable
     {
         private readonly List<ProjectReference> _projectReferences;
-        private readonly IVBProject _project;
 
         public ProjectDeclaration(
             QualifiedMemberName qualifiedName,
             string name,
-            bool isUserDefined,
-            IVBProject project)
+            bool isUserDefined)
             : base(
                   qualifiedName,
                   null,
@@ -34,12 +31,11 @@ namespace Rubberduck.Parsing.Symbols
                   null,
                   isUserDefined)
         {
-            _project = project;
             _projectReferences = new List<ProjectReference>();
         }
 
         public ProjectDeclaration(ComProject project, QualifiedModuleName module)
-            : this(module.QualifyMemberName(project.Name), project.Name, false, null)
+            : this(module.QualifyMemberName(project.Name), project.Name, false)
         {
             Guid = project.Guid;
             MajorVersion = project.MajorVersion;
@@ -70,24 +66,6 @@ namespace Rubberduck.Parsing.Symbols
         public void ClearProjectReferences()
         {
             _projectReferences.Clear();
-        }
-
-        private string _displayName;
-        /// <summary>
-        /// WARNING: This property has side effects. It changes the ActiveVBProject, which causes a flicker in the VBE.
-        /// This should only be called if it is *absolutely* necessary.
-        /// </summary>
-        public override string ProjectDisplayName
-        {
-            get
-            {
-                if (_displayName != null)
-                {
-                    return _displayName;
-                }
-                _displayName = !IsDisposed && _project != null ? _project.ProjectDisplayName : string.Empty;
-                return _displayName;
-            }
         }
 
         public bool IsDisposed { get; private set; }
