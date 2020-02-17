@@ -8,7 +8,9 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.Refactorings.AddInterfaceImplementations;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
@@ -16,16 +18,19 @@ namespace Rubberduck.Refactorings.ExtractInterface
     {
         private readonly ICodeOnlyBaseRefactoring<AddInterfaceImplementationsModel> _addImplementationsRefactoring;
         private readonly IParseTreeProvider _parseTreeProvider;
+        private readonly IProjectsProvider _projectsProvider;
 
         public ExtractInterfaceBaseRefactoring(
             AddInterFaceImplementationsBaseRefactoring addImplementationsRefactoring,
             IParseTreeProvider parseTreeProvider,
             IParseManager parseManager, 
-            IRewritingManager rewritingManager) 
+            IRewritingManager rewritingManager,
+            IProjectsProvider projectsProvider) 
             : base(parseManager, rewritingManager)
         {
             _addImplementationsRefactoring = addImplementationsRefactoring;
             _parseTreeProvider = parseTreeProvider;
+            _projectsProvider = projectsProvider;
         }
 
         protected override bool RequiresSuspension(ExtractInterfaceModel model)
@@ -40,20 +45,19 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         private void AddInterface(ExtractInterfaceModel model, IRewriteSession rewriteSession)
         {
-            var targetProject = model.TargetDeclaration.Project;
+            var targetProject = _projectsProvider.Project(model.TargetDeclaration.ProjectId);
             if (targetProject == null)
             {
                 return; //The target project is not available.
             }
 
-            AddInterfaceClass(model.TargetDeclaration, model.InterfaceName, GetInterfaceModuleBody(model));
+            AddInterfaceClass(targetProject, model.InterfaceName, GetInterfaceModuleBody(model));
             AddImplementsStatement(model, rewriteSession);
             AddInterfaceMembersToClass(model, rewriteSession);
         }
 
-        private void AddInterfaceClass(Declaration implementingClass, string interfaceName, string interfaceBody)
+        private void AddInterfaceClass(IVBProject targetProject, string interfaceName, string interfaceBody)
         {
-            var targetProject = implementingClass.Project;
             using (var components = targetProject.VBComponents)
             {
                 using (var interfaceComponent = components.Add(ComponentType.ClassModule))
@@ -119,8 +123,6 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
             return (-1, false);
         }
-
-
 
         private void AddInterfaceMembersToClass(ExtractInterfaceModel model, IRewriteSession rewriteSession)
         {

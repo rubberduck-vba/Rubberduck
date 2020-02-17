@@ -172,7 +172,7 @@ End Property";
                 .Setup(m => m.Invoke(It.IsAny<Action>()))
                 .Callback((Action action) => action.Invoke());
             var addImplementationsBaseRefactoring = new AddInterFaceImplementationsBaseRefactoring(rewritingManager);
-            var baseRefactoring = new ExtractInterfaceBaseRefactoring(addImplementationsBaseRefactoring, state, state, rewritingManager);
+            var baseRefactoring = new ExtractInterfaceBaseRefactoring(addImplementationsBaseRefactoring, state, state, rewritingManager, state.ProjectsProvider);
             var refactoring = new ExtractInterfaceRefactoring(baseRefactoring, state, factory, selectionService, uiDispatcherMock.Object);
             var notifier = new ExtractInterfaceFailedNotifier(msgBox);
             return new RefactorExtractInterfaceCommand(refactoring, notifier, state, selectionService);

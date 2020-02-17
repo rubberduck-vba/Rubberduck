@@ -504,7 +504,7 @@ namespace RubberduckTests.CodeExplorer
         public MockedCodeExplorer ImplementExtractInterfaceCommand()
         {
             var addImplementationsBaseRefactoring = new AddInterFaceImplementationsBaseRefactoring(null);
-            var extractInterfaceBaseRefactoring = new ExtractInterfaceBaseRefactoring(addImplementationsBaseRefactoring, State, State, null);
+            var extractInterfaceBaseRefactoring = new ExtractInterfaceBaseRefactoring(addImplementationsBaseRefactoring, State, State, null, State.ProjectsProvider);
             ViewModel.CodeExplorerExtractInterfaceCommand = new CodeExplorerExtractInterfaceCommand(
                 new ExtractInterfaceRefactoring(extractInterfaceBaseRefactoring, State, null, null, _uiDispatcher.Object),
                 State, null, VbeEvents.Object);
