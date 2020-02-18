@@ -10,7 +10,7 @@ using Rubberduck.Refactorings.MoveToFolder;
 namespace RubberduckTests.Refactoring
 {
     [TestFixture]
-    public class MoveToFolderTests : BaseRefactoringTestBase<MoveToFolderModel>
+    public class MoveToFolderRefactoringActionTests : RefactoringActionTestBase<MoveToFolderModel>
     {
         [Test]
         [Category("Refactorings")]
@@ -58,6 +58,32 @@ End Sub
                     .UserDeclarations(DeclarationType.ProceduralModule)
                     .Single() as ModuleDeclaration;
                 return new MoveToFolderModel(module, "MyNewFolder.MySubFolder");
+            };
+
+            var refactoredCode = RefactoredCode(code, modelBuilder);
+
+            Assert.AreEqual(expectedCode, refactoredCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        public void MoveToFolderBaseRefactoring_NameContainingDoubleQuotes()
+        {
+            const string code = @"
+Public Sub Foo()
+End Sub
+";
+            const string expectedCode = @"'@Folder ""MyNew""""Folder.My""""""""""""""""SubFolder""
+
+Public Sub Foo()
+End Sub
+";
+            Func<RubberduckParserState, MoveToFolderModel> modelBuilder = (state) =>
+            {
+                var module = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.ProceduralModule)
+                    .Single() as ModuleDeclaration;
+                return new MoveToFolderModel(module, "MyNew\"Folder.My\"\"\"\"SubFolder");
             };
 
             var refactoredCode = RefactoredCode(code, modelBuilder);

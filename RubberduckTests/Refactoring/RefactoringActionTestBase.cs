@@ -11,7 +11,7 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring
 {
-    public abstract class BaseRefactoringTestBase<TModel>
+    public abstract class RefactoringActionTestBase<TModel>
         where TModel : class, IRefactoringModel
     {
 
