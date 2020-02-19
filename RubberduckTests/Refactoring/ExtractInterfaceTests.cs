@@ -12,7 +12,9 @@ using Rubberduck.Refactorings.AddInterfaceImplementations;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Mocks;
 
@@ -47,9 +49,10 @@ End Sub
             const string expectedInterfaceCode =
                 @"Option Explicit
 
+'@Interface
+
 Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
-
 ";
             Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
             {
@@ -194,6 +197,8 @@ End Property
             const string expectedInterfaceCode =
                 @"Option Explicit
 
+'@Interface
+
 Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
 
@@ -208,7 +213,6 @@ End Property
 
 Public Property Set Buzz(ByRef value As Variant)
 End Property
-
 ";
             Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
             {
@@ -281,12 +285,13 @@ End Function
             const string expectedInterfaceCode =
                 @"Option Explicit
 
+'@Interface
+
 Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
 
 Public Function Fizz(ByRef b As Variant) As Variant
 End Function
-
 ";
             Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
             {
@@ -401,9 +406,10 @@ End Sub
             const string expectedInterfaceCode =
                 @"Option Explicit
 
+'@Interface
+
 Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
-
 ";
             Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
             {
@@ -466,9 +472,10 @@ End Sub
             const string expectedInterfaceCode =
                 @"Option Explicit
 
+'@Interface
+
 Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
-
 ";
             Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
             {
@@ -545,9 +552,10 @@ End Sub
             const string expectedInterfaceCode =
                 @"Option Explicit
 
+'@Interface
+
 Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
-
 ";
             Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
             {
@@ -622,9 +630,10 @@ End Sub
             const string expectedInterfaceCode =
                 @"Option Explicit
 
+'@Interface
+
 Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
-
 ";
             Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
             {
@@ -650,8 +659,15 @@ End Sub
                 .Setup(m => m.Invoke(It.IsAny<Action>()))
                 .Callback((Action action) => action.Invoke());
             var addImplementationsBaseRefactoring = new AddInterfaceImplementationsRefactoringAction(rewritingManager);
-            var baseRefactoring = new ExtractInterfaceRefactoringAction(addImplementationsBaseRefactoring, state, state, rewritingManager, state?.ProjectsProvider);
+            var addComponentService = TestAddComponentService(state?.ProjectsProvider);
+            var baseRefactoring = new ExtractInterfaceRefactoringAction(addImplementationsBaseRefactoring, state, state, rewritingManager, state?.ProjectsProvider, addComponentService);
             return new ExtractInterfaceRefactoring(baseRefactoring, state, factory, selectionService, uiDispatcherMock.Object);
+        }
+
+        private static IAddComponentService TestAddComponentService(IProjectsProvider projectsProvider)
+        {
+            var sourceCodeHandler = new CodeModuleComponentSourceCodeHandler();
+            return new AddComponentService(projectsProvider, sourceCodeHandler, sourceCodeHandler);
         }
     }
 }

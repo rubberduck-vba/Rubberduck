@@ -504,11 +504,18 @@ namespace RubberduckTests.CodeExplorer
         public MockedCodeExplorer ImplementExtractInterfaceCommand()
         {
             var addImplementationsBaseRefactoring = new AddInterfaceImplementationsRefactoringAction(null);
-            var extractInterfaceBaseRefactoring = new ExtractInterfaceRefactoringAction(addImplementationsBaseRefactoring, State, State, null, State.ProjectsProvider);
+            var addComponentService = TestAddComponentService(State.ProjectsProvider);
+            var extractInterfaceBaseRefactoring = new ExtractInterfaceRefactoringAction(addImplementationsBaseRefactoring, State, State, null, State.ProjectsProvider, addComponentService);
             ViewModel.CodeExplorerExtractInterfaceCommand = new CodeExplorerExtractInterfaceCommand(
                 new ExtractInterfaceRefactoring(extractInterfaceBaseRefactoring, State, null, null, _uiDispatcher.Object),
                 State, null, VbeEvents.Object);
             return this;
+        }
+
+        private static IAddComponentService TestAddComponentService(IProjectsProvider projectsProvider)
+        {
+            var sourceCodeHandler = new CodeModuleComponentSourceCodeHandler();
+            return new AddComponentService(projectsProvider, sourceCodeHandler, sourceCodeHandler);
         }
 
         public MockedCodeExplorer ConfigureSaveDialog(string path, DialogResult result)
