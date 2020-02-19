@@ -74,10 +74,17 @@ namespace Rubberduck.Refactorings.ExtractInterface
         {
             var interfaceMembers = string.Join(Environment.NewLine, model.SelectedMembers.Select(m => m.Body));
             var optionExplicit = $"{Tokens.Option} {Tokens.Explicit}{Environment.NewLine}";
+
+            var targetModule = Declaration.GetModuleParent(model.TargetDeclaration);
+            var folderAnnotation = targetModule?.Annotations.FirstOrDefault(pta => pta.Annotation is FolderAnnotation);
+            var folderAnnotationText = folderAnnotation != null
+                                       ? $"'@{folderAnnotation.Context.GetText()}{Environment.NewLine}"
+                                       : string.Empty;
+
             var interfaceAnnotation = new InterfaceAnnotation();
             var interfaceAnnotationText = $"'@{interfaceAnnotation.Name}{Environment.NewLine}";
 
-            return $"{optionExplicit}{Environment.NewLine}{interfaceAnnotationText}{Environment.NewLine}{interfaceMembers}";
+            return $"{optionExplicit}{Environment.NewLine}{folderAnnotationText}{interfaceAnnotationText}{Environment.NewLine}{interfaceMembers}";
         }
 
         private void AddImplementsStatement(ExtractInterfaceModel model, IRewriteSession rewriteSession)

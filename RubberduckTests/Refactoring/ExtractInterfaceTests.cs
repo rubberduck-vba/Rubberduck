@@ -652,6 +652,58 @@ End Sub
             Assert.AreEqual(expectedInterfaceCode, actualInterfaceCode);
         }
 
+        [Test]
+        [Category("Refactorings")]
+        [Category("Extract Interface")]
+        public void ExtractInterfaceRefactoring_PutsInterfaceInFolderOfClassItIsExtractedFrom()
+        {
+            //Input
+            const string inputCode =
+                @"'@Folder(""MyFolder.MySubFolder"")
+
+Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub";
+            var selection = new Selection(1, 23, 1, 27);
+
+            //Expectation
+            const string expectedCode =
+                @"Implements IClass
+
+'@Folder(""MyFolder.MySubFolder"")
+
+Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub
+
+Private Sub IClass_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+    Err.Raise 5 'TODO implement interface member
+End Sub
+";
+
+            const string expectedInterfaceCode =
+                @"Option Explicit
+
+'@Folder(""MyFolder.MySubFolder"")
+'@Interface
+
+Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub
+";
+            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
+            {
+                foreach (var interfaceMember in model.Members)
+                {
+                    interfaceMember.IsSelected = true;
+                }
+
+                return model;
+            };
+
+            var actualCode = RefactoredCode("Class", selection, presenterAction, null, false, ("Class", inputCode, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode, actualCode["Class"]);
+            var actualInterfaceCode = actualCode[actualCode.Keys.Single(componentName => !componentName.Equals("Class"))];
+            Assert.AreEqual(expectedInterfaceCode, actualInterfaceCode);
+        }
+
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
         {
             var uiDispatcherMock = new Mock<IUiDispatcher>();
