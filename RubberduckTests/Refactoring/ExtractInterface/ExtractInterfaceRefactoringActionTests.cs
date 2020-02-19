@@ -91,7 +91,7 @@ Private Sub IClass_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
     Err.Raise 5 'TODO implement interface member
 End Sub
 
-Private Function IClass_Fizz(ByRef b As Variant) As Variant
+Private Function IClass_Fizz(b As Variant) As Variant
     Err.Raise 5 'TODO implement interface member
 End Function
 
@@ -99,11 +99,11 @@ Private Property Get IClass_Buzz() As Variant
     Err.Raise 5 'TODO implement interface member
 End Property
 
-Private Property Let IClass_Buzz(ByRef value As Variant)
+Private Property Let IClass_Buzz(value As Variant)
     Err.Raise 5 'TODO implement interface member
 End Property
 
-Private Property Set IClass_Buzz(ByRef value As Variant)
+Private Property Set IClass_Buzz(value As Variant)
     Err.Raise 5 'TODO implement interface member
 End Property
 ";
@@ -176,7 +176,7 @@ Private Sub IClass_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
     Err.Raise 5 'TODO implement interface member
 End Sub
 
-Private Function IClass_Fizz(ByRef b As Variant) As Variant
+Private Function IClass_Fizz(b As Variant) As Variant
     Err.Raise 5 'TODO implement interface member
 End Function
 ";

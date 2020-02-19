@@ -85,14 +85,13 @@ namespace Rubberduck.Refactorings.AddInterfaceImplementations
                 };
             }
 
-            return ((ModuleBodyElementDeclaration)member).Parameters.Select(p => new Parameter
+            if (member is ModuleBodyElementDeclaration method)
             {
-                Accessibility = ((VBAParser.ArgContext)p.Context).BYVAL() != null
-                    ? Tokens.ByVal
-                    : Tokens.ByRef,
-                Name = p.IdentifierName,
-                AsTypeName = p.AsTypeName
-            });
+                return method.Parameters
+                    .Select(parameter => new Parameter(parameter));
+            }
+
+            return Enumerable.Empty<Parameter>();
         }
     }
 }

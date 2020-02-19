@@ -101,7 +101,7 @@ Private Property Get Interface1_a() As String
     Err.Raise 5 'TODO implement interface member
 End Property
 
-Private Property Let Interface1_a(ByRef RHS As String)
+Private Property Let Interface1_a(RHS As String)
     Err.Raise 5 'TODO implement interface member
 End Property
 
@@ -129,7 +129,7 @@ End Sub";
             const string expectedCode =
                 @"Implements Interface1
 
-Private Sub Interface1_Foo(ByVal a As Integer, ByRef b As Variant, ByRef c As Variant, ByRef d As Long)
+Private Sub Interface1_Foo(ByVal a As Integer, ByRef b As Variant, c As Variant, d As Long)
     Err.Raise 5 'TODO implement interface member
 End Sub
 ";
@@ -201,7 +201,7 @@ End Function";
             const string expectedCode =
                 @"Implements Interface1
 
-Private Function Interface1_Foo(ByRef a As Variant) As Variant
+Private Function Interface1_Foo(a As Variant) As Variant
     Err.Raise 5 'TODO implement interface member
 End Function
 ";
@@ -273,7 +273,7 @@ End Property";
             const string expectedCode =
                 @"Implements Interface1
 
-Private Property Get Interface1_Foo(ByRef a As Variant) As Variant
+Private Property Get Interface1_Foo(a As Variant) As Variant
     Err.Raise 5 'TODO implement interface member
 End Property
 ";
@@ -321,7 +321,7 @@ End Property";
             const string expectedCode =
                 @"Implements Interface1
 
-Private Property Let Interface1_Foo(ByRef a As Variant)
+Private Property Let Interface1_Foo(a As Variant)
     Err.Raise 5 'TODO implement interface member
 End Property
 ";
@@ -369,7 +369,7 @@ End Property";
             const string expectedCode =
                 @"Implements Interface1
 
-Private Property Set Interface1_Foo(ByRef a As Variant)
+Private Property Set Interface1_Foo(a As Variant)
     Err.Raise 5 'TODO implement interface member
 End Property
 ";
@@ -454,7 +454,7 @@ Private Sub Interface1_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
     Err.Raise 5 'TODO implement interface member
 End Sub
 
-Private Function Interface1_Fizz(ByRef b As Variant) As Variant
+Private Function Interface1_Fizz(b As Variant) As Variant
     Err.Raise 5 'TODO implement interface member
 End Function
 
@@ -462,11 +462,11 @@ Private Property Get Interface1_Buzz() As Variant
     Err.Raise 5 'TODO implement interface member
 End Property
 
-Private Property Let Interface1_Buzz(ByRef value As Variant)
+Private Property Let Interface1_Buzz(value As Variant)
     Err.Raise 5 'TODO implement interface member
 End Property
 
-Private Property Set Interface1_Buzz(ByRef value As Variant)
+Private Property Set Interface1_Buzz(value As Variant)
     Err.Raise 5 'TODO implement interface member
 End Property
 ";
@@ -550,6 +550,198 @@ End Property
 Private Property Set Interface1_Foo(ByVal rhs As Variant)
     Err.Raise 5 'TODO implement interface member
 End Property
+";
+            ExecuteTest(classCode, interfaceCode, expectedCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
+        public void ImplementInterface_ImplicitByRefParameter()
+        {
+            //Input
+            const string interfaceCode =
+                @"Public Sub Foo(arg As Variant)
+End Sub";
+
+            const string classCode =
+                @"Implements Interface1";
+
+            //Expectation
+            const string expectedCode =
+                @"Implements Interface1
+
+Private Sub Interface1_Foo(arg As Variant)
+    Err.Raise 5 'TODO implement interface member
+End Sub
+";
+            ExecuteTest(classCode, interfaceCode, expectedCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
+        public void ImplementInterface_ExplicitByRefParameter()
+        {
+            //Input
+            const string interfaceCode =
+                @"Public Sub Foo(ByRef arg As Variant)
+End Sub";
+
+            const string classCode =
+                @"Implements Interface1";
+
+            //Expectation
+            const string expectedCode =
+                @"Implements Interface1
+
+Private Sub Interface1_Foo(ByRef arg As Variant)
+    Err.Raise 5 'TODO implement interface member
+End Sub
+";
+            ExecuteTest(classCode, interfaceCode, expectedCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
+        public void ImplementInterface_ByValParameter()
+        {
+            //Input
+            const string interfaceCode =
+                @"Public Sub Foo(ByVal arg As Variant)
+End Sub";
+
+            const string classCode =
+                @"Implements Interface1";
+
+            //Expectation
+            const string expectedCode =
+                @"Implements Interface1
+
+Private Sub Interface1_Foo(ByVal arg As Variant)
+    Err.Raise 5 'TODO implement interface member
+End Sub
+";
+            ExecuteTest(classCode, interfaceCode, expectedCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
+        public void ImplementInterface_OptionalParameter_WoDefault()
+        {
+            //Input
+            const string interfaceCode =
+                @"Public Sub Foo(Optional arg As Variant)
+End Sub";
+
+            const string classCode =
+                @"Implements Interface1";
+
+            //Expectation
+            const string expectedCode =
+                @"Implements Interface1
+
+Private Sub Interface1_Foo(Optional arg As Variant)
+    Err.Raise 5 'TODO implement interface member
+End Sub
+";
+            ExecuteTest(classCode, interfaceCode, expectedCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
+        public void ImplementInterface_OptionalParameter_WithDefault()
+        {
+            //Input
+            const string interfaceCode =
+                @"Public Sub Foo(Optional arg As Variant = 42)
+End Sub";
+
+            const string classCode =
+                @"Implements Interface1";
+
+            //Expectation
+            const string expectedCode =
+                @"Implements Interface1
+
+Private Sub Interface1_Foo(Optional arg As Variant = 42)
+    Err.Raise 5 'TODO implement interface member
+End Sub
+";
+            ExecuteTest(classCode, interfaceCode, expectedCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
+        public void ImplementInterface_ParamArray()
+        {
+            //Input
+            const string interfaceCode =
+                @"Public Sub Foo(arg1 As Long, ParamArray args() As Variant)
+End Sub";
+
+            const string classCode =
+                @"Implements Interface1";
+
+            //Expectation
+            const string expectedCode =
+                @"Implements Interface1
+
+Private Sub Interface1_Foo(arg1 As Long, ParamArray args() As Variant)
+    Err.Raise 5 'TODO implement interface member
+End Sub
+";
+            ExecuteTest(classCode, interfaceCode, expectedCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
+        public void ImplementInterface_MakesMissingAsTypesExplicit()
+        {
+            //Input
+            const string interfaceCode =
+                @"Public Sub Foo(arg1)
+End Sub";
+
+            const string classCode =
+                @"Implements Interface1";
+
+            //Expectation
+            const string expectedCode =
+                @"Implements Interface1
+
+Private Sub Interface1_Foo(arg1 As Variant)
+    Err.Raise 5 'TODO implement interface member
+End Sub
+";
+            ExecuteTest(classCode, interfaceCode, expectedCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
+        public void ImplementInterface_Array()
+        {
+            //Input
+            const string interfaceCode =
+                @"Public Sub Foo(arg1() As Long)
+End Sub";
+
+            const string classCode =
+                @"Implements Interface1";
+
+            //Expectation
+            const string expectedCode =
+                @"Implements Interface1
+
+Private Sub Interface1_Foo(arg1() As Long)
+    Err.Raise 5 'TODO implement interface member
+End Sub
 ";
             ExecuteTest(classCode, interfaceCode, expectedCode);
         }
