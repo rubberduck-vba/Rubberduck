@@ -11,7 +11,6 @@ using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.Refactorings.AddInterfaceImplementations;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.ExtractInterface
@@ -143,12 +142,5 @@ namespace Rubberduck.Refactorings.ExtractInterface
             var addMembersModel = new AddInterfaceImplementationsModel(targetModule, interfaceName, membersToImplement);
             _addImplementationsRefactoringAction.Refactor(addMembersModel, rewriteSession);
         }
-
-        private static readonly DeclarationType[] ModuleTypes =
-        {
-            DeclarationType.ClassModule,
-            DeclarationType.Document,
-            DeclarationType.UserForm
-        };
     }
 }

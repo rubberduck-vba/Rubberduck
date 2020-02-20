@@ -88,6 +88,7 @@ namespace Rubberduck.Refactorings.AddInterfaceImplementations
             if (member is ModuleBodyElementDeclaration method)
             {
                 return method.Parameters
+                    .OrderBy(parameter => parameter.Selection)
                     .Select(parameter => new Parameter(parameter));
             }
 

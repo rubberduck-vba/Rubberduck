@@ -116,16 +116,16 @@ End Property
 Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
 
-Public Function Fizz(ByRef b As Variant) As Variant
+Public Function Fizz(b As Variant) As Variant
 End Function
 
 Public Property Get Buzz() As Variant
 End Property
 
-Public Property Let Buzz(ByRef value As Variant)
+Public Property Let Buzz(value As Variant)
 End Property
 
-Public Property Set Buzz(ByRef value As Variant)
+Public Property Set Buzz(value As Variant)
 End Property
 ";
             ExecuteTest(inputCode, expectedClassCode, expectedInterfaceCode, SelectAllMembers);
@@ -189,7 +189,7 @@ End Function
 Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
 
-Public Function Fizz(ByRef b As Variant) As Variant
+Public Function Fizz(b As Variant) As Variant
 End Function
 ";
             var modelAdjustment = SelectFilteredMembers(member => !member.FullMemberSignature.Contains("Property"));
@@ -409,6 +409,254 @@ End Sub
 '@Interface
 
 Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub
+";
+            ExecuteTest(inputCode, expectedClassCode, expectedInterfaceCode, SelectAllMembers);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
+        public void ExtractInterfaceRefactoring_ImplicitByRefParameter()
+        {
+            //Input
+            const string inputCode =
+                @"Public Sub Foo(arg As Variant)
+End Sub";
+            //Expectation
+            const string expectedClassCode =
+                @"Implements IClass
+
+Public Sub Foo(arg As Variant)
+End Sub
+
+Private Sub IClass_Foo(arg As Variant)
+    Err.Raise 5 'TODO implement interface member
+End Sub
+";
+            const string expectedInterfaceCode =
+                @"Option Explicit
+
+'@Interface
+
+Public Sub Foo(arg As Variant)
+End Sub
+";
+            ExecuteTest(inputCode, expectedClassCode, expectedInterfaceCode, SelectAllMembers);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
+        public void ExtractInterfaceRefactoring_ExplicitByRefParameter()
+        {
+            //Input
+            const string inputCode =
+                @"Public Sub Foo(ByRef arg As Variant)
+End Sub";
+            //Expectation
+            const string expectedClassCode =
+                @"Implements IClass
+
+Public Sub Foo(ByRef arg As Variant)
+End Sub
+
+Private Sub IClass_Foo(ByRef arg As Variant)
+    Err.Raise 5 'TODO implement interface member
+End Sub
+";
+            const string expectedInterfaceCode =
+                @"Option Explicit
+
+'@Interface
+
+Public Sub Foo(ByRef arg As Variant)
+End Sub
+";
+            ExecuteTest(inputCode, expectedClassCode, expectedInterfaceCode, SelectAllMembers);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
+        public void ExtractInterfaceRefactoring_ByValParameter()
+        {
+            //Input
+            const string inputCode =
+                @"Public Sub Foo(ByVal arg As Variant)
+End Sub";
+            //Expectation
+            const string expectedClassCode =
+                @"Implements IClass
+
+Public Sub Foo(ByVal arg As Variant)
+End Sub
+
+Private Sub IClass_Foo(ByVal arg As Variant)
+    Err.Raise 5 'TODO implement interface member
+End Sub
+";
+            const string expectedInterfaceCode =
+                @"Option Explicit
+
+'@Interface
+
+Public Sub Foo(ByVal arg As Variant)
+End Sub
+";
+            ExecuteTest(inputCode, expectedClassCode, expectedInterfaceCode, SelectAllMembers);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
+        public void ExtractInterfaceRefactoring_OptionalParameter_WoDefault()
+        {
+            //Input
+            const string inputCode =
+                @"Public Sub Foo(Optional arg As Variant)
+End Sub";
+            //Expectation
+            const string expectedClassCode =
+                @"Implements IClass
+
+Public Sub Foo(Optional arg As Variant)
+End Sub
+
+Private Sub IClass_Foo(Optional arg As Variant)
+    Err.Raise 5 'TODO implement interface member
+End Sub
+";
+            const string expectedInterfaceCode =
+                @"Option Explicit
+
+'@Interface
+
+Public Sub Foo(Optional arg As Variant)
+End Sub
+";
+            ExecuteTest(inputCode, expectedClassCode, expectedInterfaceCode, SelectAllMembers);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
+        public void ExtractInterfaceRefactoring_OptionalParameter_WithDefault()
+        {
+            //Input
+            const string inputCode =
+                @"Public Sub Foo(Optional arg As Variant = 42)
+End Sub";
+            //Expectation
+            const string expectedClassCode =
+                @"Implements IClass
+
+Public Sub Foo(Optional arg As Variant = 42)
+End Sub
+
+Private Sub IClass_Foo(Optional arg As Variant = 42)
+    Err.Raise 5 'TODO implement interface member
+End Sub
+";
+            const string expectedInterfaceCode =
+                @"Option Explicit
+
+'@Interface
+
+Public Sub Foo(Optional arg As Variant = 42)
+End Sub
+";
+            ExecuteTest(inputCode, expectedClassCode, expectedInterfaceCode, SelectAllMembers);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
+        public void ExtractInterfaceRefactoring_ParamArray()
+        {
+            //Input
+            const string inputCode =
+                @"Public Sub Foo(arg1 As Long, ParamArray args() As Variant)
+End Sub";
+            //Expectation
+            const string expectedClassCode =
+                @"Implements IClass
+
+Public Sub Foo(arg1 As Long, ParamArray args() As Variant)
+End Sub
+
+Private Sub IClass_Foo(arg1 As Long, ParamArray args() As Variant)
+    Err.Raise 5 'TODO implement interface member
+End Sub
+";
+            const string expectedInterfaceCode =
+                @"Option Explicit
+
+'@Interface
+
+Public Sub Foo(arg1 As Long, ParamArray args() As Variant)
+End Sub
+";
+            ExecuteTest(inputCode, expectedClassCode, expectedInterfaceCode, SelectAllMembers);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
+        public void ExtractInterfaceRefactoring_MakesMissingAsTypesExplicit()
+        {
+            //Input
+            const string inputCode =
+                @"Public Sub Foo(arg1)
+End Sub";
+            //Expectation
+            const string expectedClassCode =
+                @"Implements IClass
+
+Public Sub Foo(arg1)
+End Sub
+
+Private Sub IClass_Foo(arg1 As Variant)
+    Err.Raise 5 'TODO implement interface member
+End Sub
+";
+            const string expectedInterfaceCode =
+                @"Option Explicit
+
+'@Interface
+
+Public Sub Foo(arg1 As Variant)
+End Sub
+";
+            ExecuteTest(inputCode, expectedClassCode, expectedInterfaceCode, SelectAllMembers);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
+        public void ExtractInterfaceRefactoring_Array()
+        {
+            //Input
+            const string inputCode =
+                @"Public Sub Foo(arg1() As Long)
+End Sub";
+            //Expectation
+            const string expectedClassCode =
+                @"Implements IClass
+
+Public Sub Foo(arg1() As Long)
+End Sub
+
+Private Sub IClass_Foo(arg1() As Long)
+    Err.Raise 5 'TODO implement interface member
+End Sub
+";
+            const string expectedInterfaceCode =
+                @"Option Explicit
+
+'@Interface
+
+Public Sub Foo(arg1() As Long)
 End Sub
 ";
             ExecuteTest(inputCode, expectedClassCode, expectedInterfaceCode, SelectAllMembers);
