@@ -62,13 +62,21 @@ namespace Rubberduck.Inspections.Abstract
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder, TGlobalInfo globalInformation)
         {
             var objectionableDeclarationsWithAdditionalProperties = RelevantDeclarationsInModule(module, finder)
-                    .Select(declaration => (declaration, IsResultDeclarationWithAdditionalProperties(declaration, finder, globalInformation)))
-                    .Where(tpl => tpl.Item2.isResult)
-                    .Select(tpl => (tpl.declaration, tpl.Item2.properties));
+                .Select(declaration => DeclarationWithResultProperties(declaration, finder, globalInformation))
+                .Where(result => result.HasValue)
+                .Select(result => result.Value);
 
             return objectionableDeclarationsWithAdditionalProperties
                 .Select(tpl => InspectionResult(tpl.declaration, tpl.properties))
                 .ToList();
+        }
+
+        private (Declaration declaration, TProperties properties)? DeclarationWithResultProperties(Declaration declaration, DeclarationFinder finder, TGlobalInfo globalInformation)
+        {
+            var (isResult, properties) = IsResultDeclarationWithAdditionalProperties(declaration, finder, globalInformation);
+            return isResult
+                ? (declaration, properties)
+                : ((Declaration declaration, TProperties properties)?)null;
         }
 
         protected virtual IInspectionResult InspectionResult(Declaration declaration, TProperties properties)

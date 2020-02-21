@@ -24,19 +24,10 @@ namespace Rubberduck.Inspections.Abstract
         {
             var finder = DeclarationFinderProvider.DeclarationFinder;
 
-            var results = new List<IInspectionResult>();
-            foreach (var moduleDeclaration in State.DeclarationFinder.UserDeclarations(DeclarationType.Module))
-            {
-                if (moduleDeclaration == null)
-                {
-                    continue;
-                }
-
-                var module = moduleDeclaration.QualifiedModuleName;
-                results.AddRange(DoGetInspectionResults(module, finder));
-            }
-
-            return results;
+            return finder.UserDeclarations(DeclarationType.Module)
+                .Where(declaration => declaration != null)
+                .SelectMany(declaration => DoGetInspectionResults(declaration.QualifiedModuleName, finder))
+                .ToList();
         }
 
         protected IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
@@ -104,13 +95,21 @@ namespace Rubberduck.Inspections.Abstract
         protected IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
         {
             var objectionableReferencesWithProperties = ReferencesInModule(module, finder)
-                .Select(reference => (reference, IsResultReferenceWithAdditionalProperties(reference, finder)))
-                .Where(tpl => tpl.Item2.isResult)
-                .Select(tpl => (tpl.reference, tpl.Item2.properties));
+                .Select(reference => ReferenceWithResultProperties(reference, finder))
+                .Where(result => result.HasValue)
+                .Select(result => result.Value);
 
             return objectionableReferencesWithProperties
                 .Select(tpl => InspectionResult(tpl.reference, DeclarationFinderProvider, tpl.properties))
                 .ToList();
+        }
+
+        private (IdentifierReference reference, T properties)? ReferenceWithResultProperties(IdentifierReference reference, DeclarationFinder finder)
+        {
+            var (isResult, properties) = IsResultReferenceWithAdditionalProperties(reference, finder);
+            return isResult
+                ? (reference, properties)
+                : ((IdentifierReference reference, T properties)?)null;
         }
 
         protected IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)

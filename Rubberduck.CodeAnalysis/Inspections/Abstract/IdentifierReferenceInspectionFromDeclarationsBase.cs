@@ -92,9 +92,17 @@ namespace Rubberduck.Inspections.Abstract
         private IEnumerable<(IdentifierReference reference, T properties)> ResultReferences(IEnumerable<IdentifierReference> potentialResultReferences, DeclarationFinder finder)
         {
             return potentialResultReferences
-                .Select(reference => (reference, IsResultReferenceWithAdditionalProperties(reference, finder)))
-                .Where(tpl => tpl.Item2.isResult)
-                .Select(tpl => (tpl.reference, tpl.Item2.properties));
+                .Select(reference => ReferenceWithResultProperties(reference, finder))
+                .Where(result => result.HasValue)
+                .Select(result => result.Value); ;
+        }
+
+        private (IdentifierReference reference, T properties)? ReferenceWithResultProperties(IdentifierReference reference, DeclarationFinder finder)
+        {
+            var (isResult, properties) = IsResultReferenceWithAdditionalProperties(reference, finder);
+            return isResult
+                ? (reference, properties)
+                : ((IdentifierReference reference, T properties)?)null;
         }
 
         protected virtual IEnumerable<IdentifierReference> ObjectionableReferences(DeclarationFinder finder)

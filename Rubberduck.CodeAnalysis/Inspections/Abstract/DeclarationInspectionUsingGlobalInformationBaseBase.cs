@@ -30,6 +30,9 @@ namespace Rubberduck.Inspections.Abstract
         protected abstract IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder, T globalInformation);
         protected abstract T GlobalInformation(DeclarationFinder finder);
 
+        /// <summary>
+        /// Can be overwritten to enhance performance if providing the global information for one module module only is cheaper than getting it for all modules. 
+        /// </summary>
         protected virtual T GlobalInformation(QualifiedModuleName module, DeclarationFinder finder)
         {
             return GlobalInformation(finder);
@@ -40,30 +43,11 @@ namespace Rubberduck.Inspections.Abstract
             var finder = DeclarationFinderProvider.DeclarationFinder;
             var globalInformation = GlobalInformation(finder);
 
-            var results = new List<IInspectionResult>();
-            foreach (var moduleDeclaration in finder.UserDeclarations(DeclarationType.Module))
-            {
-                if (moduleDeclaration == null)
-                {
-                    continue;
-                }
-
-                var module = moduleDeclaration.QualifiedModuleName;
-                results.AddRange(DoGetInspectionResults(module, finder, globalInformation));
-            }
-
-            foreach (var projectDeclaration in finder.UserDeclarations(DeclarationType.Project))
-            {
-                if (projectDeclaration == null)
-                {
-                    continue;
-                }
-
-                var module = projectDeclaration.QualifiedModuleName;
-                results.AddRange(DoGetInspectionResults(module, finder, globalInformation));
-            }
-
-            return results;
+            return finder.UserDeclarations(DeclarationType.Module)
+                .Concat(finder.UserDeclarations(DeclarationType.Project))
+                .Where(declaration => declaration != null)
+                .SelectMany(declaration => DoGetInspectionResults(declaration.QualifiedModuleName, finder, globalInformation))
+                .ToList();
         }
 
         protected virtual IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
