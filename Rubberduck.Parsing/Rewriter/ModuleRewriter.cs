@@ -35,9 +35,9 @@ namespace Rubberduck.Parsing.Rewriter
 
             var tentativeCode = _rewriter.GetText();
 
-            while (tentativeCode.EndsWith(Environment.NewLine))
+            while (tentativeCode.EndsWith(Environment.NewLine + Environment.NewLine))
             {
-                tentativeCode = tentativeCode.Remove(tentativeCode.Length - 2);
+                tentativeCode = tentativeCode.Remove(tentativeCode.Length - Environment.NewLine.Length);
             };
             var newCode = tentativeCode;
 
