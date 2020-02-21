@@ -59,6 +59,7 @@ environment:
 before_build:
   - development/java/Rubberduck.Parsing/Grammar/gradlew.bat -p development/java/Rubberduck.Parsing/Grammar clean build
   - cinst innosetup -version 5.6.1
+  - cinst codecov
   - cinst opencover.portable
   - nuget restore RubberduckMeta.sln
   - nuget restore Rubberduck.sln
@@ -76,9 +77,8 @@ test_script:
   - |
     OpenCover.Console.exe -register:Path64 -returntargetcode -target:"nunit3-console.exe" -threshold:10 -targetargs:".\RubberduckTests\bin\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
     OpenCover.Console.exe -register:Path64 -returntargetcode -target:"nunit3-console.exe" -threshold:10 -targetargs:".\RubberduckTestsCodeAnalysis\bin\RubberduckTestsCodeAnalysis.dll" -output:".\RubberduckCodeAnalysis_Coverage.xml"
-    curl --silent https://codecov.io/bash --output codecov
-    bash codecov -f Rubberduck_Coverage.xml -f RubberduckCodeAnalysis_Coverage.xml
-
+    codecov -f "Rubberduck_Coverage.xml RubberduckCodeAnalysis_Coverage.xml"
+    
 # Define the installer-name depending on what branch we're building on
 for:
 - 

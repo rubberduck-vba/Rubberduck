@@ -1,29 +1,32 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Abstract
 {
     public abstract class IdentifierReferenceInspectionBase : InspectionBase
     {
-        protected readonly IDeclarationFinderProvider DeclarationFinderProvider;
-
-        public IdentifierReferenceInspectionBase(RubberduckParserState state)
+        protected IdentifierReferenceInspectionBase(RubberduckParserState state)
             : base(state)
-        {
-            DeclarationFinderProvider = state;
-        }
+        {}
 
-        protected abstract bool IsResultReference(IdentifierReference reference);
-        protected abstract string ResultDescription(IdentifierReference reference);
+        protected abstract bool IsResultReference(IdentifierReference reference, DeclarationFinder finder);
+        protected abstract string ResultDescription(IdentifierReference reference, dynamic properties = null);
+
+        protected virtual (bool isResult, object properties) IsResultReferenceWithAdditionalProperties(IdentifierReference reference, DeclarationFinder finder)
+        {
+            return (IsResultReference(reference, finder), null);
+        }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
+            var finder = DeclarationFinderProvider.DeclarationFinder;
+
             var results = new List<IInspectionResult>();
             foreach (var moduleDeclaration in State.DeclarationFinder.UserDeclarations(DeclarationType.Module))
             {
@@ -33,34 +36,43 @@ namespace Rubberduck.Inspections.Abstract
                 }
 
                 var module = moduleDeclaration.QualifiedModuleName;
-                results.AddRange(DoGetInspectionResults(module));
+                results.AddRange(DoGetInspectionResults(module, finder));
             }
 
             return results;
         }
 
-        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
+        protected IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
         {
-            var objectionableReferences = ReferencesInModule(module)
-                .Where(IsResultReference);
+            var objectionableReferencesWithProperties = ReferencesInModule(module, finder)
+                .Select(reference => (reference, IsResultReferenceWithAdditionalProperties(reference, finder)))
+                .Where(tpl => tpl.Item2.isResult)
+                .Select(tpl => (tpl.reference, tpl.Item2.properties));
 
-            return objectionableReferences
-                .Select(reference => InspectionResult(reference, DeclarationFinderProvider))
+            return objectionableReferencesWithProperties
+                .Select(tpl => InspectionResult(tpl.reference, DeclarationFinderProvider, tpl.properties))
                 .ToList();
         }
 
-        protected virtual IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module)
+        protected IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
         {
-            return DeclarationFinderProvider.DeclarationFinder.IdentifierReferences(module);
+            var finder = DeclarationFinderProvider.DeclarationFinder;
+            return DoGetInspectionResults(module, finder);
         }
 
-        protected virtual IInspectionResult InspectionResult(IdentifierReference reference, IDeclarationFinderProvider declarationFinderProvider)
+        protected virtual IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module, DeclarationFinder finder)
+        {
+            return finder.IdentifierReferences(module);
+        }
+
+        protected virtual IInspectionResult InspectionResult(IdentifierReference reference, IDeclarationFinderProvider declarationFinderProvider, dynamic properties = null)
         {
             return new IdentifierReferenceInspectionResult(
                 this,
-                ResultDescription(reference),
+                ResultDescription(reference, properties),
                 declarationFinderProvider,
-                reference);
+                reference,
+                properties);
         }
     }
 }

@@ -6,6 +6,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
@@ -41,19 +42,19 @@ namespace Rubberduck.Inspections.Concrete
             Severity = CodeInspectionSeverity.Warning;
         }
 
-        protected override IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module)
+        protected override IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module, DeclarationFinder finder)
         {
-            return DeclarationFinderProvider.DeclarationFinder.UnboundDefaultMemberAccesses(module);
+            return finder.UnboundDefaultMemberAccesses(module);
         }
 
-        protected override bool IsResultReference(IdentifierReference reference)
+        protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
             return reference.IsIndexedDefaultMemberAccess
                    && !(reference.Context is VBAParser.DictionaryAccessContext)
                    && !reference.IsIgnoringInspectionResultFor(AnnotationName);
         }
 
-        protected override string ResultDescription(IdentifierReference reference)
+        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
         {
             var expression = reference.IdentifierName;
             return string.Format(InspectionResults.IndexedUnboundDefaultMemberAccessInspection, expression);

@@ -4,6 +4,7 @@ using Rubberduck.Inspections.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
+using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
@@ -106,7 +107,7 @@ End {1}
         }
 
         private int InspectionResultCount(string inputCode, ComponentType moduleType)
-            => InspectionResultsForModules(("UnderTest", inputCode, moduleType), "Excel").Count();
+            => InspectionResultsForModules(("UnderTest", inputCode, moduleType), ReferenceLibrary.Excel).Count();
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {

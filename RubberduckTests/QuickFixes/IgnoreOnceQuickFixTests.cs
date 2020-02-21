@@ -12,6 +12,7 @@ using RubberduckTests.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
 
 namespace RubberduckTests.QuickFixes
 {
@@ -114,7 +115,7 @@ Public fizz As Boolean";
         [Test]
         [Category("QuickFixes")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_IgnoreQuickFixWorks()
+        public void FunctionReturnValueDiscarded_IgnoreQuickFixWorks()
         {
             const string inputCode =
                 @"Public Function Foo(ByVal bar As String) As Boolean
@@ -125,7 +126,33 @@ Public Sub Goo()
 End Sub";
 
             const string expectedCode =
-                @"'@Ignore FunctionReturnValueNotUsed
+                @"Public Function Foo(ByVal bar As String) As Boolean
+End Function
+
+Public Sub Goo()
+    '@Ignore FunctionReturnValueDiscarded
+    Foo ""test""
+End Sub";
+
+            var actualCode = ApplyIgnoreOnceToFirstResult(inputCode, state => new FunctionReturnValueDiscardedInspection(state), TestStandardModuleVbeSetup);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        [Category("Unused Value")]
+        public void FunctionReturnValueAlwaysDiscarded_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+                @"Public Function Foo(ByVal bar As String) As Boolean
+End Function
+
+Public Sub Goo()
+    Foo ""test""
+End Sub";
+
+            const string expectedCode =
+                @"'@Ignore FunctionReturnValueAlwaysDiscarded
 Public Function Foo(ByVal bar As String) As Boolean
 End Function
 
@@ -133,7 +160,7 @@ Public Sub Goo()
     Foo ""test""
 End Sub";
 
-            var actualCode = ApplyIgnoreOnceToFirstResult(inputCode, state => new FunctionReturnValueNotUsedInspection(state), TestStandardModuleVbeSetup);
+            var actualCode = ApplyIgnoreOnceToFirstResult(inputCode, state => new FunctionReturnValueAlwaysDiscardedInspection(state), TestStandardModuleVbeSetup);
             Assert.AreEqual(expectedCode, actualCode);
         }
 
@@ -711,7 +738,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddReference(ReferenceLibrary.VBA)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
@@ -1050,6 +1077,26 @@ End Sub";
             Assert.AreEqual(expectedCode, actualCode);
         }
 
+        [Test]
+        [Category("QuickFixes")]
+        public void ImplicitlyTypedConst_IgnoreOnceQuickFixWorks()
+        {
+            const string inputCode =
+@"Public Sub Foo()
+    Const bar = 0
+End Sub";
+            
+            const string expected =
+@"Public Sub Foo()
+    '@Ignore ImplicitlyTypedConst
+    Const bar = 0
+End Sub";
+
+            var actual = ApplyIgnoreOnceToFirstResult(inputCode, state => new ImplicitlyTypedConstInspection(state), TestStandardModuleVbeSetup);
+
+            Assert.AreEqual(expected, actual);
+        }
+
         private string ApplyIgnoreOnceToFirstResult(
             string inputCode,
             Func<RubberduckParserState, IInspection> inspectionFactory,
@@ -1105,7 +1152,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode)
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
+                .AddReference(ReferenceLibrary.Excel)
                 .Build();
             var component = project.Object.VBComponents[0];
             var vbe = builder.AddProject(project).Build();
@@ -1118,7 +1165,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, inputCode)
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
+                .AddReference(ReferenceLibrary.Excel)
                 .Build();
 
             var vbe = builder.AddProject(project).Build();

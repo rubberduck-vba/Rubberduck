@@ -3,6 +3,8 @@ using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.SafeComWrappers;
+using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
@@ -37,7 +39,22 @@ End Sub
 
         [Test]
         [Category("Inspections")]
-        public void IgnoresArraySubscripts()
+        public void DoNotIgnoresArrayReDimBounds()
+        {
+            const string code = @"
+Sub Foo()
+    Dim bar As Variant
+    Dim baz As Variant
+    Dim foo As Variant
+    ReDim bar(baz To foo)
+End Sub
+";
+            Assert.AreEqual(2, InspectionResultsForStandardModule(code).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void IgnoresArraySubscripts_Let()
         {
             const string code = @"
 Sub Foo()
@@ -47,6 +64,139 @@ Sub Foo()
 End Sub
 ";
             Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void DoNotIgnoreArrayIndexes_Let()
+        {
+            const string code = @"
+Sub Foo()
+    Dim bar As Variant
+    Dim foo As Variant
+    ReDim bar(1 To 10)
+    bar(foo) = 42
+End Sub
+";
+            Assert.AreEqual(1, InspectionResultsForStandardModule(code).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void DoNotIgnoreValuesAssignedToArraySubscripts_Let()
+        {
+            const string code = @"
+Sub Foo()
+    Dim bar As Variant
+    Dim foo As Variant
+    ReDim bar(1 To 10)
+    bar(1) = foo
+End Sub
+";
+            Assert.AreEqual(1, InspectionResultsForStandardModule(code).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void DoNotIgnoreIndexedPropertyAccess_Let()
+        {
+            const string code = @"
+Sub Foo()
+    Dim foo As Variant
+    ReDim bar(1 To 10)
+    foo.Bar(1) = 42
+End Sub
+";
+            Assert.AreEqual(1, InspectionResultsForStandardModule(code).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void IgnoresArraySubscripts_Set()
+        {
+            const string code = @"
+Sub Foo()
+    Dim bar As Variant
+    ReDim bar(1 To 10)
+    Set bar(1) = Nothing
+End Sub
+";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void DoNotIgnoreArrayIndexes_Set()
+        {
+            const string code = @"
+Sub Foo()
+    Dim bar As Variant
+    Dim foo As Variant
+    ReDim bar(1 To 10)
+    Set bar(foo) = Nothing
+End Sub
+";
+            Assert.AreEqual(1, InspectionResultsForStandardModule(code).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void DoNotIgnoreValuesAssignedToArraySubscripts_Set()
+        {
+            const string code = @"
+Sub Foo()
+    Dim bar As Variant
+    Dim foo As Variant
+    ReDim bar(1 To 10)
+    Set bar(1) = foo
+End Sub
+";
+            Assert.AreEqual(1, InspectionResultsForStandardModule(code).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void DoNotIgnoreIndexedPropertyAccess_Set()
+        {
+            const string code = @"
+Sub Foo()
+    Dim foo As Variant
+    ReDim bar(1 To 10)
+    Set foo.Bar(1) = 42
+End Sub
+";
+            Assert.AreEqual(1, InspectionResultsForStandardModule(code).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void DoesNotIgnoreWithBlockVariableUse()
+        {
+            const string code = @"
+Sub Foo()
+    Dim foo As Variant
+    With foo
+    End With
+End Sub
+";
+            Assert.AreEqual(1, InspectionResultsForStandardModule(code).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void IgnoreUseViaWithBlockVariableInWithBlock()
+        {
+            const string code = @"
+Sub Foo()
+    Dim foo As Variant
+    Dim bar As Variant
+    With foo
+        bar = .Baz + 23
+        bar = .Baz + 42
+    End With
+End Sub
+";
+            Assert.AreEqual(1, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
@@ -120,7 +270,8 @@ End Sub
 Sub DoSomething()
     Dim foo
     AssignThing foo
-    Debug.Print foo
+    Dim bar As Variant
+    bar = foo
 End Sub
 
 Sub AssignThing(ByRef thing As Variant)
@@ -143,31 +294,95 @@ End Sub
         }
 
         [Test]
-        [Ignore("Test concurrency issue. Only passes if run individually.")]
         [Category("Inspections")]
         public void UnassignedVariableUsage_NoResultForLenFunction()
         {
             const string code = @"
 Sub DoSomething()
     Dim foo As LongPtr
-    Debug.Print Len(foo)
+    Dim bar As Variant
+    bar = Len(foo)
 End Sub
 ";
-            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
+            var inspectionResults = InspectionResultsForModules(("TestModule", code, ComponentType.StandardModule), ReferenceLibrary.VBA);
+            Assert.AreEqual(0, inspectionResults.Count());
         }
 
         [Test]
-        [Ignore("Test concurrency issue. Only passes if run individually.")]
         [Category("Inspections")]
         public void UnassignedVariableUsage_NoResultForLenBFunction()
         {
             const string code = @"
 Sub DoSomething()
     Dim foo As LongPtr
-    Debug.Print LenB(foo)
+    Dim bar As Variant
+    bar = LenB(foo)
 End Sub
 ";
-            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
+            var inspectionResults = InspectionResultsForModules(("TestModule", code, ComponentType.StandardModule), ReferenceLibrary.VBA);
+            Assert.AreEqual(0, inspectionResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void UnassignedVariableUsage_ResultForOthersIfLenFunctionIsUsed()
+        {
+            const string code = @"
+Sub DoSomething()
+    Dim foo As Variant
+    Dim bar As Variant
+    bar = Len(foo)
+    bar = foo + 5
+End Sub
+";
+            var inspectionResults = InspectionResultsForModules(("TestModule", code, ComponentType.StandardModule), ReferenceLibrary.VBA);
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void UnassignedVariableUsage_ResultForOthersIfLenBFunctionIsUsed()
+        {
+            const string code = @"
+Sub DoSomething()
+    Dim foo As Variant
+    Dim bar As Variant
+    bar = LenB(foo)
+    bar = foo + 5
+End Sub
+";
+            var inspectionResults = InspectionResultsForModules(("TestModule", code, ComponentType.StandardModule), ReferenceLibrary.VBA);
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void UnassignedVariableUsage_ResultForUsageInsideArgumentOfLen()
+        {
+            const string code = @"
+Sub DoSomething()
+    Dim foo As Variant
+    Dim bar As Variant
+    bar = Len(foo + 5)
+End Sub
+";
+            var inspectionResults = InspectionResultsForModules(("TestModule", code, ComponentType.StandardModule), ReferenceLibrary.VBA);
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void UnassignedVariableUsage_ResultForUsageInsideArgumentOfLenB()
+        {
+            const string code = @"
+Sub DoSomething()
+    Dim foo As Variant
+    Dim bar As Variant
+    bar = LenB(foo + 5)
+End Sub
+";
+            var inspectionResults = InspectionResultsForModules(("TestModule", code, ComponentType.StandardModule), ReferenceLibrary.VBA);
+            Assert.AreEqual(1, inspectionResults.Count());
         }
 
         [Test]

@@ -9,89 +9,21 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <converters:InvertBoolValueConverter x:Key="InvertedBool" />
-        <removeParameters:ParameterTextDecorationConverter x:Key="ParameterTextDecoration" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Styles/DefaultStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
 
-        <BitmapImage x:Key="RemoveParameterImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-script.png" />
-        <BitmapImage x:Key="RestoreParameterImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-return-180-left.png" />
+            <converters:InvertBoolValueConverter x:Key="InvertedBool" />
+            <removeParameters:ParameterTextDecorationConverter x:Key="ParameterTextDecoration" />
 
-        <Style x:Key="FocusVisual">
-            <Setter Property="Control.Template">
-                <Setter.Value>
-                    <ControlTemplate>
-                        <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <SolidColorBrush x:Key="Item.MouseOver.Background" Color="#1F26A0DA"/>
-        <SolidColorBrush x:Key="Item.MouseOver.Border" Color="#a826A0Da"/>
-        <LinearGradientBrush x:Key="Item.SelectedInactive.Background" EndPoint="0,1" StartPoint="0,0">
-            <GradientStop Color="#FFEEEDED" Offset="0"/>
-            <GradientStop Color="#FFDDDDDD" Offset="1"/>
-        </LinearGradientBrush>
-        <SolidColorBrush x:Key="Item.SelectedInactive.Border" Color="LightGray"/>
-        <LinearGradientBrush x:Key="Item.SelectedActive.Background" EndPoint="0,1" StartPoint="0,0">
-            <GradientStop Color="#FFD9F4FF" Offset="0"/>
-            <GradientStop Color="#FF9BDDFB" Offset="1"/>
-        </LinearGradientBrush>
-        <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="#ADC6E5"/>
-        <Style x:Key="PrettyListBoxItem" TargetType="{x:Type ListBoxItem}">
-            <Style.Resources>
-                <Style TargetType="{x:Type Border}">
-                    <Setter Property="CornerRadius" Value="2"/>
-                </Style>
-            </Style.Resources>
-            <Setter Property="SnapsToDevicePixels" Value="True"/>
-            <Setter Property="Padding" Value="4,1"/>
-            <Setter Property="HorizontalContentAlignment" Value="Left"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderBrush" Value="Black"/>
-            <Setter Property="BorderThickness" Value="0,.5,0,0"/>
-            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
-            <Setter Property="Height" Value="26" />
-            <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                        <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
-                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsMouseOver" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.MouseOver.Background}"/>
-                                <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.MouseOver.Border}"/>
-                            </MultiTrigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="Selector.IsSelectionActive" Value="False"/>
-                                    <Condition Property="IsSelected" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <Setter Property="BorderThickness" Value="1.5" />
-                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Background}"/>
-                                <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Border}"/>
-                            </MultiTrigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="Selector.IsSelectionActive" Value="True"/>
-                                    <Condition Property="IsSelected" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <Setter Property="BorderThickness" Value="1.5" />
-                                <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Background}"/>
-                                <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Border}"/>
-                            </MultiTrigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="TextElement.Foreground" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+            <BitmapImage x:Key="RemoveParameterImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-script.png" />
+            <BitmapImage x:Key="RestoreParameterImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-return-180-left.png" />
+
+            <Style x:Key="PrettyListBoxItemModified" TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource PrettyListBoxItem}">
+                <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick" />
+            </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -99,7 +31,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
-        <StackPanel Background="White">
+        <StackPanel Background="{StaticResource BackgroundLightBrush}">
             <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=RemoveParamsDialog_TitleText}" FontWeight="Bold" />
             <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=RemoveParamsDialog_InstructionsLabelText}"
                        Margin="5,0" />
@@ -117,7 +49,7 @@
                      ItemsSource="{Binding Parameters, UpdateSourceTrigger=PropertyChanged}"
                      SelectedIndex="0"
                      Name="ParameterGrid"
-                     ItemContainerStyle="{StaticResource PrettyListBoxItem}"
+                     ItemContainerStyle="{StaticResource PrettyListBoxItemModified}"
                      AlternationCount="2">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -164,8 +96,8 @@
             <Expander Grid.Row="1"
                       Grid.ColumnSpan="2"
                       IsExpanded="True"
-                      Background="#FFFFFFFF"
-                      BorderBrush="#FFA9A9A9"
+                      Background="{StaticResource ExpanderBackgroundBrush}"
+                      BorderBrush="{StaticResource ExpanderBorderBrush}"
                       Margin="5,0,5,5">
                 <Expander.Header>
                     <Label FontWeight="SemiBold">

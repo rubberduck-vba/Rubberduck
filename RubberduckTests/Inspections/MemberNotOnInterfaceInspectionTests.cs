@@ -11,7 +11,7 @@ namespace RubberduckTests.Inspections
     [TestFixture]
     public class MemberNotOnInterfaceInspectionTests : InspectionTestsBase
     {
-        private int ArrangeParserAndGetResultCount(string inputCode, string library)
+        private int ArrangeParserAndGetResultCount(string inputCode, ReferenceLibrary library = ReferenceLibrary.Scripting)
             => InspectionResultsForModules(("Codez", inputCode, ComponentType.StandardModule), library).Count();
 
         [Test]
@@ -24,7 +24,7 @@ namespace RubberduckTests.Inspections
     Set dict = New Dictionary
     dict.NonMember
 End Sub";
-            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode));
         }
 
         [Test]
@@ -37,7 +37,7 @@ End Sub";
     Set dict = New Dictionary
     dict.NonMember
 End Sub";
-            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode));
         }
 
         [Test]
@@ -48,7 +48,7 @@ End Sub";
                 @"Sub Foo()
     Application.NonMember
 End Sub";
-            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Excel"));
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, ReferenceLibrary.Excel));
         }
 
         [Test]
@@ -59,7 +59,7 @@ End Sub";
                 @"Sub Foo(dict As Dictionary)
     dict.NonMember
 End Sub";
-            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode));
         }
 
         [Test]
@@ -72,7 +72,7 @@ End Sub";
     Set dict = New Dictionary
     Debug.Print dict.Count
 End Sub";
-            Assert.AreEqual(0, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
+            Assert.AreEqual(0, ArrangeParserAndGetResultCount(inputCode));
         }
 
         [Test]
@@ -84,7 +84,7 @@ End Sub";
     Dim x As File
     Debug.Print x.NonMember
 End Sub";
-            Assert.AreEqual(0, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
+            Assert.AreEqual(0, ArrangeParserAndGetResultCount(inputCode));
         }
 
         [Test]
@@ -98,7 +98,7 @@ End Sub";
         .NonMember
     End With
 End Sub";
-            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode));
         }
 
         [Test]
@@ -111,7 +111,7 @@ End Sub";
     Set dict = New Dictionary
     dict!SomeIdentifier = 42
 End Sub";
-            Assert.AreEqual(0, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
+            Assert.AreEqual(0, ArrangeParserAndGetResultCount(inputCode));
         }
 
         [Test]
@@ -125,7 +125,7 @@ End Sub";
         !SomeIdentifier = 42
     End With
 End Sub";
-            Assert.AreEqual(0, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
+            Assert.AreEqual(0, ArrangeParserAndGetResultCount(inputCode));
         }
 
         [Test]
@@ -136,7 +136,7 @@ End Sub";
                 @"Sub Foo()
     Dim dict As Scripting.Dictionary
 End Sub";
-            Assert.AreEqual(0, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
+            Assert.AreEqual(0, ArrangeParserAndGetResultCount(inputCode));
         }
 
         [Test]
@@ -150,7 +150,7 @@ End Sub";
     '@Ignore MemberNotOnInterface
     dict.NonMember
 End Sub";
-            Assert.AreEqual(0, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
+            Assert.AreEqual(0, ArrangeParserAndGetResultCount(inputCode));
         }
 
         [Test]
@@ -163,7 +163,7 @@ End Sub";
         .FooBar
     End With
 End Sub";
-            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode));
         }
 
         [Test]
@@ -180,7 +180,7 @@ End Sub
 
 Private Sub Bar(baz As Long)
 End Sub";
-            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode));
         }
 
         [Test]
@@ -197,7 +197,7 @@ End Sub
 
 Private Function Bar(baz As Long) As Variant
 End Function";
-            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode));
         }
 
         [Test]
@@ -214,7 +214,7 @@ End Sub
 
 Private Function Bar(baz As Long) As Variant
 End Function";
-            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode));
         }
 
         [Test]
@@ -231,7 +231,7 @@ End Sub
 
 Private Function Bar(baz As Long) As Variant
 End Function";
-            Assert.AreEqual(2, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
+            Assert.AreEqual(2, ArrangeParserAndGetResultCount(inputCode));
         }
 
         [Test]
@@ -248,7 +248,7 @@ End Sub
 
 Private Function Bar(baz As Long) As Variant
 End Function";
-            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode));
         }
 
         [Test]
@@ -265,7 +265,7 @@ End Sub
 
 Private Function Bar(baz As Long) As Variant
 End Function";
-            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode));
         }
 
         [Test]
@@ -282,7 +282,7 @@ End Sub
 
 Private Function Bar(baz As Long) As Variant
 End Function";
-            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode));
         }
 
         [Test]
@@ -299,7 +299,7 @@ End Sub
 
 Private Function Bar(baz As Long) As Variant
 End Function";
-            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode));
         }
 
         [Test]
@@ -319,7 +319,7 @@ End Function
 
 Private Sub Barr(baz As Long)
 End Sub";
-            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode));
         }
 
         [Test]
@@ -339,7 +339,7 @@ End Function
 
 Private Sub Barr(baz As Long)
 End Sub";
-            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode));
         }
 
         [Test]
@@ -359,7 +359,7 @@ End Function
 
 Private Sub Barr(baz As Long)
 End Sub";
-            Assert.AreEqual(3, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
+            Assert.AreEqual(3, ArrangeParserAndGetResultCount(inputCode));
         }
 
         [Test]
@@ -379,7 +379,7 @@ End Function
 
 Private Sub Barr(baz As Long)
 End Sub";
-            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
+            Assert.AreEqual(1, ArrangeParserAndGetResultCount(inputCode));
         }
 
         [Test]
@@ -392,7 +392,7 @@ End Sub";
         !FooBar = 42
     End With
 End Sub";
-            Assert.AreEqual(0, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
+            Assert.AreEqual(0, ArrangeParserAndGetResultCount(inputCode));
         }
 
         [Test]
@@ -405,7 +405,7 @@ End Sub";
         .Add 42, 42
     End With
 End Sub";
-            Assert.AreEqual(0, ArrangeParserAndGetResultCount(inputCode, "Scripting"));
+            Assert.AreEqual(0, ArrangeParserAndGetResultCount(inputCode));
         }
 
         [Test]
@@ -443,7 +443,7 @@ End Sub
             var projectBuilder = vbeBuilder.ProjectBuilder("testproject", ProjectProtection.Unprotected);
             projectBuilder.MockUserFormBuilder("UserForm1", userForm1Code).AddFormToProjectBuilder()
                 .AddComponent("ReferencingModule", ComponentType.StandardModule, analyzedCode)
-                .AddReference("MSForms", MockVbeBuilder.LibraryPathMsForms, 2, 0, true);
+                .AddReference(ReferenceLibrary.MsForms);
 
             vbeBuilder.AddProject(projectBuilder.Build());
             var vbe = vbeBuilder.Build();
@@ -464,7 +464,7 @@ End Sub";
             var vbeBuilder = new MockVbeBuilder();
             var projectBuilder = vbeBuilder.ProjectBuilder("testproject", ProjectProtection.Unprotected);
             projectBuilder.MockUserFormBuilder("UserForm1", inputCode).AddFormToProjectBuilder()
-                .AddReference("MSForms", MockVbeBuilder.LibraryPathMsForms, 2, 0, true);
+                .AddReference(ReferenceLibrary.MsForms);
 
             vbeBuilder.AddProject(projectBuilder.Build());
             var vbe = vbeBuilder.Build();

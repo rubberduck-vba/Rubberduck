@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -39,38 +38,48 @@ namespace Rubberduck.Inspections.Concrete
     /// ]]>
     /// </example>
     [RequiredLibrary("Excel")]
-    public sealed class ImplicitActiveSheetReferenceInspection : InspectionBase
+    public sealed class ImplicitActiveSheetReferenceInspection : IdentifierReferenceInspectionFromDeclarationsBase
     {
         public ImplicitActiveSheetReferenceInspection(RubberduckParserState state)
-            : base(state) { }
+            : base(state)
+        {}
 
-        private static readonly string[] Targets = 
+        protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)
+        {
+            var excel = finder.Projects
+                .SingleOrDefault(item => !item.IsUserDefined
+                                         && item.IdentifierName == "Excel");
+            if (excel == null)
+            {
+                return Enumerable.Empty<Declaration>();
+            }
+
+            var globalModules = GlobalObjectClassNames
+                .Select(className => finder.FindClassModule(className, excel, true))
+                .OfType<ModuleDeclaration>();
+
+            return globalModules
+                .SelectMany(moduleClass => moduleClass.Members)
+                .Where(declaration => TargetMemberNames.Contains(declaration.IdentifierName) 
+                                      && declaration.DeclarationType.HasFlag(DeclarationType.Member)
+                                      && declaration.AsTypeName == "Range");
+        }
+
+        private static readonly string[] GlobalObjectClassNames =
+        {
+            "Global", "_Global"
+        };
+
+        private static readonly string[] TargetMemberNames =
         {
             "Cells", "Range", "Columns", "Rows"
         };
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
         {
-            var excel = State.DeclarationFinder.Projects.SingleOrDefault(item => !item.IsUserDefined && item.IdentifierName == "Excel");
-            if (excel == null) { return Enumerable.Empty<IInspectionResult>(); }
-
-            var globalModules = new[]
-            {
-                State.DeclarationFinder.FindClassModule("Global", excel, true),
-                State.DeclarationFinder.FindClassModule("_Global", excel, true)
-            };
-
-            var members = Targets
-                .SelectMany(target => globalModules.SelectMany(global =>
-                    State.DeclarationFinder.FindMemberMatches(global, target))
-                .Where(member => member.AsTypeName == "Range" && member.References.Any()));
-
-            return members
-                .SelectMany(declaration => declaration.References)
-                .Select(issue => new IdentifierReferenceInspectionResult(this,
-                                                      string.Format(InspectionResults.ImplicitActiveSheetReferenceInspection, issue.Declaration.IdentifierName),
-                                                      State,
-                                                      issue));
+            return string.Format(
+                InspectionResults.ImplicitActiveSheetReferenceInspection,
+                reference.Declaration.IdentifierName);
         }
     }
 }

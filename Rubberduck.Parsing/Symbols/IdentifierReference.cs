@@ -12,7 +12,7 @@ namespace Rubberduck.Parsing.Symbols
     [DebuggerDisplay("({IdentifierName}) IsAss:{IsAssignment} | {Selection} ")]
     public class IdentifierReference : IEquatable<IdentifierReference>
     {
-        public IdentifierReference(
+        internal IdentifierReference(
             QualifiedModuleName qualifiedName, 
             Declaration parentScopingDeclaration, 
             Declaration parentNonScopingDeclaration, 

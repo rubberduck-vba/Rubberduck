@@ -8,12 +8,12 @@ using Rubberduck.VBEditor.SafeComWrappers;
 namespace RubberduckTests.Inspections
 {
     [TestFixture]
-    public class FunctionReturnValueNotUsedInspectionTests : InspectionTestsBase
+    public class FunctionReturnValueAlwaysDiscardedInspectionTests : InspectionTestsBase
     {
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_IgnoresUnusedFunction()
+        public void IgnoresUnusedFunction()
         {
             const string code = @"
 Public Function Foo() As Long
@@ -26,7 +26,7 @@ End Function
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_ReturnsResult_ExplicitCallWithoutAssignment()
+        public void ExplicitCallWithoutAssignment_ReturnsResult()
         {
             const string code = @"
 Public Function Foo(ByVal bar As String) As Integer
@@ -43,7 +43,7 @@ End Sub
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_ReturnsResult_CallWithoutAssignment()
+        public void CallWithoutAssignment_ReturnsResult()
         {
             const string code = @"
 Public Function Foo(ByVal bar As String) As Integer
@@ -60,7 +60,88 @@ End Sub
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_ReturnsResult_AddressOf()
+        public void ReturnValueAssignment_DoesNotReturnResult()
+        {
+            const string code = @"
+Public Function Foo(ByVal bar As String) As Integer
+    Foo = 42
+End Function
+
+Public Sub Baz()
+    TestVal = Foo(""Test"")
+End Sub
+";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [Category("Unused Value")]
+        public void CallWithoutAssignmentAndUseOfReturnValue_NoResult()
+        {
+            const string code = @"
+Public Function Foo(ByVal bar As String) As Integer
+    Foo = 42
+End Function
+
+Public Sub Bar()
+    Foo ""Test""
+End Sub
+
+Public Sub Baz()
+    Dim var As Integer
+    var = Foo(""Test"")
+End Sub
+";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [Category("Unused Value")]
+        public void TwoUses_OneResult()
+        {
+            const string code = @"
+Public Function Foo(ByVal bar As String) As Integer
+    Foo = 42
+End Function
+
+Public Sub Bar()
+    Foo ""Test""
+End Sub
+
+Public Sub Baz()
+    Foo ""Test""
+End Sub
+";
+            Assert.AreEqual(1, InspectionResultsForStandardModule(code).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [Category("Unused Value")]
+        public void AddressOfAndCallWithoutAssignment_NoResult()
+        {
+            const string code = @"
+Public Function Foo(ByVal bar As String) As Integer
+    Foo = 42
+End Function
+
+Public Sub Bar()
+    Foo ""Test""
+End Sub
+
+Public Sub Baz()
+    Bar AddressOf Foo
+End Sub
+";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [Category("Unused Value")]
+        public void AddressOfAlone_NoResult()
         {
             const string code = @"
 Public Function Foo(ByVal bar As String) As Integer
@@ -71,13 +152,13 @@ Public Sub Bar()
     Bar AddressOf Foo
 End Sub
 ";
-            Assert.AreEqual(1, InspectionResultsForStandardModule(code).Count());
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_ReturnsResult_NoReturnValueAssignment()
+        public void NoReturnValueAssignment_ReturnsResult()
         {
             const string code = @"
 Public Function Foo() As Integer
@@ -93,16 +174,15 @@ End Sub
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_Ignored_DoesNotReturnResult_AddressOf()
+        public void Ignored_DoesNotReturnResult()
         {
             const string code = @"
-'@Ignore FunctionReturnValueNotUsed
-Public Function Foo(ByVal bar As String) As Integer
-    Foo = 42
+'@Ignore FunctionReturnValueAlwaysDiscarded
+Public Function Foo() As Integer
 End Function
 
 Public Sub Bar()
-    Bar AddressOf Foo
+    Foo
 End Sub
 ";
             Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
@@ -111,7 +191,7 @@ End Sub
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_DoesNotReturnResult_MultipleConsecutiveCalls()
+        public void DoesNotReturnResult_MultipleConsecutiveCalls()
         {
             const string code = @"
 Public Function Foo(ByVal bar As String) As Integer
@@ -128,7 +208,7 @@ End Sub
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_DoesNotReturnResult_IfStatement()
+        public void IfStatement_DoesNotReturnResult()
         {
             const string code = @"
 Public Function Foo(ByVal bar As String) As Integer
@@ -146,7 +226,7 @@ End Sub
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_DoesNotReturnResult_ForEachStatement()
+        public void ForEachStatement_DoesNotReturnResult()
         {
             const string code = @"
 Public Function Foo(ByVal bar As String) As Integer
@@ -167,7 +247,7 @@ End Sub
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_DoesNotReturnResult_WhileStatement()
+        public void WhileStatement_DoesNotReturnResult()
         {
             const string code = @"
 Public Function Foo(ByVal bar As String) As Integer
@@ -188,7 +268,7 @@ End Sub
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_DoesNotReturnResult_DoUntilStatement()
+        public void DoUntilStatement_DoesNotReturnResult()
         {
             const string code = @"
 Public Function Foo(ByVal bar As String) As Integer
@@ -209,24 +289,7 @@ End Sub
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_DoesNotReturnResult_ReturnValueAssignment()
-        {
-            const string code = @"
-Public Function Foo(ByVal bar As String) As Integer
-    Foo = 42
-End Function
-
-Public Sub Baz()
-    TestVal = Foo(""Test"")
-End Sub
-";
-            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
-        }
-
-        [Test]
-        [Category("Inspections")]
-        [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_DoesNotReturnResult_RecursiveFunction()
+        public void RecursiveFunction_DoesNotReturnResult()
         {
             const string code = @"
 Public Function Factorial(ByVal n As Long) As Long
@@ -243,7 +306,7 @@ End Function
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_DoesNotReturnResult_ArgumentFunctionCall()
+        public void ArgumentFunctionCall_DoesNotReturnResult()
         {
             const string code = @"
 Public Function Foo(ByVal bar As String) As Integer
@@ -263,7 +326,24 @@ End Sub
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_DoesNotReturnResult_IgnoresBuiltInFunctions()
+        public void OutputListFunctionCall_DoesNotReturnResult()
+        {
+            const string code = @"
+Public Function Foo(ByVal bar As String) As Integer
+    Foo = 42
+End Function
+
+Public Sub Baz()
+    Debug.Print Foo(""Test"")
+End Sub
+";
+            Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [Category("Unused Value")]
+        public void IgnoresBuiltInFunctions_DoesNotReturnResult()
         {
             const string code = @"
 Public Sub Dummy()
@@ -326,7 +406,7 @@ End Sub";
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
-        public void FunctionReturnValueNotUsed_ReturnsResult_InterfaceMember()
+        public void InterfaceMember_ReturnsResult()
         {
             const string interfaceCode = @"
 Public Function Test() As Integer
@@ -358,16 +438,68 @@ End Sub
         [Test]
         [Category("Inspections")]
         [Category("Unused Value")]
+        public void MemberCallOnReturnValue_NoResult()
+        {
+            const string classCode = @"
+Public Function Test() As Bar
+End Function
+
+Public Sub FooBar()
+End Sub
+";
+            const string callSiteCode = @"
+Public Sub Baz()
+    Dim testObj As Bar
+    Set testObj = new Bar
+    testObj.Test.FooBar
+End Sub
+";
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("Bar", classCode, ComponentType.ClassModule),
+                ("TestModule", callSiteCode, ComponentType.StandardModule),
+            };
+
+            Assert.AreEqual(0, InspectionResultsForModules(modules).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [Category("Unused Value")]
+        public void InterfaceMemberNotUsed_NoResult()
+        {
+            const string interfaceCode = @"
+Public Function Test() As Integer
+End Function
+";
+            const string implementationCode =
+                @"Implements IFoo
+Public Function IFoo_Test() As Integer
+    IFoo_Test = 42
+End Function
+";
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("IFoo", interfaceCode, ComponentType.ClassModule),
+                ("Bar", implementationCode, ComponentType.ClassModule)
+            };
+
+            Assert.AreEqual(0, InspectionResultsForModules(modules).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [Category("Unused Value")]
         public void InspectionName()
         {
-            var inspection = new FunctionReturnValueNotUsedInspection(null);
+            var inspection = InspectionUnderTest(null);
 
-            Assert.AreEqual(nameof(FunctionReturnValueNotUsedInspection), inspection.Name);
+            Assert.AreEqual(nameof(FunctionReturnValueAlwaysDiscardedInspection), inspection.Name);
         }
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
-            return new FunctionReturnValueNotUsedInspection(state);
+            return new FunctionReturnValueAlwaysDiscardedInspection(state);
         }
     }
 }

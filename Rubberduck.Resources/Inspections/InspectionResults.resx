@@ -141,8 +141,9 @@
   <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
     <value>Object reference '{0}' is auto-instantiated.</value>
   </data>
-  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
+  <data name="FunctionReturnValueAlwaysDiscardedInspection" xml:space="preserve">
     <value>Return value of function '{0}' is never used.</value>
+    <comment>{0} function name</comment>
   </data>
   <data name="AssignedByValParameterInspection" xml:space="preserve">
     <value>Parameter '{0}' is passed 'ByVal' and assigned a value.</value>
@@ -207,9 +208,11 @@
   </data>
   <data name="ImplicitActiveSheetReferenceInspection" xml:space="preserve">
     <value>Member '{0}' implicitly references 'ActiveSheet'.</value>
+    <comment>{0} member name</comment>
   </data>
   <data name="ImplicitActiveWorkbookReferenceInspection" xml:space="preserve">
     <value>Member '{0}' implicitly references 'ActiveWorkbook'.</value>
+    <comment>{0} member name</comment>
   </data>
   <data name="MultipleDeclarationsInspection" xml:space="preserve">
     <value>Instruction contains multiple declarations.</value>
@@ -317,13 +320,13 @@
     <value>Case clause '{0}' cannot be reached.</value>
   </data>
   <data name="UnreachableCaseInspection_CaseElse" xml:space="preserve">
-    <value>'Case Else' statement is unreachable</value>
+    <value>'Case Else' statement is unreachable.</value>
   </data>
   <data name="UnreachableCaseInspection_TypeMismatch" xml:space="preserve">
     <value>'Case' statement will cause run-time error 13 (type mismatch).</value>
   </data>
   <data name="UnreachableCaseInspection_Unreachable" xml:space="preserve">
-    <value>'Case' statement is unreachable</value>
+    <value>'Case' statement is unreachable.</value>
   </data>
   <data name="UnhandledOnErrorResumeNextInspection" xml:space="preserve">
     <value>Errors are ignored but never handled again.</value>
@@ -352,13 +355,13 @@
     <value>'Case' statement Range Clauses must be expressed '[x] To [y]' where [x] is less than or equal to [y]'.</value>
   </data>
   <data name="UnreachableCaseInspection_Overflow" xml:space="preserve">
-    <value>'Case' statement will cause run-time error 6 (Overflow)</value>
+    <value>'Case' statement will cause run-time error 6 (Overflow).</value>
   </data>
   <data name="DuplicatedAnnotationInspection" xml:space="preserve">
     <value>Annotation '{0}' is duplicated.</value>
   </data>
   <data name="ModuleWithoutFolderInspection" xml:space="preserve">
-    <value>Module '{0}' has no '@Folder' annotation</value>
+    <value>Module '{0}' has no '@Folder' annotation.</value>
   </data>
   <data name="OnLocalErrorInspection" xml:space="preserve">
     <value>'On Local Error' statement detected.</value>
@@ -384,7 +387,7 @@
     <comment>{0} Function name</comment>
   </data>
   <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
-    <value>The attribute value(s) for attribute {0} ({1}) are out of sync with the {2} annotation. </value>
+    <value>The attribute value(s) for attribute {0} ({1}) are out of sync with the {2} annotation.</value>
     <comment>{0} attribute name, {1} attribute values, {2} annotation name</comment>
   </data>
   <data name="MissingMemberAnnotationInspection" xml:space="preserve">
@@ -396,14 +399,14 @@
     <comment>{0} module; {1} specified attribute; {2} specified values</comment>
   </data>
   <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
-    <value>Keyword used as an identifier for the member '{0}'</value>
+    <value>Keyword used as an identifier for the member '{0}'.</value>
     <comment>{0} Member name</comment>
   </data>
   <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
-    <value>Line continuation(s) in unexpected places. </value>
+    <value>Line continuation(s) in unexpected places.</value>
   </data>
   <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
-    <value>Non-breaking space encountered in identifier '{0}'</value>
+    <value>Non-breaking space encountered in identifier '{0}'.</value>
     <comment>{0} Identifier</comment>
   </data>
   <data name="ThunderCode_Base" xml:space="preserve">
@@ -423,7 +426,7 @@ In memoriam, 1972-2018</value>
     <value>'While...Wend' conditional loop can be written as a 'Do While...Loop' block.</value>
   </data>
   <data name="SetAssignmentWithIncompatibleObjectTypeInspection" xml:space="preserve">
-    <value>To the variable '{0}' of declared type '{1}' a value is set assigned with the incompatible declared type '{2}'.  </value>
+    <value>To the variable '{0}' of declared type '{1}' a value is set assigned with the incompatible declared type '{2}'.</value>
     <comment>{0} variable name, {1} variable declared type, {2} rhs declared type</comment>
   </data>
   <data name="EmptyMethodInspection" xml:space="preserve">
@@ -497,5 +500,12 @@ In memoriam, 1972-2018</value>
   <data name="SuspiciousLetAssignmentInspection" xml:space="preserve">
     <value>There is an assignment from the default member of the result of expression '{1}' to that of the expression '{0}'.</value>
     <comment>{0} lhsExpression; {1} rhsExpression</comment>
+  </data>
+  <data name="FunctionReturnValueDiscardedInspection" xml:space="preserve">
+    <value>Return value of function '{0}' gets discarded.</value>
+    <comment>{0} function name</comment>
+  </data>
+  <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
+    <value>Constant '{0}' is implicitly typed.</value>
   </data>
 </root>

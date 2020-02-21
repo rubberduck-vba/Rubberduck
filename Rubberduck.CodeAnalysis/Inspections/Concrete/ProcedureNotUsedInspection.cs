@@ -1,16 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Inspections.Results;
 using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.VBA.Extensions;
-using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -102,7 +100,8 @@ namespace Rubberduck.Inspections.Concrete
                 || IsPublicModuleMember(modules, declaration)
                 || IsClassLifeCycleHandler(enumerable, declaration)
                 || interfaceMembers.Contains(declaration)
-                || interfaceImplementingMembers.Contains(declaration);
+                || interfaceImplementingMembers.Contains(declaration)
+                || declaration.Annotations.Any(x => x.Annotation is ITestAnnotation);
 
             return result;
         }

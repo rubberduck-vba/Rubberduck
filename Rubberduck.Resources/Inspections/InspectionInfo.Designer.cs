@@ -277,11 +277,20 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A member is written as a function, but used as a procedure. Unless the function is recursive, consider converting the &apos;Function&apos; into a &apos;Sub&apos;. If the function is recursive, none of its external callers are using the returned value..
+        ///   Looks up a localized string similar to A member is written as a function, but always used as a procedure. Consider converting the &apos;Function&apos; into a &apos;Sub&apos;..
         /// </summary>
-        public static string FunctionReturnValueNotUsedInspection {
+        public static string FunctionReturnValueAlwaysDiscardedInspection {
             get {
-                return ResourceManager.GetString("FunctionReturnValueNotUsedInspection", resourceCulture);
+                return ResourceManager.GetString("FunctionReturnValueAlwaysDiscardedInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The return value of a function gets discarded, i.e. the function is used like a procedure. This is either an oversight or the function is used for its side-effects, whose existence would also be a code smell..
+        /// </summary>
+        public static string FunctionReturnValueDiscardedInspection {
+            get {
+                return ResourceManager.GetString("FunctionReturnValueDiscardedInspection", resourceCulture);
             }
         }
         
@@ -354,6 +363,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string ImplicitDefaultMemberAccessInspection {
             get {
                 return ResourceManager.GetString("ImplicitDefaultMemberAccessInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If the as type clause for a Const isn&apos;t included it is implicitly typed. Include an explicit &apos; As &lt;Type&gt;&apos; replacing &apos;&lt;Type&gt;&apos; with the correct data type to explicitly type your const value..
+        /// </summary>
+        public static string ImplicitlyTypedConstInspection {
+            get {
+                return ResourceManager.GetString("ImplicitlyTypedConstInspection", resourceCulture);
             }
         }
         
@@ -529,7 +547,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Modules without the &apos;@Folder&apos; annotation cannot receive custom groupings in the Code Explorer. .
+        ///   Looks up a localized string similar to Modules without the &apos;@Folder&apos; annotation cannot receive custom groupings in the Code Explorer..
         /// </summary>
         public static string ModuleWithoutFolderInspection {
             get {

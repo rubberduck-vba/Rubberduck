@@ -6820,7 +6820,7 @@ End Function
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, classCode)
                 .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddReference(ReferenceLibrary.VBA)
                 .AddProjectToVbeBuilder()
                 .Build();
 
@@ -6853,7 +6853,7 @@ End Function
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, classCode)
                 .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddReference(ReferenceLibrary.VBA)
                 .AddProjectToVbeBuilder()
                 .Build();
 
@@ -6890,7 +6890,7 @@ End Function
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, classCode)
                 .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddReference(ReferenceLibrary.VBA)
                 .AddProjectToVbeBuilder()
                 .Build();
 
@@ -6927,7 +6927,7 @@ End Function
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, classCode)
                 .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddReference(ReferenceLibrary.VBA)
                 .AddProjectToVbeBuilder()
                 .Build();
 
@@ -6964,7 +6964,7 @@ End Function
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, classCode)
                 .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddReference(ReferenceLibrary.VBA)
                 .AddProjectToVbeBuilder()
                 .Build();
 
@@ -7298,6 +7298,78 @@ End Function
                     .Single(reference => reference.Declaration.DeclarationType.HasFlag(DeclarationType.Member));
 
                 Assert.AreEqual(expectedReferenceText, enumMemberReference.IdentifierName);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void OneUndeclaredVariablePerMemberAndUndeclaredIdentifier_DifferentMemberName()
+        {
+            var moduleCode = @"
+Private Sub Foo
+    bar = 42 + 23
+    bar = bar + bar 
+    bar = bar * bar
+    fooBar = 42
+End Sub
+
+Private Sub DoSomething
+    bar = 42 + 23
+    bar = bar + bar 
+    bar = bar * bar
+    fooBaz = 42
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(moduleCode, out _);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var finder = state.DeclarationFinder;
+                var module = finder.UserDeclarations(DeclarationType.ProceduralModule)
+                    .Single();
+                var undeclared = finder.Members(module.QualifiedModuleName)
+                    .Where(declaration => declaration.IsUndeclared)
+                    .ToList();
+                
+                Assert.AreEqual(4, undeclared.Count);
+            }
+        }
+
+        [Category("Grammar")]
+        [Category("Resolver")]
+        [Test]
+        public void OneUndeclaredVariablePerMemberAndUndeclaredIdentifier_DifferentDeclarationType()
+        {
+            var moduleCode = @"
+Private Property Get Foo() As Variant
+    bar = 42 + 23
+    bar = bar + bar 
+    bar = bar * bar
+    fooBar = 42
+End Property
+
+Private Property Let Foo(arg As Variant)
+    bar = 42 + 23
+    bar = bar + bar 
+    bar = bar * bar
+    fooBaz = 42
+End Property
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(moduleCode, out _);
+
+            using (var state = Resolve(vbe.Object))
+            {
+                var finder = state.DeclarationFinder;
+                var module = finder.UserDeclarations(DeclarationType.ProceduralModule)
+                    .Single();
+                var undeclared = finder.Members(module.QualifiedModuleName)
+                    .Where(declaration => declaration.IsUndeclared)
+                    .ToList();
+
+                Assert.AreEqual(4, undeclared.Count);
             }
         }
     }

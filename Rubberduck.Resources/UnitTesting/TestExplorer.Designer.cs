@@ -124,6 +124,24 @@ namespace Rubberduck.Resources.UnitTesting {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ignore all tests in group.
+        /// </summary>
+        public static string TestExplorer_ContextMenuIgnoreGroup {
+            get {
+                return ResourceManager.GetString("TestExplorer_ContextMenuIgnoreGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignore selected tests.
+        /// </summary>
+        public static string TestExplorer_ContextMenuIgnoreSelectedTests {
+            get {
+                return ResourceManager.GetString("TestExplorer_ContextMenuIgnoreSelectedTests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run all tests.
         /// </summary>
         public static string TestExplorer_ContextMenuRunAll {
@@ -156,6 +174,24 @@ namespace Rubberduck.Resources.UnitTesting {
         public static string TestExplorer_ContextMenuRunSingle {
             get {
                 return ResourceManager.GetString("TestExplorer_ContextMenuRunSingle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unignore all tests in group.
+        /// </summary>
+        public static string TestExplorer_ContextMenuUnignoreGroup {
+            get {
+                return ResourceManager.GetString("TestExplorer_ContextMenuUnignoreGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unignore selected tests.
+        /// </summary>
+        public static string TestExplorer_ContextMenuUnignoreSelectedTests {
+            get {
+                return ResourceManager.GetString("TestExplorer_ContextMenuUnignoreSelectedTests", resourceCulture);
             }
         }
         

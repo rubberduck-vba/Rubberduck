@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -11,6 +10,28 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Mocks
 {
+    public enum ReferenceLibrary
+    {
+        VBA,
+        Excel,
+        MsOffice,
+        StdOle,
+        MsForms,
+        VBIDE,
+        Scripting,
+        Regex,
+        MsXml,
+        ShDoc,
+        AdoDb,
+        AdoRecordset,
+    }
+
+    public static class ReferenceLibraryExtensions
+    {
+        public static string Name(this ReferenceLibrary val) => MockVbeBuilder.ReferenceLibraryIdentifiers[val].Name;
+        public static string Path(this ReferenceLibrary val) => MockVbeBuilder.ReferenceLibraryIdentifiers[val].Path;
+    }
+
     /// <summary>
     /// Builds a mock <see cref="IVBE"/>.
     /// </summary>
@@ -20,53 +41,35 @@ namespace RubberduckTests.Mocks
         public const string TestProjectName = "TestProject1";
         public const string TestModuleName = "TestModule1";
         private readonly Mock<IVBE> _vbe;
-        private readonly Mock<IVbeEvents> _vbeEvents;
 
-        #region standard library paths (referenced in all VBA projects hosted in Microsoft Excel)
-        public static readonly string LibraryPathVBA = @"C:\PROGRA~1\COMMON~1\MICROS~1\VBA\VBA7.1\VBE7.DLL";      // standard library, priority locked
-        public static readonly string LibraryPathMsExcel = @"C:\Program Files\Microsoft Office\Office15\EXCEL.EXE";   // mock host application, priority locked
-        public static readonly string LibraryPathMsOffice = @"C:\Program Files\Common Files\Microsoft Shared\OFFICE15\MSO.DLL";
-        public static readonly string LibraryPathStdOle = @"C:\Windows\System32\stdole2.tlb";
-        public static readonly string LibraryPathMsForms = @"C:\Windows\system32\FM20.DLL"; // standard in projects with a UserForm module
-        #endregion
-
-        public static readonly string LibraryPathVBIDE = @"C:\Program Files (x86)\Common Files\Microsoft Shared\VBA\VBA6\VBE6EXT.OLB";
-        public static readonly string LibraryPathScripting = @"C:\Windows\System32\scrrun.dll";
-        public static readonly string LibraryPathRegex = @"C:\Windows\System32\vbscript.dll\3";
-        public static readonly string LibraryPathMsXml = @"C:\Windows\System32\msxml6.dll";
-        public static readonly string LibraryPathShDoc = @"C:\Windows\System32\ieframe.dll";
-        public static readonly string LibraryPathAdoDb = @"C:\Program Files\Common Files\System\ado\msado15.dll";
-        public static readonly string LibraryPathAdoRecordset = @"C:\Program Files\Common Files\System\ado\msador15.dll";
-
-        public static readonly Dictionary<string, string> LibraryPaths = new Dictionary<string, string>
+        public static Dictionary<ReferenceLibrary, (string Name, string Path)> ReferenceLibraryIdentifiers = new Dictionary<ReferenceLibrary, (string Name, string Path)>()
         {
-            ["VBA"] = LibraryPathVBA,
-            ["Excel"] = LibraryPathMsExcel,
-            ["Office"] = LibraryPathMsOffice,
-            ["stdole"] = LibraryPathStdOle,
-            ["MSForms"] = LibraryPathMsForms,
-            ["VBIDE"] = LibraryPathVBIDE,
-            ["Scripting"] = LibraryPathScripting,
-            ["VBScript_RegExp_55"] = LibraryPathRegex,
-            ["MSXML2"] = LibraryPathMsXml,
-            ["SHDocVw"] = LibraryPathShDoc,
-            ["ADODB"] = LibraryPathAdoDb,
-            ["ADOR"] = LibraryPathAdoRecordset
+            //standard library paths (referenced in all VBA projects hosted in Microsoft Excel)
+            [ReferenceLibrary.VBA] = ("VBA", @"C:\PROGRA~1\COMMON~1\MICROS~1\VBA\VBA7.1\VBE7.DLL"), //standard library, priority locked"
+            [ReferenceLibrary.Excel] = ("Excel", @"C:\Program Files\Microsoft Office\Office15\EXCEL.EXE"), // mock host application, priority locked
+            [ReferenceLibrary.MsOffice] = ("Office", @"C:\Program Files\Common Files\Microsoft Shared\OFFICE15\MSO.DLL"),
+            [ReferenceLibrary.StdOle] = ("stdole", @"C:\Windows\System32\stdole2.tlb"),
+            [ReferenceLibrary.MsForms] = ("MSForms", @"C:\Windows\system32\FM20.DLL"),  // standard in projects with a UserForm module
+            //end standard library paths
+            [ReferenceLibrary.VBIDE] = ("VBIDE", @"C:\Program Files (x86)\Common Files\Microsoft Shared\VBA\VBA6\VBE6EXT.OLB"),
+            [ReferenceLibrary.Scripting] = ("Scripting", @"C:\Windows\System32\scrrun.dll"),
+            [ReferenceLibrary.Regex] = ("VBScript_RegExp_55", @"C:\Windows\System32\vbscript.dll\3"),
+            [ReferenceLibrary.MsXml] = ("MSXML2", @"C:\Windows\System32\msxml6.dll"),
+            [ReferenceLibrary.ShDoc] = ("SHDocVw", @"C:\Windows\System32\ieframe.dll"),
+            [ReferenceLibrary.AdoDb] = ("ADODB", @"C:\Program Files\Common Files\System\ado\msado15.dll"),
+            [ReferenceLibrary.AdoRecordset] = ("ADOR", @"C:\Program Files\Common Files\System\ado\msador15.dll"),
         };
 
-        private static readonly Dictionary<string, Func<MockProjectBuilder, MockProjectBuilder>> AddReference = new Dictionary<string, Func<MockProjectBuilder, MockProjectBuilder>>
+        internal static readonly Dictionary<ReferenceLibrary, (string name, string path, int versionMajor, int versionMinor, bool isBuiltIn)> ReferenceLibraries = new Dictionary<ReferenceLibrary, (string name, string path, int versionMajor, int versionMinor, bool isBuiltIn)>
         {
-            ["Excel"] = (MockProjectBuilder builder) => builder.AddReference("Excel", LibraryPathMsExcel, 1, 8, true),
-            ["VBA"] = (MockProjectBuilder builder) => builder.AddReference("VBA", LibraryPathVBA, 4, 2, true),
-            ["Scripting"] = (MockProjectBuilder builder) => builder.AddReference("Scripting", LibraryPathScripting, 1, 0, true),
-            ["ADODB"] = (MockProjectBuilder builder) => builder.AddReference("ADODB", LibraryPathAdoDb, 6, 1, false),
-            ["MSForms"] = (MockProjectBuilder builder) => builder.AddReference("MSForms", LibraryPathMsForms, 2, 0, true),
+            [ReferenceLibrary.VBA] = (ReferenceLibrary.VBA.Name(), ReferenceLibrary.VBA.Path(), 4, 2, true),
+            [ReferenceLibrary.Excel] = (ReferenceLibrary.Excel.Name(), ReferenceLibrary.Excel.Path(), 1, 8, true),
+            [ReferenceLibrary.Scripting] = (ReferenceLibrary.Scripting.Name(), ReferenceLibrary.Scripting.Path(), 1, 0, true),
+            [ReferenceLibrary.AdoDb] = (ReferenceLibrary.AdoDb.Name(), ReferenceLibrary.AdoDb.Path(), 6, 1, false),
+            [ReferenceLibrary.MsForms] = (ReferenceLibrary.MsForms.Name(), ReferenceLibrary.MsForms.Path(), 2, 0, true),
         };
 
-        //private Mock<IWindows> _vbWindows;
         private readonly Windows _windows = new Windows();
-
-        private Mock<IVBProjects> _vbProjects;
         private readonly ICollection<IVBProject> _projects = new List<IVBProject>();
 
         private Mock<ICodePanes> _vbCodePanes;
@@ -94,7 +97,7 @@ namespace RubberduckTests.Mocks
             AddOpenCodePanes(allCodePanes);
 
             _vbe.SetupGet(vbe => vbe.ActiveVBProject).Returns(project.Object);
-            _vbe.SetupGet(m => m.VBProjects).Returns(() => _vbProjects.Object);
+            _vbe.SetupGet(m => m.VBProjects).Returns(() => MockProjectsCollection.Object);
 
             return this;
         }
@@ -162,7 +165,7 @@ namespace RubberduckTests.Mocks
 
             if (referenceStdLibs)
             {
-                builder.AddReference("VBA", LibraryPathVBA, 4, 2, true);
+                builder.AddReference(ReferenceLibrary.VBA);
             }
 
             var project = builder.Build();
@@ -196,24 +199,24 @@ namespace RubberduckTests.Mocks
         /// Builds a mock VBE containing a single "TestProject1" with multiple modules.
         /// </summary>
         public static Mock<IVBE> BuildFromModules(IEnumerable<(string name, string content, ComponentType componentType)> modules)
-            => BuildFromModules(modules, Enumerable.Empty<string>());
+            => BuildFromModules(modules, Enumerable.Empty<ReferenceLibrary>());
 
         /// <summary>
         /// Builds a mock VBE containing a single "TestProject1" with one module and one or more libraries.
         /// </summary>
-        public static Mock<IVBE> BuildFromModules((string name, string content, ComponentType componentType) module, params string[] libraries)
-            => BuildFromModules(new (string, string, ComponentType)[] { module }, libraries);
+        public static Mock<IVBE> BuildFromModules((string name, string content, ComponentType componentType) module, params ReferenceLibrary[] libraries)
+            => BuildFromModules(new(string, string, ComponentType)[] { module }, libraries);
 
         /// <summary>
         /// Builds a mock VBE containing a single "TestProject1" with multiple modules and libraries.
         /// </summary>
-        public static Mock<IVBE> BuildFromModules(IEnumerable<(string name, string content, ComponentType componentType)> modules, IEnumerable<string> libraryNames)
-            => BuildFromModules(TestProjectName, modules, libraryNames);
+        public static Mock<IVBE> BuildFromModules(IEnumerable<(string name, string content, ComponentType componentType)> modules, IEnumerable<ReferenceLibrary> libraries)
+            => BuildFromModules(TestProjectName, modules, libraries);
 
         /// <summary>
         /// Builds a mock VBE containing one project with multiple modules and libraries.
         /// </summary>
-        public static Mock<IVBE> BuildFromModules(string projectName, IEnumerable<(string name, string content, ComponentType componentType)> modules, IEnumerable<string> libraryNames)
+        public static Mock<IVBE> BuildFromModules(string projectName, IEnumerable<(string name, string content, ComponentType componentType)> modules, IEnumerable<ReferenceLibrary> referenceLibraries)
         {
             var vbeBuilder = new MockVbeBuilder();
 
@@ -223,9 +226,10 @@ namespace RubberduckTests.Mocks
                 builder.AddComponent(name, componentType, content);
             }
 
-            foreach (var name in libraryNames)
+            foreach (var refLibrary in referenceLibraries)
             {
-                AddReference[name](builder);
+                var (name, path, versionMajor, versionMinor, isBuiltIn) = ReferenceLibraries[refLibrary];
+                builder.AddReference(name, path, versionMajor, versionMinor, isBuiltIn);
             }
 
             var project = builder.Build();
@@ -265,7 +269,7 @@ namespace RubberduckTests.Mocks
             vbe.Setup(m => m.Windows).Returns(() => _windows);
             vbe.SetupProperty(m => m.ActiveCodePane);
             vbe.SetupProperty(m => m.ActiveVBProject);
-            
+
             vbe.SetupGet(m => m.SelectedVBComponent).Returns(() => vbe.Object.ActiveCodePane?.CodeModule?.Parent);
             vbe.Setup(m => m.GetActiveSelection()).Returns(() => vbe.Object.ActiveCodePane?.GetQualifiedSelection());
             vbe.SetupGet(m => m.ActiveWindow).Returns(() => vbe.Object.ActiveCodePane.Window);
@@ -275,8 +279,8 @@ namespace RubberduckTests.Mocks
 
             vbe.SetupGet(m => m.MainWindow).Returns(() => mainWindow.Object);
 
-            _vbProjects = CreateProjectsMock();
-            vbe.SetupGet(m => m.VBProjects).Returns(() => _vbProjects.Object);
+            MockProjectsCollection = CreateProjectsMock();
+            vbe.SetupGet(m => m.VBProjects).Returns(() => MockProjectsCollection.Object);
 
             _vbCodePanes = CreateCodePanesMock();
             vbe.SetupGet(m => m.CodePanes).Returns(() => _vbCodePanes.Object);
@@ -291,8 +295,8 @@ namespace RubberduckTests.Mocks
 
         private static ICommandBars DummyCommandBars()
         {
-            var commandBars = new Mock<ICommandBars>(); 
- 
+            var commandBars = new Mock<ICommandBars>();
+
             var dummyCommandBar = DummyCommandBar();
 
             commandBars.SetupGet(m => m[It.IsAny<int>()]).Returns(dummyCommandBar);
@@ -335,7 +339,7 @@ namespace RubberduckTests.Mocks
 
             result.Setup(m => m.GetEnumerator()).Returns(() => _projects.GetEnumerator());
             result.As<IEnumerable>().Setup(m => m.GetEnumerator()).Returns(() => _projects.GetEnumerator());
-            
+
             result.Setup(m => m[It.IsAny<int>()]).Returns<int>(value => _projects.ElementAt(value));
             result.SetupGet(m => m.Count).Returns(() => _projects.Count);
 
@@ -372,13 +376,13 @@ namespace RubberduckTests.Mocks
 
             result.Setup(m => m.GetEnumerator()).Returns(() => _codePanes.GetEnumerator());
             result.As<IEnumerable>().Setup(m => m.GetEnumerator()).Returns(() => _codePanes.GetEnumerator());
-            
+
             result.Setup(m => m[It.IsAny<int>()]).Returns<int>(value => _codePanes.ElementAt(value));
             result.SetupGet(m => m.Count).Returns(() => _codePanes.Count);
 
             return result;
         }
 
-        public Mock<IVBProjects> MockProjectsCollection => _vbProjects;
+        public Mock<IVBProjects> MockProjectsCollection { get; private set; }
     }
 }
