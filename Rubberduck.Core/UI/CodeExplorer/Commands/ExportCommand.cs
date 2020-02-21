@@ -100,15 +100,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 var component = ProjectsProvider.Component(qualifiedModule);
                 try
                 {
-                    if (component.Type == ComponentType.Document)
-                    {
-                        var path = System.IO.Path.GetDirectoryName(dialog.FileName);
-                        component.ExportAsSourceFile(path);
-                    }
-                    else
-                    {
-                        component.Export(dialog.FileName);
-                    }
+                    var path = System.IO.Path.GetDirectoryName(dialog.FileName);
+                    component.ExportAsSourceFile(path);
                 }
                 catch (Exception ex)
                 {
