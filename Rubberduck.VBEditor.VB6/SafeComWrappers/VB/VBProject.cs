@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -193,15 +192,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                     _displayName = DisplayNameFromWindowCaption();
                 }
 
-                if (string.IsNullOrEmpty(_displayName)
-                    || _displayName.EndsWith("..."))
+                if (string.IsNullOrEmpty(_displayName))
                 {
-                    var nameFromBuildFileName = DisplayNameFromBuildFileName();
-                    if (!string.IsNullOrEmpty(nameFromBuildFileName)
-                        && nameFromBuildFileName.Length > _displayName.Length - 3) //Otherwise, we got more of the name from the previous attempt.
-                    {
-                        _displayName = nameFromBuildFileName;
-                    }
+                    _displayName = DisplayNameFromBuildFileName();
                 }
 
                 return _displayName;
@@ -221,11 +214,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 : pseudoDllName.Substring(0, pseudoDllName.Length - 4);
         }
 
-        private static readonly Regex CaptionProjectRegex = new Regex(@"^(?:[^-]+)(?:\s-\s)(?<project>.+)(?:\s-\s.*)?$");
-        private static readonly Regex OpenModuleRegex = new Regex(@"^(?<project>.+)(?<module>\s-\s\[.*\((Code|UserForm)\)\])$");
-        private static readonly Regex PartialOpenModuleRegex = new Regex(@"^(?<project>.+)(\s-\s\[)");
-        private static readonly Regex NearlyOnlyProject = new Regex(@"^(?<project>.+)(\s-?\s?)$");
-
+        private static readonly Regex CaptionProjectRegex = new Regex(@"^(?<project>.+)(?:\s-\s)Microsoft Visual");
         private string DisplayNameFromWindowCaption()
         {
             using (var vbe = VBE)
@@ -240,62 +229,20 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                     }
 
                     var caption = mainWindow.Caption;
-                    if (caption.Length > 99)
+                    if (CaptionProjectRegex.IsMatch(caption))
                     {
-                        //The value returned will be truncated at character 99 and the rest is garbage due to a bug in the VBE API.
-                        caption = caption.Substring(0, 99);
-
-                        if (CaptionProjectRegex.IsMatch(caption))
-                        {
-                            var projectRelatedPartOfCaption = CaptionProjectRegex
-                                .Matches(caption)[0]
-                                .Groups["project"]
-                                .Value;
-
-                            if (PartialOpenModuleRegex.IsMatch(projectRelatedPartOfCaption))
-                            {
-                                return PartialOpenModuleRegex
-                                    .Matches(projectRelatedPartOfCaption)[0]
-                                    .Groups["project"]
-                                    .Value;
-                            }
-
-                            if (NearlyOnlyProject.IsMatch(projectRelatedPartOfCaption))
-                            {
-                                return NearlyOnlyProject
-                                    .Matches(projectRelatedPartOfCaption)[0]
-                                    .Groups["project"]
-                                    .Value;
-                            }
-
-                            return $"{projectRelatedPartOfCaption}...";
-                        }
+                        return CaptionProjectRegex
+                            .Matches(caption)[0]
+                            .Groups["project"]
+                            .Value;
                     }
-                    else
-                    {
-                        if (CaptionProjectRegex.IsMatch(caption))
-                        {
-                            var projectRelatedPartOfCaption = CaptionProjectRegex
-                                .Matches(caption)[0]
-                                .Groups["project"]
-                                .Value;
 
-                            if (OpenModuleRegex.IsMatch(projectRelatedPartOfCaption))
-                            {
-                                return OpenModuleRegex
-                                    .Matches(projectRelatedPartOfCaption)[0]
-                                    .Groups["project"]
-                                    .Value;
-                            }
-                        }
-                    }
+                    return string.Empty;
                 }
                 catch
                 {
                     return string.Empty;
                 }
-
-                return string.Empty;
             }
         }
 
