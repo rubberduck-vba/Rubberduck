@@ -13,12 +13,14 @@ using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.MoveMember.Extensions;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 
 namespace Rubberduck.Refactorings.MoveMember
@@ -26,7 +28,7 @@ namespace Rubberduck.Refactorings.MoveMember
     public interface IMoveMemberRefactoringTestAccess
     {
         MoveMemberModel TestUserInteractionOnly(Declaration target, Func<MoveMemberModel, MoveMemberModel> userInteraction);
-        string PreviewDestination(MoveMemberModel model);
+        string PreviewModuleContent(MoveMemberModel model, PreviewModule previewModule);
     }
 
     public class MoveMemberRefactoring : InteractiveRefactoringBase<IMoveMemberPresenter, MoveMemberModel>, IMoveMemberRefactoringTestAccess
@@ -38,7 +40,7 @@ namespace Rubberduck.Refactorings.MoveMember
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
         private readonly ISelectionService _selectionService;
 
-        private MoveMemberModel Model { set; get; } = null;
+        private MoveMemberObjectsFactory _moveMemberFactory;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -60,6 +62,7 @@ namespace Rubberduck.Refactorings.MoveMember
             _rewritingManager = rewritingManager;
             _selectedDeclarationProvider = selectedDeclarationProvider;
             _selectionService = selectionService;
+            _moveMemberFactory = new MoveMemberObjectsFactory(declarationFinderProvider);
         }
 
         public MoveMemberModel TestUserInteractionOnly(Declaration target, Func<MoveMemberModel, MoveMemberModel> userInteraction)
@@ -68,31 +71,65 @@ namespace Rubberduck.Refactorings.MoveMember
             return userInteraction(model);
         }
 
-        public string PreviewDestination(MoveMemberModel model)
+        public string PreviewModuleContent(MoveMemberModel model, PreviewModule previewModule)
         {
-            var contentToMove = new ContentToMove();
-            (bool strategyFound, IMoveMemberRewriteSession moveMemberSession) = RefactorRewrite(model, model.MoveRewritingManager.CheckOutCodePaneSession(), contentToMove);
+            //If there are no declarations selected to move, preview the module's existing content
+            //if (!model.SelectedDeclarations.Any())
+            //{
+            //    if (previewModule == PreviewModule.Source)
+            //    {
+            //        return PreviewExistingContent(model, model.Source.QualifiedModuleName);
+            //    }
 
-            if (strategyFound)
+            //    if (previewModule == PreviewModule.Destination)
+            //    {
+            //        if (model.Destination.IsExistingModule(out var destination))
+            //        {
+            //            return PreviewExistingContent(model, destination.QualifiedModuleName);
+            //        }
+
+            //        return $"{Tokens.Option} {Tokens.Explicit}";
+            //    }
+            //}
+
+            //if (!model.Strategy.IsApplicable(model))
+            if (!MoveMemberObjectsFactory.TryCreateStrategy(model, out var strategy))
             {
-                if (model.Destination.IsExistingModule(out var destinationModule))
-                {
-                    var rewriter = moveMemberSession.CheckOutModuleRewriter(destinationModule.QualifiedModuleName);
-                    return rewriter.GetText();
-                }
-                return contentToMove.AsSingleBlock;
+                return MoveMemberResources.ApplicableStrategyNotFound;
             }
 
-            return MoveMemberResources.ApplicableStrategyNotFound;
+            var isExistingDestination = model.Destination.IsExistingModule(out var destinationModule);
+            if (previewModule == PreviewModule.Destination && !isExistingDestination)
+            {
+                var content = strategy.NewDestinationModuleContent(model, _rewritingManager, new ContentToMove()).AsSingleBlockWithinDemarcationComments();
+
+                return $"{Tokens.Option} {Tokens.Explicit}{Environment.NewLine}{Environment.NewLine}{content}";
+            }
+
+            var previewSession = strategy.RefactorRewrite(model, _rewritingManager, new ContentToMove(), true);
+
+            var qmnToPreview = previewModule == PreviewModule.Destination
+                ? destinationModule.QualifiedModuleName
+                : model.Source.QualifiedModuleName;
+
+            var rewriter = previewSession.CheckOutModuleRewriter(qmnToPreview);
+            var preview =  rewriter.GetText(maxConsecutiveNewLines: 3);
+            return preview;
+        }
+
+        private string PreviewExistingContent(MoveMemberModel model, QualifiedModuleName qualifiedModuleName)
+        {
+            var session = _rewritingManager.CheckOutCodePaneSession();
+            var sourceRewriter = session.CheckOutModuleRewriter(qualifiedModuleName);
+            return sourceRewriter.GetText();
         }
 
         protected override MoveMemberModel InitializeModel(Declaration target)
         {
             if (target == null) { throw new TargetDeclarationIsNullException(); }
 
-            Model = new MoveMemberModel(_declarationFinderProvider, RewritingManager, PreviewDestination);
-            Model.DefineMove(target);
-            return Model;
+            var model = new MoveMemberModel(target, _declarationFinderProvider, PreviewModuleContent, _moveMemberFactory);
+            return model;
         }
 
         protected override void RefactorImpl(MoveMemberModel model)
@@ -103,19 +140,31 @@ namespace Rubberduck.Refactorings.MoveMember
                 return;
             }
 
-            Model = model;
-
-            if (Model.Destination.IsExistingModule(out _))
+            if (!MoveMemberObjectsFactory.TryCreateStrategy(model, out _))
             {
-                SafeMoveMembers();
+                _messageBox?.Message(MoveMemberResources.ApplicableStrategyNotFound);
                 return;
             }
 
-            var suspendResult = _parseManager.OnSuspendParser(this, new[] { ParserState.Ready }, SafeMoveMembers);
+            if (model.Destination.IsExistingModule(out _))
+            {
+                MoveMembers(model);
+                return;
+            }
+
+            var suspendResult = _parseManager.OnSuspendParser(this, new[] { ParserState.Ready }, () => MoveMembers(model));
             var suspendOutcome = suspendResult.Outcome;
             if (suspendOutcome != SuspensionOutcome.Completed)
             {
-                _logger.Warn($"AddModule: {Model.Destination.ModuleName} failed.");
+                if ((suspendOutcome == SuspensionOutcome.UnexpectedError || suspendOutcome == SuspensionOutcome.Canceled)
+                    && suspendResult.EncounteredException != null)
+                {
+                    ExceptionDispatchInfo.Capture(suspendResult.EncounteredException).Throw();
+                    return;
+                }
+
+                _logger.Warn($"{nameof(MoveMembers)} failed because a parser suspension request could not be fulfilled.  The request's result was '{suspendResult.ToString()}'.");
+                throw new SuspendParserFailureException();
             }
         }
 
@@ -132,41 +181,27 @@ namespace Rubberduck.Refactorings.MoveMember
             return null;
         }
 
-        private static (bool strategyFound, IMoveMemberRewriteSession rewriteSession) RefactorRewrite(MoveMemberModel model, IExecutableRewriteSession session, IProvideNewContent contentToMove)
+        private void MoveMembers(MoveMemberModel model)
         {
-            var strategy = model.Strategy;
-            if (strategy is null)
-            {
-                return (false, new MoveMemberRewriteSession(session));
-            }
-
-            return (true, strategy.ModifyContent(model, session, contentToMove));
-        }
-
-        private void SafeMoveMembers()
-        {
-            ICodeModule newlyCreatedCodeModule = null;
-            var newModulePostMoveSelection = new Selection();
             try
             {
-                var contentToMove = new ContentToMove();
-                (bool strategyFound, IMoveMemberRewriteSession moveMemberRewriteSession) = RefactorRewrite(Model, _rewritingManager.CheckOutCodePaneSession(), contentToMove);
-
-                if (!strategyFound) { return; }
-
-                if (!moveMemberRewriteSession.TryRewrite())
+                if (!MoveMemberObjectsFactory.TryCreateStrategy(model, out var strategy))
                 {
-                    PresentMoveMemberErrorMessage(BuildDefaultErrorMessage(Model.SelectedDeclarations.FirstOrDefault()));
                     return;
                 }
 
-                if (!Model.Destination.IsExistingModule(out _))
+                var contentToMove = new ContentToMove();
+                var moveMemberRewriteSession = strategy.RefactorRewrite(model, _rewritingManager, contentToMove);
+
+                if (!moveMemberRewriteSession.TryRewrite())
                 {
-                    //CreateNewModuleWithContent returns an ICodeModule reference to support setting the post-move Selection.
-                    //Unable to use the ISelectionService after creating a module, since the
-                    //new Component is not available via VBComponents until after a reparse
-                    newlyCreatedCodeModule = CreateNewModule(contentToMove.AsSingleBlock, Model);
-                    newModulePostMoveSelection = new Selection(newlyCreatedCodeModule.CountOfLines - contentToMove.CountOfLines + 1, 1);
+                    PresentMoveMemberErrorMessage(BuildDefaultErrorMessage(model.SelectedDeclarations.FirstOrDefault()));
+                    return;
+                }
+
+                if (!model.Destination.IsExistingModule(out _))
+                {
+                    CreateNewModule(contentToMove.AsSingleBlock, model);
                 }
             }
             //TODO: Review these catches
@@ -176,42 +211,27 @@ namespace Rubberduck.Refactorings.MoveMember
             }
             catch (RuntimeBinderException rbEx)
             {
-                PresentMoveMemberErrorMessage($"{BuildDefaultErrorMessage(Model.SelectedDeclarations.FirstOrDefault())}: {rbEx.Message}");
+                PresentMoveMemberErrorMessage($"{BuildDefaultErrorMessage(model.SelectedDeclarations.FirstOrDefault())}: {rbEx.Message}");
             }
             catch (COMException comEx)
             {
-                PresentMoveMemberErrorMessage($"{BuildDefaultErrorMessage(Model.SelectedDeclarations.FirstOrDefault())}: {comEx.Message}");
+                PresentMoveMemberErrorMessage($"{BuildDefaultErrorMessage(model.SelectedDeclarations.FirstOrDefault())}: {comEx.Message}");
             }
             catch (ArgumentException argEx)
             {
                 //This exception is often thrown when there is a rewrite conflict (e.g., try to insert where something's been deleted)
-                PresentMoveMemberErrorMessage($"{BuildDefaultErrorMessage(Model.SelectedDeclarations.FirstOrDefault())}: {argEx.Message}");
+                PresentMoveMemberErrorMessage($"{BuildDefaultErrorMessage(model.SelectedDeclarations.FirstOrDefault())}: {argEx.Message}");
             }
             catch (Exception unhandledEx)
             {
-                PresentMoveMemberErrorMessage($"{BuildDefaultErrorMessage(Model.SelectedDeclarations.FirstOrDefault())}: {unhandledEx.Message}");
-            }
-            finally
-            {
-                if (newlyCreatedCodeModule != null)
-                {
-                    using (newlyCreatedCodeModule)
-                    {
-                        SetPostMoveSelection(newModulePostMoveSelection, newlyCreatedCodeModule);
-                    }
-                }
-                else
-                {
-                    SetPostMoveSelection();
-                }
+                PresentMoveMemberErrorMessage($"{BuildDefaultErrorMessage(model.SelectedDeclarations.FirstOrDefault())}: {unhandledEx.Message}");
             }
         }
 
-        private static ICodeModule CreateNewModule(string newModuleContent, MoveMemberModel model)
+        private void CreateNewModule(string newModuleContent, MoveMemberModel model)
         {
-            ICodeModule codeModule = null;
-            var vbProject = model.Source.Module.Project;
-            using (var components = vbProject.VBComponents)
+            var targetProject = model.Source.Module.Project;
+            using (var components = targetProject.VBComponents)
             {
                 using (var newComponent = components.Add(model.Destination.ComponentType))
                 {
@@ -220,51 +240,15 @@ namespace Rubberduck.Refactorings.MoveMember
                     {
                         //If VBE Option 'Require Variable Declaration' is set, then
                         //Option Explicit is included with a newly inserted Module...hence, the check
-                        if (newModule.Content().Contains(MoveMemberResources.OptionExplicit))
+                        var optionExplicit = $"{Tokens.Option} {Tokens.Explicit}";
+                        if (newModule.Content().Contains(optionExplicit))
                         {
                             newModule.InsertLines(newModule.CountOfLines, newModuleContent);
+                            return;
                         }
-                        else
-                        {
-                            newModule.InsertLines(1, $"{MoveMemberResources.OptionExplicit}{Environment.NewLine}{Environment.NewLine}{newModuleContent}");
-                        }
-                        codeModule = newModule;
+                        newModule.InsertLines(1, $"{optionExplicit}{Environment.NewLine}{Environment.NewLine}{newModuleContent}");
                     }
                 }
-            }
-            return codeModule;
-        }
-
-        private void SetPostMoveSelection(Selection postMoveSelection = new Selection(), ICodeModule newlyCreatedCodeModule = null)
-        {
-            //The move/rewrite is done at this point, so do not bubble up any exceptions. 
-            //If the user sees an exception, he may think that the the move failed
-            try
-            {
-                if (newlyCreatedCodeModule != null)
-                {
-                    using (var codePane = newlyCreatedCodeModule.CodePane)
-                    {
-                        if (!codePane.IsWrappingNullReference)
-                        {
-                            codePane.Selection = postMoveSelection;
-                        }
-                    }
-                    return;
-                }
-                if (Model.Destination.IsExistingModule(out var module))
-                {
-                    var destinationMembers = _declarationFinderProvider.DeclarationFinder.Members(module.QualifiedModuleName)
-                        .Where(d => d.IsMember());
-
-                    var lastPreMoveDestinationMember = destinationMembers.Where(d => d.IsMember()).OrderBy(d => d.Selection).LastOrDefault();
-
-                    _selectionService.TrySetSelection(module.QualifiedModuleName, new Selection(lastPreMoveDestinationMember?.Context.Stop.Line ?? 1, 1));
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Warn($"{ex.Message}: {nameof(SetPostMoveSelection)} threw and exception");
             }
         }
 
@@ -286,7 +270,9 @@ namespace Rubberduck.Refactorings.MoveMember
         public MoveMemberUnsupportedMoveException() { }
 
         public MoveMemberUnsupportedMoveException(Declaration declaration)
-            : base(String.Format(MoveMemberResources.UnsupportedMoveExceptionFormat, ToLocalizedString(declaration.DeclarationType) , declaration.IdentifierName))
+            : base(String.Format(MoveMemberResources.UnsupportedMoveExceptionFormat, 
+                        ToLocalizedString(declaration?.DeclarationType ?? DeclarationType.Member), 
+                        declaration?.IdentifierName ?? ToLocalizedString(DeclarationType.Member)))
         { }
 
         private static string ToLocalizedString(DeclarationType type)

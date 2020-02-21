@@ -6,19 +6,18 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.MoveMember
 {
-    public enum ContentTypes { TypeDeclarationBlock, DeclarationBlock, MethodBlock, PostContentMessage };
+    public enum ContentTypes { TypeDeclarationBlock, DeclarationBlock, MethodBlock };
 
-    public interface IProvideNewContent
+    public interface INewContentProvider
     {
         void AddMethod(string content);
         void AddFieldOrConstantDeclaration(string content);
         void AddTypeDeclaration(string content);
-        void AddPostScriptComment(string content);
         string AsSingleBlock { get; }
-        int CountOfLines { get; }
+        string AsSingleBlockWithinDemarcationComments(string startMessage = null, string endMessage = null);
     }
 
-    public class ContentToMove : IProvideNewContent
+    public class ContentToMove : INewContentProvider
     {
         private Dictionary<ContentTypes, List<string>> _movedContent;
 
@@ -26,7 +25,6 @@ namespace Rubberduck.Refactorings.MoveMember
         {
             _movedContent = new Dictionary<ContentTypes, List<string>>
             {
-                { ContentTypes.PostContentMessage, new List<string>() },
                 { ContentTypes.DeclarationBlock, new List<string>() },
                 { ContentTypes.MethodBlock, new List<string>() },
                 { ContentTypes.TypeDeclarationBlock, new List<string>() }
@@ -44,7 +42,6 @@ namespace Rubberduck.Refactorings.MoveMember
         public void AddMethod(string content) => Add(ContentTypes.MethodBlock, content);
         public void AddFieldOrConstantDeclaration(string content) => Add(ContentTypes.DeclarationBlock, content);
         public void AddTypeDeclaration(string content) => Add(ContentTypes.TypeDeclarationBlock, content);
-        public void AddPostScriptComment(string content) => Add(ContentTypes.PostContentMessage, content);
 
         private void Add(ContentTypes contentType, string content)
         {
@@ -63,13 +60,17 @@ namespace Rubberduck.Refactorings.MoveMember
                 return string.Join($"{ Environment.NewLine}{ Environment.NewLine}",
                                 (_movedContent[ContentTypes.TypeDeclarationBlock])
                                 .Concat(_movedContent[ContentTypes.DeclarationBlock])
-                                .Concat(_movedContent[ContentTypes.MethodBlock])
-                                .Concat(_movedContent[ContentTypes.PostContentMessage]))
+                                .Concat(_movedContent[ContentTypes.MethodBlock]))
                                 .Trim();
             }
         }
 
-        public int CountOfLines 
-            => AsSingleBlock.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).Count();
+        public string AsSingleBlockWithinDemarcationComments(string startMessage = null, string endMessage = null)
+        {
+            var changesStartMarker = startMessage ?? "Moved Content below this line";
+            var changesEndMarker = endMessage ?? "Moved Content above this line";
+
+            return $"'<=== {changesStartMarker}  ===>{Environment.NewLine}{AsSingleBlock}{Environment.NewLine}'<=== {changesEndMarker} ===>";
+        }
     }
 }

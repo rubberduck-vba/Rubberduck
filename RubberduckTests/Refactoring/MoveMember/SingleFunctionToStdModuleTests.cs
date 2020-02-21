@@ -15,7 +15,7 @@ namespace RubberduckTests.Refactoring.MoveMember
      * equivalent test in the SingleProcedureToStdModuleTests class 
      */
     [TestFixture]
-    public class SingleFunctionToStdModuleTests : MoveMemberTestsBase
+    public class MoveFunctionToStdModuleTests : MoveMemberTestsBase
     {
         private const string ThisStrategy = nameof(MoveMemberToStdModule);
         private const DeclarationType ThisDeclarationType = DeclarationType.Function;
@@ -42,7 +42,7 @@ End Function
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType));
 
-            var refactoredCode = RefactoredCode(moveDefinition, source);
+            var refactoredCode = RefactoredCode_UserSetsDestinationModuleName(moveDefinition, source);
 
             StringAssert.AreEqualIgnoringCase(null, refactoredCode.StrategyName);
         }
@@ -68,25 +68,10 @@ End Function
 ";
 
             var moveDefinition = new TestMoveDefinition(endpoints, memberToMove);
-
-            string strategyName = null;
-            MoveMemberModel PresenterAdjustment(MoveMemberModel model)
-            {
-                model.ChangeDestination(moveDefinition.DestinationModuleName);
-                //if (model.TryFindStrategy(out var strategy))
-                //{
-                //    strategyName = strategy.GetType().Name ?? null;
-                //}
-                strategyName = model.Strategy?.GetType().Name ?? null;
-                return model;
-            }
-
-            var vbeStub = Support.BuildVBEStub(moveDefinition, source);
-
-            var preview = RetrievePreviewAfterUserInput(vbeStub, memberToMove, PresenterAdjustment);
+            var preview = RetrievePreviewAfterUserInput(moveDefinition, source, memberToMove);
 
             StringAssert.Contains("Option Explicit", preview);
-            StringAssert.Contains("Public Function Foo(", preview);
+            Assert.IsTrue(Support.OccursOnce("Public Function Foo(", preview));
         }
 
         [TestCase(MoveEndpoints.StdToStd, "Public", ThisStrategy)]
@@ -118,7 +103,7 @@ End Function
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType));
 
-            var refactoredCode = RefactoredCode(moveDefinition, source);
+            var refactoredCode = RefactoredCode_UserSetsDestinationModuleName(moveDefinition, source);
 
             StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
 
@@ -162,7 +147,7 @@ End Function";
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType));
 
-            var refactoredCode = RefactoredCode(moveDefinition, source);
+            var refactoredCode = RefactoredCode_UserSetsDestinationModuleName(moveDefinition, source);
 
             StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
 
@@ -201,7 +186,7 @@ End Function";
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType));
 
-            var refactoredCode = RefactoredCode(moveDefinition, source);
+            var refactoredCode = RefactoredCode_UserSetsDestinationModuleName(moveDefinition, source);
 
             StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
         }
@@ -233,7 +218,7 @@ End Sub
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType));
 
-            var refactoredCode = RefactoredCode(moveDefinition, source);
+            var refactoredCode = RefactoredCode_UserSetsDestinationModuleName(moveDefinition, source);
 
             StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
 
@@ -281,7 +266,7 @@ End Function
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType));
 
-            var refactoredCode = RefactoredCode(moveDefinition, source);
+            var refactoredCode = RefactoredCode_UserSetsDestinationModuleName(moveDefinition, source);
 
             StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
 
@@ -339,7 +324,7 @@ End Sub
             var referencingModuleName = "Module3";
             moveDefinition.Add(new ModuleDefinition(referencingModuleName, ComponentType.StandardModule, externalReferences));
 
-            var refactoredCode = RefactoredCode(moveDefinition, source);
+            var refactoredCode = RefactoredCode_UserSetsDestinationModuleName(moveDefinition, source);
 
             StringAssert.AreEqualIgnoringCase(ThisStrategy, refactoredCode.StrategyName);
 
@@ -394,7 +379,7 @@ End Sub
             var referencingModuleName = "Module3";
             moveDefinition.Add(new ModuleDefinition(referencingModuleName, ComponentType.StandardModule, externalReferences));
 
-            var refactoredCode = RefactoredCode(moveDefinition, source);
+            var refactoredCode = RefactoredCode_UserSetsDestinationModuleName(moveDefinition, source);
 
             StringAssert.AreEqualIgnoringCase(null, refactoredCode.StrategyName);
         }
@@ -430,7 +415,7 @@ End Function
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType));
 
-            var refactoredCode = RefactoredCode(moveDefinition, source);
+            var refactoredCode = RefactoredCode_UserSetsDestinationModuleName(moveDefinition, source);
 
             StringAssert.AreEqualIgnoringCase(ThisStrategy, refactoredCode.StrategyName);
 
@@ -471,14 +456,14 @@ End Function
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType));
 
-            var refactoredCode = RefactoredCode(moveDefinition, source);
+            var refactoredCode = RefactoredCode_UserSetsDestinationModuleName(moveDefinition, source);
 
             StringAssert.AreEqualIgnoringCase(ThisStrategy, refactoredCode.StrategyName);
             StringAssert.Contains($"{moveDefinition.DestinationModuleName}.CalculateVolume(", refactoredCode.Source);
             StringAssert.DoesNotContain("Private Function CalculateVolume", refactoredCode.Source);
 
             StringAssert.Contains($"CalculateVolume = area * height", refactoredCode.Destination);
-            StringAssert.Contains($"Public Function CalculateVolume(area", refactoredCode.Destination);
+            StringAssert.Contains($"Public Function CalculateVolume(ByRef area", refactoredCode.Destination);
         }
 
         [TestCase(MoveEndpoints.StdToStd, "Public")]
@@ -533,7 +518,7 @@ End Function
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType));
 
-            var refactoredCode = RefactoredCode(moveDefinition, source);
+            var refactoredCode = RefactoredCode_UserSetsDestinationModuleName(moveDefinition, source);
 
             StringAssert.AreEqualIgnoringCase(ThisStrategy, refactoredCode.StrategyName);
 
@@ -608,7 +593,7 @@ End Function
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType));
 
-            var refactoredCode = RefactoredCode(moveDefinition, source);
+            var refactoredCode = RefactoredCode_UserSetsDestinationModuleName(moveDefinition, source);
 
             StringAssert.AreEqualIgnoringCase(null, refactoredCode.StrategyName);
         }
@@ -662,7 +647,7 @@ End Function
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType));
 
-            var refactoredCode = RefactoredCode(moveDefinition, source);
+            var refactoredCode = RefactoredCode_UserSetsDestinationModuleName(moveDefinition, source);
 
             StringAssert.AreEqualIgnoringCase(null, refactoredCode.StrategyName);
         }
@@ -713,7 +698,7 @@ End Function
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType));
 
-            var refactoredCode = RefactoredCode(moveDefinition, source);
+            var refactoredCode = RefactoredCode_UserSetsDestinationModuleName(moveDefinition, source);
 
             StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
 
@@ -824,7 +809,7 @@ End Sub
 ";
             moveDefinition.Add(new ModuleDefinition(callSiteModuleName, ComponentType.StandardModule, callSiteCode));
 
-            var refactoredCode = RefactoredCode(moveDefinition, source);
+            var refactoredCode = RefactoredCode_UserSetsDestinationModuleName(moveDefinition, source);
 
             StringAssert.AreEqualIgnoringCase(ThisStrategy, refactoredCode.StrategyName);
 
@@ -917,7 +902,7 @@ Private Const LOG_IS_ENABLED = True
 
 Public Entries As Long
 
-Public Function Foo(arg1 As Long)
+Public Function Foo(ByRef arg1 As Long)
     mfoo = arg1 * 10
     If LogIsEnabled Then
         Log ""Foo called""
@@ -975,7 +960,7 @@ End Property
 ";
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType));
-            var refactoredCode = RefactoredCode(moveDefinition, source);
+            var refactoredCode = RefactoredCode_UserSetsDestinationModuleName(moveDefinition, source);
 
             StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
             if (expectedStrategy is null)
@@ -984,16 +969,16 @@ End Property
             }
 
             StringAssert.DoesNotContain("Function Foo(arg1", refactoredCode.Source);
-            StringAssert.Contains("Public Function Foo(arg1", refactoredCode.Destination);
+            StringAssert.Contains("Public Function Foo(ByRef arg1", refactoredCode.Destination);
             StringAssert.Contains($"arg1 = {moveDefinition.SourceModuleName}.Bar * 10", refactoredCode.Destination);
         }
 
-        [TestCase("Public", MoveEndpoints.StdToStd)]
-        [TestCase("Public", MoveEndpoints.ClassToStd)]
-        [TestCase("Public", MoveEndpoints.FormToStd)]
+        [TestCase(MoveEndpoints.StdToStd, ThisStrategy)]
+        [TestCase(MoveEndpoints.ClassToStd, null)]
+        [TestCase(MoveEndpoints.FormToStd, null)]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void ReferencesNonExclusiveBackingVariable_NoStrategy(string accessibility, MoveEndpoints endpoints)
+        public void SupportMemberReferencesNonExclusiveBackingVariable( MoveEndpoints endpoints, string expectedStrategy)
         {
             var memberToMove = "Foo";
             var source = $@"
@@ -1005,7 +990,7 @@ Public Sub InitializeModule(arg1 As Long)
     mBar = arg1
 End Sub
 
-{accessibility} Function Foo(arg1 As Long) As Long
+Public Function Foo(arg1 As Long) As Long
     arg1 = Bar * 10
     Bar = arg1
     Foo = arg1
@@ -1021,9 +1006,20 @@ End Property
 ";
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType));
-            var refactoredCode = RefactoredCode(moveDefinition, source);
+            var refactoredCode = RefactoredCode_UserSetsDestinationModuleName(moveDefinition, source);
 
-            StringAssert.AreEqualIgnoringCase(null, refactoredCode.StrategyName);
+            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
+            if (expectedStrategy is null)
+            {
+                return;
+            }
+
+            StringAssert.Contains("Bar(", refactoredCode.Source);
+            StringAssert.DoesNotContain("Function Foo(arg1", refactoredCode.Source);
+            StringAssert.Contains("Public Function Foo(ByRef arg1", refactoredCode.Destination);
+            StringAssert.Contains($"arg1 = {moveDefinition.SourceModuleName}.Bar", refactoredCode.Destination);
+            StringAssert.Contains($"{moveDefinition.SourceModuleName}.Bar = arg1", refactoredCode.Destination);
+            StringAssert.DoesNotContain("Bar(", refactoredCode.Destination);
         }
 
         [TestCase("Public", MoveEndpoints.StdToStd)]
@@ -1058,7 +1054,7 @@ End Property
 ";
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType));
-            var refactoredCode = RefactoredCode(moveDefinition, source);
+            var refactoredCode = RefactoredCode_UserSetsDestinationModuleName(moveDefinition, source);
 
             StringAssert.AreEqualIgnoringCase(ThisStrategy, refactoredCode.StrategyName);
 
@@ -1066,7 +1062,7 @@ End Property
             StringAssert.DoesNotContain("Public Property Let Bar", refactoredCode.Source);
             StringAssert.DoesNotContain("Public Property Get Bar", refactoredCode.Source);
 
-            StringAssert.Contains("Public Function Foo(arg1", refactoredCode.Destination);
+            StringAssert.Contains("Public Function Foo(ByRef arg1", refactoredCode.Destination);
             StringAssert.Contains($"arg1 = Bar * 10", refactoredCode.Destination);
             StringAssert.Contains($"Bar = arg1", refactoredCode.Destination);
         }
@@ -1108,19 +1104,235 @@ End Sub
 ";
             moveDefinition.Add(new ModuleDefinition("Module3", ComponentType.StandardModule, externalReferencingCode));
 
-            var refactoredCode = RefactoredCode(moveDefinition, source);
+            var refactoredCode = RefactoredCode_UserSetsDestinationModuleName(moveDefinition, source);
 
             StringAssert.AreEqualIgnoringCase(ThisStrategy, refactoredCode.StrategyName);
 
             StringAssert.DoesNotContain("Function Foo(arg1", refactoredCode.Source);
 
-            StringAssert.Contains("Public Function Foo(arg1", refactoredCode.Destination);
+            StringAssert.Contains("Public Function Foo(ByRef arg1", refactoredCode.Destination);
             StringAssert.DoesNotContain("Public Property Let Bar", refactoredCode.Destination);
             StringAssert.DoesNotContain("Public Property Get Bar", refactoredCode.Destination);
 
             var module3Content = refactoredCode["Module3"];
             StringAssert.Contains($"{moveDefinition.SourceModuleName}.Bar", refactoredCode.Destination);
 
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("MoveMember")]
+        public void CorrectsMemberNameCollisionInDestination()
+        {
+            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, ("Goo", DeclarationType.PropertyLet));
+
+            var destinationModuleName = moveDefinition.DestinationModuleName;
+            var source =
+$@"
+Option Explicit
+
+Private mfoo As Long
+Private mgoo As Long
+
+Public Function Foo(arg1 As Long) As Long
+    mfoo = arg1 * 10
+    Foo = mfoo
+End Function
+
+Public Property Let Goo(arg1 As Long)
+    mgoo = arg1
+End Property
+
+Public Property Get Goo() As Long
+    Goo = mgoo
+End Property
+";
+
+
+            var destination =
+$@"
+Option Explicit
+
+Public multiplier As Long
+
+Public Function Goo(arg1 As Long) 
+    Goo = multiplier * arg1
+End Function
+";
+
+            var refactorResults = RefactoredCode(moveDefinition, source, destination);
+
+            var destinationExpectedContent =
+$@"
+Option Explicit
+
+Public multiplier As Long
+
+Private mgoo As Long
+
+Public Property Let Goo1(ByVal arg1 As Long)
+    mgoo = arg1
+End Property
+
+Public Property Get Goo1() As Long
+    Goo1 = mgoo
+End Property
+
+Public Function Goo(arg1 As Long) 
+    Goo = multiplier * arg1
+End Function
+";
+            var expectedLines = destinationExpectedContent.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var line in expectedLines)
+            {
+                StringAssert.Contains(line, refactorResults.Destination);
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("MoveMember")]
+        public void SetsNewMemberNameAtExternalReferences()
+        {
+            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, ("Goo", DeclarationType.PropertyLet));
+
+            var destinationModuleName = moveDefinition.DestinationModuleName;
+            var source =
+$@"
+Option Explicit
+
+Private mfoo As Long
+Private mgoo As Long
+
+Public Function Foo(arg1 As Long) As Long
+    mfoo = arg1 * 10
+    Foo = mfoo
+End Function
+
+Public Property Let Goo(arg1 As Long)
+    mgoo = arg1
+End Property
+
+Public Property Get Goo() As Long
+    Goo = mgoo
+End Property
+";
+
+
+            var destination =
+$@"
+Option Explicit
+
+Public multiplier As Long
+
+Public Function Goo(arg1 As Long) 
+    Goo = multiplier * arg1
+End Function
+";
+            var callSiteModuleName = "Module3";
+            var callSiteCode =
+    $@"
+Option Explicit
+
+Private mBar As Long
+
+Public Sub MemberAccess(arg1 As Long)
+    mBar = {moveDefinition.SourceModuleName}.Goo
+End Sub
+
+Public Sub WithMemberAccess(arg2 As Long)
+    With {moveDefinition.SourceModuleName}
+        mBar = .Goo
+    End With
+End Sub
+
+Public Sub NonQualified(arg3 As Long)
+    mBar = Goo + arg3
+End Sub
+";
+            moveDefinition.Add(new ModuleDefinition(callSiteModuleName, ComponentType.StandardModule, callSiteCode));
+
+            var refactorResults = RefactoredCode(moveDefinition, source, destination);
+
+            var callSiteExpectedContent =
+$@"
+Option Explicit
+
+Private mBar As Long
+
+Public Sub MemberAccess(arg1 As Long)
+    mBar = {moveDefinition.DestinationModuleName}.Goo1
+End Sub
+
+Public Sub WithMemberAccess(arg2 As Long)
+    With {moveDefinition.SourceModuleName}
+        mBar = {moveDefinition.DestinationModuleName}.Goo1
+    End With
+End Sub
+
+Public Sub NonQualified(arg3 As Long)
+    mBar = {moveDefinition.DestinationModuleName}.Goo1 + arg3
+End Sub
+";
+            var expectedLines = callSiteExpectedContent.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var line in expectedLines)
+            {
+                StringAssert.Contains(line, refactorResults[callSiteModuleName]);
+            }
+        }
+
+
+        [TestCase(MoveEndpoints.StdToStd)]
+        [TestCase(MoveEndpoints.ClassToStd)]
+        [TestCase(MoveEndpoints.FormToStd)]
+        [Category("Refactorings")]
+        [Category("MoveMember")]
+        public void ContainsObjectField(MoveEndpoints endpoints)
+        {
+            var memberToMove = "FooMath";
+            var source =
+$@"
+Option Explicit
+
+Private mObj As ObjectClass
+
+Public Function FooMath(arg1 As Long) As Long
+    if mObj is Nothing Then
+        Set mObj = new ObjectClass
+    End if
+
+    FooMath = arg1 * mObj.Value
+End Function
+";
+
+            var objectClass =
+$@"
+Option Explicit
+
+Private mValue As Long
+
+Private Sub Class_Initialize()
+    mValue = 6
+End Sub
+
+Public Property Get Value() As Long
+    Value = mValue
+End Property
+";
+
+            var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType));
+
+            var refactoredCode = RefactoredCode_UserSetsDestinationModuleName(moveDefinition, source);
+
+            StringAssert.AreEqualIgnoringCase(ThisStrategy, refactoredCode.StrategyName);
+
+            var sourceRefactored = refactoredCode.Source;
+            StringAssert.DoesNotContain("FooMath", sourceRefactored);
+            StringAssert.DoesNotContain("mObj", sourceRefactored);
+
+            var destinationRefactored = refactoredCode.Destination;
+            StringAssert.Contains("FooMath", destinationRefactored);
+            StringAssert.Contains("mObj", destinationRefactored);
         }
     }
 }

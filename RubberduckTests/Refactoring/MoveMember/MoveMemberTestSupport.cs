@@ -1,4 +1,5 @@
 ﻿using Moq;
+using NUnit.Framework;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
@@ -55,45 +56,69 @@ namespace RubberduckTests.Refactoring.MoveMember
             return new MoveMemberRefactoring(state, state, null, factory, rewritingManager, selectionService, new SelectedDeclarationProvider(selectionService, state), uiDispatcherMock.Object);
         }
 
-        protected MoveMemberRefactorResults RefactoredCode(TestMoveDefinition moveDefinition, string sourceContent, string destinationContent = null, params (string, DeclarationType)[] additionalElements)
+        protected MoveMemberRefactorResults RefactoredCode(TestMoveDefinition moveDefinition, string sourceContent, string destinationContent = null, Type expectedException = null, bool executeViaActiveSelection = false, params (string identifier, DeclarationType declarationType)[] additionalElements)
         {
             string strategyName = null;
             MoveMemberModel PresenterAdjustment(MoveMemberModel model)
             {
                 model.ChangeDestination(moveDefinition.DestinationModuleName);
+                var moveCandidates = model.MoveableMembers;
                 foreach (var element in additionalElements)
                 {
-                    var target = model.DeclarationFinderProvider.DeclarationFinder.DeclarationsWithType(element.Item2)
+                    var target = model.DeclarationFinderProvider.DeclarationFinder.DeclarationsWithType(element.declarationType)
+                        .Where(t => t.ParentDeclaration.IdentifierName == moveDefinition.SourceModuleName)
                         .Single(declaration => declaration.IdentifierName == element.Item1);
 
-                    model.AddDeclarationToMove(target);
+                    var moveable = moveCandidates.Single(mv => mv.IdentifierName == element.identifier);
+                    moveable.IsSelected = true;
                 }
-                //if (model.TryFindStrategy(out var strategy))
-                //{
-                //    strategyName = strategy.GetType().Name ?? null;
-                //}
 
-                strategyName = model.Strategy?.GetType().Name ?? null;
+                strategyName = GetStrategyName(model);
                 return model;
             }
 
 
             var vbeStub = Support.BuildVBEStub(moveDefinition, sourceContent, destinationContent);
-            var results = RefactoredCode(vbeStub, moveDefinition.SelectedElement, moveDefinition.SelectedDeclarationType, PresenterAdjustment);
-            return new MoveMemberRefactorResults(moveDefinition, results, strategyName);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbeStub);
+            using (state)
+            {
+                var target = state.DeclarationFinder.DeclarationsWithType(moveDefinition.SelectedDeclarationType)
+                    .Where(t => t.ParentDeclaration.IdentifierName == moveDefinition.SourceModuleName)
+                    .Single(declaration => declaration.IdentifierName == moveDefinition.SelectedElement);
+
+                var refactoring = TestRefactoring(rewritingManager, state, PresenterAdjustment);
+
+                if (expectedException != null)
+                {
+                    Assert.Throws(expectedException, () => refactoring.Refactor(target));
+                }
+                else
+                {
+                    refactoring.Refactor(target);
+                }
+
+                var results = vbeStub.ActiveVBProject.VBComponents
+                    .ToDictionary(component => component.Name, component => component.CodeModule.Content());
+                return new MoveMemberRefactorResults(moveDefinition, results, strategyName);
+            }
         }
 
-        protected MoveMemberRefactorResults RefactoredCode(TestMoveDefinition moveDefinition, string sourceContent)
+        private string GetStrategyName(MoveMemberModel model)
+        {
+            if (MoveMemberObjectsFactory.TryCreateStrategy(model, out var strategy))
+            {
+                return strategy.GetType().Name;
+            }
+            return null;
+        }
+
+        protected MoveMemberRefactorResults RefactoredCode_UserSetsDestinationModuleName(TestMoveDefinition moveDefinition, string sourceContent)
         {
             string strategyName = null;
             MoveMemberModel PresenterAdjustment(MoveMemberModel model)
             {
                 model.ChangeDestination(moveDefinition.DestinationModuleName);
-                //if (model.TryFindStrategy(out var strategy))
-                //{
-                //    strategyName = strategy.GetType().Name ?? null;
-                //}
-                strategyName = model.Strategy?.GetType().Name ?? null;
+                strategyName = GetStrategyName(model);
                 return model;
             }
 
@@ -103,19 +128,26 @@ namespace RubberduckTests.Refactoring.MoveMember
             return new MoveMemberRefactorResults(moveDefinition, results, strategyName);
         }
 
-        protected string RetrievePreviewAfterUserInput(IVBE vbe, (string declarationName, DeclarationType declarationType) memberToMove, Func<MoveMemberModel, MoveMemberModel> presenterAdjustment)
+        protected string RetrievePreviewAfterUserInput(TestMoveDefinition moveDefinition, string sourceContent, (string declarationName, DeclarationType declarationType) memberToMove)
         {
+            MoveMemberModel PresenterAdjustment(MoveMemberModel model)
+            {
+                model.ChangeDestination(moveDefinition.DestinationModuleName);
+                return model;
+            }
+
+            var vbe = Support.BuildVBEStub(moveDefinition, sourceContent);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
             using (state)
             {
                 var target = state.DeclarationFinder.DeclarationsWithType(memberToMove.declarationType)
                                     .Single(declaration => declaration.IdentifierName == memberToMove.declarationName);
 
-                var refactoring = TestRefactoring(rewritingManager, state, presenterAdjustment);
+                var refactoring = TestRefactoring(rewritingManager, state, PresenterAdjustment);
                 if (refactoring is IMoveMemberRefactoringTestAccess testAccess)
                 {
-                    var model = testAccess.TestUserInteractionOnly(target, presenterAdjustment);
-                    return testAccess.PreviewDestination(model);
+                    var model = testAccess.TestUserInteractionOnly(target, PresenterAdjustment);
+                    return testAccess.PreviewModuleContent(model, PreviewModule.Destination);
                 }
                 throw new InvalidCastException();
             }
@@ -158,8 +190,8 @@ namespace RubberduckTests.Refactoring.MoveMember
             var member = state.DeclarationFinder.AllUserDeclarations.FirstOrDefault(d => d.IdentifierName.Equals(moveDefinition.SelectedElement));
             var destinationModule = state.DeclarationFinder.ModuleDeclaration(GetQMN(vbe, moveDefinition.DestinationModuleName));
 
-            var model = new MoveMemberModel(state, rewritingManager, null);
-            model.DefineMove(member, destinationModule);
+            var model = new MoveMemberModel(member, state, null, new MoveMemberObjectsFactory(state));
+            model.ChangeDestination(destinationModule);
 
             var selectionService = MockedSelectionService(vbe.GetActiveSelection());
             if (msgBox == null)
@@ -198,15 +230,15 @@ namespace RubberduckTests.Refactoring.MoveMember
             return result;
         }
 
-        public static T ParseAndTest<T>(IVBE vbe, Func<RubberduckParserState, IVBE, T> testFunc)
-        {
-            T result = default;
-            using (var state = MockParser.CreateAndParse(vbe))
-            {
-                result = testFunc(state, vbe);
-            }
-            return result;
-        }
+        //public static T ParseAndTest<T>(IVBE vbe, Func<RubberduckParserState, IVBE, T> testFunc)
+        //{
+        //    T result = default;
+        //    using (var state = MockParser.CreateAndParse(vbe))
+        //    {
+        //        result = testFunc(state, vbe);
+        //    }
+        //    return result;
+        //}
 
         public static void ParseAndTest(IVBE vbe, Action<RubberduckParserState, IVBE, IRewritingManager> testFunc)
         {
@@ -228,17 +260,17 @@ namespace RubberduckTests.Refactoring.MoveMember
             return result;
         }
 
-        public static T ParseAndTest<T>(Func<RubberduckParserState, IVBE, IRewritingManager, T> testFunc, TestMoveDefinition moveDefinition, string sourceContent)
-        {
-            T result = default;
-            var vbe = BuildVBEStub(moveDefinition, sourceContent);
-            (RubberduckParserState state, IRewritingManager rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
-            using (state)
-            {
-                result = testFunc(state, vbe, rewritingManager);
-            }
-            return result;
-        }
+        //public static T ParseAndTest<T>(Func<RubberduckParserState, IVBE, IRewritingManager, T> testFunc, TestMoveDefinition moveDefinition, string sourceContent)
+        //{
+        //    T result = default;
+        //    var vbe = BuildVBEStub(moveDefinition, sourceContent);
+        //    (RubberduckParserState state, IRewritingManager rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
+        //    using (state)
+        //    {
+        //        result = testFunc(state, vbe, rewritingManager);
+        //    }
+        //    return result;
+        //}
 
         public static T ParseAndTest<T>(Func<RubberduckParserState, IVBE, IRewritingManager, T> testFunc, params (string moduleName, string content, ComponentType componentType)[] modules)
         {
@@ -257,14 +289,16 @@ namespace RubberduckTests.Refactoring.MoveMember
             var target = declarationFinderProvider.DeclarationFinder.DeclarationsWithType(declarationType)
                  .Single(declaration => declaration.IdentifierName == declarationName);
 
-            var model = new MoveMemberModel(declarationFinderProvider, rewritingManager, null);
-            //var scenario = MoveMemberModel.CreateMoveScenario(declarationFinderProvider, target, new MoveDefinitionEndpoint(DEFAULT_DESTINATION_MODULE_NAME, ComponentType.StandardModule));
-            //var manager = new MoveMemberRewritingManager(rewritingManager);
-            //return MoveMemberStrategyProvider.FindStrategies(/*scenario,*/ declarationFinderProvider, model);
-            var strategy = model.Strategy;
-            return strategy != null
-                ? new IMoveMemberRefactoringStrategy[] { model.Strategy }
-                : Enumerable.Empty<IMoveMemberRefactoringStrategy>();
+            var model = new MoveMemberModel(target, declarationFinderProvider, null, new MoveMemberObjectsFactory(declarationFinderProvider));
+
+            model.ChangeDestination(DEFAULT_DESTINATION_MODULE_NAME);
+
+            if (MoveMemberObjectsFactory.TryCreateStrategy(model, out var strategy))
+            {
+                return new IMoveMemberRefactoringStrategy[] { strategy };
+            }
+
+            return Enumerable.Empty<IMoveMemberRefactoringStrategy>(); ;
         }
 
         public static MoveMemberModel CreateModelAndDefineMove(IVBE vbe, TestMoveDefinition moveDefinition, RubberduckParserState state, IRewritingManager rewritingManager)
@@ -272,20 +306,13 @@ namespace RubberduckTests.Refactoring.MoveMember
             var sourceModule = state.DeclarationFinder.ModuleDeclaration(GetQMN(vbe, moveDefinition.SourceModuleName));
             var member = state.DeclarationFinder.Members(sourceModule).FirstOrDefault(m => m.IdentifierName.Equals(moveDefinition.SelectedElement));
             var destinationModule = state.DeclarationFinder.ModuleDeclaration(GetQMN(vbe, moveDefinition.DestinationModuleName));
-            var model = new MoveMemberModel(state, rewritingManager, null);
+            var model = new MoveMemberModel(member, state, null, new MoveMemberObjectsFactory(state));
 
-            if (destinationModule != null)
-            {
-                model.DefineMove(member, destinationModule);
-            }
-            else
-            {
-                model.DefineMove(member, moveDefinition.DestinationModuleName, moveDefinition.DestinationComponentType);
-            }
+            model.ChangeDestination(destinationModule);
             return model;
         }
 
-        public static IVBE BuildVBEStub(TestMoveDefinition moveDefinition, string sourceContent) //, string destinationContent = null)
+        public static IVBE BuildVBEStub(TestMoveDefinition moveDefinition, string sourceContent)
         {
             if (moveDefinition.CreateNewModule)
             {
@@ -336,6 +363,41 @@ namespace RubberduckTests.Refactoring.MoveMember
             }
         }
 
+        public static bool OccursOnce(string toFind, string content)
+        {
+            var firstIdx = content.IndexOf(toFind);
+            var lastIdx = content.LastIndexOf(toFind);
+            return firstIdx == lastIdx;
+        }
+
+        public static (string moduleName, ComponentType componentType) EndpointToSourceTuple(MoveEndpoints endpoints)
+        {
+            switch (endpoints)
+            {
+                case MoveEndpoints.FormToStd:
+                    return (DEFAULT_SOURCE_FORM_NAME, ComponentType.UserForm);
+                case MoveEndpoints.ClassToStd:
+                    return (DEFAULT_SOURCE_CLASS_NAME, ComponentType.ClassModule);
+                case MoveEndpoints.StdToStd:
+                    return (DEFAULT_SOURCE_MODULE_NAME, ComponentType.StandardModule);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public static (string moduleName, ComponentType componentType) EndpointToDestinationTuple(MoveEndpoints endpoints)
+        {
+            switch (endpoints)
+            {
+                case MoveEndpoints.FormToStd:
+                case MoveEndpoints.ClassToStd:
+                case MoveEndpoints.StdToStd:
+                    return (DEFAULT_DESTINATION_MODULE_NAME, ComponentType.StandardModule);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
         private static Mock<IRefactoringPresenterFactory> CreatePresenterFactoryStub(MoveMemberModel model)
         {
             var presenterStub = new Mock<IMoveMemberPresenter>();
@@ -347,15 +409,6 @@ namespace RubberduckTests.Refactoring.MoveMember
 
             return factoryStub;
         }
-
-        //        public static string ClassVariableDeclareAndInitialize(string classModuleName, string variableName = null)
-        //        {
-        //            var helper = new ClassVariableContentProvider(classModuleName, variableName);
-        //            return
-        //$@"{helper.ClassVariableDeclaration}
-
-        //{helper.ClassModuleClassInitializeProcedure}";
-        //        }
 
         public static string ClassInstantiationBoilerPlate(string instanceIdentifier, string className)
         {

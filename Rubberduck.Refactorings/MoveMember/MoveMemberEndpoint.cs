@@ -26,95 +26,138 @@ namespace Rubberduck.Refactorings.MoveMember
         FormToClass
     };
 
-    public interface IMoveEndpoint
+    public interface IMoveMemberModuleProxy
     {
         string ModuleName { get; }
         ComponentType ComponentType { get; }
+        bool IsStandardModule { get; }
+        bool IsClassModule { get; }
+        bool IsUserFormModule { get; }
+        IEnumerable<Declaration> ModuleDeclarations { get; }
+        bool TryGetCodeSectionStartIndex(out int insertionIndex);
     }
 
-    public interface IMoveSource : IMoveEndpoint
+    public interface IMoveSourceModuleProxy : IMoveMemberModuleProxy
     {
         Declaration Module { get; }
         QualifiedModuleName QualifiedModuleName { get; }
+        //IReadOnlyCollection<IMembersRelatedByName> MoveableMembers { get; }
     }
 
-    public interface IMoveDestination : IMoveEndpoint
+    public interface IMoveDestinationModuleProxy : IMoveMemberModuleProxy
     {
         bool IsExistingModule(out Declaration module);
-        bool TryGetCodeSectionStartIndex(IDeclarationFinderProvider declarationFinderProvider, out int insertionIndex);
     }
 
-    public class MoveSource : IMoveSource
+    public class MoveSourceModuleProxy : IMoveSourceModuleProxy
     {
         private MoveMemberEndpoint _endpoint;
+        private List<IMoveableMemberSet> _moveableMembers;
 
-        public MoveSource(MoveMemberEndpoint endpoint)
+        public MoveSourceModuleProxy(MoveMemberEndpoint endpoint)
         {
             _endpoint = endpoint;
         }
+
+        public IEnumerable<Declaration> ModuleDeclarations 
+                    => _endpoint.DeclarationFinderProvider.DeclarationFinder.Members(_endpoint.Module);
+
+        //public void LoadMoveableMembers(IEnumerable<IMembersRelatedByName> moveable)
+        //{
+        //    _moveableMembers = moveable.ToList();
+        //}
+
+        //public IReadOnlyCollection<IMembersRelatedByName> MoveableMembers => _moveableMembers;
 
         public QualifiedModuleName QualifiedModuleName => Module.QualifiedModuleName;
         public Declaration Module => _endpoint.Module;
         public string ModuleName => _endpoint.Module.IdentifierName;
         public ComponentType ComponentType => _endpoint.ComponentType;
+
+        public bool IsStandardModule => _endpoint.IsStandardModule;
+        public bool IsClassModule => _endpoint.IsClassModule;
+        public bool IsUserFormModule => _endpoint.IsUserFormModule;
+
+        public bool TryGetCodeSectionStartIndex(out int insertionIndex)
+            => _endpoint.TryGetCodeSectionStartIndex(out insertionIndex);
     }
 
-    public class MoveDestination : IMoveDestination
+    public class MoveDestinationModuleProxy : IMoveDestinationModuleProxy
     {
         private MoveMemberEndpoint _endpoint;
 
-        public MoveDestination(MoveMemberEndpoint endpoint)
+        public MoveDestinationModuleProxy(MoveMemberEndpoint endpoint)
         {
             _endpoint = endpoint;
         }
 
         public string ModuleName => _endpoint.ModuleName;
         public ComponentType ComponentType => _endpoint.ComponentType;
-        public bool IsExistingModule(out Declaration module)
+
+        public IEnumerable<Declaration> ModuleDeclarations
         {
-            module = null;
-            if (_endpoint.Module != null)
+            get
             {
-                module = _endpoint.Module;
-                return true;
+                if (IsExistingModule(out var module))
+                {
+                    return _endpoint.DeclarationFinderProvider.DeclarationFinder.Members(module);
+                }
+                return Enumerable.Empty<Declaration>();
             }
-            return false;
         }
 
-        public bool TryGetCodeSectionStartIndex(IDeclarationFinderProvider declarationFinderProvider, out int insertionIndex)
+        public bool IsStandardModule => _endpoint.IsStandardModule;
+        public bool IsClassModule => _endpoint.IsClassModule;
+        public bool IsUserFormModule => _endpoint.IsUserFormModule;
+
+        public bool IsExistingModule(out Declaration module)
         {
-            insertionIndex = -1;
-            if (IsExistingModule(out var module))
-            {
-                insertionIndex = declarationFinderProvider.DeclarationFinder.Members(module.QualifiedModuleName)
-                        .Where(d => d.IsMember())
-                        .OrderBy(c => c.Selection)
-                        .FirstOrDefault()?.Context.Start.TokenIndex ?? -1;
-            }
-            return insertionIndex > -1;
+            module = _endpoint.Module;
+            return module != null;
         }
+
+        public bool TryGetCodeSectionStartIndex(out int insertionIndex)
+            => _endpoint.TryGetCodeSectionStartIndex(out insertionIndex);
     }
 
     public struct MoveMemberEndpoint
     {
-        public MoveMemberEndpoint(string moduleName, ComponentType moduleComponentType)
-            : this(null)
+        public MoveMemberEndpoint(string moduleName, ComponentType moduleComponentType, IDeclarationFinderProvider declarationFinderProvider)
+            : this(null, declarationFinderProvider)
         {
             ModuleName = moduleName;
             ComponentType = moduleComponentType;
         }
 
-        public MoveMemberEndpoint(Declaration module)
+        public MoveMemberEndpoint(Declaration module, IDeclarationFinderProvider declarationFinderProvider)
         {
             QualifiedModuleName = module?.QualifiedModuleName;
             Module = module;
             ModuleName = module?.IdentifierName ?? string.Empty;
             ComponentType = module?.QualifiedModuleName.ComponentType ?? ComponentType.Undefined;
+            DeclarationFinderProvider = declarationFinderProvider;
         }
 
         public QualifiedModuleName? QualifiedModuleName { get; }
         public Declaration Module { get; }
         public string ModuleName { get; }
         public ComponentType ComponentType { get; }
+        public bool IsStandardModule => ComponentType.Equals(ComponentType.StandardModule);
+        public bool IsClassModule => ComponentType.Equals(ComponentType.ClassModule);
+        public bool IsUserFormModule => ComponentType.Equals(ComponentType.UserForm);
+        public IDeclarationFinderProvider DeclarationFinderProvider { get; }
+
+        public bool TryGetCodeSectionStartIndex(out int insertionIndex)
+        {
+            insertionIndex = -1;
+            if (Module != null)
+            {
+                insertionIndex = DeclarationFinderProvider.DeclarationFinder.Members(Module.QualifiedModuleName)
+                        .Where(d => d.IsMember())
+                        .OrderBy(c => c.Selection)
+                        .FirstOrDefault()?.Context.Start.TokenIndex ?? -1;
+            }
+            return insertionIndex > -1;
+        }
     }
 }
