@@ -63,10 +63,30 @@ namespace Rubberduck.Refactorings.ExtractInterface
         private void AddInterfaceClass(ExtractInterfaceModel model)
         {
             var targetProjectId = model.TargetDeclaration.ProjectId;
-            var interfaceCode = InterfaceModuleBody(model);
+            var interfaceCode = InterfaceCode(model);
             var interfaceName = model.InterfaceName;
 
-            _addComponentService.AddComponent(targetProjectId, ComponentType.ClassModule, interfaceCode, componentName: interfaceName);
+            if (model.InterfaceInstancing == ClassInstancing.Public)
+            {
+                _addComponentService.AddComponentWithAttributes(targetProjectId, ComponentType.ClassModule, interfaceCode, componentName: interfaceName);
+            }
+            else
+            {
+                _addComponentService.AddComponent(targetProjectId, ComponentType.ClassModule, interfaceCode, componentName: interfaceName);
+            }
+        }
+
+        private static string InterfaceCode(ExtractInterfaceModel model)
+        {
+            var interfaceBody = InterfaceModuleBody(model);
+
+            if (model.InterfaceInstancing == ClassInstancing.Public)
+            {
+                var moduleHeader = ExposedInterfaceHeader(model.InterfaceName);
+                return $"{moduleHeader}{Environment.NewLine}{interfaceBody}";
+            }
+
+            return interfaceBody;
         }
 
         private static string InterfaceModuleBody(ExtractInterfaceModel model)
@@ -80,10 +100,25 @@ namespace Rubberduck.Refactorings.ExtractInterface
                                        ? $"'@{folderAnnotation.Context.GetText()}{Environment.NewLine}"
                                        : string.Empty;
 
+            var exposedAnnotation = new ExposedModuleAnnotation();
+            var exposedAnnotationText = model.InterfaceInstancing == ClassInstancing.Public
+                ? $"'@{exposedAnnotation.Name}{Environment.NewLine}"
+                : string.Empty;
+
             var interfaceAnnotation = new InterfaceAnnotation();
             var interfaceAnnotationText = $"'@{interfaceAnnotation.Name}{Environment.NewLine}";
 
-            return $"{optionExplicit}{Environment.NewLine}{folderAnnotationText}{interfaceAnnotationText}{Environment.NewLine}{interfaceMembers}";
+            return $"{optionExplicit}{Environment.NewLine}{folderAnnotationText}{exposedAnnotationText}{interfaceAnnotationText}{Environment.NewLine}{interfaceMembers}";
+        }
+
+        private static string ExposedInterfaceHeader(string interfaceName)
+        {
+            return $@"VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = ""{interfaceName}""
+Attribute VB_Exposed = True";
         }
 
         private void AddImplementsStatement(ExtractInterfaceModel model, IRewriteSession rewriteSession)

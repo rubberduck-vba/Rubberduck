@@ -51,12 +51,13 @@ namespace Rubberduck.Refactorings.ExtractInterface
                 throw new TargetDeclarationIsNullException();
             }
 
-            if (!ModuleTypes.Contains(target.DeclarationType))
+            if (!ModuleTypes.Contains(target.DeclarationType) 
+                || !(target is ClassModuleDeclaration targetClass))
             {
                 throw new InvalidDeclarationTypeException(target);
             }
 
-            return new ExtractInterfaceModel(_declarationFinderProvider, target);
+            return new ExtractInterfaceModel(_declarationFinderProvider, targetClass);
         }
 
         protected override void RefactorImpl(ExtractInterfaceModel model)

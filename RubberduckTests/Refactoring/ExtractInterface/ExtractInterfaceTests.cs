@@ -144,11 +144,68 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _, selection);
             using(var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var target  = state.DeclarationFinder.UserDeclarations(DeclarationType.ClassModule).First();
+                var target  = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.ClassModule)
+                    .OfType<ClassModuleDeclaration>()
+                    .First();
 
                 //Specify Params to remove
                 var model = new ExtractInterfaceModel(state, target);
                 Assert.AreEqual(0, model.Members.Count);
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Extract Interface")]
+        public void ExtractInterfaceRefactoring_DefaultsToPublicInterfaceForExposedImplementingClass()
+        {
+            //Input
+            const string inputCode =
+                @"Attribute VB_Exposed = True
+
+Public Sub Foo
+End Sub";
+
+            var selection = new Selection(1, 23, 1, 27);
+
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _, selection);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var target = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.ClassModule)
+                    .OfType<ClassModuleDeclaration>()
+                    .First();
+
+                //Specify Params to remove
+                var model = new ExtractInterfaceModel(state, target);
+                Assert.AreEqual(ClassInstancing.Public, model.InterfaceInstancing);
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Extract Interface")]
+        public void ExtractInterfaceRefactoring_DefaultsToPrivateInterfaceForNonExposedImplementingClass()
+        {
+            //Input
+            const string inputCode =
+                @"Public Sub Foo
+End Sub";
+
+            var selection = new Selection(1, 23, 1, 27);
+
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _, selection);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var target = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.ClassModule)
+                    .OfType<ClassModuleDeclaration>()
+                    .First();
+
+                //Specify Params to remove
+                var model = new ExtractInterfaceModel(state, target);
+                Assert.AreEqual(ClassInstancing.Private, model.InterfaceInstancing);
             }
         }
 

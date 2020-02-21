@@ -662,6 +662,58 @@ End Sub
             ExecuteTest(inputCode, expectedClassCode, expectedInterfaceCode, SelectAllMembers);
         }
 
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
+        public void ExtractInterfaceRefactoring_PublicInterfaceInstancingCreatesExposedInterface()
+        {
+
+            //Input
+            const string inputCode =
+                @"'@Folder(""MyFolder.MySubFolder"")
+
+Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub";
+
+            //Expectation
+            const string expectedClassCode =
+                @"Implements IClass
+
+'@Folder(""MyFolder.MySubFolder"")
+
+Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub
+
+Private Sub IClass_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+    Err.Raise 5 'TODO implement interface member
+End Sub
+";
+
+            const string expectedInterfaceCode =
+                @"VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = ""IClass""
+Attribute VB_Exposed = True
+Option Explicit
+
+'@Folder(""MyFolder.MySubFolder"")
+'@Exposed
+'@Interface
+
+Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub
+";
+            Func<ExtractInterfaceModel, ExtractInterfaceModel> modelAdjustment = model =>
+            {
+                var modifiedModel = SelectAllMembers(model);
+                modifiedModel.InterfaceInstancing = ClassInstancing.Public;
+                return modifiedModel;
+            };
+            ExecuteTest(inputCode, expectedClassCode, expectedInterfaceCode, modelAdjustment);
+        }
+
         private void ExecuteTest(string inputCode, string expectedClassCode, string expectedInterfaceCode, Func<ExtractInterfaceModel, ExtractInterfaceModel> modelAdjustment)
         {
             var refactoredCode = RefactoredCode(
