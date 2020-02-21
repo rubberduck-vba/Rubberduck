@@ -17,31 +17,11 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Controls/ToolBar.xaml"/>
+                <ResourceDictionary Source="../Styles/DefaultStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
-            <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
-            <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
-            <converters:BooleanToDimmedBrushConverter x:Key="BooleanToDimmed" />
             <converters:CodeExplorerNodeToIconConverter x:Key="NodeToIcon" />
             <converters:AccessibilityToIconConverter x:Key="AccessibilityToIcon" />
-
-            <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
-                <GradientStop Color="#FFD9F4FF" Offset="0"/>
-                <GradientStop Color="#FF9BDDFB" Offset="1"/>
-            </LinearGradientBrush>
-            <LinearGradientBrush x:Key="{x:Static SystemColors.ControlBrushKey}" EndPoint="0,1" StartPoint="0,0">
-                <GradientStop Color="#FFEEEDED" Offset="0"/>
-                <GradientStop Color="#FFDDDDDD" Offset="1"/>
-            </LinearGradientBrush>
-            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
-            <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
-
-            <Style x:Key="ToolbarIconStyle" TargetType="Image">
-                <Setter Property="Height" Value="16" />
-                <Setter Property="Width" Value="16" />
-                <Setter Property="Margin" Value="2,0,2,0" />
-                <Setter Property="VerticalAlignment" Value="Top" />
-            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -58,7 +38,7 @@
 
         <TreeView x:Name="ProjectTree"
                   Grid.RowSpan="2" Grid.Column="0"
-                  Background="White"
+                  Background="{StaticResource BackgroundLightBrush}"
                   HorizontalContentAlignment="Stretch"
                   ItemsSource="{Binding Projects}"
                   BorderThickness="0,1"
@@ -74,14 +54,14 @@
                             <Setter Property="HorizontalAlignment" Value="Left" />
                             <Style.Triggers>
                                 <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="BorderBrush" Value="#adc6e5"/>
+                                    <Setter Property="BorderBrush" Value="{StaticResource HighlightBorderActiveBrush}"/>
                                 </Trigger>
                                 <MultiTrigger>
                                     <MultiTrigger.Conditions>
                                         <Condition Property="IsSelected" Value="True"/>
                                         <Condition Property="IsSelectionActive" Value="False"/>
                                     </MultiTrigger.Conditions>
-                                    <Setter Property="BorderBrush" Value="LightGray"/>
+                                    <Setter Property="BorderBrush" Value="{StaticResource HighlightInactiveBorderBrush}"/>
                                 </MultiTrigger>
                             </Style.Triggers>
                             <Style.Resources>
@@ -92,22 +72,8 @@
                         </Style>
                     </HierarchicalDataTemplate.ItemContainerStyle>
                     <HierarchicalDataTemplate.Resources>
-                        <Style x:Key="TreeViewItemStyle" TargetType="{x:Type TextBlock}">
+                        <Style x:Key="TreeViewItemStyleModified" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TreeViewItemStyle}">
                             <Setter Property="Text" Value="{Binding NameWithSignature}" />
-                            <Setter Property="FontSize" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeView}}, Path=FontSize}" />
-                            <Setter Property="FontWeight" Value="{Binding FontWeight}"/>
-                            <Setter Property="Margin" Value="2,0,2,0" />
-                            <Setter Property="VerticalAlignment" Value="Center" />
-                            <Setter Property="ToolTip" Value="{Binding ToolTip}" />
-                            <Setter Property="ToolTipService.InitialShowDelay" Value="500" />
-                            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                            <Setter Property="Foreground" Value="{Binding IsDimmed, Mode=OneWay, Converter={StaticResource BooleanToDimmed}}" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsObsolete}" Value="True">
-                                    <Setter Property="Foreground" Value="Gray" />
-                                    <Setter Property="TextDecorations" Value="Strikethrough" />
-                                </DataTrigger>
-                            </Style.Triggers>
                         </Style>
                     </HierarchicalDataTemplate.Resources>
                     <StackPanel Orientation="Horizontal">
@@ -125,7 +91,7 @@
                             </Image>
                             <Image Source="{Binding Declaration, Converter={StaticResource AccessibilityToIcon}}" Style="{StaticResource ToolbarIconStyle}" />
                         </Grid>
-                        <TextBlock Style="{StaticResource TreeViewItemStyle}" />
+                        <TextBlock Style="{StaticResource TreeViewItemStyleModified}" />
                     </StackPanel>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>

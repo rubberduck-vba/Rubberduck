@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 
 namespace Rubberduck.Inspections.Inspections.Concrete
@@ -48,34 +49,31 @@ namespace Rubberduck.Inspections.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class ObsoleteMemberUsageInspection : InspectionBase
+    public sealed class ObsoleteMemberUsageInspection : IdentifierReferenceInspectionBase
     {
         public ObsoleteMemberUsageInspection(RubberduckParserState state) : base(state)
         {
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
-            var declarations = State.AllUserDeclarations
-                .Where(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Member) &&
-                                      declaration.Annotations.Any(pta => pta.Annotation is ObsoleteAnnotation));
+            var declaration = reference?.Declaration;
+            return declaration != null
+                   && declaration.IsUserDefined
+                   && declaration.DeclarationType.HasFlag(DeclarationType.Member)
+                   && declaration.Annotations.Any(pta => pta.Annotation is ObsoleteAnnotation);
+        }
 
-            var issues = new List<IdentifierReferenceInspectionResult>();
-
-            foreach (var declaration in declarations)
-            {
-                var replacementDocumentation = declaration.Annotations
-                    .First(pta => pta.Annotation is ObsoleteAnnotation)
-                    .AnnotationArguments
-                    .FirstOrDefault() ?? string.Empty;
-
-                issues.AddRange(declaration.References.Select(reference =>
-                    new IdentifierReferenceInspectionResult(this,
-                        string.Format(InspectionResults.ObsoleteMemberUsageInspection, reference.IdentifierName, replacementDocumentation),
-                        State, reference)));
-            }
-
-            return issues;
+        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
+        {
+            var replacementDocumentation = reference.Declaration.Annotations
+                                               .First(pta => pta.Annotation is ObsoleteAnnotation)
+                                               .AnnotationArguments
+                                               .FirstOrDefault() ?? string.Empty;
+            return string.Format(
+                InspectionResults.ObsoleteMemberUsageInspection, 
+                reference.IdentifierName,
+                replacementDocumentation);
         }
     }
 }

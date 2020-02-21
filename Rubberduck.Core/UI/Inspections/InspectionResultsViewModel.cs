@@ -429,6 +429,20 @@ namespace Rubberduck.UI.Inspections
 
         private async void RefreshInspections(CancellationToken token)
         {
+            //We have to catch all exceptions here since this method is a fire-and-forget async action.
+            //Accordingly, any exception bubbling out of this method will likely take down the runtime and, thus, crash the host.
+            try
+            {
+                await RefreshInspections_Internal(token);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex,"Unhandled exception when refreshing inspection results.");
+            }
+        }
+
+        private async Task RefreshInspections_Internal(CancellationToken token)
+        {
             var stopwatch = Stopwatch.StartNew();
             IsBusy = true;
 

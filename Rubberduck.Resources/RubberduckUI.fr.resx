@@ -507,9 +507,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="Language_DE" xml:space="preserve">
     <value>Allemand</value>
   </data>
-  <data name="EncapsulateField_ParameterName" xml:space="preserve">
-    <value>Nom du paramètre:</value>
-  </data>
   <data name="MakeActiveWorkbookReferenceExplicit" xml:space="preserve">
     <value>Référer explicitement au classeur actif</value>
   </data>
@@ -611,9 +608,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="RegexSearchReplace_ReplaceAllButtonLabel" xml:space="preserve">
     <value>Remplacer tout</value>
-  </data>
-  <data name="EncapsulateField_SetterType" xml:space="preserve">
-    <value>Mutateur:</value>
   </data>
   <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
     <value>Sélection invalide</value>

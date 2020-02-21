@@ -5,7 +5,9 @@ using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 
 namespace Rubberduck.Inspections.Concrete
@@ -38,30 +40,27 @@ namespace Rubberduck.Inspections.Concrete
         public IsMissingOnInappropriateArgumentInspection(RubberduckParserState state)
             : base(state) { }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override (bool isResult, object properties) IsUnsuitableArgumentWithAdditionalProperties(ArgumentReference reference, DeclarationFinder finder)
         {
-            var results = new List<IInspectionResult>();
+            var parameter = ParameterForReference(reference, finder);
 
-            var prefilteredReferences = IsMissingDeclarations.SelectMany(decl => decl.References
-                .Where(candidate => !candidate.IsIgnoringInspectionResultFor(AnnotationName)));
+            var isResult = parameter != null
+                           && (!parameter.IsOptional
+                               || !parameter.AsTypeName.Equals(Tokens.Variant)
+                               || !string.IsNullOrEmpty(parameter.DefaultValue)
+                               || parameter.IsArray);
+            return (isResult, parameter);
+        }
 
-            foreach (var reference in prefilteredReferences)
-            {
-                var parameter = GetParameterForReference(reference);
+        protected override bool IsUnsuitableArgument(ArgumentReference reference, DeclarationFinder finder)
+        {
+            //No need to implement this, since we override IsUnsuitableArgumentWithAdditionalProperties.
+            throw new System.NotImplementedException();
+        }
 
-                if (parameter == null || 
-                    parameter.IsOptional 
-                    && parameter.AsTypeName.Equals(Tokens.Variant) 
-                    && string.IsNullOrEmpty(parameter.DefaultValue) 
-                    && !parameter.IsArray)
-                {
-                    continue;                   
-                }
-
-                results.Add(new IdentifierReferenceInspectionResult(this, InspectionResults.IsMissingOnInappropriateArgumentInspection, State, reference, parameter));
-            }
-
-            return results;
+        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
+        {
+            return InspectionResults.IsMissingOnInappropriateArgumentInspection;
         }
     }
 }

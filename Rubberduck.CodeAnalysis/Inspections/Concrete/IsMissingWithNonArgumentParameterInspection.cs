@@ -1,13 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Inspections.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
+﻿using Rubberduck.Inspections.Inspections.Abstract;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Inspections.Concrete
+namespace Rubberduck.Inspections.Concrete
 {
     /// <summary>
     /// Identifies uses of 'IsMissing' involving a non-parameter argument.
@@ -38,27 +35,16 @@ namespace Rubberduck.Inspections.Inspections.Concrete
         public IsMissingWithNonArgumentParameterInspection(RubberduckParserState state)
             : base(state) { }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsUnsuitableArgument(ArgumentReference reference, DeclarationFinder finder)
         {
-            var results = new List<IInspectionResult>();
+            var parameter = ParameterForReference(reference, finder);
 
-            // prefilter to reduce searchspace
-            var prefilteredReferences = IsMissingDeclarations.SelectMany(decl => decl.References
-                .Where(candidate => !candidate.IsIgnoringInspectionResultFor(AnnotationName)));
+            return parameter == null;
+        }
 
-            foreach (var reference in prefilteredReferences)
-            {
-                var parameter = GetParameterForReference(reference);
-
-                if (parameter != null)
-                {
-                    continue;
-                }
-
-                results.Add(new IdentifierReferenceInspectionResult(this, InspectionResults.IsMissingWithNonArgumentParameterInspection, State, reference));
-            }
-
-            return results;
+        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
+        {
+            return InspectionResults.IsMissingWithNonArgumentParameterInspection;
         }
     }
 }

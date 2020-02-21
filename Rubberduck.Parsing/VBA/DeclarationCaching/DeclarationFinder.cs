@@ -26,11 +26,11 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
         private readonly IHostApplication _hostApp;
         private IDictionary<string, List<Declaration>> _declarationsByName;
-        private IDictionary<QualifiedModuleName, List<Declaration>> _declarations;
+        private IDictionary<QualifiedModuleName, IDictionary<DeclarationType, List<Declaration>>> _declarations;
 
         private readonly IReadOnlyDictionary<QualifiedModuleName, IFailedResolutionStore> _failedResolutionStores;
         private readonly ConcurrentDictionary<QualifiedModuleName, IMutableFailedResolutionStore> _newFailedResolutionStores;
-        private readonly ConcurrentDictionary<QualifiedMemberName, ConcurrentBag<Declaration>> _newUndeclared;
+        private readonly ConcurrentDictionary<(QualifiedMemberName memberName, DeclarationType declarationType), ConcurrentBag<Declaration>> _newUndeclared;
 
         private IDictionary<(QualifiedModuleName module, int annotatedLine), List<IParseTreeAnnotation>> _annotations;
         private IDictionary<Declaration, List<ParameterDeclaration>> _parametersByParent;
@@ -78,7 +78,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             _failedResolutionStores = failedResolutionStores;
 
             _newFailedResolutionStores = new ConcurrentDictionary<QualifiedModuleName, IMutableFailedResolutionStore>();
-            _newUndeclared = new ConcurrentDictionary<QualifiedMemberName, ConcurrentBag<Declaration>>();
+            _newUndeclared = new ConcurrentDictionary<(QualifiedMemberName memberName, DeclarationType declarationType), ConcurrentBag<Declaration>>();
 
             var collectionConstructionActions = CollectionConstructionActions(declarations, annotations);
             ExecuteCollectionConstructionActions(collectionConstructionActions);
@@ -104,6 +104,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 () =>
                     _declarations = declarations
                         .GroupBy(item => item.QualifiedName.QualifiedModuleName)
+                        .SelectMany(grp1 => grp1.GroupBy(declaration => declaration.DeclarationType), (grp1, grp2) => (grp1, grp2))
+                        .GroupBy(tpl => tpl.grp1.Key, tpl => tpl.grp2)
                         .ToDictionary(),
                 () =>
                     _declarationsByName = declarations
@@ -282,16 +284,33 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             return Members(module.QualifiedName.QualifiedModuleName);
         }
 
+        public IEnumerable<Declaration> Members(Declaration module, DeclarationType declarationType)
+        {
+            return Members(module.QualifiedName.QualifiedModuleName, declarationType);
+        }
+
         public IEnumerable<Declaration> Members(QualifiedModuleName module)
         {
             return _declarations.TryGetValue(module, out var members)
-                    ? members
+                    ? members.AllValues()
                     : Enumerable.Empty<Declaration>();
+        }
+
+        public IEnumerable<Declaration> Members(QualifiedModuleName module, DeclarationType declarationType)
+        {
+            if (!_declarations.TryGetValue(module, out var membersByType))
+            {
+                return Enumerable.Empty<Declaration>();
+            }
+
+            return membersByType
+                    .Where(item => item.Key.HasFlag(declarationType))
+                    .SelectMany(item => item.Value);
         }
 
         public Declaration ModuleDeclaration(QualifiedModuleName module)
         {
-            return Members(module).SingleOrDefault(member => member.DeclarationType.HasFlag(DeclarationType.Module));
+            return Members(module, DeclarationType.Module).SingleOrDefault();
         }
 
         public IReadOnlyCollection<QualifiedModuleName> AllModules => _declarations.Keys.AsReadOnly();
@@ -494,10 +513,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
         public IEnumerable<Declaration> FindMemberMatches(Declaration parent, string memberName)
         {
-            return _declarations.TryGetValue(parent.QualifiedName.QualifiedModuleName, out var children)
-                ? children.Where(item => item.DeclarationType.HasFlag(DeclarationType.Member)
-                                             && item.IdentifierName == memberName)
-                : Enumerable.Empty<Declaration>();
+            return Members(parent.QualifiedName.QualifiedModuleName, DeclarationType.Member)
+                .Where(member => member.IdentifierName.Equals(memberName));
         }
 
         public IEnumerable<IParseTreeAnnotation> FindAnnotations(QualifiedModuleName module, int annotatedLine)
@@ -969,13 +986,14 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                     null,
                     !isReDimVariable);
 
-            var hasUndeclared = _newUndeclared.ContainsKey(enclosingProcedure.QualifiedName);
+            var enclosingScope = (enclosingProcedure.QualifiedName, enclosingProcedure.DeclarationType);
+            var hasUndeclared = _newUndeclared.ContainsKey(enclosingScope);
             if (hasUndeclared)
             {
                 ConcurrentBag<Declaration> undeclared;
-                while (!_newUndeclared.TryGetValue(enclosingProcedure.QualifiedName, out undeclared))
+                while (!_newUndeclared.TryGetValue(enclosingScope, out undeclared))
                 {
-                    _newUndeclared.TryGetValue(enclosingProcedure.QualifiedName, out undeclared);
+                    _newUndeclared.TryGetValue(enclosingScope, out undeclared);
                 }
                 var inScopeUndeclared = undeclared.FirstOrDefault(d => d.IdentifierName == identifierName);
                 if (inScopeUndeclared != null)
@@ -986,7 +1004,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             }
             else
             {
-                _newUndeclared.TryAdd(enclosingProcedure.QualifiedName, new ConcurrentBag<Declaration> { undeclaredLocal });
+                _newUndeclared.TryAdd(enclosingScope, new ConcurrentBag<Declaration> { undeclaredLocal });
             }
             return undeclaredLocal;
         }
@@ -1050,14 +1068,16 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             Debug.Assert(hostApp != null, "Host application project can't be null. Make sure VBA standard library is included if host is unknown.");
 
             var qualifiedName = hostApp.QualifiedName.QualifiedModuleName.QualifyMemberName(expression);
+            var declarationType = DeclarationType.BracketedExpression;
+            var undeclaredScope = (qualifiedName, declarationType);
 
-            if (_newUndeclared.TryGetValue(qualifiedName, out var undeclared))
+            if (_newUndeclared.TryGetValue(undeclaredScope, out var undeclared))
             {
                 return undeclared.SingleOrDefault();
             }
 
             var item = new Declaration(qualifiedName, hostApp, hostApp, Tokens.Variant, string.Empty, false, false, Accessibility.Global, DeclarationType.BracketedExpression, context, null, context.GetSelection(), true, null);
-            _newUndeclared.TryAdd(qualifiedName, new ConcurrentBag<Declaration> { item });
+            _newUndeclared.TryAdd(undeclaredScope, new ConcurrentBag<Declaration> { item });
             return item;
         }
 

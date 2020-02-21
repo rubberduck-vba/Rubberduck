@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -56,12 +55,9 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class ObjectWhereProcedureIsRequiredInspection : InspectionBase
     {
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
-
         public ObjectWhereProcedureIsRequiredInspection(RubberduckParserState state)
             : base(state)
         {
-            _declarationFinderProvider = state;
             Severity = CodeInspectionSeverity.Warning;
         }
 
@@ -84,7 +80,7 @@ namespace Rubberduck.Inspections.Concrete
 
         private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
         {
-            var finder = _declarationFinderProvider.DeclarationFinder;
+            var finder = DeclarationFinderProvider.DeclarationFinder;
             return BoundInspectionResults(module, finder)
                 .Concat(UnboundInspectionResults(module, finder));
         }
@@ -96,11 +92,11 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(IsResultReference);
 
             return objectionableReferences
-                .Select(reference => BoundInspectionResult(reference, _declarationFinderProvider))
+                .Select(reference => BoundInspectionResult(reference, DeclarationFinderProvider))
                 .ToList();
         }
 
-        private bool IsResultReference(IdentifierReference reference)
+        private static bool IsResultReference(IdentifierReference reference)
         {
             return reference.IsProcedureCoercion;
         }
@@ -114,7 +110,7 @@ namespace Rubberduck.Inspections.Concrete
                 reference);
         }
 
-        private string BoundResultDescription(IdentifierReference reference)
+        private static string BoundResultDescription(IdentifierReference reference)
         {
             var expression = reference.IdentifierName;
             var defaultMember = reference.Declaration.QualifiedName.ToString();
@@ -128,7 +124,7 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(IsResultReference);
 
             return objectionableReferences
-                .Select(reference => UnboundInspectionResult(reference, _declarationFinderProvider))
+                .Select(reference => UnboundInspectionResult(reference, DeclarationFinderProvider))
                 .ToList();
         }
 
@@ -143,7 +139,7 @@ namespace Rubberduck.Inspections.Concrete
             return result;
         }
 
-        private string UnboundResultDescription(IdentifierReference reference)
+        private static string UnboundResultDescription(IdentifierReference reference)
         {
             var expression = reference.IdentifierName;
             return string.Format(InspectionResults.ObjectWhereProcedureIsRequiredInspection_Unbound, expression);

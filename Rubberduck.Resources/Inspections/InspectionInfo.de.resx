@@ -226,8 +226,8 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="ModuleScopeDimKeywordInspection" xml:space="preserve">
     <value>Das Schlüsselwort 'Public' kann nur auf Modulebene verwendet werden; Sein Konterpart 'Private' kann auch nur auf Modulebene verwendet werden. 'Dim' jedoch kann verwendet werden, um sowohl modulweite als auch prozedurweite Variablen zu deklarieren. Um der Konsistenz Willen ist es besser, 'Dim' nur für lokale Variablen zu verwenden, also 'Private' statt 'Dim' auf Modulebene zu verwenden.</value>
   </data>
-  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
-    <value>Ein Member ist als Funktion geschrieben, aber wird wie eine Prozedur verwendet. Falls die Funktion nicht rekursiv ist, sollten Sie in Erwägung ziehen, die 'Function' in ein 'Sub' zu konvertieren. Falls die Funktion rekursiv ist, verwendet keiner der externen Aufrufer den Rückgabewert.</value>
+  <data name="FunctionReturnValueAlwaysDiscardedInspection" xml:space="preserve">
+    <value>Ein Member ist als Funktion geschrieben, wird aber überall wie eine Prozedur verwendet. Sie sollten in Erwägung ziehen die 'Function' in ein 'Sub' zu konvertieren.</value>
   </data>
   <data name="MemberNotOnInterfaceInspection" xml:space="preserve">
     <value>Es wird ein Memberzugriff verwendet, der vom Interface des Objektes nicht deklariert wird. Dies ist höchstwahrscheinlich ein Fehler. Falls der Memberzugriff das erweiterbare Interface des Objektes verwendet, erwägen Sie ein nicht erweiterbares Äquivalent zu verwenden um Prüfungen zur Kompilierzeit zu ermöglichen und das Auftreten von Laufzeitfehler 438 zu verhindern.</value>
@@ -432,5 +432,11 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   </data>
   <data name="UnreachableCaseInspection" xml:space="preserve">
     <value>Eine Bedingung in einem Case-Ausdruck ist entweder nie erfüllt, verursacht einen Laufzeitfehler oder kann nicht erfüllt werden, da die vorherigen Case-Ausdrücke bereits alle zulässigen Werte abdecken. Infolgedessen wird der Code in dem Case-Zweig nie ausgeführt und stellt "toten Code" dar oder der Case-Ausdruck stellt sogar einen Laufzeitfehler dar, der nur darauf wartet irgendwann aufzutreten. Der Case-Zweig sollte entweder gelöscht, verändert oder an eine andere Stelle verschoben werden.</value>
+  </data>
+  <data name="FunctionReturnValueDiscardedInspection" xml:space="preserve">
+    <value>Der Rückgabewert einer Funktion wird verworfen, d.h. die Funktion wird wie eine Prozedur verwendet. Dies ist entweder ein Versäumnis oder die Funktion wird wegen ihrer Nebenwirkungen verwendet, deren Existenz in der Regel selber problematisch wäre.</value>
+  </data>
+  <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
+    <value>Wird keine Typdeklaration verwendet wird der Datentyp einer Konstante implizit bestimmt. Erwägen Sie eine explizite 'As &lt;Datentyp&gt;'-Deklaration zu verwenden um die Lesbarkeit zu verbessern, wobei '&lt;Datentyp&gt;' der erwünschte Datentyp der Konstante ist.</value>
   </data>
 </root>

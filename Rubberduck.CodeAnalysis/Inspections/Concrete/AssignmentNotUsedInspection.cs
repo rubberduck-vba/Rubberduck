@@ -1,14 +1,15 @@
 using System.Collections.Generic;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Inspections.CodePathAnalysis;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Inspections.CodePathAnalysis.Extensions;
 using System.Linq;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Grammar;
+using Rubberduck.Inspections.CodePathAnalysis.Nodes;
 using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -36,7 +37,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class AssignmentNotUsedInspection : InspectionBase
+    public sealed class AssignmentNotUsedInspection : IdentifierReferenceInspectionBase
     {
         private readonly Walker _walker;
 
@@ -45,36 +46,66 @@ namespace Rubberduck.Inspections.Concrete
             _walker = walker;
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module, DeclarationFinder finder)
         {
-            var variables = State.DeclarationFinder
-                    .UserDeclarations(DeclarationType.Variable)
-                    .Where(d => !d.IsArray);
+            var localNonArrayVariables = finder.Members(module, DeclarationType.Variable)
+                .Where(declaration => !declaration.IsArray
+                                      && !declaration.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module));
+            return localNonArrayVariables
+                .Where(declaration => !declaration.IsIgnoringInspectionResultFor(AnnotationName))
+                .SelectMany(UnusedAssignments);
+        }
 
+        private IEnumerable<IdentifierReference> UnusedAssignments(Declaration localVariable)
+        {
+            var tree = _walker.GenerateTree(localVariable.ParentScopeDeclaration.Context, localVariable);
+            return UnusedAssignmentReferences(tree);
+        }
+
+        public static List<IdentifierReference> UnusedAssignmentReferences(INode node)
+        {
             var nodes = new List<IdentifierReference>();
-            foreach (var variable in variables)
-            {
-                var parentScopeDeclaration = variable.ParentScopeDeclaration;
 
-                if (parentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module))
+            var blockNodes = node.Nodes(new[] { typeof(BlockNode) });
+            foreach (var block in blockNodes)
+            {
+                INode lastNode = default;
+                foreach (var flattenedNode in block.FlattenedNodes(new[] { typeof(GenericNode), typeof(BlockNode) }))
                 {
-                    continue;
+                    if (flattenedNode is AssignmentNode &&
+                        lastNode is AssignmentNode)
+                    {
+                        nodes.Add(lastNode.Reference);
+                    }
+
+                    lastNode = flattenedNode;
                 }
 
-                var tree = _walker.GenerateTree(parentScopeDeclaration.Context, variable);
-
-                var references = tree.GetIdentifierReferences();
-                // ignore set-assignments to 'Nothing'
-                nodes.AddRange(references.Where(r =>
-                    !(r.Context.Parent is VBAParser.SetStmtContext setStmtContext &&
-                    setStmtContext.expression().GetText().Equals(Tokens.Nothing))));
+                if (lastNode is AssignmentNode &&
+                    block.Children[0].GetFirstNode(new[] { typeof(GenericNode) }) is DeclarationNode)
+                {
+                    nodes.Add(lastNode.Reference);
+                }
             }
 
-            return nodes
-                // Ignoring the Declaration disqualifies all assignments
-                .Where(issue => !issue.Declaration.IsIgnoringInspectionResultFor(AnnotationName))
-                .Select(issue => new IdentifierReferenceInspectionResult(this, Description, State, issue))
-                .ToList();
+            return nodes;
+        }
+
+        protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
+        {
+            return !IsAssignmentOfNothing(reference);
+        }
+
+        private static bool IsAssignmentOfNothing(IdentifierReference reference)
+        {
+            return reference.IsSetAssignment
+                && reference.Context.Parent is VBAParser.SetStmtContext setStmtContext
+                && setStmtContext.expression().GetText().Equals(Tokens.Nothing);
+        }
+
+        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
+        {
+            return Description;
         }
     }
 }

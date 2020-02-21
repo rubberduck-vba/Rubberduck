@@ -8,56 +8,61 @@
              d:DataContext="{d:DesignInstance {x:Type about:AboutControlViewModel}, IsDesignTimeCreatable=False}"
              KeyDown="OnKeyDownHandler">
     <UserControl.Resources>
-        <BitmapImage x:Key="RD" UriSource="pack://application:,,,/Rubberduck.Resources;component/Rubberduck.png" />
-        <Style x:Key="NormalLabel" TargetType="TextBlock">
-            <Style.Setters>
-                <Setter Property="FontFamily" Value="Segoe UI" />
-                <Setter Property="FontSize" Value="11" />
-                <Setter Property="FontWeight" Value="Normal" />
-                <Setter Property="Foreground" Value="{x:Static SystemColors.ControlTextBrush}" />
-            </Style.Setters>
-        </Style>
-        <Style x:Key="SubtleLabel" TargetType="TextBlock">
-            <Style.Setters>
-                <Setter Property="FontFamily" Value="Segoe UI" />
-                <Setter Property="FontSize" Value="11" />
-                <Setter Property="FontWeight" Value="Thin" />
-                <Setter Property="Foreground" Value="{x:Static SystemColors.GrayTextBrush}" />
-            </Style.Setters>
-        </Style>
-        <Style x:Key="HeadingLabel" TargetType="TextBlock">
-            <Style.Setters>
-                <Setter Property="FontFamily" Value="Segoe UI" />
-                <Setter Property="FontSize" Value="14" />
-                <Setter Property="FontWeight" Value="Bold" />
-                <Setter Property="Foreground" Value="{x:Static SystemColors.ControlTextBrush}" />
-            </Style.Setters>
-        </Style>
-        <Style x:Key="SectionBorder" TargetType="Border">
-            <Style.Setters>
-                <Setter Property="Background" Value="{x:Static SystemColors.ControlBrush}" />
-                <Setter Property="BorderBrush" Value="{x:Static SystemColors.HighlightBrush}" />
-                <Setter Property="BorderThickness" Value="2" />
-                <Setter Property="CornerRadius" Value="8" />
-                <Setter Property="Margin" Value="8,8" />
-                <Setter Property="Padding" Value="4" />
-            </Style.Setters>
-        </Style>
-        <Style x:Key="ReportButtonBorder" TargetType="Border">
-            <Style.Setters>
-                <Setter Property="Margin" Value="10" />
-                <Setter Property="CornerRadius" Value="6" />
-                <Setter Property="BorderBrush" Value="Green" />
-                <Setter Property="BorderThickness" Value="2" />
-                <Setter Property="Background" Value="#FF40C954" />
-            </Style.Setters>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#FF61D156" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles/DefaultStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            
+            <BitmapImage x:Key="RD" UriSource="pack://application:,,,/Rubberduck.Resources;component/Rubberduck.png" />
+            <Style x:Key="NormalLabel" TargetType="TextBlock">
+                <Style.Setters>
+                    <Setter Property="FontFamily" Value="Segoe UI" />
+                    <Setter Property="FontSize" Value="11" />
+                    <Setter Property="FontWeight" Value="Normal" />
+                    <Setter Property="Foreground" Value="{x:Static SystemColors.ControlTextBrush}" />
+                </Style.Setters>
+            </Style>
+            <Style x:Key="SubtleLabel" TargetType="TextBlock">
+                <Style.Setters>
+                    <Setter Property="FontFamily" Value="Segoe UI" />
+                    <Setter Property="FontSize" Value="11" />
+                    <Setter Property="FontWeight" Value="Thin" />
+                    <Setter Property="Foreground" Value="{x:Static SystemColors.GrayTextBrush}" />
+                </Style.Setters>
+            </Style>
+            <Style x:Key="HeadingLabel" TargetType="TextBlock">
+                <Style.Setters>
+                    <Setter Property="FontFamily" Value="Segoe UI" />
+                    <Setter Property="FontSize" Value="14" />
+                    <Setter Property="FontWeight" Value="Bold" />
+                    <Setter Property="Foreground" Value="{x:Static SystemColors.ControlTextBrush}" />
+                </Style.Setters>
+            </Style>
+            <Style x:Key="SectionBorder" TargetType="Border">
+                <Style.Setters>
+                    <Setter Property="Background" Value="{x:Static SystemColors.ControlBrush}" />
+                    <Setter Property="BorderBrush" Value="{x:Static SystemColors.HighlightBrush}" />
+                    <Setter Property="BorderThickness" Value="2" />
+                    <Setter Property="CornerRadius" Value="8" />
+                    <Setter Property="Margin" Value="8,8" />
+                    <Setter Property="Padding" Value="4" />
+                </Style.Setters>
+            </Style>
+            <Style x:Key="ReportButtonBorder" TargetType="Border">
+                <Style.Setters>
+                    <Setter Property="Margin" Value="10" />
+                    <Setter Property="CornerRadius" Value="6" />
+                    <Setter Property="BorderBrush" Value="{StaticResource GreenButtonBorderBrush}" />
+                    <Setter Property="BorderThickness" Value="2" />
+                    <Setter Property="Background" Value="{StaticResource GreenButtonBrush}" />
+                </Style.Setters>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{StaticResource GreenButtonMouseOverBrush}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
     <Grid Background="{x:Static SystemColors.WindowBrush}">
         <Grid.ColumnDefinitions>
@@ -109,7 +114,7 @@
                                        NavigateUri="https://github.com/rubberduck-vba/Rubberduck/issues/new/choose"
                                        TextDecorations="{x:Null}"
                                        Command="{Binding UriCommand}" CommandParameter="{Binding ElementName=GitHubIssueUrl, Path=NavigateUri}">
-                                <Label Height="40" Foreground="White" FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
+                                <Label Height="40" Foreground="{StaticResource CaptionLightBrush}" FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"
                                        VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch"
                                        Content="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_ReportAnIssue}"/>
                             </Hyperlink>
