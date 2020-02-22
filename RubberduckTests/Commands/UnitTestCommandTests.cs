@@ -475,7 +475,7 @@ End Enum
         // TODO: Remove the temporal copuling with other Arrange*
         private AddTestModuleCommand ArrangeAddTestModuleCommand(Mock<IVBE> vbe, RubberduckParserState state, ITestCodeGenerator generator, Mock<IVbeEvents> vbeEvents)
         {
-            return new AddTestModuleCommand(vbe.Object, state, ArrangeCodeGenerator(vbe.Object, state), vbeEvents.Object);
+            return new AddTestModuleCommand(vbe.Object, state, ArrangeCodeGenerator(vbe.Object, state), vbeEvents.Object, state.ProjectsProvider);
         }
 
         // TODO: Remove the temporal coupling with other Arrange*

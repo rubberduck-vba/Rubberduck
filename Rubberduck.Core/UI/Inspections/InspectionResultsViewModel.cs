@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using NLog;
 using Rubberduck.Common;
+using Rubberduck.Formatters;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.JunkDrawer.Extensions;
@@ -20,7 +22,6 @@ using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
@@ -667,15 +668,24 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
-            var resultArray = Results.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
+            var resultArray = Results
+                .OfType<IInspectionResult>()
+                .Select(result => new InspectionResultFormatter(result, DocumentName(result)))
+                .Select(formattedResult => formattedResult.ToArray())
+                .ToArray();
 
-            var resource = resultArray.Count() == 1
+            var resource = resultArray.Length == 1
                 ? Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular
                 : Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Plural;
 
             var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), resultArray.Count());
 
-            var textResults = title + Environment.NewLine + string.Join(string.Empty, Results.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
+            var resultTexts = Results
+                .OfType<IInspectionResult>()
+                .Select(result => new InspectionResultFormatter(result, DocumentName(result)))
+                .Select(formattedResult => $"{formattedResult.ToClipboardString()}{Environment.NewLine}")
+                .ToArray();
+            var textResults = $"{title}{Environment.NewLine}{string.Join(string.Empty, resultTexts)}";
             var csvResults = ExportFormatter.Csv(resultArray, title, ColumnInformation);
             var htmlResults = ExportFormatter.HtmlClipboardFragment(resultArray, title, ColumnInformation);
             var rtfResults = ExportFormatter.RTF(resultArray, title);
@@ -690,6 +700,20 @@ namespace Rubberduck.UI.Inspections
             _clipboard.AppendString(DataFormats.UnicodeText, textResults);
 
             _clipboard.Flush();
+        }
+
+        private string DocumentName(IInspectionResult result)
+        {
+            var module = result.QualifiedSelection.QualifiedName;
+            var projectId = module.ProjectId;
+            var project = _state.ProjectsProvider.Project(projectId);
+
+            if (project == null)
+            {
+                return Path.GetFileName(module.ProjectPath);
+            }
+
+            return project.ProjectDisplayName;
         }
 
         private bool CanExecuteCopyResultsCommand(object parameter)

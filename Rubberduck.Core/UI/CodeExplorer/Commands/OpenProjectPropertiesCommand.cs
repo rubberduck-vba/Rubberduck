@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Rubberduck.Navigation.CodeExplorer;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -18,13 +19,16 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         };
 
         private readonly IVBE _vbe;
+        private readonly IProjectsProvider _projectsProvider;
 
         public OpenProjectPropertiesCommand(
             IVBE vbe, 
-            IVbeEvents vbeEvents) 
+            IVbeEvents vbeEvents,
+            IProjectsProvider projectsProvider) 
             : base(vbeEvents)
         {
             _vbe = vbe;
+            _projectsProvider = projectsProvider;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
@@ -67,7 +71,13 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                         return;
                     }
 
-                    var nodeProject = node.Declaration?.Project;
+                    var nodeProjectId = node.Declaration?.ProjectId;
+                    if (nodeProjectId == null)
+                    {
+                        return;
+                    }
+
+                    var nodeProject = _projectsProvider.Project(nodeProjectId);
                     if (nodeProject == null)
                     {
                         return; //The project declaration has been disposed, i.e. the project has been removed already.

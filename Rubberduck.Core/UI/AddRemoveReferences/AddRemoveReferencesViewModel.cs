@@ -13,6 +13,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.UI.AddRemoveReferences
@@ -83,13 +84,19 @@ namespace Rubberduck.UI.AddRemoveReferences
         private readonly ObservableCollection<ReferenceModel> _available;
         private readonly ObservableCollection<ReferenceModel> _project;
         private readonly IReferenceReconciler _reconciler;
+        private readonly IProjectsProvider _projectsProvider;
         private readonly IFileSystemBrowserFactory _browser;
 
-        public AddRemoveReferencesViewModel(IAddRemoveReferencesModel model, IReferenceReconciler reconciler, IFileSystemBrowserFactory browser)
+        public AddRemoveReferencesViewModel(
+            IAddRemoveReferencesModel model, 
+            IReferenceReconciler reconciler, 
+            IFileSystemBrowserFactory browser,
+            IProjectsProvider projectsProvider)
         {
             Model = model;
             _reconciler = reconciler;
             _browser = browser;
+            _projectsProvider = projectsProvider;
 
             _available = new ObservableCollection<ReferenceModel>(model.References
                 .Where(reference => !reference.IsReferenced).OrderBy(reference => reference.Description));
@@ -114,9 +121,25 @@ namespace Rubberduck.UI.AddRemoveReferences
             ApplyCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteApplyCommand, ApplyCanExecute);
         }
 
-        public string ProjectCaption => string.IsNullOrEmpty(Model?.Project?.IdentifierName)
-            ? RubberduckUI.References_Caption
-            : string.Format(RubberduckUI.References_CaptionTemplate, Model.Project.ProjectDisplayName);
+        public string ProjectCaption
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Model?.Project?.IdentifierName))
+                {
+                    return RubberduckUI.References_Caption;
+                }
+
+                var project = _projectsProvider.Project(Model.Project.ProjectId);
+
+                if (project == null)
+                {
+                    return RubberduckUI.References_Caption;
+                }
+
+                return project.ProjectDisplayName;
+            }
+        }
 
         /// <summary>
         /// The IAddRemoveReferencesModel for the view.

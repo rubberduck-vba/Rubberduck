@@ -170,7 +170,7 @@ End Property";
             uiDispatcherMock
                 .Setup(m => m.Invoke(It.IsAny<Action>()))
                 .Callback((Action action) => action.Invoke());
-            var refactoring = new ExtractInterfaceRefactoring(state, state, factory, rewritingManager, selectionService, uiDispatcherMock.Object);
+            var refactoring = new ExtractInterfaceRefactoring(state, state, factory, rewritingManager, selectionService, uiDispatcherMock.Object, state.ProjectsProvider);
             var notifier = new ExtractInterfaceFailedNotifier(msgBox);
             return new RefactorExtractInterfaceCommand(refactoring, notifier, state, selectionService);
         }
