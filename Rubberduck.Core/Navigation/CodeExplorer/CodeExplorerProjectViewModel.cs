@@ -5,6 +5,7 @@ using Rubberduck.AddRemoveReferences;
 using Rubberduck.Navigation.Folders;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -21,11 +22,20 @@ namespace Rubberduck.Navigation.CodeExplorer
         };
 
         private readonly IVBE _vbe;
+        private readonly IProjectsProvider _projectsProvider;
 
-        public CodeExplorerProjectViewModel(Declaration project, ref List<Declaration> declarations, RubberduckParserState state, IVBE vbe, bool references = true) : base(null, project)
+        public CodeExplorerProjectViewModel(
+            Declaration project, 
+            ref List<Declaration> declarations, 
+            RubberduckParserState state, 
+            IVBE vbe, 
+            IProjectsProvider projectsProvider,
+            bool references = true) 
+            : base(null, project)
         {
-            State = state;         
+            State = state;
             _vbe = vbe;
+            _projectsProvider = projectsProvider;
             ShowReferences = references;
 
             SetName();
@@ -47,7 +57,13 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             get
             {
-                if (_vbe.Kind == VBEKind.Hosted || Declaration.Project == null)
+                if (_vbe.Kind == VBEKind.Hosted || Declaration == null)
+                {
+                    return base.FontWeight;
+                }
+
+                var project = _projectsProvider.Project(Declaration.ProjectId);
+                if (project == null)
                 {
                     return base.FontWeight;
                 }
@@ -55,7 +71,9 @@ namespace Rubberduck.Navigation.CodeExplorer
                 using (var vbProjects = _vbe.VBProjects)
                 using (var startProject = vbProjects?.StartProject)
                 {
-                    return Declaration.Project.Equals(startProject) ? FontWeights.Bold : base.FontWeight;
+                    return project.Equals(startProject) 
+                        ? FontWeights.Bold 
+                        : base.FontWeight;
                 }
             }
         }
@@ -139,7 +157,12 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private List<ReferenceModel> GetProjectReferenceModels()
         {
-            var project = Declaration?.Project;
+            if (Declaration == null)
+            {
+                return new List<ReferenceModel>();
+            }
+
+            var project = _projectsProvider.Project(Declaration.ProjectId);
             if (project == null)
             {
                 return new List<ReferenceModel>();
@@ -170,9 +193,22 @@ namespace Rubberduck.Navigation.CodeExplorer
             _name = Declaration?.IdentifierName ?? string.Empty;
 
             // F' the flicker. Digging into the properties has some even more evil side-effects, and is a performance nightmare by comparison.
-            _displayName = Declaration?.ProjectDisplayName ?? string.Empty;
+            _displayName = DisplayName(Declaration);
 
             OnNameChanged();
+        }
+
+        private string DisplayName(Declaration declaration)
+        {
+            if (declaration == null)
+            {
+                return string.Empty;
+            }
+
+            var project = _projectsProvider.Project(declaration.ProjectId);
+            return project != null 
+                ? project.ProjectDisplayName 
+                : string.Empty;
         }
 
         private static readonly List<DeclarationType> UntrackedTypes = new List<DeclarationType>

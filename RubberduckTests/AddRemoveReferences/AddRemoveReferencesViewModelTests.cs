@@ -136,7 +136,7 @@ namespace RubberduckTests.AddRemoveReferences
             var model = new AddRemoveReferencesModel(null, declaration, SearchReferencesList, settings);
             var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler(settings);
 
-            var viewModel = new AddRemoveReferencesViewModel(model, reconciler, new Mock<IFileSystemBrowserFactory>().Object);
+            var viewModel = new AddRemoveReferencesViewModel(model, reconciler, new Mock<IFileSystemBrowserFactory>().Object, null);
             viewModel.SelectedFilter = ReferenceFilter.ComTypes.ToString();
             viewModel.Search = input;
 
