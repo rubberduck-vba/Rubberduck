@@ -6,6 +6,7 @@ using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 using System.Linq;
 using System.Windows.Forms;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -409,16 +410,21 @@ namespace RubberduckTests.Commands
             project2.Verify(m => m.ExportSourceFiles(_path), Times.Never);
         }
 
-        private static ExportAllCommand ArrangeExportAllCommand(Mock<IVBE> vbe,
-            Mock<IFileSystemBrowserFactory> mockFolderBrowserFactory)
+        private static ExportAllCommand ArrangeExportAllCommand(
+            Mock<IVBE> vbe,
+            Mock<IFileSystemBrowserFactory> mockFolderBrowserFactory,
+            IProjectsProvider projectsProvider = null)
         {
-            return ArrangeExportAllCommand(vbe, mockFolderBrowserFactory, MockVbeEvents.CreateMockVbeEvents(vbe));
+            return ArrangeExportAllCommand(vbe, mockFolderBrowserFactory, MockVbeEvents.CreateMockVbeEvents(vbe), projectsProvider);
         }
 
-        private static ExportAllCommand ArrangeExportAllCommand(Mock<IVBE> vbe,
-            Mock<IFileSystemBrowserFactory> mockFolderBrowserFactory, Mock<IVbeEvents> vbeEvents)
+        private static ExportAllCommand ArrangeExportAllCommand(
+            Mock<IVBE> vbe, 
+            Mock<IFileSystemBrowserFactory> mockFolderBrowserFactory, 
+            Mock<IVbeEvents> vbeEvents,
+            IProjectsProvider projectsProvider)
         {
-            return new ExportAllCommand(vbe.Object, mockFolderBrowserFactory.Object, vbeEvents.Object);
+            return new ExportAllCommand(vbe.Object, mockFolderBrowserFactory.Object, vbeEvents.Object, projectsProvider);
         }
     }
 }

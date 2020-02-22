@@ -80,7 +80,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
 
             var qualifiedModuleName = new QualifiedModuleName(project);
             var qualifiedName = qualifiedModuleName.QualifyMemberName(project.Name);
-            var projectDeclaration = new ProjectDeclaration(qualifiedName, qualifiedName.MemberName, true, project);
+            var projectDeclaration = new ProjectDeclaration(qualifiedName, qualifiedName.MemberName, true);
 
             return projectDeclaration;
         }

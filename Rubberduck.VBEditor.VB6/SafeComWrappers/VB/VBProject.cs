@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -165,11 +165,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             }
         }
 
-        private static readonly Regex CaptionProjectRegex = new Regex(@"^(?:[^-]+)(?:\s-\s)(?<project>.+)(?:\s-\s.*)?$");
-        private static readonly Regex OpenModuleRegex = new Regex(@"^(?<project>.+)(?<module>\s-\s\[.*\((Code|UserForm)\)\])$");
         private string _displayName;
         /// <summary>
-        /// WARNING: This property has side effects. It changes the ActiveVBProject, which causes a flicker in the VBE.
+        /// WARNING: This property might have has side effects. If the filename cannot be accessed, it changes the ActiveVBProject, which causes a flicker in the VBE.
         /// This should only be called if it is *absolutely* necessary.
         /// </summary>
         public string ProjectDisplayName
@@ -187,31 +185,63 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                     return _displayName;
                 }
 
-                var vbe = VBE;
-                var activeProject = vbe.ActiveVBProject;
-                var mainWindow = vbe.MainWindow;
-                {
-                    try
-                    {
-                        if (Target.HelpFile != activeProject.HelpFile)
-                        {
-                            vbe.ActiveVBProject = this;
-                        }
+                _displayName = DisplayNameFromFileName();
 
-                        var caption = mainWindow.Caption;
-                        if (CaptionProjectRegex.IsMatch(caption))
-                        {
-                            caption = CaptionProjectRegex.Matches(caption)[0].Groups["project"].Value;
-                            _displayName = OpenModuleRegex.IsMatch(caption)
-                                ? OpenModuleRegex.Matches(caption)[0].Groups["project"].Value
-                                : caption;
-                        }
-                    }
-                    catch
+                if (string.IsNullOrEmpty(_displayName))
+                {
+                    _displayName = DisplayNameFromWindowCaption();
+                }
+
+                if (string.IsNullOrEmpty(_displayName))
+                {
+                    _displayName = DisplayNameFromBuildFileName();
+                }
+
+                return _displayName;
+            }
+        }
+
+        private string DisplayNameFromFileName()
+        {
+            return Path.GetFileName(FileName);
+        }
+
+        private string DisplayNameFromBuildFileName()
+        {
+            var pseudoDllName = Path.GetFileName(BuildFileName);
+            return pseudoDllName == null || pseudoDllName.Length <= 4 //Should not happen as the string should always end in .DLL.
+                ? string.Empty
+                : pseudoDllName.Substring(0, pseudoDllName.Length - 4);
+        }
+
+        private static readonly Regex CaptionProjectRegex = new Regex(@"^(?<project>.+)(?:\s-\s)Microsoft Visual");
+        private string DisplayNameFromWindowCaption()
+        {
+            using (var vbe = VBE)
+            using (var activeProject = vbe.ActiveVBProject)
+            using (var mainWindow = vbe.MainWindow)
+            {
+                try
+                {
+                    if (ProjectId != activeProject.ProjectId)
                     {
-                        _displayName = string.Empty;
+                        vbe.ActiveVBProject = this;
                     }
-                    return _displayName;
+
+                    var caption = mainWindow.Caption;
+                    if (CaptionProjectRegex.IsMatch(caption))
+                    {
+                        return CaptionProjectRegex
+                            .Matches(caption)[0]
+                            .Groups["project"]
+                            .Value;
+                    }
+
+                    return string.Empty;
+                }
+                catch
+                {
+                    return string.Empty;
                 }
             }
         }

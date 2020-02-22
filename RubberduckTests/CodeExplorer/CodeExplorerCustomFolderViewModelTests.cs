@@ -22,13 +22,16 @@ namespace RubberduckTests.CodeExplorer
             var folderPath = structure.First().Folder;
             var path = folderPath.Split(FolderExtensions.FolderDelimiter);
 
-            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(structure, out _);
-            var folder = new CodeExplorerCustomFolderViewModel(null, path.First(), path.First(), null, ref declarations);
-
-            foreach (var name in path)
+            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(structure, out _, out var state);
+            using (state)
             {
-                Assert.AreEqual(name, folder.Name);
-                folder = folder.Children.OfType<CodeExplorerCustomFolderViewModel>().FirstOrDefault();
+                var folder = new CodeExplorerCustomFolderViewModel(null, path.First(), path.First(), null, ref declarations);
+
+                foreach (var name in path)
+                {
+                    Assert.AreEqual(name, folder.Name);
+                    folder = folder.Children.OfType<CodeExplorerCustomFolderViewModel>().FirstOrDefault();
+                }
             }
         }
 
@@ -43,14 +46,17 @@ namespace RubberduckTests.CodeExplorer
             var folderPath = structure.First().Folder;
             var path = folderPath.Split(FolderExtensions.FolderDelimiter);
 
-            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(structure, out _);
-            var folder = new CodeExplorerCustomFolderViewModel(null, path.First(), path.First(), null, ref declarations);
-
-            var depth = 1;
-            foreach (var _ in path)
+            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(structure, out _, out var state);
+            using (state)
             {
-                Assert.AreEqual(string.Join(FolderExtensions.FolderDelimiter.ToString(), path.Take(depth++)), folder.FullPath);
-                folder = folder.Children.OfType<CodeExplorerCustomFolderViewModel>().FirstOrDefault();
+                var folder = new CodeExplorerCustomFolderViewModel(null, path.First(), path.First(), null, ref declarations);
+
+                var depth = 1;
+                foreach (var _ in path)
+                {
+                    Assert.AreEqual(string.Join(FolderExtensions.FolderDelimiter.ToString(), path.Take(depth++)), folder.FullPath);
+                    folder = folder.Children.OfType<CodeExplorerCustomFolderViewModel>().FirstOrDefault();
+                }
             }
         }
 
@@ -65,13 +71,17 @@ namespace RubberduckTests.CodeExplorer
             var folderPath = structure.First().Folder;
             var path = folderPath.Split(FolderExtensions.FolderDelimiter);
 
-            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(structure, out _);
-            var folder = new CodeExplorerCustomFolderViewModel(null, path.First(), path.First(), null, ref declarations);
-
-            foreach (var _ in path)
+            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(structure, out _, out var state);
+            using (state)
             {
-                Assert.AreEqual(folder.FullPath, folder.PanelTitle);
-                folder = folder.Children.OfType<CodeExplorerCustomFolderViewModel>().FirstOrDefault();
+                var folder =
+                    new CodeExplorerCustomFolderViewModel(null, path.First(), path.First(), null, ref declarations);
+
+                foreach (var _ in path)
+                {
+                    Assert.AreEqual(folder.FullPath, folder.PanelTitle);
+                    folder = folder.Children.OfType<CodeExplorerCustomFolderViewModel>().FirstOrDefault();
+                }
             }
         }
 
@@ -86,13 +96,17 @@ namespace RubberduckTests.CodeExplorer
             var folderPath = structure.First().Folder;
             var path = folderPath.Split(FolderExtensions.FolderDelimiter);
 
-            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(structure, out _);
-            var folder = new CodeExplorerCustomFolderViewModel(null, path.First(), path.First(), null, ref declarations);
-
-            foreach (var _ in path)
+            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(structure, out _, out var state);
+            using (state)
             {
-                Assert.AreEqual($"'@Folder(\"{folder.FullPath}\")", folder.FolderAttribute);
-                folder = folder.Children.OfType<CodeExplorerCustomFolderViewModel>().FirstOrDefault();
+                var folder =
+                    new CodeExplorerCustomFolderViewModel(null, path.First(), path.First(), null, ref declarations);
+
+                foreach (var _ in path)
+                {
+                    Assert.AreEqual($"'@Folder(\"{folder.FullPath}\")", folder.FolderAttribute);
+                    folder = folder.Children.OfType<CodeExplorerCustomFolderViewModel>().FirstOrDefault();
+                }
             }
         }
 
@@ -107,13 +121,17 @@ namespace RubberduckTests.CodeExplorer
             var folderPath = structure.First().Folder;
             var path = folderPath.Split(FolderExtensions.FolderDelimiter);
 
-            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(structure, out _);
-            var folder = new CodeExplorerCustomFolderViewModel(null, path.First(), path.First(), null, ref declarations);
-
-            foreach (var _ in path)
+            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(structure, out _, out var state);
+            using (state)
             {
-                Assert.AreEqual(folder.FolderAttribute, folder.Description);
-                folder = folder.Children.OfType<CodeExplorerCustomFolderViewModel>().FirstOrDefault();
+                var folder =
+                    new CodeExplorerCustomFolderViewModel(null, path.First(), path.First(), null, ref declarations);
+
+                foreach (var _ in path)
+                {
+                    Assert.AreEqual(folder.FolderAttribute, folder.Description);
+                    folder = folder.Children.OfType<CodeExplorerCustomFolderViewModel>().FirstOrDefault();
+                }
             }
         }
 
@@ -128,14 +146,18 @@ namespace RubberduckTests.CodeExplorer
             var folderPath = structure.First().Folder;
             var path = folderPath.Split(FolderExtensions.FolderDelimiter);
 
-            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(structure, out _);
-            var folder = new CodeExplorerCustomFolderViewModel(null, path.First(), path.First(), null, ref declarations);
-
-            var depth = 1;
-            foreach (var _ in path)
+            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(structure, out _, out var state);
+            using (state)
             {
-                Assert.AreEqual(depth++, folder.FolderDepth);
-                folder = folder.Children.OfType<CodeExplorerCustomFolderViewModel>().FirstOrDefault();
+                var folder =
+                    new CodeExplorerCustomFolderViewModel(null, path.First(), path.First(), null, ref declarations);
+
+                var depth = 1;
+                foreach (var _ in path)
+                {
+                    Assert.AreEqual(depth++, folder.FolderDepth);
+                    folder = folder.Children.OfType<CodeExplorerCustomFolderViewModel>().FirstOrDefault();
+                }
             }
         }
 
@@ -147,17 +169,23 @@ namespace RubberduckTests.CodeExplorer
             const string folderName = "Asdf";
 
             var testFolder = (Name: CodeExplorerTestSetup.TestModuleName, Folder: folderName);
-            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(new List<(string Name, string Folder)> { testFolder }, out _);
-            var children = declarations.SelectMany(declaration => declaration.IdentifierName.ToCharArray()).Distinct().ToList();
-
-            var folder = new CodeExplorerCustomFolderViewModel(null, folderName, folderName, null, ref declarations);
-
-            var nonMatching = testCharacters.ToCharArray().Except(folderName.ToLowerInvariant().ToCharArray().Union(children));
-
-            foreach (var character in nonMatching.Select(letter => letter.ToString()))
+            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(new List<(string Name, string Folder)> { testFolder }, out _, out var state);
+            using (state)
             {
-                folder.Filter = character;
-                Assert.IsTrue(folder.Filtered);
+                var children = declarations.SelectMany(declaration => declaration.IdentifierName.ToCharArray())
+                    .Distinct().ToList();
+
+                var folder =
+                    new CodeExplorerCustomFolderViewModel(null, folderName, folderName, null, ref declarations);
+
+                var nonMatching = testCharacters.ToCharArray()
+                    .Except(folderName.ToLowerInvariant().ToCharArray().Union(children));
+
+                foreach (var character in nonMatching.Select(letter => letter.ToString()))
+                {
+                    folder.Filter = character;
+                    Assert.IsTrue(folder.Filtered);
+                }
             }
         }
 
@@ -168,20 +196,24 @@ namespace RubberduckTests.CodeExplorer
             const string folderName = "Foobar";
 
             var testFolder = (Name: CodeExplorerTestSetup.TestModuleName, Folder: folderName);
-            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(new List<(string Name, string Folder)> { testFolder }, out _);
-
-            var folder = new CodeExplorerCustomFolderViewModel(null, folderName, folderName, null, ref declarations);
-
-            for (var characters = 1; characters <= folderName.Length; characters++)
+            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(new List<(string Name, string Folder)> { testFolder }, out _, out var state);
+            using (state)
             {
-                folder.Filter = folderName.Substring(0, characters);
-                Assert.IsFalse(folder.Filtered);
-            }
 
-            for (var position = folderName.Length - 2; position > 0; position--)
-            {
-                folder.Filter = folderName.Substring(position);
-                Assert.IsFalse(folder.Filtered);
+                var folder =
+                    new CodeExplorerCustomFolderViewModel(null, folderName, folderName, null, ref declarations);
+
+                for (var characters = 1; characters <= folderName.Length; characters++)
+                {
+                    folder.Filter = folderName.Substring(0, characters);
+                    Assert.IsFalse(folder.Filtered);
+                }
+
+                for (var position = folderName.Length - 2; position > 0; position--)
+                {
+                    folder.Filter = folderName.Substring(position);
+                    Assert.IsFalse(folder.Filtered);
+                }
             }
         }
 
@@ -192,21 +224,25 @@ namespace RubberduckTests.CodeExplorer
             const string folderName = "Foobar";
 
             var testFolder = (Name: CodeExplorerTestSetup.TestModuleName, Folder: folderName);
-            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(new List<(string Name, string Folder)> { testFolder }, out _);
-
-            var folder = new CodeExplorerCustomFolderViewModel(null, folderName, folderName, null, ref declarations);
-            var childName = folder.Children.First().Name;
-
-            for (var characters = 1; characters <= childName.Length; characters++)
+            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(new List<(string Name, string Folder)> { testFolder }, out _, out var state);
+            using (state)
             {
-                folder.Filter = childName.Substring(0, characters);
-                Assert.IsFalse(folder.Filtered);
-            }
 
-            for (var position = childName.Length - 2; position > 0; position--)
-            {
-                folder.Filter = childName.Substring(position);
-                Assert.IsFalse(folder.Filtered);
+                var folder =
+                    new CodeExplorerCustomFolderViewModel(null, folderName, folderName, null, ref declarations);
+                var childName = folder.Children.First().Name;
+
+                for (var characters = 1; characters <= childName.Length; characters++)
+                {
+                    folder.Filter = childName.Substring(0, characters);
+                    Assert.IsFalse(folder.Filtered);
+                }
+
+                for (var position = childName.Length - 2; position > 0; position--)
+                {
+                    folder.Filter = childName.Substring(position);
+                    Assert.IsFalse(folder.Filtered);
+                }
             }
         }
 
@@ -217,17 +253,21 @@ namespace RubberduckTests.CodeExplorer
             const string folderName = "Foobar";
 
             var testFolder = (Name: CodeExplorerTestSetup.TestModuleName, Folder: folderName);
-            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(new List<(string Name, string Folder)> { testFolder }, out _);
+            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(new List<(string Name, string Folder)> { testFolder }, out _, out var state);
+            using (state)
+            {
 
-            var folder = new CodeExplorerCustomFolderViewModel(null, folderName, folderName, null, ref declarations);
-            var childName = folder.Children.First().Name;
+                var folder =
+                    new CodeExplorerCustomFolderViewModel(null, folderName, folderName, null, ref declarations);
+                var childName = folder.Children.First().Name;
 
-            folder.IsExpanded = false;
-            folder.Filter = childName;
-            Assert.IsTrue(folder.IsExpanded);
+                folder.IsExpanded = false;
+                folder.Filter = childName;
+                Assert.IsTrue(folder.IsExpanded);
 
-            folder.Filter = string.Empty;
-            Assert.IsFalse(folder.IsExpanded);
+                folder.Filter = string.Empty;
+                Assert.IsFalse(folder.IsExpanded);
+            }
         }
 
         [Test]
@@ -243,14 +283,17 @@ namespace RubberduckTests.CodeExplorer
             const string folderName = "Foo";
 
             var testFolder = (Name: CodeExplorerTestSetup.TestModuleName, Folder: folderName);
-            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(new List<(string Name, string Folder)> { testFolder }, out _);
-
-            var folder = new CodeExplorerCustomFolderViewModel(null, folderName, folderName, null, ref declarations)
+            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(new List<(string Name, string Folder)> { testFolder }, out _, out var state);
+            using (state)
             {
-                SortOrder = order
-            };
 
-            Assert.AreEqual(CodeExplorerItemComparer.Name.GetType(), folder.SortComparer.GetType());
+                var folder = new CodeExplorerCustomFolderViewModel(null, folderName, folderName, null, ref declarations)
+                {
+                    SortOrder = order
+                };
+
+                Assert.AreEqual(CodeExplorerItemComparer.Name.GetType(), folder.SortComparer.GetType());
+            }
         }
 
         [Test]
@@ -260,14 +303,17 @@ namespace RubberduckTests.CodeExplorer
             const string folderName = "Foo";
 
             var testFolder = (Name: CodeExplorerTestSetup.TestModuleName, Folder: folderName);
-            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(new List<(string Name, string Folder)> { testFolder }, out _);
-
-            var folder = new CodeExplorerCustomFolderViewModel(null, folderName, folderName, null, ref declarations)
+            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(new List<(string Name, string Folder)> { testFolder }, out _, out var state);
+            using (state)
             {
-                IsErrorState = true
-            };
 
-            Assert.IsFalse(folder.IsErrorState);
+                var folder = new CodeExplorerCustomFolderViewModel(null, folderName, folderName, null, ref declarations)
+                {
+                    IsErrorState = true
+                };
+
+                Assert.IsFalse(folder.IsErrorState);
+            }
         }
 
         [Test]
@@ -306,12 +352,18 @@ namespace RubberduckTests.CodeExplorer
             var root = structure.First().Folder;
             var path = root.Split(FolderExtensions.FolderDelimiter);
 
-            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(structure, out var projectDeclaration);
-            var contents = CodeExplorerProjectViewModel.ExtractTrackedDeclarationsForProject(projectDeclaration, ref declarations);
+            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(structure, out var projectDeclaration, out var state);
+            using (state)
+            {
+                var contents =
+                    CodeExplorerProjectViewModel.ExtractTrackedDeclarationsForProject(projectDeclaration,
+                        ref declarations);
 
-            var folder = new CodeExplorerCustomFolderViewModel(null, path.First(), path.First(), null, ref contents);
+                var folder =
+                    new CodeExplorerCustomFolderViewModel(null, path.First(), path.First(), null, ref contents);
 
-            AssertFolderStructureIsCorrect(folder, structure);
+                AssertFolderStructureIsCorrect(folder, structure);
+            }
         }
 
         [Test]
@@ -350,17 +402,23 @@ namespace RubberduckTests.CodeExplorer
             var root = structure.First().Folder;
             var path = root.Split(FolderExtensions.FolderDelimiter);
 
-            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(structure, out var projectDeclaration);
-            var synchronizing = CodeExplorerProjectViewModel.ExtractTrackedDeclarationsForProject(projectDeclaration, ref declarations);
-            var component = synchronizing.TestComponentDeclarations(structure.Last().Name);
-            var contents = synchronizing.Except(component).ToList();
+            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(structure, out var projectDeclaration, out var state);
+            using (state)
+            {
+                var synchronizing =
+                    CodeExplorerProjectViewModel.ExtractTrackedDeclarationsForProject(projectDeclaration,
+                        ref declarations);
+                var component = synchronizing.TestComponentDeclarations(structure.Last().Name);
+                var contents = synchronizing.Except(component).ToList();
 
-            var project = new CodeExplorerProjectViewModel(projectDeclaration, ref contents, null, null);
-            var folder = project.Children.OfType<CodeExplorerCustomFolderViewModel>().Single(item => item.Name.Equals(path.First()));
+                var project = new CodeExplorerProjectViewModel(projectDeclaration, ref contents, state, null, state.ProjectsProvider);
+                var folder = project.Children.OfType<CodeExplorerCustomFolderViewModel>()
+                    .Single(item => item.Name.Equals(path.First()));
 
-            project.Synchronize(ref synchronizing);
+                project.Synchronize(ref synchronizing);
 
-            AssertFolderStructureIsCorrect(folder, structure);
+                AssertFolderStructureIsCorrect(folder, structure);
+            }
         }
 
         [Test]
@@ -399,17 +457,23 @@ namespace RubberduckTests.CodeExplorer
             var root = structure.First().Folder;
             var path = root.Split(FolderExtensions.FolderDelimiter);
 
-            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(structure, out var projectDeclaration);
-            var contents = CodeExplorerProjectViewModel.ExtractTrackedDeclarationsForProject(projectDeclaration, ref declarations);
-            var component = contents.TestComponentDeclarations(structure.Last().Name);
-            var synchronizing = contents.Except(component).ToList();
+            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(structure, out var projectDeclaration, out var state);
+            using (state)
+            {
+                var contents =
+                    CodeExplorerProjectViewModel.ExtractTrackedDeclarationsForProject(projectDeclaration,
+                        ref declarations);
+                var component = contents.TestComponentDeclarations(structure.Last().Name);
+                var synchronizing = contents.Except(component).ToList();
 
-            var project = new CodeExplorerProjectViewModel(projectDeclaration, ref contents, null, null);
-            var folder = project.Children.OfType<CodeExplorerCustomFolderViewModel>().Single(item => item.Name.Equals(path.First()));
+                var project = new CodeExplorerProjectViewModel(projectDeclaration, ref contents, state, null, state.ProjectsProvider);
+                var folder = project.Children.OfType<CodeExplorerCustomFolderViewModel>()
+                    .Single(item => item.Name.Equals(path.First()));
 
-            project.Synchronize(ref synchronizing);
+                project.Synchronize(ref synchronizing);
 
-            AssertFolderStructureIsCorrect(folder, structure.Take(structure.Count - 1).ToList());
+                AssertFolderStructureIsCorrect(folder, structure.Take(structure.Count - 1).ToList());
+            }
         }
 
         private static void AssertFolderStructureIsCorrect(CodeExplorerCustomFolderViewModel underTest, List<(string Name, string Folder)> structure)

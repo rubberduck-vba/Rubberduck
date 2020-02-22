@@ -102,9 +102,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             return (targetProject, targetProject != null);
         }
 
-        private static IVBProject TargetProjectFromParameter(object parameter)
+        private IVBProject TargetProjectFromParameter(object parameter)
         {
-            return (parameter as CodeExplorerItemViewModel)?.Declaration?.Project;
+            var declaration = (parameter as CodeExplorerItemViewModel)?.Declaration;
+            return declaration != null 
+                ? _projectsProvider.Project(declaration.ProjectId)
+                : null;
         }
 
         private IVBProject TargetProjectFromVbe()

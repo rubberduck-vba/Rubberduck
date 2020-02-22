@@ -424,7 +424,7 @@ End Sub
             uiDispatcherMock
                 .Setup(m => m.Invoke(It.IsAny<Action>()))
                 .Callback((Action action) => action.Invoke());
-            return new ExtractInterfaceRefactoring(state, state, factory, rewritingManager, selectionService, uiDispatcherMock.Object);
+            return new ExtractInterfaceRefactoring(state, state, factory, rewritingManager, selectionService, uiDispatcherMock.Object, state?.ProjectsProvider);
         }
     }
 }
