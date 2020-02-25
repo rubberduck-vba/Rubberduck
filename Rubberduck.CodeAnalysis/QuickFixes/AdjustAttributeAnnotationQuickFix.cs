@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Annotations;
@@ -60,40 +59,37 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            IParseTreeAnnotation oldAnnotation = result.Properties.Annotation;
-            string attributeName = result.Properties.AttributeName;
-            IReadOnlyList<string> attributeValues = result.Properties.AttributeValues;
+            if (!(result is IWithInspectionResultProperties<(IParseTreeAnnotation Annotation, string AttributeName, IReadOnlyList<string> AttributeValues)> resultProperties))
+            {
+                return;
+            }
 
             var declaration = result.Target;
+            var (oldParseTreeAnnotation, attributeBaseName, attributeValues) = resultProperties.Properties;
+
             if (declaration.DeclarationType.HasFlag(DeclarationType.Module))
             {
                 var componentType = declaration.QualifiedModuleName.ComponentType;
-                if (IsDefaultAttribute(componentType, attributeName, attributeValues))
+                if (IsDefaultAttribute(componentType, attributeBaseName, attributeValues))
                 {
-                    _annotationUpdater.RemoveAnnotation(rewriteSession, oldAnnotation);
+                    _annotationUpdater.RemoveAnnotation(rewriteSession, oldParseTreeAnnotation);
                 }
                 else
                 {
-                    var (newAnnotation, newAnnotationValues) = _attributeAnnotationProvider.ModuleAttributeAnnotation(attributeName, attributeValues);
-                    _annotationUpdater.UpdateAnnotation(rewriteSession, oldAnnotation, newAnnotation, newAnnotationValues);
+                    var (newAnnotation, newAnnotationValues) = _attributeAnnotationProvider.ModuleAttributeAnnotation(attributeBaseName, attributeValues);
+                    _annotationUpdater.UpdateAnnotation(rewriteSession, oldParseTreeAnnotation, newAnnotation, newAnnotationValues);
                 }
             }
             else
             {
-                var attributeBaseName = AttributeBaseName(attributeName, declaration);
                 var (newAnnotation, newAnnotationValues) = _attributeAnnotationProvider.MemberAttributeAnnotation(attributeBaseName, attributeValues);
-                _annotationUpdater.UpdateAnnotation(rewriteSession, oldAnnotation, newAnnotation, newAnnotationValues);
+                _annotationUpdater.UpdateAnnotation(rewriteSession, oldParseTreeAnnotation, newAnnotation, newAnnotationValues);
             }
         }
 
         private static bool IsDefaultAttribute(ComponentType componentType, string attributeName, IReadOnlyList<string> attributeValues)
         {
             return Attributes.IsDefaultAttribute(componentType, attributeName, attributeValues);
-        }
-
-        private static string AttributeBaseName(string attributeName, Declaration declaration)
-        {
-            return Attributes.AttributeBaseName(attributeName, declaration.IdentifierName);
         }
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.AdjustAttributeAnnotationQuickFix;

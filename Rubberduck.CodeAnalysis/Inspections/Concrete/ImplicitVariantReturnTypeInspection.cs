@@ -1,14 +1,7 @@
-using System.Collections.Generic;
-using System.Linq;
-using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -32,20 +25,15 @@ namespace Rubberduck.Inspections.Concrete
     /// End Function
     /// ]]>
     /// </example>
-    public sealed class ImplicitVariantReturnTypeInspection : InspectionBase
+    public sealed class ImplicitVariantReturnTypeInspection : ImplicitTypeInspectionBase
     {
         public ImplicitVariantReturnTypeInspection(RubberduckParserState state)
-            : base(state) { }
+            : base(state, DeclarationType.Function)
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string ResultDescription(Declaration declaration)
         {
-            var issues = from item in State.DeclarationFinder.UserDeclarations(DeclarationType.Function)
-                         where !item.IsTypeSpecified 
-                         let issue = new {Declaration = item, QualifiedContext = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)}
-                         select new DeclarationInspectionResult(this,
-                                                     string.Format(InspectionResults.ImplicitVariantReturnTypeInspection, item.IdentifierName),
-                                                     item);
-            return issues;
+            return string.Format(InspectionResults.ImplicitVariantReturnTypeInspection, declaration.IdentifierName);
         }
     }
 }

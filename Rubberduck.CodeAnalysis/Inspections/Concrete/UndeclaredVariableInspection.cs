@@ -1,12 +1,8 @@
-using System.Collections.Generic;
-using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -33,16 +29,20 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class UndeclaredVariableInspection : InspectionBase
+    public sealed class UndeclaredVariableInspection : DeclarationInspectionBase
     {
         public UndeclaredVariableInspection(RubberduckParserState state)
-            : base(state) { }
+            : base(state, DeclarationType.Variable)
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            return State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                .Where(item => item.IsUndeclared)
-                .Select(item => new DeclarationInspectionResult(this, string.Format(InspectionResults.UndeclaredVariableInspection, item.IdentifierName), item));
+            return declaration.IsUndeclared;
+        }
+
+        protected override string ResultDescription(Declaration declaration)
+        {
+            return string.Format(InspectionResults.UndeclaredVariableInspection, declaration.IdentifierName);
         }
     }
 }

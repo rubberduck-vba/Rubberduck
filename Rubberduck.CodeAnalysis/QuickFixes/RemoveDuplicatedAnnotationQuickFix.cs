@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
@@ -47,8 +48,14 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
+            if (!(result is IWithInspectionResultProperties<IAnnotation> resultProperties))
+            {
+                return;
+            }
+
+            var resultAnnotation = resultProperties.Properties;
             var duplicateAnnotations = result.Target.Annotations
-                .Where(pta => pta.Annotation == result.Properties.Annotation)
+                .Where(pta => pta.Annotation == resultAnnotation)
                 .OrderBy(annotation => annotation.AnnotatedLine)
                 .Skip(1)
                 .ToList();

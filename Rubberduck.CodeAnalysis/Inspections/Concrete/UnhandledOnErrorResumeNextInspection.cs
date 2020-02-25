@@ -56,10 +56,9 @@ namespace Rubberduck.Inspections.Concrete
             return Listener.Contexts
                 .Select(result =>
                 {
-                    dynamic properties = new PropertyBag();
-                    properties.UnhandledContexts = _unhandledContextsMap[result];
+                    var unhandledContexts = _unhandledContextsMap[result];
 
-                    return new QualifiedContextInspectionResult(this, InspectionResults.UnhandledOnErrorResumeNextInspection, result, properties);
+                    return new QualifiedContextInspectionResult<List<ParserRuleContext>>(this, InspectionResults.UnhandledOnErrorResumeNextInspection, result, unhandledContexts);
                 });
         }
     }

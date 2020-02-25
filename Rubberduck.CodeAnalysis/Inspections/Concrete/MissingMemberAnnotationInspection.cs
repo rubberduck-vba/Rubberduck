@@ -1,13 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor.SafeComWrappers;
 
@@ -37,48 +34,22 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class MissingMemberAnnotationInspection : InspectionBase
+    public sealed class MissingMemberAnnotationInspection : DeclarationInspectionMultiResultBase<(string AttributeName, IReadOnlyList<string> AttriguteValues)>
     {
         public MissingMemberAnnotationInspection(RubberduckParserState state) 
-        :base(state)
+        :base(state, new DeclarationType[0], new []{DeclarationType.Module })
         {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<(string AttributeName, IReadOnlyList<string> AttriguteValues)> ResultProperties(Declaration declaration, DeclarationFinder finder)
         {
-            var memberDeclarationsWithAttributes = State.DeclarationFinder.AllUserDeclarations
-                .Where(decl => !decl.DeclarationType.HasFlag(DeclarationType.Module)
-                                && decl.Attributes.Any());
-
-            var declarationsToInspect = memberDeclarationsWithAttributes
-                // prefilter declarations to reduce searchspace
-                .Where(decl => decl.QualifiedModuleName.ComponentType != ComponentType.Document
-                               && !decl.IsIgnoringInspectionResultFor(AnnotationName));
-
-            var results = new List<DeclarationInspectionResult>();
-            foreach (var declaration in declarationsToInspect)
+            if (declaration.QualifiedModuleName.ComponentType == ComponentType.Document)
             {
-                foreach (var attribute in declaration.Attributes)
-                {
-                    if (MissesCorrespondingMemberAnnotation(declaration, attribute))
-                    {
-                        var attributeBaseName = AttributeBaseName(declaration, attribute);
-
-                        var description = string.Format(InspectionResults.MissingMemberAnnotationInspection, 
-                            declaration.IdentifierName,
-                            attributeBaseName,
-                            string.Join(", ", attribute.Values));
-
-                        var result = new DeclarationInspectionResult(this, description, declaration,
-                            new QualifiedContext(declaration.QualifiedModuleName, declaration.Context));
-                        result.Properties.AttributeName = attributeBaseName;
-                        result.Properties.AttributeValues = attribute.Values;
-
-                        results.Add(result);
-                    }
-                }
+                return Enumerable.Empty<(string AttributeName, IReadOnlyList<string> AttriguteValues)>();
             }
 
-            return results;
+            return declaration.Attributes
+                .Where(attribute => MissesCorrespondingMemberAnnotation(declaration, attribute))
+                .Select(attribute => (AttributeBaseName(declaration, attribute), attribute.Values));
         }
 
         private static bool MissesCorrespondingMemberAnnotation(Declaration declaration, AttributeNode attribute)
@@ -106,6 +77,15 @@ namespace Rubberduck.Inspections.Concrete
         private static string AttributeBaseName(Declaration declaration, AttributeNode attribute)
         {
             return Attributes.AttributeBaseName(attribute.Name, declaration.IdentifierName);
+        }
+
+        protected override string ResultDescription(Declaration declaration, (string AttributeName, IReadOnlyList<string> AttriguteValues) properties)
+        {
+            var (attributeBaseName, attributeValues) = properties;
+            return string.Format(InspectionResults.MissingMemberAnnotationInspection,
+                declaration.IdentifierName,
+                attributeBaseName,
+                string.Join(", ", attributeValues));
         }
     }
 }

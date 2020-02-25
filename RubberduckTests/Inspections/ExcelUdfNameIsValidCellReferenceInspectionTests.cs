@@ -32,6 +32,20 @@ End Function
             Assert.AreEqual(1, InspectionResultCount(string.Format(codeTemplate, identifier), ComponentType.StandardModule));
         }
 
+        [Test]
+        [Category("Inspections")]
+        public void ExcelUdfNameIsValidCellReferenceInspection_ReturnsResult_ValidCellsInPrivateModule()
+        {
+            const string code =
+                @"Option Private Module
+Public Function A1() As Long
+    A1 = 42
+End Function
+";
+
+            Assert.AreEqual(0, InspectionResultCount(code, ComponentType.StandardModule));
+        }
+
         [TestCase("Foo")]
         [TestCase("XXX69")]
         [TestCase("XKCD42")]

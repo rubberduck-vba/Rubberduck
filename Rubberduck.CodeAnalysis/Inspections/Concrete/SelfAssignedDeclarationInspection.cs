@@ -1,13 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -43,24 +40,26 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class SelfAssignedDeclarationInspection : InspectionBase
+    public sealed class SelfAssignedDeclarationInspection : DeclarationInspectionBase
     {
         public SelfAssignedDeclarationInspection(RubberduckParserState state)
-            : base(state) { }
+            : base(state, DeclarationType.Variable)
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            return State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                .Where(declaration => declaration.IsSelfAssigned 
-                    && declaration.IsTypeSpecified
-                    && !SymbolList.ValueTypes.Contains(declaration.AsTypeName)
-                    && (declaration.AsTypeDeclaration == null
-                        || declaration.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType)
-                    && declaration.ParentScopeDeclaration != null
-                    && declaration.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member))
-                .Select(issue => new DeclarationInspectionResult(this,
-                                                      string.Format(InspectionResults.SelfAssignedDeclarationInspection, issue.IdentifierName),
-                                                      issue));
+            return declaration.IsSelfAssigned
+                   && declaration.IsTypeSpecified
+                   && !SymbolList.ValueTypes.Contains(declaration.AsTypeName)
+                   && (declaration.AsTypeDeclaration == null
+                       || declaration.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType)
+                   && declaration.ParentScopeDeclaration != null
+                   && declaration.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member);
+        }
+
+        protected override string ResultDescription(Declaration declaration)
+        {
+            return string.Format(InspectionResults.SelfAssignedDeclarationInspection, declaration.IdentifierName);
         }
     }
 }

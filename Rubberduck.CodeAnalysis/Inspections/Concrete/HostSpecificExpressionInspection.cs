@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -30,15 +30,20 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class HostSpecificExpressionInspection : InspectionBase
+    public sealed class HostSpecificExpressionInspection : DeclarationInspectionBase
     {
         public HostSpecificExpressionInspection(RubberduckParserState state)
-            : base(state) { }
+            : base(state, DeclarationType.BracketedExpression)
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            return Declarations.Where(item => item.DeclarationType == DeclarationType.BracketedExpression)
-                .Select(item => new DeclarationInspectionResult(this, string.Format(InspectionResults.HostSpecificExpressionInspection, item.IdentifierName), item));
+            return true;
+        }
+
+        protected override string ResultDescription(Declaration declaration)
+        {
+            return string.Format(InspectionResults.HostSpecificExpressionInspection, declaration.IdentifierName);
         }
     }
 }

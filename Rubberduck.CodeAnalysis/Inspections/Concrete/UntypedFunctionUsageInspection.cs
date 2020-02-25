@@ -76,7 +76,7 @@ namespace Rubberduck.Inspections.Concrete
                                         && _tokens.Contains(item.IdentifierName.Substring("_B_var_".Length))));
         }
 
-        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
+        protected override string ResultDescription(IdentifierReference reference)
         {
             var declarationName = reference.Declaration.IdentifierName;
             return string.Format(

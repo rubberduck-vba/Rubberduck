@@ -1,14 +1,11 @@
-using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -37,37 +34,61 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class VariableNotAssignedInspection : InspectionBase
+    public sealed class VariableNotAssignedInspection : DeclarationInspectionBase
     {
         public VariableNotAssignedInspection(RubberduckParserState state)
-            : base(state) { }
+            : base(state, DeclarationType.Variable) { }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            // ignore arrays. todo: ArrayIndicesNotAccessedInspection
-            var arrays = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Where(declaration => declaration.IsArray);
-
-            var declarations = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                .Except(arrays)
-                .Where(declaration =>
-                    !declaration.IsWithEvents
-                    && State.DeclarationFinder.MatchName(declaration.AsTypeName).All(item => item.DeclarationType != DeclarationType.UserDefinedType) // UDT variables don't need to be assigned
-                    && !declaration.IsSelfAssigned
-                    && !declaration.References.Any(reference => reference.IsAssignment || IsAssignedByRefArgument(reference.ParentScoping, reference)));
-
-            return declarations.Select(issue => 
-                new DeclarationInspectionResult(this, string.Format(InspectionResults.VariableNotAssignedInspection, issue.IdentifierName), issue));
+            return declaration != null
+                   && !declaration.IsArray // ignore arrays. todo: ArrayIndicesNotAccessedInspection
+                   && !declaration.IsWithEvents
+                   && !declaration.IsSelfAssigned
+                   && !HasUdtType(declaration, finder) // UDT variables don't need to be assigned
+                   && !declaration.References.Any(reference => reference.IsAssignment || IsAssignedByRefArgument(reference.ParentScoping, reference, finder));
         }
 
-        private bool IsAssignedByRefArgument(Declaration enclosingProcedure, IdentifierReference reference)
+        private static bool HasUdtType(Declaration declaration, DeclarationFinder finder)
         {
-            var argExpression = reference.Context.GetAncestor<VBAParser.ArgumentExpressionContext>();
-            var parameter = State.DeclarationFinder.FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(argExpression, enclosingProcedure);
+            return finder.MatchName(declaration.AsTypeName)
+                .Any(item => item.DeclarationType == DeclarationType.UserDefinedType);
+        }
+
+        private static bool IsAssignedByRefArgument(Declaration enclosingProcedure, IdentifierReference reference, DeclarationFinder finder)
+        {
+            var argExpression = ImmediateArgumentExpressionContext(reference);
+
+            if (argExpression is null)
+            {
+                return false;
+            }
+
+            var parameter = finder.FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(argExpression, enclosingProcedure);
 
             // note: not recursive, by design.
             return parameter != null
                    && (parameter.IsImplicitByRef || parameter.IsByRef)
                    && parameter.References.Any(r => r.IsAssignment);
+        }
+
+        private static VBAParser.ArgumentExpressionContext ImmediateArgumentExpressionContext(IdentifierReference reference)
+        {
+            var context = reference.Context;
+            //The context is either already a simpleNameExprContext or an IdentifierValueContext used in a sub-rule of some other lExpression alternative. 
+            var lExpressionNameContext = context is VBAParser.SimpleNameExprContext simpleName
+                ? simpleName
+                : context.GetAncestor<VBAParser.LExpressionContext>();
+
+            //To be an immediate argument and, thus, assignable by ref, the structure must be argumentExpression -> expression -> lExpression.
+            return lExpressionNameContext?
+                .Parent?
+                .Parent as VBAParser.ArgumentExpressionContext;
+        }
+
+        protected override string ResultDescription(Declaration declaration)
+        {
+            return string.Format(InspectionResults.VariableNotAssignedInspection, declaration.IdentifierName);
         }
     }
 }

@@ -198,18 +198,22 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         }
 
         //public static to support tests
-        public static (bool success, IdentifierReference idRef) GetIdentifierReferenceForContext(ParserRuleContext context, RubberduckParserState state)
+        public static (bool success, IdentifierReference idRef) GetIdentifierReferenceForContext(ParserRuleContext context, IDeclarationFinderProvider declarationFinderProvider)
         {
-            IdentifierReference idRef = null;
-            var success = false;
-            var identifierReferences = (state.DeclarationFinder.MatchName(context.GetText()).Select(dec => dec.References)).SelectMany(rf => rf)
-                .Where(rf => rf.Context == context);
-            if (identifierReferences.Count() == 1)
+            if (context == null)
             {
-                idRef = identifierReferences.First();
-                success = true;
+                return (false, null);
             }
-            return (success, idRef);
+
+            var finder = declarationFinderProvider.DeclarationFinder;
+            var identifierReferences = finder.MatchName(context.GetText())
+                .SelectMany(declaration => declaration.References)
+                .Where(reference => reference.Context == context)
+                .ToList();
+
+            return identifierReferences.Count == 1 
+                ? (true, identifierReferences.First())
+                : (false, null);
         }
 
         //Method is used as a delegate to avoid propogating RubberduckParserState beyond this class

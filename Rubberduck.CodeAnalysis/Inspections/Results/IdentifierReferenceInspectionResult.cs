@@ -13,15 +13,20 @@ namespace Rubberduck.Inspections.Results
     {
         public IdentifierReference Reference { get; }
 
-        public IdentifierReferenceInspectionResult(IInspection inspection, string description, IDeclarationFinderProvider declarationFinderProvider, IdentifierReference reference, dynamic properties = null) :
-            base(inspection,
+        public IdentifierReferenceInspectionResult(
+            IInspection inspection, 
+            string description, 
+            IDeclarationFinderProvider declarationFinderProvider, 
+            IdentifierReference reference,
+            ICollection<string> disabledQuickFixes = null) 
+            : base(inspection,
                  description,
                  reference.QualifiedModuleName,
                  reference.Context,
                  reference.Declaration,
                  new QualifiedSelection(reference.QualifiedModuleName, reference.Context.GetSelection()),
                  GetQualifiedMemberName(declarationFinderProvider, reference),
-                 (object)properties)
+                 disabledQuickFixes)
         {
             Reference = reference;
         }
@@ -37,5 +42,27 @@ namespace Rubberduck.Inspections.Results
             return Target != null && modifiedModules.Contains(Target.QualifiedModuleName)
                    || base.ChangesInvalidateResult(modifiedModules);
         }
+    }
+
+    public class IdentifierReferenceInspectionResult<T> : IdentifierReferenceInspectionResult, IWithInspectionResultProperties<T>
+    {
+        public IdentifierReferenceInspectionResult(
+            IInspection inspection, 
+            string description, 
+            IDeclarationFinderProvider declarationFinderProvider, 
+            IdentifierReference reference, 
+            T properties,
+            ICollection<string> disabledQuickFixes = null) 
+            : base(
+                inspection,
+                description,
+                declarationFinderProvider, 
+                reference,
+                disabledQuickFixes)
+        {
+            Properties = properties;
+        }
+
+        public T Properties { get; }
     }
 }

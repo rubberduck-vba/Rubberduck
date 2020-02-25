@@ -1,17 +1,9 @@
 ﻿using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using System.Collections.Generic;
-using System.Linq;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Common;
 using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
-using Rubberduck.Parsing.VBA.Extensions;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -36,47 +28,20 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    internal class EmptyMethodInspection : InspectionBase
+    internal class EmptyMethodInspection : DeclarationInspectionBase
     {
         public EmptyMethodInspection(RubberduckParserState state)
-            : base(state) { }
+            : base(state, DeclarationType.Member)
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            var finder = State.DeclarationFinder;
-
-            var userInterfaces = UserInterfaces(finder);
-            var emptyMethods = EmptyNonInterfaceMethods(finder, userInterfaces);
-
-            return emptyMethods.Select(Result);
+            return declaration is ModuleBodyElementDeclaration member 
+                   && !member.IsInterfaceMember 
+                   && !member.Block.ContainsExecutableStatements();
         }
 
-        private static ICollection<QualifiedModuleName> UserInterfaces(DeclarationFinder finder)
-        {
-            return finder
-                .FindAllUserInterfaces()
-                .Select(decl => decl.QualifiedModuleName)
-                .ToHashSet();
-        }
-
-        private static IEnumerable<Declaration> EmptyNonInterfaceMethods(DeclarationFinder finder, ICollection<QualifiedModuleName> userInterfaces)
-        {
-            return finder
-                .UserDeclarations(DeclarationType.Member)
-                .Where(member => !userInterfaces.Contains(member.QualifiedModuleName)
-                                 && member is ModuleBodyElementDeclaration moduleBodyElement
-                                 && !moduleBodyElement.Block.ContainsExecutableStatements());
-        }
-
-        private IInspectionResult Result(Declaration member)
-        {
-            return new DeclarationInspectionResult(
-                this,
-                ResultDescription(member),
-                member);
-        }
-
-        private static string ResultDescription(Declaration member)
+        protected override string ResultDescription(Declaration member)
         {
             var identifierName = member.IdentifierName;
             var declarationType = member.DeclarationType.ToLocalizedString();

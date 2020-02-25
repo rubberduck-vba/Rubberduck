@@ -16,7 +16,9 @@ namespace Rubberduck.Inspections.Abstract
         {}
 
         protected abstract IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder);
-        protected abstract string ResultDescription(IdentifierReference reference, dynamic properties = null);
+        protected abstract string ResultDescription(IdentifierReference reference);
+
+        protected virtual ICollection<string> DisabledQuickFixes(IdentifierReference reference) => new List<string>();
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
@@ -24,16 +26,14 @@ namespace Rubberduck.Inspections.Abstract
             var objectionableReferences = ObjectionableReferences(finder);
             var resultReferences = ResultReferences(objectionableReferences, finder);
             return resultReferences
-                .Select(tpl => InspectionResult(tpl.reference, DeclarationFinderProvider, tpl.properties))
+                .Select(reference => InspectionResult(reference, DeclarationFinderProvider))
                 .ToList();
         }
 
-        private IEnumerable<(IdentifierReference reference, object properties)> ResultReferences(IEnumerable<IdentifierReference> potentialResultReferences, DeclarationFinder finder)
+        private IEnumerable<IdentifierReference> ResultReferences(IEnumerable<IdentifierReference> potentialResultReferences, DeclarationFinder finder)
         {
             return potentialResultReferences
-                .Select(reference => (reference, IsResultReferenceWithAdditionalProperties(reference, finder)))
-                .Where(tpl => tpl.Item2.isResult)
-                .Select(tpl => (tpl.reference, tpl.Item2.properties));
+                .Where(reference => IsResultReference(reference, finder));
         }
 
         protected virtual IEnumerable<IdentifierReference> ObjectionableReferences(DeclarationFinder finder)
@@ -45,9 +45,71 @@ namespace Rubberduck.Inspections.Abstract
 
         protected virtual bool IsResultReference(IdentifierReference reference, DeclarationFinder finder) => true;
 
-        protected virtual (bool isResult, object properties) IsResultReferenceWithAdditionalProperties(IdentifierReference reference, DeclarationFinder finder)
+        protected IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
         {
-            return (IsResultReference(reference, finder), null);
+            var finder = DeclarationFinderProvider.DeclarationFinder;
+            var objectionableReferences = ObjectionableReferences(finder)
+                .Where(reference => reference.QualifiedModuleName.Equals(module));
+            var resultReferences = ResultReferences(objectionableReferences, finder);
+            return resultReferences
+                .Select(reference => InspectionResult(reference, DeclarationFinderProvider))
+                .ToList();
+        }
+
+        protected virtual IInspectionResult InspectionResult(IdentifierReference reference, IDeclarationFinderProvider declarationFinderProvider)
+        {
+            return new IdentifierReferenceInspectionResult(
+                this,
+                ResultDescription(reference),
+                declarationFinderProvider,
+                reference,
+                DisabledQuickFixes(reference));
+        }
+    }
+
+    public abstract class IdentifierReferenceInspectionFromDeclarationsBase<T> : InspectionBase
+    {
+        protected IdentifierReferenceInspectionFromDeclarationsBase(RubberduckParserState state)
+            : base(state)
+        { }
+
+        protected abstract IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder);
+        protected abstract (bool isResult, T properties) IsResultReferenceWithAdditionalProperties(IdentifierReference reference, DeclarationFinder finder);
+        protected abstract string ResultDescription(IdentifierReference reference, T properties);
+
+        protected virtual ICollection<string> DisabledQuickFixes(IdentifierReference reference, T properties) => new List<string>();
+
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        {
+            var finder = DeclarationFinderProvider.DeclarationFinder;
+            var objectionableReferences = ObjectionableReferences(finder);
+            var resultReferences = ResultReferences(objectionableReferences, finder);
+            return resultReferences
+                .Select(tpl => InspectionResult(tpl.reference, DeclarationFinderProvider, tpl.properties))
+                .ToList();
+        }
+
+        private IEnumerable<(IdentifierReference reference, T properties)> ResultReferences(IEnumerable<IdentifierReference> potentialResultReferences, DeclarationFinder finder)
+        {
+            return potentialResultReferences
+                .Select(reference => ReferenceWithResultProperties(reference, finder))
+                .Where(result => result.HasValue)
+                .Select(result => result.Value); ;
+        }
+
+        private (IdentifierReference reference, T properties)? ReferenceWithResultProperties(IdentifierReference reference, DeclarationFinder finder)
+        {
+            var (isResult, properties) = IsResultReferenceWithAdditionalProperties(reference, finder);
+            return isResult
+                ? (reference, properties)
+                : ((IdentifierReference reference, T properties)?)null;
+        }
+
+        protected virtual IEnumerable<IdentifierReference> ObjectionableReferences(DeclarationFinder finder)
+        {
+            var objectionableDeclarations = ObjectionableDeclarations(finder);
+            return objectionableDeclarations
+                .SelectMany(declaration => declaration.References);
         }
 
         protected IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
@@ -61,14 +123,15 @@ namespace Rubberduck.Inspections.Abstract
                 .ToList();
         }
 
-        protected virtual IInspectionResult InspectionResult(IdentifierReference reference, IDeclarationFinderProvider declarationFinderProvider, dynamic properties = null)
+        protected virtual IInspectionResult InspectionResult(IdentifierReference reference, IDeclarationFinderProvider declarationFinderProvider, T properties)
         {
-            return new IdentifierReferenceInspectionResult(
+            return new IdentifierReferenceInspectionResult<T>(
                 this,
                 ResultDescription(reference, properties),
                 declarationFinderProvider,
                 reference,
-                properties);
+                properties,
+                DisabledQuickFixes(reference, properties));
         }
     }
 }

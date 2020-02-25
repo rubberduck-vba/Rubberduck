@@ -61,19 +61,29 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
+            if (!(result is IWithInspectionResultProperties<(IParseTreeAnnotation Annotation, string AttributeName, IReadOnlyList<string> AttributeValues)> resultProperties))
+            {
+                return;
+            }
+
             var declaration = result.Target;
-            IParseTreeAnnotation annotationInstance = result.Properties.Annotation;
+            var (parseTreeAnnotation, attributeBaseName, attributeValues) = resultProperties.Properties;
 
-            Debug.Assert(annotationInstance.Annotation is IAttributeAnnotation);
-            IAttributeAnnotation annotation = (IAttributeAnnotation)annotationInstance.Annotation;
-            IReadOnlyList<string> attributeValues = result.Properties.AttributeValues;
-
-            var attribute = annotation.Attribute(annotationInstance);
             var attributeName = declaration.DeclarationType.HasFlag(DeclarationType.Module)
-                ? attribute
-                : $"{declaration.IdentifierName}.{attribute}";
+                ? attributeBaseName
+                : Attributes.MemberAttributeName(attributeBaseName, declaration.IdentifierName);
 
-            _attributesUpdater.UpdateAttribute(rewriteSession, declaration, attributeName, annotation.AttributeValues(annotationInstance), oldValues: attributeValues);
+            if (!(parseTreeAnnotation.Annotation is IAttributeAnnotation attributeAnnotation))
+            {
+                var message = $"Tried to adjust values of attribute {attributeName} to values of non-attribute annotation {parseTreeAnnotation.Annotation.Name} in component {declaration.QualifiedModuleName}.";
+                Logger.Warn(message);
+                Debug.Fail(message);
+                return;
+            }
+
+            var attributeValuesFromAnnotation = attributeAnnotation.AttributeValues(parseTreeAnnotation);
+
+            _attributesUpdater.UpdateAttribute(rewriteSession, declaration, attributeName, attributeValuesFromAnnotation, oldValues: attributeValues);
         }
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.AdjustAttributeValuesQuickFix;
