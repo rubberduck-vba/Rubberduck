@@ -84,7 +84,8 @@ End Sub
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
             var result = inspectionResults.Single();
-            Assert.AreEqual("ExpandDefaultMemberQuickFix", result.Properties.DisableFixes);
+            var actuallyDisabledQuickFix = result.DisabledQuickFixes.Single();
+            Assert.AreEqual("ExpandDefaultMemberQuickFix", actuallyDisabledQuickFix);
         }
         [Test]
         [Category("Inspections")]
@@ -238,7 +239,8 @@ End Sub
                 ("Module1", moduleCode, ComponentType.StandardModule));
 
             var result = inspectionResults.Single();
-            Assert.AreEqual("ExpandDefaultMemberQuickFix", result.Properties.DisableFixes);
+            var actuallyDisabledQuickFix = result.DisabledQuickFixes.Single();
+            Assert.AreEqual("ExpandDefaultMemberQuickFix", actuallyDisabledQuickFix);
         }
 
         [Test]

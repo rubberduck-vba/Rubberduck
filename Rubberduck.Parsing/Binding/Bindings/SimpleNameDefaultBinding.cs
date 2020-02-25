@@ -72,7 +72,7 @@ namespace Rubberduck.Parsing.Binding
 
             if (_context.Start.Text == "[" && _context.Stop.Text == "]")
             {
-                var bracketedExpression = _declarationFinder.OnBracketedExpression(_context.GetText(), _context);
+                var bracketedExpression = _declarationFinder.OnBracketedExpression(_context.GetText(), _context, _module.QualifiedModuleName);
                 return new SimpleNameExpression(bracketedExpression, ExpressionClassification.Unbound, _context);
             }
             

@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 
@@ -47,12 +48,20 @@ End Sub
 
             var inspectionResult = inspectionResults.Single();
 
-            Assert.IsNotNull(inspectionResult.Properties.RhSReference);
-
-            if (assignedTypeName.Equals("Object") || assignedToTypeName.Equals("Object"))
+            if (inspectionResult is IWithInspectionResultProperties<IdentifierReference> resultProperties)
             {
-                var deactivatedFixes = inspectionResult.Properties.DisableFixes;
-                Assert.AreEqual("ExpandDefaultMemberQuickFix", deactivatedFixes);
+                var rhsReference = resultProperties.Properties;
+                Assert.IsNotNull(rhsReference);
+
+                if (assignedTypeName.Equals("Object") || assignedToTypeName.Equals("Object"))
+                {
+                    var deactivatedFix = inspectionResult.DisabledQuickFixes.Single();
+                    Assert.AreEqual("ExpandDefaultMemberQuickFix", deactivatedFix);
+                }
+            }
+            else
+            {
+                Assert.Fail("Result is missing expected properties.");
             }
         }
 

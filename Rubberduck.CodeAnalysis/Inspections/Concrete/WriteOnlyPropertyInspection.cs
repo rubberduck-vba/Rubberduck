@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -39,26 +39,35 @@ namespace Rubberduck.Inspections.Concrete
     /// End Property
     /// ]]>
     /// </example>
-    public sealed class WriteOnlyPropertyInspection : InspectionBase
+    public sealed class WriteOnlyPropertyInspection : DeclarationInspectionBase
     {
         public WriteOnlyPropertyInspection(RubberduckParserState state)
-            : base(state) { }
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+            : base(state, DeclarationType.PropertyLet, DeclarationType.PropertySet) { }
+        
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
         {
-            var setters = State.DeclarationFinder.UserDeclarations(DeclarationType.Property | DeclarationType.Procedure)
-                .Where(item => 
-                       (item.Accessibility == Accessibility.Implicit || 
-                        item.Accessibility == Accessibility.Public || 
-                        item.Accessibility == Accessibility.Global)
-                    && State.DeclarationFinder.MatchName(item.IdentifierName).All(accessor => accessor.DeclarationType != DeclarationType.PropertyGet))
-                .GroupBy(item => new {item.QualifiedName, item.DeclarationType})
+            var setters = RelevantDeclarationsInModule(module, finder)
+                .Where(declaration => IsResultDeclaration(declaration, finder))
+                .GroupBy(declaration => declaration.DeclarationType)
                 .Select(grouping => grouping.First()); // don't get both Let and Set accessors
 
-            return setters.Select(setter =>
-                new DeclarationInspectionResult(this,
-                                                string.Format(InspectionResults.WriteOnlyPropertyInspection, setter.IdentifierName),
-                                                setter));
+            return setters
+                .Select(InspectionResult)
+                .ToList();
+        }
+
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
+        {
+            return (declaration.Accessibility == Accessibility.Implicit
+                    || declaration.Accessibility == Accessibility.Public
+                    || declaration.Accessibility == Accessibility.Global)
+                   && finder.MatchName(declaration.IdentifierName)
+                       .All(accessor => accessor.DeclarationType != DeclarationType.PropertyGet);
+        }
+
+        protected override string ResultDescription(Declaration declaration)
+        {
+            return string.Format(InspectionResults.WriteOnlyPropertyInspection, declaration.IdentifierName);
         }
     }
 }

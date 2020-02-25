@@ -83,7 +83,7 @@ End Sub";
                 var quickFixProvider = new QuickFixProvider(rewritingManager, failureNotifier, new IQuickFix[] { new RemoveUnusedDeclarationQuickFix() });
 
                 var result = inspectionResults.First();
-                result.Properties.DisableFixes = nameof(RemoveUnusedDeclarationQuickFix);
+                result.DisabledQuickFixes.Add(nameof(RemoveUnusedDeclarationQuickFix));
 
                 Assert.AreEqual(0, quickFixProvider.QuickFixes(result).Count());
             }

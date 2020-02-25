@@ -1,11 +1,8 @@
-using System.Collections.Generic;
-using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -32,25 +29,25 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class UnderscoreInPublicClassModuleMemberInspection : InspectionBase
+    public sealed class UnderscoreInPublicClassModuleMemberInspection : DeclarationInspectionBase
     {
         public UnderscoreInPublicClassModuleMemberInspection(RubberduckParserState state)
-            : base(state) { }
+            : base(state, DeclarationType.Member)
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            var interfaceMembers = State.DeclarationFinder.FindAllInterfaceImplementingMembers().ToList();
-            var eventHandlers = State.DeclarationFinder.FindEventHandlers().ToList();
+            return declaration.IdentifierName.Contains("_") 
+                   && (declaration.Accessibility == Accessibility.Public 
+                       || declaration.Accessibility == Accessibility.Implicit) 
+                   && declaration.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.ClassModule)
+                   && !finder.FindEventHandlers().Contains(declaration)
+                   && !(declaration is ModuleBodyElementDeclaration member && member.IsInterfaceImplementation);
+        }
 
-            var names = State.DeclarationFinder.UserDeclarations(Parsing.Symbols.DeclarationType.Member)
-                .Where(w => w.ParentDeclaration.DeclarationType.HasFlag(Parsing.Symbols.DeclarationType.ClassModule))
-                .Where(w => !interfaceMembers.Contains(w) && !eventHandlers.Contains(w))
-                .Where(w => w.Accessibility == Parsing.Symbols.Accessibility.Public || w.Accessibility == Parsing.Symbols.Accessibility.Implicit)
-                .Where(w => w.IdentifierName.Contains('_'))
-                .ToList();
-
-            return names.Select(issue =>
-                new DeclarationInspectionResult(this, string.Format(InspectionResults.UnderscoreInPublicClassModuleMemberInspection, issue.IdentifierName), issue));
+        protected override string ResultDescription(Declaration declaration)
+        {
+            return string.Format(InspectionResults.UnderscoreInPublicClassModuleMemberInspection, declaration.IdentifierName);
         }
     }
 }

@@ -98,7 +98,7 @@ namespace Rubberduck.Inspections.Concrete
             return true;
         }
 
-        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
+        protected override string ResultDescription(IdentifierReference reference)
         {
             return string.Format(InspectionResults.ObjectVariableNotSetInspection, reference.IdentifierName);
         }

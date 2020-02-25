@@ -39,7 +39,10 @@
         /// <param name="member">The member to find the InterfaceDeclaration of.</param>
         /// <returns>Tthe Declaration of the interface that this is a member of, or null if IsInterfaceMember is false.</returns>
         internal static ClassModuleDeclaration InterfaceDeclaration(this IInterfaceExposable member) =>
-            member.ParentDeclaration is ClassModuleDeclaration parent && parent.IsInterface ? parent : null;
+            member.ParentDeclaration is ClassModuleDeclaration parent 
+                    && parent.IsInterface 
+                ? parent 
+                : null;
 
         /// <summary>
         /// Provides a default implementation of IInterfaceExposable.ImplementingIdentifierName

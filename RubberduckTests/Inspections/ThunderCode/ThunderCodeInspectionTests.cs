@@ -43,8 +43,6 @@ End Sub")]
             }
         }
 
-
-
         [Test]
         [TestCase(2, @"Do")]
         [TestCase(2, @"Loop")]
@@ -68,6 +66,26 @@ End Enum";
                 new KeywordsUsedAsMemberInspection(state));
             ThunderCatsGo(func, inputCode, expectedCount);
         }
+
+        [Test]
+        [TestCase( @"[Do]")]
+        [TestCase(@"Do ")]
+        [TestCase(@" Do")]
+        [TestCase(@"")]
+        [TestCase(@"[]")]
+        public void KeywordsUsedAsMember_CorrectlyDistinguishesBracketedIdentifiers(string inputVariable)
+        {
+            var inputCode = $@"
+Private Enum HawHaw
+  [{inputVariable}] = 1
+End Enum";
+
+            var func = new Func<RubberduckParserState, IInspection>(state =>
+                new KeywordsUsedAsMemberInspection(state));
+            ThunderCatsGo(func, inputCode, 0);
+        }
+
+
 
         // NOTE: the inspection only covers trivial cases and is not exhaustive
         // For that reason, some of test cases which the evil continuations exists

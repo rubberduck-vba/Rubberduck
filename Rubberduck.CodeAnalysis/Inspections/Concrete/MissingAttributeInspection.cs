@@ -9,6 +9,7 @@ using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor.SafeComWrappers;
 
@@ -39,42 +40,29 @@ namespace Rubberduck.Inspections.Concrete
     /// ]]>
     /// </example>
     [CannotAnnotate]
-    public sealed class MissingAttributeInspection : InspectionBase
+    public sealed class MissingAttributeInspection : DeclarationInspectionMultiResultBase<IParseTreeAnnotation>
     {
         public MissingAttributeInspection(RubberduckParserState state)
             : base(state)
         {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<IParseTreeAnnotation> ResultProperties(Declaration declaration, DeclarationFinder finder)
         {
-            var declarationsWithAttributeAnnotations = State.DeclarationFinder.AllUserDeclarations
-                .Where(declaration => declaration.Annotations.Any(pta => pta.Annotation is IAttributeAnnotation)
-                    && (declaration.DeclarationType.HasFlag(DeclarationType.Module) 
-                        || declaration.AttributesPassContext != null));
-            var results = new List<DeclarationInspectionResult>();
-
-            // prefilter declarations to reduce searchspace
-            var interestingDeclarations = declarationsWithAttributeAnnotations.Where(decl => decl.QualifiedModuleName.ComponentType != ComponentType.Document
-                                                                                                   && !decl.IsIgnoringInspectionResultFor(AnnotationName));
-            foreach (var declaration in interestingDeclarations)
+            if (!declaration.DeclarationType.HasFlag(DeclarationType.Module)
+                && declaration.AttributesPassContext == null
+                || declaration.QualifiedModuleName.ComponentType == ComponentType.Document)
             {
-                foreach (var annotationInstance in declaration.Annotations.Where(pta => pta.Annotation is IAttributeAnnotation))
-                {
-                    var annotation = (IAttributeAnnotation)annotationInstance.Annotation;
-                    if (MissesCorrespondingAttribute(declaration, annotationInstance))
-                    {
-                        var description = string.Format(InspectionResults.MissingAttributeInspection, declaration.IdentifierName, annotation.Name);
-
-                        var result = new DeclarationInspectionResult(this, description, declaration,
-                            new QualifiedContext(declaration.QualifiedModuleName, annotationInstance.Context));
-                        result.Properties.Annotation = annotationInstance;
-
-                        results.Add(result);
-                    }
-                }
+                return Enumerable.Empty<IParseTreeAnnotation>();
             }
 
-            return results;
+            return declaration.Annotations
+                .Where(pta => pta.Annotation is IAttributeAnnotation
+                              && MissesCorrespondingAttribute(declaration, pta));
+        }
+
+        protected override string ResultDescription(Declaration declaration, IParseTreeAnnotation pta)
+        {
+            return string.Format(InspectionResults.MissingAttributeInspection, declaration.IdentifierName, pta.Annotation.Name);
         }
 
         private static bool MissesCorrespondingAttribute(Declaration declaration, IParseTreeAnnotation annotationInstance)

@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
@@ -48,7 +49,12 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            _annotationUpdater.RemoveAnnotation(rewriteSession, result.Properties.Annotation);
+            if (!(result is IWithInspectionResultProperties<IParseTreeAnnotation> resultProperties))
+            {
+                return;
+            }
+
+            _annotationUpdater.RemoveAnnotation(rewriteSession, resultProperties.Properties);
         }
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.RemoveAnnotationQuickFix;

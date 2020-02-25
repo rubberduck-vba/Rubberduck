@@ -262,7 +262,6 @@ End Sub
         }
 
         [Test]
-        [Ignore("Test is green if executed manually, red otherwise. Possible concurrency issue?")]
         [Category("Inspections")]
         public void UnassignedVariableUsage_NoResultForAssignedByRefReference()
         {
@@ -279,6 +278,25 @@ Sub AssignThing(ByRef thing As Variant)
 End Sub
 ";
             Assert.AreEqual(0, InspectionResultsForStandardModule(code).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void UnassignedVariableUsage_ResultForUseStrictlyInsideArgumentToByRefArgument()
+        {
+            const string code = @"
+Sub DoSomething()
+    Dim foo
+    AssignThing foo + 42
+    Dim bar As Variant
+    bar = foo
+End Sub
+
+Sub AssignThing(ByRef thing As Variant)
+    thing = 42
+End Sub
+";
+            Assert.AreEqual(2, InspectionResultsForStandardModule(code).Count());
         }
 
         [Test]

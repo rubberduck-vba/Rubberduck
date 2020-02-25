@@ -1,16 +1,11 @@
-using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
-using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using static Rubberduck.Parsing.Grammar.VBAParser;
 using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -43,24 +38,28 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class LineLabelNotUsedInspection : InspectionBase
+    public sealed class LineLabelNotUsedInspection : DeclarationInspectionBase
     {
-        public LineLabelNotUsedInspection(RubberduckParserState state) : base(state) { }
+        public LineLabelNotUsedInspection(RubberduckParserState state) 
+            : base(state, DeclarationType.LineLabel)
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            var labels = State.DeclarationFinder.UserDeclarations(DeclarationType.LineLabel);
-            var declarations = labels
-                .Where(declaration =>
-                    !declaration.IsWithEvents
-                    && declaration.Context is IdentifierStatementLabelContext
-                    && (!declaration.References.Any() || declaration.References.All(reference => reference.IsAssignment)));
+            return declaration != null
+                   && !declaration.IsWithEvents
+                   && declaration.Context is IdentifierStatementLabelContext
+                   && declaration.References.All(reference => reference.IsAssignment);
+        }
 
-            return declarations.Select(issue => 
-                new DeclarationInspectionResult(this,
-                                     string.Format(InspectionResults.IdentifierNotUsedInspection, issue.DeclarationType.ToLocalizedString(), issue.IdentifierName),
-                                     issue,
-                                     new QualifiedContext<ParserRuleContext>(issue.QualifiedName.QualifiedModuleName, ((IdentifierStatementLabelContext)issue.Context).legalLabelIdentifier())));
+        protected override string ResultDescription(Declaration declaration)
+        {
+            var declarationType = declaration.DeclarationType.ToLocalizedString();
+            var declarationName = declaration.IdentifierName;
+            return string.Format(
+                InspectionResults.IdentifierNotUsedInspection, 
+                declarationType, 
+                declarationName);
         }
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Microsoft.CSharp.RuntimeBinder;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA.Parsing;
@@ -49,25 +48,8 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public IEnumerable<IQuickFix> QuickFixes(IInspectionResult result)
         {
-            return QuickFixes(result.Inspection.GetType()).Where(fix =>
-                {
-                    string value;
-                    try
-                    {
-                        value = result.Properties.DisableFixes;
-                    }
-                    catch (RuntimeBinderException)
-                    {
-                        return true;
-                    }
-
-                    if (value == null)
-                    {
-                        return true;
-                    }
-
-                    return !value.Split(',').Contains(fix.GetType().Name);
-                })
+            return QuickFixes(result.Inspection.GetType())
+                .Where(fix => !result.DisabledQuickFixes.Contains(fix.GetType().Name))
                 .OrderBy(fix => fix.SupportedInspections.Count); // most specific fixes first; keeps "ignore once" last
         }
 

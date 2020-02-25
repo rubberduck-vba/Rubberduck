@@ -1,12 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -39,58 +36,56 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class MoveFieldCloserToUsageInspection : InspectionBase
+    public sealed class MoveFieldCloserToUsageInspection : DeclarationInspectionBase
     {
         public MoveFieldCloserToUsageInspection(RubberduckParserState state)
-            : base(state) { }
+            : base(state, DeclarationType.Variable)
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            return State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                .Where(declaration =>
-                {
-                    if (declaration.IsWithEvents
-                        || !new[] {DeclarationType.ClassModule, DeclarationType.Document, DeclarationType.ProceduralModule}.Contains(declaration.ParentDeclaration.DeclarationType))
-                    {
-                        return false;
-                    }
+            if (declaration.IsWithEvents
+                || !IsField(declaration))
+            {
+                return false;
+            }
 
-                    var asType = declaration.AsTypeDeclaration;
-                    if (asType != null && asType.ProjectName.Equals("Rubberduck") &&
-                        (asType.IdentifierName.Equals("PermissiveAssertClass") || asType.IdentifierName.Equals("AssertClass")))
-                    {
-                        return false;
-                    }
+            if (IsRubberduckAssertField(declaration))
+            {
+                return false;
+            }
 
-                    var firstReference = declaration.References.FirstOrDefault();
+            var firstReference = declaration.References.FirstOrDefault();
+            var usageMember = firstReference?.ParentScoping;
 
-                    if (firstReference == null ||
-                        declaration.References.Any(r => r.ParentScoping != firstReference.ParentScoping))
-                    {
-                        return false;
-                    }
+            if (usageMember == null 
+                || declaration.References.Any(reference => !reference.ParentScoping.Equals(usageMember)))
+            {
+                return false;
+            }
 
-                    var parentDeclaration = ParentDeclaration(firstReference);
-
-                    return parentDeclaration != null &&
-                           !new[]
-                           {
-                               DeclarationType.PropertyGet,
-                               DeclarationType.PropertyLet,
-                               DeclarationType.PropertySet
-                           }.Contains(parentDeclaration.DeclarationType);
-                })
-                .Select(issue =>
-                        new DeclarationInspectionResult(this, string.Format(InspectionResults.MoveFieldCloserToUsageInspection, issue.IdentifierName), issue));
+            return usageMember.DeclarationType == DeclarationType.Procedure
+                   || usageMember.DeclarationType == DeclarationType.Function;
         }
 
-        private Declaration ParentDeclaration(IdentifierReference reference)
+        private static bool IsField(Declaration variableDeclaration)
         {
-            var declarationTypes = new[] {DeclarationType.Function, DeclarationType.Procedure, DeclarationType.Property};
+            var parentDeclarationType = variableDeclaration.ParentDeclaration.DeclarationType;
+            return parentDeclarationType.HasFlag(DeclarationType.Module);
+        }
 
-            return UserDeclarations.SingleOrDefault(d =>
-                        reference.ParentScoping.Equals(d) && declarationTypes.Contains(d.DeclarationType) &&
-                        d.QualifiedName.QualifiedModuleName.Equals(reference.QualifiedModuleName));
+        private static bool IsRubberduckAssertField(Declaration fieldDeclaration)
+        {
+            var asType = fieldDeclaration.AsTypeDeclaration;
+            return asType != null
+                   && asType.ProjectName.Equals("Rubberduck")
+                   && (asType.IdentifierName.Equals("PermissiveAssertClass")
+                       || asType.IdentifierName.Equals("AssertClass"));
+        }
+
+        protected override string ResultDescription(Declaration declaration)
+        {
+            return string.Format(InspectionResults.MoveFieldCloserToUsageInspection, declaration.IdentifierName);
         }
     }
 }

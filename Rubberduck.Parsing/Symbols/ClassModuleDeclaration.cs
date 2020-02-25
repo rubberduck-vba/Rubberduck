@@ -188,7 +188,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public IEnumerable<Declaration> Subtypes => _subtypes.Keys;
 
-        public bool IsInterface => _subtypes.Count > 0;
+        public bool IsInterface => _subtypes.Count > 0 || Annotations.Any(pta => pta.Annotation is InterfaceAnnotation);
 
         public bool IsUserInterface => Subtypes.Any(s => s.IsUserDefined);
 

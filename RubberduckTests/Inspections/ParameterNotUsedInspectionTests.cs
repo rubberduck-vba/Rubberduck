@@ -80,9 +80,8 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void ParameterNotUsed_ReturnsResult_InterfaceImplementation()
+        public void ParameterNotUsed_InterfaceWithImplementation_ReturnsResultForInterface()
         {
-            //Input
             const string inputCode1 =
                 @"Public Sub DoSomething(ByVal a As Integer)
 End Sub";
@@ -96,9 +95,157 @@ End Sub";
            {
                 ("IClass1", inputCode1, ComponentType.ClassModule),
                 ("Class1", inputCode2, ComponentType.ClassModule),
+                ("Class2", inputCode2, ComponentType.ClassModule),
            };
 
             Assert.AreEqual(1, InspectionResultsForModules(modules).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ParameterNotUsed_InterfaceWithImplementation_SomeUseParameter_DoesNotReturnResult()
+        {
+            const string inputCode1 =
+                @"Public Sub DoSomething(ByVal a As Integer)
+End Sub";
+            const string inputCode2 =
+                @"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByVal a As Integer)
+End Sub";
+            const string inputCode3 =
+                @"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByVal a As Integer)
+    Dim bar As Variant
+    bar = a
+End Sub
+";
+
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("IClass1", inputCode1, ComponentType.ClassModule),
+                ("Class1", inputCode2, ComponentType.ClassModule),
+                ("Class2", inputCode3, ComponentType.ClassModule),
+            };
+
+            Assert.AreEqual(0, InspectionResultsForModules(modules).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ParameterNotUsed_InterfaceWithoutImplementation_DoesNotReturnResult()
+        {
+            const string inputCode1 =
+                @"'@Interface
+Public Sub DoSomething(ByVal a As Integer)
+End Sub";
+
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("IClass1", inputCode1, ComponentType.ClassModule)
+            };
+
+            Assert.AreEqual(0, InspectionResultsForModules(modules).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ParameterNotUsed_EventMemberWithHandlers_ResultForEventOnly()
+        {
+            const string inputCode1 =
+                @"Public Event Foo(ByRef arg1 As Integer)";
+
+            const string inputCode2 =
+                @"Private WithEvents abc As Class1
+
+Private Sub abc_Foo(ByRef arg1 As Integer)
+End Sub";
+
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("Class1", inputCode1, ComponentType.ClassModule),
+                ("Class2", inputCode2, ComponentType.ClassModule),
+                ("Class3", inputCode2, ComponentType.ClassModule),
+            };
+
+            Assert.AreEqual(1, InspectionResultsForModules(modules).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ParameterNotUsed_EventMemberWithHandlers_SomeUseParameter_DoesNotReturnResult()
+        {
+            const string inputCode1 =
+                @"Public Event Foo(ByRef arg1 As Integer)";
+
+            const string inputCode2 =
+                @"Private WithEvents abc As Class1
+
+Private Sub abc_Foo(ByRef arg1 As Integer)
+End Sub";
+
+            const string inputCode3 =
+                @"Private WithEvents abc As Class1
+
+Private Sub abc_Foo(ByRef arg1 As Integer)
+    Dim bar As Variant
+    bar = arg1
+End Sub";
+
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("Class1", inputCode1, ComponentType.ClassModule),
+                ("Class2", inputCode2, ComponentType.ClassModule),
+                ("Class3", inputCode3, ComponentType.ClassModule),
+            };
+
+            Assert.AreEqual(0, InspectionResultsForModules(modules).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ParameterNotUsed_EventMemberWithoutHandlers_DoesNotReturnResult()
+        {
+            const string inputCode1 =
+                @"Public Event Foo(ByRef arg1 As Integer)";
+
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("Class1", inputCode1, ComponentType.ClassModule)
+            };
+
+            Assert.AreEqual(0, InspectionResultsForModules(modules).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ParameterNotUsed_LibraryFunction_DoesNotReturnResult()
+        {
+            const string inputCode1 =
+                @"Public Declare Function MyLibFunction Lib ""MyLib"" (arg1 As Integer) As Integer";
+
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("Class1", inputCode1, ComponentType.ClassModule)
+            };
+
+            Assert.AreEqual(0, InspectionResultsForModules(modules).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ParameterNotUsed_LibraryProcedure_DoesNotReturnResult()
+        {
+            const string inputCode1 =
+                @"Public Declare Sub MyLibProcedure Lib ""MyLib"" (arg1 As Integer)";
+
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("Class1", inputCode1, ComponentType.ClassModule)
+            };
+
+            Assert.AreEqual(0, InspectionResultsForModules(modules).Count());
         }
 
         [Test]

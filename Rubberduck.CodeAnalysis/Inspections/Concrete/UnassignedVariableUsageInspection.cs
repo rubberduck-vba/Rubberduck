@@ -1,13 +1,10 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -66,7 +63,9 @@ namespace Rubberduck.Inspections.Concrete
                                       && finder.MatchName(declaration.AsTypeName)
                                           .All(d => d.DeclarationType != DeclarationType.UserDefinedType)
                                       && !declaration.References
-                                          .Any(reference => reference.IsAssignment));
+                                          .Any(reference => reference.IsAssignment)
+                                      && !declaration.References
+                                          .Any(reference => IsAssignedByRefArgument(reference.ParentScoping, reference, finder)));
         }
 
         //We override this in order to look up the argument usage exclusion references only once.
@@ -130,12 +129,11 @@ namespace Rubberduck.Inspections.Concrete
         protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {
             return reference != null
-                   && !IsAssignedByRefArgument(reference.ParentScoping, reference, finder)
                    && !IsArraySubscriptAssignment(reference) 
                    && !IsArrayReDim(reference);
         }
 
-        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
+        protected override string ResultDescription(IdentifierReference reference)
         {
             var identifierName = reference.IdentifierName;
             return string.Format(
@@ -145,13 +143,33 @@ namespace Rubberduck.Inspections.Concrete
 
         private static bool IsAssignedByRefArgument(Declaration enclosingProcedure, IdentifierReference reference, DeclarationFinder finder)
         {
-            var argExpression = reference.Context.GetAncestor<VBAParser.ArgumentExpressionContext>();
+            var argExpression = ImmediateArgumentExpressionContext(reference);
+
+            if (argExpression is null)
+            {
+                return false;
+            }
+
             var parameter = finder.FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(argExpression, enclosingProcedure);
 
             // note: not recursive, by design.
             return parameter != null
-                   && (parameter.IsImplicitByRef || parameter.IsByRef)
-                   && parameter.References.Any(r => r.IsAssignment);
+                && (parameter.IsImplicitByRef || parameter.IsByRef)
+                && parameter.References.Any(r => r.IsAssignment);
+        }
+
+        private static VBAParser.ArgumentExpressionContext ImmediateArgumentExpressionContext(IdentifierReference reference)
+        {
+            var context = reference.Context;
+            //The context is either already a simpleNameExprContext or an IdentifierValueContext used in a sub-rule of some other lExpression alternative. 
+            var lExpressionNameContext = context is VBAParser.SimpleNameExprContext simpleName
+                ? simpleName
+                : context.GetAncestor<VBAParser.LExpressionContext>();
+
+            //To be an immediate argument and, thus, assignable by ref, the structure must be argumentExpression -> expression -> lExpression.
+            return lExpressionNameContext?
+                .Parent?
+                .Parent as VBAParser.ArgumentExpressionContext;
         }
 
         private static bool IsArraySubscriptAssignment(IdentifierReference reference)
