@@ -88,7 +88,7 @@ namespace Rubberduck.Inspections.Concrete
             return outputListParent == null;
         }
 
-        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
+        protected override string ResultDescription(IdentifierReference reference)
         {
             var functionName = reference.Declaration.QualifiedName.ToString();
             return string.Format(InspectionResults.FunctionReturnValueDiscardedInspection, functionName);

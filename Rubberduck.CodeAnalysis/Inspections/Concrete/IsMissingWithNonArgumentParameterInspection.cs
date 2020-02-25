@@ -35,14 +35,14 @@ namespace Rubberduck.Inspections.Concrete
         public IsMissingWithNonArgumentParameterInspection(RubberduckParserState state)
             : base(state) { }
 
-        protected override bool IsUnsuitableArgument(ArgumentReference reference, DeclarationFinder finder)
+        protected override (bool isResult, ParameterDeclaration properties) IsUnsuitableArgumentWithAdditionalProperties(ArgumentReference reference, DeclarationFinder finder)
         {
             var parameter = ParameterForReference(reference, finder);
 
-            return parameter == null;
+            return (parameter == null, null);
         }
 
-        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
+        protected override string ResultDescription(IdentifierReference reference, ParameterDeclaration properties)
         {
             return InspectionResults.IsMissingWithNonArgumentParameterInspection;
         }

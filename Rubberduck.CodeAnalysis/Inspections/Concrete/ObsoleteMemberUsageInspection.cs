@@ -64,7 +64,7 @@ namespace Rubberduck.Inspections.Inspections.Concrete
                    && declaration.Annotations.Any(pta => pta.Annotation is ObsoleteAnnotation);
         }
 
-        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
+        protected override string ResultDescription(IdentifierReference reference)
         {
             var replacementDocumentation = reference.Declaration.Annotations
                                                .First(pta => pta.Annotation is ObsoleteAnnotation)

@@ -108,6 +108,21 @@ End Sub
 
         [Test]
         [Category("Inspections")]
+        public void NonReturningFunction_ReturnsResult_GivenUseStrictlyInsideByRefAssignment()
+        {
+            const string inputCode = @"
+Public Function Foo() As Boolean
+    ByRefAssign Foo + 42
+End Function
+
+Public Sub ByRefAssign(ByRef a As Boolean)
+End Sub
+";
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void NonReturningFunction_NoResult_GivenByRefAssignment_WithMemberAccess()
         {
             const string inputCode = @"

@@ -103,7 +103,7 @@ namespace Rubberduck.Inspections.Concrete
                 && setStmtContext.expression().GetText().Equals(Tokens.Nothing);
         }
 
-        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
+        protected override string ResultDescription(IdentifierReference reference)
         {
             return Description;
         }

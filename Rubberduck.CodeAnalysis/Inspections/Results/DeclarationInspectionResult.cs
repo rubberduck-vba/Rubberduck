@@ -9,17 +9,21 @@ namespace Rubberduck.Inspections.Results
 {
     public class DeclarationInspectionResult : InspectionResultBase
     {
-        public DeclarationInspectionResult(IInspection inspection, string description, Declaration target, QualifiedContext context = null, dynamic properties = null) :
-            base(inspection,
+        public DeclarationInspectionResult(
+            IInspection inspection, 
+            string description, 
+            Declaration target, 
+            QualifiedContext context = null,
+            ICollection<string> disabledQuickFixes = null) 
+            : base(inspection,
                  description,
                  context == null ? target.QualifiedName.QualifiedModuleName : context.ModuleName,
                  context == null ? target.Context : context.Context,
                  target,
                  target.QualifiedSelection,
                  GetQualifiedMemberName(target),
-                 (object)properties)
-        {
-        }
+                 disabledQuickFixes)
+        {}
         
         private static QualifiedMemberName? GetQualifiedMemberName(Declaration target)
         {
@@ -38,5 +42,27 @@ namespace Rubberduck.Inspections.Results
             return modifiedModules.Contains(Target.QualifiedModuleName)
                    || base.ChangesInvalidateResult(modifiedModules);
         }
+    }
+
+    public class DeclarationInspectionResult<T> : DeclarationInspectionResult, IWithInspectionResultProperties<T>
+    {
+        public DeclarationInspectionResult(
+            IInspection inspection, 
+            string description, 
+            Declaration target,
+            T properties, 
+            QualifiedContext context = null,
+            ICollection<string> disabledQuickFixes = null) :
+            base(
+                inspection,
+                description,
+                target,
+                context,
+                disabledQuickFixes)
+        {
+            Properties = properties;
+        }
+
+        public T Properties { get; }
     }
 }

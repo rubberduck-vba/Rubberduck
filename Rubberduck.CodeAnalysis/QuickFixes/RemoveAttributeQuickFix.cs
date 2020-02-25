@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
@@ -50,13 +51,17 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
+            if (!(result is IWithInspectionResultProperties<(string AttributeName, IReadOnlyList<string> AttributeValues)> resultProperties))
+            {
+                return;
+            }
+
             var declaration = result.Target;
-            string attributeBaseName = result.Properties.AttributeName; 
-            IReadOnlyList<string> attributeValues = result.Properties.AttributeValues;
+            var (attributeBaseName, attributeValues) = resultProperties.Properties;
 
             var attributeName = declaration.DeclarationType.HasFlag(DeclarationType.Module)
                 ? attributeBaseName
-                : $"{declaration.IdentifierName}.{attributeBaseName}";
+                : Attributes.MemberAttributeName(attributeBaseName,declaration.IdentifierName);
 
             _attributesUpdater.RemoveAttribute(rewriteSession, declaration, attributeName, attributeValues);
         }

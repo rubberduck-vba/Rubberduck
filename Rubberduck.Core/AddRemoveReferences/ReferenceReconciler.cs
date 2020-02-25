@@ -8,6 +8,7 @@ using Rubberduck.Resources;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.AddRemoveReferences;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.AddRemoveReferences
@@ -29,15 +30,18 @@ namespace Rubberduck.AddRemoveReferences
         private readonly IMessageBox _messageBox;
         private readonly IConfigurationService<ReferenceSettings> _settings;
         private readonly IComLibraryProvider _libraryProvider;
+        private readonly IProjectsProvider _projectsProvider;
 
         public ReferenceReconciler(
             IMessageBox messageBox, 
             IConfigurationService<ReferenceSettings> settings, 
-            IComLibraryProvider libraryProvider)
+            IComLibraryProvider libraryProvider,
+            IProjectsProvider projectsProvider)
         {
             _messageBox = messageBox;
             _settings = settings;
             _libraryProvider = libraryProvider;
+            _projectsProvider = projectsProvider;
         }
 
         public List<ReferenceModel> ReconcileReferences(IAddRemoveReferencesModel model)
@@ -58,12 +62,18 @@ namespace Rubberduck.AddRemoveReferences
                 return new List<ReferenceModel>();
             }
 
+            var project = _projectsProvider.Project(model.Project.ProjectId);
+
+            if (project == null)
+            {
+                return new List<ReferenceModel>();
+            }
+
             var selected = allReferences.Where(reference => !reference.IsBuiltIn && reference.Priority.HasValue)
                 .ToDictionary(reference => reference.FullPath);
 
             var output = selected.Values.Where(reference => reference.IsBuiltIn).ToList();
 
-            var project = model.Project.Project;
             using (var references = project.References)
             {
                 foreach (var reference in references)

@@ -72,7 +72,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 	/// End Sub
 	/// ]]>
 	/// </example>
-    public class SetAssignmentWithIncompatibleObjectTypeInspection : IdentifierReferenceInspectionBase
+    public class SetAssignmentWithIncompatibleObjectTypeInspection : IdentifierReferenceInspectionBase<string>
     {
         private readonly ISetTypeResolver _setTypeResolver;
 
@@ -85,7 +85,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             Severity = CodeInspectionSeverity.Error;
         }
 
-        protected override (bool isResult, object properties) IsResultReferenceWithAdditionalProperties(IdentifierReference reference, DeclarationFinder finder)
+        protected override (bool isResult, string properties) IsResultReferenceWithAdditionalProperties(IdentifierReference reference, DeclarationFinder finder)
         {
             if (!ToBeConsidered(reference))
             {
@@ -100,12 +100,6 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             }
 
             return (true, assignedTypeName);
-        }
-
-        protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
-        {
-            //No need to implement this since we override IsResultReferenceWithAdditionalProperties.
-            throw new System.NotImplementedException();
         }
 
         private static bool ToBeConsidered(IdentifierReference reference)
@@ -166,11 +160,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             return classType.Supertypes.Select(supertype => supertype.QualifiedModuleName.ToString()).Contains(typeName);
         }
 
-        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
+        protected override string ResultDescription(IdentifierReference reference, string assignedTypeName)
         {
             var declarationName = reference.Declaration.IdentifierName;
             var variableTypeName = reference.Declaration.FullAsTypeName;
-            var assignedTypeName = (string)properties;
             return string.Format(InspectionResults.SetAssignmentWithIncompatibleObjectTypeInspection, declarationName, variableTypeName, assignedTypeName);
         }
     }

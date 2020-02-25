@@ -79,7 +79,6 @@ namespace Rubberduck.Inspections.QuickFixes
                     .ToList()
                 : _declarationFinderProvider.DeclarationFinder
                     .FindInterfaceImplementationMembers(target.ParentDeclaration)
-                    .Cast<Declaration>()
                     .ToList();
 
             foreach (var member in members)

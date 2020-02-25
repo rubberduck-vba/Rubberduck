@@ -78,7 +78,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 	/// End Sub
 	/// ]]>
 	/// </example>
-    public class ArgumentWithIncompatibleObjectTypeInspection : ArgumentReferenceInspectionFromDeclarationsBase
+    public class ArgumentWithIncompatibleObjectTypeInspection : ArgumentReferenceInspectionFromDeclarationsBase<string>
     {
         private readonly ISetTypeResolver _setTypeResolver;
 
@@ -103,7 +103,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                    && declaration.IsObject;
         }
 
-        protected override (bool isResult, object properties) IsUnsuitableArgumentWithAdditionalProperties(ArgumentReference reference, DeclarationFinder finder)
+        protected override (bool isResult, string properties) IsUnsuitableArgumentWithAdditionalProperties(ArgumentReference reference, DeclarationFinder finder)
         {
             var argumentSetTypeName = ArgumentSetTypeName(reference, finder);
 
@@ -113,12 +113,6 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             }
 
             return (true, argumentSetTypeName);
-        }
-
-        protected override bool IsUnsuitableArgument(ArgumentReference reference, DeclarationFinder finder)
-        {
-            //No need to implement this since we overwrite IsUnsuitableArgumentWithAdditionalProperties.
-            throw new System.NotImplementedException();
         }
 
         private string ArgumentSetTypeName(IdentifierReference argumentReference, DeclarationFinder finder)
@@ -163,12 +157,11 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             return classType.Supertypes.Select(supertype => supertype.QualifiedModuleName.ToString()).Contains(typeName);
         }
 
-        protected override string ResultDescription(IdentifierReference reference, dynamic properties = null)
+        protected override string ResultDescription(IdentifierReference reference, string argumentTypeName)
         {
             var parameterName = reference.Declaration.IdentifierName;
             var parameterTypeName = reference.Declaration.FullAsTypeName;
             var argumentExpression = reference.Context.GetText();
-            var argumentTypeName = (string)properties;
             return string.Format(InspectionResults.SetAssignmentWithIncompatibleObjectTypeInspection, parameterName, parameterTypeName, argumentExpression, argumentTypeName);
         }
     }

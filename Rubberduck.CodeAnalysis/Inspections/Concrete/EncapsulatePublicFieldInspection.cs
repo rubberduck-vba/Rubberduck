@@ -1,12 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
+﻿using Rubberduck.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -31,25 +27,23 @@ namespace Rubberduck.Inspections.Concrete
     /// End Property
     /// ]]>
     /// </example>
-    public sealed class EncapsulatePublicFieldInspection : InspectionBase
+    public sealed class EncapsulatePublicFieldInspection : DeclarationInspectionBase
     {
         public EncapsulatePublicFieldInspection(RubberduckParserState state)
-            : base(state) { }
+            : base(state, DeclarationType.Variable)
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            // we're creating a public field for every control on a form, needs to be ignored.
-            var fields = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                .Where(item => item.DeclarationType != DeclarationType.Control
-                               && (item.Accessibility == Accessibility.Public ||
-                                   item.Accessibility == Accessibility.Global))
-                .ToList();
+            // we're creating a public field for every control on a form, needs to be ignored
+            return declaration.DeclarationType != DeclarationType.Control
+                   && (declaration.Accessibility == Accessibility.Public
+                   || declaration.Accessibility == Accessibility.Global);
+        }
 
-            return fields
-                .Select(issue => new DeclarationInspectionResult(this,
-                                                      string.Format(InspectionResults.EncapsulatePublicFieldInspection, issue.IdentifierName),
-                                                      issue))
-                .ToList();
+        protected override string ResultDescription(Declaration declaration)
+        {
+            return string.Format(InspectionResults.EncapsulatePublicFieldInspection, declaration.IdentifierName);
         }
     }
 }

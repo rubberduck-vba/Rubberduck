@@ -1,16 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using Rubberduck.CodeAnalysis.Settings;
-using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Refactorings.Common;
-using Rubberduck.Resources;
 using Rubberduck.SettingsProvider;
 using static Rubberduck.Parsing.Grammar.VBAParser;
 
@@ -37,7 +33,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class UseMeaningfulNameInspection : InspectionBase
+    public sealed class UseMeaningfulNameInspection : DeclarationInspectionUsingGlobalInformationBase<string[]>
     {
         private readonly IConfigurationService<CodeInspectionSettings> _settings;
 
@@ -54,43 +50,42 @@ namespace Rubberduck.Inspections.Concrete
             DeclarationType.LibraryProcedure, 
         };
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string[] GlobalInformation(DeclarationFinder finder)
         {
             var settings = _settings.Read();
-            var whitelistedNames = settings.WhitelistedIdentifiers.Select(s => s.Identifier).ToArray();
-
-            var handlers = State.DeclarationFinder.FindEventHandlers();
-
-            var issues = UserDeclarations
-                            .Where(declaration => !string.IsNullOrEmpty(declaration.IdentifierName) &&
-                                !IgnoreDeclarationTypes.Contains(declaration.DeclarationType) &&
-                                !(declaration.Context is LineNumberLabelContext) &&
-                                (declaration.ParentDeclaration == null || 
-                                    !IgnoreDeclarationTypes.Contains(declaration.ParentDeclaration.DeclarationType) &&
-                                    !handlers.Contains(declaration.ParentDeclaration)) &&
-                                    !whitelistedNames.Contains(declaration.IdentifierName) &&
-                                    !VBAIdentifierValidator.IsMeaningfulIdentifier(declaration.IdentifierName));
-
-            return (from issue in issues select CreateInspectionResult(this, issue))
-                .ToList();
+            return settings.WhitelistedIdentifiers
+                .Select(s => s.Identifier)
+                .ToArray();
         }
 
-        private static DeclarationInspectionResult CreateInspectionResult(IInspection inspection, Declaration issue)
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder, string[] whitelistedNames)
         {
-            dynamic properties = null;
+            return !string.IsNullOrEmpty(declaration.IdentifierName)
+                   && !IgnoreDeclarationTypes.Contains(declaration.DeclarationType)
+                   && !(declaration.Context is LineNumberLabelContext)
+                   && (declaration.ParentDeclaration == null
+                       || !IgnoreDeclarationTypes.Contains(declaration.ParentDeclaration.DeclarationType)
+                       && !finder.FindEventHandlers().Contains(declaration.ParentDeclaration))
+                   && !whitelistedNames.Contains(declaration.IdentifierName)
+                   && !VBAIdentifierValidator.IsMeaningfulIdentifier(declaration.IdentifierName);
+        }
 
-            if (issue.DeclarationType.HasFlag(DeclarationType.Module) ||
-                issue.DeclarationType.HasFlag(DeclarationType.Project))
-            {
-                properties = new PropertyBag();
-                properties.DisableFixes = "IgnoreOnceQuickFix";
-            }
+        protected override string ResultDescription(Declaration declaration)
+        {
+            var declarationType = declaration.DeclarationType.ToLocalizedString();
+            var declarationName = declaration.IdentifierName;
+            return string.Format(
+                Resources.Inspections.InspectionResults.IdentifierNameInspection,
+                declarationType,
+                declarationName);
+        }
 
-            return new DeclarationInspectionResult(inspection,
-                string.Format(Resources.Inspections.InspectionResults.IdentifierNameInspection,
-                    RubberduckUI.ResourceManager.GetString("DeclarationType_" + issue.DeclarationType,
-                        CultureInfo.CurrentUICulture), issue.IdentifierName),
-                issue, properties: properties);
+        protected override ICollection<string> DisabledQuickFixes(Declaration declaration)
+        {
+            return declaration.DeclarationType.HasFlag(DeclarationType.Module)
+                   || declaration.DeclarationType.HasFlag(DeclarationType.Project)
+                   ? new List<string> {"IgnoreOnceQuickFix"}
+                   : new List<string>();
         }
     }
 }

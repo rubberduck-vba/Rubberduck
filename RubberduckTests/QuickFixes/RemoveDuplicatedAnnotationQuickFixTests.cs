@@ -182,7 +182,8 @@ End Sub";
 '@TestMethod
 Public Sub Foo
 End Sub";
-            Func<IInspectionResult, bool> conditionToFix = result => result.Properties.Annotation is ObsoleteAnnotation;
+            Func<IInspectionResult, bool> conditionToFix = result => result is IWithInspectionResultProperties<IAnnotation> resultProperties 
+                                                                     && resultProperties.Properties is ObsoleteAnnotation;
             var actualCode = ApplyQuickFixToFirstInspectionResultSatisfyingPredicate(inputCode, state => new DuplicatedAnnotationInspection(state), conditionToFix);
             Assert.AreEqual(expectedCode, actualCode);
         }

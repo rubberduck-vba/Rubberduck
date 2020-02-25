@@ -1583,7 +1583,7 @@ End Property
         private static ProjectDeclaration GetTestProject(string name)
         {
             var qualifiedProjectName = new QualifiedMemberName(StubQualifiedModuleName("proj"), name);
-            return new ProjectDeclaration(qualifiedProjectName, name, true, null);
+            return new ProjectDeclaration(qualifiedProjectName, name, true);
         }
 
         private static QualifiedModuleName StubQualifiedModuleName(string name)
