@@ -46,7 +46,7 @@ namespace Rubberduck.Refactorings.MoveMember
 
         public IMoveDestinationModuleProxy Destination { private set; get; }
 
-        public IReadOnlyCollection<IMoveableMemberSet> MoveableMembers => _moveablesByName.Values; // Source.MoveableMembers;
+        public IReadOnlyCollection<IMoveableMemberSet> MoveableMembers => _moveablesByName.Values;
 
         public IMoveableMemberSet MoveableMemberSetByName(string identifier) => _moveablesByName[identifier];
 

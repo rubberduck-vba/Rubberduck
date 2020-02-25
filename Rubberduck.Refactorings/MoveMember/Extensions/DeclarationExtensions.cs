@@ -11,38 +11,6 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.MoveMember.Extensions
 {
-    public static class StringExtensions
-    {
-        public static bool IsEquivalentVBAIdentifierTo(this string lhs, string identifier)
-                => lhs.Equals(identifier, StringComparison.InvariantCultureIgnoreCase);
-
-
-        public static string IncrementIdentifier2(this string identifier)
-        {
-            var fragments = identifier.Split('x');
-            if (fragments.Length == 1) { return $"{identifier}x1"; }
-
-            var lastFragment = fragments[fragments.Length - 1];
-            if (long.TryParse(lastFragment, out var number))
-            {
-                fragments[fragments.Length - 1] = (number + 1).ToString();
-
-                return string.Join("x", fragments);
-            }
-            return $"{identifier}x1"; ;
-        }
-
-        public static string IncrementIdentifier(this string identifier)
-        {
-            var numeric = string.Join(string.Empty, identifier.Reverse().TakeWhile(c => char.IsDigit(c)).Reverse());
-            if (!int.TryParse(numeric, out var currentNum))
-            {
-                currentNum = 0;
-            }
-            var identifierSansNumericSuffix = identifier.Substring(0, identifier.Length - numeric.Length);
-            return $"{identifierSansNumericSuffix}{++currentNum}";
-        }
-    }
 
     public static class IParameterizedDeclarationExtensions
     {
@@ -74,6 +42,7 @@ namespace Rubberduck.Refactorings.MoveMember.Extensions
             return improvedArgList;
         }
     }
+
     public static class DeclarationExtensions
     {
         public static bool IsVariable(this Declaration declaration)
@@ -131,8 +100,8 @@ namespace Rubberduck.Refactorings.MoveMember.Extensions
                     throw new ArgumentException();
             }
 
-            var accessibilityToken = declaration.Accessibility.Equals(Accessibility.Implicit) 
-                ? Tokens.Public 
+            var accessibilityToken = declaration.Accessibility.Equals(Accessibility.Implicit)
+                ? Tokens.Public
                 : $"{declaration.Accessibility.ToString()}";
 
             var signature = $"{memberType} {declaration.IdentifierName}()";
@@ -148,19 +117,10 @@ namespace Rubberduck.Refactorings.MoveMember.Extensions
             return fullSignature;
         }
 
-        //public static bool ContainsParentScopeToAllReferences(this IEnumerable<Declaration> containing, IEnumerable<Declaration> declarations)
-        //{
-        //    return ContainsParentScopeToAllReferences(containing, declarations.AllReferences());
-        //}
+        public static bool ContainsParentScopesForAllReferences(this IEnumerable<Declaration> containing, IEnumerable<IdentifierReference> references) 
+            => references.All(rf => containing.Contains(rf.ParentScoping));
 
-        public static bool ContainsParentScopesForAllReferences(this IEnumerable<Declaration> containing, IEnumerable<IdentifierReference> references)
-        {
-            return references.All(rf => containing.Contains(rf.ParentScoping));
-        }
-
-        public static bool ContainsParentScopeForAnyReference(this IEnumerable<Declaration> containing, IEnumerable<IdentifierReference> references)
-        {
-            return references.Any(rf => containing.Contains(rf.ParentScoping));
-        }
+        public static bool ContainsParentScopeForAnyReference(this IEnumerable<Declaration> containing, IEnumerable<IdentifierReference> references) 
+            => references.Any(rf => containing.Contains(rf.ParentScoping));
     }
 }

@@ -1,8 +1,10 @@
 ﻿using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.MoveMember;
+using Rubberduck.Refactorings.MoveMember.Extensions;
 using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor.Utility;
 using System.Runtime.InteropServices;
@@ -13,31 +15,42 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorMoveMemberCommand : RefactorCodePaneCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly ISelectionService _selectionService;
+        private readonly ISelectionProvider _selectionProvider;
+        private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
 
-        public RefactorMoveMemberCommand(MoveMemberRefactoring refactoring, MoveMemberFailedNotifier moveMemberFailedNotifier, RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
-            : base(refactoring, moveMemberFailedNotifier, selectionService, state)
+        public RefactorMoveMemberCommand(
+            MoveMemberRefactoring refactoring, 
+            MoveMemberFailedNotifier moveMemberFailedNotifier, 
+            RubberduckParserState state,
+            ISelectionProvider selectionProvider,
+            ISelectedDeclarationProvider selectedDeclarationProvider)
+            : base(refactoring, moveMemberFailedNotifier, selectionProvider, state)
         {
             _state = state;
-            _selectionService = selectionService;
+            _selectionProvider = selectionProvider;
+            _selectedDeclarationProvider = selectedDeclarationProvider;
             AddToCanExecuteEvaluation(SpecializedEvaluateCanExecute);
         }
 
         private bool SpecializedEvaluateCanExecute(object parameter)
         {
-            var canExecute = true;
+            var target = GetTarget();
 
-            if (_state.Status != ParserState.Ready)
-            {
-                return false;
-            }
+            return target != null
+                && !_state.IsNewOrModified(target.QualifiedModuleName);
+        }
 
-            var activeSelection = _selectionService.ActiveSelection();
-            if (!activeSelection.HasValue)
+        private Declaration GetTarget()
+        {
+            var selected = _selectedDeclarationProvider.SelectedDeclaration();
+            if (selected is null 
+                || !(selected.IsMember()
+                        || selected.IsModuleConstant()
+                        || (selected.IsField() && !selected.HasPrivateAccessibility())))
             {
-                return false;
+                return null;
             }
-            return canExecute;
+            return selected;
         }
     }
 }

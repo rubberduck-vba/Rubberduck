@@ -39,11 +39,7 @@ namespace Rubberduck.Refactorings.MoveMember
         public IMoveSourceModuleProxy CreateMoveSourceProxy(Declaration target)
         {
             var sourceModule = _declarationFinderProvider.DeclarationFinder.ModuleDeclaration(target.QualifiedModuleName);
-            var sourceModuleProxy = new MoveSourceModuleProxy(new MoveMemberEndpoint(sourceModule, _declarationFinderProvider));
-
-            //sourceModuleProxy.LoadMoveableMembers(CreateMoveables(target));
-
-            return sourceModuleProxy;
+            return new MoveSourceModuleProxy(new MoveMemberEndpoint(sourceModule, _declarationFinderProvider));
         }
 
         public IMoveDestinationModuleProxy CreateMoveDestinationProxy(Declaration moveDestination)
@@ -69,18 +65,11 @@ namespace Rubberduck.Refactorings.MoveMember
             return new MoveMemberRewriteSession(rewriteSession);
         }
 
-        //TODO: Does this really go here?
         public static bool TryCreateStrategy(MoveMemberModel model, out IMoveMemberRefactoringStrategy strategy)
         {
             strategy = null;
 
             var strategies = new List<IMoveMemberRefactoringStrategy>();
-
-            strategy = new MoveMemberToUndefined();
-            if (strategy.IsApplicable(model))
-            {
-                strategies.Add(strategy);
-            }
 
             strategy = new MoveMemberEmptySet();
             if (strategy.IsApplicable(model))
@@ -89,6 +78,7 @@ namespace Rubberduck.Refactorings.MoveMember
             }
 
             strategy = new MoveMemberToStdModule();
+            //If there is selected declarations but no destination name, force this to be the default strategy
             if (strategy.IsApplicable(model))
             {
                 strategies.Add(strategy);

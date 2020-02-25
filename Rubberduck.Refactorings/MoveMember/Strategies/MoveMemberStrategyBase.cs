@@ -15,10 +15,6 @@ namespace Rubberduck.Refactorings.MoveMember
         IMoveMemberRewriteSession RefactorRewrite(MoveMemberModel model, IRewritingManager rewritingManager, INewContentProvider movedContent, bool asPreview = false);
         INewContentProvider NewDestinationModuleContent(MoveMemberModel model, IRewritingManager rewritingManager, INewContentProvider contentToMove);
         bool IsApplicable(MoveMemberModel model);
-        bool IsAnExecutableStrategy { get; }
-    }
-
-    public class MoveMemberStrategyBase
-    {
+        bool IsAnExecutableScenario(out string nonExecutableMessage);
     }
 }

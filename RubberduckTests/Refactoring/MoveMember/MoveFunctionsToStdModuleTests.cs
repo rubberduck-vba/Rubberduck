@@ -15,7 +15,7 @@ namespace RubberduckTests.Refactoring.MoveMember
      * equivalent test in the SingleProcedureToStdModuleTests class 
      */
     [TestFixture]
-    public class MoveFunctionToStdModuleTests : MoveMemberTestsBase
+    public class MoveFunctionsToStdModuleTests : MoveMemberTestsBase
     {
         private const string ThisStrategy = nameof(MoveMemberToStdModule);
         private const DeclarationType ThisDeclarationType = DeclarationType.Function;

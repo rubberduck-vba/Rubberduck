@@ -41,7 +41,6 @@ namespace Rubberduck.Refactorings.MoveMember
     {
         Declaration Module { get; }
         QualifiedModuleName QualifiedModuleName { get; }
-        //IReadOnlyCollection<IMembersRelatedByName> MoveableMembers { get; }
     }
 
     public interface IMoveDestinationModuleProxy : IMoveMemberModuleProxy
@@ -52,7 +51,6 @@ namespace Rubberduck.Refactorings.MoveMember
     public class MoveSourceModuleProxy : IMoveSourceModuleProxy
     {
         private MoveMemberEndpoint _endpoint;
-        private List<IMoveableMemberSet> _moveableMembers;
 
         public MoveSourceModuleProxy(MoveMemberEndpoint endpoint)
         {
@@ -61,13 +59,6 @@ namespace Rubberduck.Refactorings.MoveMember
 
         public IEnumerable<Declaration> ModuleDeclarations 
                     => _endpoint.DeclarationFinderProvider.DeclarationFinder.Members(_endpoint.Module);
-
-        //public void LoadMoveableMembers(IEnumerable<IMembersRelatedByName> moveable)
-        //{
-        //    _moveableMembers = moveable.ToList();
-        //}
-
-        //public IReadOnlyCollection<IMembersRelatedByName> MoveableMembers => _moveableMembers;
 
         public QualifiedModuleName QualifiedModuleName => Module.QualifiedModuleName;
         public Declaration Module => _endpoint.Module;
@@ -106,7 +97,8 @@ namespace Rubberduck.Refactorings.MoveMember
             }
         }
 
-        public bool IsStandardModule => _endpoint.IsStandardModule;
+        //Destination defaults to StandardModule if the Destination module is unassigned
+        public bool IsStandardModule => _endpoint.IsStandardModule || string.IsNullOrEmpty(_endpoint.ModuleName);
         public bool IsClassModule => _endpoint.IsClassModule;
         public bool IsUserFormModule => _endpoint.IsUserFormModule;
 

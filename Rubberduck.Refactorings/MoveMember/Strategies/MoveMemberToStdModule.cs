@@ -4,6 +4,7 @@ using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
+using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.MoveMember.Extensions;
 using Rubberduck.VBEditor;
 using System;
@@ -17,6 +18,11 @@ namespace Rubberduck.Refactorings.MoveMember
 {
     public class MoveMemberToStdModule : IMoveMemberRefactoringStrategy
     {
+        public MoveMemberToStdModule()
+        {
+            _isExecutable = false;
+        }
+
         private MoveMemberModel _model;
         private IRewritingManager _rewritingManager;
         private IMoveGroupsProvider _moveGroups;
@@ -25,24 +31,18 @@ namespace Rubberduck.Refactorings.MoveMember
 
         public bool IsApplicable(MoveMemberModel model)
         {
+            _isExecutable = !string.IsNullOrEmpty(model.Destination.ModuleName);
+
             //A strategy exists to handle 'nothing selected'...it's not this one
             if (!model.SelectedDeclarations.Any()) { return false; }
 
+            //Note: A StandardModule is the default so... 
+            //model.Destination.IsStandardModule returns true when nothing is specified
             if (!model.Destination.IsStandardModule) { return false; }
 
-            //Strategy does not move fields of Private UserDefinedTypes
-            if (model.SelectedDeclarations.Any(nm => nm.DeclarationType.HasFlag(DeclarationType.Variable) 
-                && (nm.AsTypeDeclaration?.DeclarationType.Equals(DeclarationType.UserDefinedType) ?? false)
-                && nm.AsTypeDeclaration.HasPrivateAccessibility())) { return false; }
-
-            //Strategy does not move fields of Private EnumTypes
-            if (model.SelectedDeclarations.Any(nm => nm.DeclarationType.HasFlag(DeclarationType.Variable)
-                && (nm.AsTypeDeclaration?.DeclarationType.Equals(DeclarationType.Enumeration) ?? false)
-                && nm.AsTypeDeclaration.HasPrivateAccessibility())) { return false; }
-
-            //Strategy does not move fields of ObjectTypes - would disconnect declaration from instantiation execution paths
-            if (model.SelectedDeclarations.Any(nm => nm.DeclarationType.HasFlag(DeclarationType.Variable)
-                                    && nm.IsObject)) { return false; }
+            //Strategy does not support Private Fields as a SelectedDeclaration
+            if (model.SelectedDeclarations.Any(sd => sd.DeclarationType.HasFlag(DeclarationType.Variable)
+                                    && sd.HasPrivateAccessibility())) { return false; }
 
             var moveGroups = model.MoveMemberFactory.CreateMoveGroupsProvider(model.SelectedDeclarations);
 
@@ -51,10 +51,14 @@ namespace Rubberduck.Refactorings.MoveMember
             {
                 if (moveGroups.NonExclusiveSupportDeclarations.Any()) { return false; }
 
-                /*
-                 * If there are external references to the selected element(s) and the source is a 
-                 * ClassModule or  UserForm, then they cannot be supported by this strategy
-                */
+                //Strategy does not move Public Fields of ObjectTypes from ClassModules.
+                //As a simple Fields, we could no longer guarantee that it is a valid instance
+                if (model.SelectedDeclarations.Any(nm => nm.DeclarationType.HasFlag(DeclarationType.Variable)
+                                        && nm.IsObject)) { return false; }
+
+                
+                 //If there are external references to the selected element(s) and the source is a 
+                 //ClassModule or  UserForm, then they are not be supported by this strategy            
                 var externalMemberRefs = model.SelectedDeclarations.AllReferences().Where(rf => rf.QualifiedModuleName != model.Source.QualifiedModuleName);
                 return !externalMemberRefs.Any();
             }
@@ -64,10 +68,30 @@ namespace Rubberduck.Refactorings.MoveMember
             return TryVerifySupportMembersProvideUnMoveableDeclarationsAccess(moveGroups, out _);
         }
 
-        public bool IsAnExecutableStrategy => true;
+        private bool _isExecutable;
+        public bool IsAnExecutableScenario(out string nonExecutableMessage)
+        {
+            nonExecutableMessage = string.Empty;
+            if (!_isExecutable)
+            {
+                if (_model != null)
+                {
+                    if (string.IsNullOrEmpty(_model.Destination.ModuleName))
+                    {
+                        nonExecutableMessage = MoveMemberResources.UndefinedDestinationModule;
+                    }
+                }
+            }
+            return _isExecutable;
+        }
 
         public IMoveMemberRewriteSession RefactorRewrite(MoveMemberModel model, IRewritingManager rewritingManager, INewContentProvider contentToMove, bool asPreview = false)
         {
+            if (!asPreview && string.IsNullOrEmpty(model.Destination.ModuleName))
+            {
+                throw new MoveMemberUnsupportedMoveException();
+            }
+
             InitializeStrategyMembers(model, rewritingManager);
 
             contentToMove = CreateMovedContentBlock(model, contentToMove, rewritingManager.CheckOutCodePaneSession());
@@ -220,7 +244,7 @@ namespace Rubberduck.Refactorings.MoveMember
 
             if (member.IsVariable() || member.IsConstant())
             {
-                var visibility  = isOnlyReferencedByMovedMethods  ? Tokens.Private : Tokens.Public;
+                var visibility  = isOnlyReferencedByMovedMethods  ? member.Accessibility.TokenString() : Tokens.Public;
 
                 SetMovedMemberIdentifier(membersRelatedByName, member, rewriter);
 

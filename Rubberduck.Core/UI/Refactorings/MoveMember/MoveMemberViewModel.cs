@@ -58,16 +58,41 @@ namespace Rubberduck.UI.Refactorings.MoveMember
         {
             get
             {
-                if (IsValidModuleName && MoveMemberObjectsFactory.TryCreateStrategy(Model, out var strategy))// MoveCandidates.Any(mc => mc.IsSelected))
+                var result = false;
+                if (IsValidModuleName && MoveMemberObjectsFactory.TryCreateStrategy(Model, out var strategy))
                 {
-                    return strategy.IsAnExecutableStrategy;
+                    if (strategy.IsAnExecutableScenario(out _nonExecutableMessage))
+                    {
+                        result = true;
+                        //OnPropertyChanged(nameof(DestinationNameFailureCriteria));
+                        //return true;
+                    }
                 }
-                return false;
+                OnPropertyChanged(nameof(IsValidModuleName));
+                OnPropertyChanged(nameof(DestinationNameFailureCriteria));
+                return result;
             }
         }
 
+        private string _nonExecutableMessage;
+        public string NonExecutableMessage => _nonExecutableMessage;
+
         private string _destinationNameFailureCriteria;
-        public string DestinationNameFailureCriteria => _destinationNameFailureCriteria;
+        public string DestinationNameFailureCriteria
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(_destinationNameFailureCriteria))
+                {
+                    return _destinationNameFailureCriteria;
+                }
+                if (!string.IsNullOrEmpty(_nonExecutableMessage))
+                {
+                    return _nonExecutableMessage;
+                }
+                return string.Empty;
+            }
+        }
 
         public bool IsValidModuleName
         {
@@ -124,8 +149,8 @@ namespace Rubberduck.UI.Refactorings.MoveMember
             {
                 var previewSelections = new List<KeyValuePair<PreviewModule, string>>()
                 {
-                    new KeyValuePair<PreviewModule, string>(PreviewModule.Destination, "Preview: Destination"),
-                    new KeyValuePair<PreviewModule, string>(PreviewModule.Source, $"Preview: {Model.Source.ModuleName}"),
+                    new KeyValuePair<PreviewModule, string>(PreviewModule.Destination, "Destination"),
+                    new KeyValuePair<PreviewModule, string>(PreviewModule.Source, $"{Model.Source.ModuleName}"),
                 };
                 return previewSelections;
             }
@@ -141,7 +166,7 @@ namespace Rubberduck.UI.Refactorings.MoveMember
             {
                 Model.ChangeDestination(value);
                 OnPropertyChanged(nameof(IsExecutableMove));
-                OnPropertyChanged(nameof(IsValidModuleName));
+                //OnPropertyChanged(nameof(IsValidModuleName));
                 OnPropertyChanged(nameof(MovePreview));
             }
         }

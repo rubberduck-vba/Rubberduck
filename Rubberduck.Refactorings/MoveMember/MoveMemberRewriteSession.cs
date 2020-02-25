@@ -10,20 +10,46 @@ using System.Text;
 using System.Threading.Tasks;
 using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using Rubberduck.Parsing.VBA.Parsing;
+using Antlr4.Runtime;
 
 namespace Rubberduck.Refactorings.MoveMember
 {
     public interface IMoveMemberRewriteSession : IExecutableRewriteSession
     {
+        /// <summary>
+        /// The wrapped IExecutableRewriteSession
+        /// </summary>
         IExecutableRewriteSession WrappedSession { get; }
+
+        /// <summary>
+        /// Caches declaration remove requests to support the use cases 
+        /// for variables and constants in declaration lists
+        /// and every variable/constant in the list is removed.
+        /// All other Variables, Constants, and Members call rewriter.Remove 
+        /// immediately
+        /// </summary>
         void Remove(IEnumerable<Declaration> declarations);
+
+        /// <summary>
+        /// Caches declaration remove requests to support the use cases 
+        /// for variables and constants  in declaration lists
+        /// and every variable/constant in the list is removed.
+        /// All other Variables, Constants, and Members call rewriter.Remove 
+        /// immediately
+        /// </summary>
         void Remove(Declaration target);
     }
 
+    /// <summary>
+    /// Extends IExecutableRewriteSession to intercept the
+    /// IExecutableRewriteSession.TryRewrite() to insert a
+    /// removal variables and constants IModuleRewriter.Remove requests
+    /// </summary>
     public class MoveMemberRewriteSession : IMoveMemberRewriteSession
     {
         private IExecutableRewriteSession _rewriteSession;
         private Dictionary<VBAParser.VariableListStmtContext, HashSet<Declaration>> RemovedVariables { set; get; } = new Dictionary<VBAParser.VariableListStmtContext, HashSet<Declaration>>();
+        private Dictionary<VBAParser.ConstStmtContext, HashSet<Declaration>> RemovedConstants { set; get; } = new Dictionary<VBAParser.ConstStmtContext, HashSet<Declaration>>();
 
         public MoveMemberRewriteSession(IExecutableRewriteSession rewriteSession)
         {
@@ -62,47 +88,72 @@ namespace Rubberduck.Refactorings.MoveMember
 
         public void Remove(Declaration target)
         {
-            var varList = target.Context.GetAncestor<VBAParser.VariableListStmtContext>();
+            if (target.DeclarationType.Equals(DeclarationType.Variable))
+            {
+                RemoveTarget<VBAParser.VariableListStmtContext, VBAParser.VariableSubStmtContext>(target, RemovedVariables);
+                return;
+            }
+            if (target.DeclarationType.Equals(DeclarationType.Constant))
+            {
+                RemoveTarget<VBAParser.ConstStmtContext, VBAParser.ConstSubStmtContext>(target, RemovedConstants);
+                return;
+            }
 
-            if (varList is null || varList.children.Where(ch => ch is VBAParser.VariableSubStmtContext).Count() == 1)
+            var rewriter = _rewriteSession.CheckOutModuleRewriter(target.QualifiedModuleName);
+            rewriter.Remove(target);
+        }
+
+        private void RemoveTarget<T, K>(Declaration target, Dictionary<T, HashSet<Declaration>> dictionary) where T : ParserRuleContext where K : ParserRuleContext
+        {
+            var declarationList = target.Context.GetAncestor<T>();
+
+            if (declarationList is null || declarationList.children.Where(ch => ch is K).Count() == 1)
             {
                 var rewriter = _rewriteSession.CheckOutModuleRewriter(target.QualifiedModuleName);
                 rewriter.Remove(target);
                 return;
             }
 
-            if (!RemovedVariables.ContainsKey(varList))
+            if (!dictionary.ContainsKey(declarationList))
             {
-                RemovedVariables.Add(varList, new HashSet<Declaration>());
+                dictionary.Add(declarationList, new HashSet<Declaration>());
             }
-            RemovedVariables[varList].Add(target);
+            dictionary[declarationList].Add(target);
         }
 
         private void ExecuteCachedRemoveRequests()
         {
-            foreach (var key in RemovedVariables.Keys)
+            ExecuteCachedRemoveRequests<VBAParser.VariableListStmtContext, VBAParser.VariableSubStmtContext>(RemovedVariables);
+            RemovedVariables = new Dictionary<VBAParser.VariableListStmtContext, HashSet<Declaration>>();
+
+            ExecuteCachedRemoveRequests<VBAParser.ConstStmtContext, VBAParser.ConstSubStmtContext>(RemovedConstants);
+            RemovedConstants = new Dictionary<VBAParser.ConstStmtContext, HashSet<Declaration>>();
+        }
+
+        private void ExecuteCachedRemoveRequests<T, K>(Dictionary<T, HashSet<Declaration>> dictionary) where T: ParserRuleContext where K: ParserRuleContext
+        {
+            foreach (var key in dictionary.Keys)
             {
-                if (RemovedVariables[key].Count == 0)
+                if (dictionary[key].Count == 0)
                 {
                     continue;
                 }
 
-                var rewriter = _rewriteSession.CheckOutModuleRewriter(RemovedVariables[key].First().QualifiedModuleName);
+                var rewriter = _rewriteSession.CheckOutModuleRewriter(dictionary[key].First().QualifiedModuleName);
 
-                var variables = key.children.Where(ch => ch is VBAParser.VariableSubStmtContext);
-                if (variables.Count() == RemovedVariables[key].Count)
+                var toRemove = key.children.Where(ch => ch is K);
+                if (toRemove.Count() == dictionary[key].Count)
                 {
                     rewriter.Remove(key.Parent);
                 }
                 else
                 {
-                    foreach (var dec in RemovedVariables[key])
+                    foreach (var dec in dictionary[key])
                     {
                         rewriter.Remove(dec);
                     }
                 }
             }
-            RemovedVariables = new Dictionary<VBAParser.VariableListStmtContext, HashSet<Declaration>>();
         }
     }
 }

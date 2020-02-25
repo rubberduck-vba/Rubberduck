@@ -15,12 +15,8 @@ using Support = RubberduckTests.Refactoring.MoveMember.MoveMemberTestSupport;
 
 namespace RubberduckTests.Refactoring.MoveMember
 {
-    /*
-     * Every test in this class should have an 
-     * equivalent test in the SingleFunctionToStdModuleTests class 
-     */
     [TestFixture]
-    public class MoveProcedureToStdModuleTests : MoveMemberTestsBase
+    public class MoveProceduresToStdModuleTests : MoveMemberTestsBase
     {
         private const string ThisStrategy = nameof(MoveMemberToStdModule);
         private const DeclarationType ThisDeclarationType = DeclarationType.Procedure;

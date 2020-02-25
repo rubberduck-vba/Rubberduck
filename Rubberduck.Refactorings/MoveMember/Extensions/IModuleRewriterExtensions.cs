@@ -59,7 +59,6 @@ namespace Rubberduck.Refactorings.MoveMember.Extensions
             {
                 if (idRef.Context.Parent is VBAParser.MemberAccessExprContext maec)
                 {
-                    Debug.Assert(maec.ChildCount == 3, "MemberAccessExprContext child contexts does not equal 3");
                     rewriter.Replace(maec, maec.children[2].GetText());
                 }
             }
@@ -85,16 +84,7 @@ namespace Rubberduck.Refactorings.MoveMember.Extensions
 
         public static void Rename(this IModuleRewriter rewriter, IdentifierReference idRef, string newName)
         {
-            //if (!(idRef.Context is IIdentifierContext context))
-            //{
-            //    throw new ArgumentException();
-            //}
-
             rewriter.Replace(idRef.Context, newName);
         }
-
-        public static void Rename(this IModuleRewriter rewriter, IIdentifierContext identifierContext, string newName) 
-            => rewriter.Replace(identifierContext.IdentifierTokens, newName);
     }
-
 }

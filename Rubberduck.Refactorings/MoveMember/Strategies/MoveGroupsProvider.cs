@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.MoveMember.Extensions;
 using Rubberduck.VBEditor;
 using System;
@@ -44,7 +45,7 @@ namespace Rubberduck.Refactorings.MoveMember
             _allModuleDeclarations = declarationFinderProvider.DeclarationFinder.Members(selectedDeclarations.First().QualifiedModuleName).ToList();
 
             //Modify _callTreeRoots to remove selected declarations that
-            //are included as a support member of one of the other declarations
+            //are a support member of any of the other selected declarations
             foreach (var selected in selectedDeclarations)
             {
                 var allSupportParticipants = CallTreeDeclarations(new Declaration[] { selected }, true).ToList();
@@ -64,7 +65,7 @@ namespace Rubberduck.Refactorings.MoveMember
             {
                 if (_allParticipants.ContainsParentScopesForAllReferences(lsgPropertyGroup.AllReferences()))
                 {
-                    var propertyGroup =  lsgPropertyGroup.Except(_callTreeRoots);
+                    var propertyGroup = lsgPropertyGroup.Except(_callTreeRoots);
                     _exclusiveSupportLetSetGetProperties.Add(lsgPropertyGroup.Key, propertyGroup.ToList());
                 }
                 else if (_allParticipants.ContainsParentScopeForAnyReference(lsgPropertyGroup.AllReferences()))

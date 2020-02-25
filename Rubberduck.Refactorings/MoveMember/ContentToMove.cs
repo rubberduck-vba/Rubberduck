@@ -67,10 +67,10 @@ namespace Rubberduck.Refactorings.MoveMember
 
         public string AsSingleBlockWithinDemarcationComments(string startMessage = null, string endMessage = null)
         {
-            var changesStartMarker = startMessage ?? "Moved Content below this line";
-            var changesEndMarker = endMessage ?? "Moved Content above this line";
+            var changesStartMarker = startMessage ?? MoveMemberResources.MovedContentBelowThisLine;
+            var changesEndMarker = endMessage ?? MoveMemberResources.MovedContentAboveThisLine;
 
-            return $"'<=== {changesStartMarker}  ===>{Environment.NewLine}{AsSingleBlock}{Environment.NewLine}'<=== {changesEndMarker} ===>";
+            return $"'***** {changesStartMarker}  *****{Environment.NewLine}{AsSingleBlock}{Environment.NewLine}'**** {changesEndMarker} ****{Environment.NewLine}";
         }
     }
 }

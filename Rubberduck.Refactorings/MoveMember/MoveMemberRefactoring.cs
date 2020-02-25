@@ -45,16 +45,16 @@ namespace Rubberduck.Refactorings.MoveMember
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public MoveMemberRefactoring(
-            IDeclarationFinderProvider declarationFinderProvider, 
-            IParseManager parseManager, 
-            IMessageBox messageBox, 
-            IRefactoringPresenterFactory factory, 
-            IRewritingManager rewritingManager, 
+            IDeclarationFinderProvider declarationFinderProvider,
+            IParseManager parseManager,
+            IMessageBox messageBox,
+            IRefactoringPresenterFactory factory,
+            IRewritingManager rewritingManager,
             ISelectionService selectionService,
             ISelectedDeclarationProvider selectedDeclarationProvider,
             IUiDispatcher uiDispatcher)
             : base(rewritingManager, selectionService, factory, uiDispatcher)
-                  
+
         {
             _declarationFinderProvider = declarationFinderProvider;
             _parseManager = parseManager;
@@ -65,6 +65,19 @@ namespace Rubberduck.Refactorings.MoveMember
             _moveMemberFactory = new MoveMemberObjectsFactory(declarationFinderProvider);
         }
 
+        protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
+        {
+            var selected = _selectedDeclarationProvider.SelectedDeclaration(targetSelection);
+            if (selected.IsMember()
+                || selected.IsModuleConstant()
+                || (selected.IsField() && !selected.HasPrivateAccessibility()))
+            {
+                return selected;
+            }
+
+            return null;
+        }
+
         public MoveMemberModel TestUserInteractionOnly(Declaration target, Func<MoveMemberModel, MoveMemberModel> userInteraction)
         {
             var model = InitializeModel(target);
@@ -73,26 +86,6 @@ namespace Rubberduck.Refactorings.MoveMember
 
         public string PreviewModuleContent(MoveMemberModel model, PreviewModule previewModule)
         {
-            //If there are no declarations selected to move, preview the module's existing content
-            //if (!model.SelectedDeclarations.Any())
-            //{
-            //    if (previewModule == PreviewModule.Source)
-            //    {
-            //        return PreviewExistingContent(model, model.Source.QualifiedModuleName);
-            //    }
-
-            //    if (previewModule == PreviewModule.Destination)
-            //    {
-            //        if (model.Destination.IsExistingModule(out var destination))
-            //        {
-            //            return PreviewExistingContent(model, destination.QualifiedModuleName);
-            //        }
-
-            //        return $"{Tokens.Option} {Tokens.Explicit}";
-            //    }
-            //}
-
-            //if (!model.Strategy.IsApplicable(model))
             if (!MoveMemberObjectsFactory.TryCreateStrategy(model, out var strategy))
             {
                 return MoveMemberResources.ApplicableStrategyNotFound;
@@ -113,7 +106,7 @@ namespace Rubberduck.Refactorings.MoveMember
                 : model.Source.QualifiedModuleName;
 
             var rewriter = previewSession.CheckOutModuleRewriter(qmnToPreview);
-            var preview =  rewriter.GetText(maxConsecutiveNewLines: 3);
+            var preview = rewriter.GetText(maxConsecutiveNewLines: 3);
             return preview;
         }
 
@@ -132,20 +125,10 @@ namespace Rubberduck.Refactorings.MoveMember
             return model;
         }
 
+        //https://github.com/rubberduck-vba/Rubberduck/pull/5387
+        //TODO: Update once #5387 is merged to eliminate suspension code
         protected override void RefactorImpl(MoveMemberModel model)
         {
-            if (!model.HasValidDestination)
-            {
-                _messageBox?.Message(MoveMemberResources.InvalidMoveDefinition);
-                return;
-            }
-
-            if (!MoveMemberObjectsFactory.TryCreateStrategy(model, out _))
-            {
-                _messageBox?.Message(MoveMemberResources.ApplicableStrategyNotFound);
-                return;
-            }
-
             if (model.Destination.IsExistingModule(out _))
             {
                 MoveMembers(model);
@@ -168,24 +151,11 @@ namespace Rubberduck.Refactorings.MoveMember
             }
         }
 
-        protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
-        {
-            var selected = _selectedDeclarationProvider.SelectedDeclaration(targetSelection);
-            if (selected.IsMember()
-                || selected.IsModuleConstant()
-                || selected.IsField())
-            {
-                return selected;
-            }
-
-            return null;
-        }
-
         private void MoveMembers(MoveMemberModel model)
         {
             try
             {
-                if (!MoveMemberObjectsFactory.TryCreateStrategy(model, out var strategy))
+                if (!MoveMemberObjectsFactory.TryCreateStrategy(model, out var strategy) || !strategy.IsAnExecutableScenario(out _))
                 {
                     return;
                 }
@@ -195,8 +165,7 @@ namespace Rubberduck.Refactorings.MoveMember
 
                 if (!moveMemberRewriteSession.TryRewrite())
                 {
-                    PresentMoveMemberErrorMessage(BuildDefaultErrorMessage(model.SelectedDeclarations.FirstOrDefault()));
-                    return;
+                    throw new RewriteFailedException(moveMemberRewriteSession);
                 }
 
                 if (!model.Destination.IsExistingModule(out _))
@@ -204,30 +173,31 @@ namespace Rubberduck.Refactorings.MoveMember
                     CreateNewModule(contentToMove.AsSingleBlock, model);
                 }
             }
-            //TODO: Review these catches
             catch (MoveMemberUnsupportedMoveException unsupportedMove)
             {
-                PresentMoveMemberErrorMessage(unsupportedMove.Message);
+                _logger.Warn($"{nameof(MoveMembers)} {nameof(MoveMemberUnsupportedMoveException)} {unsupportedMove.Message}");
             }
             catch (RuntimeBinderException rbEx)
             {
-                PresentMoveMemberErrorMessage($"{BuildDefaultErrorMessage(model.SelectedDeclarations.FirstOrDefault())}: {rbEx.Message}");
+                _logger.Warn($"{nameof(MoveMembers)} {nameof(RuntimeBinderException)} {rbEx.Message}");
             }
             catch (COMException comEx)
             {
-                PresentMoveMemberErrorMessage($"{BuildDefaultErrorMessage(model.SelectedDeclarations.FirstOrDefault())}: {comEx.Message}");
+                _logger.Warn($"{nameof(MoveMembers)} {nameof(COMException)} {comEx.Message}");
             }
             catch (ArgumentException argEx)
             {
                 //This exception is often thrown when there is a rewrite conflict (e.g., try to insert where something's been deleted)
-                PresentMoveMemberErrorMessage($"{BuildDefaultErrorMessage(model.SelectedDeclarations.FirstOrDefault())}: {argEx.Message}");
+                _logger.Warn($"{nameof(MoveMembers)} {nameof(ArgumentException)} {argEx.Message}");
             }
             catch (Exception unhandledEx)
             {
-                PresentMoveMemberErrorMessage($"{BuildDefaultErrorMessage(model.SelectedDeclarations.FirstOrDefault())}: {unhandledEx.Message}");
+                _logger.Warn($"{nameof(MoveMembers)} {nameof(Exception)} {unhandledEx.Message}");
             }
         }
 
+        //https://github.com/rubberduck-vba/Rubberduck/pull/5387
+        //TODO: Update once #5387 is merged
         private void CreateNewModule(string newModuleContent, MoveMemberModel model)
         {
             var targetProject = model.Source.Module.Project;
@@ -251,31 +221,5 @@ namespace Rubberduck.Refactorings.MoveMember
                 }
             }
         }
-
-        private void PresentMoveMemberErrorMessage(string errorMsg)
-        {
-            _messageBox?.NotifyWarn(errorMsg, MoveMemberResources.Caption);
-        }
-
-        private string BuildDefaultErrorMessage(Declaration target)
-        {
-            return string.Format(MoveMemberResources.DefaultErrorMessageFormat, target?.IdentifierName ?? MoveMemberResources.InvalidMoveDefinition);
-        }
-    }
-
-    //TODO: Are there any tests checking for this exception?
-    [Serializable]
-    class MoveMemberUnsupportedMoveException : Exception
-    {
-        public MoveMemberUnsupportedMoveException() { }
-
-        public MoveMemberUnsupportedMoveException(Declaration declaration)
-            : base(String.Format(MoveMemberResources.UnsupportedMoveExceptionFormat, 
-                        ToLocalizedString(declaration?.DeclarationType ?? DeclarationType.Member), 
-                        declaration?.IdentifierName ?? ToLocalizedString(DeclarationType.Member)))
-        { }
-
-        private static string ToLocalizedString(DeclarationType type)
-            => RubberduckUI.ResourceManager.GetString("DeclarationType_" + type, CultureInfo.CurrentUICulture);
     }
 }

@@ -163,7 +163,7 @@ namespace RubberduckTests.Refactoring.MoveMember
         public const string DEFAULT_DESTINATION_MODULE_NAME = "DfltDestStd";
         public const string DEFAULT_DESTINATION_CLASS_NAME = "DfltDestClass";
 
-        public static string PARAM_PREFIX = MoveMemberResources.Prefix_Parameter;
+        //public static string PARAM_PREFIX = MoveMemberResources.Prefix_Parameter;
 
         //If destinationOriginalContent is null, the refactoring is to an existing empty module
         public static MoveMemberTestResult RefactorToExistingDestinationModule(TestMoveDefinition moveDefinition, string sourceOriginalContent, string destinationOriginalContent = null)
@@ -567,20 +567,20 @@ End Sub
         public ModuleDefinition DestinationModuleDefinition(string content = null)
             => new ModuleDefinition(DestinationModuleName, DestinationComponentType, content ?? $"{Tokens.Option} {Tokens.Explicit}");
 
-        public string ClassVariableName
-            => $"{MoveMemberResources.Prefix_Variable}{DestinationModuleName}";
+        //public string ClassVariableName
+        //    => $"{MoveMemberResources.Prefix_Variable}{DestinationModuleName}";
 
-        public string ClassInstantiationSubName
-        {
-            get
-            {
-                if (SourceComponentType == ComponentType.ClassModule)
-                {
-                    return MoveMemberResources.Class_Initialize;
-                }
-                return $"{MoveMemberResources.Prefix_ClassInstantiationProcedure}{ClassVariableName}";
-            }
-        }
+        //public string ClassInstantiationSubName
+        //{
+        //    get
+        //    {
+        //        if (SourceComponentType == ComponentType.ClassModule)
+        //        {
+        //            return MoveMemberResources.Class_Initialize;
+        //        }
+        //        return $"{MoveMemberResources.Prefix_ClassInstantiationProcedure}{ClassVariableName}";
+        //    }
+        //}
     }
 
     public struct MoveMemberTestResult
