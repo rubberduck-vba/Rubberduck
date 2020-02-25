@@ -53,7 +53,7 @@ namespace RubberduckTests.Refactoring.MoveMember
             uiDispatcherMock
                 .Setup(m => m.Invoke(It.IsAny<Action>()))
                 .Callback((Action action) => action.Invoke());
-            return new MoveMemberRefactoring(state, state, null, factory, rewritingManager, selectionService, new SelectedDeclarationProvider(selectionService, state), uiDispatcherMock.Object);
+            return new MoveMemberRefactoring(state, state, null, factory, rewritingManager, selectionService, new SelectedDeclarationProvider(selectionService, state), null, uiDispatcherMock.Object);
         }
 
         protected MoveMemberRefactorResults RefactoredCode(TestMoveDefinition moveDefinition, string sourceContent, string destinationContent = null, Type expectedException = null, bool executeViaActiveSelection = false, params (string identifier, DeclarationType declarationType)[] additionalElements)
@@ -205,7 +205,7 @@ namespace RubberduckTests.Refactoring.MoveMember
             uiDispatcherMock
                 .Setup(m => m.Invoke(It.IsAny<Action>()))
                 .Callback((Action action) => action.Invoke());
-            var moveMemberRefactoring = new MoveMemberRefactoring(state, state, msgBox, presenterFactoryStub.Object, rewritingManager, selectionService, new SelectedDeclarationProvider(selectionService, state), uiDispatcherMock.Object);
+            var moveMemberRefactoring = new MoveMemberRefactoring(state, state, msgBox, presenterFactoryStub.Object, rewritingManager, selectionService, new SelectedDeclarationProvider(selectionService, state), null, uiDispatcherMock.Object);
 
             moveMemberRefactoring.Refactor();
         }

@@ -13,6 +13,7 @@ using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.MoveMember.Extensions;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
@@ -39,6 +40,7 @@ namespace Rubberduck.Refactorings.MoveMember
         private readonly IRewritingManager _rewritingManager;
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
         private readonly ISelectionService _selectionService;
+        private readonly IProjectsProvider _projectsProvider;
 
         private MoveMemberObjectsFactory _moveMemberFactory;
 
@@ -52,6 +54,7 @@ namespace Rubberduck.Refactorings.MoveMember
             IRewritingManager rewritingManager,
             ISelectionService selectionService,
             ISelectedDeclarationProvider selectedDeclarationProvider,
+            IProjectsProvider projectsProvider,
             IUiDispatcher uiDispatcher)
             : base(rewritingManager, selectionService, factory, uiDispatcher)
 
@@ -62,6 +65,7 @@ namespace Rubberduck.Refactorings.MoveMember
             _rewritingManager = rewritingManager;
             _selectedDeclarationProvider = selectedDeclarationProvider;
             _selectionService = selectionService;
+            _projectsProvider = projectsProvider;
             _moveMemberFactory = new MoveMemberObjectsFactory(declarationFinderProvider);
         }
 
@@ -200,7 +204,12 @@ namespace Rubberduck.Refactorings.MoveMember
         //TODO: Update once #5387 is merged
         private void CreateNewModule(string newModuleContent, MoveMemberModel model)
         {
-            var targetProject = model.Source.Module.Project;
+            var targetProject = _projectsProvider.Project(model.Source.Module.ProjectId);
+            if (targetProject == null)
+            {
+                return; //The target project is not available.
+            }
+
             using (var components = targetProject.VBComponents)
             {
                 using (var newComponent = components.Add(model.Destination.ComponentType))
