@@ -2,15 +2,11 @@
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
-using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -39,33 +35,31 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public class UnhandledOnErrorResumeNextInspection : ParseTreeInspectionBase
+    public class UnhandledOnErrorResumeNextInspection : ParseTreeInspectionBase<IList<ParserRuleContext>>
     {
         private readonly Dictionary<QualifiedContext<ParserRuleContext>, List<ParserRuleContext>> _unhandledContextsMap =
             new Dictionary<QualifiedContext<ParserRuleContext>, List<ParserRuleContext>>();
 
-        public UnhandledOnErrorResumeNextInspection(RubberduckParserState state) : base(state)
+        public UnhandledOnErrorResumeNextInspection(RubberduckParserState state) 
+            : base(state)
         {
             Listener = new OnErrorStatementListener(_unhandledContextsMap);
         }
 
         public override IInspectionListener Listener { get; }
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context, IList<ParserRuleContext> properties)
         {
-            return Listener.Contexts
-                .Select(result =>
-                {
-                    var unhandledContexts = _unhandledContextsMap[result];
+            return InspectionResults.UnhandledOnErrorResumeNextInspection;
+        }
 
-                    return new QualifiedContextInspectionResult<List<ParserRuleContext>>(this, InspectionResults.UnhandledOnErrorResumeNextInspection, result, unhandledContexts);
-                });
+        protected override (bool isResult, IList<ParserRuleContext> properties) IsResultContextWithAdditionalProperties(QualifiedContext<ParserRuleContext> context)
+        {
+            return (true, _unhandledContextsMap[context]);
         }
     }
 
-    public class OnErrorStatementListener : VBAParserBaseListener, IInspectionListener
+    public class OnErrorStatementListener : InspectionListenerBase
     {
-        private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
         private readonly List<QualifiedContext<ParserRuleContext>> _unhandledContexts = new List<QualifiedContext<ParserRuleContext>>();
         private readonly Dictionary<QualifiedContext<ParserRuleContext>, List<ParserRuleContext>> _unhandledContextsMap;
 
@@ -74,15 +68,11 @@ namespace Rubberduck.Inspections.Concrete
             _unhandledContextsMap = unhandledContextsMap;
         }
 
-        public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-
-        public void ClearContexts()
+        public override void ClearContexts()
         {
-            _contexts.Clear();
             _unhandledContextsMap.Clear();
+            base.ClearContexts();
         }
-
-        public QualifiedModuleName CurrentModuleName { get; set; }
 
         public override void ExitModuleBodyElement(VBAParser.ModuleBodyElementContext context)
         {
@@ -91,9 +81,8 @@ namespace Rubberduck.Inspections.Concrete
                 foreach (var errorContext in _unhandledContexts)
                 {
                     _unhandledContextsMap.Add(errorContext, new List<ParserRuleContext>(_unhandledContexts.Select(ctx => ctx.Context)));
+                    SaveContext(errorContext.Context);
                 }
-
-                _contexts.AddRange(_unhandledContexts);
 
                 _unhandledContexts.Clear();
             }
@@ -103,12 +92,19 @@ namespace Rubberduck.Inspections.Concrete
         {
             if (context.RESUME() != null)
             {
-                _unhandledContexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                SaveUnhandledContext(context);
             }
             else if (context.GOTO() != null)
             {
                 _unhandledContexts.Clear();
             }
+        }
+
+        private void SaveUnhandledContext(ParserRuleContext context)
+        {
+            var module = CurrentModuleName;
+            var qualifiedContext = new QualifiedContext<ParserRuleContext>(module, context);
+            _unhandledContexts.Add(qualifiedContext);
         }
     }
 }

@@ -55,7 +55,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            if (!(result is IWithInspectionResultProperties<List<ParserRuleContext>> resultProperties))
+            if (!(result is IWithInspectionResultProperties<IList<ParserRuleContext>> resultProperties))
             {
                 return;
             }

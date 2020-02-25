@@ -36,10 +36,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private IParseTreeVisitorResults _contextValues;
         private IParseTreeValueFactory _inspValueFactory;
-        private List<VBAParser.EnumerationStmtContext> _enumStmtContexts;
+        private IReadOnlyList<VBAParser.EnumerationStmtContext> _enumStmtContexts;
         private List<EnumMember> _enumMembers;
 
-        public ParseTreeValueVisitor(IParseTreeValueFactory valueFactory, List<VBAParser.EnumerationStmtContext> allEnums, Func<ParserRuleContext, (bool success, IdentifierReference idRef)> idRefRetriever)
+        public ParseTreeValueVisitor(IParseTreeValueFactory valueFactory, IReadOnlyList<VBAParser.EnumerationStmtContext> allEnums, Func<ParserRuleContext, (bool success, IdentifierReference idRef)> idRefRetriever)
         {
             _inspValueFactory = valueFactory;
             IdRefRetriever = idRefRetriever;

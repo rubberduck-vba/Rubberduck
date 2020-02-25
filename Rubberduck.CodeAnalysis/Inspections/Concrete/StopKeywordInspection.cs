@@ -1,16 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
-using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -41,34 +36,22 @@ namespace Rubberduck.Inspections.Concrete
     public sealed class StopKeywordInspection : ParseTreeInspectionBase
     {
         public StopKeywordInspection(RubberduckParserState state)
-            : base(state) { }
+            : base(state)
+        {}
 
         public override IInspectionListener Listener { get; } =
             new StopKeywordListener();
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
         {
-            return Listener.Contexts
-                .Select(result => new QualifiedContextInspectionResult(this,
-                                                       InspectionResults.StopKeywordInspection,
-                                                       result));
+            return InspectionResults.StopKeywordInspection;
         }
 
-        public class StopKeywordListener : VBAParserBaseListener, IInspectionListener
+        public class StopKeywordListener : InspectionListenerBase
         {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-            
-            public QualifiedModuleName CurrentModuleName { get; set; }
-
-            public void ClearContexts()
-            {
-                _contexts.Clear();
-            }
-
             public override void ExitStopStmt([NotNull] VBAParser.StopStmtContext context)
             {
-                _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                SaveContext(context);
             }
         }
     }

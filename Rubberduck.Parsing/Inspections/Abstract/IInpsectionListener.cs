@@ -7,7 +7,8 @@ namespace Rubberduck.Parsing.Inspections.Abstract
 {
     public interface IInspectionListener: IParseTreeListener
     {
-        IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts { get; }
+        IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts();
+        IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts(QualifiedModuleName module);
         void ClearContexts();
         QualifiedModuleName CurrentModuleName { get; set; }
     }

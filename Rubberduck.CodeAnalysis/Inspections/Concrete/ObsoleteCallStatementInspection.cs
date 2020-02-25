@@ -1,16 +1,12 @@
-using System.Collections.Generic;
-using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Extensions;
-using Rubberduck.VBEditor;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.VBEditor.ComManagement;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -44,64 +40,49 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class ObsoleteCallStatementInspection : ParseTreeInspectionBase
     {
-        public ObsoleteCallStatementInspection(RubberduckParserState state)
+        private readonly IProjectsProvider _projectsProvider;
+
+        public ObsoleteCallStatementInspection(RubberduckParserState state, IProjectsProvider projectsProvider)
             : base(state)
         {
             Listener = new ObsoleteCallStatementListener();
+            _projectsProvider = projectsProvider;
         }
 
         public override IInspectionListener Listener { get; }
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
         {
-            var results = new List<IInspectionResult>();
-            // do prefiltering to reduce searchspace
-            var prefilteredContexts = Listener.Contexts.Where(context => !context.IsIgnoringInspectionResultFor(State.DeclarationFinder, AnnotationName));
-            foreach (var context in prefilteredContexts)
-            {
-                string lines;
-                var component = State.ProjectsProvider.Component(context.ModuleName);
-                using (var module = component.CodeModule)
-                {
-                    lines = module.GetLines(context.Context.Start.Line,
-                        context.Context.Stop.Line - context.Context.Start.Line + 1);
-                }
-
-                var stringStrippedLines = string.Join(string.Empty, lines).StripStringLiterals();
-
-                if (stringStrippedLines.HasComment(out var commentIndex))
-                {
-                    stringStrippedLines = stringStrippedLines.Remove(commentIndex);
-                }
-
-                if (!stringStrippedLines.Contains(":"))
-                {
-                    results.Add(new QualifiedContextInspectionResult(this,
-                                                     InspectionResults.ObsoleteCallStatementInspection,
-                                                     context));
-                }
-            }
-
-            return results;
+            return InspectionResults.ObsoleteCallStatementInspection;
         }
 
-        public class ObsoleteCallStatementListener : VBAParserBaseListener, IInspectionListener
+        protected override bool IsResultContext(QualifiedContext<ParserRuleContext> context)
         {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-
-            public QualifiedModuleName CurrentModuleName { get; set; }
-
-            public void ClearContexts()
+            //FIXME At least use a parse tree here instead of the COM API.
+            string lines;
+            var component = _projectsProvider.Component(context.ModuleName);
+            using (var module = component.CodeModule)
             {
-                _contexts.Clear();
+                lines = module.GetLines(context.Context.Start.Line,
+                    context.Context.Stop.Line - context.Context.Start.Line + 1);
             }
 
+            var stringStrippedLines = string.Join(string.Empty, lines).StripStringLiterals();
+
+            if (stringStrippedLines.HasComment(out var commentIndex))
+            {
+                stringStrippedLines = stringStrippedLines.Remove(commentIndex);
+            }
+
+            return !stringStrippedLines.Contains(":");
+        }
+
+        public class ObsoleteCallStatementListener : InspectionListenerBase
+        {
             public override void ExitCallStmt(VBAParser.CallStmtContext context)
             {
                 if (context.CALL() != null)
                 {
-                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                    SaveContext(context);
                 }
             }
         }

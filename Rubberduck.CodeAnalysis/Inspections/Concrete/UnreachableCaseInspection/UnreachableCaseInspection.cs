@@ -13,6 +13,8 @@ using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using System;
 using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
@@ -111,10 +113,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class UnreachableCaseInspection : ParseTreeInspectionBase
+    public sealed class UnreachableCaseInspection : InspectionBase, IParseTreeInspection
     {
         private readonly IUnreachableCaseInspectorFactory _unreachableCaseInspectorFactory;
         private readonly IParseTreeValueFactory _valueFactory;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
         private enum CaseInspectionResult { Unreachable, InherentlyUnreachable, MismatchType, Overflow, CaseElse };
 
@@ -127,15 +130,19 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             [CaseInspectionResult.CaseElse] = InspectionResults.UnreachableCaseInspection_CaseElse
         };
 
-        public UnreachableCaseInspection(RubberduckParserState state) : base(state)
+        public UnreachableCaseInspection(RubberduckParserState state, IDeclarationFinderProvider declarationFinderProvider) 
+            : base(state)
         {
             var factoryProvider = new UnreachableCaseInspectionFactoryProvider();
 
             _unreachableCaseInspectorFactory = factoryProvider.CreateIUnreachableInspectorFactory();
             _valueFactory = factoryProvider.CreateIParseTreeValueFactory();
+            _declarationFinderProvider = declarationFinderProvider;
         }
 
-        public override IInspectionListener Listener { get; } =
+        public CodeKind TargetKindOfCode => CodeKind.CodePaneCode;
+
+        public IInspectionListener Listener { get; } =
             new UnreachableCaseInspectionListener();
 
         private List<IInspectionResult> _inspectionResults = new List<IInspectionResult>();
@@ -143,10 +150,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
+            //FIXME Get the declaration finder only once inside the inspection to avoid possible inconsistent state due to a reparse while inspections run.
             _inspectionResults = new List<IInspectionResult>();
-            var qualifiedSelectCaseStmts = Listener.Contexts
+            var qualifiedSelectCaseStmts = Listener.Contexts()
                 // ignore filtering here to make the search space smaller
-                .Where(result => !result.IsIgnoringInspectionResultFor(State.DeclarationFinder, AnnotationName));
+                .Where(result => !result.IsIgnoringInspectionResultFor(_declarationFinderProvider.DeclarationFinder, AnnotationName));
 
             ParseTreeValueVisitor.OnValueResultCreated += ValueResults.OnNewValueResult;
 
@@ -174,7 +182,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 if (_parseTreeValueVisitor is null)
                 {
                     var listener = (UnreachableCaseInspectionListener)Listener;
-                    _parseTreeValueVisitor = CreateParseTreeValueVisitor(_valueFactory, listener.EnumerationStmtContexts.ToList(), GetIdentifierReferenceForContext);
+                    _parseTreeValueVisitor = CreateParseTreeValueVisitor(_valueFactory, listener.EnumerationStmtContexts(), GetIdentifierReferenceForContext);
                 }
                 return _parseTreeValueVisitor;
             }
@@ -188,16 +196,17 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             _inspectionResults.Add(result);
         }
 
-        public static IParseTreeValueVisitor CreateParseTreeValueVisitor(IParseTreeValueFactory valueFactory, List<VBAParser.EnumerationStmtContext> allEnums, Func<ParserRuleContext, (bool success, IdentifierReference idRef)> func)
+        public static IParseTreeValueVisitor CreateParseTreeValueVisitor(IParseTreeValueFactory valueFactory, IReadOnlyList<VBAParser.EnumerationStmtContext> allEnums, Func<ParserRuleContext, (bool success, IdentifierReference idRef)> func)
             => new ParseTreeValueVisitor(valueFactory, allEnums, func);
 
-        //Method is used as a delegate to avoid propogating RubberduckParserState beyond this class
+        //Method is used as a delegate to avoid propagating RubberduckParserState beyond this class
         private (bool success, IdentifierReference idRef) GetIdentifierReferenceForContext(ParserRuleContext context)
         {
-            return GetIdentifierReferenceForContext(context, State);
+            return GetIdentifierReferenceForContext(context, _declarationFinderProvider);
         }
 
         //public static to support tests
+        //FIXME There should not be additional public methods just for tests. This class seems to want to be split or at least reorganized.
         public static (bool success, IdentifierReference idRef) GetIdentifierReferenceForContext(ParserRuleContext context, IDeclarationFinderProvider declarationFinderProvider)
         {
             if (context == null)
@@ -219,10 +228,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         //Method is used as a delegate to avoid propogating RubberduckParserState beyond this class
         private string GetVariableTypeName(string variableName, ParserRuleContext ancestor)
         {
-            var descendents = ancestor.GetDescendents<VBAParser.SimpleNameExprContext>().Where(desc => desc.GetText().Equals(variableName));
+            var descendents = ancestor.GetDescendents<VBAParser.SimpleNameExprContext>().Where(desc => desc.GetText().Equals(variableName)).ToList();
             if (descendents.Any())
             {
-                (bool success, IdentifierReference idRef) = GetIdentifierReferenceForContext(descendents.First(), State);
+                (bool success, IdentifierReference idRef) = GetIdentifierReferenceForContext(descendents.First(), _declarationFinderProvider);
                 if (success)
                 {
                     return GetBaseTypeForDeclaration(idRef.Declaration);
@@ -245,29 +254,42 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         }
 
         #region UnreachableCaseInspectionListeners
-        public class UnreachableCaseInspectionListener : VBAParserBaseListener, IInspectionListener
+        public class UnreachableCaseInspectionListener : InspectionListenerBase
         {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
+            private readonly IDictionary<QualifiedModuleName, List<VBAParser.EnumerationStmtContext>> _enumStmts = new Dictionary<QualifiedModuleName, List<VBAParser.EnumerationStmtContext>>();
+            public IReadOnlyList<VBAParser.EnumerationStmtContext> EnumerationStmtContexts() => _enumStmts.AllValues().ToList();
+            public IReadOnlyList<VBAParser.EnumerationStmtContext> EnumerationStmtContexts(QualifiedModuleName module) => 
+                _enumStmts.TryGetValue(module, out var stmts)
+                    ? stmts
+                    : new List<VBAParser.EnumerationStmtContext>();
 
-            private readonly List<VBAParser.EnumerationStmtContext> _enumStmts = new List<VBAParser.EnumerationStmtContext>();
-            public IReadOnlyList<VBAParser.EnumerationStmtContext> EnumerationStmtContexts => _enumStmts;
-
-            public QualifiedModuleName CurrentModuleName { get; set; }
-
-            public void ClearContexts()
+            public override void ClearContexts()
             {
-                _contexts.Clear();
+                _enumStmts.Clear();
+                base.ClearContexts();
             }
 
             public override void EnterSelectCaseStmt([NotNull] VBAParser.SelectCaseStmtContext context)
             {
-                _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                SaveContext(context);
             }
 
             public override void EnterEnumerationStmt([NotNull] VBAParser.EnumerationStmtContext context)
             {
-                _enumStmts.Add(context);
+                SaveEnumStmt(context);
+            }
+
+            private void SaveEnumStmt(VBAParser.EnumerationStmtContext context)
+            {
+                var module = CurrentModuleName;
+                if (_enumStmts.TryGetValue(module, out var stmts))
+                {
+                    stmts.Add(context);
+                }
+                else
+                {
+                    _enumStmts.Add(module, new List<VBAParser.EnumerationStmtContext> { context });
+                }
             }
         }
         #endregion

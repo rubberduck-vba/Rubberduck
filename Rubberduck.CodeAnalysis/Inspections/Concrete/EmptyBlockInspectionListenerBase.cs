@@ -1,37 +1,20 @@
 ﻿using Antlr4.Runtime;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Antlr4.Runtime.Tree;
+using Rubberduck.Inspections.Abstract;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    public class EmptyBlockInspectionListenerBase : VBAParserBaseListener, IInspectionListener
+    public class EmptyBlockInspectionListenerBase : InspectionListenerBase
     {
-        private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-        public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-
-        public QualifiedModuleName CurrentModuleName { get; set; }
-
-        public void ClearContexts()
-        {
-            _contexts.Clear();
-        }
-
         public void InspectBlockForExecutableStatements<T>(VBAParser.BlockContext block, T context) where T : ParserRuleContext
         {
             if (!BlockContainsExecutableStatements(block))
             {
-                AddResult(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                SaveContext(context);
             }
-        }
-
-        public void AddResult(QualifiedContext<ParserRuleContext> qualifiedContext)
-        {
-            _contexts.Add(qualifiedContext);
         }
 
         private bool BlockContainsExecutableStatements(VBAParser.BlockContext block)
@@ -82,7 +65,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             if (!BlockContainsExecutableStatements(block))
             {
-                AddResult(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                SaveContext(context);
             }
         }
 

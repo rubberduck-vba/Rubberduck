@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources.Inspections;
@@ -7,10 +6,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Grammar;
 using Antlr4.Runtime;
 using Rubberduck.Parsing;
-using Rubberduck.VBEditor;
 using Antlr4.Runtime.Misc;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -40,34 +36,15 @@ namespace Rubberduck.Inspections.Concrete
         }
         
         public override IInspectionListener Listener { get; }
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
         {
-            var results = Listener.Contexts
-                .Select(context => new QualifiedContextInspectionResult(this,
-                                                                        string.Format(InspectionResults.DefTypeStatementInspection,
-                                                                                      GetTypeOfDefType(context.Context.start.Text),
-                                                                                      context.Context.start.Text),
-                                                                        context));
-            return results;
-        }
+            var typeName = GetTypeOfDefType(context.Context.start.Text);
+            var defStmtText = context.Context.start.Text;
 
-        public class DefTypeStatementInspectionListener : VBAParserBaseListener, IInspectionListener
-        {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-
-            public QualifiedModuleName CurrentModuleName { get; set; }
-
-            public void ClearContexts()
-            {
-                _contexts.Clear();
-            }
-
-            public override void ExitDefType([NotNull] VBAParser.DefTypeContext context)
-            {
-                _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
-            }
+            return string.Format(
+                InspectionResults.DefTypeStatementInspection,
+                typeName,
+                defStmtText);
         }
 
         private string GetTypeOfDefType(string defType)
@@ -90,5 +67,13 @@ namespace Rubberduck.Inspections.Concrete
             { "DefObj", "Object" },
             { "DefVar", "Variant" }
         };
+
+        public class DefTypeStatementInspectionListener : InspectionListenerBase
+        {
+            public override void ExitDefType([NotNull] VBAParser.DefTypeContext context)
+            {
+                SaveContext(context);
+            }
+        }
     }
 }

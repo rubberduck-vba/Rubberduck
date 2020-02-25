@@ -1,16 +1,13 @@
 using System.Collections.Generic;
-using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
-using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -48,49 +45,45 @@ namespace Rubberduck.Inspections.Concrete
         }
 
         public override IInspectionListener Listener { get; }
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
         {
-            return Listener.Contexts
-                .Select(context => new QualifiedContextInspectionResult(this,
-                    string.Format(InspectionResults.OptionExplicitInspection, context.ModuleName.ComponentName),
-                    context));
+            var moduleName = context.ModuleName.ComponentName;
+            return string.Format(
+                InspectionResults.OptionExplicitInspection,
+                moduleName);
         }
 
-        public class MissingOptionExplicitListener : VBAParserBaseListener, IInspectionListener
+        protected override bool IsResultContext(QualifiedContext<ParserRuleContext> context)
         {
-            private readonly IDictionary<string, QualifiedContext<ParserRuleContext>> _contexts = new Dictionary<string,QualifiedContext<ParserRuleContext>>();
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts.Values.ToList();
+            var moduleBody = (context.Context as VBAParser.ModuleContext)?.moduleBody();
+            return moduleBody != null && moduleBody.ChildCount != 0;
+        }
 
-            public QualifiedModuleName CurrentModuleName { get; set; }
+        public class MissingOptionExplicitListener : InspectionListenerBase
+        {
+            private readonly IDictionary<QualifiedModuleName, bool> _hasOptionExplicit = new Dictionary<QualifiedModuleName, bool>();
 
-            public void ClearContexts()
+            public override void ClearContexts()
             {
-                _contexts.Clear();
+                _hasOptionExplicit.Clear();
+                base.ClearContexts();
             }
 
-            public override void ExitModuleBody(VBAParser.ModuleBodyContext context)
+            public override void EnterModuleDeclarations(VBAParser.ModuleDeclarationsContext context)
             {
-                if (context.ChildCount == 0 && _contexts.ContainsKey(CurrentModuleName.Name))
-                {
-                    _contexts.Remove(CurrentModuleName.Name);
-                }
+                _hasOptionExplicit[CurrentModuleName] = false;
+            }
+
+            public override void ExitOptionExplicitStmt(VBAParser.OptionExplicitStmtContext context)
+            {
+                _hasOptionExplicit[CurrentModuleName] = true;
             }
 
             public override void ExitModuleDeclarations([NotNull] VBAParser.ModuleDeclarationsContext context)
             {
-                var hasOptionExplicit = false;
-                foreach (var element in context.moduleDeclarationsElement())
+                if (!_hasOptionExplicit.TryGetValue(CurrentModuleName, out var hasOptionExplicit) || !hasOptionExplicit)
                 {
-                    if (element.moduleOption() is VBAParser.OptionExplicitStmtContext)
-                    {
-                        hasOptionExplicit = true;
-                    }
-                }
-
-                if (!hasOptionExplicit)
-                {
-                    _contexts.Add(CurrentModuleName.Name, new QualifiedContext<ParserRuleContext>(CurrentModuleName, (ParserRuleContext)context.Parent));
+                    SaveContext((ParserRuleContext)context.Parent);
                 }
             }
         }

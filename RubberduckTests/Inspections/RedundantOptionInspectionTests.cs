@@ -32,7 +32,7 @@ Option Base 0";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
-                var inspection = new ObsoleteCallStatementInspection(state);
+                var inspection = new ObsoleteCallStatementInspection(state, state.ProjectsProvider);
                 var inspector = InspectionsHelper.GetInspector(inspection);
                 var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 

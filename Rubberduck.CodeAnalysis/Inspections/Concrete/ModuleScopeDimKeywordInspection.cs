@@ -41,34 +41,25 @@ namespace Rubberduck.Inspections.Concrete
             : base(state) { }
 
         public override IInspectionListener Listener { get; } = new ModuleScopedDimListener();
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
         {
-            return Listener.Contexts
-                .SelectMany(result => result.Context.GetDescendents<VBAParser.VariableSubStmtContext>()
-                        .Select(r => new QualifiedContext<ParserRuleContext>(result.ModuleName, r)))
-                .Select(result => new QualifiedContextInspectionResult(this,
-                                                       string.Format(InspectionResults.ModuleScopeDimKeywordInspection, ((VBAParser.VariableSubStmtContext)result.Context).identifier().GetText()),
-                                                       result));
+            var identifierName = ((VBAParser.VariableSubStmtContext) context.Context).identifier().GetText();
+            return string.Format(
+                InspectionResults.ModuleScopeDimKeywordInspection,
+                identifierName);
         }
 
-        public class ModuleScopedDimListener : VBAParserBaseListener, IInspectionListener
+        public class ModuleScopedDimListener : InspectionListenerBase
         {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-
-            public QualifiedModuleName CurrentModuleName { get; set; }
-
-            public void ClearContexts()
-            {
-                _contexts.Clear();
-            }
-
             public override void ExitVariableStmt([NotNull] VBAParser.VariableStmtContext context)
             {
                 if (context.DIM() != null && context.TryGetAncestor<VBAParser.ModuleDeclarationsElementContext>(out _))
                 {
-                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                    var resultContexts = context.GetDescendents<VBAParser.VariableSubStmtContext>();
+                    foreach (var resultContext in resultContexts)
+                    {
+                        SaveContext(resultContext);
+                    }
                 }
             }
         }

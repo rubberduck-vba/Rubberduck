@@ -9,7 +9,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
+using Rubberduck.Parsing.VBA.Parsing;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -39,7 +39,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Function
     /// ]]>
     /// </example>
-    public sealed class ProcedureCanBeWrittenAsFunctionInspection : ParseTreeInspectionBase
+    public sealed class ProcedureCanBeWrittenAsFunctionInspection : InspectionBase, IParseTreeInspection
     {
         public ProcedureCanBeWrittenAsFunctionInspection(RubberduckParserState state)
             : base(state)
@@ -47,16 +47,19 @@ namespace Rubberduck.Inspections.Concrete
             Listener = new SingleByRefParamArgListListener();
         }
 
-        public override IInspectionListener Listener { get; }
+        public CodeKind TargetKindOfCode => CodeKind.CodePaneCode;
+        public IInspectionListener Listener { get; }
+
+        //FIXME This should really be a declaration inspection. 
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            if (!Listener.Contexts.Any())
+            if (!Listener.Contexts().Any())
             {
                 return Enumerable.Empty<IInspectionResult>();
             }
 
-            var userDeclarations = UserDeclarations.ToList();
+            var userDeclarations = State.AllUserDeclarations.ToList();
             var builtinHandlers = State.DeclarationFinder.FindEventHandlers().ToList();
 
             var contextLookup = userDeclarations.Where(decl => decl.Context != null).ToDictionary(decl => decl.Context);
@@ -66,7 +69,7 @@ namespace Rubberduck.Inspections.Concrete
                 .Concat(builtinHandlers)
                 .Concat(userDeclarations.Where(item => item.IsWithEvents)));
 
-            return Listener.Contexts
+            return Listener.Contexts()
                 .Where(context => context.Context.Parent is VBAParser.SubStmtContext
                                     && HasArgumentReferencesWithIsAssignmentFlagged(context))
                 .Select(GetSubStmtParentDeclaration)
@@ -93,24 +96,14 @@ namespace Rubberduck.Inspections.Concrete
             }
         }
 
-        public class SingleByRefParamArgListListener : VBAParserBaseListener, IInspectionListener
+        public class SingleByRefParamArgListListener : InspectionListenerBase
         {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-
-            public QualifiedModuleName CurrentModuleName { get; set; }
-
-            public void ClearContexts()
-            {
-                _contexts.Clear();
-            }
-
             public override void ExitArgList(VBAParser.ArgListContext context)
             {
                 var args = context.arg();
                 if (args != null && args.All(a => a.PARAMARRAY() == null && a.LPAREN() == null) && args.Count(a => a.BYREF() != null || (a.BYREF() == null && a.BYVAL() == null)) == 1)
                 {
-                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                    SaveContext(context);
                 }
             }
         }

@@ -1,15 +1,10 @@
-using System.Collections.Generic;
-using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
-using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -51,32 +46,21 @@ namespace Rubberduck.Inspections.Concrete
         }
         
         public override IInspectionListener Listener { get; }
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
         {
-            return Listener.Contexts
-                .Select(context => new QualifiedContextInspectionResult(this,
-                                                        string.Format(InspectionResults.OptionBaseInspection, context.ModuleName.ComponentName),
-                                                        context));
+            var moduleName = context.ModuleName.ComponentName;
+            return string.Format(
+                InspectionResults.OptionBaseInspection, 
+                moduleName);
         }
 
-        public class OptionBaseStatementListener : VBAParserBaseListener, IInspectionListener
+        public class OptionBaseStatementListener : InspectionListenerBase
         {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-
-            public QualifiedModuleName CurrentModuleName { get; set; }
-
-            public void ClearContexts()
-            {
-                _contexts.Clear();
-            }
-
             public override void ExitOptionBaseStmt(VBAParser.OptionBaseStmtContext context)
             {
                 if (context.numberLiteral()?.INTEGERLITERAL().Symbol.Text == "1")
                 {
-                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                   SaveContext(context);
                 }
             }
         }

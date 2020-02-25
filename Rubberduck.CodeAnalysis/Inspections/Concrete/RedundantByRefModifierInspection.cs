@@ -1,16 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.VBA.Extensions;
-using Rubberduck.VBEditor;
-using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.JunkDrawer.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
@@ -49,48 +44,38 @@ namespace Rubberduck.Inspections.Concrete
         }
 
         public override IInspectionListener Listener { get; } = new RedundantByRefModifierListener();
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
         {
+            var identifier = ((VBAParser.ArgContext)context.Context)
+                .unrestrictedIdentifier()
+                .identifier();
+
+            var identifierText = identifier.untypedIdentifier() != null
+                ? identifier.untypedIdentifier().identifierValue().GetText()
+                : identifier.typedIdentifier().untypedIdentifier().identifierValue().GetText();
+
+            return string.Format(
+                InspectionResults.RedundantByRefModifierInspection,
+                identifierText);
+        }
+
+        protected override bool IsResultContext(QualifiedContext<ParserRuleContext> context)
+        {
+            //FIXME This should be an inspection on parameter declarations.
             var builtInEventHandlerContexts = State.DeclarationFinder.FindEventHandlers().Select(handler => handler.Context).ToHashSet();
             var interfaceImplementationMemberContexts = State.DeclarationFinder.FindAllInterfaceImplementingMembers().Select(member => member.Context).ToHashSet();
 
-            var issues = Listener.Contexts.Where(context =>
-                !builtInEventHandlerContexts.Contains(context.Context.Parent.Parent) &&
-                !interfaceImplementationMemberContexts.Contains(context.Context.Parent.Parent));
-
-            return issues.Select(issue =>
-            {
-                var identifier = ((VBAParser.ArgContext) issue.Context)
-                    .unrestrictedIdentifier()
-                    .identifier();
-
-                return new QualifiedContextInspectionResult(this,
-                    string.Format(InspectionResults.RedundantByRefModifierInspection,
-                        identifier.untypedIdentifier() != null
-                            ? identifier.untypedIdentifier().identifierValue().GetText()
-                            : identifier.typedIdentifier().untypedIdentifier().identifierValue().GetText()), issue);
-            });
+            return !builtInEventHandlerContexts.Contains(context.Context.Parent.Parent)
+                   && !interfaceImplementationMemberContexts.Contains(context.Context.Parent.Parent);
         }
 
-        public class RedundantByRefModifierListener : VBAParserBaseListener, IInspectionListener
+        public class RedundantByRefModifierListener : InspectionListenerBase
         {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts  => _contexts;
-
-            public QualifiedModuleName CurrentModuleName { get; set; }
-
-            public void ClearContexts()
-            {
-                _contexts.Clear();
-            }
-
             public override void ExitArg(VBAParser.ArgContext context)
             {
                 if (context.BYREF() != null)
                 {
-                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                   SaveContext(context);
                 }
             }
         }

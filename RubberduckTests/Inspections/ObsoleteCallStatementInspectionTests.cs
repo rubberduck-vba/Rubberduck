@@ -111,14 +111,14 @@ End Sub";
         [Category("Inspections")]
         public void InspectionName()
         {
-            var inspection = new ObsoleteCallStatementInspection(null);
+            var inspection = new ObsoleteCallStatementInspection(null, null);
 
             Assert.AreEqual(nameof(ObsoleteCallStatementInspection), inspection.Name);
         }
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
-            return new ObsoleteCallStatementInspection(state);
+            return new ObsoleteCallStatementInspection(state, state.ProjectsProvider);
         }
     }
 }

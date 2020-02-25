@@ -1,15 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources.Inspections;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
 {
@@ -27,29 +23,21 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
     /// </remarks>
     public class LineContinuationBetweenKeywordsInspection : ParseTreeInspectionBase
     {
-        public LineContinuationBetweenKeywordsInspection(RubberduckParserState state) : base(state)
+        public LineContinuationBetweenKeywordsInspection(RubberduckParserState state) 
+            : base(state)
         {
             Listener = new LineContinuationBetweenKeywordsListener();
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
         {
-            return Listener.Contexts.Select(c => new QualifiedContextInspectionResult(
-                this, InspectionResults.LineContinuationBetweenKeywordsInspection.ThunderCodeFormat(), c));
+            return InspectionResults.LineContinuationBetweenKeywordsInspection.ThunderCodeFormat();
         }
 
         public override IInspectionListener Listener { get; }
 
-        public class LineContinuationBetweenKeywordsListener : VBAParserBaseListener, IInspectionListener
+        public class LineContinuationBetweenKeywordsListener : InspectionListenerBase
         {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-
-            public void ClearContexts() => _contexts.Clear();
-
-            public QualifiedModuleName CurrentModuleName { get; set; }
-
             public override void EnterSubStmt(VBAParser.SubStmtContext context)
             {
                 CheckContext(context, context.END_SUB());
@@ -149,12 +137,11 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
             }
 
 
-
             private void CheckContext(ParserRuleContext context, IParseTree subTreeToExamine)
             {
                 if (subTreeToExamine?.GetText().Contains("_") ?? false)
                 {
-                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                    SaveContext(context);
                 }
             }
         }

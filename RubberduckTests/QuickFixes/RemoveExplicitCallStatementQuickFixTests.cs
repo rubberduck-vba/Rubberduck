@@ -32,7 +32,7 @@ Sub Goo(arg1 As Integer, arg1 As String)
     Foo
 End Sub";
 
-            var actualCode = ApplyQuickFixToAllInspectionResults(inputCode, state => new ObsoleteCallStatementInspection(state));
+            var actualCode = ApplyQuickFixToAllInspectionResults(inputCode, state => new ObsoleteCallStatementInspection(state, state.ProjectsProvider));
             Assert.AreEqual(expectedCode, actualCode);
         }
 

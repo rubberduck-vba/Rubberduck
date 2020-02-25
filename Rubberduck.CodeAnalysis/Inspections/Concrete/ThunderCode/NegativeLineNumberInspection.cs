@@ -1,15 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources.Inspections;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
 {
@@ -23,29 +19,21 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
     /// </why>
     public class NegativeLineNumberInspection : ParseTreeInspectionBase
     {
-        public NegativeLineNumberInspection(RubberduckParserState state) : base(state)
+        public NegativeLineNumberInspection(RubberduckParserState state) 
+            : base(state)
         {
             Listener = new NegativeLineNumberKeywordsListener();
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
         {
-            return Listener.Contexts.Select(c => new QualifiedContextInspectionResult(
-                this, InspectionResults.NegativeLineNumberInspection.ThunderCodeFormat(), c));
+            return InspectionResults.NegativeLineNumberInspection.ThunderCodeFormat();
         }
 
         public override IInspectionListener Listener { get; }
 
-        public class NegativeLineNumberKeywordsListener : VBAParserBaseListener, IInspectionListener
+        public class NegativeLineNumberKeywordsListener : InspectionListenerBase
         {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-
-            public void ClearContexts() => _contexts.Clear();
-
-            public QualifiedModuleName CurrentModuleName { get; set; }
-
             public override void EnterOnErrorStmt(VBAParser.OnErrorStmtContext context)
             {
                 CheckContext(context, context.expression());
@@ -69,7 +57,7 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
                 var target = expression?.GetText().Trim() ?? string.Empty;
                 if (target.StartsWith("-") && int.TryParse(target.Substring(1), out _))
                 {
-                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                    SaveContext(context);
                 }
             }
         }

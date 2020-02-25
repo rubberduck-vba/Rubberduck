@@ -1,15 +1,13 @@
 ﻿using Antlr4.Runtime.Misc;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using System.Collections.Generic;
-using System.Linq;
+using Antlr4.Runtime;
 using Rubberduck.Resources.Experimentals;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -45,18 +43,15 @@ namespace Rubberduck.Inspections.Concrete
         public EmptyForLoopBlockInspection(RubberduckParserState state)
             : base(state) { }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
         {
-            return Listener.Contexts
-                .Select(result => new QualifiedContextInspectionResult(this,
-                                                        InspectionResults.EmptyForLoopBlockInspection,
-                                                        result));
+            return InspectionResults.EmptyForLoopBlockInspection;
         }
 
         public override IInspectionListener Listener { get; } =
-            new EmptyForloopBlockListener();
+            new EmptyForLoopBlockListener();
 
-        public class EmptyForloopBlockListener : EmptyBlockInspectionListenerBase
+        public class EmptyForLoopBlockListener : EmptyBlockInspectionListenerBase
         {
             public override void EnterForNextStmt([NotNull] VBAParser.ForNextStmtContext context)
             {

@@ -1,14 +1,11 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -40,14 +37,12 @@ namespace Rubberduck.Inspections.Concrete
     internal class EmptyIfBlockInspection : ParseTreeInspectionBase
     {
         public EmptyIfBlockInspection(RubberduckParserState state)
-            : base(state) { }
+            : base(state)
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
         {
-            return Listener.Contexts
-                .Select(result => new QualifiedContextInspectionResult(this,
-                                                        InspectionResults.EmptyIfBlockInspection,
-                                                        result));
+            return InspectionResults.EmptyIfBlockInspection;
         }
 
         public override IInspectionListener Listener { get; } =
@@ -69,7 +64,7 @@ namespace Rubberduck.Inspections.Concrete
             {
                 if (context.ifWithEmptyThen() != null)
                 {
-                    AddResult(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context.ifWithEmptyThen()));
+                    SaveContext(context.ifWithEmptyThen());
                 }
             }
         }
