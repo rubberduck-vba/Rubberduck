@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Rubberduck.VBEditor.Extensions
+namespace Rubberduck.JunkDrawer.Extensions
 {
     public static class DictionaryExtensions
     {

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Rubberduck.VBEditor.Extensions;
+using Rubberduck.JunkDrawer.Extensions;
 
 namespace Rubberduck.Parsing.PreProcessing
 {

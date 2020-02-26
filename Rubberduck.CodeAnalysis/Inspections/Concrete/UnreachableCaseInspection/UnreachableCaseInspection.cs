@@ -13,8 +13,8 @@ using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using System;
 using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.VBA.Parsing;
-using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {

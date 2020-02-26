@@ -13,7 +13,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Parsing.VBA.ReferenceManagement;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
