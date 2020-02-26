@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Annotations
 {
@@ -12,7 +9,7 @@ namespace Rubberduck.Parsing.Annotations
         public string Name { get; }
         public AnnotationTarget Target { get; }
 
-        public AnnotationBase(string name, AnnotationTarget target, bool allowMultiple = false)
+        protected AnnotationBase(string name, AnnotationTarget target, bool allowMultiple = false)
         {
             Name = name;
             Target = target;

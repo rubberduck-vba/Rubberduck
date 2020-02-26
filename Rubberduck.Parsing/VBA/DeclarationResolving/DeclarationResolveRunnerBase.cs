@@ -139,7 +139,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                 }
                 Logger.Debug($"Creating declarations for module {module.Name}.");
 
-                var annotationsOnWhiteSpaceLines = _state.GetModuleAnnotations(module)
+                var annotationsOnWhiteSpaceLines = _state.GetAnnotations(module)
                     .Where(a => a.AnnotatedLine.HasValue)
                     .GroupBy(a => a.AnnotatedLine.Value)
                     .ToDictionary();

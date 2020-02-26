@@ -33,8 +33,13 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class MissingAnnotationArgumentInspection : ParseTreeInspectionBase
     {
+        private readonly RubberduckParserState _state;
+
         public MissingAnnotationArgumentInspection(RubberduckParserState state)
-            : base(state) { }
+            : base(state)
+        {
+            _state = state;
+        }
 
         public override CodeKind TargetKindOfCode => CodeKind.AttributesCode;
 

@@ -9,6 +9,8 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Inspections.Concrete
@@ -53,27 +55,65 @@ namespace Rubberduck.Inspections.Concrete
         {
             var finder = DeclarationFinderProvider.DeclarationFinder;
 
-            var userDeclarations = finder.AllUserDeclarations.ToList();
-            var identifierReferences = finder.AllIdentifierReferences().ToList();
-            var annotations = _state.AllAnnotations;
+            return finder.UserDeclarations(DeclarationType.Module)
+                .Where(module => module != null)
+                .SelectMany(module => DoGetInspectionResults(module.QualifiedModuleName, finder));
+        }
+
+        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
+        {
+            var finder = DeclarationFinderProvider.DeclarationFinder;
+            return DoGetInspectionResults(module, finder);
+        }
+
+        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
+        {
+            var userDeclarations = finder.Members(module).ToList();
+            var identifierReferences = finder.IdentifierReferences(module).ToList();
+            var annotations = _state.GetAnnotations(module);
 
             var unboundAnnotations = UnboundAnnotations(annotations, userDeclarations, identifierReferences)
                 .Where(annotation => !annotation.Annotation.Target.HasFlag(AnnotationTarget.General)
                                      || annotation.AnnotatedLine == null);
-            var attributeAnnotationsInDocuments = AttributeAnnotationsInDocuments(userDeclarations);
 
             var attributeAnnotationsOnDeclarationsNotAllowingAttributes = AttributeAnnotationsOnDeclarationsNotAllowingAttributes(userDeclarations);
 
             var illegalAnnotations = unboundAnnotations
-                .Concat(attributeAnnotationsInDocuments)
                 .Concat(attributeAnnotationsOnDeclarationsNotAllowingAttributes)
-                .ToHashSet();
+                .Distinct();
 
-            return illegalAnnotations.Select(annotation => 
-                new QualifiedContextInspectionResult(
-                    this, 
-                    string.Format(InspectionResults.IllegalAnnotationInspection, annotation.Context.annotationName().GetText()), 
-                    new QualifiedContext(annotation.QualifiedSelection.QualifiedName, annotation.Context)));
+            if (module.ComponentType == ComponentType.Document)
+            {
+                var attributeAnnotationsInDocuments = AttributeAnnotationsInDocuments(userDeclarations);
+                illegalAnnotations = illegalAnnotations
+                    .Concat(attributeAnnotationsInDocuments)
+                    .Distinct();
+            }
+
+            return illegalAnnotations
+                .Select(InspectionResult)
+                .ToList();
+        }
+
+        private IInspectionResult InspectionResult(IParseTreeAnnotation pta)
+        {
+            return new QualifiedContextInspectionResult(
+                this,
+                ResultDescription(pta),
+                Context(pta));
+        }
+
+        private static string ResultDescription(IParseTreeAnnotation pta)
+        {
+            var annotationText = pta.Context.annotationName().GetText();
+            return string.Format(
+                InspectionResults.IllegalAnnotationInspection,
+                annotationText);
+        }
+
+        private static QualifiedContext Context(IParseTreeAnnotation pta)
+        {
+            return new QualifiedContext(pta.QualifiedSelection.QualifiedName, pta.Context);
         }
 
         private static IEnumerable<IParseTreeAnnotation> UnboundAnnotations(IEnumerable<IParseTreeAnnotation> annotations, IEnumerable<Declaration> userDeclarations, IEnumerable<IdentifierReference> identifierReferences)
@@ -91,7 +131,8 @@ namespace Rubberduck.Inspections.Concrete
         {
             var declarationsInDocuments = userDeclarations
                 .Where(declaration => declaration.QualifiedModuleName.ComponentType == ComponentType.Document);
-            return declarationsInDocuments.SelectMany(doc => doc.Annotations).Where(pta => pta.Annotation is IAttributeAnnotation);
+            return declarationsInDocuments.SelectMany(doc => doc.Annotations)
+                .Where(pta => pta.Annotation is IAttributeAnnotation);
         }
 
         private static IEnumerable<IParseTreeAnnotation> AttributeAnnotationsOnDeclarationsNotAllowingAttributes(IEnumerable<Declaration> userDeclarations)
