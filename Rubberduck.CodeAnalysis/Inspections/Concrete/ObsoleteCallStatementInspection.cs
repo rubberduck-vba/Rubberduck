@@ -40,13 +40,10 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class ObsoleteCallStatementInspection : ParseTreeInspectionBase
     {
-        private readonly IProjectsProvider _projectsProvider;
-
-        public ObsoleteCallStatementInspection(IDeclarationFinderProvider declarationFinderProvider, IProjectsProvider projectsProvider)
+        public ObsoleteCallStatementInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
         {
             Listener = new ObsoleteCallStatementListener();
-            _projectsProvider = projectsProvider;
         }
 
         public override IInspectionListener Listener { get; }
@@ -57,23 +54,19 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override bool IsResultContext(QualifiedContext<ParserRuleContext> context)
         {
-            //FIXME At least use a parse tree here instead of the COM API.
-            string lines;
-            var component = _projectsProvider.Component(context.ModuleName);
-            using (var module = component.CodeModule)
+            if (!context.Context.TryGetFollowingContext(out VBAParser.IndividualNonEOFEndOfStatementContext followingEndOfStatement)
+                || followingEndOfStatement.COLON() == null)
             {
-                lines = module.GetLines(context.Context.Start.Line,
-                    context.Context.Stop.Line - context.Context.Start.Line + 1);
+                return true;
             }
 
-            var stringStrippedLines = string.Join(string.Empty, lines).StripStringLiterals();
-
-            if (stringStrippedLines.HasComment(out var commentIndex))
+            if (!context.Context.TryGetPrecedingContext(out VBAParser.IndividualNonEOFEndOfStatementContext precedingEndOfStatement)
+                || precedingEndOfStatement.endOfLine() == null)
             {
-                stringStrippedLines = stringStrippedLines.Remove(commentIndex);
+                return true;
             }
 
-            return !stringStrippedLines.Contains(":");
+            return false;
         }
 
         public class ObsoleteCallStatementListener : InspectionListenerBase

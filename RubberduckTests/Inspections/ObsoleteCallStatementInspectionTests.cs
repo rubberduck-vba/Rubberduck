@@ -45,6 +45,28 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
+        public void ObsoleteCallStatement_ReturnsResult_LabelInFront()
+        {
+            const string inputCode =
+                @"Sub Foo()
+    Foo: Call Foo
+End Sub";
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ObsoleteCallStatement_ReturnsResult_LabelInFrontWithSeparator()
+        {
+            const string inputCode =
+                @"Sub Foo()
+    Foo: Call Foo : Foo
+End Sub";
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void ObsoleteCallStatement_ReturnsResult_ColonInComment()
         {
             const string inputCode =
@@ -111,14 +133,14 @@ End Sub";
         [Category("Inspections")]
         public void InspectionName()
         {
-            var inspection = new ObsoleteCallStatementInspection(null, null);
+            var inspection = new ObsoleteCallStatementInspection(null);
 
             Assert.AreEqual(nameof(ObsoleteCallStatementInspection), inspection.Name);
         }
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
-            return new ObsoleteCallStatementInspection(state, state.ProjectsProvider);
+            return new ObsoleteCallStatementInspection(state);
         }
     }
 }

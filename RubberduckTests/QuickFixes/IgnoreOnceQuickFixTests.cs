@@ -465,7 +465,7 @@ Sub Goo(arg1 As Integer, arg1 As String)
     Call Foo
 End Sub";
 
-            var actualCode = ApplyIgnoreOnceToAllResults(inputCode, state => new ObsoleteCallStatementInspection(state, state.ProjectsProvider), TestStandardModuleVbeSetup);
+            var actualCode = ApplyIgnoreOnceToAllResults(inputCode, state => new ObsoleteCallStatementInspection(state), TestStandardModuleVbeSetup);
             Assert.AreEqual(expectedCode, actualCode);
         }
 
