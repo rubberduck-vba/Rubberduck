@@ -135,7 +135,9 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                 || assignedTypeName == Tokens.Variant
                 || assignedTypeName == Tokens.Object
                 || HasBaseType(declaration, assignedTypeName)
-                || HasSubType(declaration, assignedTypeName);
+                || HasSubType(declaration, assignedTypeName)
+                || assignedTypeName.EndsWith("stdole.IUnknown")
+                || declaration.FullAsTypeName.EndsWith("stdole.IUnknown");
         }
 
         private bool HasBaseType(Declaration declaration, string typeName)
