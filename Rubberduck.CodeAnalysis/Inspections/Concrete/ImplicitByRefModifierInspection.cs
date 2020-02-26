@@ -1,12 +1,8 @@
-using System.Linq;
-using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.JunkDrawer.Extensions;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -31,48 +27,38 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class ImplicitByRefModifierInspection : ParseTreeInspectionBase
+    public sealed class ImplicitByRefModifierInspection : DeclarationInspectionBase
     {
         public ImplicitByRefModifierInspection(RubberduckParserState state)
-            : base(state)
+            : base(state, DeclarationType.Parameter)
         {}
 
-        public override IInspectionListener Listener { get; } = new ImplicitByRefModifierListener();
-        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            var identifier = ((VBAParser.ArgContext)context.Context)
-                .unrestrictedIdentifier()
-                .identifier();
+            if (!(declaration is ParameterDeclaration parameter)
+                || !parameter.IsImplicitByRef
+                || parameter.IsParamArray)
+            {
+                return false;
+            }
 
-            var identifierText = identifier.untypedIdentifier() != null
-                ? identifier.untypedIdentifier().identifierValue().GetText()
-                : identifier.typedIdentifier().untypedIdentifier().identifierValue().GetText();
+            var parentDeclaration = parameter.ParentDeclaration;
 
+            if (parentDeclaration is ModuleBodyElementDeclaration enclosingMethod)
+            {
+                return !enclosingMethod.IsInterfaceImplementation
+                       && !finder.FindEventHandlers().Contains(enclosingMethod);
+            }
+
+            return parentDeclaration.DeclarationType != DeclarationType.LibraryFunction
+                   && parentDeclaration.DeclarationType != DeclarationType.LibraryProcedure;
+        }
+
+        protected override string ResultDescription(Declaration declaration)
+        {
             return string.Format(
                 InspectionResults.ImplicitByRefModifierInspection,
-                identifierText);
-        }
-
-        protected override bool IsResultContext(QualifiedContext<ParserRuleContext> context)
-        {
-            //FIXME : This should really be a declaration inspection on the parameter. 
-            var finder = DeclarationFinderProvider.DeclarationFinder;
-            var builtInEventHandlerContexts = finder.FindEventHandlers().Select(handler => handler.Context).ToHashSet();
-            var interfaceImplementationMemberContexts = finder.FindAllInterfaceImplementingMembers().Select(member => member.Context).ToHashSet();
-
-            return !builtInEventHandlerContexts.Contains(context.Context.Parent.Parent)
-                   && !interfaceImplementationMemberContexts.Contains(context.Context.Parent.Parent);
-        }
-
-        public class ImplicitByRefModifierListener : InspectionListenerBase
-        {
-            public override void ExitArg(VBAParser.ArgContext context)
-            {
-                if (context.PARAMARRAY() == null && context.BYVAL() == null && context.BYREF() == null)
-                {
-                    SaveContext(context);
-                }
-            }
+                declaration.IdentifierName);
         }
     }
 }

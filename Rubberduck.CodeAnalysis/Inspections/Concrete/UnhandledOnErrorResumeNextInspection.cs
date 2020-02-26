@@ -35,7 +35,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public class UnhandledOnErrorResumeNextInspection : ParseTreeInspectionBase<IList<ParserRuleContext>>
+    public class UnhandledOnErrorResumeNextInspection : ParseTreeInspectionBase<IReadOnlyList<ParserRuleContext>>
     {
         private readonly Dictionary<QualifiedContext<ParserRuleContext>, List<ParserRuleContext>> _unhandledContextsMap =
             new Dictionary<QualifiedContext<ParserRuleContext>, List<ParserRuleContext>>();
@@ -47,12 +47,12 @@ namespace Rubberduck.Inspections.Concrete
         }
 
         public override IInspectionListener Listener { get; }
-        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context, IList<ParserRuleContext> properties)
+        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context, IReadOnlyList<ParserRuleContext> properties)
         {
             return InspectionResults.UnhandledOnErrorResumeNextInspection;
         }
 
-        protected override (bool isResult, IList<ParserRuleContext> properties) IsResultContextWithAdditionalProperties(QualifiedContext<ParserRuleContext> context)
+        protected override (bool isResult, IReadOnlyList<ParserRuleContext> properties) IsResultContextWithAdditionalProperties(QualifiedContext<ParserRuleContext> context)
         {
             return (true, _unhandledContextsMap[context]);
         }

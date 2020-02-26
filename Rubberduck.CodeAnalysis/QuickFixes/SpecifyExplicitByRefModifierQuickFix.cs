@@ -1,4 +1,3 @@
-using System;
 using Rubberduck.Parsing.Grammar;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
@@ -8,6 +7,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
@@ -50,42 +50,58 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            var context = (VBAParser.ArgContext)result.Context;
-
-            AddByRefIdentifier(rewriteSession.CheckOutModuleRewriter(result.QualifiedSelection.QualifiedName), context);
-
-            var interfaceMembers = _declarationFinderProvider.DeclarationFinder.FindAllInterfaceMembers().ToArray();
-
-            var matchingInterfaceMemberContext = interfaceMembers.Select(member => member.Context).FirstOrDefault(c => c == context.Parent.Parent);
-
-            if (matchingInterfaceMemberContext == null)
+            if (!(result.Target is ParameterDeclaration parameter))
             {
                 return;
             }
-            
-            var interfaceParameterIndex = GetParameterIndex(context);
 
-            var implementationMembers =
-                _declarationFinderProvider.DeclarationFinder.FindInterfaceImplementationMembers(interfaceMembers.First(
-                    member => member.Context == matchingInterfaceMemberContext)).ToHashSet();
+            AddByRefIdentifier(rewriteSession, parameter);
 
-            var parameters =
-                _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Parameter)
-                    .Where(p => implementationMembers.Contains(p.ParentDeclaration))
-                    .Cast<ParameterDeclaration>()
-                    .ToArray();
+            var finder = _declarationFinderProvider.DeclarationFinder;
+            var parentDeclaration = parameter.ParentDeclaration;
 
-            foreach (var parameter in parameters)
+            if (parentDeclaration is ModuleBodyElementDeclaration enclosingMember 
+                && enclosingMember.IsInterfaceMember)
             {
-                var parameterContext = (VBAParser.ArgContext)parameter.Context;
-                var parameterIndex = GetParameterIndex(parameterContext);
-
-                if (parameterIndex == interfaceParameterIndex)
-                {
-                    AddByRefIdentifier(rewriteSession.CheckOutModuleRewriter(parameter.QualifiedModuleName), parameterContext);
-                }
+                var parameterIndex = ParameterIndex(parameter, enclosingMember);
+                AddByRefIdentifierToImplementations(enclosingMember, parameterIndex, finder, rewriteSession);
             }
-            
+
+            if (parentDeclaration is EventDeclaration enclosingEvent)
+            {
+                var parameterIndex = ParameterIndex(parameter, enclosingEvent);
+                AddByRefIdentifierToHandlers(enclosingEvent, parameterIndex, finder, rewriteSession);
+            }
+        }
+
+        private static void AddByRefIdentifierToImplementations(
+            ModuleBodyElementDeclaration interfaceMember,
+            int parameterIndex, 
+            DeclarationFinder finder, 
+            IRewriteSession rewriteSession)
+        {
+            var implementationParameters = finder.FindInterfaceImplementationMembers(interfaceMember)
+                .Select(implementation => implementation.Parameters[parameterIndex]);
+
+            foreach (var parameter in implementationParameters)
+            {
+                AddByRefIdentifier(rewriteSession, parameter);
+            }
+        }
+
+        private static void AddByRefIdentifierToHandlers(
+            EventDeclaration eventDeclaration,
+            int parameterIndex,
+            DeclarationFinder finder,
+            IRewriteSession rewriteSession)
+        {
+            var handlers = finder.FindEventHandlers(eventDeclaration)
+                .Select(implementation => implementation.Parameters[parameterIndex]);
+
+            foreach (var parameter in handlers)
+            {
+                AddByRefIdentifier(rewriteSession, parameter);
+            }
         }
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.ImplicitByRefModifierQuickFix;
@@ -94,13 +110,15 @@ namespace Rubberduck.Inspections.QuickFixes
         public override bool CanFixInModule => true;
         public override bool CanFixInProject => true;
 
-        private static int GetParameterIndex(VBAParser.ArgContext context)
+        private static int ParameterIndex(ParameterDeclaration parameter, IParameterizedDeclaration enclosingMember)
         {
-            return Array.IndexOf(((VBAParser.ArgListContext)context.Parent).arg().ToArray(), context);
+            return enclosingMember.Parameters.IndexOf(parameter);
         }
 
-        private static void AddByRefIdentifier(IModuleRewriter rewriter, VBAParser.ArgContext context)
+        private static void AddByRefIdentifier(IRewriteSession rewriteSession, ParameterDeclaration parameter)
         {
+            var rewriter = rewriteSession.CheckOutModuleRewriter(parameter.QualifiedModuleName);
+            var context = (VBAParser.ArgContext) parameter.Context;
             if (context.BYREF() == null)
             {
                 rewriter.InsertBefore(context.unrestrictedIdentifier().Start.TokenIndex, "ByRef ");

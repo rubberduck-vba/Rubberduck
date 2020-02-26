@@ -3,6 +3,7 @@ using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -55,7 +56,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            if (!(result is IWithInspectionResultProperties<IList<ParserRuleContext>> resultProperties))
+            if (!(result is IWithInspectionResultProperties<IReadOnlyList<ParserRuleContext>> resultProperties))
             {
                 return;
             }
