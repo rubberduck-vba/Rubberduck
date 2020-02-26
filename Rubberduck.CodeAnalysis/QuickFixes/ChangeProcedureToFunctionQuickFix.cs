@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -56,7 +57,7 @@ namespace Rubberduck.Inspections.QuickFixes
         {
             var parameterizedDeclaration = (IParameterizedDeclaration) result.Target;
             var arg = parameterizedDeclaration.Parameters.First(p => p.IsByRef || p.IsImplicitByRef);
-            var argIndex = parameterizedDeclaration.Parameters.ToList().IndexOf(arg);
+            var argIndex = parameterizedDeclaration.Parameters.IndexOf(arg);
             
             UpdateSignature(result.Target, arg, rewriteSession);
             foreach (var reference in result.Target.References.Where(reference => !reference.IsDefaultMemberAccess))
