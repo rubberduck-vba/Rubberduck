@@ -40,8 +40,8 @@ namespace Rubberduck.Inspections.Concrete
         private readonly Dictionary<QualifiedContext<ParserRuleContext>, List<ParserRuleContext>> _unhandledContextsMap =
             new Dictionary<QualifiedContext<ParserRuleContext>, List<ParserRuleContext>>();
 
-        public UnhandledOnErrorResumeNextInspection(RubberduckParserState state) 
-            : base(state)
+        public UnhandledOnErrorResumeNextInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Listener = new OnErrorStatementListener(_unhandledContextsMap);
         }

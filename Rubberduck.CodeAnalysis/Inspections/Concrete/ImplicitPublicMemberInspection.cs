@@ -29,8 +29,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class ImplicitPublicMemberInspection : DeclarationInspectionBase
     {
-        public ImplicitPublicMemberInspection(RubberduckParserState state)
-            : base(state, ProcedureTypes) { }
+        public ImplicitPublicMemberInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, ProcedureTypes) { }
 
         private static readonly DeclarationType[] ProcedureTypes = 
         {

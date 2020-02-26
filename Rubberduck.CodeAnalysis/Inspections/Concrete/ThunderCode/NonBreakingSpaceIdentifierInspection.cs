@@ -18,8 +18,8 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
     {
         private const string Nbsp = "\u00A0";
 
-        public NonBreakingSpaceIdentifierInspection(RubberduckParserState state) 
-            : base(state)
+        public NonBreakingSpaceIdentifierInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)

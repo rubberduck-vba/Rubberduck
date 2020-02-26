@@ -40,8 +40,8 @@ namespace Rubberduck.Inspections.Concrete
     [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
     internal class EmptyForEachBlockInspection : ParseTreeInspectionBase
     {
-        public EmptyForEachBlockInspection(RubberduckParserState state)
-            : base(state)
+        public EmptyForEachBlockInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {}
 
         protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)

@@ -49,8 +49,8 @@ namespace Rubberduck.Inspections.Concrete
     {
         private readonly IProjectsProvider _projectsProvider;
 
-        public SheetAccessedUsingStringInspection(RubberduckParserState state, IProjectsProvider projectsProvider)
-            : base(state)
+        public SheetAccessedUsingStringInspection(IDeclarationFinderProvider declarationFinderProvider, IProjectsProvider projectsProvider)
+            : base(declarationFinderProvider)
         {
             _projectsProvider = projectsProvider;
         }

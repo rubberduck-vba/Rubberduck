@@ -34,9 +34,9 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class RedundantByRefModifierInspection : DeclarationInspectionBase
     {
-        public RedundantByRefModifierInspection(RubberduckParserState state)
-            : base(state, DeclarationType.Parameter)
-        { }
+        public RedundantByRefModifierInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Parameter)
+        {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {

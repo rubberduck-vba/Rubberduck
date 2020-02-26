@@ -36,8 +36,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class EmptyStringLiteralInspection : ParseTreeInspectionBase
     {
-        public EmptyStringLiteralInspection(RubberduckParserState state)
-            : base(state)
+        public EmptyStringLiteralInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {}
 
         public override IInspectionListener Listener { get; } =

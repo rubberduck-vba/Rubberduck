@@ -33,8 +33,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class IndexedDefaultMemberAccessInspection : IdentifierReferenceInspectionBase
     {
-        public IndexedDefaultMemberAccessInspection(RubberduckParserState state)
-            : base(state)
+        public IndexedDefaultMemberAccessInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Severity = CodeInspectionSeverity.Hint;
         }

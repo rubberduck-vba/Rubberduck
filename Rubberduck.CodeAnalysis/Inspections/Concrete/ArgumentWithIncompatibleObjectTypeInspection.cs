@@ -1,12 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.TypeResolvers;
 using Rubberduck.Parsing.VBA;
@@ -82,8 +78,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     {
         private readonly ISetTypeResolver _setTypeResolver;
 
-        public ArgumentWithIncompatibleObjectTypeInspection(RubberduckParserState state, ISetTypeResolver setTypeResolver)
-            : base(state)
+        public ArgumentWithIncompatibleObjectTypeInspection(IDeclarationFinderProvider declarationFinderProvider, ISetTypeResolver setTypeResolver)
+            : base(declarationFinderProvider)
         {
             _setTypeResolver = setTypeResolver;
 

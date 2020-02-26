@@ -13,15 +13,15 @@ namespace Rubberduck.Inspections.Abstract
         protected readonly DeclarationType[] RelevantDeclarationTypes;
         protected readonly DeclarationType[] ExcludeDeclarationTypes;
 
-        protected DeclarationInspectionUsingGlobalInformationBaseBase(RubberduckParserState state, params DeclarationType[] relevantDeclarationTypes)
-            : base(state)
+        protected DeclarationInspectionUsingGlobalInformationBaseBase(IDeclarationFinderProvider declarationFinderProvider, params DeclarationType[] relevantDeclarationTypes)
+            : base(declarationFinderProvider)
         {
             RelevantDeclarationTypes = relevantDeclarationTypes;
             ExcludeDeclarationTypes = new DeclarationType[0];
         }
 
-        protected DeclarationInspectionUsingGlobalInformationBaseBase(RubberduckParserState state, DeclarationType[] relevantDeclarationTypes, DeclarationType[] excludeDeclarationTypes)
-            : base(state)
+        protected DeclarationInspectionUsingGlobalInformationBaseBase(IDeclarationFinderProvider declarationFinderProvider, DeclarationType[] relevantDeclarationTypes, DeclarationType[] excludeDeclarationTypes)
+            : base(declarationFinderProvider)
         {
             RelevantDeclarationTypes = relevantDeclarationTypes;
             ExcludeDeclarationTypes = excludeDeclarationTypes;

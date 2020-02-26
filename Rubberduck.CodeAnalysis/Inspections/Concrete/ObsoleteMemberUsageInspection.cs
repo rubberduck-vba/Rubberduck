@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
@@ -51,9 +48,9 @@ namespace Rubberduck.Inspections.Inspections.Concrete
     /// </example>
     public sealed class ObsoleteMemberUsageInspection : IdentifierReferenceInspectionBase
     {
-        public ObsoleteMemberUsageInspection(RubberduckParserState state) : base(state)
-        {
-        }
+        public ObsoleteMemberUsageInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         protected override bool IsResultReference(IdentifierReference reference, DeclarationFinder finder)
         {

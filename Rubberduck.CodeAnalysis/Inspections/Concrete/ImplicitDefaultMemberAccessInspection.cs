@@ -49,8 +49,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class ImplicitDefaultMemberAccessInspection : IdentifierReferenceInspectionBase
     {
-        public ImplicitDefaultMemberAccessInspection(RubberduckParserState state)
-            : base(state)
+        public ImplicitDefaultMemberAccessInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Severity = CodeInspectionSeverity.Suggestion;
         }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections;
@@ -42,7 +41,9 @@ namespace Rubberduck.Inspections.Concrete
     [RequiredLibrary("Excel")]
     public class ExcelMemberMayReturnNothingInspection : MemberAccessMayReturnNothingInspectionBase
     {
-        public ExcelMemberMayReturnNothingInspection(RubberduckParserState state) : base(state) { }
+        public ExcelMemberMayReturnNothingInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         private static readonly List<(string className, string memberName)> ExcelMembers = new List<(string className, string memberName)>
         {

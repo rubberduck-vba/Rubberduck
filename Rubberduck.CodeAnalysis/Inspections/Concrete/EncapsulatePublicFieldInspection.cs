@@ -29,8 +29,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class EncapsulatePublicFieldInspection : DeclarationInspectionBase
     {
-        public EncapsulatePublicFieldInspection(RubberduckParserState state)
-            : base(state, DeclarationType.Variable)
+        public EncapsulatePublicFieldInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Variable)
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)

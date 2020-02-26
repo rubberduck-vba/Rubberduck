@@ -28,8 +28,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class ImplicitlyTypedConstInspection : ImplicitTypeInspectionBase
     {
-        public ImplicitlyTypedConstInspection(RubberduckParserState state)
-            : base(state, DeclarationType.Constant)
+        public ImplicitlyTypedConstInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Constant)
         {}
 
         protected override string ResultDescription(Declaration declaration)

@@ -3,8 +3,8 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using static Rubberduck.Parsing.Grammar.VBAParser;
 using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Concrete
@@ -40,15 +40,15 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class LineLabelNotUsedInspection : DeclarationInspectionBase
     {
-        public LineLabelNotUsedInspection(RubberduckParserState state) 
-            : base(state, DeclarationType.LineLabel)
+        public LineLabelNotUsedInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.LineLabel)
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
             return declaration != null
                    && !declaration.IsWithEvents
-                   && declaration.Context is IdentifierStatementLabelContext
+                   && declaration.Context is VBAParser.IdentifierStatementLabelContext
                    && declaration.References.All(reference => reference.IsAssignment);
         }
 

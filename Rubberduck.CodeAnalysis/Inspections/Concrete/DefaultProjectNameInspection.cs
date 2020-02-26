@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using Rubberduck.Inspections.Abstract;
+﻿using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
@@ -17,8 +15,8 @@ namespace Rubberduck.Inspections.Concrete
     [CannotAnnotate]
     public sealed class DefaultProjectNameInspection : DeclarationInspectionBase
     {
-        public DefaultProjectNameInspection(RubberduckParserState state)
-            : base(state, DeclarationType.Project)
+        public DefaultProjectNameInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Project)
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)

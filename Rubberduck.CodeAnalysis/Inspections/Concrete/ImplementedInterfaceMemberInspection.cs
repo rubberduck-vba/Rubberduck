@@ -5,6 +5,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Concrete
@@ -37,8 +38,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     internal class ImplementedInterfaceMemberInspection : DeclarationInspectionBase
     {
-        public ImplementedInterfaceMemberInspection(Parsing.VBA.RubberduckParserState state)
-            : base(state, DeclarationType.ClassModule)
+        public ImplementedInterfaceMemberInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.ClassModule)
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)

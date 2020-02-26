@@ -38,8 +38,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class MoveFieldCloserToUsageInspection : DeclarationInspectionBase
     {
-        public MoveFieldCloserToUsageInspection(RubberduckParserState state)
-            : base(state, DeclarationType.Variable)
+        public MoveFieldCloserToUsageInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Variable)
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)

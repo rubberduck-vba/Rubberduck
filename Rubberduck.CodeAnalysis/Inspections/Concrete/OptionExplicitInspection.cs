@@ -38,8 +38,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class OptionExplicitInspection : ParseTreeInspectionBase
     {
-        public OptionExplicitInspection(RubberduckParserState state)
-            : base(state)
+        public OptionExplicitInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Listener = new MissingOptionExplicitListener();
         }

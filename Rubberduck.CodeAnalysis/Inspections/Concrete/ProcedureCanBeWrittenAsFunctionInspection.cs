@@ -41,8 +41,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class ProcedureCanBeWrittenAsFunctionInspection : InspectionBase, IParseTreeInspection
     {
-        public ProcedureCanBeWrittenAsFunctionInspection(RubberduckParserState state)
-            : base(state)
+        public ProcedureCanBeWrittenAsFunctionInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Listener = new SingleByRefParamArgListListener();
         }

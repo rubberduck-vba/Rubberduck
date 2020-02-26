@@ -28,8 +28,9 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class MultipleDeclarationsInspection : ParseTreeInspectionBase
     {
-        public MultipleDeclarationsInspection(RubberduckParserState state)
-            : base(state) { }
+        public MultipleDeclarationsInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
         {

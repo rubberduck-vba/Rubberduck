@@ -32,8 +32,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class ObsoleteLetStatementInspection : ParseTreeInspectionBase
     {
-        public ObsoleteLetStatementInspection(RubberduckParserState state)
-            : base(state)
+        public ObsoleteLetStatementInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Listener = new ObsoleteLetStatementListener();
         }

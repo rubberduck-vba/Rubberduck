@@ -35,8 +35,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class RedundantOptionInspection : ParseTreeInspectionBase
     {
-        public RedundantOptionInspection(RubberduckParserState state)
-            : base(state)
+        public RedundantOptionInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Listener = new RedundantModuleOptionListener();
         }

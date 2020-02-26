@@ -1,12 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
@@ -42,8 +38,8 @@ namespace Rubberduck.Inspections.Concrete
     [CannotAnnotate]
     public sealed class MissingAttributeInspection : DeclarationInspectionMultiResultBase<IParseTreeAnnotation>
     {
-        public MissingAttributeInspection(RubberduckParserState state)
-            : base(state)
+        public MissingAttributeInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {}
 
         protected override IEnumerable<IParseTreeAnnotation> ResultProperties(Declaration declaration, DeclarationFinder finder)

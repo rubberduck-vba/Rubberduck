@@ -33,8 +33,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class IndexedRecursiveDefaultMemberAccessInspection : IdentifierReferenceInspectionBase
     {
-        public IndexedRecursiveDefaultMemberAccessInspection(RubberduckParserState state)
-            : base(state)
+        public IndexedRecursiveDefaultMemberAccessInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Severity = CodeInspectionSeverity.Suggestion;
         }

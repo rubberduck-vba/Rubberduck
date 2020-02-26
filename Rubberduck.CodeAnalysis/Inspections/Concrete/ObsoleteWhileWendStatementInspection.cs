@@ -35,8 +35,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// </example>
     public sealed class ObsoleteWhileWendStatementInspection : ParseTreeInspectionBase
     {
-        public ObsoleteWhileWendStatementInspection(RubberduckParserState state)
-            : base(state)
+        public ObsoleteWhileWendStatementInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Listener = new ObsoleteWhileWendStatementListener();
         }

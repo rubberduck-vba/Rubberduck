@@ -38,8 +38,9 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class StepIsNotSpecifiedInspection : ParseTreeInspectionBase
     {
-        public StepIsNotSpecifiedInspection(RubberduckParserState state) 
-            : base(state) { }
+        public StepIsNotSpecifiedInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
         {

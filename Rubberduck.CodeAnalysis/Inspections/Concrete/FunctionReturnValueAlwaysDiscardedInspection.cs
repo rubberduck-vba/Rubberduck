@@ -49,8 +49,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class FunctionReturnValueAlwaysDiscardedInspection : DeclarationInspectionBase
     {
-        public FunctionReturnValueAlwaysDiscardedInspection(RubberduckParserState state)
-            :base(state, DeclarationType.Function)
+        public FunctionReturnValueAlwaysDiscardedInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Function)
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)

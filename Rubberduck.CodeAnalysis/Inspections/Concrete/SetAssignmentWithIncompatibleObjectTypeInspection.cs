@@ -76,8 +76,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     {
         private readonly ISetTypeResolver _setTypeResolver;
 
-        public SetAssignmentWithIncompatibleObjectTypeInspection(RubberduckParserState state, ISetTypeResolver setTypeResolver)
-            : base(state)
+        public SetAssignmentWithIncompatibleObjectTypeInspection(IDeclarationFinderProvider declarationFinderProvider, ISetTypeResolver setTypeResolver)
+            : base(declarationFinderProvider)
         {
             _setTypeResolver = setTypeResolver;
 

@@ -69,8 +69,8 @@ namespace Rubberduck.Inspections.Concrete
 
         private readonly IConfigurationService<CodeInspectionSettings> _settings;
 
-        public HungarianNotationInspection(RubberduckParserState state, IConfigurationService<CodeInspectionSettings> settings)
-            : base(state, TargetDeclarationTypes, IgnoredProcedureTypes)
+        public HungarianNotationInspection(IDeclarationFinderProvider declarationFinderProvider, IConfigurationService<CodeInspectionSettings> settings)
+            : base(declarationFinderProvider, TargetDeclarationTypes, IgnoredProcedureTypes)
         {
             _settings = settings;
         }

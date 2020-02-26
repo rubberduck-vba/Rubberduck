@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Inspections.Results;
 using Rubberduck.JunkDrawer.Extensions;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
-using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 
@@ -53,8 +49,8 @@ namespace Rubberduck.Inspections.Concrete
             SameComponent = 3
         }
 
-        public ShadowedDeclarationInspection(RubberduckParserState state) 
-            : base(state)
+        public ShadowedDeclarationInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {}
 
         protected override IDictionary<string, HashSet<string>> GlobalInformation(DeclarationFinder finder)

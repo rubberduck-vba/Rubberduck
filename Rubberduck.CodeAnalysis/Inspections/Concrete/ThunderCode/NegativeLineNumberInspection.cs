@@ -19,8 +19,8 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
     /// </why>
     public class NegativeLineNumberInspection : ParseTreeInspectionBase
     {
-        public NegativeLineNumberInspection(RubberduckParserState state) 
-            : base(state)
+        public NegativeLineNumberInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Listener = new NegativeLineNumberKeywordsListener();
         }

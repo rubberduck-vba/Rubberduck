@@ -42,8 +42,8 @@ namespace Rubberduck.Inspections.Concrete
     {
         private readonly IProjectsProvider _projectsProvider;
 
-        public ObsoleteCallStatementInspection(RubberduckParserState state, IProjectsProvider projectsProvider)
-            : base(state)
+        public ObsoleteCallStatementInspection(IDeclarationFinderProvider declarationFinderProvider, IProjectsProvider projectsProvider)
+            : base(declarationFinderProvider)
         {
             Listener = new ObsoleteCallStatementListener();
             _projectsProvider = projectsProvider;

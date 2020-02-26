@@ -1,14 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
-using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 
@@ -58,8 +54,9 @@ namespace Rubberduck.Inspections.Concrete
     [RequiredLibrary("Excel")]
     public class ApplicationWorksheetFunctionInspection : IdentifierReferenceInspectionFromDeclarationsBase
     {
-        public ApplicationWorksheetFunctionInspection(RubberduckParserState state)
-            : base(state) { }
+        public ApplicationWorksheetFunctionInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)
         {

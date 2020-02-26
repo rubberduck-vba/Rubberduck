@@ -30,8 +30,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class ModuleWithoutFolderInspection : DeclarationInspectionBase
     {
-        public ModuleWithoutFolderInspection(RubberduckParserState state)
-            : base(state, DeclarationType.Module)
+        public ModuleWithoutFolderInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Module)
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)

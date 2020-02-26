@@ -19,8 +19,8 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
     /// </why>
     public class OnErrorGoToMinusOneInspection : ParseTreeInspectionBase
     {
-        public OnErrorGoToMinusOneInspection(RubberduckParserState state) 
-            : base(state)
+        public OnErrorGoToMinusOneInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Listener = new OnErrorGoToMinusOneListener();
         }

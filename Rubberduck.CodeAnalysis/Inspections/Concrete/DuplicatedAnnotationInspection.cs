@@ -36,9 +36,9 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class DuplicatedAnnotationInspection : DeclarationInspectionMultiResultBase<IAnnotation>
     {
-        public DuplicatedAnnotationInspection(RubberduckParserState state) 
-            : base(state)
-        { }
+        public DuplicatedAnnotationInspection(IDeclarationFinderProvider declarationFinderProvider) 
+            : base(declarationFinderProvider)
+        {}
 
         protected override IEnumerable<IAnnotation> ResultProperties(Declaration declaration, DeclarationFinder finder)
         {

@@ -37,9 +37,9 @@ namespace Rubberduck.Inspections.Inspections.Concrete
     [RequiredLibrary("Excel")]
     public class ExcelUdfNameIsValidCellReferenceInspection : DeclarationInspectionBase
     {
-        public ExcelUdfNameIsValidCellReferenceInspection(RubberduckParserState state) 
-            : base(state, new []{DeclarationType.Function}, new []{DeclarationType.PropertyGet, DeclarationType.LibraryFunction})
-        { }
+        public ExcelUdfNameIsValidCellReferenceInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, new []{DeclarationType.Function}, new []{DeclarationType.PropertyGet, DeclarationType.LibraryFunction})
+        {}
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {

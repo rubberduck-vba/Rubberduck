@@ -14,8 +14,9 @@ namespace Rubberduck.Inspections.Abstract
 {
     public abstract class ParseTreeInspectionBase : InspectionBase, IParseTreeInspection
     {
-        protected ParseTreeInspectionBase(RubberduckParserState state)
-            : base(state) { }
+        protected ParseTreeInspectionBase(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         public abstract IInspectionListener Listener { get; }
         protected abstract string ResultDescription(QualifiedContext<ParserRuleContext> context);
@@ -58,8 +59,8 @@ namespace Rubberduck.Inspections.Abstract
 
     public abstract class ParseTreeInspectionBase<T> : InspectionBase, IParseTreeInspection
     {
-        protected ParseTreeInspectionBase(RubberduckParserState state)
-            : base(state)
+        protected ParseTreeInspectionBase(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {}
 
         public abstract IInspectionListener Listener { get; }

@@ -38,8 +38,9 @@ namespace Rubberduck.Inspections.Concrete
     [RequiredLibrary("Excel")]
     public sealed class ImplicitActiveWorkbookReferenceInspection : IdentifierReferenceInspectionFromDeclarationsBase
     {
-        public ImplicitActiveWorkbookReferenceInspection(RubberduckParserState state)
-            : base(state) { }
+        public ImplicitActiveWorkbookReferenceInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         private static readonly string[] InterestingMembers =
         {

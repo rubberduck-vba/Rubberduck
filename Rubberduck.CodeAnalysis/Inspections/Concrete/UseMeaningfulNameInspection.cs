@@ -3,12 +3,12 @@ using System.Linq;
 using Rubberduck.CodeAnalysis.Settings;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.SettingsProvider;
-using static Rubberduck.Parsing.Grammar.VBAParser;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -37,8 +37,8 @@ namespace Rubberduck.Inspections.Concrete
     {
         private readonly IConfigurationService<CodeInspectionSettings> _settings;
 
-        public UseMeaningfulNameInspection(RubberduckParserState state, IConfigurationService<CodeInspectionSettings> settings)
-            : base(state)
+        public UseMeaningfulNameInspection(IDeclarationFinderProvider declarationFinderProvider, IConfigurationService<CodeInspectionSettings> settings)
+            : base(declarationFinderProvider)
         {
             _settings = settings;
         }
@@ -62,7 +62,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             return !string.IsNullOrEmpty(declaration.IdentifierName)
                    && !IgnoreDeclarationTypes.Contains(declaration.DeclarationType)
-                   && !(declaration.Context is LineNumberLabelContext)
+                   && !(declaration.Context is VBAParser.LineNumberLabelContext)
                    && (declaration.ParentDeclaration == null
                        || !IgnoreDeclarationTypes.Contains(declaration.ParentDeclaration.DeclarationType)
                        && !finder.FindEventHandlers().Contains(declaration.ParentDeclaration))

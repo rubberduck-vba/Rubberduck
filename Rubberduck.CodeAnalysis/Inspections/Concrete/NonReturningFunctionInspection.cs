@@ -1,11 +1,7 @@
-using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -39,9 +35,9 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class NonReturningFunctionInspection : DeclarationInspectionBase
     {
-        public NonReturningFunctionInspection(RubberduckParserState state)
-            : base(state, DeclarationType.Function)
-        { }
+        public NonReturningFunctionInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Function)
+        {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {

@@ -30,8 +30,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class ObsoleteErrorSyntaxInspection : ParseTreeInspectionBase
     {
-        public ObsoleteErrorSyntaxInspection(RubberduckParserState state)
-            : base(state)
+        public ObsoleteErrorSyntaxInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Listener = new ObsoleteErrorSyntaxListener();
         }

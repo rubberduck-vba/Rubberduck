@@ -15,7 +15,9 @@ namespace Rubberduck.Inspections.Abstract
 {
     public abstract class MemberAccessMayReturnNothingInspectionBase : IdentifierReferenceInspectionFromDeclarationsBase
     {
-        protected MemberAccessMayReturnNothingInspectionBase(RubberduckParserState state) : base(state) { }
+        protected MemberAccessMayReturnNothingInspectionBase(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         public abstract IEnumerable<Declaration> MembersUnderTest(DeclarationFinder finder);
         public abstract string ResultTemplate { get; }

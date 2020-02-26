@@ -36,8 +36,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class MissingMemberAnnotationInspection : DeclarationInspectionMultiResultBase<(string AttributeName, IReadOnlyList<string> AttriguteValues)>
     {
-        public MissingMemberAnnotationInspection(RubberduckParserState state) 
-        :base(state, new DeclarationType[0], new []{DeclarationType.Module })
+        public MissingMemberAnnotationInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, new DeclarationType[0], new []{DeclarationType.Module })
         {}
 
         protected override IEnumerable<(string AttributeName, IReadOnlyList<string> AttriguteValues)> ResultProperties(Declaration declaration, DeclarationFinder finder)

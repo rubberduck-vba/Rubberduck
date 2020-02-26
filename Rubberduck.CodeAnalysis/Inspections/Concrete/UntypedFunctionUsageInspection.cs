@@ -32,8 +32,9 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class UntypedFunctionUsageInspection : IdentifierReferenceInspectionFromDeclarationsBase
     {
-        public UntypedFunctionUsageInspection(RubberduckParserState state)
-            : base(state) { }
+        public UntypedFunctionUsageInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         private readonly HashSet<string> _tokens = new HashSet<string>{
             Tokens.Error,

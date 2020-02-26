@@ -20,11 +20,11 @@ namespace Rubberduck.Inspections.Concrete
         private readonly EmptyModuleVisitor _emptyModuleVisitor;
         private readonly IParseTreeProvider _parseTreeProvider;
 
-        public EmptyModuleInspection(RubberduckParserState state)
-            : base(state, new []{DeclarationType.Module}, new []{DeclarationType.Document})
+        public EmptyModuleInspection(IDeclarationFinderProvider declarationFinderProvider, IParseTreeProvider parseTreeProvider)
+            : base(declarationFinderProvider, new []{DeclarationType.Module}, new []{DeclarationType.Document})
         {
             _emptyModuleVisitor = new EmptyModuleVisitor();
-            _parseTreeProvider = state;
+            _parseTreeProvider = parseTreeProvider;
         }
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)

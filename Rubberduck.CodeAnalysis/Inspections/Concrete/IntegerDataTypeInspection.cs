@@ -32,9 +32,9 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class IntegerDataTypeInspection : DeclarationInspectionBase
     {
-        public IntegerDataTypeInspection(RubberduckParserState state)
-            : base(state)
-        { }
+        public IntegerDataTypeInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {

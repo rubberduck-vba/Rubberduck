@@ -35,36 +35,22 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class ObsoleteTypeHintInspection : InspectionBase
     {
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
-
-        public ObsoleteTypeHintInspection(RubberduckParserState state)
-            : base(state)
-        {
-            _declarationFinderProvider = state;
-        }
+        public ObsoleteTypeHintInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            var finder = _declarationFinderProvider.DeclarationFinder;
+            var finder = DeclarationFinderProvider.DeclarationFinder;
 
-            var results = new List<IInspectionResult>();
-            foreach (var moduleDeclaration in finder.UserDeclarations(DeclarationType.Module))
-            {
-                if (moduleDeclaration == null)
-                {
-                    continue;
-                }
-
-                var module = moduleDeclaration.QualifiedModuleName;
-                results.AddRange(DoGetInspectionResults(module, finder));
-            }
-
-            return results;
+            return finder.UserDeclarations(DeclarationType.Module)
+                .Where(module => module != null)
+                .SelectMany(module => DoGetInspectionResults(module.QualifiedModuleName, finder));
         }
 
         private  IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
         {
-            var finder = _declarationFinderProvider.DeclarationFinder;
+            var finder = DeclarationFinderProvider.DeclarationFinder;
             return DoGetInspectionResults(module, finder);
         }
 
@@ -109,7 +95,7 @@ namespace Rubberduck.Inspections.Concrete
                                     && reference.Declaration.IsUserDefined
                                     && reference.HasTypeHint());
             return objectionableReferences
-                .Select(reference => InspectionResult(reference, _declarationFinderProvider));
+                .Select(reference => InspectionResult(reference, DeclarationFinderProvider));
         }
 
         private IInspectionResult InspectionResult(IdentifierReference reference, IDeclarationFinderProvider declarationFinderProvider)

@@ -38,8 +38,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class StepOneIsRedundantInspection : ParseTreeInspectionBase
     {
-        public StepOneIsRedundantInspection(RubberduckParserState state) 
-            : base(state)
+        public StepOneIsRedundantInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {}
 
         protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)

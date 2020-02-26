@@ -11,8 +11,8 @@ namespace Rubberduck.Inspections.Abstract
 {
     public abstract class IdentifierReferenceInspectionBase : InspectionBase
     {
-        protected IdentifierReferenceInspectionBase(RubberduckParserState state)
-            : base(state)
+        protected IdentifierReferenceInspectionBase(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {}
 
         protected abstract bool IsResultReference(IdentifierReference reference, DeclarationFinder finder);
@@ -64,9 +64,9 @@ namespace Rubberduck.Inspections.Abstract
 
     public abstract class IdentifierReferenceInspectionBase<T> : InspectionBase
     {
-        protected IdentifierReferenceInspectionBase(RubberduckParserState state)
-            : base(state)
-        { }
+        protected IdentifierReferenceInspectionBase(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         protected abstract (bool isResult, T properties) IsResultReferenceWithAdditionalProperties(IdentifierReference reference, DeclarationFinder finder);
         protected abstract string ResultDescription(IdentifierReference reference, T properties);

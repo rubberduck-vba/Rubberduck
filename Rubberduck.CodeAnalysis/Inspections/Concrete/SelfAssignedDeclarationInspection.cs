@@ -42,8 +42,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class SelfAssignedDeclarationInspection : DeclarationInspectionBase
     {
-        public SelfAssignedDeclarationInspection(RubberduckParserState state)
-            : base(state, DeclarationType.Variable)
+        public SelfAssignedDeclarationInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Variable)
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)

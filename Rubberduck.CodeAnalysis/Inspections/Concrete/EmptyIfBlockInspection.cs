@@ -36,8 +36,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     internal class EmptyIfBlockInspection : ParseTreeInspectionBase
     {
-        public EmptyIfBlockInspection(RubberduckParserState state)
-            : base(state)
+        public EmptyIfBlockInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {}
 
         protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)

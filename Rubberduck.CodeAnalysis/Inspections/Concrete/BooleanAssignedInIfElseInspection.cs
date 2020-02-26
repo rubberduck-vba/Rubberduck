@@ -39,8 +39,9 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class BooleanAssignedInIfElseInspection : ParseTreeInspectionBase
     {
-        public BooleanAssignedInIfElseInspection(RubberduckParserState state)
-            : base(state) { }
+        public BooleanAssignedInIfElseInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
         
         public override IInspectionListener Listener { get; } =
             new BooleanAssignedInIfElseListener();

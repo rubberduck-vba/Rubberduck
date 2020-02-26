@@ -36,8 +36,9 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class VariableNotAssignedInspection : DeclarationInspectionBase
     {
-        public VariableNotAssignedInspection(RubberduckParserState state)
-            : base(state, DeclarationType.Variable) { }
+        public VariableNotAssignedInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Variable)
+        {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {

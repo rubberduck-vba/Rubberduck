@@ -30,8 +30,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     internal class EmptyMethodInspection : DeclarationInspectionBase
     {
-        public EmptyMethodInspection(RubberduckParserState state)
-            : base(state, DeclarationType.Member)
+        public EmptyMethodInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Member)
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)

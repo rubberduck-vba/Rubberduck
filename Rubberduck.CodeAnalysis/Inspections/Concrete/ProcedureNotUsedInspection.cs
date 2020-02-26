@@ -42,8 +42,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class ProcedureNotUsedInspection : DeclarationInspectionBase
     {
-        public ProcedureNotUsedInspection(RubberduckParserState state) 
-            : base(state, ProcedureTypes)
+        public ProcedureNotUsedInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, ProcedureTypes)
         {}
 
         private static readonly DeclarationType[] ProcedureTypes =

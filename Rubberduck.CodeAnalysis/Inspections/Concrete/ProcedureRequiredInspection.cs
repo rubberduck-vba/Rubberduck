@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -54,8 +53,8 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// </example>
     public class ProcedureRequiredInspection : IdentifierReferenceInspectionBase
     {
-        public ProcedureRequiredInspection(RubberduckParserState state)
-            : base(state)
+        public ProcedureRequiredInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             //This will most likely cause a runtime error. The exceptions are rare and should be refactored or made explicit with an @Ignore annotation.
             Severity = CodeInspectionSeverity.Error;

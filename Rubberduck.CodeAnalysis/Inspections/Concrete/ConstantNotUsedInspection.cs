@@ -34,8 +34,9 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class ConstantNotUsedInspection : DeclarationInspectionBase
     {
-        public ConstantNotUsedInspection(RubberduckParserState state)
-            : base(state, DeclarationType.Constant) { }
+        public ConstantNotUsedInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Constant)
+        {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {

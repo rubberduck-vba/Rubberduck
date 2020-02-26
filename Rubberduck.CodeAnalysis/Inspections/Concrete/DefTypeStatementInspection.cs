@@ -29,8 +29,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class DefTypeStatementInspection : ParseTreeInspectionBase
     {
-        public DefTypeStatementInspection(RubberduckParserState state)
-            : base(state)
+        public DefTypeStatementInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Listener = new DefTypeStatementInspectionListener();
         }

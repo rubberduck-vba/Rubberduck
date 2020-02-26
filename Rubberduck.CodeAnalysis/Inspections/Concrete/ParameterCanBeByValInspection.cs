@@ -37,8 +37,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class ParameterCanBeByValInspection : DeclarationInspectionBase
     {
-        public ParameterCanBeByValInspection(RubberduckParserState state)
-            : base(state, DeclarationType.Parameter)
+        public ParameterCanBeByValInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Parameter)
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)

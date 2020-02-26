@@ -43,8 +43,9 @@ namespace Rubberduck.Inspections.Concrete
     [SuppressMessage("ReSharper", "LoopCanBeConvertedToQuery")]
     public sealed class UnassignedVariableUsageInspection : IdentifierReferenceInspectionFromDeclarationsBase
     {
-        public UnassignedVariableUsageInspection(RubberduckParserState state)
-            : base(state) { }
+        public UnassignedVariableUsageInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         //See https://github.com/rubberduck-vba/Rubberduck/issues/2010 for why these are being excluded.
         private static readonly List<string> IgnoredFunctions = new List<string>

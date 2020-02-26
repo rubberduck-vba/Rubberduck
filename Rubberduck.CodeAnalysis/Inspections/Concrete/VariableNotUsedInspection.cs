@@ -43,8 +43,8 @@ namespace Rubberduck.Inspections.Concrete
         /// Inspection results for variables that are never referenced.
         /// </summary>
         /// <returns></returns>
-        public VariableNotUsedInspection(RubberduckParserState state) 
-            : base(state, DeclarationType.Variable)
+        public VariableNotUsedInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Variable)
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)

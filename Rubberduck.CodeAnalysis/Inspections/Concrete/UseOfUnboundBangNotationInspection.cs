@@ -3,7 +3,6 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
@@ -59,8 +58,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class UseOfUnboundBangNotationInspection : IdentifierReferenceInspectionBase
     {
-        public UseOfUnboundBangNotationInspection(RubberduckParserState state)
-            : base(state)
+        public UseOfUnboundBangNotationInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Severity = CodeInspectionSeverity.Warning;
         }

@@ -1,13 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
@@ -42,9 +39,9 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class MemberNotOnInterfaceInspection : DeclarationInspectionBase<Declaration>
     {
-        public MemberNotOnInterfaceInspection(RubberduckParserState state)
-            : base(state)
-        { }
+        public MemberNotOnInterfaceInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         protected override IEnumerable<Declaration> RelevantDeclarationsInModule(QualifiedModuleName module, DeclarationFinder finder)
         {

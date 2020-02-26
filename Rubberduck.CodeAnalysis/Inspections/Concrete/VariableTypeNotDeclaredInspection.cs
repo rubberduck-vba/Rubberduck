@@ -33,8 +33,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class VariableTypeNotDeclaredInspection : ImplicitTypeInspectionBase
     {
-        public VariableTypeNotDeclaredInspection(RubberduckParserState state)
-            : base(state, new []{DeclarationType.Parameter, DeclarationType.Variable}, new[]{DeclarationType.Control})
+        public VariableTypeNotDeclaredInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, new []{DeclarationType.Parameter, DeclarationType.Variable}, new[]{DeclarationType.Control})
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)

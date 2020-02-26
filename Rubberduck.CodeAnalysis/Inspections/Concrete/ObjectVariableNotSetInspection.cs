@@ -40,8 +40,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class ObjectVariableNotSetInspection : IdentifierReferenceInspectionBase
     {
-        public ObjectVariableNotSetInspection(RubberduckParserState state)
-            : base(state)
+        public ObjectVariableNotSetInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {}
 
         protected override IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module, DeclarationFinder finder)

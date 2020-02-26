@@ -23,8 +23,8 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
     /// </remarks>
     public class LineContinuationBetweenKeywordsInspection : ParseTreeInspectionBase
     {
-        public LineContinuationBetweenKeywordsInspection(RubberduckParserState state) 
-            : base(state)
+        public LineContinuationBetweenKeywordsInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Listener = new LineContinuationBetweenKeywordsListener();
         }

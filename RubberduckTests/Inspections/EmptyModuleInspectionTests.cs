@@ -77,14 +77,14 @@ DefBool B: DefByte Y: DefInt I: DefLng L: DefLngLng N: DefLngPtr P: DefCur C: De
         [Category("Inspections")]
         public void InspectionName()
         {
-            var inspection = new EmptyModuleInspection(null);
+            var inspection = new EmptyModuleInspection(null, null);
 
             Assert.AreEqual(nameof(EmptyModuleInspection), inspection.Name);
         }
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
-            return new EmptyModuleInspection(state);
+            return new EmptyModuleInspection(state, state);
         }
     }
 }

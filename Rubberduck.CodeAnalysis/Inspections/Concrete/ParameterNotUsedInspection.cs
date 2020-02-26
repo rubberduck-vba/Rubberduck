@@ -38,8 +38,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class ParameterNotUsedInspection : DeclarationInspectionBase
     {
-        public ParameterNotUsedInspection(RubberduckParserState state)
-            : base(state, DeclarationType.Parameter)
+        public ParameterNotUsedInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Parameter)
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)

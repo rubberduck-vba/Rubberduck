@@ -27,8 +27,8 @@ namespace Rubberduck.Inspections.Inspections.Concrete
     /// </example>
     public sealed class ObsoleteCallingConventionInspection : ParseTreeInspectionBase
     {
-        public ObsoleteCallingConventionInspection(RubberduckParserState state)
-            : base(state)
+        public ObsoleteCallingConventionInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Listener = new ObsoleteCallingConventionListener();
         }

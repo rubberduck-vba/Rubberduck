@@ -33,8 +33,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class MultilineParameterInspection : ParseTreeInspectionBase
     {
-        public MultilineParameterInspection(RubberduckParserState state)
-            : base(state)
+        public MultilineParameterInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Listener = new ParameterListener();
         }

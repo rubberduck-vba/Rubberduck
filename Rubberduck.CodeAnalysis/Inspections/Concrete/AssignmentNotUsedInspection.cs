@@ -41,8 +41,9 @@ namespace Rubberduck.Inspections.Concrete
     {
         private readonly Walker _walker;
 
-        public AssignmentNotUsedInspection(RubberduckParserState state, Walker walker)
-            : base(state) {
+        public AssignmentNotUsedInspection(IDeclarationFinderProvider declarationFinderProvider, Walker walker)
+            : base(declarationFinderProvider)
+        {
             _walker = walker;
         }
 

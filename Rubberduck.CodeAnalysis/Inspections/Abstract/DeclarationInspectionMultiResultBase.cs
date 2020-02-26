@@ -11,12 +11,12 @@ namespace Rubberduck.Inspections.Abstract
 {
     public abstract class DeclarationInspectionMultiResultBase<T> : DeclarationInspectionBaseBase
     {
-        protected DeclarationInspectionMultiResultBase(RubberduckParserState state, params DeclarationType[] relevantDeclarationTypes)
-            : base(state, relevantDeclarationTypes)
+        protected DeclarationInspectionMultiResultBase(IDeclarationFinderProvider declarationFinderProvider, params DeclarationType[] relevantDeclarationTypes)
+            : base(declarationFinderProvider, relevantDeclarationTypes)
         {}
 
-        protected DeclarationInspectionMultiResultBase(RubberduckParserState state, DeclarationType[] relevantDeclarationTypes, DeclarationType[] excludeDeclarationTypes)
-            : base(state, relevantDeclarationTypes, excludeDeclarationTypes)
+        protected DeclarationInspectionMultiResultBase(IDeclarationFinderProvider declarationFinderProvider, DeclarationType[] relevantDeclarationTypes, DeclarationType[] excludeDeclarationTypes)
+            : base(declarationFinderProvider, relevantDeclarationTypes, excludeDeclarationTypes)
         {}
 
         protected abstract IEnumerable<T> ResultProperties(Declaration declaration, DeclarationFinder finder);

@@ -1,7 +1,4 @@
-using System.Collections.Generic;
-using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -32,8 +29,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class HostSpecificExpressionInspection : DeclarationInspectionBase
     {
-        public HostSpecificExpressionInspection(RubberduckParserState state)
-            : base(state, DeclarationType.BracketedExpression)
+        public HostSpecificExpressionInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.BracketedExpression)
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)

@@ -35,8 +35,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class StopKeywordInspection : ParseTreeInspectionBase
     {
-        public StopKeywordInspection(RubberduckParserState state)
-            : base(state)
+        public StopKeywordInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {}
 
         public override IInspectionListener Listener { get; } =

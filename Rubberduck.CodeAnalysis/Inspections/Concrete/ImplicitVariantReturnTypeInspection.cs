@@ -27,8 +27,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class ImplicitVariantReturnTypeInspection : ImplicitTypeInspectionBase
     {
-        public ImplicitVariantReturnTypeInspection(RubberduckParserState state)
-            : base(state, DeclarationType.Function)
+        public ImplicitVariantReturnTypeInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Function)
         {}
 
         protected override string ResultDescription(Declaration declaration)

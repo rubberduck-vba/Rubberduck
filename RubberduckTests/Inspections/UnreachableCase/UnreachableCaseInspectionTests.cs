@@ -2473,7 +2473,7 @@ End Sub
             var actualResults = Enumerable.Empty<IInspectionResult>();
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var inspection = new UnreachableCaseInspection(state, state);
+                var inspection = new UnreachableCaseInspection(state);
                 var parseTreeValueVisitor = inspection.ParseTreeValueVisitor as ITestParseTreeVisitor;
 
                 parseTreeValueVisitor.InjectValuedDeclarationEvaluator(TestGetValuedDeclaration);
@@ -2527,7 +2527,7 @@ End Sub
             var actualResults = Enumerable.Empty<IInspectionResult>();
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var inspection = new UnreachableCaseInspection(state, state);
+                var inspection = new UnreachableCaseInspection(state);
                 var parseTreeValueVisitor = inspection.ParseTreeValueVisitor as ITestParseTreeVisitor;
 
                 parseTreeValueVisitor.InjectValuedDeclarationEvaluator(TestGetValuedDeclaration);
@@ -2636,7 +2636,7 @@ End Sub
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
-            return new UnreachableCaseInspection(state, state);
+            return new UnreachableCaseInspection(state);
         }
     }
 }

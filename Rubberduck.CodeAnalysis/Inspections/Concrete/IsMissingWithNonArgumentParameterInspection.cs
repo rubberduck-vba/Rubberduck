@@ -32,8 +32,9 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public class IsMissingWithNonArgumentParameterInspection : IsMissingInspectionBase
     {
-        public IsMissingWithNonArgumentParameterInspection(RubberduckParserState state)
-            : base(state) { }
+        public IsMissingWithNonArgumentParameterInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         protected override (bool isResult, ParameterDeclaration properties) IsUnsuitableArgumentWithAdditionalProperties(ArgumentReference reference, DeclarationFinder finder)
         {

@@ -27,8 +27,9 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class ObsoleteGlobalInspection : DeclarationInspectionBase
     {
-        public ObsoleteGlobalInspection(RubberduckParserState state)
-            : base(state) { }
+        public ObsoleteGlobalInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {

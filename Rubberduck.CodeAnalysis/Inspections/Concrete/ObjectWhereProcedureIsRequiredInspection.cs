@@ -55,8 +55,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class ObjectWhereProcedureIsRequiredInspection : InspectionBase
     {
-        public ObjectWhereProcedureIsRequiredInspection(RubberduckParserState state)
-            : base(state)
+        public ObjectWhereProcedureIsRequiredInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Severity = CodeInspectionSeverity.Warning;
         }

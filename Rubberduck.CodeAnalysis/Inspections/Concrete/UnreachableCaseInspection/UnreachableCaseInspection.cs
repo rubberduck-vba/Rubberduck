@@ -117,7 +117,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     {
         private readonly IUnreachableCaseInspectorFactory _unreachableCaseInspectorFactory;
         private readonly IParseTreeValueFactory _valueFactory;
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
         private enum CaseInspectionResult { Unreachable, InherentlyUnreachable, MismatchType, Overflow, CaseElse };
 
@@ -130,14 +129,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             [CaseInspectionResult.CaseElse] = InspectionResults.UnreachableCaseInspection_CaseElse
         };
 
-        public UnreachableCaseInspection(RubberduckParserState state, IDeclarationFinderProvider declarationFinderProvider) 
-            : base(state)
+        public UnreachableCaseInspection(IDeclarationFinderProvider declarationFinderProvider) 
+            : base(declarationFinderProvider)
         {
             var factoryProvider = new UnreachableCaseInspectionFactoryProvider();
 
             _unreachableCaseInspectorFactory = factoryProvider.CreateIUnreachableInspectorFactory();
             _valueFactory = factoryProvider.CreateIParseTreeValueFactory();
-            _declarationFinderProvider = declarationFinderProvider;
         }
 
         public CodeKind TargetKindOfCode => CodeKind.CodePaneCode;
@@ -154,7 +152,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             _inspectionResults = new List<IInspectionResult>();
             var qualifiedSelectCaseStmts = Listener.Contexts()
                 // ignore filtering here to make the search space smaller
-                .Where(result => !result.IsIgnoringInspectionResultFor(_declarationFinderProvider.DeclarationFinder, AnnotationName));
+                .Where(result => !result.IsIgnoringInspectionResultFor(DeclarationFinderProvider.DeclarationFinder, AnnotationName));
 
             ParseTreeValueVisitor.OnValueResultCreated += ValueResults.OnNewValueResult;
 
@@ -202,7 +200,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         //Method is used as a delegate to avoid propagating RubberduckParserState beyond this class
         private (bool success, IdentifierReference idRef) GetIdentifierReferenceForContext(ParserRuleContext context)
         {
-            return GetIdentifierReferenceForContext(context, _declarationFinderProvider);
+            return GetIdentifierReferenceForContext(context, DeclarationFinderProvider);
         }
 
         //public static to support tests
@@ -231,7 +229,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             var descendents = ancestor.GetDescendents<VBAParser.SimpleNameExprContext>().Where(desc => desc.GetText().Equals(variableName)).ToList();
             if (descendents.Any())
             {
-                (bool success, IdentifierReference idRef) = GetIdentifierReferenceForContext(descendents.First(), _declarationFinderProvider);
+                (bool success, IdentifierReference idRef) = GetIdentifierReferenceForContext(descendents.First(), DeclarationFinderProvider);
                 if (success)
                 {
                     return GetBaseTypeForDeclaration(idRef.Declaration);

@@ -1,10 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Inspections.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Inspections.Results;
+﻿using Rubberduck.Inspections.Inspections.Abstract;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
@@ -37,8 +32,9 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public class IsMissingOnInappropriateArgumentInspection : IsMissingInspectionBase
     {
-        public IsMissingOnInappropriateArgumentInspection(RubberduckParserState state)
-            : base(state) { }
+        public IsMissingOnInappropriateArgumentInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         protected override (bool isResult, ParameterDeclaration properties) IsUnsuitableArgumentWithAdditionalProperties(ArgumentReference reference, DeclarationFinder finder)
         {

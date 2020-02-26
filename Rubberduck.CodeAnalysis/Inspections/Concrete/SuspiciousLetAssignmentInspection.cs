@@ -45,8 +45,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class SuspiciousLetAssignmentInspection : InspectionBase
     {
-        public SuspiciousLetAssignmentInspection(RubberduckParserState state)
-            : base(state)
+        public SuspiciousLetAssignmentInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Severity = CodeInspectionSeverity.Warning;
         }

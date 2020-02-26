@@ -41,8 +41,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class WriteOnlyPropertyInspection : DeclarationInspectionBase
     {
-        public WriteOnlyPropertyInspection(RubberduckParserState state)
-            : base(state, DeclarationType.PropertyLet, DeclarationType.PropertySet) { }
+        public WriteOnlyPropertyInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.PropertyLet, DeclarationType.PropertySet) { }
         
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
         {

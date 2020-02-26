@@ -2,7 +2,6 @@
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
@@ -56,8 +55,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class UseOfBangNotationInspection : IdentifierReferenceInspectionBase
     {
-        public UseOfBangNotationInspection(RubberduckParserState state)
-            : base(state)
+        public UseOfBangNotationInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Severity = CodeInspectionSeverity.Suggestion;
         }

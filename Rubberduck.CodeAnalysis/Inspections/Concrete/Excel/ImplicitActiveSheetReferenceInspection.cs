@@ -40,8 +40,8 @@ namespace Rubberduck.Inspections.Concrete
     [RequiredLibrary("Excel")]
     public sealed class ImplicitActiveSheetReferenceInspection : IdentifierReferenceInspectionFromDeclarationsBase
     {
-        public ImplicitActiveSheetReferenceInspection(RubberduckParserState state)
-            : base(state)
+        public ImplicitActiveSheetReferenceInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {}
 
         protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)

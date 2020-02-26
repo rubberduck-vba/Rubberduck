@@ -41,8 +41,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class FunctionReturnValueDiscardedInspection : IdentifierReferenceInspectionBase
     {
-        public FunctionReturnValueDiscardedInspection(RubberduckParserState state)
-            : base(state)
+        public FunctionReturnValueDiscardedInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Severity = CodeInspectionSeverity.Suggestion;
         }

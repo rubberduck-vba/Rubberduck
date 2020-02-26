@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
@@ -23,8 +21,8 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
     /// </why>
     public class KeywordsUsedAsMemberInspection : DeclarationInspectionBase
     {
-        public KeywordsUsedAsMemberInspection(RubberduckParserState state) 
-            : base(state, DeclarationType.EnumerationMember, DeclarationType.UserDefinedTypeMember)
+        public KeywordsUsedAsMemberInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.EnumerationMember, DeclarationType.UserDefinedTypeMember)
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)

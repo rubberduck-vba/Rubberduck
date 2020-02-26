@@ -39,8 +39,9 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class OnLocalErrorInspection : ParseTreeInspectionBase
     {
-        public OnLocalErrorInspection(RubberduckParserState state)
-            : base(state) { }
+        public OnLocalErrorInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         public override IInspectionListener Listener { get; } =
             new OnLocalErrorListener();

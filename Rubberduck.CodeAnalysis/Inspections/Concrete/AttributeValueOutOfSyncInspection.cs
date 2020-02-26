@@ -39,10 +39,9 @@ namespace Rubberduck.Inspections.Concrete
     [CannotAnnotate]
     public sealed class AttributeValueOutOfSyncInspection : DeclarationInspectionMultiResultBase<(IParseTreeAnnotation Annotation, string AttributeName, IReadOnlyList<string> AttributeValues)>
     {
-        public AttributeValueOutOfSyncInspection(RubberduckParserState state) 
-        :base(state)
-        {
-        }
+        public AttributeValueOutOfSyncInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         protected override IEnumerable<(IParseTreeAnnotation Annotation, string AttributeName, IReadOnlyList<string> AttributeValues)> ResultProperties(Declaration declaration, DeclarationFinder finder)
         {

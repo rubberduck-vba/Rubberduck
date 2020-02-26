@@ -1,16 +1,11 @@
-using System.Collections.Generic;
-using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
-using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -37,8 +32,9 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class ModuleScopeDimKeywordInspection : ParseTreeInspectionBase
     {
-        public ModuleScopeDimKeywordInspection(RubberduckParserState state) 
-            : base(state) { }
+        public ModuleScopeDimKeywordInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         public override IInspectionListener Listener { get; } = new ModuleScopedDimListener();
         protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)

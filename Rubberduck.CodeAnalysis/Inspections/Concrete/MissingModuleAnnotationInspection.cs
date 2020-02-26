@@ -2,7 +2,6 @@
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
@@ -34,8 +33,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class MissingModuleAnnotationInspection : DeclarationInspectionMultiResultBase<(string AttributeName, IReadOnlyList<string> AttributeValues)>
     {
-        public MissingModuleAnnotationInspection(RubberduckParserState state) 
-        :base(state, new []{DeclarationType.Module}, new []{DeclarationType.Document})
+        public MissingModuleAnnotationInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, new []{DeclarationType.Module}, new []{DeclarationType.Document})
         {}
 
         protected override IEnumerable<(string AttributeName, IReadOnlyList<string> AttributeValues)> ResultProperties(Declaration declaration, DeclarationFinder finder)

@@ -31,8 +31,8 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class UnderscoreInPublicClassModuleMemberInspection : DeclarationInspectionBase
     {
-        public UnderscoreInPublicClassModuleMemberInspection(RubberduckParserState state)
-            : base(state, DeclarationType.Member)
+        public UnderscoreInPublicClassModuleMemberInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Member)
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)

@@ -34,8 +34,9 @@ namespace Rubberduck.Inspections.Inspections.Abstract
 
     public abstract class ArgumentReferenceInspectionFromDeclarationsBase<T> : IdentifierReferenceInspectionFromDeclarationsBase<T>
     {
-        protected ArgumentReferenceInspectionFromDeclarationsBase(RubberduckParserState state)
-            : base(state) { }
+        protected ArgumentReferenceInspectionFromDeclarationsBase(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         protected abstract (bool isResult, T properties) IsUnsuitableArgumentWithAdditionalProperties(ArgumentReference reference, DeclarationFinder finder);
 
