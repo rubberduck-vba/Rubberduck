@@ -43,8 +43,11 @@ namespace Rubberduck.Inspections.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            if (!State.DeclarationFinder.Projects.Any(project => !project.IsUserDefined 
-                                                                 && project.IdentifierName == "Excel"))
+            //FIXME As-is, both this method and the base method get a declaration finder.
+            var finder = DeclarationFinderProvider.DeclarationFinder;
+
+            if (!finder.Projects.Any(project => !project.IsUserDefined 
+                                                         && project.IdentifierName == "Excel"))
             {
                 return Enumerable.Empty<IInspectionResult>();
             }
@@ -54,8 +57,11 @@ namespace Rubberduck.Inspections.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
         {
-            if (!State.DeclarationFinder.Projects.Any(project => !project.IsUserDefined
-                                                                 && project.IdentifierName == "Excel"))
+            //FIXME As-is, both this method and the base method get a declaration finder.
+            var finder = DeclarationFinderProvider.DeclarationFinder;
+
+            if (!finder.Projects.Any(project => !project.IsUserDefined
+                                                         && project.IdentifierName == "Excel"))
             {
                 return Enumerable.Empty<IInspectionResult>();
             }

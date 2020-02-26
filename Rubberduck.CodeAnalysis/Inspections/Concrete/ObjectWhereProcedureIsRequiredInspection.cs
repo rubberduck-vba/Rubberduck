@@ -63,24 +63,21 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            var results = new List<IInspectionResult>();
-            foreach (var moduleDeclaration in State.DeclarationFinder.UserDeclarations(DeclarationType.Module))
-            {
-                if (moduleDeclaration == null)
-                {
-                    continue;
-                }
+            var finder = DeclarationFinderProvider.DeclarationFinder;
 
-                var module = moduleDeclaration.QualifiedModuleName;
-                results.AddRange(DoGetInspectionResults(module));
-            }
-
-            return results;
+            return finder.UserDeclarations(DeclarationType.Module)
+                .Where(module => module != null)
+                .SelectMany(module => DoGetInspectionResults(module.QualifiedModuleName));
         }
 
         private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
         {
             var finder = DeclarationFinderProvider.DeclarationFinder;
+            return DoGetInspectionResults(module, finder);
+        }
+
+        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
+        {
             return BoundInspectionResults(module, finder)
                 .Concat(UnboundInspectionResults(module, finder));
         }

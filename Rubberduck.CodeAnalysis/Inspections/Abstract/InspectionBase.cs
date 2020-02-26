@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Diagnostics;
@@ -16,17 +15,15 @@ namespace Rubberduck.Inspections.Abstract
 {
     public abstract class InspectionBase : IInspection
     {
-        protected readonly RubberduckParserState State;
         protected readonly IDeclarationFinderProvider DeclarationFinderProvider;
 
         protected readonly ILogger Logger;
 
-        protected InspectionBase(RubberduckParserState state)
+        protected InspectionBase(IDeclarationFinderProvider declarationFinderProvider)
         {
             Logger = LogManager.GetLogger(GetType().FullName);
 
-            State = state;
-            DeclarationFinderProvider = state;
+            DeclarationFinderProvider = declarationFinderProvider;
             Name = GetType().Name;
         }
 
@@ -66,26 +63,6 @@ namespace Rubberduck.Inspections.Abstract
         /// @Ignore annotation to disable the inspection at a given site.
         /// </summary>
         public virtual string AnnotationName => Name.Replace("Inspection", string.Empty);
-
-        /// <summary>
-        /// Gets all declarations in the parser state without an @Ignore annotation for this inspection.
-        /// </summary>
-        protected virtual IEnumerable<Declaration> Declarations => DeclarationFinderProvider
-            .DeclarationFinder
-            .AllDeclarations
-            .Where(declaration => !declaration.IsIgnoringInspectionResultFor(AnnotationName));
-
-        /// <summary>
-        /// Gets all user declarations in the parser state without an @Ignore annotation for this inspection.
-        /// </summary>
-        protected virtual IEnumerable<Declaration> UserDeclarations => DeclarationFinderProvider
-            .DeclarationFinder
-            .AllUserDeclarations
-            .Where(declaration => !declaration.IsIgnoringInspectionResultFor(AnnotationName));
-
-        protected virtual IEnumerable<Declaration> BuiltInDeclarations => DeclarationFinderProvider
-            .DeclarationFinder
-            .AllBuiltInDeclarations;
 
         public int CompareTo(IInspection other) => string.Compare(InspectionType + Name, other.InspectionType + other.Name, StringComparison.Ordinal);
         public int CompareTo(object obj) => CompareTo(obj as IInspection);

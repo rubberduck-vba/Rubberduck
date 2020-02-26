@@ -56,8 +56,9 @@ namespace Rubberduck.Inspections.Concrete
         protected override bool IsResultContext(QualifiedContext<ParserRuleContext> context)
         {
             //FIXME : This should really be a declaration inspection on the parameter. 
-            var builtInEventHandlerContexts = State.DeclarationFinder.FindEventHandlers().Select(handler => handler.Context).ToHashSet();
-            var interfaceImplementationMemberContexts = State.DeclarationFinder.FindAllInterfaceImplementingMembers().Select(member => member.Context).ToHashSet();
+            var finder = DeclarationFinderProvider.DeclarationFinder;
+            var builtInEventHandlerContexts = finder.FindEventHandlers().Select(handler => handler.Context).ToHashSet();
+            var interfaceImplementationMemberContexts = finder.FindAllInterfaceImplementingMembers().Select(member => member.Context).ToHashSet();
 
             return !builtInEventHandlerContexts.Contains(context.Context.Parent.Parent)
                    && !interfaceImplementationMemberContexts.Contains(context.Context.Parent.Parent);

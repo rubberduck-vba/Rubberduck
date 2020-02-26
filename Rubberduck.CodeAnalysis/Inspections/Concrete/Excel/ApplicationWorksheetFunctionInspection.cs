@@ -63,18 +63,18 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)
         {
-            var excel = State.DeclarationFinder.Projects.SingleOrDefault(item => !item.IsUserDefined && item.IdentifierName == "Excel");
+            var excel = finder.Projects.SingleOrDefault(item => !item.IsUserDefined && item.IdentifierName == "Excel");
             if (excel == null)
             {
                 return Enumerable.Empty<Declaration>();
             }
 
-            if (!(State.DeclarationFinder.FindClassModule("WorksheetFunction", excel, true) is ModuleDeclaration worksheetFunctionsModule))
+            if (!(finder.FindClassModule("WorksheetFunction", excel, true) is ModuleDeclaration worksheetFunctionsModule))
             {
                 return Enumerable.Empty<Declaration>();
             }
 
-            if (!(State.DeclarationFinder.FindClassModule("Application", excel, true) is ModuleDeclaration excelApplicationClass))
+            if (!(finder.FindClassModule("Application", excel, true) is ModuleDeclaration excelApplicationClass))
             {
                 return Enumerable.Empty<Declaration>();
             }

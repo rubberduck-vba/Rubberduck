@@ -59,13 +59,15 @@ namespace Rubberduck.Inspections.Concrete
                 return Enumerable.Empty<IInspectionResult>();
             }
 
-            var userDeclarations = State.AllUserDeclarations.ToList();
-            var builtinHandlers = State.DeclarationFinder.FindEventHandlers().ToList();
+            var finder = DeclarationFinderProvider.DeclarationFinder;
+
+            var userDeclarations = finder.AllUserDeclarations.ToList();
+            var builtinHandlers = finder.FindEventHandlers().ToList();
 
             var contextLookup = userDeclarations.Where(decl => decl.Context != null).ToDictionary(decl => decl.Context);
 
-            var ignored = new HashSet<Declaration>( State.DeclarationFinder.FindAllInterfaceMembers()
-                .Concat(State.DeclarationFinder.FindAllInterfaceImplementingMembers())
+            var ignored = new HashSet<Declaration>(finder.FindAllInterfaceMembers()
+                .Concat(finder.FindAllInterfaceImplementingMembers())
                 .Concat(builtinHandlers)
                 .Concat(userDeclarations.Where(item => item.IsWithEvents)));
 
@@ -76,7 +78,7 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(decl => decl != null && 
                                 !ignored.Contains(decl) &&
                                 userDeclarations.Where(item => item.IsWithEvents)
-                                   .All(withEvents => !State.DeclarationFinder.FindHandlersForWithEventsField(withEvents).Any()) &&
+                                   .All(withEvents => !finder.FindHandlersForWithEventsField(withEvents).Any()) &&
                                !builtinHandlers.Contains(decl))
                 .Select(result => new DeclarationInspectionResult(this,
                     string.Format(InspectionResults.ProcedureCanBeWrittenAsFunctionInspection, result.IdentifierName),
