@@ -1,11 +1,15 @@
-using Antlr4.Runtime;
+using System.Collections.Generic;
+using System.Linq;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -31,48 +35,57 @@ namespace Rubberduck.Inspections.Concrete
     /// ' ...
     /// ]]>
     /// </example>
-    public sealed class MissingAnnotationArgumentInspection : ParseTreeInspectionBase
+    public sealed class MissingAnnotationArgumentInspection : InspectionBase
     {
-        private readonly RubberduckParserState _state;
+        public MissingAnnotationArgumentInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
-        public MissingAnnotationArgumentInspection(RubberduckParserState state)
-            : base(state)
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            _state = state;
+            var finder = DeclarationFinderProvider.DeclarationFinder;
+
+            return finder.UserDeclarations(DeclarationType.Module)
+                .Where(module => module != null)
+                .SelectMany(module => DoGetInspectionResults(module.QualifiedModuleName, finder))
+                .ToList();
         }
 
-        public override CodeKind TargetKindOfCode => CodeKind.AttributesCode;
-
-        public override IInspectionListener Listener { get; } =
-            new InvalidAnnotationStatementListener();
-
-        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
         {
-            var expressionText = ((VBAParser.AnnotationContext) context.Context).annotationName().GetText();
+            var finder = DeclarationFinderProvider.DeclarationFinder;
+            return DoGetInspectionResults(module, finder);
+        }
+
+        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
+        {
+            var objectionableAnnotations = finder.FindAnnotations(module)
+                .Where(IsResultAnnotation);
+
+            return objectionableAnnotations
+                .Select(InspectionResult)
+                .ToList();
+        }
+
+        private static bool IsResultAnnotation(IParseTreeAnnotation pta)
+        {
+            return pta.Annotation.RequiredArguments > pta.AnnotationArguments.Count;
+        }
+
+        private IInspectionResult InspectionResult(IParseTreeAnnotation pta)
+        {
+            var qualifiedContext = new QualifiedContext(pta.QualifiedSelection.QualifiedName, pta.Context);
+            return new QualifiedContextInspectionResult(
+                this,
+                ResultDescription(pta),
+                qualifiedContext);
+        }
+
+        private static string ResultDescription(IParseTreeAnnotation pta)
+        {
             return string.Format(
                 InspectionResults.MissingAnnotationArgumentInspection,
-                expressionText);
-        }
-
-        protected override bool IsResultContext(QualifiedContext<ParserRuleContext> context)
-        {
-            // FIXME don't actually use listeners here, iterate the Annotations instead
-            // FIXME don't maintain a separate list for annotations that require arguments, instead use AnnotationAttribute to store that information
-            var annotationContext = (VBAParser.AnnotationContext) context.Context;
-            return (annotationContext.annotationName().GetText() == "Ignore"
-                    || annotationContext.annotationName().GetText() == "Folder")
-                    && annotationContext.annotationArgList() == null;
-        }
-
-        public class InvalidAnnotationStatementListener : InspectionListenerBase
-        {
-            public override void ExitAnnotation(VBAParser.AnnotationContext context)
-            {
-                if (context.annotationName() != null)
-                {
-                    SaveContext(context);
-                }
-            }
+                pta.Annotation.Name);
         }
     }
 }

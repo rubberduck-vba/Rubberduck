@@ -43,13 +43,9 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class IllegalAnnotationInspection : InspectionBase
     {
-        private readonly RubberduckParserState _state;
-
-        public IllegalAnnotationInspection(RubberduckParserState state)
-            : base(state)
-        {
-            _state = state;
-        }
+        public IllegalAnnotationInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
@@ -70,7 +66,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             var userDeclarations = finder.Members(module).ToList();
             var identifierReferences = finder.IdentifierReferences(module).ToList();
-            var annotations = _state.GetAnnotations(module);
+            var annotations = finder.FindAnnotations(module);
 
             var unboundAnnotations = UnboundAnnotations(annotations, userDeclarations, identifierReferences)
                 .Where(annotation => !annotation.Annotation.Target.HasFlag(AnnotationTarget.General)

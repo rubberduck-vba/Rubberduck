@@ -68,9 +68,9 @@ namespace Rubberduck.Inspections.QuickFixes
         {
             var module = result.QualifiedSelection.QualifiedName;
             var lineToAnnotate = result.QualifiedSelection.Selection.StartLine;
-            var existingIgnoreAnnotation = _state.DeclarationFinder.FindAnnotations(module, lineToAnnotate)
-                .Where(pta => pta.Annotation is IgnoreAnnotation)
-                .FirstOrDefault();
+            var existingIgnoreAnnotation = _state.DeclarationFinder
+                .FindAnnotations(module, lineToAnnotate)
+                .FirstOrDefault(pta => pta.Annotation is IgnoreAnnotation);
 
             var annotationInfo = new IgnoreAnnotation();
             if (existingIgnoreAnnotation != null)
