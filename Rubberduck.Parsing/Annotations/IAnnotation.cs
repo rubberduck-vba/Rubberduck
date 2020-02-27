@@ -6,8 +6,21 @@ namespace Rubberduck.Parsing.Annotations
     public interface IAnnotation
     {
         string Name { get; }
+
+        /// <summary>
+        /// The kind of object this annotation can be applied to 
+        /// </summary>
         AnnotationTarget Target { get; }
+
+        /// <summary>
+        /// Specifies whether there can be multiple instances of the annotation on the same target.
+        /// </summary>
         bool AllowMultiple { get; }
+
+        /// <summary>
+        /// The minimal number of arguments that must be provided to for this annotation
+        /// </summary>
+        int RequiredArguments { get; }
 
         IReadOnlyList<string> ProcessAnnotationArguments(IEnumerable<string> arguments);
     }

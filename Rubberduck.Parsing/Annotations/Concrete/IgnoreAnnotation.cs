@@ -1,9 +1,4 @@
-﻿using Rubberduck.VBEditor;
-using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Parsing.Grammar;
-
-namespace Rubberduck.Parsing.Annotations
+﻿namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>
     /// Used for ignoring specific inspection results from a specified set of inspections.
@@ -11,7 +6,7 @@ namespace Rubberduck.Parsing.Annotations
     public sealed class IgnoreAnnotation : AnnotationBase
     {
         public IgnoreAnnotation()
-            : base("Ignore", AnnotationTarget.General, true)
-        { }
+            : base("Ignore", AnnotationTarget.General, 1, true)
+        {}
     }
 }
