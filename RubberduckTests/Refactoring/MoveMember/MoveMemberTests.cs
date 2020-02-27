@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;

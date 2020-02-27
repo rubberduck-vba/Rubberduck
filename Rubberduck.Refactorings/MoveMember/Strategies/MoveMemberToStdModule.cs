@@ -2,17 +2,13 @@
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.MoveMember.Extensions;
 using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.MoveMember
 {
@@ -44,7 +40,7 @@ namespace Rubberduck.Refactorings.MoveMember
             if (model.SelectedDeclarations.Any(sd => sd.DeclarationType.HasFlag(DeclarationType.Variable)
                                     && sd.HasPrivateAccessibility())) { return false; }
 
-            var moveGroups = model.MoveMemberFactory.CreateMoveGroupsProvider(model.SelectedDeclarations);
+            var moveGroups = model.MoveMemberFactory.CreateMoveGroupsProvider(model.MoveableMembers);
 
 
             if (!model.Source.IsStandardModule)
@@ -63,9 +59,9 @@ namespace Rubberduck.Refactorings.MoveMember
                 return !externalMemberRefs.Any();
             }
 
-            if (!HasUnMoveableSupportContent(moveGroups)) { return true; }
+            if (!HasUnMoveableSupportContent(moveGroups, out _)) { return true; }
 
-            return TryVerifySupportMembersProvideUnMoveableDeclarationsAccess(moveGroups, out _);
+            return PublicSupportMembersProvideUnMoveableDeclarationsAccess(moveGroups);
         }
 
         private bool _isExecutable;
@@ -152,44 +148,49 @@ namespace Rubberduck.Refactorings.MoveMember
             return contentToMove;
         }
 
-        private void ModifyMovedIdentifiersToAvoidDestinationNameConflicts(MoveMemberModel model, IEnumerable<Declaration> copyAndDelete)
+        private static void ModifyMovedIdentifiersToAvoidDestinationNameConflicts(MoveMemberModel model, IEnumerable<Declaration> copyAndDelete)
         {
             if (!model.Destination.IsExistingModule(out var destination)) { return; }
 
             var allPotentialConflictNames = model.Destination.ModuleDeclarations
                 .Where(d => !NeverCauseNameConflictTypes.Contains(d.DeclarationType))
-                .Select(m => m.IdentifierName);
+                .Select(m => m.IdentifierName).ToList();
 
             var conflictingIdentifiers = copyAndDelete
                         .Where(m => allPotentialConflictNames.Contains(m.IdentifierName))
-                        .Select(m => m.IdentifierName);
+                        .Select(m => m.IdentifierName)
+                        .Distinct();
 
-            var identifier = string.Empty;
-            var guard = 0;
-            var maxIterations = 50;
             foreach (var conflictIdentifier in conflictingIdentifiers)
             {
-                var moveable = model.MoveableMemberSetByName(conflictIdentifier);
-                identifier = conflictIdentifier;
-                guard = 0;
-                while (guard++ < maxIterations && allPotentialConflictNames.Contains(identifier))
+                var moveableMemberSet = model.MoveableMemberSetByName(conflictIdentifier);
+
+                if (!TryCreateNonConflictIdentifier(conflictIdentifier, allPotentialConflictNames, out var identifier))
                 {
-                    identifier = identifier.IncrementIdentifier();
+                    throw new MoveMemberUnsupportedMoveException(moveableMemberSet?.Member);
                 }
 
-                if (guard >= maxIterations)
-                {
-                    //If we end up here, something is probably really wrong and we should not proceed with the refactoring
-                    throw new MoveMemberUnsupportedMoveException(moveable.Member);
-                }
-
-                moveable.MovedIdentifierName = identifier;
+                moveableMemberSet.MovedIdentifierName = identifier;
+                allPotentialConflictNames.Add(identifier);
             }
+        }
+
+        private static bool TryCreateNonConflictIdentifier(string originalIdentifier, IEnumerable<string> allPotentialConflictNames, out string identifier)
+        {
+            identifier = originalIdentifier;
+
+            var guard = 0;
+            var maxIterations = 50;
+            while (guard++ < maxIterations && allPotentialConflictNames.Contains(identifier))
+            {
+                identifier = identifier.IncrementIdentifier();
+            }
+            return guard < maxIterations;
         }
 
         private void ModifyRetainedReferencesToMovedMembers(IMoveMemberRewriteSession rewriteSession)
         {
-            var retainedReferencesToModuleQualify = RenameableReferencesByQualifiedModuleName(_moveGroups.CallTreeRoots.AllReferences())
+            var retainedReferencesToModuleQualify = RenameableReferencesByQualifiedModuleName(_moveGroups.Selected.AllReferences())
                 .Where(g => g.Key == _model.Source.QualifiedModuleName)
                 .SelectMany(grp => grp)
                 .Where(rf => !_copyAndDelete.Contains(rf.ParentScoping));
@@ -206,7 +207,7 @@ namespace Rubberduck.Refactorings.MoveMember
 
         private void ModifyDestinationExistingReferencesToMovedMembers(Declaration destination, IMoveMemberRewriteSession rewriteSession)
         {
-            var destinationReferencesToMovedMembers = _moveGroups.CallTreeRoots.AllReferences()
+            var destinationReferencesToMovedMembers = _moveGroups.Selected.AllReferences()
                 .Where(rf => rf.QualifiedModuleName == destination.QualifiedModuleName);
 
             if (destinationReferencesToMovedMembers.Any())
@@ -236,15 +237,11 @@ namespace Rubberduck.Refactorings.MoveMember
 
         private string CreateMovedElementCodeBlock(MoveMemberModel model, Declaration member, IModuleRewriter rewriter)
         {
-            var isOnlyReferencedByMovedMethods = member
-                        .References.All(rf => _copyAndDelete
-                            .Where(m => m.IsMember()).Contains(rf.ParentScoping));
-
             var membersRelatedByName = model.MoveableMemberSetByName(member.IdentifierName);
 
             if (member.IsVariable() || member.IsConstant())
             {
-                var visibility  = isOnlyReferencedByMovedMethods  ? member.Accessibility.TokenString() : Tokens.Public;
+                var visibility  = IsOnlyReferencedByMovedMethods(member, _copyAndDelete)  ? member.Accessibility.TokenString() : Tokens.Public;
 
                 SetMovedMemberIdentifier(membersRelatedByName, member, rewriter);
 
@@ -259,10 +256,13 @@ namespace Rubberduck.Refactorings.MoveMember
                 rewriter.Replace(argListContext, paramDeclaration.BuildFullyDefinedArgumentList());
             }
 
-            if (_moveGroups.CallTreeRoots.Contains(member)
-                || !isOnlyReferencedByMovedMethods)
+            if (_moveGroups.Selected.Contains(member))
             {
-                rewriter.SetMemberAccessibility(member, Tokens.Public);
+                var accessibility = IsOnlyReferencedByMovedMethods(member, _copyAndDelete)
+                    ? member.Accessibility.TokenString() 
+                    : Tokens.Public;
+
+                rewriter.SetMemberAccessibility(member, accessibility);
             }
 
             SetMovedMemberIdentifier(membersRelatedByName, member, rewriter);
@@ -328,7 +328,7 @@ namespace Rubberduck.Refactorings.MoveMember
             }
 
             var qmnToReferenceGroups 
-                    = RenameableReferencesByQualifiedModuleName(_moveGroups.CallTreeRoots.AllReferences())
+                    = RenameableReferencesByQualifiedModuleName(_moveGroups.Selected.AllReferences())
                             .Where(qmn => !endpointQMNs.Contains(qmn.Key));
 
             foreach (var referenceGroup in qmnToReferenceGroups)
@@ -416,46 +416,104 @@ namespace Rubberduck.Refactorings.MoveMember
 
             _rewritingManager = rewritingManager;
 
-            _moveGroups = model.MoveMemberFactory.CreateMoveGroupsProvider(model.SelectedDeclarations);
+            _moveGroups = model.MoveMemberFactory.CreateMoveGroupsProvider(model.MoveableMembers);
 
-            _copyAndDelete = _moveGroups.CallTreeRoots
-                                        .Concat(_moveGroups.ExclusiveSupportDeclarations)
-                                        .ToList();
+            var privateSupportToRetainCandidates = new List<Declaration>();
+            var publicSupportMembersToRetain = _moveGroups.Declarations(MoveGroups.Support_Public).ToList();
 
-            if (HasUnMoveableSupportContent(_moveGroups))
+            if (model.Source.IsStandardModule)
             {
-                if (TryVerifySupportMembersProvideUnMoveableDeclarationsAccess(_moveGroups, out var supportMembers))
+                var allParticipantDependencies = _moveGroups.Dependencies(MoveGroups.AllParticipants);
+                var nonParticipantDependencies = _moveGroups.Dependencies(MoveGroups.NonParticipants);
+
+                var mustRetainPrivateDeclarations = allParticipantDependencies.Intersect(nonParticipantDependencies)
+                    .Where(d => d.HasPrivateAccessibility());
+
+                var selectedMembersDirectDependencies = new List<Declaration>();
+                foreach (var selected in _moveGroups[MoveGroups.Selected])
                 {
-                    //If we retain any public property member, then retain every L\S\G method for the identifier
-                    var publicSupportMembersToRetain = supportMembers.Select(p => model.MoveableMemberSetByName(p.IdentifierName))
-                                                            .SelectMany(mbn => mbn.Members).Distinct();
-
-                    _copyAndDelete = _copyAndDelete.Except(publicSupportMembersToRetain).ToList();
+                    selectedMembersDirectDependencies.AddRange(selected.DirectDependencies);
                 }
-            }
 
+                var privateSupport = _moveGroups.Declarations(MoveGroups.Support).Where(d => d.HasPrivateAccessibility());
+                var mustMovePrivateSupport = selectedMembersDirectDependencies.Intersect(privateSupport);
+
+                if (mustMovePrivateSupport.Any(mp => mustRetainPrivateDeclarations.Contains(mp)))
+                {
+                    //Can't make the move
+                    throw new MoveMemberUnsupportedMoveException(_moveGroups.Declarations(MoveGroups.Selected).FirstOrDefault());
+                }
+
+                var mustMovePublicSupport = new List<Declaration>();
+                var publicSupportMoveables = _moveGroups[MoveGroups.Support_Public];
+                for (var idx = 0; idx < publicSupportMoveables.Count; idx++)
+                {
+                    var moveable = publicSupportMoveables.ElementAt(idx);
+                    if (!publicSupportMembersToRetain.Contains(moveable.Member))
+                    {
+                        continue;
+                    }
+
+                    if (IsMustMovePublicSupport(moveable, mustMovePrivateSupport, out var newPrivateMustMoveSupport))
+                    {
+                        mustMovePrivateSupport = mustMovePrivateSupport.Concat(newPrivateMustMoveSupport).Distinct();
+                        publicSupportMembersToRetain = publicSupportMembersToRetain.Except(moveable.Members).ToList();
+                        //Need to work from the start of the list again to see if the added private support
+                        //dependencies forces a move of any other MoveableMembers in the 'Retain' collection 
+                        idx = -1;   
+                    }
+                }
+
+                var retainCandidates = privateSupport.Except(mustMovePrivateSupport);
+
+                var privateDependenciesOfRetainedPublicSupportMembers = retainCandidates.Intersect(_moveGroups.Dependencies(MoveGroups.Support_Public));
+
+                _copyAndDelete = _moveGroups.Selected
+                                        .Concat(_moveGroups.ExclusiveSupportDeclarations)
+                                        .Except(publicSupportMembersToRetain)
+                                        .Except(mustRetainPrivateDeclarations)
+                                        .Except(privateDependenciesOfRetainedPublicSupportMembers)
+                                        .ToList();
+            }
+            else
+            {
+                _copyAndDelete = _moveGroups.Selected
+                        .Concat(_moveGroups.ExclusiveSupportDeclarations)
+                        .ToList();
+
+            }
             _retain = _moveGroups.AllParticipants.Except(_copyAndDelete).ToList();
         }
 
-        private bool HasUnMoveableSupportContent(IMoveGroupsProvider moveGroups) 
-                => moveGroups.NonExclusiveSupportDeclarations.Where(d => d.HasPrivateAccessibility()).Any();
-
-        private bool TryVerifySupportMembersProvideUnMoveableDeclarationsAccess(IMoveGroupsProvider moveGroups, out List<Declaration> supportMembersToRetain)
+        private bool IsMustMovePublicSupport(IMoveableMemberSet publicSupportMember, IEnumerable<Declaration> mustMovePrivateSupport, out IEnumerable<Declaration> newMustMovePrivateSupport)
         {
-            var theReferencesThatMatter = moveGroups.NonExclusiveSupportDeclarations
+            newMustMovePrivateSupport = new List<Declaration>();
+            foreach (var mustMovePvtSupport in mustMovePrivateSupport)
+            {
+                if (publicSupportMember.DirectDependencies.Contains(mustMovePvtSupport))
+                {
+                    newMustMovePrivateSupport = publicSupportMember.DirectDependencies.Where(d => d.HasPrivateAccessibility());
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool HasUnMoveableSupportContent(IMoveGroupsProvider moveGroups, out IEnumerable<Declaration> unMoveables)
+        {
+            unMoveables = moveGroups.NonExclusiveSupportDeclarations.Where(d => d.HasPrivateAccessibility());
+            return unMoveables.Any();
+        }
+
+        private bool PublicSupportMembersProvideUnMoveableDeclarationsAccess(IMoveGroupsProvider moveGroups)
+        {
+            var privateNonExclusiveReferences = moveGroups.NonExclusiveSupportDeclarations
                 .Where(d => d.HasPrivateAccessibility())
                 .AllReferences()
                 .Where(rf => moveGroups.AllParticipants.Contains(rf.ParentScoping));
 
-            var publicSupportingMembers = moveGroups.SupportMembers.Where(sm => !sm.HasPrivateAccessibility());
-
-            supportMembersToRetain = new List<Declaration>();
-            if(publicSupportingMembers.ContainsParentScopesForAllReferences(theReferencesThatMatter))
-            {
-                supportMembersToRetain = theReferencesThatMatter.Select(rf => rf.ParentScoping).Distinct().ToList();
-                return true;
-            }
-            return false;
+            var publicSupportingMembers = moveGroups.Declarations(MoveGroups.Support_Public);
+            return publicSupportingMembers.ContainsParentScopesForAllReferences(privateNonExclusiveReferences);
         }
 
         private static IEnumerable<IGrouping<QualifiedModuleName, IdentifierReference>> RenameableReferencesByQualifiedModuleName(IEnumerable<IdentifierReference> references)

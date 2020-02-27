@@ -15,7 +15,7 @@ namespace Rubberduck.Refactorings.MoveMember
 {
     public interface IMoveMemberObjectsFactory
     {
-        IMoveGroupsProvider CreateMoveGroupsProvider(IEnumerable<Declaration> selectedDeclarations);
+        IMoveGroupsProvider CreateMoveGroupsProvider(IEnumerable<IMoveableMemberSet> selectedDeclarations);
         IMoveSourceModuleProxy CreateMoveSourceProxy(Declaration moveSource);
         IMoveDestinationModuleProxy CreateMoveDestinationProxy(Declaration moveDestination);
         IMoveDestinationModuleProxy CreateMoveDestination(string moduleName, ComponentType moduleComponentType = ComponentType.StandardModule);
@@ -31,9 +31,9 @@ namespace Rubberduck.Refactorings.MoveMember
             _declarationFinderProvider = declarationFinderProvider;
         }
 
-        public IMoveGroupsProvider CreateMoveGroupsProvider(IEnumerable<Declaration> selectedDeclarations)
+        public IMoveGroupsProvider CreateMoveGroupsProvider(IEnumerable<IMoveableMemberSet> moveableMemberSets)
         {
-            return new MoveGroupsProvider(selectedDeclarations, _declarationFinderProvider);
+            return new MoveGroupsProvider(moveableMemberSets, _declarationFinderProvider);
         }
 
         public IMoveSourceModuleProxy CreateMoveSourceProxy(Declaration target)
@@ -77,13 +77,15 @@ namespace Rubberduck.Refactorings.MoveMember
                 strategies.Add(strategy);
             }
 
+            //The default strategy when the Destination is undefined
             strategy = new MoveMemberToStdModule();
-            //If there is selected declarations but no destination name, force this to be the default strategy
             if (strategy.IsApplicable(model))
             {
                 strategies.Add(strategy);
             }
 
+            //Unless a single applicable strategies is found,
+            //the correct strategy is indeterminant.
             if (strategies.Count() == 1)
             {
                 strategy = strategies.Single();
@@ -104,6 +106,17 @@ namespace Rubberduck.Refactorings.MoveMember
             {
                 var newMoveable = new MoveableMemberSet(group.ToList());
                 newMoveable.IsSelected = newMoveable.IdentifierName == moveTarget.IdentifierName;
+
+                var idRefs = new List<IdentifierReference>();
+                foreach (var member in newMoveable.Members)
+                {
+                    var memberContainedReferences = _declarationFinderProvider.DeclarationFinder.IdentifierReferences(member.QualifiedModuleName.QualifyMemberName(member.IdentifierName))
+                        .Where(rf => !(rf.Declaration.DeclarationType.HasFlag(DeclarationType.Parameter) || rf.Declaration == rf.ParentScoping));
+                    idRefs.AddRange(memberContainedReferences);
+                }
+
+                newMoveable.ContainedReferences = idRefs;
+
                 moveableMembers.Add(newMoveable);
             }
 

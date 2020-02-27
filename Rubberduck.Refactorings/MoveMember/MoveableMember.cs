@@ -11,33 +11,67 @@ namespace Rubberduck.Refactorings.MoveMember
     public interface IMoveableMemberSet
     {
         /// <summary>
-        /// Returns the wrapped declaration for all types except Properties
-        /// Returns the Let/Set declaration of a property unless only a Get exists 
+        /// Properties: Returns the first Property member in the Members collection  
+        /// Non-Properties: Returns the wrapped declaration for all types except Properties
         /// </summary>
         Declaration Member { get; }
+
         /// <summary>
         /// All declarations sharing the same IdentifierName.
-        /// Typically there is only 1 except for Properties
+        /// Typically there is only 1 declaration in the list except for Properties
         /// </summary>
         IReadOnlyList<Declaration> Members { get; }
+
         /// <summary>
         /// The IdentifierName of the wrapped declaration(s)
         /// </summary>
         string IdentifierName { get; }
+
         /// <summary>
         /// The identifier name to be used when the declaration is moved.
-        /// Typically it is equal to the IdentifierName unless there was 
+        /// Typically it is equal to the IdentifierName unless there is 
         /// a name conflict in the Destination module
         /// </summary>
         string MovedIdentifierName { set; get; }
+
         /// <summary>
-        /// Is true if MoveIdentifierName != IdentifierName
+        /// Returns true if MoveIdentifierName != IdentifierName
         /// </summary>
         bool RetainsOriginalIdentifier { get; }
+
         /// <summary>
-        /// IsSelected flags the declaration set 
+        /// Set to true if the declaration set as a defining element of the move 
         /// </summary>
         bool IsSelected { set; get; }
+
+        /// <summary>
+        /// Returns true if the MoveableMemberSet contains the declaration 
+        /// </summary>
+        bool Contains(Declaration declaration);
+
+        /// <summary>
+        /// Set to true if the declaration is referenced by the MoveMember CallTree 
+        /// </summary>
+        bool IsSupport { set; get; }
+
+        /// <summary>
+        /// Set to true if the declaration is referenced exclusively by the MoveMember participants 
+        /// </summary>
+        bool IsExclusive { set; get; }
+        
+        /// <summary>
+        /// Returns references other than those local to the Member body.  e.g, Function return assignments 
+        /// </summary>
+        IEnumerable<IdentifierReference> NonMemberBodyReferences { get; }
+
+        /// <summary>
+        /// Set to true if all Members have Private Accessibility 
+        /// </summary>
+        bool HasPrivateAccessibility { get; }
+
+        IEnumerable<Declaration> DirectDependencies { get; }
+
+        IReadOnlyCollection<Declaration> FlattenedDependencyGraph { set; get; }
     }
 
     /// <summary>
@@ -50,35 +84,47 @@ namespace Rubberduck.Refactorings.MoveMember
     /// </summary>
     public class MoveableMemberSet : IMoveableMemberSet
     {
+        //private List<IdentifierReference> _containedReferences;
         public MoveableMemberSet(Declaration member)
-            :this(new List<Declaration>() { member })
-        {}
+            : this(new List<Declaration>() { member })
+        { }
 
         public MoveableMemberSet(IEnumerable<Declaration> members)
         {
-            _members = new List<Declaration>(members);
+            _members = members.ToList();
             MovedIdentifierName = IdentifierName;
+            //_containedReferences = new List<IdentifierReference>();
         }
 
         private List<Declaration> _members;
         public IReadOnlyList<Declaration> Members => _members;
 
-        public Declaration Member
+        public IEnumerable<IdentifierReference> ContainedReferences {set; get;}
+
+        public IEnumerable<Declaration> DirectDependencies
         {
             get
             {
-                if (_members.Count == 1)
-                {
-                    return _members.First();
-                }
-                var subroutinePropertyTypes = _members.Where(m => m.DeclarationType.Equals(DeclarationType.PropertyLet)
-                                || m.DeclarationType.Equals(DeclarationType.PropertySet));
-
-                return subroutinePropertyTypes.First();
+                return ContainedReferences.Select(rf => rf.Declaration).Distinct();
             }
         }
 
+        public IReadOnlyCollection<Declaration> FlattenedDependencyGraph { set; get; } = new List<Declaration>();
+
+        public Declaration Member => _members.First();
+
         public bool IsSelected { set; get; }
+
+        public bool IsSupport { set; get; }
+
+        public bool IsExclusive { set; get; }
+
+        public bool HasPrivateAccessibility => Members.All(mm => mm.HasPrivateAccessibility());
+
+        public bool Contains(Declaration declaration) => Members.Contains(declaration);
+
+        public IEnumerable<IdentifierReference> NonMemberBodyReferences
+            => Members.AllReferences().Where(rf => !Members.Contains(rf.ParentScoping));
 
         public string IdentifierName => _members.First().IdentifierName;
 

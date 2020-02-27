@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.MoveMember
 {
+    /// <summary>
+    /// MoveMemberEmptySet supports the scenario where
+    /// the user has unselected all moveable declarations
+    /// </summary>
     public class MoveMemberEmptySet : IMoveMemberRefactoringStrategy
     {
         public bool IsApplicable(MoveMemberModel model)
@@ -32,7 +36,6 @@ namespace Rubberduck.Refactorings.MoveMember
             {
                 return model.MoveMemberFactory.CreateMoveMemberRewriteSession(rewritingManager.CheckOutCodePaneSession());
             }
-
 
             var moveSession = model.MoveMemberFactory.CreateMoveMemberRewriteSession(rewritingManager.CheckOutCodePaneSession());
             if (asPreview)

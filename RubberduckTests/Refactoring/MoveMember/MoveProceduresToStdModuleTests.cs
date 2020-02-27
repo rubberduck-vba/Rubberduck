@@ -102,19 +102,41 @@ End Sub
 
             StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
 
-            if (expectedStrategy is null)
+            if (moveDefinition.IsStdModuleSource)
             {
-                return;
+                if (exclusiveFuncAccessibility.Equals(Tokens.Private))
+                {
+                    StringAssert.DoesNotContain($"Private Const {exclusiveSupportElement} As Single", refactoredCode.Source);
+                    StringAssert.DoesNotContain($"{exclusiveFuncAccessibility} Sub CalculateVolume(", refactoredCode.Source);
+                    StringAssert.DoesNotContain("Public Sub CalculateVolumeFromDiameter(", refactoredCode.Source);
+
+                    StringAssert.Contains("Public Sub CalculateVolumeFromDiameter(", refactoredCode.Destination);
+                    StringAssert.Contains("CalculateVolume(diameter / 2, height, volume)", refactoredCode.Destination);
+                    StringAssert.Contains($"{exclusiveFuncAccessibility} Sub CalculateVolume(", refactoredCode.Destination);
+                    StringAssert.Contains($"Private Const {exclusiveSupportElement} As Single", refactoredCode.Destination);
+                }
+                else
+                {
+                    StringAssert.Contains($"Private Const {exclusiveSupportElement} As Single", refactoredCode.Source);
+                    StringAssert.Contains($"{exclusiveFuncAccessibility} Sub CalculateVolume(", refactoredCode.Source);
+                    StringAssert.DoesNotContain("Public Sub CalculateVolumeFromDiameter(", refactoredCode.Source);
+
+                    StringAssert.Contains("Public Sub CalculateVolumeFromDiameter(", refactoredCode.Destination);
+                    StringAssert.Contains($"{moveDefinition.SourceModuleName}.CalculateVolume(diameter / 2, height, volume)", refactoredCode.Destination);
+                    StringAssert.DoesNotContain($"{exclusiveFuncAccessibility} Sub CalculateVolume(", refactoredCode.Destination);
+                }
             }
+            else
+            {
+                StringAssert.DoesNotContain($"Private Const {exclusiveSupportElement} As Single", refactoredCode.Source);
+                StringAssert.DoesNotContain($"{exclusiveFuncAccessibility} Sub CalculateVolume(", refactoredCode.Source);
+                StringAssert.DoesNotContain("Public Sub CalculateVolumeFromDiameter(", refactoredCode.Source);
 
-            StringAssert.DoesNotContain("Public Sub CalculateVolumeFromDiameter(", refactoredCode.Source);
-            StringAssert.DoesNotContain($"{exclusiveFuncAccessibility} Function CalculateVolume(", refactoredCode.Source);
-            StringAssert.DoesNotContain($"{exclusiveSupportElement} As Single", refactoredCode.Source);
-
-            StringAssert.Contains($"Private Const {exclusiveSupportElement} As Single", refactoredCode.Destination);
-            StringAssert.Contains("Public Sub CalculateVolumeFromDiameter(", refactoredCode.Destination);
-            StringAssert.Contains("CalculateVolume(diameter / 2, height, volume)", refactoredCode.Destination);
-            StringAssert.Contains($"{exclusiveFuncAccessibility} Sub CalculateVolume(", refactoredCode.Destination);
+                StringAssert.Contains("Public Sub CalculateVolumeFromDiameter(", refactoredCode.Destination);
+                StringAssert.Contains("CalculateVolume(diameter / 2, height, volume)", refactoredCode.Destination);
+                StringAssert.Contains($"{exclusiveFuncAccessibility} Sub CalculateVolume(", refactoredCode.Destination);
+                StringAssert.Contains($"Private Const {exclusiveSupportElement} As Single", refactoredCode.Destination);
+            }
         }
 
         [TestCase(MoveEndpoints.StdToStd, ThisStrategy)]
@@ -225,7 +247,7 @@ End Sub
             StringAssert.Contains($"Public Sub Goo(", refactoredCode.Source);
             StringAssert.Contains($"Public bar As Long", refactoredCode.Source);
 
-            StringAssert.Contains($"Public Sub Foo(", refactoredCode.Destination);
+            StringAssert.Contains($"{accessibility} Sub Foo(", refactoredCode.Destination);
             StringAssert.Contains($"{moveDefinition.SourceModuleName}.bar = {moveDefinition.SourceModuleName}.bar + arg1", refactoredCode.Destination);
             StringAssert.DoesNotContain($"Public bar As Long", refactoredCode.Destination);
         }
@@ -1042,7 +1064,7 @@ End Property
             }
 
             StringAssert.DoesNotContain("Sub Foo(arg1", refactoredCode.Source);
-            StringAssert.Contains("Public Sub Foo(ByRef arg1", refactoredCode.Destination);
+            StringAssert.Contains($"{accessibility} Sub Foo(ByRef arg1", refactoredCode.Destination);
             StringAssert.Contains($"arg1 = {moveDefinition.SourceModuleName}", refactoredCode.Destination);
         }
 
@@ -1182,13 +1204,28 @@ End Property
 
             StringAssert.AreEqualIgnoringCase(ThisStrategy, refactoredCode.StrategyName);
 
-            StringAssert.DoesNotContain("Sub Foo(arg1", refactoredCode.Source);
-            StringAssert.DoesNotContain("Public Property Let Bar", refactoredCode.Source);
-            StringAssert.DoesNotContain("Public Property Get Bar", refactoredCode.Source);
+            if (moveDefinition.IsStdModuleSource)
+            {
+                StringAssert.DoesNotContain("Sub Foo(arg1", refactoredCode.Source);
+                StringAssert.Contains("Public Property Let Bar", refactoredCode.Source);
+                StringAssert.Contains("Public Property Get Bar", refactoredCode.Source);
 
-            StringAssert.Contains("Public Sub Foo(ByRef arg1", refactoredCode.Destination);
-            StringAssert.Contains($"arg1 = Bar * 10", refactoredCode.Destination);
-            StringAssert.Contains($"Bar = arg1", refactoredCode.Destination);
+                StringAssert.Contains($"{accessibility} Sub Foo(ByRef arg1", refactoredCode.Destination);
+                StringAssert.Contains($"arg1 = {moveDefinition.SourceModuleName}.Bar * 10", refactoredCode.Destination);
+                StringAssert.Contains($"{moveDefinition.SourceModuleName}.Bar = arg1", refactoredCode.Destination);
+            }
+            else
+            {
+                StringAssert.DoesNotContain("Sub Foo(arg1", refactoredCode.Source);
+                StringAssert.DoesNotContain("Public Property Let Bar", refactoredCode.Source);
+                StringAssert.DoesNotContain("Public Property Get Bar", refactoredCode.Source);
+
+                StringAssert.Contains($"{accessibility} Sub Foo(ByRef arg1", refactoredCode.Destination);
+                StringAssert.Contains($"arg1 = Bar * 10", refactoredCode.Destination);
+                StringAssert.Contains($" Bar = arg1", refactoredCode.Destination);
+                StringAssert.Contains("Public Property Let Bar", refactoredCode.Destination);
+                StringAssert.Contains("Public Property Get Bar", refactoredCode.Destination);
+            }
         }
 
         [TestCase("Public", MoveEndpoints.StdToStd)]
@@ -1233,7 +1270,7 @@ End Sub
 
             StringAssert.DoesNotContain("Sub Foo(arg1", refactoredCode.Source);
 
-            StringAssert.Contains("Public Sub Foo(ByRef arg1", refactoredCode.Destination);
+            StringAssert.Contains($"{accessibility} Sub Foo(ByRef arg1", refactoredCode.Destination);
             StringAssert.DoesNotContain("Public Property Let Bar", refactoredCode.Destination);
             StringAssert.DoesNotContain("Public Property Get Bar", refactoredCode.Destination);
 
