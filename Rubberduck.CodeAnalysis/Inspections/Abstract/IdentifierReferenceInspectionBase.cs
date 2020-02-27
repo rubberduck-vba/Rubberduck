@@ -40,7 +40,7 @@ namespace Rubberduck.Inspections.Abstract
                 .ToList();
         }
 
-        protected IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
         {
             var finder = DeclarationFinderProvider.DeclarationFinder;
             return DoGetInspectionResults(module, finder);
@@ -102,7 +102,7 @@ namespace Rubberduck.Inspections.Abstract
                 : ((IdentifierReference reference, T properties)?)null;
         }
 
-        protected IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
         {
             var finder = DeclarationFinderProvider.DeclarationFinder;
             return DoGetInspectionResults(module, finder);

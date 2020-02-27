@@ -156,7 +156,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 .ToList();
         }
 
-        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
         {
             var finder = DeclarationFinderProvider.DeclarationFinder;
             return DoGetInspectionResults(module, finder);

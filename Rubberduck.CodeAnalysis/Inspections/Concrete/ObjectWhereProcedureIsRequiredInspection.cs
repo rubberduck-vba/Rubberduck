@@ -70,7 +70,7 @@ namespace Rubberduck.Inspections.Concrete
                 .SelectMany(module => DoGetInspectionResults(module.QualifiedModuleName));
         }
 
-        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
         {
             var finder = DeclarationFinderProvider.DeclarationFinder;
             return DoGetInspectionResults(module, finder);

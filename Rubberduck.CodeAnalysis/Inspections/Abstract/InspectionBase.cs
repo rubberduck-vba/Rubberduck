@@ -68,6 +68,7 @@ namespace Rubberduck.Inspections.Abstract
         public int CompareTo(object obj) => CompareTo(obj as IInspection);
 
         protected abstract IEnumerable<IInspectionResult> DoGetInspectionResults();
+        protected abstract IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module);
 
         /// <summary>
         /// A method that inspects the parser state and returns all issues it can find.
@@ -80,6 +81,26 @@ namespace Rubberduck.Inspections.Abstract
             stopwatch.Start();
             var declarationFinder = DeclarationFinderProvider.DeclarationFinder;
             var result = DoGetInspectionResults()
+                .Where(ir => !ir.IsIgnoringInspectionResult(declarationFinder))
+                .ToList();
+            stopwatch.Stop();
+            Logger.Trace("Intercepted invocation of '{0}.{1}' returned {2} objects.", GetType().Name, nameof(DoGetInspectionResults), result.Count);
+            Logger.Trace("Intercepted invocation of '{0}.{1}' ran for {2}ms", GetType().Name, nameof(DoGetInspectionResults), stopwatch.ElapsedMilliseconds);
+            return result;
+        }
+
+        /// <summary>
+        /// A method that inspects the parser state and returns all issues in it can find in a module.
+        /// </summary>
+        /// <param name="module">The module for which to get inspection results</param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public IEnumerable<IInspectionResult> GetInspectionResults(QualifiedModuleName module, CancellationToken token)
+        {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            var declarationFinder = DeclarationFinderProvider.DeclarationFinder;
+            var result = DoGetInspectionResults(module)
                 .Where(ir => !ir.IsIgnoringInspectionResult(declarationFinder))
                 .ToList();
             stopwatch.Stop();

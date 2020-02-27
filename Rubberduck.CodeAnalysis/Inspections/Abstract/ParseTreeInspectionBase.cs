@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections.Abstract
             return DoGetInspectionResults(Listener.Contexts());
         }
 
-        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
         {
             return DoGetInspectionResults(Listener.Contexts(module));
         }
@@ -72,7 +72,7 @@ namespace Rubberduck.Inspections.Abstract
             return DoGetInspectionResults(Listener.Contexts());
         }
 
-        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
         {
             return DoGetInspectionResults(Listener.Contexts(module));
         }
