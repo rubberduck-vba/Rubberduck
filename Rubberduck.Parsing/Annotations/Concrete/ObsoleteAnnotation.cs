@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Common;
 
 namespace Rubberduck.Parsing.Annotations
 {
@@ -19,7 +20,7 @@ namespace Rubberduck.Parsing.Annotations
             var args = arguments.ToList();
 
             ReplacementDocumentation = args.Any()
-                ? args[0]
+                ? args[0].UnQuote()
                 : string.Empty;
 
             return base.ProcessAnnotationArguments(args);
