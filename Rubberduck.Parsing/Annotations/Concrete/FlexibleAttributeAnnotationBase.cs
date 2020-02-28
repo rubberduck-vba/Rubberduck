@@ -7,7 +7,7 @@ namespace Rubberduck.Parsing.Annotations
     public abstract class FlexibleAttributeAnnotationBase : AnnotationBase, IAttributeAnnotation
     {
         protected FlexibleAttributeAnnotationBase(string name, AnnotationTarget target, bool allowMultiple = false)
-            : base(name, target, 2, allowMultiple) //We need at least the attribute name and one value for it.
+            : base(name, target, 2, null, allowMultiple) //We need at least the attribute name and one value for it.
         {}
         
         public IReadOnlyList<string> AnnotationToAttributeValues(IReadOnlyList<string> annotationValues)

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
@@ -14,30 +15,30 @@ using Rubberduck.VBEditor;
 namespace Rubberduck.Inspections.Concrete
 {
     /// <summary>
-    /// Warns about a malformed Rubberduck annotation that is missing one or more arguments.
+    /// Warns about Rubberduck annotations with more arguments than allowed.
     /// </summary>
     /// <why>
-    /// Some annotations require arguments; if the required number of arguments isn't specified, the annotation is nothing more than an obscure comment.
+    /// Most annotations only process a limited number of arguments; superfluous arguments are ignored.
     /// </why>
     /// <example hasResults="true">
     /// <![CDATA[
-    /// '@Folder
-    /// '@ModuleDescription
+    /// '@Folder "MyFolder.MySubFolder" "SomethingElse
+    /// '@PredeclaredId True
     /// Option Explicit
     /// ' ...
     /// ]]>
     /// </example>
     /// <example hasResults="false">
     /// <![CDATA[
-    /// '@Folder("MyProject.XYZ")
-    /// '@ModuleDescription("This module does XYZ")
+    /// '@Folder("MyFolder.MySubFolder")
+    /// '@PredeclaredId
     /// Option Explicit
     /// ' ...
     /// ]]>
     /// </example>
-    public sealed class MissingAnnotationArgumentInspection : InspectionBase
+    public sealed class SuperfluousAnnotationArgumentInspection : InspectionBase
     {
-        public MissingAnnotationArgumentInspection(IDeclarationFinderProvider declarationFinderProvider)
+        public SuperfluousAnnotationArgumentInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
         {}
 
@@ -69,7 +70,8 @@ namespace Rubberduck.Inspections.Concrete
 
         private static bool IsResultAnnotation(IParseTreeAnnotation pta)
         {
-            return pta.Annotation.RequiredArguments > pta.AnnotationArguments.Count;
+            var allowedArguments = pta.Annotation.AllowedArguments;
+            return allowedArguments.HasValue && allowedArguments.Value < pta.AnnotationArguments.Count;
         }
 
         private IInspectionResult InspectionResult(IParseTreeAnnotation pta)
@@ -84,7 +86,7 @@ namespace Rubberduck.Inspections.Concrete
         private static string ResultDescription(IParseTreeAnnotation pta)
         {
             return string.Format(
-                InspectionResults.MissingAnnotationArgumentInspection,
+                InspectionResults.SuperfluousAnnotationArgumentInspection,
                 pta.Annotation.Name);
         }
     }

@@ -6,7 +6,7 @@
     public sealed class IgnoreTestAnnotation : AnnotationBase
     {
         public IgnoreTestAnnotation()
-            : base("IgnoreTest", AnnotationTarget.Member)
-        { }
+            : base("IgnoreTest", AnnotationTarget.Member, allowedArguments: 1)
+        {}
     }
 }

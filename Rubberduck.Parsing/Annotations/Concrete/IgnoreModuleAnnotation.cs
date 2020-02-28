@@ -6,7 +6,7 @@
     public sealed class IgnoreModuleAnnotation : AnnotationBase
     {
         public IgnoreModuleAnnotation()
-            : base("IgnoreModule", AnnotationTarget.Module, 1, true)
+            : base("IgnoreModule", AnnotationTarget.Module, allowedArguments: null, allowMultiple: true)
         {}
     }
 }

@@ -7,6 +7,6 @@
     {
         public TestInitializeAnnotation()
             : base("TestInitialize", AnnotationTarget.Member)
-        { }
+        {}
     }
 }

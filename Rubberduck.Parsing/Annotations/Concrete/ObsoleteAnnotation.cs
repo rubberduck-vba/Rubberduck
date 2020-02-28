@@ -12,7 +12,7 @@ namespace Rubberduck.Parsing.Annotations
         public string ReplacementDocumentation { get; private set; }
 
         public ObsoleteAnnotation()
-            : base("Obsolete", AnnotationTarget.Member | AnnotationTarget.Variable)
+            : base("Obsolete", AnnotationTarget.Member | AnnotationTarget.Variable, allowedArguments: 1)
         {}
 
         public override IReadOnlyList<string> ProcessAnnotationArguments(IEnumerable<string> arguments)

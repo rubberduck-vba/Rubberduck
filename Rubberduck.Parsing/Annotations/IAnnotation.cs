@@ -22,6 +22,11 @@ namespace Rubberduck.Parsing.Annotations
         /// </summary>
         int RequiredArguments { get; }
 
+        /// <summary>
+        /// The maximal number of arguments that must be provided to for this annotation; null means that there is no limit.
+        /// </summary>
+        int? AllowedArguments { get; }
+
         IReadOnlyList<string> ProcessAnnotationArguments(IEnumerable<string> arguments);
     }
 
