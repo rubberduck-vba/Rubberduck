@@ -12,13 +12,15 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.MoveMember
 {
-    public enum MoveGroups
+    public enum MoveGroup
     {
         AllParticipants,
         Selected, 
         Support,
         NonParticipants,
-        Support_Public
+        Support_Public,
+        Support_Exclusive,
+        Support_NonExclusive
     }
 
     public interface IMoveGroupsProvider
@@ -26,56 +28,18 @@ namespace Rubberduck.Refactorings.MoveMember
         /// <summary>
         /// Returns read-only declarations collection for the moveGroup
         /// </summary>
-        IReadOnlyCollection<Declaration> Declarations(MoveGroups moveGroup);
+        IReadOnlyCollection<Declaration> Declarations(MoveGroup moveGroup);
 
         /// <summary>
         /// Returns read-only dependency declarations collection for the moveGroup
         /// </summary>
-        IReadOnlyCollection<Declaration> Dependencies(MoveGroups moveGroup);
-
-        /// <summary>
-        /// Returns IMoveableMemberSet for all moveable Source Module declarations
-        /// </summary>
-        IReadOnlyCollection<IMoveableMemberSet> MoveableMembers { get; }
-
-        /// <summary>
-        /// Returns IMoveableMemberSet for the identifier
-        /// </summary>
-        IMoveableMemberSet MoveableMember(string identifier);
+        IReadOnlyCollection<Declaration> Dependencies(MoveGroup moveGroup);
 
         /// <summary>
         /// Returns IMoveableMemberSet for the specified MoveGroup
         /// </summary>
-        IReadOnlyCollection<IMoveableMemberSet> this[MoveGroups moveGroup] { get; }
+        IReadOnlyCollection<IMoveableMemberSet> MoveableMemberSets(MoveGroup moveGroup);
 
-        /// <summary>
-        /// Returns all declarations involved in the MoveMember refactoring request 
-        /// </summary>
-        IReadOnlyCollection<Declaration> AllParticipants { get; }
-
-        /// <summary>
-        /// Returns the explicitly selected Declarations that define the move 
-        /// </summary>
-        IReadOnlyCollection<Declaration> Selected { get; }
-
-        /// <summary>
-        /// Returns declaration that are referenced directly or indirectly by 
-        /// the MoveMember CallTree declarations
-        /// </summary>
-        IReadOnlyCollection<Declaration> SupportMembers { get; }
-
-        /// <summary>
-        /// Returns the supporting declarations referenced exclusively by the MoveMember calltrees 
-        /// </summary>
-        IReadOnlyCollection<Declaration> ExclusiveSupportDeclarations { get; }
-        
-        /// <summary>
-        /// Returns MoveMember support declarations that are referenced by
-        /// Source module members not involved in the move 
-        /// </summary>
-        IReadOnlyCollection<Declaration> NonExclusiveSupportDeclarations { get; }
-
-        IReadOnlyCollection<Declaration> FlattenedDependencyGraph(string identifier);
     }
 
     public class MoveGroupsProvider : IMoveGroupsProvider
@@ -83,249 +47,153 @@ namespace Rubberduck.Refactorings.MoveMember
         private readonly IDeclarationFinderProvider _declarationProvider;
         private List<IMoveableMemberSet> _allMoveableMemberSets;
 
+        private List<Declaration> _allParticipants;
+        private Dictionary<MoveGroup, List<Declaration>> _declarationsByMoveGroup;
+        private Dictionary<MoveGroup, List<IMoveableMemberSet>> _moveMemberSetsByMoveGroup;
+        private Dictionary<MoveGroup, List<Declaration>> _dependenciesByMoveGroup;
+        private Dictionary<string, IMoveableMemberSet> _moveableMembersByName;
+
         public MoveGroupsProvider(IEnumerable<IMoveableMemberSet> moveableMemberSets, IDeclarationFinderProvider declarationFinderProvider)
         {
             _declarationProvider = declarationFinderProvider;
             _allMoveableMemberSets = moveableMemberSets.ToList();
-            foreach (var moveableMemberSet in moveableMemberSets)
-            {
-                moveableMemberSet.IsSupport = false;
-                moveableMemberSet.IsExclusive = false;
-            }
 
-            var selectedDeclarations = moveableMemberSets.Where(mm => mm.IsSelected).SelectMany(mm => mm.Members);
+            var selectedMoveMemberSets = _allMoveableMemberSets.Where(mm => mm.IsSelected);
+            var selectedDeclarations = selectedMoveMemberSets.SelectMany(mm => mm.Members);
 
             if (!selectedDeclarations.Any()) { return; }
 
-            var allParticipants = CallTreeDeclarations(selectedDeclarations, declarationFinderProvider);
+            _moveableMembersByName = _allMoveableMemberSets.ToDictionary(key => key.IdentifierName);
 
-            foreach (var supportParticipant in allParticipants.Except(selectedDeclarations))
+            CreateFlattenedDependencies(_allMoveableMemberSets);
+
+            _allParticipants =
+                selectedDeclarations.Concat(AggregateDependencies(selectedMoveMemberSets)).ToList();
+
+            foreach (var moveableMemberSet in _allMoveableMemberSets)
             {
-                var moveMemberSet = moveableMemberSets.Where(mm => mm.Contains(supportParticipant)).SingleOrDefault();
-                if (moveMemberSet != null)
-                {
-                    moveMemberSet.IsSupport = true;
-                    moveMemberSet.IsExclusive = allParticipants.ContainsParentScopesForAllReferences(moveMemberSet.NonMemberBodyReferences);
-                }
+                moveableMemberSet.IsSupport = !moveableMemberSet.IsSelected && _allParticipants.Contains(moveableMemberSet.Member);
+
+                var referencesExternalToMember = moveableMemberSet.Members.AllReferences().Where(rf => !moveableMemberSet.Members.Contains(rf.ParentScoping));
+                moveableMemberSet.IsExclusive = _allParticipants.ContainsParentScopesForAll(referencesExternalToMember);
             }
 
-            foreach (var moveable in _allMoveableMemberSets)
+            _declarationsByMoveGroup = new Dictionary<MoveGroup, List<Declaration>>()
             {
-                var fdg = BuildFlattenedDependencyGraph(moveable.IdentifierName);
-                moveable.FlattenedDependencyGraph = fdg;
-            }
-        }
-
-        public IMoveableMemberSet this[string identifier]
-        {
-            get
-            {
-                return _allMoveableMemberSets.Where(mm => mm.IdentifierName.IsEquivalentVBAIdentifierTo(identifier))
-                    .SingleOrDefault();
-            }
-        }
-
-        public IReadOnlyCollection<IMoveableMemberSet> this[MoveGroups moveGroup]
-        {
-            get
-            {
-                switch (moveGroup)
-                {
-                    case MoveGroups.Selected:
-                        return _allMoveableMemberSets.Where(mm => mm.IsSelected).ToList();
-                    case MoveGroups.AllParticipants:
-                        return _allMoveableMemberSets.Where(mm => mm.IsSelected || mm.IsSupport).ToList();
-                    case MoveGroups.Support:
-                        return _allMoveableMemberSets.Where(mm => !mm.IsSelected && mm.IsSupport).ToList();
-                    case MoveGroups.Support_Public:
-                        return _allMoveableMemberSets.Where(mm => !mm.HasPrivateAccessibility && (!mm.IsSelected && mm.IsSupport)).ToList();
-                    case MoveGroups.NonParticipants:
-                        return _allMoveableMemberSets.Where(mm => !(mm.IsSelected || mm.IsSupport)).ToList();
-                }
-                return new List<IMoveableMemberSet>();
-            }
-        }
-
-        public IReadOnlyCollection<Declaration> Declarations(MoveGroups moveGroup)
-        {
-            switch (moveGroup)
-            {
-                case MoveGroups.Selected:
-                    return Selected;
-                case MoveGroups.AllParticipants:
-                    return AllParticipants;
-                case MoveGroups.Support:
-                    return Support;
-                case MoveGroups.Support_Public:
-                    return Support.Where(d => !d.HasPrivateAccessibility()).ToList();
-                case MoveGroups.NonParticipants:
-                    return _allMoveableMemberSets.Where(mm => !(mm.IsSelected || mm.IsSupport))
+                [MoveGroup.AllParticipants] = _allParticipants.ToList(),
+                [MoveGroup.NonParticipants] = _allMoveableMemberSets
+                                                    .Where(mm => !(mm.IsSelected || mm.IsSupport))
                                                     .SelectMany(mm => mm.Members)
-                                                    .ToList();
-            }
-            return new List<Declaration>();
+                                                    .ToList(),
+                [MoveGroup.Selected] = _allMoveableMemberSets
+                                                    .Where(mm => mm.IsSelected)
+                                                    .SelectMany(mm => mm.Members)
+                                                    .ToList(),
+                [MoveGroup.Support] = _allMoveableMemberSets
+                                                    .Where(mm => mm.IsSupport && !mm.IsSelected)
+                                                    .SelectMany(mm => mm.Members)
+                                                    .ToList(),
+                [MoveGroup.Support_Public] = _allMoveableMemberSets
+                                                    .Where(mm => mm.IsSupport && !mm.IsSelected && !mm.HasPrivateAccessibility)
+                                                    .SelectMany(mm => mm.Members)
+                                                    .ToList(),
+                [MoveGroup.Support_Exclusive] = _allMoveableMemberSets
+                                                    .Where(mm => mm.IsSupport && !mm.IsSelected && mm.IsExclusive)
+                                                    .SelectMany(mm => mm.Members)
+                                                    .ToList(),
+                [MoveGroup.Support_NonExclusive] = _allMoveableMemberSets
+                                                    .Where(mm => mm.IsSupport && !mm.IsSelected && !mm.IsExclusive)
+                                                    .SelectMany(mm => mm.Members)
+                                                    .ToList()
+            };
+
+            _moveMemberSetsByMoveGroup = new Dictionary<MoveGroup, List<IMoveableMemberSet>>()
+            {
+                [MoveGroup.Selected] = _allMoveableMemberSets.Where(mm => mm.IsSelected).ToList(),
+                [MoveGroup.AllParticipants] = _allMoveableMemberSets.Where(mm => mm.IsSelected || mm.IsSupport).ToList(),
+                [MoveGroup.NonParticipants] = _allMoveableMemberSets.Where(mm => !(mm.IsSelected || mm.IsSupport)).ToList(),
+                [MoveGroup.Support] = _allMoveableMemberSets.Where(mm => !mm.IsSelected && mm.IsSupport).ToList(),
+                [MoveGroup.Support_Public] = _allMoveableMemberSets.Where(mm => !mm.HasPrivateAccessibility && (!mm.IsSelected && mm.IsSupport)).ToList(),
+                [MoveGroup.Support_Exclusive] = _allMoveableMemberSets.Where(mm => !mm.IsSelected && mm.IsSupport && mm.IsExclusive).ToList(),
+                [MoveGroup.Support_NonExclusive] = _allMoveableMemberSets.Where(mm => !mm.IsSelected && mm.IsSupport && !mm.IsExclusive).ToList(),
+            };
+
+            _dependenciesByMoveGroup = new Dictionary<MoveGroup, List<Declaration>>();
         }
 
-        public IReadOnlyCollection<Declaration> Dependencies(MoveGroups moveGroup)
+        public IReadOnlyCollection<IMoveableMemberSet> MoveableMemberSets(MoveGroup moveGroup) 
+            => _moveMemberSetsByMoveGroup[moveGroup];
+
+        public IReadOnlyCollection<Declaration> Declarations(MoveGroup moveGroup) 
+            => _declarationsByMoveGroup[moveGroup];
+
+        public IReadOnlyCollection<Declaration> Dependencies(MoveGroup moveGroup)
         {
-            switch (moveGroup)
+            if (!_dependenciesByMoveGroup.TryGetValue(moveGroup, out var dependencies))
             {
-                case MoveGroups.Selected:
-                    return AggregateDependencies(this[MoveGroups.Selected]);
-                case MoveGroups.AllParticipants:
-                    return AggregateDependencies(this[MoveGroups.AllParticipants]);
-                case MoveGroups.Support:
-                    return AggregateDependencies(this[MoveGroups.Support]);
-                case MoveGroups.NonParticipants:
-                    return AggregateDependencies(this[MoveGroups.NonParticipants]);
-                case MoveGroups.Support_Public:
-                    return AggregateDependencies(this[MoveGroups.Support].Where(mm => !mm.HasPrivateAccessibility));
+                dependencies = AggregateDependencies(MoveableMemberSets(moveGroup)).ToList();
+                _dependenciesByMoveGroup.Add(moveGroup, dependencies);
             }
-            return new List<Declaration>();
+            return dependencies;
         }
+
+        private IMoveableMemberSet MoveableMemberSet(string identifier)
+            =>  _moveableMembersByName.TryGetValue(identifier, out var moveable)
+                    ? moveable
+                    : null;
 
         private IReadOnlyCollection<Declaration> AggregateDependencies(IEnumerable<IMoveableMemberSet> moveMemberSets )
         {
             var aggregated = new List<Declaration>();
             foreach (var moveMemberSet in moveMemberSets)
             {
-                var dependencies = FlattenedDependencyGraph(moveMemberSet.IdentifierName).ToList();
+                var dependencies = MoveableMemberSet(moveMemberSet.IdentifierName).FlattenedDependencies.ToList();
                 aggregated.AddRange(dependencies);
             }
             return aggregated;
         }
 
-        public IReadOnlyCollection<Declaration> FlattenedDependencyGraph(string identifier)
+        private void CreateFlattenedDependencies(IEnumerable<IMoveableMemberSet> moveableMembers)
         {
-            return this[identifier].FlattenedDependencyGraph;
-        }
-
-        private List<Declaration> BuildFlattenedDependencyGraph(string identifier)
-        {
-            var names = new List<string>();
-
-            var moveable = this[identifier];
-            var dependentNames = moveable.DirectDependencies.Select(d => d.IdentifierName).ToList();
-
-            while (TryAddDependencyNames(names, dependentNames, out var newNames))
+            foreach (var moveable in moveableMembers)
             {
-                dependentNames = newNames;
-            }
+                var dependencyDeclarations = new List<Declaration>();
 
-            var flattened = new List<Declaration>();
-            foreach (var id in names)
-            {
-                flattened.AddRange(this[id].Members);
-            }
-            return flattened;
-        }
+                var dependencies = moveable.DirectDependencies.ToList();
 
-        private bool TryAddDependencyNames(List<string> names, List<string> dependencyNames, out List<string> newNames)
-        {
-            var newDependencyNames = new List<string>();
-            if (dependencyNames.Any())
-            {
-                foreach (var name in dependencyNames)
+                while(dependencies.Any())
                 {
-                    var moveable = this[name];
-                    if (moveable != null) //UDT members return null
-                    {
-                        names.Add(name);
-                        newDependencyNames.AddRange(moveable.DirectDependencies.Select(d => d.IdentifierName));
-                    }
+                    dependencyDeclarations = AddDependencies(dependencyDeclarations, dependencies, out var additionalDependencies);
+                    dependencies = additionalDependencies;
+                }
+
+                //Once all the dependencies by declaration are found,
+                //we want a flattened list of dependencies that includes 
+                //all the declarations by MoveableMemberSet.  
+                //This attaches the related Property members as dependencies (for the purposes of moving)
+                // even if only one of them participates in a given dependency graph
+                var flattened = new List<Declaration>();
+                foreach (var id in dependencyDeclarations)
+                {
+                    flattened.AddRange(MoveableMemberSet(id.IdentifierName).Members);
+                }
+                moveable.FlattenedDependencies = flattened;
+            }
+        }
+
+        private List<Declaration> AddDependencies(List<Declaration> allDependencies, List<Declaration> dependenciesToAdd, out List<Declaration> downstreamDependencies)
+        {
+            downstreamDependencies = new List<Declaration>();
+            foreach (var dependency in dependenciesToAdd)
+            {
+                var moveable = MoveableMemberSet(dependency.IdentifierName);
+                if (moveable != null) //e.g., UDT members return null
+                {
+                    allDependencies.Add(dependency);
+                    downstreamDependencies.AddRange(moveable.DirectDependencies);
                 }
             }
-            newNames = newDependencyNames;
-            return dependencyNames.Any();
-        }
-
-        public IMoveableMemberSet MoveableMember(string identifier)
-        {
-            return this[identifier];
-        }
-
-        public IReadOnlyCollection<IMoveableMemberSet> MoveableMembers => _allMoveableMemberSets;
-
-        public IReadOnlyCollection<Declaration> Selected 
-            => _allMoveableMemberSets.Where(mm => mm.IsSelected)
-                                    .SelectMany(mm => mm.Members)
-                                    .ToList();
-
-        public IReadOnlyCollection<Declaration> AllParticipants 
-            => _allMoveableMemberSets.Where(mm => mm.IsSelected || mm.IsSupport)
-                                    .SelectMany(mm => mm.Members)
-                                    .ToList();
-
-        public IReadOnlyCollection<Declaration> ExclusiveSupportDeclarations 
-            => _allMoveableMemberSets.Where(mm => mm.IsSupport && mm.IsExclusive)
-                                    .SelectMany(mm => mm.Members)
-                                    .ToList();
-
-        public IReadOnlyCollection<Declaration> NonExclusiveSupportDeclarations 
-            => _allMoveableMemberSets.Where(mm => mm.IsSupport && !mm.IsExclusive)
-                                    .SelectMany(mm => mm.Members)
-                                    .ToList();
-
-        public IReadOnlyCollection<Declaration> Support
-            => _allMoveableMemberSets.Where(mm => mm.IsSupport)
-                                    .SelectMany(mm => mm.Members)
-                                    .ToList();
-
-        public IReadOnlyCollection<Declaration> SupportMembers
-            => _allMoveableMemberSets.Where(mm => mm.IsSupport && mm.Member.IsMember())
-                                    .SelectMany(mm => mm.Members)
-                                    .ToList();
-
-        private static IReadOnlyCollection<Declaration> CallTreeDeclarations(IEnumerable<Declaration> definingDeclarations, IDeclarationFinderProvider declarationFinderProvider)
-        {
-            if (!definingDeclarations.Any()) { return new HashSet<Declaration>(); }
-
-            var allElements = declarationFinderProvider.DeclarationFinder.Members(definingDeclarations.First().QualifiedModuleName)
-                .Where(d => !d.DeclarationType.HasFlag(DeclarationType.Module));
-
-            var participatingDeclarations = new HashSet<Declaration>();
-
-            foreach (var element in definingDeclarations)
-            {
-                participatingDeclarations.Add(element);
-            }
-
-            var allReferences = allElements.AllReferences().ToList();
-
-            var maxIterations = 100;
-            var guard = 0;
-            var newElements = definingDeclarations;
-            while (newElements.Any() && guard++ < maxIterations)
-            {
-                newElements = allReferences
-                        .Where(rf => newElements.Contains(rf.ParentScoping)
-                                && rf.ParentScoping != rf.Declaration)
-                        .Select(rf => rf.Declaration)
-                .ToList();
-
-                foreach (var element in newElements)
-                {
-                    if (IsMoveableDeclaration(element))
-                    {
-                        participatingDeclarations.Add(element);
-                    }
-                }
-            }
-
-            Debug.Assert(guard < maxIterations);
-            if (guard >= maxIterations)
-            {
-                throw new MoveMemberUnsupportedMoveException(definingDeclarations.FirstOrDefault());
-            }
-
-            return participatingDeclarations.ToList();
-        }
-
-        private static bool IsMoveableDeclaration(Declaration declaration)
-        {
-            return (declaration.DeclarationType.HasFlag(DeclarationType.Member)
-                        || declaration.IsField()
-                        || declaration.IsModuleConstant());
+            return allDependencies;
         }
     }
 }

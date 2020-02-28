@@ -59,10 +59,10 @@ namespace Rubberduck.Refactorings.MoveMember
         /// </summary>
         bool IsExclusive { set; get; }
         
-        /// <summary>
-        /// Returns references other than those local to the Member body.  e.g, Function return assignments 
-        /// </summary>
-        IEnumerable<IdentifierReference> NonMemberBodyReferences { get; }
+        ///// <summary>
+        ///// Returns references other than those local to the Member body.  e.g, Function return assignments 
+        ///// </summary>
+        //IEnumerable<IdentifierReference> NonMemberBodyReferences { get; }
 
         /// <summary>
         /// Set to true if all Members have Private Accessibility 
@@ -71,7 +71,7 @@ namespace Rubberduck.Refactorings.MoveMember
 
         IEnumerable<Declaration> DirectDependencies { get; }
 
-        IReadOnlyCollection<Declaration> FlattenedDependencyGraph { set; get; }
+        IReadOnlyCollection<Declaration> FlattenedDependencies { set; get; }
     }
 
     /// <summary>
@@ -93,7 +93,6 @@ namespace Rubberduck.Refactorings.MoveMember
         {
             _members = members.ToList();
             MovedIdentifierName = IdentifierName;
-            //_containedReferences = new List<IdentifierReference>();
         }
 
         private List<Declaration> _members;
@@ -109,7 +108,7 @@ namespace Rubberduck.Refactorings.MoveMember
             }
         }
 
-        public IReadOnlyCollection<Declaration> FlattenedDependencyGraph { set; get; } = new List<Declaration>();
+        public IReadOnlyCollection<Declaration> FlattenedDependencies { set; get; } = new List<Declaration>();
 
         public Declaration Member => _members.First();
 
@@ -123,8 +122,8 @@ namespace Rubberduck.Refactorings.MoveMember
 
         public bool Contains(Declaration declaration) => Members.Contains(declaration);
 
-        public IEnumerable<IdentifierReference> NonMemberBodyReferences
-            => Members.AllReferences().Where(rf => !Members.Contains(rf.ParentScoping));
+        //public IEnumerable<IdentifierReference> NonMemberBodyReferences
+        //    => Members.AllReferences().Where(rf => !Members.Contains(rf.ParentScoping));
 
         public string IdentifierName => _members.First().IdentifierName;
 

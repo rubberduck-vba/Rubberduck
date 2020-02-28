@@ -117,7 +117,7 @@ namespace Rubberduck.Refactorings.MoveMember.Extensions
             return fullSignature;
         }
 
-        public static bool ContainsParentScopesForAllReferences(this IEnumerable<Declaration> containing, IEnumerable<IdentifierReference> references) 
+        public static bool ContainsParentScopesForAll(this IEnumerable<Declaration> containing, IEnumerable<IdentifierReference> references) 
             => references.All(rf => containing.Contains(rf.ParentScoping));
 
         public static bool ContainsParentScopeForAnyReference(this IEnumerable<Declaration> containing, IEnumerable<IdentifierReference> references) 

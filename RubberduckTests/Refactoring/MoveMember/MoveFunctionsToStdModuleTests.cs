@@ -614,6 +614,50 @@ End Function
         }
 
         [TestCase(MoveEndpoints.StdToStd, "Public")]
+        [Category("Refactorings")]
+        [Category("MoveMember")]
+        public void ExclusiveCallChainNon(MoveEndpoints endpoints, string accessibility)
+        {
+            var memberToMove = "Foo";
+            var source =
+$@"
+Option Explicit
+
+Private mfoo As Long
+
+{accessibility} Function Foo(arg1 As Long) As Long
+    Foo = Bar(arg1)
+End Function
+
+Public Sub Goo(arg1 As Long)
+    mfoo = arg1
+End Sub
+
+Public Function Bar(arg1 As Long) As Long
+    Bar = Barn(arg1) + 4
+End Function
+
+Private Function Barn(arg1 As Long) As Long
+    Barn = arg1 + mfoo
+End Function
+";
+
+            var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType));
+
+            var refactoredCode = RefactoredCode_UserSetsDestinationModuleName(moveDefinition, source);
+
+            StringAssert.AreEqualIgnoringCase(ThisStrategy, refactoredCode.StrategyName);
+
+            var sourceRefactored = refactoredCode.Source;
+            StringAssert.Contains("Private mfoo As Long", sourceRefactored);
+            StringAssert.Contains("Function Bar(", sourceRefactored);
+            StringAssert.Contains("Function Barn(", sourceRefactored);
+
+            var destinationRefactored = refactoredCode.Destination;
+            StringAssert.Contains("Private Function Foo", destinationRefactored);
+        }
+
+        [TestCase(MoveEndpoints.StdToStd, "Public")]
         [TestCase(MoveEndpoints.StdToStd, "Private")]
         [TestCase(MoveEndpoints.ClassToStd, "Public")]
         [TestCase(MoveEndpoints.ClassToStd, "Private")]
