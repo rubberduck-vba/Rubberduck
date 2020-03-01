@@ -10,6 +10,7 @@ namespace Rubberduck.Parsing.Inspections.Abstract
         IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts();
         IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts(QualifiedModuleName module);
         void ClearContexts();
+        void ClearContexts(QualifiedModuleName module);
         QualifiedModuleName CurrentModuleName { get; set; }
     }
 }

@@ -139,6 +139,11 @@ namespace Rubberduck.Inspections.Abstract
             _contexts.Clear();
         }
 
+        public virtual void ClearContexts(QualifiedModuleName module)
+        {
+            _contexts.Remove(module);
+        }
+
         protected void SaveContext(ParserRuleContext context)
         {
             var module = CurrentModuleName;

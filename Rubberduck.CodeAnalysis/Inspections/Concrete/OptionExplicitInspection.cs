@@ -69,6 +69,12 @@ namespace Rubberduck.Inspections.Concrete
                 base.ClearContexts();
             }
 
+            public override void ClearContexts(QualifiedModuleName module)
+            {
+                _hasOptionExplicit.Remove(module);
+                base.ClearContexts(module);
+            }
+
             public override void EnterModuleDeclarations(VBAParser.ModuleDeclarationsContext context)
             {
                 _hasOptionExplicit[CurrentModuleName] = false;

@@ -7,6 +7,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -72,6 +73,19 @@ namespace Rubberduck.Inspections.Concrete
         {
             _unhandledContextsMap.Clear();
             base.ClearContexts();
+        }
+
+        public override void ClearContexts(QualifiedModuleName module)
+        {
+            var keysInModule = _unhandledContextsMap.Keys
+                .Where(context => context.ModuleName.Equals(module));
+
+            foreach (var key in keysInModule)
+            {
+                _unhandledContextsMap.Remove(key);
+            }
+
+            base.ClearContexts(module);
         }
 
         public override void ExitModuleBodyElement(VBAParser.ModuleBodyElementContext context)

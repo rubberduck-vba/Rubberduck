@@ -279,15 +279,17 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             private readonly IDictionary<QualifiedModuleName, List<VBAParser.EnumerationStmtContext>> _enumStmts = new Dictionary<QualifiedModuleName, List<VBAParser.EnumerationStmtContext>>();
             public IReadOnlyList<VBAParser.EnumerationStmtContext> EnumerationStmtContexts() => _enumStmts.AllValues().ToList();
-            public IReadOnlyList<VBAParser.EnumerationStmtContext> EnumerationStmtContexts(QualifiedModuleName module) => 
-                _enumStmts.TryGetValue(module, out var stmts)
-                    ? stmts
-                    : new List<VBAParser.EnumerationStmtContext>();
 
             public override void ClearContexts()
             {
                 _enumStmts.Clear();
                 base.ClearContexts();
+            }
+
+            public override void ClearContexts(QualifiedModuleName module)
+            {
+                _enumStmts.Remove(module);
+                base.ClearContexts(module);
             }
 
             public override void EnterSelectCaseStmt([NotNull] VBAParser.SelectCaseStmtContext context)
