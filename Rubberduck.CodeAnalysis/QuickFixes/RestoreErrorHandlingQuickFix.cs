@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
@@ -93,7 +94,9 @@ namespace Rubberduck.Inspections.QuickFixes
 
             var rewriter = rewriteSession.CheckOutModuleRewriter(result.QualifiedSelection.QualifiedName);
             var context = (VBAParser.OnErrorStmtContext)result.Context;
-            var labels = bodyElementContext.GetDescendents<VBAParser.IdentifierStatementLabelContext>().ToArray();
+            var labels = bodyElementContext.GetDescendents<VBAParser.IdentifierStatementLabelContext>()
+                .OrderBy(labelContext => labelContext.GetSelection())
+                .ToArray();
             var maximumExistingLabelIndex = GetMaximumExistingLabelIndex(labels);
             var unhandledContexts = resultProperties.Properties;
             var offset = unhandledContexts.IndexOf(result.Context);
