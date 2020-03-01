@@ -13,7 +13,11 @@ using RubberduckTests.Mocks;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Antlr4.Runtime.Tree;
 using Moq;
+using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 
 namespace RubberduckTests.Inspections.UnreachableCase
 {
@@ -2461,8 +2465,8 @@ End Sub
                 var factoryProvider = SpecialValueDeclarationEvaluatorFactoryProvider(TestGetValuedDeclaration);
                 var inspection = new UnreachableCaseInspection(state, factoryProvider);
 
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                WalkTrees(inspection, state);
+                actualResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             var actualUnreachable = actualResults.Where(ar => ar.Description.Equals(Rubberduck.Resources.Inspections.InspectionResults.UnreachableCaseInspection_Unreachable));
@@ -2513,8 +2517,8 @@ End Sub
                 var factoryProvider = SpecialValueDeclarationEvaluatorFactoryProvider(TestGetValuedDeclaration);
                 var inspection = new UnreachableCaseInspection(state, factoryProvider);
 
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                WalkTrees(inspection, state);
+                actualResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             var actualUnreachable = actualResults.Where(ar => ar.Description.Equals(Rubberduck.Resources.Inspections.InspectionResults.UnreachableCaseInspection_Unreachable));
@@ -2631,14 +2635,14 @@ End Sub
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var firstParserRuleContext = (ParserRuleContext)state.ParseTrees
-                    .First(pt => pt.Value is ParserRuleContext)
-                    .Value;
-                selectStmt = firstParserRuleContext.GetDescendent<VBAParser.SelectCaseStmtContext>();
+                var finder = state.DeclarationFinder;
+                var (parseTreeModule, moduleParseTree) = state.ParseTrees
+                    .First(pt => pt.Value is ParserRuleContext);
+                selectStmt = ((ParserRuleContext)moduleParseTree).GetDescendent<VBAParser.SelectCaseStmtContext>();
                 var visitor = ParseTreeValueVisitorFactory.Create(
                     new List<VBAParser.EnumerationStmtContext>(),
-                    context => UnreachableCaseInspection.GetIdentifierReferenceForContext(context, state));
-                valueResults = selectStmt.Accept(visitor);
+                    (context) => UnreachableCaseInspection.GetIdentifierReferenceForContext(parseTreeModule, context, finder));
+                valueResults = visitor.VisitChildren(selectStmt);
             }
             return valueResults;
         }

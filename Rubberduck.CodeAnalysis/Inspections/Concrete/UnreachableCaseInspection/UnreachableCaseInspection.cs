@@ -144,28 +144,27 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var finder = DeclarationFinderProvider.DeclarationFinder;
-            var enumStmts = _listener.EnumerationStmtContexts();
-            var parseTreeValueVisitor = CreateParseTreeValueVisitor(enumStmts, GetIdentifierReferenceForContext);
 
             return finder.UserDeclarations(DeclarationType.Module)
                 .Where(module => module != null)
-                .SelectMany(module => DoGetInspectionResults(module.QualifiedModuleName, finder, parseTreeValueVisitor))
+                .SelectMany(module => DoGetInspectionResults(module.QualifiedModuleName, finder))
                 .ToList();
         }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
         {
             var finder = DeclarationFinderProvider.DeclarationFinder;
-            var enumStmts = _listener.EnumerationStmtContexts();
-            var parseTreeValueVisitor = CreateParseTreeValueVisitor(enumStmts, GetIdentifierReferenceForContext);
-            return DoGetInspectionResults(module, finder, parseTreeValueVisitor);
+            return DoGetInspectionResults(module, finder);
         }
 
-        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder, IParseTreeValueVisitor parseTreeValueVisitor)
+        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
         {
             var qualifiedSelectCaseStmts = Listener.Contexts(module)
                 // ignore filtering here to make the search space smaller
                 .Where(result => !result.IsIgnoringInspectionResultFor(finder, AnnotationName));
+
+            var enumStmts = _listener.EnumerationStmtContexts();
+            var parseTreeValueVisitor = CreateParseTreeValueVisitor(enumStmts, context => GetIdentifierReferenceForContextFunction(finder)(module, context));
 
             return qualifiedSelectCaseStmts
                 .SelectMany(context => ResultsForContext(context, finder, parseTreeValueVisitor))
@@ -174,8 +173,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private IEnumerable<IInspectionResult> ResultsForContext(QualifiedContext<ParserRuleContext> qualifiedSelectCaseStmt, DeclarationFinder finder, IParseTreeValueVisitor parseTreeValueVisitor)
         {
-            var contextValues = qualifiedSelectCaseStmt.Context.Accept(parseTreeValueVisitor);
-            var selectCaseInspector = _unreachableCaseInspectorFactory.Create((VBAParser.SelectCaseStmtContext)qualifiedSelectCaseStmt.Context, contextValues, GetVariableTypeName);
+            var module = qualifiedSelectCaseStmt.ModuleName;
+            var contextValues = parseTreeValueVisitor.VisitChildren(qualifiedSelectCaseStmt.Context);
+            var selectCaseInspector = _unreachableCaseInspectorFactory.Create((VBAParser.SelectCaseStmtContext)qualifiedSelectCaseStmt.Context, contextValues, GetVariableTypeNameFunction(module, finder));
 
             var results = selectCaseInspector.InspectForUnreachableCases();
 
@@ -216,28 +216,33 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                         new QualifiedContext<ParserRuleContext>(selectStmt.ModuleName, unreachableBlock));
         }
 
-        public IParseTreeValueVisitor CreateParseTreeValueVisitor(IReadOnlyList<VBAParser.EnumerationStmtContext> allEnums, Func<ParserRuleContext, (bool success, IdentifierReference idRef)> func)
-            => _parseTreeValueVisitorFactory.Create(allEnums, func);
-
-        //Method is used as a delegate to avoid propagating RubberduckParserState beyond this class
-        private (bool success, IdentifierReference idRef) GetIdentifierReferenceForContext(ParserRuleContext context)
+        public IParseTreeValueVisitor CreateParseTreeValueVisitor(
+            IReadOnlyList<QualifiedContext<VBAParser.EnumerationStmtContext>> allEnums,
+            Func<ParserRuleContext, (bool success, IdentifierReference idRef)> func)
         {
-            return GetIdentifierReferenceForContext(context, DeclarationFinderProvider);
+            var enums = allEnums.Select(item => item.Context).ToList();
+            return _parseTreeValueVisitorFactory.Create(enums, func);
+        }
+
+        private Func<QualifiedModuleName, ParserRuleContext,(bool success, IdentifierReference idRef)> GetIdentifierReferenceForContextFunction(DeclarationFinder finder)
+        {
+            return (module, context) => GetIdentifierReferenceForContext(module, context, finder);
         }
 
         //public static to support tests
         //FIXME There should not be additional public methods just for tests. This class seems to want to be split or at least reorganized.
-        public static (bool success, IdentifierReference idRef) GetIdentifierReferenceForContext(ParserRuleContext context, IDeclarationFinderProvider declarationFinderProvider)
+        public static (bool success, IdentifierReference idRef) GetIdentifierReferenceForContext(QualifiedModuleName module, ParserRuleContext context, DeclarationFinder finder)
         {
             if (context == null)
             {
                 return (false, null);
             }
 
-            //FIXME Get the declaration finder only once inside the inspection to avoid the possibility of inconsistent state due to a reparse while inspections run.
-            var finder = declarationFinderProvider.DeclarationFinder;
-            var identifierReferences = finder.MatchName(context.GetText())
-                .SelectMany(declaration => declaration.References)
+            var qualifiedSelection = new QualifiedSelection(module, context.GetSelection());
+
+            var identifierReferences = 
+                finder
+                .IdentifierReferences(qualifiedSelection)
                 .Where(reference => reference.Context == context)
                 .ToList();
 
@@ -246,19 +251,31 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 : (false, null);
         }
 
-        //Method is used as a delegate to avoid propogating RubberduckParserState beyond this class
-        private string GetVariableTypeName(string variableName, ParserRuleContext ancestor)
+        private Func<string, ParserRuleContext, string> GetVariableTypeNameFunction(QualifiedModuleName module, DeclarationFinder finder)
         {
-            var descendents = ancestor.GetDescendents<VBAParser.SimpleNameExprContext>().Where(desc => desc.GetText().Equals(variableName)).ToList();
-            if (descendents.Any())
+            return (variableName, ancestor) => GetVariableTypeName(module, variableName, ancestor, finder);
+        }
+
+        private string GetVariableTypeName(QualifiedModuleName module, string variableName, ParserRuleContext ancestor, DeclarationFinder finder)
+        {
+            if (ancestor == null)
             {
-                (bool success, IdentifierReference idRef) = GetIdentifierReferenceForContext(descendents.First(), DeclarationFinderProvider);
-                if (success)
-                {
-                    return GetBaseTypeForDeclaration(idRef.Declaration);
-                }
+                return string.Empty;
             }
-            return string.Empty;
+
+            var descendents = ancestor.GetDescendents<VBAParser.SimpleNameExprContext>()
+                .Where(desc => desc.GetText().Equals(variableName))
+                .ToList();
+            if (!descendents.Any())
+            {
+                return string.Empty;
+            }
+
+            var firstDescendent = descendents.First();
+            var (success, reference) = GetIdentifierReferenceForContext(module, firstDescendent, finder);
+            return success ?
+                GetBaseTypeForDeclaration(reference.Declaration) 
+                : string.Empty;
         }
 
         private string GetBaseTypeForDeclaration(Declaration declaration)
@@ -277,8 +294,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         #region UnreachableCaseInspectionListeners
         public class UnreachableCaseInspectionListener : InspectionListenerBase
         {
-            private readonly IDictionary<QualifiedModuleName, List<VBAParser.EnumerationStmtContext>> _enumStmts = new Dictionary<QualifiedModuleName, List<VBAParser.EnumerationStmtContext>>();
-            public IReadOnlyList<VBAParser.EnumerationStmtContext> EnumerationStmtContexts() => _enumStmts.AllValues().ToList();
+            private readonly IDictionary<QualifiedModuleName, List<QualifiedContext<VBAParser.EnumerationStmtContext>>> _enumStmts = new Dictionary<QualifiedModuleName, List<QualifiedContext<VBAParser.EnumerationStmtContext>>>();
+            public IReadOnlyList<QualifiedContext<VBAParser.EnumerationStmtContext>> EnumerationStmtContexts() => _enumStmts.AllValues().ToList();
 
             public override void ClearContexts()
             {
@@ -305,13 +322,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             private void SaveEnumStmt(VBAParser.EnumerationStmtContext context)
             {
                 var module = CurrentModuleName;
+                var qualifiedContext = new QualifiedContext<VBAParser.EnumerationStmtContext>(module, context);
                 if (_enumStmts.TryGetValue(module, out var stmts))
                 {
-                    stmts.Add(context);
+                    stmts.Add(qualifiedContext);
                 }
                 else
                 {
-                    _enumStmts.Add(module, new List<VBAParser.EnumerationStmtContext> { context });
+                    _enumStmts.Add(module, new List<QualifiedContext<VBAParser.EnumerationStmtContext>> { qualifiedContext });
                 }
             }
         }

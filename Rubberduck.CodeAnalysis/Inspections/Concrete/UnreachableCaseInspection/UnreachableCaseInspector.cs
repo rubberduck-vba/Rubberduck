@@ -21,7 +21,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private readonly Func<string, ParserRuleContext, string> _getVariableDeclarationTypeName;
         private IParseTreeValue _selectExpressionValue;
 
-        public UnreachableCaseInspector(VBAParser.SelectCaseStmtContext selectCaseContext, 
+        public UnreachableCaseInspector(
+            VBAParser.SelectCaseStmtContext selectCaseContext, 
             IParseTreeVisitorResults inspValues, 
             IParseTreeValueFactory valueFactory,
             Func<string,ParserRuleContext,string> getVariableTypeName = null)
