@@ -16,6 +16,7 @@ using Rubberduck.CodeAnalysis.CodeMetrics;
 using Rubberduck.ComClientLibrary.UnitTesting;
 using Rubberduck.Common;
 using Rubberduck.Common.Hotkeys;
+using Rubberduck.Inspections.Concrete.UnreachableCaseInspection;
 using Rubberduck.Inspections.Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Common;
@@ -373,7 +374,25 @@ namespace Rubberduck.Root
             container.Register(Component.For<IAddRemoveReferencesPresenterFactory>()
                 .ImplementedBy<AddRemoveReferencesPresenterFactory>()
                 .LifestyleSingleton());
+            RegisterUnreachableCaseFactories(container);
         }
+
+        private void RegisterUnreachableCaseFactories(IWindsorContainer container)
+        {
+            container.Register(Component.For<IParseTreeValueFactory>()
+                .ImplementedBy<ParseTreeValueFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IUnreachableCaseInspectorFactory>()
+                .ImplementedBy<UnreachableCaseInspectorFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IParseTreeValueVisitorFactory>()
+                .ImplementedBy<ParseTreeValueVisitorFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IUnreachableCaseInspectionFactoryProvider>()
+                .ImplementedBy<UnreachableCaseInspectionFactoryProvider>()
+                .LifestyleSingleton());
+        }
+
 
         private void RegisterQuickFixes(IWindsorContainer container, Assembly[] assembliesToRegister)
         {

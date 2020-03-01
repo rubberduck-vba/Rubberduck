@@ -5,6 +5,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     {
         IParseTreeValueFactory CreateIParseTreeValueFactory();
         IUnreachableCaseInspectorFactory CreateIUnreachableInspectorFactory();
+        IParseTreeValueVisitorFactory CreateParseTreeValueVisitorFactory();
     }
 
     public class UnreachableCaseInspectionFactoryProvider : IUnreachableCaseInspectionFactoryProvider
@@ -16,7 +17,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public IUnreachableCaseInspectorFactory CreateIUnreachableInspectorFactory()
         {
-            return new UnreachableCaseInspectorFactory();
+            return new UnreachableCaseInspectorFactory(CreateIParseTreeValueFactory());
+        }
+
+        public IParseTreeValueVisitorFactory CreateParseTreeValueVisitorFactory()
+        {
+            return new ParseTreeValueVisitorFactory(CreateIParseTreeValueFactory());
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Antlr4.Runtime;
+﻿using System;
+using Antlr4.Runtime;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete.UnreachableCaseInspection;
 using Rubberduck.Parsing;
@@ -12,29 +13,13 @@ using RubberduckTests.Mocks;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Moq;
 
 namespace RubberduckTests.Inspections.UnreachableCase
 {
     [TestFixture]
     public class UnreachableCaseInspectionTests : InspectionTestsBase
     {
-        private IUnreachableCaseInspectionFactoryProvider _factoryProvider;
-
-        private IUnreachableCaseInspectionFactoryProvider FactoryProvider
-        {
-            get
-            {
-                if (_factoryProvider is null)
-                {
-                    _factoryProvider = new UnreachableCaseInspectionFactoryProvider();
-                }
-                return _factoryProvider;
-            }
-        }
-
-        private IUnreachableCaseInspectorFactory IUnreachableCaseInspectorFactory => FactoryProvider.CreateIUnreachableInspectorFactory();
-        private IParseTreeValueFactory ValueFactory => FactoryProvider.CreateIParseTreeValueFactory();
-
         [TestCase("Dim Hint$\r\nSelect Case Hint$", @"""Here"" To ""Eternity"",""Forever""", "String")] //String
         [TestCase("Dim Hint#\r\nHint#= 1.0\r\nSelect Case Hint#", "10.00 To 30.00, 20.00", "Double")] //Double
         [TestCase("Dim Hint!\r\nHint! = 1.0\r\nSelect Case Hint!", "10.00 To 30.00,20.00", "Single")] //Single
@@ -2473,10 +2458,8 @@ End Sub
             var actualResults = Enumerable.Empty<IInspectionResult>();
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var inspection = new UnreachableCaseInspection(state);
-                var parseTreeValueVisitor = inspection.ParseTreeValueVisitor as ITestParseTreeVisitor;
-
-                parseTreeValueVisitor.InjectValuedDeclarationEvaluator(TestGetValuedDeclaration);
+                var factoryProvider = SpecialValueDeclarationEvaluatorFactoryProvider(TestGetValuedDeclaration);
+                var inspection = new UnreachableCaseInspection(state, factoryProvider);
 
                 var inspector = InspectionsHelper.GetInspector(inspection);
                 actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
@@ -2527,10 +2510,8 @@ End Sub
             var actualResults = Enumerable.Empty<IInspectionResult>();
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var inspection = new UnreachableCaseInspection(state);
-                var parseTreeValueVisitor = inspection.ParseTreeValueVisitor as ITestParseTreeVisitor;
-
-                parseTreeValueVisitor.InjectValuedDeclarationEvaluator(TestGetValuedDeclaration);
+                var factoryProvider = SpecialValueDeclarationEvaluatorFactoryProvider(TestGetValuedDeclaration);
+                var inspection = new UnreachableCaseInspection(state, factoryProvider);
 
                 var inspector = InspectionsHelper.GetInspector(inspection);
                 actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
@@ -2539,6 +2520,34 @@ End Sub
             var actualUnreachable = actualResults.Where(ar => ar.Description.Equals(Rubberduck.Resources.Inspections.InspectionResults.UnreachableCaseInspection_Unreachable));
 
             Assert.AreEqual(expectedUnreachableCount, actualUnreachable.Count());
+        }
+
+        private IUnreachableCaseInspectionFactoryProvider _factoryProvider;
+        private IUnreachableCaseInspectionFactoryProvider FactoryProvider => _factoryProvider ?? (_factoryProvider = new UnreachableCaseInspectionFactoryProvider());
+
+        private IUnreachableCaseInspectorFactory UnreachableCaseInspectorFactory => FactoryProvider.CreateIUnreachableInspectorFactory();
+        private IParseTreeValueVisitorFactory ParseTreeValueVisitorFactory => FactoryProvider.CreateParseTreeValueVisitorFactory();
+
+        private IUnreachableCaseInspectionFactoryProvider SpecialValueDeclarationEvaluatorFactoryProvider(Func<Declaration, (bool, string, string)> valueDeclarationEvaluator)
+        {
+            var baseFactoryProvider = FactoryProvider;
+            var factoryProviderMock = new Mock<IUnreachableCaseInspectionFactoryProvider>();
+            factoryProviderMock.Setup(m => m.CreateIParseTreeValueFactory()).Returns(() => baseFactoryProvider.CreateIParseTreeValueFactory());
+            factoryProviderMock.Setup(m => m.CreateIUnreachableInspectorFactory()).Returns(() => baseFactoryProvider.CreateIUnreachableInspectorFactory());
+            factoryProviderMock.Setup(m => m.CreateParseTreeValueVisitorFactory()).Returns(() => 
+                SpecialValueDeclarationEvaluatorParseTreeValueVisitorFactory(baseFactoryProvider.CreateIParseTreeValueFactory(), valueDeclarationEvaluator));
+            return factoryProviderMock.Object;
+        }
+
+        private IParseTreeValueVisitorFactory SpecialValueDeclarationEvaluatorParseTreeValueVisitorFactory(IParseTreeValueFactory valueFactory, Func<Declaration, (bool, string, string)> valueDeclarationEvaluator)
+        {
+            var factoryMock = new Mock<IParseTreeValueVisitorFactory>();
+            factoryMock.Setup(m => m.Create(
+                    It.IsAny<IReadOnlyList<VBAParser.EnumerationStmtContext>>(), 
+                    It.IsAny<Func<ParserRuleContext, (bool success, IdentifierReference idRef)>>()))
+                .Returns<IReadOnlyList<VBAParser.EnumerationStmtContext>, Func<ParserRuleContext, (bool success, IdentifierReference idRef)>>((allEnums, identifierReferenceRetriever) => 
+                    new ParseTreeValueVisitor(valueFactory, allEnums, identifierReferenceRetriever, valueDeclarationEvaluator));
+            return factoryMock.Object;
         }
 
         private static Dictionary<string, (string, string)> _vbConstConversions = new Dictionary<string, (string, string)>()
@@ -2611,7 +2620,7 @@ End Sub
         {
             var selectStmtValueResults = GetParseTreeValueResults(inputCode, out VBAParser.SelectCaseStmtContext selectStmtContext);
 
-            var inspector = IUnreachableCaseInspectorFactory.Create(selectStmtContext, selectStmtValueResults, ValueFactory);
+            var inspector = UnreachableCaseInspectorFactory.Create(selectStmtContext, selectStmtValueResults);
             return inspector.SelectExpressionTypeName;
         }
 
@@ -2622,13 +2631,13 @@ End Sub
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var firstParserRuleContext = (ParserRuleContext)state.ParseTrees.Where(pt => pt.Value is ParserRuleContext).First().Value;
+                var firstParserRuleContext = (ParserRuleContext)state.ParseTrees
+                    .First(pt => pt.Value is ParserRuleContext)
+                    .Value;
                 selectStmt = firstParserRuleContext.GetDescendent<VBAParser.SelectCaseStmtContext>();
-                var visitor = UnreachableCaseInspection.CreateParseTreeValueVisitor
-                    (   ValueFactory, new List<VBAParser.EnumerationStmtContext>(), 
-                        (ParserRuleContext context) =>
-                            { return UnreachableCaseInspection.GetIdentifierReferenceForContext(context, state); }
-                    );
+                var visitor = ParseTreeValueVisitorFactory.Create(
+                    new List<VBAParser.EnumerationStmtContext>(),
+                    context => UnreachableCaseInspection.GetIdentifierReferenceForContext(context, state));
                 valueResults = selectStmt.Accept(visitor);
             }
             return valueResults;
@@ -2636,7 +2645,8 @@ End Sub
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
-            return new UnreachableCaseInspection(state);
+            var factoryProvider = new UnreachableCaseInspectionFactoryProvider(); 
+            return new UnreachableCaseInspection(state, factoryProvider);
         }
     }
 }

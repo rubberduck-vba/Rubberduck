@@ -1,6 +1,7 @@
 ﻿using Antlr4.Runtime;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
@@ -12,7 +13,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         string GetToken(ParserRuleContext context);
         bool Contains(ParserRuleContext context);
         bool TryGetValue(ParserRuleContext context, out IParseTreeValue value);
-        void OnNewValueResult(object sender, ValueResultEventArgs e);
+        void AddIfNotPresent(ParserRuleContext context, IParseTreeValue value);
     }
 
     public class ParseTreeVisitorResults : IParseTreeVisitorResults
@@ -35,18 +36,15 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public List<ParserRuleContext> GetChildResults(ParserRuleContext parent)
         {
-            var results = new List<ParserRuleContext>();
-            if (!(parent is null) || Contains(parent))
+            if (parent is null)
             {
-                foreach (var child in parent.children)
-                {
-                    if (child is ParserRuleContext prCtxt  && Contains(prCtxt))
-                    {
-                        results.Add(prCtxt);
-                    }
-                }
+                return new List<ParserRuleContext>();
             }
-            return results;
+
+            return parent.children
+                .OfType<ParserRuleContext>()
+                .Where(Contains)
+                .ToList();
         }
 
         public string GetValueType(ParserRuleContext context)
@@ -69,11 +67,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return _parseTreeValues.TryGetValue(context, out value);
         }
 
-        public void OnNewValueResult(object sender, ValueResultEventArgs e)
+        public void AddIfNotPresent(ParserRuleContext context, IParseTreeValue value)
         {
-            if (!_parseTreeValues.ContainsKey(e.Context))
+            if (!_parseTreeValues.ContainsKey(context))
             {
-                _parseTreeValues.Add(e.Context, e.Value);
+                _parseTreeValues.Add(context, value);
             }
         }
     }

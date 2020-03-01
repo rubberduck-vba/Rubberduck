@@ -10,16 +10,9 @@ using System.Linq;
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public interface IParseTreeValueVisitor : IParseTreeVisitor<IParseTreeVisitorResults>
-    {
-        event EventHandler<ValueResultEventArgs> OnValueResultCreated;
-    }
+    {}
 
-    public interface ITestParseTreeVisitor
-    {
-        void InjectValuedDeclarationEvaluator(Func<Declaration, (bool, string, string)> func);
-    }
-
-    public class ParseTreeValueVisitor : IParseTreeValueVisitor, ITestParseTreeVisitor
+    public class ParseTreeValueVisitor : IParseTreeValueVisitor
     {
         private class EnumMember
         {
@@ -29,28 +22,31 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 Value = initValue;
                 HasAssignment = constContext.children.Any(ch => ch.Equals(constContext.GetToken(VBAParser.EQ, 0)));
             }
-            public VBAParser.EnumerationStmt_ConstantContext ConstantContext { set; get; }
+            public VBAParser.EnumerationStmt_ConstantContext ConstantContext { get; }
             public long Value { set; get; }
-            public bool HasAssignment { set; get; }
+            public bool HasAssignment { get; }
         }
 
-        private IParseTreeVisitorResults _contextValues;
-        private IParseTreeValueFactory _inspValueFactory;
-        private IReadOnlyList<VBAParser.EnumerationStmtContext> _enumStmtContexts;
+        private readonly IParseTreeVisitorResults _contextValues;
+        private readonly IParseTreeValueFactory _inspValueFactory;
+        private readonly IReadOnlyList<VBAParser.EnumerationStmtContext> _enumStmtContexts;
         private List<EnumMember> _enumMembers;
+        private Func<Declaration, (bool, string, string)> _valueDeclarationEvaluator;
 
-        public ParseTreeValueVisitor(IParseTreeValueFactory valueFactory, IReadOnlyList<VBAParser.EnumerationStmtContext> allEnums, Func<ParserRuleContext, (bool success, IdentifierReference idRef)> idRefRetriever)
+        public ParseTreeValueVisitor(
+            IParseTreeValueFactory valueFactory, 
+            IReadOnlyList<VBAParser.EnumerationStmtContext> allEnums, 
+            Func<ParserRuleContext, (bool success, IdentifierReference idRef)> idRefRetriever, 
+            Func<Declaration, (bool, string, string)> valueDeclarationEvaluator = null)
         {
             _inspValueFactory = valueFactory;
             IdRefRetriever = idRefRetriever;
             _contextValues = new ParseTreeVisitorResults();
-            OnValueResultCreated += _contextValues.OnNewValueResult;
             _enumStmtContexts = allEnums;
+            _valueDeclarationEvaluator = valueDeclarationEvaluator ?? GetValuedDeclaration;
         }
 
-        private Func<ParserRuleContext, (bool success, IdentifierReference idRef)> IdRefRetriever { set; get; } = null;
-
-        public event EventHandler<ValueResultEventArgs> OnValueResultCreated;
+        private Func<ParserRuleContext, (bool success, IdentifierReference idRef)> IdRefRetriever { get; }
 
         public virtual IParseTreeVisitorResults Visit(IParseTree tree)
         {
@@ -85,7 +81,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private void StoreVisitResult(ParserRuleContext context, IParseTreeValue inspValue)
         {
-            OnValueResultCreated(this, new ValueResultEventArgs(context, inspValue));
+            _contextValues.AddIfNotPresent(context, inspValue);
         }
 
         private bool HasResult(ParserRuleContext context)
@@ -141,7 +137,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
             else
             {
-                var smplNameExprTypeName = string.Empty;
                 var smplName = context.GetDescendent<VBAParser.SimpleNameExprContext>();
                 if (TryGetIdentifierReferenceForContext(smplName, out IdentifierReference idRef))
                 {
@@ -286,20 +281,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return false;
         }
 
-        private Func<Declaration, (bool, string, string)> _valueDeclarationEvaluator;
-        private Func<Declaration, (bool, string, string)> ValuedDeclarationEvaluator
-        {
-            set
-            {
-                _valueDeclarationEvaluator = value;
-            }
-            get
-            {
-                return _valueDeclarationEvaluator ?? GetValuedDeclaration;
-            }
-        }
-
-
         private (bool IsType, string ExpressionValue, string TypeName) GetValuedDeclaration(Declaration declaration)
         {
             if (declaration is ValuedDeclaration valuedDeclaration)
@@ -321,7 +302,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 expressionValue = rangeClauseIdentifierReference.IdentifierName;
                 declaredTypeName = GetBaseTypeForDeclaration(declaration);
 
-                (bool IsValuedDeclaration, string ExpressionValue, string TypeName) = ValuedDeclarationEvaluator(declaration);
+                (bool IsValuedDeclaration, string ExpressionValue, string TypeName) = _valueDeclarationEvaluator(declaration);
 
                 if( IsValuedDeclaration)
                 {
@@ -334,7 +315,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                         declaredTypeName = Tokens.String;
                         return;
                     }
-                    else if (long.TryParse(expressionValue, out _))
+
+                    if (long.TryParse(expressionValue, out _))
                     {
                         return;
                     }
@@ -436,9 +418,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
             return false;
         }
-
-        public void InjectValuedDeclarationEvaluator( Func<Declaration, (bool, string, string)> func)
-            => ValuedDeclarationEvaluator = func;
 
         private void LoadEnumMemberValues()
         {

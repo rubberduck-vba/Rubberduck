@@ -6,17 +6,24 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public interface IUnreachableCaseInspectorFactory
     {
-        IUnreachableCaseInspector Create(VBAParser.SelectCaseStmtContext selectStmt, 
+        IUnreachableCaseInspector Create(
+            VBAParser.SelectCaseStmtContext selectStmt, 
             IParseTreeVisitorResults results, 
-            IParseTreeValueFactory valueFactory,
             Func<string,ParserRuleContext,string> func = null);
     }
 
     public class UnreachableCaseInspectorFactory : IUnreachableCaseInspectorFactory
     {
-        public IUnreachableCaseInspector Create(VBAParser.SelectCaseStmtContext selectStmt, IParseTreeVisitorResults results, IParseTreeValueFactory valueFactory, Func<string, ParserRuleContext, string> func = null)
+        private readonly IParseTreeValueFactory _valueFactory;
+
+        public UnreachableCaseInspectorFactory(IParseTreeValueFactory valueFactory)
         {
-            return new UnreachableCaseInspector(selectStmt, results, valueFactory, func);
+            _valueFactory = valueFactory;
+        }
+
+        public IUnreachableCaseInspector Create(VBAParser.SelectCaseStmtContext selectStmt, IParseTreeVisitorResults results, Func<string, ParserRuleContext, string> func = null)
+        {
+            return new UnreachableCaseInspector(selectStmt, results, _valueFactory, func);
         }
     }
 }

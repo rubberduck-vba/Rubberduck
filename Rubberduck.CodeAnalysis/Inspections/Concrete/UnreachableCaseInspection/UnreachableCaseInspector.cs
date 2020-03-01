@@ -9,13 +9,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public interface IUnreachableCaseInspector
     {
-        void InspectForUnreachableCases();
+        ICollection<(UnreachableCaseInspection.CaseInspectionResultType resultType, ParserRuleContext context)> InspectForUnreachableCases();
         string SelectExpressionTypeName { get; }
-        List<ParserRuleContext> UnreachableCases { get; }
-        List<ParserRuleContext> InherentlyUnreachableCases { get; }
-        List<ParserRuleContext> MismatchTypeCases { get; }
-        List<ParserRuleContext> OverflowCases { get; }
-        List<ParserRuleContext> UnreachableCaseElseCases { get; }
     }
 
     public class UnreachableCaseInspector : IUnreachableCaseInspector
@@ -49,15 +44,30 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public List<ParserRuleContext> UnreachableCaseElseCases { set; get; } = new List<ParserRuleContext>();
 
+        public ICollection<(UnreachableCaseInspection.CaseInspectionResultType resultType, ParserRuleContext context)>
+            AllResults =>
+            WithType(UnreachableCaseInspection.CaseInspectionResultType.Unreachable, UnreachableCases)
+                .Concat(WithType(UnreachableCaseInspection.CaseInspectionResultType.InherentlyUnreachable, InherentlyUnreachableCases))
+                .Concat(WithType(UnreachableCaseInspection.CaseInspectionResultType.MismatchType, MismatchTypeCases))
+                .Concat(WithType(UnreachableCaseInspection.CaseInspectionResultType.Overflow, OverflowCases))
+                .Concat(WithType(UnreachableCaseInspection.CaseInspectionResultType.CaseElse, UnreachableCaseElseCases))
+                .ToList();
+
+        private static IEnumerable<(UnreachableCaseInspection.CaseInspectionResultType type, ParserRuleContext context)>
+            WithType(UnreachableCaseInspection.CaseInspectionResultType type, IEnumerable<ParserRuleContext> source)
+        {
+            return source.Select(context => (type, context));
+        }
+
         public string SelectExpressionTypeName { private set; get; } = string.Empty;
 
         private IParseTreeVisitorResults ParseTreeValueResults { get; }
 
-        public void InspectForUnreachableCases()
+        public ICollection<(UnreachableCaseInspection.CaseInspectionResultType resultType, ParserRuleContext context)> InspectForUnreachableCases()
         {
             if (!InspectableTypes.Contains(SelectExpressionTypeName))
             {
-                return;
+                return new List<(UnreachableCaseInspection.CaseInspectionResultType resultType, ParserRuleContext context)>();
             }
 
             var remainingCasesToInspect = new List<VBAParser.CaseClauseContext>();
@@ -130,6 +140,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 UnreachableCaseElseCases.Add(_caseElseContext);
             }
+
+            return AllResults;
         }
 
         private IExpressionFilter BuildRangeClauseFilter(IEnumerable<VBAParser.CaseClauseContext> caseClauses)
@@ -327,8 +339,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return false;
         }
 
-        private static (IParseTreeValue lhs, IParseTreeValue rhs)
-            CreateLogicPair(IParseTreeValue value, string opSymbol, IParseTreeValueFactory factory)
+        private static (IParseTreeValue lhs, IParseTreeValue rhs) CreateLogicPair(IParseTreeValue value, string opSymbol, IParseTreeValueFactory factory)
         {
             var operands = value.Token.Split(new [] { opSymbol }, StringSplitOptions.None);
             if (operands.Length == 2)
