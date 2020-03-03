@@ -1464,7 +1464,7 @@ Sub Foo(z As BitCountMaxValues)
         'Unreachable
     End Select
 End Sub";
-            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            var (expectedMsg, actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 
@@ -2547,9 +2547,9 @@ End Sub
         {
             var factoryMock = new Mock<IParseTreeValueVisitorFactory>();
             factoryMock.Setup(m => m.Create(
-                    It.IsAny<IReadOnlyList<VBAParser.EnumerationStmtContext>>(), 
-                    It.IsAny<Func<ParserRuleContext, (bool success, IdentifierReference idRef)>>()))
-                .Returns<IReadOnlyList<VBAParser.EnumerationStmtContext>, Func<ParserRuleContext, (bool success, IdentifierReference idRef)>>((allEnums, identifierReferenceRetriever) => 
+                    It.IsAny<IReadOnlyList<QualifiedContext<VBAParser.EnumerationStmtContext>>>(), 
+                    It.IsAny<Func<QualifiedModuleName, ParserRuleContext, (bool success, IdentifierReference idRef)>>()))
+                .Returns<IReadOnlyList<QualifiedContext<VBAParser.EnumerationStmtContext>>, Func<QualifiedModuleName, ParserRuleContext, (bool success, IdentifierReference idRef)>>((allEnums, identifierReferenceRetriever) => 
                     new ParseTreeValueVisitor(valueFactory, allEnums, identifierReferenceRetriever, valueDeclarationEvaluator));
             return factoryMock.Object;
         }
@@ -2622,13 +2622,13 @@ End Sub
 
         private string GetSelectExpressionType(string inputCode)
         {
-            var selectStmtValueResults = GetParseTreeValueResults(inputCode, out VBAParser.SelectCaseStmtContext selectStmtContext);
+            var selectStmtValueResults = GetParseTreeValueResults(inputCode, out VBAParser.SelectCaseStmtContext selectStmtContext, out var module);
 
-            var inspector = UnreachableCaseInspectorFactory.Create(selectStmtContext, selectStmtValueResults);
+            var inspector = UnreachableCaseInspectorFactory.Create(module, selectStmtContext, selectStmtValueResults);
             return inspector.SelectExpressionTypeName;
         }
 
-        private IParseTreeVisitorResults GetParseTreeValueResults(string inputCode, out VBAParser.SelectCaseStmtContext selectStmt)
+        private IParseTreeVisitorResults GetParseTreeValueResults(string inputCode, out VBAParser.SelectCaseStmtContext selectStmt, out QualifiedModuleName contextModule)
         {
             selectStmt = null;
             IParseTreeVisitorResults valueResults = null;
@@ -2640,9 +2640,10 @@ End Sub
                     .First(pt => pt.Value is ParserRuleContext);
                 selectStmt = ((ParserRuleContext)moduleParseTree).GetDescendent<VBAParser.SelectCaseStmtContext>();
                 var visitor = ParseTreeValueVisitorFactory.Create(
-                    new List<VBAParser.EnumerationStmtContext>(),
-                    (context) => UnreachableCaseInspection.GetIdentifierReferenceForContext(parseTreeModule, context, finder));
-                valueResults = visitor.VisitChildren(selectStmt);
+                    new List<QualifiedContext<VBAParser.EnumerationStmtContext>>(),
+                    (module, context) => UnreachableCaseInspection.GetIdentifierReferenceForContext(module, context, finder));
+                valueResults = visitor.VisitChildren(parseTreeModule, selectStmt);
+                contextModule = parseTreeModule;
             }
             return valueResults;
         }

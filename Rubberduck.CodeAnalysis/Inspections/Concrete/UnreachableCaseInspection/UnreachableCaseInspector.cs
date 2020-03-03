@@ -4,6 +4,7 @@ using Rubberduck.Parsing.Grammar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
@@ -18,18 +19,21 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private readonly IEnumerable<VBAParser.CaseClauseContext> _caseClauses;
         private readonly ParserRuleContext _caseElseContext;
         private readonly IParseTreeValueFactory _valueFactory;
-        private readonly Func<string, ParserRuleContext, string> _getVariableDeclarationTypeName;
+        private readonly Func<string, QualifiedModuleName, ParserRuleContext, string> _getVariableDeclarationTypeName;
+        private readonly QualifiedModuleName _module;
         private IParseTreeValue _selectExpressionValue;
 
         public UnreachableCaseInspector(
+            QualifiedModuleName module,
             VBAParser.SelectCaseStmtContext selectCaseContext, 
             IParseTreeVisitorResults inspValues, 
             IParseTreeValueFactory valueFactory,
-            Func<string,ParserRuleContext,string> getVariableTypeName = null)
+            Func<string, QualifiedModuleName, ParserRuleContext, string> getVariableTypeName = null)
         {
             _valueFactory = valueFactory;
             _caseClauses = selectCaseContext.caseClause();
             _caseElseContext = selectCaseContext.caseElseClause();
+            _module = module;
             _getVariableDeclarationTypeName = getVariableTypeName;
             ParseTreeValueResults = inspValues;
             SetSelectExpressionTypeName(selectCaseContext, inspValues);
@@ -158,7 +162,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                         var expression = GetRangeClauseExpression(rangeClause);
                         if (!expression?.LHS?.ParsesToConstantValue ?? false)
                         {
-                            var typeName = _getVariableDeclarationTypeName(expression.LHS.Token, rangeClause);
+                            var typeName = _getVariableDeclarationTypeName(expression.LHS.Token, _module, rangeClause);
                             rangeClauseFilter.AddComparablePredicateFilter(expression.LHS.Token, typeName);
                         }
                     }

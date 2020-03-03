@@ -164,7 +164,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 .Where(result => !result.IsIgnoringInspectionResultFor(finder, AnnotationName));
 
             var enumStmts = _listener.EnumerationStmtContexts();
-            var parseTreeValueVisitor = CreateParseTreeValueVisitor(enumStmts, context => GetIdentifierReferenceForContextFunction(finder)(module, context));
+            var parseTreeValueVisitor = CreateParseTreeValueVisitor(enumStmts, GetIdentifierReferenceForContextFunction(finder));
 
             return qualifiedSelectCaseStmts
                 .SelectMany(context => ResultsForContext(context, finder, parseTreeValueVisitor))
@@ -174,8 +174,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private IEnumerable<IInspectionResult> ResultsForContext(QualifiedContext<ParserRuleContext> qualifiedSelectCaseStmt, DeclarationFinder finder, IParseTreeValueVisitor parseTreeValueVisitor)
         {
             var module = qualifiedSelectCaseStmt.ModuleName;
-            var contextValues = parseTreeValueVisitor.VisitChildren(qualifiedSelectCaseStmt.Context);
-            var selectCaseInspector = _unreachableCaseInspectorFactory.Create((VBAParser.SelectCaseStmtContext)qualifiedSelectCaseStmt.Context, contextValues, GetVariableTypeNameFunction(module, finder));
+            var contextValues = parseTreeValueVisitor.VisitChildren(module, qualifiedSelectCaseStmt.Context);
+            var selectCaseInspector = _unreachableCaseInspectorFactory.Create(module, (VBAParser.SelectCaseStmtContext)qualifiedSelectCaseStmt.Context, contextValues, GetVariableTypeNameFunction(finder));
 
             var results = selectCaseInspector.InspectForUnreachableCases();
 
@@ -218,13 +218,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public IParseTreeValueVisitor CreateParseTreeValueVisitor(
             IReadOnlyList<QualifiedContext<VBAParser.EnumerationStmtContext>> allEnums,
-            Func<ParserRuleContext, (bool success, IdentifierReference idRef)> func)
+            Func<QualifiedModuleName, ParserRuleContext, (bool success, IdentifierReference idRef)> func)
         {
-            var enums = allEnums.Select(item => item.Context).ToList();
-            return _parseTreeValueVisitorFactory.Create(enums, func);
+            return _parseTreeValueVisitorFactory.Create(allEnums, func);
         }
 
-        private Func<QualifiedModuleName, ParserRuleContext,(bool success, IdentifierReference idRef)> GetIdentifierReferenceForContextFunction(DeclarationFinder finder)
+        private Func<QualifiedModuleName, ParserRuleContext,(bool success, IdentifierReference reference)> GetIdentifierReferenceForContextFunction(DeclarationFinder finder)
         {
             return (module, context) => GetIdentifierReferenceForContext(module, context, finder);
         }
@@ -251,12 +250,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 : (false, null);
         }
 
-        private Func<string, ParserRuleContext, string> GetVariableTypeNameFunction(QualifiedModuleName module, DeclarationFinder finder)
+        private Func<string, QualifiedModuleName, ParserRuleContext, string> GetVariableTypeNameFunction(DeclarationFinder finder)
         {
-            return (variableName, ancestor) => GetVariableTypeName(module, variableName, ancestor, finder);
+            var referenceRetriever = GetIdentifierReferenceForContextFunction(finder);
+            return (variableName, module, ancestor) => GetVariableTypeName(module, variableName, ancestor, referenceRetriever);
         }
 
-        private string GetVariableTypeName(QualifiedModuleName module, string variableName, ParserRuleContext ancestor, DeclarationFinder finder)
+        private string GetVariableTypeName(QualifiedModuleName module, string variableName, ParserRuleContext ancestor, Func<QualifiedModuleName, ParserRuleContext, (bool success, IdentifierReference reference)> referenceRetriever)
         {
             if (ancestor == null)
             {
@@ -272,7 +272,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
 
             var firstDescendent = descendents.First();
-            var (success, reference) = GetIdentifierReferenceForContext(module, firstDescendent, finder);
+            var (success, reference) = referenceRetriever(module, firstDescendent);
             return success ?
                 GetBaseTypeForDeclaration(reference.Declaration) 
                 : string.Empty;
