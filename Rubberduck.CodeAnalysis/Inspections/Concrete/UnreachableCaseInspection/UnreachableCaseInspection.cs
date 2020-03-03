@@ -144,27 +144,26 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var finder = DeclarationFinderProvider.DeclarationFinder;
+            var parseTreeValueVisitor = CreateParseTreeValueVisitor(GetIdentifierReferenceForContextFunction(finder));
 
             return finder.UserDeclarations(DeclarationType.Module)
                 .Where(module => module != null)
-                .SelectMany(module => DoGetInspectionResults(module.QualifiedModuleName, finder))
+                .SelectMany(module => DoGetInspectionResults(module.QualifiedModuleName, finder, parseTreeValueVisitor))
                 .ToList();
         }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
         {
             var finder = DeclarationFinderProvider.DeclarationFinder;
-            return DoGetInspectionResults(module, finder);
+            var parseTreeValueVisitor = CreateParseTreeValueVisitor(GetIdentifierReferenceForContextFunction(finder));
+            return DoGetInspectionResults(module, finder, parseTreeValueVisitor);
         }
 
-        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
+        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder, IParseTreeValueVisitor parseTreeValueVisitor)
         {
             var qualifiedSelectCaseStmts = Listener.Contexts(module)
                 // ignore filtering here to make the search space smaller
                 .Where(result => !result.IsIgnoringInspectionResultFor(finder, AnnotationName));
-
-            var enumStmts = _listener.EnumerationStmtContexts();
-            var parseTreeValueVisitor = CreateParseTreeValueVisitor(enumStmts, GetIdentifierReferenceForContextFunction(finder));
 
             return qualifiedSelectCaseStmts
                 .SelectMany(context => ResultsForContext(context, finder, parseTreeValueVisitor))
@@ -216,11 +215,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                         new QualifiedContext<ParserRuleContext>(selectStmt.ModuleName, unreachableBlock));
         }
 
-        public IParseTreeValueVisitor CreateParseTreeValueVisitor(
-            IReadOnlyList<QualifiedContext<VBAParser.EnumerationStmtContext>> allEnums,
-            Func<QualifiedModuleName, ParserRuleContext, (bool success, IdentifierReference idRef)> func)
+        public IParseTreeValueVisitor CreateParseTreeValueVisitor(Func<QualifiedModuleName, ParserRuleContext, (bool success, IdentifierReference idRef)> func)
         {
-            return _parseTreeValueVisitorFactory.Create(allEnums, func);
+            return _parseTreeValueVisitorFactory.Create(func);
         }
 
         private Func<QualifiedModuleName, ParserRuleContext,(bool success, IdentifierReference reference)> GetIdentifierReferenceForContextFunction(DeclarationFinder finder)
@@ -291,48 +288,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return localDeclaration is null ? declaration.AsTypeName : localDeclaration.AsTypeName;
         }
 
-        #region UnreachableCaseInspectionListeners
         public class UnreachableCaseInspectionListener : InspectionListenerBase
         {
-            private readonly IDictionary<QualifiedModuleName, List<QualifiedContext<VBAParser.EnumerationStmtContext>>> _enumStmts = new Dictionary<QualifiedModuleName, List<QualifiedContext<VBAParser.EnumerationStmtContext>>>();
-            public IReadOnlyList<QualifiedContext<VBAParser.EnumerationStmtContext>> EnumerationStmtContexts() => _enumStmts.AllValues().ToList();
-
-            public override void ClearContexts()
-            {
-                _enumStmts.Clear();
-                base.ClearContexts();
-            }
-
-            public override void ClearContexts(QualifiedModuleName module)
-            {
-                _enumStmts.Remove(module);
-                base.ClearContexts(module);
-            }
-
             public override void EnterSelectCaseStmt([NotNull] VBAParser.SelectCaseStmtContext context)
             {
                 SaveContext(context);
             }
-
-            public override void EnterEnumerationStmt([NotNull] VBAParser.EnumerationStmtContext context)
-            {
-                SaveEnumStmt(context);
-            }
-
-            private void SaveEnumStmt(VBAParser.EnumerationStmtContext context)
-            {
-                var module = CurrentModuleName;
-                var qualifiedContext = new QualifiedContext<VBAParser.EnumerationStmtContext>(module, context);
-                if (_enumStmts.TryGetValue(module, out var stmts))
-                {
-                    stmts.Add(qualifiedContext);
-                }
-                else
-                {
-                    _enumStmts.Add(module, new List<QualifiedContext<VBAParser.EnumerationStmtContext>> { qualifiedContext });
-                }
-            }
         }
-        #endregion
     }
 }

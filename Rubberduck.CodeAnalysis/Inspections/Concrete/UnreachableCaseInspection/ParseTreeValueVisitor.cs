@@ -32,17 +32,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     {
         private readonly IParseTreeValueFactory _valueFactory;
         private readonly Func<Declaration, (bool, string, string)> _valueDeclarationEvaluator;
-        private readonly IReadOnlyList<QualifiedContext<VBAParser.EnumerationStmtContext>> _enumStmtContexts;
 
         public ParseTreeValueVisitor(
             IParseTreeValueFactory valueFactory,
-            IReadOnlyList<QualifiedContext<VBAParser.EnumerationStmtContext>> allEnums, 
             Func<QualifiedModuleName, ParserRuleContext, (bool success, IdentifierReference idRef)> identifierReferenceRetriever, 
             Func<Declaration, (bool, string, string)> valueDeclarationEvaluator = null)
         {
             _valueFactory = valueFactory;
             IdentifierReferenceRetriever = identifierReferenceRetriever;
-            _enumStmtContexts = allEnums;
             _valueDeclarationEvaluator = valueDeclarationEvaluator ?? GetValuedDeclaration;
         }
 
@@ -357,10 +354,15 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     return (Tokens.Long, constantExpressionValue, resultValues);
                 }
 
-                var (enumMembers, valueResults) = EnumMembers(resultValues);
-                var enumValue = enumMembers.SingleOrDefault(dt => dt.ConstantContext == declaration.Context);
-                var enumExpressionValue = enumValue?.Value.ToString() ?? string.Empty;
-                return (Tokens.Long, enumExpressionValue, valueResults);
+                if (declaration.Context.Parent is VBAParser.EnumerationStmtContext enumStmt)
+                {
+                    var (enumMembers, valueResults) = EnumMembers(module, enumStmt, resultValues);
+                    var enumValue = enumMembers.SingleOrDefault(enumMember => enumMember.ConstantContext == declaration.Context);
+                    var enumExpressionValue = enumValue?.Value.ToString() ?? string.Empty;
+                    return (Tokens.Long, enumExpressionValue, valueResults);
+                } 
+
+                return (Tokens.Long, string.Empty, resultValues);
             }
 
             return (declaredTypeName, expressionValue, knownResults);
@@ -443,46 +445,46 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return false;
         }
 
-        private (IReadOnlyList<EnumMember> enumMembers, IMutableParseTreeVisitorResults resultValues) EnumMembers(IMutableParseTreeVisitorResults knownResults)
+        private (IReadOnlyList<EnumMember> enumMembers, IMutableParseTreeVisitorResults resultValues) EnumMembers(QualifiedModuleName enumModule, VBAParser.EnumerationStmtContext enumerationStmtContext, IMutableParseTreeVisitorResults knownResults)
         {
-            if (knownResults.EnumMembers.Count > 0)
+            if (knownResults.TryGetEnumMembers(enumerationStmtContext, out var enumMembers))
             {
-                return (knownResults.EnumMembers, knownResults);
+                return (enumMembers, knownResults);
             }
 
-            var resultValues = LoadEnumMemberValues(_enumStmtContexts, knownResults);
-            return (resultValues.EnumMembers, resultValues);
+            var resultValues = LoadEnumMemberValues(enumModule, enumerationStmtContext, knownResults);
+            if (knownResults.TryGetEnumMembers(enumerationStmtContext, out var newEnumMembers))
+            {
+                return (newEnumMembers, resultValues);
+            }
+
+            return (new List<EnumMember>(), resultValues);
         }
 
         //The enum members incrementally to the parse tree visitor result are used within the call to Visit.
-        private IMutableParseTreeVisitorResults LoadEnumMemberValues(IReadOnlyList<QualifiedContext<VBAParser.EnumerationStmtContext>> enumStmtContexts, IMutableParseTreeVisitorResults knownResults)
+        private IMutableParseTreeVisitorResults LoadEnumMemberValues(QualifiedModuleName enumModule, VBAParser.EnumerationStmtContext enumStmt, IMutableParseTreeVisitorResults knownResults)
         {
             var valueResults = knownResults;
-            foreach (var qualifiedEnumStmt in enumStmtContexts)
+            long enumAssignedValue = -1;
+            var enumConstContexts = enumStmt.children
+                .OfType<VBAParser.EnumerationStmt_ConstantContext>();
+            foreach (var enumConstContext in enumConstContexts)
             {
-                var module = qualifiedEnumStmt.ModuleName;
-                var enumStmt = qualifiedEnumStmt.Context;
-                long enumAssignedValue = -1;
-                var enumConstContexts = enumStmt.children
-                    .OfType<VBAParser.EnumerationStmt_ConstantContext>();
-                foreach (var enumConstContext in enumConstContexts)
+                enumAssignedValue++;
+                var enumMember = new EnumMember(enumConstContext, enumAssignedValue);
+                if (enumMember.HasAssignment)
                 {
-                    enumAssignedValue++;
-                    var enumMember = new EnumMember(enumConstContext, enumAssignedValue);
-                    if (enumMember.HasAssignment)
-                    {
-                        valueResults = Visit(module, enumMember.ConstantContext, valueResults);
+                    valueResults = Visit(enumModule, enumMember.ConstantContext, valueResults);
 
-                        var (valueText, resultValues) = GetConstantContextValueToken(module, enumMember.ConstantContext, valueResults);
-                        valueResults = resultValues;
-                        if (!valueText.Equals(string.Empty))
-                        {
-                            enumMember.Value = long.Parse(valueText);
-                            enumAssignedValue = enumMember.Value;
-                        }
+                    var (valueText, resultValues) = GetConstantContextValueToken(enumModule, enumMember.ConstantContext, valueResults);
+                    valueResults = resultValues;
+                    if (!valueText.Equals(string.Empty))
+                    {
+                        enumMember.Value = long.Parse(valueText);
+                        enumAssignedValue = enumMember.Value;
                     }
-                    valueResults.Add(enumMember);
                 }
+                valueResults.AddEnumMember(enumStmt, enumMember);
             }
 
             return valueResults;

@@ -839,7 +839,7 @@ Sub Foo( x As Long, y As Double)
         Case 95
         'OK
         Case x > -3000
-        'Ureachable
+        'Unreachable
         Case Else
         'OK
     End Select
@@ -2459,7 +2459,7 @@ End Sub
 
             var vbe = CreateStandardModuleProject(inputCode);
 
-            var actualResults = Enumerable.Empty<IInspectionResult>();
+            IEnumerable<IInspectionResult> actualResults;
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var factoryProvider = SpecialValueDeclarationEvaluatorFactoryProvider(TestGetValuedDeclaration);
@@ -2511,7 +2511,7 @@ End Sub
 ";
             var vbe = CreateStandardModuleProject(inputCode);
 
-            var actualResults = Enumerable.Empty<IInspectionResult>();
+            IEnumerable<IInspectionResult> actualResults;
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var factoryProvider = SpecialValueDeclarationEvaluatorFactoryProvider(TestGetValuedDeclaration);
@@ -2546,11 +2546,9 @@ End Sub
         private IParseTreeValueVisitorFactory SpecialValueDeclarationEvaluatorParseTreeValueVisitorFactory(IParseTreeValueFactory valueFactory, Func<Declaration, (bool, string, string)> valueDeclarationEvaluator)
         {
             var factoryMock = new Mock<IParseTreeValueVisitorFactory>();
-            factoryMock.Setup(m => m.Create(
-                    It.IsAny<IReadOnlyList<QualifiedContext<VBAParser.EnumerationStmtContext>>>(), 
-                    It.IsAny<Func<QualifiedModuleName, ParserRuleContext, (bool success, IdentifierReference idRef)>>()))
-                .Returns<IReadOnlyList<QualifiedContext<VBAParser.EnumerationStmtContext>>, Func<QualifiedModuleName, ParserRuleContext, (bool success, IdentifierReference idRef)>>((allEnums, identifierReferenceRetriever) => 
-                    new ParseTreeValueVisitor(valueFactory, allEnums, identifierReferenceRetriever, valueDeclarationEvaluator));
+            factoryMock.Setup(m => m.Create(It.IsAny<Func<QualifiedModuleName, ParserRuleContext, (bool success, IdentifierReference idRef)>>()))
+                .Returns<Func<QualifiedModuleName, ParserRuleContext, (bool success, IdentifierReference idRef)>>((identifierReferenceRetriever) => 
+                    new ParseTreeValueVisitor(valueFactory, identifierReferenceRetriever, valueDeclarationEvaluator));
             return factoryMock.Object;
         }
 
@@ -2595,7 +2593,7 @@ End Sub
                 { Rubberduck.Resources.Inspections.InspectionResults.UnreachableCaseInspection_CaseElse, caseElse },
             };
 
-            var actualResults = InspectionResultsForModules(components);
+            var actualResults = InspectionResultsForModules(components).ToList();
 
             var actualUnreachable = actualResults.Where(ar => ar.Description.Equals(Rubberduck.Resources.Inspections.InspectionResults.UnreachableCaseInspection_Unreachable));
             var actualMismatches = actualResults.Where(ar => ar.Description.Equals(Rubberduck.Resources.Inspections.InspectionResults.UnreachableCaseInspection_TypeMismatch));
@@ -2614,7 +2612,7 @@ End Sub
             return (expectedMsg, actualMsg);
         }
 
-        private Moq.Mock<IVBE> CreateStandardModuleProject(string inputCode)
+        private Mock<IVBE> CreateStandardModuleProject(string inputCode)
             => MockVbeBuilder.BuildFromModules(new List<(string moduleName, string inputCode, ComponentType componentType)>() { ("TestModule1", inputCode, ComponentType.StandardModule) });
 
         private static string BuildResultString(int unreachableCount, int mismatchCount, int caseElseCount, int inherentCount, int overflowCount)
@@ -2631,7 +2629,7 @@ End Sub
         private IParseTreeVisitorResults GetParseTreeValueResults(string inputCode, out VBAParser.SelectCaseStmtContext selectStmt, out QualifiedModuleName contextModule)
         {
             selectStmt = null;
-            IParseTreeVisitorResults valueResults = null;
+            IParseTreeVisitorResults valueResults;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
@@ -2639,9 +2637,7 @@ End Sub
                 var (parseTreeModule, moduleParseTree) = state.ParseTrees
                     .First(pt => pt.Value is ParserRuleContext);
                 selectStmt = ((ParserRuleContext)moduleParseTree).GetDescendent<VBAParser.SelectCaseStmtContext>();
-                var visitor = ParseTreeValueVisitorFactory.Create(
-                    new List<QualifiedContext<VBAParser.EnumerationStmtContext>>(),
-                    (module, context) => UnreachableCaseInspection.GetIdentifierReferenceForContext(module, context, finder));
+                var visitor = ParseTreeValueVisitorFactory.Create((module, context) => UnreachableCaseInspection.GetIdentifierReferenceForContext(module, context, finder));
                 valueResults = visitor.VisitChildren(parseTreeModule, selectStmt);
                 contextModule = parseTreeModule;
             }
