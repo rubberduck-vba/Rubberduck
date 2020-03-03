@@ -18,14 +18,12 @@
 
             <BitmapImage x:Key="InvalidInterfaceImage"
                          UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
-            <!--<converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />-->
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
             <RowDefinition Height="Auto" />
-            <!--<RowDefinition Height="5" />-->
             <RowDefinition Height="*" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
@@ -39,61 +37,6 @@
                            Padding="0,5" />
             </StackPanel>
         </DockPanel>
-        <!--<Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="50"></ColumnDefinition>
-                <ColumnDefinition Width="200"></ColumnDefinition>
-                <ColumnDefinition Width="50"></ColumnDefinition>
-                <ColumnDefinition Width="200"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <Grid Grid.Column="1">
-                --><!--<StackPanel VerticalAlignment="Center">
-                    <TextBlock Text="{Binding SourceModuleLabel}"
-                               Padding="10,0"
-                               FontWeight="Bold"
-                               Height="20">
-                    </TextBlock>
-                    <TextBlock Height="30"
-                               Width="200"
-                               FontWeight="Bold"
-                               HorizontalAlignment="Left"
-                               Padding="10,0"
-                               Text="{Binding SourceModuleName}">
-                    </TextBlock>
-                </StackPanel>--><!--
-            </Grid>
-            <Grid Grid.Column="3">
-                <StackPanel VerticalAlignment="Center">
-                    --><!--<TextBlock Text="{Binding DestinationSelectionLabel, Mode=OneTime}"
-                               Padding="10,0"
-                               FontWeight="Bold"
-                               Height="20">
-                    </TextBlock>--><!--
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="42*" />
-                            <ColumnDefinition Width="59*" />
-                        </Grid.ColumnDefinitions>
-                        --><!--<ComboBox x:Name="DestinationModuleName"
-                                  IsEditable="True"
-                                  IsTextSearchEnabled="True"
-                                  Height="30"
-                                  Width="200"
-                                  HorizontalAlignment="Right"
-                                  VerticalContentAlignment="Center"
-                                  Padding="10,0"
-                                  SelectedValue="{Binding DestinationModule, Mode=TwoWay}"
-                                  Text="{Binding DestinationModuleName, Mode=TwoWay}"
-                                  ItemsSource="{Binding DestinationModules, Mode=OneWay}"
-                                  SelectedValuePath="Key"
-                                  DisplayMemberPath="Value"
-                                  Grid.ColumnSpan="2"
-                                  Margin="0,0,0.333,0">
-                        </ComboBox>--><!--
-                    </Grid>
-                </StackPanel>
-            </Grid>
-        </Grid>-->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="10"></ColumnDefinition>
@@ -101,13 +44,6 @@
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="1">
                 <StackPanel VerticalAlignment="Center">
-                    <!--<TextBlock Text="Member to Move" 
-                            HorizontalAlignment="Left"
-                            Padding="10,0"
-                           FontWeight="Bold"
-                               Height="20">
-                    </TextBlock>-->
-                    <!--Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_MembersGroupBox}"-->
                     <GroupBox Header="{Binding MoveableMembersLabel, Mode=OneWay}"
                               Grid.Row="1"
                               FontWeight="Bold"
@@ -175,16 +111,6 @@
                             </StackPanel>
                         </Grid>
                     </GroupBox>
-                    <!--<ComboBox 
-                        Height = "30" 
-                        Width="450"
-                        HorizontalAlignment="Left"
-                        VerticalContentAlignment="Center"
-                        Padding="10,0"
-                        SelectedValue="{Binding MemberToMove, Mode=TwoWay}"
-                        ItemsSource="{Binding MoveCandidates }"
-                        SelectedValuePath="Key"
-                        DisplayMemberPath="Value"/>-->
                 </StackPanel>
             </Grid>
             <Grid Grid.Column="3">
@@ -207,7 +133,6 @@
                     <ColumnDefinition Width="250" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <!--Text="{Binding DestinationSelectionLabel, Mode=OneWay}"-->
                 <TextBlock Grid.Column="3"
                            Text="Destination Module"
                            HorizontalAlignment="Center"
@@ -295,11 +220,6 @@
                        HorizontalAlignment="Left"
                        VerticalAlignment="Top"
                        Visibility="{Binding IsValidModuleName, Converter={StaticResource BoolToHiddenVisibility}}" />
-                <!--<TextBox
-                        Grid.Row="1"
-                        IsReadOnly="True"
-                        Text="{Binding MoveCommentary,Mode=OneWay}">
-                </TextBox>-->
             </Grid>
         </Grid>
 

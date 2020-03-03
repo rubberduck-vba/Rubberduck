@@ -51,8 +51,8 @@ namespace Rubberduck.UI.Refactorings.MoveMember
             _destinationNameFailureCriteria = string.Empty;
         }
 
-        public string RefactorName => "Move Members, Fields, and/or Constants to another Module";
-        public string Instructions => "Select Declarations and specify a Destination Module";
+        public string RefactorName => MoveMemberResources.RefactorName;
+        public string Instructions => MoveMemberResources.Instructions;
 
         public bool IsExecutableMove
         {
@@ -64,8 +64,6 @@ namespace Rubberduck.UI.Refactorings.MoveMember
                     if (strategy.IsExecutableModel(Model, out _nonExecutableMessage))
                     {
                         result = true;
-                        //OnPropertyChanged(nameof(DestinationNameFailureCriteria));
-                        //return true;
                     }
                 }
                 OnPropertyChanged(nameof(IsValidModuleName));
@@ -115,13 +113,13 @@ namespace Rubberduck.UI.Refactorings.MoveMember
 
             if (Model.Source.Module.ProjectName.IsEquivalentVBAIdentifierTo(DestinationModuleName))
             {
-                failCriteria = $"Module name matches Project Name";
+                failCriteria = MoveMemberResources.ModuleMatchesProjectNameFailMsg; 
                 return false;
             }
 
             if (Model.Source.ModuleName.IsEquivalentVBAIdentifierTo(DestinationModuleName))
             {
-                failCriteria = $"Module name matches Source Module Name";
+                failCriteria = MoveMemberResources.SourceAndDestinationModuleNameMatcheFailMsg;
                 return false;
             }
             return true;
@@ -149,14 +147,14 @@ namespace Rubberduck.UI.Refactorings.MoveMember
             {
                 var previewSelections = new List<KeyValuePair<PreviewModule, string>>()
                 {
-                    new KeyValuePair<PreviewModule, string>(PreviewModule.Destination, "Destination"),
+                    new KeyValuePair<PreviewModule, string>(PreviewModule.Destination, MoveMemberResources.MoveMember_Destination),
                     new KeyValuePair<PreviewModule, string>(PreviewModule.Source, $"{Model.Source.ModuleName}"),
                 };
                 return previewSelections;
             }
         }
 
-        public string MoveableMembersLabel => $"Source ({Model.Source.ModuleName}) Declarations";
+        public string MoveableMembersLabel => string.Format(MoveMemberResources.MoveMember_MemberListLabelFormat, Model.Source.ModuleName);
 
         public string DestinationModuleName
         {
@@ -200,9 +198,9 @@ namespace Rubberduck.UI.Refactorings.MoveMember
                             .Select(mod => new KeyValuePair<Declaration, string>(mod, mod.IdentifierName));
         }
 
-        public string DestinationSelectionLabel => $"Destination ({LocalizedTypeDisplay(ComponentType.StandardModule)})";
+        public string DestinationSelectionLabel => string.Format(MoveMemberResources.MoveMember_DestinationSelectionLabelFormat, LocalizedTypeDisplay(ComponentType.StandardModule));
 
-        public string SourceModuleLabel => $"Source ({LocalizedTypeDisplay(Model.Source.ComponentType)})";
+        public string SourceModuleLabel => string.Format(MoveMemberResources.MoveMember_SourceModuleLabelFormat, LocalizedTypeDisplay(Model.Source.ComponentType));
 
         private string LocalizedTypeDisplay(ComponentType componentType)
         {
