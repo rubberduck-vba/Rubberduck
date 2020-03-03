@@ -613,10 +613,11 @@ End Function
             StringAssert.Contains("Private Function AddSix(", destinationRefactored);
         }
 
+        [TestCase(MoveEndpoints.StdToStd, "Private")]
         [TestCase(MoveEndpoints.StdToStd, "Public")]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void ExclusiveCallChainNon(MoveEndpoints endpoints, string accessibility)
+        public void ExclusiveCallChainNonExclusiveFieldAccessedViaPublicSupportMember(MoveEndpoints endpoints, string accessibility)
         {
             var memberToMove = "Foo";
             var source =
@@ -654,7 +655,7 @@ End Function
             StringAssert.Contains("Function Barn(", sourceRefactored);
 
             var destinationRefactored = refactoredCode.Destination;
-            StringAssert.Contains("Private Function Foo", destinationRefactored);
+            StringAssert.Contains($"{accessibility} Function Foo", destinationRefactored);
         }
 
         [TestCase(MoveEndpoints.StdToStd, "Public")]

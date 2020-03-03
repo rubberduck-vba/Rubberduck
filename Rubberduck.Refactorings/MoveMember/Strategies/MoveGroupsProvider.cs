@@ -19,6 +19,7 @@ namespace Rubberduck.Refactorings.MoveMember
         Support,
         NonParticipants,
         Support_Public,
+        Support_Private,
         Support_Exclusive,
         Support_NonExclusive
     }
@@ -39,6 +40,10 @@ namespace Rubberduck.Refactorings.MoveMember
         /// Returns IMoveableMemberSet for the specified MoveGroup
         /// </summary>
         IReadOnlyCollection<IMoveableMemberSet> MoveableMemberSets(MoveGroup moveGroup);
+
+        IReadOnlyCollection<Declaration> AggregateDependencies(IEnumerable<IMoveableMemberSet> moveMemberSets);
+
+        IReadOnlyCollection<IMoveableMemberSet> ToMoveableMemberSets(IEnumerable<Declaration> declarations);
 
     }
 
@@ -78,35 +83,6 @@ namespace Rubberduck.Refactorings.MoveMember
                 moveableMemberSet.IsExclusive = _allParticipants.ContainsParentScopesForAll(referencesExternalToMember);
             }
 
-            _declarationsByMoveGroup = new Dictionary<MoveGroup, List<Declaration>>()
-            {
-                [MoveGroup.AllParticipants] = _allParticipants.ToList(),
-                [MoveGroup.NonParticipants] = _allMoveableMemberSets
-                                                    .Where(mm => !(mm.IsSelected || mm.IsSupport))
-                                                    .SelectMany(mm => mm.Members)
-                                                    .ToList(),
-                [MoveGroup.Selected] = _allMoveableMemberSets
-                                                    .Where(mm => mm.IsSelected)
-                                                    .SelectMany(mm => mm.Members)
-                                                    .ToList(),
-                [MoveGroup.Support] = _allMoveableMemberSets
-                                                    .Where(mm => mm.IsSupport && !mm.IsSelected)
-                                                    .SelectMany(mm => mm.Members)
-                                                    .ToList(),
-                [MoveGroup.Support_Public] = _allMoveableMemberSets
-                                                    .Where(mm => mm.IsSupport && !mm.IsSelected && !mm.HasPrivateAccessibility)
-                                                    .SelectMany(mm => mm.Members)
-                                                    .ToList(),
-                [MoveGroup.Support_Exclusive] = _allMoveableMemberSets
-                                                    .Where(mm => mm.IsSupport && !mm.IsSelected && mm.IsExclusive)
-                                                    .SelectMany(mm => mm.Members)
-                                                    .ToList(),
-                [MoveGroup.Support_NonExclusive] = _allMoveableMemberSets
-                                                    .Where(mm => mm.IsSupport && !mm.IsSelected && !mm.IsExclusive)
-                                                    .SelectMany(mm => mm.Members)
-                                                    .ToList()
-            };
-
             _moveMemberSetsByMoveGroup = new Dictionary<MoveGroup, List<IMoveableMemberSet>>()
             {
                 [MoveGroup.Selected] = _allMoveableMemberSets.Where(mm => mm.IsSelected).ToList(),
@@ -114,9 +90,44 @@ namespace Rubberduck.Refactorings.MoveMember
                 [MoveGroup.NonParticipants] = _allMoveableMemberSets.Where(mm => !(mm.IsSelected || mm.IsSupport)).ToList(),
                 [MoveGroup.Support] = _allMoveableMemberSets.Where(mm => !mm.IsSelected && mm.IsSupport).ToList(),
                 [MoveGroup.Support_Public] = _allMoveableMemberSets.Where(mm => !mm.HasPrivateAccessibility && (!mm.IsSelected && mm.IsSupport)).ToList(),
+                [MoveGroup.Support_Private] = _allMoveableMemberSets.Where(mm => mm.HasPrivateAccessibility && (!mm.IsSelected && mm.IsSupport)).ToList(),
                 [MoveGroup.Support_Exclusive] = _allMoveableMemberSets.Where(mm => !mm.IsSelected && mm.IsSupport && mm.IsExclusive).ToList(),
                 [MoveGroup.Support_NonExclusive] = _allMoveableMemberSets.Where(mm => !mm.IsSelected && mm.IsSupport && !mm.IsExclusive).ToList(),
             };
+
+            _declarationsByMoveGroup = new Dictionary<MoveGroup, List<Declaration>>()
+            {
+                [MoveGroup.AllParticipants] = _allParticipants.ToList(),
+                [MoveGroup.NonParticipants] = _allMoveableMemberSets
+                                                    .Where(mm => !(mm.IsSelected || mm.IsSupport))
+                                                    .SelectMany(mm => mm.Members)
+                                                    .ToList(),
+                [MoveGroup.Selected] = _moveMemberSetsByMoveGroup[MoveGroup.Selected]
+                                                    .SelectMany(mm => mm.Members)
+                                                    .ToList(),
+                [MoveGroup.Support] = _moveMemberSetsByMoveGroup[MoveGroup.Support]
+                                                    .SelectMany(mm => mm.Members)
+                                                    .ToList(),
+                [MoveGroup.Support_Public] = _moveMemberSetsByMoveGroup[MoveGroup.Support]
+                                                    .Where(mm => !mm.HasPrivateAccessibility)
+                                                    .SelectMany(mm => mm.Members)
+                                                    .ToList(),
+                [MoveGroup.Support_Private] = _moveMemberSetsByMoveGroup[MoveGroup.Support]
+                                                    .Where(mm => mm.HasPrivateAccessibility)
+                                                    .SelectMany(mm => mm.Members)
+                                                    .ToList(),
+                [MoveGroup.Support_Exclusive] = _moveMemberSetsByMoveGroup[MoveGroup.Support_Exclusive]
+                                                    .SelectMany(mm => mm.Members)
+                                                    .ToList(),
+                [MoveGroup.Support_NonExclusive] = _moveMemberSetsByMoveGroup[MoveGroup.Support_NonExclusive]
+                                                    .SelectMany(mm => mm.Members)
+                                                    .ToList()
+            };
+
+            if (_declarationsByMoveGroup[MoveGroup.AllParticipants].Intersect(_declarationsByMoveGroup[MoveGroup.NonParticipants]).Any())
+            {
+                throw new MoveMemberUnsupportedMoveException(moveableMemberSets.Select(mm => mm.Member).FirstOrDefault());
+            }
 
             _dependenciesByMoveGroup = new Dictionary<MoveGroup, List<Declaration>>();
         }
@@ -137,12 +148,25 @@ namespace Rubberduck.Refactorings.MoveMember
             return dependencies;
         }
 
+        public IReadOnlyCollection<IMoveableMemberSet> ToMoveableMemberSets(IEnumerable<Declaration> declarations)
+        {
+            var uniqueIdentifiers = declarations.Select(d => d.IdentifierName).Distinct();
+            var moveables = new List<IMoveableMemberSet>();
+            foreach (var identifier in uniqueIdentifiers)
+            {
+                moveables.AddRange(_moveMemberSetsByMoveGroup[MoveGroup.AllParticipants].Where(mm => mm.IdentifierName.IsEquivalentVBAIdentifierTo(identifier)));
+            }
+            return moveables;
+        }
+
+
+
         private IMoveableMemberSet MoveableMemberSet(string identifier)
             =>  _moveableMembersByName.TryGetValue(identifier, out var moveable)
                     ? moveable
                     : null;
 
-        private IReadOnlyCollection<Declaration> AggregateDependencies(IEnumerable<IMoveableMemberSet> moveMemberSets )
+        public IReadOnlyCollection<Declaration> AggregateDependencies(IEnumerable<IMoveableMemberSet> moveMemberSets )
         {
             var aggregated = new List<Declaration>();
             foreach (var moveMemberSet in moveMemberSets)

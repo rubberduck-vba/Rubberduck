@@ -61,7 +61,7 @@ namespace Rubberduck.UI.Refactorings.MoveMember
                 var result = false;
                 if (IsValidModuleName && MoveMemberObjectsFactory.TryCreateStrategy(Model, out var strategy))
                 {
-                    if (strategy.IsAnExecutableScenario(out _nonExecutableMessage))
+                    if (strategy.IsExecutableModel(Model, out _nonExecutableMessage))
                     {
                         result = true;
                         //OnPropertyChanged(nameof(DestinationNameFailureCriteria));

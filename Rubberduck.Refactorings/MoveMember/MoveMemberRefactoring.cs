@@ -1,7 +1,5 @@
-﻿using Antlr4.Runtime;
-using Microsoft.CSharp.RuntimeBinder;
+﻿using Microsoft.CSharp.RuntimeBinder;
 using NLog;
-using Rubberduck.Common;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -11,16 +9,10 @@ using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.MoveMember.Extensions;
-using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 
@@ -114,13 +106,6 @@ namespace Rubberduck.Refactorings.MoveMember
             return preview;
         }
 
-        private string PreviewExistingContent(MoveMemberModel model, QualifiedModuleName qualifiedModuleName)
-        {
-            var session = _rewritingManager.CheckOutCodePaneSession();
-            var sourceRewriter = session.CheckOutModuleRewriter(qualifiedModuleName);
-            return sourceRewriter.GetText();
-        }
-
         protected override MoveMemberModel InitializeModel(Declaration target)
         {
             if (target == null) { throw new TargetDeclarationIsNullException(); }
@@ -159,7 +144,7 @@ namespace Rubberduck.Refactorings.MoveMember
         {
             try
             {
-                if (!MoveMemberObjectsFactory.TryCreateStrategy(model, out var strategy) || !strategy.IsAnExecutableScenario(out _))
+                if (!MoveMemberObjectsFactory.TryCreateStrategy(model, out var strategy) || !strategy.IsExecutableModel(model, out _))
                 {
                     return;
                 }

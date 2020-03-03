@@ -24,7 +24,7 @@ namespace Rubberduck.Refactorings.MoveMember
             return false;
         }
 
-        public bool IsAnExecutableScenario(out string nonExecutableMessage)
+        public bool IsExecutableModel(MoveMemberModel model, out string nonExecutableMessage)
         {
             nonExecutableMessage = MoveMemberResources.NoDeclarationsSelectedToMove;
             return false;
