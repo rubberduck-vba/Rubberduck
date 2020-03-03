@@ -13,17 +13,19 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         string GetToken(ParserRuleContext context);
         bool Contains(ParserRuleContext context);
         bool TryGetValue(ParserRuleContext context, out IParseTreeValue value);
-        void AddIfNotPresent(ParserRuleContext context, IParseTreeValue value);
+        IReadOnlyList<EnumMember> EnumMembers { get; }
     }
 
-    public class ParseTreeVisitorResults : IParseTreeVisitorResults
+    public interface IMutableParseTreeVisitorResults : IParseTreeVisitorResults
     {
-        private Dictionary<ParserRuleContext, IParseTreeValue> _parseTreeValues;
+        void AddIfNotPresent(ParserRuleContext context, IParseTreeValue value);
+        void Add(EnumMember enumMember);
+    }
 
-        public ParseTreeVisitorResults()
-        {
-            _parseTreeValues = new Dictionary<ParserRuleContext, IParseTreeValue>();
-        }
+    public class ParseTreeVisitorResults : IMutableParseTreeVisitorResults
+    {
+        private readonly Dictionary<ParserRuleContext, IParseTreeValue> _parseTreeValues = new Dictionary<ParserRuleContext, IParseTreeValue>();
+        private readonly List<EnumMember> _enumMembers = new List<EnumMember>();
 
         public IParseTreeValue GetValue(ParserRuleContext context)
         {
@@ -73,6 +75,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 _parseTreeValues.Add(context, value);
             }
+        }
+
+        public IReadOnlyList<EnumMember> EnumMembers => _enumMembers;
+        public void Add(EnumMember enumMember)
+        {
+            _enumMembers.Add(enumMember);
         }
     }
 }
