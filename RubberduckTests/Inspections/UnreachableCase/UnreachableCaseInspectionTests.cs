@@ -2622,8 +2622,8 @@ End Sub
         {
             var selectStmtValueResults = GetParseTreeValueResults(inputCode, out VBAParser.SelectCaseStmtContext selectStmtContext, out var module);
 
-            var inspector = UnreachableCaseInspectorFactory.Create(module, selectStmtContext, selectStmtValueResults);
-            return inspector.SelectExpressionTypeName;
+            var inspector = UnreachableCaseInspectorFactory.Create();
+            return inspector.SelectExpressionTypeName(selectStmtContext, selectStmtValueResults);
         }
 
         private IParseTreeVisitorResults GetParseTreeValueResults(string inputCode, out VBAParser.SelectCaseStmtContext selectStmt, out QualifiedModuleName contextModule)

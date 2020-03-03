@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
     public interface IExpressionFilter
     {
-        void AddExpression(IRangeClauseExpression expression);
+        void CheckAndAddExpression(IRangeClauseExpression expression);
         void AddComparablePredicateFilter(string variable, string variableTypeName);
         bool HasFilters { get; }
         bool FiltersAllValues { get; }
@@ -172,12 +172,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             set
             {
                 _selectExpressionValue = value;
-                AddExpression(new IsClauseExpression(_selectExpressionValue, RelationalOperators.NEQ));
+                CheckAndAddExpression(new IsClauseExpression(_selectExpressionValue, RelationalOperators.NEQ));
             }
             get => _selectExpressionValue;
         }
 
-        public void AddExpression(IRangeClauseExpression expression)
+        public void CheckAndAddExpression(IRangeClauseExpression expression)
         {
             if (expression is null
                 || expression.ToString().Equals(string.Empty)
@@ -289,7 +289,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 if (!positiveLogic.FiltersAllValues)
                 {
                     IRangeClauseExpression predicateExpression = new IsClauseExpression(parseTreeValue, expression.OpSymbol);
-                    positiveLogic.AddExpression(predicateExpression);
+                    positiveLogic.CheckAndAddExpression(predicateExpression);
                     if (positiveLogic.FiltersAllValues)
                     {
                         AddSingleValue(_trueValue);
@@ -301,7 +301,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 {
                     IRangeClauseExpression predicateExpressionInverse
                         = new IsClauseExpression(parseTreeValue, RelationalInverse(expression.OpSymbol));
-                    negativeLogic.AddExpression(predicateExpressionInverse);
+                    negativeLogic.CheckAndAddExpression(predicateExpressionInverse);
                     if (negativeLogic.FiltersAllValues)
                     {
                         AddSingleValue(_falseValue);

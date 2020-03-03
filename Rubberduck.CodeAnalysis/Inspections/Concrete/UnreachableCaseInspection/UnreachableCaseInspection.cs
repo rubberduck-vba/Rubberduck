@@ -13,7 +13,6 @@ using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using System;
 using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Parsing.VBA.Parsing;
 
@@ -145,10 +144,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             var finder = DeclarationFinderProvider.DeclarationFinder;
             var parseTreeValueVisitor = CreateParseTreeValueVisitor(GetIdentifierReferenceForContextFunction(finder));
+            var selectCaseInspector = _unreachableCaseInspectorFactory.Create(GetVariableTypeNameFunction(finder));
 
             return finder.UserDeclarations(DeclarationType.Module)
                 .Where(module => module != null)
-                .SelectMany(module => DoGetInspectionResults(module.QualifiedModuleName, finder, parseTreeValueVisitor))
+                .SelectMany(module => DoGetInspectionResults(module.QualifiedModuleName, finder, parseTreeValueVisitor, selectCaseInspector))
                 .ToList();
         }
 
@@ -156,27 +156,28 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             var finder = DeclarationFinderProvider.DeclarationFinder;
             var parseTreeValueVisitor = CreateParseTreeValueVisitor(GetIdentifierReferenceForContextFunction(finder));
-            return DoGetInspectionResults(module, finder, parseTreeValueVisitor);
+            var selectCaseInspector = _unreachableCaseInspectorFactory.Create(GetVariableTypeNameFunction(finder));
+            return DoGetInspectionResults(module, finder, parseTreeValueVisitor, selectCaseInspector);
         }
 
-        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder, IParseTreeValueVisitor parseTreeValueVisitor)
+        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder, IParseTreeValueVisitor parseTreeValueVisitor, IUnreachableCaseInspector selectCaseInspector)
         {
             var qualifiedSelectCaseStmts = Listener.Contexts(module)
                 // ignore filtering here to make the search space smaller
                 .Where(result => !result.IsIgnoringInspectionResultFor(finder, AnnotationName));
 
             return qualifiedSelectCaseStmts
-                .SelectMany(context => ResultsForContext(context, finder, parseTreeValueVisitor))
+                .SelectMany(context => ResultsForContext(context, parseTreeValueVisitor, selectCaseInspector))
                 .ToList();
         }
 
-        private IEnumerable<IInspectionResult> ResultsForContext(QualifiedContext<ParserRuleContext> qualifiedSelectCaseStmt, DeclarationFinder finder, IParseTreeValueVisitor parseTreeValueVisitor)
+        private IEnumerable<IInspectionResult> ResultsForContext(QualifiedContext<ParserRuleContext> qualifiedSelectCaseStmt, IParseTreeValueVisitor parseTreeValueVisitor, IUnreachableCaseInspector selectCaseInspector)
         {
             var module = qualifiedSelectCaseStmt.ModuleName;
-            var contextValues = parseTreeValueVisitor.VisitChildren(module, qualifiedSelectCaseStmt.Context);
-            var selectCaseInspector = _unreachableCaseInspectorFactory.Create(module, (VBAParser.SelectCaseStmtContext)qualifiedSelectCaseStmt.Context, contextValues, GetVariableTypeNameFunction(finder));
+            var selectStmt = (VBAParser.SelectCaseStmtContext)qualifiedSelectCaseStmt.Context;
+            var contextValues = parseTreeValueVisitor.VisitChildren(module, selectStmt);
 
-            var results = selectCaseInspector.InspectForUnreachableCases();
+            var results = selectCaseInspector.InspectForUnreachableCases(module, selectStmt, contextValues);
 
             return results
                 .Select(resultTpl => CreateInspectionResult(qualifiedSelectCaseStmt, resultTpl.context, resultTpl.resultType))

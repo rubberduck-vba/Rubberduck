@@ -404,7 +404,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         {
             var filter = ExpressionFilterFactory.Create(filterTypeName);
             var expression = RangeClauseTokensToExpressions(new string[] { rangeClause }, filterTypeName).First();
-            filter.AddExpression(expression);
+            filter.CheckAndAddExpression(expression);
             Assert.IsTrue(expression.IsInherentlyUnreachable);
         }
 
@@ -519,7 +519,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
             var expressions = RangeClauseTokensToExpressions(rangeClauses, filterTypeName);
             foreach (var expression in expressions)
             {
-                filter.AddExpression(expression);
+                filter.CheckAndAddExpression(expression);
             }
             return filter;
         }
@@ -574,7 +574,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
 
             foreach (var expr in expressions)
             {
-                filter.AddExpression(expr);
+                filter.CheckAndAddExpression(expr);
             }
             return filter;
         }

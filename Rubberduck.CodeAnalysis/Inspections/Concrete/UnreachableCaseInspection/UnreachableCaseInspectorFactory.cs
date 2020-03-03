@@ -1,18 +1,12 @@
 ﻿using Antlr4.Runtime;
-using Rubberduck.Parsing.Grammar;
 using System;
-using Rubberduck.Parsing;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public interface IUnreachableCaseInspectorFactory
     {
-        IUnreachableCaseInspector Create(
-            QualifiedModuleName module,
-            VBAParser.SelectCaseStmtContext selectStmt, 
-            IParseTreeVisitorResults results, 
-            Func<string,QualifiedModuleName,ParserRuleContext,string> func = null);
+        IUnreachableCaseInspector Create(Func<string,QualifiedModuleName,ParserRuleContext,string> func = null);
     }
 
     public class UnreachableCaseInspectorFactory : IUnreachableCaseInspectorFactory
@@ -24,9 +18,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             _valueFactory = valueFactory;
         }
 
-        public IUnreachableCaseInspector Create(QualifiedModuleName module, VBAParser.SelectCaseStmtContext selectStmt, IParseTreeVisitorResults results, Func<string, QualifiedModuleName, ParserRuleContext, string> func = null)
+        public IUnreachableCaseInspector Create(Func<string, QualifiedModuleName, ParserRuleContext, string> func = null)
         {
-            return new UnreachableCaseInspector(module, selectStmt, results, _valueFactory, func);
+            return new UnreachableCaseInspector(_valueFactory, func);
         }
     }
 }
