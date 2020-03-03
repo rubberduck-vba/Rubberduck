@@ -28,9 +28,6 @@ namespace Rubberduck.UI.Command.MenuItems
             }
         }
         public override int DisplayOrder => (int)RefactoringsMenuItemDisplayOrder.MoveMember;
-        ////TODO: Get MoveMember Image and Mask
-        //public override Image Image => Resources.CommandBarIcons.ExtractInterface;
-        //public override Image Mask => Resources.CommandBarIcons.ExtractInterfaceMask;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {

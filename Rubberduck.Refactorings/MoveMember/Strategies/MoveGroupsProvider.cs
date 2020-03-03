@@ -2,13 +2,8 @@
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.MoveMember.Extensions;
-using Rubberduck.VBEditor;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.MoveMember
 {
@@ -41,8 +36,14 @@ namespace Rubberduck.Refactorings.MoveMember
         /// </summary>
         IReadOnlyCollection<IMoveableMemberSet> MoveableMemberSets(MoveGroup moveGroup);
 
+        /// <summary>
+        /// Returns read-only flattened dependency declaration collection for a collection of MoveMemberSets
+        /// </summary>
         IReadOnlyCollection<Declaration> AggregateDependencies(IEnumerable<IMoveableMemberSet> moveMemberSets);
 
+        /// <summary>
+        /// Returns a collection of MoveMemberSets for a group of declarations
+        /// </summary>
         IReadOnlyCollection<IMoveableMemberSet> ToMoveableMemberSets(IEnumerable<Declaration> declarations);
 
     }

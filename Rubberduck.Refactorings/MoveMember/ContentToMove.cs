@@ -10,7 +10,7 @@ namespace Rubberduck.Refactorings.MoveMember
 
     public interface INewContentProvider
     {
-        void AddMethod(string content);
+        void AddMethodDeclaration(string content);
         void AddFieldOrConstantDeclaration(string content);
         void AddTypeDeclaration(string content);
         string AsSingleBlock { get; }
@@ -31,15 +31,7 @@ namespace Rubberduck.Refactorings.MoveMember
             };
         }
 
-        public string this[ContentTypes contentType]
-        {
-            get
-            {
-                return string.Empty;
-            }
-        }
-
-        public void AddMethod(string content) => Add(ContentTypes.MethodBlock, content);
+        public void AddMethodDeclaration(string content) => Add(ContentTypes.MethodBlock, content);
         public void AddFieldOrConstantDeclaration(string content) => Add(ContentTypes.DeclarationBlock, content);
         public void AddTypeDeclaration(string content) => Add(ContentTypes.TypeDeclarationBlock, content);
 

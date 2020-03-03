@@ -309,7 +309,7 @@ namespace Rubberduck.Refactorings.MoveMember
                 var codeBlock = CreateMovedElementCodeBlock(model, moveGroups, element, movedContentRewriter, dispositions);
                 if (element.IsMember())
                 {
-                    contentToMove.AddMethod(codeBlock);
+                    contentToMove.AddMethodDeclaration(codeBlock);
                     continue;
                 }
                 contentToMove.AddFieldOrConstantDeclaration(codeBlock);

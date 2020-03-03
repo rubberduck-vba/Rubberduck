@@ -3,7 +3,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.MoveMember.Extensions;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 
 namespace Rubberduck.Refactorings.MoveMember
@@ -69,8 +68,14 @@ namespace Rubberduck.Refactorings.MoveMember
         /// </summary>
         bool HasPrivateAccessibility { get; }
 
-        IEnumerable<Declaration> DirectDependencies { get; }
+        /// <summary>
+        /// Returns the direct dependency declarations for the MoveableMemberSet 
+        /// </summary>
+        IReadOnlyCollection<Declaration> DirectDependencies { get; }
 
+        /// <summary>
+        /// Returns the a flatted collection of the call-tree dependencies for the MoveableMemberSet 
+        /// </summary>
         IReadOnlyCollection<Declaration> FlattenedDependencies { set; get; }
     }
 
@@ -100,13 +105,8 @@ namespace Rubberduck.Refactorings.MoveMember
 
         public IEnumerable<IdentifierReference> ContainedReferences {set; get;}
 
-        public IEnumerable<Declaration> DirectDependencies
-        {
-            get
-            {
-                return ContainedReferences.Select(rf => rf.Declaration).Distinct();
-            }
-        }
+        public IReadOnlyCollection<Declaration> DirectDependencies 
+            => ContainedReferences.Select(rf => rf.Declaration).Distinct().ToList();
 
         public IReadOnlyCollection<Declaration> FlattenedDependencies { set; get; } = new List<Declaration>();
 
@@ -121,9 +121,6 @@ namespace Rubberduck.Refactorings.MoveMember
         public bool HasPrivateAccessibility => Members.All(mm => mm.HasPrivateAccessibility());
 
         public bool Contains(Declaration declaration) => Members.Contains(declaration);
-
-        //public IEnumerable<IdentifierReference> NonMemberBodyReferences
-        //    => Members.AllReferences().Where(rf => !Members.Contains(rf.ParentScoping));
 
         public string IdentifierName => _members.First().IdentifierName;
 
