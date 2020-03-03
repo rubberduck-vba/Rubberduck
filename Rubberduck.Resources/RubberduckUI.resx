@@ -950,7 +950,7 @@ Do you want to proceed with this rename?</value>
     <value>Miscellaneous</value>
   </data>
   <data name="CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse" xml:space="preserve">
-    <value>Run inspections automatically on successful parse</value>
+    <value>_Run inspections automatically on successful parse</value>
   </data>
   <data name="GeneralSettings_ShowSplash" xml:space="preserve">
     <value>Show splash screen at startup</value>
@@ -1184,7 +1184,7 @@ NOTE: Restart is required for the setting to take effect.</value>
     <value>Compile On Demand currently enabled</value>
   </data>
   <data name="InspectionSettings_FilterByDescription" xml:space="preserve">
-    <value>Description:</value>
+    <value>_Description:</value>
   </data>
   <data name="ParserState_Busy" xml:space="preserve">
     <value>Busy</value>
@@ -1254,7 +1254,7 @@ NOTE: Restart is required for the setting to take effect.</value>
     <value>Ignore empty lines when locating first comment and declaration blocks</value>
   </data>
   <data name="InspectionSettings_FilterBySeverity" xml:space="preserve">
-    <value>Severity:</value>
+    <value>_Severity:</value>
   </data>
   <data name="Language_CS" xml:space="preserve">
     <value>Czech</value>

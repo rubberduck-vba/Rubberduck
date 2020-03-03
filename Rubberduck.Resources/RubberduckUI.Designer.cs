@@ -525,7 +525,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run inspections automatically on successful parse.
+        ///   Looks up a localized string similar to _Run inspections automatically on successful parse.
         /// </summary>
         public static string CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse {
             get {
@@ -2410,7 +2410,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Description:.
+        ///   Looks up a localized string similar to _Description:.
         /// </summary>
         public static string InspectionSettings_FilterByDescription {
             get {
@@ -2419,7 +2419,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Severity:.
+        ///   Looks up a localized string similar to _Severity:.
         /// </summary>
         public static string InspectionSettings_FilterBySeverity {
             get {
