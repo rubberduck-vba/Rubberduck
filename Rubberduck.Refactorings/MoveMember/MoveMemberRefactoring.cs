@@ -74,12 +74,13 @@ namespace Rubberduck.Refactorings.MoveMember
             var isExistingDestination = model.Destination.IsExistingModule(out var destinationModule);
             if (previewModule == PreviewModule.Destination && !isExistingDestination)
             {
-                var content = strategy.NewDestinationModuleContent(model, _rewritingManager, new ContentToMove()).AsSingleBlockWithinDemarcationComments();
+                var content = strategy.NewDestinationModuleContent(model, _rewritingManager, new MovedContentProvider()).AsSingleBlockWithinDemarcationComments();
 
                 return $"{Tokens.Option} {Tokens.Explicit}{Environment.NewLine}{Environment.NewLine}{content}";
             }
 
-            var previewSession = strategy.RefactorRewrite(model, _rewritingManager, new ContentToMove(), true);
+            var previewSession = _rewritingManager.CheckOutCodePaneSession();
+            strategy.RefactorRewrite(model, previewSession, _rewritingManager, true);
 
             var qmnToPreview = previewModule == PreviewModule.Destination
                 ? destinationModule.QualifiedModuleName

@@ -7,12 +7,11 @@ using Rubberduck.Refactorings.MoveMember.Extensions;
 using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace Rubberduck.Refactorings.MoveMember
 {
-    public class MoveMemberToStdModule : IMoveMemberRefactoringStrategy
+    public class MoveMemberToStdModule : MoveMemberStrategyBase
     {
         private enum RequiredGroup
         {
@@ -22,9 +21,13 @@ namespace Rubberduck.Refactorings.MoveMember
             PublicSupportMove,
         }
 
-        private enum MoveDisposition { Move, Retain }
+        private enum MoveDisposition
+        {
+            Move,
+            Retain
+        }
 
-        public bool IsApplicable(MoveMemberModel model)
+        public override bool IsApplicable(MoveMemberModel model)
         {
             //A strategy exists to handle 'nothing selected'...it's not this one
             if (!model.SelectedDeclarations.Any()) { return false; }
@@ -46,7 +49,7 @@ namespace Rubberduck.Refactorings.MoveMember
             return TrySetDispositionGroupsForClassModuleSource(model, moveGroups, out _);
         }
 
-        public bool IsExecutableModel(MoveMemberModel model, out string nonExecutableMessage)
+        public override bool IsExecutableModel(MoveMemberModel model, out string nonExecutableMessage)
         {
             nonExecutableMessage = string.Empty;
             
@@ -58,7 +61,7 @@ namespace Rubberduck.Refactorings.MoveMember
             return true;
         }
 
-        public IMoveMemberRewriteSession RefactorRewrite(MoveMemberModel model, IRewritingManager rewritingManager, INewContentProvider contentToMove, bool asPreview = false)
+        public override void RefactorRewrite(MoveMemberModel model, IRewriteSession moveMemberRewriteSession, IRewritingManager rewritingManager, bool asPreview = false)
         {
             if (!asPreview && string.IsNullOrEmpty(model.Destination.ModuleName))
             {
@@ -87,17 +90,16 @@ namespace Rubberduck.Refactorings.MoveMember
                 }
             }
 
-            var moveMemberRewriteSession = model.MoveMemberFactory.CreateMoveMemberRewriteSession(rewritingManager.CheckOutCodePaneSession());
-
-            //Like moving files/folders - this strategy's Move is a copy to the new location and deletion from the old
-            contentToMove = CreateMovedContentBlock(model, moveGroups, contentToMove, rewritingManager.CheckOutCodePaneSession(), dispositions);
-            moveMemberRewriteSession.Remove(dispositions[MoveDisposition.Move]);
+            RemoveDeclarations(moveMemberRewriteSession, dispositions[MoveDisposition.Move]);
 
             if (model.Destination.IsExistingModule(out var destinationModule))
             {
+                var movedContentProvider = model.MoveMemberFactory.CreateMovedContentProvider();
+                movedContentProvider = LoadMovedContentProvider(movedContentProvider, model, moveGroups, rewritingManager.CheckOutCodePaneSession(), dispositions);
+
                 var newContent = asPreview
-                    ? contentToMove.AsSingleBlockWithinDemarcationComments()
-                    : contentToMove.AsSingleBlock;
+                    ? movedContentProvider.AsSingleBlockWithinDemarcationComments()
+                    : movedContentProvider.AsSingleBlock;
 
                 InsertMovedContent(moveMemberRewriteSession, model.Destination, newContent);
 
@@ -107,20 +109,17 @@ namespace Rubberduck.Refactorings.MoveMember
             ModifyRetainedReferencesToMovedMembers(moveMemberRewriteSession, model, moveGroups, dispositions);
 
             UpdateOtherModuleReferencesToMovedMembers(model, moveGroups, moveMemberRewriteSession);
-
-            return moveMemberRewriteSession;
         }
 
-        public INewContentProvider NewDestinationModuleContent(MoveMemberModel model, IRewritingManager rewritingManager, INewContentProvider contentToMove)
+        public override IMovedContentProvider NewDestinationModuleContent(MoveMemberModel model, IRewritingManager rewritingManager, IMovedContentProvider contentToMove)
         {
-            var moveGroups = model.MoveMemberFactory.CreateMoveGroupsProvider(model.MoveableMembers);
-
             var dispositions = new Dictionary<MoveDisposition, List<Declaration>>()
             {
                 [MoveDisposition.Move] = new List<Declaration>(),
                 [MoveDisposition.Retain] = new List<Declaration>()
             };
 
+            var moveGroups = model.MoveMemberFactory.CreateMoveGroupsProvider(model.MoveableMembers);
             if (model.Source.IsStandardModule)
             {
                 if (!TrySetDispositionGroupsForStandardModuleSource(model, moveGroups, out dispositions))
@@ -136,7 +135,8 @@ namespace Rubberduck.Refactorings.MoveMember
                 }
             }
 
-            return CreateMovedContentBlock(model, moveGroups, contentToMove, rewritingManager.CheckOutCodePaneSession(), dispositions);
+            var movedContentProvider = model.MoveMemberFactory.CreateMovedContentProvider();
+            return LoadMovedContentProvider(movedContentProvider, model, moveGroups, rewritingManager.CheckOutCodePaneSession(), dispositions);
         }
 
         private static bool TrySetDispositionGroupsForClassModuleSource(MoveMemberModel model, IMoveGroupsProvider moveGroups, out Dictionary<MoveDisposition, List<Declaration>> dispositions)
@@ -295,24 +295,24 @@ namespace Rubberduck.Refactorings.MoveMember
             return true;
         }
 
-        private static INewContentProvider CreateMovedContentBlock(MoveMemberModel model, IMoveGroupsProvider moveGroups, INewContentProvider contentToMove, IExecutableRewriteSession scratchPadSession, Dictionary<MoveDisposition, List<Declaration>> dispositions)
+        private static IMovedContentProvider LoadMovedContentProvider(IMovedContentProvider contentProvider, MoveMemberModel model, IMoveGroupsProvider moveGroups, IRewriteSession scratchPadSession, Dictionary<MoveDisposition, List<Declaration>> dispositions)
         {
             ModifyMovedIdentifiersToAvoidDestinationNameConflicts(model, dispositions[MoveDisposition.Move]);
 
-            var movedContentRewriter = scratchPadSession.CheckOutModuleRewriter(model.Source.QualifiedModuleName);
+            var rewriter = scratchPadSession.CheckOutModuleRewriter(model.Source.QualifiedModuleName);
 
             foreach (var element in dispositions[MoveDisposition.Move])
             {
-                var codeBlock = CreateMovedElementCodeBlock(model, moveGroups, element, movedContentRewriter, dispositions);
+                var codeBlock = CreateMovedElementCodeBlock(model, moveGroups, element, rewriter, dispositions);
                 if (element.IsMember())
                 {
-                    contentToMove.AddMethodDeclaration(codeBlock);
+                    contentProvider.AddMethodDeclaration(codeBlock);
                     continue;
                 }
-                contentToMove.AddFieldOrConstantDeclaration(codeBlock);
+                contentProvider.AddFieldOrConstantDeclaration(codeBlock);
             }
 
-            return contentToMove;
+            return contentProvider;
         }
 
         private static void ModifyMovedIdentifiersToAvoidDestinationNameConflicts(MoveMemberModel model, IEnumerable<Declaration> copyAndDelete)
@@ -355,7 +355,7 @@ namespace Rubberduck.Refactorings.MoveMember
             return guard < maxIterations;
         }
 
-        private static void ModifyRetainedReferencesToMovedMembers(IMoveMemberRewriteSession rewriteSession, MoveMemberModel model, IMoveGroupsProvider moveGroups, Dictionary<MoveDisposition, List<Declaration>> dispositions)
+        private static void ModifyRetainedReferencesToMovedMembers(IRewriteSession rewriteSession, MoveMemberModel model, IMoveGroupsProvider moveGroups, Dictionary<MoveDisposition, List<Declaration>> dispositions)
         {
             var retainedReferencesToModuleQualify = RenameableReferences(moveGroups.Declarations(MoveGroup.Selected), model.Source.QualifiedModuleName)
                 .Where(rf => !dispositions[MoveDisposition.Move].Contains(rf.ParentScoping));
@@ -370,7 +370,7 @@ namespace Rubberduck.Refactorings.MoveMember
             }
         }
 
-        private static void ModifyDestinationExistingReferencesToMovedMembers(Declaration destination, IMoveGroupsProvider moveGroups, IMoveMemberRewriteSession rewriteSession)
+        private static void ModifyDestinationExistingReferencesToMovedMembers(Declaration destination, IMoveGroupsProvider moveGroups, IRewriteSession rewriteSession)
         {
             var destinationReferencesToMovedMembers = moveGroups.Declarations(MoveGroup.Selected).AllReferences()
                 .Where(rf => rf.QualifiedModuleName == destination.QualifiedModuleName);
@@ -385,7 +385,7 @@ namespace Rubberduck.Refactorings.MoveMember
             }
         }
 
-        private static IModuleRewriter InsertMovedContent(IMoveMemberRewriteSession refactoringRewriteSession, IMoveDestinationModuleProxy destination, string movedContent)
+        private static IModuleRewriter InsertMovedContent(IRewriteSession refactoringRewriteSession, IMoveDestinationModuleProxy destination, string movedContent)
         {
             if (!destination.IsExistingModule(out var module))
             {
@@ -492,7 +492,7 @@ namespace Rubberduck.Refactorings.MoveMember
             return tempRewriter;
         }
 
-        private static void UpdateOtherModuleReferencesToMovedMembers(MoveMemberModel model, IMoveGroupsProvider moveGroups, IMoveMemberRewriteSession rewriteSession)
+        private static void UpdateOtherModuleReferencesToMovedMembers(MoveMemberModel model, IMoveGroupsProvider moveGroups, IRewriteSession rewriteSession)
         {
             var endpointQMNs = new List<QualifiedModuleName>() { model.Source.QualifiedModuleName };
             if (model.Destination.IsExistingModule(out var destination))

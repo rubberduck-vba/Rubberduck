@@ -6,22 +6,27 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.MoveMember
 {
-    public enum ContentTypes { TypeDeclarationBlock, DeclarationBlock, MethodBlock };
+    public enum ContentTypes
+    {
+        TypeDeclarationBlock,
+        DeclarationBlock,
+        MethodBlock
+    };
 
-    public interface INewContentProvider
+    public interface IMovedContentProvider
     {
         void AddMethodDeclaration(string content);
         void AddFieldOrConstantDeclaration(string content);
         void AddTypeDeclaration(string content);
         string AsSingleBlock { get; }
-        string AsSingleBlockWithinDemarcationComments(string startMessage = null, string endMessage = null);
+        string AsSingleBlockWithinDemarcationComments();
     }
 
-    public class ContentToMove : INewContentProvider
+    public class MovedContentProvider : IMovedContentProvider
     {
         private Dictionary<ContentTypes, List<string>> _movedContent;
 
-        public ContentToMove()
+        public MovedContentProvider()
         {
             _movedContent = new Dictionary<ContentTypes, List<string>>
             {
@@ -57,12 +62,9 @@ namespace Rubberduck.Refactorings.MoveMember
             }
         }
 
-        public string AsSingleBlockWithinDemarcationComments(string startMessage = null, string endMessage = null)
+        public string AsSingleBlockWithinDemarcationComments()
         {
-            var changesStartMarker = startMessage ?? MoveMemberResources.MovedContentBelowThisLine;
-            var changesEndMarker = endMessage ?? MoveMemberResources.MovedContentAboveThisLine;
-
-            return $"'***** {changesStartMarker}  *****{Environment.NewLine}{AsSingleBlock}{Environment.NewLine}'**** {changesEndMarker} ****{Environment.NewLine}";
+            return $"'*****  {MoveMemberResources.MovedContentBelowThisLine}  *****{Environment.NewLine}{AsSingleBlock}{Environment.NewLine}'****  {MoveMemberResources.MovedContentAboveThisLine}  ****{Environment.NewLine}";
         }
     }
 }

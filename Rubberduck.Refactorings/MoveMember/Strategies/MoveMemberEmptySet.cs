@@ -30,22 +30,21 @@ namespace Rubberduck.Refactorings.MoveMember
             return false;
         }
 
-        public IMoveMemberRewriteSession RefactorRewrite(MoveMemberModel model, IRewritingManager rewritingManager, INewContentProvider contentToMove, bool asPreview = false)
+        public void RefactorRewrite(MoveMemberModel model, IRewriteSession session, IRewritingManager rewritingManager, /*INewContentProvider contentToMove,*/ bool asPreview = false)
         {
             if (string.IsNullOrEmpty(model.Destination.ModuleName))
             {
-                return model.MoveMemberFactory.CreateMoveMemberRewriteSession(rewritingManager.CheckOutCodePaneSession());
+                return;
             }
 
-            var moveSession = model.MoveMemberFactory.CreateMoveMemberRewriteSession(rewritingManager.CheckOutCodePaneSession());
             if (asPreview)
             {
-
+                var contentToMove = new MovedContentProvider();
                 contentToMove.AddFieldOrConstantDeclaration(NothingSelectedPreviewMessage);
                 var isExistingDestination = model.Destination.IsExistingModule(out var module);
                 if (isExistingDestination)
                 {
-                    var rewriter = moveSession.CheckOutModuleRewriter(module.QualifiedModuleName);
+                    var rewriter = session.CheckOutModuleRewriter(module.QualifiedModuleName);
                     if (model.Destination.TryGetCodeSectionStartIndex(out var insertIndex))
                     {
                         rewriter.InsertBefore(insertIndex, contentToMove.AsSingleBlockWithinDemarcationComments());
@@ -56,10 +55,9 @@ namespace Rubberduck.Refactorings.MoveMember
                     }
                 }
             }
-            return moveSession;
         }
 
-        public INewContentProvider NewDestinationModuleContent(MoveMemberModel model, IRewritingManager rewritingManager, INewContentProvider contentToMove)
+        public IMovedContentProvider NewDestinationModuleContent(MoveMemberModel model, IRewritingManager rewritingManager, IMovedContentProvider contentToMove)
         {
             contentToMove.AddFieldOrConstantDeclaration(NothingSelectedPreviewMessage);
             return contentToMove;

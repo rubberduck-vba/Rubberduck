@@ -57,11 +57,11 @@ namespace RubberduckTests.Refactoring.MoveMember
                 .Callback((Action action) => action.Invoke());
 
             var addComponentService = TestAddComponentService(state?.ProjectsProvider);
+            var existingDestinationRefactoring = new MoveMemberToExistingModuleRefactoring(state, rewritingManager, addComponentService);
+            var newDestinationRefactoring = new MoveMemberToNewModuleRefactoring(existingDestinationRefactoring, state, rewritingManager, addComponentService);
+            var refactoringAction = new MoveMemberRefactoringAction(newDestinationRefactoring, existingDestinationRefactoring);
 
-            var refactoringAction = new MoveMemberRefactoringAction(state, rewritingManager, addComponentService);
-
-            ISelectionProvider selectionProvider = null;
-            return new MoveMemberRefactoring(refactoringAction, state, factory, rewritingManager, selectionProvider, new SelectedDeclarationProvider(selectionService, state), uiDispatcherMock.Object);
+            return new MoveMemberRefactoring(refactoringAction, state, factory, rewritingManager, selectionService, new SelectedDeclarationProvider(selectionService, state), uiDispatcherMock.Object);
         }
 
         public static Mock<IRefactoringPresenterFactory> CreatePresenterFactoryStub(MoveMemberModel model)
@@ -190,61 +190,6 @@ namespace RubberduckTests.Refactoring.MoveMember
         public const string DEFAULT_DESTINATION_MODULE_NAME = "DfltDestStd";
         public const string DEFAULT_DESTINATION_CLASS_NAME = "DfltDestClass";
 
-        //If destinationOriginalContent is null, the refactoring is to an existing empty module
-        public static MoveMemberTestResult RefactorToExistingDestinationModule(TestMoveDefinition moveDefinition, string sourceOriginalContent, string destinationOriginalContent = null)
-        {
-            var results = new MoveMemberTestResult(moveDefinition);
-
-            void ThisTest(RubberduckParserState state, IVBE vbe, IRewritingManager rewritingManager)
-            {
-                ExecuteMoveMemberRefactoring(vbe, moveDefinition, state, rewritingManager);
-            }
-
-            var vbeStub = BuildVBEStub(moveDefinition, sourceOriginalContent, destinationOriginalContent);
-            ParseAndTest(vbeStub, ThisTest);
-
-            foreach (var moduleDefinition in moveDefinition.ModuleDefinitions)
-            {
-                results.Add(moduleDefinition.ModuleName, RetrieveModuleContent(vbeStub, moduleDefinition.ModuleName));
-            }
-            return results;
-        }
-
-        public static void ExecuteMoveMemberRefactoring(IVBE vbe, TestMoveDefinition moveDefinition, RubberduckParserState state, IRewritingManager rewritingManager)
-        {
-            var member = state.DeclarationFinder.AllUserDeclarations.FirstOrDefault(d => d.IdentifierName.Equals(moveDefinition.SelectedElement));
-            var destinationModule = state.DeclarationFinder.ModuleDeclaration(GetQMN(vbe, moveDefinition.DestinationModuleName));
-
-            var model = new MoveMemberModel(member, state, null, new MoveMemberObjectsFactory(state));
-            model.ChangeDestination(destinationModule);
-
-            var selectionService = MockedSelectionService(vbe.GetActiveSelection());
-
-            var presenterFactoryStub = CreatePresenterFactoryStub(model);
-
-            var uiDispatcherMock = new Mock<IUiDispatcher>();
-            uiDispatcherMock
-                .Setup(m => m.Invoke(It.IsAny<Action>()))
-                .Callback((Action action) => action.Invoke());
-
-            var addComponentService = MoveMemberTestsBase.TestAddComponentService(state?.ProjectsProvider);
-            var refactoringAction = new MoveMemberRefactoringAction(state, rewritingManager, addComponentService);
-            ISelectionProvider selectionProvider = null;
-            var moveMemberRefactoring = new MoveMemberRefactoring(refactoringAction, state, /*state,*/ presenterFactoryStub.Object, rewritingManager, /*selectionService,*/ selectionProvider, new SelectedDeclarationProvider(selectionService, state), /*state?.ProjectsProvider,*/ uiDispatcherMock.Object);
-
-            moveMemberRefactoring.Refactor();
-        }
-
-        public static ISelectionService MockedSelectionService(QualifiedSelection? initialSelection)
-        {
-            QualifiedSelection? activeSelection = initialSelection;
-            var selectionServiceMock = new Mock<ISelectionService>();
-            selectionServiceMock.Setup(m => m.ActiveSelection()).Returns(() => activeSelection);
-            selectionServiceMock.Setup(m => m.TrySetActiveSelection(It.IsAny<QualifiedSelection>()))
-                .Returns(() => true).Callback((QualifiedSelection selection) => activeSelection = selection);
-            return selectionServiceMock.Object;
-        }
-
         public static T ParseAndTest<T>(IVBE vbe, Func<RubberduckParserState, T> testFunc)
         {
             T result = default;
@@ -253,15 +198,6 @@ namespace RubberduckTests.Refactoring.MoveMember
                 result = testFunc(state);
             }
             return result;
-        }
-
-        public static void ParseAndTest(IVBE vbe, Action<RubberduckParserState, IVBE, IRewritingManager> testFunc)
-        {
-            (RubberduckParserState state, IRewritingManager rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
-            using (state)
-            {
-                testFunc(state, vbe, rewritingManager);
-            }
         }
 
         public static T ParseAndTest<T>(IVBE vbe, Func<RubberduckParserState, IVBE, IRewritingManager, T> testFunc)

@@ -19,8 +19,8 @@ namespace Rubberduck.Refactorings.MoveMember
         IMoveSourceModuleProxy CreateMoveSourceProxy(Declaration moveSource);
         IMoveDestinationModuleProxy CreateMoveDestinationProxy(Declaration moveDestination);
         IMoveDestinationModuleProxy CreateMoveDestination(string moduleName, ComponentType moduleComponentType = ComponentType.StandardModule);
-        IMoveMemberRewriteSession CreateMoveMemberRewriteSession(IExecutableRewriteSession rewriteSession);
         IEnumerable<IMoveableMemberSet> CreateMoveables(Declaration moveTarget);
+        IMovedContentProvider CreateMovedContentProvider();
     }
 
     public class MoveMemberObjectsFactory : IMoveMemberObjectsFactory
@@ -58,11 +58,6 @@ namespace Rubberduck.Refactorings.MoveMember
             }
 
             return new MoveDestinationModuleProxy(new MoveMemberEndpoint(moduleName, moduleComponentType, _declarationFinderProvider));
-        }
-
-        public IMoveMemberRewriteSession CreateMoveMemberRewriteSession(IExecutableRewriteSession rewriteSession)
-        {
-            return new MoveMemberRewriteSession(rewriteSession);
         }
 
         public static bool TryCreateStrategy(MoveMemberModel model, out IMoveMemberRefactoringStrategy strategy)
@@ -121,6 +116,11 @@ namespace Rubberduck.Refactorings.MoveMember
             }
 
             return moveableMembers;
+        }
+
+        public IMovedContentProvider CreateMovedContentProvider()
+        {
+            return new MovedContentProvider();
         }
 
     }
