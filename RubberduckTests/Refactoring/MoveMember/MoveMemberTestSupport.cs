@@ -9,8 +9,10 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.MoveMember;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Mocks;
 using System;
@@ -53,7 +55,32 @@ namespace RubberduckTests.Refactoring.MoveMember
             uiDispatcherMock
                 .Setup(m => m.Invoke(It.IsAny<Action>()))
                 .Callback((Action action) => action.Invoke());
-            return new MoveMemberRefactoring(state, state, factory, rewritingManager, selectionService, new SelectedDeclarationProvider(selectionService, state), null, uiDispatcherMock.Object);
+
+            var addComponentService = TestAddComponentService(state?.ProjectsProvider);
+
+            var refactoringAction = new MoveMemberRefactoringAction(state, rewritingManager, addComponentService);
+
+            ISelectionProvider selectionProvider = null;
+            return new MoveMemberRefactoring(refactoringAction, state, factory, rewritingManager, selectionProvider, new SelectedDeclarationProvider(selectionService, state), uiDispatcherMock.Object);
+        }
+
+        public static Mock<IRefactoringPresenterFactory> CreatePresenterFactoryStub(MoveMemberModel model)
+        {
+            var presenterStub = new Mock<IMoveMemberPresenter>();
+            presenterStub.Setup(p => p.Show()).Returns(model);
+
+            var factoryStub = new Mock<IRefactoringPresenterFactory>();
+            factoryStub.Setup(f => f.Create<IMoveMemberPresenter, MoveMemberModel>(It.IsAny<MoveMemberModel>()))
+                .Returns(presenterStub.Object);
+
+            return factoryStub;
+        }
+
+
+        public static IAddComponentService TestAddComponentService(IProjectsProvider projectsProvider)
+        {
+            var sourceCodeHandler = new CodeModuleComponentSourceCodeHandler();
+            return new AddComponentService(projectsProvider, sourceCodeHandler, sourceCodeHandler);
         }
 
         protected MoveMemberRefactorResults RefactoredCode(TestMoveDefinition moveDefinition, string sourceContent, string destinationContent = null, Type expectedException = null, bool executeViaActiveSelection = false, params (string identifier, DeclarationType declarationType)[] additionalElements)
@@ -163,8 +190,6 @@ namespace RubberduckTests.Refactoring.MoveMember
         public const string DEFAULT_DESTINATION_MODULE_NAME = "DfltDestStd";
         public const string DEFAULT_DESTINATION_CLASS_NAME = "DfltDestClass";
 
-        //public static string PARAM_PREFIX = MoveMemberResources.Prefix_Parameter;
-
         //If destinationOriginalContent is null, the refactoring is to an existing empty module
         public static MoveMemberTestResult RefactorToExistingDestinationModule(TestMoveDefinition moveDefinition, string sourceOriginalContent, string destinationOriginalContent = null)
         {
@@ -201,7 +226,11 @@ namespace RubberduckTests.Refactoring.MoveMember
             uiDispatcherMock
                 .Setup(m => m.Invoke(It.IsAny<Action>()))
                 .Callback((Action action) => action.Invoke());
-            var moveMemberRefactoring = new MoveMemberRefactoring(state, state, presenterFactoryStub.Object, rewritingManager, selectionService, new SelectedDeclarationProvider(selectionService, state), null, uiDispatcherMock.Object);
+
+            var addComponentService = MoveMemberTestsBase.TestAddComponentService(state?.ProjectsProvider);
+            var refactoringAction = new MoveMemberRefactoringAction(state, rewritingManager, addComponentService);
+            ISelectionProvider selectionProvider = null;
+            var moveMemberRefactoring = new MoveMemberRefactoring(refactoringAction, state, /*state,*/ presenterFactoryStub.Object, rewritingManager, /*selectionService,*/ selectionProvider, new SelectedDeclarationProvider(selectionService, state), /*state?.ProjectsProvider,*/ uiDispatcherMock.Object);
 
             moveMemberRefactoring.Refactor();
         }
@@ -226,16 +255,6 @@ namespace RubberduckTests.Refactoring.MoveMember
             return result;
         }
 
-        //public static T ParseAndTest<T>(IVBE vbe, Func<RubberduckParserState, IVBE, T> testFunc)
-        //{
-        //    T result = default;
-        //    using (var state = MockParser.CreateAndParse(vbe))
-        //    {
-        //        result = testFunc(state, vbe);
-        //    }
-        //    return result;
-        //}
-
         public static void ParseAndTest(IVBE vbe, Action<RubberduckParserState, IVBE, IRewritingManager> testFunc)
         {
             (RubberduckParserState state, IRewritingManager rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
@@ -255,18 +274,6 @@ namespace RubberduckTests.Refactoring.MoveMember
             }
             return result;
         }
-
-        //public static T ParseAndTest<T>(Func<RubberduckParserState, IVBE, IRewritingManager, T> testFunc, TestMoveDefinition moveDefinition, string sourceContent)
-        //{
-        //    T result = default;
-        //    var vbe = BuildVBEStub(moveDefinition, sourceContent);
-        //    (RubberduckParserState state, IRewritingManager rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
-        //    using (state)
-        //    {
-        //        result = testFunc(state, vbe, rewritingManager);
-        //    }
-        //    return result;
-        //}
 
         public static T ParseAndTest<T>(Func<RubberduckParserState, IVBE, IRewritingManager, T> testFunc, params (string moduleName, string content, ComponentType componentType)[] modules)
         {
@@ -562,21 +569,6 @@ End Sub
 
         public ModuleDefinition DestinationModuleDefinition(string content = null)
             => new ModuleDefinition(DestinationModuleName, DestinationComponentType, content ?? $"{Tokens.Option} {Tokens.Explicit}");
-
-        //public string ClassVariableName
-        //    => $"{MoveMemberResources.Prefix_Variable}{DestinationModuleName}";
-
-        //public string ClassInstantiationSubName
-        //{
-        //    get
-        //    {
-        //        if (SourceComponentType == ComponentType.ClassModule)
-        //        {
-        //            return MoveMemberResources.Class_Initialize;
-        //        }
-        //        return $"{MoveMemberResources.Prefix_ClassInstantiationProcedure}{ClassVariableName}";
-        //    }
-        //}
     }
 
     public struct MoveMemberTestResult
