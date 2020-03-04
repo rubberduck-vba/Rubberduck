@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
@@ -8,9 +7,7 @@ using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.Utility;
-using System.Collections.Generic;
 using System;
-using Rubberduck.Refactorings.EncapsulateField.Extensions;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
@@ -30,7 +27,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
         private readonly IIndenter _indenter;
-        private QualifiedModuleName _targetQMN;
+        private readonly IRewritingManager _rewritingManager;
 
         public EncapsulateFieldRefactoring(
                 IDeclarationFinderProvider declarationFinderProvider,
@@ -40,11 +37,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 ISelectionProvider selectionProvider,
                 ISelectedDeclarationProvider selectedDeclarationProvider,
                 IUiDispatcher uiDispatcher)
-            :base(rewritingManager, selectionProvider, factory, uiDispatcher)
+            :base(selectionProvider, factory, uiDispatcher)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _selectedDeclarationProvider = selectedDeclarationProvider;
             _indenter = indenter;
+            _rewritingManager = rewritingManager;
         }
 
         public EncapsulateFieldModel TestUserInteractionOnly(Declaration target, Func<EncapsulateFieldModel, EncapsulateFieldModel> userInteraction)
@@ -68,13 +66,17 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         protected override EncapsulateFieldModel InitializeModel(Declaration target)
         {
-            if (target == null) { throw new TargetDeclarationIsNullException(); }
+            if (target == null)
+            {
+                throw new TargetDeclarationIsNullException();
+            }
 
-            if (!target.DeclarationType.Equals(DeclarationType.Variable)) { throw new InvalidDeclarationTypeException(target); }
+            if (!target.DeclarationType.Equals(DeclarationType.Variable))
+            {
+                throw new InvalidDeclarationTypeException(target);
+            }
 
-            _targetQMN = target.QualifiedModuleName;
-
-            var builder = new EncapsulateFieldElementsBuilder(_declarationFinderProvider, _targetQMN);
+            var builder = new EncapsulateFieldElementsBuilder(_declarationFinderProvider, target.QualifiedModuleName);
 
             var selected = builder.Candidates.Single(c => c.Declaration == target);
             selected.EncapsulateFlag = true;
@@ -99,7 +101,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         protected override void RefactorImpl(EncapsulateFieldModel model)
         {
-            var refactorRewriteSession = new EncapsulateFieldRewriteSession(RewritingManager.CheckOutCodePaneSession()) as IEncapsulateFieldRewriteSession;
+            var refactorRewriteSession = new EncapsulateFieldRewriteSession(_rewritingManager.CheckOutCodePaneSession()) as IEncapsulateFieldRewriteSession;
 
             refactorRewriteSession = RefactorRewrite(model, refactorRewriteSession);
 
@@ -111,11 +113,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         private string PreviewRewrite(EncapsulateFieldModel model)
         {
-            var previewSession = new EncapsulateFieldRewriteSession(RewritingManager.CheckOutCodePaneSession()) as IEncapsulateFieldRewriteSession; ;
+            var previewSession = new EncapsulateFieldRewriteSession(_rewritingManager.CheckOutCodePaneSession()) as IEncapsulateFieldRewriteSession; ;
 
             previewSession = RefactorRewrite(model, previewSession, true);
 
-            return previewSession.CreatePreview(_targetQMN);
+            return previewSession.CreatePreview(model.QualifiedModuleName);
         }
 
         private IEncapsulateFieldRewriteSession RefactorRewrite(EncapsulateFieldModel model, IEncapsulateFieldRewriteSession refactorRewriteSession, bool asPreview = false)

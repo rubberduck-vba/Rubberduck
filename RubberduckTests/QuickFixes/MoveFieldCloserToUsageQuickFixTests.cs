@@ -128,7 +128,8 @@ End Sub";
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
                 var selectionService = MockedSelectionService();
                 var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-                var refactoring = new MoveCloserToUsageRefactoring(state, rewritingManager, selectionService, selectedDeclarationProvider);
+                var baseRefactoring = new MoveCloserToUsageRefactoringAction(rewritingManager);
+                var refactoring = new MoveCloserToUsageRefactoring(baseRefactoring, state, selectionService, selectedDeclarationProvider);
                 var quickFix = new MoveFieldCloserToUsageQuickFix(refactoring);
 
                 quickFix.Fix(resultToFix, rewriteSession);

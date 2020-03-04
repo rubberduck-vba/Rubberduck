@@ -1,5 +1,4 @@
-﻿using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.Symbols;
+﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
@@ -8,12 +7,10 @@ namespace Rubberduck.Refactorings
 {
     public abstract class RefactoringBase : IRefactoring
     {
-        protected readonly IRewritingManager RewritingManager;
         protected readonly ISelectionProvider SelectionProvider;
 
-        protected RefactoringBase(IRewritingManager rewritingManager, ISelectionProvider selectionProvider)
+        protected RefactoringBase(ISelectionProvider selectionProvider)
         {
-            RewritingManager = rewritingManager;
             SelectionProvider = selectionProvider;
         }
 
