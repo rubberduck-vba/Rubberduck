@@ -26,7 +26,7 @@ namespace Rubberduck.Refactorings.MoveMember
 
     public class MoveMemberRefactoring : InteractiveRefactoringBase<IMoveMemberPresenter, MoveMemberModel>, IMoveMemberRefactoringTestAccess
     {
-        private readonly IMessageBox _messageBox;
+        //private readonly IMessageBox _messageBox;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IParseManager _parseManager;
         private readonly IRewritingManager _rewritingManager;
@@ -41,7 +41,7 @@ namespace Rubberduck.Refactorings.MoveMember
         public MoveMemberRefactoring(
             IDeclarationFinderProvider declarationFinderProvider,
             IParseManager parseManager,
-            IMessageBox messageBox,
+            //IMessageBox messageBox,
             IRefactoringPresenterFactory factory,
             IRewritingManager rewritingManager,
             ISelectionService selectionService,
@@ -53,7 +53,7 @@ namespace Rubberduck.Refactorings.MoveMember
         {
             _declarationFinderProvider = declarationFinderProvider;
             _parseManager = parseManager;
-            _messageBox = messageBox;
+            //_messageBox = messageBox;
             _rewritingManager = rewritingManager;
             _selectedDeclarationProvider = selectedDeclarationProvider;
             _selectionService = selectionService;

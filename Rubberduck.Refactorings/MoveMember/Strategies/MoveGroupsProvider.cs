@@ -32,12 +32,12 @@ namespace Rubberduck.Refactorings.MoveMember
         IReadOnlyCollection<Declaration> Dependencies(MoveGroup moveGroup);
 
         /// <summary>
-        /// Returns IMoveableMemberSet for the specified MoveGroup
+        /// Returns read-only IMoveableMemberSet collection for the specified MoveGroup
         /// </summary>
         IReadOnlyCollection<IMoveableMemberSet> MoveableMemberSets(MoveGroup moveGroup);
 
         /// <summary>
-        /// Returns read-only flattened dependency declaration collection for a collection of MoveMemberSets
+        /// Returns read-only flattened dependency graph for a group of IMoveMemberSets
         /// </summary>
         IReadOnlyCollection<Declaration> AggregateDependencies(IEnumerable<IMoveableMemberSet> moveMemberSets);
 

@@ -17,34 +17,26 @@ namespace Rubberduck.Refactorings.MoveMember
     public interface IMoveMemberRewriteSession : IExecutableRewriteSession
     {
         /// <summary>
-        /// The wrapped IExecutableRewriteSession
+        /// Removes all tokens for specified collection of <see cref="Declaration>"/>.
         /// </summary>
-        IExecutableRewriteSession WrappedSession { get; }
-
-        /// <summary>
-        /// Caches declaration remove requests to support the use cases 
-        /// for variables and constants in declaration lists
-        /// and every variable/constant in the list is removed.
-        /// All other Variables, Constants, and Members call rewriter.Remove 
-        /// immediately
-        /// </summary>
+        /// <remarks>
+        /// Handles Remove requests for variables and constants that are declared in lists. 
+        /// Ensures removal of the entire statement if all declarations in the list are removed.
+        /// </remarks>
+        /// <param name="declarations">An Enumerable set of <see cref="Declaration"/> to remove.</param>
         void Remove(IEnumerable<Declaration> declarations);
 
         /// <summary>
-        /// Caches declaration remove requests to support the use cases 
-        /// for variables and constants  in declaration lists
-        /// and every variable/constant in the list is removed.
-        /// All other Variables, Constants, and Members call rewriter.Remove 
-        /// immediately
+        /// Removes all tokens for specified <see cref="Declaration"/>.
         /// </summary>
+        /// <param name="target">The <see cref="Declaration"/> to remove.</param>
+        /// <remarks>
+        /// Handles Remove requests for variables and constants that are declared in lists. 
+        /// Ensures removal of the entire statement if all declarations in the list are removed.
+        /// </remarks>
         void Remove(Declaration target);
     }
 
-    /// <summary>
-    /// Extends IExecutableRewriteSession to intercept the
-    /// IExecutableRewriteSession.TryRewrite() to insert a
-    /// removal variables and constants IModuleRewriter.Remove requests
-    /// </summary>
     public class MoveMemberRewriteSession : IMoveMemberRewriteSession
     {
         private IExecutableRewriteSession _rewriteSession;
@@ -56,11 +48,14 @@ namespace Rubberduck.Refactorings.MoveMember
             _rewriteSession = rewriteSession;
         }
 
-        public IExecutableRewriteSession WrappedSession => _rewriteSession;
-
         public IModuleRewriter CheckOutModuleRewriter(QualifiedModuleName qmn)
             => _rewriteSession.CheckOutModuleRewriter(qmn);
 
+        /// <summary>
+        /// Intercepts <see cref="IExecutableRewriteSession.TryRewrite"/> calls to
+        /// execute cached <see cref="IModuleRewriter.Remove"/> requests for 
+        /// for variables and constants that are declared in lists.
+        /// </summary>
         public bool TryRewrite()
         {
             ExecuteCachedRemoveRequests();
