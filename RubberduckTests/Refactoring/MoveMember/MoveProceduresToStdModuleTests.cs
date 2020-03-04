@@ -21,20 +21,17 @@ namespace RubberduckTests.Refactoring.MoveMember
         private const string ThisStrategy = nameof(MoveMemberToStdModule);
         private const DeclarationType ThisDeclarationType = DeclarationType.Procedure;
 
-        [TestCase("Public", MoveEndpoints.StdToClass)]
-        [TestCase("Private", MoveEndpoints.StdToClass)]
-        [TestCase("Public", MoveEndpoints.ClassToClass)]
-        [TestCase("Private", MoveEndpoints.ClassToClass)]
-        [TestCase("Public", MoveEndpoints.FormToClass)]
-        [TestCase("Private", MoveEndpoints.FormToClass)]
+        [TestCase(MoveEndpoints.StdToClass)]
+        [TestCase(MoveEndpoints.ClassToClass)]
+        [TestCase(MoveEndpoints.FormToClass)]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void SimpleMoveToClassModule_NoStrategy(string accessibility, MoveEndpoints endpoints)
+        public void SimpleMoveToClassModule_NoStrategy(MoveEndpoints endpoints)
         {
             var source = $@"
 Option Explicit
 
-{accessibility} Sub Log()
+Public Sub Log()
 End Sub";
 
             var moveDefinition = new TestMoveDefinition(endpoints, ("Log", ThisDeclarationType));
@@ -77,22 +74,22 @@ End Sub
         [TestCase(MoveEndpoints.FormToStd, "Private", ThisStrategy)]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void MovedSubReferencesExclusiveSupportConstant(MoveEndpoints endpoints, string exclusiveFuncAccessibility, string expectedStrategy)
+        public void SupportSubReferencesExclusiveSupportConstant(MoveEndpoints endpoints, string exclusiveFuncAccessibility, string expectedStrategy)
         {
             var memberToMove = "CalculateVolumeFromDiameter";
-            var exclusiveSupportElement = "Pi";
+            var exclusiveSupportConstant = "Pi";
             var source =
 $@"
 Option Explicit
 
-Private Const {exclusiveSupportElement} As Single = 3.14
+Private Const {exclusiveSupportConstant} As Single = 3.14
 
 Public Sub CalculateVolumeFromDiameter(ByVal diameter As Single, ByVal height As Single, ByRef volume As Single)
     CalculateVolume(diameter / 2, height, volume)
 End Sub
 
 {exclusiveFuncAccessibility} Sub CalculateVolume(ByVal radius As Single, ByVal height As Single, ByRef volume As Single)
-    volume = height * {exclusiveSupportElement} * radius ^ 2
+    volume = height * {exclusiveSupportConstant} * radius ^ 2
 End Sub
 ";
 
@@ -106,18 +103,18 @@ End Sub
             {
                 if (exclusiveFuncAccessibility.Equals(Tokens.Private))
                 {
-                    StringAssert.DoesNotContain($"Private Const {exclusiveSupportElement} As Single", refactoredCode.Source);
+                    StringAssert.DoesNotContain($"Private Const {exclusiveSupportConstant} As Single", refactoredCode.Source);
                     StringAssert.DoesNotContain($"{exclusiveFuncAccessibility} Sub CalculateVolume(", refactoredCode.Source);
                     StringAssert.DoesNotContain("Public Sub CalculateVolumeFromDiameter(", refactoredCode.Source);
 
                     StringAssert.Contains("Public Sub CalculateVolumeFromDiameter(", refactoredCode.Destination);
                     StringAssert.Contains("CalculateVolume(diameter / 2, height, volume)", refactoredCode.Destination);
                     StringAssert.Contains($"{exclusiveFuncAccessibility} Sub CalculateVolume(", refactoredCode.Destination);
-                    StringAssert.Contains($"Private Const {exclusiveSupportElement} As Single", refactoredCode.Destination);
+                    StringAssert.Contains($"Private Const {exclusiveSupportConstant} As Single", refactoredCode.Destination);
                 }
                 else
                 {
-                    StringAssert.Contains($"Private Const {exclusiveSupportElement} As Single", refactoredCode.Source);
+                    StringAssert.Contains($"Private Const {exclusiveSupportConstant} As Single", refactoredCode.Source);
                     StringAssert.Contains($"{exclusiveFuncAccessibility} Sub CalculateVolume(", refactoredCode.Source);
                     StringAssert.DoesNotContain("Public Sub CalculateVolumeFromDiameter(", refactoredCode.Source);
 
@@ -128,30 +125,31 @@ End Sub
             }
             else
             {
-                StringAssert.DoesNotContain($"Private Const {exclusiveSupportElement} As Single", refactoredCode.Source);
+                StringAssert.DoesNotContain($"Private Const {exclusiveSupportConstant} As Single", refactoredCode.Source);
                 StringAssert.DoesNotContain($"{exclusiveFuncAccessibility} Sub CalculateVolume(", refactoredCode.Source);
                 StringAssert.DoesNotContain("Public Sub CalculateVolumeFromDiameter(", refactoredCode.Source);
 
                 StringAssert.Contains("Public Sub CalculateVolumeFromDiameter(", refactoredCode.Destination);
                 StringAssert.Contains("CalculateVolume(diameter / 2, height, volume)", refactoredCode.Destination);
                 StringAssert.Contains($"{exclusiveFuncAccessibility} Sub CalculateVolume(", refactoredCode.Destination);
-                StringAssert.Contains($"Private Const {exclusiveSupportElement} As Single", refactoredCode.Destination);
+                StringAssert.Contains($"Private Const {exclusiveSupportConstant} As Single", refactoredCode.Destination);
             }
         }
 
-        [TestCase(MoveEndpoints.StdToStd, ThisStrategy)]
-        [TestCase(MoveEndpoints.ClassToStd, null)]
-        [TestCase(MoveEndpoints.FormToStd, null)]
+        [TestCase(MoveEndpoints.StdToStd, "Public Const Pi As Single = 3.14", ThisStrategy)]
+        [TestCase(MoveEndpoints.StdToStd, "Public Pi As Single", ThisStrategy)]
+        [TestCase(MoveEndpoints.ClassToStd, "Public Pi As Single", null)]
+        [TestCase(MoveEndpoints.FormToStd, "Public Pi As Single", null)]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void MovedSubReferencesNonExclusivePublicSupportConstant(MoveEndpoints endpoints, string expectedStrategy)
+        public void MovedSubReferencesNonExclusivePublicSupportNonMember(MoveEndpoints endpoints, string nonMemberDeclaration, string expectedStrategy)
         {
             var memberToMove = "CalculateVolumeFromDiameter";
             var source =
 $@"
 Option Explicit
 
-Public Const Pi As Single = 3.14
+{nonMemberDeclaration}
 
 Public Sub CalculateVolumeFromDiameter(ByVal diameter As Single, ByVal height As Single, ByRef volume As Single)
     volume = height * Pi * (diameter / 2) ^ 2 
@@ -179,98 +177,26 @@ End Function";
             StringAssert.Contains($"height * {moveDefinition.SourceModuleName}.Pi", refactoredCode.Destination);
         }
 
-        [TestCase(MoveEndpoints.StdToStd, null)]
+        [TestCase(MoveEndpoints.StdToStd, "Private Const Pi As Single = 3.14", null)]
+        [TestCase(MoveEndpoints.StdToStd, "Private Pi As Single", null)]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void MovedSubReferencesNonExclusivePrivateSupportConstant(MoveEndpoints endpoints, string expectedStrategy)
+        public void ReferencesNonExclusivePrivateSupportNonMember(MoveEndpoints endpoints, string nonMemberDeclaration, string expectedStrategy)
         {
             var memberToMove = "CalculateVolumeFromDiameter";
-            var pi = "Pi";
             var source =
 $@"
 Option Explicit
 
-Private Const {pi} As Single = 3.14
+{nonMemberDeclaration}
 
 Public Sub CalculateVolumeFromDiameter(ByVal diameter As Single, ByVal height As Single, ByRef volume As Single)
-    volume = height * {pi} * (diameter / 2) ^ 2 
+    volume = height * Pi * (diameter / 2) ^ 2 
 End Sub
 
 Public Sub CalculateCircumferenceFromDiameter(ByVal diameter As Single, ByRef circumference As Single)
-    circumference = diameter * {pi}
+    circumference = diameter * Pi
 End Sub";
-
-            var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType));
-
-            var refactoredCode = RefactoredCode_UserSetsDestinationModuleName(moveDefinition, source);
-
-            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
-        }
-
-        [TestCase("Public", MoveEndpoints.StdToStd, ThisStrategy)]
-        [TestCase("Private", MoveEndpoints.StdToStd, ThisStrategy)]
-        [TestCase("Public", MoveEndpoints.ClassToStd, null)]
-        [TestCase("Private", MoveEndpoints.ClassToStd, null)]
-        [TestCase("Public", MoveEndpoints.FormToStd, null)]
-        [TestCase("Private", MoveEndpoints.FormToStd, null)]
-        [Category("Refactorings")]
-        [Category("MoveMember")]
-        public void ReferencesNonExclusivePublicField(string accessibility, MoveEndpoints endpoints, string expectedStrategy)
-        {
-            var memberToMove = "Foo";
-            var source = $@"
-Option Explicit
-
-Public bar As Long
-
-{accessibility} Sub Foo(arg1 As Long)
-    bar = bar + arg1
-End Sub
-
-Public Sub Goo(arg1 As Long)
-    bar = bar + arg1
-End Sub
-";
-
-            var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType));
-
-            var refactoredCode = RefactoredCode_UserSetsDestinationModuleName(moveDefinition, source);
-
-            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
-
-            if (expectedStrategy is null)
-            {
-                return;
-            }
-
-            StringAssert.DoesNotContain($"{accessibility} Sub Foo(", refactoredCode.Source);
-            StringAssert.Contains($"Public Sub Goo(", refactoredCode.Source);
-            StringAssert.Contains($"Public bar As Long", refactoredCode.Source);
-
-            StringAssert.Contains($"{accessibility} Sub Foo(", refactoredCode.Destination);
-            StringAssert.Contains($"{moveDefinition.SourceModuleName}.bar = {moveDefinition.SourceModuleName}.bar + arg1", refactoredCode.Destination);
-            StringAssert.DoesNotContain($"Public bar As Long", refactoredCode.Destination);
-        }
-
-        [TestCase(MoveEndpoints.StdToStd, null)]
-        [Category("Refactorings")]
-        [Category("MoveMember")]
-        public void ReferencesNonExclusivePrivateField(MoveEndpoints endpoints, string expectedStrategy)
-        {
-            var memberToMove = "Foo";
-            var source = $@"
-Option Explicit
-
-Private bar As Long
-
-Public Sub Foo(arg1 As Long)
-    bar = bar + arg1
-End Sub
-
-Public Sub Goo(arg1 As Long)
-    bar = bar + arg1
-End Sub
-";
 
             var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, ThisDeclarationType));
 

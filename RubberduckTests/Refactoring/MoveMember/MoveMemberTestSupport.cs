@@ -53,7 +53,7 @@ namespace RubberduckTests.Refactoring.MoveMember
             uiDispatcherMock
                 .Setup(m => m.Invoke(It.IsAny<Action>()))
                 .Callback((Action action) => action.Invoke());
-            return new MoveMemberRefactoring(state, state, null, factory, rewritingManager, selectionService, new SelectedDeclarationProvider(selectionService, state), null, uiDispatcherMock.Object);
+            return new MoveMemberRefactoring(state, state, factory, rewritingManager, selectionService, new SelectedDeclarationProvider(selectionService, state), null, uiDispatcherMock.Object);
         }
 
         protected MoveMemberRefactorResults RefactoredCode(TestMoveDefinition moveDefinition, string sourceContent, string destinationContent = null, Type expectedException = null, bool executeViaActiveSelection = false, params (string identifier, DeclarationType declarationType)[] additionalElements)
@@ -185,7 +185,7 @@ namespace RubberduckTests.Refactoring.MoveMember
             return results;
         }
 
-        public static void ExecuteMoveMemberRefactoring(IVBE vbe, TestMoveDefinition moveDefinition, RubberduckParserState state, IRewritingManager rewritingManager, IMessageBox msgBox = null)
+        public static void ExecuteMoveMemberRefactoring(IVBE vbe, TestMoveDefinition moveDefinition, RubberduckParserState state, IRewritingManager rewritingManager)
         {
             var member = state.DeclarationFinder.AllUserDeclarations.FirstOrDefault(d => d.IdentifierName.Equals(moveDefinition.SelectedElement));
             var destinationModule = state.DeclarationFinder.ModuleDeclaration(GetQMN(vbe, moveDefinition.DestinationModuleName));
@@ -194,10 +194,6 @@ namespace RubberduckTests.Refactoring.MoveMember
             model.ChangeDestination(destinationModule);
 
             var selectionService = MockedSelectionService(vbe.GetActiveSelection());
-            if (msgBox == null)
-            {
-                msgBox = new Mock<IMessageBox>().Object;
-            }
 
             var presenterFactoryStub = CreatePresenterFactoryStub(model);
 
@@ -205,7 +201,7 @@ namespace RubberduckTests.Refactoring.MoveMember
             uiDispatcherMock
                 .Setup(m => m.Invoke(It.IsAny<Action>()))
                 .Callback((Action action) => action.Invoke());
-            var moveMemberRefactoring = new MoveMemberRefactoring(state, state, msgBox, presenterFactoryStub.Object, rewritingManager, selectionService, new SelectedDeclarationProvider(selectionService, state), null, uiDispatcherMock.Object);
+            var moveMemberRefactoring = new MoveMemberRefactoring(state, state, presenterFactoryStub.Object, rewritingManager, selectionService, new SelectedDeclarationProvider(selectionService, state), null, uiDispatcherMock.Object);
 
             moveMemberRefactoring.Refactor();
         }

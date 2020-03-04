@@ -535,19 +535,22 @@ End Function
             }
         }
 
-        [TestCase(MoveEndpoints.FormToStd)]
-        [TestCase(MoveEndpoints.ClassToStd)]
-        [TestCase(MoveEndpoints.StdToStd)]
+        [TestCase(MoveEndpoints.FormToStd, "Public")]
+        [TestCase(MoveEndpoints.FormToStd, "Private")]
+        [TestCase(MoveEndpoints.ClassToStd, "Public")]
+        [TestCase(MoveEndpoints.ClassToStd, "Private")]
+        [TestCase(MoveEndpoints.StdToStd, "Public")]
+        [TestCase(MoveEndpoints.StdToStd, "Private")]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void ObjectField_NoStrategyFound(MoveEndpoints endpoints)
+        public void ObjectField_NoStrategyFound(MoveEndpoints endpoints, string accessibility)
         {
             var memberToMove = "mObj";
             var source =
 $@"
 Option Explicit
 
-Private mObj As ObjectClass
+{accessibility} mObj As ObjectClass
 
 Public Function FooMath(arg1 As Long) As Long
     if mObj is Nothing Then
