@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using Rubberduck.Common;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Rewriter;
+﻿using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
@@ -14,17 +10,16 @@ namespace Rubberduck.Refactorings.IntroduceField
 {
     public class IntroduceFieldRefactoring : RefactoringBase
     {
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        private readonly IRefactoringAction<IntroduceFieldModel> _refactoringAction;
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
 
         public IntroduceFieldRefactoring(
-            IDeclarationFinderProvider declarationFinderProvider, 
-            IRewritingManager rewritingManager,
+            IntroduceFieldRefactoringAction refactoringAction, 
             ISelectionProvider selectionProvider,
             ISelectedDeclarationProvider selectedDeclarationProvider)
-        :base(rewritingManager, selectionProvider)
+        :base(selectionProvider)
         {
-            _declarationFinderProvider = declarationFinderProvider;
+            _refactoringAction = refactoringAction;
             _selectedDeclarationProvider = selectedDeclarationProvider;
         }
 
@@ -62,27 +57,13 @@ namespace Rubberduck.Refactorings.IntroduceField
 
         private void PromoteVariable(Declaration target)
         {
-            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
-            var rewriter = rewriteSession.CheckOutModuleRewriter(target.QualifiedModuleName);
-
-            rewriter.Remove(target);
-            AddField(rewriter, target);
-
-            if (!rewriteSession.TryRewrite())
-            {
-                throw new RewriteFailedException(rewriteSession);
-            }
+            var model = Model(target);
+            _refactoringAction.Refactor(model);
         }
 
-        private void AddField(IModuleRewriter rewriter, Declaration target)
+        private static IntroduceFieldModel Model(Declaration target)
         {
-            var content = $"{Tokens.Private} {target.IdentifierName} {Tokens.As} {target.AsTypeName}{Environment.NewLine}";
-            var members = _declarationFinderProvider.DeclarationFinder.Members(target.QualifiedName.QualifiedModuleName)
-                .Where(item => item.DeclarationType.HasFlag(DeclarationType.Member))
-                .OrderBy(item => item.Selection);
-
-            var firstMember = members.FirstOrDefault();
-            rewriter.InsertBefore(firstMember?.Context.Start.TokenIndex ?? 0, content);
+            return new IntroduceFieldModel(target);
         }
     }
 }

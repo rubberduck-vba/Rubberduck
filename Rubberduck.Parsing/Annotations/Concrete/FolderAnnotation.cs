@@ -1,9 +1,4 @@
-﻿using Rubberduck.VBEditor;
-using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Parsing.Grammar;
-
-namespace Rubberduck.Parsing.Annotations
+﻿namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>
     /// Used for specifying the Code Explorer folder a appears under.

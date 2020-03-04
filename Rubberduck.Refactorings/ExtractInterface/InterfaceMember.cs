@@ -5,21 +5,10 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings.ImplementInterface;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
-    public class Parameter
-    {
-        public string ParamAccessibility { get; set; }
-        public string ParamName { get; set; }
-        public string ParamType { get; set; }
-
-        public override string ToString()
-        {
-            return $"{ParamAccessibility} {ParamName} As {ParamType}";
-        }
-    }
-
     public class InterfaceMember : INotifyPropertyChanged
     {
         public Declaration Member { get; }
@@ -61,15 +50,8 @@ namespace Rubberduck.Refactorings.ExtractInterface
             if (member is IParameterizedDeclaration memberWithParams)
             {
                 MemberParams = memberWithParams.Parameters
-                    .OrderBy(o => o.Selection.StartLine)
-                    .ThenBy(t => t.Selection.StartColumn)
-                    .Select(p => new Parameter
-                    {
-                        ParamAccessibility =
-                            ((VBAParser.ArgContext) p.Context).BYVAL() != null ? Tokens.ByVal : Tokens.ByRef,
-                        ParamName = p.IdentifierName,
-                        ParamType = p.AsTypeName
-                    })
+                    .OrderBy(parameter => parameter.Selection)
+                    .Select(parameter => new Parameter(parameter))
                     .ToList();
             }
             else

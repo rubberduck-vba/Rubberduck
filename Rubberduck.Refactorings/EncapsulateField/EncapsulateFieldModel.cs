@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.EncapsulateField

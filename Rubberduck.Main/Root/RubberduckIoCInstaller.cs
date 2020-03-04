@@ -149,6 +149,7 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
 
             RegisterSettingsViewModel(container);
+            RegisterRefactoringPreviewProviders(container);
             RegisterRefactoringDialogs(container);
 
             container.Register(Component.For<ISearchResultsWindowViewModel>()
@@ -156,8 +157,7 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<SearchResultPresenterInstanceManager>()
                 .LifestyleSingleton());
-
-            RegisterRefactoringDialogs(container);
+            
             RegisterDockablePresenters(container);
             RegisterDockableUserControls(container);
 
@@ -710,6 +710,23 @@ namespace Rubberduck.Root
                 {
                     var face = type.GetInterfaces().FirstOrDefault(i =>
                         i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ISettingsViewModel<>));
+
+                    return face == null ? new[] { type } : new[] { type, face };
+                })
+            );
+        }
+
+        private void RegisterRefactoringPreviewProviders(IWindsorContainer container)
+        {
+            container.Register(Types
+                .FromAssemblyInThisApplication()
+                .IncludeNonPublicTypes()
+                .BasedOn(typeof(IRefactoringPreviewProvider<>))
+                .LifestyleSingleton()
+                .WithServiceSelect((type, types) =>
+                {
+                    var face = type.GetInterfaces().FirstOrDefault(i =>
+                        i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRefactoringPreviewProvider<>));
 
                     return face == null ? new[] { type } : new[] { type, face };
                 })

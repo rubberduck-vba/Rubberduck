@@ -8,10 +8,13 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.AddInterfaceImplementations;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Mocks;
 
@@ -46,9 +49,10 @@ End Sub
             const string expectedInterfaceCode =
                 @"Option Explicit
 
+'@Interface
+
 Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
-
 ";
             Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
             {
@@ -129,183 +133,6 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Extract Interface")]
-        public void ExtractInterfaceRefactoring_ImplementProcAndFuncAndPropGetSetLet()
-        {
-            //Input
-            const string inputCode = @"
-Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub
-
-Public Function Fizz(b) As Variant
-End Function
-
-Public Property Get Buzz()
-End Property
-
-Public Property Let Buzz(value)
-End Property
-
-Public Property Set Buzz(value)
-End Property";
-
-            var selection = new Selection(1, 23, 1, 27);
-
-            //Expectation
-            const string expectedCode = @"
-Implements IClass
-
-Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub
-
-Public Function Fizz(b) As Variant
-End Function
-
-Public Property Get Buzz()
-End Property
-
-Public Property Let Buzz(value)
-End Property
-
-Public Property Set Buzz(value)
-End Property
-
-Private Sub IClass_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-    Err.Raise 5 'TODO implement interface member
-End Sub
-
-Private Function IClass_Fizz(ByRef b As Variant) As Variant
-    Err.Raise 5 'TODO implement interface member
-End Function
-
-Private Property Get IClass_Buzz() As Variant
-    Err.Raise 5 'TODO implement interface member
-End Property
-
-Private Property Let IClass_Buzz(ByRef value As Variant)
-    Err.Raise 5 'TODO implement interface member
-End Property
-
-Private Property Set IClass_Buzz(ByRef value As Variant)
-    Err.Raise 5 'TODO implement interface member
-End Property
-";
-
-            const string expectedInterfaceCode =
-                @"Option Explicit
-
-Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub
-
-Public Function Fizz(ByRef b As Variant) As Variant
-End Function
-
-Public Property Get Buzz() As Variant
-End Property
-
-Public Property Let Buzz(ByRef value As Variant)
-End Property
-
-Public Property Set Buzz(ByRef value As Variant)
-End Property
-
-";
-            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
-            {
-                foreach (var interfaceMember in model.Members)
-                {
-                    interfaceMember.IsSelected = true;
-                }
-
-                return model;
-            };
-
-            var actualCode = RefactoredCode("Class", selection, presenterAction, null, false, ("Class", inputCode, ComponentType.ClassModule));
-            Assert.AreEqual(expectedCode, actualCode["Class"]);
-            var actualInterfaceCode = actualCode[actualCode.Keys.Single(componentName => !componentName.Equals("Class"))];
-            Assert.AreEqual(expectedInterfaceCode, actualInterfaceCode);
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Extract Interface")]
-        public void ExtractInterfaceRefactoring_ImplementProcAndFunc_IgnoreProperties()
-        {
-            //Input
-            const string inputCode =
-                @"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub
-
-Public Function Fizz(b) As Variant
-End Function
-
-Public Property Get Buzz()
-End Property
-
-Public Property Let Buzz(value)
-End Property
-
-Public Property Set Buzz(value)
-End Property";
-
-            var selection = new Selection(1, 23, 1, 27);
-
-            //Expectation
-            const string expectedCode =
-                @"Implements IClass
-
-Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub
-
-Public Function Fizz(b) As Variant
-End Function
-
-Public Property Get Buzz()
-End Property
-
-Public Property Let Buzz(value)
-End Property
-
-Public Property Set Buzz(value)
-End Property
-
-Private Sub IClass_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-    Err.Raise 5 'TODO implement interface member
-End Sub
-
-Private Function IClass_Fizz(ByRef b As Variant) As Variant
-    Err.Raise 5 'TODO implement interface member
-End Function
-";
-
-            const string expectedInterfaceCode =
-                @"Option Explicit
-
-Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub
-
-Public Function Fizz(ByRef b As Variant) As Variant
-End Function
-
-";
-            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
-            {
-                foreach (var interfaceMember in model.Members.Where(member => !member.FullMemberSignature.Contains("Property")))
-                {
-                    interfaceMember.IsSelected = true;
-                }
-
-                return model;
-            };
-
-            var actualCode = RefactoredCode("Class", selection, presenterAction, null, false, ("Class", inputCode, ComponentType.ClassModule));
-            Assert.AreEqual(expectedCode, actualCode["Class"]);
-            var actualInterfaceCode = actualCode[actualCode.Keys.Single(componentName => !componentName.Equals("Class"))];
-            Assert.AreEqual(expectedInterfaceCode, actualInterfaceCode);
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Extract Interface")]
         public void ExtractInterfaceRefactoring_IgnoresField()
         {
             //Input
@@ -317,11 +144,68 @@ End Function
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _, selection);
             using(var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var target  = state.DeclarationFinder.UserDeclarations(DeclarationType.ClassModule).First();
+                var target  = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.ClassModule)
+                    .OfType<ClassModuleDeclaration>()
+                    .First();
 
                 //Specify Params to remove
                 var model = new ExtractInterfaceModel(state, target);
                 Assert.AreEqual(0, model.Members.Count);
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Extract Interface")]
+        public void ExtractInterfaceRefactoring_DefaultsToPublicInterfaceForExposedImplementingClass()
+        {
+            //Input
+            const string inputCode =
+                @"Attribute VB_Exposed = True
+
+Public Sub Foo
+End Sub";
+
+            var selection = new Selection(1, 23, 1, 27);
+
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _, selection);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var target = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.ClassModule)
+                    .OfType<ClassModuleDeclaration>()
+                    .First();
+
+                //Specify Params to remove
+                var model = new ExtractInterfaceModel(state, target);
+                Assert.AreEqual(ClassInstancing.Public, model.InterfaceInstancing);
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Extract Interface")]
+        public void ExtractInterfaceRefactoring_DefaultsToPrivateInterfaceForNonExposedImplementingClass()
+        {
+            //Input
+            const string inputCode =
+                @"Public Sub Foo
+End Sub";
+
+            var selection = new Selection(1, 23, 1, 27);
+
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _, selection);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var target = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.ClassModule)
+                    .OfType<ClassModuleDeclaration>()
+                    .First();
+
+                //Specify Params to remove
+                var model = new ExtractInterfaceModel(state, target);
+                Assert.AreEqual(ClassInstancing.Private, model.InterfaceInstancing);
             }
         }
 
@@ -400,9 +284,10 @@ End Sub
             const string expectedInterfaceCode =
                 @"Option Explicit
 
+'@Interface
+
 Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
-
 ";
             Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
             {
@@ -424,7 +309,16 @@ End Sub
             uiDispatcherMock
                 .Setup(m => m.Invoke(It.IsAny<Action>()))
                 .Callback((Action action) => action.Invoke());
-            return new ExtractInterfaceRefactoring(state, state, factory, rewritingManager, selectionService, uiDispatcherMock.Object, state?.ProjectsProvider);
+            var addImplementationsBaseRefactoring = new AddInterfaceImplementationsRefactoringAction(rewritingManager);
+            var addComponentService = TestAddComponentService(state?.ProjectsProvider);
+            var baseRefactoring = new ExtractInterfaceRefactoringAction(addImplementationsBaseRefactoring, state, state, rewritingManager, state?.ProjectsProvider, addComponentService);
+            return new ExtractInterfaceRefactoring(baseRefactoring, state, factory, selectionService, uiDispatcherMock.Object);
+        }
+
+        private static IAddComponentService TestAddComponentService(IProjectsProvider projectsProvider)
+        {
+            var sourceCodeHandler = new CodeModuleComponentSourceCodeHandler();
+            return new AddComponentService(projectsProvider, sourceCodeHandler, sourceCodeHandler);
         }
     }
 }
