@@ -11,7 +11,7 @@ namespace Rubberduck.Refactorings.MoveMember
     {
         /// <summary>
         /// Properties: Returns the first Property member in the Members collection  
-        /// Non-Properties: Returns the wrapped declaration for all types except Properties
+        /// Non-Properties: Returns the wrapped declaration
         /// </summary>
         Declaration Member { get; }
 
@@ -34,12 +34,12 @@ namespace Rubberduck.Refactorings.MoveMember
         string MovedIdentifierName { set; get; }
 
         /// <summary>
-        /// Returns true if MoveIdentifierName != IdentifierName
+        /// Returns true if MoveIdentifierName == IdentifierName
         /// </summary>
         bool RetainsOriginalIdentifier { get; }
 
         /// <summary>
-        /// Set to true if the declaration set as a defining element of the move 
+        /// Set to true if the any of the wrapped declarations is a defining element of the move 
         /// </summary>
         bool IsSelected { set; get; }
 
@@ -49,12 +49,12 @@ namespace Rubberduck.Refactorings.MoveMember
         bool Contains(Declaration declaration);
 
         /// <summary>
-        /// Set to true if the declaration is referenced by the MoveMember CallTree 
+        /// Returns true if the declaration is not Selected but is referenced by the MoveMember CallTree 
         /// </summary>
         bool IsSupport { set; get; }
 
         /// <summary>
-        /// Set to true if the declaration is referenced exclusively by the MoveMember participants 
+        /// Returns true if the declaration is referenced exclusively by the MoveMember participants 
         /// </summary>
         bool IsExclusive { set; get; }
         
@@ -64,12 +64,13 @@ namespace Rubberduck.Refactorings.MoveMember
         //IEnumerable<IdentifierReference> NonMemberBodyReferences { get; }
 
         /// <summary>
-        /// Set to true if all Members have Private Accessibility 
+        /// Returns true if all Members have Private Accessibility 
         /// </summary>
         bool HasPrivateAccessibility { get; }
 
         /// <summary>
-        /// Returns the direct dependency declarations for the MoveableMemberSet 
+        /// Returns the declaration for each IdentifierReference that has a ParentScope 
+        /// equal to one of the MoveableMemberSet declarations 
         /// </summary>
         IReadOnlyCollection<Declaration> DirectDependencies { get; }
 
