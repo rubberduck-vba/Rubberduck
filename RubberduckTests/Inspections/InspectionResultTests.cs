@@ -140,13 +140,11 @@ namespace RubberduckTests.Inspections
             var identifierReference = new IdentifierReference(module, null, null, "test", default, null, declaration);
             var modifiedModules = new HashSet<QualifiedModuleName> { declarationModule };
 
-            var declarationFinderProviderMock = new Mock<IDeclarationFinderProvider>();
-            var declaratioFinder = new DeclarationFinder(
+            var finder = new DeclarationFinder(
                 new List<Declaration>(), 
                 new List<IParseTreeAnnotation>(),
                 new Dictionary<QualifiedModuleName, IFailedResolutionStore>());
-            declarationFinderProviderMock.SetupGet(m => m.DeclarationFinder).Returns(declaratioFinder);
-            var inspectionResult = new IdentifierReferenceInspectionResult(inspectionMock.Object, string.Empty, declarationFinderProviderMock.Object, identifierReference);
+            var inspectionResult = new IdentifierReferenceInspectionResult(inspectionMock.Object, string.Empty, finder, identifierReference);
 
             Assert.IsTrue(inspectionResult.ChangesInvalidateResult(modifiedModules));
         }
@@ -171,13 +169,11 @@ namespace RubberduckTests.Inspections
             var identifierReference = new IdentifierReference(module, null, null, "test", default, null, declaration); 
             var modifiedModules = new HashSet<QualifiedModuleName> { otherModule };
 
-            var declarationFinderProviderMock = new Mock<IDeclarationFinderProvider>();
-            var declarationFinder = new DeclarationFinder(
+            var finder = new DeclarationFinder(
                 new List<Declaration>(), 
                 new List<IParseTreeAnnotation>(),
                 new Dictionary<QualifiedModuleName, IFailedResolutionStore>());
-            declarationFinderProviderMock.SetupGet(m => m.DeclarationFinder).Returns(declarationFinder);
-            var inspectionResult = new IdentifierReferenceInspectionResult(inspectionMock.Object, string.Empty, declarationFinderProviderMock.Object, identifierReference);
+            var inspectionResult = new IdentifierReferenceInspectionResult(inspectionMock.Object, string.Empty, finder, identifierReference);
 
             Assert.IsFalse(inspectionResult.ChangesInvalidateResult(modifiedModules));
         }

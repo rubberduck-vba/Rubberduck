@@ -95,15 +95,15 @@ namespace Rubberduck.Inspections.Concrete
                                     && reference.Declaration.IsUserDefined
                                     && reference.HasTypeHint());
             return objectionableReferences
-                .Select(reference => InspectionResult(reference, DeclarationFinderProvider));
+                .Select(reference => InspectionResult(reference, finder));
         }
 
-        private IInspectionResult InspectionResult(IdentifierReference reference, IDeclarationFinderProvider declarationFinderProvider)
+        private IInspectionResult InspectionResult(IdentifierReference reference, DeclarationFinder finder)
         {
             return new IdentifierReferenceInspectionResult(
                 this,
                 ResultDescription(reference),
-                declarationFinderProvider,
+                finder,
                 reference);
         }
 

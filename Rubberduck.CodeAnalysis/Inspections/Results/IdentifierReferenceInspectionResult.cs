@@ -5,6 +5,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Results
@@ -16,7 +17,7 @@ namespace Rubberduck.Inspections.Results
         public IdentifierReferenceInspectionResult(
             IInspection inspection, 
             string description, 
-            IDeclarationFinderProvider declarationFinderProvider, 
+            DeclarationFinder finder, 
             IdentifierReference reference,
             ICollection<string> disabledQuickFixes = null) 
             : base(inspection,
@@ -25,15 +26,15 @@ namespace Rubberduck.Inspections.Results
                  reference.Context,
                  reference.Declaration,
                  new QualifiedSelection(reference.QualifiedModuleName, reference.Context.GetSelection()),
-                 GetQualifiedMemberName(declarationFinderProvider, reference),
+                 GetQualifiedMemberName(finder, reference),
                  disabledQuickFixes)
         {
             Reference = reference;
         }
 
-        private static QualifiedMemberName? GetQualifiedMemberName(IDeclarationFinderProvider declarationFinderProvider, IdentifierReference reference)
+        private static QualifiedMemberName? GetQualifiedMemberName(DeclarationFinder finder, IdentifierReference reference)
         {
-            var members = declarationFinderProvider.DeclarationFinder.Members(reference.QualifiedModuleName);
+            var members = finder.Members(reference.QualifiedModuleName);
             return members.SingleOrDefault(m => reference.Context.IsDescendentOf(m.Context))?.QualifiedName;
         }
 
@@ -49,14 +50,14 @@ namespace Rubberduck.Inspections.Results
         public IdentifierReferenceInspectionResult(
             IInspection inspection, 
             string description, 
-            IDeclarationFinderProvider declarationFinderProvider, 
+            DeclarationFinder finder, 
             IdentifierReference reference, 
             T properties,
             ICollection<string> disabledQuickFixes = null) 
             : base(
                 inspection,
                 description,
-                declarationFinderProvider, 
+                finder, 
                 reference,
                 disabledQuickFixes)
         {

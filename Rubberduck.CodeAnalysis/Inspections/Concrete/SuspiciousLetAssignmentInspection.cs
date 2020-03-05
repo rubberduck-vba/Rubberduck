@@ -86,7 +86,7 @@ namespace Rubberduck.Inspections.Concrete
 
                 if (rhsDefaultMemberAccess != null)
                 {
-                    var result = InspectionResult(assignment, rhsDefaultMemberAccess, isUnbound);
+                    var result = InspectionResult(assignment, rhsDefaultMemberAccess, isUnbound, finder);
                     results.Add(result);
                 }
             }
@@ -127,7 +127,7 @@ namespace Rubberduck.Inspections.Concrete
             return (unboundRhsDefaultMemberAccess, true);
         }
 
-        private IInspectionResult InspectionResult(IdentifierReference lhsReference, IdentifierReference rhsReference, bool isUnbound)
+        private IInspectionResult InspectionResult(IdentifierReference lhsReference, IdentifierReference rhsReference, bool isUnbound, DeclarationFinder finder)
         {
             var disabledQuickFixes = isUnbound
                 ? new List<string> {"ExpandDefaultMemberQuickFix"}
@@ -135,7 +135,7 @@ namespace Rubberduck.Inspections.Concrete
             return new IdentifierReferenceInspectionResult<IdentifierReference>(
                 this,
                 ResultDescription(lhsReference, rhsReference),
-                DeclarationFinderProvider,
+                finder,
                 lhsReference,
                 rhsReference,
                 disabledQuickFixes);
@@ -161,7 +161,7 @@ namespace Rubberduck.Inspections.Concrete
 
                 if (rhsDefaultMemberAccess != null)
                 {
-                    var result = InspectionResult(assignment, rhsDefaultMemberAccess, true);
+                    var result = InspectionResult(assignment, rhsDefaultMemberAccess, true, finder);
                     results.Add(result);
                 }
             }

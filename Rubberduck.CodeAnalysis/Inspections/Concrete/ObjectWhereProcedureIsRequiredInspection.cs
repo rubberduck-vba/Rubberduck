@@ -89,7 +89,7 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(IsResultReference);
 
             return objectionableReferences
-                .Select(reference => BoundInspectionResult(reference, DeclarationFinderProvider))
+                .Select(reference => BoundInspectionResult(reference, finder))
                 .ToList();
         }
 
@@ -98,12 +98,12 @@ namespace Rubberduck.Inspections.Concrete
             return reference.IsProcedureCoercion;
         }
 
-        private IInspectionResult BoundInspectionResult(IdentifierReference reference, IDeclarationFinderProvider declarationFinderProvider)
+        private IInspectionResult BoundInspectionResult(IdentifierReference reference, DeclarationFinder finder)
         {
             return new IdentifierReferenceInspectionResult(
                 this,
                 BoundResultDescription(reference),
-                declarationFinderProvider,
+                finder,
                 reference);
         }
 
@@ -121,17 +121,17 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(IsResultReference);
 
             return objectionableReferences
-                .Select(reference => UnboundInspectionResult(reference, DeclarationFinderProvider))
+                .Select(reference => UnboundInspectionResult(reference, finder))
                 .ToList();
         }
 
-        private IInspectionResult UnboundInspectionResult(IdentifierReference reference, IDeclarationFinderProvider declarationFinderProvider)
+        private IInspectionResult UnboundInspectionResult(IdentifierReference reference, DeclarationFinder finder)
         {
             var disabledQuickFixes = new List<string>{ "ExpandDefaultMemberQuickFix" };
             return new IdentifierReferenceInspectionResult(
                 this,
                 UnboundResultDescription(reference),
-                declarationFinderProvider,
+                finder,
                 reference,
                 disabledQuickFixes);
         }
