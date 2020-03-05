@@ -10,12 +10,13 @@ using System.Threading;
 using NLog;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Abstract
 {
     public abstract class InspectionBase : IInspection
     {
-        protected readonly IDeclarationFinderProvider DeclarationFinderProvider;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
         protected readonly ILogger Logger;
 
@@ -23,7 +24,7 @@ namespace Rubberduck.Inspections.Abstract
         {
             Logger = LogManager.GetLogger(GetType().FullName);
 
-            DeclarationFinderProvider = declarationFinderProvider;
+            _declarationFinderProvider = declarationFinderProvider;
             Name = GetType().Name;
         }
 
@@ -67,8 +68,8 @@ namespace Rubberduck.Inspections.Abstract
         public int CompareTo(IInspection other) => string.Compare(InspectionType + Name, other.InspectionType + other.Name, StringComparison.Ordinal);
         public int CompareTo(object obj) => CompareTo(obj as IInspection);
 
-        protected abstract IEnumerable<IInspectionResult> DoGetInspectionResults();
-        protected abstract IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module);
+        protected abstract IEnumerable<IInspectionResult> DoGetInspectionResults(DeclarationFinder finder);
+        protected abstract IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder);
 
         /// <summary>
         /// A method that inspects the parser state and returns all issues it can find.
@@ -79,9 +80,9 @@ namespace Rubberduck.Inspections.Abstract
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var declarationFinder = DeclarationFinderProvider.DeclarationFinder;
-            var result = DoGetInspectionResults()
-                .Where(ir => !ir.IsIgnoringInspectionResult(declarationFinder))
+            var finder = _declarationFinderProvider.DeclarationFinder;
+            var result = DoGetInspectionResults(finder)
+                .Where(ir => !ir.IsIgnoringInspectionResult(finder))
                 .ToList();
             stopwatch.Stop();
             Logger.Trace("Intercepted invocation of '{0}.{1}' returned {2} objects.", GetType().Name, nameof(DoGetInspectionResults), result.Count);
@@ -99,9 +100,9 @@ namespace Rubberduck.Inspections.Abstract
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            var declarationFinder = DeclarationFinderProvider.DeclarationFinder;
-            var result = DoGetInspectionResults(module)
-                .Where(ir => !ir.IsIgnoringInspectionResult(declarationFinder))
+            var finder = _declarationFinderProvider.DeclarationFinder;
+            var result = DoGetInspectionResults(module, finder)
+                .Where(ir => !ir.IsIgnoringInspectionResult(finder))
                 .ToList();
             stopwatch.Stop();
             Logger.Trace("Intercepted invocation of '{0}.{1}' returned {2} objects.", GetType().Name, nameof(DoGetInspectionResults), result.Count);

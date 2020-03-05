@@ -20,17 +20,15 @@ namespace Rubberduck.Inspections.Abstract
 
         protected virtual ICollection<string> DisabledQuickFixes(IdentifierReference reference) => new List<string>();
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(DeclarationFinder finder)
         {
-            var finder = DeclarationFinderProvider.DeclarationFinder;
-
             return finder.UserDeclarations(DeclarationType.Module)
                 .Where(declaration => declaration != null)
                 .SelectMany(declaration => DoGetInspectionResults(declaration.QualifiedModuleName, finder))
                 .ToList();
         }
 
-        protected IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
         {
             var objectionableReferences = ReferencesInModule(module, finder)
                 .Where(reference => IsResultReference(reference, finder));
@@ -38,12 +36,6 @@ namespace Rubberduck.Inspections.Abstract
             return objectionableReferences
                 .Select(reference => InspectionResult(reference, finder))
                 .ToList();
-        }
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
-        {
-            var finder = DeclarationFinderProvider.DeclarationFinder;
-            return DoGetInspectionResults(module, finder);
         }
 
         protected virtual IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module, DeclarationFinder finder)
@@ -73,16 +65,14 @@ namespace Rubberduck.Inspections.Abstract
 
         protected virtual ICollection<string> DisabledQuickFixes(IdentifierReference reference, T properties) => new List<string>();
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(DeclarationFinder finder)
         {
-            var finder = DeclarationFinderProvider.DeclarationFinder;
-
             return finder.UserDeclarations(DeclarationType.Module)
                 .Where(module => module != null)
                 .SelectMany(module => DoGetInspectionResults(module.QualifiedModuleName, finder));
         }
 
-        protected IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
         {
             var objectionableReferencesWithProperties = ReferencesInModule(module, finder)
                 .Select(reference => ReferenceWithResultProperties(reference, finder))
@@ -100,12 +90,6 @@ namespace Rubberduck.Inspections.Abstract
             return isResult
                 ? (reference, properties)
                 : ((IdentifierReference reference, T properties)?)null;
-        }
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
-        {
-            var finder = DeclarationFinderProvider.DeclarationFinder;
-            return DoGetInspectionResults(module, finder);
         }
 
         protected virtual IEnumerable<IdentifierReference> ReferencesInModule(QualifiedModuleName module, DeclarationFinder finder)

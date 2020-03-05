@@ -140,9 +140,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public IInspectionListener Listener => _listener;
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(DeclarationFinder finder)
         {
-            var finder = DeclarationFinderProvider.DeclarationFinder;
             var parseTreeValueVisitor = CreateParseTreeValueVisitor(GetIdentifierReferenceForContextFunction(finder));
             var selectCaseInspector = _unreachableCaseInspectorFactory.Create(GetVariableTypeNameFunction(finder));
 
@@ -152,9 +151,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 .ToList();
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
         {
-            var finder = DeclarationFinderProvider.DeclarationFinder;
             var parseTreeValueVisitor = CreateParseTreeValueVisitor(GetIdentifierReferenceForContextFunction(finder));
             var selectCaseInspector = _unreachableCaseInspectorFactory.Create(GetVariableTypeNameFunction(finder));
             return DoGetInspectionResults(module, finder, parseTreeValueVisitor, selectCaseInspector);

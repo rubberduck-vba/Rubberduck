@@ -42,23 +42,15 @@ namespace Rubberduck.Inspections.Concrete
             : base(declarationFinderProvider)
         {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(DeclarationFinder finder)
         {
-            var finder = DeclarationFinderProvider.DeclarationFinder;
-
             return finder.UserDeclarations(DeclarationType.Module)
                 .Where(module => module != null)
                 .SelectMany(module => DoGetInspectionResults(module.QualifiedModuleName, finder))
                 .ToList();
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
-        {
-            var finder = DeclarationFinderProvider.DeclarationFinder;
-            return DoGetInspectionResults(module, finder);
-        }
-
-        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
         {
             var objectionableAnnotations = finder.FindAnnotations(module)
                 .Where(IsResultAnnotation);

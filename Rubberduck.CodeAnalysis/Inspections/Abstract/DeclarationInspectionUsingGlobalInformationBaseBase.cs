@@ -38,9 +38,8 @@ namespace Rubberduck.Inspections.Abstract
             return GlobalInformation(finder);
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(DeclarationFinder finder)
         {
-            var finder = DeclarationFinderProvider.DeclarationFinder;
             var globalInformation = GlobalInformation(finder);
 
             return finder.UserDeclarations(DeclarationType.Module)
@@ -50,9 +49,8 @@ namespace Rubberduck.Inspections.Abstract
                 .ToList();
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
         {
-            var finder = DeclarationFinderProvider.DeclarationFinder;
             var globalInformation = GlobalInformation(module, finder);
             return DoGetInspectionResults(module, finder, globalInformation);
         }

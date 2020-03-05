@@ -4,6 +4,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -50,7 +51,7 @@ namespace Rubberduck.Inspections.Concrete
             return InspectionResults.ObsoleteCallStatementInspection;
         }
 
-        protected override bool IsResultContext(QualifiedContext<VBAParser.CallStmtContext> context)
+        protected override bool IsResultContext(QualifiedContext<VBAParser.CallStmtContext> context, DeclarationFinder finder)
         {
             if (!context.Context.TryGetFollowingContext(out VBAParser.IndividualNonEOFEndOfStatementContext followingEndOfStatement)
                 || followingEndOfStatement.COLON() == null)

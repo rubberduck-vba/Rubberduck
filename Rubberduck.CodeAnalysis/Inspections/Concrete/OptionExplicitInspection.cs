@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
@@ -45,7 +46,7 @@ namespace Rubberduck.Inspections.Concrete
 
         protected  override IInspectionListener<VBAParser.ModuleContext> ContextListener { get; }
 
-        protected override bool IsResultContext(QualifiedContext<VBAParser.ModuleContext> context)
+        protected override bool IsResultContext(QualifiedContext<VBAParser.ModuleContext> context, DeclarationFinder finder)
         {
             var moduleBody = context.Context.moduleBody();
             return moduleBody != null && moduleBody.ChildCount != 0;

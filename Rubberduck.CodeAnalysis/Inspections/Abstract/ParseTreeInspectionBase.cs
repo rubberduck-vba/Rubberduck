@@ -7,6 +7,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor;
 
@@ -25,22 +26,22 @@ namespace Rubberduck.Inspections.Abstract
 
         protected abstract string ResultDescription(QualifiedContext<TContext> context);
 
-        protected virtual bool IsResultContext(QualifiedContext<TContext> context) => true;
+        protected virtual bool IsResultContext(QualifiedContext<TContext> context, DeclarationFinder finder) => true;
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(DeclarationFinder finder)
         {
-            return DoGetInspectionResults(ContextListener.Contexts());
+            return DoGetInspectionResults(ContextListener.Contexts(), finder);
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
         {
-            return DoGetInspectionResults(ContextListener.Contexts(module));
+            return DoGetInspectionResults(ContextListener.Contexts(module), finder);
         }
 
-        private IEnumerable<IInspectionResult> DoGetInspectionResults(IEnumerable<QualifiedContext<TContext>> contexts)
+        private IEnumerable<IInspectionResult> DoGetInspectionResults(IEnumerable<QualifiedContext<TContext>> contexts, DeclarationFinder finder)
         {
             var objectionableContexts = contexts
-                .Where(IsResultContext);
+                .Where(context => IsResultContext(context, finder));
 
             return objectionableContexts
                 .Select(InspectionResult)
@@ -72,22 +73,22 @@ namespace Rubberduck.Inspections.Abstract
 
         protected abstract IInspectionListener<TContext> ContextListener { get; }
         protected abstract string ResultDescription(QualifiedContext<TContext> context, TProperties properties);
-        protected abstract (bool isResult, TProperties properties) IsResultContextWithAdditionalProperties(QualifiedContext<TContext> context);
+        protected abstract (bool isResult, TProperties properties) IsResultContextWithAdditionalProperties(QualifiedContext<TContext> context, DeclarationFinder finder);
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(DeclarationFinder finder)
         {
-            return DoGetInspectionResults(ContextListener.Contexts());
+            return DoGetInspectionResults(ContextListener.Contexts(), finder);
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
         {
-            return DoGetInspectionResults(ContextListener.Contexts(module));
+            return DoGetInspectionResults(ContextListener.Contexts(module), finder);
         }
 
-        private IEnumerable<IInspectionResult> DoGetInspectionResults(IEnumerable<QualifiedContext<TContext>> contexts)
+        private IEnumerable<IInspectionResult> DoGetInspectionResults(IEnumerable<QualifiedContext<TContext>> contexts, DeclarationFinder finder)
         {
             var objectionableContexts = contexts
-                .Select(ContextsWithResultProperties)
+                .Select(context => ContextsWithResultProperties(context, finder))
                 .Where(result => result.HasValue)
                 .Select(result => result.Value);
 
@@ -96,9 +97,9 @@ namespace Rubberduck.Inspections.Abstract
                 .ToList();
         }
 
-        private (QualifiedContext<TContext> context, TProperties properties)? ContextsWithResultProperties(QualifiedContext<TContext> context)
+        private (QualifiedContext<TContext> context, TProperties properties)? ContextsWithResultProperties(QualifiedContext<TContext> context, DeclarationFinder finder)
         {
-            var (isResult, properties) = IsResultContextWithAdditionalProperties(context);
+            var (isResult, properties) = IsResultContextWithAdditionalProperties(context, finder);
             return isResult
                 ? (context, properties)
                 : ((QualifiedContext<TContext> context, TProperties properties)?) null;

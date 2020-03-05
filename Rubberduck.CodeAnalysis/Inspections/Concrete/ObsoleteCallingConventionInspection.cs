@@ -3,6 +3,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 
 namespace Rubberduck.Inspections.Inspections.Concrete
@@ -42,7 +43,7 @@ namespace Rubberduck.Inspections.Inspections.Concrete
                 identifierName);
         }
 
-        protected override bool IsResultContext(QualifiedContext<VBAParser.DeclareStmtContext> context)
+        protected override bool IsResultContext(QualifiedContext<VBAParser.DeclareStmtContext> context, DeclarationFinder finder)
         {
             return ((VBAParser.DeclareStmtContext)context.Context).CDECL() != null;
         }

@@ -35,43 +35,15 @@ namespace Rubberduck.Inspections.Inspections.Concrete
     /// ]]>
     /// </example>
     [RequiredLibrary("Excel")]
-    public class ExcelUdfNameIsValidCellReferenceInspection : DeclarationInspectionBase
+    public class ExcelUdfNameIsValidCellReferenceInspection : DeclarationInspectionUsingGlobalInformationBase<bool>
     {
         public ExcelUdfNameIsValidCellReferenceInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, new []{DeclarationType.Function}, new []{DeclarationType.PropertyGet, DeclarationType.LibraryFunction})
         {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder, bool excelIsReferenced)
         {
-            //FIXME As-is, both this method and the base method get a declaration finder.
-            var finder = DeclarationFinderProvider.DeclarationFinder;
-
-            if (!finder.Projects.Any(project => !project.IsUserDefined 
-                                                         && project.IdentifierName == "Excel"))
-            {
-                return Enumerable.Empty<IInspectionResult>();
-            }
-
-            return base.DoGetInspectionResults();
-        }
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
-        {
-            //FIXME As-is, both this method and the base method get a declaration finder.
-            var finder = DeclarationFinderProvider.DeclarationFinder;
-
-            if (!finder.Projects.Any(project => !project.IsUserDefined
-                                                         && project.IdentifierName == "Excel"))
-            {
-                return Enumerable.Empty<IInspectionResult>();
-            }
-
-            return base.DoGetInspectionResults(module);
-        }
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
-        {
-            if (module.ComponentType != ComponentType.StandardModule)
+            if (!excelIsReferenced || module.ComponentType != ComponentType.StandardModule)
             {
                 return Enumerable.Empty<IInspectionResult>();
             }
@@ -85,10 +57,16 @@ namespace Rubberduck.Inspections.Inspections.Concrete
                 return Enumerable.Empty<IInspectionResult>();
             }
 
-            return base.DoGetInspectionResults(module, finder);
+            return base.DoGetInspectionResults(module, finder, excelIsReferenced);
         }
 
-        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
+        protected override bool GlobalInformation(DeclarationFinder finder)
+        {
+            return finder.Projects.Any(project => !project.IsUserDefined
+                                                            && project.IdentifierName == "Excel");
+        }
+
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder, bool globalInfo)
         {
             if (!VisibleAsUdf.Contains(declaration.Accessibility))
             {
