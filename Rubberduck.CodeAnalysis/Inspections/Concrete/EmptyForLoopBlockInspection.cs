@@ -5,7 +5,6 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Antlr4.Runtime;
 using Rubberduck.Resources.Experimentals;
 using Rubberduck.Parsing;
 
@@ -38,21 +37,22 @@ namespace Rubberduck.Inspections.Concrete
     /// ]]>
     /// </example>
     [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
-    internal class EmptyForLoopBlockInspection : ParseTreeInspectionBase
+    internal sealed class EmptyForLoopBlockInspection : ParseTreeInspectionBase<VBAParser.ForNextStmtContext>
     {
         public EmptyForLoopBlockInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
-        {}
+        {
+            ContextListener = new EmptyForLoopBlockListener();
+        }
 
-        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
+        protected override IInspectionListener<VBAParser.ForNextStmtContext> ContextListener { get; }
+
+        protected override string ResultDescription(QualifiedContext<VBAParser.ForNextStmtContext> context)
         {
             return InspectionResults.EmptyForLoopBlockInspection;
         }
 
-        public override IInspectionListener Listener { get; } =
-            new EmptyForLoopBlockListener();
-
-        public class EmptyForLoopBlockListener : EmptyBlockInspectionListenerBase
+        public class EmptyForLoopBlockListener : EmptyBlockInspectionListenerBase<VBAParser.ForNextStmtContext>
         {
             public override void EnterForNextStmt([NotNull] VBAParser.ForNextStmtContext context)
             {

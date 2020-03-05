@@ -5,7 +5,6 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Antlr4.Runtime;
 using Rubberduck.Resources.Experimentals;
 using Rubberduck.Parsing;
 
@@ -36,21 +35,22 @@ namespace Rubberduck.Inspections.Concrete
     /// ]]>
     /// </example>
     [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
-    internal class EmptyWhileWendBlockInspection : ParseTreeInspectionBase
+    internal sealed class EmptyWhileWendBlockInspection : ParseTreeInspectionBase<VBAParser.WhileWendStmtContext>
     {
         public EmptyWhileWendBlockInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
-        {}
+        {
+            ContextListener = new EmptyWhileWendBlockListener();
+        }
 
-        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
+        protected override IInspectionListener<VBAParser.WhileWendStmtContext> ContextListener { get; }
+
+        protected override string ResultDescription(QualifiedContext<VBAParser.WhileWendStmtContext> context)
         {
             return InspectionResults.EmptyWhileWendBlockInspection;
         }
 
-        public override IInspectionListener Listener { get; } =
-            new EmptyWhileWendBlockListener();
-
-        public class EmptyWhileWendBlockListener : EmptyBlockInspectionListenerBase
+        public class EmptyWhileWendBlockListener : EmptyBlockInspectionListenerBase<VBAParser.WhileWendStmtContext>
         {
             public override void EnterWhileWendStmt([NotNull] VBAParser.WhileWendStmtContext context)
             {

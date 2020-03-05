@@ -4,7 +4,6 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Grammar;
-using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Antlr4.Runtime.Misc;
 
@@ -27,16 +26,17 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class DefTypeStatementInspection : ParseTreeInspectionBase
+    public sealed class DefTypeStatementInspection : ParseTreeInspectionBase<VBAParser.DefTypeContext>
     {
         public DefTypeStatementInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
         {
-            Listener = new DefTypeStatementInspectionListener();
+            ContextListener = new DefTypeStatementInspectionListener();
         }
         
-        public override IInspectionListener Listener { get; }
-        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
+        protected override IInspectionListener<VBAParser.DefTypeContext> ContextListener { get; }
+
+        protected override string ResultDescription(QualifiedContext<VBAParser.DefTypeContext> context)
         {
             var typeName = GetTypeOfDefType(context.Context.start.Text);
             var defStmtText = context.Context.start.Text;
@@ -68,7 +68,7 @@ namespace Rubberduck.Inspections.Concrete
             { "DefVar", "Variant" }
         };
 
-        public class DefTypeStatementInspectionListener : InspectionListenerBase
+        public class DefTypeStatementInspectionListener : InspectionListenerBase<VBAParser.DefTypeContext>
         {
             public override void ExitDefType([NotNull] VBAParser.DefTypeContext context)
             {

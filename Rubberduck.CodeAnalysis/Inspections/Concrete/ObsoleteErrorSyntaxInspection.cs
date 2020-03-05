@@ -1,5 +1,4 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
+﻿using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -28,21 +27,22 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class ObsoleteErrorSyntaxInspection : ParseTreeInspectionBase
+    public sealed class ObsoleteErrorSyntaxInspection : ParseTreeInspectionBase<VBAParser.ErrorStmtContext>
     {
         public ObsoleteErrorSyntaxInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
         {
-            Listener = new ObsoleteErrorSyntaxListener();
+            ContextListener = new ObsoleteErrorSyntaxListener();
         }
 
-        public override IInspectionListener Listener { get; }
-        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
+        protected override IInspectionListener<VBAParser.ErrorStmtContext> ContextListener { get; }
+
+        protected override string ResultDescription(QualifiedContext<VBAParser.ErrorStmtContext> context)
         {
             return InspectionResults.ObsoleteErrorSyntaxInspection;
         }
 
-        public class ObsoleteErrorSyntaxListener : InspectionListenerBase
+        public class ObsoleteErrorSyntaxListener : InspectionListenerBase<VBAParser.ErrorStmtContext>
         {
             public override void ExitErrorStmt(VBAParser.ErrorStmtContext context)
             {

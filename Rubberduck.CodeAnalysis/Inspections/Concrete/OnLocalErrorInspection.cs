@@ -1,5 +1,4 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
+﻿using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -37,21 +36,22 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class OnLocalErrorInspection : ParseTreeInspectionBase
+    public sealed class OnLocalErrorInspection : ParseTreeInspectionBase<VBAParser.OnErrorStmtContext>
     {
         public OnLocalErrorInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
-        {}
+        {
+            ContextListener = new OnLocalErrorListener();
+        }
 
-        public override IInspectionListener Listener { get; } =
-            new OnLocalErrorListener();
+        protected override IInspectionListener<VBAParser.OnErrorStmtContext> ContextListener { get; }
 
-        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
+        protected override string ResultDescription(QualifiedContext<VBAParser.OnErrorStmtContext> context)
         {
             return InspectionResults.OnLocalErrorInspection;
         }
 
-        public class OnLocalErrorListener : InspectionListenerBase
+        public class OnLocalErrorListener : InspectionListenerBase<VBAParser.OnErrorStmtContext>
         {
             public override void ExitOnErrorStmt([NotNull] VBAParser.OnErrorStmtContext context)
             {

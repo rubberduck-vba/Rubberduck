@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -36,37 +35,37 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public class UnhandledOnErrorResumeNextInspection : ParseTreeInspectionBase<IReadOnlyList<ParserRuleContext>>
+    public sealed class UnhandledOnErrorResumeNextInspection : ParseTreeInspectionBase<VBAParser.OnErrorStmtContext, IReadOnlyList<VBAParser.OnErrorStmtContext>>
     {
-        private readonly Dictionary<QualifiedContext<ParserRuleContext>, List<ParserRuleContext>> _unhandledContextsMap =
-            new Dictionary<QualifiedContext<ParserRuleContext>, List<ParserRuleContext>>();
+        private readonly OnErrorStatementListener _listener = new OnErrorStatementListener();
 
         public UnhandledOnErrorResumeNextInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
-        {
-            Listener = new OnErrorStatementListener(_unhandledContextsMap);
-        }
+        {}
 
-        public override IInspectionListener Listener { get; }
-        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context, IReadOnlyList<ParserRuleContext> properties)
+        protected override IInspectionListener<VBAParser.OnErrorStmtContext> ContextListener => _listener;
+
+        protected override string ResultDescription(QualifiedContext<VBAParser.OnErrorStmtContext> context, IReadOnlyList<VBAParser.OnErrorStmtContext> properties)
         {
             return InspectionResults.UnhandledOnErrorResumeNextInspection;
         }
 
-        protected override (bool isResult, IReadOnlyList<ParserRuleContext> properties) IsResultContextWithAdditionalProperties(QualifiedContext<ParserRuleContext> context)
+        protected override (bool isResult, IReadOnlyList<VBAParser.OnErrorStmtContext> properties) IsResultContextWithAdditionalProperties(QualifiedContext<VBAParser.OnErrorStmtContext> context)
         {
-            return (true, _unhandledContextsMap[context]);
+            return (true, _listener.UnhandledContexts(context));
         }
     }
 
-    public class OnErrorStatementListener : InspectionListenerBase
+    public class OnErrorStatementListener : InspectionListenerBase<VBAParser.OnErrorStmtContext>
     {
-        private readonly List<QualifiedContext<ParserRuleContext>> _unhandledContexts = new List<QualifiedContext<ParserRuleContext>>();
-        private readonly Dictionary<QualifiedContext<ParserRuleContext>, List<ParserRuleContext>> _unhandledContextsMap;
+        private readonly List<QualifiedContext<VBAParser.OnErrorStmtContext>> _unhandledContexts = new List<QualifiedContext<VBAParser.OnErrorStmtContext>>();
+        private readonly Dictionary<QualifiedContext<VBAParser.OnErrorStmtContext>, List<VBAParser.OnErrorStmtContext>> _unhandledContextsMap = new Dictionary<QualifiedContext<VBAParser.OnErrorStmtContext>, List<VBAParser.OnErrorStmtContext>>();
 
-        public OnErrorStatementListener(Dictionary<QualifiedContext<ParserRuleContext>, List<ParserRuleContext>> unhandledContextsMap)
+        public IReadOnlyList<VBAParser.OnErrorStmtContext> UnhandledContexts(QualifiedContext<VBAParser.OnErrorStmtContext> context)
         {
-            _unhandledContextsMap = unhandledContextsMap;
+            return _unhandledContextsMap.TryGetValue(context, out var unhandledContexts) 
+                ? unhandledContexts 
+                : new List<VBAParser.OnErrorStmtContext>();
         }
 
         public override void ClearContexts()
@@ -94,7 +93,7 @@ namespace Rubberduck.Inspections.Concrete
             {
                 foreach (var errorContext in _unhandledContexts)
                 {
-                    _unhandledContextsMap.Add(errorContext, new List<ParserRuleContext>(_unhandledContexts.Select(ctx => ctx.Context)));
+                    _unhandledContextsMap.Add(errorContext, new List<VBAParser.OnErrorStmtContext>(_unhandledContexts.Select(ctx => ctx.Context)));
                     SaveContext(errorContext.Context);
                 }
 
@@ -114,10 +113,10 @@ namespace Rubberduck.Inspections.Concrete
             }
         }
 
-        private void SaveUnhandledContext(ParserRuleContext context)
+        private void SaveUnhandledContext(VBAParser.OnErrorStmtContext context)
         {
             var module = CurrentModuleName;
-            var qualifiedContext = new QualifiedContext<ParserRuleContext>(module, context);
+            var qualifiedContext = new QualifiedContext<VBAParser.OnErrorStmtContext>(module, context);
             _unhandledContexts.Add(qualifiedContext);
         }
     }

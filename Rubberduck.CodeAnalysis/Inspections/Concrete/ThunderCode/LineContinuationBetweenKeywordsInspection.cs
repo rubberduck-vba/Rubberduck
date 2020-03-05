@@ -21,22 +21,22 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
     /// Note that the inspection only checks a subset of possible "evil" line continatuions 
     /// for both simplicity and performance reasons. Exhaustive inspection would likely take too much effort. 
     /// </remarks>
-    public class LineContinuationBetweenKeywordsInspection : ParseTreeInspectionBase
+    public sealed class LineContinuationBetweenKeywordsInspection : ParseTreeInspectionBase<ParserRuleContext>
     {
         public LineContinuationBetweenKeywordsInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
         {
-            Listener = new LineContinuationBetweenKeywordsListener();
+            ContextListener = new LineContinuationBetweenKeywordsListener();
         }
+
+        protected override IInspectionListener<ParserRuleContext> ContextListener { get; }
 
         protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
         {
             return InspectionResults.LineContinuationBetweenKeywordsInspection.ThunderCodeFormat();
         }
 
-        public override IInspectionListener Listener { get; }
-
-        public class LineContinuationBetweenKeywordsListener : InspectionListenerBase
+        public class LineContinuationBetweenKeywordsListener : InspectionListenerBase<ParserRuleContext>
         {
             public override void EnterSubStmt(VBAParser.SubStmtContext context)
             {

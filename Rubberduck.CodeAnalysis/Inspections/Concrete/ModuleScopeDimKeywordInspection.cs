@@ -1,4 +1,3 @@
-using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing;
@@ -30,22 +29,25 @@ namespace Rubberduck.Inspections.Concrete
     /// ' ...
     /// ]]>
     /// </example>
-    public sealed class ModuleScopeDimKeywordInspection : ParseTreeInspectionBase
+    public sealed class ModuleScopeDimKeywordInspection : ParseTreeInspectionBase<VBAParser.VariableSubStmtContext>
     {
         public ModuleScopeDimKeywordInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
-        {}
-
-        public override IInspectionListener Listener { get; } = new ModuleScopedDimListener();
-        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
         {
-            var identifierName = ((VBAParser.VariableSubStmtContext) context.Context).identifier().GetText();
+            ContextListener = new ModuleScopedDimListener();
+        }
+
+        protected override IInspectionListener<VBAParser.VariableSubStmtContext> ContextListener { get; }
+
+        protected override string ResultDescription(QualifiedContext<VBAParser.VariableSubStmtContext> context)
+        {
+            var identifierName = context.Context.identifier().GetText();
             return string.Format(
                 InspectionResults.ModuleScopeDimKeywordInspection,
                 identifierName);
         }
 
-        public class ModuleScopedDimListener : InspectionListenerBase
+        public class ModuleScopedDimListener : InspectionListenerBase<VBAParser.VariableSubStmtContext>
         {
             public override void ExitVariableStmt([NotNull] VBAParser.VariableStmtContext context)
             {

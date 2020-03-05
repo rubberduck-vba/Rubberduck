@@ -5,7 +5,6 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Antlr4.Runtime;
 using Rubberduck.Resources.Experimentals;
 using Rubberduck.Parsing;
 
@@ -38,21 +37,22 @@ namespace Rubberduck.Inspections.Concrete
     /// ]]>
     /// </example>
     [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
-    internal class EmptyForEachBlockInspection : ParseTreeInspectionBase
+    internal sealed class EmptyForEachBlockInspection : ParseTreeInspectionBase<VBAParser.ForEachStmtContext>
     {
         public EmptyForEachBlockInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
-        {}
+        {
+            ContextListener = new EmptyForEachBlockListener();
+        }
 
-        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
+        protected override IInspectionListener<VBAParser.ForEachStmtContext> ContextListener { get; }
+
+        protected override string ResultDescription(QualifiedContext<VBAParser.ForEachStmtContext> context)
         {
             return InspectionResults.EmptyForEachBlockInspection;
         }
 
-        public override IInspectionListener Listener { get; } =
-            new EmptyForEachBlockListener();
-
-        public class EmptyForEachBlockListener : EmptyBlockInspectionListenerBase
+        public class EmptyForEachBlockListener : EmptyBlockInspectionListenerBase<VBAParser.ForEachStmtContext>
         {
             public override void EnterForEachStmt([NotNull] VBAParser.ForEachStmtContext context)
             {

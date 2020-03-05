@@ -162,7 +162,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder, IParseTreeValueVisitor parseTreeValueVisitor, IUnreachableCaseInspector selectCaseInspector)
         {
-            var qualifiedSelectCaseStmts = Listener.Contexts(module)
+            var qualifiedSelectCaseStmts = _listener.Contexts(module)
                 // ignore filtering here to make the search space smaller
                 .Where(result => !result.IsIgnoringInspectionResultFor(finder, AnnotationName));
 
@@ -171,10 +171,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 .ToList();
         }
 
-        private IEnumerable<IInspectionResult> ResultsForContext(QualifiedContext<ParserRuleContext> qualifiedSelectCaseStmt, IParseTreeValueVisitor parseTreeValueVisitor, IUnreachableCaseInspector selectCaseInspector)
+        private IEnumerable<IInspectionResult> ResultsForContext(QualifiedContext<VBAParser.SelectCaseStmtContext> qualifiedSelectCaseStmt, IParseTreeValueVisitor parseTreeValueVisitor, IUnreachableCaseInspector selectCaseInspector)
         {
             var module = qualifiedSelectCaseStmt.ModuleName;
-            var selectStmt = (VBAParser.SelectCaseStmtContext)qualifiedSelectCaseStmt.Context;
+            var selectStmt = qualifiedSelectCaseStmt.Context;
             var contextValues = parseTreeValueVisitor.VisitChildren(module, selectStmt);
 
             var results = selectCaseInspector.InspectForUnreachableCases(module, selectStmt, contextValues);
@@ -184,7 +184,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 .ToList();
         }
 
-        private IInspectionResult CreateInspectionResult(QualifiedContext<ParserRuleContext> selectStmt, ParserRuleContext unreachableBlock, CaseInspectionResultType resultType)
+        private IInspectionResult CreateInspectionResult(QualifiedContext<VBAParser.SelectCaseStmtContext> selectStmt, ParserRuleContext unreachableBlock, CaseInspectionResultType resultType)
         {
             return CreateInspectionResult(selectStmt, unreachableBlock, ResultMessage(resultType));
         }
@@ -209,7 +209,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
         }
 
-        private IInspectionResult CreateInspectionResult(QualifiedContext<ParserRuleContext> selectStmt, ParserRuleContext unreachableBlock, string message)
+        private IInspectionResult CreateInspectionResult(QualifiedContext<VBAParser.SelectCaseStmtContext> selectStmt, ParserRuleContext unreachableBlock, string message)
         {
             return new QualifiedContextInspectionResult(this,
                         message,
@@ -289,7 +289,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return localDeclaration is null ? declaration.AsTypeName : localDeclaration.AsTypeName;
         }
 
-        public class UnreachableCaseInspectionListener : InspectionListenerBase
+        public class UnreachableCaseInspectionListener : InspectionListenerBase<VBAParser.SelectCaseStmtContext>
         {
             public override void EnterSelectCaseStmt([NotNull] VBAParser.SelectCaseStmtContext context)
             {

@@ -3,7 +3,6 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 using Antlr4.Runtime.Misc;
-using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 
@@ -36,22 +35,23 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class StepOneIsRedundantInspection : ParseTreeInspectionBase
+    public sealed class StepOneIsRedundantInspection : ParseTreeInspectionBase<VBAParser.StepStmtContext>
     {
         public StepOneIsRedundantInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
-        {}
+        {
+            ContextListener = new StepOneIsRedundantListener();
+        }
 
-        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
+        protected override IInspectionListener<VBAParser.StepStmtContext> ContextListener { get; }
+
+        protected override string ResultDescription(QualifiedContext<VBAParser.StepStmtContext> context)
         {
             return InspectionResults.StepOneIsRedundantInspection;
         }
-
-        public override IInspectionListener Listener { get; } =
-            new StepOneIsRedundantListener();
     }
 
-    public class StepOneIsRedundantListener : InspectionListenerBase
+    public class StepOneIsRedundantListener : InspectionListenerBase<VBAParser.StepStmtContext>
     {
         public override void EnterForNextStmt([NotNull] VBAParser.ForNextStmtContext context)
         {

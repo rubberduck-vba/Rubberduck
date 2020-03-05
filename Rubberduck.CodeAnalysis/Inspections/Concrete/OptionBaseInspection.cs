@@ -1,4 +1,3 @@
-using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -37,16 +36,17 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class OptionBaseInspection : ParseTreeInspectionBase
+    public sealed class OptionBaseInspection : ParseTreeInspectionBase<VBAParser.OptionBaseStmtContext>
     {
         public OptionBaseInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
         {
-            Listener = new OptionBaseStatementListener();
+            ContextListener = new OptionBaseStatementListener();
         }
         
-        public override IInspectionListener Listener { get; }
-        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
+        protected override IInspectionListener<VBAParser.OptionBaseStmtContext> ContextListener { get; }
+
+        protected override string ResultDescription(QualifiedContext<VBAParser.OptionBaseStmtContext> context)
         {
             var moduleName = context.ModuleName.ComponentName;
             return string.Format(
@@ -54,7 +54,7 @@ namespace Rubberduck.Inspections.Concrete
                 moduleName);
         }
 
-        public class OptionBaseStatementListener : InspectionListenerBase
+        public class OptionBaseStatementListener : InspectionListenerBase<VBAParser.OptionBaseStmtContext>
         {
             public override void ExitOptionBaseStmt(VBAParser.OptionBaseStmtContext context)
             {

@@ -12,28 +12,32 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Abstract
 {
-    public abstract class ParseTreeInspectionBase : InspectionBase, IParseTreeInspection
+    public abstract class ParseTreeInspectionBase<TContext> : InspectionBase, IParseTreeInspection
+        where TContext : ParserRuleContext
     {
         protected ParseTreeInspectionBase(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
         {}
 
-        public abstract IInspectionListener Listener { get; }
-        protected abstract string ResultDescription(QualifiedContext<ParserRuleContext> context);
+        public IInspectionListener Listener => ContextListener;
 
-        protected virtual bool IsResultContext(QualifiedContext<ParserRuleContext> context) => true;
+        protected abstract IInspectionListener<TContext> ContextListener { get; }
+
+        protected abstract string ResultDescription(QualifiedContext<TContext> context);
+
+        protected virtual bool IsResultContext(QualifiedContext<TContext> context) => true;
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            return DoGetInspectionResults(Listener.Contexts());
+            return DoGetInspectionResults(ContextListener.Contexts());
         }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
         {
-            return DoGetInspectionResults(Listener.Contexts(module));
+            return DoGetInspectionResults(ContextListener.Contexts(module));
         }
 
-        private IEnumerable<IInspectionResult> DoGetInspectionResults(IEnumerable<QualifiedContext<ParserRuleContext>> contexts)
+        private IEnumerable<IInspectionResult> DoGetInspectionResults(IEnumerable<QualifiedContext<TContext>> contexts)
         {
             var objectionableContexts = contexts
                 .Where(IsResultContext);
@@ -43,7 +47,7 @@ namespace Rubberduck.Inspections.Abstract
                 .ToList();
         }
 
-        protected virtual IInspectionResult InspectionResult(QualifiedContext<ParserRuleContext> context)
+        protected virtual IInspectionResult InspectionResult(QualifiedContext<TContext> context)
         {
             return new QualifiedContextInspectionResult(
                 this,
@@ -52,32 +56,35 @@ namespace Rubberduck.Inspections.Abstract
                 DisabledQuickFixes(context));
         }
 
-        protected virtual ICollection<string> DisabledQuickFixes(QualifiedContext<ParserRuleContext> context) => new List<string>();
+        protected virtual ICollection<string> DisabledQuickFixes(QualifiedContext<TContext> context) => new List<string>();
         public virtual CodeKind TargetKindOfCode => CodeKind.CodePaneCode;
     }
 
 
-    public abstract class ParseTreeInspectionBase<T> : InspectionBase, IParseTreeInspection
+    public abstract class ParseTreeInspectionBase<TContext, TProperties> : InspectionBase, IParseTreeInspection
+        where TContext : ParserRuleContext
     {
         protected ParseTreeInspectionBase(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
         {}
 
-        public abstract IInspectionListener Listener { get; }
-        protected abstract string ResultDescription(QualifiedContext<ParserRuleContext> context, T properties);
-        protected abstract (bool isResult, T properties) IsResultContextWithAdditionalProperties(QualifiedContext<ParserRuleContext> context);
+        public IInspectionListener Listener => ContextListener;
+
+        protected abstract IInspectionListener<TContext> ContextListener { get; }
+        protected abstract string ResultDescription(QualifiedContext<TContext> context, TProperties properties);
+        protected abstract (bool isResult, TProperties properties) IsResultContextWithAdditionalProperties(QualifiedContext<TContext> context);
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            return DoGetInspectionResults(Listener.Contexts());
+            return DoGetInspectionResults(ContextListener.Contexts());
         }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
         {
-            return DoGetInspectionResults(Listener.Contexts(module));
+            return DoGetInspectionResults(ContextListener.Contexts(module));
         }
 
-        private IEnumerable<IInspectionResult> DoGetInspectionResults(IEnumerable<QualifiedContext<ParserRuleContext>> contexts)
+        private IEnumerable<IInspectionResult> DoGetInspectionResults(IEnumerable<QualifiedContext<TContext>> contexts)
         {
             var objectionableContexts = contexts
                 .Select(ContextsWithResultProperties)
@@ -89,17 +96,17 @@ namespace Rubberduck.Inspections.Abstract
                 .ToList();
         }
 
-        private (QualifiedContext<ParserRuleContext> context, T properties)? ContextsWithResultProperties(QualifiedContext<ParserRuleContext> context)
+        private (QualifiedContext<TContext> context, TProperties properties)? ContextsWithResultProperties(QualifiedContext<TContext> context)
         {
             var (isResult, properties) = IsResultContextWithAdditionalProperties(context);
             return isResult
                 ? (context, properties)
-                : ((QualifiedContext<ParserRuleContext> context, T properties)?) null;
+                : ((QualifiedContext<TContext> context, TProperties properties)?) null;
         }
 
-        protected virtual IInspectionResult InspectionResult(QualifiedContext<ParserRuleContext> context, T properties)
+        protected virtual IInspectionResult InspectionResult(QualifiedContext<TContext> context, TProperties properties)
         {
-            return new QualifiedContextInspectionResult<T>(
+            return new QualifiedContextInspectionResult<TProperties>(
                 this,
                 ResultDescription(context, properties),
                 context,
@@ -107,31 +114,32 @@ namespace Rubberduck.Inspections.Abstract
                 DisabledQuickFixes(context, properties));
         }
 
-        protected virtual ICollection<string> DisabledQuickFixes(QualifiedContext<ParserRuleContext> context, T properties) => new List<string>();
+        protected virtual ICollection<string> DisabledQuickFixes(QualifiedContext<TContext> context, TProperties properties) => new List<string>();
         public virtual CodeKind TargetKindOfCode => CodeKind.CodePaneCode;
     }
 
-    public class InspectionListenerBase : VBAParserBaseListener, IInspectionListener
+    public class InspectionListenerBase<TContext> : VBAParserBaseListener, IInspectionListener<TContext>
+        where TContext : ParserRuleContext
     {
-        private readonly IDictionary<QualifiedModuleName, List<QualifiedContext<ParserRuleContext>>> _contexts;
+        private readonly IDictionary<QualifiedModuleName, List<QualifiedContext<TContext>>> _contexts;
 
         public InspectionListenerBase()
         {
-            _contexts = new Dictionary<QualifiedModuleName, List<QualifiedContext<ParserRuleContext>>>();
+            _contexts = new Dictionary<QualifiedModuleName, List<QualifiedContext<TContext>>>();
         }
 
         public QualifiedModuleName CurrentModuleName { get; set; }
         
-        public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts()
+        public IReadOnlyList<QualifiedContext<TContext>> Contexts()
         {
             return _contexts.AllValues().ToList();
         }
 
-        public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts(QualifiedModuleName module)
+        public IReadOnlyList<QualifiedContext<TContext>> Contexts(QualifiedModuleName module)
         {
             return _contexts.TryGetValue(module, out var contexts)
                 ? contexts
-                : new List<QualifiedContext<ParserRuleContext>>();
+                : new List<QualifiedContext<TContext>>();
         }
 
         public virtual void ClearContexts()
@@ -144,17 +152,17 @@ namespace Rubberduck.Inspections.Abstract
             _contexts.Remove(module);
         }
 
-        protected void SaveContext(ParserRuleContext context)
+        protected void SaveContext(TContext context)
         {
             var module = CurrentModuleName;
-            var qualifiedContext = new QualifiedContext<ParserRuleContext>(module, context);
+            var qualifiedContext = new QualifiedContext<TContext>(module, context);
             if (_contexts.TryGetValue(module, out var contexts))
             {
                 contexts.Add(qualifiedContext);
             }
             else
             {
-                _contexts.Add(module, new List<QualifiedContext<ParserRuleContext>>{qualifiedContext});
+                _contexts.Add(module, new List<QualifiedContext<TContext>>{qualifiedContext});
             }
         }
     }

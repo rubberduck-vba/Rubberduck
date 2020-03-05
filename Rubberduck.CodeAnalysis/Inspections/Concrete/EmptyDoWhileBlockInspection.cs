@@ -5,7 +5,6 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Antlr4.Runtime;
 using Rubberduck.Resources.Experimentals;
 using Rubberduck.Parsing;
 
@@ -36,20 +35,22 @@ namespace Rubberduck.Inspections.Concrete
     /// ]]>
     /// </example>
     [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
-    internal class EmptyDoWhileBlockInspection : ParseTreeInspectionBase
+    internal sealed class EmptyDoWhileBlockInspection : ParseTreeInspectionBase<VBAParser.DoLoopStmtContext>
     {
         public EmptyDoWhileBlockInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
-        {}
+        {
+            ContextListener = new EmptyDoWhileBlockListener();
+        }
 
-        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
+        protected override IInspectionListener<VBAParser.DoLoopStmtContext> ContextListener { get; }
+
+        protected override string ResultDescription(QualifiedContext<VBAParser.DoLoopStmtContext> context)
         {
             return InspectionResults.EmptyDoWhileBlockInspection;
         }
 
-        public override IInspectionListener Listener { get; } = new EmptyDoWhileBlockListener();
-
-        public class EmptyDoWhileBlockListener : EmptyBlockInspectionListenerBase
+        public class EmptyDoWhileBlockListener : EmptyBlockInspectionListenerBase<VBAParser.DoLoopStmtContext>
         {
             public override void EnterDoLoopStmt([NotNull] VBAParser.DoLoopStmtContext context)
             {

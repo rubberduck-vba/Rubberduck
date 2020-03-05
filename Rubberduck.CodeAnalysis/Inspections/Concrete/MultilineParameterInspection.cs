@@ -1,4 +1,3 @@
-using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing;
@@ -31,25 +30,27 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class MultilineParameterInspection : ParseTreeInspectionBase
+    public sealed class MultilineParameterInspection : ParseTreeInspectionBase<VBAParser.ArgContext>
     {
         public MultilineParameterInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
         {
-            Listener = new ParameterListener();
+            ContextListener = new ParameterListener();
         }
         
-        public override IInspectionListener Listener { get; }
-        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
+        protected override IInspectionListener<VBAParser.ArgContext> ContextListener { get; }
+
+        protected override string ResultDescription(QualifiedContext<VBAParser.ArgContext> context)
         {
-            var parameterText = ((VBAParser.ArgContext) context.Context).unrestrictedIdentifier().GetText();
-            return string.Format(context.Context.GetSelection().LineCount > 3
+            var parameterText = context.Context.unrestrictedIdentifier().GetText();
+            return string.Format(
+                context.Context.GetSelection().LineCount > 3
                     ? RubberduckUI.EasterEgg_Continuator
                     : Resources.Inspections.InspectionResults.MultilineParameterInspection,
                 parameterText);
         }
 
-        public class ParameterListener : InspectionListenerBase
+        public class ParameterListener : InspectionListenerBase<VBAParser.ArgContext>
         {
             public override void ExitArg([NotNull] VBAParser.ArgContext context)
             {

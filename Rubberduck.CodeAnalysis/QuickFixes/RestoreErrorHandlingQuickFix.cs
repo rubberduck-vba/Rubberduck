@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.JunkDrawer.Extensions;
@@ -57,7 +55,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            if (!(result is IWithInspectionResultProperties<IReadOnlyList<ParserRuleContext>> resultProperties))
+            if (!(result is IWithInspectionResultProperties<IReadOnlyList<VBAParser.OnErrorStmtContext>> resultProperties))
             {
                 return;
             }

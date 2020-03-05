@@ -26,20 +26,22 @@ namespace Rubberduck.Inspections.Concrete
     /// Dim bar As Long 
     /// ]]>
     /// </example>
-    public sealed class MultipleDeclarationsInspection : ParseTreeInspectionBase
+    public sealed class MultipleDeclarationsInspection : ParseTreeInspectionBase<ParserRuleContext>
     {
         public MultipleDeclarationsInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
-        {}
+        {
+            ContextListener = new ParameterListListener();
+        }
+
+        protected override IInspectionListener<ParserRuleContext> ContextListener { get; }
 
         protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
         {
             return InspectionResults.MultipleDeclarationsInspection;
         }
 
-        public override IInspectionListener Listener { get; } = new ParameterListListener();
-
-        public class ParameterListListener : InspectionListenerBase
+        public class ParameterListListener : InspectionListenerBase<ParserRuleContext>
         {
             public override void ExitVariableListStmt([NotNull] VBAParser.VariableListStmtContext context)
             {

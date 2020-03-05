@@ -33,15 +33,16 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class RedundantOptionInspection : ParseTreeInspectionBase
+    public sealed class RedundantOptionInspection : ParseTreeInspectionBase<ParserRuleContext>
     {
         public RedundantOptionInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
         {
-            Listener = new RedundantModuleOptionListener();
+            ContextListener = new RedundantModuleOptionListener();
         }
 
-        public override IInspectionListener Listener { get; }
+        protected override IInspectionListener<ParserRuleContext> ContextListener { get; }
+
         protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
         {
             return string.Format(
@@ -49,7 +50,7 @@ namespace Rubberduck.Inspections.Concrete
                 context.Context.GetText());
         }
 
-        public class RedundantModuleOptionListener : InspectionListenerBase
+        public class RedundantModuleOptionListener : InspectionListenerBase<ParserRuleContext>
         {
             public override void ExitOptionBaseStmt(VBAParser.OptionBaseStmtContext context)
             {

@@ -34,21 +34,22 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    internal class EmptyIfBlockInspection : ParseTreeInspectionBase
+    internal sealed class EmptyIfBlockInspection : ParseTreeInspectionBase<ParserRuleContext>
     {
         public EmptyIfBlockInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
-        {}
+        {
+            ContextListener = new EmptyIfBlockListener();
+        }
 
         protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
         {
             return InspectionResults.EmptyIfBlockInspection;
         }
 
-        public override IInspectionListener Listener { get; } =
-            new EmptyIfBlockListener();
+        protected override IInspectionListener<ParserRuleContext> ContextListener { get; }
 
-        public class EmptyIfBlockListener : EmptyBlockInspectionListenerBase
+        public class EmptyIfBlockListener : EmptyBlockInspectionListenerBase<ParserRuleContext>
         {
             public override void EnterIfStmt([NotNull] VBAParser.IfStmtContext context)
             {

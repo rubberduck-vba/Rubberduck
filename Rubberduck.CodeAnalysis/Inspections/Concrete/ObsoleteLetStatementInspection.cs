@@ -1,4 +1,3 @@
-using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -30,22 +29,22 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class ObsoleteLetStatementInspection : ParseTreeInspectionBase
+    public sealed class ObsoleteLetStatementInspection : ParseTreeInspectionBase<VBAParser.LetStmtContext>
     {
         public ObsoleteLetStatementInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
         {
-            Listener = new ObsoleteLetStatementListener();
+            ContextListener = new ObsoleteLetStatementListener();
         }
         
-        public override IInspectionListener Listener { get; }
+        protected override IInspectionListener<VBAParser.LetStmtContext> ContextListener { get; }
 
-        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
+        protected override string ResultDescription(QualifiedContext<VBAParser.LetStmtContext> context)
         {
             return InspectionResults.ObsoleteLetStatementInspection;
         }
 
-        public class ObsoleteLetStatementListener : InspectionListenerBase
+        public class ObsoleteLetStatementListener : InspectionListenerBase<VBAParser.LetStmtContext>
         {
             public override void ExitLetStmt(VBAParser.LetStmtContext context)
             {

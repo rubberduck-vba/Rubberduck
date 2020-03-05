@@ -1,5 +1,4 @@
 ﻿using Rubberduck.Inspections.Abstract;
-using Antlr4.Runtime;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -33,21 +32,22 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class ObsoleteWhileWendStatementInspection : ParseTreeInspectionBase
+    public sealed class ObsoleteWhileWendStatementInspection : ParseTreeInspectionBase<VBAParser.WhileWendStmtContext>
     {
         public ObsoleteWhileWendStatementInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
         {
-            Listener = new ObsoleteWhileWendStatementListener();
+            ContextListener = new ObsoleteWhileWendStatementListener();
         }
 
-        public override IInspectionListener Listener { get; }
-        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
+        protected override IInspectionListener<VBAParser.WhileWendStmtContext> ContextListener { get; }
+
+        protected override string ResultDescription(QualifiedContext<VBAParser.WhileWendStmtContext> context)
         {
             return InspectionResults.ObsoleteWhileWendStatementInspection;
         }
 
-        public class ObsoleteWhileWendStatementListener : InspectionListenerBase
+        public class ObsoleteWhileWendStatementListener : InspectionListenerBase<VBAParser.WhileWendStmtContext>
         {
             public override void ExitWhileWendStmt(VBAParser.WhileWendStmtContext context)
             {

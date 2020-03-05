@@ -1,5 +1,4 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
+﻿using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -34,21 +33,22 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class EmptyStringLiteralInspection : ParseTreeInspectionBase
+    public sealed class EmptyStringLiteralInspection : ParseTreeInspectionBase<VBAParser.LiteralExpressionContext>
     {
         public EmptyStringLiteralInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
-        {}
+        {
+            ContextListener = new EmptyStringLiteralListener();
+        }
 
-        public override IInspectionListener Listener { get; } =
-            new EmptyStringLiteralListener();
+        protected override IInspectionListener<VBAParser.LiteralExpressionContext> ContextListener { get; }
 
-        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
+        protected override string ResultDescription(QualifiedContext<VBAParser.LiteralExpressionContext> context)
         {
             return InspectionResults.EmptyStringLiteralInspection;
         }
 
-        public class EmptyStringLiteralListener : InspectionListenerBase
+        public class EmptyStringLiteralListener : InspectionListenerBase<VBAParser.LiteralExpressionContext>
         {
             public override void ExitLiteralExpression(VBAParser.LiteralExpressionContext context)
             {

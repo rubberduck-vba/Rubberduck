@@ -5,7 +5,6 @@ using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Antlr4.Runtime;
 using Rubberduck.Resources.Experimentals;
 using Rubberduck.Parsing;
 
@@ -41,21 +40,22 @@ namespace Rubberduck.Inspections.Concrete
     /// ]]>
     /// </example>
     [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
-    internal class EmptyCaseBlockInspection : ParseTreeInspectionBase
+    internal sealed class EmptyCaseBlockInspection : ParseTreeInspectionBase<VBAParser.CaseClauseContext>
     {
         public EmptyCaseBlockInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
-        {}
+        {
+            ContextListener = new EmptyCaseBlockListener();
+        }
 
-        public override IInspectionListener Listener { get; } =
-            new EmptyCaseBlockListener();
+        protected override IInspectionListener<VBAParser.CaseClauseContext> ContextListener { get; }
 
-        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
+        protected override string ResultDescription(QualifiedContext<VBAParser.CaseClauseContext> context)
         {
             return InspectionResults.EmptyCaseBlockInspection;
         }
 
-        public class EmptyCaseBlockListener : EmptyBlockInspectionListenerBase
+        public class EmptyCaseBlockListener : EmptyBlockInspectionListenerBase<VBAParser.CaseClauseContext>
         {
             public override void EnterCaseClause([NotNull] VBAParser.CaseClauseContext context)
             {

@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -37,18 +36,19 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class BooleanAssignedInIfElseInspection : ParseTreeInspectionBase
+    public sealed class BooleanAssignedInIfElseInspection : ParseTreeInspectionBase<VBAParser.IfStmtContext>
     {
         public BooleanAssignedInIfElseInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
-        {}
-        
-        public override IInspectionListener Listener { get; } =
-            new BooleanAssignedInIfElseListener();
-
-        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
         {
-            var literalText = ((VBAParser.IfStmtContext) context.Context)
+            ContextListener = new BooleanAssignedInIfElseListener();
+        }
+        
+        protected override IInspectionListener<VBAParser.IfStmtContext> ContextListener { get; }
+
+        protected override string ResultDescription(QualifiedContext<VBAParser.IfStmtContext> context)
+        {
+            var literalText = context.Context
                 .block()
                 .GetDescendent<VBAParser.LetStmtContext>()
                 .lExpression()
@@ -59,7 +59,7 @@ namespace Rubberduck.Inspections.Concrete
                 literalText);
         }
 
-        public class BooleanAssignedInIfElseListener : InspectionListenerBase
+        public class BooleanAssignedInIfElseListener : InspectionListenerBase<VBAParser.IfStmtContext>
         {
             public override void ExitIfStmt(VBAParser.IfStmtContext context)
             {

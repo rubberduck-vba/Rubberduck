@@ -1,5 +1,4 @@
-﻿using Antlr4.Runtime;
-using Antlr4.Runtime.Misc;
+﻿using Antlr4.Runtime.Misc;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -33,21 +32,22 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class StopKeywordInspection : ParseTreeInspectionBase
+    public sealed class StopKeywordInspection : ParseTreeInspectionBase<VBAParser.StopStmtContext>
     {
         public StopKeywordInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
-        {}
+        {
+            ContextListener = new StopKeywordListener();
+        }
 
-        public override IInspectionListener Listener { get; } =
-            new StopKeywordListener();
+        protected override IInspectionListener<VBAParser.StopStmtContext> ContextListener { get; }
 
-        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
+        protected override string ResultDescription(QualifiedContext<VBAParser.StopStmtContext> context)
         {
             return InspectionResults.StopKeywordInspection;
         }
 
-        public class StopKeywordListener : InspectionListenerBase
+        public class StopKeywordListener : InspectionListenerBase<VBAParser.StopStmtContext>
         {
             public override void ExitStopStmt([NotNull] VBAParser.StopStmtContext context)
             {

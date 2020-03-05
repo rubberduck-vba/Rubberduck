@@ -17,22 +17,22 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
     /// code our friend Andrew Jackson would have written to confuse Rubberduck's parser and/or resolver. 
     /// The VBE does allow rather strange and unbelievable things to happen.
     /// </why>
-    public class NegativeLineNumberInspection : ParseTreeInspectionBase
+    public sealed class NegativeLineNumberInspection : ParseTreeInspectionBase<ParserRuleContext>
     {
         public NegativeLineNumberInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
         {
-            Listener = new NegativeLineNumberKeywordsListener();
+            ContextListener = new NegativeLineNumberKeywordsListener();
         }
+
+        protected override IInspectionListener<ParserRuleContext> ContextListener { get; }
 
         protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
         {
             return InspectionResults.NegativeLineNumberInspection.ThunderCodeFormat();
         }
 
-        public override IInspectionListener Listener { get; }
-
-        public class NegativeLineNumberKeywordsListener : InspectionListenerBase
+        public class NegativeLineNumberKeywordsListener : InspectionListenerBase<ParserRuleContext>
         {
             public override void EnterOnErrorStmt(VBAParser.OnErrorStmtContext context)
             {

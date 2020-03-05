@@ -1,5 +1,4 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
+﻿using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -25,17 +24,17 @@ namespace Rubberduck.Inspections.Inspections.Concrete
     /// Private Declare Sub Beep Lib "kernel32" (dwFreq As Any, dwDuration As Any)
     /// ]]>
     /// </example>
-    public sealed class ObsoleteCallingConventionInspection : ParseTreeInspectionBase
+    public sealed class ObsoleteCallingConventionInspection : ParseTreeInspectionBase<VBAParser.DeclareStmtContext>
     {
         public ObsoleteCallingConventionInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
         {
-            Listener = new ObsoleteCallingConventionListener();
+            ContextListener = new ObsoleteCallingConventionListener();
         }
 
-        public override IInspectionListener Listener { get; }
+        protected override IInspectionListener<VBAParser.DeclareStmtContext> ContextListener { get; }
 
-        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
+        protected override string ResultDescription(QualifiedContext<VBAParser.DeclareStmtContext> context)
         {
             var identifierName = ((VBAParser.DeclareStmtContext) context.Context).identifier().GetText();
             return string.Format(
@@ -43,12 +42,12 @@ namespace Rubberduck.Inspections.Inspections.Concrete
                 identifierName);
         }
 
-        protected override bool IsResultContext(QualifiedContext<ParserRuleContext> context)
+        protected override bool IsResultContext(QualifiedContext<VBAParser.DeclareStmtContext> context)
         {
             return ((VBAParser.DeclareStmtContext)context.Context).CDECL() != null;
         }
 
-        public class ObsoleteCallingConventionListener : InspectionListenerBase
+        public class ObsoleteCallingConventionListener : InspectionListenerBase<VBAParser.DeclareStmtContext>
         {
             public override void ExitDeclareStmt(VBAParser.DeclareStmtContext context)
             {

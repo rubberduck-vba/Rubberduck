@@ -1,12 +1,9 @@
-using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.VBA.Extensions;
-using Rubberduck.VBEditor.ComManagement;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -38,21 +35,22 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class ObsoleteCallStatementInspection : ParseTreeInspectionBase
+    public sealed class ObsoleteCallStatementInspection : ParseTreeInspectionBase<VBAParser.CallStmtContext>
     {
         public ObsoleteCallStatementInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
         {
-            Listener = new ObsoleteCallStatementListener();
+            ContextListener = new ObsoleteCallStatementListener();
         }
 
-        public override IInspectionListener Listener { get; }
-        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
+        protected override IInspectionListener<VBAParser.CallStmtContext> ContextListener { get; }
+
+        protected override string ResultDescription(QualifiedContext<VBAParser.CallStmtContext> context)
         {
             return InspectionResults.ObsoleteCallStatementInspection;
         }
 
-        protected override bool IsResultContext(QualifiedContext<ParserRuleContext> context)
+        protected override bool IsResultContext(QualifiedContext<VBAParser.CallStmtContext> context)
         {
             if (!context.Context.TryGetFollowingContext(out VBAParser.IndividualNonEOFEndOfStatementContext followingEndOfStatement)
                 || followingEndOfStatement.COLON() == null)
@@ -69,7 +67,7 @@ namespace Rubberduck.Inspections.Concrete
             return false;
         }
 
-        public class ObsoleteCallStatementListener : InspectionListenerBase
+        public class ObsoleteCallStatementListener : InspectionListenerBase<VBAParser.CallStmtContext>
         {
             public override void ExitCallStmt(VBAParser.CallStmtContext context)
             {

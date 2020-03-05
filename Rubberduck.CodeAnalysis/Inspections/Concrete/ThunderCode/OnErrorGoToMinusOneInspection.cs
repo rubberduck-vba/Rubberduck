@@ -1,5 +1,4 @@
-﻿using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
+﻿using Antlr4.Runtime.Tree;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -17,22 +16,22 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
     /// code our friend Andrew Jackson would have written to confuse Rubberduck's parser and/or resolver. 
     /// 'On Error GoTo -1' is poorly documented and uselessly complicates error handling.
     /// </why>
-    public class OnErrorGoToMinusOneInspection : ParseTreeInspectionBase
+    public sealed class OnErrorGoToMinusOneInspection : ParseTreeInspectionBase<VBAParser.OnErrorStmtContext>
     {
         public OnErrorGoToMinusOneInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
         {
-            Listener = new OnErrorGoToMinusOneListener();
+            ContextListener = new OnErrorGoToMinusOneListener();
         }
 
-        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
+        protected override IInspectionListener<VBAParser.OnErrorStmtContext> ContextListener { get; }
+
+        protected override string ResultDescription(QualifiedContext<VBAParser.OnErrorStmtContext> context)
         {
             return InspectionResults.OnErrorGoToMinusOneInspection.ThunderCodeFormat();
         }
 
-        public override IInspectionListener Listener { get; }
-
-        public class OnErrorGoToMinusOneListener : InspectionListenerBase
+        public class OnErrorGoToMinusOneListener : InspectionListenerBase<VBAParser.OnErrorStmtContext>
         {
             public override void EnterOnErrorStmt(VBAParser.OnErrorStmtContext context)
             {
@@ -40,7 +39,7 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
                 base.EnterOnErrorStmt(context);
             }
             
-            private void CheckContext(ParserRuleContext context, IParseTree expression)
+            private void CheckContext(VBAParser.OnErrorStmtContext context, IParseTree expression)
             {
                 var target = expression?.GetText().Trim() ?? string.Empty;
                 if (target.StartsWith("-") && int.TryParse(target.Substring(1), out var result) && result == 1)

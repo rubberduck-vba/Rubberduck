@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing;
@@ -36,16 +35,23 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class OptionExplicitInspection : ParseTreeInspectionBase
+    public sealed class OptionExplicitInspection : ParseTreeInspectionBase<VBAParser.ModuleContext>
     {
         public OptionExplicitInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
         {
-            Listener = new MissingOptionExplicitListener();
+            ContextListener = new MissingOptionExplicitListener();
         }
 
-        public override IInspectionListener Listener { get; }
-        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
+        protected  override IInspectionListener<VBAParser.ModuleContext> ContextListener { get; }
+
+        protected override bool IsResultContext(QualifiedContext<VBAParser.ModuleContext> context)
+        {
+            var moduleBody = context.Context.moduleBody();
+            return moduleBody != null && moduleBody.ChildCount != 0;
+        }
+
+        protected override string ResultDescription(QualifiedContext<VBAParser.ModuleContext> context)
         {
             var moduleName = context.ModuleName.ComponentName;
             return string.Format(
@@ -53,13 +59,7 @@ namespace Rubberduck.Inspections.Concrete
                 moduleName);
         }
 
-        protected override bool IsResultContext(QualifiedContext<ParserRuleContext> context)
-        {
-            var moduleBody = (context.Context as VBAParser.ModuleContext)?.moduleBody();
-            return moduleBody != null && moduleBody.ChildCount != 0;
-        }
-
-        public class MissingOptionExplicitListener : InspectionListenerBase
+        public class MissingOptionExplicitListener : InspectionListenerBase<VBAParser.ModuleContext>
         {
             private readonly IDictionary<QualifiedModuleName, bool> _hasOptionExplicit = new Dictionary<QualifiedModuleName, bool>();
 
@@ -89,7 +89,7 @@ namespace Rubberduck.Inspections.Concrete
             {
                 if (!_hasOptionExplicit.TryGetValue(CurrentModuleName, out var hasOptionExplicit) || !hasOptionExplicit)
                 {
-                    SaveContext((ParserRuleContext)context.Parent);
+                    SaveContext((VBAParser.ModuleContext)context.Parent);
                 }
             }
         }

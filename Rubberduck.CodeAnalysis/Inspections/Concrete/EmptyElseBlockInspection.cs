@@ -5,7 +5,6 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Antlr4.Runtime;
 using Rubberduck.Resources.Experimentals;
 using Rubberduck.Parsing;
 
@@ -38,21 +37,22 @@ namespace Rubberduck.Inspections.Concrete
     /// ]]>
     /// </example>
     [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
-    internal class EmptyElseBlockInspection : ParseTreeInspectionBase
+    internal sealed class EmptyElseBlockInspection : ParseTreeInspectionBase<VBAParser.ElseBlockContext>
     {
         public EmptyElseBlockInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
-        {}
+        {
+            ContextListener = new EmptyElseBlockListener();
+        }
 
-        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
+        protected override IInspectionListener<VBAParser.ElseBlockContext> ContextListener { get; }
+
+        protected override string ResultDescription(QualifiedContext<VBAParser.ElseBlockContext> context)
         {
             return InspectionResults.EmptyElseBlockInspection;
         }
 
-        public override IInspectionListener Listener { get; } 
-            = new EmptyElseBlockListener();
-        
-        public class EmptyElseBlockListener : EmptyBlockInspectionListenerBase
+        public class EmptyElseBlockListener : EmptyBlockInspectionListenerBase<VBAParser.ElseBlockContext>
         {
             public override void EnterElseBlock([NotNull] VBAParser.ElseBlockContext context)
             {

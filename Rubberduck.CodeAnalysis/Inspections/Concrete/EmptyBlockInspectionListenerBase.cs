@@ -7,9 +7,10 @@ using Rubberduck.Inspections.Abstract;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    public class EmptyBlockInspectionListenerBase : InspectionListenerBase
+    public class EmptyBlockInspectionListenerBase<TContext> : InspectionListenerBase<TContext>
+        where TContext : ParserRuleContext
     {
-        public void InspectBlockForExecutableStatements<T>(VBAParser.BlockContext block, T context) where T : ParserRuleContext
+        public void InspectBlockForExecutableStatements<T>(VBAParser.BlockContext block, T context) where T : TContext
         {
             if (!BlockContainsExecutableStatements(block))
             {
@@ -61,7 +62,7 @@ namespace Rubberduck.Inspections.Concrete
             return false;
         }
 
-        public void InspectBlockForExecutableStatements<T>(VBAParser.UnterminatedBlockContext block, T context) where T : ParserRuleContext
+        public void InspectBlockForExecutableStatements<T>(VBAParser.UnterminatedBlockContext block, T context) where T : TContext
         {
             if (!BlockContainsExecutableStatements(block))
             {

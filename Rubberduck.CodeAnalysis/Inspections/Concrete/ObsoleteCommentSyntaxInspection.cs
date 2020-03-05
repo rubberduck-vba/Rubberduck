@@ -1,5 +1,4 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
+﻿using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -28,21 +27,22 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class ObsoleteCommentSyntaxInspection : ParseTreeInspectionBase
+    public sealed class ObsoleteCommentSyntaxInspection : ParseTreeInspectionBase<VBAParser.RemCommentContext>
     {
         public ObsoleteCommentSyntaxInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
         {
-            Listener = new ObsoleteCommentSyntaxListener();
+            ContextListener = new ObsoleteCommentSyntaxListener();
         }
 
-        public override IInspectionListener Listener { get; }
-        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
+        protected override IInspectionListener<VBAParser.RemCommentContext> ContextListener { get; }
+
+        protected override string ResultDescription(QualifiedContext<VBAParser.RemCommentContext> context)
         {
             return InspectionResults.ObsoleteCommentSyntaxInspection;
         }
 
-        public class ObsoleteCommentSyntaxListener : InspectionListenerBase
+        public class ObsoleteCommentSyntaxListener : InspectionListenerBase<VBAParser.RemCommentContext>
         {
             public override void ExitRemComment(VBAParser.RemCommentContext context)
             {
