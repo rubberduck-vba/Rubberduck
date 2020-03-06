@@ -2460,9 +2460,7 @@ End Sub
             IEnumerable<IInspectionResult> actualResults;
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var factoryProvider = FactoryProvider;
-                var parseTreeVisitor = TestParseTreeValueVisitor(TestGetValuedDeclaration);
-                var inspection = new UnreachableCaseInspection(state, factoryProvider, parseTreeVisitor);
+                var inspection = InspectionUnderTest(state, TestGetValuedDeclaration);
 
                 WalkTrees(inspection, state);
                 actualResults = inspection.GetInspectionResults(CancellationToken.None);
@@ -2513,9 +2511,7 @@ End Sub
             IEnumerable<IInspectionResult> actualResults;
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var factoryProvider = FactoryProvider;
-                var parseTreeVisitor = TestParseTreeValueVisitor(TestGetValuedDeclaration);
-                var inspection = new UnreachableCaseInspection(state, factoryProvider, parseTreeVisitor);
+                var inspection = InspectionUnderTest(state, TestGetValuedDeclaration);
 
                 WalkTrees(inspection, state);
                 actualResults = inspection.GetInspectionResults(CancellationToken.None);
@@ -2525,11 +2521,6 @@ End Sub
 
             Assert.AreEqual(expectedUnreachableCount, actualUnreachable.Count());
         }
-
-        private IUnreachableCaseInspectionFactoryProvider _factoryProvider;
-        private IUnreachableCaseInspectionFactoryProvider FactoryProvider => _factoryProvider ?? (_factoryProvider = new UnreachableCaseInspectionFactoryProvider());
-
-        private IUnreachableCaseInspectorFactory UnreachableCaseInspectorFactory => FactoryProvider.CreateIUnreachableInspectorFactory();
 
         private static Dictionary<string, (string, string)> _vbConstConversions = new Dictionary<string, (string, string)>()
         {
@@ -2601,7 +2592,7 @@ End Sub
         {
             var selectStmtValueResults = GetParseTreeValueResults(inputCode, out VBAParser.SelectCaseStmtContext selectStmtContext, out var module);
 
-            var inspector = UnreachableCaseInspectorFactory.Create();
+            var inspector = TestUnreachableCaseInspector();
             return inspector.SelectExpressionTypeName(selectStmtContext, selectStmtValueResults);
         }
 
@@ -2623,17 +2614,30 @@ End Sub
             return valueResults;
         }
 
-        private ParseTreeValueVisitor TestParseTreeValueVisitor(Func<Declaration, (bool, string, string)> valueDeclarationEvaluator = null)
+        private IParseTreeValueVisitor TestParseTreeValueVisitor(Func<Declaration, (bool, string, string)> valueDeclarationEvaluator = null)
         {
             var valueFactory = new ParseTreeValueFactory();
             return new ParseTreeValueVisitor(valueFactory, valueDeclarationEvaluator);
         }
 
+        private IUnreachableCaseInspector TestUnreachableCaseInspector()
+        {
+            var valueFactory = new ParseTreeValueFactory();
+            return new UnreachableCaseInspector(valueFactory);
+        }
+
+        private IParseTreeInspection InspectionUnderTest(RubberduckParserState state, Func<Declaration, (bool, string, string)> valueDeclarationEvaluator)
+        {
+            var inspector = TestUnreachableCaseInspector();
+            var parseTeeValueVisitor = TestParseTreeValueVisitor(valueDeclarationEvaluator);
+            return new UnreachableCaseInspection(state, inspector, parseTeeValueVisitor);
+        }
+
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
-            var factoryProvider = new UnreachableCaseInspectionFactoryProvider(); 
-            var parseTeeValueVisitor = new ParseTreeValueVisitor(factoryProvider.CreateIParseTreeValueFactory());
-            return new UnreachableCaseInspection(state, factoryProvider, parseTeeValueVisitor);
+            var inspector = TestUnreachableCaseInspector(); 
+            var parseTeeValueVisitor = TestParseTreeValueVisitor();
+            return new UnreachableCaseInspection(state, inspector, parseTeeValueVisitor);
         }
     }
 }

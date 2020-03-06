@@ -4,6 +4,8 @@ using Rubberduck.Parsing.Grammar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
@@ -13,7 +15,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         ICollection<(UnreachableCaseInspection.CaseInspectionResultType resultType, ParserRuleContext context)> InspectForUnreachableCases(
             QualifiedModuleName module, 
             VBAParser.SelectCaseStmtContext selectCaseContext, 
-            IParseTreeVisitorResults parseTreeValues);
+            IParseTreeVisitorResults parseTreeValues,
+            DeclarationFinder finder);
         string SelectExpressionTypeName(
             VBAParser.SelectCaseStmtContext selectCaseContext, 
             IParseTreeVisitorResults parseTreeValues);
@@ -22,20 +25,18 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     public class UnreachableCaseInspector : IUnreachableCaseInspector
     {
         private readonly IParseTreeValueFactory _valueFactory;
-        private readonly Func<string, QualifiedModuleName, ParserRuleContext, string> _getVariableDeclarationTypeName;
 
         public UnreachableCaseInspector(
-            IParseTreeValueFactory valueFactory,
-            Func<string, QualifiedModuleName, ParserRuleContext, string> getVariableTypeName = null)
+            IParseTreeValueFactory valueFactory)
         {
             _valueFactory = valueFactory;
-            _getVariableDeclarationTypeName = getVariableTypeName;
         }
 
         public ICollection<(UnreachableCaseInspection.CaseInspectionResultType resultType, ParserRuleContext context)> InspectForUnreachableCases(
             QualifiedModuleName module,
             VBAParser.SelectCaseStmtContext selectCaseContext,
-            IParseTreeVisitorResults parseTreeValues)
+            IParseTreeVisitorResults parseTreeValues,
+            DeclarationFinder finder)
         {
             var (selectExpressionTypeName, selectExpressionValue) = SelectExpressionTypeNameAndValue(selectCaseContext, parseTreeValues);
 
@@ -61,7 +62,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 .Select(tpl => tpl.caseClause)
                 .ToList();
 
-            var rangeClauseFilter = BuildRangeClauseFilter(module, remainingCasesToInspect, selectExpressionTypeName, parseTreeValues);
+            var rangeClauseFilter = BuildRangeClauseFilter(module, remainingCasesToInspect, selectExpressionTypeName, parseTreeValues, finder);
             if (!(selectExpressionValue is null) && selectExpressionValue.ParsesToConstantValue)
             {
                 rangeClauseFilter.SelectExpressionValue = selectExpressionValue;
@@ -146,14 +147,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return null;
         }
 
-        private IExpressionFilter BuildRangeClauseFilter(QualifiedModuleName module, IEnumerable<VBAParser.CaseClauseContext> caseClauses, string selectExpressionTypeName, IParseTreeVisitorResults parseTreeValues)
+        private IExpressionFilter BuildRangeClauseFilter(QualifiedModuleName module, IEnumerable<VBAParser.CaseClauseContext> caseClauses, string selectExpressionTypeName, IParseTreeVisitorResults parseTreeValues, DeclarationFinder finder)
         {
             var rangeClauseFilter = ExpressionFilterFactory.Create(selectExpressionTypeName);
-
-            if (_getVariableDeclarationTypeName is null)
-            {
-                return rangeClauseFilter;
-            }
 
             var rangeClauses = caseClauses.SelectMany(caseClause => caseClause.rangeClause());
             foreach (var rangeClause in rangeClauses)
@@ -161,12 +157,67 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 var expression = GetRangeClauseExpression(rangeClause, parseTreeValues);
                 if (!expression?.LHS?.ParsesToConstantValue ?? false)
                 {
-                    var typeName = _getVariableDeclarationTypeName(expression.LHS.Token, module, rangeClause);
+                    var typeName = GetVariableTypeName(module, expression.LHS.Token, rangeClause, finder);
                     rangeClauseFilter.AddComparablePredicateFilter(expression.LHS.Token, typeName);
                 }
             }
 
             return rangeClauseFilter;
+        }
+
+        private string GetVariableTypeName(QualifiedModuleName module, string variableName, ParserRuleContext ancestor, DeclarationFinder finder)
+        {
+            if (ancestor == null)
+            {
+                return string.Empty;
+            }
+
+            var descendents = ancestor.GetDescendents<VBAParser.SimpleNameExprContext>()
+                .Where(desc => desc.GetText().Equals(variableName))
+                .ToList();
+            if (!descendents.Any())
+            {
+                return string.Empty;
+            }
+
+            var firstDescendent = descendents.First();
+            var (success, reference) = GetIdentifierReferenceForContext(module, firstDescendent, finder);
+            return success ?
+                GetBaseTypeForDeclaration(reference.Declaration)
+                : string.Empty;
+        }
+
+        private static (bool success, IdentifierReference idRef) GetIdentifierReferenceForContext(QualifiedModuleName module, ParserRuleContext context, DeclarationFinder finder)
+        {
+            if (context == null)
+            {
+                return (false, null);
+            }
+
+            var qualifiedSelection = new QualifiedSelection(module, context.GetSelection());
+
+            var identifierReferences =
+                finder
+                    .IdentifierReferences(qualifiedSelection)
+                    .Where(reference => reference.Context == context)
+                    .ToList();
+
+            return identifierReferences.Count == 1
+                ? (true, identifierReferences.First())
+                : (false, null);
+        }
+
+        private string GetBaseTypeForDeclaration(Declaration declaration)
+        {
+            var localDeclaration = declaration;
+            var iterationGuard = 0;
+            while (!(localDeclaration is null)
+                   && !localDeclaration.AsTypeIsBaseType
+                   && iterationGuard++ < 5)
+            {
+                localDeclaration = localDeclaration.AsTypeDeclaration;
+            }
+            return localDeclaration is null ? declaration.AsTypeName : localDeclaration.AsTypeName;
         }
 
         public string SelectExpressionTypeName(

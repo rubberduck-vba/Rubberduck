@@ -115,7 +115,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     /// </example>
     public sealed class UnreachableCaseInspection : InspectionBase, IParseTreeInspection
     {
-        private readonly IUnreachableCaseInspectorFactory _unreachableCaseInspectorFactory;
+        private readonly IUnreachableCaseInspector _inspector;
         private readonly IParseTreeValueVisitor _parseTreeValueVisitor;
         private readonly IInspectionListener<VBAParser.SelectCaseStmtContext> _listener;
 
@@ -128,10 +128,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             CaseElse
         }
 
-        public UnreachableCaseInspection(IDeclarationFinderProvider declarationFinderProvider, IUnreachableCaseInspectionFactoryProvider factoryProvider, IParseTreeValueVisitor parseTreeValueVisitor) 
+        public UnreachableCaseInspection(
+            IDeclarationFinderProvider declarationFinderProvider, 
+            IUnreachableCaseInspector inspector, 
+            IParseTreeValueVisitor parseTreeValueVisitor) 
             : base(declarationFinderProvider)
         {
-            _unreachableCaseInspectorFactory = factoryProvider.CreateIUnreachableInspectorFactory();
+            _inspector = inspector;
             _parseTreeValueVisitor = parseTreeValueVisitor;
             _listener = new UnreachableCaseInspectionListener();
         }
@@ -142,38 +145,30 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults(DeclarationFinder finder)
         {
-            var selectCaseInspector = _unreachableCaseInspectorFactory.Create(GetVariableTypeNameFunction(finder));
-
             return finder.UserDeclarations(DeclarationType.Module)
                 .Where(module => module != null)
-                .SelectMany(module => DoGetInspectionResults(module.QualifiedModuleName, finder, selectCaseInspector))
+                .SelectMany(module => DoGetInspectionResults(module.QualifiedModuleName, finder))
                 .ToList();
         }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
-        {
-            var selectCaseInspector = _unreachableCaseInspectorFactory.Create(GetVariableTypeNameFunction(finder));
-            return DoGetInspectionResults(module, finder, selectCaseInspector);
-        }
-
-        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder, IUnreachableCaseInspector selectCaseInspector)
         {
             var qualifiedSelectCaseStmts = _listener.Contexts(module)
                 // ignore filtering here to make the search space smaller
                 .Where(result => !result.IsIgnoringInspectionResultFor(finder, AnnotationName));
 
             return qualifiedSelectCaseStmts
-                .SelectMany(context => ResultsForContext(context, selectCaseInspector, finder))
+                .SelectMany(context => ResultsForContext(context, finder))
                 .ToList();
         }
 
-        private IEnumerable<IInspectionResult> ResultsForContext(QualifiedContext<VBAParser.SelectCaseStmtContext> qualifiedSelectCaseStmt, IUnreachableCaseInspector selectCaseInspector, DeclarationFinder finder)
+        private IEnumerable<IInspectionResult> ResultsForContext(QualifiedContext<VBAParser.SelectCaseStmtContext> qualifiedSelectCaseStmt, DeclarationFinder finder)
         {
             var module = qualifiedSelectCaseStmt.ModuleName;
             var selectStmt = qualifiedSelectCaseStmt.Context;
             var contextValues = _parseTreeValueVisitor.VisitChildren(module, selectStmt, finder);
 
-            var results = selectCaseInspector.InspectForUnreachableCases(module, selectStmt, contextValues);
+            var results = _inspector.InspectForUnreachableCases(module, selectStmt, contextValues, finder);
 
             return results
                 .Select(resultTpl => CreateInspectionResult(qualifiedSelectCaseStmt, resultTpl.context, resultTpl.resultType))
@@ -210,74 +205,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return new QualifiedContextInspectionResult(this,
                         message,
                         new QualifiedContext<ParserRuleContext>(selectStmt.ModuleName, unreachableBlock));
-        }
-
-        private Func<QualifiedModuleName, ParserRuleContext,(bool success, IdentifierReference reference)> GetIdentifierReferenceForContextFunction(DeclarationFinder finder)
-        {
-            return (module, context) => GetIdentifierReferenceForContext(module, context, finder);
-        }
-
-        //public static to support tests
-        //FIXME There should not be additional public methods just for tests. This class seems to want to be split or at least reorganized.
-        public static (bool success, IdentifierReference idRef) GetIdentifierReferenceForContext(QualifiedModuleName module, ParserRuleContext context, DeclarationFinder finder)
-        {
-            if (context == null)
-            {
-                return (false, null);
-            }
-
-            var qualifiedSelection = new QualifiedSelection(module, context.GetSelection());
-
-            var identifierReferences = 
-                finder
-                .IdentifierReferences(qualifiedSelection)
-                .Where(reference => reference.Context == context)
-                .ToList();
-
-            return identifierReferences.Count == 1 
-                ? (true, identifierReferences.First())
-                : (false, null);
-        }
-
-        private Func<string, QualifiedModuleName, ParserRuleContext, string> GetVariableTypeNameFunction(DeclarationFinder finder)
-        {
-            var referenceRetriever = GetIdentifierReferenceForContextFunction(finder);
-            return (variableName, module, ancestor) => GetVariableTypeName(module, variableName, ancestor, referenceRetriever);
-        }
-
-        private string GetVariableTypeName(QualifiedModuleName module, string variableName, ParserRuleContext ancestor, Func<QualifiedModuleName, ParserRuleContext, (bool success, IdentifierReference reference)> referenceRetriever)
-        {
-            if (ancestor == null)
-            {
-                return string.Empty;
-            }
-
-            var descendents = ancestor.GetDescendents<VBAParser.SimpleNameExprContext>()
-                .Where(desc => desc.GetText().Equals(variableName))
-                .ToList();
-            if (!descendents.Any())
-            {
-                return string.Empty;
-            }
-
-            var firstDescendent = descendents.First();
-            var (success, reference) = referenceRetriever(module, firstDescendent);
-            return success ?
-                GetBaseTypeForDeclaration(reference.Declaration) 
-                : string.Empty;
-        }
-
-        private string GetBaseTypeForDeclaration(Declaration declaration)
-        {
-            var localDeclaration = declaration;
-            var iterationGuard = 0;
-            while (!(localDeclaration is null)
-                && !localDeclaration.AsTypeIsBaseType
-                && iterationGuard++ < 5)
-            {
-                localDeclaration = localDeclaration.AsTypeDeclaration;
-            }
-            return localDeclaration is null ? declaration.AsTypeName : localDeclaration.AsTypeName;
         }
 
         private class UnreachableCaseInspectionListener : InspectionListenerBase<VBAParser.SelectCaseStmtContext>

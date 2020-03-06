@@ -39,32 +39,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
         private const string CLAUSETYPE_VALUE_DELIMITER = "!";
         private const string RANGE_STARTEND_DELIMITER = ":";
 
-        private IUnreachableCaseInspectionFactoryProvider _factoryProvider;
-        private IParseTreeValueFactory _valueFactory;
-
-        private IUnreachableCaseInspectionFactoryProvider FactoryProvider
-        {
-            get
-            {
-                if (_factoryProvider is null)
-                {
-                    _factoryProvider = new UnreachableCaseInspectionFactoryProvider();
-                }
-                return _factoryProvider;
-            }
-        }
-
-        private IParseTreeValueFactory ValueFactory
-        {
-            get
-            {
-                if (_valueFactory is null)
-                {
-                    _valueFactory = FactoryProvider.CreateIParseTreeValueFactory();
-                }
-                return _valueFactory;
-            }
-        }
+        private readonly  Lazy<IParseTreeValueFactory> _valueFactory = new Lazy<IParseTreeValueFactory>(() => new ParseTreeValueFactory());
+        private IParseTreeValueFactory ValueFactory => _valueFactory.Value;
 
         [TestCase("Min!-5000", "", "Min(-5000)Max(typeMax)")]
         [TestCase("Min!-5000,Max!5000", "", "Min(-5000)Max(5000)")]
