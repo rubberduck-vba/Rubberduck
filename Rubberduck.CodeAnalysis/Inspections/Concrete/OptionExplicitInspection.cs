@@ -60,7 +60,7 @@ namespace Rubberduck.Inspections.Concrete
                 moduleName);
         }
 
-        public class MissingOptionExplicitListener : InspectionListenerBase<VBAParser.ModuleContext>
+        private class MissingOptionExplicitListener : InspectionListenerBase<VBAParser.ModuleContext>
         {
             private readonly IDictionary<QualifiedModuleName, bool> _hasOptionExplicit = new Dictionary<QualifiedModuleName, bool>();
 

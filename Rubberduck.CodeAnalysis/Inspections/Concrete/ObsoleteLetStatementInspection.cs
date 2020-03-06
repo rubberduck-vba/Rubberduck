@@ -44,7 +44,7 @@ namespace Rubberduck.Inspections.Concrete
             return InspectionResults.ObsoleteLetStatementInspection;
         }
 
-        public class ObsoleteLetStatementListener : InspectionListenerBase<VBAParser.LetStmtContext>
+        private class ObsoleteLetStatementListener : InspectionListenerBase<VBAParser.LetStmtContext>
         {
             public override void ExitLetStmt(VBAParser.LetStmtContext context)
             {

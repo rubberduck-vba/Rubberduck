@@ -47,7 +47,7 @@ namespace Rubberduck.Inspections.Concrete
             return InspectionResults.StopKeywordInspection;
         }
 
-        public class StopKeywordListener : InspectionListenerBase<VBAParser.StopStmtContext>
+        private class StopKeywordListener : InspectionListenerBase<VBAParser.StopStmtContext>
         {
             public override void ExitStopStmt([NotNull] VBAParser.StopStmtContext context)
             {

@@ -50,7 +50,7 @@ namespace Rubberduck.Inspections.Concrete
                 context.Context.GetText());
         }
 
-        public class RedundantModuleOptionListener : InspectionListenerBase<ParserRuleContext>
+        private class RedundantModuleOptionListener : InspectionListenerBase<ParserRuleContext>
         {
             public override void ExitOptionBaseStmt(VBAParser.OptionBaseStmtContext context)
             {

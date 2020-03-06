@@ -49,24 +49,24 @@ namespace Rubberduck.Inspections.Concrete
         {
             return InspectionResults.StepOneIsRedundantInspection;
         }
-    }
 
-    public class StepOneIsRedundantListener : InspectionListenerBase<VBAParser.StepStmtContext>
-    {
-        public override void EnterForNextStmt([NotNull] VBAParser.ForNextStmtContext context)
+        private class StepOneIsRedundantListener : InspectionListenerBase<VBAParser.StepStmtContext>
         {
-            var stepStatement = context.stepStmt();
-
-            if (stepStatement == null)
+            public override void EnterForNextStmt([NotNull] VBAParser.ForNextStmtContext context)
             {
-                return;
-            }
+                var stepStatement = context.stepStmt();
 
-            var stepText = stepStatement.expression().GetText();
+                if (stepStatement == null)
+                {
+                    return;
+                }
 
-            if(stepText == "1")
-            {
-                SaveContext(stepStatement);
+                var stepText = stepStatement.expression().GetText();
+
+                if (stepText == "1")
+                {
+                    SaveContext(stepStatement);
+                }
             }
         }
     }

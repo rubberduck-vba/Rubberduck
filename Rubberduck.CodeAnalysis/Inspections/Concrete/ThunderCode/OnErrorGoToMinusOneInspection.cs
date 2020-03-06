@@ -31,7 +31,7 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
             return InspectionResults.OnErrorGoToMinusOneInspection.ThunderCodeFormat();
         }
 
-        public class OnErrorGoToMinusOneListener : InspectionListenerBase<VBAParser.OnErrorStmtContext>
+        private class OnErrorGoToMinusOneListener : InspectionListenerBase<VBAParser.OnErrorStmtContext>
         {
             public override void EnterOnErrorStmt(VBAParser.OnErrorStmtContext context)
             {

@@ -68,7 +68,7 @@ namespace Rubberduck.Inspections.Concrete
             { "DefVar", "Variant" }
         };
 
-        public class DefTypeStatementInspectionListener : InspectionListenerBase<VBAParser.DefTypeContext>
+        private class DefTypeStatementInspectionListener : InspectionListenerBase<VBAParser.DefTypeContext>
         {
             public override void ExitDefType([NotNull] VBAParser.DefTypeContext context)
             {

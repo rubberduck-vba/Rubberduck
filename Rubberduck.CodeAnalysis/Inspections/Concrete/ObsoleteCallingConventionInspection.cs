@@ -48,7 +48,7 @@ namespace Rubberduck.Inspections.Inspections.Concrete
             return ((VBAParser.DeclareStmtContext)context.Context).CDECL() != null;
         }
 
-        public class ObsoleteCallingConventionListener : InspectionListenerBase<VBAParser.DeclareStmtContext>
+        private class ObsoleteCallingConventionListener : InspectionListenerBase<VBAParser.DeclareStmtContext>
         {
             public override void ExitDeclareStmt(VBAParser.DeclareStmtContext context)
             {

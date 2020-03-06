@@ -47,7 +47,7 @@ namespace Rubberduck.Inspections.Concrete
                 identifierName);
         }
 
-        public class ModuleScopedDimListener : InspectionListenerBase<VBAParser.VariableSubStmtContext>
+        private class ModuleScopedDimListener : InspectionListenerBase<VBAParser.VariableSubStmtContext>
         {
             public override void ExitVariableStmt([NotNull] VBAParser.VariableStmtContext context)
             {

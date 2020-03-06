@@ -42,7 +42,7 @@ namespace Rubberduck.Inspections.Concrete
             return InspectionResults.ObsoleteErrorSyntaxInspection;
         }
 
-        public class ObsoleteErrorSyntaxListener : InspectionListenerBase<VBAParser.ErrorStmtContext>
+        private class ObsoleteErrorSyntaxListener : InspectionListenerBase<VBAParser.ErrorStmtContext>
         {
             public override void ExitErrorStmt(VBAParser.ErrorStmtContext context)
             {

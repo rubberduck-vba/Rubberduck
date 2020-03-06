@@ -42,7 +42,7 @@ namespace Rubberduck.Inspections.Concrete
             return InspectionResults.ObsoleteCommentSyntaxInspection;
         }
 
-        public class ObsoleteCommentSyntaxListener : InspectionListenerBase<VBAParser.RemCommentContext>
+        private class ObsoleteCommentSyntaxListener : InspectionListenerBase<VBAParser.RemCommentContext>
         {
             public override void ExitRemComment(VBAParser.RemCommentContext context)
             {

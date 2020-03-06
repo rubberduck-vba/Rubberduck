@@ -32,7 +32,7 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
             return InspectionResults.NegativeLineNumberInspection.ThunderCodeFormat();
         }
 
-        public class NegativeLineNumberKeywordsListener : InspectionListenerBase<ParserRuleContext>
+        private class NegativeLineNumberKeywordsListener : InspectionListenerBase<ParserRuleContext>
         {
             public override void EnterOnErrorStmt(VBAParser.OnErrorStmtContext context)
             {

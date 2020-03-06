@@ -48,7 +48,7 @@ namespace Rubberduck.Inspections.Concrete
             return InspectionResults.EmptyStringLiteralInspection;
         }
 
-        public class EmptyStringLiteralListener : InspectionListenerBase<VBAParser.LiteralExpressionContext>
+        private class EmptyStringLiteralListener : InspectionListenerBase<VBAParser.LiteralExpressionContext>
         {
             public override void ExitLiteralExpression(VBAParser.LiteralExpressionContext context)
             {

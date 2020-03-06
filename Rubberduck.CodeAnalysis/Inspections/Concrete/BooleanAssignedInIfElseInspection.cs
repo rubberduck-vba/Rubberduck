@@ -59,7 +59,7 @@ namespace Rubberduck.Inspections.Concrete
                 literalText);
         }
 
-        public class BooleanAssignedInIfElseListener : InspectionListenerBase<VBAParser.IfStmtContext>
+        private class BooleanAssignedInIfElseListener : InspectionListenerBase<VBAParser.IfStmtContext>
         {
             public override void ExitIfStmt(VBAParser.IfStmtContext context)
             {

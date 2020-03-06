@@ -50,7 +50,7 @@ namespace Rubberduck.Inspections.Concrete
             return InspectionResults.EmptyWhileWendBlockInspection;
         }
 
-        public class EmptyWhileWendBlockListener : EmptyBlockInspectionListenerBase<VBAParser.WhileWendStmtContext>
+        private class EmptyWhileWendBlockListener : EmptyBlockInspectionListenerBase<VBAParser.WhileWendStmtContext>
         {
             public override void EnterWhileWendStmt([NotNull] VBAParser.WhileWendStmtContext context)
             {

@@ -68,7 +68,7 @@ namespace Rubberduck.Inspections.Concrete
             return false;
         }
 
-        public class ObsoleteCallStatementListener : InspectionListenerBase<VBAParser.CallStmtContext>
+        private class ObsoleteCallStatementListener : InspectionListenerBase<VBAParser.CallStmtContext>
         {
             public override void ExitCallStmt(VBAParser.CallStmtContext context)
             {

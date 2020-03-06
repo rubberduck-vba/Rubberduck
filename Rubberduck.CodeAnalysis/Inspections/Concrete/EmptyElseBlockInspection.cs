@@ -52,7 +52,7 @@ namespace Rubberduck.Inspections.Concrete
             return InspectionResults.EmptyElseBlockInspection;
         }
 
-        public class EmptyElseBlockListener : EmptyBlockInspectionListenerBase<VBAParser.ElseBlockContext>
+        private class EmptyElseBlockListener : EmptyBlockInspectionListenerBase<VBAParser.ElseBlockContext>
         {
             public override void EnterElseBlock([NotNull] VBAParser.ElseBlockContext context)
             {

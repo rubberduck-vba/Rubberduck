@@ -50,7 +50,7 @@ namespace Rubberduck.Inspections.Concrete
                 parameterText);
         }
 
-        public class ParameterListener : InspectionListenerBase<VBAParser.ArgContext>
+        private class ParameterListener : InspectionListenerBase<VBAParser.ArgContext>
         {
             public override void ExitArg([NotNull] VBAParser.ArgContext context)
             {

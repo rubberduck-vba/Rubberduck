@@ -50,7 +50,7 @@ namespace Rubberduck.Inspections.Concrete
             return InspectionResults.EmptyDoWhileBlockInspection;
         }
 
-        public class EmptyDoWhileBlockListener : EmptyBlockInspectionListenerBase<VBAParser.DoLoopStmtContext>
+        private class EmptyDoWhileBlockListener : EmptyBlockInspectionListenerBase<VBAParser.DoLoopStmtContext>
         {
             public override void EnterDoLoopStmt([NotNull] VBAParser.DoLoopStmtContext context)
             {

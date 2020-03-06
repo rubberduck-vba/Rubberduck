@@ -55,70 +55,70 @@ namespace Rubberduck.Inspections.Concrete
         {
             return (true, _listener.UnhandledContexts(context));
         }
-    }
 
-    public class OnErrorStatementListener : InspectionListenerBase<VBAParser.OnErrorStmtContext>
-    {
-        private readonly List<QualifiedContext<VBAParser.OnErrorStmtContext>> _unhandledContexts = new List<QualifiedContext<VBAParser.OnErrorStmtContext>>();
-        private readonly Dictionary<QualifiedContext<VBAParser.OnErrorStmtContext>, List<VBAParser.OnErrorStmtContext>> _unhandledContextsMap = new Dictionary<QualifiedContext<VBAParser.OnErrorStmtContext>, List<VBAParser.OnErrorStmtContext>>();
-
-        public IReadOnlyList<VBAParser.OnErrorStmtContext> UnhandledContexts(QualifiedContext<VBAParser.OnErrorStmtContext> context)
+        private class OnErrorStatementListener : InspectionListenerBase<VBAParser.OnErrorStmtContext>
         {
-            return _unhandledContextsMap.TryGetValue(context, out var unhandledContexts) 
-                ? unhandledContexts 
-                : new List<VBAParser.OnErrorStmtContext>();
-        }
+            private readonly List<QualifiedContext<VBAParser.OnErrorStmtContext>> _unhandledContexts = new List<QualifiedContext<VBAParser.OnErrorStmtContext>>();
+            private readonly Dictionary<QualifiedContext<VBAParser.OnErrorStmtContext>, List<VBAParser.OnErrorStmtContext>> _unhandledContextsMap = new Dictionary<QualifiedContext<VBAParser.OnErrorStmtContext>, List<VBAParser.OnErrorStmtContext>>();
 
-        public override void ClearContexts()
-        {
-            _unhandledContextsMap.Clear();
-            base.ClearContexts();
-        }
-
-        public override void ClearContexts(QualifiedModuleName module)
-        {
-            var keysInModule = _unhandledContextsMap.Keys
-                .Where(context => context.ModuleName.Equals(module));
-
-            foreach (var key in keysInModule)
+            public IReadOnlyList<VBAParser.OnErrorStmtContext> UnhandledContexts(QualifiedContext<VBAParser.OnErrorStmtContext> context)
             {
-                _unhandledContextsMap.Remove(key);
+                return _unhandledContextsMap.TryGetValue(context, out var unhandledContexts)
+                    ? unhandledContexts
+                    : new List<VBAParser.OnErrorStmtContext>();
             }
 
-            base.ClearContexts(module);
-        }
-
-        public override void ExitModuleBodyElement(VBAParser.ModuleBodyElementContext context)
-        {
-            if (_unhandledContexts.Any())
+            public override void ClearContexts()
             {
-                foreach (var errorContext in _unhandledContexts)
+                _unhandledContextsMap.Clear();
+                base.ClearContexts();
+            }
+
+            public override void ClearContexts(QualifiedModuleName module)
+            {
+                var keysInModule = _unhandledContextsMap.Keys
+                    .Where(context => context.ModuleName.Equals(module));
+
+                foreach (var key in keysInModule)
                 {
-                    _unhandledContextsMap.Add(errorContext, new List<VBAParser.OnErrorStmtContext>(_unhandledContexts.Select(ctx => ctx.Context)));
-                    SaveContext(errorContext.Context);
+                    _unhandledContextsMap.Remove(key);
                 }
 
-                _unhandledContexts.Clear();
+                base.ClearContexts(module);
             }
-        }
 
-        public override void ExitOnErrorStmt(VBAParser.OnErrorStmtContext context)
-        {
-            if (context.RESUME() != null)
+            public override void ExitModuleBodyElement(VBAParser.ModuleBodyElementContext context)
             {
-                SaveUnhandledContext(context);
-            }
-            else if (context.GOTO() != null)
-            {
-                _unhandledContexts.Clear();
-            }
-        }
+                if (_unhandledContexts.Any())
+                {
+                    foreach (var errorContext in _unhandledContexts)
+                    {
+                        _unhandledContextsMap.Add(errorContext, new List<VBAParser.OnErrorStmtContext>(_unhandledContexts.Select(ctx => ctx.Context)));
+                        SaveContext(errorContext.Context);
+                    }
 
-        private void SaveUnhandledContext(VBAParser.OnErrorStmtContext context)
-        {
-            var module = CurrentModuleName;
-            var qualifiedContext = new QualifiedContext<VBAParser.OnErrorStmtContext>(module, context);
-            _unhandledContexts.Add(qualifiedContext);
+                    _unhandledContexts.Clear();
+                }
+            }
+
+            public override void ExitOnErrorStmt(VBAParser.OnErrorStmtContext context)
+            {
+                if (context.RESUME() != null)
+                {
+                    SaveUnhandledContext(context);
+                }
+                else if (context.GOTO() != null)
+                {
+                    _unhandledContexts.Clear();
+                }
+            }
+
+            private void SaveUnhandledContext(VBAParser.OnErrorStmtContext context)
+            {
+                var module = CurrentModuleName;
+                var qualifiedContext = new QualifiedContext<VBAParser.OnErrorStmtContext>(module, context);
+                _unhandledContexts.Add(qualifiedContext);
+            }
         }
     }
 }

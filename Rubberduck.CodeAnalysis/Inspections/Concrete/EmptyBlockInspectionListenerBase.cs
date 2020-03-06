@@ -7,7 +7,7 @@ using Rubberduck.Inspections.Abstract;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    public class EmptyBlockInspectionListenerBase<TContext> : InspectionListenerBase<TContext>
+    internal class EmptyBlockInspectionListenerBase<TContext> : InspectionListenerBase<TContext>
         where TContext : ParserRuleContext
     {
         public void InspectBlockForExecutableStatements<T>(VBAParser.BlockContext block, T context) where T : TContext

@@ -55,7 +55,7 @@ namespace Rubberduck.Inspections.Concrete
             return InspectionResults.EmptyCaseBlockInspection;
         }
 
-        public class EmptyCaseBlockListener : EmptyBlockInspectionListenerBase<VBAParser.CaseClauseContext>
+        private class EmptyCaseBlockListener : EmptyBlockInspectionListenerBase<VBAParser.CaseClauseContext>
         {
             public override void EnterCaseClause([NotNull] VBAParser.CaseClauseContext context)
             {

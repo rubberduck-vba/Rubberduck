@@ -51,7 +51,7 @@ namespace Rubberduck.Inspections.Concrete
             return InspectionResults.OnLocalErrorInspection;
         }
 
-        public class OnLocalErrorListener : InspectionListenerBase<VBAParser.OnErrorStmtContext>
+        private class OnLocalErrorListener : InspectionListenerBase<VBAParser.OnErrorStmtContext>
         {
             public override void ExitOnErrorStmt([NotNull] VBAParser.OnErrorStmtContext context)
             {

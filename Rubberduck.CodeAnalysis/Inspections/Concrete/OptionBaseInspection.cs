@@ -54,7 +54,7 @@ namespace Rubberduck.Inspections.Concrete
                 moduleName);
         }
 
-        public class OptionBaseStatementListener : InspectionListenerBase<VBAParser.OptionBaseStmtContext>
+        private class OptionBaseStatementListener : InspectionListenerBase<VBAParser.OptionBaseStmtContext>
         {
             public override void ExitOptionBaseStmt(VBAParser.OptionBaseStmtContext context)
             {

@@ -52,7 +52,7 @@ namespace Rubberduck.Inspections.Concrete
             return InspectionResults.EmptyForLoopBlockInspection;
         }
 
-        public class EmptyForLoopBlockListener : EmptyBlockInspectionListenerBase<VBAParser.ForNextStmtContext>
+        private class EmptyForLoopBlockListener : EmptyBlockInspectionListenerBase<VBAParser.ForNextStmtContext>
         {
             public override void EnterForNextStmt([NotNull] VBAParser.ForNextStmtContext context)
             {

@@ -47,7 +47,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             return InspectionResults.ObsoleteWhileWendStatementInspection;
         }
 
-        public class ObsoleteWhileWendStatementListener : InspectionListenerBase<VBAParser.WhileWendStmtContext>
+        private class ObsoleteWhileWendStatementListener : InspectionListenerBase<VBAParser.WhileWendStmtContext>
         {
             public override void ExitWhileWendStmt(VBAParser.WhileWendStmtContext context)
             {

@@ -41,7 +41,7 @@ namespace Rubberduck.Inspections.Concrete
             return InspectionResults.MultipleDeclarationsInspection;
         }
 
-        public class ParameterListListener : InspectionListenerBase<ParserRuleContext>
+        private class ParameterListListener : InspectionListenerBase<ParserRuleContext>
         {
             public override void ExitVariableListStmt([NotNull] VBAParser.VariableListStmtContext context)
             {

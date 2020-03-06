@@ -43,23 +43,23 @@ namespace Rubberduck.Inspections.Concrete
             ContextListener = new StepIsNotSpecifiedListener();
         }
 
+        protected override IInspectionListener<VBAParser.ForNextStmtContext> ContextListener { get; }
+
         protected override string ResultDescription(QualifiedContext<VBAParser.ForNextStmtContext> context)
         {
             return InspectionResults.StepIsNotSpecifiedInspection;
         }
 
-        protected override IInspectionListener<VBAParser.ForNextStmtContext> ContextListener { get; } 
-    }
-
-    public class StepIsNotSpecifiedListener : InspectionListenerBase<VBAParser.ForNextStmtContext>
-    {
-        public override void EnterForNextStmt([NotNull] VBAParser.ForNextStmtContext context)
+        private class StepIsNotSpecifiedListener : InspectionListenerBase<VBAParser.ForNextStmtContext>
         {
-            var stepStatement = context.stepStmt();
-
-            if (stepStatement == null)
+            public override void EnterForNextStmt([NotNull] VBAParser.ForNextStmtContext context)
             {
-                SaveContext(context);
+                var stepStatement = context.stepStmt();
+
+                if (stepStatement == null)
+                {
+                    SaveContext(context);
+                }
             }
         }
     }

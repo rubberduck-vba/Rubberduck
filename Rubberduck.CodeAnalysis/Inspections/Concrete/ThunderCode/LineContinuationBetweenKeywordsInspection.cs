@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
             return InspectionResults.LineContinuationBetweenKeywordsInspection.ThunderCodeFormat();
         }
 
-        public class LineContinuationBetweenKeywordsListener : InspectionListenerBase<ParserRuleContext>
+        private class LineContinuationBetweenKeywordsListener : InspectionListenerBase<ParserRuleContext>
         {
             public override void EnterSubStmt(VBAParser.SubStmtContext context)
             {

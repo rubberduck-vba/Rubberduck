@@ -49,7 +49,7 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IInspectionListener<ParserRuleContext> ContextListener { get; }
 
-        public class EmptyIfBlockListener : EmptyBlockInspectionListenerBase<ParserRuleContext>
+        private class EmptyIfBlockListener : EmptyBlockInspectionListenerBase<ParserRuleContext>
         {
             public override void EnterIfStmt([NotNull] VBAParser.IfStmtContext context)
             {
