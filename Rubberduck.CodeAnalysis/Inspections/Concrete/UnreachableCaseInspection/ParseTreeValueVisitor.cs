@@ -6,13 +6,14 @@ using Rubberduck.Parsing.Symbols;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public interface IParseTreeValueVisitor
     {
-        IParseTreeVisitorResults VisitChildren(QualifiedModuleName module, IRuleNode node);
+        IParseTreeVisitorResults VisitChildren(QualifiedModuleName module, IRuleNode node, DeclarationFinder finder);
     }
 
     public class EnumMember
@@ -35,26 +36,21 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public ParseTreeValueVisitor(
             IParseTreeValueFactory valueFactory,
-            Func<QualifiedModuleName, ParserRuleContext, (bool success, IdentifierReference idRef)> identifierReferenceRetriever, 
             Func<Declaration, (bool, string, string)> valueDeclarationEvaluator = null)
         {
             _valueFactory = valueFactory;
-            IdentifierReferenceRetriever = identifierReferenceRetriever;
             _valueDeclarationEvaluator = valueDeclarationEvaluator ?? GetValuedDeclaration;
         }
 
-        //This does not use a qualified context in order to avoid constant boxing and unboxing.
-        private Func<QualifiedModuleName, ParserRuleContext, (bool success, IdentifierReference idRef)> IdentifierReferenceRetriever { get; }
-
-        public IParseTreeVisitorResults VisitChildren(QualifiedModuleName module, IRuleNode ruleNode)
+        public IParseTreeVisitorResults VisitChildren(QualifiedModuleName module, IRuleNode ruleNode, DeclarationFinder finder)
         {
             var newResults = new ParseTreeVisitorResults();
-            return VisitChildren(module, ruleNode, newResults);
+            return VisitChildren(module, ruleNode, newResults, finder);
         }
 
         //The known results get passed along instead of aggregating from the bottom since other contexts can get already visited when resolving the value of other contexts.
         //Passing the results along avoids performing the resolution multiple times.
-        private IMutableParseTreeVisitorResults VisitChildren(QualifiedModuleName module, IRuleNode node, IMutableParseTreeVisitorResults knownResults)
+        private IMutableParseTreeVisitorResults VisitChildren(QualifiedModuleName module, IRuleNode node, IMutableParseTreeVisitorResults knownResults, DeclarationFinder finder)
         {
             if (!(node is ParserRuleContext context))
             {
@@ -64,57 +60,79 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             var valueResults = knownResults;
             foreach (var child in context.children)
             {
-                valueResults = Visit(module, child, valueResults);
+                valueResults = Visit(module, child, valueResults, finder);
             }
 
             return valueResults;
         }
 
-        private IMutableParseTreeVisitorResults Visit(QualifiedModuleName module, IParseTree tree, IMutableParseTreeVisitorResults knownResults)
+        private IMutableParseTreeVisitorResults Visit(QualifiedModuleName module, IParseTree tree, IMutableParseTreeVisitorResults knownResults, DeclarationFinder finder)
         {
             var valueResults = knownResults;
             if (tree is ParserRuleContext context && !(context is VBAParser.WhiteSpaceContext))
             {
-                valueResults =  Visit(module, context, valueResults);
+                valueResults =  Visit(module, context, valueResults, finder);
             }
 
             return valueResults;
         }
 
-        private IMutableParseTreeVisitorResults Visit(QualifiedModuleName module, ParserRuleContext parserRuleContext, IMutableParseTreeVisitorResults knownResults)
+        private IMutableParseTreeVisitorResults Visit(QualifiedModuleName module, ParserRuleContext parserRuleContext, IMutableParseTreeVisitorResults knownResults, DeclarationFinder finder)
         {
             switch (parserRuleContext)
             {
                 case VBAParser.LExprContext lExpr:
-                    return Visit(module, lExpr, knownResults);
+                    return Visit(module, lExpr, knownResults, finder);
                 case VBAParser.LiteralExprContext litExpr:
                     return Visit(litExpr, knownResults);
                 case VBAParser.CaseClauseContext caseClause:
-                    var caseClauseResults = VisitChildren(module, caseClause, knownResults);
-                    caseClauseResults.AddIfNotPresent(caseClause, _valueFactory.Create(caseClause.GetText()));
-                    return caseClauseResults;
+                    return VisitCaseClause(module, caseClause, knownResults, finder);
                 case VBAParser.RangeClauseContext rangeClause:
-                    var rangeClauseResults = VisitChildren(module, rangeClause, knownResults);
-                    rangeClauseResults.AddIfNotPresent(rangeClause, _valueFactory.Create(rangeClause.GetText()));
-                    return rangeClauseResults;
+                    return VisitRangeClause(module, rangeClause, knownResults, finder);
                 case VBAParser.LogicalNotOpContext _:
                 case VBAParser.UnaryMinusOpContext _:
-                    return VisitUnaryOpEvaluationContext(module, parserRuleContext, knownResults);
+                    return VisitUnaryOpEvaluationContext(module, parserRuleContext, knownResults, finder);
                 default:
                     if (IsUnaryResultContext(parserRuleContext))
                     {
-                        return VisitUnaryResultContext(module, parserRuleContext, knownResults);
+                        return VisitUnaryResultContext(module, parserRuleContext, knownResults, finder);
                     }
                     if (IsBinaryOpEvaluationContext(parserRuleContext))
                     {
-                        return VisitBinaryOpEvaluationContext(module, parserRuleContext, knownResults);
+                        return VisitBinaryOpEvaluationContext(module, parserRuleContext, knownResults, finder);
                     }
 
                     return knownResults;
             }
         }
 
-        private IMutableParseTreeVisitorResults Visit(QualifiedModuleName module, VBAParser.LExprContext context, IMutableParseTreeVisitorResults knownResults)
+        private IMutableParseTreeVisitorResults VisitRangeClause(
+            QualifiedModuleName module, 
+            VBAParser.RangeClauseContext rangeClause, 
+            IMutableParseTreeVisitorResults knownResults, 
+            DeclarationFinder finder)
+        {
+            var rangeClauseResults = VisitChildren(module, rangeClause, knownResults, finder);
+            rangeClauseResults.AddIfNotPresent(rangeClause, _valueFactory.Create(rangeClause.GetText()));
+            return rangeClauseResults;
+        }
+
+        private IMutableParseTreeVisitorResults VisitCaseClause(
+            QualifiedModuleName module, 
+            VBAParser.CaseClauseContext caseClause, 
+            IMutableParseTreeVisitorResults knownResults,
+            DeclarationFinder finder)
+        {
+            var caseClauseResults = VisitChildren(module, caseClause, knownResults, finder);
+            caseClauseResults.AddIfNotPresent(caseClause, _valueFactory.Create(caseClause.GetText()));
+            return caseClauseResults;
+        }
+
+        private IMutableParseTreeVisitorResults Visit(
+            QualifiedModuleName module, 
+            VBAParser.LExprContext context, 
+            IMutableParseTreeVisitorResults knownResults, 
+            DeclarationFinder finder)
         {
             if (knownResults.Contains(context))
             {
@@ -124,14 +142,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             var valueResults = knownResults;
 
             IParseTreeValue newResult = null;
-            if (TryGetLExprValue(module, context, ref valueResults, out string lExprValue, out string declaredType))
+            if (TryGetLExprValue(module, context, ref valueResults, finder, out string lExprValue, out string declaredType))
             {
                 newResult = _valueFactory.CreateDeclaredType(lExprValue, declaredType);
             }
             else
             {
                 var simpleName = context.GetDescendent<VBAParser.SimpleNameExprContext>();
-                if (TryGetIdentifierReferenceForContext(module, simpleName, out var reference))
+                if (TryGetIdentifierReferenceForContext(module, simpleName, finder, out var reference))
                 {
                     var declarationTypeName = GetBaseTypeForDeclaration(reference.Declaration);
                     newResult = _valueFactory.CreateDeclaredType(context.GetText(), declarationTypeName);
@@ -160,9 +178,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return valueResults;
         }
 
-        private IMutableParseTreeVisitorResults VisitBinaryOpEvaluationContext(QualifiedModuleName module, ParserRuleContext context, IMutableParseTreeVisitorResults knownResults)
+        private IMutableParseTreeVisitorResults VisitBinaryOpEvaluationContext(
+            QualifiedModuleName module, 
+            ParserRuleContext context, 
+            IMutableParseTreeVisitorResults knownResults, 
+            DeclarationFinder finder)
         {
-            var valueResults = VisitChildren(module, context, knownResults);
+            var valueResults = VisitChildren(module, context, knownResults, finder);
 
             var (lhs, rhs, operatorSymbol) = RetrieveOpEvaluationElements(context, valueResults);
             if (lhs is null || rhs is null)
@@ -188,9 +210,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return valueResults;
         }
 
-        private IMutableParseTreeVisitorResults VisitUnaryOpEvaluationContext(QualifiedModuleName module, ParserRuleContext context, IMutableParseTreeVisitorResults knownResults)
+        private IMutableParseTreeVisitorResults VisitUnaryOpEvaluationContext(
+            QualifiedModuleName module, 
+            ParserRuleContext context, 
+            IMutableParseTreeVisitorResults knownResults, 
+            DeclarationFinder finder)
         {
-            var valueResults = VisitChildren(module, context, knownResults);
+            var valueResults = VisitChildren(module, context, knownResults, finder);
 
             var (lhs, rhs, operatorSymbol) = RetrieveOpEvaluationElements(context, valueResults);
             if (lhs is null || rhs != null)
@@ -230,9 +256,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return operandElements;
         }
 
-        private IMutableParseTreeVisitorResults VisitUnaryResultContext(QualifiedModuleName module, ParserRuleContext parserRuleContext, IMutableParseTreeVisitorResults knownResults)
+        private IMutableParseTreeVisitorResults VisitUnaryResultContext(
+            QualifiedModuleName module, 
+            ParserRuleContext parserRuleContext, 
+            IMutableParseTreeVisitorResults knownResults, 
+            DeclarationFinder finder)
         {
-            var valueResults = VisitChildren(module, parserRuleContext, knownResults);
+            var valueResults = VisitChildren(module, parserRuleContext, knownResults, finder);
 
             var firstChildWithValue = ParserRuleContextChildren(parserRuleContext)
                 .FirstOrDefault(childContext => valueResults.Contains(childContext));
@@ -245,7 +275,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return valueResults;
         }
 
-        private IMutableParseTreeVisitorResults VisitChildren(QualifiedModuleName module, ParserRuleContext context, IMutableParseTreeVisitorResults knownResults)
+        private IMutableParseTreeVisitorResults VisitChildren(
+            QualifiedModuleName module, 
+            ParserRuleContext context, 
+            IMutableParseTreeVisitorResults knownResults, 
+            DeclarationFinder finder)
         {
             if (knownResults.Contains(context))
             {
@@ -255,7 +289,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             var valueResults = knownResults;
             foreach (var childContext in ParserRuleContextChildren(context))
             {
-                valueResults = Visit(module, childContext, valueResults);
+                valueResults = Visit(module, childContext, valueResults, finder);
             }
 
             return valueResults;
@@ -267,14 +301,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private static IEnumerable<IParseTree> NonWhitespaceChildren(ParserRuleContext ptParent)
             => ptParent.children.Where(ch => !(ch is VBAParser.WhiteSpaceContext));
 
-        private bool TryGetLExprValue(QualifiedModuleName module, VBAParser.LExprContext lExprContext, ref IMutableParseTreeVisitorResults knownResults, out string expressionValue, out string declaredTypeName)
+        private bool TryGetLExprValue(QualifiedModuleName module, VBAParser.LExprContext lExprContext, ref IMutableParseTreeVisitorResults knownResults, DeclarationFinder finder, out string expressionValue, out string declaredTypeName)
         {
             expressionValue = string.Empty;
             declaredTypeName = string.Empty;
             if (lExprContext.TryGetChildContext(out VBAParser.MemberAccessExprContext memberAccess))
             {
                 var member = memberAccess.GetChild<VBAParser.UnrestrictedIdentifierContext>();
-                var (typeName, valueText, resultValues) = GetContextValue(module, member, knownResults);
+                var (typeName, valueText, resultValues) = GetContextValue(module, member, knownResults, finder);
                 knownResults = resultValues;
                 declaredTypeName = typeName;
                 expressionValue = valueText;
@@ -283,7 +317,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (lExprContext.TryGetChildContext(out VBAParser.SimpleNameExprContext smplName))
             {
-                var (typeName, valueText, resultValues) = GetContextValue(module, smplName, knownResults);
+                var (typeName, valueText, resultValues) = GetContextValue(module, smplName, knownResults, finder);
                 knownResults = resultValues;
                 declaredTypeName = typeName;
                 expressionValue = valueText;
@@ -312,9 +346,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return (true, valuedDeclaration.Expression, typeName);
         }
 
-        private (string declarationTypeName, string expressionValue, IMutableParseTreeVisitorResults resultValues) GetContextValue(QualifiedModuleName module, ParserRuleContext context, IMutableParseTreeVisitorResults knownResults)
+        private (string declarationTypeName, string expressionValue, IMutableParseTreeVisitorResults resultValues) GetContextValue(
+            QualifiedModuleName module, 
+            ParserRuleContext context, 
+            IMutableParseTreeVisitorResults knownResults, 
+            DeclarationFinder finder)
         {
-            if (!TryGetIdentifierReferenceForContext(module, context, out var rangeClauseIdentifierReference))
+            if (!TryGetIdentifierReferenceForContext(module, context, finder, out var rangeClauseIdentifierReference))
             {
                 return (string.Empty, context.GetText(), knownResults);
             }
@@ -342,13 +380,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (declaration.DeclarationType.HasFlag(DeclarationType.Constant))
             {
-                var (constantTokenExpressionValue, resultValues) = GetConstantContextValueToken(module, declaration.Context, knownResults);
+                var (constantTokenExpressionValue, resultValues) = GetConstantContextValueToken(module, declaration.Context, knownResults, finder);
                 return (declaredTypeName, constantTokenExpressionValue, resultValues);
             }
 
             if (declaration.DeclarationType.HasFlag(DeclarationType.EnumerationMember))
             {
-                var (constantExpressionValue, resultValues) = GetConstantContextValueToken(module, declaration.Context, knownResults);
+                var (constantExpressionValue, resultValues) = GetConstantContextValueToken(module, declaration.Context, knownResults, finder);
                 if (!constantExpressionValue.Equals(string.Empty))
                 {
                     return (Tokens.Long, constantExpressionValue, resultValues);
@@ -356,7 +394,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
                 if (declaration.Context.Parent is VBAParser.EnumerationStmtContext enumStmt)
                 {
-                    var (enumMembers, valueResults) = EnumMembers(module, enumStmt, resultValues);
+                    var (enumMembers, valueResults) = EnumMembers(module, enumStmt, resultValues, finder);
                     var enumValue = enumMembers.SingleOrDefault(enumMember => enumMember.ConstantContext == declaration.Context);
                     var enumExpressionValue = enumValue?.Value.ToString() ?? string.Empty;
                     return (Tokens.Long, enumExpressionValue, valueResults);
@@ -368,20 +406,45 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return (declaredTypeName, expressionValue, knownResults);
         }
 
-        private bool TryGetIdentifierReferenceForContext(QualifiedModuleName module, ParserRuleContext context, out IdentifierReference referenceForContext)
+        private bool TryGetIdentifierReferenceForContext(
+            QualifiedModuleName module, 
+            ParserRuleContext context, 
+            DeclarationFinder finder, 
+            out IdentifierReference referenceForContext)
         {
-            if (IdentifierReferenceRetriever == null)
-            {
-                referenceForContext = null;
-                return false;
-            }
-
-            var (success, reference) = IdentifierReferenceRetriever(module, context);
+            var (success, reference) = GetIdentifierReferenceForContext(module, context, finder);
             referenceForContext = reference;
             return success;
         }
 
-        private (string valueText, IMutableParseTreeVisitorResults valueResults) GetConstantContextValueToken(QualifiedModuleName module, ParserRuleContext context, IMutableParseTreeVisitorResults knownResults)
+        public static (bool success, IdentifierReference idRef) GetIdentifierReferenceForContext(
+            QualifiedModuleName module, 
+            ParserRuleContext context, 
+            DeclarationFinder finder)
+        {
+            if (context == null)
+            {
+                return (false, null);
+            }
+
+            var qualifiedSelection = new QualifiedSelection(module, context.GetSelection());
+
+            var identifierReferences =
+                finder
+                    .IdentifierReferences(qualifiedSelection)
+                    .Where(reference => reference.Context == context)
+                    .ToList();
+
+            return identifierReferences.Count == 1
+                ? (true, identifierReferences.First())
+                : (false, null);
+        }
+
+        private (string valueText, IMutableParseTreeVisitorResults valueResults) GetConstantContextValueToken(
+            QualifiedModuleName module, 
+            ParserRuleContext context, 
+            IMutableParseTreeVisitorResults knownResults,
+            DeclarationFinder finder)
         {
             if (context is null)
             {
@@ -403,7 +466,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             foreach (var child in contextsOfInterest)
             {
-                knownResults = Visit(module, child, knownResults);
+                knownResults = Visit(module, child, knownResults, finder);
                 if (knownResults.TryGetValue(child, out var value))
                 {
                     return (value.Token, knownResults);
@@ -445,14 +508,18 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return false;
         }
 
-        private (IReadOnlyList<EnumMember> enumMembers, IMutableParseTreeVisitorResults resultValues) EnumMembers(QualifiedModuleName enumModule, VBAParser.EnumerationStmtContext enumerationStmtContext, IMutableParseTreeVisitorResults knownResults)
+        private (IReadOnlyList<EnumMember> enumMembers, IMutableParseTreeVisitorResults resultValues) EnumMembers(
+            QualifiedModuleName enumModule, 
+            VBAParser.EnumerationStmtContext enumerationStmtContext, 
+            IMutableParseTreeVisitorResults knownResults,
+            DeclarationFinder finder)
         {
             if (knownResults.TryGetEnumMembers(enumerationStmtContext, out var enumMembers))
             {
                 return (enumMembers, knownResults);
             }
 
-            var resultValues = LoadEnumMemberValues(enumModule, enumerationStmtContext, knownResults);
+            var resultValues = LoadEnumMemberValues(enumModule, enumerationStmtContext, knownResults, finder);
             if (knownResults.TryGetEnumMembers(enumerationStmtContext, out var newEnumMembers))
             {
                 return (newEnumMembers, resultValues);
@@ -462,7 +529,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         }
 
         //The enum members incrementally to the parse tree visitor result are used within the call to Visit.
-        private IMutableParseTreeVisitorResults LoadEnumMemberValues(QualifiedModuleName enumModule, VBAParser.EnumerationStmtContext enumStmt, IMutableParseTreeVisitorResults knownResults)
+        private IMutableParseTreeVisitorResults LoadEnumMemberValues(
+            QualifiedModuleName enumModule, 
+            VBAParser.EnumerationStmtContext enumStmt, 
+            IMutableParseTreeVisitorResults knownResults,
+            DeclarationFinder finder)
         {
             var valueResults = knownResults;
             long enumAssignedValue = -1;
@@ -474,9 +545,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 var enumMember = new EnumMember(enumConstContext, enumAssignedValue);
                 if (enumMember.HasAssignment)
                 {
-                    valueResults = Visit(enumModule, enumMember.ConstantContext, valueResults);
+                    valueResults = Visit(enumModule, enumMember.ConstantContext, valueResults, finder);
 
-                    var (valueText, resultValues) = GetConstantContextValueToken(enumModule, enumMember.ConstantContext, valueResults);
+                    var (valueText, resultValues) = GetConstantContextValueToken(enumModule, enumMember.ConstantContext, valueResults, finder);
                     valueResults = resultValues;
                     if (!valueText.Equals(string.Empty))
                     {

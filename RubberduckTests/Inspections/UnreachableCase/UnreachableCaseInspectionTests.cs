@@ -13,9 +13,7 @@ using RubberduckTests.Mocks;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Antlr4.Runtime.Tree;
 using Moq;
-using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 
@@ -2462,8 +2460,9 @@ End Sub
             IEnumerable<IInspectionResult> actualResults;
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var factoryProvider = SpecialValueDeclarationEvaluatorFactoryProvider(TestGetValuedDeclaration);
-                var inspection = new UnreachableCaseInspection(state, factoryProvider);
+                var factoryProvider = FactoryProvider;
+                var parseTreeVisitor = TestParseTreeValueVisitor(TestGetValuedDeclaration);
+                var inspection = new UnreachableCaseInspection(state, factoryProvider, parseTreeVisitor);
 
                 WalkTrees(inspection, state);
                 actualResults = inspection.GetInspectionResults(CancellationToken.None);
@@ -2514,8 +2513,9 @@ End Sub
             IEnumerable<IInspectionResult> actualResults;
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var factoryProvider = SpecialValueDeclarationEvaluatorFactoryProvider(TestGetValuedDeclaration);
-                var inspection = new UnreachableCaseInspection(state, factoryProvider);
+                var factoryProvider = FactoryProvider;
+                var parseTreeVisitor = TestParseTreeValueVisitor(TestGetValuedDeclaration);
+                var inspection = new UnreachableCaseInspection(state, factoryProvider, parseTreeVisitor);
 
                 WalkTrees(inspection, state);
                 actualResults = inspection.GetInspectionResults(CancellationToken.None);
@@ -2530,27 +2530,6 @@ End Sub
         private IUnreachableCaseInspectionFactoryProvider FactoryProvider => _factoryProvider ?? (_factoryProvider = new UnreachableCaseInspectionFactoryProvider());
 
         private IUnreachableCaseInspectorFactory UnreachableCaseInspectorFactory => FactoryProvider.CreateIUnreachableInspectorFactory();
-        private IParseTreeValueVisitorFactory ParseTreeValueVisitorFactory => FactoryProvider.CreateParseTreeValueVisitorFactory();
-
-        private IUnreachableCaseInspectionFactoryProvider SpecialValueDeclarationEvaluatorFactoryProvider(Func<Declaration, (bool, string, string)> valueDeclarationEvaluator)
-        {
-            var baseFactoryProvider = FactoryProvider;
-            var factoryProviderMock = new Mock<IUnreachableCaseInspectionFactoryProvider>();
-            factoryProviderMock.Setup(m => m.CreateIParseTreeValueFactory()).Returns(() => baseFactoryProvider.CreateIParseTreeValueFactory());
-            factoryProviderMock.Setup(m => m.CreateIUnreachableInspectorFactory()).Returns(() => baseFactoryProvider.CreateIUnreachableInspectorFactory());
-            factoryProviderMock.Setup(m => m.CreateParseTreeValueVisitorFactory()).Returns(() => 
-                SpecialValueDeclarationEvaluatorParseTreeValueVisitorFactory(baseFactoryProvider.CreateIParseTreeValueFactory(), valueDeclarationEvaluator));
-            return factoryProviderMock.Object;
-        }
-
-        private IParseTreeValueVisitorFactory SpecialValueDeclarationEvaluatorParseTreeValueVisitorFactory(IParseTreeValueFactory valueFactory, Func<Declaration, (bool, string, string)> valueDeclarationEvaluator)
-        {
-            var factoryMock = new Mock<IParseTreeValueVisitorFactory>();
-            factoryMock.Setup(m => m.Create(It.IsAny<Func<QualifiedModuleName, ParserRuleContext, (bool success, IdentifierReference idRef)>>()))
-                .Returns<Func<QualifiedModuleName, ParserRuleContext, (bool success, IdentifierReference idRef)>>((identifierReferenceRetriever) => 
-                    new ParseTreeValueVisitor(valueFactory, identifierReferenceRetriever, valueDeclarationEvaluator));
-            return factoryMock.Object;
-        }
 
         private static Dictionary<string, (string, string)> _vbConstConversions = new Dictionary<string, (string, string)>()
         {
@@ -2637,17 +2616,24 @@ End Sub
                 var (parseTreeModule, moduleParseTree) = state.ParseTrees
                     .First(pt => pt.Value is ParserRuleContext);
                 selectStmt = ((ParserRuleContext)moduleParseTree).GetDescendent<VBAParser.SelectCaseStmtContext>();
-                var visitor = ParseTreeValueVisitorFactory.Create((module, context) => UnreachableCaseInspection.GetIdentifierReferenceForContext(module, context, finder));
-                valueResults = visitor.VisitChildren(parseTreeModule, selectStmt);
+                var visitor = TestParseTreeValueVisitor();
+                valueResults = visitor.VisitChildren(parseTreeModule, selectStmt, finder);
                 contextModule = parseTreeModule;
             }
             return valueResults;
         }
 
+        private ParseTreeValueVisitor TestParseTreeValueVisitor(Func<Declaration, (bool, string, string)> valueDeclarationEvaluator = null)
+        {
+            var valueFactory = new ParseTreeValueFactory();
+            return new ParseTreeValueVisitor(valueFactory, valueDeclarationEvaluator);
+        }
+
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
             var factoryProvider = new UnreachableCaseInspectionFactoryProvider(); 
-            return new UnreachableCaseInspection(state, factoryProvider);
+            var parseTeeValueVisitor = new ParseTreeValueVisitor(factoryProvider.CreateIParseTreeValueFactory());
+            return new UnreachableCaseInspection(state, factoryProvider, parseTeeValueVisitor);
         }
     }
 }

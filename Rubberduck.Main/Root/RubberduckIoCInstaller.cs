@@ -385,9 +385,6 @@ namespace Rubberduck.Root
             container.Register(Component.For<IUnreachableCaseInspectorFactory>()
                 .ImplementedBy<UnreachableCaseInspectorFactory>()
                 .LifestyleSingleton());
-            container.Register(Component.For<IParseTreeValueVisitorFactory>()
-                .ImplementedBy<ParseTreeValueVisitorFactory>()
-                .LifestyleSingleton());
             container.Register(Component.For<IUnreachableCaseInspectionFactoryProvider>()
                 .ImplementedBy<UnreachableCaseInspectionFactoryProvider>()
                 .LifestyleSingleton());
