@@ -90,7 +90,7 @@
                                     <DataGridTextColumn Binding="{Binding MemberDisplaySignature}"
                                                         Width="*"
                                                         IsReadOnly="True"
-                                                        SortMemberPath="MemberDisplaySignature" />
+                                                        SortMemberPath="ToDisplayString" />
                                 </DataGrid.Columns>
                             </DataGrid>
                             <StackPanel Grid.Column="1"

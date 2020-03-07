@@ -22,24 +22,23 @@ namespace Rubberduck.Refactorings.MoveMember
 
     public class MoveMemberModel : IRefactoringModel
     {
-        private readonly Func<MoveMemberModel, PreviewModule, string> _previewDelegate;
         private readonly IMoveMemberObjectsFactory _moveMemberFactory;
         private Dictionary<string, IMoveableMemberSet> _moveablesByName;
         public IDeclarationFinderProvider DeclarationFinderProvider { get; }
 
-        public MoveMemberModel(Declaration target, IDeclarationFinderProvider declarationFinderProvider, Func<MoveMemberModel, PreviewModule, string> previewDelegate, IMoveMemberObjectsFactory factory)
+        public MoveMemberModel(Declaration target, IDeclarationFinderProvider declarationFinderProvider)
         {
-            _previewDelegate = previewDelegate;
-
             DeclarationFinderProvider = declarationFinderProvider;
 
-            _moveMemberFactory = factory;
+            _moveMemberFactory = new MoveMemberObjectsFactory(declarationFinderProvider);
 
             Source = _moveMemberFactory.CreateMoveSourceProxy(target);
 
             Destination = _moveMemberFactory.CreateMoveDestinationProxy(null);
 
             _moveablesByName = _moveMemberFactory.CreateMoveables(target).ToDictionary(mm => mm.IdentifierName);
+
+            _previewDelegate = null;
         }
 
         public IMoveSourceModuleProxy Source { private set; get; }
@@ -74,6 +73,13 @@ namespace Rubberduck.Refactorings.MoveMember
             }
 
             return _previewDelegate(this, previewModule);
+        }
+
+        private Func<MoveMemberModel, PreviewModule, string> _previewDelegate;
+        public Func<MoveMemberModel, PreviewModule, string> PreviewBuilder
+        {
+            set => _previewDelegate = value;
+            get => _previewDelegate;
         }
 
         public bool HasValidDestination

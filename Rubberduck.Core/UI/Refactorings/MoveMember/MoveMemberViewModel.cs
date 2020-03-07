@@ -52,6 +52,7 @@ namespace Rubberduck.UI.Refactorings.MoveMember
         }
 
         public string RefactorName => MoveMemberResources.RefactorName;
+
         public string Instructions => MoveMemberResources.Instructions;
 
         public bool IsExecutableMove
@@ -164,7 +165,6 @@ namespace Rubberduck.UI.Refactorings.MoveMember
             {
                 Model.ChangeDestination(value);
                 OnPropertyChanged(nameof(IsExecutableMove));
-                //OnPropertyChanged(nameof(IsValidModuleName));
                 OnPropertyChanged(nameof(MovePreview));
             }
         }
@@ -230,7 +230,7 @@ namespace Rubberduck.UI.Refactorings.MoveMember
 
         private IEnumerable<MoveableMemberSetViewModel> OrderedMemberSets()
         {
-            return _moveableMemberViewModels.OrderByDescending(mm => mm.IsSelected).ThenBy(mm => mm.MemberDisplaySignature);
+            return _moveableMemberViewModels.OrderByDescending(mm => mm.IsSelected).ThenBy(mm => mm.ToDisplayString);
         }
 
         public void RefreshPreview(MoveableMemberSetViewModel selected)

@@ -14,7 +14,7 @@ using System;
 namespace RubberduckTests.Refactoring.MoveMember
 {
     [TestFixture]
-    public class MoveFieldsOrConstantsTests : MoveMemberTestsBase
+    public class MoveFieldsOrConstantsTests : MoveMemberRefactoringActionTestSupportBase
     {
         [TestCase(MoveEndpoints.FormToStd, "Private")]
         [TestCase(MoveEndpoints.ClassToStd, "Private")]
@@ -65,7 +65,8 @@ End Function
 
             var destinationDeclaration = "Public Const mFoo As Long = 10";
 
-            var refactoredCode = RefactoredCode_UserSetsDestinationModuleName(moveDefinition, source);
+            
+            var refactoredCode = ExecuteTest(moveDefinition);
 
             StringAssert.DoesNotContain("Const mFoo As Long = 10", refactoredCode.Source);
             StringAssert.Contains(destinationDeclaration, refactoredCode.Destination);
@@ -125,7 +126,8 @@ End Function
                 moveDefinition.Add(new ModuleDefinition(callSiteModuleName, ComponentType.StandardModule, otherModuleReference));
             }
 
-            var refactoredCode = RefactoredCode_UserSetsDestinationModuleName(moveDefinition, source);
+            
+            var refactoredCode = ExecuteTest(moveDefinition);
             StringAssert.AreEqualIgnoringCase(expectedStrategyName, refactoredCode.StrategyName);
 
             if (expectedStrategyName is null)
@@ -188,7 +190,11 @@ End Function
             moveDefinition.Add(new ModuleDefinition(callSiteModuleName, ComponentType.StandardModule, otherModuleReference));
 
             var decType = DeclarationType.Variable;
-            var refactoredCode = RefactoredCode(moveDefinition, source, null, null, false, ("mFoo1", decType), ("mFoo2", decType), ("mFoo3", decType));
+            moveDefinition.SetEndpointContent(source);
+            moveDefinition.AddSelectedDeclaration("mFoo1", decType);
+            moveDefinition.AddSelectedDeclaration("mFoo2", decType);
+            moveDefinition.AddSelectedDeclaration("mFoo3", decType);
+            var refactoredCode = ExecuteTest(moveDefinition);
 
             var destinationDeclaration = "Public mFoo As Long";
 
@@ -246,7 +252,11 @@ End Function
             moveDefinition.Add(new ModuleDefinition(callSiteModuleName, ComponentType.StandardModule, otherModuleReference));
 
             var decType = DeclarationType.Variable;
-            var refactoredCode = RefactoredCode(moveDefinition, source, null, null, false, ("mFoo1", decType), ("mFoo2", decType), ("mFoo3", decType));
+            moveDefinition.SetEndpointContent(source);
+            moveDefinition.AddSelectedDeclaration("mFoo1", decType);
+            moveDefinition.AddSelectedDeclaration("mFoo2", decType);
+            moveDefinition.AddSelectedDeclaration("mFoo3", decType);
+            var refactoredCode = ExecuteTest(moveDefinition);
 
             Assert.IsTrue(MoveMemberTestSupport.OccursOnce("Public", refactoredCode.Source));
             StringAssert.DoesNotContain("mFoo As Long", refactoredCode.Source);
@@ -311,7 +321,11 @@ End Function
                 moveDefinition.Add(new ModuleDefinition(callSiteModuleName, ComponentType.StandardModule, otherModuleReference));
             }
             var decType = DeclarationType.Constant;
-            var refactoredCode = RefactoredCode(moveDefinition, source, null, null, false, ("mFoo1", decType), ("mFoo2", decType), ("mFoo3", decType));
+            moveDefinition.SetEndpointContent(source);
+            moveDefinition.AddSelectedDeclaration("mFoo1", decType);
+            moveDefinition.AddSelectedDeclaration("mFoo2", decType);
+            moveDefinition.AddSelectedDeclaration("mFoo3", decType);
+            var refactoredCode = ExecuteTest(moveDefinition);
 
             StringAssert.DoesNotContain($"{accessibility} Const", refactoredCode.Source);
             StringAssert.DoesNotContain("mFoo As Long", refactoredCode.Source);
@@ -329,6 +343,45 @@ End Function
                 StringAssert.Contains($"{moveDefinition.DestinationModuleName}.{moveDefinition.SelectedElement}", refactoredCode[callSiteModuleName]);
                 StringAssert.Contains($"result = ({moveDefinition.DestinationModuleName}.{moveDefinition.SelectedElement} + arg1) * 2", refactoredCode[callSiteModuleName]);
                 StringAssert.Contains($"NonQualifiedFoo = ({moveDefinition.DestinationModuleName}.mFoo2 + arg1) * 2", refactoredCode[callSiteModuleName]);
+            }
+        }
+
+        [Test]
+        [Ignore("This needs to be addressed")]
+        [Category("Refactorings")]
+        [Category("MoveMember")]
+        public void MoveConstantValueReferencesPrivateConstantWithLocalReference()
+        {
+            var source =
+$@"
+Option Explicit
+
+Public Const FIZZ As Long = PVT_VALUE
+
+Private Const PVT_VALUE As Long = 75
+
+Private Function Bizz(arg As Long) As Long
+    Bizz = arg + PVT_VALUE
+End Function
+";
+
+            //var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, ("FIZZ", DeclarationType.Constant), sourceContent: source);
+            //var refactoredCode = ExecuteTest(moveDefinition);
+
+            //StringAssert.Contains($"FIZZ", refactoredCode.Source);
+            //StringAssert.Contains($"PVT_VALUE", refactoredCode.Source);
+
+            var sourceTuple = MoveMemberTestSupport.EndpointToSourceTuple(MoveEndpoints.StdToStd, source);
+            var destinationTuple = MoveMemberTestSupport.EndpointToDestinationTuple(MoveEndpoints.StdToStd, string.Empty);
+
+            var resultCount = MoveMemberTestSupport.ParseAndTest(ThisTest, sourceTuple, destinationTuple);
+
+            Assert.AreEqual(0, resultCount);
+
+            long ThisTest(RubberduckParserState state, IVBE vbe, IRewritingManager rewritingManager)
+            {
+                var strategies = MoveMemberTestSupport.RetrieveStrategies(state, "FIZZ", DeclarationType.Constant, rewritingManager);
+                return strategies.Count();
             }
         }
 
@@ -390,7 +443,8 @@ End Function
 ";
             moveDefinition.Add(new ModuleDefinition(callSiteModuleName, ComponentType.StandardModule, otherModuleReference));
 
-            var refactoredCode = RefactoredCode_UserSetsDestinationModuleName(moveDefinition, source);
+            
+            var refactoredCode = ExecuteTest(moveDefinition);
 
             var destinationDeclaration = "Public mFooBar As MyTestType";
 
@@ -430,9 +484,9 @@ Public Function ConcatBar(arg1 As String) As String
     ConcatBar = arg1 & mFooBar.Bar
 End Function";
 
-            var (moduleName, componentType) = MoveMemberTestSupport.EndpointToSourceTuple(endpoints);
-            var (destName, destCompType) = MoveMemberTestSupport.EndpointToDestinationTuple(endpoints);
-            var resultCount = MoveMemberTestSupport.ParseAndTest(ThisTest, (moduleName, source, componentType), (destName, string.Empty, destCompType));
+            var sourceTuple = MoveMemberTestSupport.EndpointToSourceTuple(endpoints, source);
+            var destinationTuple = MoveMemberTestSupport.EndpointToDestinationTuple(endpoints, string.Empty );
+            var resultCount = MoveMemberTestSupport.ParseAndTest(ThisTest, sourceTuple, destinationTuple);
             Assert.AreEqual(0, resultCount);
 
             long ThisTest(RubberduckParserState state, IVBE vbe, IRewritingManager rewritingManager)
@@ -489,7 +543,8 @@ End Function
 ";
             moveDefinition.Add(new ModuleDefinition(callSiteModuleName, ComponentType.StandardModule, otherModuleReference));
 
-            var refactoredCode = RefactoredCode_UserSetsDestinationModuleName(moveDefinition, source);
+            
+            var refactoredCode = ExecuteTest(moveDefinition);
 
             var destinationDeclaration = "Public eFoo As MyTestEnum";
 
@@ -523,9 +578,9 @@ Public Function FooMath(arg1 As Long) As Long
     FooMath = arg1 * eFoo
 End Function
 ";
-            var (moduleName, componentType) = MoveMemberTestSupport.EndpointToSourceTuple(endpoints);
-            var (destName, destCompType) = MoveMemberTestSupport.EndpointToDestinationTuple(endpoints);
-            var resultCount = MoveMemberTestSupport.ParseAndTest(ThisTest, (moduleName, source, componentType), (destName, string.Empty, destCompType));
+            var sourceTuple = MoveMemberTestSupport.EndpointToSourceTuple(endpoints, source);
+            var destinationTuple = MoveMemberTestSupport.EndpointToDestinationTuple(endpoints, string.Empty);
+            var resultCount = MoveMemberTestSupport.ParseAndTest(ThisTest, sourceTuple, destinationTuple);
             Assert.AreEqual(0, resultCount);
 
             long ThisTest(RubberduckParserState state, IVBE vbe, IRewritingManager rewritingManager)
@@ -575,9 +630,9 @@ Public Property Get Value() As Long
     Value = mValue
 End Property
 ";
-            var (moduleName, componentType) = MoveMemberTestSupport.EndpointToSourceTuple(endpoints);
-            var (destName, destCompType) = MoveMemberTestSupport.EndpointToDestinationTuple(endpoints);
-            var resultCount = MoveMemberTestSupport.ParseAndTest(ThisTest, (moduleName, source, componentType), (destName, string.Empty, destCompType), ("ObjectClass", objectClass, ComponentType.ClassModule));
+            var sourceTuple = MoveMemberTestSupport.EndpointToSourceTuple(endpoints, source);
+            var destinationTuple = MoveMemberTestSupport.EndpointToDestinationTuple(endpoints, string.Empty);
+            var resultCount = MoveMemberTestSupport.ParseAndTest(ThisTest, sourceTuple, destinationTuple, ("ObjectClass", objectClass, ComponentType.ClassModule));
             Assert.AreEqual(0, resultCount);
 
             long ThisTest(RubberduckParserState state, IVBE vbe, IRewritingManager rewritingManager)
@@ -628,7 +683,8 @@ End Function
 ";
             moveDefinition.Add(new ModuleDefinition(callSiteModuleName, ComponentType.StandardModule, otherModuleReference));
 
-            var refactoredCode = RefactoredCode_UserSetsDestinationModuleName(moveDefinition, source);
+            
+            var refactoredCode = ExecuteTest(moveDefinition);
 
             var destinationDeclaration = "Public mArray(5) As Long";
 
@@ -681,7 +737,8 @@ Public Function Multiply(arg1 As Long)
 End Function
 ";
 
-            var refactorResults = RefactoredCode(moveDefinition, source, destination);
+            moveDefinition.SetEndpointContent(source, destination);
+            var refactorResults = ExecuteTest(moveDefinition);
 
             var destinationExpectedContent =
 $@"
@@ -780,7 +837,8 @@ Public Sub NonQualified(arg3 As Long)
     mBar = {moveDefinition.DestinationModuleName}.mfoo1 + arg3
 End Sub
 ";
-            var refactorResults = RefactoredCode(moveDefinition, source, destination);
+            moveDefinition.SetEndpointContent(source, destination);
+            var refactorResults = ExecuteTest(moveDefinition);
 
             var expectedLines = expectedCallSiteCode.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             foreach (var line in expectedLines)
@@ -833,7 +891,8 @@ Public Function Multiply(arg1 As Long)
 End Function
 ";
 
-            var refactorResults = RefactoredCode(moveDefinition, source, destination);
+            moveDefinition.SetEndpointContent(source, destination);
+            var refactorResults = ExecuteTest(moveDefinition);
 
             var destinationExpectedContent =
 $@"
@@ -936,7 +995,8 @@ Public Sub NonQualified(arg3 As Long)
     mBar = {moveDefinition.DestinationModuleName}.mfoo1 + arg3
 End Sub
 ";
-            var refactorResults = RefactoredCode(moveDefinition, source, destination);
+            moveDefinition.SetEndpointContent(source, destination);
+            var refactorResults = ExecuteTest(moveDefinition);
 
             var expectedLines = expectedCallSiteCode.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             foreach (var line in expectedLines)

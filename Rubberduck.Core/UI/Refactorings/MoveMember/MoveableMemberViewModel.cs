@@ -1,6 +1,8 @@
-﻿using Rubberduck.Parsing.Grammar;
+﻿using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Properties;
+using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.MoveMember;
 using Rubberduck.Refactorings.MoveMember.Extensions;
 using System;
@@ -22,6 +24,7 @@ namespace Rubberduck.UI.Refactorings.MoveMember
         {
             _parentModel = vmodel;
             _moveable = moveable;
+            ToDisplayString = BuildDisplaySignature(_moveable);
         }
 
         public string IdentifierName => _moveable.IdentifierName;
@@ -39,61 +42,86 @@ namespace Rubberduck.UI.Refactorings.MoveMember
             }
         }
 
-        private string _displaySignature;
-        public string MemberDisplaySignature
+        public string ToDisplayString { private set; get; }
+
+        public static string BuildDisplaySignature(IMoveableMemberSet moveable)
         {
-            get
+            var displaySignature = string.Empty;
+            var accessibility = moveable.Member.Accessibility == Accessibility.Implicit
+                ? Tokens.Public
+                : moveable.Member.Accessibility.TokenString();
+
+            if (moveable.Member is ModuleBodyElementDeclaration moduleBodyElementDeclaration)
             {
-                if (_displaySignature != null)
+                displaySignature = moduleBodyElementDeclaration.FullMemberSignature();
+
+                if (moveable.Member.DeclarationType.HasFlag(DeclarationType.Property))
                 {
-                    return _displaySignature;
-                }
+                    //Use the Property Get signature as the default if available
+                    var propertyTemplate = moveable.Members.SingleOrDefault(mm => mm.DeclarationType.Equals(DeclarationType.PropertyGet))
+                                            ?? moveable.Member;
 
-                _displaySignature = string.Empty;
+                    displaySignature = moveable.Member.Equals(propertyTemplate)
+                        ? displaySignature
+                        : (propertyTemplate as ModuleBodyElementDeclaration).FullMemberSignature();
 
-                var accessibility = _moveable.Member.Accessibility == Accessibility.Implicit
-                    ? Tokens.Public
-                    : _moveable.Member.Accessibility.TokenString();
-
-                if (_moveable.Member is ModuleBodyElementDeclaration mbed)
-                {
-                    _displaySignature = mbed.FullyDefinedSignature();
-                    if (_moveable.Member.DeclarationType.HasFlag(DeclarationType.Property))
+                    //Force the Tokens order to be Let\Set\Get so that 'Get' is closest to the signature
+                    var LetSetGetTokens = new SortedDictionary<string, string>();
+                    foreach (var member in moveable.Members)
                     {
-                        var LetSetGetTokens = new SortedDictionary<string, string>();
-                        foreach (var member in _moveable.Members)
+                        switch (member.DeclarationType)
                         {
-                            if (member.DeclarationType.Equals(DeclarationType.PropertyLet)) { LetSetGetTokens.Add("a", Tokens.Let); }
-                            if (member.DeclarationType.Equals(DeclarationType.PropertySet)) { LetSetGetTokens.Add("b", Tokens.Set); }
-                            if (member.DeclarationType.Equals(DeclarationType.PropertyGet)) { LetSetGetTokens.Add("c", Tokens.Get); }
-                        }
-
-                        if (mbed.DeclarationType.Equals(DeclarationType.PropertyLet))
-                        {
-                            _displaySignature = _displaySignature.Replace($"{Tokens.Property} {Tokens.Let}", $"{Tokens.Property} {string.Join("\\", LetSetGetTokens.Values)}");
-                        }
-                        else if (mbed.DeclarationType.Equals(DeclarationType.PropertySet))
-                        {
-                            _displaySignature = _displaySignature.Replace($"{Tokens.Property} {Tokens.Set}", $"{Tokens.Property} {string.Join("\\", LetSetGetTokens.Values)}");
-                        }
-                        else
-                        {
-                            _displaySignature = _displaySignature.Replace($"{Tokens.Property} {Tokens.Get}", $"{Tokens.Property} {string.Join("\\", LetSetGetTokens.Values)}");
+                            case DeclarationType.PropertyLet:
+                                LetSetGetTokens.Add("a", Tokens.Let);
+                                break;
+                            case DeclarationType.PropertySet:
+                                LetSetGetTokens.Add("b", Tokens.Set);
+                                break;
+                            case DeclarationType.PropertyGet:
+                                LetSetGetTokens.Add("c", Tokens.Get);
+                                break;
+                            default:
+                                throw new ArgumentException();
                         }
                     }
-                }
-                else if (_moveable.Member.IsConstant())
-                {
-                    _displaySignature = $"{accessibility} {_moveable.Member.IdentifierName} {Tokens.Const}";
-                }
-                else if (_moveable.Member.IsField())
-                {
-                    _displaySignature = $"{accessibility} {_moveable.Member.IdentifierName}";
-                }
 
-                _displaySignature = _moveable.Member.AsTypeName == null ? _displaySignature : $"{_displaySignature} {Tokens.As} {_moveable.Member.AsTypeName}";
-                return _displaySignature;
+                    var displaySignaturePrefix = $"{Tokens.Property} {string.Join("\\", LetSetGetTokens.Values)}";
+                    switch (propertyTemplate.DeclarationType)
+                    {
+                        case DeclarationType.PropertyGet:
+                            displaySignature = displaySignature.Replace($"{Tokens.Property} {Tokens.Get}", displaySignaturePrefix);
+                            break;
+                        case DeclarationType.PropertyLet:
+                            displaySignature = displaySignature.Replace($"{Tokens.Property} {Tokens.Let}", displaySignaturePrefix);
+                            break;
+                        case DeclarationType.PropertySet:
+                            displaySignature = displaySignature.Replace($"{Tokens.Property} {Tokens.Set}", displaySignaturePrefix);
+                            break;
+                        default:
+                            throw new ArgumentException();
+                    }
+                }
             }
+            else if (moveable.Member.IsConstant())
+            {
+                displaySignature = $"{accessibility} {Tokens.Const} {moveable.Member.IdentifierName}";
+                var constValue = string.Empty;
+                if (moveable.Member.Context.TryGetChildContext<VBAParser.LiteralExprContext>(out var litExpr))
+                {
+                    constValue = litExpr.GetText();
+                }
+                else if (moveable.Member.Context.TryGetChildContext<VBAParser.LExprContext>(out var lExpr))
+                {
+                    constValue = lExpr.GetText();
+                }
+                displaySignature = moveable.Member.AsTypeName == null ? displaySignature : $"{displaySignature} {Tokens.As} {moveable.Member.AsTypeName} = {constValue}";
+            }
+            else if (moveable.Member.IsField())
+            {
+                displaySignature = $"{accessibility} {moveable.Member.IdentifierName}";
+                displaySignature = moveable.Member.AsTypeName == null ? displaySignature : $"{displaySignature} {Tokens.As} {moveable.Member.AsTypeName}";
+            }
+            return displaySignature;
         }
 
         public override int GetHashCode()

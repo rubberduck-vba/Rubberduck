@@ -1,182 +1,110 @@
-﻿using NUnit.Framework;
-using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings.MoveMember;
-using Rubberduck.Refactorings.MoveMember.Extensions;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using RubberduckTests.Mocks;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Moq;
+using NUnit.Framework;
+using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.UIContext;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.MoveMember;
+using Rubberduck.VBEditor.ComManagement;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SourceCodeHandling;
+using Rubberduck.VBEditor.Utility;
+using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring.MoveMember
 {
     [TestFixture]
-    public class MoveMemberTests : MoveMemberTestsBase
+    public class MoveMemberTests : InteractiveRefactoringTestBase<IMoveMemberPresenter, MoveMemberModel>
     {
-        [TestCase("Foo(ByVal arg1 As Single, ByVal arg2 As Single, arg3 As Single)", "ByRef arg3")]
-        [TestCase("Foo(arg1 As Single, ByVal arg2 As Single, arg3 As Single)", "ByRef arg1")]
+        [TestCase(MoveEndpoints.StdToStd)]
+        [TestCase(MoveEndpoints.ClassToStd)]
+        [TestCase(MoveEndpoints.FormToStd)]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void ImprovedArgListTest(string input, string expectedToContain)
+        public void PreviewMovedContentFunction(MoveEndpoints endpoints)
         {
-            var member = "Foo";
+            var memberToMove = ("Foo", DeclarationType.Function);
             var source =
 $@"
 Option Explicit
 
-Public Sub {input}
+Function Foo(arg1 As Long) As Long
+    Const localConst As Long = 5
+    Dim local As Long
+    local = 6
+    Foo = localConst + localVar + arg1
+End Function
+";
+
+            var moveDefinition = new TestMoveDefinition(endpoints, memberToMove);
+            var preview = RetrievePreviewAfterUserInput(moveDefinition, source, memberToMove);
+
+            StringAssert.Contains("Option Explicit", preview);
+            Assert.IsTrue(OccursOnce("Public Function Foo(", preview));
+        }
+
+        [TestCase(MoveEndpoints.StdToStd)]
+        [TestCase(MoveEndpoints.ClassToStd)]
+        [TestCase(MoveEndpoints.FormToStd)]
+        [Category("Refactorings")]
+        [Category("MoveMember")]
+        public void PreviewMovedContentProcedure(MoveEndpoints endpoints)
+        {
+            var memberToMove = "Foo";
+            var source =
+$@"
+Option Explicit
+
+Sub Foo(ByVal arg1 As Long, ByRef result As Long)
+    result = 10 * arg1
 End Sub
 ";
 
-            var vbeStub = MockVbeBuilder.BuildFromSingleModule(source, Rubberduck.VBEditor.SafeComWrappers.ComponentType.StandardModule, out _);
-            var result = MoveMemberTestSupport.ParseAndTest(vbeStub.Object, ThisTest);
+            var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, DeclarationType.Procedure));
 
-            string ThisTest(RubberduckParserState state)
-            {
-                var target = state.DeclarationFinder.MatchName(member).Single();
-                return target is IParameterizedDeclaration memberWithParams
-                                ? memberWithParams.BuildFullyDefinedArgumentList()
-                                : "()";
-            }
+            var preview = RetrievePreviewAfterUserInput(moveDefinition, source, (memberToMove, DeclarationType.Procedure));
 
-            StringAssert.Contains(expectedToContain, result);
+            StringAssert.Contains("Option Explicit", preview);
+            Assert.IsTrue(OccursOnce("Public Sub Foo(", preview));
         }
 
-        [TestCase("Foo(ByVal arg1 As Single, ByVal arg2 As Single, arg3 As Single) As Single", "ByRef arg3")]
-        [TestCase("Foo(arg1 As Single, ByVal arg2 As Single, arg3 As Single) As Single", "ByRef arg1")]
+
+        [TestCase(MoveEndpoints.StdToStd)]
+        [TestCase(MoveEndpoints.ClassToStd)]
+        [TestCase(MoveEndpoints.FormToStd)]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void ImprovedArgListTestPropertyGet(string input, string expectedToContain)
+        public void PreviewMovedContentProperties(MoveEndpoints endpoints)
         {
-            var member = "Foo";
+            var memberToMove = ("TheValue", DeclarationType.PropertyGet);
             var source =
 $@"
 Option Explicit
 
-Public Property Get {input}
+
+Private mTheValue As Long
+
+Public Property Get TheValue() As Long
+    TheValue = mTheValue
+End Property
+
+Public Property Let TheValue(ByVal value As Long)
+    mTheValue = value
 End Property
 ";
 
-            var vbeStub = MockVbeBuilder.BuildFromSingleModule(source, Rubberduck.VBEditor.SafeComWrappers.ComponentType.StandardModule, out _);
-            var result = MoveMemberTestSupport.ParseAndTest(vbeStub.Object, ThisTest);
+            var moveDefinition = new TestMoveDefinition(endpoints, memberToMove);
+            var preview = RetrievePreviewAfterUserInput(moveDefinition, source, memberToMove);
 
-            string ThisTest(RubberduckParserState state)
-            {
-                var target = state.DeclarationFinder.MatchName(member).Single();
-                return target is IParameterizedDeclaration memberWithParams
-                                ? memberWithParams.BuildFullyDefinedArgumentList()
-                                : "()";
-            }
-
-            StringAssert.Contains(expectedToContain, result);
-        }
-
-        [TestCase("Foo(ByVal arg1 As Single, ByVal arg2 As Single, arg3 As Single)", "ByVal arg3")]
-        [TestCase("Foo(arg1 As Single, ByVal arg2 As Single, ByRef arg3 As Single)", "ByRef arg1", "ByVal arg3")]
-        [Category("Refactorings")]
-        [Category("MoveMember")]
-        public void ImprovedArgListTestPropertyLet(string input, params string[] expectedToContain)
-        {
-            var member = "Foo";
-            var source =
-$@"
-Option Explicit
-
-Public Property Let {input}
-End Property
-";
-
-            var vbeStub = MockVbeBuilder.BuildFromSingleModule(source, Rubberduck.VBEditor.SafeComWrappers.ComponentType.StandardModule, out _);
-            var result = MoveMemberTestSupport.ParseAndTest(vbeStub.Object, ThisTest);
-
-            string ThisTest(RubberduckParserState state)
-            {
-                var target = state.DeclarationFinder.MatchName(member).Single();
-                return target is IParameterizedDeclaration memberWithParams
-                                ? memberWithParams.BuildFullyDefinedArgumentList()
-                                : "()";
-            }
-
-            foreach (var expected in expectedToContain)
-            {
-                StringAssert.Contains(expected, result);
-            }
-        }
-
-        [TestCase("Foo(arg1, ByVal arg2 As Single, arg3 As Single)", "ByRef arg1 As Variant", "ByVal arg3")]
-        [TestCase("Foo(arg1, ByVal arg2, arg3 As Single)", "ByRef arg1 As Variant", "ByVal arg2 As Variant", "ByVal arg3")]
-        [Category("Refactorings")]
-        [Category("MoveMember")]
-        public void ImprovedArgListTestImplicitTypes(string input, params string[] expectedToContain)
-        {
-            var member = "Foo";
-            var source =
-$@"
-Option Explicit
-
-Public Property Let {input}
-End Property
-";
-
-            var vbeStub = MockVbeBuilder.BuildFromSingleModule(source, ComponentType.StandardModule, out _);
-            var result = MoveMemberTestSupport.ParseAndTest(vbeStub.Object, ThisTest);
-
-            string ThisTest(RubberduckParserState state)
-            {
-                var target = state.DeclarationFinder.MatchName(member).Single();
-                return target is IParameterizedDeclaration memberWithParams
-                                ? memberWithParams.BuildFullyDefinedArgumentList()
-                                : "()";
-            }
-
-            foreach (var expected in expectedToContain)
-            {
-                StringAssert.Contains(expected, result);
-            }
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("MoveMember")]
-        public void MoveCandidatesPropertiesGroupedTogether()
-        {
-            var member = "Foo";
-            var source =
-$@"
-Option Explicit
-
-Public Property Let Foo(arg As Long)
-End Property
-
-Public Property Get Foo() As Long
-End Property
-
-Public Property Let Bar(arg As Long)
-End Property
-
-Public Property Get Bar() As Long
-End Property
-
-Public Property Get Baz() As Long
-End Property
-";
-
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, (member, DeclarationType.PropertyGet), sourceContent: source);
-
-
-            var vbeStub = MoveMemberTestSupport.BuildVBEStub(moveDefinition, source);
-            var moveCandidates = MoveMemberTestSupport.ParseAndTest(vbeStub, ThisTest);
-
-
-            IEnumerable<IMoveableMemberSet> ThisTest(RubberduckParserState state, IVBE vbe, IRewritingManager rewritingManager)
-            {
-                var model = MoveMemberTestSupport.CreateModelAndDefineMove(vbe, moveDefinition, state, rewritingManager);
-                return model.MoveableMembers;
-            }
-
-            Assert.AreEqual(3, moveCandidates.Count());
+            StringAssert.Contains("Option Explicit", preview);
+            Assert.IsTrue(OccursOnce("Property Get TheValue(", preview));
+            Assert.IsTrue(OccursOnce("Property Let TheValue(", preview));
         }
 
         [Test]
@@ -212,49 +140,79 @@ End Property
             Assert.IsTrue(MoveMemberTestSupport.OccursOnce("Get Foo(", preview), "String occurs more than once");
         }
 
-        [Test]
-        [Category("Refactorings")]
-        [Category("MoveMember")]
-        public void MultiplePropertyGroupsReferenceSameVariable()
+        private string RetrievePreviewAfterUserInput(TestMoveDefinition moveDefinition, string sourceContent, (string declarationName, DeclarationType declarationType) memberToMove)
         {
-            var member = "Foo";
-            var source =
-$@"
-Option Explicit
+            MoveMemberModel PresenterAdjustment(MoveMemberModel model)
+            {
+                model.ChangeDestination(moveDefinition.DestinationModuleName);
+                return model;
+            }
 
-Private Const mFoo As Long = 10
+            var vbe = BuildVBEStub(moveDefinition, sourceContent);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
+            using (state)
+            {
+                var target = state.DeclarationFinder.DeclarationsWithType(memberToMove.declarationType)
+                                    .Single(declaration => declaration.IdentifierName == memberToMove.declarationName);
 
-Public Property Get Foo() As Long
-    Foo = mFoo
-End Property
-
-Public Property Get FooTimes2() As Long 
-    FooTimes2 = mFoo * 2
-End Property
-";
-
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, (member, DeclarationType.PropertyGet), sourceContent: source);
-
-
-            var refactoredCode = RefactoredCode(moveDefinition, source, null, null, false, ("FooTimes2", DeclarationType.PropertyGet));
-
-            StringAssert.Contains("Get Foo()", refactoredCode.Destination);
-            StringAssert.Contains("Get FooTimes2()", refactoredCode.Destination);
-            StringAssert.Contains("Private Const mFoo As Long = 10", refactoredCode.Destination);
+                var refactoring = TestRefactoring(rewritingManager, state, PresenterAdjustment);
+                if (refactoring is IMoveMemberRefactoringTestAccess testAccess)
+                {
+                    var model = testAccess.TestUserInteractionOnly(target, PresenterAdjustment);
+                    return testAccess.PreviewModuleContent(model, PreviewModule.Destination);
+                }
+                throw new InvalidCastException();
+            }
         }
 
-        [TestCase("foo", "foo1")]
-        [TestCase("foo1", "foo2")]
-        [TestCase("foo123", "foo124")]
-        [TestCase("f67oo3", "f67oo4")]
-        [TestCase("foo0", "foo1")]
-        [TestCase("", "1")]
-        [Category("Refactorings")]
-        [Category("MoveMember")]
-        public void IdentifierNameIncrementing(string input, string expected)
+        private static IVBE BuildVBEStub(TestMoveDefinition moveDefinition, string sourceContent)
         {
-            var actual = input.IncrementIdentifier();
-            Assert.AreEqual(expected, actual);
+            if (moveDefinition.CreateNewModule)
+            {
+                moveDefinition.SetEndpointContent(sourceContent);
+                return MockVbeBuilder.BuildFromModules(moveDefinition.ModuleDefinitions.Select(tc => tc.AsTuple)).Object;
+            }
+            moveDefinition.SetEndpointContent(sourceContent, null);
+            return MockVbeBuilder.BuildFromModules(moveDefinition.ModuleDefinitions.Select(tc => tc.AsTuple)).Object;
+        }
+
+        private static IVBE BuildVBEStub(TestMoveDefinition moveDefinition, string sourceContent, string destinationContent = null, params ReferenceLibrary[] libraries)
+        {
+            if (moveDefinition.CreateNewModule)
+            {
+                moveDefinition.SetEndpointContent(sourceContent);
+                return MockVbeBuilder.BuildFromModules(moveDefinition.ModuleDefinitions.Select(tc => tc.AsTuple)).Object;
+            }
+            moveDefinition.SetEndpointContent(sourceContent, destinationContent);
+            return MockVbeBuilder.BuildFromModules(moveDefinition.ModuleDefinitions.Select(tc => tc.AsTuple), libraries).Object;
+        }
+
+        private static bool OccursOnce(string toFind, string content)
+        {
+            var firstIdx = content.IndexOf(toFind);
+            var lastIdx = content.LastIndexOf(toFind);
+            return firstIdx == lastIdx;
+        }
+
+        private static IAddComponentService TestAddComponentService(IProjectsProvider projectsProvider)
+        {
+            var sourceCodeHandler = new CodeModuleComponentSourceCodeHandler();
+            return new AddComponentService(projectsProvider, sourceCodeHandler, sourceCodeHandler);
+        }
+
+        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
+        {
+            var selectedDeclarationService = new SelectedDeclarationProvider(selectionService, state);
+            var uiDispatcherMock = new Mock<IUiDispatcher>();
+            uiDispatcherMock
+                .Setup(m => m.Invoke(It.IsAny<Action>()))
+                .Callback((Action action) => action.Invoke());
+
+            var addComponentService = TestAddComponentService(state?.ProjectsProvider);
+            var existingDestinationModuleRefactoring = new MoveMemberToExistingModuleRefactoring(state, rewritingManager);
+            var newDestinationModuleRefactoring = new MoveMemberToNewModuleRefactoring(existingDestinationModuleRefactoring, state, rewritingManager, addComponentService);
+            var refactoringAction = new MoveMemberRefactoringAction(newDestinationModuleRefactoring, existingDestinationModuleRefactoring);
+            return new MoveMemberRefactoring(refactoringAction, state, factory, rewritingManager, selectionService, selectedDeclarationService, uiDispatcherMock.Object);
         }
     }
 }

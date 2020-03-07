@@ -95,7 +95,11 @@ namespace Rubberduck.Refactorings.MoveMember
         {
             if (target == null) { throw new TargetDeclarationIsNullException(); }
 
-            var model = new MoveMemberModel(target, _declarationFinderProvider, PreviewModuleContent, _moveMemberFactory);
+            var model = new MoveMemberModel(target, _declarationFinderProvider)
+            {
+                PreviewBuilder = PreviewModuleContent
+            };
+
             return model;
         }
 

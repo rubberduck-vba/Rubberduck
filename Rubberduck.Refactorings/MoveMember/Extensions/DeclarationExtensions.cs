@@ -2,6 +2,7 @@
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
+//using Rubberduck.Refactorings.ImplementInterface;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -43,47 +44,6 @@ namespace Rubberduck.Refactorings.MoveMember.Extensions
             return from dec in declarations
                    from reference in dec.References
                    select reference;
-        }
-
-        public static string FullyDefinedSignature(this ModuleBodyElementDeclaration declaration)
-        {
-            var memberType = string.Empty;
-            switch (declaration.Context)
-            {
-                case VBAParser.SubStmtContext _:
-                    memberType = Tokens.Sub;
-                    break;
-                case VBAParser.FunctionStmtContext _:
-                    memberType = Tokens.Function;
-                    break;
-                case VBAParser.PropertyGetStmtContext _:
-                    memberType = $"{Tokens.Property} {Tokens.Get}";
-                    break;
-                case VBAParser.PropertyLetStmtContext _:
-                    memberType = $"{Tokens.Property} {Tokens.Let}";
-                    break;
-                case VBAParser.PropertySetStmtContext _:
-                    memberType = $"{Tokens.Property} {Tokens.Set}";
-                    break;
-                default:
-                    throw new ArgumentException();
-            }
-
-            var accessibilityToken = declaration.Accessibility.Equals(Accessibility.Implicit)
-                ? Tokens.Public
-                : $"{declaration.Accessibility.ToString()}";
-
-            var signature = $"{memberType} {declaration.IdentifierName}()";
-            if (declaration is IParameterizedDeclaration parameterizedDeclaration)
-            {
-                signature = signature.Replace("()", parameterizedDeclaration.BuildFullyDefinedArgumentList());
-            }
-
-            var fullSignature = declaration.AsTypeName == null ?
-                $"{accessibilityToken} {signature}"
-                : $"{accessibilityToken} {signature} As {declaration.AsTypeName}";
-
-            return fullSignature;
         }
 
         public static bool ContainsParentScopesForAll(this IEnumerable<Declaration> containing, IEnumerable<IdentifierReference> references) 

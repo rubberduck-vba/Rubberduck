@@ -2,6 +2,7 @@
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.MoveMember.Extensions;
 using Rubberduck.VBEditor;
@@ -421,10 +422,10 @@ namespace Rubberduck.Refactorings.MoveMember
                     : $"{visibility} {Tokens.Const} {rewriter.GetText(member)}";
             }
 
-            if (member is IParameterizedDeclaration paramDeclaration)
+            if (member is ModuleBodyElementDeclaration mbed)
             {
                 var argListContext = member.Context.GetDescendent<VBAParser.ArgListContext>();
-                rewriter.Replace(argListContext, paramDeclaration.BuildFullyDefinedArgumentList());
+                rewriter.Replace(argListContext, $"({mbed.ImprovedArgumentList()})");
             }
 
             if (moveGroups.Declarations(MoveGroup.Selected).Contains(member))

@@ -3,7 +3,6 @@ using NLog;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
-using Rubberduck.VBEditor.Utility;
 using System;
 using System.Runtime.InteropServices;
 
@@ -13,17 +12,14 @@ namespace Rubberduck.Refactorings.MoveMember
     {
         private readonly IParseManager _parseManager;
         private readonly IRewritingManager _rewritingManager;
-        private readonly IAddComponentService _addComponentService;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public MoveMemberToExistingModuleRefactoring(
                         IParseManager parseManager,
-                        IRewritingManager rewritingManager,
-                        IAddComponentService addComponentService)
+                        IRewritingManager rewritingManager)
                 : base(rewritingManager)
         {
-            _addComponentService = addComponentService;
             _parseManager = parseManager;
             _rewritingManager = rewritingManager;
         }
