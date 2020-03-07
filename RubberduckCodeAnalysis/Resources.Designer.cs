@@ -97,6 +97,33 @@ namespace RubberduckCodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Duplicate value in &apos;name&apos; attribute.
+        /// </summary>
+        public static string DuplicateNameAttribute {
+            get {
+                return ResourceManager.GetString("DuplicateNameAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;name&apos; attribute is used to uniquely identify an element. Consequently, it has to be unique..
+        /// </summary>
+        public static string DuplicateNameAttributeDescription {
+            get {
+                return ResourceManager.GetString("DuplicateNameAttributeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; is used in the &apos;name&apos; attribute of multiple &apos;{1}&apos; elements..
+        /// </summary>
+        public static string DuplicateNameAttributeMessageFormat {
+            get {
+                return ResourceManager.GetString("DuplicateNameAttributeMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid value for &apos;type&apos; attribute..
         /// </summary>
         public static string InvalidTypeAttribute {

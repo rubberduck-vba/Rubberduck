@@ -285,4 +285,13 @@
   <data name="InvalidTypeAttributeMessageFormat" xml:space="preserve">
     <value>The value '{0}' is not legal for the 'type' attribute.</value>
   </data>
+  <data name="DuplicateNameAttribute" xml:space="preserve">
+    <value>Duplicate value in 'name' attribute</value>
+  </data>
+  <data name="DuplicateNameAttributeDescription" xml:space="preserve">
+    <value>The 'name' attribute is used to uniquely identify an element. Consequently, it has to be unique.</value>
+  </data>
+  <data name="DuplicateNameAttributeMessageFormat" xml:space="preserve">
+    <value>The value '{0}' is used in the 'name' attribute of multiple '{1}' elements.</value>
+  </data>
 </root>

@@ -365,6 +365,62 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
             Assert.IsFalse(diagnostics.Any(d => d.Descriptor.Id == InspectionXmlDocAnalyzer.MissingNameAttribute));
         }
 
+        [Test]
+        [Category("InspectionXmlDoc")]
+        public void DuplicateNameAttribute_ReferenceElement()
+        {
+            var test = @"
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
+{
+    /// <summary>
+    /// blablabla
+    /// </summary>
+    /// <reference name=""Excel"" />
+    /// <reference name=""Excel"" />
+    /// <example hasresult=""true"">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
+    [RequiredLibrary(""Excel"")]
+    public sealed class SomeInspection : IInspection { }
+}
+";
+
+            var diagnostics = GetDiagnostics(test);
+            Assert.IsTrue(diagnostics.Any(d => d.Descriptor.Id == InspectionXmlDocAnalyzer.DuplicateNameAttribute));
+        }
+
+        [Test]
+        [Category("InspectionXmlDoc")]
+        public void DuplicateNameAttribute_ReferenceElement_Negative()
+        {
+            var test = @"
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
+{
+    /// <summary>
+    /// blablabla
+    /// </summary>
+    /// <reference name=""Excel"" />
+    /// <reference name=""Word"" />
+    /// <example hasresult=""true"">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
+    [RequiredLibrary(""Excel"")]
+    public sealed class SomeInspection : IInspection { }
+}
+";
+
+            var diagnostics = GetDiagnostics(test);
+            Assert.IsFalse(diagnostics.Any(d => d.Descriptor.Id == InspectionXmlDocAnalyzer.DuplicateNameAttribute));
+        }
+
         [Test][Category("InspectionXmlDoc")]
         public void MissingHasResultAttribute_Misspelled()
         {
@@ -688,6 +744,74 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 
             var diagnostics = GetDiagnostics(test);
             Assert.IsFalse(diagnostics.Any(d => d.Descriptor.Id == InspectionXmlDocAnalyzer.InvalidTypeAttribute));
+        }
+
+        [Test]
+        [Category("InspectionXmlDoc")]
+        public void DuplicateNameAttribute_ModuleElement()
+        {
+            var test = @"
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
+{
+    /// <summary>
+    /// blablabla
+    /// </summary>
+    /// <example hasresult=""true"">
+    /// <module name=""MyModule"" type=""Standard Module"">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// <module name=""MyModule"" type=""Class Module"">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
+    public sealed class SomeInspection : IInspection { }
+}
+";
+
+            var diagnostics = GetDiagnostics(test);
+            Assert.IsTrue(diagnostics.Any(d => d.Descriptor.Id == InspectionXmlDocAnalyzer.DuplicateNameAttribute));
+        }
+
+        [Test]
+        [Category("InspectionXmlDoc")]
+        public void DuplicateNameAttribute_ModuleElement_Negative()
+        {
+            var test = @"
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
+{
+    /// <summary>
+    /// blablabla
+    /// </summary>
+    /// <example hasresult=""true"">
+    /// <module name=""MyModule"" type=""Standard Module"">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// <module name=""OtherModule"" type=""Class Module"">
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
+    public sealed class SomeInspection : IInspection { }
+}
+";
+
+            var diagnostics = GetDiagnostics(test);
+            Assert.IsFalse(diagnostics.Any(d => d.Descriptor.Id == InspectionXmlDocAnalyzer.DuplicateNameAttribute));
         }
     }
 }

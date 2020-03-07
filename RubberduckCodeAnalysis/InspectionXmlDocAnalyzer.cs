@@ -87,6 +87,17 @@ namespace RubberduckCodeAnalysis
             new LocalizableResourceString(nameof(Resources.MissingNameAttributeDescription), Resources.ResourceManager, typeof(Resources))
             );
 
+        public const string DuplicateNameAttribute = "DuplicateNameAttribute";
+        private static readonly DiagnosticDescriptor DuplicateNameAttributeRule = new DiagnosticDescriptor(
+            DuplicateNameAttribute,
+            new LocalizableResourceString(nameof(Resources.DuplicateNameAttribute), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.DuplicateNameAttributeMessageFormat), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.XmlDocAnalyzerCategory), Resources.ResourceManager, typeof(Resources)).ToString(),
+            DiagnosticSeverity.Error,
+            true,
+            new LocalizableResourceString(nameof(Resources.DuplicateNameAttributeDescription), Resources.ResourceManager, typeof(Resources))
+        );
+
         public const string MissingTypeAttribute = "MissingTypeAttribute";
         private static readonly DiagnosticDescriptor MissingTypeAttributeRule = new DiagnosticDescriptor(
             MissingTypeAttribute,
@@ -130,7 +141,8 @@ namespace RubberduckCodeAnalysis
             MissingModuleElementRule,
             MissingExampleElementRule,
             MissingTypeAttributeRule,
-            InvalidTypeAttributeRule
+            InvalidTypeAttributeRule,
+            DuplicateNameAttributeRule
             );
 
         public override void Initialize(AnalysisContext context)
@@ -182,13 +194,16 @@ namespace RubberduckCodeAnalysis
             }
         }
 
-        private static void CheckNameAttribute(SymbolAnalysisContext context, XElement element, Location location)
+        private static string CheckNameAttributeAndReturnValue(SymbolAnalysisContext context, XElement element, Location location)
         {
-            if (!element.Attributes().Any(a => a.Name.LocalName.Equals("name")))
+            var nameAttribute = element.Attributes().FirstOrDefault(a => a.Name.LocalName.Equals("name"));
+            if (nameAttribute == null)
             {
                 var diagnostic = Diagnostic.Create(MissingNameAttributeRule, location, element.Name.LocalName);
                 context.ReportDiagnostic(diagnostic);
             }
+
+            return nameAttribute?.Value;
         }
 
         private static void CheckReferenceElement(SymbolAnalysisContext context, INamedTypeSymbol symbol, XElement xml, ICollection<AttributeData> requiredLibAttributes)
@@ -199,12 +214,25 @@ namespace RubberduckCodeAnalysis
                 context.ReportDiagnostic(diagnostic);
             }
 
+            var xmlRefLibs = new List<string>();
             foreach (var element in xml.Elements("reference"))
             {
-                CheckNameAttribute(context, element, symbol.Locations[0]);
+                var name = CheckNameAttributeAndReturnValue(context, element, symbol.Locations[0]);
+                if (name != null)
+                {
+                    xmlRefLibs.Add(name);
+                }
+            }
+
+            var duplicateNames = xmlRefLibs
+                .GroupBy(name => name)
+                .Where(group => group.Count() > 1);
+            foreach (var name in duplicateNames)
+            {
+                var diagnostic = Diagnostic.Create(DuplicateNameAttributeRule, symbol.Locations[0], name, "reference");
+                context.ReportDiagnostic(diagnostic);
             }
             
-            var xmlRefLibs = xml.Elements("reference").Select(e => e.Attribute("name")?.Value).ToList();
             foreach (var attribute in requiredLibAttributes)
             {
                 var requiredLib = attribute.ConstructorArguments[0].Value.ToString();
@@ -255,10 +283,25 @@ namespace RubberduckCodeAnalysis
                 context.ReportDiagnostic(diagnostic);
             }
 
+            var moduleNames = new List<string>();
             foreach (var module in example.Elements("module"))
             {
-                CheckNameAttribute(context, module, symbol.Locations[0]);
+                var moduleName = CheckNameAttributeAndReturnValue(context, module, symbol.Locations[0]);
+                if (moduleName != null)
+                {
+                    moduleNames.Add(moduleName);
+                }
+
                 CheckTypeAttribute(context, module, symbol.Locations[0]);
+            }
+
+            var duplicateNames = moduleNames
+                .GroupBy(name => name)
+                .Where(group => group.Count() > 1);
+            foreach (var name in duplicateNames)
+            {
+                var diagnostic = Diagnostic.Create(DuplicateNameAttributeRule, symbol.Locations[0], name, "module");
+                context.ReportDiagnostic(diagnostic);
             }
         }
 
