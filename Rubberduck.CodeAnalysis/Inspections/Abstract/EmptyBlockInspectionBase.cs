@@ -10,9 +10,11 @@ namespace Rubberduck.CodeAnalysis.Inspections.Abstract
     internal abstract class EmptyBlockInspectionBase<TContext> : ParseTreeInspectionBase<TContext>
         where TContext : ParserRuleContext
     {
-        protected EmptyBlockInspectionBase(IDeclarationFinderProvider declarationFinderProvider) 
+        protected EmptyBlockInspectionBase(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
-        {}
+        {
+            Severity = CodeInspectionSeverity.Hint;
+        }
 
         protected class EmptyBlockInspectionListenerBase : InspectionListenerBase<TContext>
         {

@@ -1,10 +1,8 @@
 ﻿using Antlr4.Runtime.Misc;
 using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Resources.Experimentals;
 using Rubberduck.Resources.Inspections;
 
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete.EmptyBlock
@@ -33,7 +31,6 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.EmptyBlock
     /// End Sub
     /// ]]>
     /// </example>
-    [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
     internal sealed class EmptyWhileWendBlockInspection : EmptyBlockInspectionBase<VBAParser.WhileWendStmtContext>
     {
         public EmptyWhileWendBlockInspection(IDeclarationFinderProvider declarationFinderProvider)
