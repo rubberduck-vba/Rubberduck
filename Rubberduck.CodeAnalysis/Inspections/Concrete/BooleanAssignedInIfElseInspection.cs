@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class BooleanAssignedInIfElseInspection : ParseTreeInspectionBase<VBAParser.IfStmtContext>
+    internal sealed class BooleanAssignedInIfElseInspection : ParseTreeInspectionBase<VBAParser.IfStmtContext>
     {
         public BooleanAssignedInIfElseInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

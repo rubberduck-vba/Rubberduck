@@ -6,7 +6,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Results
 {
-    public class QualifiedContextInspectionResult : InspectionResultBase
+    internal class QualifiedContextInspectionResult : InspectionResultBase
     {
         public QualifiedContextInspectionResult(
             IInspection inspection, 
@@ -24,7 +24,7 @@ namespace Rubberduck.Inspections.Results
         {}
     }
 
-    public class QualifiedContextInspectionResult<T> : QualifiedContextInspectionResult, IWithInspectionResultProperties<T>
+    internal class QualifiedContextInspectionResult<T> : QualifiedContextInspectionResult, IWithInspectionResultProperties<T>
     {
         public QualifiedContextInspectionResult(
             IInspection inspection, 

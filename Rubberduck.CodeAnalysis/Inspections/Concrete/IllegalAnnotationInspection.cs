@@ -41,7 +41,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class IllegalAnnotationInspection : InspectionBase
+    internal sealed class IllegalAnnotationInspection : InspectionBase
     {
         public IllegalAnnotationInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

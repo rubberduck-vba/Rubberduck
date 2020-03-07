@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
-    public class ExpressionFilterDate : ExpressionFilter<ComparableDateValue>
+    internal class ExpressionFilterDate : ExpressionFilter<ComparableDateValue>
     {
         public ExpressionFilterDate() : base(Tokens.Date, ComparableDateValue.Parse) { }
 

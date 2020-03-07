@@ -53,7 +53,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public class DefaultMemberRequiredInspection : IdentifierReferenceInspectionBase
+    internal class DefaultMemberRequiredInspection : IdentifierReferenceInspectionBase
     {
         public DefaultMemberRequiredInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

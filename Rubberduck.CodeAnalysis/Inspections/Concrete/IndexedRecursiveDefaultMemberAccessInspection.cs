@@ -31,7 +31,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class IndexedRecursiveDefaultMemberAccessInspection : IdentifierReferenceInspectionBase
+    internal sealed class IndexedRecursiveDefaultMemberAccessInspection : IdentifierReferenceInspectionBase
     {
         public IndexedRecursiveDefaultMemberAccessInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

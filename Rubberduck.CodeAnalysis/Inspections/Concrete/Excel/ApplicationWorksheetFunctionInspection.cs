@@ -52,7 +52,7 @@ namespace Rubberduck.Inspections.Concrete
     /// ]]>
     /// </example>
     [RequiredLibrary("Excel")]
-    public class ApplicationWorksheetFunctionInspection : IdentifierReferenceInspectionFromDeclarationsBase
+    internal class ApplicationWorksheetFunctionInspection : IdentifierReferenceInspectionFromDeclarationsBase
     {
         public ApplicationWorksheetFunctionInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

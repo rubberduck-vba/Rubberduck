@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class DefTypeStatementInspection : ParseTreeInspectionBase<VBAParser.DefTypeContext>
+    internal sealed class DefTypeStatementInspection : ParseTreeInspectionBase<VBAParser.DefTypeContext>
     {
         public DefTypeStatementInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

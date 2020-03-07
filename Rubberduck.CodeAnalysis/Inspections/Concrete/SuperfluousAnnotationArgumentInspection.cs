@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections.Concrete
     /// ' ...
     /// ]]>
     /// </example>
-    public sealed class SuperfluousAnnotationArgumentInspection : InspectionBase
+    internal sealed class SuperfluousAnnotationArgumentInspection : InspectionBase
     {
         public SuperfluousAnnotationArgumentInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

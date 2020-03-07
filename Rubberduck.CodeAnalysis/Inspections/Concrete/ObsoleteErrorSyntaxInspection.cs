@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class ObsoleteErrorSyntaxInspection : ParseTreeInspectionBase<VBAParser.ErrorStmtContext>
+    internal sealed class ObsoleteErrorSyntaxInspection : ParseTreeInspectionBase<VBAParser.ErrorStmtContext>
     {
         public ObsoleteErrorSyntaxInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

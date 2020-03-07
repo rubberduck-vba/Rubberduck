@@ -37,7 +37,7 @@ namespace Rubberduck.Inspections.Concrete
     /// ]]>
     /// </example>
     [CannotAnnotate]
-    public sealed class AttributeValueOutOfSyncInspection : DeclarationInspectionMultiResultBase<(IParseTreeAnnotation Annotation, string AttributeName, IReadOnlyList<string> AttributeValues)>
+    internal sealed class AttributeValueOutOfSyncInspection : DeclarationInspectionMultiResultBase<(IParseTreeAnnotation Annotation, string AttributeName, IReadOnlyList<string> AttributeValues)>
     {
         public AttributeValueOutOfSyncInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

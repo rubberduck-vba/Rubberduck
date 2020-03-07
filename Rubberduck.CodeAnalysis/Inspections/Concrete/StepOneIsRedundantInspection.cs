@@ -35,7 +35,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class StepOneIsRedundantInspection : ParseTreeInspectionBase<VBAParser.StepStmtContext>
+    internal sealed class StepOneIsRedundantInspection : ParseTreeInspectionBase<VBAParser.StepStmtContext>
     {
         public StepOneIsRedundantInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

@@ -8,7 +8,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
-    public static class VariableRequiresSetAssignmentEvaluator
+    internal static class VariableRequiresSetAssignmentEvaluator
     {
         /// <summary>
         /// Determines whether the 'Set' keyword is required (whether it's present or not) for the specified identifier reference.

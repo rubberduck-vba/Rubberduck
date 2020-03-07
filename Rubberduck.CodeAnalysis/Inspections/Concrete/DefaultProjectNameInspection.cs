@@ -13,7 +13,7 @@ namespace Rubberduck.Inspections.Concrete
     /// VBA projects should be meaningfully named, to avoid namespace clashes when referencing other VBA projects.
     /// </why>
     [CannotAnnotate]
-    public sealed class DefaultProjectNameInspection : DeclarationInspectionBase
+    internal sealed class DefaultProjectNameInspection : DeclarationInspectionBase
     {
         public DefaultProjectNameInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, DeclarationType.Project)

@@ -56,7 +56,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Function
     /// ]]>
     /// </example>
-    public sealed class UseOfUnboundBangNotationInspection : IdentifierReferenceInspectionBase
+    internal sealed class UseOfUnboundBangNotationInspection : IdentifierReferenceInspectionBase
     {
         public UseOfUnboundBangNotationInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

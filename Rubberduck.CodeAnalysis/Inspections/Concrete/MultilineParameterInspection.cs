@@ -30,7 +30,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class MultilineParameterInspection : ParseTreeInspectionBase<VBAParser.ArgContext>
+    internal sealed class MultilineParameterInspection : ParseTreeInspectionBase<VBAParser.ArgContext>
     {
         public MultilineParameterInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

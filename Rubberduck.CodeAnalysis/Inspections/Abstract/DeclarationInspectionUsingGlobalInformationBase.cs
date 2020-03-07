@@ -9,7 +9,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Abstract
 {
-    public abstract class DeclarationInspectionUsingGlobalInformationBase<TGlobalInfo> : DeclarationInspectionUsingGlobalInformationBaseBase<TGlobalInfo>
+    internal abstract class DeclarationInspectionUsingGlobalInformationBase<TGlobalInfo> : DeclarationInspectionUsingGlobalInformationBaseBase<TGlobalInfo>
     {
         protected DeclarationInspectionUsingGlobalInformationBase(IDeclarationFinderProvider declarationFinderProvider, params DeclarationType[] relevantDeclarationTypes)
             : base(declarationFinderProvider, relevantDeclarationTypes)
@@ -44,7 +44,7 @@ namespace Rubberduck.Inspections.Abstract
         }
     }
 
-    public abstract class DeclarationInspectionUsingGlobalInformationBase<TGlobalInfo,TProperties> : DeclarationInspectionUsingGlobalInformationBaseBase<TGlobalInfo>
+    internal abstract class DeclarationInspectionUsingGlobalInformationBase<TGlobalInfo,TProperties> : DeclarationInspectionUsingGlobalInformationBaseBase<TGlobalInfo>
     {
         protected DeclarationInspectionUsingGlobalInformationBase(IDeclarationFinderProvider declarationFinderProvider, params DeclarationType[] relevantDeclarationTypes)
             : base(declarationFinderProvider, relevantDeclarationTypes)

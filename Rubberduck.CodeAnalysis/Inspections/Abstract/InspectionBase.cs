@@ -14,7 +14,7 @@ using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Abstract
 {
-    public abstract class InspectionBase : IInspection
+    internal abstract class InspectionBase : IInspection
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
 

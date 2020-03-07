@@ -35,7 +35,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class ParameterCanBeByValInspection : DeclarationInspectionBase
+    internal sealed class ParameterCanBeByValInspection : DeclarationInspectionBase
     {
         public ParameterCanBeByValInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, DeclarationType.Parameter)

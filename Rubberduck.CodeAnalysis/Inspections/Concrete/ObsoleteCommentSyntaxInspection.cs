@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class ObsoleteCommentSyntaxInspection : ParseTreeInspectionBase<VBAParser.RemCommentContext>
+    internal sealed class ObsoleteCommentSyntaxInspection : ParseTreeInspectionBase<VBAParser.RemCommentContext>
     {
         public ObsoleteCommentSyntaxInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

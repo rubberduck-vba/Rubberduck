@@ -53,7 +53,7 @@ namespace Rubberduck.Inspections.Concrete
     /// ]]>
     /// </module>
     /// </example>
-    public sealed class ObjectWhereProcedureIsRequiredInspection : InspectionBase
+    internal sealed class ObjectWhereProcedureIsRequiredInspection : InspectionBase
     {
         public ObjectWhereProcedureIsRequiredInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

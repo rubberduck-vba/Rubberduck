@@ -37,7 +37,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class VariableNotUsedInspection : DeclarationInspectionBase
+    internal sealed class VariableNotUsedInspection : DeclarationInspectionBase
     {
         /// <summary>
         /// Inspection results for variables that are never referenced.

@@ -44,7 +44,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Function
     /// ]]>
     /// </example>
-    public sealed class ProcedureCanBeWrittenAsFunctionInspection : DeclarationInspectionBase
+    internal sealed class ProcedureCanBeWrittenAsFunctionInspection : DeclarationInspectionBase
     {
         public ProcedureCanBeWrittenAsFunctionInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, new []{DeclarationType.Procedure}, new []{DeclarationType.LibraryProcedure, DeclarationType.PropertyLet, DeclarationType.PropertySet})

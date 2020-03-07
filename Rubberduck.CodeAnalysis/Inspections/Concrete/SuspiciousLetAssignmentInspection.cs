@@ -43,7 +43,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class SuspiciousLetAssignmentInspection : InspectionBase
+    internal sealed class SuspiciousLetAssignmentInspection : InspectionBase
     {
         public SuspiciousLetAssignmentInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

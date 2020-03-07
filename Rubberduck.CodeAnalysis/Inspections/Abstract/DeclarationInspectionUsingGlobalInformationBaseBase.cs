@@ -8,7 +8,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Abstract
 {
-    public abstract class DeclarationInspectionUsingGlobalInformationBaseBase<T> : InspectionBase
+    internal abstract class DeclarationInspectionUsingGlobalInformationBaseBase<T> : InspectionBase
     {
         protected readonly DeclarationType[] RelevantDeclarationTypes;
         protected readonly DeclarationType[] ExcludeDeclarationTypes;

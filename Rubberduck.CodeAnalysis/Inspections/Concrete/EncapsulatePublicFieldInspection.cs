@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Property
     /// ]]>
     /// </example>
-    public sealed class EncapsulatePublicFieldInspection : DeclarationInspectionBase
+    internal sealed class EncapsulatePublicFieldInspection : DeclarationInspectionBase
     {
         public EncapsulatePublicFieldInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, DeclarationType.Variable)

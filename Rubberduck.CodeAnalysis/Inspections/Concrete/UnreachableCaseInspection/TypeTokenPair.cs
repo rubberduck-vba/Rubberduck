@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
-    public struct TypeTokenPair
+    internal struct TypeTokenPair
     {
         public string ValueType { get; }
         public string Token { get; }

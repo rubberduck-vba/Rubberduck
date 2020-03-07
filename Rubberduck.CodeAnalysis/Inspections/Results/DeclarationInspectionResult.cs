@@ -7,7 +7,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Results
 {
-    public class DeclarationInspectionResult : InspectionResultBase
+    internal class DeclarationInspectionResult : InspectionResultBase
     {
         public DeclarationInspectionResult(
             IInspection inspection, 
@@ -44,7 +44,7 @@ namespace Rubberduck.Inspections.Results
         }
     }
 
-    public class DeclarationInspectionResult<T> : DeclarationInspectionResult, IWithInspectionResultProperties<T>
+    internal class DeclarationInspectionResult<T> : DeclarationInspectionResult, IWithInspectionResultProperties<T>
     {
         public DeclarationInspectionResult(
             IInspection inspection, 

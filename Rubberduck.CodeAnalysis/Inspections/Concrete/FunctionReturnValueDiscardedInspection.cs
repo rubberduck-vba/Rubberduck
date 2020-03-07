@@ -39,7 +39,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Function
     /// ]]>
     /// </example>
-    public sealed class FunctionReturnValueDiscardedInspection : IdentifierReferenceInspectionBase
+    internal sealed class FunctionReturnValueDiscardedInspection : IdentifierReferenceInspectionBase
     {
         public FunctionReturnValueDiscardedInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

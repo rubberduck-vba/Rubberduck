@@ -30,7 +30,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class IntegerDataTypeInspection : DeclarationInspectionBase
+    internal sealed class IntegerDataTypeInspection : DeclarationInspectionBase
     {
         public IntegerDataTypeInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

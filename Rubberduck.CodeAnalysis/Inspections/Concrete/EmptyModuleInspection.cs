@@ -15,7 +15,7 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// An empty module does not need to exist and can be safely removed.
     /// </why>
-    public sealed class EmptyModuleInspection : DeclarationInspectionBase
+    internal sealed class EmptyModuleInspection : DeclarationInspectionBase
     {
         private readonly EmptyModuleVisitor _emptyModuleVisitor;
         private readonly IParseTreeProvider _parseTreeProvider;

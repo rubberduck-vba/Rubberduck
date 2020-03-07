@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection{
 
-    public static class ExpressionFilterFactory
+    internal static class ExpressionFilterFactory
     {
         private static readonly Dictionary<string, (long typeMin, long typeMax)> IntegralNumberExtents = new Dictionary<string, (long typeMin, long typeMax)>()
         {

@@ -39,7 +39,7 @@ namespace Rubberduck.Inspections.Concrete
     /// ]]>
     /// </example>
     [RequiredLibrary("Excel")]
-    public class ExcelMemberMayReturnNothingInspection : MemberAccessMayReturnNothingInspectionBase
+    internal class ExcelMemberMayReturnNothingInspection : MemberAccessMayReturnNothingInspectionBase
     {
         public ExcelMemberMayReturnNothingInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

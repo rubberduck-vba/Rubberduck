@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections.Concrete
     /// ]]>
     /// </example>
     [CannotAnnotate]
-    public sealed class MissingAttributeInspection : DeclarationInspectionMultiResultBase<IParseTreeAnnotation>
+    internal sealed class MissingAttributeInspection : DeclarationInspectionMultiResultBase<IParseTreeAnnotation>
     {
         public MissingAttributeInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

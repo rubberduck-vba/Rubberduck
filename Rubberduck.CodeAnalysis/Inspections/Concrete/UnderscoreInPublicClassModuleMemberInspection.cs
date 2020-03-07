@@ -29,7 +29,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class UnderscoreInPublicClassModuleMemberInspection : DeclarationInspectionBase
+    internal sealed class UnderscoreInPublicClassModuleMemberInspection : DeclarationInspectionBase
     {
         public UnderscoreInPublicClassModuleMemberInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, DeclarationType.Member)

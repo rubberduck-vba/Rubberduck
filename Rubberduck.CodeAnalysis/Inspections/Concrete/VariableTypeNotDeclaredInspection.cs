@@ -31,7 +31,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class VariableTypeNotDeclaredInspection : ImplicitTypeInspectionBase
+    internal sealed class VariableTypeNotDeclaredInspection : ImplicitTypeInspectionBase
     {
         public VariableTypeNotDeclaredInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, new []{DeclarationType.Parameter, DeclarationType.Variable}, new[]{DeclarationType.Control})

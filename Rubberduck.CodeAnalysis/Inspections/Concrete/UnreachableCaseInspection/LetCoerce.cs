@@ -6,7 +6,7 @@ using System.Globalization;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
-    public struct VBACurrency
+    internal struct VBACurrency
     {
         public static decimal MinValue = -922337203685477.5808M;
         public static decimal MaxValue = 922337203685477.5807M;
@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         }
     }
 
-    public struct LetCoerce
+    internal struct LetCoerce
     {
         //Content: Dictionary<sourceTypeName,Dictionary<LetDestinationTypeName,CoercionFunc>
         private static Dictionary<string, Dictionary<string, Func<string, string>>> _coercions = new Dictionary<string, Dictionary<string, Func<string, string>>>

@@ -39,7 +39,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Property
     /// ]]>
     /// </example>
-    public sealed class WriteOnlyPropertyInspection : DeclarationInspectionBase
+    internal sealed class WriteOnlyPropertyInspection : DeclarationInspectionBase
     {
         public WriteOnlyPropertyInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, DeclarationType.PropertyLet, DeclarationType.PropertySet) { }

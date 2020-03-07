@@ -33,7 +33,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class AssignedByValParameterInspection : DeclarationInspectionBase
+    internal sealed class AssignedByValParameterInspection : DeclarationInspectionBase
     {
         public AssignedByValParameterInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, DeclarationType.Parameter)

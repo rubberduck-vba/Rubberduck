@@ -281,9 +281,9 @@ namespace Rubberduck.UI.Inspections
 
         private bool FilterResults(object inspectionResult)
         {
-            var inspectionResultBase = inspectionResult as InspectionResultBase;
+            var inspectionResultBase = inspectionResult as IInspectionResult;
             
-            return inspectionResultBase.Description.ToUpper().Contains(InspectionDescriptionFilter.ToUpper()); ;
+            return inspectionResultBase?.Description.ToUpper().Contains(InspectionDescriptionFilter.ToUpper()) ?? false;
         }
 
         private bool InspectionFilter(IInspectionResult result)

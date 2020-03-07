@@ -67,7 +67,7 @@ namespace Rubberduck.Inspections.Concrete
     /// ]]>
     /// </module>
     /// </example>
-    public sealed class ImplicitRecursiveDefaultMemberAccessInspection : IdentifierReferenceInspectionBase
+    internal sealed class ImplicitRecursiveDefaultMemberAccessInspection : IdentifierReferenceInspectionBase
     {
         public ImplicitRecursiveDefaultMemberAccessInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    internal class ImplementedInterfaceMemberInspection : DeclarationInspectionBase
+    internal sealed class ImplementedInterfaceMemberInspection : DeclarationInspectionBase
     {
         public ImplementedInterfaceMemberInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, DeclarationType.ClassModule)

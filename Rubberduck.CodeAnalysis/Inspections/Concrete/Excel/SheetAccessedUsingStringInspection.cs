@@ -45,7 +45,7 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     [RequiredHost("EXCEL.EXE")]
     [RequiredLibrary("Excel")]
-    public class SheetAccessedUsingStringInspection : IdentifierReferenceInspectionFromDeclarationsBase<string>
+    internal class SheetAccessedUsingStringInspection : IdentifierReferenceInspectionFromDeclarationsBase<string>
     {
         private readonly IProjectsProvider _projectsProvider;
 

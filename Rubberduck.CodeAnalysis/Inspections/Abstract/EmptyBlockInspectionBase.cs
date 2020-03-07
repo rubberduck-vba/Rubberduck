@@ -7,7 +7,7 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.Abstract
 {
-    public abstract class EmptyBlockInspectionBase<TContext> : ParseTreeInspectionBase<TContext>
+    internal abstract class EmptyBlockInspectionBase<TContext> : ParseTreeInspectionBase<TContext>
         where TContext : ParserRuleContext
     {
         protected EmptyBlockInspectionBase(IDeclarationFinderProvider declarationFinderProvider) 

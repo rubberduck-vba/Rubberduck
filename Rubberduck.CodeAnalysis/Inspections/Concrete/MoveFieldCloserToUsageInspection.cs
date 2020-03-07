@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class MoveFieldCloserToUsageInspection : DeclarationInspectionBase
+    internal sealed class MoveFieldCloserToUsageInspection : DeclarationInspectionBase
     {
         public MoveFieldCloserToUsageInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, DeclarationType.Variable)

@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class UnhandledOnErrorResumeNextInspection : ParseTreeInspectionBase<VBAParser.OnErrorStmtContext, IReadOnlyList<VBAParser.OnErrorStmtContext>>
+    internal sealed class UnhandledOnErrorResumeNextInspection : ParseTreeInspectionBase<VBAParser.OnErrorStmtContext, IReadOnlyList<VBAParser.OnErrorStmtContext>>
     {
         private readonly OnErrorStatementListener _listener = new OnErrorStatementListener();
 

@@ -21,7 +21,7 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
     /// Note that the inspection only checks a subset of possible "evil" line continatuions 
     /// for both simplicity and performance reasons. Exhaustive inspection would likely take too much effort. 
     /// </remarks>
-    public sealed class LineContinuationBetweenKeywordsInspection : ParseTreeInspectionBase<ParserRuleContext>
+    internal sealed class LineContinuationBetweenKeywordsInspection : ParseTreeInspectionBase<ParserRuleContext>
     {
         public LineContinuationBetweenKeywordsInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

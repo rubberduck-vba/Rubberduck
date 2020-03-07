@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Function
     /// ]]>
     /// </example>
-    public sealed class ImplicitVariantReturnTypeInspection : ImplicitTypeInspectionBase
+    internal sealed class ImplicitVariantReturnTypeInspection : ImplicitTypeInspectionBase
     {
         public ImplicitVariantReturnTypeInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, DeclarationType.Function)

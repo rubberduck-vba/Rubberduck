@@ -113,7 +113,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class UnreachableCaseInspection : InspectionBase, IParseTreeInspection
+    internal sealed class UnreachableCaseInspection : InspectionBase, IParseTreeInspection
     {
         private readonly IUnreachableCaseInspector _inspector;
         private readonly IParseTreeValueVisitor _parseTreeValueVisitor;

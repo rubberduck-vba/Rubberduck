@@ -7,7 +7,7 @@ using System.Globalization;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
-    public class ComparableDateValue : IValue, IComparable<ComparableDateValue>
+    internal class ComparableDateValue : IValue, IComparable<ComparableDateValue>
     {
         private readonly DateValue _dateValue;
         private readonly int _hashCode;

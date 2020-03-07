@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
-    public class OperatorTypesProvider
+    internal class OperatorTypesProvider
     {
         private readonly (string lhs, string rhs) _operandTypeNames;
         private readonly string _opSymbol;

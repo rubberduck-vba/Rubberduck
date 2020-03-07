@@ -16,7 +16,7 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
     /// code our friend Andrew Jackson would have written to confuse Rubberduck's parser and/or resolver. 
     /// 'On Error GoTo -1' is poorly documented and uselessly complicates error handling.
     /// </why>
-    public sealed class OnErrorGoToMinusOneInspection : ParseTreeInspectionBase<VBAParser.OnErrorStmtContext>
+    internal sealed class OnErrorGoToMinusOneInspection : ParseTreeInspectionBase<VBAParser.OnErrorStmtContext>
     {
         public OnErrorGoToMinusOneInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

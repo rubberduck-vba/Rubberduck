@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class ImplicitByRefModifierInspection : DeclarationInspectionBase
+    internal sealed class ImplicitByRefModifierInspection : DeclarationInspectionBase
     {
         public ImplicitByRefModifierInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, DeclarationType.Parameter)

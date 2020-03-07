@@ -33,7 +33,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class RedundantOptionInspection : ParseTreeInspectionBase<ParserRuleContext>
+    internal sealed class RedundantOptionInspection : ParseTreeInspectionBase<ParserRuleContext>
     {
         public RedundantOptionInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

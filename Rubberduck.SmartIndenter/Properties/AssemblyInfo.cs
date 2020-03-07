@@ -1,7 +1,8 @@
-﻿using System.Reflection;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 
+//This is the assembly name of the project Rubberduck.Main.
+[assembly: InternalsVisibleTo("Rubberduck")]
 [assembly: InternalsVisibleTo("RubberduckTests")]
 
 [assembly: ComVisible(false)]

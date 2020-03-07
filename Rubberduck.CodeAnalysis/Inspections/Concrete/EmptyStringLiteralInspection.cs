@@ -33,7 +33,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class EmptyStringLiteralInspection : ParseTreeInspectionBase<VBAParser.LiteralExpressionContext>
+    internal sealed class EmptyStringLiteralInspection : ParseTreeInspectionBase<VBAParser.LiteralExpressionContext>
     {
         public EmptyStringLiteralInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

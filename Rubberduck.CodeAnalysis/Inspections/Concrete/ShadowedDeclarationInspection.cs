@@ -39,7 +39,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class ShadowedDeclarationInspection : DeclarationInspectionUsingGlobalInformationBase<IDictionary<string, HashSet<string>>, Declaration>
+    internal sealed class ShadowedDeclarationInspection : DeclarationInspectionUsingGlobalInformationBase<IDictionary<string, HashSet<string>>, Declaration>
     {
         private enum DeclarationSite
         {

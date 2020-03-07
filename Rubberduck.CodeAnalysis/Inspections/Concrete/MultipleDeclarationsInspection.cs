@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Dim bar As Long 
     /// ]]>
     /// </example>
-    public sealed class MultipleDeclarationsInspection : ParseTreeInspectionBase<ParserRuleContext>
+    internal sealed class MultipleDeclarationsInspection : ParseTreeInspectionBase<ParserRuleContext>
     {
         public MultipleDeclarationsInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

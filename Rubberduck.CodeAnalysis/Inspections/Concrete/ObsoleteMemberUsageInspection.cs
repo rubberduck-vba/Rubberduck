@@ -46,7 +46,7 @@ namespace Rubberduck.Inspections.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class ObsoleteMemberUsageInspection : IdentifierReferenceInspectionBase
+    internal sealed class ObsoleteMemberUsageInspection : IdentifierReferenceInspectionBase
     {
         public ObsoleteMemberUsageInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

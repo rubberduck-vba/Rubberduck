@@ -9,7 +9,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Results
 {
-    public class IdentifierReferenceInspectionResult : InspectionResultBase
+    internal class IdentifierReferenceInspectionResult : InspectionResultBase
     {
         public IdentifierReference Reference { get; }
 
@@ -44,7 +44,7 @@ namespace Rubberduck.Inspections.Results
         }
     }
 
-    public class IdentifierReferenceInspectionResult<T> : IdentifierReferenceInspectionResult, IWithInspectionResultProperties<T>
+    internal class IdentifierReferenceInspectionResult<T> : IdentifierReferenceInspectionResult, IWithInspectionResultProperties<T>
     {
         public IdentifierReferenceInspectionResult(
             IInspection inspection, 

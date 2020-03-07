@@ -30,7 +30,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public class IsMissingOnInappropriateArgumentInspection : IsMissingInspectionBase
+    internal class IsMissingOnInappropriateArgumentInspection : IsMissingInspectionBase
     {
         public IsMissingOnInappropriateArgumentInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

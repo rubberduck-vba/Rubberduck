@@ -40,7 +40,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class ProcedureNotUsedInspection : DeclarationInspectionBase
+    internal sealed class ProcedureNotUsedInspection : DeclarationInspectionBase
     {
         public ProcedureNotUsedInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, ProcedureTypes)

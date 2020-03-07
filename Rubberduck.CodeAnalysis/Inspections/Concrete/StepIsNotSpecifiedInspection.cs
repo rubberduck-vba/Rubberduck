@@ -35,7 +35,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class StepIsNotSpecifiedInspection : ParseTreeInspectionBase<VBAParser.ForNextStmtContext>
+    internal sealed class StepIsNotSpecifiedInspection : ParseTreeInspectionBase<VBAParser.ForNextStmtContext>
     {
         public StepIsNotSpecifiedInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

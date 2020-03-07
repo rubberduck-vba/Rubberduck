@@ -40,7 +40,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class SelfAssignedDeclarationInspection : DeclarationInspectionBase
+    internal sealed class SelfAssignedDeclarationInspection : DeclarationInspectionBase
     {
         public SelfAssignedDeclarationInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, DeclarationType.Variable)

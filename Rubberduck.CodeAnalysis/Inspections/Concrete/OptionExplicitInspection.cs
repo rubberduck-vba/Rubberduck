@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class OptionExplicitInspection : ParseTreeInspectionBase<VBAParser.ModuleContext>
+    internal sealed class OptionExplicitInspection : ParseTreeInspectionBase<VBAParser.ModuleContext>
     {
         public OptionExplicitInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

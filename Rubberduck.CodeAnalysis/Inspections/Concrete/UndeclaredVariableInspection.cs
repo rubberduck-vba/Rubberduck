@@ -29,7 +29,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class UndeclaredVariableInspection : DeclarationInspectionBase
+    internal sealed class UndeclaredVariableInspection : DeclarationInspectionBase
     {
         public UndeclaredVariableInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, DeclarationType.Variable)

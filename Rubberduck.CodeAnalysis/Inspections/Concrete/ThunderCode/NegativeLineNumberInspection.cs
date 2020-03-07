@@ -17,7 +17,7 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
     /// code our friend Andrew Jackson would have written to confuse Rubberduck's parser and/or resolver. 
     /// The VBE does allow rather strange and unbelievable things to happen.
     /// </why>
-    public sealed class NegativeLineNumberInspection : ParseTreeInspectionBase<ParserRuleContext>
+    internal sealed class NegativeLineNumberInspection : ParseTreeInspectionBase<ParserRuleContext>
     {
         public NegativeLineNumberInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

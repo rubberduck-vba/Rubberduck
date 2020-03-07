@@ -38,7 +38,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class LineLabelNotUsedInspection : DeclarationInspectionBase
+    internal sealed class LineLabelNotUsedInspection : DeclarationInspectionBase
     {
         public LineLabelNotUsedInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, DeclarationType.LineLabel)

@@ -8,7 +8,7 @@ using Rubberduck.Interaction.Navigation;
 
 namespace Rubberduck.Inspections.Abstract
 {
-    public abstract class InspectionResultBase : IInspectionResult, INavigateSource
+    internal abstract class InspectionResultBase : IInspectionResult, INavigateSource
     {
         protected InspectionResultBase(IInspection inspection,
             string description,

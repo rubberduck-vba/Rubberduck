@@ -43,7 +43,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Function
     /// ]]>
     /// </example>
-    public sealed class HungarianNotationInspection : DeclarationInspectionUsingGlobalInformationBase<List<string>>
+    internal sealed class HungarianNotationInspection : DeclarationInspectionUsingGlobalInformationBase<List<string>>
     {
         private static readonly DeclarationType[] TargetDeclarationTypes = new []
         {

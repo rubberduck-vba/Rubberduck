@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Public Foo As Long
     /// ]]>
     /// </example>
-    public sealed class ObsoleteGlobalInspection : DeclarationInspectionBase
+    internal sealed class ObsoleteGlobalInspection : DeclarationInspectionBase
     {
         public ObsoleteGlobalInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

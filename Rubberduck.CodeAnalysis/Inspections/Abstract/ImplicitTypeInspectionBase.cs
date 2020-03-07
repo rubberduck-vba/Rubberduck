@@ -4,7 +4,7 @@ using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Abstract
 {
-    public abstract class ImplicitTypeInspectionBase : DeclarationInspectionBase
+    internal abstract class ImplicitTypeInspectionBase : DeclarationInspectionBase
     {
         protected ImplicitTypeInspectionBase(IDeclarationFinderProvider declarationFinderProvider, params DeclarationType[] relevantDeclarationTypes) 
             : base(declarationFinderProvider, relevantDeclarationTypes)

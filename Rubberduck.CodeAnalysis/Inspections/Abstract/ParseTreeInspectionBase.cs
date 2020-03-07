@@ -13,7 +13,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Abstract
 {
-    public abstract class ParseTreeInspectionBase<TContext> : InspectionBase, IParseTreeInspection
+    internal abstract class ParseTreeInspectionBase<TContext> : InspectionBase, IParseTreeInspection
         where TContext : ParserRuleContext
     {
         protected ParseTreeInspectionBase(IDeclarationFinderProvider declarationFinderProvider)
@@ -62,7 +62,7 @@ namespace Rubberduck.Inspections.Abstract
     }
 
 
-    public abstract class ParseTreeInspectionBase<TContext, TProperties> : InspectionBase, IParseTreeInspection
+    internal abstract class ParseTreeInspectionBase<TContext, TProperties> : InspectionBase, IParseTreeInspection
         where TContext : ParserRuleContext
     {
         protected ParseTreeInspectionBase(IDeclarationFinderProvider declarationFinderProvider)
@@ -119,7 +119,7 @@ namespace Rubberduck.Inspections.Abstract
         public virtual CodeKind TargetKindOfCode => CodeKind.CodePaneCode;
     }
 
-    public class InspectionListenerBase<TContext> : VBAParserBaseListener, IInspectionListener<TContext>
+    internal class InspectionListenerBase<TContext> : VBAParserBaseListener, IInspectionListener<TContext>
         where TContext : ParserRuleContext
     {
         private readonly IDictionary<QualifiedModuleName, List<QualifiedContext<TContext>>> _contexts;

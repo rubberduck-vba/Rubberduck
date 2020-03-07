@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Const myInteger% = 12345
     /// ]]>
     /// </example>
-    public sealed class ImplicitlyTypedConstInspection : ImplicitTypeInspectionBase
+    internal sealed class ImplicitlyTypedConstInspection : ImplicitTypeInspectionBase
     {
         public ImplicitlyTypedConstInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, DeclarationType.Constant)

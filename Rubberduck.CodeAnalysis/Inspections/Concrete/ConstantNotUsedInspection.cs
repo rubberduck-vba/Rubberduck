@@ -32,7 +32,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class ConstantNotUsedInspection : DeclarationInspectionBase
+    internal sealed class ConstantNotUsedInspection : DeclarationInspectionBase
     {
         public ConstantNotUsedInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, DeclarationType.Constant)

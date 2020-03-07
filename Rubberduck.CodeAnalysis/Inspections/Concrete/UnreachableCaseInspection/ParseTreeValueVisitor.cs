@@ -11,12 +11,12 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
-    public interface IParseTreeValueVisitor
+    internal interface IParseTreeValueVisitor
     {
         IParseTreeVisitorResults VisitChildren(QualifiedModuleName module, IRuleNode node, DeclarationFinder finder);
     }
 
-    public class EnumMember
+    internal class EnumMember
     {
         public EnumMember(VBAParser.EnumerationStmt_ConstantContext constContext, long initValue)
         {
@@ -29,7 +29,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public bool HasAssignment { get; }
     }
 
-    public class ParseTreeValueVisitor : IParseTreeValueVisitor
+    internal class ParseTreeValueVisitor : IParseTreeValueVisitor
     {
         private readonly IParseTreeValueFactory _valueFactory;
         private readonly Func<Declaration, (bool, string, string)> _valueDeclarationEvaluator;

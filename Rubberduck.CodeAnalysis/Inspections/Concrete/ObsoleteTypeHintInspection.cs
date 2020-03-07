@@ -33,7 +33,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class ObsoleteTypeHintInspection : InspectionBase
+    internal sealed class ObsoleteTypeHintInspection : InspectionBase
     {
         public ObsoleteTypeHintInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

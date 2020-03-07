@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Rubberduck.Inspections.Inspections.Extensions
 {
-    static class IgnoreRelatedExtensions
+    internal static class IgnoreRelatedExtensions
     {
         public static bool IsIgnoringInspectionResultFor(this IdentifierReference reference, string inspectionName)
         {

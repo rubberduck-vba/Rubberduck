@@ -41,7 +41,7 @@ namespace Rubberduck.Inspections.Concrete
     /// ]]>
     /// </example>
     [SuppressMessage("ReSharper", "LoopCanBeConvertedToQuery")]
-    public sealed class UnassignedVariableUsageInspection : IdentifierReferenceInspectionFromDeclarationsBase
+    internal sealed class UnassignedVariableUsageInspection : IdentifierReferenceInspectionFromDeclarationsBase
     {
         public UnassignedVariableUsageInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

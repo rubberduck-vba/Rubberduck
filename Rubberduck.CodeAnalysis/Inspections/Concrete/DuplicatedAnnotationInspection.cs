@@ -34,7 +34,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class DuplicatedAnnotationInspection : DeclarationInspectionMultiResultBase<IAnnotation>
+    internal sealed class DuplicatedAnnotationInspection : DeclarationInspectionMultiResultBase<IAnnotation>
     {
         public DuplicatedAnnotationInspection(IDeclarationFinderProvider declarationFinderProvider) 
             : base(declarationFinderProvider)

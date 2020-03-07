@@ -29,7 +29,7 @@ namespace Rubberduck.Inspections.Concrete
     /// ' ...
     /// ]]>
     /// </example>
-    public sealed class ModuleScopeDimKeywordInspection : ParseTreeInspectionBase<VBAParser.VariableSubStmtContext>
+    internal sealed class ModuleScopeDimKeywordInspection : ParseTreeInspectionBase<VBAParser.VariableSubStmtContext>
     {
         public ModuleScopeDimKeywordInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

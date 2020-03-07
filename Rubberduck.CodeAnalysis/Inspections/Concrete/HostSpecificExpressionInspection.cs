@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class HostSpecificExpressionInspection : DeclarationInspectionBase
+    internal sealed class HostSpecificExpressionInspection : DeclarationInspectionBase
     {
         public HostSpecificExpressionInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, DeclarationType.BracketedExpression)

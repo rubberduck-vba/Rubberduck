@@ -1,8 +1,8 @@
-﻿using System.Reflection;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: InternalsVisibleTo("Rubberduck.Main")]
+//This is the assembly name of the project Rubberduck.Main.
+[assembly: InternalsVisibleTo("Rubberduck")]
 [assembly: InternalsVisibleTo("RubberduckTests")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 

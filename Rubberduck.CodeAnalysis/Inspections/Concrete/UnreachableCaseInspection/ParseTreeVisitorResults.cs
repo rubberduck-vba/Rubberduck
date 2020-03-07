@@ -6,7 +6,7 @@ using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
-    public interface IParseTreeVisitorResults
+    internal interface IParseTreeVisitorResults
     {
         IParseTreeValue GetValue(ParserRuleContext context);
         List<ParserRuleContext> GetChildResults(ParserRuleContext parent);
@@ -17,13 +17,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         bool TryGetEnumMembers(VBAParser.EnumerationStmtContext enumerationStmtContext, out IReadOnlyList<EnumMember> enumMembers);
     }
 
-    public interface IMutableParseTreeVisitorResults : IParseTreeVisitorResults
+    internal interface IMutableParseTreeVisitorResults : IParseTreeVisitorResults
     {
         void AddIfNotPresent(ParserRuleContext context, IParseTreeValue value);
         void AddEnumMember(VBAParser.EnumerationStmtContext enumerationStmtContext, EnumMember enumMember);
     }
 
-    public class ParseTreeVisitorResults : IMutableParseTreeVisitorResults
+    internal class ParseTreeVisitorResults : IMutableParseTreeVisitorResults
     {
         private readonly Dictionary<ParserRuleContext, IParseTreeValue> _parseTreeValues = new Dictionary<ParserRuleContext, IParseTreeValue>();
         private readonly Dictionary<VBAParser.EnumerationStmtContext, List<EnumMember>> _enumMembers = new Dictionary<VBAParser.EnumerationStmtContext, List<EnumMember>>();

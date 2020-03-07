@@ -47,7 +47,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Function
     /// ]]>
     /// </example>
-    public sealed class FunctionReturnValueAlwaysDiscardedInspection : DeclarationInspectionBase
+    internal sealed class FunctionReturnValueAlwaysDiscardedInspection : DeclarationInspectionBase
     {
         public FunctionReturnValueAlwaysDiscardedInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, DeclarationType.Function)

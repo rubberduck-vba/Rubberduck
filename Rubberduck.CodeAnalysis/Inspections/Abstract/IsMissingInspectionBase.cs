@@ -8,7 +8,7 @@ using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Inspections.Abstract
 {
-    public abstract class IsMissingInspectionBase : ArgumentReferenceInspectionFromDeclarationsBase<ParameterDeclaration>
+    internal abstract class IsMissingInspectionBase : ArgumentReferenceInspectionFromDeclarationsBase<ParameterDeclaration>
     {
         protected IsMissingInspectionBase(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

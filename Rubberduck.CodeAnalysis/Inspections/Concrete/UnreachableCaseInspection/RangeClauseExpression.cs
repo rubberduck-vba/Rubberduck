@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
-    public interface IRangeClauseExpression
+    internal interface IRangeClauseExpression
     {
         IParseTreeValue RHS { get; }
         IParseTreeValue LHS { get; }
@@ -14,13 +14,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         bool IsInherentlyUnreachable { set; get; }
     }
 
-    public class RangeOfValuesExpression : RangeClauseExpression
+    internal class RangeOfValuesExpression : RangeClauseExpression
     {
         public RangeOfValuesExpression((IParseTreeValue lhs, IParseTreeValue rhs) rangeOfValues)
             : base(rangeOfValues.lhs, rangeOfValues.rhs, Tokens.To) { }
     }
 
-    public class BinaryExpression : RangeClauseExpression
+    internal class BinaryExpression : RangeClauseExpression
     {
         public BinaryExpression(IParseTreeValue lhs, IParseTreeValue rhs, string opSymbol)
             : base(lhs, rhs, opSymbol, true)
@@ -29,7 +29,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         }
     }
 
-    public class LikeExpression : RangeClauseExpression
+    internal class LikeExpression : RangeClauseExpression
     {
         public LikeExpression(IParseTreeValue lhs, IParseTreeValue rhs)
             : base(lhs, rhs, Tokens.Like, false)
@@ -65,7 +65,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         }
     }
 
-    public class IsClauseExpression : RangeClauseExpression
+    internal class IsClauseExpression : RangeClauseExpression
     {
         public IsClauseExpression(IParseTreeValue value, string opSymbol)
             : base(value, null, opSymbol)
@@ -79,7 +79,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         }
     }
 
-    public class UnaryExpression : RangeClauseExpression
+    internal class UnaryExpression : RangeClauseExpression
     {
         public UnaryExpression(IParseTreeValue value, string opSymbol)
             : base(value, null, opSymbol)
@@ -93,7 +93,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         }
     }
 
-    public class ValueExpression : RangeClauseExpression
+    internal class ValueExpression : RangeClauseExpression
     {
         public ValueExpression(IParseTreeValue value)
             : base(value, null, string.Empty)
@@ -104,7 +104,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public override string ToString() => LHS.Token;
     }
 
-    public abstract class RangeClauseExpression : IRangeClauseExpression
+    internal abstract class RangeClauseExpression : IRangeClauseExpression
     {
         private ClauseExpressionData _data;
         protected int _hashCode;

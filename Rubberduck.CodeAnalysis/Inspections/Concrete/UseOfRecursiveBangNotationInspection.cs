@@ -61,7 +61,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Function
     /// ]]>
     /// </example>
-    public sealed class UseOfRecursiveBangNotationInspection : IdentifierReferenceInspectionBase
+    internal sealed class UseOfRecursiveBangNotationInspection : IdentifierReferenceInspectionBase
     {
         public UseOfRecursiveBangNotationInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

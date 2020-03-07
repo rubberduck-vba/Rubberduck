@@ -38,7 +38,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class ObjectVariableNotSetInspection : IdentifierReferenceInspectionBase
+    internal sealed class ObjectVariableNotSetInspection : IdentifierReferenceInspectionBase
     {
         public ObjectVariableNotSetInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

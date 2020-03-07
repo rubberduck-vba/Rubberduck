@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections.Concrete
     /// ' ...
     /// ]]>
     /// </example>
-    public sealed class ModuleWithoutFolderInspection : DeclarationInspectionBase
+    internal sealed class ModuleWithoutFolderInspection : DeclarationInspectionBase
     {
         public ModuleWithoutFolderInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, DeclarationType.Module)

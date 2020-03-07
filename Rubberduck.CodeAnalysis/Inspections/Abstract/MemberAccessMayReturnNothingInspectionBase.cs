@@ -13,7 +13,7 @@ using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Abstract
 {
-    public abstract class MemberAccessMayReturnNothingInspectionBase : IdentifierReferenceInspectionFromDeclarationsBase
+    internal abstract class MemberAccessMayReturnNothingInspectionBase : IdentifierReferenceInspectionFromDeclarationsBase
     {
         protected MemberAccessMayReturnNothingInspectionBase(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

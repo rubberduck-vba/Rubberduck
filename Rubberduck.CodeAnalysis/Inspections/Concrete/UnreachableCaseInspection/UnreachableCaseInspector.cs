@@ -10,7 +10,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
-    public interface IUnreachableCaseInspector
+    internal interface IUnreachableCaseInspector
     {
         ICollection<(UnreachableCaseInspection.CaseInspectionResultType resultType, ParserRuleContext context)> InspectForUnreachableCases(
             QualifiedModuleName module, 
@@ -22,7 +22,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             IParseTreeVisitorResults parseTreeValues);
     }
 
-    public class UnreachableCaseInspector : IUnreachableCaseInspector
+    internal class UnreachableCaseInspector : IUnreachableCaseInspector
     {
         private readonly IParseTreeValueFactory _valueFactory;
 

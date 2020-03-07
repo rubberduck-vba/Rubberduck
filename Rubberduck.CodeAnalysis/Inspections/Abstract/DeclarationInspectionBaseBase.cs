@@ -11,7 +11,7 @@ namespace Rubberduck.Inspections.Abstract
     /// <summary>
     /// This is a base class for the other declaration inspection base classes. It should not be implemented directly by concrete inspections.
     /// </summary>
-    public abstract class DeclarationInspectionBaseBase : InspectionBase
+    internal abstract class DeclarationInspectionBaseBase : InspectionBase
     {
         private readonly DeclarationType[] _relevantDeclarationTypes;
         private readonly DeclarationType[] _excludeDeclarationTypes;

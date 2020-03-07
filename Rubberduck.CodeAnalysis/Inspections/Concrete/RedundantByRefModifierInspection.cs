@@ -32,7 +32,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class RedundantByRefModifierInspection : DeclarationInspectionBase
+    internal sealed class RedundantByRefModifierInspection : DeclarationInspectionBase
     {
         public RedundantByRefModifierInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, DeclarationType.Parameter)

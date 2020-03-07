@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections.Inspections.Concrete
     /// Private Declare Sub Beep Lib "kernel32" (dwFreq As Any, dwDuration As Any)
     /// ]]>
     /// </example>
-    public sealed class ObsoleteCallingConventionInspection : ParseTreeInspectionBase<VBAParser.DeclareStmtContext>
+    internal sealed class ObsoleteCallingConventionInspection : ParseTreeInspectionBase<VBAParser.DeclareStmtContext>
     {
         public ObsoleteCallingConventionInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

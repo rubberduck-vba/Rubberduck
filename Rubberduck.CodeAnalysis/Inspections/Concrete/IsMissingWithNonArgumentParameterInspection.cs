@@ -30,7 +30,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public class IsMissingWithNonArgumentParameterInspection : IsMissingInspectionBase
+    internal class IsMissingWithNonArgumentParameterInspection : IsMissingInspectionBase
     {
         public IsMissingWithNonArgumentParameterInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

@@ -32,7 +32,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class StopKeywordInspection : ParseTreeInspectionBase<VBAParser.StopStmtContext>
+    internal sealed class StopKeywordInspection : ParseTreeInspectionBase<VBAParser.StopStmtContext>
     {
         public StopKeywordInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

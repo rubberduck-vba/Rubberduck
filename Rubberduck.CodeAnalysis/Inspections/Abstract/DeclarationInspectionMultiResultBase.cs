@@ -9,7 +9,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Abstract
 {
-    public abstract class DeclarationInspectionMultiResultBase<T> : DeclarationInspectionBaseBase
+    internal abstract class DeclarationInspectionMultiResultBase<T> : DeclarationInspectionBaseBase
     {
         protected DeclarationInspectionMultiResultBase(IDeclarationFinderProvider declarationFinderProvider, params DeclarationType[] relevantDeclarationTypes)
             : base(declarationFinderProvider, relevantDeclarationTypes)

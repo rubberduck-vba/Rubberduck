@@ -37,7 +37,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class MemberNotOnInterfaceInspection : DeclarationInspectionBase<Declaration>
+    internal sealed class MemberNotOnInterfaceInspection : DeclarationInspectionBase<Declaration>
     {
         public MemberNotOnInterfaceInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

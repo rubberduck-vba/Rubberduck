@@ -7,7 +7,7 @@ using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Inspections.Inspections.Abstract
 {
-    public abstract class ArgumentReferenceInspectionFromDeclarationsBase : IdentifierReferenceInspectionFromDeclarationsBase
+    internal abstract class ArgumentReferenceInspectionFromDeclarationsBase : IdentifierReferenceInspectionFromDeclarationsBase
     {
         protected ArgumentReferenceInspectionFromDeclarationsBase(RubberduckParserState state) 
             : base(state) { }
@@ -32,7 +32,7 @@ namespace Rubberduck.Inspections.Inspections.Abstract
         }
     }
 
-    public abstract class ArgumentReferenceInspectionFromDeclarationsBase<T> : IdentifierReferenceInspectionFromDeclarationsBase<T>
+    internal abstract class ArgumentReferenceInspectionFromDeclarationsBase<T> : IdentifierReferenceInspectionFromDeclarationsBase<T>
     {
         protected ArgumentReferenceInspectionFromDeclarationsBase(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

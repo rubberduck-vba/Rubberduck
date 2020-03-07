@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
-    public enum VariableClauseTypes
+    internal enum VariableClauseTypes
     {
         Predicate,
         Value,
@@ -15,7 +15,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         Is
     };
 
-    public interface IExpressionFilter
+    internal interface IExpressionFilter
     {
         void CheckAndAddExpression(IRangeClauseExpression expression);
         void AddComparablePredicateFilter(string variable, string variableTypeName);
@@ -24,7 +24,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         IParseTreeValue SelectExpressionValue { set; get; }
     }
 
-    public class ExpressionFilter<T> : IExpressionFilter where T : IComparable<T>
+    internal class ExpressionFilter<T> : IExpressionFilter where T : IComparable<T>
     {
         private struct PredicateValueExpression
         {

@@ -33,7 +33,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Function
     /// ]]>
     /// </example>
-    public sealed class NonReturningFunctionInspection : DeclarationInspectionBase
+    internal sealed class NonReturningFunctionInspection : DeclarationInspectionBase
     {
         public NonReturningFunctionInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, DeclarationType.Function)

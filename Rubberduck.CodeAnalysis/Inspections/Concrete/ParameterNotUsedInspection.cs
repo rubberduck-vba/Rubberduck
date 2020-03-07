@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class ParameterNotUsedInspection : DeclarationInspectionBase
+    internal sealed class ParameterNotUsedInspection : DeclarationInspectionBase
     {
         public ParameterNotUsedInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, DeclarationType.Parameter)

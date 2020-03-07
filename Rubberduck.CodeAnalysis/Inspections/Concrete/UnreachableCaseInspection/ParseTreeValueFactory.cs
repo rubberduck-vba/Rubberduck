@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
-    public interface IParseTreeValueFactory
+    internal interface IParseTreeValueFactory
     {
         IParseTreeValue CreateMismatchExpression(string expression, string typeName);
         IParseTreeValue CreateExpression(string expression, string typeName);
@@ -23,7 +23,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         IParseTreeValue CreateDate(double value);
     }
 
-    public class ParseTreeValueFactory : IParseTreeValueFactory
+    internal class ParseTreeValueFactory : IParseTreeValueFactory
     {
         public IParseTreeValue CreateValueType(string expression, string declaredTypeName)
         {

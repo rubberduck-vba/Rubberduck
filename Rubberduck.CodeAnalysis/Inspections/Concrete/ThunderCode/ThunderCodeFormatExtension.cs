@@ -2,7 +2,7 @@
 
 namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
 {
-    public static class ThunderCodeFormatExtension
+    internal static class ThunderCodeFormatExtension
     {
         public static string ThunderCodeFormat(this string inspectionBase, params object[] args)
         {

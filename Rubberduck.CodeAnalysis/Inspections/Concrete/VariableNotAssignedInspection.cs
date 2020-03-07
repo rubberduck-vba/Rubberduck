@@ -34,7 +34,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class VariableNotAssignedInspection : DeclarationInspectionBase
+    internal sealed class VariableNotAssignedInspection : DeclarationInspectionBase
     {
         public VariableNotAssignedInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, DeclarationType.Variable)

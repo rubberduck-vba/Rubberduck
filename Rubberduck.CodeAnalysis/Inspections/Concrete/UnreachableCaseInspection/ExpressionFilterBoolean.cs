@@ -2,7 +2,7 @@
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
-    public class ExpressionFilterBoolean : ExpressionFilter<bool>
+    internal class ExpressionFilterBoolean : ExpressionFilter<bool>
     {
         public ExpressionFilterBoolean() : base(Tokens.Boolean, (a) => { return a.Equals(Tokens.True); }) { }
 
@@ -73,26 +73,31 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 {
                     return AddSingleValue(!isValue);
                 }
-                else if (opSymbol.Equals(RelationalOperators.EQ))
+
+                if (opSymbol.Equals(RelationalOperators.EQ))
                 {
                     return AddSingleValue(isValue);
                 }
-                else if (opSymbol.Equals(RelationalOperators.GT))
+
+                if (opSymbol.Equals(RelationalOperators.GT))
                 {
                     expression.IsInherentlyUnreachable = !isValue;
                     return isValue ? AddComparablePredicate(Tokens.Is, expression) : false;
                 }
-                else if (opSymbol.Equals(RelationalOperators.GTE) || opSymbol.Equals(RelationalOperators.GTE2))
+
+                if (opSymbol.Equals(RelationalOperators.GTE) || opSymbol.Equals(RelationalOperators.GTE2))
                 {
                     return isValue ? AddTrueAndFalse()  //True for selectExpr value of True or False
                                         : AddComparablePredicate(Tokens.Is, expression);
                 }
-                else if (opSymbol.Equals(RelationalOperators.LT))
+
+                if (opSymbol.Equals(RelationalOperators.LT))
                 {
                     expression.IsInherentlyUnreachable = isValue;
                     return isValue ? false : AddComparablePredicate(Tokens.Is, expression);
                 }
-                else if (opSymbol.Equals(RelationalOperators.LTE) || opSymbol.Equals(RelationalOperators.LTE2))
+
+                if (opSymbol.Equals(RelationalOperators.LTE) || opSymbol.Equals(RelationalOperators.LTE2))
                 {
                     return isValue ? AddComparablePredicate(Tokens.Is, expression)
                                         : AddTrueAndFalse(); //True for selectExpr value of True or False
@@ -105,18 +110,21 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 {
                     return AddSingleValue(selectExpr != isValue);
                 }
-                else if (opSymbol.Equals(RelationalOperators.EQ))
+
+                if (opSymbol.Equals(RelationalOperators.EQ))
                 {
                     return AddSingleValue(selectExpr == isValue);
                 }
-                else if (opSymbol.Equals(RelationalOperators.GT))
+
+                if (opSymbol.Equals(RelationalOperators.GT))
                 {
                     //if Is > True and the selectExpr is False => True
                     //If Is > True and the selectExpr is True => False
                     expression.IsInherentlyUnreachable = !isValue;
                     return isValue ? AddSingleValue(!selectExpr) : false;
                 }
-                else if (opSymbol.Equals(RelationalOperators.GTE) || opSymbol.Equals(RelationalOperators.GTE2))
+
+                if (opSymbol.Equals(RelationalOperators.GTE) || opSymbol.Equals(RelationalOperators.GTE2))
                 {
                     //if Is >= True and the selectExpr is False => True
                     //If Is >= True and the selectExpr is True => True
@@ -124,12 +132,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     //If Is >= False and the selectExpr is True => False
                     return AddSingleValue(!(!isValue && selectExpr));
                 }
-                else if (opSymbol.Equals(RelationalOperators.LT))
+
+                if (opSymbol.Equals(RelationalOperators.LT))
                 {
                     expression.IsInherentlyUnreachable = isValue;
                     return isValue ? false : AddSingleValue(selectExpr);
                 }
-                else if (opSymbol.Equals(RelationalOperators.LTE) || opSymbol.Equals(RelationalOperators.LTE2))
+
+                if (opSymbol.Equals(RelationalOperators.LTE) || opSymbol.Equals(RelationalOperators.LTE2))
                 {
                     //if Is <= True and the selectExpr is False => False
                     //If Is <= True and the selectExpr is True => True
@@ -138,6 +148,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     return AddSingleValue(!(isValue && !selectExpr));
                 }
             }
+
             return false;
         }
 

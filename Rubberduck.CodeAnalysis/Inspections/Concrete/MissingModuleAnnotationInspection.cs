@@ -31,7 +31,7 @@ namespace Rubberduck.Inspections.Concrete
     /// ' ...
     /// ]]>
     /// </example>
-    public sealed class MissingModuleAnnotationInspection : DeclarationInspectionMultiResultBase<(string AttributeName, IReadOnlyList<string> AttributeValues)>
+    internal sealed class MissingModuleAnnotationInspection : DeclarationInspectionMultiResultBase<(string AttributeName, IReadOnlyList<string> AttributeValues)>
     {
         public MissingModuleAnnotationInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider, new []{DeclarationType.Module}, new []{DeclarationType.Document})

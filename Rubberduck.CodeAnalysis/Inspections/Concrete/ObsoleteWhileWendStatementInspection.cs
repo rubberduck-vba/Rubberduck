@@ -32,7 +32,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class ObsoleteWhileWendStatementInspection : ParseTreeInspectionBase<VBAParser.WhileWendStmtContext>
+    internal sealed class ObsoleteWhileWendStatementInspection : ParseTreeInspectionBase<VBAParser.WhileWendStmtContext>
     {
         public ObsoleteWhileWendStatementInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)

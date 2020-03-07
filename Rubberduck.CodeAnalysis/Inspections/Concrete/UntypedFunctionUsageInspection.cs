@@ -30,7 +30,7 @@ namespace Rubberduck.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    public sealed class UntypedFunctionUsageInspection : IdentifierReferenceInspectionFromDeclarationsBase
+    internal sealed class UntypedFunctionUsageInspection : IdentifierReferenceInspectionFromDeclarationsBase
     {
         public UntypedFunctionUsageInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
