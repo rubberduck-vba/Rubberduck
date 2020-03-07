@@ -97,6 +97,33 @@ namespace RubberduckCodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid value for &apos;type&apos; attribute..
+        /// </summary>
+        public static string InvalidTypeAttribute {
+            get {
+                return ResourceManager.GetString("InvalidTypeAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The values of the &apos;type&apos; attribute are restricted to the value &apos;Standard Module&apos;, &apos;Class Module&apos;, &apos;Document&apos; and &apos;User Form&apos;..
+        /// </summary>
+        public static string InvalidTypeAttributeDescription {
+            get {
+                return ResourceManager.GetString("InvalidTypeAttributeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; is not legal for the &apos;type&apos; attribute..
+        /// </summary>
+        public static string InvalidTypeAttributeMessageFormat {
+            get {
+                return ResourceManager.GetString("InvalidTypeAttributeMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to COM-visible classes must have an explicit ClassInterface attribute and be set to `None`. This is required to avoid versioning problems..
         /// </summary>
         public static string MissingClassInterfaceDescription {
@@ -489,6 +516,33 @@ namespace RubberduckCodeAnalysis {
         public static string MissingRequiredLibAttributeMessageFormat {
             get {
                 return ResourceManager.GetString("MissingRequiredLibAttributeMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing &apos;type&apos; attribute..
+        /// </summary>
+        public static string MissingTypeAttribute {
+            get {
+                return ResourceManager.GetString("MissingTypeAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This attribute value will be used to determine the component type of each module in a code example..
+        /// </summary>
+        public static string MissingTypeAttributeDescription {
+            get {
+                return ResourceManager.GetString("MissingTypeAttributeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A &apos;{0}&apos; element requires a &apos;type&apos; attribute value..
+        /// </summary>
+        public static string MissingTypeAttributeMessageFormat {
+            get {
+                return ResourceManager.GetString("MissingTypeAttributeMessageFormat", resourceCulture);
             }
         }
         

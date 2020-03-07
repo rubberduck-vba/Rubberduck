@@ -87,6 +87,28 @@ namespace RubberduckCodeAnalysis
             new LocalizableResourceString(nameof(Resources.MissingNameAttributeDescription), Resources.ResourceManager, typeof(Resources))
             );
 
+        public const string MissingTypeAttribute = "MissingTypeAttribute";
+        private static readonly DiagnosticDescriptor MissingTypeAttributeRule = new DiagnosticDescriptor(
+            MissingTypeAttribute,
+            new LocalizableResourceString(nameof(Resources.MissingTypeAttribute), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.MissingTypeAttributeMessageFormat), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.XmlDocAnalyzerCategory), Resources.ResourceManager, typeof(Resources)).ToString(),
+            DiagnosticSeverity.Error,
+            true,
+            new LocalizableResourceString(nameof(Resources.MissingTypeAttributeDescription), Resources.ResourceManager, typeof(Resources))
+        );
+
+        public const string InvalidTypeAttribute = "InvalidTypeAttribute";
+        private static readonly DiagnosticDescriptor InvalidTypeAttributeRule = new DiagnosticDescriptor(
+            InvalidTypeAttribute,
+            new LocalizableResourceString(nameof(Resources.InvalidTypeAttribute), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.InvalidTypeAttributeMessageFormat), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.XmlDocAnalyzerCategory), Resources.ResourceManager, typeof(Resources)).ToString(),
+            DiagnosticSeverity.Error,
+            true,
+            new LocalizableResourceString(nameof(Resources.InvalidTypeAttributeDescription), Resources.ResourceManager, typeof(Resources))
+        );
+
         public const string MissingHasResultAttribute = "MissingHasResultAttribute";
         private static readonly DiagnosticDescriptor MissingHasResultAttributeRule = new DiagnosticDescriptor(
             MissingHasResultAttribute,
@@ -106,7 +128,9 @@ namespace RubberduckCodeAnalysis
             MissingHasResultAttributeRule,
             MissingNameAttributeRule,
             MissingModuleElementRule,
-            MissingExampleElementRule
+            MissingExampleElementRule,
+            MissingTypeAttributeRule,
+            InvalidTypeAttributeRule
             );
 
         public override void Initialize(AnalysisContext context)
@@ -160,14 +184,14 @@ namespace RubberduckCodeAnalysis
 
         private static void CheckNameAttribute(SymbolAnalysisContext context, XElement element, Location location)
         {
-            if (!element.Attributes().Any(a => a.Name.Equals("name")))
+            if (!element.Attributes().Any(a => a.Name.LocalName.Equals("name")))
             {
-                var diagnostic = Diagnostic.Create(MissingNameAttributeRule, location, element.Name);
+                var diagnostic = Diagnostic.Create(MissingNameAttributeRule, location, element.Name.LocalName);
                 context.ReportDiagnostic(diagnostic);
             }
         }
 
-        private static void CheckReferenceElement(SymbolAnalysisContext context, INamedTypeSymbol symbol, XElement xml, IEnumerable<AttributeData> requiredLibAttributes)
+        private static void CheckReferenceElement(SymbolAnalysisContext context, INamedTypeSymbol symbol, XElement xml, ICollection<AttributeData> requiredLibAttributes)
         {
             if (requiredLibAttributes.Any() && !xml.Elements("reference").Any())
             {
@@ -218,23 +242,60 @@ namespace RubberduckCodeAnalysis
             var examples = xml.Elements("example");
             foreach (var example in examples)
             {
-                if (!example.Attributes().Any(a => a.Name.LocalName.Equals("hasresult", System.StringComparison.InvariantCultureIgnoreCase)))
-                {
-                    var diagnostic = Diagnostic.Create(MissingHasResultAttributeRule, symbol.Locations[0]);
-                    context.ReportDiagnostic(diagnostic);
-                }
+                CheckHasResultAttribute(context, example, symbol.Locations[0]);
+                CheckModuleElements(context, symbol, example);
+            }
+        }
 
-                if (!example.Elements("module").Any())
-                {
-                    var diagnostic = Diagnostic.Create(MissingModuleElementRule, symbol.Locations[0]);
-                    context.ReportDiagnostic(diagnostic);
-                }
+        private static void CheckModuleElements(SymbolAnalysisContext context, INamedTypeSymbol symbol, XElement example)
+        {
+            if (!example.Elements("module").Any())
+            {
+                var diagnostic = Diagnostic.Create(MissingModuleElementRule, symbol.Locations[0]);
+                context.ReportDiagnostic(diagnostic);
+            }
 
-                foreach (var module in example.Elements("module"))
+            foreach (var module in example.Elements("module"))
+            {
+                CheckNameAttribute(context, module, symbol.Locations[0]);
+                CheckTypeAttribute(context, module, symbol.Locations[0]);
+            }
+        }
+
+        private static void CheckHasResultAttribute(SymbolAnalysisContext context, XElement element, Location location)
+        {
+            if (!element.Attributes().Any(a => a.Name.LocalName.Equals("hasresult", System.StringComparison.InvariantCultureIgnoreCase)))
+            {
+                var diagnostic = Diagnostic.Create(MissingHasResultAttributeRule, location);
+                context.ReportDiagnostic(diagnostic);
+            }
+        }
+
+        private static void CheckTypeAttribute(SymbolAnalysisContext context, XElement element, Location location)
+        {
+            var nameAttribute = element.Attributes().FirstOrDefault(a => a.Name.LocalName.Equals("type"));
+            if (nameAttribute == null)
+            {
+                var diagnostic = Diagnostic.Create(MissingTypeAttributeRule, location, element.Name.LocalName);
+                context.ReportDiagnostic(diagnostic);
+            }
+            else
+            {
+                var typeNameValue = nameAttribute.Value;
+                if (!ValidTypeAttributeValues.Contains(typeNameValue))
                 {
-                    CheckNameAttribute(context, module, symbol.Locations[0]);
+                    var diagnostic = Diagnostic.Create(InvalidTypeAttributeRule, location, typeNameValue);
+                    context.ReportDiagnostic(diagnostic);
                 }
             }
         }
+
+        private static readonly List<string> ValidTypeAttributeValues = new List<string>
+        {
+            "Standard Module",
+            "Class Module",
+            "Document",
+            "User Form"
+        };
     }
 }
