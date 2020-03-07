@@ -13,7 +13,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// <why>
     /// The assignment could be made directly to the result of the conditional Boolean expression instead.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal value As Long)
     ///     Dim result As Boolean
@@ -26,7 +26,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal value As Long)
     ///     Dim result As Boolean

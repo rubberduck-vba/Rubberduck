@@ -14,7 +14,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.EmptyBlock
     /// <why>
     /// Conditional expression is inverted; there would not be a need for an 'Else' block otherwise.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Boolean)
     ///     If foo Then
@@ -24,7 +24,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.EmptyBlock
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Boolean)
     ///     If Not foo Then

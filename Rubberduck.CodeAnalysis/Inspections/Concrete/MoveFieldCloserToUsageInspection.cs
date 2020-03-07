@@ -14,7 +14,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Module-level variables that are only used in a single procedure can often be declared in that procedure's scope. 
     /// Declaring variables closer to where they are used generally makes the code easier to follow.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
     /// <![CDATA[
     /// Option Explicit
     /// Private foo As Long
@@ -25,7 +25,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
     /// <![CDATA[
     /// Option Explicit
     ///

@@ -12,7 +12,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// <why>
     /// The legacy syntax is obsolete/redundant; prefer implicit Let-coercion instead.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Long
@@ -20,7 +20,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Long

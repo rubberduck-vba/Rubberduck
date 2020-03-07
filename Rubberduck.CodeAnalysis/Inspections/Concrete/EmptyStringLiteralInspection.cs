@@ -14,7 +14,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// While the memory gain is meaningless, an empty string literal still takes up 2 bytes of memory,
     /// but 'vbNullString' is a null string pointer, and doesn't.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As String)
     ///     If foo = "" Then
@@ -23,7 +23,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As String)
     ///     If foo = vbNullString Then

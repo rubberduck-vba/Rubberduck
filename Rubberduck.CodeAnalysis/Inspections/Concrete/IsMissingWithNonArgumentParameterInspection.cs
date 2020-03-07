@@ -13,7 +13,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// 'IsMissing' only returns True when an optional Variant parameter was not supplied as an argument.
     /// This inspection flags uses that attempt to use 'IsMissing' for other purposes, resulting in conditions that are always False.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Variant
@@ -22,7 +22,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
     /// <![CDATA[
     /// Public Sub DoSomething(Optional ByVal foo As Variant = 0)
     ///     If IsMissing(foo) Then Exit Sub

@@ -14,7 +14,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Module options that are redundant can be safely removed. Disable this inspection if your convention is to explicitly specify them; a future 
     /// inspection may be used to enforce consistently explicit module options.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
     /// <![CDATA[
     /// Option Explicit
     /// Option Base 0
@@ -24,7 +24,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
     /// <![CDATA[
     /// Option Explicit
     /// 

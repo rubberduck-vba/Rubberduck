@@ -21,7 +21,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Not all unused procedures can/should be removed: ignore any inspection results for 
     /// event handler procedures and interface members that Rubberduck isn't recognizing as such.
     /// </remarks>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
     /// <![CDATA[
     /// Option Explicit
     /// 
@@ -30,7 +30,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
     /// <![CDATA[
     /// Option Explicit
     ///

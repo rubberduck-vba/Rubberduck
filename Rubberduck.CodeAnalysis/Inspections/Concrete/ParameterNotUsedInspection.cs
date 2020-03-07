@@ -19,7 +19,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Not all unused parameters can/should be removed: ignore any inspection results for 
     /// event handler procedures and interface members that Rubberduck isn't recognizing as such.
     /// </remarks>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
     /// <![CDATA[
     /// Option Explicit
     /// 
@@ -28,7 +28,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example>
+    /// <example hasResult="false">
     /// <![CDATA[
     /// Option Explicit
     /// Public Sub DoSomething(ByVal foo As Long, ByVal bar As Long)

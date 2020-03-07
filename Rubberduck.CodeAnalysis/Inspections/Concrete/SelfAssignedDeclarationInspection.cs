@@ -15,7 +15,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Auto-assigned objects are automatically re-created as soon as they are referenced. It is therefore impossible to set one such reference 
     /// to 'Nothing' and then verifying whether the object 'Is Nothing': it will never be. This behavior is potentially confusing and bug-prone.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim c As New Collection
@@ -27,7 +27,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim c As Collection

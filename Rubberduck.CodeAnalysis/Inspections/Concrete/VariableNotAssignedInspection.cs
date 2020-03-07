@@ -17,7 +17,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// This inspection may yield false positives if the variable is assigned through a ByRef parameter assignment, or 
     /// if UserForm controls fail to resolve, references to these controls in code-behind can be flagged as unassigned and undeclared variables.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim value As Long ' declared, but not assigned
@@ -25,7 +25,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim value As Long

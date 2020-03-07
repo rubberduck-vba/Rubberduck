@@ -18,7 +18,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// <why>
     /// Most annotations only process a limited number of arguments; superfluous arguments are ignored.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
     /// <![CDATA[
     /// '@Folder "MyFolder.MySubFolder" "SomethingElse
     /// '@PredeclaredId True
@@ -26,7 +26,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// ' ...
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
     /// <![CDATA[
     /// '@Folder("MyFolder.MySubFolder")
     /// '@PredeclaredId

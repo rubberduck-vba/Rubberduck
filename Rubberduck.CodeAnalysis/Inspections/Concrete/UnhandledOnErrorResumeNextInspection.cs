@@ -18,7 +18,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// for the rest of the procedure; 'On Error GoTo 0' reinstates error handling. 
     /// This inspection helps treating 'Resume Next' and 'GoTo 0' as a code block (similar to 'With...End With'), essentially.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     On Error Resume Next ' error handling is never restored in this scope.
@@ -26,7 +26,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     On Error Resume Next

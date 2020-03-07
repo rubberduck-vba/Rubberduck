@@ -19,7 +19,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.Excel
     /// is more robust, and will be less likely to throw run-time error 1004 or produce unexpected results
     /// when the active workbook isn't the expected one.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
     /// <![CDATA[
     /// Private Sub Example()
     ///     Dim summarySheet As Worksheet
@@ -27,7 +27,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.Excel
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
     /// <![CDATA[
     /// Private Sub Example(ByVal book As Workbook)
     ///     Dim summarySheet As Worksheet

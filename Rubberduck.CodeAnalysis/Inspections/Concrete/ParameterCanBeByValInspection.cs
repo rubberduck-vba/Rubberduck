@@ -19,14 +19,14 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// a parameter that is passed by reference (implicitly, or explicitly ByRef) makes it ambiguous from the calling code's standpoint, whether the 
     /// procedure might re-assign these ByRef values and introduce a bug.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long, bar As Long)
     ///     Debug.Print foo, bar
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
     /// <![CDATA[
     /// Option Explicit
     /// Public Sub DoSomething(ByVal foo As long, ByRef bar As Long)

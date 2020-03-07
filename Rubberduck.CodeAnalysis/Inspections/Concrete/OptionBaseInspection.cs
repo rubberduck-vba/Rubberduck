@@ -14,7 +14,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// having an implicit lower bound of 1 for implicitly-sized user arrays does not change the fact that arrays are always better off with explicit boundaries.
     /// Because 0 is always the lower array bound in many other programming languages, this option may trip a reader/maintainer with a different background.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
     /// <![CDATA[
     /// Option Explicit
     /// Option Base 1
@@ -25,7 +25,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
     /// <![CDATA[
     /// Option Explicit
     /// Public Sub DoSomething()

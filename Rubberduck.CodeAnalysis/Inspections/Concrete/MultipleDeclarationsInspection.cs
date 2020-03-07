@@ -14,12 +14,12 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// <why>
     /// Declaration statements should generally declare a single variable.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
     /// <![CDATA[
     /// Dim foo As Long, bar As Long
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
     /// <![CDATA[
     /// Dim foo As Long 
     /// Dim bar As Long 

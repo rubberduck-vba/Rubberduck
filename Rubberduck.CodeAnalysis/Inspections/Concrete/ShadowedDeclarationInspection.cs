@@ -19,7 +19,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Global namespace contains a number of perfectly legal identifier names that user code can use. But using these names in user code 
     /// effectively "hides" the global ones. In general, avoid shadowing global-scope identifiers if possible.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
     /// <![CDATA[
     /// Private MsgBox As String ' hides the global-scope VBA.Interaction.MsgBox function in this module.
     /// 
@@ -29,7 +29,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
     /// <![CDATA[
     /// Private message As String
     /// 

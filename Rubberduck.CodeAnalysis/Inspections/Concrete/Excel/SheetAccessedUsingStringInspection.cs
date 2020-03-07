@@ -27,7 +27,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.Excel
     /// <remarks>
     /// For performance reasons, the inspection only evaluates hard-coded string literals; string-valued expressions evaluating into a sheet name are ignored.
     /// </remarks>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim sheet As Worksheet
@@ -36,7 +36,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.Excel
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Sheet1.Range("A1").Value = 42 ' TODO rename Sheet1 to meaningful name

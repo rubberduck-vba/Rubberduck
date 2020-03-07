@@ -19,14 +19,14 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Meaningful, pronounceable, unabbreviated names read better and leave less room for interpretation. 
     /// Moreover, names suffixed with a number can indicate the need to look into an array, collection, or dictionary data structure.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
     /// <![CDATA[
     /// Public Sub CpFrmtRls(ByVal rng1 As Range, ByVal rng2 As Range)
     ///     ' ...
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
     /// <![CDATA[
     /// Public Sub CopyFormatRules(ByVal source As Range, ByVal destination As Range)
     ///     ' ...

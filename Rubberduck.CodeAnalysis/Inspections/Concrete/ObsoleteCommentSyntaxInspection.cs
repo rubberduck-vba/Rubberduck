@@ -12,14 +12,14 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// <why>
     /// Modern VB comments use a single quote character (') to denote the beginning of a comment: the legacy 'Rem' syntax is obsolete.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
     /// <![CDATA[
     /// Public Sub DoSomething()
     /// Rem this comment is using an obsolete legacy syntax
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
     /// <![CDATA[
     /// Public Sub DoSomething()
     /// ' this comment is using the modern comment syntax

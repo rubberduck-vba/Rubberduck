@@ -16,14 +16,14 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Several functions in the standard library take a Variant parameter and return a Variant result, but an equivalent 
     /// string-returning function taking a string parameter exists and should probably be preferred.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Double)
     ///     Debug.Print Format(foo, "Currency") ' Strings.Format function returns a Variant.
     /// End Sub
     /// ]]>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Double)
     ///     Debug.Print Format$(CStr(foo), "Currency") ' Strings.Format$ function returns a String.
