@@ -470,7 +470,7 @@ namespace Rubberduck.Parsing.Symbols
                 {
                     return AsTypeName;
                 }
-                return AsTypeName.Replace("(", "").Replace(")", "").Trim();
+                return AsTypeName.Replace("(", string.Empty).Replace(")", string.Empty).Trim();
             }
         }
 
