@@ -12,7 +12,7 @@ namespace Rubberduck.Parsing.Annotations
     public sealed class DefaultMemberAnnotation : FixedAttributeValueAnnotationBase
     {
         public DefaultMemberAnnotation()
-            : base("DefaultMember", AnnotationTarget.Member, "VB_UserMemId", new[] { WellKnownDispIds.Value })
+            : base("DefaultMember", AnnotationTarget.Member, "VB_UserMemId", new[] { WellKnownDispIds.Value.ToString() })
         {
         }
     }
