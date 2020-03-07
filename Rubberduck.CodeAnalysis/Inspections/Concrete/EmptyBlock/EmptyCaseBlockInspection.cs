@@ -40,7 +40,7 @@ namespace Rubberduck.Inspections.Concrete
     /// ]]>
     /// </example>
     [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
-    internal sealed class EmptyCaseBlockInspection : ParseTreeInspectionBase<VBAParser.CaseClauseContext>
+    internal sealed class EmptyCaseBlockInspection : EmptyBlockInspectionBase<VBAParser.CaseClauseContext>
     {
         public EmptyCaseBlockInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
@@ -55,7 +55,7 @@ namespace Rubberduck.Inspections.Concrete
             return InspectionResults.EmptyCaseBlockInspection;
         }
 
-        private class EmptyCaseBlockListener : EmptyBlockInspectionListenerBase<VBAParser.CaseClauseContext>
+        private class EmptyCaseBlockListener : EmptyBlockInspectionListenerBase
         {
             public override void EnterCaseClause([NotNull] VBAParser.CaseClauseContext context)
             {

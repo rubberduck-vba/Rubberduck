@@ -37,7 +37,7 @@ namespace Rubberduck.Inspections.Concrete
     /// ]]>
     /// </example>
     [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
-    internal sealed class EmptyElseBlockInspection : ParseTreeInspectionBase<VBAParser.ElseBlockContext>
+    internal sealed class EmptyElseBlockInspection : EmptyBlockInspectionBase<VBAParser.ElseBlockContext>
     {
         public EmptyElseBlockInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
@@ -52,7 +52,7 @@ namespace Rubberduck.Inspections.Concrete
             return InspectionResults.EmptyElseBlockInspection;
         }
 
-        private class EmptyElseBlockListener : EmptyBlockInspectionListenerBase<VBAParser.ElseBlockContext>
+        private class EmptyElseBlockListener : EmptyBlockInspectionListenerBase
         {
             public override void EnterElseBlock([NotNull] VBAParser.ElseBlockContext context)
             {

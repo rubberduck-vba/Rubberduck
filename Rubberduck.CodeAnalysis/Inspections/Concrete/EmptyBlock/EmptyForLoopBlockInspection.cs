@@ -37,7 +37,7 @@ namespace Rubberduck.Inspections.Concrete
     /// ]]>
     /// </example>
     [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
-    internal sealed class EmptyForLoopBlockInspection : ParseTreeInspectionBase<VBAParser.ForNextStmtContext>
+    internal sealed class EmptyForLoopBlockInspection : EmptyBlockInspectionBase<VBAParser.ForNextStmtContext>
     {
         public EmptyForLoopBlockInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
@@ -52,7 +52,7 @@ namespace Rubberduck.Inspections.Concrete
             return InspectionResults.EmptyForLoopBlockInspection;
         }
 
-        private class EmptyForLoopBlockListener : EmptyBlockInspectionListenerBase<VBAParser.ForNextStmtContext>
+        private class EmptyForLoopBlockListener : EmptyBlockInspectionListenerBase
         {
             public override void EnterForNextStmt([NotNull] VBAParser.ForNextStmtContext context)
             {

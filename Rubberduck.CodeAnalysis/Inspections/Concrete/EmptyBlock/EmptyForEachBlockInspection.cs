@@ -37,7 +37,7 @@ namespace Rubberduck.Inspections.Concrete
     /// ]]>
     /// </example>
     [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
-    internal sealed class EmptyForEachBlockInspection : ParseTreeInspectionBase<VBAParser.ForEachStmtContext>
+    internal sealed class EmptyForEachBlockInspection : EmptyBlockInspectionBase<VBAParser.ForEachStmtContext>
     {
         public EmptyForEachBlockInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
@@ -52,7 +52,7 @@ namespace Rubberduck.Inspections.Concrete
             return InspectionResults.EmptyForEachBlockInspection;
         }
 
-        private class EmptyForEachBlockListener : EmptyBlockInspectionListenerBase<VBAParser.ForEachStmtContext>
+        private class EmptyForEachBlockListener : EmptyBlockInspectionListenerBase
         {
             public override void EnterForEachStmt([NotNull] VBAParser.ForEachStmtContext context)
             {

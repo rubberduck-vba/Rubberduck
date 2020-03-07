@@ -11,7 +11,7 @@ using Rubberduck.Parsing;
 namespace Rubberduck.Inspections.Concrete
 {
     /// <summary>
-    /// Identifies empty 'Do...Loop While' blocks that can be safely removed.
+    /// Identifies empty 'While...Wend' blocks that can be safely removed.
     /// </summary>
     /// <why>
     /// Dead code should be removed. A loop without a body is usually redundant.
@@ -19,40 +19,40 @@ namespace Rubberduck.Inspections.Concrete
     /// <example hasResults="true">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
-    ///     Do
-    ///         ' no executable statement...
-    ///     Loop While foo < 100
+    ///     While foo < 100
+    ///         'no executable statements... would be an infinite loop if entered
+    ///     Wend
     /// End Sub
     /// ]]>
     /// </example>
     /// <example hasResults="false">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
-    ///     Do
-    ///         Debug.Print foo
-    ///     Loop While foo < 100
+    ///     While foo < 100
+    ///         foo = foo + 1
+    ///     Wend
     /// End Sub
     /// ]]>
     /// </example>
     [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
-    internal sealed class EmptyDoWhileBlockInspection : ParseTreeInspectionBase<VBAParser.DoLoopStmtContext>
+    internal sealed class EmptyWhileWendBlockInspection : EmptyBlockInspectionBase<VBAParser.WhileWendStmtContext>
     {
-        public EmptyDoWhileBlockInspection(IDeclarationFinderProvider declarationFinderProvider)
+        public EmptyWhileWendBlockInspection(IDeclarationFinderProvider declarationFinderProvider)
             : base(declarationFinderProvider)
         {
-            ContextListener = new EmptyDoWhileBlockListener();
+            ContextListener = new EmptyWhileWendBlockListener();
         }
 
-        protected override IInspectionListener<VBAParser.DoLoopStmtContext> ContextListener { get; }
+        protected override IInspectionListener<VBAParser.WhileWendStmtContext> ContextListener { get; }
 
-        protected override string ResultDescription(QualifiedContext<VBAParser.DoLoopStmtContext> context)
+        protected override string ResultDescription(QualifiedContext<VBAParser.WhileWendStmtContext> context)
         {
-            return InspectionResults.EmptyDoWhileBlockInspection;
+            return InspectionResults.EmptyWhileWendBlockInspection;
         }
 
-        private class EmptyDoWhileBlockListener : EmptyBlockInspectionListenerBase<VBAParser.DoLoopStmtContext>
+        private class EmptyWhileWendBlockListener : EmptyBlockInspectionListenerBase
         {
-            public override void EnterDoLoopStmt([NotNull] VBAParser.DoLoopStmtContext context)
+            public override void EnterWhileWendStmt([NotNull] VBAParser.WhileWendStmtContext context)
             {
                 InspectBlockForExecutableStatements(context.block(), context);
             }
