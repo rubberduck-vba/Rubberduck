@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.CodeAnalysis.Inspections.Attributes;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;

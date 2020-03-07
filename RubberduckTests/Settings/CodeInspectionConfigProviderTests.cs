@@ -2,9 +2,7 @@
 using System.Linq;
 using Moq;
 using NUnit.Framework;
-using Rubberduck.Parsing.Inspections;
 using Rubberduck.CodeAnalysis.Inspections;
-using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.CodeAnalysis.Settings;
 

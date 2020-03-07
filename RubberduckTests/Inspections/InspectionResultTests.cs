@@ -6,10 +6,8 @@ using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Parsing.VBA.ReferenceManagement;
-using Rubberduck.UI.Inspections;
 using Rubberduck.VBEditor;
 
 namespace RubberduckTests.Inspections

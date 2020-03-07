@@ -4,7 +4,6 @@ using NUnit.Framework;
 using Moq;
 using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.Settings;
-using Rubberduck.Parsing.Inspections;
 using Rubberduck.CodeAnalysis.Settings;
 
 namespace RubberduckTests

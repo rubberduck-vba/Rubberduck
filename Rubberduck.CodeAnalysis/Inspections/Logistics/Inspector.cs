@@ -11,7 +11,7 @@ using System.Windows.Forms;
 using Antlr4.Runtime.Tree;
 using NLog;
 using Rubberduck.CodeAnalysis.Inspections;
-using Rubberduck.Parsing.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Attributes;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor;

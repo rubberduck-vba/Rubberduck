@@ -5,7 +5,6 @@ using System.Globalization;
 using System.Linq;
 using System.Xml.Serialization;
 using Rubberduck.CodeAnalysis.Inspections;
-using Rubberduck.Parsing.Inspections;
 
 namespace Rubberduck.CodeAnalysis.Settings
 {

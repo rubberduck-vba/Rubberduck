@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.Parsing.Inspections
+﻿namespace Rubberduck.CodeAnalysis.Inspections
 {
     public enum CodeInspectionType
     {

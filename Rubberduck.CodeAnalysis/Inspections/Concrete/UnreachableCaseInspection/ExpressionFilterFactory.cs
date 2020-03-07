@@ -1,6 +1,4 @@
-﻿using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
-using System;
+﻿using Rubberduck.Parsing.Grammar;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;

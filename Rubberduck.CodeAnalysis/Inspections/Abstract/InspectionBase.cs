@@ -8,7 +8,6 @@ using System.Diagnostics;
 using System.Threading;
 using NLog;
 using Rubberduck.CodeAnalysis.Inspections;
-using Rubberduck.Parsing.Inspections;
 using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 

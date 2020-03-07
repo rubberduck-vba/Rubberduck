@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Rubberduck.Parsing.Inspections
+namespace Rubberduck.CodeAnalysis.Inspections.Attributes
 {
     /// <summary>
     /// This inspection requires a specific host application in order to run.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public class RequiredHostAttribute : Attribute
+    internal class RequiredHostAttribute : Attribute
     {
         public IEnumerable<string> HostNames { get; }
 

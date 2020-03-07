@@ -1,6 +1,4 @@
-﻿using Rubberduck.Parsing.Inspections;
-
-namespace Rubberduck.CodeAnalysis.Inspections
+﻿namespace Rubberduck.CodeAnalysis.Inspections
 {
     /// <summary>
     /// An interface that abstracts the data structure for a code inspection

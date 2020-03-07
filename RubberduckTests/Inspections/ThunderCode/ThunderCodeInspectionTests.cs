@@ -8,7 +8,6 @@ using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.Inspections.Inspections.Concrete.ThunderCode;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Parsing;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using RubberduckTests.Mocks;
