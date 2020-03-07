@@ -1,11 +1,11 @@
-﻿using Rubberduck.Parsing.Grammar;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using Rubberduck.Parsing.Grammar;
 
-namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection
 {
     internal enum VariableClauseTypes
     {

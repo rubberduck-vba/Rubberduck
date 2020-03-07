@@ -1,12 +1,12 @@
-﻿using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.PreProcessing;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.PreProcessing;
 
-namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection
 {
     internal interface IParseTreeExpressionEvaluator
     {

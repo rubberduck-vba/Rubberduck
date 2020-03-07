@@ -2,7 +2,7 @@
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 
-namespace Rubberduck.Inspections.Abstract
+namespace Rubberduck.CodeAnalysis.Inspections.Abstract
 {
     internal abstract class ImplicitTypeInspectionBase : DeclarationInspectionBase
     {

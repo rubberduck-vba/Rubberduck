@@ -1,15 +1,15 @@
 ﻿using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete.Excel;
+using Rubberduck.CodeAnalysis.Inspections.Results;
 using Rubberduck.CodeAnalysis.QuickFixes.Abstract;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 
-namespace Rubberduck.Inspections.QuickFixes
+namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
 {
     /// <summary>
     /// Modifies a Workbook.Worksheets or Workbook.Sheets call accessing a sheet of ThisWorkbook that exists at compile-time.

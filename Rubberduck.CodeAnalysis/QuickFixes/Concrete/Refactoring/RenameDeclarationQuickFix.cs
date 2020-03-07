@@ -1,12 +1,12 @@
 using System.Globalization;
 using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
+using Rubberduck.CodeAnalysis.Inspections.Concrete.Excel;
 using Rubberduck.CodeAnalysis.QuickFixes.Abstract;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.Inspections.Concrete;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.Resources;
 
-namespace Rubberduck.Inspections.QuickFixes
+namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete.Refactoring
 {
     /// <summary>
     /// Prompts for a new name, renames a declaration accordingly, and updates all usages.

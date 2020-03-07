@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using Rubberduck.CodeAnalysis.Inspections;
-using Rubberduck.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Results
+namespace Rubberduck.CodeAnalysis.Inspections.Results
 {
     internal class QualifiedContextInspectionResult : InspectionResultBase
     {

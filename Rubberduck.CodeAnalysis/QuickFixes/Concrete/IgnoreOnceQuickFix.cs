@@ -9,7 +9,7 @@ using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
-namespace Rubberduck.Inspections.QuickFixes
+namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
 {
     /// <summary>
     /// Adds an '@Ignore annotation to ignore a specific inspection result. Applicable to all inspections whose results can be annotated in a module.

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace Rubberduck.CodeAnalysis.Inspections
+namespace Rubberduck.CodeAnalysis.Inspections.Logistics
 {
-    public interface IInspectionProvider
+    internal interface IInspectionProvider
     {
         IEnumerable<IInspection> Inspections { get; }
     }

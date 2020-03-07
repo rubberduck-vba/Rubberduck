@@ -1,13 +1,12 @@
-﻿using Rubberduck.Inspections.Results;
+﻿using System.Linq;
+using Rubberduck.CodeAnalysis.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
-using System.Linq;
-using Rubberduck.CodeAnalysis.Inspections;
 
-namespace Rubberduck.Inspections.Inspections.Extensions
+namespace Rubberduck.CodeAnalysis.Inspections.Extensions
 {
     internal static class IgnoreRelatedExtensions
     {

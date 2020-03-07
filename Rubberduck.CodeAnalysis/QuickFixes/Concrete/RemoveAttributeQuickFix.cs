@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.CodeAnalysis.QuickFixes.Abstract;
-using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Parsing;
 
-namespace Rubberduck.Inspections.QuickFixes
+namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
 {
     /// <summary>
     /// Removes a hidden attribute, in order to maintain consistency between hidden attributes and (missing) annotation comments.

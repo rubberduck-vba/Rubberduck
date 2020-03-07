@@ -1,9 +1,9 @@
 using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.CodeAnalysis.QuickFixes.Abstract;
-using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Rewriter;
 
-namespace Rubberduck.Inspections.QuickFixes
+namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
 {
     /// <summary>
     /// Removes the declaration for a constant, variable, procedure, or line label that isn't used. This operation can break the code if the declaration is actually in use but Rubberduck couldn't find where.

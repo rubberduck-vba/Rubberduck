@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Settings;
 using Rubberduck.CodeAnalysis.Settings;
+using Rubberduck.Settings;
 
-namespace Rubberduck.CodeAnalysis.Inspections
+namespace Rubberduck.CodeAnalysis.Inspections.Logistics
 {
     internal class InspectionProvider : IInspectionProvider
     {

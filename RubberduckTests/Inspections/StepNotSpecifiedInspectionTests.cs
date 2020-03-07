@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
-using Rubberduck.Inspections.Concrete;
 using System.Linq;
 using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections

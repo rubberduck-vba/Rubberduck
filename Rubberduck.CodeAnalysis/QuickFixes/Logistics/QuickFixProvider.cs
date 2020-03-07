@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Rubberduck.CodeAnalysis.Inspections;
-using Rubberduck.CodeAnalysis.QuickFixes;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.QuickFixes
+namespace Rubberduck.CodeAnalysis.QuickFixes.Logistics
 {
     internal class QuickFixProvider : IQuickFixProvider
     {

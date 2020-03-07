@@ -1,6 +1,6 @@
 ﻿using Rubberduck.Parsing.Grammar;
 
-namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection
 {
     internal class ExpressionFilterBoolean : ExpressionFilter<bool>
     {

@@ -2,16 +2,16 @@
 using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
 using Rubberduck.Inspections.CodePathAnalysis;
 using Rubberduck.Inspections.CodePathAnalysis.Nodes;
-using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 
-namespace Rubberduck.Inspections.Abstract
+namespace Rubberduck.CodeAnalysis.Inspections.Abstract
 {
     internal abstract class MemberAccessMayReturnNothingInspectionBase : IdentifierReferenceInspectionFromDeclarationsBase
     {

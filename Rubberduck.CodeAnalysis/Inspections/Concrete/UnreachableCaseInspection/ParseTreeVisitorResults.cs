@@ -1,10 +1,10 @@
-﻿using Antlr4.Runtime;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 
-namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection
 {
     internal interface IParseTreeVisitorResults
     {

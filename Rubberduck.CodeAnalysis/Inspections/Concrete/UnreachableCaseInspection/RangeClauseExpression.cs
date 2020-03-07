@@ -1,7 +1,7 @@
-﻿using Rubberduck.Parsing.Grammar;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Rubberduck.Parsing.Grammar;
 
-namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection
 {
     internal interface IRangeClauseExpression
     {

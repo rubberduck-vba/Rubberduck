@@ -1,22 +1,21 @@
-﻿using Antlr4.Runtime;
-using Antlr4.Runtime.Misc;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Resources.Inspections;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
+using Rubberduck.CodeAnalysis.Inspections.Results;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using System;
-using Rubberduck.CodeAnalysis.Inspections;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.Resources.Inspections;
+using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection
 {
     /// <summary>
     /// Flags 'Case' blocks that will never execute.

@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Indicates that a hidden VB attribute is present for a module, but no Rubberduck annotation is documenting it.
@@ -57,7 +57,7 @@ namespace Rubberduck.Inspections.Concrete
 
         private static bool IsDefaultAttribute(Declaration declaration, AttributeNode attribute)
         {
-            return Attributes.IsDefaultAttribute(declaration.QualifiedModuleName.ComponentType, attribute.Name, attribute.Values);
+            return Parsing.Symbols.Attributes.IsDefaultAttribute(declaration.QualifiedModuleName.ComponentType, attribute.Name, attribute.Values);
         }
 
         private static bool MissesCorrespondingModuleAnnotation(Declaration declaration, AttributeNode attribute)

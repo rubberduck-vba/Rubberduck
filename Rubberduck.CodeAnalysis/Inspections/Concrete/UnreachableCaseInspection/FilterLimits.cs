@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection
 {
     internal struct Limit<T> where T : IComparable<T>
     {

@@ -1,9 +1,9 @@
 using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.CodeAnalysis.QuickFixes.Abstract;
-using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Rewriter;
 
-namespace Rubberduck.Inspections.QuickFixes
+namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
 {
     /// <summary>
     /// Removes the declaration for a variable that is never assigned. This operation may result in broken code if the unassigned variable is in use.

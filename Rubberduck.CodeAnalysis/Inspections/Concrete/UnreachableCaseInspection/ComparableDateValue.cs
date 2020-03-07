@@ -1,11 +1,11 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.Parsing.PreProcessing;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using Antlr4.Runtime;
+using Rubberduck.Parsing.PreProcessing;
 
-namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection
 {
     internal class ComparableDateValue : IValue, IComparable<ComparableDateValue>
     {

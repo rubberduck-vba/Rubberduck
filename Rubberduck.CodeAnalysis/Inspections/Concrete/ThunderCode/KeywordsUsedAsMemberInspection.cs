@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
@@ -8,7 +8,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.ThunderCode
 {
     /// <summary hidden="true">
     /// A ThunderCode inspection that locates instances of various keywords and reserved identifiers used as Type or Enum member names.

@@ -1,10 +1,10 @@
-﻿using Rubberduck.Inspections.Abstract;
+﻿using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.ThunderCode
 {
     /// <summary hidden="true">
     /// A ThunderCode inspection that locates non-breaking spaces hidden in identifier names.

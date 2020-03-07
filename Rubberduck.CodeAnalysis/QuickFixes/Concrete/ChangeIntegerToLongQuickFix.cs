@@ -1,17 +1,17 @@
 ﻿using System;
-using Rubberduck.Parsing.Grammar;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.CodeAnalysis.QuickFixes.Abstract;
-using Rubberduck.Inspections.Concrete;
 using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
-namespace Rubberduck.Inspections.QuickFixes
+namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
 {
     /// <summary>
     /// Changes 16-bit (max value 32,767) Integer declarations to use 32-bit (max value 2,147,483,647‬) Long integer type instead.

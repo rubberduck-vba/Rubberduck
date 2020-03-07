@@ -6,7 +6,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 
-namespace Rubberduck.Inspections.Inspections.Abstract
+namespace Rubberduck.CodeAnalysis.Inspections.Abstract
 {
     internal abstract class IsMissingInspectionBase : ArgumentReferenceInspectionFromDeclarationsBase<ParameterDeclaration>
     {

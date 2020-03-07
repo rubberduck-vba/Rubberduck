@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
-using Rubberduck.Inspections.Abstract;
+using Antlr4.Runtime.Misc;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources.Inspections;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing;
-using Antlr4.Runtime.Misc;
-using Rubberduck.CodeAnalysis.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about Def[Type] statements.

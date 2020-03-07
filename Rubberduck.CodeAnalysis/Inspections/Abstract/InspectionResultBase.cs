@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using Antlr4.Runtime;
-using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.Common;
+using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using Rubberduck.Interaction.Navigation;
 
-namespace Rubberduck.Inspections.Abstract
+namespace Rubberduck.CodeAnalysis.Inspections.Abstract
 {
     internal abstract class InspectionResultBase : IInspectionResult, INavigateSource
     {

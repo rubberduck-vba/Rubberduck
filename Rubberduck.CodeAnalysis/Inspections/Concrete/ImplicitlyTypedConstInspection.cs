@@ -1,9 +1,9 @@
-﻿using Rubberduck.Inspections.Abstract;
-using Rubberduck.Parsing.VBA;
+﻿using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about constants that don't have an explicitly defined type.

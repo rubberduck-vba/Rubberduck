@@ -2,7 +2,7 @@
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources;
 
-namespace Rubberduck.Inspections.Inspections.Extensions
+namespace Rubberduck.CodeAnalysis.Inspections.Extensions
 {
     internal static class DeclarationTypeExtensions
     {

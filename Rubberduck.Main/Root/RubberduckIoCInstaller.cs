@@ -14,12 +14,12 @@ using Castle.Windsor;
 using Rubberduck.AutoComplete;
 using Rubberduck.CodeAnalysis.CodeMetrics;
 using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection;
+using Rubberduck.CodeAnalysis.Inspections.Logistics;
 using Rubberduck.CodeAnalysis.QuickFixes;
 using Rubberduck.ComClientLibrary.UnitTesting;
 using Rubberduck.Common;
 using Rubberduck.Common.Hotkeys;
-using Rubberduck.Inspections.Concrete.UnreachableCaseInspection;
-using Rubberduck.Inspections.Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.ComReflection;
@@ -255,6 +255,7 @@ namespace Rubberduck.Root
             foreach (var assembly in assembliesToRegister)
             {
                 container.Register(Classes.FromAssembly(assembly)
+                    .IncludeNonPublicTypes()
                     .BasedOn(typeof(ConfigurationServiceBase<>))
                     .WithServiceSelect((type, hierarchy) =>
                     {

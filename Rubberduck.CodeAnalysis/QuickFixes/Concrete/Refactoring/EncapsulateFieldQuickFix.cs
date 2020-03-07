@@ -1,9 +1,9 @@
 using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.CodeAnalysis.QuickFixes.Abstract;
-using Rubberduck.Inspections.Concrete;
 using Rubberduck.Refactorings.EncapsulateField;
 
-namespace Rubberduck.Inspections.QuickFixes
+namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete.Refactoring
 {
     /// <summary>
     /// Runs the 'Encapsulate Field' refactoring, which prompts for identifier names for the new property and its value parameter.

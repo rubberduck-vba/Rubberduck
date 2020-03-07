@@ -1,14 +1,14 @@
-﻿using Rubberduck.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
-using System.Linq;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Inspections.Inspections.Extensions;
+﻿using System.Linq;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Identifies class modules that define an interface with one or more members containing a concrete implementation.

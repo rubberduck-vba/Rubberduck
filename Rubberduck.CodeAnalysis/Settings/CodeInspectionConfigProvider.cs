@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Logistics;
 using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.SettingsProvider;
 using Rubberduck.Settings;
 
 namespace Rubberduck.CodeAnalysis.Settings
 {
-    public class CodeInspectionConfigProvider : ConfigurationServiceBase<CodeInspectionSettings>
+    internal class CodeInspectionConfigProvider : ConfigurationServiceBase<CodeInspectionSettings>
     {
         private readonly HashSet<string> foundInspectionNames;
 

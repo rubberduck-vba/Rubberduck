@@ -1,7 +1,7 @@
 ﻿using Moq;
 using System.Linq;
 using Rubberduck.CodeAnalysis.Inspections;
-using Rubberduck.Inspections.Rubberduck.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Logistics;
 using Rubberduck.SettingsProvider;
 using Rubberduck.CodeAnalysis.Settings;
 

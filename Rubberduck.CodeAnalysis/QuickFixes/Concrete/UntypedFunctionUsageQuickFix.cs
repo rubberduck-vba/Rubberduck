@@ -2,12 +2,12 @@ using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.CodeAnalysis.QuickFixes.Abstract;
-using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 
-namespace Rubberduck.Inspections.QuickFixes
+namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
 {
     /// <summary>
     /// Replaces the use of a Variant-returning standard library function with its String-returning equivalent. Using this when the argument can be 'Null' will break the code.

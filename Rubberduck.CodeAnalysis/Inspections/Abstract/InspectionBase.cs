@@ -1,17 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
-using System.Diagnostics;
 using System.Threading;
 using NLog;
-using Rubberduck.CodeAnalysis.Inspections;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Abstract
+namespace Rubberduck.CodeAnalysis.Inspections.Abstract
 {
     internal abstract class InspectionBase : IInspection
     {

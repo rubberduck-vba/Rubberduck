@@ -5,7 +5,7 @@ using System.Threading;
 using Antlr4.Runtime.Tree;
 using NUnit.Framework;
 using Rubberduck.CodeAnalysis.Inspections;
-using Rubberduck.Inspections.Inspections.Concrete.ThunderCode;
+using Rubberduck.CodeAnalysis.Inspections.Concrete.ThunderCode;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor;

@@ -1,8 +1,8 @@
 ﻿using NUnit.Framework;
-using Rubberduck.Inspections.Concrete.UnreachableCaseInspection;
 using Rubberduck.Parsing.Grammar;
 using System;
 using System.Globalization;
+using Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection;
 
 namespace RubberduckTests.Inspections.UnreachableCase
 {

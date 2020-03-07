@@ -1,11 +1,11 @@
-﻿using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Rewriter;
-using System;
+﻿using System;
 using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.CodeAnalysis.QuickFixes.Abstract;
+using Rubberduck.Parsing.Rewriter;
 using static Rubberduck.Parsing.Grammar.VBAParser;
 
-namespace Rubberduck.Inspections.QuickFixes
+namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
 {
     /// <summary>
     /// Adds an explicit Step specifier to a For loop instruction.

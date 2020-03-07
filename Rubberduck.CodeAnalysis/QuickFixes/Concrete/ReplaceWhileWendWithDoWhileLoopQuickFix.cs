@@ -4,7 +4,7 @@ using Rubberduck.CodeAnalysis.QuickFixes.Abstract;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 
-namespace Rubberduck.CodeAnalysis.QuickFixes
+namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
 {
     /// <summary>
     /// Replaces 'While...Wend' loop statement with equivalent 'Do While...Loop'.

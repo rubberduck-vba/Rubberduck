@@ -2,7 +2,7 @@ using System.Linq;
 using Moq;
 using NUnit.Framework;
 using Rubberduck.CodeAnalysis.Inspections;
-using Rubberduck.Inspections.Concrete;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;

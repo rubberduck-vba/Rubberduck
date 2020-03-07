@@ -5,7 +5,7 @@ using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA;
 
-namespace Rubberduck.Inspections.Abstract
+namespace Rubberduck.CodeAnalysis.Inspections.Abstract
 {
     internal abstract class EmptyBlockInspectionBase<TContext> : ParseTreeInspectionBase<TContext>
         where TContext : ParserRuleContext

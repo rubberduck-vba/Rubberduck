@@ -1,12 +1,12 @@
 using System.Linq;
 using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.CodeAnalysis.QuickFixes.Abstract;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.CodeAnalysis.Settings;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.SettingsProvider;
 
-namespace Rubberduck.Inspections.QuickFixes
+namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
 {
     /// <summary>
     /// Adds an identifier or Hungarian Notation prefix to a list of white-listed identifiers and prefixes in Rubberduck's inspection settings.

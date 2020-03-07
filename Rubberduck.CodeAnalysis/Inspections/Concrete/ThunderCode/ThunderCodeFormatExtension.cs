@@ -1,6 +1,6 @@
 ﻿using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.ThunderCode
 {
     internal static class ThunderCodeFormatExtension
     {

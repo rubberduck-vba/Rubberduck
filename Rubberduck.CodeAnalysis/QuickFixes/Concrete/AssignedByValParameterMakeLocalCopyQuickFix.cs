@@ -1,21 +1,21 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI.Refactorings;
-using Rubberduck.Common;
 using System.Windows.Forms;
 using Antlr4.Runtime;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.VBA;
-using System.Diagnostics;
 using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.CodeAnalysis.QuickFixes.Abstract;
+using Rubberduck.Common;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
+using Rubberduck.UI.Refactorings;
 
-namespace Rubberduck.Inspections.QuickFixes
+namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete
 {
     /// <summary>
     /// Introduces a new local variable and assigns it at the top of the procedure scope, then updates all parameter references to refer to the new local variable.

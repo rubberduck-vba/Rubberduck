@@ -2,7 +2,7 @@
 using Antlr4.Runtime.Tree;
 using static Rubberduck.Parsing.Grammar.VBAParser;
 
-namespace Rubberduck.Inspections.Inspections.Extensions
+namespace Rubberduck.CodeAnalysis.Inspections.Extensions
 {
     internal static class ExecutableBlocksExtensions
     {

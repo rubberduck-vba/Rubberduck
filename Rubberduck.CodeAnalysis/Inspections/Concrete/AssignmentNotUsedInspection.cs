@@ -1,17 +1,17 @@
 using System.Collections.Generic;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.CodePathAnalysis;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Inspections.CodePathAnalysis.Extensions;
 using System.Linq;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
+using Rubberduck.Inspections.CodePathAnalysis;
+using Rubberduck.Inspections.CodePathAnalysis.Extensions;
 using Rubberduck.Inspections.CodePathAnalysis.Nodes;
-using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about a variable that is assigned, and then re-assigned before the first assignment is read.

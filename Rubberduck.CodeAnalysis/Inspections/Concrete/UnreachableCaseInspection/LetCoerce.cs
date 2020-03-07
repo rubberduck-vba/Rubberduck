@@ -1,10 +1,10 @@
-﻿using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.PreProcessing;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.PreProcessing;
 
-namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection
 {
     internal struct VBACurrency
     {

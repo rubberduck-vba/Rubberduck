@@ -1,9 +1,9 @@
 using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.CodeAnalysis.QuickFixes.Abstract;
-using Rubberduck.Inspections.Concrete;
 using Rubberduck.Refactorings.RemoveParameters;
 
-namespace Rubberduck.Inspections.QuickFixes
+namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete.Refactoring
 {
     /// <summary>
     /// Refactors a procedure's signature to remove a parameter that isn't used. Also updates usages.

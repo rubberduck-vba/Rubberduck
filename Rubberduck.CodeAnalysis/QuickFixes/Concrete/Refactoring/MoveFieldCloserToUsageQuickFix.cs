@@ -1,10 +1,10 @@
 using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.CodeAnalysis.QuickFixes.Abstract;
-using Rubberduck.Inspections.Concrete;
 using Rubberduck.Refactorings.MoveCloserToUsage;
 using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.QuickFixes
+namespace Rubberduck.CodeAnalysis.QuickFixes.Concrete.Refactoring
 {
     /// <summary>
     /// Moves field declaration to the procedure scope it's used in.

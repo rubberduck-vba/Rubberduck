@@ -1,14 +1,13 @@
 ﻿using Antlr4.Runtime.Misc;
-using Rubberduck.CodeAnalysis.Inspections;
-using Rubberduck.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources.Experimentals;
-using Rubberduck.Parsing;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.EmptyBlock
 {
     /// <summary>
     /// Identifies empty 'Do...Loop While' blocks that can be safely removed.

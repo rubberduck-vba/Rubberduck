@@ -2,7 +2,7 @@
 using Moq;
 using NUnit.Framework;
 using Rubberduck.CodeAnalysis.Inspections;
-using Rubberduck.Inspections.Results;
+using Rubberduck.CodeAnalysis.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;

@@ -1,14 +1,14 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Antlr4.Runtime;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection
 {
     internal interface IUnreachableCaseInspector
     {

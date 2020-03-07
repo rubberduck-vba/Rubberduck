@@ -1,10 +1,10 @@
-﻿using Rubberduck.CodeAnalysis.Inspections.Attributes;
-using Rubberduck.Inspections.Abstract;
+﻿using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Attributes;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// This inspection means to indicate when the project has not been renamed.

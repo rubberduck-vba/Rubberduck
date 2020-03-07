@@ -2,7 +2,7 @@
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
 
-namespace Rubberduck.Inspections.QuickFixes
+namespace Rubberduck.CodeAnalysis.QuickFixes.Logistics
 {
     internal class QuickFixFailureNotifier : IQuickFixFailureNotifier
     {

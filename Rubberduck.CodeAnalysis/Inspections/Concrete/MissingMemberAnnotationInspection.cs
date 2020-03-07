@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -8,7 +8,7 @@ using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor.SafeComWrappers;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Indicates that a hidden VB attribute is present for a member, but no Rubberduck annotation is documenting it.
@@ -76,7 +76,7 @@ namespace Rubberduck.Inspections.Concrete
 
         private static string AttributeBaseName(Declaration declaration, AttributeNode attribute)
         {
-            return Attributes.AttributeBaseName(attribute.Name, declaration.IdentifierName);
+            return Parsing.Symbols.Attributes.AttributeBaseName(attribute.Name, declaration.IdentifierName);
         }
 
         protected override string ResultDescription(Declaration declaration, (string AttributeName, IReadOnlyList<string> AttriguteValues) properties)

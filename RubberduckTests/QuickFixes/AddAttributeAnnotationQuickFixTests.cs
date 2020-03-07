@@ -1,12 +1,12 @@
 ﻿using NUnit.Framework;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
 using System;
 using System.Linq;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.CodeAnalysis.QuickFixes;
+using Rubberduck.CodeAnalysis.QuickFixes.Concrete;
 
 namespace RubberduckTests.QuickFixes
 {
