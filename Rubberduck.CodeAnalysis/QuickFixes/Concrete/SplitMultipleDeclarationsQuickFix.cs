@@ -1,10 +1,10 @@
 using System;
 using System.Text;
 using Antlr4.Runtime;
+using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.CodeAnalysis.QuickFixes.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Inspections.QuickFixes

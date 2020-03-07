@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using Rubberduck.Parsing;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Parsing.Inspections.Abstract
+namespace Rubberduck.CodeAnalysis.Inspections
 {
     public interface IInspectionListener: IParseTreeListener
     {

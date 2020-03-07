@@ -2,9 +2,9 @@
 using System.Threading;
 using Moq;
 using NUnit.Framework;
+using Rubberduck.CodeAnalysis.QuickFixes;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
 using RubberduckTests.Mocks;
 using RubberduckTests.Inspections;

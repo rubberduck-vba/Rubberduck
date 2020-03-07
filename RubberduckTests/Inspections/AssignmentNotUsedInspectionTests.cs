@@ -4,7 +4,7 @@ using Rubberduck.Inspections.CodePathAnalysis;
 using Rubberduck.Inspections.Concrete;
 using RubberduckTests.Mocks;
 using System.Linq;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections

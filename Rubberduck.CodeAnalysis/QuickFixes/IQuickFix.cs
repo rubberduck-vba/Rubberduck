@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA.Parsing;
 
-namespace Rubberduck.Parsing.Inspections.Abstract
+namespace Rubberduck.CodeAnalysis.QuickFixes
 {
     public interface IQuickFix
     {

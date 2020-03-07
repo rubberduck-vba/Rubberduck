@@ -1,5 +1,4 @@
 ﻿using Moq;
-using Rubberduck.Parsing.Inspections.Abstract;
 using System.Linq;
 using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.Inspections.Rubberduck.Inspections;

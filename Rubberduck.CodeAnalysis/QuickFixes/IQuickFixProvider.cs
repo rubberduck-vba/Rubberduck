@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Parsing.Inspections.Abstract
+namespace Rubberduck.CodeAnalysis.QuickFixes
 {
     /// <summary>
     /// An interface that abstracts a runnable code inspection.

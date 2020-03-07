@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using Antlr4.Runtime.Tree;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor;

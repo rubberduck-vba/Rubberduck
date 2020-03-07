@@ -1,9 +1,9 @@
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;

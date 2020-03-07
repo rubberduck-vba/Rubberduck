@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Parsing.Inspections.Abstract
+namespace Rubberduck.CodeAnalysis.Inspections
 {
     /// <summary>
     /// An interface that abstracts a runnable code inspection.

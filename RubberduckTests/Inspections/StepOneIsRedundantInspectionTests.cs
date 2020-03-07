@@ -2,7 +2,7 @@
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections;
 using System.Linq;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections

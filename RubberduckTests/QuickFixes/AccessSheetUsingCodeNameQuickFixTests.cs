@@ -1,8 +1,8 @@
 ﻿using Moq;
 using NUnit.Framework;
+using Rubberduck.CodeAnalysis.QuickFixes;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;

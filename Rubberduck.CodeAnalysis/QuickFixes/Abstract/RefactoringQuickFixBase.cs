@@ -1,5 +1,5 @@
 ﻿using System;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;

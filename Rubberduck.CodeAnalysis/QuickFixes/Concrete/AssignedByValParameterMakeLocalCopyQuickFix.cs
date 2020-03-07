@@ -8,10 +8,10 @@ using Rubberduck.Common;
 using System.Windows.Forms;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using System.Diagnostics;
+using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.CodeAnalysis.QuickFixes.Abstract;
 using Rubberduck.Refactorings.Common;
 

@@ -1,11 +1,11 @@
 using System.Linq;
 using NUnit.Framework;
 using Moq;
+using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Inspections

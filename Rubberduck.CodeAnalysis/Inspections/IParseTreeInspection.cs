@@ -1,6 +1,6 @@
 ﻿using Rubberduck.Parsing.VBA.Parsing;
 
-namespace Rubberduck.Parsing.Inspections.Abstract
+namespace Rubberduck.CodeAnalysis.Inspections
 {
     public interface IParseTreeInspection : IInspection
     {

@@ -1,11 +1,11 @@
 ﻿using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
 using System.Linq;
+using Rubberduck.CodeAnalysis.Inspections;
 
 namespace Rubberduck.Inspections.Inspections.Extensions
 {

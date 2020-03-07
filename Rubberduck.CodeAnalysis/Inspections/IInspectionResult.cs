@@ -4,7 +4,7 @@ using Antlr4.Runtime;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Parsing.Inspections.Abstract
+namespace Rubberduck.CodeAnalysis.Inspections
 {
     public interface IInspectionResult : IComparable<IInspectionResult>, IComparable
     {

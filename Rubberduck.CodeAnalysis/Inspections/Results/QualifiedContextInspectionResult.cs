@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Results

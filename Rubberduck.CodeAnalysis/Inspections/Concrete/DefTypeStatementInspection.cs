@@ -2,10 +2,10 @@
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing;
 using Antlr4.Runtime.Misc;
+using Rubberduck.CodeAnalysis.Inspections;
 
 namespace Rubberduck.Inspections.Concrete
 {

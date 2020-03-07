@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Rubberduck.Parsing.VBA;
 
-namespace Rubberduck.Parsing.Inspections.Abstract
+namespace Rubberduck.CodeAnalysis.Inspections
 {
     public interface IInspector : IDisposable
     {

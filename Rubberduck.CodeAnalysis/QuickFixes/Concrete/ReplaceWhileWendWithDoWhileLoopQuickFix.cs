@@ -1,7 +1,7 @@
-﻿using Rubberduck.CodeAnalysis.Inspections.Concrete;
+﻿using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.CodeAnalysis.QuickFixes.Abstract;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.CodeAnalysis.QuickFixes

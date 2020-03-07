@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Settings;
 using Rubberduck.CodeAnalysis.Settings;
 

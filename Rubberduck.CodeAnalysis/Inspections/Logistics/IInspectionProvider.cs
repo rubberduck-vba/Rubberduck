@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Rubberduck.Parsing.Inspections.Abstract;
 
 namespace Rubberduck.CodeAnalysis.Inspections
 {

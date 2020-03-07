@@ -7,8 +7,8 @@ using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 using Rubberduck.CodeAnalysis.Settings;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.Inspections.Abstract;
 using System.Collections.Generic;
+using Rubberduck.CodeAnalysis.Inspections;
 
 namespace RubberduckTests.Inspections
 {
