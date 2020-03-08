@@ -15,7 +15,7 @@ namespace Rubberduck.Parsing.Annotations
 
         public IReadOnlyList<string> ProcessAnnotationArguments(IEnumerable<string> arguments)
         {
-            var firstParameter = arguments.FirstOrDefault()?.UnQuote();
+            var firstParameter = arguments.FirstOrDefault();
             var result = new List<string>();
             if (!string.IsNullOrWhiteSpace(firstParameter))
             {

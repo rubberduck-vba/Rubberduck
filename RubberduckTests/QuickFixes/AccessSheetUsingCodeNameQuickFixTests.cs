@@ -33,6 +33,24 @@ End Sub";
 
         [Test]
         [Category("QuickFixes")]
+        public void SheetAccessedUsingString_QuickFixWorks_SheetNameContainingDoubleQuotes()
+        {
+            const string inputCode = @"
+Public Sub Foo()
+    ThisWorkbook.Sheets(""She""""et1"").Range(""A1"") = ""foo""
+End Sub";
+
+            const string expectedCode = @"
+Public Sub Foo()
+    Sheet1.Range(""A1"") = ""foo""
+End Sub";
+            var vbe = TestVbe(inputCode, "She\"et1", out _);
+            var actualCode = ApplyQuickFixToFirstInspectionResult(vbe, "Module1", state => new SheetAccessedUsingStringInspection(state, state.ProjectsProvider));
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
         public void SheetAccessedUsingString_QuickFixWorks_AssigningSheetToVariable()
         {
             const string inputCode = @"
@@ -192,13 +210,18 @@ End Sub";
 
         protected override IVBE TestVbe(string code, out IVBComponent component)
         {
+            return TestVbe(code, "Sheet1", out component);
+        }
+
+        private IVBE TestVbe(string code, string sheetName, out IVBComponent component)
+        {
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, code)
                 .AddComponent("Sheet1", ComponentType.Document, "",
                     properties: new[]
                     {
-                        CreateVBComponentPropertyMock("Name", "Sheet1").Object,
+                        CreateVBComponentPropertyMock("Name", sheetName).Object,
                         CreateVBComponentPropertyMock("CodeName", "Sheet1").Object
                     })
                 .AddComponent("SheetWithDifferentCodeName", ComponentType.Document, "",
