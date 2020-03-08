@@ -1,13 +1,13 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.Parsing.PreProcessing;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using Antlr4.Runtime;
+using Rubberduck.Parsing.PreProcessing;
 
-namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection
 {
-    public class ComparableDateValue : IValue, IComparable<ComparableDateValue>
+    internal class ComparableDateValue : IValue, IComparable<ComparableDateValue>
     {
         private readonly DateValue _dateValue;
         private readonly int _hashCode;

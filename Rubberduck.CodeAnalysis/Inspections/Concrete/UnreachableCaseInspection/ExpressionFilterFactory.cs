@@ -1,13 +1,11 @@
-﻿using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Rubberduck.Parsing.Grammar;
 
-namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection{
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection{
 
-    public static class ExpressionFilterFactory
+    internal static class ExpressionFilterFactory
     {
         private static readonly Dictionary<string, (long typeMin, long typeMax)> IntegralNumberExtents = new Dictionary<string, (long typeMin, long typeMax)>()
         {

@@ -6,7 +6,7 @@
     public sealed class FolderAnnotation : AnnotationBase
     {
         public FolderAnnotation()
-            : base("Folder", AnnotationTarget.Module)
-        { }
+            : base("Folder", AnnotationTarget.Module, 1, 1)
+        {}
     }
 }

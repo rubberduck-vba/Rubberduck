@@ -1,17 +1,17 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns when a variable is referenced prior to being assigned.
@@ -23,15 +23,18 @@ namespace Rubberduck.Inspections.Concrete
     /// <remarks>
     /// This inspection may produce false positives when the variable is an array, or if it's passed by reference (ByRef) to a procedure that assigns it.
     /// </remarks>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim i As Long
     ///     Debug.Print i ' i was never assigned
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim i As Long
@@ -39,12 +42,14 @@ namespace Rubberduck.Inspections.Concrete
     ///     Debug.Print i
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     [SuppressMessage("ReSharper", "LoopCanBeConvertedToQuery")]
-    public sealed class UnassignedVariableUsageInspection : IdentifierReferenceInspectionFromDeclarationsBase
+    internal sealed class UnassignedVariableUsageInspection : IdentifierReferenceInspectionFromDeclarationsBase
     {
-        public UnassignedVariableUsageInspection(RubberduckParserState state)
-            : base(state) { }
+        public UnassignedVariableUsageInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         //See https://github.com/rubberduck-vba/Rubberduck/issues/2010 for why these are being excluded.
         private static readonly List<string> IgnoredFunctions = new List<string>

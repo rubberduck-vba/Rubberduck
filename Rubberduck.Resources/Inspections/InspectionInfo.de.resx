@@ -218,7 +218,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
     <value>Rubberduck hat festgestellt, dass die Variable eine Objektvariable ist, die ohne 'Set'-Schlüsselwort zugewiesen wird. Dies führt zu dem Laufzeitfehler 91 'Objektvariable oder With-Blockvariable nicht festgelegt' oder 438 'Objekt unterstützt diese Eigenschaft oder Methode nicht' abhängig davon, ob die Variable den Wert 'Nothing' hat oder nicht.</value>
   </data>
   <data name="MissingAnnotationArgumentInspection" xml:space="preserve">
-    <value>Eine Annotation in einem Kommentar konnte nicht gelesen werden. Die korrekte Syntax ist: '@Annotation([parameter])'\nBeispiel: '@Folder("Parent.Child")'</value>
+    <value>Einer Annotation in einem Kommentar fehlt ein Argument oder sie konnte nicht gelesen werden. Die korrekte Syntax ist: '@Annotation([parameter])'\nBeispiel: '@Folder("Parent.Child")'</value>
   </data>
   <data name="UndeclaredVariableInspection" xml:space="preserve">
     <value>Code, der undeklarierte Variablen verwendet, kompiliert nicht wenn 'Option Explicit' spezifiziert wird. Undeklarierte Variablen sind immer vom Typ 'Variant', was unnötige Zusatzkosten in Ausführungszeit und Speicherverbauch verursacht.</value>
@@ -438,5 +438,8 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   </data>
   <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
     <value>Wird keine Typdeklaration verwendet wird der Datentyp einer Konstante implizit bestimmt. Erwägen Sie eine explizite 'As &lt;Datentyp&gt;'-Deklaration zu verwenden um die Lesbarkeit zu verbessern, wobei '&lt;Datentyp&gt;' der erwünschte Datentyp der Konstante ist.</value>
+  </data>
+  <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
+    <value>Eine Annotation hat mehr Argumente als erlaubt. Die überzähligen Argumente werden ignoriert.</value>
   </data>
 </root>

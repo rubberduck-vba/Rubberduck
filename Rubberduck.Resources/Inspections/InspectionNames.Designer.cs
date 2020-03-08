@@ -880,6 +880,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Superfluous annotation arguments.
+        /// </summary>
+        public static string SuperfluousAnnotationArgumentInspection {
+            get {
+                return ResourceManager.GetString("SuperfluousAnnotationArgumentInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Suspicious Let assignment.
         /// </summary>
         public static string SuspiciousLetAssignmentInspection {

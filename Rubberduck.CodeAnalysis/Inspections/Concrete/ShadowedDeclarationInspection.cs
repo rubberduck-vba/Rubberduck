@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Inspections.Results;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
 using Rubberduck.JunkDrawer.Extensions;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
-using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Identifies identifiers that hide/"shadow" other identifiers otherwise accessible in that scope.
@@ -23,7 +19,8 @@ namespace Rubberduck.Inspections.Concrete
     /// Global namespace contains a number of perfectly legal identifier names that user code can use. But using these names in user code 
     /// effectively "hides" the global ones. In general, avoid shadowing global-scope identifiers if possible.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private MsgBox As String ' hides the global-scope VBA.Interaction.MsgBox function in this module.
     /// 
@@ -32,8 +29,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     VBA.Interaction.MsgBox MsgBox ' global function now needs to be fully qualified to be accessed.
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private message As String
     /// 
@@ -42,8 +41,9 @@ namespace Rubberduck.Inspections.Concrete
     ///     MsgBox message ' VBA.Interaction module qualifier is optional.
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class ShadowedDeclarationInspection : DeclarationInspectionUsingGlobalInformationBase<IDictionary<string, HashSet<string>>, Declaration>
+    internal sealed class ShadowedDeclarationInspection : DeclarationInspectionUsingGlobalInformationBase<IDictionary<string, HashSet<string>>, Declaration>
     {
         private enum DeclarationSite
         {
@@ -53,8 +53,8 @@ namespace Rubberduck.Inspections.Concrete
             SameComponent = 3
         }
 
-        public ShadowedDeclarationInspection(RubberduckParserState state) 
-            : base(state)
+        public ShadowedDeclarationInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {}
 
         protected override IDictionary<string, HashSet<string>> GlobalInformation(DeclarationFinder finder)

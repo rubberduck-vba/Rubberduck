@@ -1,13 +1,13 @@
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Locates procedures that are never invoked from user code.
@@ -21,7 +21,8 @@ namespace Rubberduck.Inspections.Concrete
     /// Not all unused procedures can/should be removed: ignore any inspection results for 
     /// event handler procedures and interface members that Rubberduck isn't recognizing as such.
     /// </remarks>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// 
@@ -29,8 +30,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' macro is attached to a worksheet Shape.
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     ///
@@ -39,11 +42,12 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' macro is attached to a worksheet Shape.
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class ProcedureNotUsedInspection : DeclarationInspectionBase
+    internal sealed class ProcedureNotUsedInspection : DeclarationInspectionBase
     {
-        public ProcedureNotUsedInspection(RubberduckParserState state) 
-            : base(state, ProcedureTypes)
+        public ProcedureNotUsedInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, ProcedureTypes)
         {}
 
         private static readonly DeclarationType[] ProcedureTypes =

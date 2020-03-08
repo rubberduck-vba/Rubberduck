@@ -3,9 +3,9 @@ using System.Linq;
 using System.Threading;
 using Moq;
 using NUnit.Framework;
+using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.TypeResolvers;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
@@ -353,6 +353,40 @@ End Sub
 
         [Test]
         [Category("Inspections")]
+        public void AssignmentToIUnknown_NoResult()
+        {
+            const string class1 =
+                @"
+Private Sub Interface1_DoIt()
+End Sub
+";
+
+            const string consumerModule =
+                @"
+Private Sub TestIt()
+    Dim cls As IUnknown
+    Dim otherCls As Class1
+
+    Set otherCls = new Class1
+    Set cls = otherCls
+End Sub
+";
+            var testVbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, class1)
+                .AddComponent("Module1", ComponentType.StandardModule, consumerModule)
+                .AddReference(ReferenceLibrary.StdOle)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
+
+            var inspectionResults = InspectionResults(testVbe);
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void AssignmentOfObject_NoResult()
         {
             const string class1 =
@@ -405,6 +439,41 @@ End Sub
                 ("Class1", class1, ComponentType.ClassModule),
                 ("Class2", class1, ComponentType.ClassModule),
                 ("Module1", consumerModule, ComponentType.StandardModule));
+
+            Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void AssignmentOfIUnknown_NoResult()
+        {
+            const string class1 =
+                @"
+Private Sub Interface1_DoIt()
+End Sub
+";
+
+            const string consumerModule =
+                @"
+Private Sub TestIt()
+    Dim cls As Class1
+    Dim otherCls As IUnknown
+
+    Set otherCls = new Class2
+    Set cls = otherCls
+End Sub
+";
+            var testVbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, class1)
+                .AddComponent("Class2", ComponentType.ClassModule, class1)
+                .AddComponent("Module1", ComponentType.StandardModule, consumerModule)
+                .AddReference(ReferenceLibrary.StdOle)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
+
+            var inspectionResults = InspectionResults(testVbe);
 
             Assert.IsFalse(inspectionResults.Any());
         }
@@ -468,10 +537,10 @@ End Sub
         [TestCase("Class1", "TestProject1.Class1", 0)]
         [TestCase("Interface1", "TestProject1.Class1", 0)]
         [TestCase("Class1", "TestProject1.Interface1", 0)]
-        [TestCase("Variant", "Whatever", 0)] //Tokens.Variant cannot be used here because it is not a constant expression.
-        [TestCase("Object", "Whatever", 0)]
-        [TestCase("Whatever", "Variant", 0)]
-        [TestCase("Whatever", "Object", 0)]
+        [TestCase("Variant", "Class1", 0)] //Tokens.Variant cannot be used here because it is not a constant expression.
+        [TestCase("Object", "Class1", 0)]
+        [TestCase("Class1", "Variant", 0)]
+        [TestCase("Class1", "Object", 0)]
         [TestCase("Class1", "TestProject1.SomethingIncompatible", 1)]
         [TestCase("Class1", "SomethingDifferent", 1)]
         [TestCase("TestProject1.Class1", "OtherProject.Class1", 1)]
@@ -523,13 +592,58 @@ End Function
 
         [Test]
         [Category("Inspections")]
+        [TestCase("IUnknown", "Class1", 0)]
+        [TestCase("Class1", ":stdole.IUnknown", 0)]
+        public void MockedSetTypeEvaluatorTest_Function_IUnknown(string lhsTypeName, string expressionFullTypeName, int expectedResultsCount)
+        {
+            const string interface1 =
+                @"
+Private Sub Foo() 
+End Sub
+";
+            const string class1 =
+                @"Implements Interface1
+
+Private Sub Interface1_Foo()
+End Sub
+";
+
+            var module1 =
+                $@"
+Private Function Cls() As {lhsTypeName}
+    Set Cls = expression
+End Function
+";
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, class1)
+                .AddComponent("Interface1", ComponentType.ClassModule, interface1)
+                .AddComponent("Module1", ComponentType.StandardModule, module1)
+                .AddReference(ReferenceLibrary.StdOle)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
+
+            var setTypeResolverMock = new Mock<ISetTypeResolver>();
+            setTypeResolverMock.Setup(m =>
+                    m.SetTypeName(It.IsAny<VBAParser.ExpressionContext>(), It.IsAny<QualifiedModuleName>()))
+                .Returns((VBAParser.ExpressionContext context, QualifiedModuleName qmn) => expressionFullTypeName);
+
+            var inspectionResults = InspectionResults(vbe, setTypeResolverMock.Object).ToList();
+
+            Assert.AreEqual(expectedResultsCount, inspectionResults.Count);
+        }
+
+        [Test]
+        [Category("Inspections")]
         [TestCase("Class1", "TestProject1.Class1", 0)]
         [TestCase("Interface1", "TestProject1.Class1", 0)]
         [TestCase("Class1", "TestProject1.Interface1", 0)]
-        [TestCase("Variant", "Whatever", 0)] //Tokens.Variant cannot be used here because it is not a constant expression.
-        [TestCase("Object", "Whatever", 0)]
-        [TestCase("Whatever", "Variant", 0)]
-        [TestCase("Whatever", "Object", 0)]
+        [TestCase("Variant", "Class1", 0)] //Tokens.Variant cannot be used here because it is not a constant expression.
+        [TestCase("Object", "Class1", 0)]
+        [TestCase("Class1", "Variant", 0)]
+        [TestCase("Class1", "Object", 0)]
         [TestCase("Class1", "TestProject1.SomethingIncompatible", 1)]
         [TestCase("Class1", "SomethingDifferent", 1)]
         [TestCase("TestProject1.Class1", "OtherProject.Class1", 1)]
@@ -582,13 +696,58 @@ End Property
 
         [Test]
         [Category("Inspections")]
+        [TestCase("IUnknown", "Class1", 0)]
+        [TestCase("Class1", ":stdole.IUnknown", 0)]
+        public void MockedSetTypeEvaluatorTest_PropertyGet_IUnknown(string lhsTypeName, string expressionFullTypeName, int expectedResultsCount)
+        {
+            const string interface1 =
+                @"
+Private Sub Foo() 
+End Sub
+";
+            const string class1 =
+                @"Implements Interface1
+
+Private Sub Interface1_Foo()
+End Sub
+";
+
+            var module1 =
+                $@"
+Private Property Get Cls() As {lhsTypeName}
+    Set Cls = expression
+End Property
+";
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, class1)
+                .AddComponent("Interface1", ComponentType.ClassModule, interface1)
+                .AddComponent("Module1", ComponentType.StandardModule, module1)
+                .AddReference(ReferenceLibrary.StdOle)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
+
+            var setTypeResolverMock = new Mock<ISetTypeResolver>();
+            setTypeResolverMock.Setup(m =>
+                    m.SetTypeName(It.IsAny<VBAParser.ExpressionContext>(), It.IsAny<QualifiedModuleName>()))
+                .Returns((VBAParser.ExpressionContext context, QualifiedModuleName qmn) => expressionFullTypeName);
+
+            var inspectionResults = InspectionResults(vbe, setTypeResolverMock.Object).ToList();
+
+            Assert.AreEqual(expectedResultsCount, inspectionResults.Count);
+        }
+
+        [Test]
+        [Category("Inspections")]
         [TestCase("Class1", "TestProject1.Class1", 0)]
         [TestCase("Interface1", "TestProject1.Class1", 0)]
         [TestCase("Class1", "TestProject1.Interface1", 0)]
-        [TestCase("Variant", "Whatever", 0)] //Tokens.Variant cannot be used here because it is not a constant expression.
-        [TestCase("Object", "Whatever", 0)]
-        [TestCase("Whatever", "Variant", 0)]
-        [TestCase("Whatever", "Object", 0)]
+        [TestCase("Variant", "Class1", 0)] //Tokens.Variant cannot be used here because it is not a constant expression.
+        [TestCase("Object", "Class1", 0)]
+        [TestCase("Class1", "Variant", 0)]
+        [TestCase("Class1", "Object", 0)]
         [TestCase("Class1", "TestProject1.SomethingIncompatible", 1)]
         [TestCase("Class1", "SomethingDifferent", 1)]
         [TestCase("TestProject1.Class1", "OtherProject.Class1", 1)]
@@ -630,6 +789,53 @@ End Sub
             };
 
             var vbe = MockVbeBuilder.BuildFromModules(modules).Object;
+
+            var setTypeResolverMock = new Mock<ISetTypeResolver>();
+            setTypeResolverMock.Setup(m =>
+                    m.SetTypeName(It.IsAny<VBAParser.ExpressionContext>(), It.IsAny<QualifiedModuleName>()))
+                .Returns((VBAParser.ExpressionContext context, QualifiedModuleName qmn) => expressionFullTypeName);
+
+            var inspectionResults = InspectionResults(vbe, setTypeResolverMock.Object).ToList();
+
+            Assert.AreEqual(expectedResultsCount, inspectionResults.Count);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        [TestCase("IUnknown", "Class1", 0)]
+        [TestCase("Class1", ":stdole.IUnknown", 0)]
+        public void MockedSetTypeEvaluatorTest_Variable_IUnknown(string lhsTypeName, string expressionFullTypeName, int expectedResultsCount)
+        {
+            const string interface1 =
+                @"
+Private Sub Foo() 
+End Sub
+";
+            const string class1 =
+                @"Implements Interface1
+
+Private Sub Interface1_Foo()
+End Sub
+";
+
+            var module1 =
+                $@"
+Private Sub TestIt()
+    Dim cls As {lhsTypeName}
+
+    Set cls = expression
+End Sub
+";
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, class1)
+                .AddComponent("Interface1", ComponentType.ClassModule, interface1)
+                .AddComponent("Module1", ComponentType.StandardModule, module1)
+                .AddReference(ReferenceLibrary.StdOle)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
 
             var setTypeResolverMock = new Mock<ISetTypeResolver>();
             setTypeResolverMock.Setup(m =>

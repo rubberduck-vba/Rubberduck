@@ -1,16 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.ThunderCode
 {
     /// <summary hidden="true">
     /// A ThunderCode inspection that locates instances of various keywords and reserved identifiers used as Type or Enum member names.
@@ -21,10 +19,10 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
     /// While perfectly legal as Type or Enum member names, these identifiers should be avoided: 
     /// they need to be square-bracketed everywhere they are used.
     /// </why>
-    public class KeywordsUsedAsMemberInspection : DeclarationInspectionBase
+    internal class KeywordsUsedAsMemberInspection : DeclarationInspectionBase
     {
-        public KeywordsUsedAsMemberInspection(RubberduckParserState state) 
-            : base(state, DeclarationType.EnumerationMember, DeclarationType.UserDefinedTypeMember)
+        public KeywordsUsedAsMemberInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.EnumerationMember, DeclarationType.UserDefinedTypeMember)
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)

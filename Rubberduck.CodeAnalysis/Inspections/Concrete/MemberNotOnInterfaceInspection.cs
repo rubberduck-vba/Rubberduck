@@ -1,18 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about member calls against an extensible interface, that cannot be validated at compile-time.
@@ -21,14 +18,17 @@ namespace Rubberduck.Inspections.Concrete
     /// Extensible COM types can have members attached at run-time; VBA cannot bind these member calls at compile-time.
     /// If there is an early-bound alternative way to achieve the same result, it should be preferred.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal adoConnection As ADODB.Connection)
     ///     adoConnection.SomeStoredProcedure 42
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal adoConnection As ADODB.Connection)
     ///     Dim adoCommand As ADODB.Command
@@ -39,12 +39,13 @@ namespace Rubberduck.Inspections.Concrete
     ///     adoCommand.Execute
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class MemberNotOnInterfaceInspection : DeclarationInspectionBase<Declaration>
+    internal sealed class MemberNotOnInterfaceInspection : DeclarationInspectionBase<Declaration>
     {
-        public MemberNotOnInterfaceInspection(RubberduckParserState state)
-            : base(state)
-        { }
+        public MemberNotOnInterfaceInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         protected override IEnumerable<Declaration> RelevantDeclarationsInModule(QualifiedModuleName module, DeclarationFinder finder)
         {

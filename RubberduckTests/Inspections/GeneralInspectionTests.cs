@@ -4,8 +4,8 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using NUnit.Framework;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Concrete;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.Resources;
 using Rubberduck.Resources.Inspections;
 

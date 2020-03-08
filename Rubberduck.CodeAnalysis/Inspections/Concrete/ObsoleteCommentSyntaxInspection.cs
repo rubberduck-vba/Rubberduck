@@ -1,17 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+﻿using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Locates legacy 'Rem' comments.
@@ -19,51 +12,44 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// Modern VB comments use a single quote character (') to denote the beginning of a comment: the legacy 'Rem' syntax is obsolete.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     /// Rem this comment is using an obsolete legacy syntax
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     /// ' this comment is using the modern comment syntax
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class ObsoleteCommentSyntaxInspection : ParseTreeInspectionBase
+    internal sealed class ObsoleteCommentSyntaxInspection : ParseTreeInspectionBase<VBAParser.RemCommentContext>
     {
-        public ObsoleteCommentSyntaxInspection(RubberduckParserState state)
-            : base(state)
+        public ObsoleteCommentSyntaxInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
-            Listener = new ObsoleteCommentSyntaxListener();
+            ContextListener = new ObsoleteCommentSyntaxListener();
         }
 
-        public override IInspectionListener Listener { get; }
+        protected override IInspectionListener<VBAParser.RemCommentContext> ContextListener { get; }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string ResultDescription(QualifiedContext<VBAParser.RemCommentContext> context)
         {
-            return Listener.Contexts
-                .Select(context => new QualifiedContextInspectionResult(this, InspectionResults.ObsoleteCommentSyntaxInspection, context));
+            return InspectionResults.ObsoleteCommentSyntaxInspection;
         }
 
-        public class ObsoleteCommentSyntaxListener : VBAParserBaseListener, IInspectionListener
+        private class ObsoleteCommentSyntaxListener : InspectionListenerBase<VBAParser.RemCommentContext>
         {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-
-            public QualifiedModuleName CurrentModuleName { get; set; }
-
-            public void ClearContexts()
-            {
-                _contexts.Clear();
-            }
-
             public override void ExitRemComment(VBAParser.RemCommentContext context)
             {
-                _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                SaveContext(context);
             }
         }
     }

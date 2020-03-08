@@ -4,8 +4,7 @@ using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Xml.Serialization;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections;
+using Rubberduck.CodeAnalysis.Inspections;
 
 namespace Rubberduck.CodeAnalysis.Settings
 {

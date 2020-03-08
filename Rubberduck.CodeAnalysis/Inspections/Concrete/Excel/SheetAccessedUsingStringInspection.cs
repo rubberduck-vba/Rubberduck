@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Attributes;
 using Rubberduck.Common;
-using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.Parsing.VBA.DeclarationCaching;
-using Rubberduck.VBEditor.ComManagement;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.Excel
 {
     /// <summary>
     /// Locates ThisWorkbook.Worksheets and ThisWorkbook.Sheets calls that appear to be dereferencing a worksheet that is already accessible at compile-time with a global-scope identifier.
@@ -23,11 +23,12 @@ namespace Rubberduck.Inspections.Concrete
     /// which cannot be altered by the user without accessing the VBE and altering the VBA project.
     /// </why>
     /// <reference name="Excel" />
-    /// <hostapp name="EXCEL.EXE" />
+    /// <hostApp name="EXCEL.EXE" />
     /// <remarks>
     /// For performance reasons, the inspection only evaluates hard-coded string literals; string-valued expressions evaluating into a sheet name are ignored.
     /// </remarks>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim sheet As Worksheet
@@ -35,22 +36,25 @@ namespace Rubberduck.Inspections.Concrete
     ///     sheet.Range("A1").Value = 42
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Sheet1.Range("A1").Value = 42 ' TODO rename Sheet1 to meaningful name
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     [RequiredHost("EXCEL.EXE")]
     [RequiredLibrary("Excel")]
-    public class SheetAccessedUsingStringInspection : IdentifierReferenceInspectionFromDeclarationsBase<string>
+    internal class SheetAccessedUsingStringInspection : IdentifierReferenceInspectionFromDeclarationsBase<string>
     {
         private readonly IProjectsProvider _projectsProvider;
 
-        public SheetAccessedUsingStringInspection(RubberduckParserState state, IProjectsProvider projectsProvider)
-            : base(state)
+        public SheetAccessedUsingStringInspection(IDeclarationFinderProvider declarationFinderProvider, IProjectsProvider projectsProvider)
+            : base(declarationFinderProvider)
         {
             _projectsProvider = projectsProvider;
         }

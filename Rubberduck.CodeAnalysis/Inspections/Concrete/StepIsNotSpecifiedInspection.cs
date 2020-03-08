@@ -1,19 +1,11 @@
-﻿using Rubberduck.Inspections.Abstract;
-using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.Grammar;
-using Antlr4.Runtime.Misc;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime.Misc;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
-using Rubberduck.VBEditor;
-using Rubberduck.Inspections.Results;
-using static Rubberduck.Parsing.Grammar.VBAParser;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Locates 'For' loops where the 'Step' token is omitted.
@@ -22,7 +14,8 @@ namespace Rubberduck.Inspections.Concrete
     /// Out of convention or preference, explicit 'Step' specifiers could be considered mandatory; 
     /// this inspection can ensure the consistency of the convention.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim i As Long
@@ -31,8 +24,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     Next
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim i As Long
@@ -41,46 +36,33 @@ namespace Rubberduck.Inspections.Concrete
     ///     Next
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class StepIsNotSpecifiedInspection : ParseTreeInspectionBase
+    internal sealed class StepIsNotSpecifiedInspection : ParseTreeInspectionBase<VBAParser.ForNextStmtContext>
     {
-        public StepIsNotSpecifiedInspection(RubberduckParserState state) : base(state) { }
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        public StepIsNotSpecifiedInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
-            return Listener.Contexts
-                .Select(result => new QualifiedContextInspectionResult(this,
-                                                        InspectionResults.StepIsNotSpecifiedInspection,
-                                                        result));
+            ContextListener = new StepIsNotSpecifiedListener();
         }
 
-        public override IInspectionListener Listener { get; } =
-            new StepIsNotSpecifiedListener();
-    }
+        protected override IInspectionListener<VBAParser.ForNextStmtContext> ContextListener { get; }
 
-    public class StepIsNotSpecifiedListener : VBAParserBaseListener, IInspectionListener
-    {
-        private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-        public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-
-        public QualifiedModuleName CurrentModuleName
+        protected override string ResultDescription(QualifiedContext<VBAParser.ForNextStmtContext> context)
         {
-            get;
-            set;
+            return InspectionResults.StepIsNotSpecifiedInspection;
         }
 
-        public void ClearContexts()
+        private class StepIsNotSpecifiedListener : InspectionListenerBase<VBAParser.ForNextStmtContext>
         {
-            _contexts.Clear();
-        }
-
-        public override void EnterForNextStmt([NotNull] ForNextStmtContext context)
-        {
-            StepStmtContext stepStatement = context.stepStmt();
-
-            if (stepStatement == null)
+            public override void EnterForNextStmt([NotNull] VBAParser.ForNextStmtContext context)
             {
-                _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                var stepStatement = context.stepStmt();
+
+                if (stepStatement == null)
+                {
+                    SaveContext(context);
+                }
             }
         }
     }

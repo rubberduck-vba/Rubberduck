@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:codeInspections="clr-namespace:Rubberduck.UI.Inspections"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
-             xmlns:abstract1="clr-namespace:Rubberduck.Parsing.Inspections.Abstract;assembly=Rubberduck.Parsing"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:inspections="clr-namespace:Rubberduck.CodeAnalysis.Inspections;assembly=Rubberduck.CodeAnalysis"
              ResxExtension.DefaultResxName="Rubberduck.Resources.RubberduckUI" 
              Language="{UICulture}"
              mc:Ignorable="d" 
@@ -216,7 +216,7 @@
                         <DataGrid.Columns>
                             <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Type}">
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate DataType="abstract1:IInspectionResult">
+                                    <DataTemplate DataType="inspections:IInspectionResult">
                                         <Image Source="{Binding Inspection, Converter={StaticResource InspectionIconConverter}, Mode=OneTime}" Width="16" Height="16" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>

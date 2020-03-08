@@ -1,18 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Antlr4.Runtime;
-using Antlr4.Runtime.Misc;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+﻿using Antlr4.Runtime.Misc;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Locates 'Stop' instructions in user code.
@@ -20,7 +13,8 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// While a great debugging tool, 'Stop' instructions should not be reachable in production code; this inspection makes it easy to locate them all.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     ' ...
@@ -28,8 +22,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     '....
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     ' ...
@@ -37,38 +33,28 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class StopKeywordInspection : ParseTreeInspectionBase
+    internal sealed class StopKeywordInspection : ParseTreeInspectionBase<VBAParser.StopStmtContext>
     {
-        public StopKeywordInspection(RubberduckParserState state)
-            : base(state) { }
-
-        public override IInspectionListener Listener { get; } =
-            new StopKeywordListener();
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        public StopKeywordInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
-            return Listener.Contexts
-                .Select(result => new QualifiedContextInspectionResult(this,
-                                                       InspectionResults.StopKeywordInspection,
-                                                       result));
+            ContextListener = new StopKeywordListener();
         }
 
-        public class StopKeywordListener : VBAParserBaseListener, IInspectionListener
+        protected override IInspectionListener<VBAParser.StopStmtContext> ContextListener { get; }
+
+        protected override string ResultDescription(QualifiedContext<VBAParser.StopStmtContext> context)
         {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-            
-            public QualifiedModuleName CurrentModuleName { get; set; }
+            return InspectionResults.StopKeywordInspection;
+        }
 
-            public void ClearContexts()
-            {
-                _contexts.Clear();
-            }
-
+        private class StopKeywordListener : InspectionListenerBase<VBAParser.StopStmtContext>
+        {
             public override void ExitStopStmt([NotNull] VBAParser.StopStmtContext context)
             {
-                _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                SaveContext(context);
             }
         }
     }

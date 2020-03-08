@@ -3,13 +3,13 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Data;
 using NLog;
-using Rubberduck.Parsing.Inspections;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
 using Rubberduck.Resources.Inspections;
 using System.Globalization;
 using System;
+using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.Resources.Settings;
 using Rubberduck.CodeAnalysis.Settings;
 

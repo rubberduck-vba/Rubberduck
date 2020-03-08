@@ -443,4 +443,7 @@
   <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
     <value>Implicitly typed Const</value>
   </data>
+  <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
+    <value>Superfluous annotation arguments</value>
+  </data>
 </root>

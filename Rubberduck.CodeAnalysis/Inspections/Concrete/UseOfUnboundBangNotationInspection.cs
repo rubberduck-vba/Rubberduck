@@ -1,15 +1,13 @@
 ﻿using System.Collections.Generic;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Identifies the use of bang notation, formally known as dictionary access expression, for which the default member is not known at compile time.
@@ -19,13 +17,16 @@ namespace Rubberduck.Inspections.Concrete
     /// This is especially misleading the default member cannot be determined at compile time.  
     /// </why>
     /// <example hasresult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function MyName(ByVal rst As Object) As Variant
     ///     MyName = rst!Name.Value
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function MyName(ByVal rst As Variant) As Variant
     ///     With rst
@@ -33,22 +34,28 @@ namespace Rubberduck.Inspections.Concrete
     ///     End With
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function MyName(ByVal rst As ADODB.Recordset) As Variant
     ///     MyName = rst!Name.Value
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function MyName(ByVal rst As Object) As Variant
     ///     MyName = rst("Name").Value
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function MyName(ByVal rst As Variant) As Variant
     ///     With rst
@@ -56,11 +63,12 @@ namespace Rubberduck.Inspections.Concrete
     ///     End With
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class UseOfUnboundBangNotationInspection : IdentifierReferenceInspectionBase
+    internal sealed class UseOfUnboundBangNotationInspection : IdentifierReferenceInspectionBase
     {
-        public UseOfUnboundBangNotationInspection(RubberduckParserState state)
-            : base(state)
+        public UseOfUnboundBangNotationInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Severity = CodeInspectionSeverity.Warning;
         }

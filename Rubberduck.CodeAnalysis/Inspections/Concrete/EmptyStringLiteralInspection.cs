@@ -1,17 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+﻿using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Flags uses of an empty string literal ("").
@@ -21,7 +14,8 @@ namespace Rubberduck.Inspections.Concrete
     /// While the memory gain is meaningless, an empty string literal still takes up 2 bytes of memory,
     /// but 'vbNullString' is a null string pointer, and doesn't.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As String)
     ///     If foo = "" Then
@@ -29,8 +23,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     End If
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As String)
     ///     If foo = vbNullString Then
@@ -38,41 +34,31 @@ namespace Rubberduck.Inspections.Concrete
     ///     End If
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class EmptyStringLiteralInspection : ParseTreeInspectionBase
+    internal sealed class EmptyStringLiteralInspection : ParseTreeInspectionBase<VBAParser.LiteralExpressionContext>
     {
-        public EmptyStringLiteralInspection(RubberduckParserState state)
-            : base(state) { }
-
-        public override IInspectionListener Listener { get; } =
-            new EmptyStringLiteralListener();
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        public EmptyStringLiteralInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
-            return Listener.Contexts
-                .Select(result => new QualifiedContextInspectionResult(this,
-                                                       InspectionResults.EmptyStringLiteralInspection,
-                                                       result));
+            ContextListener = new EmptyStringLiteralListener();
         }
 
-        public class EmptyStringLiteralListener : VBAParserBaseListener, IInspectionListener
+        protected override IInspectionListener<VBAParser.LiteralExpressionContext> ContextListener { get; }
+
+        protected override string ResultDescription(QualifiedContext<VBAParser.LiteralExpressionContext> context)
         {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-            
-            public QualifiedModuleName CurrentModuleName { get; set; }
+            return InspectionResults.EmptyStringLiteralInspection;
+        }
 
-            public void ClearContexts()
-            {
-                _contexts.Clear();
-            }
-
+        private class EmptyStringLiteralListener : InspectionListenerBase<VBAParser.LiteralExpressionContext>
+        {
             public override void ExitLiteralExpression(VBAParser.LiteralExpressionContext context)
             {
                 var literal = context.STRINGLITERAL();
                 if (literal != null && literal.GetText() == "\"\"")
                 {
-                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                    SaveContext(context);
                 }
             }
         }

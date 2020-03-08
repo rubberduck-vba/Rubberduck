@@ -2,8 +2,8 @@
 using System.Threading;
 using NUnit.Framework;
 using Moq;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
+using Rubberduck.CodeAnalysis.QuickFixes.Concrete.Refactoring;
 using RubberduckTests.Mocks;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.VBA;

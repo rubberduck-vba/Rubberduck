@@ -1,15 +1,15 @@
 using System.Diagnostics;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Flags parameters that are passed by reference (ByRef), but could be passed by value (ByVal).
@@ -19,14 +19,17 @@ namespace Rubberduck.Inspections.Concrete
     /// a parameter that is passed by reference (implicitly, or explicitly ByRef) makes it ambiguous from the calling code's standpoint, whether the 
     /// procedure might re-assign these ByRef values and introduce a bug.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long, bar As Long)
     ///     Debug.Print foo, bar
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// Public Sub DoSomething(ByVal foo As long, ByRef bar As Long)
@@ -34,11 +37,12 @@ namespace Rubberduck.Inspections.Concrete
     ///     Debug.Print foo, bar
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class ParameterCanBeByValInspection : DeclarationInspectionBase
+    internal sealed class ParameterCanBeByValInspection : DeclarationInspectionBase
     {
-        public ParameterCanBeByValInspection(RubberduckParserState state)
-            : base(state, DeclarationType.Parameter)
+        public ParameterCanBeByValInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Parameter)
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)

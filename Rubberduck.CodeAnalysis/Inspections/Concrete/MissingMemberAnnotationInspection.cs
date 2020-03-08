@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -8,7 +8,7 @@ using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor.SafeComWrappers;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Indicates that a hidden VB attribute is present for a member, but no Rubberduck annotation is documenting it.
@@ -17,15 +17,18 @@ namespace Rubberduck.Inspections.Concrete
     /// Rubberduck annotations mean to document the presence of hidden VB attributes; this inspection flags members that
     /// do not have a Rubberduck annotation corresponding to the hidden VB attribute.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     /// Attribute VB_Description = "foo"
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// '@Description("foo")
     /// Public Sub DoSomething()
@@ -33,11 +36,12 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class MissingMemberAnnotationInspection : DeclarationInspectionMultiResultBase<(string AttributeName, IReadOnlyList<string> AttriguteValues)>
+    internal sealed class MissingMemberAnnotationInspection : DeclarationInspectionMultiResultBase<(string AttributeName, IReadOnlyList<string> AttriguteValues)>
     {
-        public MissingMemberAnnotationInspection(RubberduckParserState state) 
-        :base(state, new DeclarationType[0], new []{DeclarationType.Module })
+        public MissingMemberAnnotationInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, new DeclarationType[0], new []{DeclarationType.Module })
         {}
 
         protected override IEnumerable<(string AttributeName, IReadOnlyList<string> AttriguteValues)> ResultProperties(Declaration declaration, DeclarationFinder finder)
@@ -76,7 +80,7 @@ namespace Rubberduck.Inspections.Concrete
 
         private static string AttributeBaseName(Declaration declaration, AttributeNode attribute)
         {
-            return Attributes.AttributeBaseName(attribute.Name, declaration.IdentifierName);
+            return Parsing.Symbols.Attributes.AttributeBaseName(attribute.Name, declaration.IdentifierName);
         }
 
         protected override string ResultDescription(Declaration declaration, (string AttributeName, IReadOnlyList<string> AttriguteValues) properties)

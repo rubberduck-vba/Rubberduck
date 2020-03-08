@@ -1,13 +1,13 @@
-﻿using Rubberduck.Parsing.Grammar;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using Rubberduck.Parsing.Grammar;
 
-namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection
 {
-    public enum VariableClauseTypes
+    internal enum VariableClauseTypes
     {
         Predicate,
         Value,
@@ -15,16 +15,16 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         Is
     };
 
-    public interface IExpressionFilter
+    internal interface IExpressionFilter
     {
-        void AddExpression(IRangeClauseExpression expression);
+        void CheckAndAddExpression(IRangeClauseExpression expression);
         void AddComparablePredicateFilter(string variable, string variableTypeName);
         bool HasFilters { get; }
         bool FiltersAllValues { get; }
         IParseTreeValue SelectExpressionValue { set; get; }
     }
 
-    public class ExpressionFilter<T> : IExpressionFilter where T : IComparable<T>
+    internal class ExpressionFilter<T> : IExpressionFilter where T : IComparable<T>
     {
         private struct PredicateValueExpression
         {
@@ -172,12 +172,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             set
             {
                 _selectExpressionValue = value;
-                AddExpression(new IsClauseExpression(_selectExpressionValue, RelationalOperators.NEQ));
+                CheckAndAddExpression(new IsClauseExpression(_selectExpressionValue, RelationalOperators.NEQ));
             }
             get => _selectExpressionValue;
         }
 
-        public void AddExpression(IRangeClauseExpression expression)
+        public void CheckAndAddExpression(IRangeClauseExpression expression)
         {
             if (expression is null
                 || expression.ToString().Equals(string.Empty)
@@ -289,7 +289,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 if (!positiveLogic.FiltersAllValues)
                 {
                     IRangeClauseExpression predicateExpression = new IsClauseExpression(parseTreeValue, expression.OpSymbol);
-                    positiveLogic.AddExpression(predicateExpression);
+                    positiveLogic.CheckAndAddExpression(predicateExpression);
                     if (positiveLogic.FiltersAllValues)
                     {
                         AddSingleValue(_trueValue);
@@ -301,7 +301,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 {
                     IRangeClauseExpression predicateExpressionInverse
                         = new IsClauseExpression(parseTreeValue, RelationalInverse(expression.OpSymbol));
-                    negativeLogic.AddExpression(predicateExpressionInverse);
+                    negativeLogic.CheckAndAddExpression(predicateExpressionInverse);
                     if (negativeLogic.FiltersAllValues)
                     {
                         AddSingleValue(_falseValue);

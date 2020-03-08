@@ -1,14 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about properties that don't expose a 'Property Get' accessor.
@@ -17,7 +16,8 @@ namespace Rubberduck.Inspections.Concrete
     /// Write-only properties are suspicious: if the client code is able to set a property, it should be allowed to read that property as well. 
     /// Class design guidelines and best practices generally recommend against write-only properties.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private internalFoo As Long
     ///
@@ -25,8 +25,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     internalFoo = value
     /// End Property
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private internalFoo As Long
     ///
@@ -38,11 +40,12 @@ namespace Rubberduck.Inspections.Concrete
     ///     Foo = internalFoo
     /// End Property
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class WriteOnlyPropertyInspection : DeclarationInspectionBase
+    internal sealed class WriteOnlyPropertyInspection : DeclarationInspectionBase
     {
-        public WriteOnlyPropertyInspection(RubberduckParserState state)
-            : base(state, DeclarationType.PropertyLet, DeclarationType.PropertySet) { }
+        public WriteOnlyPropertyInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.PropertyLet, DeclarationType.PropertySet) { }
         
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
         {

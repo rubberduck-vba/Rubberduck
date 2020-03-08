@@ -423,4 +423,7 @@
   <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
     <value>Konstante mit implizit bestimmtem Datentyp</value>
   </data>
+  <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
+    <value>Überflüssige Annotationsargumente</value>
+  </data>
 </root>

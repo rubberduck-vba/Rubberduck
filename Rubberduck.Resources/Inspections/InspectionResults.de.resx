@@ -222,7 +222,7 @@
     <value>Instruktion enthält Mehrfachdeklaration.</value>
   </data>
   <data name="MissingAnnotationArgumentInspection" xml:space="preserve">
-    <value>Ausdruck '{0}' sollte einen Parameter enthalten, es wurde aber keiner angegeben.</value>
+    <value>Die Annotation '{0}' erwartet mehr Argumente.</value>
   </data>
   <data name="UndeclaredVariableInspection" xml:space="preserve">
     <value>Die lokale Variable '{0}' wurde nicht deklariert.</value>
@@ -463,5 +463,8 @@ In Memoriam, 1972-2018</value>
   </data>
   <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
     <value>Der Datentyp der Konstante '{0}' ist implizit bestimmt.</value>
+  </data>
+  <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
+    <value>Die Annotation '{0}' erwartet weniger Argumente.</value>
   </data>
 </root>

@@ -1,8 +1,4 @@
-﻿using Rubberduck.VBEditor;
-using System.Collections.Generic;
-using Rubberduck.Parsing.Grammar;
-
-namespace Rubberduck.Parsing.Annotations
+﻿namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>
     /// Marks a module that the test engine treat as a test module.
@@ -14,6 +10,6 @@ namespace Rubberduck.Parsing.Annotations
     {
         public TestModuleAnnotation()
             : base("TestModule", AnnotationTarget.Module)
-        { }
+        {}
     }
 }

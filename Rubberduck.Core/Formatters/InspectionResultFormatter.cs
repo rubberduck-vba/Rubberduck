@@ -1,5 +1,5 @@
-﻿using Rubberduck.Common;
-using Rubberduck.Parsing.Inspections.Abstract;
+﻿using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.Common;
 using Rubberduck.Resources.Inspections;
 
 namespace Rubberduck.Formatters

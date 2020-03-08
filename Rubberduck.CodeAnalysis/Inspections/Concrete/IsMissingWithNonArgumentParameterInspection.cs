@@ -1,10 +1,10 @@
-﻿using Rubberduck.Inspections.Inspections.Abstract;
+﻿using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Identifies uses of 'IsMissing' involving a non-parameter argument.
@@ -13,7 +13,8 @@ namespace Rubberduck.Inspections.Concrete
     /// 'IsMissing' only returns True when an optional Variant parameter was not supplied as an argument.
     /// This inspection flags uses that attempt to use 'IsMissing' for other purposes, resulting in conditions that are always False.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Variant
@@ -21,19 +22,23 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(Optional ByVal foo As Variant = 0)
     ///     If IsMissing(foo) Then Exit Sub
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public class IsMissingWithNonArgumentParameterInspection : IsMissingInspectionBase
+    internal class IsMissingWithNonArgumentParameterInspection : IsMissingInspectionBase
     {
-        public IsMissingWithNonArgumentParameterInspection(RubberduckParserState state)
-            : base(state) { }
+        public IsMissingWithNonArgumentParameterInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         protected override (bool isResult, ParameterDeclaration properties) IsUnsuitableArgumentWithAdditionalProperties(ArgumentReference reference, DeclarationFinder finder)
         {
