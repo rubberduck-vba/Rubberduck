@@ -294,4 +294,22 @@
   <data name="DuplicateNameAttributeMessageFormat" xml:space="preserve">
     <value>The value '{0}' is used in the 'name' attribute of multiple '{1}' elements.</value>
   </data>
+  <data name="MissingRequiredHostAttribute" xml:space="preserve">
+    <value>Missing 'RequiredHost' attribute</value>
+  </data>
+  <data name="MissingRequiredHostAttributeDescription" xml:space="preserve">
+    <value>The &lt;hostApp name="RequiredHost" /&gt; element means to document the presence of a [RequiredHostAttribute]. If the attribute is correctly missing, the xml-doc element should be removed.</value>
+  </data>
+  <data name="MissingRequiredHostAttributeMessageFormat" xml:space="preserve">
+    <value>XML documentation of type '{0}' includes a &lt;hostApp&gt; element, but no corresponding [RequiredHostAttribute] is decorating the inspection type. Expected: [RequiredHost("{1}")].</value>
+  </data>
+  <data name="MissingInspectionHostAppElement" xml:space="preserve">
+    <value>Missing xml-doc 'hostApp' element</value>
+  </data>
+  <data name="MissingInspectionHostAppElementDescription" xml:space="preserve">
+    <value>XML documentation for inspections with a [RequiredHostAttribute] must include a &lt;hostApp&gt; element with a 'name' attribute with the same value as the [RequiredHostAttribute]. For example [RequiredHost("Excel")] mandates &lt;hostApp name="Excel" /&gt;.</value>
+  </data>
+  <data name="MissingInspectionHostAppElementMessageFormat" xml:space="preserve">
+    <value>XML documentation for type '{0}' is missing a 'hostApp' element.</value>
+  </data>
 </root>

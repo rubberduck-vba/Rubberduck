@@ -313,6 +313,33 @@ namespace RubberduckCodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Missing xml-doc &apos;hostApp&apos; element.
+        /// </summary>
+        public static string MissingInspectionHostAppElement {
+            get {
+                return ResourceManager.GetString("MissingInspectionHostAppElement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XML documentation for inspections with a [RequiredHostAttribute] must include a &lt;hostApp&gt; element with a &apos;name&apos; attribute with the same value as the [RequiredHostAttribute]. For example [RequiredHost(&quot;Excel&quot;)] mandates &lt;hostApp name=&quot;Excel&quot; /&gt;..
+        /// </summary>
+        public static string MissingInspectionHostAppElementDescription {
+            get {
+                return ResourceManager.GetString("MissingInspectionHostAppElementDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XML documentation for type &apos;{0}&apos; is missing a &apos;hostApp&apos; element..
+        /// </summary>
+        public static string MissingInspectionHostAppElementMessageFormat {
+            get {
+                return ResourceManager.GetString("MissingInspectionHostAppElementMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Missing xml-doc &apos;reference&apos; element.
         /// </summary>
         public static string MissingInspectionReferenceElement {
@@ -516,6 +543,33 @@ namespace RubberduckCodeAnalysis {
         public static string MissingProgIdTitle {
             get {
                 return ResourceManager.GetString("MissingProgIdTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing &apos;RequiredHost&apos; attribute.
+        /// </summary>
+        public static string MissingRequiredHostAttribute {
+            get {
+                return ResourceManager.GetString("MissingRequiredHostAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &lt;hostApp name=&quot;RequiredHost&quot; /&gt; element means to document the presence of a [RequiredHostAttribute]. If the attribute is correctly missing, the xml-doc element should be removed..
+        /// </summary>
+        public static string MissingRequiredHostAttributeDescription {
+            get {
+                return ResourceManager.GetString("MissingRequiredHostAttributeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to XML documentation of type &apos;{0}&apos; includes a &lt;hostApp&gt; element, but no corresponding [RequiredHostAttribute] is decorating the inspection type. Expected: [RequiredHost(&quot;{1}&quot;)]..
+        /// </summary>
+        public static string MissingRequiredHostAttributeMessageFormat {
+            get {
+                return ResourceManager.GetString("MissingRequiredHostAttributeMessageFormat", resourceCulture);
             }
         }
         

@@ -23,7 +23,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.Excel
     /// which cannot be altered by the user without accessing the VBE and altering the VBA project.
     /// </why>
     /// <reference name="Excel" />
-    /// <hostapp name="EXCEL.EXE" />
+    /// <hostApp name="EXCEL.EXE" />
     /// <remarks>
     /// For performance reasons, the inspection only evaluates hard-coded string literals; string-valued expressions evaluating into a sheet name are ignored.
     /// </remarks>

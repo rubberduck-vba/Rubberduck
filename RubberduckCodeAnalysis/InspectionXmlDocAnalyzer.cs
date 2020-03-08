@@ -54,6 +54,28 @@ namespace RubberduckCodeAnalysis
             new LocalizableResourceString(nameof(Resources.MissingRequiredLibAttributeDescription), Resources.ResourceManager, typeof(Resources))
         );
 
+        public const string MissingHostAppElement = "MissingHostAppElement";
+        private static readonly DiagnosticDescriptor MissingHostAppElementRule = new DiagnosticDescriptor(
+            MissingHostAppElement,
+            new LocalizableResourceString(nameof(Resources.MissingInspectionHostAppElement), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.MissingInspectionHostAppElementMessageFormat), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.XmlDocAnalyzerCategory), Resources.ResourceManager, typeof(Resources)).ToString(),
+            DiagnosticSeverity.Error,
+            true,
+            new LocalizableResourceString(nameof(Resources.MissingInspectionHostAppElementDescription), Resources.ResourceManager, typeof(Resources))
+        );
+
+        public const string MissingRequiredHostAttribute = "MissingRequiredHostAttribute";
+        private static readonly DiagnosticDescriptor MissingRequiredHostAttributeRule = new DiagnosticDescriptor(
+            MissingRequiredHostAttribute,
+            new LocalizableResourceString(nameof(Resources.MissingRequiredHostAttribute), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.MissingRequiredHostAttributeMessageFormat), Resources.ResourceManager, typeof(Resources)),
+            new LocalizableResourceString(nameof(Resources.XmlDocAnalyzerCategory), Resources.ResourceManager, typeof(Resources)).ToString(),
+            DiagnosticSeverity.Error,
+            true,
+            new LocalizableResourceString(nameof(Resources.MissingRequiredHostAttributeDescription), Resources.ResourceManager, typeof(Resources))
+        );
+
         public const string MissingExampleElement = "MissingExampleElement";
         private static readonly DiagnosticDescriptor MissingExampleElementRule = new DiagnosticDescriptor(
             MissingExampleElement,
@@ -142,7 +164,9 @@ namespace RubberduckCodeAnalysis
             MissingExampleElementRule,
             MissingTypeAttributeRule,
             InvalidTypeAttributeRule,
-            DuplicateNameAttributeRule
+            DuplicateNameAttributeRule,
+            MissingHostAppElementRule,
+            MissingRequiredHostAttributeRule
             );
 
         public override void Initialize(AnalysisContext context)
@@ -164,9 +188,19 @@ namespace RubberduckCodeAnalysis
             CheckWhyElement(context, namedTypeSymbol, xml);
             CheckExampleElement(context, namedTypeSymbol, xml);
 
-            var requiredLibraryAttributes = namedTypeSymbol.GetAttributes().Where(a => a.AttributeClass.Name == "RequiredLibraryAttribute").ToList();
-            CheckReferenceElement(context, namedTypeSymbol, xml, requiredLibraryAttributes);
-            CheckRequiredLibAttribute(context, namedTypeSymbol, xml, requiredLibraryAttributes);
+            var attributes = namedTypeSymbol.GetAttributes();
+            var requiredLibraryAttributes = attributes
+                .Where(a => a.AttributeClass.Name == "RequiredLibraryAttribute")
+                .ToList();
+            var requiredHostAttributes = attributes
+                .Where(a => a.AttributeClass.Name == "RequiredHostAttribute")
+                .ToList();
+
+            CheckAttributeRelatedElementElements(context, namedTypeSymbol, xml, requiredLibraryAttributes, "reference", MissingReferenceElementRule);
+            CheckAttributeRelatedElementElements(context, namedTypeSymbol, xml, requiredHostAttributes, "hostApp", MissingHostAppElementRule);
+
+            CheckXmlRelatedAttribute(context, namedTypeSymbol, xml, requiredLibraryAttributes, "reference", MissingRequiredLibAttributeRule);
+            CheckXmlRelatedAttribute(context, namedTypeSymbol, xml, requiredHostAttributes, "hostApp", MissingRequiredHostAttributeRule);
         }
 
         private static bool IsInspectionClass(INamedTypeSymbol namedTypeSymbol)
@@ -206,54 +240,66 @@ namespace RubberduckCodeAnalysis
             return nameAttribute?.Value;
         }
 
-        private static void CheckReferenceElement(SymbolAnalysisContext context, INamedTypeSymbol symbol, XElement xml, ICollection<AttributeData> requiredLibAttributes)
+        private static void CheckAttributeRelatedElementElements(SymbolAnalysisContext context, INamedTypeSymbol symbol, XElement xml, ICollection<AttributeData> requiredAttributes, string xmlElementName, DiagnosticDescriptor requiredElementDescriptor)
         {
-            if (requiredLibAttributes.Any() && !xml.Elements("reference").Any())
+            if (requiredAttributes.Any() && !xml.Elements(xmlElementName).Any())
             {
-                var diagnostic = Diagnostic.Create(MissingReferenceElementRule, symbol.Locations[0], symbol.Name);
+                var diagnostic = Diagnostic.Create(requiredElementDescriptor, symbol.Locations[0], symbol.Name);
                 context.ReportDiagnostic(diagnostic);
             }
 
-            var xmlRefLibs = new List<string>();
-            foreach (var element in xml.Elements("reference"))
+            var xmlElementNames = new List<string>();
+            foreach (var element in xml.Elements(xmlElementName))
             {
                 var name = CheckNameAttributeAndReturnValue(context, element, symbol.Locations[0]);
                 if (name != null)
                 {
-                    xmlRefLibs.Add(name);
+                    xmlElementNames.Add(name);
                 }
             }
 
-            var duplicateNames = xmlRefLibs
-                .GroupBy(name => name)
-                .Where(group => group.Count() > 1)
-                .Select(group => group.Key);
-            foreach (var name in duplicateNames)
+            CheckForDuplicateNames(context, symbol, xmlElementName, xmlElementNames);
+
+            var requiredNames = requiredAttributes
+                .Where(a => a.ConstructorArguments.Length > 0)
+                .Select(a => a.ConstructorArguments[0].Value.ToString())
+                .ToList();
+            foreach (var requiredName in requiredNames)
             {
-                var diagnostic = Diagnostic.Create(DuplicateNameAttributeRule, symbol.Locations[0], name, "reference");
-                context.ReportDiagnostic(diagnostic);
-            }
-            
-            foreach (var attribute in requiredLibAttributes)
-            {
-                var requiredLib = attribute.ConstructorArguments[0].Value.ToString();
-                if (xmlRefLibs.All(lib => lib != requiredLib))
+                if (requiredNames.All(lib => lib != requiredName))
                 {
-                    var diagnostic = Diagnostic.Create(MissingReferenceElementRule, symbol.Locations[0], symbol.Name);
+                    var diagnostic = Diagnostic.Create(requiredElementDescriptor, symbol.Locations[0], symbol.Name);
                     context.ReportDiagnostic(diagnostic);
                 }
             }
         }
 
-        private static void CheckRequiredLibAttribute(SymbolAnalysisContext context, INamedTypeSymbol symbol, XElement xml, IEnumerable<AttributeData> requiredLibAttributes)
+        private static void CheckForDuplicateNames(SymbolAnalysisContext context, INamedTypeSymbol symbol, string xmlElementName, List<string> names)
         {
-            var requiredLibs = requiredLibAttributes.Select(a => a.ConstructorArguments[0].Value.ToString()).ToList();
-            foreach (var element in xml.Elements("reference"))
+            var duplicateNames = names
+                .GroupBy(name => name)
+                .Where(group => @group.Count() > 1)
+                .Select(group => @group.Key);
+            foreach (var name in duplicateNames)
             {
-                var xmlRefLib = element.Attribute("name")?.Value;
-                if (xmlRefLib == null || requiredLibs.All(lib => lib != xmlRefLib))
+                var diagnostic = Diagnostic.Create(DuplicateNameAttributeRule, symbol.Locations[0], name, xmlElementName);
+                context.ReportDiagnostic(diagnostic);
+            }
+        }
+
+        private static void CheckXmlRelatedAttribute(SymbolAnalysisContext context, INamedTypeSymbol symbol, XElement xml, IEnumerable<AttributeData> requiredAttributes, string xmlElementName, DiagnosticDescriptor requiredAttributeDescriptor)
+        {
+            var requiredNames = requiredAttributes
+                .Where(a => a.ConstructorArguments.Length > 0)
+                .Select(a => a.ConstructorArguments[0].Value.ToString())
+                .ToList();
+
+            foreach (var element in xml.Elements(xmlElementName))
+            {
+                var name = element.Attribute("name")?.Value;
+                if (name == null || requiredNames.All(lib => lib != name))
                 {
-                    var diagnostic = Diagnostic.Create(MissingRequiredLibAttributeRule, symbol.Locations[0], symbol.Name, xmlRefLib);
+                    var diagnostic = Diagnostic.Create(requiredAttributeDescriptor, symbol.Locations[0], symbol.Name, name);
                     context.ReportDiagnostic(diagnostic);
                 }
             }
@@ -296,15 +342,7 @@ namespace RubberduckCodeAnalysis
                 CheckTypeAttribute(context, module, symbol.Locations[0]);
             }
 
-            var duplicateNames = moduleNames
-                .GroupBy(name => name)
-                .Where(group => group.Count() > 1)
-                .Select(group => group.Key);
-            foreach (var name in duplicateNames)
-            {
-                var diagnostic = Diagnostic.Create(DuplicateNameAttributeRule, symbol.Locations[0], name, "module");
-                context.ReportDiagnostic(diagnostic);
-            }
+            CheckForDuplicateNames(context, symbol, "module", moduleNames);
         }
 
         private static void CheckHasResultAttribute(SymbolAnalysisContext context, XElement element, Location location)
