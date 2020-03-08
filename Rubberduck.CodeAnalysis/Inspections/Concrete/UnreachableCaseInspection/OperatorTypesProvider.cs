@@ -1,11 +1,11 @@
-﻿using Rubberduck.Parsing.Grammar;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Parsing.Grammar;
 
-namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection
 {
-    public class OperatorTypesProvider
+    internal class OperatorTypesProvider
     {
         private readonly (string lhs, string rhs) _operandTypeNames;
         private readonly string _opSymbol;

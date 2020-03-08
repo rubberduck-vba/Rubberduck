@@ -7,6 +7,6 @@
     {
         public InterfaceAnnotation()
             : base("Interface", AnnotationTarget.Module)
-        { }
+        {}
     }
 }

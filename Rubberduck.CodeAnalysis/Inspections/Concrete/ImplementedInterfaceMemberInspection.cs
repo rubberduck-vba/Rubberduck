@@ -1,13 +1,14 @@
-﻿using Rubberduck.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
-using System.Linq;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Inspections.Inspections.Extensions;
+﻿using System.Linq;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Identifies class modules that define an interface with one or more members containing a concrete implementation.
@@ -15,7 +16,8 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// Interfaces provide an abstract, unified programmatic access to different objects; concrete implementations of their members should be in a separate module that 'Implements' the interface.
     /// </why>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Class Module">
     /// <![CDATA[
     /// Option Explicit
     /// '@Interface
@@ -24,8 +26,10 @@ namespace Rubberduck.Inspections.Concrete
     /// ' empty interface stub
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Class Module">
     /// <![CDATA[
     /// Option Explicit
     /// '@Interface
@@ -34,11 +38,12 @@ namespace Rubberduck.Inspections.Concrete
     ///     MsgBox "Hello from interface!"
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    internal class ImplementedInterfaceMemberInspection : DeclarationInspectionBase
+    internal sealed class ImplementedInterfaceMemberInspection : DeclarationInspectionBase
     {
-        public ImplementedInterfaceMemberInspection(Parsing.VBA.RubberduckParserState state)
-            : base(state, DeclarationType.ClassModule)
+        public ImplementedInterfaceMemberInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.ClassModule)
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)

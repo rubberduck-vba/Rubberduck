@@ -1,9 +1,11 @@
-﻿using System.Reflection;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: InternalsVisibleTo("Rubberduck.Main")]
+//This is the assembly name of the project Rubberduck.Main.
+[assembly: InternalsVisibleTo("Rubberduck")]
+// internals visible for testing and mocking
 [assembly: InternalsVisibleTo("RubberduckTests")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 

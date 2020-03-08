@@ -520,7 +520,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expression &apos;{0}&apos; was expected to contain a parameter, but none was specified..
+        ///   Looks up a localized string similar to The annotation &apos;{0}&apos; was expected to have more arguments..
         /// </summary>
         public static string MissingAnnotationArgumentInspection {
             get {
@@ -903,6 +903,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string StopKeywordInspection {
             get {
                 return ResourceManager.GetString("StopKeywordInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The annotation &apos;{0}&apos; was expected to have less arguments..
+        /// </summary>
+        public static string SuperfluousAnnotationArgumentInspection {
+            get {
+                return ResourceManager.GetString("SuperfluousAnnotationArgumentInspection", resourceCulture);
             }
         }
         

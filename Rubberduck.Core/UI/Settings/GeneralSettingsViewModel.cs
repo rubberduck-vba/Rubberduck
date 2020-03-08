@@ -12,7 +12,6 @@ using Rubberduck.VBEditor.VbeRuntime.Settings;
 using Rubberduck.Resources;
 using Rubberduck.Resources.Settings;
 using Rubberduck.Parsing.Common;
-using System.Collections.Specialized;
 using Rubberduck.UI.WPF;
 
 namespace Rubberduck.UI.Settings

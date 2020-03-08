@@ -1,9 +1,9 @@
 using System.Linq;
 using NUnit.Framework;
-using Rubberduck.Inspections.Concrete;
+using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.Inspections.Abstract;
 
 namespace RubberduckTests.Inspections
 {
@@ -17,6 +17,90 @@ namespace RubberduckTests.Inspections
             const string inputCode =
                 @"Private Sub Foo(ByRef foo As Boolean)
     foo = 42
+End Sub";
+
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ProcedureShouldBeFunction_ReturnsResult_UsedByValAfterConditionalAssignment()
+        {
+            const string inputCode =
+                @"Private Sub Foo(ByRef bar As Boolean, ByVal baz As Boolean)
+    If baz Then
+        bar = 42
+    End If
+    Goo bar
+End Sub
+
+Private Sub Goo(ByVal arg As Boolean)
+End Sub";
+
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ProcedureShouldBeFunction_ReturnsResult_UsedByValBeforeAssignment()
+        {
+            const string inputCode =
+                @"Private Sub Foo(ByRef bar As Boolean)
+    Goo bar
+    bar = 42
+End Sub
+
+Private Sub Goo(ByVal arg As Boolean)
+End Sub";
+
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ProcedureShouldBeFunction_ReturnsResult_UsedByRef()
+        {
+            const string inputCode =
+                @"Private Sub Foo(ByRef bar As Boolean)
+    Goo bar, True
+End Sub
+
+Private Sub Goo(ByRef arg1 As Boolean, ByRef arg2 As Boolean)
+    arg1 = arg2
+End Sub";
+
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ProcedureShouldBeFunction_DoesNotReturnResult_UsedInExpression()
+        {
+            const string inputCode =
+                @"Private Sub Foo(ByRef bar As Boolean)
+    Goo Not bar, True
+End Sub
+
+Private Sub Goo(ByRef arg1 As Boolean, ByRef arg2 As Boolean)
+    arg1 = arg2
+End Sub";
+
+            Assert.AreEqual(0, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ProcedureShouldBeFunction_ReturnsResult_UsedByRefWithArgumentUsage()
+        {
+            const string inputCode =
+                @"Private Sub Foo(ByRef bar As Boolean)
+    Goo bar, True
+End Sub
+
+Private Sub Goo(ByRef arg1 As Boolean, ByRef arg2 As Boolean)
+    Dim baz As Variant
+    baz = arg1
+    arg1 = arg2
 End Sub";
 
             Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
@@ -87,6 +171,19 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
+        public void ProcedureShouldBeFunction_ReturnsResult_MultipleParamsOneByRef()
+        {
+            const string inputCode =
+                @"Private Sub Foo(ByVal foo As Integer, ByRef goo As Integer, ByVal hoo As Variant)
+    foo = 42
+    goo = 42
+End Sub";
+
+            Assert.AreEqual(1, InspectionResultsForStandardModule(inputCode).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void ProcedureShouldBeFunction_DoesNotReturnResult_InterfaceImplementation()
         {
             const string inputCode1 =
@@ -102,6 +199,44 @@ End Sub";
             {
                 ("IClass1", inputCode1, ComponentType.ClassModule),
                 ("Class1", inputCode2, ComponentType.ClassModule)
+            };
+
+            Assert.AreEqual(0, InspectionResultsForModules(modules).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ProcedureShouldBeFunction_ReturnsResult_Object()
+        {
+            const string inputCode1 =
+                @"Public bar As Variant";
+            const string inputCode2 =
+                @"Private Sub DoSomething(ByRef a As Class1)
+    Set a = New Class1
+End Sub";
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("Class1", inputCode1, ComponentType.ClassModule),
+                ("Class2", inputCode2, ComponentType.ClassModule)
+            };
+
+            Assert.AreEqual(1, InspectionResultsForModules(modules).Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ProcedureShouldBeFunction_DoesNotReturnResult_ObjectMember()
+        {
+            const string inputCode1 =
+                @"Public bar As Variant";
+            const string inputCode2 =
+                @"Private Sub DoSomething(ByRef a As Class1)
+    Set a.bar = New Class1
+End Sub";
+            var modules = new (string, string, ComponentType)[]
+            {
+                ("Class1", inputCode1, ComponentType.ClassModule),
+                ("Class2", inputCode2, ComponentType.ClassModule)
             };
 
             Assert.AreEqual(0, InspectionResultsForModules(modules).Count());
@@ -146,6 +281,8 @@ End Sub";
         public void InspectionName()
         {
             var inspection = new ProcedureCanBeWrittenAsFunctionInspection(null);
+
+            Assert.AreEqual(nameof(ProcedureCanBeWrittenAsFunctionInspection), inspection.Name);
         }
 
         protected override IInspection InspectionUnderTest(RubberduckParserState state)

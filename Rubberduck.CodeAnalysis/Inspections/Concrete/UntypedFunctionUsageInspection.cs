@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Resources.Inspections;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Flags uses of a number of specific string-centric but Variant-returning functions in various standard library modules.
@@ -16,24 +16,29 @@ namespace Rubberduck.Inspections.Concrete
     /// Several functions in the standard library take a Variant parameter and return a Variant result, but an equivalent 
     /// string-returning function taking a string parameter exists and should probably be preferred.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Double)
     ///     Debug.Print Format(foo, "Currency") ' Strings.Format function returns a Variant.
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Double)
     ///     Debug.Print Format$(CStr(foo), "Currency") ' Strings.Format$ function returns a String.
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class UntypedFunctionUsageInspection : IdentifierReferenceInspectionFromDeclarationsBase
+    internal sealed class UntypedFunctionUsageInspection : IdentifierReferenceInspectionFromDeclarationsBase
     {
-        public UntypedFunctionUsageInspection(RubberduckParserState state)
-            : base(state) { }
+        public UntypedFunctionUsageInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         private readonly HashSet<string> _tokens = new HashSet<string>{
             Tokens.Error,

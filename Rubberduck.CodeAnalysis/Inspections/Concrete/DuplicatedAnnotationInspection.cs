@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about duplicated annotations.
@@ -15,7 +15,8 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// Rubberduck annotations should not be specified more than once for a given module, member, variable, or expression.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// '@Folder("Bar")
     /// '@Folder("Foo")
@@ -24,8 +25,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// '@Folder("Foo.Bar")
     ///
@@ -33,12 +36,13 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class DuplicatedAnnotationInspection : DeclarationInspectionMultiResultBase<IAnnotation>
+    internal sealed class DuplicatedAnnotationInspection : DeclarationInspectionMultiResultBase<IAnnotation>
     {
-        public DuplicatedAnnotationInspection(RubberduckParserState state) 
-            : base(state)
-        { }
+        public DuplicatedAnnotationInspection(IDeclarationFinderProvider declarationFinderProvider) 
+            : base(declarationFinderProvider)
+        {}
 
         protected override IEnumerable<IAnnotation> ResultProperties(Declaration declaration, DeclarationFinder finder)
         {

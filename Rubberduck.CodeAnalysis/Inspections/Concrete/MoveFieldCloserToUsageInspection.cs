@@ -1,11 +1,11 @@
 ﻿using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Locates module-level fields that can be moved to a smaller scope.
@@ -14,7 +14,8 @@ namespace Rubberduck.Inspections.Concrete
     /// Module-level variables that are only used in a single procedure can often be declared in that procedure's scope. 
     /// Declaring variables closer to where they are used generally makes the code easier to follow.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// Private foo As Long
@@ -24,8 +25,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     Debug.Print foo ' module variable is only used in this scope
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     ///
@@ -35,11 +38,12 @@ namespace Rubberduck.Inspections.Concrete
     ///     Debug.Print foo
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class MoveFieldCloserToUsageInspection : DeclarationInspectionBase
+    internal sealed class MoveFieldCloserToUsageInspection : DeclarationInspectionBase
     {
-        public MoveFieldCloserToUsageInspection(RubberduckParserState state)
-            : base(state, DeclarationType.Variable)
+        public MoveFieldCloserToUsageInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Variable)
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)

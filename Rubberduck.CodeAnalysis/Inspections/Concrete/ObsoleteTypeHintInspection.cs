@@ -1,15 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Results;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Flags declarations where a type hint is used in place of an 'As' clause.
@@ -17,58 +16,40 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// Type hints were made obsolete when declaration syntax introduced the 'As' keyword. Prefer explicit type names over type hint symbols.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo$
     ///     foo = "some string"
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As String
     ///     foo = "some string"
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class ObsoleteTypeHintInspection : InspectionBase
+    internal sealed class ObsoleteTypeHintInspection : InspectionBase
     {
-        private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        public ObsoleteTypeHintInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
-        public ObsoleteTypeHintInspection(RubberduckParserState state)
-            : base(state)
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(DeclarationFinder finder)
         {
-            _declarationFinderProvider = state;
+            return finder.UserDeclarations(DeclarationType.Module)
+                .Where(module => module != null)
+                .SelectMany(module => DoGetInspectionResults(module.QualifiedModuleName, finder));
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
-        {
-            var finder = _declarationFinderProvider.DeclarationFinder;
-
-            var results = new List<IInspectionResult>();
-            foreach (var moduleDeclaration in finder.UserDeclarations(DeclarationType.Module))
-            {
-                if (moduleDeclaration == null)
-                {
-                    continue;
-                }
-
-                var module = moduleDeclaration.QualifiedModuleName;
-                results.AddRange(DoGetInspectionResults(module, finder));
-            }
-
-            return results;
-        }
-
-        private  IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
-        {
-            var finder = _declarationFinderProvider.DeclarationFinder;
-            return DoGetInspectionResults(module, finder);
-        }
-
-        private IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
         {
             var declarationResults = DeclarationResults(module, finder);
             var referenceResults = ReferenceResults(module, finder);
@@ -109,15 +90,15 @@ namespace Rubberduck.Inspections.Concrete
                                     && reference.Declaration.IsUserDefined
                                     && reference.HasTypeHint());
             return objectionableReferences
-                .Select(reference => InspectionResult(reference, _declarationFinderProvider));
+                .Select(reference => InspectionResult(reference, finder));
         }
 
-        private IInspectionResult InspectionResult(IdentifierReference reference, IDeclarationFinderProvider declarationFinderProvider)
+        private IInspectionResult InspectionResult(IdentifierReference reference, DeclarationFinder finder)
         {
             return new IdentifierReferenceInspectionResult(
                 this,
                 ResultDescription(reference),
-                declarationFinderProvider,
+                finder,
                 reference);
         }
 

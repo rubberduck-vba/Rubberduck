@@ -1,18 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Attributes;
+using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.JunkDrawer.Extensions;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.Excel
 {
     /// <summary>
     /// Warns about late-bound WorksheetFunction calls made against the extended interface of the Application object.
@@ -27,7 +23,8 @@ namespace Rubberduck.Inspections.Concrete
     /// A Variant/Error value cannot be coerced into any other data type, be it for assignment or comparison.
     /// 
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Sub Example()
     ///     Debug.Print Application.Sum(Array(1, 2, 3), 4, 5, "ABC") ' outputs "Error 2015" (no run-time error is raised).
@@ -40,8 +37,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     End If
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Sub Example()
     ///     Debug.Print Application.WorksheetFunction.Sum(Array(1, 2, 3), 4, 5, "ABC") ' raises error 1004
@@ -54,27 +53,29 @@ namespace Rubberduck.Inspections.Concrete
     ///     End If
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     [RequiredLibrary("Excel")]
-    public class ApplicationWorksheetFunctionInspection : IdentifierReferenceInspectionFromDeclarationsBase
+    internal class ApplicationWorksheetFunctionInspection : IdentifierReferenceInspectionFromDeclarationsBase
     {
-        public ApplicationWorksheetFunctionInspection(RubberduckParserState state)
-            : base(state) { }
+        public ApplicationWorksheetFunctionInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)
         {
-            var excel = State.DeclarationFinder.Projects.SingleOrDefault(item => !item.IsUserDefined && item.IdentifierName == "Excel");
+            var excel = finder.Projects.SingleOrDefault(item => !item.IsUserDefined && item.IdentifierName == "Excel");
             if (excel == null)
             {
                 return Enumerable.Empty<Declaration>();
             }
 
-            if (!(State.DeclarationFinder.FindClassModule("WorksheetFunction", excel, true) is ModuleDeclaration worksheetFunctionsModule))
+            if (!(finder.FindClassModule("WorksheetFunction", excel, true) is ModuleDeclaration worksheetFunctionsModule))
             {
                 return Enumerable.Empty<Declaration>();
             }
 
-            if (!(State.DeclarationFinder.FindClassModule("Application", excel, true) is ModuleDeclaration excelApplicationClass))
+            if (!(finder.FindClassModule("Application", excel, true) is ModuleDeclaration excelApplicationClass))
             {
                 return Enumerable.Empty<Declaration>();
             }

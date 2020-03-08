@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Antlr4.Runtime.Tree;
+using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.QuickFixes;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using RubberduckTests.Inspections;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
@@ -90,13 +92,37 @@ namespace RubberduckTests.QuickFixes
 
         private IEnumerable<IInspectionResult> InspectionResults(IInspection inspection, RubberduckParserState state)
         {
-            if (inspection is IParseTreeInspection)
+            if (inspection is IParseTreeInspection parseTreeInspection)
             {
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                return inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                WalkTrees(parseTreeInspection, state);
             }
 
             return inspection.GetInspectionResults(CancellationToken.None);
+        }
+
+        private static void WalkTrees(IParseTreeInspection inspection, RubberduckParserState state)
+        {
+            var codeKind = inspection.TargetKindOfCode;
+            var listener = inspection.Listener;
+
+            List<KeyValuePair<QualifiedModuleName, IParseTree>> trees;
+            switch (codeKind)
+            {
+                case CodeKind.AttributesCode:
+                    trees = state.AttributeParseTrees;
+                    break;
+                case CodeKind.CodePaneCode:
+                    trees = state.ParseTrees;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(codeKind), codeKind, null);
+            }
+
+            foreach (var (module, tree) in trees)
+            {
+                listener.CurrentModuleName = module;
+                ParseTreeWalker.Default.Walk(listener, tree);
+            }
         }
 
         private void ApplyToFirstResult(IQuickFix quickFix, IEnumerable<IInspectionResult> inspectionResults, IRewriteSession rewriteSession)

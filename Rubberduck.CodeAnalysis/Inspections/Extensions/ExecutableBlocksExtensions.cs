@@ -1,9 +1,10 @@
-﻿using Antlr4.Runtime.Tree;
+﻿using System.Collections.Generic;
+using Antlr4.Runtime.Tree;
 using static Rubberduck.Parsing.Grammar.VBAParser;
 
-namespace Rubberduck.Inspections.Inspections.Extensions
+namespace Rubberduck.CodeAnalysis.Inspections.Extensions
 {
-    public static class ExecutableBlocksExtensions
+    internal static class ExecutableBlocksExtensions
     {
         /// <summary>
         /// Checks a block of code for executable statments and returns true if are present.
@@ -16,8 +17,9 @@ namespace Rubberduck.Inspections.Inspections.Extensions
             return block?.children != null && ContainsExecutableStatements(block.children, considerAllocations);
         }
 
-        private static bool ContainsExecutableStatements(System.Collections.Generic.IList<IParseTree> blockChildren,
-                                                         bool considerAllocations = false)
+        private static bool ContainsExecutableStatements(
+            IList<IParseTree> blockChildren,
+            bool considerAllocations = false)
         {
             foreach (var child in blockChildren)
             {

@@ -13,13 +13,12 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using NLog;
+using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.QuickFixes;
 using Rubberduck.Common;
 using Rubberduck.Formatters;
-using Rubberduck.Inspections.Abstract;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.JunkDrawer.Extensions;
-using Rubberduck.Parsing.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
@@ -281,9 +280,9 @@ namespace Rubberduck.UI.Inspections
 
         private bool FilterResults(object inspectionResult)
         {
-            var inspectionResultBase = inspectionResult as InspectionResultBase;
+            var inspectionResultBase = inspectionResult as IInspectionResult;
             
-            return inspectionResultBase.Description.ToUpper().Contains(InspectionDescriptionFilter.ToUpper()); ;
+            return inspectionResultBase?.Description.ToUpper().Contains(InspectionDescriptionFilter.ToUpper()) ?? false;
         }
 
         private bool InspectionFilter(IInspectionResult result)

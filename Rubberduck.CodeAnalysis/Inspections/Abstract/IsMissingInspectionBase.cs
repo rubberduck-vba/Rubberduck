@@ -6,12 +6,13 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 
-namespace Rubberduck.Inspections.Inspections.Abstract
+namespace Rubberduck.CodeAnalysis.Inspections.Abstract
 {
-    public abstract class IsMissingInspectionBase : ArgumentReferenceInspectionFromDeclarationsBase<ParameterDeclaration>
+    internal abstract class IsMissingInspectionBase : ArgumentReferenceInspectionFromDeclarationsBase<ParameterDeclaration>
     {
-        protected IsMissingInspectionBase(RubberduckParserState state) 
-            : base(state) { }
+        protected IsMissingInspectionBase(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         private static readonly List<string> IsMissingQualifiedNames = new List<string>
         {

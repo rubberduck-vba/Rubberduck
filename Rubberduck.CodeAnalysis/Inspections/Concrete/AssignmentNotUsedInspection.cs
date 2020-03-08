@@ -1,17 +1,17 @@
 using System.Collections.Generic;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.CodePathAnalysis;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Inspections.CodePathAnalysis.Extensions;
 using System.Linq;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
+using Rubberduck.Inspections.CodePathAnalysis;
+using Rubberduck.Inspections.CodePathAnalysis.Extensions;
 using Rubberduck.Inspections.CodePathAnalysis.Nodes;
-using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about a variable that is assigned, and then re-assigned before the first assignment is read.
@@ -19,7 +19,8 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// The first assignment is likely redundant, since it is being overwritten by the second.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Long
@@ -27,8 +28,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     foo = 34 
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     Dim bar As Long
@@ -36,13 +39,15 @@ namespace Rubberduck.Inspections.Concrete
     ///     bar = bar + foo ' variable is re-assigned, but the prior assigned value is read at least once first.
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class AssignmentNotUsedInspection : IdentifierReferenceInspectionBase
+    internal sealed class AssignmentNotUsedInspection : IdentifierReferenceInspectionBase
     {
         private readonly Walker _walker;
 
-        public AssignmentNotUsedInspection(RubberduckParserState state, Walker walker)
-            : base(state) {
+        public AssignmentNotUsedInspection(IDeclarationFinderProvider declarationFinderProvider, Walker walker)
+            : base(declarationFinderProvider)
+        {
             _walker = walker;
         }
 

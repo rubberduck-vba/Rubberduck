@@ -1,17 +1,13 @@
-using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
-using Rubberduck.JunkDrawer.Extensions;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about 'Function' and 'Property Get' procedures whose return value is not assigned.
@@ -19,7 +15,8 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// Both 'Function' and 'Property Get' accessors should always return something. Omitting the return assignment is likely a bug.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function GetFoo() As Long
     ///     Dim foo As Long
@@ -27,8 +24,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     'function will always return 0
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function GetFoo() As Long
     ///     Dim foo As Long
@@ -36,12 +35,13 @@ namespace Rubberduck.Inspections.Concrete
     ///     GetFoo = foo
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class NonReturningFunctionInspection : DeclarationInspectionBase
+    internal sealed class NonReturningFunctionInspection : DeclarationInspectionBase
     {
-        public NonReturningFunctionInspection(RubberduckParserState state)
-            : base(state, DeclarationType.Function)
-        { }
+        public NonReturningFunctionInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Function)
+        {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {

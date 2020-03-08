@@ -439,4 +439,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="ImplicitlyTypedConstInspection" xml:space="preserve">
     <value>If the as type clause for a Const isn't included it is implicitly typed. Include an explicit ' As &lt;Type&gt;' replacing '&lt;Type&gt;' with the correct data type to explicitly type your const value.</value>
   </data>
+  <data name="SuperfluousAnnotationArgumentInspection" xml:space="preserve">
+    <value>An annotation has more arguments than allowed; superfluous arguments are ignored.</value>
+  </data>
 </root>

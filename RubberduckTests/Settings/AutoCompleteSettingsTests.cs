@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Rubberduck.Settings;
 using Rubberduck.UI.Settings;
 using AutoCompleteSettings = Rubberduck.Settings.AutoCompleteSettings;

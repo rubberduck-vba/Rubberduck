@@ -1,10 +1,10 @@
-﻿using Rubberduck.Parsing.Grammar;
-using System;
+﻿using System;
 using System.Linq;
+using Rubberduck.Parsing.Grammar;
 
-namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection
 {
-    public class ExpressionFilterDate : ExpressionFilter<ComparableDateValue>
+    internal class ExpressionFilterDate : ExpressionFilter<ComparableDateValue>
     {
         public ExpressionFilterDate() : base(Tokens.Date, ComparableDateValue.Parse) { }
 

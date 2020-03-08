@@ -687,7 +687,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public IEnumerable<IParseTreeAnnotation> GetModuleAnnotations(QualifiedModuleName module)
+        public IEnumerable<IParseTreeAnnotation> GetAnnotations(QualifiedModuleName module)
         {
             if (_moduleStates.TryGetValue(module, out var result))
             {

@@ -1,22 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Results;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Abstract
+namespace Rubberduck.CodeAnalysis.Inspections.Abstract
 {
-    public abstract class DeclarationInspectionUsingGlobalInformationBase<TGlobalInfo> : DeclarationInspectionUsingGlobalInformationBaseBase<TGlobalInfo>
+    internal abstract class DeclarationInspectionUsingGlobalInformationBase<TGlobalInfo> : DeclarationInspectionUsingGlobalInformationBaseBase<TGlobalInfo>
     {
-        protected DeclarationInspectionUsingGlobalInformationBase(RubberduckParserState state, params DeclarationType[] relevantDeclarationTypes)
-            : base(state, relevantDeclarationTypes)
+        protected DeclarationInspectionUsingGlobalInformationBase(IDeclarationFinderProvider declarationFinderProvider, params DeclarationType[] relevantDeclarationTypes)
+            : base(declarationFinderProvider, relevantDeclarationTypes)
         {}
 
-        protected DeclarationInspectionUsingGlobalInformationBase(RubberduckParserState state, DeclarationType[] relevantDeclarationTypes, DeclarationType[] excludeDeclarationTypes)
-            : base(state, relevantDeclarationTypes, excludeDeclarationTypes)
+        protected DeclarationInspectionUsingGlobalInformationBase(IDeclarationFinderProvider declarationFinderProvider, DeclarationType[] relevantDeclarationTypes, DeclarationType[] excludeDeclarationTypes)
+            : base(declarationFinderProvider, relevantDeclarationTypes, excludeDeclarationTypes)
         {}
 
         protected abstract bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder, TGlobalInfo globalInfo);
@@ -44,14 +43,14 @@ namespace Rubberduck.Inspections.Abstract
         }
     }
 
-    public abstract class DeclarationInspectionUsingGlobalInformationBase<TGlobalInfo,TProperties> : DeclarationInspectionUsingGlobalInformationBaseBase<TGlobalInfo>
+    internal abstract class DeclarationInspectionUsingGlobalInformationBase<TGlobalInfo,TProperties> : DeclarationInspectionUsingGlobalInformationBaseBase<TGlobalInfo>
     {
-        protected DeclarationInspectionUsingGlobalInformationBase(RubberduckParserState state, params DeclarationType[] relevantDeclarationTypes)
-            : base(state, relevantDeclarationTypes)
+        protected DeclarationInspectionUsingGlobalInformationBase(IDeclarationFinderProvider declarationFinderProvider, params DeclarationType[] relevantDeclarationTypes)
+            : base(declarationFinderProvider, relevantDeclarationTypes)
         {}
 
-        protected DeclarationInspectionUsingGlobalInformationBase(RubberduckParserState state, DeclarationType[] relevantDeclarationTypes, DeclarationType[] excludeDeclarationTypes)
-            : base(state, relevantDeclarationTypes, excludeDeclarationTypes)
+        protected DeclarationInspectionUsingGlobalInformationBase(IDeclarationFinderProvider declarationFinderProvider, DeclarationType[] relevantDeclarationTypes, DeclarationType[] excludeDeclarationTypes)
+            : base(declarationFinderProvider, relevantDeclarationTypes, excludeDeclarationTypes)
         {}
 
         protected abstract (bool isResult, TProperties properties) IsResultDeclarationWithAdditionalProperties(Declaration declaration, DeclarationFinder finder, TGlobalInfo globalInformation);

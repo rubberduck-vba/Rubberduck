@@ -4,7 +4,7 @@ namespace Rubberduck.Parsing.Symbols
 {
     public interface IParameterizedDeclaration
     {
-        IEnumerable<ParameterDeclaration> Parameters { get; }
+        IReadOnlyList<ParameterDeclaration> Parameters { get; }
         void AddParameter(ParameterDeclaration parameter);
     }
 }

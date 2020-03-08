@@ -1,12 +1,12 @@
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Locates 'Const' declarations that are never referenced.
@@ -14,7 +14,8 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// Declarations that are never used should be removed.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Const foo As Long = 42
     ///
@@ -22,8 +23,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' no reference to 'foo' anywhere...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Const foo As Long = 42
     ///
@@ -31,11 +34,13 @@ namespace Rubberduck.Inspections.Concrete
     ///     Debug.Print foo
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class ConstantNotUsedInspection : DeclarationInspectionBase
+    internal sealed class ConstantNotUsedInspection : DeclarationInspectionBase
     {
-        public ConstantNotUsedInspection(RubberduckParserState state)
-            : base(state, DeclarationType.Constant) { }
+        public ConstantNotUsedInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Constant)
+        {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {

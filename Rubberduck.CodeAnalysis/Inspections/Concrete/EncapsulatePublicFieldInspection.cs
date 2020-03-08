@@ -1,10 +1,10 @@
-﻿using Rubberduck.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+﻿using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Flags publicly exposed instance fields.
@@ -13,12 +13,15 @@ namespace Rubberduck.Inspections.Concrete
     /// Instance fields are the implementation details of a object's internal state; exposing them directly breaks encapsulation. 
     /// Often, an object only needs to expose a 'Get' procedure to expose an internal instance field.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Foo As Long
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private internalFoo As Long
     /// 
@@ -26,11 +29,12 @@ namespace Rubberduck.Inspections.Concrete
     ///     Foo = internalFoo
     /// End Property
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class EncapsulatePublicFieldInspection : DeclarationInspectionBase
+    internal sealed class EncapsulatePublicFieldInspection : DeclarationInspectionBase
     {
-        public EncapsulatePublicFieldInspection(RubberduckParserState state)
-            : base(state, DeclarationType.Variable)
+        public EncapsulatePublicFieldInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Variable)
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
