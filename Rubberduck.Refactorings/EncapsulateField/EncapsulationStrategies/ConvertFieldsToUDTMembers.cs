@@ -82,18 +82,18 @@ namespace Rubberduck.Refactorings.EncapsulateField
                         {
                             getContent = $"{Tokens.Set} {getContent}";
                         }
-                        AddContentBlock(NewContentTypes.MethodBlock, variableDeclaration.FieldToPropertyBlock(DeclarationType.PropertyGet, set.PropertyName, Tokens.Public, getContent));
+                        AddContentBlock(NewContentTypes.MethodBlock, variableDeclaration.FieldToPropertyBlock(DeclarationType.PropertyGet, set.PropertyName, content: $"{_defaultIndent}{getContent}"));
                         if (converted.IsReadOnly)
                         {
                             continue;
                         }
                         if (set.GenerateLetter)
                         {
-                            AddContentBlock(NewContentTypes.MethodBlock, variableDeclaration.FieldToPropertyBlock(DeclarationType.PropertyLet, set.PropertyName, Tokens.Public, $"{set.BackingField} = {set.ParameterName}"));
+                            AddContentBlock(NewContentTypes.MethodBlock, variableDeclaration.FieldToPropertyBlock(DeclarationType.PropertyLet, set.PropertyName, content: $"{_defaultIndent}{set.BackingField} = {set.ParameterName}"));
                         }
                         if (set.GenerateSetter)
                         {
-                            AddContentBlock(NewContentTypes.MethodBlock, variableDeclaration.FieldToPropertyBlock(DeclarationType.PropertySet, set.PropertyName, Tokens.Public, $"{Tokens.Set} {set.BackingField} = {set.ParameterName}"));
+                            AddContentBlock(NewContentTypes.MethodBlock, variableDeclaration.FieldToPropertyBlock(DeclarationType.PropertySet, set.PropertyName, content: $"{_defaultIndent}{Tokens.Set} {set.BackingField} = {set.ParameterName}"));
                         }
                     }
                 }

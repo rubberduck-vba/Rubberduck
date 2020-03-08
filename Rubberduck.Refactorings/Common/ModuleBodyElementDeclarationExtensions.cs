@@ -18,46 +18,25 @@ namespace Rubberduck.Refactorings.Common
         /// <param name="declaration"></param>
         /// <returns></returns>
         public static string FullMemberSignature(this ModuleBodyElementDeclaration declaration,
-                                    string accessibility = null,
-                                    string newIdentifier = null)
+                                                        string accessibility = null,
+                                                        string newIdentifier = null)
         {
-            var identifier = newIdentifier ?? declaration.IdentifierName;
-
-            var fullSignatureFormat = string.Empty;
-            switch (declaration.Context)
-            {
-                case VBAParser.SubStmtContext _:
-                    fullSignatureFormat = $"{{0}} {Tokens.Sub} {identifier}({{1}}){{2}}";
-                    break;
-                case VBAParser.FunctionStmtContext _:
-                    fullSignatureFormat = $"{{0}} {Tokens.Function} {identifier}({{1}}){{2}}";
-                    break;
-                case VBAParser.PropertyGetStmtContext _:
-                    fullSignatureFormat = $"{{0}} {Tokens.Property} {Tokens.Get} {identifier}({{1}}){{2}}";
-                    break;
-                case VBAParser.PropertyLetStmtContext _:
-                    fullSignatureFormat = $"{{0}} {Tokens.Property} {Tokens.Let} {identifier}({{1}}){{2}}";
-                    break;
-                case VBAParser.PropertySetStmtContext _:
-                    fullSignatureFormat = $"{{0}} {Tokens.Property} {Tokens.Set} {identifier}({{1}}){{2}}";
-                    break;
-                default:
-                    throw new ArgumentException();
-            }
-
             var accessibilityToken = declaration.Accessibility.Equals(Accessibility.Implicit)
                 ? Tokens.Public
                 : $"{declaration.Accessibility.ToString()}";
 
-            accessibilityToken = accessibility ?? accessibilityToken;
-
-            var improvedArgList = ImprovedArgumentList(declaration);
-
-            var asTypeSuffix = declaration.AsTypeName == null
+            var asTypeClause = declaration.AsTypeName == null
                 ? string.Empty
                 : $" {Tokens.As} {declaration.AsTypeName}";
 
-            var fullSignature = string.Format(fullSignatureFormat, accessibilityToken, improvedArgList, asTypeSuffix);
+            var fullSignatureFormat = RetrieveFullSignatureFormat(declaration);
+
+            var fullSignature = string.Format(fullSignatureFormat,
+                            accessibility ?? accessibilityToken,
+                            newIdentifier ?? declaration.IdentifierName,
+                            ImprovedArgumentList(declaration), 
+                            asTypeClause);
+
             return fullSignature.Trim();
         }
 
@@ -153,6 +132,33 @@ namespace Rubberduck.Refactorings.Common
             var defaultValue = parameter.DefaultValue;
 
             return $"{FormatStandardElement(optional)}{FormatStandardElement(accessibility)}{FormatStandardElement(name)}{FormattedAsTypeName(parameter.AsTypeName)}{FormattedDefaultValue(defaultValue)}".Trim();
+        }
+
+        private static string RetrieveFullSignatureFormat(Declaration declaration)
+        {
+            var fullSignatureFormat = $"{{0}} THE_MEMBER_TYPE {{1}}({{2}}){{3}}";
+
+            switch (declaration.Context)
+            {
+                case VBAParser.SubStmtContext _:
+                    fullSignatureFormat = fullSignatureFormat.Replace("THE_MEMBER_TYPE", Tokens.Sub);
+                    break;
+                case VBAParser.FunctionStmtContext _:
+                    fullSignatureFormat = fullSignatureFormat.Replace("THE_MEMBER_TYPE", Tokens.Function);
+                    break;
+                case VBAParser.PropertyGetStmtContext _:
+                    fullSignatureFormat = fullSignatureFormat.Replace("THE_MEMBER_TYPE", $"{Tokens.Property} {Tokens.Get}");
+                    break;
+                case VBAParser.PropertyLetStmtContext _:
+                    fullSignatureFormat = fullSignatureFormat.Replace("THE_MEMBER_TYPE", $"{Tokens.Property} {Tokens.Let}");
+                    break;
+                case VBAParser.PropertySetStmtContext _:
+                    fullSignatureFormat = fullSignatureFormat.Replace("THE_MEMBER_TYPE", $"{Tokens.Property} {Tokens.Set}");
+                    break;
+                default:
+                    throw new ArgumentException();
+            }
+            return fullSignatureFormat;
         }
 
         private static string FormatStandardElement(string element) => string.IsNullOrEmpty(element)

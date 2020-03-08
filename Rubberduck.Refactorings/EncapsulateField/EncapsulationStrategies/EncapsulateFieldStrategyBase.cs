@@ -40,6 +40,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         protected readonly IIndenter _indenter;
         protected QualifiedModuleName _targetQMN;
         private readonly int? _codeSectionStartIndex;
+        protected const string _defaultIndent = "    "; //4 spaces
 
         protected Dictionary<IdentifierReference, (ParserRuleContext, string)> IdentifierReplacements { get; } = new Dictionary<IdentifierReference, (ParserRuleContext, string)>();
 
@@ -139,35 +140,35 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         protected virtual void LoadNewPropertyBlocks()
         {
-            foreach (var set in SelectedFields.SelectMany(f => f.PropertyAttributeSets))
+            foreach (var attributeSet in SelectedFields.SelectMany(f => f.PropertyAttributeSets))
             {
-                if (set.Declaration is VariableDeclaration || set.Declaration.DeclarationType.Equals(DeclarationType.UserDefinedTypeMember))
+                if (attributeSet.Declaration is VariableDeclaration || attributeSet.Declaration.DeclarationType.Equals(DeclarationType.UserDefinedTypeMember))
                 {
-                    var getContent = $"{set.PropertyName} = {set.BackingField}";
-                    if (set.UsesSetAssignment)
+                    var getContent = $"{attributeSet.PropertyName} = {attributeSet.BackingField}";
+                    if (attributeSet.UsesSetAssignment)
                     {
                         getContent = $"{Tokens.Set} {getContent}";
                     }
-                    if (set.AsTypeName.Equals(Tokens.Variant) && !set.Declaration.IsArray)
+                    if (attributeSet.AsTypeName.Equals(Tokens.Variant) && !attributeSet.Declaration.IsArray)
                     {
                         getContent = string.Join(Environment.NewLine,
-                                            $"If IsObject({set.BackingField}) Then",
-                                            $"     Set {set.PropertyName} = {set.BackingField}",
-                                            "Else",
-                                            $"     {set.PropertyName} = {set.BackingField}",
-                                            "End If",
+                                            $"{Tokens.If} IsObject({attributeSet.BackingField}) {Tokens.Then}",
+                                            $"{_defaultIndent}{Tokens.Set} {attributeSet.PropertyName} = {attributeSet.BackingField}",
+                                            Tokens.Else,
+                                            $"{_defaultIndent}{attributeSet.PropertyName} = {attributeSet.BackingField}",
+                                            $"{Tokens.End} {Tokens.If}",
                                             Environment.NewLine);
                     }
 
-                    AddContentBlock(NewContentTypes.MethodBlock, set.Declaration.FieldToPropertyBlock(DeclarationType.PropertyGet, set.PropertyName, Tokens.Public, $"    {getContent}"));
+                    AddContentBlock(NewContentTypes.MethodBlock, attributeSet.Declaration.FieldToPropertyBlock(DeclarationType.PropertyGet, attributeSet.PropertyName, content: $"{_defaultIndent}{getContent}"));
 
-                    if (set.GenerateLetter)
+                    if (attributeSet.GenerateLetter)
                     {
-                        AddContentBlock(NewContentTypes.MethodBlock, set.Declaration.FieldToPropertyBlock(DeclarationType.PropertyLet, set.PropertyName, Tokens.Public, $"    {set.BackingField} = {set.ParameterName}"));
+                        AddContentBlock(NewContentTypes.MethodBlock, attributeSet.Declaration.FieldToPropertyBlock(DeclarationType.PropertyLet, attributeSet.PropertyName, content: $"{_defaultIndent}{attributeSet.BackingField} = {attributeSet.ParameterName}"));
                     }
-                    if (set.GenerateSetter)
+                    if (attributeSet.GenerateSetter)
                     {
-                        AddContentBlock(NewContentTypes.MethodBlock, set.Declaration.FieldToPropertyBlock(DeclarationType.PropertySet, set.PropertyName, Tokens.Public, $"    {Tokens.Set} {set.BackingField} = {set.ParameterName}"));
+                        AddContentBlock(NewContentTypes.MethodBlock, attributeSet.Declaration.FieldToPropertyBlock(DeclarationType.PropertySet, attributeSet.PropertyName, content: $"{_defaultIndent}{Tokens.Set} {attributeSet.BackingField} = {attributeSet.ParameterName}"));
                     }
                 }
             }

@@ -56,9 +56,12 @@ namespace Rubberduck.Refactorings.Common
         /// <param name="content"></param>
         /// <param name="parameterIdentifier"></param>
         /// <returns></returns>
-        public static string FieldToPropertyBlock(this Declaration variable, DeclarationType letSetGetType, string propertyIdentifier, string accessibility, string content, string parameterIdentifier = "value")
+        public static string FieldToPropertyBlock(this Declaration variable, DeclarationType letSetGetType, string propertyIdentifier, string accessibility = null, string content = null, string parameterIdentifier = null)
         {
-            var template = string.Join(Environment.NewLine, accessibility + " {0}{1} {2}{3}", $"{content}", Tokens.End + " {0}", string.Empty);
+            //"value" is the default
+            var propertyValueParam = parameterIdentifier ?? Resources.RubberduckUI.EncapsulateField_DefaultPropertyParameter;
+
+            var propertyEndStmt = $"{Tokens.End} {Tokens.Property}";
 
             var asType = variable.IsArray
                 ? $"{Tokens.Variant}"
@@ -66,26 +69,38 @@ namespace Rubberduck.Refactorings.Common
                         ? $"{Tokens.Long}"
                         : $"{variable.AsTypeName}";
 
+            var asTypeClause = $"{Tokens.As} {asType}";
+
             var paramAccessibility = variable.IsUserDefinedType() ? Tokens.ByRef : Tokens.ByVal;
 
-            var letSetParameter = $"({paramAccessibility} {parameterIdentifier} {Tokens.As} {asType})";
+            var letSetParameter = $"{paramAccessibility} {propertyValueParam} {Tokens.As} {asType}";
 
-            if (letSetGetType.Equals(DeclarationType.PropertyGet))
+            switch (letSetGetType)
             {
-                return string.Format(template, Tokens.Property, $" {Tokens.Get}", $"{propertyIdentifier}()", $" {Tokens.As} {asType}");
+                case DeclarationType.PropertyGet:
+                    return string.Join(Environment.NewLine, $"{accessibility ?? Tokens.Public} {PropertyTypeStatement(letSetGetType)} {propertyIdentifier}() {asTypeClause}", content, propertyEndStmt);
+                case DeclarationType.PropertyLet:
+                case DeclarationType.PropertySet:
+                    return string.Join(Environment.NewLine, $"{accessibility ?? Tokens.Public} {PropertyTypeStatement(letSetGetType)} {propertyIdentifier}({letSetParameter})", content, propertyEndStmt);
+                default:
+                    throw new ArgumentException();
+            }
+        }
+
+        private static string PropertyTypeStatement(DeclarationType declarationType)
+        {
+            switch (declarationType)
+            {
+                case DeclarationType.PropertyGet:
+                    return $"{Tokens.Property} {Tokens.Get}";
+                case DeclarationType.PropertyLet:
+                    return $"{Tokens.Property} {Tokens.Let}";
+                case DeclarationType.PropertySet:
+                    return $"{Tokens.Property} {Tokens.Set}";
+                default:
+                    throw new ArgumentException();
             }
 
-            if (letSetGetType.Equals(DeclarationType.PropertyLet))
-            {
-                return string.Format(template, Tokens.Property, $" {Tokens.Let}", $"{propertyIdentifier}{letSetParameter}", string.Empty);
-            }
-
-            if (letSetGetType.Equals(DeclarationType.PropertySet))
-            {
-                return string.Format(template, Tokens.Property, $" {Tokens.Set}", $"{propertyIdentifier}{letSetParameter}", string.Empty);
-            }
-
-            return string.Empty;
         }
     }
 }
