@@ -78,7 +78,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     if (converted.Declaration is VariableDeclaration variableDeclaration)
                     {
                         var getContent = $"{set.PropertyName} = {set.BackingField}";
-                        if (set.UsesSetAssignment) // variableDeclaration.AsTypeName.Equals(Tokens.Variant) || converted.Declaration.IsObject)
+                        if (set.UsesSetAssignment)
                         {
                             getContent = $"{Tokens.Set} {getContent}";
                         }

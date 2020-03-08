@@ -46,6 +46,16 @@ namespace Rubberduck.Refactorings.Common
                             && varList.ChildCount > 1;
         }
 
+        /// <summary>
+        /// Generates a Property Member code block specified by the letSetGet DeclarationType argument.
+        /// </summary>
+        /// <param name="variable"></param>
+        /// <param name="letSetGetType"></param>
+        /// <param name="propertyIdentifier"></param>
+        /// <param name="accessibility"></param>
+        /// <param name="content"></param>
+        /// <param name="parameterIdentifier"></param>
+        /// <returns></returns>
         public static string FieldToPropertyBlock(this Declaration variable, DeclarationType letSetGetType, string propertyIdentifier, string accessibility, string content, string parameterIdentifier = "value")
         {
             var template = string.Join(Environment.NewLine, accessibility + " {0}{1} {2}{3}", $"{content}", Tokens.End + " {0}", string.Empty);

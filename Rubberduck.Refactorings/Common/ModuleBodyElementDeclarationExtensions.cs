@@ -97,7 +97,6 @@ namespace Rubberduck.Refactorings.Common
                 FullMemberSignature(declaration, accessibility, newIdentifier),
                 Environment.NewLine,
                 endStatement);
-            //return $"{FullMemberSignature(declaration)}{Environment.NewLine}{endStatement}{Environment.NewLine}";
         }
 
         /// <summary>
