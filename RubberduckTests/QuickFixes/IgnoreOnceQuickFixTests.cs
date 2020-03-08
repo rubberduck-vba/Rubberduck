@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using NUnit.Framework;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 using RubberduckTests.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.CodeAnalysis.Inspections.Concrete;
+using Rubberduck.CodeAnalysis.Inspections.Concrete.Excel;
+using Rubberduck.CodeAnalysis.QuickFixes.Concrete;
 
 namespace RubberduckTests.QuickFixes
 {
@@ -870,7 +870,7 @@ End Sub";
                 @"'@IgnoreModule EmptyModule
 Option Explicit";
 
-            var actualCode = ApplyIgnoreOnceToFirstResult(inputCode, state => new EmptyModuleInspection(state), TestStandardModuleVbeSetup);
+            var actualCode = ApplyIgnoreOnceToFirstResult(inputCode, state => new EmptyModuleInspection(state, state), TestStandardModuleVbeSetup);
             Assert.AreEqual(expectedCode, actualCode);
         }
 

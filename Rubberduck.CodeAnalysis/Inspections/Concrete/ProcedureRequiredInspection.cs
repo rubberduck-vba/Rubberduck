@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Parsing.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
@@ -17,45 +15,45 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// The VBA compiler does not check whether the necessary default member is present. Instead there is a runtime error whenever the runtime type fails to have the default member.
     /// </why>
     /// <example hasresult="true">
+    /// <module name="Class1" type="Class Module">
     /// <![CDATA[
-    /// Class1:
-    ///
     /// Public Sub Foo()
     /// 'No default member attribute
     /// End Sub
-    ///
-    /// ------------------------------
-    /// Module1:
-    /// 
+    /// ]]>
+    /// </module>
+    /// <module name="Module1" type="Standard Module">
+    /// <![CDATA[
     /// Public Sub DoIt()
     ///     Dim cls As Class1
     ///     Set cls = New Class1
     ///     cls 
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="Class1" type="Class Module">
     /// <![CDATA[
-    /// Class1:
-    ///
     /// Public Sub Foo()
     /// Attribute Foo.UserMemId = 0
     /// End Sub
-    ///
-    /// ------------------------------
-    /// Module1:
-    /// 
+    /// ]]>
+    /// </module>
+    /// <module name="Module1" type="Standard Module">
+    /// <![CDATA[
     /// Public Sub DoIt()
     ///     Dim cls As Class1
     ///     Set cls = New Class1
     ///     cls 
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public class ProcedureRequiredInspection : IdentifierReferenceInspectionBase
+    internal class ProcedureRequiredInspection : IdentifierReferenceInspectionBase
     {
-        public ProcedureRequiredInspection(RubberduckParserState state)
-            : base(state)
+        public ProcedureRequiredInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             //This will most likely cause a runtime error. The exceptions are rare and should be refactored or made explicit with an @Ignore annotation.
             Severity = CodeInspectionSeverity.Error;

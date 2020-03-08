@@ -1,12 +1,11 @@
-﻿using Rubberduck.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+﻿using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Identifies the use of non-indexed default member accesses.
@@ -16,41 +15,49 @@ namespace Rubberduck.Inspections.Concrete
     /// and can cause errors in which a member was forgotten to be called to go unnoticed.
     /// </why>
     /// <example hasresult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal arg As ADODB.Field)
     ///     Dim bar As Variant
     ///     bar = arg
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal arg As ADODB.Connection)
     ///     Dim bar As String
     ///     arg = bar
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal arg As ADODB.Field)
     ///     Dim bar As Variant
     ///     bar = arg.Value
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal arg As ADODB.Connection)
     ///     Dim bar As String
     ///     arg.ConnectionString = bar
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class ImplicitDefaultMemberAccessInspection : IdentifierReferenceInspectionBase
+    internal sealed class ImplicitDefaultMemberAccessInspection : IdentifierReferenceInspectionBase
     {
-        public ImplicitDefaultMemberAccessInspection(RubberduckParserState state)
-            : base(state)
+        public ImplicitDefaultMemberAccessInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Severity = CodeInspectionSeverity.Suggestion;
         }

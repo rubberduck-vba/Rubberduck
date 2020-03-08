@@ -2,9 +2,9 @@
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources;
 
-namespace Rubberduck.Inspections.Inspections.Extensions
+namespace Rubberduck.CodeAnalysis.Inspections.Extensions
 {
-    public static class DeclarationTypeExtensions
+    internal static class DeclarationTypeExtensions
     {
         public static string ToLocalizedString(this DeclarationType type)
         {

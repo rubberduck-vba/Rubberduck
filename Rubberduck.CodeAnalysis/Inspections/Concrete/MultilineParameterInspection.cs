@@ -1,18 +1,11 @@
-using System.Collections.Generic;
-using System.Linq;
-using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Inspections.Results;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources;
-using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Flags parameters declared across multiple physical lines of code.
@@ -20,61 +13,53 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// When splitting a long list of parameters across multiple lines, care should be taken to avoid splitting a parameter declaration in two.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long, ByVal _ 
     ///                              bar As Long)
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long, _ 
     ///                        ByVal bar As Long)
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class MultilineParameterInspection : ParseTreeInspectionBase
+    internal sealed class MultilineParameterInspection : ParseTreeInspectionBase<VBAParser.ArgContext>
     {
-        public MultilineParameterInspection(RubberduckParserState state)
-            : base(state)
+        public MultilineParameterInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
-            Listener = new ParameterListener();
+            ContextListener = new ParameterListener();
         }
         
-        public override IInspectionListener Listener { get; }
+        protected override IInspectionListener<VBAParser.ArgContext> ContextListener { get; }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string ResultDescription(QualifiedContext<VBAParser.ArgContext> context)
         {
-            return Listener.Contexts
-                .Select(context => new QualifiedContextInspectionResult(this,
-                                                  string.Format(context.Context.GetSelection().LineCount > 3
-                                                        ? RubberduckUI.EasterEgg_Continuator
-                                                        : Resources.Inspections.InspectionResults.MultilineParameterInspection, ((VBAParser.ArgContext)context.Context).unrestrictedIdentifier().GetText()),
-                                                  context));
+            var parameterText = context.Context.unrestrictedIdentifier().GetText();
+            return string.Format(
+                context.Context.GetSelection().LineCount > 3
+                    ? RubberduckUI.EasterEgg_Continuator
+                    : Resources.Inspections.InspectionResults.MultilineParameterInspection,
+                parameterText);
         }
 
-        public class ParameterListener : VBAParserBaseListener, IInspectionListener
+        private class ParameterListener : InspectionListenerBase<VBAParser.ArgContext>
         {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts
-                = new List<QualifiedContext<ParserRuleContext>>();
-
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-
-            public QualifiedModuleName CurrentModuleName { get; set; }
-
-            public void ClearContexts()
-            {
-                _contexts.Clear();
-            }
-            
             public override void ExitArg([NotNull] VBAParser.ArgContext context)
             {
                 if (context.Start.Line != context.Stop.Line)
                 {
-                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                    SaveContext(context);
                 }
             }
         }

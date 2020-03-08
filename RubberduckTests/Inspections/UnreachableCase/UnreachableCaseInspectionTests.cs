@@ -1,9 +1,8 @@
-﻿using Antlr4.Runtime;
+﻿using System;
+using Antlr4.Runtime;
 using NUnit.Framework;
-using Rubberduck.Inspections.Concrete.UnreachableCaseInspection;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -12,29 +11,17 @@ using RubberduckTests.Mocks;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Moq;
+using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 
 namespace RubberduckTests.Inspections.UnreachableCase
 {
     [TestFixture]
     public class UnreachableCaseInspectionTests : InspectionTestsBase
     {
-        private IUnreachableCaseInspectionFactoryProvider _factoryProvider;
-
-        private IUnreachableCaseInspectionFactoryProvider FactoryProvider
-        {
-            get
-            {
-                if (_factoryProvider is null)
-                {
-                    _factoryProvider = new UnreachableCaseInspectionFactoryProvider();
-                }
-                return _factoryProvider;
-            }
-        }
-
-        private IUnreachableCaseInspectorFactory IUnreachableCaseInspectorFactory => FactoryProvider.CreateIUnreachableInspectorFactory();
-        private IParseTreeValueFactory ValueFactory => FactoryProvider.CreateIParseTreeValueFactory();
-
         [TestCase("Dim Hint$\r\nSelect Case Hint$", @"""Here"" To ""Eternity"",""Forever""", "String")] //String
         [TestCase("Dim Hint#\r\nHint#= 1.0\r\nSelect Case Hint#", "10.00 To 30.00, 20.00", "Double")] //Double
         [TestCase("Dim Hint!\r\nHint! = 1.0\r\nSelect Case Hint!", "10.00 To 30.00,20.00", "Single")] //Single
@@ -850,7 +837,7 @@ Sub Foo( x As Long, y As Double)
         Case 95
         'OK
         Case x > -3000
-        'Ureachable
+        'Unreachable
         Case Else
         'OK
     End Select
@@ -1475,7 +1462,7 @@ Sub Foo(z As BitCountMaxValues)
         'Unreachable
     End Select
 End Sub";
-            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            var (expectedMsg, actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 
@@ -2470,16 +2457,13 @@ End Sub
 
             var vbe = CreateStandardModuleProject(inputCode);
 
-            var actualResults = Enumerable.Empty<IInspectionResult>();
+            IEnumerable<IInspectionResult> actualResults;
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var inspection = new UnreachableCaseInspection(state);
-                var parseTreeValueVisitor = inspection.ParseTreeValueVisitor as ITestParseTreeVisitor;
+                var inspection = InspectionUnderTest(state, TestGetValuedDeclaration);
 
-                parseTreeValueVisitor.InjectValuedDeclarationEvaluator(TestGetValuedDeclaration);
-
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                WalkTrees(inspection, state);
+                actualResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             var actualUnreachable = actualResults.Where(ar => ar.Description.Equals(Rubberduck.Resources.Inspections.InspectionResults.UnreachableCaseInspection_Unreachable));
@@ -2524,16 +2508,13 @@ End Sub
 ";
             var vbe = CreateStandardModuleProject(inputCode);
 
-            var actualResults = Enumerable.Empty<IInspectionResult>();
+            IEnumerable<IInspectionResult> actualResults;
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var inspection = new UnreachableCaseInspection(state);
-                var parseTreeValueVisitor = inspection.ParseTreeValueVisitor as ITestParseTreeVisitor;
+                var inspection = InspectionUnderTest(state, TestGetValuedDeclaration);
 
-                parseTreeValueVisitor.InjectValuedDeclarationEvaluator(TestGetValuedDeclaration);
-
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                WalkTrees(inspection, state);
+                actualResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             var actualUnreachable = actualResults.Where(ar => ar.Description.Equals(Rubberduck.Resources.Inspections.InspectionResults.UnreachableCaseInspection_Unreachable));
@@ -2582,7 +2563,7 @@ End Sub
                 { Rubberduck.Resources.Inspections.InspectionResults.UnreachableCaseInspection_CaseElse, caseElse },
             };
 
-            var actualResults = InspectionResultsForModules(components);
+            var actualResults = InspectionResultsForModules(components).ToList();
 
             var actualUnreachable = actualResults.Where(ar => ar.Description.Equals(Rubberduck.Resources.Inspections.InspectionResults.UnreachableCaseInspection_Unreachable));
             var actualMismatches = actualResults.Where(ar => ar.Description.Equals(Rubberduck.Resources.Inspections.InspectionResults.UnreachableCaseInspection_TypeMismatch));
@@ -2601,7 +2582,7 @@ End Sub
             return (expectedMsg, actualMsg);
         }
 
-        private Moq.Mock<IVBE> CreateStandardModuleProject(string inputCode)
+        private Mock<IVBE> CreateStandardModuleProject(string inputCode)
             => MockVbeBuilder.BuildFromModules(new List<(string moduleName, string inputCode, ComponentType componentType)>() { ("TestModule1", inputCode, ComponentType.StandardModule) });
 
         private static string BuildResultString(int unreachableCount, int mismatchCount, int caseElseCount, int inherentCount, int overflowCount)
@@ -2609,34 +2590,54 @@ End Sub
 
         private string GetSelectExpressionType(string inputCode)
         {
-            var selectStmtValueResults = GetParseTreeValueResults(inputCode, out VBAParser.SelectCaseStmtContext selectStmtContext);
+            var selectStmtValueResults = GetParseTreeValueResults(inputCode, out VBAParser.SelectCaseStmtContext selectStmtContext, out var module);
 
-            var inspector = IUnreachableCaseInspectorFactory.Create(selectStmtContext, selectStmtValueResults, ValueFactory);
-            return inspector.SelectExpressionTypeName;
+            var inspector = TestUnreachableCaseInspector();
+            return inspector.SelectExpressionTypeName(selectStmtContext, selectStmtValueResults);
         }
 
-        private IParseTreeVisitorResults GetParseTreeValueResults(string inputCode, out VBAParser.SelectCaseStmtContext selectStmt)
+        private IParseTreeVisitorResults GetParseTreeValueResults(string inputCode, out VBAParser.SelectCaseStmtContext selectStmt, out QualifiedModuleName contextModule)
         {
             selectStmt = null;
-            IParseTreeVisitorResults valueResults = null;
+            IParseTreeVisitorResults valueResults;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var firstParserRuleContext = (ParserRuleContext)state.ParseTrees.Where(pt => pt.Value is ParserRuleContext).First().Value;
-                selectStmt = firstParserRuleContext.GetDescendent<VBAParser.SelectCaseStmtContext>();
-                var visitor = UnreachableCaseInspection.CreateParseTreeValueVisitor
-                    (   ValueFactory, new List<VBAParser.EnumerationStmtContext>(), 
-                        (ParserRuleContext context) =>
-                            { return UnreachableCaseInspection.GetIdentifierReferenceForContext(context, state); }
-                    );
-                valueResults = selectStmt.Accept(visitor);
+                var finder = state.DeclarationFinder;
+                var (parseTreeModule, moduleParseTree) = state.ParseTrees
+                    .First(pt => pt.Value is ParserRuleContext);
+                selectStmt = ((ParserRuleContext)moduleParseTree).GetDescendent<VBAParser.SelectCaseStmtContext>();
+                var visitor = TestParseTreeValueVisitor();
+                valueResults = visitor.VisitChildren(parseTreeModule, selectStmt, finder);
+                contextModule = parseTreeModule;
             }
             return valueResults;
         }
 
+        private IParseTreeValueVisitor TestParseTreeValueVisitor(Func<Declaration, (bool, string, string)> valueDeclarationEvaluator = null)
+        {
+            var valueFactory = new ParseTreeValueFactory();
+            return new ParseTreeValueVisitor(valueFactory, valueDeclarationEvaluator);
+        }
+
+        private IUnreachableCaseInspector TestUnreachableCaseInspector()
+        {
+            var valueFactory = new ParseTreeValueFactory();
+            return new UnreachableCaseInspector(valueFactory);
+        }
+
+        private IParseTreeInspection InspectionUnderTest(RubberduckParserState state, Func<Declaration, (bool, string, string)> valueDeclarationEvaluator)
+        {
+            var inspector = TestUnreachableCaseInspector();
+            var parseTeeValueVisitor = TestParseTreeValueVisitor(valueDeclarationEvaluator);
+            return new UnreachableCaseInspection(state, inspector, parseTeeValueVisitor);
+        }
+
         protected override IInspection InspectionUnderTest(RubberduckParserState state)
         {
-            return new UnreachableCaseInspection(state);
+            var inspector = TestUnreachableCaseInspector(); 
+            var parseTeeValueVisitor = TestParseTreeValueVisitor();
+            return new UnreachableCaseInspection(state, inspector, parseTeeValueVisitor);
         }
     }
 }

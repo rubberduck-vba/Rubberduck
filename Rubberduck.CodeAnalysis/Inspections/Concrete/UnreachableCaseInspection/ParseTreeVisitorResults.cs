@@ -1,10 +1,12 @@
-﻿using Antlr4.Runtime;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Antlr4.Runtime;
+using Rubberduck.Parsing.Grammar;
 
-namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection
 {
-    public interface IParseTreeVisitorResults
+    internal interface IParseTreeVisitorResults
     {
         IParseTreeValue GetValue(ParserRuleContext context);
         List<ParserRuleContext> GetChildResults(ParserRuleContext parent);
@@ -12,17 +14,19 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         string GetToken(ParserRuleContext context);
         bool Contains(ParserRuleContext context);
         bool TryGetValue(ParserRuleContext context, out IParseTreeValue value);
-        void OnNewValueResult(object sender, ValueResultEventArgs e);
+        bool TryGetEnumMembers(VBAParser.EnumerationStmtContext enumerationStmtContext, out IReadOnlyList<EnumMember> enumMembers);
     }
 
-    public class ParseTreeVisitorResults : IParseTreeVisitorResults
+    internal interface IMutableParseTreeVisitorResults : IParseTreeVisitorResults
     {
-        private Dictionary<ParserRuleContext, IParseTreeValue> _parseTreeValues;
+        void AddIfNotPresent(ParserRuleContext context, IParseTreeValue value);
+        void AddEnumMember(VBAParser.EnumerationStmtContext enumerationStmtContext, EnumMember enumMember);
+    }
 
-        public ParseTreeVisitorResults()
-        {
-            _parseTreeValues = new Dictionary<ParserRuleContext, IParseTreeValue>();
-        }
+    internal class ParseTreeVisitorResults : IMutableParseTreeVisitorResults
+    {
+        private readonly Dictionary<ParserRuleContext, IParseTreeValue> _parseTreeValues = new Dictionary<ParserRuleContext, IParseTreeValue>();
+        private readonly Dictionary<VBAParser.EnumerationStmtContext, List<EnumMember>> _enumMembers = new Dictionary<VBAParser.EnumerationStmtContext, List<EnumMember>>();
 
         public IParseTreeValue GetValue(ParserRuleContext context)
         {
@@ -35,18 +39,15 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public List<ParserRuleContext> GetChildResults(ParserRuleContext parent)
         {
-            var results = new List<ParserRuleContext>();
-            if (!(parent is null) || Contains(parent))
+            if (parent is null)
             {
-                foreach (var child in parent.children)
-                {
-                    if (child is ParserRuleContext prCtxt  && Contains(prCtxt))
-                    {
-                        results.Add(prCtxt);
-                    }
-                }
+                return new List<ParserRuleContext>();
             }
-            return results;
+
+            return parent.children
+                .OfType<ParserRuleContext>()
+                .Where(Contains)
+                .ToList();
         }
 
         public string GetValueType(ParserRuleContext context)
@@ -69,11 +70,36 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return _parseTreeValues.TryGetValue(context, out value);
         }
 
-        public void OnNewValueResult(object sender, ValueResultEventArgs e)
+        public void AddIfNotPresent(ParserRuleContext context, IParseTreeValue value)
         {
-            if (!_parseTreeValues.ContainsKey(e.Context))
+            if (!_parseTreeValues.ContainsKey(context))
             {
-                _parseTreeValues.Add(e.Context, e.Value);
+                _parseTreeValues.Add(context, value);
+            }
+        }
+
+        public bool TryGetEnumMembers(VBAParser.EnumerationStmtContext enumerationStmtContext, out IReadOnlyList<EnumMember> enumMembers)
+        {
+            if (!_enumMembers.TryGetValue(enumerationStmtContext, out var enumMemberList))
+            {
+                enumMembers = null;
+                return false;
+            }
+
+            enumMembers = enumMemberList;
+            return true;
+        }
+
+        public void AddEnumMember(VBAParser.EnumerationStmtContext enumerationStmtContext, EnumMember enumMember)
+        {
+            if (_enumMembers.TryGetValue(enumerationStmtContext, out var enumMemberList))
+            {
+                enumMemberList.Add(enumMember);
+            }
+            else
+            {
+                enumMemberList = new List<EnumMember>{enumMember};
+                _enumMembers.Add(enumerationStmtContext, enumMemberList);
             }
         }
     }

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Annotations
 {
@@ -13,7 +10,7 @@ namespace Rubberduck.Parsing.Annotations
         private readonly int _numberOfValues;
 
         protected FlexibleAttributeValueAnnotationBase(string name, AnnotationTarget target, string attribute, int numberOfValues)
-            : base(name, target)
+            : base(name, target, numberOfValues, numberOfValues)
         {
             _attribute = attribute;
             _numberOfValues = numberOfValues;

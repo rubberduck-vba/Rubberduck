@@ -1,9 +1,9 @@
-﻿using System.Reflection;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("RubberduckTests")]
+//This is the assembly name of the project Rubberduck.Main.
 [assembly: InternalsVisibleTo("Rubberduck")]
+[assembly: InternalsVisibleTo("RubberduckTests")]
 // Moq needs this to access the types
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 

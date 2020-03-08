@@ -1,19 +1,11 @@
-﻿using Rubberduck.Inspections.Abstract;
-using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.Grammar;
-using Antlr4.Runtime.Misc;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime.Misc;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
-using Rubberduck.VBEditor;
-using Rubberduck.Inspections.Results;
-using static Rubberduck.Parsing.Grammar.VBAParser;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Locates 'For' loops where the 'Step' token is specified with the default increment value (1).
@@ -22,7 +14,8 @@ namespace Rubberduck.Inspections.Concrete
     /// Out of convention or preference, explicit 'Step 1' specifiers could be considered redundant; 
     /// this inspection can ensure the consistency of the convention.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim i As Long
@@ -31,8 +24,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     Next
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim i As Long
@@ -41,53 +36,40 @@ namespace Rubberduck.Inspections.Concrete
     ///     Next
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class StepOneIsRedundantInspection : ParseTreeInspectionBase
+    internal sealed class StepOneIsRedundantInspection : ParseTreeInspectionBase<VBAParser.StepStmtContext>
     {
-        public StepOneIsRedundantInspection(RubberduckParserState state) : base(state) { }
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        public StepOneIsRedundantInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
-            return Listener.Contexts
-                .Select(result => new QualifiedContextInspectionResult(this,
-                                                        InspectionResults.StepOneIsRedundantInspection,
-                                                        result));
+            ContextListener = new StepOneIsRedundantListener();
         }
 
-        public override IInspectionListener Listener { get; } =
-            new StepOneIsRedundantListener();
-    }
+        protected override IInspectionListener<VBAParser.StepStmtContext> ContextListener { get; }
 
-    public class StepOneIsRedundantListener : VBAParserBaseListener, IInspectionListener
-    {
-        private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-        public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-
-        public QualifiedModuleName CurrentModuleName
+        protected override string ResultDescription(QualifiedContext<VBAParser.StepStmtContext> context)
         {
-            get;
-            set;
+            return InspectionResults.StepOneIsRedundantInspection;
         }
 
-        public void ClearContexts()
+        private class StepOneIsRedundantListener : InspectionListenerBase<VBAParser.StepStmtContext>
         {
-            _contexts.Clear();
-        }
-
-        public override void EnterForNextStmt([NotNull] ForNextStmtContext context)
-        {
-            StepStmtContext stepStatement = context.stepStmt();
-
-            if (stepStatement == null)
+            public override void EnterForNextStmt([NotNull] VBAParser.ForNextStmtContext context)
             {
-                return;
-            }
+                var stepStatement = context.stepStmt();
 
-            string stepText = stepStatement.expression().GetText();
+                if (stepStatement == null)
+                {
+                    return;
+                }
 
-            if(stepText == "1")
-            {
-                _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, stepStatement));
+                var stepText = stepStatement.expression().GetText();
+
+                if (stepText == "1")
+                {
+                    SaveContext(stepStatement);
+                }
             }
         }
     }

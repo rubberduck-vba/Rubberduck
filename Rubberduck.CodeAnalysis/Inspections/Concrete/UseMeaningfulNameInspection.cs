@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
 using Rubberduck.CodeAnalysis.Settings;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.SettingsProvider;
-using static Rubberduck.Parsing.Grammar.VBAParser;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about identifiers that have names that are likely to be too short, disemvoweled, or appended with a numeric suffix.
@@ -19,26 +19,30 @@ namespace Rubberduck.Inspections.Concrete
     /// Meaningful, pronounceable, unabbreviated names read better and leave less room for interpretation. 
     /// Moreover, names suffixed with a number can indicate the need to look into an array, collection, or dictionary data structure.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub CpFrmtRls(ByVal rng1 As Range, ByVal rng2 As Range)
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub CopyFormatRules(ByVal source As Range, ByVal destination As Range)
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class UseMeaningfulNameInspection : DeclarationInspectionUsingGlobalInformationBase<string[]>
+    internal sealed class UseMeaningfulNameInspection : DeclarationInspectionUsingGlobalInformationBase<string[]>
     {
         private readonly IConfigurationService<CodeInspectionSettings> _settings;
 
-        public UseMeaningfulNameInspection(RubberduckParserState state, IConfigurationService<CodeInspectionSettings> settings)
-            : base(state)
+        public UseMeaningfulNameInspection(IDeclarationFinderProvider declarationFinderProvider, IConfigurationService<CodeInspectionSettings> settings)
+            : base(declarationFinderProvider)
         {
             _settings = settings;
         }
@@ -62,7 +66,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             return !string.IsNullOrEmpty(declaration.IdentifierName)
                    && !IgnoreDeclarationTypes.Contains(declaration.DeclarationType)
-                   && !(declaration.Context is LineNumberLabelContext)
+                   && !(declaration.Context is VBAParser.LineNumberLabelContext)
                    && (declaration.ParentDeclaration == null
                        || !IgnoreDeclarationTypes.Contains(declaration.ParentDeclaration.DeclarationType)
                        && !finder.FindEventHandlers().Contains(declaration.ParentDeclaration))

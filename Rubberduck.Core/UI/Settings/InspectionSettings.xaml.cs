@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Windows.Controls;
 using System.Collections.ObjectModel;
-using Rubberduck.Parsing.Inspections;
+using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.CodeAnalysis.Settings;
 
 namespace Rubberduck.UI.Settings

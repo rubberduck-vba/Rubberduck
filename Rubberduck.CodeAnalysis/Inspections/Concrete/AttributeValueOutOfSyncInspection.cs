@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Attributes;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor.SafeComWrappers;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Indicates that the value of a hidden VB attribute is out of sync with the corresponding Rubberduck annotation comment.
@@ -18,7 +18,8 @@ namespace Rubberduck.Inspections.Concrete
     /// Keeping Rubberduck annotation comments in sync with the hidden VB attribute values, surfaces these hidden attributes in the VBE code panes; 
     /// Rubberduck can rewrite the attributes to match the corresponding annotation comment.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// '@Description("foo")
     /// Public Sub DoSomething()
@@ -26,8 +27,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// '@Description("foo")
     /// Public Sub DoSomething()
@@ -35,14 +38,14 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     [CannotAnnotate]
-    public sealed class AttributeValueOutOfSyncInspection : DeclarationInspectionMultiResultBase<(IParseTreeAnnotation Annotation, string AttributeName, IReadOnlyList<string> AttributeValues)>
+    internal sealed class AttributeValueOutOfSyncInspection : DeclarationInspectionMultiResultBase<(IParseTreeAnnotation Annotation, string AttributeName, IReadOnlyList<string> AttributeValues)>
     {
-        public AttributeValueOutOfSyncInspection(RubberduckParserState state) 
-        :base(state)
-        {
-        }
+        public AttributeValueOutOfSyncInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
+        {}
 
         protected override IEnumerable<(IParseTreeAnnotation Annotation, string AttributeName, IReadOnlyList<string> AttributeValues)> ResultProperties(Declaration declaration, DeclarationFinder finder)
         {

@@ -1,18 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using Rubberduck.Inspections.Abstract;
+using Antlr4.Runtime.Misc;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Grammar;
-using Antlr4.Runtime;
-using Rubberduck.Parsing;
-using Rubberduck.VBEditor;
-using Antlr4.Runtime.Misc;
-using Rubberduck.Inspections.Results;
-using Rubberduck.Inspections.Inspections.Extensions;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about Def[Type] statements.
@@ -20,7 +14,8 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// These declarative statements make the first letter of identifiers determine the data type.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// DefBool B
     /// DefDbl D
@@ -30,44 +25,27 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class DefTypeStatementInspection : ParseTreeInspectionBase
+    internal sealed class DefTypeStatementInspection : ParseTreeInspectionBase<VBAParser.DefTypeContext>
     {
-        public DefTypeStatementInspection(RubberduckParserState state)
-            : base(state)
+        public DefTypeStatementInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
-            Listener = new DefTypeStatementInspectionListener();
+            ContextListener = new DefTypeStatementInspectionListener();
         }
         
-        public override IInspectionListener Listener { get; }
+        protected override IInspectionListener<VBAParser.DefTypeContext> ContextListener { get; }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override string ResultDescription(QualifiedContext<VBAParser.DefTypeContext> context)
         {
-            var results = Listener.Contexts
-                .Select(context => new QualifiedContextInspectionResult(this,
-                                                                        string.Format(InspectionResults.DefTypeStatementInspection,
-                                                                                      GetTypeOfDefType(context.Context.start.Text),
-                                                                                      context.Context.start.Text),
-                                                                        context));
-            return results;
-        }
+            var typeName = GetTypeOfDefType(context.Context.start.Text);
+            var defStmtText = context.Context.start.Text;
 
-        public class DefTypeStatementInspectionListener : VBAParserBaseListener, IInspectionListener
-        {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-
-            public QualifiedModuleName CurrentModuleName { get; set; }
-
-            public void ClearContexts()
-            {
-                _contexts.Clear();
-            }
-
-            public override void ExitDefType([NotNull] VBAParser.DefTypeContext context)
-            {
-                _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
-            }
+            return string.Format(
+                InspectionResults.DefTypeStatementInspection,
+                typeName,
+                defStmtText);
         }
 
         private string GetTypeOfDefType(string defType)
@@ -90,5 +68,13 @@ namespace Rubberduck.Inspections.Concrete
             { "DefObj", "Object" },
             { "DefVar", "Variant" }
         };
+
+        private class DefTypeStatementInspectionListener : InspectionListenerBase<VBAParser.DefTypeContext>
+        {
+            public override void ExitDefType([NotNull] VBAParser.DefTypeContext context)
+            {
+                SaveContext(context);
+            }
+        }
     }
 }

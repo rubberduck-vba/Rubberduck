@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Castle.Windsor;
 using NUnit.Framework;
 using Moq;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.Root;

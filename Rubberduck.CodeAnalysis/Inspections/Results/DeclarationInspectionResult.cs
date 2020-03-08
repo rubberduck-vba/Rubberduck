@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
-using Rubberduck.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Results
+namespace Rubberduck.CodeAnalysis.Inspections.Results
 {
-    public class DeclarationInspectionResult : InspectionResultBase
+    internal class DeclarationInspectionResult : InspectionResultBase
     {
         public DeclarationInspectionResult(
             IInspection inspection, 
@@ -44,7 +43,7 @@ namespace Rubberduck.Inspections.Results
         }
     }
 
-    public class DeclarationInspectionResult<T> : DeclarationInspectionResult, IWithInspectionResultProperties<T>
+    internal class DeclarationInspectionResult<T> : DeclarationInspectionResult, IWithInspectionResultProperties<T>
     {
         public DeclarationInspectionResult(
             IInspection inspection, 

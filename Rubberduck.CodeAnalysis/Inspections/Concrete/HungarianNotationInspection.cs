@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
 using Rubberduck.CodeAnalysis.Settings;
 using Rubberduck.Common;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.SettingsProvider;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Flags identifiers that use [Systems] Hungarian Notation prefixes.
@@ -19,7 +19,8 @@ namespace Rubberduck.Inspections.Concrete
     /// when they described that prefixes identified the "kind" of variable in a naming scheme dubbed Apps Hungarian.
     /// Modern naming conventions in all programming languages heavily discourage the use of Systems Hungarian prefixes. 
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim bFoo As Boolean, blnFoo As Boolean
@@ -30,8 +31,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     fnlngGetFoo = 42
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Boolean, isFoo As Boolean
@@ -42,8 +45,9 @@ namespace Rubberduck.Inspections.Concrete
     ///     GetFoo = 42
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class HungarianNotationInspection : DeclarationInspectionUsingGlobalInformationBase<List<string>>
+    internal sealed class HungarianNotationInspection : DeclarationInspectionUsingGlobalInformationBase<List<string>>
     {
         private static readonly DeclarationType[] TargetDeclarationTypes = new []
         {
@@ -69,8 +73,8 @@ namespace Rubberduck.Inspections.Concrete
 
         private readonly IConfigurationService<CodeInspectionSettings> _settings;
 
-        public HungarianNotationInspection(RubberduckParserState state, IConfigurationService<CodeInspectionSettings> settings)
-            : base(state, TargetDeclarationTypes, IgnoredProcedureTypes)
+        public HungarianNotationInspection(IDeclarationFinderProvider declarationFinderProvider, IConfigurationService<CodeInspectionSettings> settings)
+            : base(declarationFinderProvider, TargetDeclarationTypes, IgnoredProcedureTypes)
         {
             _settings = settings;
         }

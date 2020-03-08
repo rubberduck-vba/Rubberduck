@@ -1,12 +1,12 @@
-﻿using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.PreProcessing;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.PreProcessing;
 
-namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection
 {
-    public interface IParseTreeValue
+    internal interface IParseTreeValue
     {
         string Token { get; }
         string ValueType { get; }
@@ -15,7 +15,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         bool IsMismatchExpression { get; }
     }
 
-    public struct ParseTreeValue : IParseTreeValue
+    internal struct ParseTreeValue : IParseTreeValue
     {
         private readonly int _hashCode;
         private TypeTokenPair _typeTokenPair;
@@ -180,7 +180,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private static bool IsStringConstant(string candidate) => candidate.StartsWith("\"") && candidate.EndsWith("\"");
     }
 
-    public static class ParseTreeValueExtensions
+    internal static class ParseTreeValueExtensions
     {
         public static bool TryLetCoerce(this IParseTreeValue parseTreeValue, string destinationType, out IParseTreeValue newValue)
         {

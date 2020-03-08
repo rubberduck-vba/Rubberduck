@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
+﻿using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Attributes;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// This inspection means to indicate when the project has not been renamed.
@@ -15,10 +13,10 @@ namespace Rubberduck.Inspections.Concrete
     /// VBA projects should be meaningfully named, to avoid namespace clashes when referencing other VBA projects.
     /// </why>
     [CannotAnnotate]
-    public sealed class DefaultProjectNameInspection : DeclarationInspectionBase
+    internal sealed class DefaultProjectNameInspection : DeclarationInspectionBase
     {
-        public DefaultProjectNameInspection(RubberduckParserState state)
-            : base(state, DeclarationType.Project)
+        public DefaultProjectNameInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Project)
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)

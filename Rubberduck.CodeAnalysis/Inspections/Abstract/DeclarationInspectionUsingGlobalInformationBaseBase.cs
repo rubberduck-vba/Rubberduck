@@ -1,27 +1,26 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Abstract
+namespace Rubberduck.CodeAnalysis.Inspections.Abstract
 {
-    public abstract class DeclarationInspectionUsingGlobalInformationBaseBase<T> : InspectionBase
+    internal abstract class DeclarationInspectionUsingGlobalInformationBaseBase<T> : InspectionBase
     {
         protected readonly DeclarationType[] RelevantDeclarationTypes;
         protected readonly DeclarationType[] ExcludeDeclarationTypes;
 
-        protected DeclarationInspectionUsingGlobalInformationBaseBase(RubberduckParserState state, params DeclarationType[] relevantDeclarationTypes)
-            : base(state)
+        protected DeclarationInspectionUsingGlobalInformationBaseBase(IDeclarationFinderProvider declarationFinderProvider, params DeclarationType[] relevantDeclarationTypes)
+            : base(declarationFinderProvider)
         {
             RelevantDeclarationTypes = relevantDeclarationTypes;
             ExcludeDeclarationTypes = new DeclarationType[0];
         }
 
-        protected DeclarationInspectionUsingGlobalInformationBaseBase(RubberduckParserState state, DeclarationType[] relevantDeclarationTypes, DeclarationType[] excludeDeclarationTypes)
-            : base(state)
+        protected DeclarationInspectionUsingGlobalInformationBaseBase(IDeclarationFinderProvider declarationFinderProvider, DeclarationType[] relevantDeclarationTypes, DeclarationType[] excludeDeclarationTypes)
+            : base(declarationFinderProvider)
         {
             RelevantDeclarationTypes = relevantDeclarationTypes;
             ExcludeDeclarationTypes = excludeDeclarationTypes;
@@ -38,9 +37,8 @@ namespace Rubberduck.Inspections.Abstract
             return GlobalInformation(finder);
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(DeclarationFinder finder)
         {
-            var finder = DeclarationFinderProvider.DeclarationFinder;
             var globalInformation = GlobalInformation(finder);
 
             return finder.UserDeclarations(DeclarationType.Module)
@@ -50,9 +48,8 @@ namespace Rubberduck.Inspections.Abstract
                 .ToList();
         }
 
-        protected virtual IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
         {
-            var finder = DeclarationFinderProvider.DeclarationFinder;
             var globalInformation = GlobalInformation(module, finder);
             return DoGetInspectionResults(module, finder, globalInformation);
         }

@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Attributes;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.Excel
 {
     /// <summary>
     /// Locates unqualified Worksheet.Range/Cells/Columns/Rows member calls that implicitly refer to ActiveSheet.
@@ -19,15 +19,18 @@ namespace Rubberduck.Inspections.Concrete
     /// is more robust, and will be less likely to throw run-time error 1004 or produce unexpected results
     /// when the active sheet isn't the expected one.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Sub Example()
     ///     Dim foo As Range
     ///     Set foo = Sheet1.Range(Cells(1, 1), Cells(1, 10)) ' Worksheet.Cells implicitly from ActiveSheet; error 1004 if that isn't Sheet1.
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Sub Example()
     ///     Dim foo As Range
@@ -36,12 +39,13 @@ namespace Rubberduck.Inspections.Concrete
     ///     End With
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     [RequiredLibrary("Excel")]
-    public sealed class ImplicitActiveSheetReferenceInspection : IdentifierReferenceInspectionFromDeclarationsBase
+    internal sealed class ImplicitActiveSheetReferenceInspection : IdentifierReferenceInspectionFromDeclarationsBase
     {
-        public ImplicitActiveSheetReferenceInspection(RubberduckParserState state)
-            : base(state)
+        public ImplicitActiveSheetReferenceInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {}
 
         protected override IEnumerable<Declaration> ObjectionableDeclarations(DeclarationFinder finder)

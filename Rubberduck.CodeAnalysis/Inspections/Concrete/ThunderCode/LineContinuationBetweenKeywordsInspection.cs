@@ -1,17 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources.Inspections;
-using Rubberduck.VBEditor;
 
-namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.ThunderCode
 {
     /// <summary hidden="true">
     /// A ThunderCode inspection that locates certain specific instances of line continuations in places we'd never think to put them.
@@ -25,31 +20,23 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
     /// Note that the inspection only checks a subset of possible "evil" line continatuions 
     /// for both simplicity and performance reasons. Exhaustive inspection would likely take too much effort. 
     /// </remarks>
-    public class LineContinuationBetweenKeywordsInspection : ParseTreeInspectionBase
+    internal sealed class LineContinuationBetweenKeywordsInspection : ParseTreeInspectionBase<ParserRuleContext>
     {
-        public LineContinuationBetweenKeywordsInspection(RubberduckParserState state) : base(state)
+        public LineContinuationBetweenKeywordsInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
-            Listener = new LineContinuationBetweenKeywordsListener();
+            ContextListener = new LineContinuationBetweenKeywordsListener();
         }
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IInspectionListener<ParserRuleContext> ContextListener { get; }
+
+        protected override string ResultDescription(QualifiedContext<ParserRuleContext> context)
         {
-            return Listener.Contexts.Select(c => new QualifiedContextInspectionResult(
-                this, InspectionResults.LineContinuationBetweenKeywordsInspection.ThunderCodeFormat(), c));
+            return InspectionResults.LineContinuationBetweenKeywordsInspection.ThunderCodeFormat();
         }
 
-        public override IInspectionListener Listener { get; }
-
-        public class LineContinuationBetweenKeywordsListener : VBAParserBaseListener, IInspectionListener
+        private class LineContinuationBetweenKeywordsListener : InspectionListenerBase<ParserRuleContext>
         {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-
-            public void ClearContexts() => _contexts.Clear();
-
-            public QualifiedModuleName CurrentModuleName { get; set; }
-
             public override void EnterSubStmt(VBAParser.SubStmtContext context)
             {
                 CheckContext(context, context.END_SUB());
@@ -149,12 +136,11 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
             }
 
 
-
             private void CheckContext(ParserRuleContext context, IParseTree subTreeToExamine)
             {
                 if (subTreeToExamine?.GetText().Contains("_") ?? false)
                 {
-                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                    SaveContext(context);
                 }
             }
         }

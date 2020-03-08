@@ -1,6 +1,4 @@
-﻿using Rubberduck.Parsing.Grammar;
-using Rubberduck.VBEditor;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Rubberduck.Parsing.Annotations
@@ -8,8 +6,26 @@ namespace Rubberduck.Parsing.Annotations
     public interface IAnnotation
     {
         string Name { get; }
+
+        /// <summary>
+        /// The kind of object this annotation can be applied to 
+        /// </summary>
         AnnotationTarget Target { get; }
+
+        /// <summary>
+        /// Specifies whether there can be multiple instances of the annotation on the same target.
+        /// </summary>
         bool AllowMultiple { get; }
+
+        /// <summary>
+        /// The minimal number of arguments that must be provided to for this annotation
+        /// </summary>
+        int RequiredArguments { get; }
+
+        /// <summary>
+        /// The maximal number of arguments that must be provided to for this annotation; null means that there is no limit.
+        /// </summary>
+        int? AllowedArguments { get; }
 
         IReadOnlyList<string> ProcessAnnotationArguments(IEnumerable<string> arguments);
     }

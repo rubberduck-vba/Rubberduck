@@ -1,14 +1,13 @@
 ﻿using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns when a user function's return value is not used at a call site.
@@ -16,7 +15,8 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// A 'Function' procedure normally means its return value to be captured and consumed by the calling code. 
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     GetFoo ' return value is not captured
@@ -26,8 +26,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     GetFoo = 42
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Long
@@ -38,11 +40,12 @@ namespace Rubberduck.Inspections.Concrete
     ///     GetFoo = 42
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class FunctionReturnValueDiscardedInspection : IdentifierReferenceInspectionBase
+    internal sealed class FunctionReturnValueDiscardedInspection : IdentifierReferenceInspectionBase
     {
-        public FunctionReturnValueDiscardedInspection(RubberduckParserState state)
-            : base(state)
+        public FunctionReturnValueDiscardedInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider)
         {
             Severity = CodeInspectionSeverity.Suggestion;
         }

@@ -1,17 +1,16 @@
 using System.Linq;
 using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
+using Rubberduck.CodeAnalysis.Inspections.Results;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about variables that are never referenced.
@@ -19,7 +18,8 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// A variable can be declared and even assigned, but if its value is never referenced, it's effectively an unused variable.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim value As Long ' declared
@@ -27,8 +27,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ... but never rerenced
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim value As Long
@@ -36,15 +38,16 @@ namespace Rubberduck.Inspections.Concrete
     ///     Debug.Print value
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class VariableNotUsedInspection : DeclarationInspectionBase
+    internal sealed class VariableNotUsedInspection : DeclarationInspectionBase
     {
         /// <summary>
         /// Inspection results for variables that are never referenced.
         /// </summary>
         /// <returns></returns>
-        public VariableNotUsedInspection(RubberduckParserState state) 
-            : base(state, DeclarationType.Variable)
+        public VariableNotUsedInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, DeclarationType.Variable)
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)

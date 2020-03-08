@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Attributes;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
@@ -12,7 +11,7 @@ using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 
-namespace Rubberduck.Inspections.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.Excel
 {
     /// <summary>
     /// Locates public User-Defined Function procedures accidentally named after a cell reference.
@@ -22,50 +21,32 @@ namespace Rubberduck.Inspections.Inspections.Concrete
     /// Another good reason to avoid numeric suffixes: if the function is meant to be used as a UDF in a cell formula,
     /// the worksheet cell by the same name takes precedence and gets the reference, and the function is never invoked.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function FOO1234()
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function Foo()
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     [RequiredLibrary("Excel")]
-    public class ExcelUdfNameIsValidCellReferenceInspection : DeclarationInspectionBase
+    internal class ExcelUdfNameIsValidCellReferenceInspection : DeclarationInspectionUsingGlobalInformationBase<bool>
     {
-        public ExcelUdfNameIsValidCellReferenceInspection(RubberduckParserState state) 
-            : base(state, new []{DeclarationType.Function}, new []{DeclarationType.PropertyGet, DeclarationType.LibraryFunction})
-        { }
+        public ExcelUdfNameIsValidCellReferenceInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, new []{DeclarationType.Function}, new []{DeclarationType.PropertyGet, DeclarationType.LibraryFunction})
+        {}
 
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder, bool excelIsReferenced)
         {
-            if (!State.DeclarationFinder.Projects.Any(project => !project.IsUserDefined 
-                                                                 && project.IdentifierName == "Excel"))
-            {
-                return Enumerable.Empty<IInspectionResult>();
-            }
-
-            return base.DoGetInspectionResults();
-        }
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module)
-        {
-            if (!State.DeclarationFinder.Projects.Any(project => !project.IsUserDefined
-                                                                 && project.IdentifierName == "Excel"))
-            {
-                return Enumerable.Empty<IInspectionResult>();
-            }
-
-            return base.DoGetInspectionResults(module);
-        }
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults(QualifiedModuleName module, DeclarationFinder finder)
-        {
-            if (module.ComponentType != ComponentType.StandardModule)
+            if (!excelIsReferenced || module.ComponentType != ComponentType.StandardModule)
             {
                 return Enumerable.Empty<IInspectionResult>();
             }
@@ -79,10 +60,16 @@ namespace Rubberduck.Inspections.Inspections.Concrete
                 return Enumerable.Empty<IInspectionResult>();
             }
 
-            return base.DoGetInspectionResults(module, finder);
+            return base.DoGetInspectionResults(module, finder, excelIsReferenced);
         }
 
-        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
+        protected override bool GlobalInformation(DeclarationFinder finder)
+        {
+            return finder.Projects.Any(project => !project.IsUserDefined
+                                                            && project.IdentifierName == "Excel");
+        }
+
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder, bool globalInfo)
         {
             if (!VisibleAsUdf.Contains(declaration.Accessibility))
             {

@@ -13,7 +13,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Parsing.VBA.ReferenceManagement;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -32,7 +31,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         private readonly ConcurrentDictionary<QualifiedModuleName, IMutableFailedResolutionStore> _newFailedResolutionStores;
         private readonly ConcurrentDictionary<(QualifiedMemberName memberName, DeclarationType declarationType), ConcurrentBag<Declaration>> _newUndeclared;
 
-        private IDictionary<(QualifiedModuleName module, int annotatedLine), List<IParseTreeAnnotation>> _annotations;
+        private IDictionary<QualifiedModuleName,IDictionary<int, List<IParseTreeAnnotation>>> _annotations;
         private IDictionary<Declaration, List<ParameterDeclaration>> _parametersByParent;
         private IDictionary<DeclarationType, List<Declaration>> _userDeclarationsByType;
        
@@ -98,8 +97,9 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             {
                 () =>
                     _annotations = annotations
-                        .Where(a => a.AnnotatedLine.HasValue)
-                        .GroupBy(a => (a.QualifiedSelection.QualifiedName, a.AnnotatedLine.Value))
+                        .GroupBy(annotation => annotation.QualifiedSelection.QualifiedName)
+                        .SelectMany(grp1 =>  grp1.GroupBy(annotation => annotation.AnnotatedLine.GetValueOrDefault(-1)), (grp1, grp2) => (grp1, grp2))
+                        .GroupBy(tpl => tpl.grp1.Key, tpl => tpl.grp2)
                         .ToDictionary(),
                 () =>
                     _declarations = declarations
@@ -519,8 +519,20 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
         public IEnumerable<IParseTreeAnnotation> FindAnnotations(QualifiedModuleName module, int annotatedLine)
         {
-            return _annotations.TryGetValue((module, annotatedLine), out var result) 
+            if(!_annotations.TryGetValue(module, out var annotationsByLineInModule))
+            {
+                return Enumerable.Empty<IParseTreeAnnotation>();
+            }
+
+            return annotationsByLineInModule.TryGetValue(annotatedLine, out var result) 
                 ? result 
+                : Enumerable.Empty<IParseTreeAnnotation>();
+        }
+
+        public IEnumerable<IParseTreeAnnotation> FindAnnotations(QualifiedModuleName module)
+        {
+            return _annotations.TryGetValue(module, out var annotationsByLineInModule)
+                ? annotationsByLineInModule.AllValues()
                 : Enumerable.Empty<IParseTreeAnnotation>();
         }
 

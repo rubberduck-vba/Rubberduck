@@ -1,12 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Inspections.Results;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.TypeResolvers;
 using Rubberduck.Parsing.VBA;
@@ -16,74 +11,78 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
-	/// <summary>
-	/// Locates arguments passed to functions or procedures for object parameters which the do not have a compatible declared type. 
-	/// </summary>
-	/// <why>
-	/// The VBA compiler does not check whether different object types are compatible. Instead there is a runtime error whenever the types are incompatible.
-	/// </why>
-	/// <example hasresult="true">
-	/// <![CDATA[
-	/// IInterface:
-	///
-	/// Public Sub DoSomething()
-	/// End Sub
-	///
-	/// ------------------------------
-	/// Class1:
-	///
-	///'No Implements IInterface
-	/// 
-	/// Public Sub DoSomething()
-	/// End Sub
-	///
-	/// ------------------------------
-	/// Module1:
-	/// 
-	/// Public Sub DoIt()
-	///     Dim cls As Class1
-	///     Set cls = New Class1
-	///     Foo cls 
-	/// End Sub
-	///
-	/// Public Sub Foo(cls As IInterface)
-	/// End Sub
-	/// ]]>
-	/// </example>
-	/// <example hasresult="false">
-	/// <![CDATA[
-	/// IInterface:
-	///
-	/// Public Sub DoSomething()
-	/// End Sub
-	///
-	/// ------------------------------
-	/// Class1:
-	///
-	/// Implements IInterface
-	/// 
-	/// Private Sub IInterface_DoSomething()
-	/// End Sub
-	///
-	/// ------------------------------
-	/// Module1:
-	/// 
-	/// Public Sub DoIt()
-	///     Dim cls As Class1
-	///     Set cls = New Class1
-	///     Foo cls 
-	/// End Sub
-	///
-	/// Public Sub Foo(cls As IInterface)
-	/// End Sub
-	/// ]]>
-	/// </example>
-    public class ArgumentWithIncompatibleObjectTypeInspection : ArgumentReferenceInspectionFromDeclarationsBase<string>
+    /// <summary>
+    /// Locates arguments passed to functions or procedures for object parameters which the do not have a compatible declared type. 
+    /// </summary>
+    /// <why>
+    /// The VBA compiler does not check whether different object types are compatible. Instead there is a runtime error whenever the types are incompatible.
+    /// </why>
+    /// <example hasresult="true">
+    /// <module name="Interface" type="Class Module">
+    /// <![CDATA[
+    /// IInterface:
+    ///
+    /// Public Sub DoSomething()
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// <module name="Class1" type="Class Module">
+    /// <![CDATA[
+    /// 'No Implements IInterface
+    /// 
+    /// Public Sub DoSomething()
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// <module name="Module1" type="Standard Module">
+    /// <![CDATA[
+    /// Public Sub DoIt()
+    ///     Dim cls As Class1
+    ///     Set cls = New Class1
+    ///     Foo cls 
+    /// End Sub
+    ///
+    /// Public Sub Foo(cls As IInterface)
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
+    /// <example hasresult="false">
+    /// <module name="Interface" type="Class Module">
+    /// <![CDATA[
+    /// IInterface:
+    ///
+    /// Public Sub DoSomething()
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// <module name="Class1" type="Class Module">
+    /// <![CDATA[
+    /// Implements IInterface
+    /// 
+    /// Public Sub DoSomething()
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// <module name="Module1" type="Standard Module">
+    /// <![CDATA[
+    /// Public Sub DoIt()
+    ///     Dim cls As Class1
+    ///     Set cls = New Class1
+    ///     Foo cls 
+    /// End Sub
+    ///
+    /// Public Sub Foo(cls As IInterface)
+    /// End Sub
+    /// ]]>
+    /// </module>
+    /// </example>
+    internal class ArgumentWithIncompatibleObjectTypeInspection : ArgumentReferenceInspectionFromDeclarationsBase<string>
     {
         private readonly ISetTypeResolver _setTypeResolver;
 
-        public ArgumentWithIncompatibleObjectTypeInspection(RubberduckParserState state, ISetTypeResolver setTypeResolver)
-            : base(state)
+        public ArgumentWithIncompatibleObjectTypeInspection(IDeclarationFinderProvider declarationFinderProvider, ISetTypeResolver setTypeResolver)
+            : base(declarationFinderProvider)
         {
             _setTypeResolver = setTypeResolver;
 
@@ -132,7 +131,9 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                 || assignedTypeName == Tokens.Variant
                 || assignedTypeName == Tokens.Object
                 || HasBaseType(parameterDeclaration, assignedTypeName)
-                || HasSubType(parameterDeclaration, assignedTypeName);
+                || HasSubType(parameterDeclaration, assignedTypeName)
+                || assignedTypeName.EndsWith("stdole.IUnknown")
+                || parameterDeclaration.FullAsTypeName.EndsWith("stdole.IUnknown");
         }
 
         private static bool HasBaseType(Declaration declaration, string typeName)

@@ -1,11 +1,11 @@
-﻿using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Inspections.Extensions;
-using Rubberduck.Resources.Inspections;
+﻿using Rubberduck.CodeAnalysis.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Extensions;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about variables declared without an explicit data type.
@@ -13,7 +13,8 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// A variable declared without an explicit data type is implicitly a Variant/Empty until it is assigned.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim value ' implicit Variant
@@ -21,8 +22,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim value As Long
@@ -30,11 +33,12 @@ namespace Rubberduck.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class VariableTypeNotDeclaredInspection : ImplicitTypeInspectionBase
+    internal sealed class VariableTypeNotDeclaredInspection : ImplicitTypeInspectionBase
     {
-        public VariableTypeNotDeclaredInspection(RubberduckParserState state)
-            : base(state, new []{DeclarationType.Parameter, DeclarationType.Variable}, new[]{DeclarationType.Control})
+        public VariableTypeNotDeclaredInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, new []{DeclarationType.Parameter, DeclarationType.Variable}, new[]{DeclarationType.Control})
         {}
 
         protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)

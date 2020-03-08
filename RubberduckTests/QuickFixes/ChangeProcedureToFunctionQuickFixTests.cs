@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
+using Rubberduck.CodeAnalysis.QuickFixes;
+using Rubberduck.CodeAnalysis.QuickFixes.Concrete;
 using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.QuickFixes
@@ -9,7 +9,6 @@ namespace RubberduckTests.QuickFixes
     [TestFixture]
     public class ChangeProcedureToFunctionQuickFixTests : QuickFixTestBase
     {
-
         [Test]
         [Category("QuickFixes")]
         public void ProcedureShouldBeFunction_QuickFixWorks()
@@ -24,6 +23,33 @@ End Sub";
     arg1 = 42
     Foo = arg1
 End Function";
+
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new ProcedureCanBeWrittenAsFunctionInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void ProcedureShouldBeFunction_QuickFixWorks_AssignedByRef()
+        {
+            const string inputCode =
+                @"Private Sub Foo(ByRef bar As Boolean)
+    Goo bar, True
+End Sub
+
+Private Sub Goo(ByRef arg1 As Boolean, ByRef arg2 As Boolean)
+    arg1 = arg2
+End Sub";
+
+            const string expectedCode =
+                @"Private Function Foo(ByVal bar As Boolean) As Boolean
+    Goo bar, True
+    Foo = bar
+End Function
+
+Private Sub Goo(ByRef arg1 As Boolean, ByRef arg2 As Boolean)
+    arg1 = arg2
+End Sub";
 
             var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new ProcedureCanBeWrittenAsFunctionInspection(state));
             Assert.AreEqual(expectedCode, actualCode);

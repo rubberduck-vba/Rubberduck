@@ -13,14 +13,16 @@ using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using Rubberduck.AutoComplete;
 using Rubberduck.CodeAnalysis.CodeMetrics;
+using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection;
+using Rubberduck.CodeAnalysis.Inspections.Logistics;
+using Rubberduck.CodeAnalysis.QuickFixes;
 using Rubberduck.ComClientLibrary.UnitTesting;
 using Rubberduck.Common;
 using Rubberduck.Common.Hotkeys;
-using Rubberduck.Inspections.Rubberduck.Inspections;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.ComReflection;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.Parsing.Rewriter;
@@ -253,6 +255,7 @@ namespace Rubberduck.Root
             foreach (var assembly in assembliesToRegister)
             {
                 container.Register(Classes.FromAssembly(assembly)
+                    .IncludeNonPublicTypes()
                     .BasedOn(typeof(ConfigurationServiceBase<>))
                     .WithServiceSelect((type, hierarchy) =>
                     {
@@ -373,7 +376,16 @@ namespace Rubberduck.Root
             container.Register(Component.For<IAddRemoveReferencesPresenterFactory>()
                 .ImplementedBy<AddRemoveReferencesPresenterFactory>()
                 .LifestyleSingleton());
+            RegisterUnreachableCaseFactories(container);
         }
+
+        private void RegisterUnreachableCaseFactories(IWindsorContainer container)
+        {
+            container.Register(Component.For<IParseTreeValueFactory>()
+                .ImplementedBy<ParseTreeValueFactory>()
+                .LifestyleSingleton());
+        }
+
 
         private void RegisterQuickFixes(IWindsorContainer container, Assembly[] assembliesToRegister)
         {

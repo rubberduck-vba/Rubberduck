@@ -1,6 +1,4 @@
-﻿using System.Windows.Controls;
-
-namespace Rubberduck.UI.Settings
+﻿namespace Rubberduck.UI.Settings
 {
     /// <summary>
     /// Interaction logic for AddRemoveReferencesUserSettings.xaml

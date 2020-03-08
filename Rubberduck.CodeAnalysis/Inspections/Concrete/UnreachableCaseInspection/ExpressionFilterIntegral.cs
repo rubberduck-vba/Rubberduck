@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection
 {
-    public class ExpressionFilterIntegral : ExpressionFilter<long>
+    internal class ExpressionFilterIntegral : ExpressionFilter<long>
     {
         public ExpressionFilterIntegral(string valueType, Func<string,long> parser) 
             : base(valueType, parser) { }

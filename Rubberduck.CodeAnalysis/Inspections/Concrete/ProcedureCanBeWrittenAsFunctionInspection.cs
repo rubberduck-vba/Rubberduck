@@ -1,17 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Antlr4.Runtime;
-using Rubberduck.Inspections.Abstract;
-using Rubberduck.Inspections.Results;
+﻿using System.Linq;
+using Rubberduck.CodeAnalysis.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
     /// <summary>
     /// Warns about 'Sub' procedures that could be refactored into a 'Function'.
@@ -20,7 +16,8 @@ namespace Rubberduck.Inspections.Concrete
     /// Idiomatic VB code uses 'Function' procedures to return a single value. If the procedure isn't side-effecting, consider writing is as a
     /// 'Function' rather than a 'Sub' the returns a result through a 'ByRef' parameter.
     /// </why>
-    /// <example hasResults="true">
+    /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// 
@@ -29,8 +26,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     result = 42
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
-    /// <example hasResults="false">
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// Public Function DoSomething() As Long
@@ -38,81 +37,89 @@ namespace Rubberduck.Inspections.Concrete
     ///     DoSomething = 42
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
-    public sealed class ProcedureCanBeWrittenAsFunctionInspection : ParseTreeInspectionBase
+    /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
+    /// <![CDATA[
+    /// Option Explicit
+    /// Public Function DoSomething(ByVal arg As Long) As Long
+    ///     ' ...
+    ///     DoSomething = 42
+    /// End Function
+    /// ]]>
+    /// </module>
+    /// </example>
+    internal sealed class ProcedureCanBeWrittenAsFunctionInspection : DeclarationInspectionBase
     {
-        public ProcedureCanBeWrittenAsFunctionInspection(RubberduckParserState state)
-            : base(state)
+        public ProcedureCanBeWrittenAsFunctionInspection(IDeclarationFinderProvider declarationFinderProvider)
+            : base(declarationFinderProvider, new []{DeclarationType.Procedure}, new []{DeclarationType.LibraryProcedure, DeclarationType.PropertyLet, DeclarationType.PropertySet})
+        {}
+
+        protected override bool IsResultDeclaration(Declaration declaration, DeclarationFinder finder)
         {
-            Listener = new SingleByRefParamArgListListener();
+            if (!(declaration is ModuleBodyElementDeclaration member)
+                || member.IsInterfaceImplementation
+                || member.IsInterfaceMember
+                || finder.FindEventHandlers().Contains(member)
+                || member.Parameters.Count(param => param.IsByRef && !param.IsParamArray) != 1)
+            {
+                return false;
+            }
+
+            var parameter = member.Parameters.First(param => param.IsByRef && !param.IsParamArray);
+            var parameterReferences = parameter.References.ToList();
+
+            return parameterReferences.Any(reference => IsAssignment(reference, finder));
         }
 
-        public override IInspectionListener Listener { get; }
-
-        protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
+        private static bool IsAssignment(IdentifierReference reference, DeclarationFinder finder)
         {
-            if (!Listener.Contexts.Any())
-            {
-                return Enumerable.Empty<IInspectionResult>();
-            }
-
-            var userDeclarations = UserDeclarations.ToList();
-            var builtinHandlers = State.DeclarationFinder.FindEventHandlers().ToList();
-
-            var contextLookup = userDeclarations.Where(decl => decl.Context != null).ToDictionary(decl => decl.Context);
-
-            var ignored = new HashSet<Declaration>( State.DeclarationFinder.FindAllInterfaceMembers()
-                .Concat(State.DeclarationFinder.FindAllInterfaceImplementingMembers())
-                .Concat(builtinHandlers)
-                .Concat(userDeclarations.Where(item => item.IsWithEvents)));
-
-            return Listener.Contexts
-                .Where(context => context.Context.Parent is VBAParser.SubStmtContext
-                                    && HasArgumentReferencesWithIsAssignmentFlagged(context))
-                .Select(GetSubStmtParentDeclaration)
-                .Where(decl => decl != null && 
-                                !ignored.Contains(decl) &&
-                                userDeclarations.Where(item => item.IsWithEvents)
-                                   .All(withEvents => !State.DeclarationFinder.FindHandlersForWithEventsField(withEvents).Any()) &&
-                               !builtinHandlers.Contains(decl))
-                .Select(result => new DeclarationInspectionResult(this,
-                    string.Format(InspectionResults.ProcedureCanBeWrittenAsFunctionInspection, result.IdentifierName),
-                    result));
-
-            bool HasArgumentReferencesWithIsAssignmentFlagged(QualifiedContext<ParserRuleContext> context)
-            {
-                return contextLookup.TryGetValue(context.Context.GetChild<VBAParser.ArgContext>(), out Declaration decl) 
-                       && decl.References.Any(rf => rf.IsAssignment);
-            }
-
-            Declaration GetSubStmtParentDeclaration(QualifiedContext<ParserRuleContext> context)
-            {
-                return contextLookup.TryGetValue(context.Context.Parent as VBAParser.SubStmtContext, out Declaration decl)
-                    ? decl
-                        : null;
-            }
+            return reference.IsAssignment
+                || IsUsageAsAssignedToByRefArgument(reference, finder);
         }
 
-        public class SingleByRefParamArgListListener : VBAParserBaseListener, IInspectionListener
+        private static bool IsUsageAsAssignedToByRefArgument(IdentifierReference reference, DeclarationFinder finder)
         {
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
+            var argExpression = ImmediateArgumentExpressionContext(reference);
 
-            public QualifiedModuleName CurrentModuleName { get; set; }
-
-            public void ClearContexts()
+            if (argExpression == null)
             {
-                _contexts.Clear();
+                return false;
             }
 
-            public override void ExitArgList(VBAParser.ArgListContext context)
+            var parameter = finder.FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(argExpression, reference.QualifiedModuleName);
+
+            if (parameter == null)
             {
-                var args = context.arg();
-                if (args != null && args.All(a => a.PARAMARRAY() == null && a.LPAREN() == null) && args.Count(a => a.BYREF() != null || (a.BYREF() == null && a.BYVAL() == null)) == 1)
-                {
-                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
-                }
+                //We have no idea what parameter it is passed to as argument. So, we have to err on the safe side and assume it is not passed by reference.
+                return false;
             }
+
+            //We go only one level deep and make a conservative check to avoid a potentially costly recursion.
+            return parameter.IsByRef
+                && parameter.References.Any(paramReference => paramReference.IsAssignment);
+        }
+
+        private static VBAParser.ArgumentExpressionContext ImmediateArgumentExpressionContext(IdentifierReference reference)
+        {
+            var context = reference.Context;
+            //The context is either already a simpleNameExprContext or an IdentifierValueContext used in a sub-rule of some other lExpression alternative. 
+            var lExpressionNameContext = context is VBAParser.SimpleNameExprContext simpleName
+                ? simpleName
+                : context.GetAncestor<VBAParser.LExpressionContext>();
+
+            //To be an immediate argument and, thus, assignable by ref, the structure must be argumentExpression -> expression -> lExpression.
+            return lExpressionNameContext?
+                .Parent?
+                .Parent as VBAParser.ArgumentExpressionContext;
+        }
+
+        protected override string ResultDescription(Declaration declaration)
+        {
+            return string.Format(
+                InspectionResults.ProcedureCanBeWrittenAsFunctionInspection,
+                declaration.IdentifierName);
         }
     }
 }

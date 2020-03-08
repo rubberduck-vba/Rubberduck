@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.CodeAnalysis.QuickFixes;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.QuickFixes.Concrete;
 using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.QuickFixes

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.VBEditor;
+using Rubberduck.Common;
 
 namespace Rubberduck.Parsing.Annotations
 {
@@ -10,12 +9,21 @@ namespace Rubberduck.Parsing.Annotations
     /// </summary>
     public sealed class ObsoleteAnnotation : AnnotationBase
     {
-        public string ReplacementDocumentation { get; }
+        public string ReplacementDocumentation { get; private set; }
 
         public ObsoleteAnnotation()
-            : base("Obsolete", AnnotationTarget.Member | AnnotationTarget.Variable)
-        { }
+            : base("Obsolete", AnnotationTarget.Member | AnnotationTarget.Variable, allowedArguments: 1)
+        {}
 
-        // FIXME correctly handle the fact that the replacement documentation is only the first parameter!
+        public override IReadOnlyList<string> ProcessAnnotationArguments(IEnumerable<string> arguments)
+        {
+            var args = arguments.ToList();
+
+            ReplacementDocumentation = args.Any()
+                ? args[0].UnQuote()
+                : string.Empty;
+
+            return base.ProcessAnnotationArguments(args);
+        }
     }
 }
