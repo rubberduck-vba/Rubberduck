@@ -20,14 +20,17 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.Excel
     /// when the active sheet isn't the expected one.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Sub Example()
     ///     Dim foo As Range
     ///     Set foo = Sheet1.Range(Cells(1, 1), Cells(1, 10)) ' Worksheet.Cells implicitly from ActiveSheet; error 1004 if that isn't Sheet1.
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Sub Example()
     ///     Dim foo As Range
@@ -36,6 +39,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.Excel
     ///     End With
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     [RequiredLibrary("Excel")]
     internal sealed class ImplicitActiveSheetReferenceInspection : IdentifierReferenceInspectionFromDeclarationsBase

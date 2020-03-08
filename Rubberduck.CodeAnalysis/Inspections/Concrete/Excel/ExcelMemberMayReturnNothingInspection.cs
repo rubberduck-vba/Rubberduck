@@ -16,6 +16,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.Excel
     /// this object reference will be Nothing if the search didn't turn up any results, and a member call against Nothing will raise run-time error 91.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Sub Example()
     ///     Dim foo As Range
@@ -26,8 +27,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.Excel
     ///     rowIndex = Sheet1.Range("A:A").Find("Test").Row ' Range.Row member call should be flagged.
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Sub Example()
     ///     Dim foo As Range
@@ -37,6 +40,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.Excel
     ///     End If
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     [RequiredLibrary("Excel")]
     internal class ExcelMemberMayReturnNothingInspection : MemberAccessMayReturnNothingInspectionBase

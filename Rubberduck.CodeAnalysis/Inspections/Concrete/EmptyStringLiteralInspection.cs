@@ -15,6 +15,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// but 'vbNullString' is a null string pointer, and doesn't.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As String)
     ///     If foo = "" Then
@@ -22,8 +23,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     End If
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As String)
     ///     If foo = vbNullString Then
@@ -31,6 +34,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     End If
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class EmptyStringLiteralInspection : ParseTreeInspectionBase<VBAParser.LiteralExpressionContext>
     {

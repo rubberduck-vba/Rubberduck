@@ -22,16 +22,20 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.Excel
     /// the worksheet cell by the same name takes precedence and gets the reference, and the function is never invoked.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function FOO1234()
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function Foo()
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     [RequiredLibrary("Excel")]
     internal class ExcelUdfNameIsValidCellReferenceInspection : DeclarationInspectionUsingGlobalInformationBase<bool>

@@ -15,20 +15,24 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Unless code is interacting with APIs that require a 16-bit integer, a Long (32-bit integer) should be used instead.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim rowCount As Integer
     ///     rowCount = Sheet1.Rows.Count ' overflow: maximum 16-bit signed integer value is only 32,767 (2^15-1)!
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim rowCount As Long
     ///     rowCount = Sheet1.Rows.Count ' all good: maximum 32-bit signed integer value is 2,147,483,647 (2^31-1)!
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class IntegerDataTypeInspection : DeclarationInspectionBase
     {

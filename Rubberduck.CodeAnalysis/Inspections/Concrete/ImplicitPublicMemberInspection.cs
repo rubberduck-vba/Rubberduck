@@ -14,18 +14,22 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Making the Public modifiers explicit can help surface potentially unexpected language defaults.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Sub DoSomething()
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class ImplicitPublicMemberInspection : DeclarationInspectionBase
     {

@@ -24,6 +24,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.Excel
     /// 
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Sub Example()
     ///     Debug.Print Application.Sum(Array(1, 2, 3), 4, 5, "ABC") ' outputs "Error 2015" (no run-time error is raised).
@@ -36,8 +37,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.Excel
     ///     End If
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Sub Example()
     ///     Debug.Print Application.WorksheetFunction.Sum(Array(1, 2, 3), 4, 5, "ABC") ' raises error 1004
@@ -50,6 +53,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.Excel
     ///     End If
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     [RequiredLibrary("Excel")]
     internal class ApplicationWorksheetFunctionInspection : IdentifierReferenceInspectionFromDeclarationsBase

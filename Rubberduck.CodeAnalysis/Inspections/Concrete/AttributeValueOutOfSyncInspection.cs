@@ -19,6 +19,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Rubberduck can rewrite the attributes to match the corresponding annotation comment.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// '@Description("foo")
     /// Public Sub DoSomething()
@@ -26,8 +27,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// '@Description("foo")
     /// Public Sub DoSomething()
@@ -35,6 +38,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     [CannotAnnotate]
     internal sealed class AttributeValueOutOfSyncInspection : DeclarationInspectionMultiResultBase<(IParseTreeAnnotation Annotation, string AttributeName, IReadOnlyList<string> AttributeValues)>

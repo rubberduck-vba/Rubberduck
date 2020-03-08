@@ -13,18 +13,22 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Modern VB comments use a single quote character (') to denote the beginning of a comment: the legacy 'Rem' syntax is obsolete.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     /// Rem this comment is using an obsolete legacy syntax
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     /// ' this comment is using the modern comment syntax
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class ObsoleteCommentSyntaxInspection : ParseTreeInspectionBase<VBAParser.RemCommentContext>
     {

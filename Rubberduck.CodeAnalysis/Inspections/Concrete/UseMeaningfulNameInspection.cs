@@ -20,18 +20,22 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Moreover, names suffixed with a number can indicate the need to look into an array, collection, or dictionary data structure.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub CpFrmtRls(ByVal rng1 As Range, ByVal rng2 As Range)
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub CopyFormatRules(ByVal source As Range, ByVal destination As Range)
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class UseMeaningfulNameInspection : DeclarationInspectionUsingGlobalInformationBase<string[]>
     {

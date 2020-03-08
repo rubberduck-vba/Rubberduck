@@ -16,17 +16,21 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// By specifying a custom @Folder annotation, modules can be organized by functionality rather than simply listed.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// ' ...
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// '@Folder("Foo")
     /// Option Explicit
     /// ' ...
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class ModuleWithoutFolderInspection : DeclarationInspectionBase
     {

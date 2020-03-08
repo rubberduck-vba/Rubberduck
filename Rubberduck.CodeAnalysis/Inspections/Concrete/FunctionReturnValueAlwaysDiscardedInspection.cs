@@ -21,6 +21,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// means the function is side-effecting, and thus should probably be a 'Sub' procedure instead.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     GetFoo ' return value is not captured
@@ -30,8 +31,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     GetFoo = 42
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     GetFoo ' return value is discarded
@@ -46,6 +49,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     GetFoo = 42
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class FunctionReturnValueAlwaysDiscardedInspection : DeclarationInspectionBase
     {

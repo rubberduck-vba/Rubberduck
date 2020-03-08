@@ -14,6 +14,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.EmptyBlock
     /// Case blocks in VBA do not "fall through"; an empty 'Case' block might be hiding a bug.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     Select Case foo
@@ -23,8 +24,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.EmptyBlock
     ///     End Select
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     Select Case foo
@@ -35,6 +38,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.EmptyBlock
     ///     End Select
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class EmptyCaseBlockInspection : EmptyBlockInspectionBase<VBAParser.CaseClauseContext>
     {

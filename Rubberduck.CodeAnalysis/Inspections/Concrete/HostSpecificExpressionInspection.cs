@@ -14,18 +14,22 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// If the expression yields an object, member calls against that object are late-bound.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     [A1].Value = 42
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     ActiveSheet.Range("A1").Value = 42
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class HostSpecificExpressionInspection : DeclarationInspectionBase
     {

@@ -15,18 +15,22 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// This might be the result of delaying the actual implementation for a later stage of development, and then forgetting all about that.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Sub Foo()
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Sub Foo()
     ///     MsgBox "?"
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal class EmptyMethodInspection : DeclarationInspectionBase
     {

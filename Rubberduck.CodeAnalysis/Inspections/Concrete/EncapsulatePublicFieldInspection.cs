@@ -14,11 +14,14 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Often, an object only needs to expose a 'Get' procedure to expose an internal instance field.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Foo As Long
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private internalFoo As Long
     /// 
@@ -26,6 +29,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     Foo = internalFoo
     /// End Property
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class EncapsulatePublicFieldInspection : DeclarationInspectionBase
     {

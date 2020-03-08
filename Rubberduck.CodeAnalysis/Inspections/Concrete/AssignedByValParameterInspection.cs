@@ -16,14 +16,17 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// to be able to access the modified values, then the parameter should be passed ByRef; the ByVal modifier might be a bug.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     foo = foo + 1 ' is the caller supposed to see the updated value?
     ///     Debug.Print foo
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     Dim bar As Long
@@ -32,6 +35,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     Debug.Print bar
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class AssignedByValParameterInspection : DeclarationInspectionBase
     {

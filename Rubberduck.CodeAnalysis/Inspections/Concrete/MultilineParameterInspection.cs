@@ -14,20 +14,24 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// When splitting a long list of parameters across multiple lines, care should be taken to avoid splitting a parameter declaration in two.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long, ByVal _ 
     ///                              bar As Long)
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long, _ 
     ///                        ByVal bar As Long)
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class MultilineParameterInspection : ParseTreeInspectionBase<VBAParser.ArgContext>
     {

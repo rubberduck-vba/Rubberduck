@@ -15,6 +15,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.EmptyBlock
     /// Conditional expression is inverted; there would not be a need for an 'Else' block otherwise.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Boolean)
     ///     If foo Then
@@ -23,8 +24,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.EmptyBlock
     ///     End If
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Boolean)
     ///     If Not foo Then
@@ -32,6 +35,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.EmptyBlock
     ///     End If
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class EmptyIfBlockInspection : EmptyBlockInspectionBase<ParserRuleContext>
     {

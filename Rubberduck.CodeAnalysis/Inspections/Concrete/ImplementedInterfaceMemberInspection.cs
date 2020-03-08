@@ -17,6 +17,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Interfaces provide an abstract, unified programmatic access to different objects; concrete implementations of their members should be in a separate module that 'Implements' the interface.
     /// </why>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Class Module">
     /// <![CDATA[
     /// Option Explicit
     /// '@Interface
@@ -25,8 +26,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// ' empty interface stub
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Class Module">
     /// <![CDATA[
     /// Option Explicit
     /// '@Interface
@@ -35,6 +38,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     MsgBox "Hello from interface!"
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class ImplementedInterfaceMemberInspection : DeclarationInspectionBase
     {

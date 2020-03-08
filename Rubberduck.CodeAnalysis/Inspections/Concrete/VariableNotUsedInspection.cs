@@ -19,6 +19,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// A variable can be declared and even assigned, but if its value is never referenced, it's effectively an unused variable.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim value As Long ' declared
@@ -26,8 +27,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     ' ... but never rerenced
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim value As Long
@@ -35,6 +38,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     Debug.Print value
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class VariableNotUsedInspection : DeclarationInspectionBase
     {

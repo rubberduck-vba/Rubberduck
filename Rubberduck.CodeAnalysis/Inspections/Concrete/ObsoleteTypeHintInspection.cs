@@ -17,20 +17,24 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Type hints were made obsolete when declaration syntax introduced the 'As' keyword. Prefer explicit type names over type hint symbols.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo$
     ///     foo = "some string"
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As String
     ///     foo = "some string"
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class ObsoleteTypeHintInspection : InspectionBase
     {

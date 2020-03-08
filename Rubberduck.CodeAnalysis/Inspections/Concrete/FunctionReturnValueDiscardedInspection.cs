@@ -16,6 +16,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// A 'Function' procedure normally means its return value to be captured and consumed by the calling code. 
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     GetFoo ' return value is not captured
@@ -25,8 +26,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     GetFoo = 42
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Long
@@ -37,6 +40,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     GetFoo = 42
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class FunctionReturnValueDiscardedInspection : IdentifierReferenceInspectionBase
     {

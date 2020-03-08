@@ -19,20 +19,24 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Some annotations require arguments; if the required number of arguments isn't specified, the annotation is nothing more than an obscure comment.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// '@Folder
     /// '@ModuleDescription
     /// Option Explicit
     /// ' ...
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// '@Folder("MyProject.XYZ")
     /// '@ModuleDescription("This module does XYZ")
     /// Option Explicit
     /// ' ...
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class MissingAnnotationArgumentInspection : InspectionBase
     {

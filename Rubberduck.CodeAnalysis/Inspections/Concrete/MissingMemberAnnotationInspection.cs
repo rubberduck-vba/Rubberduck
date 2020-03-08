@@ -18,14 +18,17 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// do not have a Rubberduck annotation corresponding to the hidden VB attribute.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     /// Attribute VB_Description = "foo"
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// '@Description("foo")
     /// Public Sub DoSomething()
@@ -33,6 +36,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class MissingMemberAnnotationInspection : DeclarationInspectionMultiResultBase<(string AttributeName, IReadOnlyList<string> AttriguteValues)>
     {

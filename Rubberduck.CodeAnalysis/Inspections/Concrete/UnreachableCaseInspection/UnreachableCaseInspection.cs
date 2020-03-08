@@ -27,6 +27,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection
     /// Not all unreachable 'Case' blocks may be flagged, depending on expression complexity.
     /// </remarks>
     /// <example hasresult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Sub Example(ByVal value As Long)
     ///     Select Case value
@@ -41,8 +42,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection
     ///     End Select
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// 
     /// 'If the cumulative result of multiple 'Case' statements
@@ -65,8 +68,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection
     ///     End Select
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Enum ProductID
     ///     Widget = 1
@@ -93,8 +98,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection
     ///     End Select
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// 
     /// 'The inspecion flags Range Clauses that are not of the required form:
@@ -111,6 +118,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.UnreachableCaseInspection
     ///     End Select
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class UnreachableCaseInspection : InspectionBase, IParseTreeInspection
     {

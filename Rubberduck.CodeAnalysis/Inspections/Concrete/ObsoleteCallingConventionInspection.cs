@@ -15,14 +15,18 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// then the declaration is using an unsupported (no-op) calling convention on Windows.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Declare Sub Beep CDecl Lib "kernel32" (dwFreq As Any, dwDuration As Any)
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Declare Sub Beep Lib "kernel32" (dwFreq As Any, dwDuration As Any)
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class ObsoleteCallingConventionInspection : ParseTreeInspectionBase<VBAParser.DeclareStmtContext>
     {

@@ -15,18 +15,22 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// restricted to declarations of procedure-scoped local variables, for consistency, since public module variables are declared with the 'Public' keyword.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// Dim foo As Long
     /// ' ...
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// Private foo As Long
     /// ' ...
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class ModuleScopeDimKeywordInspection : ParseTreeInspectionBase<VBAParser.VariableSubStmtContext>
     {

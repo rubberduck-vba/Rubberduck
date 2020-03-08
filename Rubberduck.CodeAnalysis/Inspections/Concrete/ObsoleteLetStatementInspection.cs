@@ -13,20 +13,24 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// The legacy syntax is obsolete/redundant; prefer implicit Let-coercion instead.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Long
     ///     Let foo = 42 ' explicit Let is redundant
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Long
     ///     foo = 42 ' [Let] is implicit
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class ObsoleteLetStatementInspection : ParseTreeInspectionBase<VBAParser.LetStmtContext>
     {

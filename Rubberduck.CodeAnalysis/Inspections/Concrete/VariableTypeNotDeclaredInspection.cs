@@ -14,6 +14,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// A variable declared without an explicit data type is implicitly a Variant/Empty until it is assigned.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim value ' implicit Variant
@@ -21,8 +22,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim value As Long
@@ -30,6 +33,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class VariableTypeNotDeclaredInspection : ImplicitTypeInspectionBase
     {

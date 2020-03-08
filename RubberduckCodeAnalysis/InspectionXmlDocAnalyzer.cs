@@ -71,7 +71,7 @@ namespace RubberduckCodeAnalysis
             new LocalizableResourceString(nameof(Resources.MissingModuleElement), Resources.ResourceManager, typeof(Resources)),
             new LocalizableResourceString(nameof(Resources.MissingModuleElementMessageFormat), Resources.ResourceManager, typeof(Resources)),
             new LocalizableResourceString(nameof(Resources.XmlDocAnalyzerCategory), Resources.ResourceManager, typeof(Resources)).ToString(),
-            DiagnosticSeverity.Info,
+            DiagnosticSeverity.Error,
             true,
             new LocalizableResourceString(nameof(Resources.MissingModuleElementDescription), Resources.ResourceManager, typeof(Resources))
             );
@@ -226,7 +226,8 @@ namespace RubberduckCodeAnalysis
 
             var duplicateNames = xmlRefLibs
                 .GroupBy(name => name)
-                .Where(group => group.Count() > 1);
+                .Where(group => group.Count() > 1)
+                .Select(group => group.Key);
             foreach (var name in duplicateNames)
             {
                 var diagnostic = Diagnostic.Create(DuplicateNameAttributeRule, symbol.Locations[0], name, "reference");
@@ -297,7 +298,8 @@ namespace RubberduckCodeAnalysis
 
             var duplicateNames = moduleNames
                 .GroupBy(name => name)
-                .Where(group => group.Count() > 1);
+                .Where(group => group.Count() > 1)
+                .Select(group => group.Key);
             foreach (var name in duplicateNames)
             {
                 var diagnostic = Diagnostic.Create(DuplicateNameAttributeRule, symbol.Locations[0], name, "module");

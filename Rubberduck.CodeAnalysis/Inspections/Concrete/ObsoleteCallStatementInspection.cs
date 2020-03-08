@@ -14,6 +14,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// The 'Call' keyword is obsolete and redundant, since call statements are legal and generally more consistent without it.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub Test()
     ///     Call DoSomething(42)
@@ -23,8 +24,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub Test()
     ///     DoSomething 42
@@ -34,6 +37,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class ObsoleteCallStatementInspection : ParseTreeInspectionBase<VBAParser.CallStmtContext>
     {

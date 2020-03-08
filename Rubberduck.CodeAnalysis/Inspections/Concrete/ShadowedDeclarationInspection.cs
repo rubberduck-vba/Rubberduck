@@ -20,6 +20,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// effectively "hides" the global ones. In general, avoid shadowing global-scope identifiers if possible.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private MsgBox As String ' hides the global-scope VBA.Interaction.MsgBox function in this module.
     /// 
@@ -28,8 +29,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     VBA.Interaction.MsgBox MsgBox ' global function now needs to be fully qualified to be accessed.
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private message As String
     /// 
@@ -38,6 +41,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     MsgBox message ' VBA.Interaction module qualifier is optional.
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class ShadowedDeclarationInspection : DeclarationInspectionUsingGlobalInformationBase<IDictionary<string, HashSet<string>>, Declaration>
     {

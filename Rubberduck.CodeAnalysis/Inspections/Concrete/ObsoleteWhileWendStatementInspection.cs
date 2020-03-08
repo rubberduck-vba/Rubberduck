@@ -14,6 +14,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// 'While...Wend' loops cannot be exited early without a GoTo jump; 'Do...Loop' statements can be conditionally exited with 'Exit Do'.
     /// </why>
     /// <example hasresult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     While True
@@ -21,8 +22,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     Wend
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Do While True
@@ -30,6 +33,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     Loop
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class ObsoleteWhileWendStatementInspection : ParseTreeInspectionBase<VBAParser.WhileWendStmtContext>
     {

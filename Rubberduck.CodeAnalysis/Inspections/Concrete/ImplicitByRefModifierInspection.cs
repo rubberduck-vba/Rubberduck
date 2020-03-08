@@ -14,18 +14,22 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Making the ByRef modifiers explicit can help surface potentially unexpected language defaults.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(foo As Long)
     ///     foo = 42
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByRef foo As Long)
     ///     foo = 42
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class ImplicitByRefModifierInspection : DeclarationInspectionBase
     {

@@ -18,23 +18,24 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// The VBA compiler does not check whether different object types are compatible. Instead there is a runtime error whenever the types are incompatible.
     /// </why>
     /// <example hasresult="true">
+    /// <module name="Interface" type="Class Module">
     /// <![CDATA[
     /// IInterface:
     ///
     /// Public Sub DoSomething()
     /// End Sub
-    ///
-    /// ------------------------------
-    /// Class1:
-    ///
-    ///'No Implements IInterface
+    /// ]]>
+    /// </module>
+    /// <module name="Class1" type="Class Module">
+    /// <![CDATA[
+    /// 'No Implements IInterface
     /// 
     /// Public Sub DoSomething()
     /// End Sub
-    ///
-    /// ------------------------------
-    /// Module1:
-    /// 
+    /// ]]>
+    /// </module>
+    /// <module name="Module1" type="Standard Module">
+    /// <![CDATA[
     /// Public Sub DoIt()
     ///     Dim cls As Class1
     ///     Set cls = New Class1
@@ -44,25 +45,27 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Public Sub Foo(cls As IInterface)
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="Interface" type="Class Module">
     /// <![CDATA[
     /// IInterface:
     ///
     /// Public Sub DoSomething()
     /// End Sub
-    ///
-    /// ------------------------------
-    /// Class1:
-    ///
+    /// ]]>
+    /// </module>
+    /// <module name="Class1" type="Class Module">
+    /// <![CDATA[
     /// Implements IInterface
     /// 
-    /// Private Sub IInterface_DoSomething()
+    /// Public Sub DoSomething()
     /// End Sub
-    ///
-    /// ------------------------------
-    /// Module1:
-    /// 
+    /// ]]>
+    /// </module>
+    /// <module name="Module1" type="Standard Module">
+    /// <![CDATA[
     /// Public Sub DoIt()
     ///     Dim cls As Class1
     ///     Set cls = New Class1
@@ -72,6 +75,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Public Sub Foo(cls As IInterface)
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal class ArgumentWithIncompatibleObjectTypeInspection : ArgumentReferenceInspectionFromDeclarationsBase<string>
     {

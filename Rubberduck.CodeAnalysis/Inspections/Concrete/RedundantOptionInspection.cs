@@ -15,6 +15,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// inspection may be used to enforce consistently explicit module options.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// Option Base 0
@@ -23,14 +24,17 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Public Sub DoSomething()
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// 
     /// Public Sub DoSomething()
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class RedundantOptionInspection : ParseTreeInspectionBase<ParserRuleContext>
     {

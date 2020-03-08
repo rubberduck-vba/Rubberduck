@@ -21,25 +21,31 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Although this might be intentional, in many situations it will just mask an erroneously forgotten Set. 
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal rng As Excel.Range, ByVal arg As ADODB Field)
     ///     rng = arg
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal rng As Excel.Range, ByVal arg As ADODB Field)
     ///     rng.Value = arg.Value
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal rng As Excel.Range, ByVal arg As ADODB Field)
     ///     Let rng = arg
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class SuspiciousLetAssignmentInspection : InspectionBase
     {

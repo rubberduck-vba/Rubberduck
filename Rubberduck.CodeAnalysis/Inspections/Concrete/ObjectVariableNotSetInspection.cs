@@ -21,6 +21,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// then the assignment is implicitly assigning to that object's default member, which may raise run-time error 91 at run-time.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Object
@@ -28,8 +29,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Object
@@ -37,6 +40,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class ObjectVariableNotSetInspection : IdentifierReferenceInspectionBase
     {

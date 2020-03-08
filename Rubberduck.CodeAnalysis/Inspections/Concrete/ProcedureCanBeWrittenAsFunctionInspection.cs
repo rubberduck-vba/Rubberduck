@@ -17,6 +17,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// 'Function' rather than a 'Sub' the returns a result through a 'ByRef' parameter.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// 
@@ -25,8 +26,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     result = 42
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// Public Function DoSomething() As Long
@@ -34,8 +37,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     DoSomething = 42
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// Public Function DoSomething(ByVal arg As Long) As Long
@@ -43,6 +48,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     DoSomething = 42
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class ProcedureCanBeWrittenAsFunctionInspection : DeclarationInspectionBase
     {

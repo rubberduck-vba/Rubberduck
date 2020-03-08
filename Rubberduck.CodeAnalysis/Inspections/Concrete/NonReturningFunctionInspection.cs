@@ -16,6 +16,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Both 'Function' and 'Property Get' accessors should always return something. Omitting the return assignment is likely a bug.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function GetFoo() As Long
     ///     Dim foo As Long
@@ -23,8 +24,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     'function will always return 0
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function GetFoo() As Long
     ///     Dim foo As Long
@@ -32,6 +35,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     GetFoo = foo
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class NonReturningFunctionInspection : DeclarationInspectionBase
     {

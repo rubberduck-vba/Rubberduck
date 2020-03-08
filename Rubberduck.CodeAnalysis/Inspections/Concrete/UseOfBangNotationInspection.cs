@@ -14,13 +14,16 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// A dictionary access expression looks like a strongly typed call, but it actually is a stringly typed access to the parameterized default member of the object. 
     /// </why>
     /// <example hasresult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal wkb As Excel.Workbook)
     ///     wkb.Worksheets!MySheet.Range("A1").Value = 42
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal wkb As Excel.Workbook)
     ///     With wkb.Worksheets
@@ -28,22 +31,28 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     End With
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal wkb As Excel.Workbook)
     ///     wkb.Worksheets("MySheet").Range("A1").Value = 42
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal wkb As Excel.Workbook)
     ///     wkb.Worksheets.Item("MySheet").Range("A1").Value = 42
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal wkb As Excel.Workbook)
     ///     With wkb.Worksheets
@@ -51,6 +60,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     End With
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class UseOfBangNotationInspection : IdentifierReferenceInspectionBase
     {

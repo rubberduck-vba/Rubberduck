@@ -13,18 +13,22 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// The legacy syntax is obsolete; prefer 'Err.Raise' instead.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Error 5 ' raises run-time error 5
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Err.Raise 5 ' raises run-time error 5
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class ObsoleteErrorSyntaxInspection : ParseTreeInspectionBase<VBAParser.ErrorStmtContext>
     {

@@ -19,14 +19,17 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// This inspection helps treating 'Resume Next' and 'GoTo 0' as a code block (similar to 'With...End With'), essentially.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     On Error Resume Next ' error handling is never restored in this scope.
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     On Error Resume Next
@@ -34,6 +37,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     On Error GoTo 0
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class UnhandledOnErrorResumeNextInspection : ParseTreeInspectionBase<VBAParser.OnErrorStmtContext, IReadOnlyList<VBAParser.OnErrorStmtContext>>
     {

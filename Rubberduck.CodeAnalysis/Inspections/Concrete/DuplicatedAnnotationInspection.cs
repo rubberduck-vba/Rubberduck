@@ -16,6 +16,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Rubberduck annotations should not be specified more than once for a given module, member, variable, or expression.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// '@Folder("Bar")
     /// '@Folder("Foo")
@@ -24,8 +25,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// '@Folder("Foo.Bar")
     ///
@@ -33,6 +36,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class DuplicatedAnnotationInspection : DeclarationInspectionMultiResultBase<IAnnotation>
     {

@@ -20,13 +20,16 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// procedure might re-assign these ByRef values and introduce a bug.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long, bar As Long)
     ///     Debug.Print foo, bar
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// Public Sub DoSomething(ByVal foo As long, ByRef bar As Long)
@@ -34,6 +37,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     Debug.Print foo, bar
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class ParameterCanBeByValInspection : DeclarationInspectionBase
     {

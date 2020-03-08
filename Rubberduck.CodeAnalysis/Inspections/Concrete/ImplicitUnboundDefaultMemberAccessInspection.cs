@@ -18,36 +18,44 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// and should there not be a suitable default member at runtime, an error 438 'Object doesn't support this property or method' will be raised.
     /// </why>
     /// <example hasresult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal arg As Object)
     ///     Dim bar As Variant
     ///     bar = arg
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal arg As Object)
     ///     Dim bar As Variant
     ///     arg = bar
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal arg As Object)
     ///     Dim bar As Variant
     ///     bar = arg.SomeValueReturningMember
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal arg As Object)
     ///     Dim bar As Variant
     ///     arg.SomePropertyLet = bar
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class ImplicitUnboundDefaultMemberAccessInspection : IdentifierReferenceInspectionBase
     {

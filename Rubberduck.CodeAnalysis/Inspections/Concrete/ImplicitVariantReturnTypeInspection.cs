@@ -12,18 +12,22 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// All functions return something, whether a type is specified or not. The implicit default is 'Variant'.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function GetFoo()
     ///     GetFoo = 42
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function GetFoo() As Long
     ///     GetFoo = 42
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class ImplicitVariantReturnTypeInspection : ImplicitTypeInspectionBase
     {

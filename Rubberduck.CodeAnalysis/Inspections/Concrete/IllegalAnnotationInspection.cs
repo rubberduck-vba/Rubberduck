@@ -21,6 +21,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Rubberduck is correctly parsing an annotation, but that annotation is illegal in that context.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// 
@@ -29,8 +30,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     Dim foo As Long
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// '@Folder("Module1.DoSomething")
     /// Option Explicit
@@ -39,6 +42,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     Dim foo As Long
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class IllegalAnnotationInspection : InspectionBase
     {

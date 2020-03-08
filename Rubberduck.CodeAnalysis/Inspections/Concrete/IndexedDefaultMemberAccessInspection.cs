@@ -15,20 +15,24 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// An indexed default member access hides away the actually called member.
     /// </why>
     /// <example hasresult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal coll As Collection)
     ///     Dim bar As Variant
     ///     bar = coll(23)
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal coll As Collection)
     ///     Dim bar As Variant
     ///     bar = coll.Item(23)
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class IndexedDefaultMemberAccessInspection : IdentifierReferenceInspectionBase
     {

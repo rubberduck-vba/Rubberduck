@@ -18,6 +18,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Omitting this option amounts to refusing the little help the VBE can provide with compile-time validation.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     ///
     /// 
@@ -25,8 +26,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// 
@@ -34,6 +37,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class OptionExplicitInspection : ParseTreeInspectionBase<VBAParser.ModuleContext>
     {

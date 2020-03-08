@@ -14,6 +14,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// This inspection can ensure the consistency of the convention.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// 
@@ -22,8 +23,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     Debug.Print foo
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// Public Sub DoSomething(foo As Long)
@@ -31,6 +34,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     Debug.Print foo
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class RedundantByRefModifierInspection : DeclarationInspectionBase
     {

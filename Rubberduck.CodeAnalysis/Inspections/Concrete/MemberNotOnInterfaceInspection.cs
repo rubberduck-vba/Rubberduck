@@ -19,13 +19,16 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// If there is an early-bound alternative way to achieve the same result, it should be preferred.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal adoConnection As ADODB.Connection)
     ///     adoConnection.SomeStoredProcedure 42
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal adoConnection As ADODB.Connection)
     ///     Dim adoCommand As ADODB.Command
@@ -36,6 +39,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     adoCommand.Execute
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class MemberNotOnInterfaceInspection : DeclarationInspectionBase<Declaration>
     {

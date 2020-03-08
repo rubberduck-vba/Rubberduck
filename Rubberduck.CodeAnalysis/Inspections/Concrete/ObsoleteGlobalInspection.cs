@@ -14,16 +14,20 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// The legacy syntax is obsolete; use the 'Public' keyword instead.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// Global Foo As Long
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// Public Foo As Long
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class ObsoleteGlobalInspection : DeclarationInspectionBase
     {

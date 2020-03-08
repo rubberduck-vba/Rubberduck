@@ -15,36 +15,44 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// and can cause errors in which a member was forgotten to be called to go unnoticed.
     /// </why>
     /// <example hasresult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal arg As ADODB.Field)
     ///     Dim bar As Variant
     ///     bar = arg
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal arg As ADODB.Connection)
     ///     Dim bar As String
     ///     arg = bar
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal arg As ADODB.Field)
     ///     Dim bar As Variant
     ///     bar = arg.Value
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal arg As ADODB.Connection)
     ///     Dim bar As String
     ///     arg.ConnectionString = bar
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class ImplicitDefaultMemberAccessInspection : IdentifierReferenceInspectionBase
     {

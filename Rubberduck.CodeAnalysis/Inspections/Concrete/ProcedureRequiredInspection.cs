@@ -15,40 +15,40 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// The VBA compiler does not check whether the necessary default member is present. Instead there is a runtime error whenever the runtime type fails to have the default member.
     /// </why>
     /// <example hasresult="true">
+    /// <module name="Class1" type="Class Module">
     /// <![CDATA[
-    /// Class1:
-    ///
     /// Public Sub Foo()
     /// 'No default member attribute
     /// End Sub
-    ///
-    /// ------------------------------
-    /// Module1:
-    /// 
+    /// ]]>
+    /// </module>
+    /// <module name="Module1" type="Standard Module">
+    /// <![CDATA[
     /// Public Sub DoIt()
     ///     Dim cls As Class1
     ///     Set cls = New Class1
     ///     cls 
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="Class1" type="Class Module">
     /// <![CDATA[
-    /// Class1:
-    ///
     /// Public Sub Foo()
     /// Attribute Foo.UserMemId = 0
     /// End Sub
-    ///
-    /// ------------------------------
-    /// Module1:
-    /// 
+    /// ]]>
+    /// </module>
+    /// <module name="Module1" type="Standard Module">
+    /// <![CDATA[
     /// Public Sub DoIt()
     ///     Dim cls As Class1
     ///     Set cls = New Class1
     ///     cls 
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal class ProcedureRequiredInspection : IdentifierReferenceInspectionBase
     {

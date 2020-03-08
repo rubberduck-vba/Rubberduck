@@ -15,6 +15,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Declarations that are never used should be removed.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Const foo As Long = 42
     ///
@@ -22,8 +23,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     ' no reference to 'foo' anywhere...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Const foo As Long = 42
     ///
@@ -31,6 +34,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     Debug.Print foo
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class ConstantNotUsedInspection : DeclarationInspectionBase
     {

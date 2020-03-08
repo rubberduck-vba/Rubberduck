@@ -17,6 +17,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// can be confusing if it isn't referenced by any such instruction.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     /// '    On Error GoTo ErrHandler ' (commented-out On Error statement leaves line label unreferenced)
@@ -26,8 +27,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     On Error GoTo ErrHandler
@@ -37,6 +40,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class LineLabelNotUsedInspection : DeclarationInspectionBase
     {

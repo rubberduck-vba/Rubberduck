@@ -14,6 +14,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// The assignment could be made directly to the result of the conditional Boolean expression instead.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal value As Long)
     ///     Dim result As Boolean
@@ -25,8 +26,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     Debug.Print result
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal value As Long)
     ///     Dim result As Boolean
@@ -34,6 +37,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     Debug.Print result
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class BooleanAssignedInIfElseInspection : ParseTreeInspectionBase<VBAParser.IfStmtContext>
     {

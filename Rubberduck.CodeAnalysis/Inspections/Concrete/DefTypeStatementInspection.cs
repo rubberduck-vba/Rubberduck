@@ -15,6 +15,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// These declarative statements make the first letter of identifiers determine the data type.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// DefBool B
     /// DefDbl D
@@ -24,6 +25,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class DefTypeStatementInspection : ParseTreeInspectionBase<VBAParser.DefTypeContext>
     {

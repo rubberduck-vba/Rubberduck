@@ -19,14 +19,17 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// do not have a corresponding VB attribute.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// '@Description("foo")
     /// Public Sub DoSomething()
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// '@Description("foo")
     /// Public Sub DoSomething()
@@ -34,6 +37,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     [CannotAnnotate]
     internal sealed class MissingAttributeInspection : DeclarationInspectionMultiResultBase<IParseTreeAnnotation>

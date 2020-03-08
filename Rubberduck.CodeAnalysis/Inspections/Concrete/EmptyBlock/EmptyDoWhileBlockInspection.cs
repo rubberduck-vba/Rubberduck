@@ -14,6 +14,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.EmptyBlock
     /// Dead code should be removed. A loop without a body is usually redundant.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     Do
@@ -21,8 +22,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.EmptyBlock
     ///     Loop While foo < 100
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     Do
@@ -30,6 +33,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.EmptyBlock
     ///     Loop While foo < 100
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class EmptyDoWhileBlockInspection : EmptyBlockInspectionBase<VBAParser.DoLoopStmtContext>
     {

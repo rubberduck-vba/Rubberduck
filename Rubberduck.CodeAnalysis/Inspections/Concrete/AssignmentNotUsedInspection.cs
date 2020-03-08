@@ -20,6 +20,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// The first assignment is likely redundant, since it is being overwritten by the second.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Long
@@ -27,8 +28,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     foo = 34 
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     Dim bar As Long
@@ -36,6 +39,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     bar = bar + foo ' variable is re-assigned, but the prior assigned value is read at least once first.
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class AssignmentNotUsedInspection : IdentifierReferenceInspectionBase
     {

@@ -17,18 +17,22 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// string-returning function taking a string parameter exists and should probably be preferred.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Double)
     ///     Debug.Print Format(foo, "Currency") ' Strings.Format function returns a Variant.
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Double)
     ///     Debug.Print Format$(CStr(foo), "Currency") ' Strings.Format$ function returns a String.
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class UntypedFunctionUsageInspection : IdentifierReferenceInspectionFromDeclarationsBase
     {

@@ -18,14 +18,17 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// if UserForm controls fail to resolve, references to these controls in code-behind can be flagged as unassigned and undeclared variables.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim value As Long ' declared, but not assigned
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim value As Long
@@ -33,6 +36,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class VariableNotAssignedInspection : DeclarationInspectionBase
     {

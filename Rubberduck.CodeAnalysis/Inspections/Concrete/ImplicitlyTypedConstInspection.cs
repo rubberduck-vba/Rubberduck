@@ -12,19 +12,25 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// All constants have a declared type, whether a type is specified or not. The implicit type is determined by the compiler based on the value, which is not always the expected type.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Const myInteger = 12345
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Const myInteger As Integer = 12345
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Const myInteger% = 12345
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class ImplicitlyTypedConstInspection : ImplicitTypeInspectionBase
     {

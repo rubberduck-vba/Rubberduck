@@ -14,6 +14,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// This inspection flags uses that attempt to use 'IsMissing' for other purposes, resulting in conditions that are always False.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Variant
@@ -21,14 +22,17 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(Optional ByVal foo As Variant = 0)
     ///     If IsMissing(foo) Then Exit Sub
     ///     ' ...
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal class IsMissingWithNonArgumentParameterInspection : IsMissingInspectionBase
     {

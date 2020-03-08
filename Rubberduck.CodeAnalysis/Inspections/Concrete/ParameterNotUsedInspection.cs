@@ -20,6 +20,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// event handler procedures and interface members that Rubberduck isn't recognizing as such.
     /// </remarks>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// 
@@ -27,14 +28,17 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     Debug.Print foo
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// Public Sub DoSomething(ByVal foo As Long, ByVal bar As Long)
     ///     Debug.Print foo, bar
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class ParameterNotUsedInspection : DeclarationInspectionBase
     {

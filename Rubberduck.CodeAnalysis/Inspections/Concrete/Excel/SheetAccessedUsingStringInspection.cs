@@ -28,6 +28,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.Excel
     /// For performance reasons, the inspection only evaluates hard-coded string literals; string-valued expressions evaluating into a sheet name are ignored.
     /// </remarks>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim sheet As Worksheet
@@ -35,13 +36,16 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.Excel
     ///     sheet.Range("A1").Value = 42
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Sheet1.Range("A1").Value = 42 ' TODO rename Sheet1 to meaningful name
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     [RequiredHost("EXCEL.EXE")]
     [RequiredLibrary("Excel")]

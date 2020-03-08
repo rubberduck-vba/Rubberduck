@@ -15,20 +15,24 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// An indexed default member access hides away the actually called member. This is especially problematic if the corresponding parameterized default member is not on the interface of the object itself.
     /// </why>
     /// <example hasresult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal rst As ADODB.Recordset)
     ///     Dim bar As Variant
     ///     bar = rst("MyField")
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal rst As ADODB.Recordset)
     ///     Dim bar As Variant
     ///     bar = rst.Fields.Item("MyField")
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class IndexedRecursiveDefaultMemberAccessInspection : IdentifierReferenceInspectionBase
     {

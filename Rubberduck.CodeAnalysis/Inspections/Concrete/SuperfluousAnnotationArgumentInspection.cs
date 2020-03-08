@@ -19,20 +19,24 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Most annotations only process a limited number of arguments; superfluous arguments are ignored.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Class Module">
     /// <![CDATA[
     /// '@Folder "MyFolder.MySubFolder" "SomethingElse
     /// '@PredeclaredId True
     /// Option Explicit
     /// ' ...
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Class Module">
     /// <![CDATA[
     /// '@Folder("MyFolder.MySubFolder")
     /// '@PredeclaredId
     /// Option Explicit
     /// ' ...
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class SuperfluousAnnotationArgumentInspection : InspectionBase
     {

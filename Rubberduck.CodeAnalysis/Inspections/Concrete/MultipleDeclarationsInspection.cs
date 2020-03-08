@@ -15,15 +15,19 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Declaration statements should generally declare a single variable.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Dim foo As Long, bar As Long
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Dim foo As Long 
     /// Dim bar As Long 
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class MultipleDeclarationsInspection : ParseTreeInspectionBase<ParserRuleContext>
     {

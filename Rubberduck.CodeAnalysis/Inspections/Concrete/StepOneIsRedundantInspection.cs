@@ -15,6 +15,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// this inspection can ensure the consistency of the convention.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim i As Long
@@ -23,8 +24,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     Next
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim i As Long
@@ -33,6 +36,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     Next
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class StepOneIsRedundantInspection : ParseTreeInspectionBase<VBAParser.StepStmtContext>
     {

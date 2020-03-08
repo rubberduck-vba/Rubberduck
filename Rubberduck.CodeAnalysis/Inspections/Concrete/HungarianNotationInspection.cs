@@ -20,6 +20,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Modern naming conventions in all programming languages heavily discourage the use of Systems Hungarian prefixes. 
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim bFoo As Boolean, blnFoo As Boolean
@@ -30,8 +31,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     fnlngGetFoo = 42
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Boolean, isFoo As Boolean
@@ -42,6 +45,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     GetFoo = 42
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class HungarianNotationInspection : DeclarationInspectionUsingGlobalInformationBase<List<string>>
     {

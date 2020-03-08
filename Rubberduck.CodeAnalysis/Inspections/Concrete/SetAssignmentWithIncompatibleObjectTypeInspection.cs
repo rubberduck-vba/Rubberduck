@@ -18,23 +18,22 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// The VBA compiler does not check whether different object types are compatible. Instead there is a runtime error whenever the types are incompatible.
     /// </why>
     /// <example hasresult="true">
+    /// <module name="IInterface" type="Class Module">
     /// <![CDATA[
-    /// IInterface:
-    ///
     /// Public Sub DoSomething()
     /// End Sub
-    ///
-    /// ------------------------------
-    /// Class1:
-    ///
+    /// ]]>
+    /// </module>
+    /// <module name="Class1" type="Class Module">
+    /// <![CDATA[
     ///'No Implements IInterface
     /// 
     /// Public Sub DoSomething()
     /// End Sub
-    ///
-    /// ------------------------------
-    /// Module1:
-    /// 
+    /// ]]>
+    /// </module>
+    /// <module name="Module1" type="Standard Module">
+    /// <![CDATA[
     /// Public Sub DoIt()
     ///     Dim cls As Class1
     ///     Dim intrfc As IInterface
@@ -43,25 +42,25 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     Set intrfc = cls 
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="IInterface" type="Class Module">
     /// <![CDATA[
-    /// IInterface:
-    ///
     /// Public Sub DoSomething()
     /// End Sub
-    ///
-    /// ------------------------------
-    /// Class1:
-    ///
+    /// ]]>
+    /// </module>
+    /// <module name="Class1" type="Class Module">
+    /// <![CDATA[
     /// Implements IInterface
     /// 
     /// Private Sub IInterface_DoSomething()
     /// End Sub
-    ///
-    /// ------------------------------
-    /// Module1:
-    /// 
+    /// ]]>
+    /// </module>
+    /// <module name="Module1" type="Standard Module">
+    /// <![CDATA[
     /// Public Sub DoIt()
     ///     Dim cls As Class1
     ///     Dim intrfc As IInterface
@@ -70,6 +69,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     Set intrfc = cls 
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal class SetAssignmentWithIncompatibleObjectTypeInspection : IdentifierReferenceInspectionBase<string>
     {

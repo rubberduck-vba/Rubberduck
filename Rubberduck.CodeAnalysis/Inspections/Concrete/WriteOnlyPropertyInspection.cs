@@ -17,6 +17,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// Class design guidelines and best practices generally recommend against write-only properties.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private internalFoo As Long
     ///
@@ -24,8 +25,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     internalFoo = value
     /// End Property
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private internalFoo As Long
     ///
@@ -37,6 +40,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     Foo = internalFoo
     /// End Property
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class WriteOnlyPropertyInspection : DeclarationInspectionBase
     {

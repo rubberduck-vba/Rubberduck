@@ -24,14 +24,17 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// This inspection may produce false positives when the variable is an array, or if it's passed by reference (ByRef) to a procedure that assigns it.
     /// </remarks>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim i As Long
     ///     Debug.Print i ' i was never assigned
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim i As Long
@@ -39,6 +42,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     Debug.Print i
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     [SuppressMessage("ReSharper", "LoopCanBeConvertedToQuery")]
     internal sealed class UnassignedVariableUsageInspection : IdentifierReferenceInspectionFromDeclarationsBase

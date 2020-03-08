@@ -16,6 +16,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// to 'Nothing' and then verifying whether the object 'Is Nothing': it will never be. This behavior is potentially confusing and bug-prone.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim c As New Collection
@@ -26,8 +27,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     Debug.Print c Is Nothing ' False
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim c As Collection
@@ -39,6 +42,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     Debug.Print c Is Nothing ' True
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class SelfAssignedDeclarationInspection : DeclarationInspectionBase
     {

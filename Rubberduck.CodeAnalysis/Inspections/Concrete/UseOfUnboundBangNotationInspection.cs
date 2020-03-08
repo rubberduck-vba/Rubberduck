@@ -17,13 +17,16 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// This is especially misleading the default member cannot be determined at compile time.  
     /// </why>
     /// <example hasresult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function MyName(ByVal rst As Object) As Variant
     ///     MyName = rst!Name.Value
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function MyName(ByVal rst As Variant) As Variant
     ///     With rst
@@ -31,22 +34,28 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     End With
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function MyName(ByVal rst As ADODB.Recordset) As Variant
     ///     MyName = rst!Name.Value
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function MyName(ByVal rst As Object) As Variant
     ///     MyName = rst("Name").Value
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasresult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Public Function MyName(ByVal rst As Variant) As Variant
     ///     With rst
@@ -54,6 +63,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     End With
     /// End Function
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class UseOfUnboundBangNotationInspection : IdentifierReferenceInspectionBase
     {

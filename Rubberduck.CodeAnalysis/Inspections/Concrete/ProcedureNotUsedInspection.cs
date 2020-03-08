@@ -22,6 +22,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// event handler procedures and interface members that Rubberduck isn't recognizing as such.
     /// </remarks>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     /// 
@@ -29,8 +30,10 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     ' macro is attached to a worksheet Shape.
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Option Explicit
     ///
@@ -39,6 +42,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     ///     ' macro is attached to a worksheet Shape.
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     internal sealed class ProcedureNotUsedInspection : DeclarationInspectionBase
     {

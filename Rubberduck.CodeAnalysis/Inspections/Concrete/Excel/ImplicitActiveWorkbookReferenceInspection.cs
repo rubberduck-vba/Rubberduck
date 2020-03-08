@@ -20,20 +20,24 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.Excel
     /// when the active workbook isn't the expected one.
     /// </why>
     /// <example hasResult="true">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Sub Example()
     ///     Dim summarySheet As Worksheet
     ///     Set summarySheet = Worksheets("Summary") ' unqualified Worksheets is implicitly querying the active workbook's Worksheets collection.
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     /// <example hasResult="false">
+    /// <module name="MyModule" type="Standard Module">
     /// <![CDATA[
     /// Private Sub Example(ByVal book As Workbook)
     ///     Dim summarySheet As Worksheet
     ///     Set summarySheet = book.Worksheets("Summary")
     /// End Sub
     /// ]]>
+    /// </module>
     /// </example>
     [RequiredLibrary("Excel")]
     internal sealed class ImplicitActiveWorkbookReferenceInspection : IdentifierReferenceInspectionFromDeclarationsBase
