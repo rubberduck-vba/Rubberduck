@@ -3,6 +3,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using Rubberduck.Resources;
 using Rubberduck.SmartIndenter;
@@ -15,6 +16,20 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
+
+    public struct PropertyAttributeSet
+    {
+        public string PropertyName { get; set; }
+        public string BackingField { get; set; }
+        public string AsTypeName { get; set; }
+        public string ParameterName { get; set; }
+        public bool GenerateLetter { get; set; }
+        public bool GenerateSetter { get; set; }
+        public bool UsesSetAssignment { get; set; }
+        public bool IsUDTProperty { get; set; }
+        public Declaration Declaration { get; set; }
+    }
+
     public interface IEncapsulateStrategy
     {
         IEncapsulateFieldRewriteSession RefactorRewrite(IEncapsulateFieldRewriteSession refactorRewriteSession, bool asPreview);
@@ -102,6 +117,15 @@ namespace Rubberduck.Refactorings.EncapsulateField
                             .Concat(_newContent[NewContentTypes.PostContentMessage]))
                             .Trim();
 
+            var maxConsecutiveNewLines = 3;
+            var target = string.Join(string.Empty, Enumerable.Repeat(Environment.NewLine, maxConsecutiveNewLines).ToList());
+            var replacement = string.Join(string.Empty, Enumerable.Repeat(Environment.NewLine, maxConsecutiveNewLines - 1).ToList());
+            for (var counter = 1; counter < 10 && newContentBlock.Contains(target); counter++)
+            {
+                newContentBlock = newContentBlock.Replace(target, replacement);
+            }
+
+
             var rewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
             if (_codeSectionStartIndex.HasValue)
             {
@@ -115,12 +139,37 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         protected virtual void LoadNewPropertyBlocks()
         {
-            var propertyGenerationSpecs = SelectedFields.SelectMany(f => f.PropertyAttributeSets);
-
-            var generator = new PropertyGenerator();
-            foreach (var spec in propertyGenerationSpecs)
+            foreach (var set in SelectedFields.SelectMany(f => f.PropertyAttributeSets))
             {
-                AddContentBlock(NewContentTypes.MethodBlock, generator.AsPropertyBlock(spec, _indenter));
+                if (set.Declaration is VariableDeclaration || set.Declaration.DeclarationType.Equals(DeclarationType.UserDefinedTypeMember))
+                {
+                    var getContent = $"{set.PropertyName} = {set.BackingField}";
+                    if (set.UsesSetAssignment)
+                    {
+                        getContent = $"{Tokens.Set} {getContent}";
+                    }
+                    if (set.AsTypeName.Equals(Tokens.Variant) && !set.Declaration.IsArray)
+                    {
+                        getContent = string.Join(Environment.NewLine,
+                                            $"If IsObject({set.BackingField}) Then",
+                                            $"     Set {set.PropertyName} = {set.BackingField}",
+                                            "Else",
+                                            $"     {set.PropertyName} = {set.BackingField}",
+                                            "End If",
+                                            Environment.NewLine);
+                    }
+
+                    AddContentBlock(NewContentTypes.MethodBlock, set.Declaration.FieldToPropertyBlock(DeclarationType.PropertyGet, set.PropertyName, Tokens.Public, $"    {getContent}"));
+
+                    if (set.GenerateLetter)
+                    {
+                        AddContentBlock(NewContentTypes.MethodBlock, set.Declaration.FieldToPropertyBlock(DeclarationType.PropertyLet, set.PropertyName, Tokens.Public, $"    {set.BackingField} = {set.ParameterName}"));
+                    }
+                    if (set.GenerateSetter)
+                    {
+                        AddContentBlock(NewContentTypes.MethodBlock, set.Declaration.FieldToPropertyBlock(DeclarationType.PropertySet, set.PropertyName, Tokens.Public, $"    {Tokens.Set} {set.BackingField} = {set.ParameterName}"));
+                    }
+                }
             }
         }
 

@@ -90,7 +90,9 @@ End Property";
 Private Property Let Interface1_b(RHS As String)
 End Property";
 
-            //Expectation
+            //Expectation - Let Interface1_b(RHS As String) 
+            //is not 'improved' to Let Interface1_b(ByVal RHS As String)
+            //because it existed prior to the refactoring action
             const string expectedCode =
                 @"Implements Interface1
 
@@ -101,7 +103,7 @@ Private Property Get Interface1_a() As String
     Err.Raise 5 'TODO implement interface member
 End Property
 
-Private Property Let Interface1_a(RHS As String)
+Private Property Let Interface1_a(ByVal RHS As String)
     Err.Raise 5 'TODO implement interface member
 End Property
 
@@ -297,7 +299,7 @@ End Property";
             const string expectedCode =
                 @"Implements Interface1
 
-Private Property Let Interface1_Foo(ByRef value As Long)
+Private Property Let Interface1_Foo(ByVal value As Long)
     Err.Raise 5 'TODO implement interface member
 End Property
 ";
@@ -321,7 +323,7 @@ End Property";
             const string expectedCode =
                 @"Implements Interface1
 
-Private Property Let Interface1_Foo(a As Variant)
+Private Property Let Interface1_Foo(ByVal a As Variant)
     Err.Raise 5 'TODO implement interface member
 End Property
 ";
@@ -345,7 +347,7 @@ End Property";
             const string expectedCode =
                 @"Implements Interface1
 
-Private Property Set Interface1_Foo(ByRef value As Variant)
+Private Property Set Interface1_Foo(ByVal value As Variant)
     Err.Raise 5 'TODO implement interface member
 End Property
 ";
@@ -369,7 +371,7 @@ End Property";
             const string expectedCode =
                 @"Implements Interface1
 
-Private Property Set Interface1_Foo(a As Variant)
+Private Property Set Interface1_Foo(ByVal a As Variant)
     Err.Raise 5 'TODO implement interface member
 End Property
 ";
@@ -414,7 +416,7 @@ Private Property Get Interface1_Buz(ByVal a As Boolean) As Integer
     Err.Raise 5 'TODO implement interface member
 End Property
 
-Private Property Let Interface1_Buz(ByVal a As Boolean, ByRef value As Integer)
+Private Property Let Interface1_Buz(ByVal a As Boolean, ByVal value As Integer)
     Err.Raise 5 'TODO implement interface member
 End Property
 ";
@@ -462,11 +464,11 @@ Private Property Get Interface1_Buzz() As Variant
     Err.Raise 5 'TODO implement interface member
 End Property
 
-Private Property Let Interface1_Buzz(value As Variant)
+Private Property Let Interface1_Buzz(ByVal value As Variant)
     Err.Raise 5 'TODO implement interface member
 End Property
 
-Private Property Set Interface1_Buzz(value As Variant)
+Private Property Set Interface1_Buzz(ByVal value As Variant)
     Err.Raise 5 'TODO implement interface member
 End Property
 ";

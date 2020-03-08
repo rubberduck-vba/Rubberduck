@@ -1,10 +1,12 @@
 ﻿using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Rubberduck.Refactorings.EncapsulateField.Extensions
+namespace Rubberduck.Refactorings.Common
 {
     public static class DeclarationExtensions
     {
@@ -42,6 +44,38 @@ namespace Rubberduck.Refactorings.EncapsulateField.Extensions
         {
             return declaration.Context.TryGetAncestor<VBAParser.VariableListStmtContext>(out var varList)
                             && varList.ChildCount > 1;
+        }
+
+        public static string FieldToPropertyBlock(this Declaration variable, DeclarationType letSetGetType, string propertyIdentifier, string accessibility, string content, string parameterIdentifier = "value")
+        {
+            var template = string.Join(Environment.NewLine, accessibility + " {0}{1} {2}{3}", $"{content}", Tokens.End + " {0}", string.Empty);
+
+            var asType = variable.IsArray
+                ? $"{Tokens.Variant}"
+                : variable.IsEnumField() && variable.AsTypeDeclaration.HasPrivateAccessibility()
+                        ? $"{Tokens.Long}"
+                        : $"{variable.AsTypeName}";
+
+            var paramAccessibility = variable.IsUserDefinedType() ? Tokens.ByRef : Tokens.ByVal;
+
+            var letSetParameter = $"({paramAccessibility} {parameterIdentifier} {Tokens.As} {asType})";
+
+            if (letSetGetType.Equals(DeclarationType.PropertyGet))
+            {
+                return string.Format(template, Tokens.Property, $" {Tokens.Get}", $"{propertyIdentifier}()", $" {Tokens.As} {asType}");
+            }
+
+            if (letSetGetType.Equals(DeclarationType.PropertyLet))
+            {
+                return string.Format(template, Tokens.Property, $" {Tokens.Let}", $"{propertyIdentifier}{letSetParameter}", string.Empty);
+            }
+
+            if (letSetGetType.Equals(DeclarationType.PropertySet))
+            {
+                return string.Format(template, Tokens.Property, $" {Tokens.Set}", $"{propertyIdentifier}{letSetParameter}", string.Empty);
+            }
+
+            return string.Empty;
         }
     }
 }
