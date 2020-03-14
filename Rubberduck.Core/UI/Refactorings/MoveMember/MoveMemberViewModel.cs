@@ -62,7 +62,7 @@ namespace Rubberduck.UI.Refactorings.MoveMember
                 var result = false;
                 if (IsValidModuleName && MoveMemberObjectsFactory.TryCreateStrategy(Model, out var strategy))
                 {
-                    if (strategy.IsExecutableModel(Model, out _nonExecutableMessage))
+                    if (strategy.IsExecutableModel(Model, out _))
                     {
                         result = true;
                     }
@@ -73,23 +73,14 @@ namespace Rubberduck.UI.Refactorings.MoveMember
             }
         }
 
-        private string _nonExecutableMessage;
-        public string NonExecutableMessage => _nonExecutableMessage;
-
         private string _destinationNameFailureCriteria;
         public string DestinationNameFailureCriteria
         {
             get
             {
-                if (!string.IsNullOrEmpty(_destinationNameFailureCriteria))
-                {
-                    return _destinationNameFailureCriteria;
-                }
-                if (!string.IsNullOrEmpty(_nonExecutableMessage))
-                {
-                    return _nonExecutableMessage;
-                }
-                return string.Empty;
+                return string.IsNullOrEmpty(_destinationNameFailureCriteria)
+                    ? string.Empty
+                    : _destinationNameFailureCriteria;
             }
         }
 

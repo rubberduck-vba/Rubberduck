@@ -87,7 +87,7 @@
                                 <DataGrid.Columns>
                                     <DataGridCheckBoxColumn Width="Auto"
                                                             Binding="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                    <DataGridTextColumn Binding="{Binding MemberDisplaySignature}"
+                                    <DataGridTextColumn Binding="{Binding ToDisplayString}"
                                                         Width="*"
                                                         IsReadOnly="True"
                                                         SortMemberPath="ToDisplayString" />
@@ -147,7 +147,7 @@
                            Grid.ColumnSpan="3"
                            HorizontalAlignment="Left"
                            FontStyle="Italic"
-                           TextAlignment="Center"
+                           TextAlignment="Right"
                            Foreground="Red"
                            Margin="37,0,0,0"
                            Padding="0,0,15,0"
