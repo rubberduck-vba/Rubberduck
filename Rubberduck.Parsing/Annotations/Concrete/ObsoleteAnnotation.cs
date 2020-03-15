@@ -20,7 +20,7 @@ namespace Rubberduck.Parsing.Annotations
             var args = arguments.ToList();
 
             ReplacementDocumentation = args.Any()
-                ? args[0].UnQuote()
+                ? args[0]
                 : string.Empty;
 
             return base.ProcessAnnotationArguments(args);
