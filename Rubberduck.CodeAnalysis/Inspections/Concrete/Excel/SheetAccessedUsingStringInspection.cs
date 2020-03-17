@@ -100,7 +100,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete.Excel
             }
 
             var projectId = reference.QualifiedModuleName.ProjectId;
-            var sheetName = sheetNameArgumentLiteralExpressionContext.GetText().UnQuote();
+            var sheetName = sheetNameArgumentLiteralExpressionContext.GetText().FromVbaStringLiteral();
             var codeName = CodeNameOfVBComponentMatchingSheetName(projectId, sheetName);
 
             if (codeName == null)

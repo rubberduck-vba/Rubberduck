@@ -66,6 +66,16 @@ namespace Rubberduck.Common
             return $"\"{input}\"";
         }
 
+        public static string FromVbaStringLiteral(this string input)
+        {
+            return input.UnQuote().Replace("\"\"", "\"");
+        }
+
+        public static string ToVbaStringLiteral(this string input)
+        {
+            return input.Replace("\"", "\"\"");
+        }
+
         public static bool TryMatchHungarianNotationCriteria(this string identifier, out string nonHungarianName)
         {
             nonHungarianName = identifier;
