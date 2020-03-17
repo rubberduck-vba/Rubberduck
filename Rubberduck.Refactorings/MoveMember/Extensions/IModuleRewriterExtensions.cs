@@ -1,23 +1,17 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.Parsing;
+﻿using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.MoveMember.Extensions
 {
     public static class IModuleRewriterExtensions
     {
-        public static string GetText(this IModuleRewriter rewriter, Declaration declaration)
-        {
-            return rewriter.GetText(declaration.Context.Start.TokenIndex, declaration.Context.Stop.TokenIndex);
-        }
+        public static string GetText(this IModuleRewriter rewriter, Declaration declaration) 
+            => rewriter.GetText(declaration.Context.Start.TokenIndex, declaration.Context.Stop.TokenIndex);
 
         public static string GetText(this IModuleRewriter rewriter, int maxConsecutiveNewLines)
         {
@@ -33,11 +27,10 @@ namespace Rubberduck.Refactorings.MoveMember.Extensions
 
         public static void InsertAtEndOfFile(this IModuleRewriter rewriter, string content)
         {
-            if (content == string.Empty)
+            if (!string.IsNullOrEmpty(content))
             {
-                return;
+                rewriter.InsertBefore(rewriter.TokenStream.Size - 1, content);
             }
-            rewriter.InsertBefore(rewriter.TokenStream.Size - 1, content);
         }
 
         public static void SetMemberAccessibility(this IModuleRewriter rewriter, Declaration element, string accessibility)

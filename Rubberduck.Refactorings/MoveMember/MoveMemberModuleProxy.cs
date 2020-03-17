@@ -145,7 +145,9 @@ namespace Rubberduck.Refactorings.MoveMember
             if (Module != null)
             {
                 insertionIndex = DeclarationFinderProvider.DeclarationFinder.Members(Module.QualifiedModuleName)
-                        .Where(d => d.IsMember())
+                        .Where(d => d.IsMember() 
+                                        && !(d.DeclarationType.Equals(DeclarationType.LibraryFunction)
+                                                || d.DeclarationType.Equals(DeclarationType.LibraryProcedure)))
                         .OrderBy(c => c.Selection)
                         .FirstOrDefault()?.Context.Start.TokenIndex ?? -1;
             }

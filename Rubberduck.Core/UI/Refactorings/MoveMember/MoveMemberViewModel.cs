@@ -34,7 +34,10 @@ namespace Rubberduck.UI.Refactorings.MoveMember
             _moveableMemberViewModels = new List<MoveableMemberSetViewModel>();
             foreach (var mm in moveableMembers)
             {
-                if (mm.Member.IsVariable() && mm.Member.HasPrivateAccessibility())
+                if ((mm.Member.IsVariable() && mm.Member.HasPrivateAccessibility())
+                    || mm.IsUserDefinedType 
+                    || mm.IsEnumeration
+                    || mm.Member.IsLifeCycleHandler())
                 {
                     continue;
                 }
@@ -221,7 +224,14 @@ namespace Rubberduck.UI.Refactorings.MoveMember
 
         private IEnumerable<MoveableMemberSetViewModel> OrderedMemberSets()
         {
-            return _moveableMemberViewModels.OrderByDescending(mm => mm.IsSelected).ThenBy(mm => mm.ToDisplayString);
+            return _moveableMemberViewModels
+                .OrderByDescending(mm => mm.IsSelected)
+                .ThenByDescending(mm => mm.IsPublicMember)
+                .ThenByDescending(mm => mm.IsPrivateMember)
+                .ThenByDescending(mm => mm.IsPublicConstant)
+                .ThenByDescending(mm => mm.IsPublicField)
+                .ThenByDescending(mm => mm.IsPrivateConstant)
+                .ThenByDescending(mm => mm.ToDisplayString);
         }
 
         public void RefreshPreview(MoveableMemberSetViewModel selected)

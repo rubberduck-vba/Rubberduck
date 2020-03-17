@@ -31,6 +31,16 @@ namespace Rubberduck.UI.Refactorings.MoveMember
 
         public string MovedIdentiferName => _moveable.MovedIdentifierName;
 
+        public bool IsPublicMember => _moveable.Members.Any(m => m.IsMember() && !m.HasPrivateAccessibility());
+
+        public bool IsPrivateMember => !IsPublicMember && _moveable.Member.IsMember();
+
+        public bool IsPublicConstant => _moveable.Member.IsModuleConstant() && !_moveable.Member.HasPrivateAccessibility();
+
+        public bool IsPrivateConstant => _moveable.Member.IsModuleConstant() && _moveable.Member.HasPrivateAccessibility();
+
+        public bool IsPublicField => _moveable.Member.IsField() && !_moveable.Member.HasPrivateAccessibility();
+
         public bool IsSelected
         {
             get => _moveable.IsSelected;

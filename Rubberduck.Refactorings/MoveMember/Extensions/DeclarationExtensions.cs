@@ -1,14 +1,7 @@
 ﻿using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
-//using Rubberduck.Refactorings.ImplementInterface;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.MoveMember.Extensions
 {
@@ -38,6 +31,11 @@ namespace Rubberduck.Refactorings.MoveMember.Extensions
 
         public static bool IsMember(this Declaration declaration)
             => declaration.DeclarationType.HasFlag(DeclarationType.Member);
+
+        public static bool IsLifeCycleHandler(this Declaration declaration)
+            => declaration.DeclarationType.HasFlag(DeclarationType.Member)
+                    && (declaration.IdentifierName.Equals("Class_Initialize")
+                        || declaration.IdentifierName.Equals("Class_Terminate"));
 
         public static IEnumerable<IdentifierReference> AllReferences(this IEnumerable<Declaration> declarations)
         {

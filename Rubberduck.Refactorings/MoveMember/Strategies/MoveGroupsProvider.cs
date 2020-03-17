@@ -2,6 +2,7 @@
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.MoveMember.Extensions;
+using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -45,7 +46,6 @@ namespace Rubberduck.Refactorings.MoveMember
         /// Returns a collection of MoveMemberSets for a group of declarations
         /// </summary>
         IReadOnlyCollection<IMoveableMemberSet> ToMoveableMemberSets(IEnumerable<Declaration> declarations);
-
     }
 
     public class MoveGroupsProvider : IMoveGroupsProvider
@@ -70,6 +70,7 @@ namespace Rubberduck.Refactorings.MoveMember
             if (!selectedDeclarations.Any()) { return; }
 
             _moveableMembersByName = _allMoveableMemberSets.ToDictionary(key => key.IdentifierName);
+            _allParticipants = new List<Declaration>();
 
             CreateFlattenedDependencies(_allMoveableMemberSets);
 
@@ -78,10 +79,14 @@ namespace Rubberduck.Refactorings.MoveMember
 
             foreach (var moveableMemberSet in _allMoveableMemberSets)
             {
-                moveableMemberSet.IsSupport = !moveableMemberSet.IsSelected && _allParticipants.Contains(moveableMemberSet.Member);
+                moveableMemberSet.IsSupport = !moveableMemberSet.IsSelected 
+                                                    && (_allParticipants.Contains(moveableMemberSet.Member) 
+                                                        || _allParticipants.Any(p => (p.AsTypeDeclaration?.IdentifierName.Equals(moveableMemberSet.Member.IdentifierName) ?? false)));
 
-                var referencesExternalToMember = moveableMemberSet.Members.AllReferences().Where(rf => !moveableMemberSet.Members.Contains(rf.ParentScoping));
-                moveableMemberSet.IsExclusive = _allParticipants.ContainsParentScopesForAll(referencesExternalToMember);
+                if (moveableMemberSet.IsSupport)
+                {
+                    SetIsExclusiveFlag(moveableMemberSet);
+                }
             }
 
             _moveMemberSetsByMoveGroup = new Dictionary<MoveGroup, List<IMoveableMemberSet>>()
@@ -134,13 +139,22 @@ namespace Rubberduck.Refactorings.MoveMember
         }
 
         public IReadOnlyCollection<IMoveableMemberSet> MoveableMemberSets(MoveGroup moveGroup) 
-            => _moveMemberSetsByMoveGroup[moveGroup];
+            => _moveMemberSetsByMoveGroup is null 
+                ? new List<IMoveableMemberSet>() 
+                : _moveMemberSetsByMoveGroup[moveGroup];
 
         public IReadOnlyCollection<Declaration> Declarations(MoveGroup moveGroup) 
-            => _declarationsByMoveGroup[moveGroup];
+            => _declarationsByMoveGroup is null 
+                    ? new List<Declaration>() 
+                    : _declarationsByMoveGroup[moveGroup];
 
         public IReadOnlyCollection<Declaration> Dependencies(MoveGroup moveGroup)
         {
+            if (_dependenciesByMoveGroup is null)
+            {
+                return new List<Declaration>();
+            }
+
             if (!_dependenciesByMoveGroup.TryGetValue(moveGroup, out var dependencies))
             {
                 dependencies = AggregateDependencies(MoveableMemberSets(moveGroup)).ToList();
@@ -160,19 +174,22 @@ namespace Rubberduck.Refactorings.MoveMember
             return moveables;
         }
 
-
-
-        private IMoveableMemberSet MoveableMemberSet(string identifier)
-            =>  _moveableMembersByName.TryGetValue(identifier, out var moveable)
-                    ? moveable
-                    : null;
+        private IMoveableMemberSet MoveableMemberSet(Declaration declaration)
+        {
+            if (_moveableMembersByName.TryGetValue(declaration.IdentifierName, out var moveable)
+                && moveable.Members.Any(mm => mm.DeclarationType.Equals(declaration.DeclarationType)))
+            {
+                return moveable;
+            }
+            return null;
+        }
 
         public IReadOnlyCollection<Declaration> AggregateDependencies(IEnumerable<IMoveableMemberSet> moveMemberSets )
         {
             var aggregated = new List<Declaration>();
             foreach (var moveMemberSet in moveMemberSets)
             {
-                var dependencies = MoveableMemberSet(moveMemberSet.IdentifierName).FlattenedDependencies.ToList();
+                var dependencies = MoveableMemberSet(moveMemberSet.Member).FlattenedDependencies.ToList();
                 aggregated.AddRange(dependencies);
             }
             return aggregated;
@@ -198,9 +215,9 @@ namespace Rubberduck.Refactorings.MoveMember
                 //This attaches the related Property members as dependencies (for the purposes of moving)
                 // even if only one of them participates in a given dependency graph
                 var flattened = new List<Declaration>();
-                foreach (var id in dependencyDeclarations)
+                foreach (var declaration in dependencyDeclarations)
                 {
-                    flattened.AddRange(MoveableMemberSet(id.IdentifierName).Members);
+                    flattened.AddRange(MoveableMemberSet(declaration).Members);
                 }
                 moveable.FlattenedDependencies = flattened;
             }
@@ -211,14 +228,38 @@ namespace Rubberduck.Refactorings.MoveMember
             downstreamDependencies = new List<Declaration>();
             foreach (var dependency in dependenciesToAdd)
             {
-                var moveable = MoveableMemberSet(dependency.IdentifierName);
-                if (moveable != null) //e.g., UDT members return null
+                var moveable = MoveableMemberSet(dependency);
+                if (moveable is null) //e.g., UserDefinedTypeMember results in null
                 {
-                    allDependencies.Add(dependency);
-                    downstreamDependencies.AddRange(moveable.DirectDependencies);
+                    continue;
                 }
+                allDependencies.Add(dependency);
+                downstreamDependencies.AddRange(moveable.DirectDependencies);
             }
             return allDependencies;
+        }
+
+        private void SetIsExclusiveFlag(IMoveableMemberSet moveableMemberSet)
+        {
+            var referencesExternalToMember = moveableMemberSet.Members.AllReferences().Where(rf => !moveableMemberSet.Members.Contains(rf.ParentScoping));
+
+            moveableMemberSet.IsExclusive = _allParticipants.ContainsParentScopesForAll(referencesExternalToMember);
+
+            if (!moveableMemberSet.IsExclusive)
+            {
+                var qmnSource = moveableMemberSet.Member.QualifiedModuleName;
+                var participatingTypeFields = _allParticipants.Where(p => p.IsField() && p.AsTypeName.Equals(moveableMemberSet.Member.IdentifierName));
+                if (moveableMemberSet.IsUserDefinedType)
+                {
+                    var allUDTFields = _declarationProvider.DeclarationFinder.Members(qmnSource).Where(m => m.IsField() && m.AsTypeDeclaration.DeclarationType.Equals(DeclarationType.UserDefinedType));
+                    moveableMemberSet.IsExclusive = !(allUDTFields.Except(participatingTypeFields)).Any();
+                }
+                if (moveableMemberSet.IsEnumeration)
+                {
+                    var allEnumFields = _declarationProvider.DeclarationFinder.Members(qmnSource).Where(m => m.IsField() && m.AsTypeDeclaration.DeclarationType.Equals(DeclarationType.Enumeration));
+                    moveableMemberSet.IsExclusive = !(allEnumFields.Except(participatingTypeFields)).Any();
+                }
+            }
         }
     }
 }

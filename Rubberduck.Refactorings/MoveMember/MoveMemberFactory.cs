@@ -1,4 +1,6 @@
-﻿using Rubberduck.Parsing.Rewriter;
+﻿using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveMember.Extensions;
@@ -94,7 +96,11 @@ namespace Rubberduck.Refactorings.MoveMember
         {
             var moveableMembers = new List<IMoveableMemberSet>();
             var groupsByIdentifier = _declarationFinderProvider.DeclarationFinder.Members(moveTarget.QualifiedModuleName)
-                    .Where(d => d.IsMember() || d.IsField() || d.IsModuleConstant())
+                    .Where(d => d.IsMember() 
+                                    || d.IsField() 
+                                    || d.IsModuleConstant() 
+                                    || d.DeclarationType.Equals(DeclarationType.UserDefinedType)
+                                    || d.DeclarationType.Equals(DeclarationType.Enumeration))
                     .GroupBy(key => key.IdentifierName);
 
             foreach (var group in groupsByIdentifier)
@@ -110,9 +116,24 @@ namespace Rubberduck.Refactorings.MoveMember
                     idRefs.AddRange(memberContainedReferences);
                 }
 
-                newMoveable.ContainedReferences = idRefs;
+                newMoveable.DirectReferences = idRefs;
 
                 moveableMembers.Add(newMoveable);
+            }
+
+            var constants = moveableMembers.Where(m => m.Member.IsModuleConstant()).ToList();
+            foreach (var moveableMember in constants)
+            {
+
+                var lExprContexts = moveableMember.Member.Context.GetDescendents<VBAParser.LExprContext>();
+                if (lExprContexts.Any())
+                {
+                    var otherConstantIdentifierRefs = constants.Where(c => c != moveableMember)
+                                                        .SelectMany(oc => oc.Member.References);
+
+                    moveableMember.DirectReferences = otherConstantIdentifierRefs
+                                    .Where(rf => lExprContexts.Contains(rf.Context.Parent));
+                }
             }
 
             return moveableMembers;

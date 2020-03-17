@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Support = RubberduckTests.Refactoring.MoveMember.MoveMemberTestSupport;
 
+
 namespace RubberduckTests.Refactoring.MoveMember
 {
     [TestFixture]
@@ -1186,7 +1187,7 @@ End Sub
 ";
             moveDefinition.Add(new ModuleDefinition("Module3", ComponentType.StandardModule, externalReferencingCode));
 
-            
+
             var refactoredCode = ExecuteTest(moveDefinition);
 
             StringAssert.AreEqualIgnoringCase(ThisStrategy, refactoredCode.StrategyName);
@@ -1201,5 +1202,150 @@ End Sub
             StringAssert.Contains($"{moveDefinition.SourceModuleName}.Bar", refactoredCode.Destination);
 
         }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("MoveMember")]
+        public void PlacesCodeInCorrectSpotRelativeToDeclareStmt()
+        {
+            var memberToMove = ("Fizz", ThisDeclarationType);
+            var source = $@"
+Option Explicit
+
+Public Sub Fizz(arg1 As Long)
+End Sub
+";
+
+            var destination = $@"
+Option Explicit
+
+Private mBar As Long
+
+Declare Sub MessageBeep Lib ""User32"" (ByVal N As Long)
+
+Public Sub DoesNothing()
+End Sub
+";
+
+            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, memberToMove);
+            moveDefinition.SetEndpointContent(source, destination);
+
+            var refactoredCode = ExecuteTest(moveDefinition);
+
+            StringAssert.AreEqualIgnoringCase(ThisStrategy, refactoredCode.StrategyName);
+
+            StringAssert.DoesNotContain("Sub Foo(arg1", refactoredCode.Source);
+
+            StringAssert.Contains($"Sub Fizz(arg1", refactoredCode.Destination);
+            var idxOfFizz = refactoredCode.Destination.IndexOf("Sub Fizz");
+            var idxOfDeclare = refactoredCode.Destination.IndexOf("Declare Sub");
+
+            Assert.Less(idxOfDeclare, idxOfFizz);
+        }
+
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("MoveMember")]
+        public void DoesNotMoveMembersThatRaiseAnEvent()
+        {
+            var memberToMove = ("RaisesAnEvent", ThisDeclarationType);
+            var source = $@"
+Option Explicit
+
+Public Event EventName(IDNumber As Long, ByRef Cancel As Boolean)
+
+Public Sub RaisesAnEvent()
+    RaiseEvent EventName(6, true)
+End Sub";
+
+            var eventSinkName = "CEventSink";
+            var eventSinkContent = $@"
+Option Explicit
+
+Dim WithEvents TestEvents As {Support.DEFAULT_SOURCE_CLASS_NAME}
+
+Private Sub TestEvents_EventName(IDNumber As Long, ByRef Cancel As Boolean)
+End Sub
+";
+
+            var moveDefinition = new TestMoveDefinition(MoveEndpoints.ClassToStd, memberToMove, source);
+            moveDefinition.Add(new ModuleDefinition(eventSinkName, ComponentType.ClassModule, eventSinkContent));
+
+            var refactoredCode = ExecuteTest(moveDefinition);
+
+            Assert.IsNull(refactoredCode.StrategyName);
+        }
+
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("MoveMember")]
+        public void DoesNotMoveEventSink()
+        {
+            var eventSourceName = "CEventSource";
+
+            var memberToMove = ("TestEvents_EventName", ThisDeclarationType);
+            var source = $@"
+Option Explicit
+
+Dim WithEvents TestEvents As {eventSourceName}
+
+Private Sub TestEvents_EventName(IDNumber As Long, ByRef Cancel As Boolean)
+End Sub
+";
+
+            var eventSourceContent = $@"
+Option Explicit
+
+Public Event EventName(IDNumber As Long, ByRef Cancel As Boolean)
+
+Public Sub RaisesAnEvent()
+    RaiseEvent EventName(6, true)
+End Sub";
+
+            var moveDefinition = new TestMoveDefinition(MoveEndpoints.ClassToStd, memberToMove, source);
+            moveDefinition.Add(new ModuleDefinition(eventSourceName, ComponentType.ClassModule, eventSourceContent));
+
+            var refactoredCode = ExecuteTest(moveDefinition);
+
+            Assert.IsNull(refactoredCode.StrategyName);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("MoveMember")]
+        public void DoesNotMoveInterfaceImplementationMember()
+        {
+            var memberToMove = ("ITestInterface_TestGet", DeclarationType.PropertyGet);
+            var source = $@"
+Option Explicit
+
+Implements ITestInterface
+
+Private mTestValue As Long
+
+Private Property Get ITestInterface_TestGet() As Long
+    ITestInterface_TestGet = mTestValue
+End Property
+
+";
+
+            var interfaceDeclarationClass = "ITestInterface";
+            var interfaceContent = $@"
+Option Explicit
+
+Public Property Get TestGet() As Long
+End Property
+";
+
+            var moveDefinition = new TestMoveDefinition(MoveEndpoints.ClassToStd, memberToMove, source);
+            moveDefinition.Add(new ModuleDefinition(interfaceDeclarationClass, ComponentType.ClassModule, interfaceContent));
+
+            var refactoredCode = ExecuteTest(moveDefinition);
+
+            Assert.IsNull(refactoredCode.StrategyName);
+        }
+
     }
 }

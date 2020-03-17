@@ -8,6 +8,7 @@ using Rubberduck.Refactorings.MoveMember.Extensions;
 using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Rubberduck.Refactorings.MoveMember
@@ -30,7 +31,7 @@ namespace Rubberduck.Refactorings.MoveMember
 
         public override bool IsApplicable(MoveMemberModel model)
         {
-            //A strategy exists to handle 'nothing selected'...it's not this one
+            //A strategy exists to handle 'nothing selected'
             if (!model.SelectedDeclarations.Any()) { return false; }
 
             //Note: A StandardModule is the default so... 
@@ -47,6 +48,7 @@ namespace Rubberduck.Refactorings.MoveMember
             {
                 return TrySetDispositionGroupsForStandardModuleSource(model, moveGroups, out _);
             }
+
             return TrySetDispositionGroupsForClassModuleSource(model, moveGroups, out _);
         }
 
@@ -148,6 +150,17 @@ namespace Rubberduck.Refactorings.MoveMember
                 [MoveDisposition.Retain] = new List<Declaration>()
             };
 
+            var participatingMembers = moveGroups.MoveableMemberSets(MoveGroup.AllParticipants)
+                        .Where(d => d.Member.IsMember())
+                        .SelectMany(pm => pm.Members);
+
+            if (ParticipantsRaiseAnEvent(participatingMembers)
+                || ParticipantsIncludeAnEventHandler(participatingMembers, model)
+                || ParticipantsIncludeAnInterfaceImplementingMember(participatingMembers, model))
+            {
+                return false;
+            }
+
             if (moveGroups.Declarations(MoveGroup.Support_NonExclusive).Any()) { return false; }
 
             //Strategy does not move Public Fields of ObjectTypes.
@@ -157,10 +170,8 @@ namespace Rubberduck.Refactorings.MoveMember
 
 
             //If there are external references to the selected element(s) and the source is a 
-            //ClassModule or  UserForm, then they are not be supported by this strategy            
-            var externalMemberRefs = model.SelectedDeclarations.AllReferences().Where(rf => rf.QualifiedModuleName != model.Source.QualifiedModuleName);
-
-            if (externalMemberRefs.Any()) { return false; }
+            //ClassModule or  UserForm, then they are not be supported by this strategy.
+            if (model.SelectedDeclarations.AllReferences().Any(rf => rf.QualifiedModuleName != model.Source.QualifiedModuleName)) { return false; }
 
             dispositions[MoveDisposition.Move] = moveGroups.Declarations(MoveGroup.Selected)
                 .Concat(moveGroups.Declarations(MoveGroup.Support_Exclusive))
@@ -169,6 +180,25 @@ namespace Rubberduck.Refactorings.MoveMember
             dispositions[MoveDisposition.Retain] = moveGroups.Declarations(MoveGroup.AllParticipants)
                                                         .Except(dispositions[MoveDisposition.Move]).ToList();
             return true;
+        }
+
+        private static bool ParticipantsIncludeAnInterfaceImplementingMember(IEnumerable<Declaration> participatingMembers, MoveMemberModel model)
+        {
+            var interfaceImplementingMembers = model.DeclarationFinderProvider.DeclarationFinder.FindAllInterfaceImplementingMembers()
+                .Where(ifm => ifm.QualifiedModuleName == model.Source.QualifiedModuleName);
+
+            return participatingMembers.Intersect(interfaceImplementingMembers).Any();
+        }
+
+        private static bool ParticipantsRaiseAnEvent(IEnumerable<Declaration> participatingMembers) 
+                    => participatingMembers.Where(m => m.Context.GetDescendent<VBAParser.RaiseEventStmtContext>() != null).Any();
+
+        private static bool ParticipantsIncludeAnEventHandler(IEnumerable<Declaration> participatingMembers, MoveMemberModel model)
+        {
+            var eventHandlers = model.DeclarationFinderProvider.DeclarationFinder.FindEventHandlers()
+                .Where(evh => evh.QualifiedModuleName == model.Source.QualifiedModuleName);
+
+            return participatingMembers.Intersect(eventHandlers).Any();
         }
 
         private static bool TrySetDispositionGroupsForStandardModuleSource(MoveMemberModel model, IMoveGroupsProvider moveGroups, out Dictionary<MoveDisposition, List<Declaration>> dispositions)
@@ -218,6 +248,14 @@ namespace Rubberduck.Refactorings.MoveMember
                 return false;
             }
 
+            var selectedMemberPrivateTypeDependencies = moveGroups.MoveableMemberSets(MoveGroup.Selected)
+                .SelectMany(mm => mm.Members.Where(m => m.AsTypeDeclaration?.HasPrivateAccessibility() ?? false));
+
+            if (selectedMemberPrivateTypeDependencies.Any())
+            {
+                return false;
+            }
+
             var privateExclusiveSupportMoveableMemberSets = moveGroups.MoveableMemberSets(MoveGroup.Support_Exclusive)
                 .Where(p => p.HasPrivateAccessibility).ToList();
 
@@ -246,8 +284,9 @@ namespace Rubberduck.Refactorings.MoveMember
                 if (IsMustMovePublicSupport(moveable, requiredGroup[RequiredGroup.PrivateSupportMove], out var newPrivateMustMoveSupport))
                 {
                     requiredGroup[RequiredGroup.PublicSupportMove].AddRange(moveable.Members);
-                    requiredGroup[RequiredGroup.PrivateSupportMove] = requiredGroup[RequiredGroup.PrivateSupportMove].Concat(newPrivateMustMoveSupport).Distinct().ToList();
                     requiredGroup[RequiredGroup.PublicSupportRetain] = requiredGroup[RequiredGroup.PublicSupportRetain].Except(moveable.Members).ToList();
+
+                    requiredGroup[RequiredGroup.PrivateSupportMove] = requiredGroup[RequiredGroup.PrivateSupportMove].Concat(newPrivateMustMoveSupport).Distinct().ToList();
                     //Need to work from the start of the list again to see if the added private support
                     //dependencies forces a move of any other MoveableMembers in the 'Retain' collection 
                     idx = -1;
@@ -262,6 +301,7 @@ namespace Rubberduck.Refactorings.MoveMember
 
 
             requiredGroup[RequiredGroup.PrivateSupportRetain].AddRange(privateDependenciesOfRetainedPublicSupportMembers);
+
             privateExclusiveSupportMoveableMemberSets = privateExclusiveSupportMoveableMemberSets
                             .Except(moveGroups.ToMoveableMemberSets(requiredGroup[RequiredGroup.PrivateSupportRetain])).ToList();
 
@@ -304,13 +344,15 @@ namespace Rubberduck.Refactorings.MoveMember
 
             foreach (var element in dispositions[MoveDisposition.Move])
             {
-                var codeBlock = CreateMovedElementCodeBlock(model, moveGroups, element, rewriter, dispositions);
                 if (element.IsMember())
                 {
-                    contentProvider.AddMethodDeclaration(codeBlock);
+                    var memberCodeBlock = CreateMovedMemberCodeBlock(model, moveGroups, element, rewriter, dispositions);
+                    contentProvider.AddMethodDeclaration(memberCodeBlock);
                     continue;
                 }
-                contentProvider.AddFieldOrConstantDeclaration(codeBlock);
+
+                var nonMembercodeBlock = CreateMovedNonMemberCodeBlock(model, moveGroups, element, rewriter, dispositions);
+                contentProvider.AddFieldOrConstantDeclaration(nonMembercodeBlock);
             }
 
             return contentProvider;
@@ -407,20 +449,9 @@ namespace Rubberduck.Refactorings.MoveMember
             return destinationRewriter;
         }
 
-        private static string CreateMovedElementCodeBlock(MoveMemberModel model, IMoveGroupsProvider moveGroups, Declaration member, IModuleRewriter rewriter, Dictionary<MoveDisposition, List<Declaration>> dispositions)
+        private static string CreateMovedMemberCodeBlock(MoveMemberModel model, IMoveGroupsProvider moveGroups, Declaration member, IModuleRewriter rewriter, Dictionary<MoveDisposition, List<Declaration>> dispositions)
         {
-            var membersRelatedByName = model.MoveableMemberSetByName(member.IdentifierName);
-
-            if (member.IsVariable() || member.IsConstant())
-            {
-                var visibility  = IsOnlyReferencedByMovedMethods(member, dispositions[MoveDisposition.Move])  ? member.Accessibility.TokenString() : Tokens.Public;
-
-                SetMovedMemberIdentifier(membersRelatedByName, member, rewriter);
-
-                return member.IsVariable()
-                    ? $"{visibility} {rewriter.GetText(member)}"
-                    : $"{visibility} {Tokens.Const} {rewriter.GetText(member)}";
-            }
+            Debug.Assert(member.IsMember());
 
             if (member is ModuleBodyElementDeclaration mbed)
             {
@@ -431,13 +462,15 @@ namespace Rubberduck.Refactorings.MoveMember
             if (moveGroups.Declarations(MoveGroup.Selected).Contains(member))
             {
                 var accessibility = IsOnlyReferencedByMovedMethods(member, dispositions[MoveDisposition.Move])
-                    ? member.Accessibility.TokenString() 
+                    ? member.Accessibility.TokenString()
                     : Tokens.Public;
 
                 rewriter.SetMemberAccessibility(member, accessibility);
             }
 
-            SetMovedMemberIdentifier(membersRelatedByName, member, rewriter);
+            var moveableMemberSet = model.MoveableMemberSetByName(member.IdentifierName);
+            SetMovedMemberIdentifier(moveableMemberSet, member, rewriter);
+
             var otherMoveParticipantReferencesRelatedToMember = moveGroups.Declarations(MoveGroup.Support_Exclusive)
                                     .Where(esd => !esd.IsMember()).AllReferences()
                                     .Where(rf => rf.ParentScoping == member);
@@ -457,6 +490,28 @@ namespace Rubberduck.Refactorings.MoveMember
 
             rewriter.RemoveMemberAccess(destinationMemberAccessReferencesToMovedMembers);
             return rewriter.GetText(member);
+        }
+
+        private static string CreateMovedNonMemberCodeBlock(MoveMemberModel model, IMoveGroupsProvider moveGroups, Declaration nonMember, IModuleRewriter rewriter, Dictionary<MoveDisposition, List<Declaration>> dispositions)
+        {
+            Debug.Assert(!nonMember.IsMember());
+
+            var visibility = IsOnlyReferencedByMovedMethods(nonMember, dispositions[MoveDisposition.Move]) ? nonMember.Accessibility.TokenString() : Tokens.Public;
+
+            var moveableMemberSet = model.MoveableMemberSetByName(nonMember.IdentifierName);
+            SetMovedMemberIdentifier(moveableMemberSet, nonMember, rewriter);
+
+            if (model.Source.IsStandardModule && nonMember.IsConstant())
+            {
+                foreach (var rf in moveableMemberSet.DirectReferences)
+                {
+                    rewriter.Replace(rf.Context, $"{model.Source.ModuleName}.{rf.IdentifierName}");
+                }
+            }
+
+            return nonMember.IsVariable()
+                ? $"{visibility} {rewriter.GetText(nonMember)}"
+                : $"{visibility} {Tokens.Const} {rewriter.GetText(nonMember)}";
         }
 
         private static void SetMovedMemberIdentifier(IMoveableMemberSet membersRelatedByName, Declaration declaration, IModuleRewriter rewriter)
@@ -566,23 +621,6 @@ namespace Rubberduck.Refactorings.MoveMember
 
         private static bool IsOnlyReferencedByMovedMethods(Declaration element, IEnumerable<Declaration> copyAndDelete)
             => element.References.All(rf => copyAndDelete.Where(m => m.IsMember()).Contains(rf.ParentScoping));
-
-#if DEBUG
-        private static (string Source, string Destination) GetContentState(MoveMemberModel model, IRewritingManager rewritingManager)
-        {
-            var debugPreviewSession = rewritingManager.CheckOutCodePaneSession();
-            var sourceRewriter = debugPreviewSession.CheckOutModuleRewriter(model.Source.QualifiedModuleName);
-            var newSource = sourceRewriter.GetText();
-            if (model.Destination.IsExistingModule(out var module))
-            {
-                var destinationRewriter = debugPreviewSession.CheckOutModuleRewriter(module.QualifiedModuleName);
-
-                var newDestination = destinationRewriter.GetText();
-                return (newSource, newDestination);
-            }
-            return (newSource, string.Empty);
-        }
-#endif
 
         private static bool IsMustMovePublicSupport(IMoveableMemberSet publicSupportMember, IEnumerable<Declaration> mustMovePrivateSupport, out List<Declaration> newMustMovePrivateSupport)
         {

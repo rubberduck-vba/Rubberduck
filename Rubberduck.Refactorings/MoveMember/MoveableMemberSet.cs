@@ -57,7 +57,7 @@ namespace Rubberduck.Refactorings.MoveMember
         /// Returns true if the declaration is referenced exclusively by the MoveMember participants 
         /// </summary>
         bool IsExclusive { set; get; }
-        
+
         ///// <summary>
         ///// Returns references other than those local to the Member body.  e.g, Function return assignments 
         ///// </summary>
@@ -78,6 +78,21 @@ namespace Rubberduck.Refactorings.MoveMember
         /// Returns the a flatted collection of the call-tree dependencies for the MoveableMemberSet 
         /// </summary>
         IReadOnlyCollection<Declaration> FlattenedDependencies { set; get; }
+
+        /// <summary>
+        /// Returns direct dependencies of the MoveableMemberSet
+        /// </summary>
+        IEnumerable<IdentifierReference> DirectReferences { set; get; }
+
+        /// <summary>
+        /// Returns true if the MoveableMemberSet is a User Defined Type declaration
+        /// </summary>
+        bool IsUserDefinedType { get; }
+
+        /// <summary>
+        /// Returns true if the MoveableMemberSet is an Enumeration declaration
+        /// </summary>
+        bool IsEnumeration { get; }
     }
 
     /// <summary>
@@ -104,10 +119,10 @@ namespace Rubberduck.Refactorings.MoveMember
         private List<Declaration> _members;
         public IReadOnlyList<Declaration> Members => _members;
 
-        public IEnumerable<IdentifierReference> ContainedReferences {set; get;}
+        public IEnumerable<IdentifierReference> DirectReferences {set; get;}
 
         public IReadOnlyCollection<Declaration> DirectDependencies 
-            => ContainedReferences.Select(rf => rf.Declaration).Distinct().ToList();
+            => DirectReferences.Select(rf => rf.Declaration).Distinct().ToList();
 
         public IReadOnlyCollection<Declaration> FlattenedDependencies { set; get; } = new List<Declaration>();
 
@@ -118,6 +133,10 @@ namespace Rubberduck.Refactorings.MoveMember
         public bool IsSupport { set; get; }
 
         public bool IsExclusive { set; get; }
+
+        public bool IsUserDefinedType => _members.First().DeclarationType.Equals(DeclarationType.UserDefinedType);
+
+        public bool IsEnumeration => _members.First().DeclarationType.Equals(DeclarationType.Enumeration);
 
         public bool HasPrivateAccessibility => Members.All(mm => mm.HasPrivateAccessibility());
 

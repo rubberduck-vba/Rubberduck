@@ -2,15 +2,12 @@
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveMember;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RubberduckTests.Refactoring.MoveMember
 {
@@ -73,17 +70,6 @@ namespace RubberduckTests.Refactoring.MoveMember
             return Enumerable.Empty<IMoveMemberRefactoringStrategy>(); ;
         }
 
-        public static MoveMemberModel CreateModelAndDefineMove(IVBE vbe, TestMoveDefinition moveDefinition, RubberduckParserState state, IRewritingManager rewritingManager)
-        {
-            var sourceModule = state.DeclarationFinder.ModuleDeclaration(GetQMN(vbe, moveDefinition.SourceModuleName));
-            var member = state.DeclarationFinder.Members(sourceModule).FirstOrDefault(m => m.IdentifierName.Equals(moveDefinition.SelectedElement));
-            var destinationModule = state.DeclarationFinder.ModuleDeclaration(GetQMN(vbe, moveDefinition.DestinationModuleName));
-            var model = new MoveMemberModel(member, state);
-
-            model.ChangeDestination(destinationModule);
-            return model;
-        }
-
         public static IVBE BuildVBEStub(TestMoveDefinition moveDefinition, string sourceContent)
         {
             if (moveDefinition.CreateNewModule)
@@ -93,16 +79,6 @@ namespace RubberduckTests.Refactoring.MoveMember
             }
             moveDefinition.SetEndpointContent(sourceContent, null);
             return MockVbeBuilder.BuildFromModules(moveDefinition.ModuleDefinitions.Select(tc => tc.AsTuple)).Object;
-        }
-
-        public static QualifiedModuleName GetQMN(IVBE VBE, string moduleName, string projectName = DEFAULT_PROJECT_NAME)
-        {
-            var project = VBE.VBProjects.Single(item => item.Name == projectName);
-            var component = project.VBComponents.SingleOrDefault(c => c.Name == moduleName);
-            using (component)
-            {
-                return component != null ? new QualifiedModuleName(component) : new QualifiedModuleName(project);
-            }
         }
 
         public static bool OccursOnce(string toFind, string content)

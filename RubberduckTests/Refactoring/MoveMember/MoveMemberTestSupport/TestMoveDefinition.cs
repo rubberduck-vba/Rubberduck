@@ -32,36 +32,31 @@ namespace RubberduckTests.Refactoring.MoveMember
     {
         private Dictionary<string, ModuleDefinition> _moduleDefs;
 
-        public TestMoveDefinition(MoveEndpoints endpoints, (string, DeclarationType) selection, string sourceModuleName = null, string destinationModuleName = null, string sourceContent = null, string destinationContent = null, bool createNewModule = false)
+        public TestMoveDefinition(MoveEndpoints endpoints, (string identifier, DeclarationType declarationType) selection, string sourceContent = null) //, bool createNewModule = false)
         {
             _moduleDefs = new Dictionary<string, ModuleDefinition>();
             _otherSelectedElements = new List<(string, DeclarationType)>();
-            CreateNewModule = createNewModule;
+            CreateNewModule = false;
             Endpoints = endpoints;
-            SelectedElement = selection.Item1;
-            SelectedDeclarationType = selection.Item2;
+            SelectedElement = selection.identifier;
+            SelectedDeclarationType = selection.declarationType;
             StrategyName = null;
-
-            _destinationModuleName = destinationModuleName;
-
-            _sourceModuleName = sourceModuleName;
 
             if (sourceContent != null)
             {
-                SetEndpointContent(sourceContent, destinationContent);
+                SetEndpointContent(sourceContent, null);
             }
         }
 
-        public MoveMemberModel ModelBuilder(RubberduckParserState state)
+        public MoveMemberModel ModelBuilder(IDeclarationFinderProvider declarationFinderProvider)
         {
             var sourceModuleName = SourceModuleName;
             var selectedElement = SelectedElement;
-            var destinationModuleName = DestinationModuleName;
-            var target = state.DeclarationFinder.DeclarationsWithType(SelectedDeclarationType)
+            var target = declarationFinderProvider.DeclarationFinder.DeclarationsWithType(SelectedDeclarationType)
                 .Where(t => t.ParentDeclaration.IdentifierName == sourceModuleName)
                 .Single(declaration => declaration.IdentifierName == selectedElement);
 
-            var model = new MoveMemberModel(target, state);
+            var model = new MoveMemberModel(target, declarationFinderProvider);
             foreach ((string ID, DeclarationType decType) in _otherSelectedElements)
             {
                 var moveableMemberSet = model.MoveableMemberSetByName(ID);
@@ -71,12 +66,13 @@ namespace RubberduckTests.Refactoring.MoveMember
             Declaration destination = null;
             if (!CreateNewModule)
             {
-                destination = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Module)
-                    .Single(t => t.IdentifierName == destinationModuleName);
+                destination = declarationFinderProvider.DeclarationFinder.DeclarationsWithType(DeclarationType.Module)
+                    .Single(t => t.IdentifierName == DestinationModuleName);
                 model.ChangeDestination(destination);
                 SetTestStrategyName(model);
                 return model;
             }
+
             model.ChangeDestination(DestinationModuleName, DestinationComponentType);
 
             SetTestStrategyName(model);
@@ -104,12 +100,19 @@ namespace RubberduckTests.Refactoring.MoveMember
         }
 
         private string _sourceModuleName;
-        public string SourceModuleName => _sourceModuleName ?? DefaultSourceModuleNameForEndpoint(Endpoints);
+        public string SourceModuleName
+        {
+            set => _sourceModuleName = value;
+            get => _sourceModuleName ?? DefaultSourceModuleNameForEndpoint(Endpoints);
+        }
 
         private string _destinationModuleName;
-        public string DestinationModuleName => _destinationModuleName ?? DefaultDestinationModuleNameForEndpoint(Endpoints);
-
-        public bool CreateNewModule { get; }
+        public string DestinationModuleName
+        {
+            set => _destinationModuleName = value;
+            get => _destinationModuleName ?? DefaultDestinationModuleNameForEndpoint(Endpoints);
+        }
+        public bool CreateNewModule { set; get; }
 
         public bool IsClassDestination => Endpoints == MoveEndpoints.ClassToClass || Endpoints == MoveEndpoints.StdToClass;
         public bool IsStdModuleDestination => Endpoints == MoveEndpoints.ClassToStd || Endpoints == MoveEndpoints.StdToStd;

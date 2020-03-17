@@ -20,14 +20,17 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Refactoring.MoveMember
 {
     [TestFixture]
-    public class MoveMemberTests : InteractiveRefactoringTestBase<IMoveMemberPresenter, MoveMemberModel>
+    public class MoveMemberPreviewTests : InteractiveRefactoringTestBase<IMoveMemberPresenter, MoveMemberModel>
     {
-        [TestCase(MoveEndpoints.StdToStd)]
-        [TestCase(MoveEndpoints.ClassToStd)]
-        [TestCase(MoveEndpoints.FormToStd)]
+        [TestCase(MoveEndpoints.StdToStd, true)]
+        [TestCase(MoveEndpoints.ClassToStd, true)]
+        [TestCase(MoveEndpoints.FormToStd, true)]
+        [TestCase(MoveEndpoints.StdToStd, false)]
+        [TestCase(MoveEndpoints.ClassToStd, false)]
+        [TestCase(MoveEndpoints.FormToStd, false)]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void PreviewMovedContentFunction(MoveEndpoints endpoints)
+        public void PreviewMovedContentFunction(MoveEndpoints endpoints, bool createNewModule)
         {
             var memberToMove = ("Foo", DeclarationType.Function);
             var source =
@@ -42,21 +45,28 @@ Function Foo(arg1 As Long) As Long
 End Function
 ";
 
-            var moveDefinition = new TestMoveDefinition(endpoints, memberToMove);
+            var moveDefinition = new TestMoveDefinition(endpoints, memberToMove)
+            {
+                CreateNewModule = createNewModule
+            };
+
             var preview = RetrievePreviewAfterUserInput(moveDefinition, source, memberToMove);
 
-            StringAssert.Contains("Option Explicit", preview);
+            Assert.IsTrue(OccursOnce("Option Explicit", preview));
             Assert.IsTrue(OccursOnce("Public Function Foo(", preview));
         }
 
-        [TestCase(MoveEndpoints.StdToStd)]
-        [TestCase(MoveEndpoints.ClassToStd)]
-        [TestCase(MoveEndpoints.FormToStd)]
+        [TestCase(MoveEndpoints.StdToStd, true)]
+        [TestCase(MoveEndpoints.ClassToStd, true)]
+        [TestCase(MoveEndpoints.FormToStd, true)]
+        [TestCase(MoveEndpoints.StdToStd, false)]
+        [TestCase(MoveEndpoints.ClassToStd, false)]
+        [TestCase(MoveEndpoints.FormToStd, false)]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void PreviewMovedContentProcedure(MoveEndpoints endpoints)
+        public void PreviewMovedContentProcedure(MoveEndpoints endpoints, bool createNewModule)
         {
-            var memberToMove = "Foo";
+            var memberToMove = ("Foo", DeclarationType.Procedure);
             var source =
 $@"
 Option Explicit
@@ -66,21 +76,27 @@ Sub Foo(ByVal arg1 As Long, ByRef result As Long)
 End Sub
 ";
 
-            var moveDefinition = new TestMoveDefinition(endpoints, (memberToMove, DeclarationType.Procedure));
+            var moveDefinition = new TestMoveDefinition(endpoints, memberToMove)
+            {
+                CreateNewModule = createNewModule
+            };
 
-            var preview = RetrievePreviewAfterUserInput(moveDefinition, source, (memberToMove, DeclarationType.Procedure));
+            var preview = RetrievePreviewAfterUserInput(moveDefinition, source, memberToMove);
 
             StringAssert.Contains("Option Explicit", preview);
             Assert.IsTrue(OccursOnce("Public Sub Foo(", preview));
         }
 
 
-        [TestCase(MoveEndpoints.StdToStd)]
-        [TestCase(MoveEndpoints.ClassToStd)]
-        [TestCase(MoveEndpoints.FormToStd)]
+        [TestCase(MoveEndpoints.StdToStd, true)]
+        [TestCase(MoveEndpoints.ClassToStd, true)]
+        [TestCase(MoveEndpoints.FormToStd, true)]
+        [TestCase(MoveEndpoints.StdToStd, false)]
+        [TestCase(MoveEndpoints.ClassToStd, false)]
+        [TestCase(MoveEndpoints.FormToStd, false)]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void PreviewMovedContentProperties(MoveEndpoints endpoints)
+        public void PreviewMovedContentProperties(MoveEndpoints endpoints, bool createNewModule)
         {
             var memberToMove = ("TheValue", DeclarationType.PropertyGet);
             var source =
@@ -99,7 +115,11 @@ Public Property Let TheValue(ByVal value As Long)
 End Property
 ";
 
-            var moveDefinition = new TestMoveDefinition(endpoints, memberToMove);
+            var moveDefinition = new TestMoveDefinition(endpoints, memberToMove)
+            {
+                CreateNewModule = createNewModule
+            };
+
             var preview = RetrievePreviewAfterUserInput(moveDefinition, source, memberToMove);
 
             StringAssert.Contains("Option Explicit", preview);
@@ -107,45 +127,11 @@ End Property
             Assert.IsTrue(OccursOnce("Property Let TheValue(", preview));
         }
 
-        [Test]
-        [Category("Refactorings")]
-        [Category("MoveMember")]
-        public void MoveCandidatesPreview()
-        {
-            var memberToMove = ("Foo", DeclarationType.PropertyGet);
-            var source =
-$@"
-Option Explicit
-
-Public Property Let Foo(arg As Long)
-End Property
-
-Public Property Get Foo() As Long
-End Property
-
-Public Property Let Bar(arg As Long)
-End Property
-
-Public Property Get Bar() As Long
-End Property
-
-Public Property Get Baz() As Long
-End Property
-";
-
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, memberToMove, sourceContent: source, createNewModule: true);
-            var preview = RetrievePreviewAfterUserInput(moveDefinition, source, memberToMove);
-
-            Assert.IsTrue(MoveMemberTestSupport.OccursOnce("Let Foo(", preview), "String occurs more than once");
-            Assert.IsTrue(MoveMemberTestSupport.OccursOnce("Get Foo(", preview), "String occurs more than once");
-        }
-
         private string RetrievePreviewAfterUserInput(TestMoveDefinition moveDefinition, string sourceContent, (string declarationName, DeclarationType declarationType) memberToMove)
         {
             MoveMemberModel PresenterAdjustment(MoveMemberModel model)
             {
-                model.ChangeDestination(moveDefinition.DestinationModuleName);
-                return model;
+                return moveDefinition.ModelBuilder(model.DeclarationFinderProvider);
             }
 
             var vbe = BuildVBEStub(moveDefinition, sourceContent);
@@ -174,17 +160,6 @@ End Property
             }
             moveDefinition.SetEndpointContent(sourceContent, null);
             return MockVbeBuilder.BuildFromModules(moveDefinition.ModuleDefinitions.Select(tc => tc.AsTuple)).Object;
-        }
-
-        private static IVBE BuildVBEStub(TestMoveDefinition moveDefinition, string sourceContent, string destinationContent = null, params ReferenceLibrary[] libraries)
-        {
-            if (moveDefinition.CreateNewModule)
-            {
-                moveDefinition.SetEndpointContent(sourceContent);
-                return MockVbeBuilder.BuildFromModules(moveDefinition.ModuleDefinitions.Select(tc => tc.AsTuple)).Object;
-            }
-            moveDefinition.SetEndpointContent(sourceContent, destinationContent);
-            return MockVbeBuilder.BuildFromModules(moveDefinition.ModuleDefinitions.Select(tc => tc.AsTuple), libraries).Object;
         }
 
         private static bool OccursOnce(string toFind, string content)

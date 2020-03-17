@@ -1,6 +1,5 @@
 ﻿using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.MoveMember

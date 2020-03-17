@@ -5,6 +5,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveMember;
 using Rubberduck.UI.Refactorings.MoveMember;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using System.Linq;
 
 namespace RubberduckTests.Refactoring.MoveMember
 {
@@ -72,18 +73,19 @@ End Property
 ";
 
             var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, (member, DeclarationType.PropertyGet), sourceContent: source);
-
             var vbeStub = MoveMemberTestSupport.BuildVBEStub(moveDefinition, source);
+
             var displaySignature = MoveMemberTestSupport.ParseAndTest(vbeStub, ThisTest);
 
             StringAssert.AreEqualIgnoringCase(expectedDisplay, displaySignature);
 
-
             string ThisTest(RubberduckParserState state, IVBE vbe, IRewritingManager rewritingManager)
             {
-                var model = MoveMemberTestSupport.CreateModelAndDefineMove(vbe, moveDefinition, state, rewritingManager);
-                var moveable = model.MoveableMemberSetByName(member);
-                return MoveableMemberSetViewModel.BuildDisplaySignature(moveable);
+                var target = state.DeclarationFinder.MatchName(member);
+
+                var model = new MoveMemberModel(target.First(), state as IDeclarationFinderProvider);
+                var viewModel = new MoveableMemberSetViewModel(new MoveMemberViewModel(model), model.MoveableMemberSetByName(target.First().IdentifierName));
+                return viewModel.ToDisplayString;
             }
         }
 
@@ -129,9 +131,11 @@ End Function
 
             string ThisTest(RubberduckParserState state, IVBE vbe, IRewritingManager rewritingManager)
             {
-                var model = MoveMemberTestSupport.CreateModelAndDefineMove(vbe, moveDefinition, state, rewritingManager);
-                var moveable = model.MoveableMemberSetByName(member);
-                return MoveableMemberSetViewModel.BuildDisplaySignature(moveable);
+                var target = state.DeclarationFinder.MatchName(member);
+
+                var model = new MoveMemberModel(target.First(), state as IDeclarationFinderProvider);
+                var viewModel = new MoveableMemberSetViewModel(new MoveMemberViewModel(model), model.MoveableMemberSetByName(target.First().IdentifierName));
+                return viewModel.ToDisplayString;
             }
         }
     }

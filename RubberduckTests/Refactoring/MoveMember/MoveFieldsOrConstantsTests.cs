@@ -346,248 +346,74 @@ End Function
             }
         }
 
-        [Test]
-        [Ignore("This needs to be addressed")]
+        [TestCase("PVT_VALUE", null)]
+        [TestCase("85 + PVT_VALUE * 4", null)]
+        [TestCase("PUB_VALUE + PVT_VALUE", null)]
+        [TestCase("PUB_VALUE", nameof(MoveMemberToStdModule))]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void MoveConstantValueReferencesPrivateConstantWithLocalReference()
+        public void MoveConstantDeclarationReferencesOtherConstant(string expression, string expectedStrategy)
         {
             var source =
 $@"
 Option Explicit
 
-Public Const FIZZ As Long = PVT_VALUE
-
 Private Const PVT_VALUE As Long = 75
+
+Public Const PUB_VALUE As Long = 10
+
+Public Const PUB_VALUE2 As Long = 20
+
+Public Const FIZZ As Long = {expression}
 
 Private Function Bizz(arg As Long) As Long
     Bizz = arg + PVT_VALUE
 End Function
 ";
 
-            //var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, ("FIZZ", DeclarationType.Constant), sourceContent: source);
-            //var refactoredCode = ExecuteTest(moveDefinition);
+            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, ("FIZZ", DeclarationType.Constant), source);
 
-            //StringAssert.Contains($"FIZZ", refactoredCode.Source);
-            //StringAssert.Contains($"PVT_VALUE", refactoredCode.Source);
-
-            var sourceTuple = MoveMemberTestSupport.EndpointToSourceTuple(MoveEndpoints.StdToStd, source);
-            var destinationTuple = MoveMemberTestSupport.EndpointToDestinationTuple(MoveEndpoints.StdToStd, string.Empty);
-
-            var resultCount = MoveMemberTestSupport.ParseAndTest(ThisTest, sourceTuple, destinationTuple);
-
-            Assert.AreEqual(0, resultCount);
-
-            long ThisTest(RubberduckParserState state, IVBE vbe, IRewritingManager rewritingManager)
-            {
-                var strategies = MoveMemberTestSupport.RetrieveStrategies(state, "FIZZ", DeclarationType.Constant, rewritingManager);
-                return strategies.Count();
-            }
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("MoveMember")]
-        public void PublicUDTMoveField_HasReferences()
-        {
-            var source =
-$@"
-Option Explicit
-
-Public Type MyTestType
-    Foo As Long
-    Bar As String
-End Type
-
-Public mFooBar As MyTestType
-
-Public Function FooMath(arg1 As Long) As Long
-    FooMath = arg1 * mFooBar.Foo
-End Function
-
-Public Function ConcatBar(arg1 As String) As String
-    ConcatBar = arg1 & mFooBar.Bar
-End Function";
-
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, ("mFooBar", DeclarationType.Variable), sourceContent: source);
-
-            var callSiteModuleName = "CallSiteModule";
-
-            var otherModuleReference =
-    $@"
-Option Explicit
-
-Public Function MemberAccessFoo(arg1 As Long) As Long
-    MemberAccessFoo = arg1 + {moveDefinition.SourceModuleName}.mFooBar.Foo * 2
-End Function
-
-Public Function WithMemberAccessFoo(arg1 As Long) As Long
-    Dim result As Long
-    With {moveDefinition.SourceModuleName}
-        result = (.mFooBar.Foo + arg1) * 2
-    End With
-    WithMemberAccessFoo = result
-End Function
-
-Public Function WithMemberAccessFoo2(arg1 As Long) As Long
-    Dim result As Long
-    With {moveDefinition.SourceModuleName}.mFooBar
-        result2 = (.Foo + arg1) * 2
-    End With
-    WithMemberAccessFoo2 = result2
-End Function
-
-Public Function NonQualifiedFoo(arg1 As Long) As Long
-    NonQualifiedFoo = (mFooBar.Foo + arg1) * 2
-End Function
-";
-            moveDefinition.Add(new ModuleDefinition(callSiteModuleName, ComponentType.StandardModule, otherModuleReference));
-
-            
             var refactoredCode = ExecuteTest(moveDefinition);
 
-            var destinationDeclaration = "Public mFooBar As MyTestType";
+            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
 
-            StringAssert.DoesNotContain("mFooBar As MyTestType", refactoredCode.Source);
-            StringAssert.Contains(destinationDeclaration, refactoredCode.Destination);
-            StringAssert.Contains($"{moveDefinition.DestinationModuleName}.mFooBar.Foo", refactoredCode.Source);
-            StringAssert.Contains($"{moveDefinition.DestinationModuleName}.mFooBar.Bar", refactoredCode.Source);
-            StringAssert.Contains($"{moveDefinition.DestinationModuleName}.{moveDefinition.SelectedElement}", refactoredCode[callSiteModuleName]);
-            StringAssert.Contains($"result = ({moveDefinition.DestinationModuleName}.mFooBar.Foo + arg1) * 2", refactoredCode[callSiteModuleName]);
-            StringAssert.Contains($"With {moveDefinition.DestinationModuleName}.mFooBar", refactoredCode[callSiteModuleName]);
-            StringAssert.Contains($"NonQualifiedFoo = ({moveDefinition.DestinationModuleName}.mFooBar.Foo + arg1) * 2", refactoredCode[callSiteModuleName]);
-        }
-
-        [TestCase(MoveEndpoints.FormToStd)]
-        [TestCase(MoveEndpoints.ClassToStd)]
-        [TestCase(MoveEndpoints.StdToStd)]
-        [Category("Refactorings")]
-        [Category("MoveMember")]
-        public void PrivateUDTMoveField_NoStrategyFound(MoveEndpoints endpoints)
-        {
-            var source =
-$@"
-Option Explicit
-
-Private Type MyTestType
-    Foo As Long
-    Bar As String
-End Type
-
-Private mFooBar As MyTestType
-
-Public Function FooMath(arg1 As Long) As Long
-    FooMath = arg1 * mFooBar.Foo
-End Function
-
-Public Function ConcatBar(arg1 As String) As String
-    ConcatBar = arg1 & mFooBar.Bar
-End Function";
-
-            var sourceTuple = MoveMemberTestSupport.EndpointToSourceTuple(endpoints, source);
-            var destinationTuple = MoveMemberTestSupport.EndpointToDestinationTuple(endpoints, string.Empty );
-            var resultCount = MoveMemberTestSupport.ParseAndTest(ThisTest, sourceTuple, destinationTuple);
-            Assert.AreEqual(0, resultCount);
-
-            long ThisTest(RubberduckParserState state, IVBE vbe, IRewritingManager rewritingManager)
+            if (expectedStrategy is null)
             {
-                var strategies = MoveMemberTestSupport.RetrieveStrategies(state, "mFooBar", DeclarationType.Variable, rewritingManager);
-                return strategies.Count();
+                return;
             }
+
+            StringAssert.Contains($"Public Const FIZZ As Long = {moveDefinition.SourceModuleName}.{expression}", refactoredCode.Destination);
         }
 
-        [Test]
+
+        [TestCase("PUB_VALUE * PUB_VALUE2", nameof(MoveMemberToStdModule))]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void PublicEnumMoveFieldHasReferences()
+        public void MoveConstantDeclarationReferencesOtherConstantMultiple(string expression, string expectedStrategy)
         {
             var source =
 $@"
 Option Explicit
 
-Public Enum MyTestEnum
-    ValueOne
-    ValueTwo
-End Enum
+Private Const PVT_VALUE As Long = 75
 
-Public eFoo As MyTestEnum
+Public Const PUB_VALUE As Long = 10
 
-Public Function FooMath(arg1 As Long) As Long
-    FooMath = arg1 * eFoo
+Public Const PUB_VALUE2 As Long = 20
+
+Public Const FIZZ As Long = {expression}
+
+Private Function Bizz(arg As Long) As Long
+    Bizz = arg + PVT_VALUE
 End Function
 ";
 
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, ("eFoo", DeclarationType.Variable), sourceContent: source);
+            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, ("FIZZ", DeclarationType.Constant), source);
 
-            var callSiteModuleName = "CallSiteModule";
-
-            var otherModuleReference =
-    $@"
-Option Explicit
-
-Public Function MemberAccessFoo(arg1 As Long) As Long
-    MemberAccessFoo = arg1 + {moveDefinition.SourceModuleName}.eFoo * 2
-End Function
-
-Public Function WithMemberAccessFoo(arg1 As Long) As Long
-    Dim result As Long
-    With {moveDefinition.SourceModuleName}
-        result = (.eFoo + arg1) * 2
-    End With
-    WithMemberAccessFoo = result
-End Function
-
-Public Function NonQualifiedFoo(arg1 As Long) As Long
-    NonQualifiedFoo = (eFoo + arg1) * 2
-End Function
-";
-            moveDefinition.Add(new ModuleDefinition(callSiteModuleName, ComponentType.StandardModule, otherModuleReference));
-
-            
             var refactoredCode = ExecuteTest(moveDefinition);
 
-            var destinationDeclaration = "Public eFoo As MyTestEnum";
-
-            StringAssert.DoesNotContain("eFoo As MyTestEnum", refactoredCode.Source);
-            StringAssert.Contains(destinationDeclaration, refactoredCode.Destination);
-            StringAssert.Contains($"{moveDefinition.DestinationModuleName}.eFoo", refactoredCode.Source);
-            StringAssert.Contains($"{moveDefinition.DestinationModuleName}.{moveDefinition.SelectedElement}", refactoredCode[callSiteModuleName]);
-            StringAssert.Contains($"result = ({moveDefinition.DestinationModuleName}.eFoo + arg1) * 2", refactoredCode[callSiteModuleName]);
-            StringAssert.Contains($"NonQualifiedFoo = ({moveDefinition.DestinationModuleName}.eFoo + arg1) * 2", refactoredCode[callSiteModuleName]);
-        }
-
-        [TestCase(MoveEndpoints.FormToStd)]
-        [TestCase(MoveEndpoints.ClassToStd)]
-        [TestCase(MoveEndpoints.StdToStd)]
-        [Category("Refactorings")]
-        [Category("MoveMember")]
-        public void PrivateEnumMoveField_NoStrategyFound(MoveEndpoints endpoints)
-        {
-            var source =
-$@"
-Option Explicit
-
-Private Enum MyTestEnum
-    ValueOne
-    ValueTwo
-End Enum
-
-Private eFoo As MyTestEnum
-
-Public Function FooMath(arg1 As Long) As Long
-    FooMath = arg1 * eFoo
-End Function
-";
-            var sourceTuple = MoveMemberTestSupport.EndpointToSourceTuple(endpoints, source);
-            var destinationTuple = MoveMemberTestSupport.EndpointToDestinationTuple(endpoints, string.Empty);
-            var resultCount = MoveMemberTestSupport.ParseAndTest(ThisTest, sourceTuple, destinationTuple);
-            Assert.AreEqual(0, resultCount);
-
-            long ThisTest(RubberduckParserState state, IVBE vbe, IRewritingManager rewritingManager)
-            {
-                var strategies = MoveMemberTestSupport.RetrieveStrategies(state, "eFoo", DeclarationType.Variable, rewritingManager);
-                return strategies.Count();
-            }
+            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
+            StringAssert.Contains($"Public Const FIZZ As Long = {moveDefinition.SourceModuleName}.PUB_VALUE * {moveDefinition.SourceModuleName}.PUB_VALUE2", refactoredCode.Destination);
         }
 
         [TestCase(MoveEndpoints.FormToStd, "Public")]

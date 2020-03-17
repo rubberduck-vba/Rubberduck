@@ -5,6 +5,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.MoveMember;
 using Rubberduck.Refactorings.MoveMember.Extensions;
+using Rubberduck.UI.Refactorings.MoveMember;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
@@ -212,36 +213,6 @@ End Sub
             }
         }
 
-        [TestCase("Fizz", "arg1Array() As Long")]
-        [Category("Refactorings")]
-        [Category("MoveMember")]
-        public void ImprovedArgListArray(string member, string expectedDisplay)
-        {
-            var source =
-$@"
-Option Explicit
-
-Public Sub Fizz(arg1Array() As Long)
-End Sub
-";
-
-            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, (member, DeclarationType.PropertyGet), sourceContent: source);
-
-            var vbeStub = MoveMemberTestSupport.BuildVBEStub(moveDefinition, source);
-            var displaySignature = MoveMemberTestSupport.ParseAndTest(vbeStub, ThisTest);
-
-            StringAssert.AreEqualIgnoringCase(expectedDisplay, displaySignature);
-
-
-            string ThisTest(RubberduckParserState state, IVBE vbe, IRewritingManager rewritingManager)
-            {
-                var target = state.DeclarationFinder.MatchName(member).Single();
-                return target is ModuleBodyElementDeclaration mbed
-                                ? mbed.ImprovedArgumentList()
-                                : string.Empty;
-            }
-        }
-
         [Test]
         [Category("Refactorings")]
         [Category("MoveMember")]
@@ -274,10 +245,11 @@ End Property
             var vbeStub = MoveMemberTestSupport.BuildVBEStub(moveDefinition, source);
             var moveCandidates = MoveMemberTestSupport.ParseAndTest(vbeStub, ThisTest);
 
-
             IEnumerable<IMoveableMemberSet> ThisTest(RubberduckParserState state, IVBE vbe, IRewritingManager rewritingManager)
             {
-                var model = MoveMemberTestSupport.CreateModelAndDefineMove(vbe, moveDefinition, state, rewritingManager);
+                var target = state.DeclarationFinder.MatchName(member);
+
+                var model = new MoveMemberModel(target.First(), state as IDeclarationFinderProvider);
                 return model.MoveableMembers;
             }
 
