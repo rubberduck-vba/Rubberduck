@@ -1,17 +1,21 @@
-﻿using Rubberduck.Parsing.Rewriter;
+﻿using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Rename;
 using Rubberduck.VBEditor.Utility;
+using System;
 
 namespace Rubberduck.Refactorings.MoveMember
 {
-    public class MoveMemberToNewModuleRefactoring : RefactoringActionWithSuspension<MoveMemberModel>
+    public class MoveMemberToNewModuleRefactoringAction : RefactoringActionWithSuspension<MoveMemberModel>
     {
-        private readonly MoveMemberToExistingModuleRefactoring _refactoring;
+        private readonly MoveMemberExistingModulesRefactoringAction _refactoring;
         private readonly IRewritingManager _rewritingManager;
         private readonly IAddComponentService _addComponentService;
 
-        public MoveMemberToNewModuleRefactoring(
-                        MoveMemberToExistingModuleRefactoring refactoring,
+        public MoveMemberToNewModuleRefactoringAction(
+                        MoveMemberExistingModulesRefactoringAction refactoring,
+                        RenameCodeDefinedIdentifierRefactoringAction renameAction,
                         IParseManager parseManager,
                         IRewritingManager rewritingManager,
                         IAddComponentService addComponentService)
@@ -30,6 +34,7 @@ namespace Rubberduck.Refactorings.MoveMember
                 return;
             }
 
+            var optionExplicit = $"{Tokens.Option} {Tokens.Explicit}{Environment.NewLine}";
             var newContent = strategy.NewDestinationModuleContent(model, _rewritingManager, new MovedContentProvider()).AsSingleBlock;
 
             _refactoring.Refactor(model, rewriteSession);
@@ -37,7 +42,7 @@ namespace Rubberduck.Refactorings.MoveMember
             _addComponentService.AddComponentWithAttributes(
                                         model.Source.Module.ProjectId,
                                         model.Destination.ComponentType,
-                                        newContent,
+                                        $"{optionExplicit}{Environment.NewLine}{newContent}",
                                         componentName: model.Destination.ModuleName);
         }
 

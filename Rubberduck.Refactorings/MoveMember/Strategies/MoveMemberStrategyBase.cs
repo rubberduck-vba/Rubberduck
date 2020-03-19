@@ -5,12 +5,13 @@ using Rubberduck.Parsing.Symbols;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
+using Rubberduck.Refactorings.Rename;
 
 namespace Rubberduck.Refactorings.MoveMember
 {
     public interface IMoveMemberRefactoringStrategy
     {
-        void RefactorRewrite(MoveMemberModel model, IRewriteSession rewriteSession, IRewritingManager rewritingManager, /*INewContentProvider movedContent,*/ bool asPreview = false);
+        void RefactorRewrite(MoveMemberModel model, IRewriteSession rewriteSession, IRewritingManager rewritingManager, bool asPreview = false);
         IMovedContentProvider NewDestinationModuleContent(MoveMemberModel model, IRewritingManager rewritingManager, IMovedContentProvider contentToMove);
         bool IsApplicable(MoveMemberModel model);
         bool IsExecutableModel(MoveMemberModel model, out string nonExecutableMessage);
@@ -18,7 +19,7 @@ namespace Rubberduck.Refactorings.MoveMember
 
     public abstract class MoveMemberStrategyBase : IMoveMemberRefactoringStrategy
     {
-        public abstract void RefactorRewrite(MoveMemberModel model, IRewriteSession rewriteSession, IRewritingManager rewritingManager, /*INewContentProvider movedContent,*/ bool asPreview = false);
+        public abstract void RefactorRewrite(MoveMemberModel model, IRewriteSession rewriteSession, IRewritingManager rewritingManager, bool asPreview = false);
         public abstract IMovedContentProvider NewDestinationModuleContent(MoveMemberModel model, IRewritingManager rewritingManager, IMovedContentProvider contentToMove);
         public abstract bool IsApplicable(MoveMemberModel model);
         public abstract bool IsExecutableModel(MoveMemberModel model, out string nonExecutableMessage);

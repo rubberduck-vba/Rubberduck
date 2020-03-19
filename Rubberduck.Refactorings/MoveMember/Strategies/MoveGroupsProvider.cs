@@ -1,4 +1,6 @@
-﻿using Rubberduck.Parsing.Symbols;
+﻿using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.MoveMember.Extensions;
@@ -46,6 +48,15 @@ namespace Rubberduck.Refactorings.MoveMember
         /// Returns a collection of MoveMemberSets for a group of declarations
         /// </summary>
         IReadOnlyCollection<IMoveableMemberSet> ToMoveableMemberSets(IEnumerable<Declaration> declarations);
+
+        /// <summary>
+        /// Returns true if the declaration is referenced within the expression of a Constant declaration.
+        /// e.g., "Public Const XYZ As Long = ABC".  IsConstantDeclarationExpressionReference(ABC) returns true.
+        /// </summary>
+        /// <param name="declaration"></param>
+        /// <returns></returns>
+        //bool TryFindConstantDeclarationExpressionReferences(Declaration declaration, out IEnumerable<Declaration> referencingConstants);
+        IEnumerable<IdentifierReference> ReferencesInConstantDeclarationExpressions(Declaration declaration); //, out IEnumerable<Declaration> referencingConstants);
     }
 
     public class MoveGroupsProvider : IMoveGroupsProvider
@@ -172,6 +183,53 @@ namespace Rubberduck.Refactorings.MoveMember
                 moveables.AddRange(_moveMemberSetsByMoveGroup[MoveGroup.AllParticipants].Where(mm => mm.IdentifierName.IsEquivalentVBAIdentifierTo(identifier)));
             }
             return moveables;
+        }
+
+        public IEnumerable<IdentifierReference> ReferencesInConstantDeclarationExpressions(Declaration declaration)
+        {
+            var references = new List<IdentifierReference>();
+
+            if (!declaration.IsConstant()) { return Enumerable.Empty<IdentifierReference>(); }
+
+            var allModuleConstants = Declarations(MoveGroup.AllParticipants).Concat(Declarations(MoveGroup.NonParticipants))
+                .Where(d => d.IsConstant() && d != declaration);
+
+            foreach (var constant in allModuleConstants)
+            {
+                var lExprContexts = constant.Context.GetDescendents<VBAParser.LExprContext>();
+                if (lExprContexts.Any())
+                {
+                    references.AddRange(declaration.References.Where(rf => lExprContexts.Contains(rf.Context.Parent)));
+                }
+            }
+            return references;
+        }
+
+        public bool TryFindConstantDeclarationExpressionReferences(Declaration declaration, out IEnumerable<Declaration> referencingConstants)
+        {
+            referencingConstants = Enumerable.Empty<Declaration>();
+            var constants = new List<Declaration>();
+
+            if (!declaration.IsConstant()) { return false; }
+
+            var allModuleConstants = Declarations(MoveGroup.AllParticipants).Concat(Declarations(MoveGroup.NonParticipants))
+                .Where(d => d.IsConstant() && d != declaration);
+
+            foreach (var constant in allModuleConstants)
+            {
+                var lExprContexts = constant.Context.GetDescendents<VBAParser.LExprContext>();
+                if (lExprContexts.Any())
+                {
+                    var test = declaration.References.Where(rf => lExprContexts.Contains(rf.Context.Parent));
+                    if (test.Any())
+                    {
+                        constants.Add(constant);
+                    }
+                }
+            }
+
+            referencingConstants = constants;
+            return referencingConstants.Any();
         }
 
         private IMoveableMemberSet MoveableMemberSet(Declaration declaration)

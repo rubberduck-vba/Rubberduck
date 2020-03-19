@@ -75,6 +75,13 @@ namespace Rubberduck.Refactorings.MoveMember
             return _previewDelegate(this, previewModule);
         }
 
+        private Action<Declaration, string, IRewriteSession> _renameAction;
+        public Action<Declaration, string, IRewriteSession> RenameService
+        {
+            set => _renameAction = value;
+            get => _renameAction;
+        }
+
         private Func<MoveMemberModel, PreviewModule, string> _previewDelegate;
         public Func<MoveMemberModel, PreviewModule, string> PreviewBuilder
         {

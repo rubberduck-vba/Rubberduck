@@ -11,6 +11,7 @@ using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.MoveMember;
+using Rubberduck.Refactorings.Rename;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SourceCodeHandling;
@@ -184,10 +185,11 @@ End Property
                 .Callback((Action action) => action.Invoke());
 
             var addComponentService = TestAddComponentService(state?.ProjectsProvider);
-            var existingDestinationModuleRefactoring = new MoveMemberToExistingModuleRefactoring(state, rewritingManager);
-            var newDestinationModuleRefactoring = new MoveMemberToNewModuleRefactoring(existingDestinationModuleRefactoring, state, rewritingManager, addComponentService);
+            var renameAction = new RenameCodeDefinedIdentifierRefactoringAction(state, state?.ProjectsProvider, rewritingManager);
+            var existingDestinationModuleRefactoring = new MoveMemberExistingModulesRefactoringAction(renameAction, state, rewritingManager);
+            var newDestinationModuleRefactoring = new MoveMemberToNewModuleRefactoringAction(existingDestinationModuleRefactoring, renameAction, state, rewritingManager, addComponentService);
             var refactoringAction = new MoveMemberRefactoringAction(newDestinationModuleRefactoring, existingDestinationModuleRefactoring);
-            return new MoveMemberRefactoring(refactoringAction, state, factory, rewritingManager, selectionService, selectedDeclarationService, uiDispatcherMock.Object);
+            return new MoveMemberRefactoring(refactoringAction, renameAction, state, factory, rewritingManager, selectionService, selectedDeclarationService, uiDispatcherMock.Object);
         }
     }
 }

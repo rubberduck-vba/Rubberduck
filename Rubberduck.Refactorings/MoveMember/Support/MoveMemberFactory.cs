@@ -124,7 +124,6 @@ namespace Rubberduck.Refactorings.MoveMember
             var constants = moveableMembers.Where(m => m.Member.IsModuleConstant()).ToList();
             foreach (var moveableMember in constants)
             {
-
                 var lExprContexts = moveableMember.Member.Context.GetDescendents<VBAParser.LExprContext>();
                 if (lExprContexts.Any())
                 {
@@ -136,6 +135,24 @@ namespace Rubberduck.Refactorings.MoveMember
                 }
             }
 
+            var variables = moveableMembers.Where(m => m.Member.IsField()).ToList();
+            var types = _declarationFinderProvider.DeclarationFinder.Members(moveTarget.QualifiedModuleName)
+                .Where(m => m.DeclarationType.Equals(DeclarationType.UserDefinedType) || m.DeclarationType.Equals(DeclarationType.Enumeration));
+
+            //var enumOrUDTTypeFields = moveableMembers.Where(m => m.Member.IsField() && (m.Member?.AsTypeDeclaration.Equals(typeReference.Declaration) ?? false));
+            foreach (var moveableMember in variables)
+            {
+                var directRefs = new List<IdentifierReference>();
+                foreach (var typeReference in types.AllReferences())
+                {
+                    if (moveableMember.Member?.AsTypeDeclaration.Equals(typeReference.Declaration) ?? false)
+                    {
+                        directRefs.Add(typeReference);
+                    }
+                }
+
+                moveableMember.DirectReferences = directRefs;
+            }
             return moveableMembers;
         }
 

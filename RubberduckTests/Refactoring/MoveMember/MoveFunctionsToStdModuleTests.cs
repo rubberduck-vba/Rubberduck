@@ -897,7 +897,7 @@ End Sub
         [TestCase(MoveEndpoints.FormToStd)]
         [Category("Refactorings")]
         [Category("MoveMember")]
-        public void RemovesMovedMemberScopeResolutionInDestination(MoveEndpoints endpoints)
+        public void RemovesMemberAccessInDestination(MoveEndpoints endpoints)
         {
             var moveDefinition = new TestMoveDefinition(endpoints, ("Foo", ThisDeclarationType));
 
@@ -915,6 +915,96 @@ Public Function Foo(arg1 As Long) As Long
         {destinationModuleName}.Log ""Foo called""
         {destinationModuleName}.Entries = {destinationModuleName}.Entries + 1
     Endif
+    Foo = mfoo
+End Function
+
+Public Property Let Goo(arg1 As Long)
+    mgoo = arg1
+    {destinationModuleName}.Log ""Let Goo called""
+End Property
+
+Public Property Get Goo() As Long
+    Goo = mgoo
+    {destinationModuleName}.Log ""Get Goo called""
+End Property";
+
+
+            var destination =
+$@"
+Option Explicit
+
+Private Const LOG_IS_ENABLED = True
+
+Public Entries As Long
+
+Public Property Get LogIsEnabled()
+    LogIsEnabled = LOG_IS_ENABLED
+End Property
+
+Public Sub Log(msg As String)
+End Sub
+";
+
+            moveDefinition.SetEndpointContent(source, destination);
+            var refactorResults = ExecuteTest(moveDefinition);
+
+            var destinationExpectedContent =
+                @"
+Option Explicit
+
+Private Const LOG_IS_ENABLED = True
+
+Public Entries As Long
+
+Public Function Foo(arg1 As Long)
+    mfoo = arg1 * 10
+    If LogIsEnabled Then
+        Log ""Foo called""
+        Entries = Entries + 1
+    Endif
+    Foo = mfoo
+End Function
+
+Public Property Get LogIsEnabled()
+    LogIsEnabled = LOG_IS_ENABLED
+End Property
+
+Public Sub Log(msg As String)
+End Sub
+";
+            var expectedLines = destinationExpectedContent.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var line in expectedLines)
+            {
+                StringAssert.Contains(line, refactorResults.Destination);
+            }
+        }
+
+
+        [TestCase(MoveEndpoints.StdToStd)]
+        [TestCase(MoveEndpoints.ClassToStd)]
+        [TestCase(MoveEndpoints.FormToStd)]
+        [Category("Refactorings")]
+        [Category("MoveMember")]
+        public void RemovesWithMemberAccessInDestination(MoveEndpoints endpoints)
+        {
+            var moveDefinition = new TestMoveDefinition(endpoints, ("Foo", ThisDeclarationType));
+
+            var destinationModuleName = moveDefinition.DestinationModuleName;
+            var source =
+$@"
+Option Explicit
+
+Private mfoo As Long
+Private mgoo As Long
+
+Public Function Foo(arg1 As Long) As Long
+    mfoo = arg1 * 10
+    With {destinationModuleName}
+        If .LogIsEnabled Then
+            .Log ""Foo called""
+            .Entries = .Entries + 1
+        Endif
+    End With
     Foo = mfoo
 End Function
 

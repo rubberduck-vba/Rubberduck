@@ -2,6 +2,7 @@
 using NLog;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor.ComManagement;
@@ -22,8 +23,8 @@ namespace Rubberduck.Refactorings.MoveMember
         private readonly IRefactoringAction<MoveMemberModel> _moveMemberToNewModuleRefactoringAction;
         private readonly IRefactoringAction<MoveMemberModel> _moveMemberToExistingModuleRefactoringAction;
 
-        public MoveMemberRefactoringAction(MoveMemberToNewModuleRefactoring moveMemberToNewModuleRefactoring, 
-                                            MoveMemberToExistingModuleRefactoring moveMemberToExistingModuleRefactoring)
+        public MoveMemberRefactoringAction(MoveMemberToNewModuleRefactoringAction moveMemberToNewModuleRefactoring, 
+                                            MoveMemberExistingModulesRefactoringAction moveMemberToExistingModuleRefactoring)
         {
             _moveMemberToNewModuleRefactoringAction = moveMemberToNewModuleRefactoring;
             _moveMemberToExistingModuleRefactoringAction = moveMemberToExistingModuleRefactoring;

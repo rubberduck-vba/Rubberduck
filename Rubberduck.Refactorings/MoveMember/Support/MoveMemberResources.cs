@@ -19,7 +19,7 @@ namespace Rubberduck.Refactorings.MoveMember
         public static string MovedContentBelowThisLine => "Moved Content below this line";
         public static string MovedContentAboveThisLine => "Moved Content above this line";
         public static string RefactorName = "Move Members, Fields, and/or Constants to another Module";
-        public static string Instructions = "Select Declarations and specify a Destination Module";
+        public static string Instructions = "Select Declarations and specify a new or existing Destination Module";
         public static string ModuleMatchesProjectNameFailMsg = "Module name matches Project Name";
         public static string SourceAndDestinationModuleNameMatcheFailMsg = "Module name matches Source Module Name";
         public static string MoveMember_Destination = "Destination";

@@ -253,6 +253,7 @@ End Property
             StringAssert.Contains("Let Test2Value", refactoredCode.Destination);
             StringAssert.Contains("Get TestValue", refactoredCode.Destination);
             StringAssert.Contains("Private Type TModuleSource", refactoredCode.Destination);
+            StringAssert.DoesNotContain(" Const", refactoredCode.Destination);
             StringAssert.Contains("Private this As TModuleSource", refactoredCode.Destination);
         }
 

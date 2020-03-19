@@ -64,20 +64,5 @@ namespace Rubberduck.Refactorings.MoveMember.Extensions
                 rewriter.RemoveRange(withMemberAccessExprContext.Start.TokenIndex, withMemberAccessExprContext.Start.TokenIndex);
             }
         }
-
-        public static void Rename(this IModuleRewriter rewriter, Declaration target, string newName)
-        {
-            if (!(target.Context is IIdentifierContext context))
-            {
-                throw new ArgumentException();
-            }
-
-            rewriter.Replace(context.IdentifierTokens, newName);
-        }
-
-        public static void Rename(this IModuleRewriter rewriter, IdentifierReference idRef, string newName)
-        {
-            rewriter.Replace(idRef.Context, newName);
-        }
     }
 }

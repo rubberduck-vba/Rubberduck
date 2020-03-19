@@ -6,6 +6,7 @@ using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.MoveMember.Extensions;
+using Rubberduck.Refactorings.Rename;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
 using System;
@@ -21,14 +22,14 @@ namespace Rubberduck.Refactorings.MoveMember
     public class MoveMemberRefactoring : InteractiveRefactoringBase<IMoveMemberPresenter, MoveMemberModel>, IMoveMemberRefactoringTestAccess
     {
         private readonly MoveMemberRefactoringAction _refactoringAction;
+        private readonly RenameCodeDefinedIdentifierRefactoringAction _renameAction;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IRewritingManager _rewritingManager;
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
 
-        private MoveMemberObjectsFactory _moveMemberFactory;
-
         public MoveMemberRefactoring(
             MoveMemberRefactoringAction refactoringAction,
+            RenameCodeDefinedIdentifierRefactoringAction renameAction,
             IDeclarationFinderProvider declarationFinderProvider,
             IRefactoringPresenterFactory factory,
             IRewritingManager rewritingManager,
@@ -39,10 +40,10 @@ namespace Rubberduck.Refactorings.MoveMember
 
         {
             _refactoringAction = refactoringAction;
+            _renameAction = renameAction;
             _declarationFinderProvider = declarationFinderProvider;
             _rewritingManager = rewritingManager;
             _selectedDeclarationProvider = selectedDeclarationProvider;
-            _moveMemberFactory = new MoveMemberObjectsFactory(declarationFinderProvider);
         }
 
         protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
@@ -61,7 +62,9 @@ namespace Rubberduck.Refactorings.MoveMember
         public MoveMemberModel TestUserInteractionOnly(Declaration target, Func<MoveMemberModel, MoveMemberModel> userInteraction)
         {
             var model = InitializeModel(target);
-            return userInteraction(model);
+            model = userInteraction(model);
+            model.RenameService = RenameService;
+            return model;
         }
 
         public string PreviewModuleContent(MoveMemberModel model, PreviewModule previewModule)
@@ -97,10 +100,23 @@ namespace Rubberduck.Refactorings.MoveMember
 
             var model = new MoveMemberModel(target, _declarationFinderProvider)
             {
-                PreviewBuilder = PreviewModuleContent
+                PreviewBuilder = PreviewModuleContent,
+                RenameService = RenameService
             };
 
             return model;
+        }
+
+        private void RenameService(Declaration declaration, string newName, IRewriteSession rewriteSession)
+        {
+            if (declaration.IdentifierName.IsEquivalentVBAIdentifierTo(newName)) { return; }
+
+            var renameModel = new RenameModel(declaration)
+            {
+                NewName = newName,
+            };
+
+            _renameAction.Refactor(renameModel, rewriteSession);
         }
 
         protected override void RefactorImpl(MoveMemberModel model)

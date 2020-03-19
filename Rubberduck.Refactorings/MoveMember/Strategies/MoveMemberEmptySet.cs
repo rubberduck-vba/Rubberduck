@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Refactorings.MoveMember.Extensions;
+using Rubberduck.Refactorings.Rename;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,7 @@ namespace Rubberduck.Refactorings.MoveMember
             return false;
         }
 
-        public void RefactorRewrite(MoveMemberModel model, IRewriteSession session, IRewritingManager rewritingManager, /*INewContentProvider contentToMove,*/ bool asPreview = false)
+        public void RefactorRewrite(MoveMemberModel model, IRewriteSession session, IRewritingManager rewritingManager, bool asPreview = false)
         {
             if (string.IsNullOrEmpty(model.Destination.ModuleName))
             {

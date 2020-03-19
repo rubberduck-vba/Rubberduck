@@ -66,7 +66,7 @@ namespace RubberduckTests.Refactoring.MoveMember
             Declaration destination = null;
             if (!CreateNewModule)
             {
-                destination = declarationFinderProvider.DeclarationFinder.DeclarationsWithType(DeclarationType.Module)
+                destination = model.DeclarationFinderProvider.DeclarationFinder.DeclarationsWithType(DeclarationType.Module)
                     .Single(t => t.IdentifierName == DestinationModuleName);
                 model.ChangeDestination(destination);
                 SetTestStrategyName(model);
