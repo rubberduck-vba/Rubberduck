@@ -243,4 +243,7 @@
   <data name="ContextMenu_RunSelectedTestModule" xml:space="preserve">
     <value>Führe alle Tests im Modul aus</value>
   </data>
+  <data name="RefactorMenu_MoveToFolder" xml:space="preserve">
+    <value>In Ordner verschieben</value>
+  </data>
 </root>

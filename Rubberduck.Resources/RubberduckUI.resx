@@ -1779,4 +1779,20 @@ Import aborted.</value>
   <data name="EncapsulateField_WrapFieldsInPrivateType" xml:space="preserve">
     <value>Wrap Fields in Private Type</value>
   </data>
+  <data name="MoveToFolderDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Move to Folder</value>
+  </data>
+  <data name="MoveToFolderDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Please specify a new folder for {0} '{1}' in folder '{2}'.</value>
+    <comment>{0} DeclarationType; {1} IdentifierName; {2} current folder</comment>
+  </data>
+  <data name="MoveToFolderDialog_TitleText" xml:space="preserve">
+    <value>Move to folder</value>
+  </data>
+  <data name="MoveToFolderDialog_FolderLabelText" xml:space="preserve">
+    <value>Folder:</value>
+  </data>
+  <data name="MoveMultipleToFolderDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Please specify new folder for the components.</value>
+  </data>
 </root>

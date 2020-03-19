@@ -244,4 +244,7 @@
   <data name="ContextMenu_RunSelectedTestModule" xml:space="preserve">
     <value>Run tests in module</value>
   </data>
+  <data name="RefactorMenu_MoveToFolder" xml:space="preserve">
+    <value>Move To Folder</value>
+  </data>
 </root>

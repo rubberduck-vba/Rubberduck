@@ -101,13 +101,7 @@ namespace Rubberduck.UI.CodeExplorer
                 return ActiveProjectFolder();
             }
 
-            var customFolder = declaration.CustomFolder;
-            if (customFolder != null)
-            {
-                return customFolder.Replace("\"", string.Empty);
-            }
-
-            return ProjectFolder(declaration.ProjectName);
+            return declaration.CustomFolder ?? ProjectFolder(declaration.ProjectName);
         }
 
         private string ActiveProjectFolder()

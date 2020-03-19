@@ -10,19 +10,19 @@ namespace Rubberduck.Navigation.Folders
 
         public static string RootFolder(this Declaration declaration)
         {
-            return (declaration?.CustomFolder?.Trim('"') ?? string.Empty).Split(FolderDelimiter).FirstOrDefault() 
+            return (declaration?.CustomFolder ?? string.Empty).Split(FolderDelimiter).FirstOrDefault() 
                    ?? declaration?.ProjectName 
                    ?? string.Empty;
         }
 
         public static string SubFolderRoot(this string folder, string subfolder)
         {
-            if (folder is null || subfolder is null || !folder.Trim('"').StartsWith(subfolder.Trim('"')))
+            if (folder is null || subfolder is null || !folder.StartsWith(subfolder))
             {
                 return string.Empty;
             }
 
-            var subPath = folder.Trim('"').Substring(subfolder.Length + 1);
+            var subPath = folder.Substring(subfolder.Length + 1);
             return subPath.Split(FolderDelimiter).FirstOrDefault() ?? string.Empty;
         }
 
@@ -33,7 +33,7 @@ namespace Rubberduck.Navigation.Folders
                 return false;
             }
 
-            return declaration.CustomFolder.Trim('"').Equals(folder.Trim('"'), StringComparison.Ordinal);
+            return declaration.CustomFolder.Equals(folder, StringComparison.Ordinal);
         }
 
         public static bool IsInSubFolder(this Declaration declaration, string folder)
@@ -43,8 +43,8 @@ namespace Rubberduck.Navigation.Folders
                 return false;
             }
 
-            var folderPath = folder.Trim('"').Split(FolderDelimiter);
-            var declarationPath = declaration.CustomFolder.Trim('"').Split(FolderDelimiter);
+            var folderPath = folder.Split(FolderDelimiter);
+            var declarationPath = declaration.CustomFolder.Split(FolderDelimiter);
 
             if (folderPath.Length >= declarationPath.Length)
             {
@@ -61,8 +61,8 @@ namespace Rubberduck.Navigation.Folders
                 return false;
             }
 
-            var folderPath = folder.Trim('"').Split(FolderDelimiter);
-            var declarationPath = declaration.CustomFolder.Trim('"').Split(FolderDelimiter);
+            var folderPath = folder.Split(FolderDelimiter);
+            var declarationPath = declaration.CustomFolder.Split(FolderDelimiter);
 
             for (var depth = 0; depth < folderPath.Length && depth < declarationPath.Length; depth++)
             {
