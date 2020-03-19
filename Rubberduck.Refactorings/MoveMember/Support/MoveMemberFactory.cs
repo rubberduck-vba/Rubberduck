@@ -1,17 +1,11 @@
 ﻿using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveMember.Extensions;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.MoveMember
 {
@@ -139,7 +133,6 @@ namespace Rubberduck.Refactorings.MoveMember
             var types = _declarationFinderProvider.DeclarationFinder.Members(moveTarget.QualifiedModuleName)
                 .Where(m => m.DeclarationType.Equals(DeclarationType.UserDefinedType) || m.DeclarationType.Equals(DeclarationType.Enumeration));
 
-            //var enumOrUDTTypeFields = moveableMembers.Where(m => m.Member.IsField() && (m.Member?.AsTypeDeclaration.Equals(typeReference.Declaration) ?? false));
             foreach (var moveableMember in variables)
             {
                 var directRefs = new List<IdentifierReference>();

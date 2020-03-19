@@ -32,7 +32,7 @@ namespace RubberduckTests.Refactoring.MoveMember
     {
         private Dictionary<string, ModuleDefinition> _moduleDefs;
 
-        public TestMoveDefinition(MoveEndpoints endpoints, (string identifier, DeclarationType declarationType) selection, string sourceContent = null) //, bool createNewModule = false)
+        public TestMoveDefinition(MoveEndpoints endpoints, (string identifier, DeclarationType declarationType) selection, string sourceContent = null)
         {
             _moduleDefs = new Dictionary<string, ModuleDefinition>();
             _otherSelectedElements = new List<(string, DeclarationType)>();

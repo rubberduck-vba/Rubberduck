@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.MoveMember
 {
@@ -64,7 +62,7 @@ namespace Rubberduck.Refactorings.MoveMember
 
         public string AsSingleBlockWithinDemarcationComments()
         {
-            return $"'*****  {Resources.RubberduckUI.MoveMember_MovedContentBelowThisLine /*MoveMemberResources.MovedContentBelowThisLine*/}  *****{Environment.NewLine}{AsSingleBlock}{Environment.NewLine}'****  {Resources.RubberduckUI.MoveMember_MovedContentAboveThisLine /*MoveMemberResources.MovedContentAboveThisLine*/}  ****{Environment.NewLine}";
+            return $"'*****  {Resources.RubberduckUI.MoveMember_MovedContentBelowThisLine}  *****{Environment.NewLine}{Environment.NewLine}{AsSingleBlock}{Environment.NewLine}{Environment.NewLine}'****  {Resources.RubberduckUI.MoveMember_MovedContentAboveThisLine}  ****{Environment.NewLine}";
         }
     }
 }
