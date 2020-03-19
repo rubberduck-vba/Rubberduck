@@ -148,7 +148,6 @@ namespace Rubberduck.UI.Refactorings.MoveMember
             return false;
         }
 
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]

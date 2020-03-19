@@ -19,14 +19,6 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public override string Key => "RefactorMenu_MoveMember";
 
-        //TODO: Remove Override once text is added to RubberduckMenus.resx
-        public override Func<string> Caption
-        {
-            get
-            {
-                return () => "Move Member";
-            }
-        }
         public override int DisplayOrder => (int)RefactoringsMenuItemDisplayOrder.MoveMember;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)

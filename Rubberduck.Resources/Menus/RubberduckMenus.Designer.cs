@@ -223,6 +223,15 @@ namespace Rubberduck.Resources.Menus {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Move Member.
+        /// </summary>
+        public static string RefactorMenu_MoveMember {
+            get {
+                return ResourceManager.GetString("RefactorMenu_MoveMember", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remo&amp;ve Parameters.
         /// </summary>
         public static string RefactorMenu_RemoveParameter {
