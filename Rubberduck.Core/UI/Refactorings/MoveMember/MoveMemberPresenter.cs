@@ -8,7 +8,7 @@ namespace Rubberduck.UI.Refactorings.MoveMember
 {
     public class MoveMemberPresenter : RefactoringPresenterBase<MoveMemberModel>, IMoveMemberPresenter
     {
-        private static readonly DialogData DialogData = DialogData.Create(MoveMemberResources.Caption, minimumHeight: 450, minimumWidth: 800);
+        private static readonly DialogData DialogData = DialogData.Create(Resources.RubberduckUI.MoveMember_Caption, minimumHeight: 450, minimumWidth: 800);
 
         public MoveMemberPresenter(MoveMemberModel model, IRefactoringDialogFactory dialogFactory)
             : base(DialogData, model, dialogFactory) { }

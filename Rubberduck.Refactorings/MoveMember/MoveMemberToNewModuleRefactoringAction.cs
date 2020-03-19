@@ -35,6 +35,7 @@ namespace Rubberduck.Refactorings.MoveMember
             }
 
             var optionExplicit = $"{Tokens.Option} {Tokens.Explicit}{Environment.NewLine}";
+
             var newContent = strategy.NewDestinationModuleContent(model, _rewritingManager, new MovedContentProvider()).AsSingleBlock;
 
             _refactoring.Refactor(model, rewriteSession);

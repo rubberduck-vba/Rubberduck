@@ -34,19 +34,9 @@ namespace Rubberduck.Refactorings.MoveMember
         string MovedIdentifierName { set; get; }
 
         /// <summary>
-        /// Returns true if MoveIdentifierName == IdentifierName
-        /// </summary>
-        bool RetainsOriginalIdentifier { get; }
-
-        /// <summary>
         /// Set to true if the any of the wrapped declarations is a defining element of the move 
         /// </summary>
         bool IsSelected { set; get; }
-
-        /// <summary>
-        /// Returns true if the MoveableMemberSet contains the declaration 
-        /// </summary>
-        bool Contains(Declaration declaration);
 
         /// <summary>
         /// Returns true if the declaration is not Selected but is referenced by the MoveMember CallTree 
@@ -58,19 +48,14 @@ namespace Rubberduck.Refactorings.MoveMember
         /// </summary>
         bool IsExclusive { set; get; }
 
-        ///// <summary>
-        ///// Returns references other than those local to the Member body.  e.g, Function return assignments 
-        ///// </summary>
-        //IEnumerable<IdentifierReference> NonMemberBodyReferences { get; }
-
         /// <summary>
         /// Returns true if all Members have Private Accessibility 
         /// </summary>
         bool HasPrivateAccessibility { get; }
 
         /// <summary>
-        /// Returns the declaration for each IdentifierReference that has a ParentScope 
-        /// equal to one of the MoveableMemberSet declarations 
+        /// Returns the declaration for each IdentifierReference that 
+        /// is directly referenced by the MoveableMemberSet declarations 
         /// </summary>
         IReadOnlyCollection<Declaration> DirectDependencies { get; }
 
@@ -105,7 +90,6 @@ namespace Rubberduck.Refactorings.MoveMember
     /// </summary>
     public class MoveableMemberSet : IMoveableMemberSet
     {
-        //private List<IdentifierReference> _containedReferences;
         public MoveableMemberSet(Declaration member)
             : this(new List<Declaration>() { member })
         { }
@@ -140,14 +124,9 @@ namespace Rubberduck.Refactorings.MoveMember
 
         public bool HasPrivateAccessibility => Members.All(mm => mm.HasPrivateAccessibility());
 
-        public bool Contains(Declaration declaration) => Members.Contains(declaration);
-
         public string IdentifierName => _members.First().IdentifierName;
 
         public string MovedIdentifierName { set; get; }
-
-        public bool RetainsOriginalIdentifier 
-            => MovedIdentifierName.IsEquivalentVBAIdentifierTo(IdentifierName);
 
         public override bool Equals(object obj)
         {

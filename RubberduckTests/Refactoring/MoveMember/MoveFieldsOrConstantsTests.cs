@@ -488,7 +488,6 @@ End Function
         [TestCase(MoveEndpoints.FormToStd, "Private")]
         [TestCase(MoveEndpoints.ClassToStd, "Public")]
         [TestCase(MoveEndpoints.ClassToStd, "Private")]
-        [TestCase(MoveEndpoints.StdToStd, "Public")]
         [TestCase(MoveEndpoints.StdToStd, "Private")]
         [Category("Refactorings")]
         [Category("MoveMember")]
@@ -534,6 +533,55 @@ End Property
                 var strategies = MoveMemberTestSupport.RetrieveStrategies(state, memberToMove, DeclarationType.Variable, rewritingManager);
                 return strategies.Count();
             }
+        }
+
+
+        [TestCase("Public mObj As ObjectClass")]
+        [TestCase("Public mObj As New ObjectClass")]
+        [Category("Refactorings")]
+        [Category("MoveMember")]
+        public void PublicObjectField(string declaration)
+        {
+            var memberToMove = "mObj";
+            var source =
+$@"
+Option Explicit
+
+{declaration}
+
+Public Function FooMath(arg1 As Long) As Long
+    if mObj is Nothing Then
+        Set mObj = new ObjectClass
+    End if
+
+    FooMath = arg1 * mObj.Value
+End Function
+";
+
+            var objectClass =
+$@"
+Option Explicit
+
+Private mValue As Long
+
+Private Sub Class_Initialize()
+    mValue = 6
+End Sub
+
+Public Property Get Value() As Long
+    Value = mValue
+End Property
+";
+
+            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, (memberToMove, DeclarationType.Variable), sourceContent: source);
+            var refactoredCode = ExecuteTest(moveDefinition);
+
+            StringAssert.DoesNotContain($"{declaration}", refactoredCode.Source);
+            StringAssert.Contains($"if {moveDefinition.DestinationModuleName}.mObj is Nothing Then", refactoredCode.Source);
+            StringAssert.Contains($"Set {moveDefinition.DestinationModuleName}.mObj = new ObjectClass", refactoredCode.Source);
+            StringAssert.Contains($"FooMath = arg1 * {moveDefinition.DestinationModuleName}.mObj.Value", refactoredCode.Source);
+
+            StringAssert.Contains($"{declaration}", refactoredCode.Destination);
         }
 
         [Test]

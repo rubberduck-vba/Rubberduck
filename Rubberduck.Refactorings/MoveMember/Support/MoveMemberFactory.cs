@@ -17,7 +17,7 @@ namespace Rubberduck.Refactorings.MoveMember
 {
     public interface IMoveMemberObjectsFactory
     {
-        IMoveGroupsProvider CreateMoveGroupsProvider(IEnumerable<IMoveableMemberSet> selectedDeclarations);
+        MoveGroupsProvider CreateMoveGroupsProvider(IEnumerable<IMoveableMemberSet> selectedDeclarations);
         IMoveSourceModuleProxy CreateMoveSourceProxy(Declaration moveSource);
         IMoveDestinationModuleProxy CreateMoveDestinationProxy(Declaration moveDestination);
         IMoveDestinationModuleProxy CreateMoveDestination(string moduleName, ComponentType moduleComponentType = ComponentType.StandardModule);
@@ -33,7 +33,7 @@ namespace Rubberduck.Refactorings.MoveMember
             _declarationFinderProvider = declarationFinderProvider;
         }
 
-        public IMoveGroupsProvider CreateMoveGroupsProvider(IEnumerable<IMoveableMemberSet> moveableMemberSets)
+        public MoveGroupsProvider CreateMoveGroupsProvider(IEnumerable<IMoveableMemberSet> moveableMemberSets)
         {
             return new MoveGroupsProvider(moveableMemberSets, _declarationFinderProvider);
         }

@@ -1,9 +1,7 @@
 ﻿using NLog;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.MoveMember;
 using Rubberduck.Refactorings.MoveMember.Extensions;
@@ -53,10 +51,6 @@ namespace Rubberduck.UI.Refactorings.MoveMember
             _previewSelection = PreviewModule.Destination;
             _destinationNameFailureCriteria = string.Empty;
         }
-
-        public string RefactorName => MoveMemberResources.RefactorName;
-
-        public string Instructions => MoveMemberResources.Instructions;
 
         public bool IsExecutableMove
         {
@@ -108,13 +102,13 @@ namespace Rubberduck.UI.Refactorings.MoveMember
 
             if (Model.Source.Module.ProjectName.IsEquivalentVBAIdentifierTo(DestinationModuleName))
             {
-                failCriteria = MoveMemberResources.ModuleMatchesProjectNameFailMsg; 
+                failCriteria = RubberduckUI.MoveMember_ModuleMatchesProjectNameFailMsg;
                 return false;
             }
 
             if (Model.Source.ModuleName.IsEquivalentVBAIdentifierTo(DestinationModuleName))
             {
-                failCriteria = MoveMemberResources.SourceAndDestinationModuleNameMatcheFailMsg;
+                failCriteria = RubberduckUI.MoveMember_SourceAndDestinationModuleNameMatchFailMsg;
                 return false;
             }
             return true;
@@ -142,14 +136,14 @@ namespace Rubberduck.UI.Refactorings.MoveMember
             {
                 var previewSelections = new List<KeyValuePair<PreviewModule, string>>()
                 {
-                    new KeyValuePair<PreviewModule, string>(PreviewModule.Destination, MoveMemberResources.MoveMember_Destination),
+                    new KeyValuePair<PreviewModule, string>(PreviewModule.Destination, RubberduckUI.MoveMember_Destination),
                     new KeyValuePair<PreviewModule, string>(PreviewModule.Source, $"{Model.Source.ModuleName}"),
                 };
                 return previewSelections;
             }
         }
 
-        public string MoveableMembersLabel => string.Format(MoveMemberResources.MoveMember_MemberListLabelFormat, Model.Source.ModuleName);
+        public string MoveableMembersLabel => string.Format(RubberduckUI.MoveMember_MoveMember_MemberListLabelFormat, Model.Source.ModuleName);
 
         public string DestinationModuleName
         {
@@ -192,9 +186,9 @@ namespace Rubberduck.UI.Refactorings.MoveMember
                             .Select(mod => new KeyValuePair<Declaration, string>(mod, mod.IdentifierName));
         }
 
-        public string DestinationSelectionLabel => string.Format(MoveMemberResources.MoveMember_DestinationSelectionLabelFormat, LocalizedTypeDisplay(ComponentType.StandardModule));
+        public string DestinationSelectionLabel => string.Format(RubberduckUI.MoveMember_MoveMember_DestinationSelectionLabelFormat, LocalizedTypeDisplay(ComponentType.StandardModule));
 
-        public string SourceModuleLabel => string.Format(MoveMemberResources.MoveMember_SourceModuleLabelFormat, LocalizedTypeDisplay(Model.Source.ComponentType));
+        public string SourceModuleLabel => string.Format(RubberduckUI.MoveMember_MoveMember_SourceModuleLabelFormat, LocalizedTypeDisplay(Model.Source.ComponentType));
 
         private string LocalizedTypeDisplay(ComponentType componentType)
         {

@@ -71,7 +71,7 @@ namespace Rubberduck.Refactorings.MoveMember
         {
             if (!MoveMemberObjectsFactory.TryCreateStrategy(model, out var strategy))
             {
-                return MoveMemberResources.ApplicableStrategyNotFound;
+                return Resources.RubberduckUI.MoveMember_ApplicableStrategyNotFound; // MoveMemberResources.ApplicableStrategyNotFound;
             }
 
             var isExistingDestination = model.Destination.IsExistingModule(out var destinationModule);

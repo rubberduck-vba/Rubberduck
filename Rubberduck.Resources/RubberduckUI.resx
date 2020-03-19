@@ -1779,4 +1779,53 @@ Import aborted.</value>
   <data name="EncapsulateField_WrapFieldsInPrivateType" xml:space="preserve">
     <value>Wrap Fields in Private Type</value>
   </data>
+  <data name="MoveMember_ApplicableStrategyNotFound" xml:space="preserve">
+    <value>Applicable move strategy not found</value>
+  </data>
+  <data name="MoveMember_Caption" xml:space="preserve">
+    <value>Rubberduck - Move Member</value>
+  </data>
+  <data name="MoveMember_Destination" xml:space="preserve">
+    <value>Destination</value>
+  </data>
+  <data name="MoveMember_InstructionText" xml:space="preserve">
+    <value>Select Declarations and specify a new or existing Destination Module</value>
+  </data>
+  <data name="MoveMember_ModuleMatchesProjectNameFailMsg" xml:space="preserve">
+    <value>Module name matches Project Name</value>
+  </data>
+  <data name="MoveMember_MovedContentAboveThisLine" xml:space="preserve">
+    <value>Moved Content above this line</value>
+  </data>
+  <data name="MoveMember_MovedContentBelowThisLine" xml:space="preserve">
+    <value>Moved Content below this line</value>
+  </data>
+  <data name="MoveMember_MoveMember_DestinationSelectionLabelFormat" xml:space="preserve">
+    <value>Destination ({0})</value>
+    <comment>{0} = destination module name</comment>
+  </data>
+  <data name="MoveMember_MoveMember_MemberListLabelFormat" xml:space="preserve">
+    <value>Source ({0}) Declarations</value>
+    <comment>{0} = source module name</comment>
+  </data>
+  <data name="MoveMember_MoveMember_SourceModuleLabelFormat" xml:space="preserve">
+    <value>Source ({0})</value>
+    <comment>{0} = source module name</comment>
+  </data>
+  <data name="MoveMember_NoDeclarationsSelectedToMove" xml:space="preserve">
+    <value>No Declarations Selected to Move</value>
+  </data>
+  <data name="MoveMember_SourceAndDestinationModuleNameMatchFailMsg" xml:space="preserve">
+    <value>Module name matches Source Module Name</value>
+  </data>
+  <data name="MoveMember_TitleText" xml:space="preserve">
+    <value>Move Members, Fields, and/or Constants to another Module</value>
+  </data>
+  <data name="MoveMember_UndefinedDestinationModule" xml:space="preserve">
+    <value>Undefined Destination Module</value>
+  </data>
+  <data name="MoveMember_UnsupportedMoveExceptionFormat" xml:space="preserve">
+    <value>Unable to Move Member: {0}</value>
+    <comment>{0} = member identifier</comment>
+  </data>
 </root>

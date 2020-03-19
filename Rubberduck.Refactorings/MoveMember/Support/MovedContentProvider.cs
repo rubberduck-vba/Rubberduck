@@ -64,7 +64,7 @@ namespace Rubberduck.Refactorings.MoveMember
 
         public string AsSingleBlockWithinDemarcationComments()
         {
-            return $"'*****  {MoveMemberResources.MovedContentBelowThisLine}  *****{Environment.NewLine}{AsSingleBlock}{Environment.NewLine}'****  {MoveMemberResources.MovedContentAboveThisLine}  ****{Environment.NewLine}";
+            return $"'*****  {Resources.RubberduckUI.MoveMember_MovedContentBelowThisLine /*MoveMemberResources.MovedContentBelowThisLine*/}  *****{Environment.NewLine}{AsSingleBlock}{Environment.NewLine}'****  {Resources.RubberduckUI.MoveMember_MovedContentAboveThisLine /*MoveMemberResources.MovedContentAboveThisLine*/}  ****{Environment.NewLine}";
         }
     }
 }

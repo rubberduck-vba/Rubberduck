@@ -2793,6 +2793,141 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Applicable move strategy not found.
+        /// </summary>
+        public static string MoveMember_ApplicableStrategyNotFound {
+            get {
+                return ResourceManager.GetString("MoveMember_ApplicableStrategyNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Move Member.
+        /// </summary>
+        public static string MoveMember_Caption {
+            get {
+                return ResourceManager.GetString("MoveMember_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Destination.
+        /// </summary>
+        public static string MoveMember_Destination {
+            get {
+                return ResourceManager.GetString("MoveMember_Destination", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Declarations and specify a new or existing Destination Module.
+        /// </summary>
+        public static string MoveMember_InstructionText {
+            get {
+                return ResourceManager.GetString("MoveMember_InstructionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Module name matches Project Name.
+        /// </summary>
+        public static string MoveMember_ModuleMatchesProjectNameFailMsg {
+            get {
+                return ResourceManager.GetString("MoveMember_ModuleMatchesProjectNameFailMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Moved Content above this line.
+        /// </summary>
+        public static string MoveMember_MovedContentAboveThisLine {
+            get {
+                return ResourceManager.GetString("MoveMember_MovedContentAboveThisLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Moved Content below this line.
+        /// </summary>
+        public static string MoveMember_MovedContentBelowThisLine {
+            get {
+                return ResourceManager.GetString("MoveMember_MovedContentBelowThisLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Destination ({0}).
+        /// </summary>
+        public static string MoveMember_MoveMember_DestinationSelectionLabelFormat {
+            get {
+                return ResourceManager.GetString("MoveMember_MoveMember_DestinationSelectionLabelFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Source ({0}) Declarations.
+        /// </summary>
+        public static string MoveMember_MoveMember_MemberListLabelFormat {
+            get {
+                return ResourceManager.GetString("MoveMember_MoveMember_MemberListLabelFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Source ({0}).
+        /// </summary>
+        public static string MoveMember_MoveMember_SourceModuleLabelFormat {
+            get {
+                return ResourceManager.GetString("MoveMember_MoveMember_SourceModuleLabelFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Declarations Selected to Move.
+        /// </summary>
+        public static string MoveMember_NoDeclarationsSelectedToMove {
+            get {
+                return ResourceManager.GetString("MoveMember_NoDeclarationsSelectedToMove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Module name matches Source Module Name.
+        /// </summary>
+        public static string MoveMember_SourceAndDestinationModuleNameMatchFailMsg {
+            get {
+                return ResourceManager.GetString("MoveMember_SourceAndDestinationModuleNameMatchFailMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move Members, Fields, and/or Constants to another Module.
+        /// </summary>
+        public static string MoveMember_TitleText {
+            get {
+                return ResourceManager.GetString("MoveMember_TitleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Undefined Destination Module.
+        /// </summary>
+        public static string MoveMember_UndefinedDestinationModule {
+            get {
+                return ResourceManager.GetString("MoveMember_UndefinedDestinationModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to Move Member: {0}.
+        /// </summary>
+        public static string MoveMember_UnsupportedMoveExceptionFormat {
+            get {
+                return ResourceManager.GetString("MoveMember_UnsupportedMoveExceptionFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
         public static string Name {

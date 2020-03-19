@@ -30,10 +30,9 @@
         <DockPanel Dock="Top"
                    Background="White">
             <StackPanel>
-                <Label Content="{Binding RefactorName}"
-                       FontWeight="Bold" />
-                <TextBlock Text="{Binding Instructions}"
+                <TextBlock Text="{Resx ResxName = Rubberduck.Resources.RubberduckUI, Key=MoveMember_InstructionText}"
                            Margin="5,0"
+                           FontWeight="Bold"
                            Padding="0,5" />
             </StackPanel>
         </DockPanel>

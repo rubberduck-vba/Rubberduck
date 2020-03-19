@@ -4,7 +4,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.MoveMember.Extensions;
-using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,44 +21,7 @@ namespace Rubberduck.Refactorings.MoveMember
         Support_NonExclusive
     }
 
-    public interface IMoveGroupsProvider
-    {
-        /// <summary>
-        /// Returns read-only declarations collection for the moveGroup
-        /// </summary>
-        IReadOnlyCollection<Declaration> Declarations(MoveGroup moveGroup);
-
-        /// <summary>
-        /// Returns read-only dependency declarations collection for the moveGroup
-        /// </summary>
-        IReadOnlyCollection<Declaration> Dependencies(MoveGroup moveGroup);
-
-        /// <summary>
-        /// Returns read-only IMoveableMemberSet collection for the specified MoveGroup
-        /// </summary>
-        IReadOnlyCollection<IMoveableMemberSet> MoveableMemberSets(MoveGroup moveGroup);
-
-        /// <summary>
-        /// Returns read-only flattened dependency graph for a group of IMoveMemberSets
-        /// </summary>
-        IReadOnlyCollection<Declaration> AggregateDependencies(IEnumerable<IMoveableMemberSet> moveMemberSets);
-
-        /// <summary>
-        /// Returns a collection of MoveMemberSets for a group of declarations
-        /// </summary>
-        IReadOnlyCollection<IMoveableMemberSet> ToMoveableMemberSets(IEnumerable<Declaration> declarations);
-
-        /// <summary>
-        /// Returns true if the declaration is referenced within the expression of a Constant declaration.
-        /// e.g., "Public Const XYZ As Long = ABC".  IsConstantDeclarationExpressionReference(ABC) returns true.
-        /// </summary>
-        /// <param name="declaration"></param>
-        /// <returns></returns>
-        //bool TryFindConstantDeclarationExpressionReferences(Declaration declaration, out IEnumerable<Declaration> referencingConstants);
-        IEnumerable<IdentifierReference> ReferencesInConstantDeclarationExpressions(Declaration declaration); //, out IEnumerable<Declaration> referencingConstants);
-    }
-
-    public class MoveGroupsProvider : IMoveGroupsProvider
+    public class MoveGroupsProvider
     {
         private readonly IDeclarationFinderProvider _declarationProvider;
         private List<IMoveableMemberSet> _allMoveableMemberSets;
@@ -149,16 +111,25 @@ namespace Rubberduck.Refactorings.MoveMember
             _dependenciesByMoveGroup = new Dictionary<MoveGroup, List<Declaration>>();
         }
 
+        /// <summary>
+        /// Returns MoveableMemberSets for the specified MoveGroup
+        /// </summary>
         public IReadOnlyCollection<IMoveableMemberSet> MoveableMemberSets(MoveGroup moveGroup) 
             => _moveMemberSetsByMoveGroup is null 
                 ? new List<IMoveableMemberSet>() 
                 : _moveMemberSetsByMoveGroup[moveGroup];
 
+        /// <summary>
+        /// Returns declarations for the moveGroup
+        /// </summary>
         public IReadOnlyCollection<Declaration> Declarations(MoveGroup moveGroup) 
             => _declarationsByMoveGroup is null 
                     ? new List<Declaration>() 
                     : _declarationsByMoveGroup[moveGroup];
 
+        /// <summary>
+        /// Returns flattened dependency graph declarations for the moveGroup
+        /// </summary>
         public IReadOnlyCollection<Declaration> Dependencies(MoveGroup moveGroup)
         {
             if (_dependenciesByMoveGroup is null)
@@ -174,6 +145,17 @@ namespace Rubberduck.Refactorings.MoveMember
             return dependencies;
         }
 
+        /// <summary>
+        /// Returns declarations for IdentifierReferences directly 
+        /// referenced by each declaration in the MoveGroup 
+        /// </summary>
+        public IReadOnlyCollection<Declaration> DirectDependencies(MoveGroup moveGroup)
+            => MoveableMemberSets(moveGroup).SelectMany(mm => mm.DirectDependencies).ToList();
+
+
+        /// <summary>
+        /// Returns MoveMemberSets associated with a set of declarations
+        /// </summary>
         public IReadOnlyCollection<IMoveableMemberSet> ToMoveableMemberSets(IEnumerable<Declaration> declarations)
         {
             var uniqueIdentifiers = declarations.Select(d => d.IdentifierName).Distinct();
@@ -183,53 +165,6 @@ namespace Rubberduck.Refactorings.MoveMember
                 moveables.AddRange(_moveMemberSetsByMoveGroup[MoveGroup.AllParticipants].Where(mm => mm.IdentifierName.IsEquivalentVBAIdentifierTo(identifier)));
             }
             return moveables;
-        }
-
-        public IEnumerable<IdentifierReference> ReferencesInConstantDeclarationExpressions(Declaration declaration)
-        {
-            var references = new List<IdentifierReference>();
-
-            if (!declaration.IsConstant()) { return Enumerable.Empty<IdentifierReference>(); }
-
-            var allModuleConstants = Declarations(MoveGroup.AllParticipants).Concat(Declarations(MoveGroup.NonParticipants))
-                .Where(d => d.IsConstant() && d != declaration);
-
-            foreach (var constant in allModuleConstants)
-            {
-                var lExprContexts = constant.Context.GetDescendents<VBAParser.LExprContext>();
-                if (lExprContexts.Any())
-                {
-                    references.AddRange(declaration.References.Where(rf => lExprContexts.Contains(rf.Context.Parent)));
-                }
-            }
-            return references;
-        }
-
-        public bool TryFindConstantDeclarationExpressionReferences(Declaration declaration, out IEnumerable<Declaration> referencingConstants)
-        {
-            referencingConstants = Enumerable.Empty<Declaration>();
-            var constants = new List<Declaration>();
-
-            if (!declaration.IsConstant()) { return false; }
-
-            var allModuleConstants = Declarations(MoveGroup.AllParticipants).Concat(Declarations(MoveGroup.NonParticipants))
-                .Where(d => d.IsConstant() && d != declaration);
-
-            foreach (var constant in allModuleConstants)
-            {
-                var lExprContexts = constant.Context.GetDescendents<VBAParser.LExprContext>();
-                if (lExprContexts.Any())
-                {
-                    var test = declaration.References.Where(rf => lExprContexts.Contains(rf.Context.Parent));
-                    if (test.Any())
-                    {
-                        constants.Add(constant);
-                    }
-                }
-            }
-
-            referencingConstants = constants;
-            return referencingConstants.Any();
         }
 
         private IMoveableMemberSet MoveableMemberSet(Declaration declaration)
@@ -242,7 +177,7 @@ namespace Rubberduck.Refactorings.MoveMember
             return null;
         }
 
-        public IReadOnlyCollection<Declaration> AggregateDependencies(IEnumerable<IMoveableMemberSet> moveMemberSets )
+        private IReadOnlyCollection<Declaration> AggregateDependencies(IEnumerable<IMoveableMemberSet> moveMemberSets )
         {
             var aggregated = new List<Declaration>();
             foreach (var moveMemberSet in moveMemberSets)

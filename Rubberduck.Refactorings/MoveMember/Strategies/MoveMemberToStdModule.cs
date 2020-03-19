@@ -17,37 +17,16 @@ namespace Rubberduck.Refactorings.MoveMember
     {
         private enum RequiredGroup
         {
-            PrivateSupportRetain,
-            PrivateSupportMove,
-            PublicSupportRetain,
-            PublicSupportMove,
+            PrivateRetain,
+            PrivateMove,
+            PublicRetain,
+            PublicMove,
         }
 
         private enum MoveDisposition
         {
             Move,
             Retain
-        }
-
-        private class MoveDispositions
-        {
-            private Dictionary<MoveDisposition, List<Declaration>> _dispositions;
-
-            public MoveDispositions()
-            {
-                _dispositions = new Dictionary<MoveDisposition, List<Declaration>>()
-                {
-                    [MoveDisposition.Move] = new List<Declaration>(),
-                    [MoveDisposition.Retain] = new List<Declaration>()
-                };
-            }
-
-            public IReadOnlyCollection<Declaration> this[MoveDisposition moveDisposition] => _dispositions[moveDisposition];
-
-            public void LoadDispositionSet(MoveDisposition moveDisposition, IEnumerable<Declaration> declarations)
-            {
-                _dispositions[moveDisposition].AddRange(declarations);
-            }
         }
 
         public override bool IsApplicable(MoveMemberModel model)
@@ -79,7 +58,7 @@ namespace Rubberduck.Refactorings.MoveMember
             
             if (string.IsNullOrEmpty(model?.Destination.ModuleName))
             {
-                nonExecutableMessage = MoveMemberResources.UndefinedDestinationModule;
+                nonExecutableMessage = Resources.RubberduckUI.MoveMember_UndefinedDestinationModule; // MoveMemberResources.UndefinedDestinationModule;
                 return false;
             }
             return true;
@@ -152,83 +131,38 @@ namespace Rubberduck.Refactorings.MoveMember
             return LoadMovedContentProvider(movedContentProvider, model, moveGroups, rewritingManager.CheckOutCodePaneSession(), dispositions);
         }
 
-        //ClearMoveNameConflicts renames members that, when moved to the Destination module as-is, will
-        //result in a name conflict.  The renaming occurs in both the moveMemberRewriteSession and
-        //in the scratchPadSession so that moved blocks of code generated from the scrathpad already have
-        //the new names loaded to the rewriter.
-        private static void ClearMoveNameConflicts(MoveMemberModel model, IRewriteSession moveMemberRewriteSession, IRewriteSession scratchPadSession, MoveDispositions dispositions)
-        {
-            SetNonConflictIdentifierNames(model, dispositions[MoveDisposition.Move]);
-
-            foreach (var moveable in model.MoveableMembers)
-            {
-                foreach (var member in moveable.Members)
-                {
-                    model.RenameService(member, moveable.MovedIdentifierName, moveMemberRewriteSession);
-                    model.RenameService(member, moveable.MovedIdentifierName, scratchPadSession);
-                }
-            }
-        }
-
-        private static bool TrySetDispositionGroupsForStandardModuleSource(MoveMemberModel model, IMoveGroupsProvider moveGroups, out MoveDispositions dispositions)
+        private static bool TrySetDispositionGroupsForStandardModuleSource(MoveMemberModel model, MoveGroupsProvider moveGroups, out MoveDispositions dispositions)
         {
             dispositions = new MoveDispositions();
 
-            //Strategy does not move Public Fields of ObjectTypes.
-            //As a Public Field of a StandardModule, we cannot guarantee that it is a valid instance
-            if (model.SelectedDeclarations.Any(nm => nm.DeclarationType.HasFlag(DeclarationType.Variable)
-                                    && nm.IsObject)) { return false; }
-
-            var requiredGroup = new Dictionary<RequiredGroup, List<Declaration>>()
+            if (SelectedElementsContainAPrivateUDTOrEnumerationField(moveGroups))
             {
-                [RequiredGroup.PrivateSupportMove] = new List<Declaration>(),
-                [RequiredGroup.PrivateSupportRetain] = new List<Declaration>(),
-                [RequiredGroup.PublicSupportMove] = new List<Declaration>(),
-                [RequiredGroup.PublicSupportRetain] = new List<Declaration>(),
+                return false;
+            }
+
+            //Any Private declaration (member, field, or constant) that is used by both the Move Participants
+            //and NonParticipants MUST be retained in the Source module.  If a Selected Element (which HAS to move)
+            //directly references a declaration that MUST be retained - the move cannot be executed
+            if (SelectedElementsDirectlyReferenceNonExclusivePrivateElement(moveGroups))
+            {
+                return false;
+            }
+
+            var support = new Dictionary<RequiredGroup, List<Declaration>>()
+            {
+                [RequiredGroup.PrivateMove] = new List<Declaration>(),
+                [RequiredGroup.PrivateRetain] = PrivateDeclarationsThatMustBeRetained(moveGroups),
+                [RequiredGroup.PublicMove] = new List<Declaration>(),
+                [RequiredGroup.PublicRetain] = moveGroups.Declarations(MoveGroup.Support_Public).ToList(),
             };
 
-            //This strategy attempts to move only members explicitly selected by the user/caller and
-            //retain as many Public support members as possible. 
-            requiredGroup[RequiredGroup.PublicSupportRetain] = moveGroups.Declarations(MoveGroup.Support_Public).ToList();
-
-            var allParticipantDependencies = moveGroups.Dependencies(MoveGroup.AllParticipants);
-            var nonParticipantDependencies = moveGroups.Dependencies(MoveGroup.NonParticipants);
-
-            //Any Private declaration (member, field, or constant) that is used by both the Participants
-            //and the NonParticipants MUST be retained in the Source module
-            requiredGroup[RequiredGroup.PrivateSupportRetain] = allParticipantDependencies.Intersect(nonParticipantDependencies)
-                .Where(d => d.HasPrivateAccessibility()).ToList();
-
-            var selectedMemberDirectDependencies = moveGroups.MoveableMemberSets(MoveGroup.Selected)
-                .SelectMany(mm => mm.DirectDependencies);
-
-            var selectedMemberDependenciesRequiredToMove = selectedMemberDirectDependencies.Intersect(moveGroups.Declarations(MoveGroup.Support_Private));
-            if (selectedMemberDependenciesRequiredToMove.Intersect(requiredGroup[RequiredGroup.PrivateSupportRetain]).Any())
+            foreach (var selectedMoveableMemberSetDependency in moveGroups.ToMoveableMemberSets(DependenciesRequiredToMove(moveGroups)))
             {
-                //If one of the Private declarations that MUST be retained is also a direct
-                //dependency of a Selected member (which MUST move), then game-over.
-                return false;
-            }
-
-            var selectedMemberPrivateTypeDependencies = moveGroups.Declarations(MoveGroup.Selected)
-                    .Where(m => m.AsTypeDeclaration?.HasPrivateAccessibility() ?? false);
-
-            if (selectedMemberPrivateTypeDependencies.Any())
-            {
-                return false;
-            }
-
-            var privateExclusiveSupportMoveableMemberSets = moveGroups.MoveableMemberSets(MoveGroup.Support_Exclusive)
-                .Where(p => p.HasPrivateAccessibility).ToList();
-
-            var mustMoveDependencySets = moveGroups.ToMoveableMemberSets(selectedMemberDependenciesRequiredToMove);
-            foreach (var selectedMoveableMemberSetDependency in mustMoveDependencySets)
-            {
-                //Add all the Selecteds' Private dependencies to the Required set of declarations that must be moved
+                //All directly referenced Private declarations of a Selected element must be moved.
+                //Otherwise, the Selected element cannot be moved
                 if (selectedMoveableMemberSetDependency.HasPrivateAccessibility)
                 {
-                    requiredGroup[RequiredGroup.PrivateSupportMove].AddRange(selectedMoveableMemberSetDependency.Members);
-                    privateExclusiveSupportMoveableMemberSets.RemoveAll(pe => selectedMoveableMemberSetDependency.IdentifierName.IsEquivalentVBAIdentifierTo(pe.IdentifierName));
+                    support[RequiredGroup.PrivateMove].AddRange(selectedMoveableMemberSetDependency.Members);
                 }
             }
 
@@ -236,68 +170,77 @@ namespace Rubberduck.Refactorings.MoveMember
             for (var idx = 0; idx < publicSupportMoveables.Count; idx++)
             {
                 var moveable = publicSupportMoveables.ElementAt(idx);
-                if (!requiredGroup[RequiredGroup.PublicSupportRetain].Contains(moveable.Member))
+                if (!support[RequiredGroup.PublicRetain].Contains(moveable.Member))
                 {
                     continue;
                 }
 
                 //If a Public support members references a Private support declaration that 'must move'
                 //then the Public support member 'must move' as well.
-                if (IsMustMovePublicSupport(moveable, requiredGroup[RequiredGroup.PrivateSupportMove], out var newPrivateMustMoveSupport))
+                if (IsMustMovePublicSupport(moveable, support[RequiredGroup.PrivateMove], out var newPrivateMustMoveSupport))
                 {
-                    requiredGroup[RequiredGroup.PublicSupportMove].AddRange(moveable.Members);
-                    requiredGroup[RequiredGroup.PublicSupportRetain] = requiredGroup[RequiredGroup.PublicSupportRetain].Except(moveable.Members).ToList();
+                    support[RequiredGroup.PublicMove].AddRange(moveable.Members);
 
-                    requiredGroup[RequiredGroup.PrivateSupportMove] = requiredGroup[RequiredGroup.PrivateSupportMove].Concat(newPrivateMustMoveSupport).Distinct().ToList();
+                    support[RequiredGroup.PublicRetain] = support[RequiredGroup.PublicRetain]
+                                                                            .Except(moveable.Members)
+                                                                            .ToList();
+
+                    support[RequiredGroup.PrivateMove] = support[RequiredGroup.PrivateMove]
+                                                                            .Concat(newPrivateMustMoveSupport)
+                                                                            .Distinct()
+                                                                            .ToList();
+
                     //Need to work from the start of the list again to see if the added private support
                     //dependencies forces a move of any other MoveableMembers in the 'Retain' collection 
                     idx = -1;
                 }
             }
 
-            var retainedPrivateSupportCandidates = moveGroups.Declarations(MoveGroup.Support_Private).Except(requiredGroup[RequiredGroup.PrivateSupportMove]);
+            var retainedPrivateSupportCandidates = moveGroups.Declarations(MoveGroup.Support_Private).Except(support[RequiredGroup.PrivateMove]);
 
             var privateDependenciesOfRetainedPublicSupportMembers = retainedPrivateSupportCandidates.AllReferences()
-                            .Where(rf => requiredGroup[RequiredGroup.PublicSupportRetain].Contains(rf.ParentScoping))
+                            .Where(rf => support[RequiredGroup.PublicRetain].Contains(rf.ParentScoping))
                             .Select(rf => rf.Declaration);
 
+            support[RequiredGroup.PrivateRetain].AddRange(privateDependenciesOfRetainedPublicSupportMembers);
 
-            requiredGroup[RequiredGroup.PrivateSupportRetain].AddRange(privateDependenciesOfRetainedPublicSupportMembers);
+            var privateExclusiveSupportMoveableMemberSets = moveGroups.MoveableMemberSets(MoveGroup.Support_Exclusive)
+                                .Where(p => p.HasPrivateAccessibility)
+                                .Except(moveGroups.ToMoveableMemberSets(support[RequiredGroup.PrivateRetain]));
 
-            privateExclusiveSupportMoveableMemberSets = privateExclusiveSupportMoveableMemberSets
-                            .Except(moveGroups.ToMoveableMemberSets(requiredGroup[RequiredGroup.PrivateSupportRetain])).ToList();
-
-            //if Private exclusive support members (which must move with the selected declarations) have
+            //if Private exclusive support members (which must move) have
             //a declaration in common with the Private declarations that must be retained in the Source
-            //Module...no can do.
+            //Module...the move is not executable.
             if (privateExclusiveSupportMoveableMemberSets.SelectMany(mm => mm.DirectDependencies)
-                .Intersect(requiredGroup[RequiredGroup.PrivateSupportRetain]).Any())
+                .Intersect(support[RequiredGroup.PrivateRetain]).Any())
             {
                 return false;
             }
 
-            //And if the Private support declarations that are required to move have any common
-            //declarations with the Private support declarations required to be retained, then this is 
-            //also a non-executable move
-            if (requiredGroup[RequiredGroup.PrivateSupportMove].Intersect(requiredGroup[RequiredGroup.PrivateSupportRetain]).Any())
+            support[RequiredGroup.PrivateMove].AddRange(privateExclusiveSupportMoveableMemberSets.SelectMany(mm => mm.Members));
+
+            //Final check to see that all 'binning' has not resulted in overlaps.  If there are overlaps,
+            //the strategy cannot fully resolve the scenario and execute the move 
+            if (support[RequiredGroup.PrivateMove].Intersect(support[RequiredGroup.PrivateRetain]).Any()
+                || support[RequiredGroup.PublicMove].Intersect(support[RequiredGroup.PublicRetain]).Any()
+                || moveGroups.Declarations(MoveGroup.Selected).Intersect(support[RequiredGroup.PrivateRetain]).Any()
+                || moveGroups.Declarations(MoveGroup.Selected).Intersect(support[RequiredGroup.PublicRetain]).Any()
+                || moveGroups.Declarations(MoveGroup.Selected).Intersect(support[RequiredGroup.PrivateMove]).Any()
+                || moveGroups.Declarations(MoveGroup.Selected).Intersect(support[RequiredGroup.PublicMove]).Any())
             {
                 return false;
             }
 
-            dispositions.LoadDispositionSet(MoveDisposition.Move,  moveGroups.Declarations(MoveGroup.Selected)
-                                    .Concat(privateExclusiveSupportMoveableMemberSets.SelectMany(mm => mm.Members))
-                                    .Concat(requiredGroup[RequiredGroup.PublicSupportMove])
-                                    .Concat(requiredGroup[RequiredGroup.PrivateSupportMove])
-                                    .Except(requiredGroup[RequiredGroup.PublicSupportRetain])
-                                    .Except(requiredGroup[RequiredGroup.PrivateSupportRetain])
-                                    .Distinct());
+            dispositions.LoadDispositionSet(MoveDisposition.Move, moveGroups.Declarations(MoveGroup.Selected)
+                                                                        .Concat(support[RequiredGroup.PublicMove])
+                                                                        .Concat(support[RequiredGroup.PrivateMove]));
 
             dispositions.LoadDispositionSet(MoveDisposition.Retain, moveGroups.Declarations(MoveGroup.AllParticipants)
-                                                        .Except(dispositions[MoveDisposition.Move]));
+                                                                        .Except(dispositions[MoveDisposition.Move]));
             return true;
         }
 
-        private static bool TrySetDispositionGroupsForClassModuleSource(MoveMemberModel model, IMoveGroupsProvider moveGroups, out MoveDispositions dispositions)
+        private static bool TrySetDispositionGroupsForClassModuleSource(MoveMemberModel model, MoveGroupsProvider moveGroups, out MoveDispositions dispositions)
         {
             dispositions = new MoveDispositions();
 
@@ -315,7 +258,7 @@ namespace Rubberduck.Refactorings.MoveMember
             if (moveGroups.Declarations(MoveGroup.Support_NonExclusive).Any()) { return false; }
 
             //Strategy does not move Public Fields of ObjectTypes.
-            //As a Public Field of a StandardModule, we cannot guarantee that it is a valid instance
+            //As a Public Field of a StandardModule, we lose control of instantiation logic
             if (model.SelectedDeclarations.Any(nm => nm.DeclarationType.HasFlag(DeclarationType.Variable)
                                     && nm.IsObject)) { return false; }
 
@@ -332,26 +275,25 @@ namespace Rubberduck.Refactorings.MoveMember
             return true;
         }
 
-        private static bool ParticipantsIncludeAnInterfaceImplementingMember(IEnumerable<Declaration> participatingMembers, MoveMemberModel model)
+         //ClearMoveNameConflicts renames members that, when moved to the Destination module as-is, will
+        //result in a name conflict.  The renaming occurs in both the moveMemberRewriteSession and
+        //in the scratchPadSession so that moved blocks of code generated from the scrathpad already have
+        //the new names loaded to the rewriter.
+        private static void ClearMoveNameConflicts(MoveMemberModel model, IRewriteSession moveMemberRewriteSession, IRewriteSession scratchPadSession, MoveDispositions dispositions)
         {
-            var interfaceImplementingMembers = model.DeclarationFinderProvider.DeclarationFinder.FindAllInterfaceImplementingMembers()
-                .Where(ifm => ifm.QualifiedModuleName == model.Source.QualifiedModuleName);
+            SetNonConflictIdentifierNames(model, dispositions[MoveDisposition.Move]);
 
-            return participatingMembers.Intersect(interfaceImplementingMembers).Any();
+            foreach (var moveable in model.MoveableMembers)
+            {
+                foreach (var member in moveable.Members)
+                {
+                    model.RenameService(member, moveable.MovedIdentifierName, moveMemberRewriteSession);
+                    model.RenameService(member, moveable.MovedIdentifierName, scratchPadSession);
+                }
+            }
         }
 
-        private static bool ParticipantsRaiseAnEvent(IEnumerable<Declaration> participatingMembers) 
-                    => participatingMembers.Where(m => m.Context.GetDescendent<VBAParser.RaiseEventStmtContext>() != null).Any();
-
-        private static bool ParticipantsIncludeAnEventHandler(IEnumerable<Declaration> participatingMembers, MoveMemberModel model)
-        {
-            var eventHandlers = model.DeclarationFinderProvider.DeclarationFinder.FindEventHandlers()
-                .Where(evh => evh.QualifiedModuleName == model.Source.QualifiedModuleName);
-
-            return participatingMembers.Intersect(eventHandlers).Any();
-        }
-
-        private static IMovedContentProvider LoadMovedContentProvider(IMovedContentProvider contentProvider, MoveMemberModel model, IMoveGroupsProvider moveGroups, IRewriteSession scratchPadSession, MoveDispositions dispositions)
+        private static IMovedContentProvider LoadMovedContentProvider(IMovedContentProvider contentProvider, MoveMemberModel model, MoveGroupsProvider moveGroups, IRewriteSession scratchPadSession, MoveDispositions dispositions)
         {
             foreach (var element in dispositions[MoveDisposition.Move])
             {
@@ -454,7 +396,7 @@ namespace Rubberduck.Refactorings.MoveMember
             }
         }
 
-        private static void InsertDestinationContent(MoveMemberModel model, IMoveGroupsProvider moveGroups, IRewriteSession moveMemberRewriteSession, IRewriteSession scratchPadSession, MoveDispositions dispositions, bool isPreview)
+        private static void InsertDestinationContent(MoveMemberModel model, MoveGroupsProvider moveGroups, IRewriteSession moveMemberRewriteSession, IRewriteSession scratchPadSession, MoveDispositions dispositions, bool isPreview)
         {
             var movedContentProvider = model.MoveMemberFactory.CreateMovedContentProvider();
             movedContentProvider = LoadMovedContentProvider(movedContentProvider, model, moveGroups, scratchPadSession, dispositions);
@@ -500,7 +442,7 @@ namespace Rubberduck.Refactorings.MoveMember
             }
         }
 
-        private static string CreateMovedMemberCodeBlock(MoveMemberModel model, IMoveGroupsProvider moveGroups, Declaration member, IRewriteSession rewriteSession, MoveDispositions dispositions)
+        private static string CreateMovedMemberCodeBlock(MoveMemberModel model, MoveGroupsProvider moveGroups, Declaration member, IRewriteSession rewriteSession, MoveDispositions dispositions)
         {
             Debug.Assert(member.IsMember());
 
@@ -539,7 +481,7 @@ namespace Rubberduck.Refactorings.MoveMember
             return rewriter.GetText(member);
         }
 
-        private static string CreateMovedNonMemberCodeBlock(MoveMemberModel model, IMoveGroupsProvider moveGroups, Declaration nonMember, IRewriteSession rewriteSession, MoveDispositions dispositions)
+        private static string CreateMovedNonMemberCodeBlock(MoveMemberModel model, MoveGroupsProvider moveGroups, Declaration nonMember, IRewriteSession rewriteSession, MoveDispositions dispositions)
         {
             Debug.Assert(!nonMember.IsMember());
 
@@ -551,7 +493,7 @@ namespace Rubberduck.Refactorings.MoveMember
 
             if (moveableMember.IsSelected && nonMember.HasPrivateAccessibility())
             {
-                var refsUsedByConstantDeclarations = moveGroups.ReferencesInConstantDeclarationExpressions(nonMember);
+                var refsUsedByConstantDeclarations = ReferencesInConstantDeclarationExpressions(moveGroups, nonMember);
 
                 var refsUsedByMovedMembers = nonMember.References.Where(rf => dispositions[MoveDisposition.Move].Where(m => m.IsMember()).Contains(rf.ParentScoping));
 
@@ -639,22 +581,17 @@ namespace Rubberduck.Refactorings.MoveMember
 
         private static string AddDestinationModuleQualification(MoveMemberModel model, IdentifierReference identifierReference, IEnumerable<Declaration> retain)
         {
-            if (NeverAddMemberAccessTypes.Contains(identifierReference.Declaration.DeclarationType))
+            var movedIdentifier = model.MoveableMemberSetByName(identifierReference.IdentifierName).MovedIdentifierName;
+
+            if (NeverAddMemberAccessTypes.Contains(identifierReference.Declaration.DeclarationType)
+                || (identifierReference.Declaration.DeclarationType.HasFlag(DeclarationType.Function)
+                        && identifierReference.IsAssignment)
+                || retain.Contains(identifierReference.Declaration))
             {
-                return identifierReference.IdentifierName;
+                return movedIdentifier;
             }
 
-            if (identifierReference.Declaration.DeclarationType.HasFlag(DeclarationType.Function)
-                && identifierReference.IsAssignment)
-            {
-                return identifierReference.IdentifierName;
-            }
-
-            if (retain.Contains(identifierReference.Declaration))
-            {
-                return identifierReference.IdentifierName;
-            }
-            return $"{model.Destination.ModuleName}.{identifierReference.IdentifierName}";
+            return $"{model.Destination.ModuleName}.{movedIdentifier}";
         }
 
         private static bool IsOnlyReferencedByMovedMethods(Declaration element, IEnumerable<Declaration> move)
@@ -676,6 +613,53 @@ namespace Rubberduck.Refactorings.MoveMember
             }
             return false;
         }
+
+        private static bool SelectedElementsContainAPrivateUDTOrEnumerationField(MoveGroupsProvider moveGroups)
+        {
+            var selectedMemberPrivateTypeDependencies = moveGroups.Declarations(MoveGroup.Selected)
+                    .Where(m => m.AsTypeDeclaration?.HasPrivateAccessibility() ?? false);
+            return selectedMemberPrivateTypeDependencies.Any();
+        }
+
+        private static bool ParticipantsIncludeAnInterfaceImplementingMember(IEnumerable<Declaration> participatingMembers, MoveMemberModel model)
+        {
+            var interfaceImplementingMembers = model.DeclarationFinderProvider.DeclarationFinder.FindAllInterfaceImplementingMembers()
+                .Where(ifm => ifm.QualifiedModuleName == model.Source.QualifiedModuleName);
+
+            return participatingMembers.Intersect(interfaceImplementingMembers).Any();
+        }
+
+        private static bool ParticipantsRaiseAnEvent(IEnumerable<Declaration> participatingMembers)
+                    => participatingMembers.Where(m => m.Context.GetDescendent<VBAParser.RaiseEventStmtContext>() != null).Any();
+
+        private static bool ParticipantsIncludeAnEventHandler(IEnumerable<Declaration> participatingMembers, MoveMemberModel model)
+        {
+            var eventHandlers = model.DeclarationFinderProvider.DeclarationFinder.FindEventHandlers()
+                .Where(evh => evh.QualifiedModuleName == model.Source.QualifiedModuleName);
+
+            return participatingMembers.Intersect(eventHandlers).Any();
+        }
+
+        //If one of the Private declarations that MUST be retained is also a direct
+        //dependency of a Selected member (which MUST move), then game-over.
+        private static bool SelectedElementsDirectlyReferenceNonExclusivePrivateElement(MoveGroupsProvider moveGroups)
+        {
+            return DependenciesRequiredToMove(moveGroups).Intersect(PrivateDeclarationsThatMustBeRetained(moveGroups)).Any();
+        }
+
+        //Any Private declaration (member, field, or constant) that is used by both the Participants
+        //and the NonParticipants MUST be retained in the Source module
+        private static List<Declaration> PrivateDeclarationsThatMustBeRetained(MoveGroupsProvider moveGroups)
+        {
+            var allParticipantDependencies = moveGroups.Dependencies(MoveGroup.AllParticipants);
+            var nonParticipantDependencies = moveGroups.Dependencies(MoveGroup.NonParticipants);
+
+            return allParticipantDependencies.Intersect(nonParticipantDependencies)
+                .Where(d => d.HasPrivateAccessibility()).ToList();
+        }
+
+        private static List<Declaration> DependenciesRequiredToMove(MoveGroupsProvider moveGroups)
+            => moveGroups.DirectDependencies(MoveGroup.Selected).Intersect(moveGroups.Declarations(MoveGroup.Support_Private)).ToList();
 
         private static IEnumerable<IdentifierReference> RenameableReferences(IEnumerable<Declaration> declarations, QualifiedModuleName qmn)
             => RenameableReferencesByQualifiedModuleName(declarations.AllReferences())
@@ -716,5 +700,48 @@ namespace Rubberduck.Refactorings.MoveMember
             DeclarationType.Enumeration,
             DeclarationType.EnumerationMember
         };
+
+        private static IEnumerable<IdentifierReference> ReferencesInConstantDeclarationExpressions(MoveGroupsProvider moveGroups, Declaration declaration)
+        {
+            var references = new List<IdentifierReference>();
+
+            if (!declaration.IsConstant()) { return Enumerable.Empty<IdentifierReference>(); }
+
+            var allModuleConstants = moveGroups.Declarations(MoveGroup.AllParticipants).Concat(moveGroups.Declarations(MoveGroup.NonParticipants))
+                .Where(d => d.IsConstant() && d != declaration);
+
+            foreach (var constant in allModuleConstants)
+            {
+                var lExprContexts = constant.Context.GetDescendents<VBAParser.LExprContext>();
+                if (lExprContexts.Any())
+                {
+                    references.AddRange(declaration.References.Where(rf => lExprContexts.Contains(rf.Context.Parent)));
+                }
+            }
+            return references;
+        }
+
+        private class MoveDispositions
+        {
+            private Dictionary<MoveDisposition, List<Declaration>> _dispositions;
+
+            public MoveDispositions()
+            {
+                _dispositions = new Dictionary<MoveDisposition, List<Declaration>>()
+                {
+                    [MoveDisposition.Move] = new List<Declaration>(),
+                    [MoveDisposition.Retain] = new List<Declaration>()
+                };
+            }
+
+            public IReadOnlyCollection<Declaration> this[MoveDisposition moveDisposition] => _dispositions[moveDisposition];
+
+            public void LoadDispositionSet(MoveDisposition moveDisposition, IEnumerable<Declaration> declarations)
+            {
+                _dispositions[moveDisposition].AddRange(declarations);
+            }
+        }
+
+
     }
 }

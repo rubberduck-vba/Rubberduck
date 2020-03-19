@@ -27,7 +27,7 @@ namespace Rubberduck.Refactorings.MoveMember
 
         public bool IsExecutableModel(MoveMemberModel model, out string nonExecutableMessage)
         {
-            nonExecutableMessage = MoveMemberResources.NoDeclarationsSelectedToMove;
+            nonExecutableMessage = Resources.RubberduckUI.MoveMember_NoDeclarationsSelectedToMove; // MoveMemberResources.NoDeclarationsSelectedToMove;
             return false;
         }
 
@@ -65,6 +65,6 @@ namespace Rubberduck.Refactorings.MoveMember
         }
 
         private string NothingSelectedPreviewMessage 
-            => $"{Environment.NewLine}{Environment.NewLine}'****  {MoveMemberResources.NoDeclarationsSelectedToMove}{Environment.NewLine}{Environment.NewLine}";
+            => $"{Environment.NewLine}{Environment.NewLine}'****  {Resources.RubberduckUI.MoveMember_NoDeclarationsSelectedToMove /*MoveMemberResources.NoDeclarationsSelectedToMove*/}{Environment.NewLine}{Environment.NewLine}";
     }
 }
