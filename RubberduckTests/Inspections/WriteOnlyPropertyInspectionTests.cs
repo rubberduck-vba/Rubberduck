@@ -76,6 +76,25 @@ End Property";
 
         [Test]
         [Category("Inspections")]
+        public void WriteOnlyProperty_ReturnsResult_GetInOtherModule()
+        {
+            const string classCode =
+                @"Property Let Foo(value)
+End Property";
+
+            const string otherClassCode =
+                @"Property Get Foo()
+End Property";
+
+            var inspectionResults = InspectionResultsForModules(
+                ("MyClass", classCode, ComponentType.ClassModule),
+                ("MyOtherClass", otherClassCode, ComponentType.ClassModule));
+
+            Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void WriteOnlyProperty_Ignored_DoesNotReturnResult()
         {
             const string inputCode =

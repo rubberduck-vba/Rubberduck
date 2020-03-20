@@ -65,6 +65,7 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
                     || declaration.Accessibility == Accessibility.Public
                     || declaration.Accessibility == Accessibility.Global)
                    && finder.MatchName(declaration.IdentifierName)
+                       .Where(otherDeclaration => otherDeclaration.QualifiedModuleName.Equals(declaration.QualifiedModuleName))
                        .All(accessor => accessor.DeclarationType != DeclarationType.PropertyGet);
         }
 
