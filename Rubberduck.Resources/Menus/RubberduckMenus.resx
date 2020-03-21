@@ -247,4 +247,7 @@
   <data name="RefactorMenu_MoveToFolder" xml:space="preserve">
     <value>Move To Folder</value>
   </data>
+  <data name="RefactorMenu_MoveContainingFolder" xml:space="preserve">
+    <value>Move Containing Folder</value>
+  </data>
 </root>

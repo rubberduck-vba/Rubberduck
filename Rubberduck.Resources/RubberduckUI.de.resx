@@ -1586,4 +1586,25 @@ Import abgebrochen.</value>
   <data name="MoveMultipleToFolderDialog_InstructionsLabelText" xml:space="preserve">
     <value>Bitte geben Sie einen neuen Ordner für die Komponenten an.</value>
   </data>
+  <data name="MoveFolderDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Bitte geben Sie einen Ordner an, in den der Unterordner '{0}' des Ordners '{1}' verschoben werden soll.</value>
+  </data>
+  <data name="MoveFoldersDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Bitte geben Sie einen Ordner an, in den die Ordner verschoben werden sollen.</value>
+  </data>
+  <data name="MoveRootFolderDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Bitte geben Sie einen Ordner an, in den der Ordner '{0}' verschoben werden soll.</value>
+  </data>
+  <data name="MoveFoldersDialog_Caption" xml:space="preserve">
+    <value>Rubberduck - Ordner verschieben</value>
+  </data>
+  <data name="MoveFoldersDialog_TitleText" xml:space="preserve">
+    <value>Ordner verschieben</value>
+  </data>
+  <data name="RefactoringFailure_NoTargetFolder" xml:space="preserve">
+    <value>Es wurde kein Zielordner festgelegt.</value>
+  </data>
+  <data name="RefactoringFailure_AffectedModuleIsStale" xml:space="preserve">
+    <value>Die Komponente '{0}' würde durch das Refactoring verändert, aber ihr Inhalt ist in Rubberduck veraltet. Bitte lassen Sie Rubberduck seinen Stand aktualisieren und versuchen Sie es erneut.</value>
+  </data>
 </root>

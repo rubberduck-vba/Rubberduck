@@ -2793,11 +2793,56 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please specify a new parent folder for the subfolder &apos;{0}&apos; of &apos;{1}&apos;..
+        /// </summary>
+        public static string MoveFolderDialog_InstructionsLabelText {
+            get {
+                return ResourceManager.GetString("MoveFolderDialog_InstructionsLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rubberduck - Move Folders.
+        /// </summary>
+        public static string MoveFoldersDialog_Caption {
+            get {
+                return ResourceManager.GetString("MoveFoldersDialog_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please specify a new parent folder for the folders..
+        /// </summary>
+        public static string MoveFoldersDialog_InstructionsLabelText {
+            get {
+                return ResourceManager.GetString("MoveFoldersDialog_InstructionsLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move Folders.
+        /// </summary>
+        public static string MoveFoldersDialog_TitleText {
+            get {
+                return ResourceManager.GetString("MoveFoldersDialog_TitleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please specify new folder for the components..
         /// </summary>
         public static string MoveMultipleToFolderDialog_InstructionsLabelText {
             get {
                 return ResourceManager.GetString("MoveMultipleToFolderDialog_InstructionsLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please specify a new parent folder for the older &apos;{0}&apos;..
+        /// </summary>
+        public static string MoveRootFolderDialog_InstructionsLabelText {
+            get {
+                return ResourceManager.GetString("MoveRootFolderDialog_InstructionsLabelText", resourceCulture);
             }
         }
         
@@ -3255,6 +3300,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The component &apos;{0}&apos; would have been affected by the refactoring, but its state in Rubberduck&apos;s memory is stale. Please refresh Rubberduck and try again..
+        /// </summary>
+        public static string RefactoringFailure_AffectedModuleIsStale {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_AffectedModuleIsStale", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Refactoring failed..
         /// </summary>
         public static string RefactoringFailure_BaseMessage {
@@ -3300,7 +3354,16 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to suspend the Parser to perform the refactoring operation.
+        ///   Looks up a localized string similar to No target has been specified..
+        /// </summary>
+        public static string RefactoringFailure_NoTargetFolder {
+            get {
+                return ResourceManager.GetString("RefactoringFailure_NoTargetFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to suspend the Parser to perform the refactoring operation..
         /// </summary>
         public static string RefactoringFailure_SuspendParserFailure {
             get {

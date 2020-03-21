@@ -7,7 +7,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.MoveToFolder;
 
-namespace RubberduckTests.Refactoring
+namespace RubberduckTests.Refactoring.MoveToFolder
 {
     [TestFixture]
     public class MoveToFolderRefactoringActionTests : RefactoringActionTestBase<MoveToFolderModel>

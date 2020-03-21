@@ -5,9 +5,9 @@ using Rubberduck.Refactorings.Exceptions.MoveToFolder;
 
 namespace Rubberduck.UI.Command.Refactorings.Notifiers
 {
-    public class MoveToFolderRefactoringFailedNotifier : RefactoringFailureNotifierBase
+    public class MoveContainingFolderRefactoringFailedNotifier : RefactoringFailureNotifierBase
     {
-        public MoveToFolderRefactoringFailedNotifier(IMessageBox messageBox) 
+        public MoveContainingFolderRefactoringFailedNotifier(IMessageBox messageBox) 
             : base(messageBox)
         {}
 

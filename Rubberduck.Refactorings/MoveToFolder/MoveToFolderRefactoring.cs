@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
+using Rubberduck.Refactorings.Exceptions.MoveToFolder;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
 
@@ -12,17 +14,20 @@ namespace Rubberduck.Refactorings.MoveToFolder
     {
         private readonly IRefactoringAction<MoveMultipleToFolderModel> _moveToFolderAction;
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
+        private readonly RubberduckParserState _state;
 
         public MoveToFolderRefactoring(
             MoveMultipleToFolderRefactoringAction moveToFolderAction,
             ISelectedDeclarationProvider selectedDeclarationProvider,
             ISelectionProvider selectionProvider, 
             IRefactoringPresenterFactory factory, 
-            IUiDispatcher uiDispatcher) 
+            IUiDispatcher uiDispatcher,
+            RubberduckParserState state) 
             : base(selectionProvider, factory, uiDispatcher)
         {
             _moveToFolderAction = moveToFolderAction;
             _selectedDeclarationProvider = selectedDeclarationProvider;
+            _state = state;
         }
 
         protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
@@ -44,7 +49,23 @@ namespace Rubberduck.Refactorings.MoveToFolder
 
         protected override void RefactorImpl(MoveMultipleToFolderModel model)
         {
+            ValidateModel(model);
             _moveToFolderAction.Refactor(model);
+        }
+
+        private void ValidateModel(MoveMultipleToFolderModel model)
+        {
+            if (string.IsNullOrEmpty(model.TargetFolder))
+            {
+                throw new NoTargetFolderException();
+            }
+
+            var firstStaleAffectedModules = model.Targets
+                .FirstOrDefault(module => _state.IsNewOrModified(module.QualifiedModuleName));
+            if (firstStaleAffectedModules != null)
+            {
+                throw new AffectedModuleIsStaleException(firstStaleAffectedModules.QualifiedModuleName);
+            }
         }
     }
 }

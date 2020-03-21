@@ -9,7 +9,7 @@ using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.MoveToFolder;
 using Rubberduck.VBEditor.SafeComWrappers;
 
-namespace RubberduckTests.Refactoring
+namespace RubberduckTests.Refactoring.MoveToFolder
 {
     [TestFixture]
     public class MoveMultipleToFolderRefactoringActionTests : RefactoringActionTestBase<MoveMultipleToFolderModel>

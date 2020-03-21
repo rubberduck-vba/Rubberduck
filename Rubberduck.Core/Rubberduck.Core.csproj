@@ -117,6 +117,9 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Update="UI\Refactorings\MoveFolder\MoveMultipleFoldersView.xaml.cs">
+      <DependentUpon>MoveMultipleFoldersView.xaml</DependentUpon>
+    </Compile>
     <Compile Update="UI\Refactorings\MoveToFolder\MoveMultipleToFolderView.xaml.cs">
       <DependentUpon>MoveMultipleToFolderView.xaml</DependentUpon>
     </Compile>

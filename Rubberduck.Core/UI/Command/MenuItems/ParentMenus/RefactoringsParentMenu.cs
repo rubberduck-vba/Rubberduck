@@ -25,6 +25,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
         IntroduceParameter,
         IntroduceField,
         MoveToFolder,
+        MoveContainingFolder,
         AddRemoveReferences
     }
 }
