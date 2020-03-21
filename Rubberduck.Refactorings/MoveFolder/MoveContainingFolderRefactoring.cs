@@ -41,6 +41,11 @@ namespace Rubberduck.Refactorings.MoveFolder
 
         protected override MoveMultipleFoldersModel InitializeModel(Declaration target)
         {
+            if (target == null)
+            {
+                throw new TargetDeclarationIsNullException();
+            }
+
             if (!(target is ModuleDeclaration targetModule))
             {
                 throw new InvalidDeclarationTypeException(target);

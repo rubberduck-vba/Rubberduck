@@ -7,6 +7,7 @@ using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -113,6 +114,99 @@ namespace RubberduckTests.Refactoring
 
                 return vbe.ActiveVBProject.VBComponents
                     .ToDictionary(component => component.Name, component => component.CodeModule.Content());
+            }
+        }
+
+        protected TModel InitialModel(string code, Selection selection, bool executeViaActiveSelection = false)
+        {
+            var vbe = TestVbe(code, out _);
+            var componentName = vbe.SelectedVBComponent.Name;
+            return InitialModel(vbe, componentName, selection, executeViaActiveSelection);
+        }
+
+        protected TModel InitialModel(string selectedComponentName, Selection selection, bool executeViaActiveSelection = false, params (string componentName, string content, ComponentType componentType)[] modules)
+        {
+            var vbe = TestVbe(modules);
+            return InitialModel(vbe, selectedComponentName, selection, executeViaActiveSelection);
+        }
+
+        protected TModel InitialModel(IVBE vbe, string selectedComponentName, Selection selection, bool executeViaActiveSelection = false)
+        {
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
+            using (state)
+            {
+                TModel initialModel = null;
+                Func<TModel, TModel> exfiltrationAction = model =>
+                {
+                    initialModel = model;
+                    throw new RefactoringAbortedException();
+                };
+
+                var module = state.DeclarationFinder.UserDeclarations(DeclarationType.Module)
+                    .Single(declaration => declaration.IdentifierName == selectedComponentName)
+                    .QualifiedModuleName;
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+
+                var refactoring = executeViaActiveSelection
+                    ? TestRefactoring(rewritingManager, state, exfiltrationAction, qualifiedSelection)
+                    : TestRefactoring(rewritingManager, state, exfiltrationAction);
+
+                try
+                {
+                    if (executeViaActiveSelection)
+                    {
+                        refactoring.Refactor();
+                    }
+                    else
+                    {
+                        refactoring.Refactor(qualifiedSelection);
+                    }
+                }
+                catch (RefactoringAbortedException)
+                {}
+
+                return initialModel;
+            }
+        }
+
+        protected TModel InitialModel(string code, string declarationName, DeclarationType declarationType)
+        {
+            var vbe = TestVbe(code, out _);
+            var componentName = vbe.SelectedVBComponent.Name;
+            return InitialModel(vbe, declarationName, declarationType);
+        }
+
+        protected TModel InitialModel(string declarationName, DeclarationType declarationType, params (string componentName, string content, ComponentType componentType)[] modules)
+        {
+            var vbe = TestVbe(modules);
+            return InitialModel(vbe, declarationName, declarationType);
+        }
+
+        protected TModel InitialModel(IVBE vbe, string declarationName, DeclarationType declarationType)
+        {
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
+            using (state)
+            {
+                var target = state.DeclarationFinder.DeclarationsWithType(declarationType)
+                    .Single(declaration => declaration.IdentifierName == declarationName);
+
+                TModel initialModel = null;
+                Func<TModel,TModel> exfiltrationAction = model =>
+                {
+                    initialModel = model;
+                    throw new RefactoringAbortedException();
+                };
+
+                var refactoring = TestRefactoring(rewritingManager, state, exfiltrationAction);
+
+                try
+                {
+                    refactoring.Refactor(target);
+                }
+                catch (RefactoringAbortedException)
+                {}
+
+                return initialModel;
             }
         }
 
