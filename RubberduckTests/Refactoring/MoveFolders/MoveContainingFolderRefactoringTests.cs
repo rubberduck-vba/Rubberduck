@@ -364,21 +364,16 @@ End Sub
         protected override IRefactoring TestRefactoring(
             IRewritingManager rewritingManager, 
             RubberduckParserState state,
-            IRefactoringPresenterFactory factory, 
+            RefactoringUserInteraction<IMoveMultipleFoldersPresenter, MoveMultipleFoldersModel> userInteraction, 
             ISelectionService selectionService)
         {
-            var uiDispatcherMock = new Mock<IUiDispatcher>();
-            uiDispatcherMock
-                .Setup(m => m.Invoke(It.IsAny<Action>()))
-                .Callback((Action action) => action.Invoke());
-
             var annotationUpdater = new AnnotationUpdater();
             var moveToFolderAction = new MoveToFolderRefactoringAction(rewritingManager, annotationUpdater);
             var moveFolderAction = new MoveFolderRefactoringAction(rewritingManager, moveToFolderAction);
             var moveMultipleFoldersAction = new MoveMultipleFoldersRefactoringAction(rewritingManager, moveFolderAction);
 
             var selectedDeclarationProvider = new SelectedDeclarationProvider(selectionService, state);
-            return new MoveContainingFolderRefactoring(moveMultipleFoldersAction, selectedDeclarationProvider, selectionService, factory,uiDispatcherMock.Object, state, state);
+            return new MoveContainingFolderRefactoring(moveMultipleFoldersAction, selectedDeclarationProvider, selectionService, userInteraction, state, state);
         }
     }
 }

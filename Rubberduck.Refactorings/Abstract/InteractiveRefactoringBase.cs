@@ -1,25 +1,19 @@
 ﻿using Rubberduck.VBEditor.Utility;
-using System;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.UIContext;
-using Rubberduck.Refactorings.Exceptions;
 
 namespace Rubberduck.Refactorings
 {
-    public abstract class InteractiveRefactoringBase<TPresenter, TModel> : RefactoringBase 
-        where TPresenter : class, IRefactoringPresenter<TModel>
+    public abstract class InteractiveRefactoringBase<TModel> : RefactoringBase
         where TModel : class, IRefactoringModel
     {
-        private readonly Func<TModel, IDisposalActionContainer<TPresenter>> _presenterFactory;
+        private readonly IRefactoringUserInteraction<TModel> _userInteraction;
 
         protected InteractiveRefactoringBase( 
             ISelectionProvider selectionProvider, 
-            IRefactoringPresenterFactory factory,
-            IUiDispatcher uiDispatcher) 
+            IRefactoringUserInteraction<TModel> userInteraction) 
         :base(selectionProvider)
         {
-            Action<TPresenter> presenterDisposalAction = (TPresenter presenter) => uiDispatcher.Invoke(() => factory.Release(presenter)); 
-            _presenterFactory = ((model) => DisposalActionContainer.Create(factory.Create<TPresenter, TModel>(model), presenterDisposalAction));
+            _userInteraction = userInteraction;
         }
 
         public override void Refactor(Declaration target)
@@ -29,27 +23,7 @@ namespace Rubberduck.Refactorings
 
         protected void Refactor(TModel initialModel)
         {
-            var model = initialModel;
-            if (model == null)
-            {
-                throw new InvalidRefactoringModelException();
-            }
-
-            using (var presenterContainer = _presenterFactory(model))
-            {
-                var presenter = presenterContainer.Value;
-                if (presenter == null)
-                {
-                    throw new InvalidRefactoringPresenterException();
-                }
-
-                model = presenter.Show();
-                if (model == null)
-                {
-                    throw new InvalidRefactoringModelException();
-                }
-            }
-
+            var model = _userInteraction.UserModifiedModel(initialModel);
             RefactorImpl(model);
         }
 

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Exceptions.MoveToFolder;
@@ -10,7 +9,7 @@ using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.MoveToFolder
 {
-    public class MoveToFolderRefactoring : InteractiveRefactoringBase<IMoveMultipleToFolderPresenter, MoveMultipleToFolderModel>
+    public class MoveToFolderRefactoring : InteractiveRefactoringBase<MoveMultipleToFolderModel>
     {
         private readonly IRefactoringAction<MoveMultipleToFolderModel> _moveToFolderAction;
         private readonly ISelectedDeclarationProvider _selectedDeclarationProvider;
@@ -20,10 +19,9 @@ namespace Rubberduck.Refactorings.MoveToFolder
             MoveMultipleToFolderRefactoringAction moveToFolderAction,
             ISelectedDeclarationProvider selectedDeclarationProvider,
             ISelectionProvider selectionProvider, 
-            IRefactoringPresenterFactory factory, 
-            IUiDispatcher uiDispatcher,
+            RefactoringUserInteraction<IMoveMultipleToFolderPresenter, MoveMultipleToFolderModel> userInteraction,
             RubberduckParserState state) 
-            : base(selectionProvider, factory, uiDispatcher)
+            : base(selectionProvider, userInteraction)
         {
             _moveToFolderAction = moveToFolderAction;
             _selectedDeclarationProvider = selectedDeclarationProvider;

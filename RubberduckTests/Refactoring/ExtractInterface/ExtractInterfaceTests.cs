@@ -303,16 +303,16 @@ End Sub
             Assert.AreEqual(expectedInterfaceCode, actualInterfaceCode);
         }
 
-        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
+        protected override IRefactoring TestRefactoring(
+            IRewritingManager rewritingManager, 
+            RubberduckParserState state,
+            RefactoringUserInteraction<IExtractInterfacePresenter, ExtractInterfaceModel> userInteraction, 
+            ISelectionService selectionService)
         {
-            var uiDispatcherMock = new Mock<IUiDispatcher>();
-            uiDispatcherMock
-                .Setup(m => m.Invoke(It.IsAny<Action>()))
-                .Callback((Action action) => action.Invoke());
             var addImplementationsBaseRefactoring = new AddInterfaceImplementationsRefactoringAction(rewritingManager);
             var addComponentService = TestAddComponentService(state?.ProjectsProvider);
             var baseRefactoring = new ExtractInterfaceRefactoringAction(addImplementationsBaseRefactoring, state, state, rewritingManager, state?.ProjectsProvider, addComponentService);
-            return new ExtractInterfaceRefactoring(baseRefactoring, state, factory, selectionService, uiDispatcherMock.Object);
+            return new ExtractInterfaceRefactoring(baseRefactoring, state, userInteraction, selectionService);
         }
 
         private static IAddComponentService TestAddComponentService(IProjectsProvider projectsProvider)

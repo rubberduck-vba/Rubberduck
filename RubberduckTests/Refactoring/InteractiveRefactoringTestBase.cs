@@ -5,6 +5,7 @@ using Moq;
 using NUnit.Framework;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
@@ -241,17 +242,43 @@ namespace RubberduckTests.Refactoring
             Func<TModel, TModel> presenterAdjustment,
             ISelectionService selectionService)
         {
-            var factory = SetupFactory(presenterAdjustment);
-            return TestRefactoring(rewritingManager, state, factory.Object, selectionService);
+            var userInteraction = TestUserInteraction(presenterAdjustment);
+            return TestRefactoring(rewritingManager, state, userInteraction, selectionService);
+        }
+
+        protected IRefactoring TestRefactoring(
+            IRewritingManager rewritingManager,
+            RubberduckParserState state,
+            IRefactoringPresenterFactory factory,
+            ISelectionService selectionService)
+        {
+            var userInteraction = TestUserInteraction(factory);
+            return TestRefactoring(rewritingManager, state, userInteraction, selectionService);
         }
 
         protected abstract IRefactoring TestRefactoring(
             IRewritingManager rewritingManager,
             RubberduckParserState state,
-            IRefactoringPresenterFactory factory,
+            RefactoringUserInteraction<TPresenter, TModel> userInteraction,
             ISelectionService selectionService);
 
-        protected virtual Mock<IRefactoringPresenterFactory> SetupFactory(Func<TModel, TModel> adjustedModel)
+        protected RefactoringUserInteraction<TPresenter, TModel> TestUserInteraction(Func<TModel, TModel> presenterAdjustment)
+        {
+            var factory = TestPresenterFactory(presenterAdjustment);
+            return TestUserInteraction(factory.Object);
+        }
+
+        protected RefactoringUserInteraction<TPresenter, TModel> TestUserInteraction(IRefactoringPresenterFactory factory)
+        {
+            var uiDispatcherMock = new Mock<IUiDispatcher>();
+            uiDispatcherMock
+                .Setup(m => m.Invoke(It.IsAny<Action>()))
+                .Callback((Action action) => action.Invoke());
+
+            return new RefactoringUserInteraction<TPresenter, TModel>(factory, uiDispatcherMock.Object);
+        }
+
+        protected virtual Mock<IRefactoringPresenterFactory> TestPresenterFactory(Func<TModel, TModel> adjustedModel)
         {
             var presenter = new Mock<TPresenter>();
 
