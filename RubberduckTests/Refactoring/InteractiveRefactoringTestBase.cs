@@ -93,7 +93,7 @@ namespace RubberduckTests.Refactoring
             return RefactoredCode(vbe, declarationName, declarationType, presenterAdjustment, expectedException);
         }
 
-        protected IDictionary<string, string> RefactoredCode(IVBE vbe, string declarationName, DeclarationType declarationType, Func<TModel, TModel> presenterAdjustment, Type expectedException = null)
+        protected IDictionary<string, string> RefactoredCode(IVBE vbe, string declarationName, DeclarationType declarationType, Func<TModel, TModel> presenterAdjustment, Type expectedException = null, bool extractAllProjects = false)
         {
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
             using (state)
@@ -112,6 +112,12 @@ namespace RubberduckTests.Refactoring
                     refactoring.Refactor(target);
                 }
 
+                if (extractAllProjects)
+                {
+                    return state.ProjectsProvider.Components()
+                        .Select(tpl => tpl.Component)
+                        .ToDictionary(component => component.Name, component => component.CodeModule.Content());
+                }
                 return vbe.ActiveVBProject.VBComponents
                     .ToDictionary(component => component.Name, component => component.CodeModule.Content());
             }
