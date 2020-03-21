@@ -11,7 +11,7 @@ namespace Rubberduck.UI.Command.Refactorings.Notifiers
             : base(messageBox)
         {}
 
-        protected override string Caption => Resources.RubberduckUI.MoveToFolderDialog_Caption;
+        protected override string Caption => Resources.RubberduckUI.MoveFoldersDialog_Caption;
 
         protected override string Message(RefactoringException exception)
         {

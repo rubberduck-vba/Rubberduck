@@ -2874,7 +2874,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Move to folder.
+        ///   Looks up a localized string similar to Move to Folder.
         /// </summary>
         public static string MoveToFolderDialog_TitleText {
             get {

@@ -256,7 +256,7 @@
     <value>Form (.frm)</value>
   </data>
   <data name="CodeExplorer_Rename" xml:space="preserve">
-    <value>Rebautizar</value>
+    <value>Rebautizar...</value>
   </data>
   <data name="CodeExplorer_SetAsStartupProject" xml:space="preserve">
     <value>Establecer como inicio</value>
