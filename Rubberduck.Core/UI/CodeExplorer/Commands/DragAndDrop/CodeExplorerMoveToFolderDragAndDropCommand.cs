@@ -3,58 +3,57 @@ using System.Collections.Generic;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.MoveFolder;
 using Rubberduck.Refactorings.MoveToFolder;
 using Rubberduck.UI.CodeExplorer.Commands.Abstract;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.UI.Command.Refactorings.Notifiers;
 
-namespace Rubberduck.UI.CodeExplorer.Commands
+namespace Rubberduck.UI.CodeExplorer.Commands.DragAndDrop
 {
-    public sealed class CodeExplorerMoveToFolderCommand : CodeExplorerMoveToFolderCommandBase
+    public sealed class CodeExplorerMoveToFolderDragAndDropCommand : CodeExplorerMoveToFolderCommandBase
     {
-        private readonly IRefactoringUserInteraction<MoveMultipleFoldersModel> _moveFoldersInteraction;
-        private readonly IRefactoringUserInteraction<MoveMultipleToFolderModel> _moveToFolderInteraction;
-
-        public CodeExplorerMoveToFolderCommand(
+        public CodeExplorerMoveToFolderDragAndDropCommand(
             MoveMultipleFoldersRefactoringAction moveFolders,
-            RefactoringUserInteraction<IMoveMultipleFoldersPresenter, MoveMultipleFoldersModel> moveFoldersInteraction,
             MoveMultipleToFolderRefactoringAction moveToFolder,
-            RefactoringUserInteraction<IMoveMultipleToFolderPresenter, MoveMultipleToFolderModel> moveToFolderInteraction,
             MoveToFolderRefactoringFailedNotifier failureNotifier, 
             IParserStatusProvider parserStatusProvider, 
             IVbeEvents vbeEvents) 
             : base(moveFolders, moveToFolder, failureNotifier, parserStatusProvider, vbeEvents)
         {
-            _moveFoldersInteraction = moveFoldersInteraction;
-            _moveToFolderInteraction = moveToFolderInteraction;
-
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        public override IEnumerable<Type> ApplicableNodeTypes => ApplicableBaseNodes;
+        //We need to use the version with the interface since the type parameters always have to match exactly in the check in the base class.
+        public override IEnumerable<Type> ApplicableNodeTypes => new []{typeof(ValueTuple<string, ICodeExplorerNode>)};
 
         private bool SpecialEvaluateCanExecute(object parameter)
         {
-            return parameter is CodeExplorerCustomFolderViewModel
-                    || parameter is CodeExplorerComponentViewModel componentViewModel
-                        && componentViewModel.Declaration is ModuleDeclaration;
+            var (targetFolder, node) = (ValueTuple<string, ICodeExplorerNode>)parameter;
+            return !string.IsNullOrEmpty(targetFolder)
+                   && (node is CodeExplorerCustomFolderViewModel
+                    || node is CodeExplorerComponentViewModel componentViewModel
+                        && componentViewModel.Declaration is ModuleDeclaration);
         }
 
         protected override ICodeExplorerNode NodeFromParameter(object parameter)
         {
-            return parameter as ICodeExplorerNode;
+            var (targetFolder, node) = (ValueTuple<string, ICodeExplorerNode>)parameter;
+            return node;
         }
 
         protected override MoveMultipleFoldersModel ModifiedFolderModel(MoveMultipleFoldersModel model, object parameter)
         {
-            return _moveFoldersInteraction.UserModifiedModel(model);
+            var (targetFolder, node) = (ValueTuple<string, ICodeExplorerNode>)parameter;
+            model.TargetFolder = targetFolder;
+            return model;
         }
 
         protected override MoveMultipleToFolderModel ModifiedComponentModel(MoveMultipleToFolderModel model, object parameter)
         {
-            return _moveToFolderInteraction.UserModifiedModel(model);
+            var (targetFolder, node) = (ValueTuple<string, ICodeExplorerNode>)parameter;
+            model.TargetFolder = targetFolder;
+            return model;
         }
     }
 }
