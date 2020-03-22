@@ -159,8 +159,6 @@ End Property
             StringAssert.Contains("Private mTestValue2 As ETestValues", refactoredCode.Destination);
         }
 
-
-
         [TestCase("MoveThisUsesProperty", nameof(MoveMemberToStdModule))]
         [TestCase("MoveThisUsesMemberAccess", null)]
         [Category("Refactorings")]
@@ -268,6 +266,83 @@ End Function
             {
                 StringAssert.Contains("Public Enum KeyValues", refactoredCode.Source);
             }
+        }
+
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("MoveMember")]
+        public void MovePrivateEnumWithFunction()
+        {
+            var member = ("UsePvtEnum", DeclarationType.Function);
+            var source =
+$@"
+Option Explicit
+
+Private Enum KeyValues
+    KeyOne
+    KeyTwo
+End Enum
+
+Private mKV As KeyValues
+
+Private Function UsePvtEnum(arg As Long) As KeyValues
+    If arg = KeyOne OR arg = KeyTwo Then mKV = arg
+
+    UsePvtEnum = mKV
+End Function
+";
+
+            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, member, source);
+
+            var refactoredCode = ExecuteTest(moveDefinition);
+
+            StringAssert.AreEqualIgnoringCase("Option Explicit", refactoredCode.Source.Trim());
+
+            StringAssert.Contains("Private Enum KeyValues", refactoredCode.Destination);
+            StringAssert.Contains("Private mKV As KeyValues", refactoredCode.Destination);
+            StringAssert.Contains("Private Function UsePvtEnum(arg As Long) As KeyValues", refactoredCode.Destination);
+            Assert.IsTrue(MoveMemberTestSupport.OccursOnce("Private Enum KeyValues", refactoredCode.Destination));
+        }
+
+        [TestCase("KeyOne", null)]
+        [TestCase("KeyValues", nameof(MoveMemberToStdModule))]
+        [Category("Refactorings")]
+        [Category("MoveMember")]
+        public void MovePrivateEnumRespectsDestinationNameCollision(string memberName, string expectedStrategy)
+        {
+            var member = ("UsePvtEnum", DeclarationType.Function);
+            var source =
+$@"
+Option Explicit
+
+Private Enum KeyValues
+    KeyOne
+    KeyTwo
+End Enum
+
+Private mKV As KeyValues
+
+Private Function UsePvtEnum(arg As Long) As KeyValues
+    If arg = KeyOne OR arg = KeyTwo Then mKV = arg
+
+    UsePvtEnum = mKV
+End Function
+";
+
+            var destination =
+$@"
+Option Explicit
+
+Private Sub {memberName}(arg As Long)
+End Sub
+";
+
+            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, member, source, destination);
+
+            var refactoredCode = ExecuteTest(moveDefinition);
+
+            StringAssert.AreEqualIgnoringCase(expectedStrategy, refactoredCode.StrategyName);
         }
     }
 }

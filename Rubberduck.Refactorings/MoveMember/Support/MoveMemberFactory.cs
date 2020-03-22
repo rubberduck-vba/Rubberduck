@@ -88,7 +88,6 @@ namespace Rubberduck.Refactorings.MoveMember
 
         public IEnumerable<IMoveableMemberSet> CreateMoveables(Declaration moveTarget)
         {
-            var moveableMembers = new List<IMoveableMemberSet>();
             var groupsByIdentifier = _declarationFinderProvider.DeclarationFinder.Members(moveTarget.QualifiedModuleName)
                     .Where(d => d.IsMember() 
                                     || d.IsField() 
@@ -97,15 +96,18 @@ namespace Rubberduck.Refactorings.MoveMember
                                     || d.DeclarationType.Equals(DeclarationType.Enumeration))
                     .GroupBy(key => key.IdentifierName);
 
+            var moveableMembers = new List<IMoveableMemberSet>();
             foreach (var group in groupsByIdentifier)
             {
                 var newMoveable = new MoveableMemberSet(group.ToList());
                 newMoveable.IsSelected = newMoveable.IdentifierName == moveTarget.IdentifierName;
 
                 var idRefs = new List<IdentifierReference>();
-                foreach (var member in newMoveable.Members)
+                foreach (var member in newMoveable.Members.Where(m => m.IsMember()))
                 {
-                    var memberContainedReferences = _declarationFinderProvider.DeclarationFinder.IdentifierReferences(member.QualifiedModuleName.QualifyMemberName(member.IdentifierName))
+                    idRefs = FindDirectTypeReferences(member).ToList();
+
+                    var memberContainedReferences = _declarationFinderProvider.DeclarationFinder.IdentifierReferences(member.QualifiedName)
                         .Where(rf => !(rf.Declaration.DeclarationType.HasFlag(DeclarationType.Parameter) || rf.Declaration == rf.ParentScoping));
                     idRefs.AddRange(memberContainedReferences);
                 }
@@ -129,24 +131,32 @@ namespace Rubberduck.Refactorings.MoveMember
                 }
             }
 
-            var variables = moveableMembers.Where(m => m.Member.IsField()).ToList();
-            var types = _declarationFinderProvider.DeclarationFinder.Members(moveTarget.QualifiedModuleName)
-                .Where(m => m.DeclarationType.Equals(DeclarationType.UserDefinedType) || m.DeclarationType.Equals(DeclarationType.Enumeration));
-
-            foreach (var moveableMember in variables)
+            foreach (var moveableMember in moveableMembers.Where(m => m.Member.IsField()).ToList())
             {
-                var directRefs = new List<IdentifierReference>();
-                foreach (var typeReference in types.AllReferences())
-                {
-                    if (moveableMember.Member?.AsTypeDeclaration.Equals(typeReference.Declaration) ?? false)
-                    {
-                        directRefs.Add(typeReference);
-                    }
-                }
-
-                moveableMember.DirectReferences = directRefs;
+                moveableMember.DirectReferences = FindDirectTypeReferences(moveableMember.Member).ToList();
             }
             return moveableMembers;
+        }
+
+        private IEnumerable<IdentifierReference> FindDirectTypeReferences(Declaration member)
+        {
+            var types = _declarationFinderProvider.DeclarationFinder.Members(member.QualifiedModuleName)
+                .Where(m => m.DeclarationType.Equals(DeclarationType.UserDefinedType) || m.DeclarationType.Equals(DeclarationType.Enumeration));
+
+            var idRefs = new List<IdentifierReference>();
+            foreach (var typeReference in types.AllReferences())
+            {
+                if (member.AsTypeDeclaration?.Equals(typeReference.Declaration) ?? false)
+                {
+                    var memberAsTypeContext = member.Context.GetDescendent<VBAParser.AsTypeClauseContext>();
+                    var referenceAsTypeContext = typeReference.Context.GetAncestor<VBAParser.AsTypeClauseContext>();
+                    if (memberAsTypeContext.Equals(referenceAsTypeContext))
+                    {
+                        idRefs.Add(typeReference);
+                    }
+                }
+            }
+            return idRefs;
         }
 
         public IMovedContentProvider CreateMovedContentProvider()

@@ -58,7 +58,7 @@ namespace Rubberduck.Refactorings.MoveMember
             
             if (string.IsNullOrEmpty(model?.Destination.ModuleName))
             {
-                nonExecutableMessage = Resources.RubberduckUI.MoveMember_UndefinedDestinationModule; // MoveMemberResources.UndefinedDestinationModule;
+                nonExecutableMessage = Resources.RubberduckUI.MoveMember_UndefinedDestinationModule;
                 return false;
             }
             return true;
@@ -134,11 +134,6 @@ namespace Rubberduck.Refactorings.MoveMember
         private static bool TrySetDispositionGroupsForStandardModuleSource(MoveMemberModel model, MoveGroupsProvider moveGroups, out MoveDispositions dispositions)
         {
             dispositions = new MoveDispositions();
-
-            if (SelectedElementsContainAPrivateUDTOrEnumerationField(moveGroups))
-            {
-                return false;
-            }
 
             //Any Private declaration (member, field, or constant) that is used by both the Move Participants
             //and NonParticipants MUST be retained in the Source module.  If a Selected Element (which HAS to move)
@@ -219,14 +214,20 @@ namespace Rubberduck.Refactorings.MoveMember
 
             support[RequiredGroup.PrivateMove].AddRange(privateExclusiveSupportMoveableMemberSets.SelectMany(mm => mm.Members));
 
+            foreach (var key in support.Keys.ToList())
+            {
+                support[key] = support[key].Distinct().ToList();
+            }
+
             //Final check to see that all 'binning' has not resulted in overlaps.  If there are overlaps,
             //the strategy cannot fully resolve the scenario and execute the move 
             if (support[RequiredGroup.PrivateMove].Intersect(support[RequiredGroup.PrivateRetain]).Any()
-                || support[RequiredGroup.PublicMove].Intersect(support[RequiredGroup.PublicRetain]).Any()
-                || moveGroups.Declarations(MoveGroup.Selected).Intersect(support[RequiredGroup.PrivateRetain]).Any()
-                || moveGroups.Declarations(MoveGroup.Selected).Intersect(support[RequiredGroup.PublicRetain]).Any()
-                || moveGroups.Declarations(MoveGroup.Selected).Intersect(support[RequiredGroup.PrivateMove]).Any()
-                || moveGroups.Declarations(MoveGroup.Selected).Intersect(support[RequiredGroup.PublicMove]).Any())
+                || support[RequiredGroup.PublicMove].Intersect(support[RequiredGroup.PublicRetain]).Any())
+            {
+                return false;
+            }
+
+            if (CreatesEnumOrEnumMemberNameConflict(model, support[RequiredGroup.PrivateMove]))
             {
                 return false;
             }
@@ -319,29 +320,34 @@ namespace Rubberduck.Refactorings.MoveMember
             return contentProvider;
         }
 
-        private static void SetNonConflictIdentifierNames(MoveMemberModel model, IEnumerable<Declaration> copyAndDelete)
+        private static void SetNonConflictIdentifierNames(MoveMemberModel model, IEnumerable<Declaration> membersToMove)
         {
-            if (!model.Destination.IsExistingModule(out var destination)) { return; }
+            var conflictingMoveables = new List<IMoveableMemberSet>();
+            var moveableMembers = membersToMove.Select(mtm => model.MoveableMemberSetByName(mtm.IdentifierName)).Distinct();
+
+            foreach (var moveableMember in moveableMembers)
+            {
+                var movingEnumMembers = moveableMember.IsEnumeration
+                    ? model.Source.ModuleDeclarations.Where(d => d.DeclarationType.Equals(DeclarationType.EnumerationMember) && moveableMember.Member.Equals(d.ParentDeclaration))
+                    : null;
+
+                if (DeclarationMoveCreatesNameConflict(moveableMember.Member, model.Destination.ModuleDeclarations, movingEnumMembers))
+                {
+                    conflictingMoveables.Add(moveableMember);
+                }
+            }
 
             var allPotentialConflictNames = model.Destination.ModuleDeclarations
-                .Where(d => !NeverCauseNameConflictTypes.Contains(d.DeclarationType))
                 .Select(m => m.IdentifierName).ToList();
 
-            var conflictingIdentifiers = copyAndDelete
-                        .Where(m => allPotentialConflictNames.Contains(m.IdentifierName))
-                        .Select(m => m.IdentifierName)
-                        .Distinct();
-
-            foreach (var conflictIdentifier in conflictingIdentifiers)
+            foreach (var conflictMoveable in conflictingMoveables)
             {
-                var moveableMemberSet = model.MoveableMemberSetByName(conflictIdentifier);
-
-                if (!TryCreateNonConflictIdentifier(conflictIdentifier, allPotentialConflictNames, out var identifier))
+                if (!TryCreateNonConflictIdentifier(conflictMoveable.IdentifierName, allPotentialConflictNames, out var identifier))
                 {
-                    throw new MoveMemberUnsupportedMoveException(moveableMemberSet?.Member);
+                    throw new MoveMemberUnsupportedMoveException(conflictMoveable?.Member);
                 }
 
-                moveableMemberSet.MovedIdentifierName = identifier;
+                conflictMoveable.MovedIdentifierName = identifier;
                 allPotentialConflictNames.Add(identifier);
             }
         }
@@ -614,13 +620,6 @@ namespace Rubberduck.Refactorings.MoveMember
             return false;
         }
 
-        private static bool SelectedElementsContainAPrivateUDTOrEnumerationField(MoveGroupsProvider moveGroups)
-        {
-            var selectedMemberPrivateTypeDependencies = moveGroups.Declarations(MoveGroup.Selected)
-                    .Where(m => m.AsTypeDeclaration?.HasPrivateAccessibility() ?? false);
-            return selectedMemberPrivateTypeDependencies.Any();
-        }
-
         private static bool ParticipantsIncludeAnInterfaceImplementingMember(IEnumerable<Declaration> participatingMembers, MoveMemberModel model)
         {
             var interfaceImplementingMembers = model.DeclarationFinderProvider.DeclarationFinder.FindAllInterfaceImplementingMembers()
@@ -679,19 +678,26 @@ namespace Rubberduck.Refactorings.MoveMember
             return modules;
         }
 
-        //5.3.1.6 Each<subroutine-declaration> and<function-declaration> must have a procedure 
-        //name that is different from any other module variable name, module constant name, 
-        //enum member name, or procedure name that is defined within the same module.
-        private static List<DeclarationType> NeverCauseNameConflictTypes = new List<DeclarationType>()
+        private static bool CreatesEnumOrEnumMemberNameConflict(MoveMemberModel model, IEnumerable<Declaration> moveDeclarations)
         {
-            DeclarationType.Project,
-            DeclarationType.ProceduralModule,
-            DeclarationType.ClassModule,
-            DeclarationType.Parameter,
-            DeclarationType.Enumeration,
-            DeclarationType.UserDefinedType,
-            DeclarationType.UserDefinedTypeMember
-        };
+            //Since these are existing declarations we are moving around, we only need to check
+            //moved Private Enumerations and their Members for conflicts
+            var privateMoveDeclarations = moveDeclarations.Where(d => d.HasPrivateAccessibility());
+
+            var movingEnums = privateMoveDeclarations.Where(d => d.DeclarationType.Equals(DeclarationType.Enumeration));
+
+            if (!movingEnums.Any()) { return false; }
+
+            foreach (var movingEnum in movingEnums)
+            {
+                var movingEnumMembers = model.Source.ModuleDeclarations.Where(d => d.DeclarationType.Equals(DeclarationType.EnumerationMember) && movingEnum.Equals(d.ParentDeclaration));
+                if (DeclarationMoveCreatesNameConflict(movingEnum, model.Destination.ModuleDeclarations, movingEnumMembers))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         private static List<DeclarationType> NeverAddMemberAccessTypes = new List<DeclarationType>()
         {
@@ -741,7 +747,5 @@ namespace Rubberduck.Refactorings.MoveMember
                 _dispositions[moveDisposition].AddRange(declarations);
             }
         }
-
-
     }
 }

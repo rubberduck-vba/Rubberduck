@@ -33,6 +33,9 @@ namespace RubberduckTests.Refactoring.MoveMember
         private Dictionary<string, ModuleDefinition> _moduleDefs;
 
         public TestMoveDefinition(MoveEndpoints endpoints, (string identifier, DeclarationType declarationType) selection, string sourceContent = null)
+            : this(endpoints, selection, sourceContent, null) {}
+
+        public TestMoveDefinition(MoveEndpoints endpoints, (string identifier, DeclarationType declarationType) selection, string sourceContent, string destinationContent)
         {
             _moduleDefs = new Dictionary<string, ModuleDefinition>();
             _otherSelectedElements = new List<(string, DeclarationType)>();
@@ -44,7 +47,7 @@ namespace RubberduckTests.Refactoring.MoveMember
 
             if (sourceContent != null)
             {
-                SetEndpointContent(sourceContent, null);
+                SetEndpointContent(sourceContent, destinationContent);
             }
         }
 

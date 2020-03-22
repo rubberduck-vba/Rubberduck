@@ -255,6 +255,7 @@ End Property
             StringAssert.Contains("Private Type TModuleSource", refactoredCode.Destination);
             StringAssert.DoesNotContain(" Const", refactoredCode.Destination);
             StringAssert.Contains("Private this As TModuleSource", refactoredCode.Destination);
+            Assert.IsTrue(MoveMemberTestSupport.OccursOnce("Private this As TModuleSource", refactoredCode.Destination));
         }
 
         [TestCase("MoveThisUsesProperty", nameof(MoveMemberToStdModule))]
@@ -364,5 +365,38 @@ End Function
             }
         }
 
+        [Test]
+        [Category("Refactorings")]
+        [Category("MoveMember")]
+        public void MovePrivateUDTWithFunction()
+        {
+            var member = ("UsePvtType", DeclarationType.Function);
+            var source =
+$@"
+Option Explicit
+
+Private Type TestType
+    FirstValue As Long
+End Type
+
+Private mTestType As TestType
+
+Private Function UsePvtType(arg As Long) As TestType
+        mTestType.FirstValue = arg
+End Function
+";
+
+            var moveDefinition = new TestMoveDefinition(MoveEndpoints.StdToStd, member, source);
+
+            var refactoredCode = ExecuteTest(moveDefinition);
+
+            StringAssert.AreEqualIgnoringCase("Option Explicit", refactoredCode.Source.Trim());
+
+            StringAssert.Contains("Private Type TestType", refactoredCode.Destination);
+            StringAssert.Contains("FirstValue As Long", refactoredCode.Destination);
+            StringAssert.Contains("Private mTestType As TestType", refactoredCode.Destination);
+            StringAssert.Contains("Private Function UsePvtType(arg As Long) As TestType", refactoredCode.Destination);
+            Assert.IsTrue(MoveMemberTestSupport.OccursOnce("Private Type TestType", refactoredCode.Destination));
+        }
     }
 }

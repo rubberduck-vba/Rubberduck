@@ -85,7 +85,7 @@ namespace RubberduckTests.Refactoring.MoveMember
         {
             var firstIdx = content.IndexOf(toFind);
             var lastIdx = content.LastIndexOf(toFind);
-            return firstIdx == lastIdx;
+            return firstIdx == lastIdx && firstIdx > -1;
         }
 
         public static (string moduleName, string content, ComponentType componentType) EndpointToSourceTuple(MoveEndpoints endpoints, string content)
