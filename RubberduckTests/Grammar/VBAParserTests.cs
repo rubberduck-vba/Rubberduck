@@ -3481,7 +3481,7 @@ End Sub
 
         
         [Test]
-        public void LeftOutOptionalArgumentsAreCountedAsMissingArguments()
+        public void LeftOutOptionalArgumentsAreCountedAsMissingArguments_Mid_Function()
         {
             const string code = @"
 Public Sub Test()
@@ -3498,7 +3498,100 @@ End Function
             AssertTree(parseResult.Item1, parseResult.Item2, "//argumentList", matches => matches.Count == 1);
         }
 
-        
+
+        [Test]
+        public void LeftOutOptionalArgumentsAreCountedAsMissingArguments_Mid_Procedure()
+        {
+            const string code = @"
+Public Sub Test()
+    Dim x As Long
+    Foo 1, , 5
+End Sub
+
+Public Sub Foo(a, Optional b, Optional c)
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//missingArgument", matches => matches.Count == 1);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentList", matches => matches.Count == 1);
+        }
+
+
+        [Test]
+        public void LeftOutOptionalArgumentsAreCountedAsMissingArguments_MultipleAtStart_Function()
+        {
+            const string code = @"
+Public Sub Test()
+    Dim x As Long
+    x = Foo(, , 5)
+End Sub
+
+Public Function Foo(Optional a, Optional b, Optional c) As Long
+    Foo = 42
+End Function
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//missingArgument", matches => matches.Count == 2);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentList", matches => matches.Count == 1);
+        }
+
+
+        [Test]
+        public void LeftOutOptionalArgumentsAreCountedAsMissingArguments_SingleAtStart_Function()
+        {
+            const string code = @"
+Public Sub Test()
+    Dim x As Long
+    x = Foo(, 1, 5)
+End Sub
+
+Public Function Foo(Optional a, Optional b, Optional c) As Long
+    Foo = 42
+End Function
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//missingArgument", matches => matches.Count == 1);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentList", matches => matches.Count == 1);
+        }
+
+
+        [Test]
+        public void LeftOutOptionalArgumentsAreCountedAsMissingArguments_AtStart_Procedure()
+        {
+            const string code = @"
+Public Sub Test()
+    Dim x As Long
+    Foo , , 5
+End Sub
+
+Public Sub Foo(Optional a, Optional b, Optional c)
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//missingArgument", matches => matches.Count == 2);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentList", matches => matches.Count == 1);
+        }
+
+
+        [Test]
+        //See issue #5440 at https://github.com/rubberduck-vba/Rubberduck/issues/5440
+        public void LeftOutOptionalArgumentsAreCountedAsMissingArguments_OneAtStart_Procedure()
+        {
+            const string code = @"
+Public Sub Test()
+    Dim x As Long
+    Foo , 1, 5
+End Sub
+
+Public Sub Foo(Optional a, Optional b, Optional c)
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//missingArgument", matches => matches.Count == 1);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//argumentList", matches => matches.Count == 1);
+        }
+
+
         [Test]
         public void TestReDimWithLineContinuation()
         {
