@@ -84,7 +84,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     GenerateLetter = ImplementLet,
                     GenerateSetter = ImplementSet,
                     UsesSetAssignment = Declaration.IsObject,
-                    IsUDTProperty = Declaration.DeclarationType == DeclarationType.UserDefinedType
+                    IsUDTProperty = Declaration.DeclarationType == DeclarationType.UserDefinedType,
+                    Declaration = Declaration
                 };
             }
         }

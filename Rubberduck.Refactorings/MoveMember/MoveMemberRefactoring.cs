@@ -4,6 +4,7 @@ using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.MoveMember.Extensions;
 using Rubberduck.Refactorings.Rename;

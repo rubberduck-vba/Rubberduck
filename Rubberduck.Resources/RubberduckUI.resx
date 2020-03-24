@@ -1827,5 +1827,8 @@ Import aborted.</value>
   <data name="MoveMember_UnsupportedMoveExceptionFormat" xml:space="preserve">
     <value>Unable to Move Member: {0}</value>
     <comment>{0} = member identifier</comment>
+  </data>	
+  <data name="ImplementInterface_TODO" xml:space="preserve">
+    <value>'TODO implement interface member</value>
   </data>
 </root>

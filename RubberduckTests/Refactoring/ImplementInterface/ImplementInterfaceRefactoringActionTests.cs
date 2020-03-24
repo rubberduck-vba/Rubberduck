@@ -14,6 +14,8 @@ namespace RubberduckTests.Refactoring
     [TestFixture]
     public class ImplementInterfaceRefactoringActionTests : RefactoringActionTestBase<ImplementInterfaceModel>
     {
+        private string _todoImplementMessage = "Err.Raise 5 'TODO implement interface member";
+
         [Test]
         [Category("Refactorings")]
         [Category("Implement Interface")]
@@ -28,11 +30,11 @@ End Sub";
                 @"Implements Interface1";
 
             //Expectation
-            const string expectedCode =
-                @"Implements Interface1
+            string expectedCode =
+                $@"Implements Interface1
 
 Private Sub Interface1_Foo()
-    Err.Raise 5 'TODO implement interface member
+    {_todoImplementMessage}
 End Sub
 ";
             ExecuteTest(classCode, interfaceCode, expectedCode);
@@ -55,14 +57,14 @@ Public Sub Bar()
 End Sub";
 
             //Expectation
-            const string expectedCode =
-                @"Implements Interface1
+            string expectedCode =
+                $@"Implements Interface1
 
 Public Sub Bar()
 End Sub
 
 Private Sub Interface1_Foo()
-    Err.Raise 5 'TODO implement interface member
+    {_todoImplementMessage}
 End Sub
 ";
             ExecuteTest(classCode, interfaceCode, expectedCode);
@@ -91,22 +93,22 @@ Private Property Let Interface1_b(RHS As String)
 End Property";
 
             //Expectation
-            const string expectedCode =
-                @"Implements Interface1
+            string expectedCode =
+                $@"Implements Interface1
 
 Private Property Let Interface1_b(RHS As String)
 End Property
 
 Private Property Get Interface1_a() As String
-    Err.Raise 5 'TODO implement interface member
+    {_todoImplementMessage}
 End Property
 
-Private Property Let Interface1_a(RHS As String)
-    Err.Raise 5 'TODO implement interface member
+Private Property Let Interface1_a(ByVal RHS As String)
+    {_todoImplementMessage}
 End Property
 
 Private Property Get Interface1_b() As String
-    Err.Raise 5 'TODO implement interface member
+    {_todoImplementMessage}
 End Property
 ";
             ExecuteTest(classCode, interfaceCode, expectedCode);
@@ -126,11 +128,11 @@ End Sub";
                 @"Implements Interface1";
 
             //Expectation
-            const string expectedCode =
-                @"Implements Interface1
+            string expectedCode =
+                $@"Implements Interface1
 
 Private Sub Interface1_Foo(ByVal a As Integer, ByRef b As Variant, c As Variant, d As Long)
-    Err.Raise 5 'TODO implement interface member
+    {_todoImplementMessage}
 End Sub
 ";
             ExecuteTest(classCode, interfaceCode, expectedCode);
@@ -150,11 +152,11 @@ End Function";
                 @"Implements Interface1";
 
             //Expectation
-            const string expectedCode =
-                @"Implements Interface1
+            string expectedCode =
+                $@"Implements Interface1
 
 Private Function Interface1_Foo() As Integer
-    Err.Raise 5 'TODO implement interface member
+    {_todoImplementMessage}
 End Function
 ";
             ExecuteTest(classCode, interfaceCode, expectedCode);
@@ -174,11 +176,11 @@ End Function";
                 @"Implements Interface1";
 
             //Expectation
-            const string expectedCode =
-                @"Implements Interface1
+            string expectedCode =
+                $@"Implements Interface1
 
 Private Function Interface1_Foo() As Variant
-    Err.Raise 5 'TODO implement interface member
+    {_todoImplementMessage}
 End Function
 ";
             ExecuteTest(classCode, interfaceCode, expectedCode);
@@ -198,11 +200,11 @@ End Function";
                 @"Implements Interface1";
 
             //Expectation
-            const string expectedCode =
-                @"Implements Interface1
+            string expectedCode =
+                $@"Implements Interface1
 
 Private Function Interface1_Foo(a As Variant) As Variant
-    Err.Raise 5 'TODO implement interface member
+    {_todoImplementMessage}
 End Function
 ";
             ExecuteTest(classCode, interfaceCode, expectedCode);
@@ -222,11 +224,11 @@ End Property";
                 @"Implements Interface1";
 
             //Expectation
-            const string expectedCode =
-                @"Implements Interface1
+            string expectedCode =
+                $@"Implements Interface1
 
 Private Property Get Interface1_Foo() As Integer
-    Err.Raise 5 'TODO implement interface member
+    {_todoImplementMessage}
 End Property
 ";
             ExecuteTest(classCode, interfaceCode, expectedCode);
@@ -246,11 +248,11 @@ End Property";
                 @"Implements Interface1";
 
             //Expectation
-            const string expectedCode =
-                @"Implements Interface1
+            string expectedCode =
+                $@"Implements Interface1
 
 Private Property Get Interface1_Foo() As Variant
-    Err.Raise 5 'TODO implement interface member
+    {_todoImplementMessage}
 End Property
 ";
             ExecuteTest(classCode, interfaceCode, expectedCode);
@@ -270,11 +272,11 @@ End Property";
                 @"Implements Interface1";
 
             //Expectation
-            const string expectedCode =
-                @"Implements Interface1
+            string expectedCode =
+                $@"Implements Interface1
 
 Private Property Get Interface1_Foo(a As Variant) As Variant
-    Err.Raise 5 'TODO implement interface member
+    {_todoImplementMessage}
 End Property
 ";
             ExecuteTest(classCode, interfaceCode, expectedCode);
@@ -294,11 +296,11 @@ End Property";
                 @"Implements Interface1";
 
             //Expectation
-            const string expectedCode =
-                @"Implements Interface1
+            string expectedCode =
+                $@"Implements Interface1
 
-Private Property Let Interface1_Foo(ByRef value As Long)
-    Err.Raise 5 'TODO implement interface member
+Private Property Let Interface1_Foo(ByVal value As Long)
+    {_todoImplementMessage}
 End Property
 ";
             ExecuteTest(classCode, interfaceCode, expectedCode);
@@ -318,11 +320,11 @@ End Property";
                 @"Implements Interface1";
 
             //Expectation
-            const string expectedCode =
-                @"Implements Interface1
+            string expectedCode =
+                $@"Implements Interface1
 
-Private Property Let Interface1_Foo(a As Variant)
-    Err.Raise 5 'TODO implement interface member
+Private Property Let Interface1_Foo(ByVal a As Variant)
+    {_todoImplementMessage}
 End Property
 ";
             ExecuteTest(classCode, interfaceCode, expectedCode);
@@ -342,11 +344,11 @@ End Property";
                 @"Implements Interface1";
 
             //Expectation
-            const string expectedCode =
-                @"Implements Interface1
+            string expectedCode =
+                $@"Implements Interface1
 
-Private Property Set Interface1_Foo(ByRef value As Variant)
-    Err.Raise 5 'TODO implement interface member
+Private Property Set Interface1_Foo(ByVal value As Variant)
+    {_todoImplementMessage}
 End Property
 ";
             ExecuteTest(classCode, interfaceCode, expectedCode);
@@ -366,11 +368,11 @@ End Property";
                 @"Implements Interface1";
 
             //Expectation
-            const string expectedCode =
-                @"Implements Interface1
+            string expectedCode =
+                 $@"Implements Interface1
 
-Private Property Set Interface1_Foo(a As Variant)
-    Err.Raise 5 'TODO implement interface member
+Private Property Set Interface1_Foo(ByVal a As Variant)
+    {_todoImplementMessage}
 End Property
 ";
             ExecuteTest(classCode, interfaceCode, expectedCode);
@@ -399,23 +401,23 @@ End Property";
                 @"Implements Interface1";
 
             //Expectation
-            const string expectedCode =
-                @"Implements Interface1
+            string expectedCode =
+                $@"Implements Interface1
 
 Private Sub Interface1_Foo()
-    Err.Raise 5 'TODO implement interface member
+    {_todoImplementMessage}
 End Sub
 
 Private Function Interface1_Bar(ByVal a As Integer) As Boolean
-    Err.Raise 5 'TODO implement interface member
+    {_todoImplementMessage}
 End Function
 
 Private Property Get Interface1_Buz(ByVal a As Boolean) As Integer
-    Err.Raise 5 'TODO implement interface member
+    {_todoImplementMessage}
 End Property
 
-Private Property Let Interface1_Buz(ByVal a As Boolean, ByRef value As Integer)
-    Err.Raise 5 'TODO implement interface member
+Private Property Let Interface1_Buz(ByVal a As Boolean, ByVal value As Integer)
+    {_todoImplementMessage}
 End Property
 ";
             ExecuteTest(classCode, interfaceCode, expectedCode);
@@ -447,27 +449,27 @@ End Property";
                 @"Implements Interface1";
 
             //Expectation
-            const string expectedCode =
-                @"Implements Interface1
+            string expectedCode =
+                $@"Implements Interface1
 
 Private Sub Interface1_Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-    Err.Raise 5 'TODO implement interface member
+    {_todoImplementMessage}
 End Sub
 
 Private Function Interface1_Fizz(b As Variant) As Variant
-    Err.Raise 5 'TODO implement interface member
+    {_todoImplementMessage}
 End Function
 
 Private Property Get Interface1_Buzz() As Variant
-    Err.Raise 5 'TODO implement interface member
+    {_todoImplementMessage}
 End Property
 
-Private Property Let Interface1_Buzz(value As Variant)
-    Err.Raise 5 'TODO implement interface member
+Private Property Let Interface1_Buzz(ByVal value As Variant)
+    {_todoImplementMessage}
 End Property
 
-Private Property Set Interface1_Buzz(value As Variant)
-    Err.Raise 5 'TODO implement interface member
+Private Property Set Interface1_Buzz(ByVal value As Variant)
+    {_todoImplementMessage}
 End Property
 ";
             ExecuteTest(classCode, interfaceCode, expectedCode);
@@ -484,15 +486,15 @@ End Property
                 @"Implements Interface1";
 
             //Expectation
-            const string expectedCode =
-                @"Implements Interface1
+            string expectedCode =
+                $@"Implements Interface1
 
 Private Property Get Interface1_Foo() As Long
-    Err.Raise 5 'TODO implement interface member
+    {_todoImplementMessage}
 End Property
 
-Private Property Let Interface1_Foo(ByVal rhs As Long)
-    Err.Raise 5 'TODO implement interface member
+Private Property Let Interface1_Foo(ByVal value As Long)
+    {_todoImplementMessage}
 End Property
 ";
             ExecuteTest(classCode, interfaceCode, expectedCode);
@@ -509,15 +511,15 @@ End Property
                 @"Implements Interface1";
 
             //Expectation
-            const string expectedCode =
-                @"Implements Interface1
+            string expectedCode =
+                $@"Implements Interface1
 
 Private Property Get Interface1_Foo() As Object
-    Err.Raise 5 'TODO implement interface member
+    {_todoImplementMessage}
 End Property
 
-Private Property Set Interface1_Foo(ByVal rhs As Object)
-    Err.Raise 5 'TODO implement interface member
+Private Property Set Interface1_Foo(ByVal value As Object)
+    {_todoImplementMessage}
 End Property
 ";
             ExecuteTest(classCode, interfaceCode, expectedCode);
@@ -536,19 +538,19 @@ End Property
                 @"Implements Interface1";
 
             //Expectation
-            const string expectedCode =
-                @"Implements Interface1
+            string expectedCode =
+                $@"Implements Interface1
 
 Private Property Get Interface1_Foo() As Variant
-    Err.Raise 5 'TODO implement interface member
+    {_todoImplementMessage}
 End Property
 
-Private Property Let Interface1_Foo(ByVal rhs As Variant)
-    Err.Raise 5 'TODO implement interface member
+Private Property Let Interface1_Foo(ByVal value As Variant)
+    {_todoImplementMessage}
 End Property
 
-Private Property Set Interface1_Foo(ByVal rhs As Variant)
-    Err.Raise 5 'TODO implement interface member
+Private Property Set Interface1_Foo(ByVal value As Variant)
+    {_todoImplementMessage}
 End Property
 ";
             ExecuteTest(classCode, interfaceCode, expectedCode);
@@ -568,11 +570,11 @@ End Sub";
                 @"Implements Interface1";
 
             //Expectation
-            const string expectedCode =
-                @"Implements Interface1
+            string expectedCode =
+                $@"Implements Interface1
 
 Private Sub Interface1_Foo(arg As Variant)
-    Err.Raise 5 'TODO implement interface member
+    {_todoImplementMessage}
 End Sub
 ";
             ExecuteTest(classCode, interfaceCode, expectedCode);
@@ -592,11 +594,11 @@ End Sub";
                 @"Implements Interface1";
 
             //Expectation
-            const string expectedCode =
-                @"Implements Interface1
+            string expectedCode =
+                $@"Implements Interface1
 
 Private Sub Interface1_Foo(ByRef arg As Variant)
-    Err.Raise 5 'TODO implement interface member
+    {_todoImplementMessage}
 End Sub
 ";
             ExecuteTest(classCode, interfaceCode, expectedCode);
@@ -616,11 +618,11 @@ End Sub";
                 @"Implements Interface1";
 
             //Expectation
-            const string expectedCode =
-                @"Implements Interface1
+            string expectedCode =
+                $@"Implements Interface1
 
 Private Sub Interface1_Foo(ByVal arg As Variant)
-    Err.Raise 5 'TODO implement interface member
+    {_todoImplementMessage}
 End Sub
 ";
             ExecuteTest(classCode, interfaceCode, expectedCode);
@@ -640,11 +642,11 @@ End Sub";
                 @"Implements Interface1";
 
             //Expectation
-            const string expectedCode =
-                @"Implements Interface1
+            string expectedCode =
+                $@"Implements Interface1
 
 Private Sub Interface1_Foo(Optional arg As Variant)
-    Err.Raise 5 'TODO implement interface member
+    {_todoImplementMessage}
 End Sub
 ";
             ExecuteTest(classCode, interfaceCode, expectedCode);
@@ -664,11 +666,11 @@ End Sub";
                 @"Implements Interface1";
 
             //Expectation
-            const string expectedCode =
-                @"Implements Interface1
+            string expectedCode =
+                $@"Implements Interface1
 
 Private Sub Interface1_Foo(Optional arg As Variant = 42)
-    Err.Raise 5 'TODO implement interface member
+    {_todoImplementMessage}
 End Sub
 ";
             ExecuteTest(classCode, interfaceCode, expectedCode);
@@ -688,11 +690,11 @@ End Sub";
                 @"Implements Interface1";
 
             //Expectation
-            const string expectedCode =
-                @"Implements Interface1
+            string expectedCode =
+                $@"Implements Interface1
 
 Private Sub Interface1_Foo(arg1 As Long, ParamArray args() As Variant)
-    Err.Raise 5 'TODO implement interface member
+    {_todoImplementMessage}
 End Sub
 ";
             ExecuteTest(classCode, interfaceCode, expectedCode);
@@ -712,11 +714,11 @@ End Sub";
                 @"Implements Interface1";
 
             //Expectation
-            const string expectedCode =
-                @"Implements Interface1
+            string expectedCode =
+                $@"Implements Interface1
 
 Private Sub Interface1_Foo(arg1 As Variant)
-    Err.Raise 5 'TODO implement interface member
+    {_todoImplementMessage}
 End Sub
 ";
             ExecuteTest(classCode, interfaceCode, expectedCode);
@@ -736,11 +738,11 @@ End Sub";
                 @"Implements Interface1";
 
             //Expectation
-            const string expectedCode =
-                @"Implements Interface1
+            string expectedCode =
+                 $@"Implements Interface1
 
 Private Sub Interface1_Foo(arg1() As Long)
-    Err.Raise 5 'TODO implement interface member
+    {_todoImplementMessage}
 End Sub
 ";
             ExecuteTest(classCode, interfaceCode, expectedCode);
@@ -753,7 +755,7 @@ End Sub
                 ("Class1", classCode,ComponentType.ClassModule),
                 ("Interface1", interfaceCode, ComponentType.ClassModule));
 
-            Assert.AreEqual(expectedClassCode, refactoredCode["Class1"]);
+            Assert.AreEqual(expectedClassCode.Trim(), refactoredCode["Class1"].Trim());
         }
 
         private static ImplementInterfaceModel TestModel(RubberduckParserState state)

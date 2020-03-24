@@ -2000,6 +2000,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;TODO implement interface member.
+        /// </summary>
+        public static string ImplementInterface_TODO {
+            get {
+                return ResourceManager.GetString("ImplementInterface_TODO", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No implements selected..
         /// </summary>
         public static string ImplementInterfaceFailed_NoImplementsStatementSelected {

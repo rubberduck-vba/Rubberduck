@@ -56,6 +56,7 @@ End Property
 
             var presenterAction = Support.SetParameters(userInput);
             var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            var expectedLines = expectedCode.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
             Assert.AreEqual(expectedCode.Trim(), actualCode);
         }
 
