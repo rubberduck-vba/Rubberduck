@@ -99,11 +99,11 @@ Private Property Get IClass_Buzz() As Variant
     Err.Raise 5 'TODO implement interface member
 End Property
 
-Private Property Let IClass_Buzz(value As Variant)
+Private Property Let IClass_Buzz(ByVal value As Variant)
     Err.Raise 5 'TODO implement interface member
 End Property
 
-Private Property Set IClass_Buzz(value As Variant)
+Private Property Set IClass_Buzz(ByVal value As Variant)
     Err.Raise 5 'TODO implement interface member
 End Property
 ";
@@ -122,10 +122,10 @@ End Function
 Public Property Get Buzz() As Variant
 End Property
 
-Public Property Let Buzz(value As Variant)
+Public Property Let Buzz(ByVal value As Variant)
 End Property
 
-Public Property Set Buzz(value As Variant)
+Public Property Set Buzz(ByVal value As Variant)
 End Property
 ";
             ExecuteTest(inputCode, expectedClassCode, expectedInterfaceCode, SelectAllMembers);
@@ -720,8 +720,8 @@ End Sub
                 state => TestModel(state, modelAdjustment),
                 ("Class", inputCode, ComponentType.ClassModule));
 
-            Assert.AreEqual(expectedClassCode, refactoredCode["Class"]);
-            Assert.AreEqual(expectedInterfaceCode, refactoredCode["IClass"]);
+            Assert.AreEqual(expectedClassCode.Trim(), refactoredCode["Class"].Trim());
+            Assert.AreEqual(expectedInterfaceCode.Trim(), refactoredCode["IClass"].Trim());
         }
 
         private static ExtractInterfaceModel SelectAllMembers(ExtractInterfaceModel model)
