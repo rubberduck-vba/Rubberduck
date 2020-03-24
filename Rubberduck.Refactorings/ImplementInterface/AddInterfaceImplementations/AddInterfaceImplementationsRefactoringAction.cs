@@ -4,17 +4,20 @@ using System.Linq;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.ImplementInterface;
 
 namespace Rubberduck.Refactorings.AddInterfaceImplementations
 {
     public class AddInterfaceImplementationsRefactoringAction : CodeOnlyRefactoringActionBase<AddInterfaceImplementationsModel>
     {
-        private const string MemberBody = "    Err.Raise 5 'TODO implement interface member";
+        private readonly string _memberBody;
 
         public AddInterfaceImplementationsRefactoringAction(IRewritingManager rewritingManager) 
             : base(rewritingManager)
-        {}
+        {
+            _memberBody = $"    {Tokens.Err}.Raise 5 {Resources.RubberduckUI.ImplementInterface_TODO}";
+        }
 
         public override void Refactor(AddInterfaceImplementationsModel model, IRewriteSession rewriteSession)
         {
@@ -32,67 +35,32 @@ namespace Rubberduck.Refactorings.AddInterfaceImplementations
 
         private string GetInterfaceMember(Declaration member, string interfaceName)
         {
-            var template = string.Join(Environment.NewLine, Tokens.Private + " {0}{1} {2}{3}", MemberBody, Tokens.End + " {0}", string.Empty);
-            var signature = $"{interfaceName}_{member.IdentifierName}({string.Join(", ", GetParameters(member))})";
-            var asType = $" {Tokens.As} {member.AsTypeName}";
-
-            switch (member.DeclarationType)
+            if (member is ModuleBodyElementDeclaration mbed)
             {
-                case DeclarationType.Procedure:
-                    return string.Format(template, Tokens.Sub, string.Empty, signature, string.Empty);
-                case DeclarationType.Function:
-                    return string.Format(template, Tokens.Function, string.Empty, signature, asType);
-                case DeclarationType.PropertyGet:
-                    return string.Format(template, Tokens.Property, $" {Tokens.Get}", signature, asType);
-                case DeclarationType.PropertyLet:
-                    return string.Format(template, Tokens.Property, $" {Tokens.Let}", signature, string.Empty);
-                case DeclarationType.PropertySet:
-                    return string.Format(template, Tokens.Property, $" {Tokens.Set}", signature, string.Empty);
-                case DeclarationType.Variable:
-                    var members = new List<string>
-                    {
-                        string.Format(template, Tokens.Property, $" {Tokens.Get}", $"{interfaceName}_{member.IdentifierName}()", asType)
-                    };
+                return mbed.AsCodeBlock(accessibility: Tokens.Private, newIdentifier: $"{interfaceName}_{member.IdentifierName}", content: _memberBody);
+            }
 
-                    if (member.AsTypeName.Equals(Tokens.Variant) || !member.IsObject)
-                    {
-                        members.Add(string.Format(template, Tokens.Property, $" {Tokens.Let}", signature, string.Empty));
-                    }
+            if (member.DeclarationType.Equals(DeclarationType.Variable))
+            {
+                var propertyGet = member.FieldToPropertyBlock(DeclarationType.PropertyGet, $"{interfaceName}_{member.IdentifierName}", Tokens.Private, _memberBody);
+                var members = new List<string> { propertyGet };
 
-                    if (member.AsTypeName.Equals(Tokens.Variant) || member.IsObject)
-                    {
-                        members.Add(string.Format(template, Tokens.Property, $" {Tokens.Set}", signature, string.Empty));
-                    }
+                if (member.AsTypeName.Equals(Tokens.Variant) || !member.IsObject)
+                {
+                    var propertyLet = member.FieldToPropertyBlock(DeclarationType.PropertyLet, $"{interfaceName}_{member.IdentifierName}", Tokens.Private, _memberBody);
+                    members.Add(propertyLet);
+                }
 
-                    return string.Join(Environment.NewLine, members);
+                if (member.AsTypeName.Equals(Tokens.Variant) || member.IsObject)
+                {
+                    var propertySet = member.FieldToPropertyBlock(DeclarationType.PropertySet, $"{interfaceName}_{member.IdentifierName}", Tokens.Private, _memberBody);
+                    members.Add(propertySet);
+                }
+
+                return string.Join($"{Environment.NewLine}{Environment.NewLine}", members);
             }
 
             return string.Empty;
-        }
-
-        private IEnumerable<Parameter> GetParameters(Declaration member)
-        {
-            if (member.DeclarationType == DeclarationType.Variable)
-            {
-                return new List<Parameter>
-                {
-                    new Parameter
-                    {
-                        Accessibility = Tokens.ByVal,
-                        Name = "rhs",
-                        AsTypeName = member.AsTypeName
-                    }
-                };
-            }
-
-            if (member is ModuleBodyElementDeclaration method)
-            {
-                return method.Parameters
-                    .OrderBy(parameter => parameter.Selection)
-                    .Select(parameter => new Parameter(parameter));
-            }
-
-            return Enumerable.Empty<Parameter>();
         }
     }
 }

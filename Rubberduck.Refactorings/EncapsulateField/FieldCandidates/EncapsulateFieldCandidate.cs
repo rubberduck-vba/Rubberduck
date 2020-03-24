@@ -1,6 +1,7 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor;
@@ -229,7 +230,8 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     GenerateLetter = ImplementLet,
                     GenerateSetter = ImplementSet,
                     UsesSetAssignment = Declaration.IsObject,
-                    IsUDTProperty = false
+                    IsUDTProperty = false,
+                    Declaration = Declaration
                 };
             }
         }

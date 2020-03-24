@@ -1,6 +1,10 @@
 ﻿using Antlr4.Runtime;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Common;
+using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using System;
@@ -66,10 +70,33 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             var propertyGenerationSpecs = SelectedFields.SelectMany(f => f.PropertyAttributeSets);
 
-            var generator = new PropertyGenerator();
-            foreach (var spec in propertyGenerationSpecs)
+            foreach (var selectedField in SelectedFields)
             {
-                AddContentBlock(NewContentTypes.MethodBlock, generator.AsPropertyBlock(spec, _indenter));
+                var converted = selectedField as IConvertToUDTMember;
+                foreach (var set in selectedField.PropertyAttributeSets)
+                {
+                    if (converted.Declaration is VariableDeclaration variableDeclaration)
+                    {
+                        var getContent = $"{set.PropertyName} = {set.BackingField}";
+                        if (set.UsesSetAssignment)
+                        {
+                            getContent = $"{Tokens.Set} {getContent}";
+                        }
+                        AddContentBlock(NewContentTypes.MethodBlock, variableDeclaration.FieldToPropertyBlock(DeclarationType.PropertyGet, set.PropertyName, content: $"{_defaultIndent}{getContent}"));
+                        if (converted.IsReadOnly)
+                        {
+                            continue;
+                        }
+                        if (set.GenerateLetter)
+                        {
+                            AddContentBlock(NewContentTypes.MethodBlock, variableDeclaration.FieldToPropertyBlock(DeclarationType.PropertyLet, set.PropertyName, content: $"{_defaultIndent}{set.BackingField} = {set.ParameterName}"));
+                        }
+                        if (set.GenerateSetter)
+                        {
+                            AddContentBlock(NewContentTypes.MethodBlock, variableDeclaration.FieldToPropertyBlock(DeclarationType.PropertySet, set.PropertyName, content: $"{_defaultIndent}{Tokens.Set} {set.BackingField} = {set.ParameterName}"));
+                        }
+                    }
+                }
             }
         }
 

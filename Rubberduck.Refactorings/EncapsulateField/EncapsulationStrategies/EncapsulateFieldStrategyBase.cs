@@ -3,6 +3,7 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.EncapsulateField.Extensions;
 using Rubberduck.Resources;
 using Rubberduck.SmartIndenter;
@@ -15,6 +16,20 @@ using System.Threading.Tasks;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
+
+    public struct PropertyAttributeSet
+    {
+        public string PropertyName { get; set; }
+        public string BackingField { get; set; }
+        public string AsTypeName { get; set; }
+        public string ParameterName { get; set; }
+        public bool GenerateLetter { get; set; }
+        public bool GenerateSetter { get; set; }
+        public bool UsesSetAssignment { get; set; }
+        public bool IsUDTProperty { get; set; }
+        public Declaration Declaration { get; set; }
+    }
+
     public interface IEncapsulateStrategy
     {
         IEncapsulateFieldRewriteSession RefactorRewrite(IEncapsulateFieldRewriteSession refactorRewriteSession, bool asPreview);
@@ -25,6 +40,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         protected readonly IIndenter _indenter;
         protected QualifiedModuleName _targetQMN;
         private readonly int? _codeSectionStartIndex;
+        protected const string _defaultIndent = "    "; //4 spaces
 
         protected Dictionary<IdentifierReference, (ParserRuleContext, string)> IdentifierReplacements { get; } = new Dictionary<IdentifierReference, (ParserRuleContext, string)>();
 
@@ -102,6 +118,15 @@ namespace Rubberduck.Refactorings.EncapsulateField
                             .Concat(_newContent[NewContentTypes.PostContentMessage]))
                             .Trim();
 
+            var maxConsecutiveNewLines = 3;
+            var target = string.Join(string.Empty, Enumerable.Repeat(Environment.NewLine, maxConsecutiveNewLines).ToList());
+            var replacement = string.Join(string.Empty, Enumerable.Repeat(Environment.NewLine, maxConsecutiveNewLines - 1).ToList());
+            for (var counter = 1; counter < 10 && newContentBlock.Contains(target); counter++)
+            {
+                newContentBlock = newContentBlock.Replace(target, replacement);
+            }
+
+
             var rewriter = refactorRewriteSession.CheckOutModuleRewriter(_targetQMN);
             if (_codeSectionStartIndex.HasValue)
             {
@@ -115,12 +140,37 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         protected virtual void LoadNewPropertyBlocks()
         {
-            var propertyGenerationSpecs = SelectedFields.SelectMany(f => f.PropertyAttributeSets);
-
-            var generator = new PropertyGenerator();
-            foreach (var spec in propertyGenerationSpecs)
+            foreach (var attributeSet in SelectedFields.SelectMany(f => f.PropertyAttributeSets))
             {
-                AddContentBlock(NewContentTypes.MethodBlock, generator.AsPropertyBlock(spec, _indenter));
+                if (attributeSet.Declaration is VariableDeclaration || attributeSet.Declaration.DeclarationType.Equals(DeclarationType.UserDefinedTypeMember))
+                {
+                    var getContent = $"{attributeSet.PropertyName} = {attributeSet.BackingField}";
+                    if (attributeSet.UsesSetAssignment)
+                    {
+                        getContent = $"{Tokens.Set} {getContent}";
+                    }
+                    if (attributeSet.AsTypeName.Equals(Tokens.Variant) && !attributeSet.Declaration.IsArray)
+                    {
+                        getContent = string.Join(Environment.NewLine,
+                                            $"{Tokens.If} IsObject({attributeSet.BackingField}) {Tokens.Then}",
+                                            $"{_defaultIndent}{Tokens.Set} {attributeSet.PropertyName} = {attributeSet.BackingField}",
+                                            Tokens.Else,
+                                            $"{_defaultIndent}{attributeSet.PropertyName} = {attributeSet.BackingField}",
+                                            $"{Tokens.End} {Tokens.If}",
+                                            Environment.NewLine);
+                    }
+
+                    AddContentBlock(NewContentTypes.MethodBlock, attributeSet.Declaration.FieldToPropertyBlock(DeclarationType.PropertyGet, attributeSet.PropertyName, content: $"{_defaultIndent}{getContent}"));
+
+                    if (attributeSet.GenerateLetter)
+                    {
+                        AddContentBlock(NewContentTypes.MethodBlock, attributeSet.Declaration.FieldToPropertyBlock(DeclarationType.PropertyLet, attributeSet.PropertyName, content: $"{_defaultIndent}{attributeSet.BackingField} = {attributeSet.ParameterName}"));
+                    }
+                    if (attributeSet.GenerateSetter)
+                    {
+                        AddContentBlock(NewContentTypes.MethodBlock, attributeSet.Declaration.FieldToPropertyBlock(DeclarationType.PropertySet, attributeSet.PropertyName, content: $"{_defaultIndent}{Tokens.Set} {attributeSet.BackingField} = {attributeSet.ParameterName}"));
+                    }
+                }
             }
         }
 
