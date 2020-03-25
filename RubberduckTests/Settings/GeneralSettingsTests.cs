@@ -8,7 +8,6 @@ using Rubberduck.Common;
 using Moq;
 using Rubberduck.VBEditor.VbeRuntime.Settings;
 using System;
-using System.Collections.ObjectModel;
 using Rubberduck.Interaction;
 using Rubberduck.SettingsProvider;
 

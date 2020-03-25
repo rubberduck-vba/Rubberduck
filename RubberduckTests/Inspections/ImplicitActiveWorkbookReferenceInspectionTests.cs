@@ -1,9 +1,10 @@
 using System.Linq;
 using NUnit.Framework;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete.Excel;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
+using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
@@ -181,7 +182,7 @@ End Sub";
         private int ArrangeAndGetInspectionCount(string code)
         {
             var modules = new(string, string, ComponentType)[] { ("Module1", code, ComponentType.StandardModule) };
-            return InspectionResultsForModules(modules, "Excel").Count();
+            return InspectionResultsForModules(modules, ReferenceLibrary.Excel).Count();
         }
 
         [Test]

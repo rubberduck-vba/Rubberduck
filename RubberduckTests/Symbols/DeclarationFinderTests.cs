@@ -673,7 +673,7 @@ End Sub";
             var vbe = new MockVbeBuilder()
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("TestModule", ComponentType.StandardModule, code)
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
+                .AddReference(ReferenceLibrary.Excel)
                 .AddProjectToVbeBuilder()
                 .Build();
 
@@ -1583,7 +1583,7 @@ End Property
         private static ProjectDeclaration GetTestProject(string name)
         {
             var qualifiedProjectName = new QualifiedMemberName(StubQualifiedModuleName("proj"), name);
-            return new ProjectDeclaration(qualifiedProjectName, name, true, null);
+            return new ProjectDeclaration(qualifiedProjectName, name, true);
         }
 
         private static QualifiedModuleName StubQualifiedModuleName(string name)

@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using NUnit.Framework;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
+using Rubberduck.CodeAnalysis.QuickFixes.Concrete;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes

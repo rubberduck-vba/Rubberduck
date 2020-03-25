@@ -1,6 +1,5 @@
 ﻿using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.ComReflection;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System;
 using System.Collections.Concurrent;
@@ -188,7 +187,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public IEnumerable<Declaration> Subtypes => _subtypes.Keys;
 
-        public bool IsInterface => _subtypes.Count > 0;
+        public bool IsInterface => _subtypes.Count > 0 || Annotations.Any(pta => pta.Annotation is InterfaceAnnotation);
 
         public bool IsUserInterface => Subtypes.Any(s => s.IsUserDefined);
 

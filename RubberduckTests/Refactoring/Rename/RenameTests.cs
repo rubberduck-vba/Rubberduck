@@ -3205,8 +3205,8 @@ End Property";
 
             if (useLibraries)
             {
-                enclosingProjectBuilder.AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 1, true);
-                enclosingProjectBuilder.AddReference("EXCEL", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true);
+                enclosingProjectBuilder.AddReference(ReferenceLibrary.VBA);
+                enclosingProjectBuilder.AddReference(ReferenceLibrary.Excel);
             }
 
             foreach (var testModuleDefinition in testModuleDefinitions)
@@ -3369,7 +3369,10 @@ End Property";
             uiDispatcherMock
                 .Setup(m => m.Invoke(It.IsAny<Action>()))
                 .Callback((Action action) => action.Invoke());
-            return new RenameRefactoring(factory, state, state?.ProjectsProvider, rewritingManager, selectionService, selectedDeclarationService, state, uiDispatcherMock.Object);
+            var componentRename = new RenameComponentOrProjectRefactoringAction(state, state?.ProjectsProvider, state, rewritingManager);
+            var otherRename = new RenameCodeDefinedIdentifierRefactoringAction(state, state?.ProjectsProvider, rewritingManager);
+            var baseRefactoring = new RenameRefactoringAction(componentRename, otherRename);
+            return new RenameRefactoring(baseRefactoring, factory, state, state?.ProjectsProvider, selectionService, selectedDeclarationService, uiDispatcherMock.Object);
         }
 
         #endregion

@@ -1,10 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Antlr4.Runtime.Tree;
 using NUnit.Framework;
-using Rubberduck.Inspections.Inspections.Concrete.ThunderCode;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.Inspections;
+using Rubberduck.CodeAnalysis.Inspections.Concrete.ThunderCode;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections.ThunderCode
@@ -43,8 +48,6 @@ End Sub")]
             }
         }
 
-
-
         [Test]
         [TestCase(2, @"Do")]
         [TestCase(2, @"Loop")]
@@ -68,6 +71,26 @@ End Enum";
                 new KeywordsUsedAsMemberInspection(state));
             ThunderCatsGo(func, inputCode, expectedCount);
         }
+
+        [Test]
+        [TestCase( @"[Do]")]
+        [TestCase(@"Do ")]
+        [TestCase(@" Do")]
+        [TestCase(@"")]
+        [TestCase(@"[]")]
+        public void KeywordsUsedAsMember_CorrectlyDistinguishesBracketedIdentifiers(string inputVariable)
+        {
+            var inputCode = $@"
+Private Enum HawHaw
+  [{inputVariable}] = 1
+End Enum";
+
+            var func = new Func<RubberduckParserState, IInspection>(state =>
+                new KeywordsUsedAsMemberInspection(state));
+            ThunderCatsGo(func, inputCode, 0);
+        }
+
+
 
         // NOTE: the inspection only covers trivial cases and is not exhaustive
         // For that reason, some of test cases which the evil continuations exists
@@ -257,10 +280,44 @@ End Sub")]
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = inspectionFunction(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+                var actualResults = InspectionResults(inspection, state);
 
                 Assert.AreEqual(expectedCount, actualResults.Count());
+            }
+        }
+
+        private static IEnumerable<IInspectionResult> InspectionResults(IInspection inspection, RubberduckParserState state)
+        {
+            if (inspection is IParseTreeInspection parseTreeInspection)
+            {
+                WalkTrees(parseTreeInspection, state);
+            }
+
+            return inspection.GetInspectionResults(CancellationToken.None);
+        }
+
+        private static void WalkTrees(IParseTreeInspection inspection, RubberduckParserState state)
+        {
+            var codeKind = inspection.TargetKindOfCode;
+            var listener = inspection.Listener;
+
+            List<KeyValuePair<QualifiedModuleName, IParseTree>> trees;
+            switch (codeKind)
+            {
+                case CodeKind.AttributesCode:
+                    trees = state.AttributeParseTrees;
+                    break;
+                case CodeKind.CodePaneCode:
+                    trees = state.ParseTrees;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(codeKind), codeKind, null);
+            }
+
+            foreach (var (module, tree) in trees)
+            {
+                listener.CurrentModuleName = module;
+                ParseTreeWalker.Default.Walk(listener, tree);
             }
         }
     }

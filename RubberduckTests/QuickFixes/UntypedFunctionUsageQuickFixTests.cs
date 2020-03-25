@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Threading;
 using NUnit.Framework;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
+using Rubberduck.CodeAnalysis.QuickFixes.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
@@ -33,7 +33,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
+                .AddReference(ReferenceLibrary.VBA)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 

@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
+using Rubberduck.CodeAnalysis.Inspections.Concrete;
 using Rubberduck.CodeAnalysis.QuickFixes;
-using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.CodeAnalysis.QuickFixes.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -667,7 +667,7 @@ End Sub
             var vbe = new MockVbeBuilder()
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
+                .AddReference(ReferenceLibrary.Excel)
                 .AddProjectToVbeBuilder()
                 .Build();
 
@@ -700,7 +700,7 @@ End Sub
             var vbe = new MockVbeBuilder()
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
+                .AddReference(ReferenceLibrary.Excel)
                 .AddProjectToVbeBuilder()
                 .Build();
 
@@ -731,7 +731,7 @@ End Sub
             var vbe = new MockVbeBuilder()
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, moduleCode)
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
+                .AddReference(ReferenceLibrary.Excel)
                 .AddProjectToVbeBuilder()
                 .Build();
 

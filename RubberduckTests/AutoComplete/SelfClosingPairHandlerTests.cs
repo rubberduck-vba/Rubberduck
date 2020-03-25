@@ -21,6 +21,18 @@ namespace RubberduckTests.AutoComplete
         }
 
         [Test]
+        public void GivenDisabledSelfClosingPairs_BailsOut()
+        {
+            var input = '"';
+            var original = "DoSomething |".ToCodeString();
+            var info = new SelfClosingPairTestInfo(original, input);
+            info.Settings.SelfClosingPairs.IsEnabled = false;
+
+            Assert.IsFalse(Run(info));
+            Assert.IsNull(info.Result);
+        }
+
+        [Test]
         public void GivenInvalidInput_ResultIsNull()
         {
             var input = 'A'; // note: not a self-closing pair opening or closing character, not a handled key (e.g. '\b').

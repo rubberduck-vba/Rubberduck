@@ -1348,7 +1348,8 @@ End Sub";
             uiDispatcherMock
                 .Setup(m => m.Invoke(It.IsAny<Action>()))
                 .Callback((Action action) => action.Invoke());
-            return new ReorderParametersRefactoring(state, factory, rewritingManager, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
+            var baseRefactoring = new ReorderParameterRefactoringAction(state, rewritingManager);
+            return new ReorderParametersRefactoring(baseRefactoring, state, factory, selectionService, selectedDeclarationProvider, uiDispatcherMock.Object);
         }
 
         private static Func<ReorderParametersModel, ReorderParametersModel> ReverseParameters()

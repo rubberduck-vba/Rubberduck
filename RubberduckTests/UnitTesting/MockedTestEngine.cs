@@ -8,6 +8,7 @@ using NUnit.Framework;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UnitTesting;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.ComManagement.TypeLibs.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -74,7 +75,7 @@ End Sub";
 
             Vbe = builder.Build();
             ParserState = MockParser.Create(Vbe.Object).State;
-            TestEngine = new SynchronouslySuspendingTestEngine(ParserState, _fakesFactory.Object, VbeInteraction.Object, WrapperProvider.Object, Dispatcher.Object, Vbe.Object);
+            TestEngine = new SynchronouslySuspendingTestEngine(ParserState, _fakesFactory.Object, VbeInteraction.Object, WrapperProvider.Object, Dispatcher.Object, Vbe.Object, ParserState.ProjectsProvider);
         }
 
         public MockedTestEngine(IReadOnlyList<string> moduleNames, IReadOnlyList<int> methodCounts) : this()
@@ -97,7 +98,7 @@ End Sub";
             project.AddProjectToVbeBuilder();
             Vbe = builder.Build();
             ParserState = MockParser.Create(Vbe.Object).State;
-            TestEngine = new SynchronouslySuspendingTestEngine(ParserState, _fakesFactory.Object, VbeInteraction.Object, WrapperProvider.Object, Dispatcher.Object, Vbe.Object);
+            TestEngine = new SynchronouslySuspendingTestEngine(ParserState, _fakesFactory.Object, VbeInteraction.Object, WrapperProvider.Object, Dispatcher.Object, Vbe.Object, ParserState.ProjectsProvider);
         }
 
         public MockedTestEngine(int testMethodCount) 
@@ -267,8 +268,9 @@ End Sub
                 IVBEInteraction declarationRunner,
                 ITypeLibWrapperProvider wrapperProvider,
                 IUiDispatcher uiDispatcher,
-                IVBE vbe)
-                : base(state, fakesFactory, declarationRunner, wrapperProvider, uiDispatcher, vbe)
+                IVBE vbe,
+                IProjectsProvider projectsProvider)
+                : base(state, fakesFactory, declarationRunner, wrapperProvider, uiDispatcher, vbe, projectsProvider)
             {
                 _state = state;
             }

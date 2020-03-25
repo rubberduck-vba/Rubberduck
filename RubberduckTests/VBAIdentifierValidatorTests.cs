@@ -20,6 +20,7 @@ namespace RubberduckTests
         [TestCase("O123456789O123456789O123456789O1", DeclarationType.Variable, true)] //32 chars OK for variables
         [TestCase("O123456789O123456789O123456789O1", DeclarationType.Project, true)] //32 chars OK for projects
         [Category("Rename")]
+        [Category("Refactorings")]
         public void VBAIdentifierValidator_IsValidName(string identifier, DeclarationType declarationType, bool expected)
         {
             Assert.AreEqual(expected, VBAIdentifierValidator.IsValidIdentifier(identifier, declarationType));
@@ -30,10 +31,26 @@ namespace RubberduckTests
         [TestCase("b1", false)]  //too short
         [TestCase("bbbbbbb", false)] //repeated letter
         [Category("Rename")]
+        [Category("Refactorings")]
         public void VBAIdentifierValidator_IsMeaningfulName(string identifier, bool expected)
         {
             Assert.AreEqual(expected, VBAIdentifierValidator.IsMeaningfulIdentifier(identifier));
         }
 
+        [TestCase("CStr", DeclarationType.UserDefinedTypeMember, false, false)]
+        [TestCase("CStr", DeclarationType.UserDefinedTypeMember, true, true)]
+        [TestCase("CStr", DeclarationType.Property, false, true)]
+        [TestCase("CStr", DeclarationType.Property, true, true)]
+        [TestCase("Name", DeclarationType.UserDefinedTypeMember, false, false)]
+        [TestCase("Name", DeclarationType.UserDefinedTypeMember, true, true)]
+        [TestCase("Name", DeclarationType.Property, false, false)]
+        [TestCase("Name", DeclarationType.Property, true, false)]
+        [Category("Rename")]
+        [Category("Refactorings")]
+        public void UDTMemberIdentifierValidations(string identifier, DeclarationType declarationType, bool isArray, bool expectedResult)
+        {
+            var result = VBAIdentifierValidator.TryMatchInvalidIdentifierCriteria(identifier, declarationType, out var errorMessage, isArray);
+            Assert.AreEqual(expectedResult, result, errorMessage);
+        }
     }
 }

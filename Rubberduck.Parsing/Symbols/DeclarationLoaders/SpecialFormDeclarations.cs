@@ -100,22 +100,37 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
 
         private static ParameterDeclaration ArrayNameParameter(Declaration parentModule, FunctionDeclaration parentFunction)
         {
-            var arrayParam = new ParameterDeclaration(new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Arrayname"), parentFunction, "Variant", null, null, false, false, true);
+            var arrayParam = new ParameterDeclaration(
+                new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Arrayname"), 
+                parentFunction, 
+                "Variant", 
+                null, 
+                null, 
+                false, 
+                false, 
+                true);
             return arrayParam;
         }
 
         private static ParameterDeclaration DimensionParameter(Declaration parentModule, FunctionDeclaration parentFunction)
         {
-            var rankParam = new ParameterDeclaration(new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Dimension"), parentFunction, "Long", null, null, true, false);
+            var rankParam = new ParameterDeclaration(
+                new QualifiedMemberName(parentModule.QualifiedName.QualifiedModuleName, "Dimension"), 
+                parentFunction, 
+                "Long", 
+                null, 
+                null, 
+                true, 
+                false);
             return rankParam;
         }
 
         private static FunctionDeclaration UBoundFunction(Declaration parentModule)
         {
-            var uboundFunction = UBoundFunctionWithoutParameters(parentModule);
-            uboundFunction.AddParameter(ArrayNameParameter(parentModule, uboundFunction));
-            uboundFunction.AddParameter(DimensionParameter(parentModule, uboundFunction));
-            return uboundFunction;
+            var uBoundFunction = UBoundFunctionWithoutParameters(parentModule);
+            uBoundFunction.AddParameter(ArrayNameParameter(parentModule, uBoundFunction));
+            uBoundFunction.AddParameter(DimensionParameter(parentModule, uBoundFunction));
+            return uBoundFunction;
         }
 
         private static FunctionDeclaration UBoundFunctionWithoutParameters(Declaration parentModule)
