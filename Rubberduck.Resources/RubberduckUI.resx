@@ -1779,7 +1779,4 @@ Import aborted.</value>
   <data name="EncapsulateField_WrapFieldsInPrivateType" xml:space="preserve">
     <value>Wrap Fields in Private Type</value>
   </data>
-  <data name="ImplementInterface_TODO" xml:space="preserve">
-    <value>'TODO implement interface member</value>
-  </data>
 </root>
