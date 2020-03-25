@@ -707,26 +707,6 @@ namespace Rubberduck.Refactorings.MoveMember
             DeclarationType.EnumerationMember
         };
 
-        private static IEnumerable<IdentifierReference> ReferencesInConstantDeclarationExpressions(MoveGroupsProvider moveGroups, Declaration declaration)
-        {
-            var references = new List<IdentifierReference>();
-
-            if (!declaration.IsConstant()) { return Enumerable.Empty<IdentifierReference>(); }
-
-            var allModuleConstants = moveGroups.Declarations(MoveGroup.AllParticipants).Concat(moveGroups.Declarations(MoveGroup.NonParticipants))
-                .Where(d => d.IsConstant() && d != declaration);
-
-            foreach (var constant in allModuleConstants)
-            {
-                var lExprContexts = constant.Context.GetDescendents<VBAParser.LExprContext>();
-                if (lExprContexts.Any())
-                {
-                    references.AddRange(declaration.References.Where(rf => lExprContexts.Contains(rf.Context.Parent)));
-                }
-            }
-            return references;
-        }
-
         private class MoveDispositions
         {
             private Dictionary<MoveDisposition, List<Declaration>> _dispositions;

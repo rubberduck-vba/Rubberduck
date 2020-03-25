@@ -1,7 +1,6 @@
 ﻿using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Refactorings.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,9 +49,9 @@ namespace Rubberduck.Refactorings.Common
         }
 
         public static bool IsLifeCycleHandler(this Declaration declaration)
-            => declaration.DeclarationType.HasFlag(DeclarationType.Member)
-                    && (declaration.IdentifierName.Equals("Class_Initialize")
-                        || declaration.IdentifierName.Equals("Class_Terminate"));
+            => declaration.ParentDeclaration.DeclarationType == DeclarationType.ClassModule
+                    && (declaration.IdentifierName.Equals("Class_Initialize", StringComparison.InvariantCultureIgnoreCase)
+                        || declaration.IdentifierName.Equals("Class_Terminate", StringComparison.InvariantCultureIgnoreCase));
 
         public static IEnumerable<IdentifierReference> AllReferences(this IEnumerable<Declaration> declarations)
                 => declarations.SelectMany(d => d.References);
