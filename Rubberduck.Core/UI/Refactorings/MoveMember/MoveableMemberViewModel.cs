@@ -4,14 +4,11 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Properties;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.MoveMember;
-using Rubberduck.Refactorings.MoveMember.Extensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.UI.Refactorings.MoveMember
 {
@@ -39,7 +36,7 @@ namespace Rubberduck.UI.Refactorings.MoveMember
 
         public bool IsPrivateConstant => _moveable.Member.IsModuleConstant() && _moveable.Member.HasPrivateAccessibility();
 
-        public bool IsPublicField => _moveable.Member.IsField() && !_moveable.Member.HasPrivateAccessibility();
+        public bool IsPublicField => _moveable.Member.IsMemberVariable() && !_moveable.Member.HasPrivateAccessibility();
 
         public bool IsSelected
         {
@@ -126,7 +123,7 @@ namespace Rubberduck.UI.Refactorings.MoveMember
                 }
                 displaySignature = moveable.Member.AsTypeName == null ? displaySignature : $"{displaySignature} {Tokens.As} {moveable.Member.AsTypeName} = {constValue}";
             }
-            else if (moveable.Member.IsField())
+            else if (moveable.Member.IsMemberVariable())
             {
                 displaySignature = $"{accessibility} {moveable.Member.IdentifierName}";
                 displaySignature = moveable.Member.AsTypeName == null ? displaySignature : $"{displaySignature} {Tokens.As} {moveable.Member.AsTypeName}";

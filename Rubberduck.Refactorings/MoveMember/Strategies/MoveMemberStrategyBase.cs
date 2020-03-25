@@ -127,7 +127,7 @@ namespace Rubberduck.Refactorings.MoveMember
 
             if (!identifierMatches.Any()) { return false; }
 
-            if (identifierMatches.Any(idm => idm.IsField() || idm.IsModuleConstant()))
+            if (identifierMatches.Any(idm => idm.IsMemberVariable() || idm.IsModuleConstant()))
             {
                 return true;
             }
@@ -182,7 +182,7 @@ namespace Rubberduck.Refactorings.MoveMember
             foreach (var potentialConflict in destinationModuleDeclarations.Where(pc => pc.IdentifierName.IsEquivalentVBAIdentifierTo(enumeration.IdentifierName)))
             {
                 if (enumerationIdentifierConflictTypes.Any(ect => ect.HasFlag(potentialConflict.DeclarationType))
-                    || potentialConflict.IsField()
+                    || potentialConflict.IsMemberVariable()
                     || potentialConflict.IsModuleConstant())
                 {
                     return true;
@@ -197,7 +197,7 @@ namespace Rubberduck.Refactorings.MoveMember
             foreach (var identifierMatch in identifierMatchingDeclarations)
             {
                 if (identifierMatch.IsMember()
-                    || identifierMatch.IsField()
+                    || identifierMatch.IsMemberVariable()
                     || identifierMatch.IsModuleConstant())
                 {
                     return true;

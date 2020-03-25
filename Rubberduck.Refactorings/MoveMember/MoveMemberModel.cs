@@ -1,18 +1,10 @@
-﻿using Antlr4.Runtime;
-using Rubberduck.Common;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Rewriter;
+﻿using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
-using Rubberduck.Refactorings.MoveMember.Extensions;
-using Rubberduck.Resources;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 
 

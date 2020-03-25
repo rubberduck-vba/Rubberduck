@@ -381,7 +381,7 @@ namespace Rubberduck.Refactorings.MoveMember
                 }
             }
 
-            var moveableFields = model.MoveableMembers.Where(mm => mm.Member.IsField());
+            var moveableFields = model.MoveableMembers.Where(mm => mm.Member.IsMemberVariable());
             var directReferencesOfMovedFields = new List<IdentifierReference>();
             foreach (var field in moveableFields)
             {

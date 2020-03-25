@@ -52,7 +52,7 @@ namespace Rubberduck.Refactorings.MoveMember
             var selected = _selectedDeclarationProvider.SelectedDeclaration(targetSelection);
             if (selected.IsMember()
                 || selected.IsModuleConstant()
-                || (selected.IsField() && !selected.HasPrivateAccessibility()))
+                || (selected.IsMemberVariable() && !selected.HasPrivateAccessibility()))
             {
                 return selected;
             }

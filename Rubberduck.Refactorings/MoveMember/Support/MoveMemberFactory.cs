@@ -3,7 +3,6 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Common;
-using Rubberduck.Refactorings.MoveMember.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
 using System.Collections.Generic;
 using System.Linq;
@@ -91,7 +90,7 @@ namespace Rubberduck.Refactorings.MoveMember
         {
             var groupsByIdentifier = _declarationFinderProvider.DeclarationFinder.Members(moveTarget.QualifiedModuleName)
                     .Where(d => d.IsMember() 
-                                    || d.IsField() 
+                                    || d.IsMemberVariable() 
                                     || d.IsModuleConstant() 
                                     || d.DeclarationType.Equals(DeclarationType.UserDefinedType)
                                     || d.DeclarationType.Equals(DeclarationType.Enumeration))
@@ -132,7 +131,7 @@ namespace Rubberduck.Refactorings.MoveMember
                 }
             }
 
-            foreach (var moveableMember in moveableMembers.Where(m => m.Member.IsField()).ToList())
+            foreach (var moveableMember in moveableMembers.Where(m => m.Member.IsMemberVariable()).ToList())
             {
                 moveableMember.DirectReferences = FindDirectTypeReferences(moveableMember.Member).ToList();
             }

@@ -1,6 +1,4 @@
 ﻿using NLog;
-using Rubberduck.Common;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.MoveMember;

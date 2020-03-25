@@ -19,6 +19,9 @@ namespace Rubberduck.Refactorings.Common
         public static bool IsLocalVariable(this Declaration declaration)
             => declaration.IsVariable() && declaration.ParentDeclaration.IsMember();
 
+        public static bool IsModuleConstant(this Declaration declaration)
+            => declaration.IsConstant() && !declaration.IsLocalConstant();
+
         public static bool IsLocalConstant(this Declaration declaration)
             => declaration.IsConstant() && declaration.ParentDeclaration.IsMember();
 
@@ -45,6 +48,14 @@ namespace Rubberduck.Refactorings.Common
             return declaration.Context.TryGetAncestor<VBAParser.VariableListStmtContext>(out var varList)
                             && varList.ChildCount > 1;
         }
+
+        public static bool IsLifeCycleHandler(this Declaration declaration)
+            => declaration.DeclarationType.HasFlag(DeclarationType.Member)
+                    && (declaration.IdentifierName.Equals("Class_Initialize")
+                        || declaration.IdentifierName.Equals("Class_Terminate"));
+
+        public static IEnumerable<IdentifierReference> AllReferences(this IEnumerable<Declaration> declarations)
+                => declarations.SelectMany(d => d.References);
 
         /// <summary>
         /// Generates a Property Member code block specified by the letSetGet DeclarationType argument.

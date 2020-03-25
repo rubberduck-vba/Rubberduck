@@ -1,8 +1,5 @@
-﻿using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Symbols;
+﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Common;
-using Rubberduck.Refactorings.MoveMember.Extensions;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 

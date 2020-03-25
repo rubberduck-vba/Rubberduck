@@ -1,7 +1,7 @@
 ﻿using Rubberduck.Parsing;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Common;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.MoveMember.Extensions;
 using System.Collections.Generic;
@@ -236,20 +236,20 @@ namespace Rubberduck.Refactorings.MoveMember
         {
             var referencesExternalToMember = moveableMemberSet.Members.AllReferences().Where(rf => !moveableMemberSet.Members.Contains(rf.ParentScoping));
 
-            moveableMemberSet.IsExclusive = _allParticipants.ContainsParentScopesForAll(referencesExternalToMember);
+            moveableMemberSet.IsExclusive = referencesExternalToMember.All(rf => _allParticipants.Contains(rf.ParentScoping));
 
             if (!moveableMemberSet.IsExclusive)
             {
                 var qmnSource = moveableMemberSet.Member.QualifiedModuleName;
-                var participatingTypeFields = _allParticipants.Where(p => p.IsField() && p.AsTypeName.Equals(moveableMemberSet.Member.IdentifierName));
+                var participatingTypeFields = _allParticipants.Where(p => p.IsMemberVariable() && p.AsTypeName.Equals(moveableMemberSet.Member.IdentifierName));
                 if (moveableMemberSet.IsUserDefinedType)
                 {
-                    var allUDTFields = _declarationProvider.DeclarationFinder.Members(qmnSource).Where(m => m.IsField() && m.AsTypeDeclaration.DeclarationType.Equals(DeclarationType.UserDefinedType));
+                    var allUDTFields = _declarationProvider.DeclarationFinder.Members(qmnSource).Where(m => m.IsMemberVariable() && m.AsTypeDeclaration.DeclarationType.Equals(DeclarationType.UserDefinedType));
                     moveableMemberSet.IsExclusive = !(allUDTFields.Except(participatingTypeFields)).Any();
                 }
                 if (moveableMemberSet.IsEnumeration)
                 {
-                    var allEnumFields = _declarationProvider.DeclarationFinder.Members(qmnSource).Where(m => m.IsField() && m.AsTypeDeclaration.DeclarationType.Equals(DeclarationType.Enumeration));
+                    var allEnumFields = _declarationProvider.DeclarationFinder.Members(qmnSource).Where(m => m.IsMemberVariable() && m.AsTypeDeclaration.DeclarationType.Equals(DeclarationType.Enumeration));
                     moveableMemberSet.IsExclusive = !(allEnumFields.Except(participatingTypeFields)).Any();
                 }
             }
